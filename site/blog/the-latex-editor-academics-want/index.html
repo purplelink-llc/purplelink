@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>The LaTeX editor that academics actually want — Purplelink LLC</title>
+    <meta name="description" content="Why existing LaTeX editors fail academic researchers — and what ModernTex does differently to serve the manuscript workflow.">
+    <link rel="canonical" href="https://purplelink.llc/blog/the-latex-editor-academics-want/">
+    <meta property="og:title" content="The LaTeX editor that academics actually want">
+    <meta property="og:description" content="Why existing LaTeX editors fail academic researchers — and what ModernTex does differently to serve the manuscript workflow.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/the-latex-editor-academics-want/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="The LaTeX editor that academics actually want">
+    <meta name="twitter:description" content="Why existing LaTeX editors fail academic researchers — and what ModernTex does differently to serve the manuscript workflow.">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BlogPosting",
+          "headline": "The LaTeX editor that academics actually want",
+          "description": "Why existing LaTeX editors fail academic researchers — and what ModernTex does differently to serve the manuscript workflow.",
+          "datePublished": "2026-05-27",
+          "author": {
+            "@type": "Organization",
+            "name": "Purplelink LLC",
+            "url": "https://purplelink.llc/"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Purplelink LLC",
+            "url": "https://purplelink.llc/"
+          },
+          "url": "https://purplelink.llc/blog/the-latex-editor-academics-want/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://purplelink.llc/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "The LaTeX editor academics want", "item": "https://purplelink.llc/blog/the-latex-editor-academics-want/" }
+          ]
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/">← All posts</a>
+
+    <div class="post-hero">
+      <p class="post-date">May 27, 2026</p>
+      <h1 class="post-title">The LaTeX editor that academics actually want</h1>
+      <p class="post-lede">TeXShop is from 2000. Overleaf is a web app built for collaboration. Neither was designed around the manuscript workflow that most researchers actually live in. ModernTex is.</p>
+    </div>
+
+    <article id="main-content" class="post-body">
+      <p>LaTeX has a tooling problem. The language itself is powerful — it produces typeset output that word processors still can't match — but the editors that support it were mostly designed for programmers or haven't changed meaningfully since the early 2000s. Academic researchers put up with them because there's no better option on macOS.</p>
+
+      <p>ModernTex is an attempt to fix that. Here's what's wrong with the current options, and what we're doing differently.</p>
+
+      <h2>The options researchers currently have</h2>
+
+      <p><strong>TeXShop</strong> is a classic. It's free, it works, and it's been shipping on macOS since 2001. But it shows its age. The interface predates modern macOS design conventions, the error reporting is raw compiler output, and the multi-file support is functional but not designed around the project structure of a real manuscript.</p>
+
+      <p><strong>Overleaf</strong> is the popular choice for collaboration-heavy workflows. But it's a web app — meaning it requires an internet connection, stores your work on someone else's server, and delivers the performance characteristics of a web app rather than a native one. For a solo researcher working offline on a dissertation, it's the wrong tool.</p>
+
+      <p><strong>VSCode with LaTeX Workshop</strong> is the programmer's choice. It's powerful, highly configurable, and actively developed. It's also a general-purpose code editor with LaTeX bolted on. The manuscript workflow — managing chapters, tracking citation keys, preparing for submission — isn't what it was designed for.</p>
+
+      <h2>What academics actually need</h2>
+
+      <p>When I talked to researchers about their LaTeX workflows, the same problems came up repeatedly.</p>
+
+      <p><em>Error messages are incomprehensible.</em> LaTeX's error output is famously hostile. A missing brace three paragraphs up produces an error message pointing to a different paragraph, and deciphering it requires experience or a Google search. Researchers lose hours to errors that should take minutes.</p>
+
+      <p><em>Multi-file projects are painful.</em> A dissertation or journal article often spans dozens of files — a main document, individual chapter files, a bibliography, custom style files, figure directories. Managing those relationships in a general-purpose editor requires configuration and discipline that adds friction.</p>
+
+      <p><em>Submission prep is manual and error-prone.</em> Most conferences and journals have specific requirements — page limits, anonymous review mode, specific formatting packages, single-file submission. Checking all of those before submission is a checklist that researchers do manually and sometimes forget.</p>
+
+      <p><em>Citation management is awkward.</em> Keeping a BibTeX file, remembering entry keys, and citing correctly across a long document are friction points in every manuscript. The existing autocomplete in most editors requires exact key matches — not useful when you can only remember the author's name.</p>
+
+      <h2>What ModernTex does differently</h2>
+
+      <p>ModernTex is designed around the manuscript as the unit of work, not the file. It understands project structure: root files, chapter files, bibliography files. The sidebar reflects the manuscript, not the filesystem.</p>
+
+      <p>Error messages are translated. When a compilation fails, ModernTex parses the raw LaTeX output and presents a plain-language explanation with a suggested fix and a direct jump to the relevant source location. Most common LaTeX errors become understandable in seconds.</p>
+
+      <p>Submission readiness is a first-class feature. Before submitting to a venue, ModernTex can check anonymization (are any author names visible?), page count, required sections, and package compatibility. It surfaces the issues that cause desk rejections.</p>
+
+      <p>Citation search works on author names, titles, and keywords — not just exact BibTeX keys. Type the author's last name and get a list of matching entries from your bibliography. Cite with a keystroke.</p>
+
+      <p>And it's native macOS. Built in Swift, dark and light mode, proper keyboard shortcuts, fast compilation that doesn't make you wait. It feels like it belongs on your Mac, because it was designed for one.</p>
+
+      <p>ModernTex is in active development. If you're a researcher who's put up with the current options for too long — <a href="/moderntex/">join the waitlist</a>.</p>
+    </article>
+
+    <div class="post-footer">
+      <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  </body>
+</html>

@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a custom software development company based in Atlanta, Georgia. It specializes in native macOS applications, iOS apps, applied AI tools, and web automation services. The company was formed in 2026 as a Georgia LLC.
+> Purplelink LLC is a software studio based in Atlanta, Georgia building native macOS and iOS apps — ModernTex, Haea, and GlobePin — with an emphasis on craft, longevity, and user privacy. Founded in 2026 as a Georgia LLC.
 
 ## Company
 
@@ -11,6 +11,7 @@
 - **Contact:** ben@purplelink.llc
 - **CEO:** Benjamin Ampel
 - **Website:** https://purplelink.llc/
+- **Mission:** Making software that lasts.
 
 ## What Purplelink builds
 
@@ -18,44 +19,94 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 
 1. **Native macOS and iOS apps** — Purpose-built Apple platform applications. Performance, aesthetics, and functionality built together, not bolted on.
 
-2. **Applied AI tools** — Internal and client-facing tools that use AI to automate analysis, writing, research, and software workflows. Practical intelligence for real tasks.
+2. **Applied AI tools** — Internal and client-facing tools that use AI to automate analysis, writing, research, and software workflows.
 
-3. **Web applications and automation** — Dashboards, portals, API integrations, and backend services that connect business tools and reduce manual work.
-
-Future work may include video game development.
+3. **Web applications and automation** — Dashboards, portals, API integrations, and backend services.
 
 ## Products in development
 
 ### ModernTex (macOS)
 - **Platform:** macOS 14+
-- **Category:** Developer / productivity
+- **Category:** Productivity / academic writing
 - **Description:** A native macOS LaTeX manuscript studio for academic researchers. Combines multi-file manuscript editing, tightly synchronized PDF preview, intelligent compile modes (Fast/Live/Full), citation management and BibTeX autocomplete, revision snapshots, plain-language error diagnostics, and submission-readiness checks in one coherent interface.
 - **Target users:** PhD students, faculty, and technical coauthors writing serious LaTeX manuscripts
+- **Pricing:** To be announced at launch
+- **Privacy:** No cloud sync, no data collection
 - **Status:** In active development, expected 2026
+- **Waitlist:** https://purplelink.llc/moderntex/
+- **Key differentiators:** Plain-language LaTeX error explanations; submission-readiness checks for journal/conference requirements; native macOS (not Electron, not web); academic manuscript workflow as first-class feature
 
 ### Haea (iOS)
 - **Platform:** iOS 17+
 - **Bundle ID:** com.BAmpel.Haea
 - **Category:** Health & fitness
-- **Description:** A comprehensive on-device health analytics platform. Integrates sleep, nutrition, weight, exercise, and biometric data to surface patterns and trends through advanced ML models including Kalman filtering, TDEE calculation, circadian rhythm intelligence, Granger causality analysis, and VO₂ max tracking. All data remains on-device with no cloud sync.
+- **Description:** A comprehensive on-device health analytics platform. Integrates sleep, nutrition, weight, exercise, and biometric data to surface patterns and trends through advanced ML models including Kalman filtering, TDEE calculation, circadian rhythm intelligence, Granger causality analysis, and VO₂ max tracking.
+- **Target users:** Health-conscious individuals who want advanced analytics without giving up their data
 - **Pricing:** Free tier + Premium ($1.99/month or $14.99/year)
-- **Privacy:** No cloud sync, no third-party SDKs, HIPAA-ready on-device storage
+- **Privacy:** No cloud sync, no third-party SDKs, no analytics, on-device only, HIPAA-ready architecture
 - **Status:** In active development, expected 2026
+- **Waitlist:** https://purplelink.llc/haea/
+- **Key differentiators:** Full on-device ML (Kalman filtering, Granger causality, biological age estimation); no cloud transmission of health data; privacy-first architecture as a core design constraint, not an add-on
 
 ### GlobePin (iOS)
 - **Platform:** iOS 17+
 - **Bundle ID:** com.globepin.app
 - **Category:** Travel
-- **Description:** A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Features interactive map visualization with globe view, statistics dashboards, travel goal tracking, anniversary reminders for visits, and shareable travel postcards. Supports iCloud sync via CloudKit.
+- **Description:** A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Features interactive map visualization with 3D globe view, flight statistics dashboards, travel goal tracking, anniversary reminders for visits, and shareable travel postcards.
+- **Target users:** Frequent travelers who want a complete personal travel record
+- **Pricing:** To be announced at launch
+- **Sync:** iCloud sync via CloudKit (no Purplelink account required)
 - **Status:** Multiple builds completed (build 79+), approaching release in 2026
+- **Waitlist:** https://purplelink.llc/globepin/
+- **Key differentiators:** 3D globe view for route visualization; complete flight log with stats; travel goals tied to actual history; anniversary reminders; iCloud sync without a separate account; no social network features
 
-## Open source projects
+## Open source
 
 ### Scholar Utility Belt
 - **Type:** Browser extension (Google Chrome)
 - **Purpose:** Utility for academic research workflows
-- **Availability:** Free, open source
 - **Chrome Web Store:** https://chromewebstore.google.com/detail/scholar-utility-belt/omcogfcgldfmihfogbffflbocdbjockn
+
+## Pages
+
+- Home: https://purplelink.llc/
+- ModernTex: https://purplelink.llc/moderntex/
+- Haea: https://purplelink.llc/haea/
+- GlobePin: https://purplelink.llc/globepin/
+- About: https://purplelink.llc/about/
+- Blog: https://purplelink.llc/blog/
+- Press: https://purplelink.llc/press/
+- Privacy Policy: https://purplelink.llc/privacy/
+- Changelog: https://purplelink.llc/changelog/
+
+## Frequently asked questions
+
+**When do Purplelink's apps ship?**
+GlobePin is nearest to launch (build 79+, expected 2026). Haea and ModernTex are in active development and also expected in 2026. All three have waitlists on their respective product pages.
+
+**What platforms do the apps support?**
+GlobePin and Haea are iOS apps (iOS 17+). ModernTex is a macOS app (macOS 14+).
+
+**Does Haea send my health data to a server?**
+No. All of Haea's data stays on-device. There is no cloud sync to Purplelink's infrastructure, no third-party SDKs, and no analytics. Your health data never leaves your iPhone.
+
+**Does Haea work with Apple Health?**
+Yes. Haea reads data from Apple Health including sleep, nutrition, weight, exercise, heart rate, HRV, and blood oxygen.
+
+**Is Haea HIPAA-compliant?**
+Haea is a consumer app, not a covered entity under HIPAA. However, its architecture exceeds typical health app privacy standards: all data is on-device with no cloud transmission.
+
+**Does GlobePin require an account?**
+No. GlobePin syncs via iCloud (CloudKit) using your existing Apple ID. No separate Purplelink account is required.
+
+**Is ModernTex a subscription?**
+Pricing has not been announced. Sign up for the waitlist at https://purplelink.llc/moderntex/ to be notified.
+
+**Who built Purplelink?**
+Purplelink LLC was founded by Benjamin Ampel in Atlanta, Georgia in 2026. It is a one-person studio.
+
+**How do I contact Purplelink?**
+Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 ## Notes
 
