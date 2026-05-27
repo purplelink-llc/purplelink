@@ -1075,6 +1075,13 @@ dd {
   border: 1px solid var(--line);
 }
 
+.screenshot-wide img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 24px oklch(0% 0 0 / 0.08);
+}
+
 /* ─── Product card links (homepage) ────────────────────────────────────── */
 
 .product-item-link {
