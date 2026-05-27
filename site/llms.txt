@@ -1,0 +1,63 @@
+# Purplelink LLC
+
+> Purplelink LLC is a custom software development company based in Atlanta, Georgia. It specializes in native macOS applications, iOS apps, applied AI tools, and web automation services. The company was formed in 2026 as a Georgia LLC.
+
+## Company
+
+- **Legal name:** Purplelink LLC
+- **Type:** Georgia LLC (NAICS 541511 — Custom Computer Programming Services)
+- **Location:** 8735 Dunwoody Place #12398, Atlanta, GA 30350
+- **Founded:** 2026
+- **Contact:** ben@purplelink.llc
+- **CEO:** Benjamin Ampel
+- **Website:** https://purplelink.llc/
+
+## What Purplelink builds
+
+Purplelink creates software with an emphasis on craft, longevity, and practical utility across three areas:
+
+1. **Native macOS and iOS apps** — Purpose-built Apple platform applications. Performance, aesthetics, and functionality built together, not bolted on.
+
+2. **Applied AI tools** — Internal and client-facing tools that use AI to automate analysis, writing, research, and software workflows. Practical intelligence for real tasks.
+
+3. **Web applications and automation** — Dashboards, portals, API integrations, and backend services that connect business tools and reduce manual work.
+
+Future work may include video game development.
+
+## Products in development
+
+### ModernTex (macOS)
+- **Platform:** macOS 14+
+- **Category:** Developer / productivity
+- **Description:** A native macOS LaTeX manuscript studio for academic researchers. Combines multi-file manuscript editing, tightly synchronized PDF preview, intelligent compile modes (Fast/Live/Full), citation management and BibTeX autocomplete, revision snapshots, plain-language error diagnostics, and submission-readiness checks in one coherent interface.
+- **Target users:** PhD students, faculty, and technical coauthors writing serious LaTeX manuscripts
+- **Status:** In active development, expected 2026
+
+### Haea (iOS)
+- **Platform:** iOS 17+
+- **Bundle ID:** com.BAmpel.Haea
+- **Category:** Health & fitness
+- **Description:** A comprehensive on-device health analytics platform. Integrates sleep, nutrition, weight, exercise, and biometric data to surface patterns and trends through advanced ML models including Kalman filtering, TDEE calculation, circadian rhythm intelligence, Granger causality analysis, and VO₂ max tracking. All data remains on-device with no cloud sync.
+- **Pricing:** Free tier + Premium ($1.99/month or $14.99/year)
+- **Privacy:** No cloud sync, no third-party SDKs, HIPAA-ready on-device storage
+- **Status:** In active development, expected 2026
+
+### GlobePin (iOS)
+- **Platform:** iOS 17+
+- **Bundle ID:** com.globepin.app
+- **Category:** Travel
+- **Description:** A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Features interactive map visualization with globe view, statistics dashboards, travel goal tracking, anniversary reminders for visits, and shareable travel postcards. Supports iCloud sync via CloudKit.
+- **Status:** Multiple builds completed (build 79+), approaching release in 2026
+
+## Open source projects
+
+### Scholar Utility Belt
+- **Type:** Browser extension (Google Chrome)
+- **Purpose:** Utility for academic research workflows
+- **Availability:** Free, open source
+- **Chrome Web Store:** https://chromewebstore.google.com/detail/scholar-utility-belt/omcogfcgldfmihfogbffflbocdbjockn
+
+## Notes
+
+- Project inquiries: ben@purplelink.llc with subject "Purplelink LLC"
+- The company is a sole-proprietor LLC operated out of Atlanta, Georgia

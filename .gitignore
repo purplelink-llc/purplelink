@@ -1,0 +1,6 @@
+.DS_Store
+.netlify
+node_modules/
+.worktrees/
+CC-Session-Logs/
+site/CC-Session-Logs/
