@@ -85,3 +85,37 @@ def parse_latex_log(log_text: str) -> list[dict]:
         if len(errors) >= MAX_REPORTED_ERRORS:
             break
     return errors
+
+
+_PICTUREENV = r"PICTUREENV=(?:picture|DIFnomarkup|tabular)[\w\d*@]*"
+
+_DIFF_LEGEND = (
+    r"\fbox{\parbox{0.9\linewidth}{\textbf{How to read this revision diff:} "
+    r"\textcolor{blue}{\uwave{blue underlined text}} was added; "
+    r"\textcolor{red}{\sout{red struck-through text}} was deleted. "
+    r"Changes inside tables are shown in final form only.}}"
+)
+
+
+def build_latexdiff_command(old_name: str, new_name: str) -> list[str]:
+    """Build the latexdiff argv with table-safe defaults (spec §latex-diff)."""
+    return [
+        "latexdiff",
+        "--type=UNDERLINE",
+        f"--config={_PICTUREENV}",
+        old_name,
+        new_name,
+    ]
+
+
+def inject_diff_legend(diff_tex: str) -> str:
+    r"""Insert a 'how to read this diff' box immediately after \maketitle.
+
+    No-op if the document has no \maketitle.
+    """
+    marker = r"\maketitle"
+    idx = diff_tex.find(marker)
+    if idx == -1:
+        return diff_tex
+    insert_at = idx + len(marker)
+    return diff_tex[:insert_at] + "\n" + _DIFF_LEGEND + "\n" + diff_tex[insert_at:]

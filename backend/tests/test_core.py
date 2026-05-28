@@ -75,3 +75,25 @@ def test_parse_latex_log_truncates_to_cap():
     big = "\n".join(f"main.tex:{i}: Error number {i}." for i in range(1, 50))
     errors = core.parse_latex_log(big)
     assert len(errors) == core.MAX_REPORTED_ERRORS
+
+
+def test_latexdiff_command_has_safe_defaults():
+    cmd = core.build_latexdiff_command("old.tex", "new.tex")
+    assert cmd[0] == "latexdiff"
+    assert "--type=UNDERLINE" in cmd
+    # tabular treated as opaque to avoid "Missing \\cr" table corruption
+    assert any("PICTUREENV" in a and "tabular" in a for a in cmd)
+    assert cmd[-2:] == ["old.tex", "new.tex"]
+
+
+def test_inject_diff_legend_after_maketitle():
+    src = r"\begin{document}" "\n" r"\maketitle" "\n" r"Body" "\n" r"\end{document}"
+    out = core.inject_diff_legend(src)
+    assert r"\maketitle" in out
+    assert "How to read this revision diff" in out
+    assert out.index("How to read") > out.index(r"\maketitle")
+
+
+def test_inject_diff_legend_noop_without_maketitle():
+    src = r"\begin{document}" "\n" r"Body" "\n" r"\end{document}"
+    assert core.inject_diff_legend(src) == src
