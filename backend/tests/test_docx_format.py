@@ -29,3 +29,17 @@ def test_rendered_citation_two_authors():
 def test_rendered_citation_four_authors_uses_etal():
     entry = {"author": "A, X and B, Y and C, Z and D, W", "year": "2021"}
     assert f._rendered_citation(entry) == "A et al. 2021"
+
+
+import inspect
+
+
+def test_format_docx_accepts_anonymize():
+    sig = inspect.signature(f.format_docx)
+    assert "anonymize" in sig.parameters
+    assert sig.parameters["anonymize"].default is False
+
+
+def test_fix_paragraphs_accepts_anonymize():
+    sig = inspect.signature(f.fix_paragraphs)
+    assert "anonymize" in sig.parameters

@@ -393,7 +393,7 @@ def fix_keywords_and_pagebreak(doc, tex_path=None):
         print(f"  Added page break before first heading (Introduction)")
 
 
-def fix_paragraphs(doc):
+def fix_paragraphs(doc, anonymize=False):
     """Apply formatting to every paragraph based on its style."""
     indent_twips = int(INDENT_INCHES * 1440)  # 720 twips = 0.5 inch
     hanging_twips = int(HANGING_INDENT_INCHES * 1440)  # 360 twips = 0.25 inch
@@ -418,9 +418,18 @@ def fix_paragraphs(doc):
                     run.text = run.text.upper()
             counts["title"] += 1
 
-        # --- Author (remove entirely) ---
+        # --- Author: remove if anonymizing, else style as a centered block ---
         elif style_name == "Author":
-            para._element.getparent().remove(para._element)
+            if anonymize:
+                para._element.getparent().remove(para._element)
+            else:
+                set_spacing(ppr, line=LINE_SPACING_SINGLE, before=0, after=120)
+                set_alignment(ppr, "center")
+                clear_first_indent(ppr)
+                rpr_a = make_clean_rpr(BODY_FONT, BODY_SIZE_PT, bold=False,
+                                       italic=False, color=BLACK)
+                for run in para.runs:
+                    replace_rpr(run._element, rpr_a)
             counts["author"] += 1
 
         # --- Abstract Title ---
@@ -2027,7 +2036,7 @@ def _replace_ref_in_para(para, search_text, bm_name, display_text):
 # ---------------------------------------------------------------------------
 
 def format_docx(input_path, output_path=None, hires_image=None,
-                bib_path=None, tex_path=None):
+                bib_path=None, tex_path=None, anonymize=False):
     if output_path is None:
         output_path = input_path
 
@@ -2040,7 +2049,7 @@ def format_docx(input_path, output_path=None, hires_image=None,
     fix_page_layout(doc)
     fix_heading_numbering(doc)
     fix_keywords_and_pagebreak(doc, tex_path=tex_path)
-    fix_paragraphs(doc)
+    fix_paragraphs(doc, anonymize=anonymize)
 
     fix_captions(doc)                        # 1. Add "Figure N." / "Table N." prefixes
     fig_bm, tab_bm = fix_caption_fields(doc) # 2. Replace prefixes with SEQ fields
@@ -2076,6 +2085,8 @@ if __name__ == "__main__":
                         help="BibTeX file for Word Reference Manager integration")
     parser.add_argument("--tex", default=None,
                         help="LaTeX source file for citation key mapping")
+    parser.add_argument("--anonymize", action="store_true",
+                        help="Remove the author block (double-blind submission)")
     args = parser.parse_args()
     format_docx(args.input, args.output, hires_image=args.image,
-                bib_path=args.bib, tex_path=args.tex)
+                bib_path=args.bib, tex_path=args.tex, anonymize=args.anonymize)
