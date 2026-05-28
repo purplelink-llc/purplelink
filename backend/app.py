@@ -18,8 +18,13 @@ image = (
         "latexmk",
         "latexdiff",
         "biber",
+        "pandoc",
     )
-    .pip_install("fastapi[standard]==0.115.2")
+    .pip_install(
+        "fastapi[standard]==0.115.2",
+        "python-docx==1.1.2",
+        "lxml==5.3.0",
+    )
     # Append paranoid hardening to the texmf config via the Debian texmf.d
     # mechanism, then verify it took effect at build time (fail the build if not).
     .add_local_file("texmf.cnf", "/etc/texmf/texmf.d/99-hardening.cnf", copy=True)
