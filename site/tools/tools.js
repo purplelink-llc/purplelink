@@ -59,6 +59,31 @@ function showPdf(resultEl, blob, downloadName) {
     `<div class="tool-preview"><iframe title="PDF preview" src="${url}"></iframe></div>`;
 }
 
+// POST a FormData; on a file response, offer a download link (no preview).
+async function postForDownload(path, formData, statusEl, resultEl, downloadName, mime) {
+  statusEl.textContent = "Working… this can take up to a minute.";
+  resultEl.innerHTML = "";
+  try {
+    const resp = await fetch(API_BASE + path, { method: "POST", body: formData });
+    const ctype = resp.headers.get("content-type") || "";
+    if (resp.ok && ctype.includes(mime)) {
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      statusEl.textContent = "Done.";
+      resultEl.innerHTML =
+        `<a class="btn btn-primary" href="${url}" download="${downloadName}">Download ${downloadName}</a>`;
+    } else {
+      let payload = null;
+      try { payload = await resp.json(); } catch (_) {}
+      statusEl.textContent = "";
+      renderError(resultEl, resp.status, payload);
+    }
+  } catch (_) {
+    statusEl.textContent = "";
+    resultEl.innerHTML = '<div class="tool-error">Network error. Please check your connection and try again.</div>';
+  }
+}
+
 // POST a FormData to API_BASE+path; on PDF success call showPdf, else renderError.
 async function postForPdf(path, formData, statusEl, resultEl, downloadName) {
   statusEl.textContent = "Working… this can take up to a minute.";
