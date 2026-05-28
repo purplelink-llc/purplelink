@@ -7,3 +7,7 @@ site/CC-Session-Logs/
 
 # Brainstorm visual-companion artifacts
 .superpowers/
+
+# Python build artifacts
+__pycache__/
+*.pyc
