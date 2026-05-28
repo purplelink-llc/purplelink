@@ -42,3 +42,22 @@ def test_compile_pdf_end_to_end(server, tmp_path):
         page.wait_for_selector("a[download='compiled.pdf'], .tool-error", timeout=90000)
         assert page.query_selector("a[download='compiled.pdf']") is not None
         browser.close()
+
+
+def test_convert_word_end_to_end(server, tmp_path):
+    from playwright.sync_api import sync_playwright
+
+    tex = tmp_path / "m.tex"
+    tex.write_text(
+        r"\documentclass{article}\title{T}\author{Jane}"
+        r"\begin{document}\maketitle\section{Intro}Hi.\end{document}"
+    )
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(f"{server}/tools/latex-to-word/")
+        page.set_input_files("#file", str(tex))
+        page.click("#run")
+        page.wait_for_selector("a[download='manuscript.docx'], .tool-error", timeout=90000)
+        assert page.query_selector("a[download='manuscript.docx']") is not None
+        browser.close()
