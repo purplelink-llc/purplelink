@@ -227,7 +227,7 @@
           var genBtn = document.getElementById("cg-generate");
           var manualToggle = document.getElementById("cg-manual-toggle");
           var manualForm = document.getElementById("cg-manual");
-          var MAILTO = "ben.ampel@gmail.com";
+          var MAILTO = "tools@purplelink.llc";
 
           function setStatus(msg) { statusEl.textContent = msg || ""; }
 
@@ -252,8 +252,10 @@
           }
 
           // Author objects: { family, given }
+          // Name fields are HTML-escaped here because every formatter renders
+          // its output via innerHTML; initials() is already alpha-only.
           function lastFirst(a) {
-            var fam = clean(a.family), giv = clean(a.given);
+            var fam = esc(clean(a.family)), giv = esc(clean(a.given));
             if (fam && giv) return fam + ", " + giv;
             return fam || giv || "";
           }
@@ -266,16 +268,16 @@
             }).join(" ");
           }
           function famInit(a) {
-            var fam = clean(a.family), ini = initials(a.given);
+            var fam = esc(clean(a.family)), ini = initials(a.given);
             return joinNonEmpty([fam, ini], ", ");
           }
           // First Last (for MLA after first author, and IEEE: F. Last)
           function givenFamily(a) {
-            return joinNonEmpty([clean(a.given), clean(a.family)], " ");
+            return joinNonEmpty([esc(clean(a.given)), esc(clean(a.family))], " ");
           }
           function ieeeName(a) {
             var ini = initials(a.given);
-            return joinNonEmpty([ini, clean(a.family)], " ");
+            return joinNonEmpty([ini, esc(clean(a.family))], " ");
           }
 
           // ---- formatters -------------------------------------------------
@@ -296,7 +298,7 @@
             var parts = [];
             var auth = apaAuthors(d.authors);
             if (auth) parts.push(auth);
-            if (d.year) parts.push("(" + d.year + ").");
+            if (d.year) parts.push("(" + esc(d.year) + ").");
             else parts.push("(n.d.).");
             if (d.title) {
               if (d.type === "book") parts.push("<em>" + esc(d.title) + "</em>.");

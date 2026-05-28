@@ -1,5 +1,6 @@
 """Modal app for the purplelink LaTeX tools backend."""
 import datetime
+import os
 
 import modal
 
@@ -46,8 +47,11 @@ rate_dict = modal.Dict.from_name("latextools-rate", create_if_missing=True)
 ALLOWED_ORIGINS = [
     "https://purplelink.llc",
     "https://www.purplelink.llc",
-    "http://localhost:4200",
 ]
+# Allow the local dev origin only when explicitly opted in, so production does
+# not advertise a cross-origin surface it never needs.
+if os.environ.get("ALLOW_LOCAL_CORS") == "1":
+    ALLOWED_ORIGINS.append("http://localhost:4200")
 
 
 @app.function(image=image, timeout=150, cpu=1.0, memory=2048, max_containers=6)
@@ -74,17 +78,29 @@ def web():
 
     def _client_ip(request: Request) -> str:
         fwd = request.headers.get("x-forwarded-for", "")
-        return (
-            fwd.split(",")[0].strip()
-            if fwd
-            else (request.client.host if request.client else "0.0.0.0")
-        )
+        peer = request.client.host if request.client else None
+        return core.client_ip_from_forwarded(fwd, peer)
 
-    def _enforce_rate_limit(request: Request) -> bool:
+    def _enforce_rate_limit(request: Request, bucket: str) -> bool:
         day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
-        key = core.rate_limit_key(_client_ip(request), day)
+        key = core.rate_limit_key(_client_ip(request), day, bucket=bucket)
         allowed, _ = core.check_and_increment(rate_dict, key)
         return allowed
+
+    def _too_large(request: Request, max_bytes: int) -> bool:
+        """True when the declared Content-Length already exceeds the cap.
+
+        Rejects oversized uploads before they are read into memory. The
+        per-endpoint size validators remain the authoritative check (a client
+        can omit or understate Content-Length); this is an early-out only.
+        """
+        raw = request.headers.get("content-length")
+        if not raw:
+            return False
+        try:
+            return int(raw) > max_bytes
+        except ValueError:
+            return False
 
     async def _read_upload(upload: UploadFile) -> tuple[str | None, bytes | None]:
         """Return (tex_source, zip_bytes); exactly one is non-None."""
@@ -123,7 +139,7 @@ def web():
         file: UploadFile = File(...),
         engine: str = Form("pdflatex"),
     ):
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "compile"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
         try:
             tex, zip_bytes = await _read_upload(file)
@@ -152,7 +168,7 @@ def web():
         engine: str = Form("pdflatex"),
         legend: str = Form("false"),
     ):
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "diff"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
         try:
             old_tex, old_zip = await _read_upload(old)
@@ -209,7 +225,7 @@ def web():
         anonymize: str = Form("false"),
         style: str = Form("manuscript"),
     ):
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "convert"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
         if style not in ("manuscript", "preprint"):
             style = "manuscript"
@@ -260,7 +276,7 @@ def web():
             resp = await client.get(
                 f"https://api.crossref.org/works/{encoded_doi}/transform/application/x-bibtex",
                 headers={
-                    "User-Agent": "purplelink-bib-builder/1.0 (mailto:ben.ampel@gmail.com)",
+                    "User-Agent": "purplelink-bib-builder/1.0 (mailto:tools@purplelink.llc)",
                     "Accept": "application/x-bibtex",
                 },
             )
@@ -299,8 +315,10 @@ def web():
         request: Request,
         file: UploadFile = File(...),
     ):
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "word-to-latex"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if _too_large(request, core.MAX_DOCX_UPLOAD_BYTES):
+            return JSONResponse({"error": "invalid", "detail": "File is too large (max 5 MB)."}, status_code=400)
         data = await file.read()
         try:
             core.validate_docx_upload(file.filename or "", len(data))
@@ -352,7 +370,7 @@ def web():
         mode: str = Form("display"),
         dpi: int = Form(300),
     ):
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "render-equation"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
         equation = equation.strip()
         if not equation:
@@ -444,7 +462,7 @@ def web():
         import httpx
         from latextools.bibbuilder import parse_ids
 
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "bib-from-ids"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
 
         parsed = parse_ids(ids)
@@ -498,12 +516,12 @@ def web():
             "query.author": r.author[:100] if r.author else "",
             "rows": "1",
             "select": "title,DOI",
-            "mailto": "ben.ampel@gmail.com",
+            "mailto": "tools@purplelink.llc",
         }
         try:
             resp = await client.get(
                 "https://api.crossref.org/works", params=params,
-                headers={"User-Agent": "purplelink-bib-validator/1.0 (mailto:ben.ampel@gmail.com)"},
+                headers={"User-Agent": "purplelink-bib-validator/1.0 (mailto:tools@purplelink.llc)"},
             )
             if resp.status_code != 200:
                 return
@@ -558,8 +576,10 @@ def web():
         import httpx
         from latextools import bibcheck
 
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "validate-bib"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if _too_large(request, core.MAX_BIB_UPLOAD_BYTES):
+            return JSONResponse({"error": "invalid", "detail": "File is too large (max 2 MB)."}, status_code=400)
         data = await file.read()
         try:
             core.validate_bib_upload(file.filename or "", len(data))
@@ -603,8 +623,10 @@ def web():
         file: UploadFile = File(None),
         target: str = Form("pdf"),
     ):
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "markdown-convert"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if _too_large(request, core.MAX_MD_UPLOAD_BYTES):
+            return JSONResponse({"error": "invalid", "detail": "Markdown is too large (max 2 MB)."}, status_code=400)
         if target not in ("pdf", "docx"):
             target = "pdf"
 
@@ -634,7 +656,16 @@ def web():
                 cmd = ["pandoc", str(md_path), "-o", str(out_path),
                        "--standalone", "--wrap=none"]
                 if target == "pdf":
-                    cmd += ["--pdf-engine=pdflatex"]
+                    # Pandoc passes raw LaTeX in the Markdown straight through to
+                    # pdflatex, so this path is only as safe as the engine's
+                    # confinement. Two layers enforce that: the image bakes
+                    # openin_any=p / shell_escape=f into texmf.cnf (verified at
+                    # build, see image .run_commands above), and we pass
+                    # -no-shell-escape explicitly here so \write18 fails closed
+                    # even if the global default ever regresses. Absolute/parent
+                    # \input/\openin are blocked by openin_any=p.
+                    cmd += ["--pdf-engine=pdflatex",
+                            "--pdf-engine-opt=-no-shell-escape"]
                 proc = _sp.run(
                     cmd, cwd=workdir, capture_output=True, text=True, timeout=90,
                 )
@@ -679,8 +710,10 @@ def web():
         file: UploadFile = File(...),
         level: str = Form("ebook"),
     ):
-        if not _enforce_rate_limit(request):
+        if not _enforce_rate_limit(request, "pdf-compress"):
             return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if _too_large(request, core.MAX_PDF_UPLOAD_BYTES):
+            return JSONResponse({"error": "invalid", "detail": "File is too large (max 20 MB)."}, status_code=400)
         gs_setting = _GS_LEVELS.get(level, "/ebook")
         data = await file.read()
         try:

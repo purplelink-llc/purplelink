@@ -342,7 +342,9 @@
             var out;
             if (wrap) {
               var caption = (captionEl.value || "").trim();
-              var label = (labelEl.value || "").trim();
+              // Restrict the label to the characters LaTeX cross-references
+              // accept; this also prevents brace/command injection into \label{}.
+              var label = (labelEl.value || "").trim().replace(/[^A-Za-z0-9:_-]/g, "");
               var wrapped = [];
               wrapped.push("\\begin{table}[ht]");
               wrapped.push("\\centering");

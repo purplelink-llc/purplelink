@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import ipaddress
 import re
 import zipfile
 from pathlib import Path
@@ -298,13 +299,57 @@ def inject_diff_legend(diff_tex: str) -> str:
     return diff_tex[:insert_at] + "\n" + _DIFF_LEGEND + "\n" + diff_tex[insert_at:]
 
 
-DAILY_LIMIT = 25  # compiles per IP per UTC day
+DAILY_LIMIT = 25  # requests per IP per endpoint bucket per UTC day
 
 
-def rate_limit_key(ip: str, day: str) -> str:
-    """Build a daily, hashed rate-limit key. Raw IP is never persisted."""
+def _is_public_ip(ip: str) -> bool:
+    """True only for well-formed, globally routable addresses."""
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return False
+    return not (
+        addr.is_private
+        or addr.is_loopback
+        or addr.is_link_local
+        or addr.is_reserved
+        or addr.is_unspecified
+        or addr.is_multicast
+    )
+
+
+def client_ip_from_forwarded(xff: str, peer: str | None) -> str:
+    """Resolve the rate-limiting identity from an X-Forwarded-For chain.
+
+    X-Forwarded-For is fully caller-controllable *except* the entry the trusted
+    ingress appends after the request arrives. We scan the chain right-to-left
+    and return the first globally-routable address: a caller can prepend fake
+    entries but cannot forge the real client address recorded after them, nor
+    collapse everyone onto a shared private proxy hop (those are skipped). Falls
+    back to the direct socket peer when no usable forwarded address exists.
+
+    NOTE: this assumes the ingress appends the observed client IP to the right
+    of XFF. Verify against the deployment's proxy before relying on it as a hard
+    security boundary; today it is a soft cost-control, not an auth gate.
+    """
+    if xff:
+        for part in reversed([p.strip() for p in xff.split(",") if p.strip()]):
+            if _is_public_ip(part):
+                return part
+    if peer and _is_public_ip(peer):
+        return peer
+    return peer or "0.0.0.0"
+
+
+def rate_limit_key(ip: str, day: str, bucket: str = "") -> str:
+    """Build a daily, hashed, per-bucket rate-limit key. Raw IP is never persisted.
+
+    *bucket* lets each endpoint family carry an independent daily quota so heavy
+    use of one tool does not exhaust a user's allowance for the others.
+    """
     digest = hashlib.sha256(ip.encode("utf-8")).hexdigest()[:16]
-    return f"rl:{day}:{digest}"
+    prefix = f"rl:{bucket}:" if bucket else "rl:"
+    return f"{prefix}{day}:{digest}"
 
 
 def check_and_increment(store, key: str) -> tuple[bool, int]:

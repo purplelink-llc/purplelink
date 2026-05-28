@@ -109,6 +109,42 @@ def test_rate_limit_key_is_stable_and_hashed():
     assert k_other != k1  # different IP must produce a different key
 
 
+def test_rate_limit_key_buckets_are_independent():
+    base = core.rate_limit_key("203.0.113.7", day="2026-05-28")
+    compile_k = core.rate_limit_key("203.0.113.7", day="2026-05-28", bucket="compile")
+    render_k = core.rate_limit_key("203.0.113.7", day="2026-05-28", bucket="render-equation")
+    assert compile_k != render_k  # each endpoint family gets its own quota
+    assert compile_k != base      # bucketed key differs from the no-bucket key
+    assert compile_k.startswith("rl:compile:2026-05-28:")
+    assert "203.0.113.7" not in compile_k  # raw IP still never stored
+
+
+def test_client_ip_prefers_rightmost_public_address():
+    # Attacker prepends a fake public IP; trusted ingress appends the real one.
+    xff = "1.1.1.1, 8.8.8.8"
+    assert core.client_ip_from_forwarded(xff, peer="9.9.9.9") == "8.8.8.8"
+
+
+def test_client_ip_skips_private_and_reserved_hops():
+    xff = "8.8.8.8, 10.0.0.1, 192.168.1.1"
+    assert core.client_ip_from_forwarded(xff, peer=None) == "8.8.8.8"
+
+
+def test_client_ip_ignores_malformed_entries():
+    xff = "not-an-ip, 8.8.8.8"
+    assert core.client_ip_from_forwarded(xff, peer=None) == "8.8.8.8"
+
+
+def test_client_ip_falls_back_to_peer_when_no_public_forwarded():
+    assert core.client_ip_from_forwarded("10.0.0.1, 192.168.0.5", peer="8.8.8.8") == "8.8.8.8"
+
+
+def test_client_ip_falls_back_to_peer_string_when_nothing_public():
+    # No public address anywhere: still return a stable, non-empty key source.
+    assert core.client_ip_from_forwarded("", peer="10.0.0.1") == "10.0.0.1"
+    assert core.client_ip_from_forwarded("", peer=None) == "0.0.0.0"
+
+
 def test_validate_upload_rejects_backslash_and_nullbyte():
     with pytest.raises(core.ValidationError, match="invalid filename"):
         core.validate_upload("..\\evil.tex", 10)

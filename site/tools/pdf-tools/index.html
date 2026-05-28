@@ -270,10 +270,14 @@
           }
           wireDropzone("merge-drop", "merge-file", function () {});
           document.getElementById("merge-file").addEventListener("change", function (e) {
+            var skipped = [];
             Array.from(e.target.files).forEach(function (f) {
-              if (f.name.toLowerCase().endsWith(".pdf") && f.size > 0) mergeFiles.push(f);
+              if (!f.name.toLowerCase().endsWith(".pdf") || f.size === 0) { skipped.push(f.name); return; }
+              if (f.size > MAX) { skipped.push(f.name + " (over 20 MB)"); return; }
+              mergeFiles.push(f);
             });
-            statusEl.textContent = ""; renderMergeList();
+            statusEl.textContent = skipped.length ? ("Skipped: " + skipped.join(", ")) : "";
+            renderMergeList();
           });
           mergeRun.addEventListener("click", async function () {
             if (mergeFiles.length < 2) return;
