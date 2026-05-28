@@ -1856,6 +1856,4 @@ dd {
 .tool-faq details { border-bottom: 1px solid var(--line); padding: 14px 0; }
 .tool-faq summary { cursor: pointer; font-weight: 600; }
 .tool-faq .faq-body { color: var(--muted); padding-top: 8px; }
-.tool-card-soon { opacity: .6; cursor: default; }
-.tool-card-soon:hover { transform: none; box-shadow: none; border-color: var(--line); }
-.tool-soon-badge { font-size: .78rem; font-weight: 600; color: var(--purple-dim); margin-top: 8px; text-transform: uppercase; letter-spacing: .04em; }
+
