@@ -1812,7 +1812,6 @@ dd {
   justify-content: center;
   flex-wrap: wrap;
 }
-}
 
 /* ── Tools section ─────────────────────────────────── */
 .tools-hero { max-width: 820px; margin: 0 auto; padding: 56px 24px 8px; text-align: center; }
