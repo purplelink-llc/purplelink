@@ -11,6 +11,68 @@
     <meta property="og:description" content="Free online LaTeX to Word converter. Upload a .tex file and download a standard double-spaced manuscript .docx. Files are never stored.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/latex-to-word/">
+    <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Convert LaTeX to Word Online — Free">
+    <meta name="twitter:description" content="Free online LaTeX to Word converter. Upload a .tex file and download a standard double-spaced manuscript .docx. Files are never stored.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "LaTeX to Word Converter",
+          "url": "https://purplelink.llc/tools/latex-to-word/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online LaTeX to Word converter. Upload a .tex paper and download a standard double-spaced manuscript .docx — Times New Roman 12pt, numbered headings, and formatted figures and tables. Files are never stored.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Convert .tex to a standard double-spaced .docx manuscript",
+            "Times New Roman 12pt body, 1-inch margins, numbered headings",
+            "Optional anonymize mode for double-blind submission",
+            "Zero file retention — nothing is stored"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are my files stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your file is converted in an ephemeral container and discarded immediately." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will my citations become editable Word references?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not yet. Native, editable Word citations need your .bib file, which this single-file tool doesn't accept. For now the reference list is rendered as static text. Multi-file project support is planned." }
+            },
+            {
+              "@type": "Question",
+              "name": "What does the anonymize option do?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It removes the author block for double-blind submission. Leave it unchecked to keep your author line." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why doesn't my custom formatting carry over?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Pandoc handles standard LaTeX well, but heavily customized macros and packages may degrade. The tool targets a clean, standard manuscript layout." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "LaTeX to Word", "item": "https://purplelink.llc/tools/latex-to-word/" }
+          ]
+        }
+      ]
+    }
+    </script>
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,6 +122,15 @@
         <p class="tool-privacy">Single self-contained .tex only. Complex custom macros may not convert perfectly. Files are never written to disk.</p>
       </div>
 
+      <section class="tool-howto">
+        <h2>How to convert LaTeX to Word online</h2>
+        <ol>
+          <li>Drag your <code>.tex</code> paper onto the upload area, or click to choose it (up to 5 MB).</li>
+          <li>Optionally tick <strong>Anonymize</strong> to strip the author block for double-blind submission.</li>
+          <li>Click <strong>Convert to Word</strong> and download the formatted <code>.docx</code> manuscript.</li>
+        </ol>
+      </section>
+
       <section class="tool-faq">
         <h2>About this tool</h2>
         <p>This converts your LaTeX to a Word document using pandoc, then reformats it to a standard double-spaced manuscript: Times New Roman 12pt body, 1-inch margins, multilevel-numbered headings, and "Figure N." / "Table N." captions.</p>
@@ -68,6 +139,17 @@
         <details><summary>What does "anonymize" do?</summary><div class="faq-body">It removes the author block for double-blind submission. Leave it unchecked to keep your author line.</div></details>
         <details><summary>Why doesn't my custom formatting carry over?</summary><div class="faq-body">Pandoc handles standard LaTeX well, but heavily customized macros and packages may degrade. The tool targets a clean, standard manuscript layout.</div></details>
       </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free LaTeX tools</h2>
+        <ul>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF →</a></li>
+          <li><a href="/tools/latex-diff/">Compare two LaTeX versions (latexdiff) →</a></li>
+          <li><a href="/tools/">All LaTeX tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
 
       <script src="/tools/tools.js"></script>
       <script>

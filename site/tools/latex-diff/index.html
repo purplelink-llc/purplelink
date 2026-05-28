@@ -11,6 +11,58 @@
     <meta property="og:description" content="Free online latexdiff tool. Upload an old and new .tex file and download a PDF with additions and deletions marked. Files are never stored.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/latex-diff/">
+    <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="LaTeX Diff Online — Compare Two Versions">
+    <meta name="twitter:description" content="Free online latexdiff tool. Upload an old and new .tex file and download a PDF with additions and deletions marked. Files are never stored.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "LaTeX Diff (latexdiff) Online",
+          "url": "https://purplelink.llc/tools/latex-diff/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online latexdiff tool. Upload an old and a new .tex file and download a PDF with additions and deletions marked. Files are never stored.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Mark additions and deletions between two LaTeX versions",
+            "Table-safe latexdiff defaults to avoid alignment corruption",
+            "Optional color legend in the output PDF",
+            "Zero file retention — nothing is stored"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are my files stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Both files are processed in an ephemeral container and discarded immediately." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why aren't changes inside my tables marked?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Tables are treated as opaque blocks to prevent column-alignment corruption. Edited tables appear in their final form only." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "LaTeX Diff", "item": "https://purplelink.llc/tools/latex-diff/" }
+          ]
+        }
+      ]
+    }
+    </script>
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,12 +123,32 @@
         <p class="tool-privacy">Changes inside tables are shown in final form only (not marked). Files are never written to disk.</p>
       </div>
 
+      <section class="tool-howto">
+        <h2>How to compare two LaTeX versions online</h2>
+        <ol>
+          <li>Upload your <strong>old</strong> <code>.tex</code> file and your <strong>new</strong> <code>.tex</code> file (up to 5 MB each).</li>
+          <li>Choose an engine and, optionally, tick the color legend.</li>
+          <li>Click <strong>Generate diff PDF</strong>. Additions appear blue and underlined; deletions appear red and struck through.</li>
+        </ol>
+      </section>
+
       <section class="tool-faq">
         <h2>About this tool</h2>
         <p>This runs <code>latexdiff</code> with table-safe defaults, then compiles the result. Added text is blue and underlined; deleted text is red and struck through.</p>
         <details><summary>Are my files stored?</summary><div class="faq-body">No. Both files are processed in an ephemeral container and discarded immediately.</div></details>
         <details><summary>Why aren't changes inside my tables marked?</summary><div class="faq-body">Tables are treated as opaque blocks to prevent column-alignment corruption. Edited tables appear in their final form only.</div></details>
       </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free LaTeX tools</h2>
+        <ul>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF →</a></li>
+          <li><a href="/tools/latex-to-word/">Convert LaTeX to Word →</a></li>
+          <li><a href="/tools/">All LaTeX tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
 
       <script src="/tools/tools.js"></script>
       <script>

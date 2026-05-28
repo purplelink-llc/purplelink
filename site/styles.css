@@ -1856,4 +1856,18 @@ dd {
 .tool-faq details { border-bottom: 1px solid var(--line); padding: 14px 0; }
 .tool-faq summary { cursor: pointer; font-weight: 600; }
 .tool-faq .faq-body { color: var(--muted); padding-top: 8px; }
+.tool-faq h2 { font-family: var(--font-display); margin-bottom: 8px; }
+.tool-howto { max-width: 820px; margin: 24px auto; padding: 0 24px; }
+.tool-howto ol { margin: 10px 0 0 1.1rem; color: var(--muted); }
+.tool-howto li { margin-bottom: 6px; }
+.tool-related { max-width: 820px; margin: 24px auto; padding: 20px 24px; border-top: 1px solid var(--line); }
+.tool-related h2 { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 10px; }
+.tool-related ul { list-style: none; display: flex; flex-wrap: wrap; gap: 12px; }
+.tool-related a { color: var(--purple); font-weight: 600; text-decoration: none; }
+.tool-related a:hover { text-decoration: underline; }
+.tool-support { max-width: 820px; margin: 4px auto 44px; padding: 0 24px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+.tool-support a { color: var(--purple); font-weight: 600; text-decoration: none; }
+.tool-support a:hover { text-decoration: underline; }
+.tool-prose { max-width: 820px; margin: 24px auto; padding: 0 24px; color: var(--muted); }
+.tool-prose h2 { font-family: var(--font-display); color: var(--ink); margin-bottom: 8px; }
 
