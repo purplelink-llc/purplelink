@@ -82,4 +82,8 @@
   <url><loc>https://purplelink.llc/tools/latex-to-pdf/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://purplelink.llc/tools/latex-diff/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://purplelink.llc/tools/latex-to-word/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://purplelink.llc/tools/bib-validator/</loc><lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://purplelink.llc/tools/bib-builder/</loc><lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://purplelink.llc/tools/equation-renderer/</loc><lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://purplelink.llc/tools/word-to-latex/</loc><lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

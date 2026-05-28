@@ -11,11 +11,13 @@
     <meta property="og:description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/bib-validator/">
-    <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/bib-validator.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="BibTeX Validator — Detect AI Hallucinations">
     <meta name="twitter:description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
-    <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -83,8 +85,11 @@
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
     <style>
-      .bib-checks { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem; }
-      .bib-checks label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; cursor: pointer; }
+      .bib-checks-fieldset { border: 1px solid #ffffff18; border-radius: 8px; padding: 0.75rem 1rem; margin: 1rem 0 0; }
+      .bib-checks-fieldset legend { font-weight: 600; padding: 0 0.25rem; }
+      .bib-checks { margin-top: 0.4rem; }
+      .bib-checks label { display: block; font-size: 0.95rem; cursor: pointer; margin-bottom: 0.5rem; line-height: 1.4; }
+      .bib-checks label input[type=checkbox] { vertical-align: middle; margin-right: 0.4rem; width: 16px; height: 16px; }
       .bib-checks input[type=checkbox]:disabled + span { opacity: 0.55; }
       .bib-privacy-notice { font-size: 0.85rem; color: var(--color-muted, #9ca3af); margin: 0.25rem 0 0; display: none; }
       .bib-privacy-notice.visible { display: block; }
@@ -146,31 +151,31 @@
           <p id="filename" class="tool-privacy"></p>
         </div>
 
-        <div class="tool-options">
-          <fieldset style="border:none;padding:0;margin:0">
-            <legend style="font-weight:600;margin-bottom:0.5rem">Checks to run</legend>
-            <div class="bib-checks">
-              <label>
-                <input type="checkbox" checked disabled>
-                <span>Syntax &amp; required fields <em style="font-weight:400;opacity:0.7">(always on)</em></span>
-              </label>
-              <label>
-                <input type="checkbox" id="check-doi">
-                <span>DOI resolution — verify each DOI is a live link</span>
-              </label>
-              <label>
-                <input type="checkbox" id="check-crossref">
-                <span>CrossRef — check titles exist in CrossRef (catches hallucinations)</span>
-              </label>
-              <label>
-                <input type="checkbox" id="check-s2">
-                <span>Semantic Scholar — check titles in Semantic Scholar</span>
-              </label>
-            </div>
-          </fieldset>
+        <fieldset class="bib-checks-fieldset">
+          <legend>Checks to run</legend>
+          <div class="bib-checks">
+            <label>
+              <input type="checkbox" checked disabled>
+              <span>Syntax &amp; required fields <em style="font-weight:400;opacity:0.7">(always on)</em></span>
+            </label>
+            <label>
+              <input type="checkbox" id="check-doi">
+              <span>DOI resolution — verify each DOI is a live link</span>
+            </label>
+            <label>
+              <input type="checkbox" id="check-crossref">
+              <span>CrossRef — check titles exist in CrossRef (catches hallucinations)</span>
+            </label>
+            <label>
+              <input type="checkbox" id="check-s2">
+              <span>Semantic Scholar — check titles in Semantic Scholar</span>
+            </label>
+          </div>
           <p id="privacy-notice" class="bib-privacy-notice" role="note">
             Enabling DOI or database checks will send entry titles and authors to external services (doi.org, CrossRef, Semantic Scholar).
           </p>
+        </fieldset>
+        <div class="tool-options" style="margin-top:0.75rem">
           <button class="btn btn-primary" id="run" disabled>Validate .bib</button>
         </div>
 
