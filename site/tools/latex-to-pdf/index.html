@@ -29,7 +29,7 @@
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
-        <a href="/tools/">Tools</a>
+        <a href="/tools/" aria-current="page">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
         <a href="/about/">About</a>
@@ -82,7 +82,7 @@
           const runBtn = document.getElementById("run");
           const nameEl = document.getElementById("filename");
           wireDropzone("dropzone", "file", function (f) {
-            if (!validClientSide(f, statusEl)) { chosen = null; runBtn.disabled = true; return; }
+            if (!validClientSide(f, statusEl)) { chosen = null; runBtn.disabled = true; nameEl.textContent = ""; return; }
             chosen = f; nameEl.textContent = f.name; statusEl.textContent = ""; runBtn.disabled = false;
           });
           runBtn.addEventListener("click", function () {

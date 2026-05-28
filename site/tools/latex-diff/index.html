@@ -29,7 +29,7 @@
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
-        <a href="/tools/">Tools</a>
+        <a href="/tools/" aria-current="page">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
         <a href="/about/">About</a>
@@ -87,11 +87,11 @@
           const runBtn = document.getElementById("run");
           function refresh() { runBtn.disabled = !(oldF && newF); }
           wireDropzone("dz-old", "file-old", function (f) {
-            if (!validClientSide(f, statusEl)) { oldF = null; refresh(); return; }
+            if (!validClientSide(f, statusEl)) { oldF = null; refresh(); document.getElementById("name-old").textContent = ""; return; }
             oldF = f; document.getElementById("name-old").textContent = f.name; statusEl.textContent = ""; refresh();
           });
           wireDropzone("dz-new", "file-new", function (f) {
-            if (!validClientSide(f, statusEl)) { newF = null; refresh(); return; }
+            if (!validClientSide(f, statusEl)) { newF = null; refresh(); document.getElementById("name-new").textContent = ""; return; }
             newF = f; document.getElementById("name-new").textContent = f.name; statusEl.textContent = ""; refresh();
           });
           runBtn.addEventListener("click", function () {

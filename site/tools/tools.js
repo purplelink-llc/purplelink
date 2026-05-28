@@ -14,8 +14,16 @@ function wireDropzone(zoneId, inputId, onFile) {
   const zone = document.getElementById(zoneId);
   const input = document.getElementById(inputId);
   zone.addEventListener("click", () => input.click());
+  zone.setAttribute("tabindex", "0");
+  zone.setAttribute("role", "button");
+  zone.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); }
+  });
   zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.classList.add("dragover"); });
-  zone.addEventListener("dragleave", () => zone.classList.remove("dragover"));
+  zone.addEventListener("dragleave", (e) => {
+    if (zone.contains(e.relatedTarget)) return;
+    zone.classList.remove("dragover");
+  });
   zone.addEventListener("drop", (e) => {
     e.preventDefault();
     zone.classList.remove("dragover");
@@ -45,14 +53,17 @@ function renderError(resultEl, status, payload) {
 
 function showPdf(resultEl, blob, downloadName) {
   const url = URL.createObjectURL(blob);
+  resultEl.dataset.blobUrl = url;
   resultEl.innerHTML =
-    `<a class="btn btn-primary" href="${url}" download="${downloadName}">Download ${downloadName}</a>` +
+    `<a class="btn btn-primary" href="${url}" download="${escapeHtml(downloadName)}">Download ${escapeHtml(downloadName)}</a>` +
     `<div style="margin-top:14px"><iframe title="PDF preview" src="${url}"></iframe></div>`;
 }
 
 // POST a FormData to API_BASE+path; on PDF success call showPdf, else renderError.
 async function postForPdf(path, formData, statusEl, resultEl, downloadName) {
   statusEl.textContent = "Working… this can take up to a minute.";
+  const prevUrl = resultEl.dataset.blobUrl;
+  if (prevUrl) { URL.revokeObjectURL(prevUrl); delete resultEl.dataset.blobUrl; }
   resultEl.innerHTML = "";
   try {
     const resp = await fetch(API_BASE + path, { method: "POST", body: formData });

@@ -29,7 +29,7 @@
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
-        <a href="/tools/">Tools</a>
+        <a href="/tools/" aria-current="page">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
         <a href="/about/">About</a>
@@ -52,11 +52,12 @@
           <h3>LaTeX → PDF</h3>
           <p>Upload a .tex file and get a compiled PDF. pdfLaTeX or XeLaTeX.</p>
         </a>
-        <a class="tool-card" href="/tools/latex-to-word/">
+        <div class="tool-card tool-card-soon" aria-disabled="true">
           <span class="tool-emoji" aria-hidden="true">📝</span>
           <h3>LaTeX → Word</h3>
           <p>Convert a .tex paper into a standard double-spaced Word manuscript.</p>
-        </a>
+          <p class="tool-soon-badge">Coming soon</p>
+        </div>
         <a class="tool-card" href="/tools/latex-diff/">
           <span class="tool-emoji" aria-hidden="true">🔀</span>
           <h3>LaTeX Diff</h3>
