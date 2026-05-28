@@ -152,4 +152,41 @@ def web():
         res = await run_in_threadpool(_do)
         return _result_or_error(res) or _pdf_response(res.pdf_bytes, "diff.pdf")
 
+    _DOCX_MIME = (
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+
+    @api.post("/convert")
+    async def convert_endpoint(
+        request: Request,
+        file: UploadFile = File(...),
+        anonymize: str = Form("false"),
+    ):
+        if not _enforce_rate_limit(request):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        try:
+            tex = await _read_tex(file)
+        except core.ValidationError as e:
+            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+
+        def _do():
+            with tempfile.TemporaryDirectory(dir="/tmp") as d:
+                return runner.convert_to_manuscript(
+                    Path(d), tex, anonymize=(anonymize == "true")
+                )
+
+        res = await run_in_threadpool(_do)
+        if not res.ok:
+            return JSONResponse(
+                {"error": "convert", "detail": res.error}, status_code=422
+            )
+        return Response(
+            content=res.docx_bytes,
+            media_type=_DOCX_MIME,
+            headers={
+                "Content-Disposition": 'attachment; filename="manuscript.docx"',
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
+
     return api
