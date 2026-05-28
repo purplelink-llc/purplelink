@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Free Citation Generator — APA, MLA, Chicago & IEEE | Purplelink LLC</title>
+    <meta name="description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, and IEEE — copy with one click. Nothing stored.">
+    <link rel="canonical" href="https://purplelink.llc/tools/citation-generator/">
+    <meta property="og:title" content="Free Citation Generator — APA, MLA, Chicago & IEEE">
+    <meta property="og:description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, and IEEE — copy with one click. Nothing stored.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/citation-generator/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/citation-generator.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free Citation Generator — APA, MLA, Chicago & IEEE">
+    <meta name="twitter:description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, and IEEE — copy with one click. Nothing stored.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/citation-generator.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Citation Generator",
+          "url": "https://purplelink.llc/tools/citation-generator/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, and IEEE. Lookups go directly from your browser to public APIs — nothing is stored.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Auto-detect DOI, arXiv ID, or ISBN",
+            "Format citations in APA 7th, MLA 9th, Chicago author-date, and IEEE",
+            "One-click copy and manual entry — nothing is stored"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Which identifiers are supported?",
+              "acceptedAnswer": { "@type": "Answer", "text": "You can enter a DOI (or a doi.org URL), an arXiv ID (or arxiv.org URL), or an ISBN-10/13. DOIs are resolved via Crossref and ISBNs via Open Library; arXiv IDs use the arXiv API where the browser allows it. You can also type details in by hand using the manual entry form." }
+            },
+            {
+              "@type": "Question",
+              "name": "How accurate are the citations?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Citations are formatted from the metadata returned by Crossref or Open Library, which is usually good but not perfect. Always proofread author names, capitalisation, page ranges, and punctuation against your style guide before submitting." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is anything stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Lookups go directly from your browser to Crossref or Open Library, and formatting happens entirely in your browser. We never see or store anything you enter." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "Citation Generator", "item": "https://purplelink.llc/tools/citation-generator/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+      .cg-form { display:flex; gap:.5rem; flex-wrap:wrap; align-items:flex-end }
+      .cg-form label { display:block; font-weight:600; font-size:.9rem; margin-bottom:.25rem }
+      .cg-form input[type=text] { width:100%; box-sizing:border-box; padding:.6rem .75rem; border-radius:.5rem; border:1px solid var(--line,#3a3550); background:rgba(255,255,255,.04); color:inherit; font:inherit }
+      .cg-id-row { flex:1 1 320px }
+      .cg-manual { margin-top:1rem; border-top:1px solid var(--line,#3a3550); padding-top:1rem }
+      .cg-manual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.75rem; margin:.75rem 0 }
+      .cg-manual-grid .cg-field-full { grid-column:1 / -1 }
+      .cg-manual select { width:100%; box-sizing:border-box; padding:.6rem .75rem; border-radius:.5rem; border:1px solid var(--line,#3a3550); background:rgba(255,255,255,.04); color:inherit; font:inherit }
+      .cg-cite { border:1px solid var(--line,#3a3550); border-radius:.6rem; padding:.85rem 1rem; margin:.75rem 0 }
+      .cg-cite h3 { margin:0 0 .4rem; font-size:1rem }
+      .cg-cite p { margin:0 0 .6rem; line-height:1.5 }
+      .cg-cite .btn { font-size:.85rem; padding:.35rem .8rem }
+      .cg-toggle { background:none; border:none; color:inherit; cursor:pointer; text-decoration:underline; font:inherit; padding:0 }
+    </style>
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Citation Generator</h1>
+        <p>Enter a <strong>DOI</strong>, <strong>arXiv ID</strong>, or <strong>ISBN</strong> and get a formatted citation in four styles — APA 7th, MLA 9th, Chicago (author-date), and IEEE. Copy any of them with one click, or type the details in by hand.</p>
+      </div>
+
+      <div class="tool-app">
+        <div class="tool-options cg-form">
+          <div class="cg-id-row">
+            <label for="cg-id">DOI, arXiv ID, or ISBN</label>
+            <input type="text" id="cg-id" placeholder="e.g. 10.1038/nphys1170, 1706.03762, or 978-0262033848" autocomplete="off" inputmode="text">
+          </div>
+          <button class="btn btn-primary" id="cg-generate" type="button">Generate</button>
+        </div>
+        <p>
+          <button class="cg-toggle" id="cg-manual-toggle" type="button" aria-expanded="false" aria-controls="cg-manual">Or enter details manually</button>
+        </p>
+
+        <form class="cg-manual" id="cg-manual" hidden>
+          <div class="cg-manual-grid">
+            <div>
+              <label for="m-type">Source type</label>
+              <select id="m-type">
+                <option value="article">Journal article</option>
+                <option value="book">Book</option>
+                <option value="website">Website</option>
+              </select>
+            </div>
+            <div>
+              <label for="m-year">Year</label>
+              <input type="text" id="m-year" autocomplete="off">
+            </div>
+            <div class="cg-field-full">
+              <label for="m-authors">Authors <span class="tool-privacy">(comma-separated, e.g. Smith, Jane; Doe, John)</span></label>
+              <input type="text" id="m-authors" autocomplete="off">
+            </div>
+            <div class="cg-field-full">
+              <label for="m-title">Title</label>
+              <input type="text" id="m-title" autocomplete="off">
+            </div>
+            <div class="cg-field-full">
+              <label for="m-container">Journal / Publisher / Site</label>
+              <input type="text" id="m-container" autocomplete="off">
+            </div>
+            <div>
+              <label for="m-volume">Volume</label>
+              <input type="text" id="m-volume" autocomplete="off">
+            </div>
+            <div>
+              <label for="m-issue">Issue</label>
+              <input type="text" id="m-issue" autocomplete="off">
+            </div>
+            <div>
+              <label for="m-pages">Pages</label>
+              <input type="text" id="m-pages" autocomplete="off">
+            </div>
+            <div>
+              <label for="m-doi">DOI</label>
+              <input type="text" id="m-doi" autocomplete="off">
+            </div>
+            <div class="cg-field-full">
+              <label for="m-url">URL</label>
+              <input type="text" id="m-url" autocomplete="off">
+            </div>
+          </div>
+          <div class="tool-options">
+            <button class="btn btn-primary" id="cg-manual-generate" type="submit">Generate citations</button>
+          </div>
+        </form>
+
+        <p class="tool-status" id="status" aria-live="polite"></p>
+        <div class="tool-result" id="result"></div>
+        <p class="tool-privacy">Lookups go directly from your browser to Crossref / Open Library — we never see or store anything you enter.</p>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to generate a citation</h2>
+        <ol>
+          <li>Paste a <strong>DOI</strong>, <strong>arXiv ID</strong>, or <strong>ISBN</strong> into the box (a doi.org or arxiv.org URL works too).</li>
+          <li>Click <strong>Generate</strong>. Your browser looks the reference up and formats it in four styles.</li>
+          <li>Click <strong>Copy</strong> on the style you need. Don't have an identifier? Use <strong>enter details manually</strong> instead.</li>
+          <li>Proofread the result against your style guide — automated metadata is good but not flawless.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>This is a dependency-free citation generator. It resolves <strong>DOIs</strong> through <a href="https://www.crossref.org/" target="_blank" rel="noopener">Crossref</a>, <strong>ISBNs</strong> through <a href="https://openlibrary.org/" target="_blank" rel="noopener">Open Library</a>, and <strong>arXiv IDs</strong> through the arXiv API, then formats the metadata into APA 7th, MLA 9th, Chicago author-date, and IEEE styles entirely in your browser.</p>
+        <details><summary>Which identifiers are supported?</summary><div class="faq-body">DOIs (e.g. <code>10.1038/nphys1170</code> or a doi.org URL), arXiv IDs (e.g. <code>1706.03762</code> or an arxiv.org URL), and ISBN-10/13 (hyphens optional). You can also fill in the manual entry form for anything without an identifier, such as a website.</div></details>
+        <details><summary>How accurate are the citations?</summary><div class="faq-body">They are built from the metadata that Crossref or Open Library returns, which is usually accurate but occasionally incomplete or inconsistently capitalised. Treat the output as a strong draft and always check author order, title case, page ranges, and punctuation against your required style.</div></details>
+        <details><summary>Why might an arXiv lookup fail?</summary><div class="faq-body">The arXiv API does not always send the CORS headers a browser needs for a cross-site fetch. If a lookup fails, the tool will tell you — try the article's DOI instead (most arXiv papers have one once published), or use manual entry.</div></details>
+        <details><summary>Is anything stored?</summary><div class="faq-body">No. Lookups go directly from your browser to the public APIs and all formatting is local. We never see or store anything you enter.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free LaTeX tools</h2>
+        <ul>
+          <li><a href="/tools/bib-builder/">Build a BibTeX bibliography →</a></li>
+          <li><a href="/tools/bib-validator/">Validate a .bib file →</a></li>
+          <li><a href="/tools/">All LaTeX tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+
+      <script>
+        (function () {
+          "use strict";
+          var statusEl = document.getElementById("status");
+          var resultEl = document.getElementById("result");
+          var idInput = document.getElementById("cg-id");
+          var genBtn = document.getElementById("cg-generate");
+          var manualToggle = document.getElementById("cg-manual-toggle");
+          var manualForm = document.getElementById("cg-manual");
+          var MAILTO = "ben.ampel@gmail.com";
+
+          function setStatus(msg) { statusEl.textContent = msg || ""; }
+
+          // ---- helpers ----------------------------------------------------
+          function esc(s) {
+            return String(s == null ? "" : s)
+              .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          }
+          function clean(s) { return (s == null ? "" : String(s)).trim(); }
+          var _decoderEl = document.createElement("textarea");
+          function decodeEntities(s) {
+            if (s == null) return "";
+            _decoderEl.innerHTML = String(s);
+            return _decoderEl.value;
+          }
+          function titleCase(s) {
+            // Sentence-ish: leave as-is; trust source. Just trim.
+            return clean(s);
+          }
+          function joinNonEmpty(parts, sep) {
+            return parts.filter(function (p) { return clean(p) !== ""; }).join(sep);
+          }
+
+          // Author objects: { family, given }
+          function lastFirst(a) {
+            var fam = clean(a.family), giv = clean(a.given);
+            if (fam && giv) return fam + ", " + giv;
+            return fam || giv || "";
+          }
+          function initials(given) {
+            given = clean(given);
+            if (!given) return "";
+            return given.split(/\s+/).map(function (p) {
+              var m = p.match(/[A-Za-zÀ-ÿ]/);
+              return m ? m[0].toUpperCase() + "." : "";
+            }).join(" ");
+          }
+          function famInit(a) {
+            var fam = clean(a.family), ini = initials(a.given);
+            return joinNonEmpty([fam, ini], ", ");
+          }
+          // First Last (for MLA after first author, and IEEE: F. Last)
+          function givenFamily(a) {
+            return joinNonEmpty([clean(a.given), clean(a.family)], " ");
+          }
+          function ieeeName(a) {
+            var ini = initials(a.given);
+            return joinNonEmpty([ini, clean(a.family)], " ");
+          }
+
+          // ---- formatters -------------------------------------------------
+          // data = { type, authors:[{family,given}], title, container, volume,
+          //          issue, pages, year, publisher, doi, url }
+
+          function apaAuthors(authors) {
+            var list = authors.map(famInit).filter(Boolean);
+            if (list.length === 0) return "";
+            if (list.length === 1) return list[0];
+            if (list.length <= 20) {
+              return list.slice(0, -1).join(", ") + ", & " + list[list.length - 1];
+            }
+            return list.slice(0, 19).join(", ") + ", ... " + list[list.length - 1];
+          }
+
+          function formatAPA(d) {
+            var parts = [];
+            var auth = apaAuthors(d.authors);
+            if (auth) parts.push(auth);
+            if (d.year) parts.push("(" + d.year + ").");
+            else parts.push("(n.d.).");
+            if (d.title) {
+              if (d.type === "book") parts.push("<em>" + esc(d.title) + "</em>.");
+              else parts.push(esc(d.title) + ".");
+            }
+            if (d.type === "book") {
+              if (d.publisher) parts.push(esc(d.publisher) + ".");
+            } else if (d.type === "website") {
+              if (d.container) parts.push("<em>" + esc(d.container) + "</em>.");
+            } else {
+              if (d.container) {
+                var jp = "<em>" + esc(d.container) + "</em>";
+                if (d.volume) {
+                  jp += ", <em>" + esc(d.volume) + "</em>";
+                  if (d.issue) jp += "(" + esc(d.issue) + ")";
+                }
+                if (d.pages) jp += ", " + esc(d.pages);
+                parts.push(jp + ".");
+              }
+            }
+            if (d.doi) parts.push("https://doi.org/" + esc(d.doi));
+            else if (d.url) parts.push(esc(d.url));
+            return joinNonEmpty(parts, " ");
+          }
+
+          function mlaAuthors(authors) {
+            if (authors.length === 0) return "";
+            var first = lastFirst(authors[0]);
+            if (authors.length === 1) return first;
+            if (authors.length === 2) return first + ", and " + givenFamily(authors[1]);
+            return first + ", et al";
+          }
+
+          function formatMLA(d) {
+            var parts = [];
+            var auth = mlaAuthors(d.authors);
+            if (auth) parts.push(auth + ".");
+            if (d.title) {
+              if (d.type === "book") parts.push("<em>" + esc(d.title) + "</em>.");
+              else parts.push("“" + esc(d.title) + ".”");
+            }
+            if (d.type === "book") {
+              parts.push(joinNonEmpty([d.publisher ? esc(d.publisher) + "," : "", d.year ? esc(d.year) + "." : ""], " "));
+            } else if (d.type === "website") {
+              if (d.container) parts.push("<em>" + esc(d.container) + "</em>,");
+              if (d.year) parts.push(esc(d.year) + ",");
+              if (d.url) parts.push(esc(d.url) + ".");
+            } else {
+              if (d.container) parts.push("<em>" + esc(d.container) + "</em>,");
+              var bits = [];
+              if (d.volume) bits.push("vol. " + esc(d.volume));
+              if (d.issue) bits.push("no. " + esc(d.issue));
+              if (d.year) bits.push(esc(d.year));
+              if (d.pages) bits.push("pp. " + esc(d.pages));
+              if (bits.length) parts.push(bits.join(", ") + ".");
+              if (d.doi) parts.push("https://doi.org/" + esc(d.doi) + ".");
+              else if (d.url) parts.push(esc(d.url) + ".");
+            }
+            return joinNonEmpty(parts, " ");
+          }
+
+          function chicagoAuthors(authors) {
+            if (authors.length === 0) return "";
+            var list = [lastFirst(authors[0])];
+            for (var i = 1; i < authors.length; i++) list.push(givenFamily(authors[i]));
+            if (list.length === 1) return list[0];
+            if (list.length === 2) return list[0] + ", and " + list[1];
+            return list.slice(0, -1).join(", ") + ", and " + list[list.length - 1];
+          }
+
+          function formatChicago(d) {
+            var parts = [];
+            var auth = chicagoAuthors(d.authors);
+            if (auth) parts.push(auth + ".");
+            if (d.year) parts.push(esc(d.year) + ".");
+            if (d.title) {
+              if (d.type === "book") parts.push("<em>" + esc(d.title) + "</em>.");
+              else parts.push("“" + esc(d.title) + ".”");
+            }
+            if (d.type === "book") {
+              if (d.publisher) parts.push(esc(d.publisher) + ".");
+            } else if (d.type === "website") {
+              if (d.container) parts.push("<em>" + esc(d.container) + "</em>.");
+              if (d.url) parts.push(esc(d.url) + ".");
+            } else {
+              if (d.container) {
+                var jp = "<em>" + esc(d.container) + "</em>";
+                if (d.volume) jp += " " + esc(d.volume);
+                if (d.issue) jp += ", no. " + esc(d.issue);
+                if (d.pages) jp += ": " + esc(d.pages);
+                parts.push(jp + ".");
+              }
+              if (d.doi) parts.push("https://doi.org/" + esc(d.doi) + ".");
+              else if (d.url) parts.push(esc(d.url) + ".");
+            }
+            return joinNonEmpty(parts, " ");
+          }
+
+          function ieeeAuthors(authors) {
+            var list = authors.map(ieeeName).filter(Boolean);
+            if (list.length === 0) return "";
+            if (list.length === 1) return list[0];
+            if (list.length === 2) return list[0] + " and " + list[1];
+            if (list.length <= 6) {
+              return list.slice(0, -1).join(", ") + ", and " + list[list.length - 1];
+            }
+            return list.slice(0, 3).join(", ") + ", et al.";
+          }
+
+          function formatIEEE(d) {
+            var parts = [];
+            var auth = ieeeAuthors(d.authors);
+            if (auth) parts.push(auth + ",");
+            if (d.title) {
+              if (d.type === "book") parts.push("<em>" + esc(d.title) + "</em>.");
+              else parts.push("“" + esc(d.title) + ",”");
+            }
+            if (d.type === "book") {
+              parts.push(joinNonEmpty([d.publisher ? esc(d.publisher) + "," : "", d.year ? esc(d.year) + "." : ""], " "));
+            } else if (d.type === "website") {
+              if (d.container) parts.push("<em>" + esc(d.container) + "</em>.");
+              if (d.year) parts.push("(" + esc(d.year) + ").");
+              if (d.url) parts.push("[Online]. Available: " + esc(d.url));
+            } else {
+              if (d.container) parts.push("<em>" + esc(d.container) + "</em>,");
+              var bits = [];
+              if (d.volume) bits.push("vol. " + esc(d.volume));
+              if (d.issue) bits.push("no. " + esc(d.issue));
+              if (d.pages) bits.push("pp. " + esc(d.pages));
+              if (d.year) bits.push(esc(d.year));
+              if (bits.length) parts.push(bits.join(", ") + ".");
+              if (d.doi) parts.push("doi: " + esc(d.doi) + ".");
+            }
+            return joinNonEmpty(parts, " ");
+          }
+
+          // ---- rendering --------------------------------------------------
+          function renderCitations(d) {
+            var styles = [
+              ["APA 7th", formatAPA(d)],
+              ["MLA 9th", formatMLA(d)],
+              ["Chicago (author-date)", formatChicago(d)],
+              ["IEEE", formatIEEE(d)]
+            ];
+            resultEl.innerHTML = "";
+            styles.forEach(function (s) {
+              var name = s[0], html = s[1];
+              var card = document.createElement("div");
+              card.className = "cg-cite";
+              var h = document.createElement("h3");
+              h.textContent = name;
+              var p = document.createElement("p");
+              p.innerHTML = html || "<em>(insufficient data for this style)</em>";
+              var btn = document.createElement("button");
+              btn.className = "btn";
+              btn.type = "button";
+              btn.textContent = "Copy";
+              btn.addEventListener("click", function () {
+                var text = p.textContent;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  navigator.clipboard.writeText(text).then(function () {
+                    var orig = btn.textContent; btn.textContent = "Copied!";
+                    setTimeout(function () { btn.textContent = orig; }, 1500);
+                  }).catch(function () { fallbackCopy(text, btn); });
+                } else {
+                  fallbackCopy(text, btn);
+                }
+              });
+              card.appendChild(h); card.appendChild(p); card.appendChild(btn);
+              resultEl.appendChild(card);
+            });
+          }
+
+          function fallbackCopy(text, btn) {
+            try {
+              var ta = document.createElement("textarea");
+              ta.value = text; ta.setAttribute("readonly", "");
+              ta.style.position = "absolute"; ta.style.left = "-9999px";
+              document.body.appendChild(ta); ta.select();
+              document.execCommand("copy"); document.body.removeChild(ta);
+              var orig = btn.textContent; btn.textContent = "Copied!";
+              setTimeout(function () { btn.textContent = orig; }, 1500);
+            } catch (e) {
+              setStatus("Couldn't copy automatically — select the text and copy it manually.");
+            }
+          }
+
+          // ---- identifier detection & lookups -----------------------------
+          function detectType(raw) {
+            var s = clean(raw);
+            if (!s) return null;
+            // DOI URL
+            var doiUrl = s.match(/(?:doi\.org\/|dx\.doi\.org\/)(10\.\d{4,9}\/\S+)/i);
+            if (doiUrl) return { type: "doi", value: doiUrl[1] };
+            if (/^10\.\d{4,9}\/\S+$/.test(s)) return { type: "doi", value: s };
+            // arXiv URL
+            var axUrl = s.match(/arxiv\.org\/(?:abs|pdf)\/(\d{4}\.\d{4,5}(?:v\d+)?)/i);
+            if (axUrl) return { type: "arxiv", value: axUrl[1] };
+            if (/^\d{4}\.\d{4,5}(v\d+)?$/.test(s)) return { type: "arxiv", value: s };
+            // ISBN: strip hyphens/spaces, then 10 or 13 digits (last may be X)
+            var compact = s.replace(/[\s-]/g, "").replace(/^isbn:?/i, "");
+            if (/^\d{9}[\dXx]$/.test(compact) || /^\d{13}$/.test(compact)) {
+              return { type: "isbn", value: compact };
+            }
+            return null;
+          }
+
+          function yearFromIssued(msg) {
+            try {
+              var dp = (msg.issued && msg.issued["date-parts"] && msg.issued["date-parts"][0]) ||
+                       (msg.published && msg.published["date-parts"] && msg.published["date-parts"][0]);
+              if (dp && dp[0]) return String(dp[0]);
+            } catch (e) {}
+            return "";
+          }
+
+          function fetchDOI(doi) {
+            var url = "https://api.crossref.org/works/" + encodeURIComponent(doi) + "?mailto=" + encodeURIComponent(MAILTO);
+            return fetch(url).then(function (r) {
+              if (r.status === 404) throw { kind: "notfound" };
+              if (!r.ok) throw { kind: "http", status: r.status };
+              return r.json();
+            }).then(function (json) {
+              var m = json.message;
+              if (!m) throw { kind: "notfound" };
+              var authors = (m.author || []).map(function (a) {
+                return { family: a.family || a.name || "", given: a.given || "" };
+              });
+              var isBook = /book/i.test(m.type || "");
+              return {
+                type: isBook ? "book" : "article",
+                authors: authors,
+                title: decodeEntities((m.title && m.title[0]) || ""),
+                container: decodeEntities((m["container-title"] && m["container-title"][0]) || ""),
+                volume: m.volume || "",
+                issue: m.issue || "",
+                pages: m.page || "",
+                year: yearFromIssued(m),
+                publisher: m.publisher || "",
+                doi: m.DOI || doi,
+                url: m.URL || ""
+              };
+            });
+          }
+
+          function fetchISBN(isbn) {
+            var url = "https://openlibrary.org/api/books?bibkeys=ISBN:" + encodeURIComponent(isbn) + "&format=json&jscmd=data";
+            return fetch(url).then(function (r) {
+              if (!r.ok) throw { kind: "http", status: r.status };
+              return r.json();
+            }).then(function (json) {
+              var rec = json["ISBN:" + isbn];
+              if (!rec) throw { kind: "notfound" };
+              var authors = (rec.authors || []).map(function (a) {
+                var name = clean(a.name);
+                // "Jane Smith" -> family Smith, given Jane (best-effort)
+                var parts = name.split(/\s+/);
+                if (parts.length >= 2) {
+                  return { family: parts[parts.length - 1], given: parts.slice(0, -1).join(" ") };
+                }
+                return { family: name, given: "" };
+              });
+              var pub = rec.publishers && rec.publishers[0] && rec.publishers[0].name;
+              var year = "";
+              if (rec.publish_date) {
+                var ym = String(rec.publish_date).match(/\d{4}/);
+                if (ym) year = ym[0];
+              }
+              return {
+                type: "book",
+                authors: authors,
+                title: rec.title || "",
+                container: "",
+                volume: "", issue: "", pages: "",
+                year: year,
+                publisher: pub || "",
+                doi: "",
+                url: rec.url || ""
+              };
+            });
+          }
+
+          function fetchArxiv(id) {
+            var url = "https://export.arxiv.org/api/query?id_list=" + encodeURIComponent(id) + "&max_results=1";
+            return fetch(url).then(function (r) {
+              if (!r.ok) throw { kind: "http", status: r.status };
+              return r.text();
+            }).then(function (xml) {
+              var doc = new DOMParser().parseFromString(xml, "text/xml");
+              var entry = doc.querySelector("entry");
+              if (!entry) throw { kind: "notfound" };
+              function tx(sel) { var e = entry.querySelector(sel); return e ? clean(e.textContent) : ""; }
+              var authors = [].slice.call(entry.querySelectorAll("author > name")).map(function (n) {
+                var name = clean(n.textContent);
+                var parts = name.split(/\s+/);
+                if (parts.length >= 2) {
+                  return { family: parts[parts.length - 1], given: parts.slice(0, -1).join(" ") };
+                }
+                return { family: name, given: "" };
+              });
+              var published = tx("published");
+              var year = published ? (published.match(/\d{4}/) || [""])[0] : "";
+              var arxId = (tx("id").match(/abs\/(\S+)$/) || [null, id])[1];
+              // DOI element if present
+              var doiEl = entry.getElementsByTagName("arxiv:doi")[0] || entry.querySelector("doi");
+              return {
+                type: "article",
+                authors: authors,
+                title: tx("title").replace(/\s+/g, " "),
+                container: "arXiv preprint arXiv:" + arxId,
+                volume: "", issue: "", pages: "",
+                year: year,
+                publisher: "",
+                doi: doiEl ? clean(doiEl.textContent) : "",
+                url: "https://arxiv.org/abs/" + arxId
+              };
+            });
+          }
+
+          function handleError(err) {
+            if (err && err.kind === "notfound") {
+              setStatus("No record found for that identifier. Double-check it, or use manual entry.");
+            } else if (err && err.kind === "http") {
+              setStatus("The lookup service returned an error (HTTP " + err.status + "). Please try again later.");
+            } else {
+              setStatus("Network error — the lookup couldn't complete. Check your connection and try again.");
+            }
+          }
+
+          // ---- main generate action ---------------------------------------
+          function generate() {
+            resultEl.innerHTML = "";
+            var raw = idInput.value;
+            var det = detectType(raw);
+            if (!det) {
+              setStatus("Please enter a valid DOI, arXiv ID, or ISBN — or use manual entry below.");
+              return;
+            }
+            setStatus("Looking up " + det.type.toUpperCase() + "…");
+            genBtn.disabled = true;
+
+            var p;
+            if (det.type === "doi") p = fetchDOI(det.value);
+            else if (det.type === "isbn") p = fetchISBN(det.value);
+            else if (det.type === "arxiv") {
+              p = fetchArxiv(det.value).catch(function (err) {
+                // arXiv often lacks CORS headers — degrade gracefully.
+                throw { kind: "arxiv-cors" };
+              });
+            }
+
+            p.then(function (data) {
+              setStatus("");
+              renderCitations(data);
+            }).catch(function (err) {
+              if (err && err.kind === "arxiv-cors") {
+                setStatus("Couldn't reach the arXiv API from your browser (it doesn't always allow cross-site requests). Try the paper's DOI instead, or use manual entry.");
+              } else {
+                handleError(err);
+              }
+            }).then(function () {
+              genBtn.disabled = false;
+            });
+          }
+
+          genBtn.addEventListener("click", generate);
+          idInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") { e.preventDefault(); generate(); }
+          });
+
+          // ---- manual entry -----------------------------------------------
+          manualToggle.addEventListener("click", function () {
+            var open = manualForm.hidden;
+            manualForm.hidden = !open;
+            manualToggle.setAttribute("aria-expanded", String(open));
+            manualToggle.textContent = open ? "Hide manual entry" : "Or enter details manually";
+          });
+
+          function parseManualAuthors(s) {
+            s = clean(s);
+            if (!s) return [];
+            return s.split(/\s*;\s*/).map(function (chunk) {
+              chunk = clean(chunk);
+              if (!chunk) return null;
+              if (chunk.indexOf(",") !== -1) {
+                var parts = chunk.split(",");
+                return { family: clean(parts[0]), given: clean(parts.slice(1).join(",")) };
+              }
+              var words = chunk.split(/\s+/);
+              if (words.length >= 2) {
+                return { family: words[words.length - 1], given: words.slice(0, -1).join(" ") };
+              }
+              return { family: chunk, given: "" };
+            }).filter(Boolean);
+          }
+
+          manualForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            var v = function (id) { return clean(document.getElementById(id).value); };
+            var data = {
+              type: document.getElementById("m-type").value,
+              authors: parseManualAuthors(v("m-authors")),
+              title: v("m-title"),
+              container: v("m-container"),
+              publisher: v("m-container"), // container doubles as publisher for books
+              volume: v("m-volume"),
+              issue: v("m-issue"),
+              pages: v("m-pages"),
+              year: v("m-year"),
+              doi: v("m-doi").replace(/^https?:\/\/(dx\.)?doi\.org\//i, ""),
+              url: v("m-url")
+            };
+            if (!data.title && data.authors.length === 0) {
+              setStatus("Add at least a title or an author to generate a citation.");
+              return;
+            }
+            setStatus("");
+            renderCitations(data);
+          });
+        })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>

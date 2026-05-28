@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Convert Markdown to PDF or Word — Free | Purplelink LLC</title>
+    <meta name="description" content="Free online Markdown converter. Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Nothing is stored.">
+    <link rel="canonical" href="https://purplelink.llc/tools/markdown-to-pdf/">
+    <meta property="og:title" content="Convert Markdown to PDF or Word — Free">
+    <meta property="og:description" content="Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Nothing is stored.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/markdown-to-pdf/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/markdown-to-pdf.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Convert Markdown to PDF or Word — Free">
+    <meta name="twitter:description" content="Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Nothing is stored.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/markdown-to-pdf.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Markdown to PDF & Word Converter",
+          "url": "https://purplelink.llc/tools/markdown-to-pdf/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online Markdown converter. Paste or upload Markdown and download a PDF or Word document, powered by Pandoc. Files are never stored.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Convert Markdown to PDF via Pandoc + pdfLaTeX",
+            "Convert Markdown to a Word .docx document",
+            "Paste text or upload a .md file",
+            "Zero file retention — nothing is stored"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What Markdown features are supported?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Pandoc Markdown is supported: headings, bold, italic, lists, links, images, code blocks, blockquotes, tables, and footnotes. LaTeX math between dollar signs is rendered in PDF output." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my content stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your Markdown is converted in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "Markdown to PDF", "item": "https://purplelink.llc/tools/markdown-to-pdf/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+      .md-textarea { width:100%; min-height:18rem; resize:vertical; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.9rem; line-height:1.5; padding:0.9rem 1rem; border-radius:10px; border:1px solid #ffffff1f; background:#0a0a0a; color:#e5e5e5; }
+      .md-textarea:focus { outline:2px solid #7c3aed; outline-offset:1px; }
+      .md-target { display:flex; gap:1.25rem; flex-wrap:wrap; align-items:center; margin:0.4rem 0; }
+      .md-target label { display:inline-flex; gap:0.4rem; align-items:center; cursor:pointer; }
+      .md-orfile { margin-top:0.5rem; font-size:0.85rem; color:#9ca3af; }
+    </style>
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Markdown to PDF &amp; Word</h1>
+        <p>Paste Markdown (or upload a <code>.md</code> file) and download a clean <code>.pdf</code> or <code>.docx</code>. Powered by Pandoc — headings, lists, tables, code, and LaTeX math all convert.</p>
+      </div>
+
+      <div class="tool-app">
+        <label for="md" class="sr-only">Markdown input</label>
+        <textarea id="md" class="md-textarea" placeholder="# My document&#10;&#10;Write **Markdown** here. Lists, tables, `code`, and $x^2$ math all work.&#10;&#10;- One&#10;- Two"></textarea>
+
+        <div class="dropzone" id="dropzone" aria-label="Or upload a .md file" style="margin-top:0.75rem">
+          <label for="file" class="sr-only">Upload a Markdown file</label>
+          <input type="file" id="file" accept=".md,.markdown,.txt">
+          <p>…or drag a <code>.md</code> file here. Max 2 MB.</p>
+          <p id="filename" class="tool-privacy"></p>
+        </div>
+
+        <div class="tool-options">
+          <div class="md-target" role="radiogroup" aria-label="Output format">
+            <label><input type="radio" name="target" value="pdf" checked> PDF</label>
+            <label><input type="radio" name="target" value="docx"> Word (.docx)</label>
+          </div>
+          <button class="btn btn-primary" id="run">Convert</button>
+        </div>
+        <p class="tool-status" id="status" aria-live="polite"></p>
+        <div class="tool-result" id="result"></div>
+        <p class="tool-privacy">Your content is never written to disk or logged.</p>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to convert Markdown to PDF or Word</h2>
+        <ol>
+          <li>Paste your Markdown into the box, or drag in a <code>.md</code> file (up to 2 MB).</li>
+          <li>Choose <strong>PDF</strong> or <strong>Word (.docx)</strong>.</li>
+          <li>Click <strong>Convert</strong> and download the result.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>This runs <code>pandoc</code> to turn Pandoc-flavored Markdown into a polished PDF (via pdfLaTeX) or a Word <code>.docx</code> document. Great for turning notes, READMEs, or drafts into something shareable.</p>
+        <details><summary>What Markdown features are supported?</summary><div class="faq-body">Headings, bold, italic, ordered and unordered lists, links, images, fenced code blocks, blockquotes, tables, and footnotes. LaTeX math between <code>$…$</code> renders in PDF output.</div></details>
+        <details><summary>Why does PDF take a few seconds?</summary><div class="faq-body">PDF output compiles your document through a real LaTeX engine for typeset-quality results. Word output is usually faster.</div></details>
+        <details><summary>Is my content stored?</summary><div class="faq-body">No. Your Markdown is converted in an ephemeral container and discarded immediately.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/word-to-latex/">Convert Word to LaTeX →</a></li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF →</a></li>
+          <li><a href="/tools/">All tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+
+      <script src="/tools/tools.js"></script>
+      <script>
+        (function () {
+          const statusEl = document.getElementById("status");
+          const resultEl = document.getElementById("result");
+          const runBtn = document.getElementById("run");
+          const mdEl = document.getElementById("md");
+          const nameEl = document.getElementById("filename");
+          let chosen = null;
+
+          wireDropzone("dropzone", "file", function (f) {
+            const name = f.name.toLowerCase();
+            if (!/\.(md|markdown|txt)$/.test(name)) { statusEl.textContent = "Please choose a .md, .markdown, or .txt file."; return; }
+            if (f.size === 0) { statusEl.textContent = "That file is empty."; return; }
+            if (f.size > 2 * 1024 * 1024) { statusEl.textContent = "File is too large (max 2 MB)."; return; }
+            chosen = f; nameEl.textContent = f.name + " — will be used instead of the text box."; statusEl.textContent = "";
+          });
+
+          mdEl.addEventListener("input", function () {
+            if (mdEl.value.trim()) { chosen = null; nameEl.textContent = ""; }
+          });
+
+          runBtn.addEventListener("click", async function () {
+            const target = document.querySelector('input[name="target"]:checked').value;
+            const hasText = mdEl.value.trim().length > 0;
+            if (!chosen && !hasText) { statusEl.textContent = "Paste some Markdown or choose a file first."; return; }
+            const fd = new FormData();
+            fd.append("target", target);
+            if (chosen) { fd.append("file", chosen); }
+            else { fd.append("text", mdEl.value); }
+            runBtn.disabled = true;
+            if (target === "pdf") {
+              await postForPdf("/markdown-convert", fd, statusEl, resultEl, "converted.pdf");
+            } else {
+              await postForDownload("/markdown-convert", fd, statusEl, resultEl, "converted.docx", "wordprocessingml");
+            }
+            runBtn.disabled = false;
+          });
+        })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>

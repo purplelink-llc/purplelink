@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Free Reference Converter — BibTeX, RIS &amp; EndNote | Purplelink LLC</title>
+    <meta name="description" content="Free online reference converter. Convert citations between BibTeX, RIS and EndNote formats — paste in, pick a target, copy out. Instant, in your browser, nothing stored.">
+    <link rel="canonical" href="https://purplelink.llc/tools/reference-converter/">
+    <meta property="og:title" content="Free Reference Converter — BibTeX, RIS, EndNote">
+    <meta property="og:description" content="Free online reference converter. Convert citations between BibTeX, RIS and EndNote formats — paste in, pick a target, copy out. Instant, in your browser, nothing stored.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/reference-converter/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/reference-converter.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free Reference Converter — BibTeX, RIS, EndNote">
+    <meta name="twitter:description" content="Free online reference converter. Convert citations between BibTeX, RIS and EndNote formats — paste in, pick a target, copy out. Instant, in your browser, nothing stored.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/reference-converter.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Reference Converter",
+          "url": "https://purplelink.llc/tools/reference-converter/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online reference converter. Convert citations between BibTeX, RIS and EndNote formats entirely in your browser. Nothing is uploaded or stored.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Convert between BibTeX, RIS and EndNote formats",
+            "Auto-detect the input format",
+            "100% client-side — nothing leaves your browser"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Which formats are supported?",
+              "acceptedAnswer": { "@type": "Answer", "text": "BibTeX, RIS, and EndNote (the tagged .enw / refer style). You can convert from any of these to any other, and auto-detect the input format." }
+            },
+            {
+              "@type": "Question",
+              "name": "How accurate is the conversion?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It is best-effort. Common entry types and core fields — title, authors, year, journal or book title, volume, issue, pages, publisher, DOI, URL, abstract and keywords — map cleanly. Less common fields or unusual formatting may need a quick manual review." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my data stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The entire conversion runs in your browser with JavaScript. There is no upload, no server call, and nothing is stored or logged." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "Reference Converter", "item": "https://purplelink.llc/tools/reference-converter/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+      .rc-field { display:flex; flex-direction:column; gap:.35rem; margin-bottom:1rem }
+      .rc-field label { font-weight:600 }
+      .rc-input { width:100%; min-height:180px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9rem; line-height:1.5; padding:.75rem; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.04); color:inherit; resize:vertical }
+      .rc-input:focus-visible { outline:2px solid #7c3aed; outline-offset:2px }
+      .rc-selects { display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end; margin-bottom:1rem }
+      .rc-selects .rc-field { flex:1 1 160px; margin-bottom:0 }
+      .rc-selects select { padding:.55rem .6rem; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.04); color:inherit; font-size:.95rem }
+      .rc-selects select:focus-visible { outline:2px solid #7c3aed; outline-offset:2px }
+      .rc-result-head { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.5rem }
+      .rc-result-head h3 { margin:0; font-size:1rem }
+      .rc-out { white-space:pre-wrap; word-break:break-word; margin:0; padding:.75rem; border-radius:10px; background:rgba(0,0,0,.35); overflow:auto; max-height:420px }
+      .rc-out code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.85rem; line-height:1.5; white-space:inherit }
+      .rc-detected { font-size:.85rem; opacity:.8; margin:.25rem 0 0 }
+      .rc-error { color:#ffb4b4 }
+    </style>
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Reference Converter</h1>
+        <p>Paste one or more references, pick a target format, and copy the result. Convert between <strong>BibTeX</strong>, <strong>RIS</strong>, and <strong>EndNote</strong> — everything runs in your browser. 🔁</p>
+      </div>
+
+      <div class="tool-app">
+        <div class="rc-field">
+          <label for="rc-input">References to convert</label>
+          <textarea id="rc-input" class="rc-input" spellcheck="false" placeholder="@article{smith2020,
+  title   = {On Things},
+  author  = {Smith, Jane and Doe, John},
+  journal = {Journal of Examples},
+  year    = {2020},
+  volume  = {12},
+  pages   = {3--14},
+  doi     = {10.1000/example}
+}"></textarea>
+        </div>
+
+        <div class="rc-selects">
+          <div class="rc-field">
+            <label for="rc-from">From</label>
+            <select id="rc-from">
+              <option value="auto" selected>Auto-detect</option>
+              <option value="bibtex">BibTeX</option>
+              <option value="ris">RIS</option>
+              <option value="endnote">EndNote</option>
+            </select>
+          </div>
+          <div class="rc-field">
+            <label for="rc-to">To</label>
+            <select id="rc-to">
+              <option value="bibtex" selected>BibTeX</option>
+              <option value="ris">RIS</option>
+              <option value="endnote">EndNote</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="tool-options">
+          <button class="btn btn-primary" id="rc-run" type="button">Convert</button>
+        </div>
+
+        <p class="tool-status" id="rc-status" aria-live="polite"></p>
+        <div class="tool-result" id="rc-result" hidden>
+          <div class="rc-result-head">
+            <h3>Converted output</h3>
+            <button class="btn" id="rc-copy" type="button">Copy</button>
+          </div>
+          <pre class="rc-out"><code id="rc-out"></code></pre>
+          <p class="rc-detected" id="rc-detected"></p>
+        </div>
+        <p class="tool-privacy">Your references never leave your browser — there's no upload and nothing is stored.</p>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to convert references online</h2>
+        <ol>
+          <li>Paste one or more references into the box (you can mix several entries of the same format).</li>
+          <li>Choose the <strong>From</strong> format, or leave it on <strong>Auto-detect</strong>.</li>
+          <li>Choose the <strong>To</strong> format you want.</li>
+          <li>Click <strong>Convert</strong>, then press <strong>Copy</strong> to grab the result.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>This converter parses each reference into a neutral model — entry type, title, authors, year, container (journal or book title), volume, issue, pages, publisher, DOI, URL, abstract, and keywords — then re-serializes it in your chosen format. It runs entirely in your browser with no network calls at all.</p>
+        <details><summary>Which formats are supported?</summary><div class="faq-body">BibTeX, RIS, and EndNote (the tagged <code>.enw</code> / refer style that uses <code>%0</code>, <code>%A</code>, <code>%T</code>…). You can convert from any of these to any other.</div></details>
+        <details><summary>How accurate is the conversion?</summary><div class="faq-body">It's best-effort. Common entry types (journal article, book, conference paper, chapter, report, thesis, web page) and core fields map cleanly. Unusual fields, non-standard tags, or heavily customized BibTeX may not round-trip perfectly — at minimum, title, authors, year, and container are preserved. Give the output a quick scan before using it.</div></details>
+        <details><summary>How are authors handled?</summary><div class="faq-body">Authors are normalized to <code>Last, First</code>. BibTeX joins them with <code>and</code>; RIS uses one <code>AU  -</code> line each; EndNote uses one <code>%A</code> line each.</div></details>
+        <details><summary>Is my data stored?</summary><div class="faq-body">No. The whole conversion happens client-side in JavaScript. There is no upload, no server, and nothing is logged or stored.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free LaTeX tools</h2>
+        <ul>
+          <li><a href="/tools/bib-builder/">Build a BibTeX entry →</a></li>
+          <li><a href="/tools/bib-validator/">Validate a .bib file →</a></li>
+          <li><a href="/tools/">All LaTeX tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+
+      <script>
+        (function () {
+          "use strict";
+
+          var inputEl = document.getElementById("rc-input");
+          var fromEl = document.getElementById("rc-from");
+          var toEl = document.getElementById("rc-to");
+          var runBtn = document.getElementById("rc-run");
+          var copyBtn = document.getElementById("rc-copy");
+          var statusEl = document.getElementById("rc-status");
+          var resultEl = document.getElementById("rc-result");
+          var outEl = document.getElementById("rc-out");
+          var detectedEl = document.getElementById("rc-detected");
+
+          // ---- Neutral model ----------------------------------------------
+          // { type, title, authors:[...], year, container, volume, issue,
+          //   pages, publisher, doi, url, abstract, keywords:[...] }
+
+          // ---- Type maps ---------------------------------------------------
+          // canonical neutral types: article, book, inproceedings, incollection,
+          // techreport, phdthesis, mastersthesis, webpage, misc
+
+          var BIBTEX_TYPE = {
+            article: "article", book: "book", inproceedings: "inproceedings",
+            conference: "inproceedings", incollection: "incollection",
+            inbook: "incollection", techreport: "techreport",
+            phdthesis: "phdthesis", mastersthesis: "mastersthesis",
+            misc: "misc", online: "webpage", electronic: "webpage",
+            booklet: "misc", manual: "misc", unpublished: "misc",
+            proceedings: "inproceedings"
+          };
+          var NEUTRAL_TO_BIBTEX = {
+            article: "article", book: "book", inproceedings: "inproceedings",
+            incollection: "incollection", techreport: "techreport",
+            phdthesis: "phdthesis", mastersthesis: "mastersthesis",
+            webpage: "online", misc: "misc"
+          };
+
+          var RIS_TO_NEUTRAL = {
+            JOUR: "article", BOOK: "book", CONF: "inproceedings",
+            CPAPER: "inproceedings", CHAP: "incollection", RPRT: "techreport",
+            THES: "phdthesis", ELEC: "webpage", GEN: "misc", ADVS: "misc",
+            MGZN: "article", NEWS: "article"
+          };
+          var NEUTRAL_TO_RIS = {
+            article: "JOUR", book: "BOOK", inproceedings: "CONF",
+            incollection: "CHAP", techreport: "RPRT", phdthesis: "THES",
+            mastersthesis: "THES", webpage: "ELEC", misc: "GEN"
+          };
+
+          // EndNote %0 reference types
+          var ENDNOTE_TO_NEUTRAL = {
+            "Journal Article": "article", "Book": "book",
+            "Conference Proceedings": "inproceedings", "Conference Paper": "inproceedings",
+            "Book Section": "incollection", "Report": "techreport",
+            "Thesis": "phdthesis", "Web Page": "webpage", "Generic": "misc"
+          };
+          var NEUTRAL_TO_ENDNOTE = {
+            article: "Journal Article", book: "Book",
+            inproceedings: "Conference Proceedings", incollection: "Book Section",
+            techreport: "Report", phdthesis: "Thesis", mastersthesis: "Thesis",
+            webpage: "Web Page", misc: "Generic"
+          };
+
+          // ---- Helpers -----------------------------------------------------
+          function emptyEntry() {
+            return { type: "misc", title: "", authors: [], year: "", container: "",
+              volume: "", issue: "", pages: "", publisher: "", doi: "",
+              url: "", abstract: "", keywords: [] };
+          }
+
+          // Normalize a single author token to "Last, First".
+          function normAuthor(raw) {
+            var a = raw.trim().replace(/\s+/g, " ");
+            if (!a) return "";
+            if (a.indexOf(",") !== -1) return a; // already Last, First
+            // "First Middle Last" -> "Last, First Middle"
+            var parts = a.split(" ");
+            if (parts.length === 1) return parts[0];
+            var last = parts.pop();
+            return last + ", " + parts.join(" ");
+          }
+
+          function makeKey(e) {
+            var first = (e.authors[0] || "anon").replace(/,.*/, "").replace(/[^A-Za-z]/g, "").toLowerCase();
+            if (!first) first = "anon";
+            return first + (e.year || "");
+          }
+
+          function stripBraces(s) {
+            return s.replace(/^[{"]+/, "").replace(/[}"]+$/, "").trim();
+          }
+
+          // ---- Detection ---------------------------------------------------
+          function detect(text) {
+            var t = text.trim();
+            if (/^@\s*[A-Za-z]+\s*[{(]/.test(t)) return "bibtex";
+            if (/^TY\s{2}-\s/m.test(text) || /^ER\s{2}-/m.test(text)) return "ris";
+            if (/^%[0ATDJVNPIUKXR]\b/m.test(text) || /^%0\s/m.test(text)) return "endnote";
+            // looser fallbacks
+            if (/\bTY\s{2}-/.test(text)) return "ris";
+            if (/^@[A-Za-z]/.test(t)) return "bibtex";
+            return null;
+          }
+
+          // ---- Parsers -----------------------------------------------------
+          function parseBibtex(text) {
+            var entries = [];
+            var re = /@\s*([A-Za-z]+)\s*\{\s*([^,\s]*)\s*,/g;
+            var m;
+            while ((m = re.exec(text)) !== null) {
+              var typeRaw = m[1].toLowerCase();
+              // find matching closing brace from the opening one
+              var start = text.indexOf("{", m.index);
+              var depth = 0, i = start, end = -1;
+              for (; i < text.length; i++) {
+                var c = text[i];
+                if (c === "{") depth++;
+                else if (c === "}") { depth--; if (depth === 0) { end = i; break; } }
+              }
+              if (end === -1) end = text.length;
+              var body = text.slice(re.lastIndex, end);
+              var e = emptyEntry();
+              e.type = BIBTEX_TYPE[typeRaw] || "misc";
+              parseBibtexFields(body, e);
+              entries.push(e);
+              re.lastIndex = end + 1;
+            }
+            return entries;
+          }
+
+          function parseBibtexFields(body, e) {
+            // tokenize key = value pairs, respecting brace/quote balance
+            var i = 0, n = body.length;
+            while (i < n) {
+              // read field name
+              while (i < n && /[\s,]/.test(body[i])) i++;
+              var ks = i;
+              while (i < n && /[A-Za-z0-9_-]/.test(body[i])) i++;
+              var key = body.slice(ks, i).trim().toLowerCase();
+              while (i < n && /\s/.test(body[i])) i++;
+              if (body[i] !== "=") { // skip stray content
+                while (i < n && body[i] !== ",") i++;
+                i++;
+                continue;
+              }
+              i++; // skip =
+              while (i < n && /\s/.test(body[i])) i++;
+              var val = "";
+              if (body[i] === "{") {
+                var depth = 0;
+                for (; i < n; i++) {
+                  var c = body[i];
+                  if (c === "{") { depth++; if (depth === 1) continue; }
+                  else if (c === "}") { depth--; if (depth === 0) { i++; break; } }
+                  val += c;
+                }
+              } else if (body[i] === '"') {
+                i++;
+                while (i < n && body[i] !== '"') { val += body[i]; i++; }
+                i++;
+              } else {
+                while (i < n && body[i] !== "," ) { val += body[i]; i++; }
+              }
+              val = val.replace(/\s+/g, " ").trim();
+              assignBibtexField(key, val, e);
+              while (i < n && body[i] !== ",") i++;
+              i++; // skip comma
+            }
+          }
+
+          function assignBibtexField(key, val, e) {
+            switch (key) {
+              case "title": e.title = val; break;
+              case "author": case "editor":
+                e.authors = val.split(/\s+and\s+/i).map(normAuthor).filter(Boolean); break;
+              case "year": e.year = (val.match(/\d{4}/) || [val])[0]; break;
+              case "date": e.year = e.year || (val.match(/\d{4}/) || [""])[0]; break;
+              case "journal": case "journaltitle": case "booktitle":
+								e.container = e.container || val; break;
+              case "volume": e.volume = val; break;
+              case "number": case "issue": e.issue = val; break;
+              case "pages": e.pages = val.replace(/--/g, "-"); break;
+              case "publisher": case "school": case "institution":
+                e.publisher = e.publisher || val; break;
+              case "doi": e.doi = val.replace(/^https?:\/\/(dx\.)?doi\.org\//i, ""); break;
+              case "url": e.url = val; break;
+              case "abstract": e.abstract = val; break;
+              case "keywords": e.keywords = val.split(/[;,]/).map(function (k) { return k.trim(); }).filter(Boolean); break;
+            }
+          }
+
+          function splitTagged(text, tagRe, startTag) {
+            // generic splitter for RIS/EndNote line-tagged formats
+            var lines = text.split(/\r?\n/);
+            var blocks = [];
+            var cur = null;
+            for (var i = 0; i < lines.length; i++) {
+              var line = lines[i];
+              if (startTag.test(line)) {
+                if (cur && cur.length) blocks.push(cur);
+                cur = [line];
+              } else if (cur) {
+                cur.push(line);
+              }
+            }
+            if (cur && cur.length) blocks.push(cur);
+            return blocks;
+          }
+
+          function parseRis(text) {
+            var entries = [];
+            // each entry starts at a TY line
+            var blocks = splitTagged(text, null, /^TY\s{2}-/);
+            blocks.forEach(function (block) {
+              var e = emptyEntry();
+              var lastTag = null;
+              block.forEach(function (line) {
+                var m = line.match(/^([A-Z][A-Z0-9])\s{2}-\s?(.*)$/);
+                if (!m) {
+                  // continuation of previous value
+                  if (lastTag) appendRis(e, lastTag, line.trim());
+                  return;
+                }
+                var tag = m[1], val = m[2].trim();
+                lastTag = tag;
+                applyRis(e, tag, val);
+              });
+              entries.push(e);
+            });
+            return entries;
+          }
+
+          function applyRis(e, tag, val) {
+            switch (tag) {
+              case "TY": e.type = RIS_TO_NEUTRAL[val] || "misc"; break;
+              case "TI": case "T1": e.title = val; break;
+              case "AU": case "A1": case "A2":
+                if (val) e.authors.push(normAuthor(val)); break;
+              case "PY": case "Y1": e.year = e.year || (val.match(/\d{4}/) || [""])[0]; break;
+              case "DA": e.year = e.year || (val.match(/\d{4}/) || [""])[0]; break;
+              case "JO": case "JF": case "J2": case "T2":
+                e.container = e.container || val; break;
+              case "VL": e.volume = val; break;
+              case "IS": e.issue = val; break;
+              case "SP": e.pages = e.pages ? e.pages : val; e._sp = val; break;
+              case "EP": e._ep = val; break;
+              case "PB": e.publisher = e.publisher || val; break;
+              case "DO": e.doi = val.replace(/^https?:\/\/(dx\.)?doi\.org\//i, ""); break;
+              case "UR": case "L1": case "L2": e.url = e.url || val; break;
+              case "AB": case "N2": e.abstract = e.abstract ? e.abstract + " " + val : val; break;
+              case "KW": if (val) e.keywords.push(val); break;
+            }
+          }
+          function appendRis(e, tag, extra) {
+            if (!extra) return;
+            if (tag === "AB" || tag === "N2") e.abstract += " " + extra;
+            else if (tag === "TI" || tag === "T1") e.title += " " + extra;
+          }
+
+          function parseEndnote(text) {
+            var entries = [];
+            var blocks = splitTagged(text, null, /^%0\s/);
+            // fall back: if no %0, treat blank-line separated chunks
+            if (!blocks.length) {
+              text.split(/\n\s*\n/).forEach(function (chunk) {
+                if (/%[A-Z0-9]/.test(chunk)) blocks.push(chunk.split(/\r?\n/));
+              });
+            }
+            blocks.forEach(function (block) {
+              var e = emptyEntry();
+              block.forEach(function (line) {
+                var m = line.match(/^%([A-Z0-9])\s?(.*)$/);
+                if (!m) return;
+                applyEndnote(e, m[1], m[2].trim());
+              });
+              entries.push(e);
+            });
+            return entries;
+          }
+
+          function applyEndnote(e, tag, val) {
+            switch (tag) {
+              case "0": e.type = ENDNOTE_TO_NEUTRAL[val] || "misc"; break;
+              case "T": e.title = val; break;
+              case "A": if (val) e.authors.push(normAuthor(val)); break;
+              case "D": e.year = e.year || (val.match(/\d{4}/) || [val])[0]; break;
+              case "J": case "B": e.container = e.container || val; break;
+              case "V": e.volume = val; break;
+              case "N": e.issue = val; break;
+              case "P": e.pages = val.replace(/--/g, "-"); break;
+              case "I": e.publisher = e.publisher || val; break;
+              case "R": e.doi = val.replace(/^https?:\/\/(dx\.)?doi\.org\//i, ""); break;
+              case "U": e.url = e.url || val; break;
+              case "X": e.abstract = val; break;
+              case "K": if (val) e.keywords.push(val); break;
+            }
+          }
+
+          // resolve RIS SP/EP into a page range after parsing
+          function finalizePages(e) {
+            if (e._sp && e._ep) e.pages = e._sp + "-" + e._ep;
+            else if (e._sp && !e.pages) e.pages = e._sp;
+            delete e._sp; delete e._ep;
+          }
+
+          // ---- Serializers -------------------------------------------------
+          function serBibtex(e, idx) {
+            var t = NEUTRAL_TO_BIBTEX[e.type] || "misc";
+            var lines = ["@" + t + "{" + makeKey(e) + "," ];
+            function f(k, v) { if (v) lines.push("  " + k + " = {" + v + "},"); }
+            f("title", e.title);
+            if (e.authors.length) f("author", e.authors.join(" and "));
+            f("year", e.year);
+            if (e.type === "article") f("journal", e.container);
+            else if (e.type === "inproceedings" || e.type === "incollection") f("booktitle", e.container);
+            else f("journal", e.container);
+            f("volume", e.volume);
+            f("number", e.issue);
+            if (e.pages) lines.push("  pages = {" + e.pages.replace(/-/g, "--") + "},");
+            f("publisher", e.publisher);
+            f("doi", e.doi);
+            f("url", e.url);
+            f("abstract", e.abstract);
+            if (e.keywords.length) f("keywords", e.keywords.join(", "));
+            // drop trailing comma on last field
+            var last = lines[lines.length - 1];
+            lines[lines.length - 1] = last.replace(/,$/, "");
+            lines.push("}");
+            return lines.join("\n");
+          }
+
+          function serRis(e) {
+            var lines = [];
+            lines.push("TY  - " + (NEUTRAL_TO_RIS[e.type] || "GEN"));
+            if (e.title) lines.push("TI  - " + e.title);
+            e.authors.forEach(function (a) { lines.push("AU  - " + a); });
+            if (e.year) lines.push("PY  - " + e.year);
+            if (e.container) lines.push("JO  - " + e.container);
+            if (e.volume) lines.push("VL  - " + e.volume);
+            if (e.issue) lines.push("IS  - " + e.issue);
+            if (e.pages) {
+              var p = e.pages.split(/[-–]/);
+              lines.push("SP  - " + p[0].trim());
+              if (p[1]) lines.push("EP  - " + p[1].trim());
+            }
+            if (e.publisher) lines.push("PB  - " + e.publisher);
+            if (e.doi) lines.push("DO  - " + e.doi);
+            if (e.url) lines.push("UR  - " + e.url);
+            if (e.abstract) lines.push("AB  - " + e.abstract);
+            e.keywords.forEach(function (k) { lines.push("KW  - " + k); });
+            lines.push("ER  - ");
+            return lines.join("\n");
+          }
+
+          function serEndnote(e) {
+            var lines = [];
+            lines.push("%0 " + (NEUTRAL_TO_ENDNOTE[e.type] || "Generic"));
+            e.authors.forEach(function (a) { lines.push("%A " + a); });
+            if (e.title) lines.push("%T " + e.title);
+            if (e.year) lines.push("%D " + e.year);
+            if (e.container) lines.push((e.type === "incollection" || e.type === "inproceedings" ? "%B " : "%J ") + e.container);
+            if (e.volume) lines.push("%V " + e.volume);
+            if (e.issue) lines.push("%N " + e.issue);
+            if (e.pages) lines.push("%P " + e.pages);
+            if (e.publisher) lines.push("%I " + e.publisher);
+            if (e.doi) lines.push("%R " + e.doi);
+            if (e.url) lines.push("%U " + e.url);
+            if (e.abstract) lines.push("%X " + e.abstract);
+            e.keywords.forEach(function (k) { lines.push("%K " + k); });
+            return lines.join("\n");
+          }
+
+          var PARSERS = { bibtex: parseBibtex, ris: parseRis, endnote: parseEndnote };
+          var SERIALIZERS = { bibtex: serBibtex, ris: serRis, endnote: serEndnote };
+          var LABELS = { bibtex: "BibTeX", ris: "RIS", endnote: "EndNote" };
+
+          // ---- Wiring ------------------------------------------------------
+          function showError(msg) {
+            resultEl.hidden = true;
+            statusEl.textContent = msg;
+            statusEl.classList.add("rc-error");
+          }
+          function clearError() {
+            statusEl.textContent = "";
+            statusEl.classList.remove("rc-error");
+          }
+
+          runBtn.addEventListener("click", function () {
+            clearError();
+            var text = inputEl.value;
+            if (!text || !text.trim()) {
+              showError("Paste one or more references first.");
+              return;
+            }
+            var from = fromEl.value;
+            var detectedNote = "";
+            if (from === "auto") {
+              var d = detect(text);
+              if (!d) {
+                showError("Couldn't auto-detect the format. Please pick the “From” format manually.");
+                return;
+              }
+              from = d;
+              detectedNote = "Detected input format: " + LABELS[from] + ".";
+            }
+            var to = toEl.value;
+
+            var entries;
+            try {
+              entries = PARSERS[from](text);
+            } catch (err) {
+              showError("Sorry — that input couldn't be parsed as " + LABELS[from] + ".");
+              return;
+            }
+            if (!entries || !entries.length) {
+              showError("No " + LABELS[from] + " entries found in the input. Check the format and try again.");
+              return;
+            }
+            entries.forEach(finalizePages);
+
+            var ser = SERIALIZERS[to];
+            var out = entries.map(function (e, i) { return ser(e, i); }).join("\n\n");
+
+            outEl.textContent = out;
+            detectedEl.textContent = (detectedNote ? detectedNote + " " : "") +
+              "Converted " + entries.length + " " + (entries.length === 1 ? "entry" : "entries") +
+              " to " + LABELS[to] + ".";
+            resultEl.hidden = false;
+            copyBtn.textContent = "Copy";
+          });
+
+          copyBtn.addEventListener("click", function () {
+            var text = outEl.textContent;
+            if (!text) return;
+            function done() { copyBtn.textContent = "Copied!"; setTimeout(function () { copyBtn.textContent = "Copy"; }, 1500); }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done, function () {
+                copyBtn.textContent = "Press Ctrl+C";
+              });
+            } else {
+              var r = document.createRange();
+              r.selectNodeContents(outEl);
+              var sel = window.getSelection();
+              sel.removeAllRanges(); sel.addRange(r);
+              try { document.execCommand("copy"); done(); } catch (e) { copyBtn.textContent = "Press Ctrl+C"; }
+            }
+          });
+        })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>

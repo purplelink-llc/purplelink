@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Free Word &amp; Character Counter | Purplelink LLC</title>
+    <meta name="description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time — instantly, in your browser. Nothing is stored.">
+    <link rel="canonical" href="https://purplelink.llc/tools/word-counter/">
+    <meta property="og:title" content="Free Word &amp; Character Counter">
+    <meta property="og:description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time — instantly, in your browser. Nothing is stored.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/word-counter/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/word-counter.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free Word &amp; Character Counter">
+    <meta name="twitter:description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time — instantly, in your browser. Nothing is stored.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/word-counter.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Word & Character Counter",
+          "url": "https://purplelink.llc/tools/word-counter/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time — instantly, in your browser. Nothing is stored.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Live word, character, sentence, and paragraph counts",
+            "Estimated reading and speaking time",
+            "Optional word-limit tracking",
+            "100% client-side — your text never leaves your browser"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How is reading time calculated?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Reading time is your word count divided by 200 words per minute, a common average for silent reading. Speaking time uses 130 words per minute, a typical pace for presentations. Both are rounded up to the nearest minute as rough estimates." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my text stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The counter runs entirely in your browser with JavaScript. Your text is never uploaded, never sent over the network, and nothing is stored or logged." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it count LaTeX commands?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. The counter treats any non-whitespace sequence as a word, so LaTeX commands like \\section or \\textbf are counted as words. It does not strip markup, so counts include your source as written." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "Word Counter", "item": "https://purplelink.llc/tools/word-counter/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+      .wc-textarea { width:100%; min-height:240px; resize:vertical; font:inherit; line-height:1.6;
+        color:inherit; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.14);
+        border-radius:12px; padding:1rem 1.1rem; box-sizing:border-box }
+      .wc-textarea:focus { outline:2px solid #7c3aed; outline-offset:2px; border-color:#7c3aed }
+      .wc-field { margin-top:1rem; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap }
+      .wc-field label { font-weight:600 }
+      .wc-field input[type=number] { width:7rem; font:inherit; color:inherit;
+        background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.14);
+        border-radius:8px; padding:.45rem .6rem; box-sizing:border-box }
+      .wc-field input[type=number]:focus { outline:2px solid #7c3aed; outline-offset:2px }
+      .wc-limit { font-weight:600 }
+      .wc-limit.over { color:#fca5a5 }
+      .wc-stats { list-style:none; padding:0; margin:1.25rem 0 0;
+        display:grid; gap:.75rem; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+      .wc-stat { background:rgba(124,58,237,0.10); border:1px solid rgba(124,58,237,0.28);
+        border-radius:12px; padding:.85rem 1rem }
+      .wc-stat .wc-num { display:block; font-family:"Fraunces",serif; font-size:1.7rem; font-weight:700; line-height:1.1 }
+      .wc-stat .wc-lbl { display:block; margin-top:.25rem; font-size:.8rem; letter-spacing:.02em;
+        text-transform:uppercase; opacity:.78 }
+    </style>
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>🔢 Word Counter</h1>
+        <p>Paste or type your text to count <strong>words, characters, sentences, paragraphs</strong>, and estimated reading time — live, as you type. Everything runs in your browser.</p>
+      </div>
+
+      <div class="tool-app">
+        <label for="wc-input" class="wc-field" style="margin-top:0">Your text</label>
+        <textarea id="wc-input" class="wc-textarea" rows="12" placeholder="Start typing or paste your text here…" aria-describedby="wc-privacy"></textarea>
+
+        <div class="wc-field">
+          <label for="wc-limit">Word limit (optional)</label>
+          <input type="number" id="wc-limit" min="1" step="1" inputmode="numeric" placeholder="e.g. 500">
+          <span id="wc-limit-readout" class="wc-limit" aria-live="polite"></span>
+        </div>
+
+        <div class="tool-options">
+          <button class="btn btn-primary" id="wc-clear" type="button">Clear</button>
+        </div>
+
+        <ul class="wc-stats" id="wc-stats" aria-live="polite" aria-label="Text statistics">
+          <li class="wc-stat"><span class="wc-num" id="s-words">0</span><span class="wc-lbl">Words</span></li>
+          <li class="wc-stat"><span class="wc-num" id="s-chars">0</span><span class="wc-lbl">Characters (with spaces)</span></li>
+          <li class="wc-stat"><span class="wc-num" id="s-chars-nospace">0</span><span class="wc-lbl">Characters (no spaces)</span></li>
+          <li class="wc-stat"><span class="wc-num" id="s-sentences">0</span><span class="wc-lbl">Sentences</span></li>
+          <li class="wc-stat"><span class="wc-num" id="s-paragraphs">0</span><span class="wc-lbl">Paragraphs</span></li>
+          <li class="wc-stat"><span class="wc-num" id="s-reading">0 min</span><span class="wc-lbl">Reading time</span></li>
+          <li class="wc-stat"><span class="wc-num" id="s-speaking">0 min</span><span class="wc-lbl">Speaking time</span></li>
+        </ul>
+
+        <p class="tool-privacy" id="wc-privacy">Your text never leaves your browser — there's no upload and nothing is stored.</p>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to count words and characters</h2>
+        <ol>
+          <li>Type directly in the box, or paste text copied from anywhere.</li>
+          <li>Watch the stats update live — words, characters, sentences, paragraphs, and time estimates.</li>
+          <li>Optionally set a <strong>word limit</strong> to track how many words you have left (or how far over you are).</li>
+          <li>Press <strong>Clear</strong> to start fresh.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>A fast, private word and character counter. It updates as you type and never sends your text anywhere — all counting happens locally in your browser.</p>
+        <details><summary>How is reading time calculated?</summary><div class="faq-body">Reading time is your word count divided by 200 words per minute (a common average for silent reading), rounded up to the nearest minute. Speaking time uses 130 words per minute, a typical presentation pace.</div></details>
+        <details><summary>Is my text stored?</summary><div class="faq-body">No. The counter runs entirely in JavaScript on your device. Your text is never uploaded, sent over the network, logged, or saved.</div></details>
+        <details><summary>Does it count LaTeX commands?</summary><div class="faq-body">Yes. Any non-whitespace sequence counts as a word, so LaTeX commands like <code>\section</code> or <code>\textbf</code> are counted as written. The tool does not strip markup, so counts reflect your raw source.</div></details>
+        <details><summary>How are words, sentences, and paragraphs counted?</summary><div class="faq-body">Words are non-empty chunks separated by whitespace. Sentences are runs of text ending in <code>.</code>, <code>!</code>, or <code>?</code>. Paragraphs are blocks of text separated by one or more blank lines.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free LaTeX tools</h2>
+        <ul>
+          <li><a href="/tools/latex-table-generator/">LaTeX Table Generator →</a></li>
+          <li><a href="/tools/word-to-latex/">Convert Word to LaTeX →</a></li>
+          <li><a href="/tools/">All LaTeX tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+
+      <script>
+        (function () {
+          var input = document.getElementById("wc-input");
+          var limitInput = document.getElementById("wc-limit");
+          var limitReadout = document.getElementById("wc-limit-readout");
+          var clearBtn = document.getElementById("wc-clear");
+
+          var elWords = document.getElementById("s-words");
+          var elChars = document.getElementById("s-chars");
+          var elCharsNoSpace = document.getElementById("s-chars-nospace");
+          var elSentences = document.getElementById("s-sentences");
+          var elParagraphs = document.getElementById("s-paragraphs");
+          var elReading = document.getElementById("s-reading");
+          var elSpeaking = document.getElementById("s-speaking");
+
+          function countWords(text) {
+            var t = text.trim();
+            if (!t) return 0;
+            return t.split(/\s+/).filter(function (w) { return w.length > 0; }).length;
+          }
+
+          function countSentences(text) {
+            var matches = text.match(/[^.!?]+[.!?]+/g);
+            if (matches) return matches.length;
+            // Fallback: any non-whitespace content counts as one sentence.
+            return text.trim().length > 0 ? 1 : 0;
+          }
+
+          function countParagraphs(text) {
+            if (!text.trim()) return 0;
+            return text
+              .split(/\n\s*\n+/)
+              .map(function (p) { return p.trim(); })
+              .filter(function (p) { return p.length > 0; }).length;
+          }
+
+          function minutesLabel(words, wpm) {
+            if (words === 0) return "0 min";
+            var mins = Math.ceil(words / wpm);
+            return mins + " min";
+          }
+
+          function updateLimit(words) {
+            var raw = limitInput.value.trim();
+            var limit = parseInt(raw, 10);
+            if (!raw || isNaN(limit) || limit <= 0) {
+              limitReadout.textContent = "";
+              limitReadout.classList.remove("over");
+              return;
+            }
+            if (words > limit) {
+              limitReadout.textContent = words + " / " + limit + " — " + (words - limit) + " over";
+              limitReadout.classList.add("over");
+            } else {
+              limitReadout.textContent = words + " / " + limit + " — " + (limit - words) + " left";
+              limitReadout.classList.remove("over");
+            }
+          }
+
+          function update() {
+            var text = input.value;
+            var words = countWords(text);
+            elWords.textContent = words.toLocaleString();
+            elChars.textContent = text.length.toLocaleString();
+            elCharsNoSpace.textContent = text.replace(/\s/g, "").length.toLocaleString();
+            elSentences.textContent = countSentences(text).toLocaleString();
+            elParagraphs.textContent = countParagraphs(text).toLocaleString();
+            elReading.textContent = minutesLabel(words, 200);
+            elSpeaking.textContent = minutesLabel(words, 130);
+            updateLimit(words);
+          }
+
+          input.addEventListener("input", update);
+          limitInput.addEventListener("input", update);
+          clearBtn.addEventListener("click", function () {
+            input.value = "";
+            update();
+            input.focus();
+          });
+
+          update();
+        })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>

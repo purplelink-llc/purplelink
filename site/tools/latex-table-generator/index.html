@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Free LaTeX Table Generator | Purplelink LLC</title>
+    <meta name="description" content="Free online LaTeX table generator. Paste CSV or TSV data and get a clean, ready-to-paste LaTeX table — with booktabs, alignment, headers and a caption. Instant, in your browser, nothing stored.">
+    <link rel="canonical" href="https://purplelink.llc/tools/latex-table-generator/">
+    <meta property="og:title" content="Free LaTeX Table Generator">
+    <meta property="og:description" content="Free online LaTeX table generator. Paste CSV or TSV data and get a clean, ready-to-paste LaTeX table — with booktabs, alignment, headers and a caption. Instant, in your browser, nothing stored.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/latex-table-generator/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-table-generator.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free LaTeX Table Generator">
+    <meta name="twitter:description" content="Free online LaTeX table generator. Paste CSV or TSV data and get a clean, ready-to-paste LaTeX table — with booktabs, alignment, headers and a caption. Instant, in your browser, nothing stored.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-table-generator.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "LaTeX Table Generator",
+          "url": "https://purplelink.llc/tools/latex-table-generator/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online LaTeX table generator. Paste CSV or TSV data and get a clean, ready-to-paste LaTeX table with booktabs, alignment, headers and a caption. Runs entirely in your browser — nothing is stored.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Convert CSV or TSV data to a LaTeX tabular",
+            "Optional booktabs rules and table environment with caption and label",
+            "Runs 100% in your browser — nothing is uploaded or stored"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is booktabs?",
+              "acceptedAnswer": { "@type": "Answer", "text": "booktabs is a popular LaTeX package for typesetting professional-looking tables. It provides \\toprule, \\midrule, and \\bottomrule for clean horizontal rules with the right spacing, instead of the heavier \\hline. You need \\usepackage{booktabs} in your preamble." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it handle commas inside quoted CSV fields?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Basic quoted-field parsing is supported for comma-separated data: fields wrapped in double quotes may contain commas, and a doubled quote (\"\") inside a quoted field is treated as a literal quote." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is my data stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The entire tool runs in your browser with JavaScript. Your data never leaves your device — there is no upload and nothing is stored." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "LaTeX Table Generator", "item": "https://purplelink.llc/tools/latex-table-generator/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+      .ttg-field { display:block;margin-bottom:1rem }
+      .ttg-field > label { display:block;font-weight:600;margin-bottom:.4rem }
+      .ttg-input {
+        width:100%;box-sizing:border-box;font:inherit;color:inherit;
+        background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.16);
+        border-radius:8px;padding:.6rem .7rem
+      }
+      textarea.ttg-input { min-height:9rem;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;line-height:1.5 }
+      .ttg-options-grid { display:flex;flex-wrap:wrap;gap:.8rem 1.4rem;align-items:flex-start }
+      .ttg-opt { display:flex;align-items:center;gap:.5rem }
+      .ttg-opt label, .ttg-opt-inline label { font-weight:500 }
+      .ttg-opt-inline { display:flex;flex-direction:column;gap:.3rem }
+      .ttg-opt-inline select, .ttg-opt-inline input {
+        font:inherit;color:inherit;background:rgba(255,255,255,.04);
+        border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:.4rem .55rem
+      }
+      .ttg-result-head { display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.5rem }
+      .ttg-result-head h2 { margin:0 }
+      .tool-result pre { overflow:auto;margin:0 }
+      .tool-result code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>LaTeX Table Generator 📊</h1>
+        <p>Paste your CSV or TSV data and get a clean, ready-to-paste LaTeX table — with <code>booktabs</code> rules, alignment, a header row, and an optional <code>table</code> environment with caption and label. Runs entirely in your browser.</p>
+      </div>
+
+      <div class="tool-app">
+        <div class="ttg-field">
+          <label for="data">Paste your CSV or TSV data</label>
+          <textarea class="ttg-input" id="data" placeholder="Name, Score, Notes&#10;Alice, 92, Top of class&#10;Bob, 88, Improving"></textarea>
+        </div>
+
+        <div class="tool-options">
+          <div class="ttg-options-grid">
+            <div class="ttg-opt-inline">
+              <label for="delim">Delimiter</label>
+              <select class="ttg-input" id="delim">
+                <option value="auto" selected>Auto-detect</option>
+                <option value=",">Comma</option>
+                <option value="\t">Tab</option>
+                <option value=";">Semicolon</option>
+              </select>
+            </div>
+            <div class="ttg-opt-inline">
+              <label for="align">Column alignment</label>
+              <select class="ttg-input" id="align">
+                <option value="l" selected>All left</option>
+                <option value="c">All center</option>
+                <option value="r">All right</option>
+              </select>
+            </div>
+            <div class="ttg-opt">
+              <input type="checkbox" id="booktabs" checked>
+              <label for="booktabs">Use booktabs (\toprule, \midrule, \bottomrule)</label>
+            </div>
+            <div class="ttg-opt">
+              <input type="checkbox" id="header" checked>
+              <label for="header">First row is a header</label>
+            </div>
+            <div class="ttg-opt">
+              <input type="checkbox" id="wrap" checked>
+              <label for="wrap">Wrap in table environment (caption + label)</label>
+            </div>
+            <div class="ttg-opt-inline">
+              <label for="caption">Caption</label>
+              <input class="ttg-input" type="text" id="caption" value="My table">
+            </div>
+            <div class="ttg-opt-inline">
+              <label for="label">Label</label>
+              <input class="ttg-input" type="text" id="label" value="tab:my-table">
+            </div>
+          </div>
+          <p style="margin-top:1rem">
+            <button class="btn btn-primary" id="run" type="button">Generate</button>
+          </p>
+        </div>
+
+        <p class="tool-status" id="status" aria-live="polite"></p>
+
+        <div class="tool-result" id="result" hidden>
+          <div class="ttg-result-head">
+            <h2>LaTeX output</h2>
+            <button class="btn" id="copy" type="button">Copy</button>
+          </div>
+          <pre><code id="output"></code></pre>
+        </div>
+
+        <p class="tool-privacy">Your data never leaves your browser — there's no upload and nothing is stored.</p>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to generate a LaTeX table</h2>
+        <ol>
+          <li>Paste your data into the box above, as comma-separated (CSV) or tab-separated (TSV) values. The first row can be your column headers.</li>
+          <li>Pick your options: keep <strong>booktabs</strong> on for clean professional rules, choose the column alignment, and decide whether to wrap the table in a <code>table</code> environment with a caption and label.</li>
+          <li>Click <strong>Generate</strong> (output also updates as you type), then press <strong>Copy</strong> and paste the LaTeX straight into your document.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>This generator turns tabular data into a LaTeX <code>tabular</code> for you. Cell contents are escaped so LaTeX special characters (<code>&amp; % $ # _ { } ~ ^ \</code>) render as literal text rather than breaking your build. Everything happens in your browser with JavaScript — no server, no upload.</p>
+        <details><summary>What is booktabs?</summary><div class="faq-body"><code>booktabs</code> is a popular LaTeX package for professional tables. It provides <code>\toprule</code>, <code>\midrule</code>, and <code>\bottomrule</code> for well-spaced horizontal rules instead of the heavier <code>\hline</code>. Add <code>\usepackage{booktabs}</code> to your preamble. Turn this option off to use plain <code>\hline</code> rules instead.</div></details>
+        <details><summary>Does it handle commas inside quoted CSV fields?</summary><div class="faq-body">Yes. For comma-separated data, fields wrapped in double quotes may contain commas, and a doubled quote (<code>""</code>) inside a quoted field is treated as a single literal quote — standard CSV quoting. Tab- and semicolon-separated input is split on the delimiter directly.</div></details>
+        <details><summary>How are columns and ragged rows handled?</summary><div class="faq-body">The number of columns is taken from the widest row, and shorter rows are padded with empty cells so the table stays well-formed. The chosen alignment (left, center, or right) is applied to every column.</div></details>
+        <details><summary>Is my data stored?</summary><div class="faq-body">No. The whole tool runs locally in your browser. Your data never leaves your device, nothing is uploaded, and nothing is saved.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/word-counter/">Word &amp; character counter →</a></li>
+          <li><a href="/tools/equation-renderer/">LaTeX equation renderer →</a></li>
+          <li><a href="/tools/">All LaTeX tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+
+      <script>
+        (function () {
+          var dataEl = document.getElementById("data");
+          var delimEl = document.getElementById("delim");
+          var alignEl = document.getElementById("align");
+          var booktabsEl = document.getElementById("booktabs");
+          var headerEl = document.getElementById("header");
+          var wrapEl = document.getElementById("wrap");
+          var captionEl = document.getElementById("caption");
+          var labelEl = document.getElementById("label");
+          var runBtn = document.getElementById("run");
+          var copyBtn = document.getElementById("copy");
+          var statusEl = document.getElementById("status");
+          var resultEl = document.getElementById("result");
+          var outputEl = document.getElementById("output");
+
+          // Escape LaTeX special characters in cell content.
+          function escapeLatex(s) {
+            return String(s)
+              .replace(/\\/g, "\\textbackslash{}")
+              .replace(/([&%$#_{}])/g, "\\$1")
+              .replace(/~/g, "\\textasciitilde{}")
+              .replace(/\^/g, "\\textasciicircum{}");
+          }
+
+          // Parse one line of delimited text. Quoted-field handling applies to
+          // comma-delimited data (standard CSV). Other delimiters split plainly.
+          function parseLine(line, delim) {
+            if (delim !== ",") {
+              return line.split(delim).map(function (c) { return c.trim(); });
+            }
+            var out = [];
+            var cur = "";
+            var inQuotes = false;
+            for (var i = 0; i < line.length; i++) {
+              var ch = line[i];
+              if (inQuotes) {
+                if (ch === '"') {
+                  if (line[i + 1] === '"') { cur += '"'; i++; }
+                  else { inQuotes = false; }
+                } else {
+                  cur += ch;
+                }
+              } else if (ch === '"') {
+                inQuotes = true;
+              } else if (ch === ",") {
+                out.push(cur);
+                cur = "";
+              } else {
+                cur += ch;
+              }
+            }
+            out.push(cur);
+            return out.map(function (c) { return c.trim(); });
+          }
+
+          function detectDelim(text) {
+            var sample = text.split(/\r?\n/)[0] || "";
+            if (sample.indexOf("\t") !== -1) return "\t";
+            if (sample.indexOf(",") !== -1) return ",";
+            if (sample.indexOf(";") !== -1) return ";";
+            return ",";
+          }
+
+          function generate() {
+            var raw = dataEl.value;
+            var text = raw.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+            // Trim only trailing blank lines; keep meaningful structure.
+            var lines = text.split("\n");
+            while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
+            while (lines.length && lines[0].trim() === "") lines.shift();
+
+            if (!lines.length) {
+              statusEl.textContent = "Paste some CSV or TSV data above to generate a table.";
+              resultEl.hidden = true;
+              outputEl.textContent = "";
+              return;
+            }
+
+            var delim = delimEl.value;
+            if (delim === "auto") delim = detectDelim(text);
+            // The "\t" option value is a literal backslash-t string; normalise.
+            if (delim === "\\t") delim = "\t";
+
+            var rows = lines.map(function (l) { return parseLine(l, delim); });
+            var ncols = rows.reduce(function (m, r) { return Math.max(m, r.length); }, 0);
+            if (ncols === 0) {
+              statusEl.textContent = "Paste some CSV or TSV data above to generate a table.";
+              resultEl.hidden = true;
+              outputEl.textContent = "";
+              return;
+            }
+
+            var align = alignEl.value; // l, c, or r
+            var colspec = new Array(ncols).fill(align).join("");
+            var useBooktabs = booktabsEl.checked;
+            var hasHeader = headerEl.checked;
+            var wrap = wrapEl.checked;
+
+            function rowLatex(cells) {
+              var padded = cells.slice();
+              while (padded.length < ncols) padded.push("");
+              return padded.map(escapeLatex).join(" & ") + " \\\\";
+            }
+
+            var body = [];
+            body.push("\\begin{tabular}{" + colspec + "}");
+            body.push(useBooktabs ? "\\toprule" : "\\hline");
+
+            var start = 0;
+            if (hasHeader && rows.length >= 1) {
+              body.push(rowLatex(rows[0]));
+              body.push(useBooktabs ? "\\midrule" : "\\hline");
+              start = 1;
+            }
+            for (var i = start; i < rows.length; i++) {
+              body.push(rowLatex(rows[i]));
+            }
+            body.push(useBooktabs ? "\\bottomrule" : "\\hline");
+            body.push("\\end{tabular}");
+
+            var out;
+            if (wrap) {
+              var caption = (captionEl.value || "").trim();
+              var label = (labelEl.value || "").trim();
+              var wrapped = [];
+              wrapped.push("\\begin{table}[ht]");
+              wrapped.push("\\centering");
+              for (var j = 0; j < body.length; j++) wrapped.push(body[j]);
+              wrapped.push("\\caption{" + escapeLatex(caption) + "}");
+              wrapped.push("\\label{" + label + "}");
+              wrapped.push("\\end{table}");
+              out = wrapped.join("\n");
+            } else {
+              out = body.join("\n");
+            }
+
+            outputEl.textContent = out;
+            resultEl.hidden = false;
+            statusEl.textContent = "";
+          }
+
+          runBtn.addEventListener("click", generate);
+          [dataEl, captionEl, labelEl].forEach(function (el) {
+            el.addEventListener("input", generate);
+          });
+          [delimEl, alignEl, booktabsEl, headerEl, wrapEl].forEach(function (el) {
+            el.addEventListener("change", generate);
+          });
+
+          copyBtn.addEventListener("click", function () {
+            var txt = outputEl.textContent;
+            if (!txt) return;
+            navigator.clipboard.writeText(txt).then(function () {
+              var prev = copyBtn.textContent;
+              copyBtn.textContent = "Copied!";
+              setTimeout(function () { copyBtn.textContent = prev; }, 1500);
+            }).catch(function () {
+              statusEl.textContent = "Couldn't copy automatically — select the text and copy manually.";
+            });
+          });
+
+          // Generate once on load in case the box is pre-filled.
+          generate();
+        })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>

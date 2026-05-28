@@ -21,6 +21,7 @@ image = (
         "pandoc",
     )
     .apt_install("poppler-utils")
+    .apt_install("ghostscript")
     .pip_install(
         "fastapi[standard]==0.115.2",
         "python-docx==1.1.2",
@@ -590,5 +591,142 @@ def web():
             "summary": bibcheck.summarize(results),
             "annotated_bib": bibcheck.annotate_bib(bib_text, results),
         })
+
+    # ------------------------------------------------------------------
+    # /markdown-convert — convert Markdown to PDF or Word via pandoc
+    # ------------------------------------------------------------------
+
+    @api.post("/markdown-convert")
+    async def markdown_convert_endpoint(
+        request: Request,
+        text: str = Form(""),
+        file: UploadFile = File(None),
+        target: str = Form("pdf"),
+    ):
+        if not _enforce_rate_limit(request):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if target not in ("pdf", "docx"):
+            target = "pdf"
+
+        if file is not None and (file.filename or ""):
+            data = await file.read()
+            try:
+                core.validate_md_upload(file.filename or "", len(data))
+            except core.ValidationError as e:
+                return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            md_source = data.decode("utf-8", errors="replace")
+        else:
+            md_source = text
+            if len(md_source.encode("utf-8")) > core.MAX_MD_UPLOAD_BYTES:
+                return JSONResponse({"error": "invalid", "detail": "Markdown is too large (max 2 MB)."}, status_code=400)
+
+        if not md_source.strip():
+            return JSONResponse({"error": "invalid", "detail": "No Markdown content provided."}, status_code=400)
+
+        import subprocess as _sp
+
+        def _do():
+            with tempfile.TemporaryDirectory(dir="/tmp") as d:
+                workdir = Path(d)
+                md_path = workdir / "input.md"
+                out_path = workdir / f"output.{target}"
+                md_path.write_text(md_source, encoding="utf-8")
+                cmd = ["pandoc", str(md_path), "-o", str(out_path),
+                       "--standalone", "--wrap=none"]
+                if target == "pdf":
+                    cmd += ["--pdf-engine=pdflatex"]
+                proc = _sp.run(
+                    cmd, cwd=workdir, capture_output=True, text=True, timeout=90,
+                )
+                if proc.returncode != 0 or not out_path.exists():
+                    return None, proc.stderr.strip()[:500] or "pandoc failed"
+                return out_path.read_bytes(), None
+
+        try:
+            out_bytes, err = await run_in_threadpool(_do)
+        except _sp.TimeoutExpired:
+            return JSONResponse({"error": "convert", "detail": "Conversion timed out."}, status_code=422)
+        except (OSError, RuntimeError):
+            return JSONResponse({"error": "convert", "detail": "Conversion failed."}, status_code=422)
+        if err:
+            return JSONResponse({"error": "convert", "detail": err}, status_code=422)
+
+        if target == "pdf":
+            return _pdf_response(out_bytes, "converted.pdf")
+        return Response(
+            content=out_bytes,
+            media_type=_DOCX_MIME,
+            headers={
+                "Content-Disposition": 'attachment; filename="converted.docx"',
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
+
+    # ------------------------------------------------------------------
+    # /pdf-compress — shrink a PDF with Ghostscript
+    # ------------------------------------------------------------------
+
+    _GS_LEVELS = {
+        "screen": "/screen",
+        "ebook": "/ebook",
+        "printer": "/printer",
+        "prepress": "/prepress",
+    }
+
+    @api.post("/pdf-compress")
+    async def pdf_compress_endpoint(
+        request: Request,
+        file: UploadFile = File(...),
+        level: str = Form("ebook"),
+    ):
+        if not _enforce_rate_limit(request):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        gs_setting = _GS_LEVELS.get(level, "/ebook")
+        data = await file.read()
+        try:
+            core.validate_pdf_upload(file.filename or "", len(data))
+        except core.ValidationError as e:
+            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+        if not data.startswith(b"%PDF-"):
+            return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
+
+        import subprocess as _sp
+
+        def _do():
+            with tempfile.TemporaryDirectory(dir="/tmp") as d:
+                workdir = Path(d)
+                in_path = workdir / "input.pdf"
+                out_path = workdir / "output.pdf"
+                in_path.write_bytes(data)
+                proc = _sp.run(
+                    ["gs", "-sDEVICE=pdfwrite", "-dCompatibilityLevel=1.4",
+                     f"-dPDFSETTINGS={gs_setting}", "-dNOPAUSE", "-dQUIET",
+                     "-dBATCH", "-dSAFER", f"-sOutputFile={out_path}", str(in_path)],
+                    cwd=workdir, capture_output=True, text=True, timeout=90,
+                )
+                if proc.returncode != 0 or not out_path.exists():
+                    return None, None, proc.stderr.strip()[:500] or "ghostscript failed"
+                return out_path.read_bytes(), len(data), None
+
+        try:
+            out_bytes, original_size, err = await run_in_threadpool(_do)
+        except _sp.TimeoutExpired:
+            return JSONResponse({"error": "compress", "detail": "Compression timed out."}, status_code=422)
+        except (OSError, RuntimeError):
+            return JSONResponse({"error": "compress", "detail": "Compression failed."}, status_code=422)
+        if err:
+            return JSONResponse({"error": "compress", "detail": err}, status_code=422)
+
+        return Response(
+            content=out_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": 'attachment; filename="compressed.pdf"',
+                "X-Content-Type-Options": "nosniff",
+                "X-Original-Size": str(original_size),
+                "X-Compressed-Size": str(len(out_bytes)),
+                "Access-Control-Expose-Headers": "X-Original-Size, X-Compressed-Size",
+            },
+        )
 
     return api

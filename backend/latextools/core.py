@@ -81,6 +81,38 @@ def validate_docx_upload(filename: str, size_bytes: int) -> None:
         raise ValidationError("File must be a .docx file.")
 
 
+MAX_MD_UPLOAD_BYTES = 2 * 1024 * 1024   # 2 MB cap for markdown files
+MAX_PDF_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB cap for PDFs to compress
+
+
+def validate_md_upload(filename: str, size_bytes: int) -> None:
+    """Validate a markdown upload's name and size. Raises ValidationError."""
+    if size_bytes <= 0:
+        raise ValidationError("File is empty.")
+    if size_bytes > MAX_MD_UPLOAD_BYTES:
+        raise ValidationError(
+            f"File is too large (max {MAX_MD_UPLOAD_BYTES // (1024 * 1024)} MB)."
+        )
+    if any(c in filename for c in ("/", "\\", "\x00")) or filename in ("", ".", ".."):
+        raise ValidationError("invalid filename")
+    if not filename.lower().endswith((".md", ".markdown", ".txt")):
+        raise ValidationError("File must be a .md, .markdown, or .txt file.")
+
+
+def validate_pdf_upload(filename: str, size_bytes: int) -> None:
+    """Validate a .pdf upload's name and size. Raises ValidationError."""
+    if size_bytes <= 0:
+        raise ValidationError("File is empty.")
+    if size_bytes > MAX_PDF_UPLOAD_BYTES:
+        raise ValidationError(
+            f"File is too large (max {MAX_PDF_UPLOAD_BYTES // (1024 * 1024)} MB)."
+        )
+    if any(c in filename for c in ("/", "\\", "\x00")) or filename in ("", ".", ".."):
+        raise ValidationError("invalid filename")
+    if not filename.lower().endswith(".pdf"):
+        raise ValidationError("File must be a .pdf file.")
+
+
 def validate_zip_upload(filename: str, size_bytes: int) -> None:
     """Validate a project ZIP upload's name and compressed size. Raises ValidationError."""
     if size_bytes <= 0:
