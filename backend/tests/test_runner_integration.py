@@ -33,8 +33,9 @@ def test_compile_error_doc_reports_errors(tmp_path):
 @has_latexmk
 def test_shell_escape_is_blocked(tmp_path):
     tex = (FIXTURES / "shell_escape.tex").read_text()
-    runner.run_compile(tmp_path, tex, engine="pdflatex", timeout=60)
+    result = runner.run_compile(tmp_path, tex, engine="pdflatex", timeout=60)
     assert not Path("/tmp/pwned_by_latex").exists()
+    assert isinstance(result, runner.CompileResult)
 
 
 @has_latexmk

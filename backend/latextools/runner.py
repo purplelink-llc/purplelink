@@ -5,6 +5,8 @@ by integration tests that skip when latexmk is unavailable.
 """
 from __future__ import annotations
 
+import os
+import signal
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,20 +27,23 @@ def run_compile(
     workdir: Path, tex_source: str, engine: str, timeout: int
 ) -> CompileResult:
     """Write *tex_source* to workdir/main.tex and compile it with latexmk."""
-    core.build_latexmk_command(engine, "main")  # validates engine early
+    cmd = core.build_latexmk_command(engine, "main")  # validates engine; raises on bad
     tex_path = Path(workdir) / "main.tex"
     tex_path.write_text(tex_source, encoding="utf-8")
-    cmd = core.build_latexmk_command(engine, "main")
 
+    proc = subprocess.Popen(
+        cmd, cwd=workdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        text=True, start_new_session=True,
+    )
     try:
-        proc = subprocess.run(
-            cmd, cwd=workdir, capture_output=True, text=True, timeout=timeout
-        )
+        stdout, _ = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
+        os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+        proc.communicate()
         return CompileResult(False, None, [], "", timed_out=True)
 
     log_path = Path(workdir) / "main.log"
-    log = log_path.read_text(errors="replace") if log_path.exists() else proc.stdout
+    log = log_path.read_text(errors="replace") if log_path.exists() else stdout
     pdf_path = Path(workdir) / "main.pdf"
 
     if proc.returncode == 0 and pdf_path.exists():
@@ -54,22 +59,36 @@ def run_diff(
     timeout: int,
     add_legend: bool,
 ) -> CompileResult:
-    """Run latexdiff(old,new) -> main.tex, then compile it."""
+    """Run latexdiff(old,new) -> main.tex, then compile it.
+
+    The *timeout* budget is split: latexdiff (a fast Perl pass) gets a small
+    slice, the compile gets the remainder, so the total stays within one
+    *timeout* window (avoids exceeding the Modal wall-clock limit).
+    """
     (Path(workdir) / "old.tex").write_text(old_source, encoding="utf-8")
     (Path(workdir) / "new.tex").write_text(new_source, encoding="utf-8")
     diff_cmd = core.build_latexdiff_command("old.tex", "new.tex")
+    diff_timeout = max(10, timeout // 4)
+
+    proc = subprocess.Popen(
+        diff_cmd, cwd=workdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        text=True, start_new_session=True,
+    )
     try:
-        diff_proc = subprocess.run(
-            diff_cmd, cwd=workdir, capture_output=True, text=True, timeout=timeout
-        )
+        diff_out, diff_err = proc.communicate(timeout=diff_timeout)
     except subprocess.TimeoutExpired:
+        os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+        proc.communicate()
         return CompileResult(False, None, [], "", timed_out=True)
-    if diff_proc.returncode != 0:
+
+    if proc.returncode != 0:
         return CompileResult(
-            False, None, [{"file": "latexdiff", "line": 0, "message": diff_proc.stderr.strip()[:500]}], diff_proc.stderr
+            False, None,
+            [{"file": "latexdiff", "line": 0, "message": diff_err.strip()[:500]}],
+            diff_err,
         )
 
-    diff_tex = diff_proc.stdout
+    diff_tex = diff_out
     if add_legend:
         diff_tex = core.inject_diff_legend(diff_tex)
-    return run_compile(workdir, diff_tex, engine, timeout)
+    return run_compile(workdir, diff_tex, engine, timeout - diff_timeout)
