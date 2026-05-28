@@ -112,3 +112,8 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 - Project inquiries: ben@purplelink.llc with subject "Purplelink LLC"
 - The company is a sole-proprietor LLC operated out of Atlanta, Georgia
+
+## Tools (free web tools)
+- LaTeX to PDF: https://purplelink.llc/tools/latex-to-pdf/ — compile a .tex file to PDF (pdfLaTeX/XeLaTeX), files never stored.
+- LaTeX Diff: https://purplelink.llc/tools/latex-diff/ — compare two .tex versions, output a marked-up PDF via latexdiff.
+- Tools hub: https://purplelink.llc/tools/
