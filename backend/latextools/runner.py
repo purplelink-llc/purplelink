@@ -92,3 +92,43 @@ def run_diff(
     if add_legend:
         diff_tex = core.inject_diff_legend(diff_tex)
     return run_compile(workdir, diff_tex, engine, timeout - diff_timeout)
+
+
+@dataclass
+class ConvertResult:
+    ok: bool
+    docx_bytes: bytes | None
+    error: str = ""
+
+
+def convert_to_manuscript(
+    workdir: Path, tex_source: str, anonymize: bool
+) -> ConvertResult:
+    """pandoc(.tex) -> base.docx, then apply the manuscript post-processor.
+
+    Single-file MVP: no .bib, so native Word citations are skipped (the
+    post-processor guards that internally). tex_path is passed so keyword
+    injection and cross-references work.
+    """
+    from latextools import docx_format
+
+    work = Path(workdir)
+    tex_path = work / "main.tex"
+    base_docx = work / "base.docx"
+    out_docx = work / "manuscript.docx"
+    tex_path.write_text(tex_source, encoding="utf-8")
+
+    try:
+        proc = subprocess.run(
+            ["pandoc", str(tex_path), "-o", str(base_docx)],
+            cwd=workdir, capture_output=True, text=True, timeout=60,
+        )
+    except subprocess.TimeoutExpired:
+        return ConvertResult(False, None, "Conversion timed out.")
+    if proc.returncode != 0 or not base_docx.exists():
+        return ConvertResult(False, None, proc.stderr.strip()[:500] or "pandoc failed")
+
+    docx_format.format_docx(
+        str(base_docx), str(out_docx), tex_path=str(tex_path), anonymize=anonymize
+    )
+    return ConvertResult(True, out_docx.read_bytes())
