@@ -115,6 +115,25 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 ## Tools (free web tools)
 - LaTeX to PDF: https://purplelink.llc/tools/latex-to-pdf/ — compile a .tex file to PDF (pdfLaTeX/XeLaTeX), files never stored.
-- LaTeX Diff: https://purplelink.llc/tools/latex-diff/ — compare two .tex versions, output a marked-up PDF via latexdiff.
-- LaTeX to Word: https://purplelink.llc/tools/latex-to-word/ — convert a .tex paper to a standard double-spaced Word manuscript, optional anonymize, files never stored.
+- LaTeX Diff: https://purplelink.llc/tools/latex-diff/ — compare two .tex versions, output a marked-up PDF via latexdiff, files never stored.
+- LaTeX to Word: https://purplelink.llc/tools/latex-to-word/ — convert a .tex paper to a standard double-spaced Word .docx manuscript, optional anonymize, files never stored.
+- Word to LaTeX: https://purplelink.llc/tools/word-to-latex/ — convert a Word .docx into LaTeX source, files never stored.
+- Markdown to PDF: https://purplelink.llc/tools/markdown-to-pdf/ — render Markdown to a typeset PDF, files never stored.
+- BibTeX Builder: https://purplelink.llc/tools/bib-builder/ — generate BibTeX entries from a DOI or arXiv ID, nothing stored.
+- BibTeX Validator: https://purplelink.llc/tools/bib-validator/ — check a .bib file for syntax errors and missing required fields, runs in your browser.
+- Citation Generator: https://purplelink.llc/tools/citation-generator/ — build IEEE, APA, MLA, and Chicago citations from entry fields, runs in your browser.
+- Reference Converter: https://purplelink.llc/tools/reference-converter/ — convert references between BibTeX, RIS, and other formats, runs in your browser.
+- Equation Renderer: https://purplelink.llc/tools/equation-renderer/ — render LaTeX math to an image, runs in your browser.
+- LaTeX Table Generator: https://purplelink.llc/tools/latex-table-generator/ — build LaTeX tabular code from a visual grid, runs in your browser.
+- Word & Character Counter: https://purplelink.llc/tools/word-counter/ — count words, characters, sentences, and reading time, runs in your browser.
+- PDF Tools: https://purplelink.llc/tools/pdf-tools/ — merge, split, and compress PDF files, files never stored.
 - Tools hub: https://purplelink.llc/tools/
+
+## Guides (free how-to articles)
+- Guides index: https://purplelink.llc/guides/
+- Convert a LaTeX paper to Word: https://purplelink.llc/guides/latex-to-word/ — step-by-step .tex → .docx for journal submission.
+- Fix common BibTeX errors: https://purplelink.llc/guides/fix-bibtex-errors/ — diagnose and repair the most frequent .bib mistakes.
+- IEEE vs APA vs MLA vs Chicago: https://purplelink.llc/guides/citation-styles-explained/ — how the four major citation styles differ and when to use each.
+- Show changes between two LaTeX versions: https://purplelink.llc/guides/latex-track-changes/ — track changes in LaTeX with latexdiff.
+- Count words in a LaTeX document: https://purplelink.llc/guides/latex-word-count/ — accurate word counts for .tex files.
+- Get BibTeX from a DOI or arXiv ID: https://purplelink.llc/guides/doi-to-bibtex/ — fetch a clean BibTeX entry from an identifier.
