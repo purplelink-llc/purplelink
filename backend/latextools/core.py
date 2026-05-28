@@ -56,3 +56,32 @@ def build_latexmk_command(engine: str, jobname: str) -> list[str]:
         "-file-line-error",
         f"{jobname}.tex",
     ]
+
+
+MAX_REPORTED_ERRORS = 20
+
+# With -file-line-error, errors look like:  main.tex:12: Undefined control sequence.
+_FILE_LINE_ERROR = re.compile(r"^(?P<file>[^:\n]+\.tex):(?P<line>\d+):\s*(?P<msg>.+)$")
+
+
+def parse_latex_log(log_text: str) -> list[dict]:
+    """Extract structured errors from a latexmk/pdflatex log.
+
+    Returns a list of {"file", "line", "message"} dicts, capped at
+    MAX_REPORTED_ERRORS. Returns [] when no errors are found.
+    """
+    errors: list[dict] = []
+    for raw in log_text.splitlines():
+        m = _FILE_LINE_ERROR.match(raw.strip())
+        if not m:
+            continue
+        errors.append(
+            {
+                "file": m.group("file"),
+                "line": int(m.group("line")),
+                "message": m.group("msg").strip(),
+            }
+        )
+        if len(errors) >= MAX_REPORTED_ERRORS:
+            break
+    return errors
