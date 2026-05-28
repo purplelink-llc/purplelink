@@ -276,7 +276,7 @@ def web():
             resp = await client.get(
                 f"https://api.crossref.org/works/{encoded_doi}/transform/application/x-bibtex",
                 headers={
-                    "User-Agent": "purplelink-bib-builder/1.0 (mailto:tools@purplelink.llc)",
+                    "User-Agent": "purplelink-bib-builder/1.0 (mailto:ben@purplelink.llc)",
                     "Accept": "application/x-bibtex",
                 },
             )
@@ -516,12 +516,12 @@ def web():
             "query.author": r.author[:100] if r.author else "",
             "rows": "1",
             "select": "title,DOI",
-            "mailto": "tools@purplelink.llc",
+            "mailto": "ben@purplelink.llc",
         }
         try:
             resp = await client.get(
                 "https://api.crossref.org/works", params=params,
-                headers={"User-Agent": "purplelink-bib-validator/1.0 (mailto:tools@purplelink.llc)"},
+                headers={"User-Agent": "purplelink-bib-validator/1.0 (mailto:ben@purplelink.llc)"},
             )
             if resp.status_code != 200:
                 return
