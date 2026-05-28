@@ -40,15 +40,15 @@ function validClientSide(file, statusEl) {
 }
 
 function renderError(resultEl, status, payload) {
-  if (status === 429) { resultEl.innerHTML = '<div class="tool-error">You\'ve reached the daily limit. Please try again tomorrow.</div>'; return; }
-  if (payload && payload.error === "timeout") { resultEl.innerHTML = '<div class="tool-error">Compilation took too long (over 60s). Your document may have an infinite loop or be too large for the free tool.</div>'; return; }
+  if (status === 429) { resultEl.innerHTML = '<div class="tool-error" role="alert">You\'ve reached the daily limit. Please try again tomorrow.</div>'; return; }
+  if (payload && payload.error === "timeout") { resultEl.innerHTML = '<div class="tool-error" role="alert">Compilation took too long (over 60s). Your document may have an infinite loop or be too large for the free tool.</div>'; return; }
   if (payload && payload.errors && payload.errors.length) {
     const lines = payload.errors.map((e) => `Line ${e.line}: ${escapeHtml(e.message)}`).join("\n");
-    resultEl.innerHTML = `<div class="tool-error">Compilation failed:\n${lines}</div>`;
+    resultEl.innerHTML = `<div class="tool-error" role="alert">Compilation failed:\n${lines}</div>`;
     return;
   }
   const detail = payload && payload.detail ? escapeHtml(payload.detail) : "Something went wrong. Please try again.";
-  resultEl.innerHTML = `<div class="tool-error">${detail}</div>`;
+  resultEl.innerHTML = `<div class="tool-error" role="alert">${detail}</div>`;
 }
 
 function showPdf(resultEl, blob, downloadName) {
@@ -61,7 +61,7 @@ function showPdf(resultEl, blob, downloadName) {
 
 // POST a FormData; on a file response, offer a download link (no preview).
 async function postForDownload(path, formData, statusEl, resultEl, downloadName, mime) {
-  statusEl.textContent = "Working… this can take up to a minute.";
+  statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>Working… this can take up to a minute.';
   const prevUrl = resultEl.dataset.blobUrl;
   if (prevUrl) { URL.revokeObjectURL(prevUrl); delete resultEl.dataset.blobUrl; }
   resultEl.innerHTML = "";
@@ -83,13 +83,13 @@ async function postForDownload(path, formData, statusEl, resultEl, downloadName,
     }
   } catch (_) {
     statusEl.textContent = "";
-    resultEl.innerHTML = '<div class="tool-error">Network error. Please check your connection and try again.</div>';
+    resultEl.innerHTML = '<div class="tool-error" role="alert">Network error. Please check your connection and try again.</div>';
   }
 }
 
 // POST a FormData to API_BASE+path; on PDF success call showPdf, else renderError.
 async function postForPdf(path, formData, statusEl, resultEl, downloadName) {
-  statusEl.textContent = "Working… this can take up to a minute.";
+  statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>Working… this can take up to a minute.';
   const prevUrl = resultEl.dataset.blobUrl;
   if (prevUrl) { URL.revokeObjectURL(prevUrl); delete resultEl.dataset.blobUrl; }
   resultEl.innerHTML = "";
@@ -108,6 +108,6 @@ async function postForPdf(path, formData, statusEl, resultEl, downloadName) {
     }
   } catch (_) {
     statusEl.textContent = "";
-    resultEl.innerHTML = '<div class="tool-error">Network error. Please check your connection and try again.</div>';
+    resultEl.innerHTML = '<div class="tool-error" role="alert">Network error. Please check your connection and try again.</div>';
   }
 }
