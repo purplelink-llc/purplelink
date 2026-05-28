@@ -98,12 +98,12 @@
       </div>
 
       <div class="tool-app">
-        <div class="dropzone" id="dz-old">
+        <div class="dropzone" id="dz-old" aria-label="Upload the old .tex version">
           <input type="file" id="file-old" accept=".tex">
           <p><strong>Old version</strong> — drag a .tex here or click. Max 5 MB.</p>
           <p id="name-old" class="tool-privacy"></p>
         </div>
-        <div class="dropzone" id="dz-new">
+        <div class="dropzone" id="dz-new" aria-label="Upload the new .tex version">
           <input type="file" id="file-new" accept=".tex">
           <p><strong>New version</strong> — drag a .tex here or click. Max 5 MB.</p>
           <p id="name-new" class="tool-privacy"></p>
@@ -118,7 +118,7 @@
           <label><input type="checkbox" id="legend"> Add a legend explaining the colors</label>
           <button class="btn btn-primary" id="run" disabled>Generate diff PDF</button>
         </div>
-        <p class="tool-status" id="status"></p>
+        <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
         <p class="tool-privacy">Changes inside tables are shown in final form only (not marked). Files are never written to disk.</p>
       </div>

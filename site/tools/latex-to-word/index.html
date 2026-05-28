@@ -108,7 +108,7 @@
       </div>
 
       <div class="tool-app">
-        <div class="dropzone" id="dropzone">
+        <div class="dropzone" id="dropzone" aria-label="Upload a .tex file">
           <input type="file" id="file" accept=".tex">
           <p>Drag a <code>.tex</code> file here, or click to choose. Max 5 MB.</p>
           <p id="filename" class="tool-privacy"></p>
@@ -117,7 +117,7 @@
           <label><input type="checkbox" id="anonymize"> Anonymize (remove author block)</label>
           <button class="btn btn-primary" id="run" disabled>Convert to Word</button>
         </div>
-        <p class="tool-status" id="status"></p>
+        <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
         <p class="tool-privacy">Single self-contained .tex only. Complex custom macros may not convert perfectly. Files are never written to disk.</p>
       </div>
