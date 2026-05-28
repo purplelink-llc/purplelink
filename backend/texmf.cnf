@@ -1,0 +1,6 @@
+% Appended to the image's texmf config to confine untrusted compiles.
+% Paranoid file access: reads/writes limited to CWD + texmf trees; no
+% absolute or parent paths; no piped input/output.
+shell_escape = f
+openin_any = p
+openout_any = p
