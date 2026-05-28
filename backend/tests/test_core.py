@@ -97,3 +97,28 @@ def test_inject_diff_legend_after_maketitle():
 def test_inject_diff_legend_noop_without_maketitle():
     src = r"\begin{document}" "\n" r"Body" "\n" r"\end{document}"
     assert core.inject_diff_legend(src) == src
+
+
+def test_rate_limit_key_is_stable_and_hashed():
+    k1 = core.rate_limit_key("203.0.113.7", day="2026-05-28")
+    k2 = core.rate_limit_key("203.0.113.7", day="2026-05-28")
+    assert k1 == k2
+    assert "203.0.113.7" not in k1  # raw IP never stored
+    assert k1.startswith("rl:2026-05-28:")
+
+
+def test_rate_limit_check_allows_under_limit():
+    store = {}
+    for i in range(core.DAILY_LIMIT):
+        allowed, remaining = core.check_and_increment(store, "k")
+        assert allowed is True
+    assert remaining == 0
+
+
+def test_rate_limit_check_blocks_over_limit():
+    store = {}
+    for _ in range(core.DAILY_LIMIT):
+        core.check_and_increment(store, "k")
+    allowed, remaining = core.check_and_increment(store, "k")
+    assert allowed is False
+    assert remaining == 0

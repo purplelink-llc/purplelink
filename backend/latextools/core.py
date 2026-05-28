@@ -119,3 +119,29 @@ def inject_diff_legend(diff_tex: str) -> str:
         return diff_tex
     insert_at = idx + len(marker)
     return diff_tex[:insert_at] + "\n" + _DIFF_LEGEND + "\n" + diff_tex[insert_at:]
+
+
+import hashlib
+
+DAILY_LIMIT = 25  # compiles per IP per UTC day
+
+
+def rate_limit_key(ip: str, day: str) -> str:
+    """Build a daily, hashed rate-limit key. Raw IP is never persisted."""
+    digest = hashlib.sha256(ip.encode("utf-8")).hexdigest()[:16]
+    return f"rl:{day}:{digest}"
+
+
+def check_and_increment(store, key: str) -> tuple[bool, int]:
+    """Increment the counter for *key* in a dict-like *store*.
+
+    Returns (allowed, remaining). When the prior count is already at
+    DAILY_LIMIT, returns (False, 0) and does not increment further.
+    *store* is any object supporting .get(key, default) and item assignment
+    (a plain dict in tests, a modal.Dict in production).
+    """
+    current = store.get(key, 0)
+    if current >= DAILY_LIMIT:
+        return False, 0
+    store[key] = current + 1
+    return True, DAILY_LIMIT - (current + 1)
