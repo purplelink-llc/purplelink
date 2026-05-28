@@ -116,4 +116,5 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 ## Tools (free web tools)
 - LaTeX to PDF: https://purplelink.llc/tools/latex-to-pdf/ — compile a .tex file to PDF (pdfLaTeX/XeLaTeX), files never stored.
 - LaTeX Diff: https://purplelink.llc/tools/latex-diff/ — compare two .tex versions, output a marked-up PDF via latexdiff.
+- LaTeX to Word: https://purplelink.llc/tools/latex-to-word/ — convert a .tex paper to a standard double-spaced Word manuscript, optional anonymize, files never stored.
 - Tools hub: https://purplelink.llc/tools/
