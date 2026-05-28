@@ -105,6 +105,15 @@ def test_rate_limit_key_is_stable_and_hashed():
     assert k1 == k2
     assert "203.0.113.7" not in k1  # raw IP never stored
     assert k1.startswith("rl:2026-05-28:")
+    k_other = core.rate_limit_key("10.0.0.1", day="2026-05-28")
+    assert k_other != k1  # different IP must produce a different key
+
+
+def test_validate_upload_rejects_backslash_and_nullbyte():
+    with pytest.raises(core.ValidationError, match="invalid filename"):
+        core.validate_upload("..\\evil.tex", 10)
+    with pytest.raises(core.ValidationError, match="invalid filename"):
+        core.validate_upload("evil\x00.tex", 10)
 
 
 def test_rate_limit_check_allows_under_limit():

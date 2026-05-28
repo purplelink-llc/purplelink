@@ -6,7 +6,7 @@ log parsing) have fast, deterministic coverage.
 """
 from __future__ import annotations
 
-import os
+import hashlib
 import re
 
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # 5 MB hard cap (matches spec)
@@ -24,10 +24,9 @@ def validate_upload(filename: str, size_bytes: int) -> None:
         raise ValidationError(
             f"File is too large (max {MAX_UPLOAD_BYTES // (1024 * 1024)} MB)."
         )
-    base = os.path.basename(filename)
-    if base != filename or base in ("", ".", ".."):
+    if any(c in filename for c in ("/", "\\", "\x00")) or filename in ("", ".", ".."):
         raise ValidationError("invalid filename")
-    if not base.lower().endswith(".tex"):
+    if not filename.lower().endswith(".tex"):
         raise ValidationError("File must be a .tex file.")
 
 
@@ -103,6 +102,7 @@ def build_latexdiff_command(old_name: str, new_name: str) -> list[str]:
         "latexdiff",
         "--type=UNDERLINE",
         f"--config={_PICTUREENV}",
+        "--",
         old_name,
         new_name,
     ]
@@ -120,8 +120,6 @@ def inject_diff_legend(diff_tex: str) -> str:
     insert_at = idx + len(marker)
     return diff_tex[:insert_at] + "\n" + _DIFF_LEGEND + "\n" + diff_tex[insert_at:]
 
-
-import hashlib
 
 DAILY_LIMIT = 25  # compiles per IP per UTC day
 
