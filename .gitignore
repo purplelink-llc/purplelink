@@ -4,3 +4,6 @@ node_modules/
 .worktrees/
 CC-Session-Logs/
 site/CC-Session-Logs/
+
+# Brainstorm visual-companion artifacts
+.superpowers/
