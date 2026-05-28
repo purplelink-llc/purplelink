@@ -61,11 +61,13 @@
       "bib-validator":     { emoji: "📚", title: "BibTeX Validator",   tagline: "Catch AI-hallucinated citations, dead DOIs & missing fields." },
       "bib-builder":       { emoji: "🔍", title: "BibTeX Builder",     tagline: "Paste DOIs or arXiv IDs, download a ready-to-use .bib file." },
       "equation-renderer": { emoji: "∑",  title: "Equation Renderer",  tagline: "Paste LaTeX math, download a high-resolution PNG." },
-      "word-to-latex":     { emoji: "🔄", title: "Word → LaTeX",       tagline: "Upload a .docx, download a .tex starting point via Pandoc." }
+      "word-to-latex":     { emoji: "🔄", title: "Word → LaTeX",       tagline: "Upload a .docx, download a .tex starting point via Pandoc." },
+      "tools-launch":      { emoji: "🧰", title: "Free LaTeX Tools",   tagline: "Compile, convert, diff, validate & render — right in your browser.", kicker: "7 tools · now live" }
     };
     window.renderTool = function (key) {
       var t = TOOLS[key];
       document.getElementById("emoji").textContent = t.emoji;
+      document.getElementById("kicker").textContent = t.kicker || "Free LaTeX tool";
       document.getElementById("title").textContent = t.title;
       document.getElementById("tagline").textContent = t.tagline;
       document.title = key;
