@@ -1,6 +1,4 @@
 """Modal app for the purplelink LaTeX tools backend."""
-from __future__ import annotations
-
 import datetime
 
 import modal
@@ -42,56 +40,20 @@ ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
 
-_COMPILE_KW = dict(
-    image=image,
-    timeout=90,
-    cpu=1.0,
-    memory=2048,
-    max_containers=4,
-)
 
-
-@app.function(**_COMPILE_KW)
-def compile_tex(tex_source: str, engine: str) -> dict:
-    """Compile a single .tex; return {ok, pdf (bytes)|None, errors, timed_out}."""
-    import tempfile
-    from pathlib import Path
-    from latextools import runner
-
-    with tempfile.TemporaryDirectory(dir="/tmp") as d:
-        res = runner.run_compile(Path(d), tex_source, engine, timeout=60)
-    return {
-        "ok": res.ok,
-        "pdf": res.pdf_bytes,
-        "errors": res.errors,
-        "timed_out": res.timed_out,
-    }
-
-
-@app.function(**_COMPILE_KW)
-def diff_tex(old_source: str, new_source: str, engine: str, add_legend: bool) -> dict:
-    import tempfile
-    from pathlib import Path
-    from latextools import runner
-
-    with tempfile.TemporaryDirectory(dir="/tmp") as d:
-        res = runner.run_diff(
-            Path(d), old_source, new_source, engine, timeout=60, add_legend=add_legend
-        )
-    return {
-        "ok": res.ok,
-        "pdf": res.pdf_bytes,
-        "errors": res.errors,
-        "timed_out": res.timed_out,
-    }
-
-
-@app.function(image=image)
+@app.function(image=image, timeout=150, cpu=1.0, memory=2048, max_containers=6)
+@modal.concurrent(max_inputs=4)
 @modal.asgi_app()
 def web():
+    import tempfile
+    from pathlib import Path
+
     from fastapi import FastAPI, File, Form, Request, UploadFile
+    from fastapi.concurrency import run_in_threadpool
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import JSONResponse, Response
+
+    from latextools import runner
 
     api = FastAPI()
     api.add_middleware(
@@ -130,6 +92,15 @@ def web():
             },
         )
 
+    def _result_or_error(res) -> Response:
+        if res.timed_out:
+            return JSONResponse({"error": "timeout"}, status_code=422)
+        if not res.ok:
+            return JSONResponse(
+                {"error": "compile", "errors": res.errors}, status_code=422
+            )
+        return None
+
     @api.post("/compile")
     async def compile_endpoint(
         request: Request,
@@ -142,14 +113,13 @@ def web():
             tex = await _read_tex(file)
         except core.ValidationError as e:
             return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
-        result = compile_tex.remote(tex, engine)
-        if result["timed_out"]:
-            return JSONResponse({"error": "timeout"}, status_code=422)
-        if not result["ok"]:
-            return JSONResponse(
-                {"error": "compile", "errors": result["errors"]}, status_code=422
-            )
-        return _pdf_response(result["pdf"], "compiled.pdf")
+
+        def _do():
+            with tempfile.TemporaryDirectory(dir="/tmp") as d:
+                return runner.run_compile(Path(d), tex, engine, timeout=60)
+
+        res = await run_in_threadpool(_do)
+        return _result_or_error(res) or _pdf_response(res.pdf_bytes, "compiled.pdf")
 
     @api.post("/diff")
     async def diff_endpoint(
@@ -166,13 +136,15 @@ def web():
             new_tex = await _read_tex(new)
         except core.ValidationError as e:
             return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
-        result = diff_tex.remote(old_tex, new_tex, engine, legend == "true")
-        if result["timed_out"]:
-            return JSONResponse({"error": "timeout"}, status_code=422)
-        if not result["ok"]:
-            return JSONResponse(
-                {"error": "compile", "errors": result["errors"]}, status_code=422
-            )
-        return _pdf_response(result["pdf"], "diff.pdf")
+
+        def _do():
+            with tempfile.TemporaryDirectory(dir="/tmp") as d:
+                return runner.run_diff(
+                    Path(d), old_tex, new_tex, engine, timeout=60,
+                    add_legend=(legend == "true"),
+                )
+
+        res = await run_in_threadpool(_do)
+        return _result_or_error(res) or _pdf_response(res.pdf_bytes, "diff.pdf")
 
     return api
