@@ -29,3 +29,30 @@ def validate_upload(filename: str, size_bytes: int) -> None:
         raise ValidationError("invalid filename")
     if not base.lower().endswith(".tex"):
         raise ValidationError("File must be a .tex file.")
+
+
+# Engine name -> latexmk engine flag. LuaLaTeX deliberately excluded (spec §RCE).
+_ENGINE_FLAGS = {
+    "pdflatex": "-pdf",
+    "xelatex": "-xelatex",
+}
+
+
+def build_latexmk_command(engine: str, jobname: str) -> list[str]:
+    """Build the latexmk argv for a hardened single-file compile.
+
+    -no-shell-escape disables \\write18. File-read/write confinement is set
+    via texmf.cnf (openin_any/openout_any=p) baked into the image.
+    """
+    flag = _ENGINE_FLAGS.get(engine)
+    if flag is None:
+        raise ValidationError(f"unsupported engine: {engine}")
+    return [
+        "latexmk",
+        flag,
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "-no-shell-escape",
+        "-file-line-error",
+        f"{jobname}.tex",
+    ]
