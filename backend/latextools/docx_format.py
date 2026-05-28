@@ -2035,12 +2035,67 @@ def _replace_ref_in_para(para, search_text, bm_name, display_text):
 # Main
 # ---------------------------------------------------------------------------
 
+def apply_preprint_overrides(doc):
+    """Convert a manuscript-formatted doc to preprint style in-place.
+
+    Changes from manuscript defaults:
+    - Body text: single-spaced, 11pt, 12pt paragraph spacing instead of indent
+    - Margins: 0.75 inch on all sides
+    - Headings and tables: unchanged
+    """
+    PREPRINT_SIZE = 11
+    PREPRINT_SPACING_AFTER = 160  # ~8pt spacing between paragraphs
+
+    # Override Normal style
+    for s in doc.styles:
+        if s.name == "Normal":
+            ppr = s.element.find(qn("w:pPr"))
+            if ppr is None:
+                ppr = etree.SubElement(s.element, qn("w:pPr"))
+            set_spacing(ppr, line=LINE_SPACING_SINGLE, before=0,
+                        after=PREPRINT_SPACING_AFTER)
+            # Update font size in style rPr
+            rpr = s.element.find(qn("w:rPr"))
+            if rpr is not None:
+                for tag in (qn("w:sz"), qn("w:szCs")):
+                    el = rpr.find(tag)
+                    if el is not None:
+                        el.set(qn("w:val"), str(PREPRINT_SIZE * 2))
+            break
+
+    # Override every body paragraph
+    for para in doc.paragraphs:
+        if is_in_table(para):
+            continue
+        style_name = para.style.name if para.style else "Normal"
+        if style_name.startswith("Heading") or style_name in (
+            "Title", "Author", "Abstract Title", "Abstract", "Bibliography",
+            "Image Caption", "Table Caption", "Captioned Figure",
+        ):
+            continue
+        ppr = ensure_ppr(para)
+        set_spacing(ppr, line=LINE_SPACING_SINGLE, before=0,
+                    after=PREPRINT_SPACING_AFTER)
+        clear_first_indent(ppr)
+        apply_font_to_runs(para, font=BODY_FONT, size_pt=PREPRINT_SIZE)
+
+    # Tighter margins
+    for section in doc.sections:
+        section.top_margin = Inches(0.75)
+        section.bottom_margin = Inches(0.75)
+        section.left_margin = Inches(0.75)
+        section.right_margin = Inches(0.75)
+
+    print("  Applied preprint overrides (single-spaced, 11pt, 0.75in margins)")
+
+
 def format_docx(input_path, output_path=None, hires_image=None,
-                bib_path=None, tex_path=None, anonymize=False):
+                bib_path=None, tex_path=None, anonymize=False,
+                style="manuscript"):
     if output_path is None:
         output_path = input_path
 
-    print(f"Processing: {input_path}")
+    print(f"Processing: {input_path} (style={style})")
     doc = Document(input_path)
 
     fix_theme(doc)
@@ -2063,6 +2118,9 @@ def format_docx(input_path, output_path=None, hires_image=None,
 
     if hires_image and Path(hires_image).exists():
         replace_image(doc, hires_image)
+
+    if style == "preprint":
+        apply_preprint_overrides(doc)
 
     doc.save(output_path)
 

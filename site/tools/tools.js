@@ -1,7 +1,10 @@
 // Shared client logic for purplelink LaTeX tool pages.
 // The Modal endpoint base is defined ONCE here.
 const API_BASE = "https://ben-ampel--purplelink-latextools-web.modal.run";
-const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_TEX_BYTES = 5 * 1024 * 1024;   // 5 MB for a single .tex file
+const MAX_ZIP_BYTES = 10 * 1024 * 1024;  // 10 MB for a project .zip
+const MAX_BIB_BYTES = 2 * 1024 * 1024;   // 2 MB for a .bib file
+const MAX_DOCX_BYTES = 5 * 1024 * 1024;  // 5 MB for a .docx file
 
 function escapeHtml(s) {
   const d = document.createElement("div");
@@ -33,9 +36,27 @@ function wireDropzone(zoneId, inputId, onFile) {
 }
 
 function validClientSide(file, statusEl) {
-  if (!file.name.toLowerCase().endsWith(".tex")) { statusEl.textContent = "Please choose a .tex file."; return false; }
-  if (file.size > MAX_BYTES) { statusEl.textContent = "File is too large (max 5 MB)."; return false; }
+  const name = file.name.toLowerCase();
+  const isTex = name.endsWith(".tex");
+  const isZip = name.endsWith(".zip");
+  if (!isTex && !isZip) { statusEl.textContent = "Please choose a .tex file or a project .zip."; return false; }
+  const maxBytes = isZip ? MAX_ZIP_BYTES : MAX_TEX_BYTES;
+  if (file.size > maxBytes) { statusEl.textContent = `File is too large (max ${isZip ? "10" : "5"} MB).`; return false; }
   if (file.size === 0) { statusEl.textContent = "That file is empty."; return false; }
+  return true;
+}
+
+function validDocxClientSide(file, statusEl) {
+  if (!file.name.toLowerCase().endsWith(".docx")) { statusEl.textContent = "Please choose a .docx file."; return false; }
+  if (file.size === 0) { statusEl.textContent = "That file is empty."; return false; }
+  if (file.size > MAX_DOCX_BYTES) { statusEl.textContent = "File is too large (max 5 MB)."; return false; }
+  return true;
+}
+
+function validBibClientSide(file, statusEl) {
+  if (!file.name.toLowerCase().endsWith(".bib")) { statusEl.textContent = "Please choose a .bib file."; return false; }
+  if (file.size === 0) { statusEl.textContent = "That file is empty."; return false; }
+  if (file.size > MAX_BIB_BYTES) { statusEl.textContent = "File is too large (max 2 MB)."; return false; }
   return true;
 }
 
@@ -44,7 +65,11 @@ function renderError(resultEl, status, payload) {
   if (payload && payload.error === "timeout") { resultEl.innerHTML = '<div class="tool-error" role="alert">Compilation took too long (over 60s). Your document may have an infinite loop or be too large for the free tool.</div>'; return; }
   if (payload && payload.errors && payload.errors.length) {
     const lines = payload.errors.map((e) => `Line ${e.line}: ${escapeHtml(e.message)}`).join("\n");
-    resultEl.innerHTML = `<div class="tool-error" role="alert">Compilation failed:\n${lines}</div>`;
+    let html = `<div class="tool-error" role="alert">Compilation failed:\n${lines}</div>`;
+    if (payload.log) {
+      html += `<details style="margin-top:0.75rem"><summary style="cursor:pointer;font-size:0.85rem;color:#9ca3af">Full compile log</summary><pre style="font-size:0.72rem;white-space:pre-wrap;overflow-x:auto;max-height:22rem;overflow-y:auto;background:#0a0a0a;padding:0.75rem;border-radius:4px;color:#d4d4d4;margin-top:0.4rem">${escapeHtml(payload.log)}</pre></details>`;
+    }
+    resultEl.innerHTML = html;
     return;
   }
   const detail = payload && payload.detail ? escapeHtml(payload.detail) : "Something went wrong. Please try again.";

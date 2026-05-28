@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Free LaTeX Tools — Compile, Convert, Diff | Purplelink LLC</title>
-    <meta name="description" content="Free online LaTeX tools for academics: compile .tex to PDF, convert LaTeX to a Word manuscript, and generate a latexdiff comparison PDF. Your files are never stored.">
+    <title>Free LaTeX Tools — Compile, Convert, Diff, Validate &amp; More | Purplelink LLC</title>
+    <meta name="description" content="Free online LaTeX tools for academics: compile to PDF, convert to Word, diff versions, validate BibTeX, render equations, build bibliographies from DOIs, and convert Word to LaTeX. Files are never stored.">
     <link rel="canonical" href="https://purplelink.llc/tools/">
-    <meta property="og:title" content="Free LaTeX Tools — Compile, Convert, Diff">
-    <meta property="og:description" content="Compile LaTeX to PDF, convert to Word, and diff two versions — free, in your browser. Zero file retention.">
+    <meta property="og:title" content="Free LaTeX Tools — Compile, Convert, Diff &amp; More">
+    <meta property="og:description" content="Compile LaTeX to PDF, convert to Word, diff versions, validate BibTeX, render equations, and build bibliographies — free, in your browser. Zero file retention.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/">
     <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Free LaTeX Tools — Compile, Convert, Diff">
-    <meta name="twitter:description" content="Compile LaTeX to PDF, convert to Word, and diff two versions — free, in your browser. Zero file retention.">
+    <meta name="twitter:title" content="Free LaTeX Tools — Compile, Convert, Diff &amp; More">
+    <meta name="twitter:description" content="Compile LaTeX to PDF, convert to Word, diff versions, validate BibTeX, render equations, and build bibliographies — free, in your browser. Zero file retention.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
     <script type="application/ld+json">
     {
@@ -32,7 +32,11 @@
           "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "LaTeX to PDF", "url": "https://purplelink.llc/tools/latex-to-pdf/" },
             { "@type": "ListItem", "position": 2, "name": "LaTeX to Word", "url": "https://purplelink.llc/tools/latex-to-word/" },
-            { "@type": "ListItem", "position": 3, "name": "LaTeX Diff", "url": "https://purplelink.llc/tools/latex-diff/" }
+            { "@type": "ListItem", "position": 3, "name": "LaTeX Diff", "url": "https://purplelink.llc/tools/latex-diff/" },
+            { "@type": "ListItem", "position": 4, "name": "BibTeX Validator", "url": "https://purplelink.llc/tools/bib-validator/" },
+            { "@type": "ListItem", "position": 5, "name": "BibTeX Builder", "url": "https://purplelink.llc/tools/bib-builder/" },
+            { "@type": "ListItem", "position": 6, "name": "Equation Renderer", "url": "https://purplelink.llc/tools/equation-renderer/" },
+            { "@type": "ListItem", "position": 7, "name": "Word to LaTeX", "url": "https://purplelink.llc/tools/word-to-latex/" }
           ]
         },
         {
@@ -91,13 +95,12 @@
       </nav>
     </header>
 
-    <a class="back-link" href="/">← Home</a>
-
     <main id="main-content">
+      <a class="back-link" href="/">← Home</a>
       <div class="tools-hero">
         <p class="eyebrow">Free web tools</p>
         <h1>LaTeX tools for academics</h1>
-        <p>Compile, convert, and compare LaTeX documents right in your browser. No account, no install. <strong>Your files are processed in memory and never stored.</strong></p>
+        <p>Compile, convert, compare, and render LaTeX — right in your browser. No account, no install. <strong>Your files are processed in memory and never stored.</strong></p>
       </div>
 
       <h2 class="tools-grid-heading">Choose a tool</h2>
@@ -117,11 +120,31 @@
           <h3>LaTeX Diff</h3>
           <p>Upload two versions and get a tracked-changes comparison PDF.</p>
         </a>
+        <a class="tool-card" href="/tools/bib-validator/">
+          <span class="tool-emoji" aria-hidden="true">📚</span>
+          <h3>BibTeX Validator</h3>
+          <p>Check citations for missing fields, dead DOIs, and AI hallucinations.</p>
+        </a>
+        <a class="tool-card" href="/tools/bib-builder/">
+          <span class="tool-emoji" aria-hidden="true">🔍</span>
+          <h3>BibTeX Builder</h3>
+          <p>Paste DOIs or arXiv IDs and download a ready-to-use .bib file.</p>
+        </a>
+        <a class="tool-card" href="/tools/equation-renderer/">
+          <span class="tool-emoji" aria-hidden="true">∑</span>
+          <h3>Equation Renderer</h3>
+          <p>Paste LaTeX math and download a high-resolution PNG image.</p>
+        </a>
+        <a class="tool-card" href="/tools/word-to-latex/">
+          <span class="tool-emoji" aria-hidden="true">🔄</span>
+          <h3>Word → LaTeX</h3>
+          <p>Upload a .docx and download a .tex starting point via Pandoc.</p>
+        </a>
       </div>
 
       <section class="tool-prose">
         <h2>Free, privacy-respecting LaTeX tools</h2>
-        <p>These are free online LaTeX utilities built for academic authors — compile a manuscript to PDF, convert it to a standard Word document for submission, or generate a tracked-changes comparison between two drafts. There's no account, no install, and no LaTeX setup required: everything runs in your browser against a hosted backend. Most importantly, your files are processed in memory and discarded the moment your download is ready — nothing is written to disk or logged, so unpublished manuscripts stay private.</p>
+        <p>These are free online LaTeX utilities built for academic authors — compile a manuscript to PDF, convert it to Word for submission, generate a tracked-changes diff, validate and build BibTeX bibliographies from DOIs and arXiv IDs, render equations to PNG, and convert Word documents back to LaTeX. There's no account, no install, and no LaTeX setup required: everything runs in your browser against a hosted backend. Your files are processed in memory and discarded the moment your download is ready — nothing is written to disk or logged, so unpublished manuscripts stay private.</p>
       </section>
 
       <section class="tool-faq">

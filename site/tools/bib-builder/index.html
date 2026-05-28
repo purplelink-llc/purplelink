@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>BibTeX Builder — DOI & arXiv to .bib | Purplelink LLC</title>
+    <meta name="description" content="Free online BibTeX builder. Paste DOIs or arXiv IDs and download a ready-to-use .bib file. No sign-up. Files are never stored.">
+    <link rel="canonical" href="https://purplelink.llc/tools/bib-builder/">
+    <meta property="og:title" content="BibTeX Builder — DOI & arXiv to .bib">
+    <meta property="og:description" content="Free online BibTeX builder. Paste DOIs or arXiv IDs and download a ready-to-use .bib file.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/bib-builder/">
+    <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="BibTeX Builder — DOI & arXiv to .bib">
+    <meta name="twitter:description" content="Paste DOIs or arXiv IDs and download a ready-to-use .bib file.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "BibTeX Builder",
+          "url": "https://purplelink.llc/tools/bib-builder/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online BibTeX builder. Paste a list of DOIs or arXiv IDs and download a formatted .bib file — each entry fetched directly from CrossRef or the arXiv API.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Convert DOIs to BibTeX via CrossRef",
+            "Convert arXiv IDs to @misc BibTeX entries via arXiv API",
+            "Download a combined .bib file",
+            "Up to 50 entries per request"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What formats are accepted?",
+              "acceptedAnswer": { "@type": "Answer", "text": "DOIs (starting with 10., or as doi.org URLs) and arXiv IDs (e.g. 2301.12345, or as arxiv.org/abs/ URLs). One per line, up to 50." }
+            },
+            {
+              "@type": "Question",
+              "name": "Where does the BibTeX data come from?",
+              "acceptedAnswer": { "@type": "Answer", "text": "DOI entries are fetched from CrossRef using content negotiation. arXiv entries are fetched from the arXiv API and formatted as @misc entries with eprint, archivePrefix, and primaryClass fields." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "BibTeX Builder", "item": "https://purplelink.llc/tools/bib-builder/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <style>
+      .bb-textarea { width: 100%; min-height: 10rem; font-family: monospace; font-size: 0.85rem; background: #1a1a2e; color: #e2e8f0; border: 1px dashed #ffffff33; border-radius: 8px; padding: 0.75rem 1rem; resize: vertical; box-sizing: border-box; }
+      .bb-textarea:focus { outline: 2px solid #7c3aed; border-color: transparent; }
+      .bb-table-wrap { overflow-x: auto; margin-top: 0.75rem; }
+      .bb-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+      .bb-table th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ffffff18; color: #9ca3af; font-weight: 600; }
+      .bb-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #ffffff0a; vertical-align: top; }
+      .bb-table tr.row-ok   td:first-child { border-left: 3px solid #4ade80; }
+      .bb-table tr.row-err  td:first-child { border-left: 3px solid #f87171; }
+      .bb-ok  { color: #4ade80; }
+      .bb-err { color: #f87171; }
+      .bb-muted { color: #6b7280; font-size: 0.8rem; }
+      .bb-key { font-family: monospace; font-size: 0.8rem; }
+      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>BibTeX Builder</h1>
+        <p>Paste a list of DOIs or arXiv IDs — one per line — and download a formatted <code>.bib</code> file. Entries are fetched directly from CrossRef and the arXiv API. <strong>Up to 50 entries per request.</strong></p>
+      </div>
+
+      <div class="tool-app">
+        <label for="ids" style="font-weight:600;display:block;margin-bottom:0.5rem">DOIs and arXiv IDs</label>
+        <textarea id="ids" class="bb-textarea" placeholder="10.1145/3544548.3581542&#10;2301.12345&#10;https://doi.org/10.1038/s41586-021-03819-2&#10;https://arxiv.org/abs/1706.03762"></textarea>
+        <p class="tool-privacy" style="margin-top:0.35rem">DOIs and arXiv IDs are sent to CrossRef and the arXiv API to look up BibTeX data.</p>
+        <div class="tool-options" style="margin-top:0.75rem">
+          <button class="btn btn-primary" id="run">Build .bib</button>
+        </div>
+        <p class="tool-status" id="status" role="status" aria-live="polite"></p>
+        <div class="tool-result" id="result"></div>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to build a .bib file from DOIs and arXiv IDs</h2>
+        <ol>
+          <li>Paste your DOIs and arXiv IDs into the text area — one per line. You can mix both formats and paste full URLs.</li>
+          <li>Click <strong>Build .bib</strong>. Each ID is looked up in CrossRef (for DOIs) or the arXiv API (for arXiv IDs).</li>
+          <li>Download the combined <code>.bib</code> file and drop it into your LaTeX project.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>This fetches BibTeX entries from CrossRef (for DOIs) and the arXiv API (for arXiv IDs) and combines them into a single <code>.bib</code> file. It's a companion to the <a href="/tools/bib-validator/">BibTeX Validator</a> — build your bibliography here, then validate it there.</p>
+        <details><summary>What formats are accepted?</summary><div class="faq-body">DOIs (starting with 10., or as doi.org URLs), and arXiv IDs (e.g. 2301.12345, arXiv:2301.12345, or full arxiv.org URLs). One per line, up to 50.</div></details>
+        <details><summary>Where does the BibTeX come from?</summary><div class="faq-body">DOI entries use CrossRef content negotiation (the same source as most reference managers). arXiv entries are formatted as @misc with eprint, archivePrefix, primaryClass, and a URL field.</div></details>
+        <details><summary>What if an ID isn't found?</summary><div class="faq-body">The table marks that entry as "not found" and omits it from the downloaded .bib. Check the DOI or arXiv ID for typos.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free LaTeX tools</h2>
+        <ul>
+          <li><a href="/tools/bib-validator/">Validate a .bib file →</a></li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF →</a></li>
+          <li><a href="/tools/">All LaTeX tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+
+      <script src="/tools/tools.js"></script>
+      <script>
+      (function () {
+        var statusEl = document.getElementById("status");
+        var resultEl = document.getElementById("result");
+        var runBtn   = document.getElementById("run");
+        var idsEl    = document.getElementById("ids");
+        var combinedBib = null;
+
+        runBtn.addEventListener("click", function () {
+          var ids = idsEl.value.trim();
+          if (!ids) { statusEl.textContent = "Paste at least one DOI or arXiv ID."; return; }
+          statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>Fetching entries…';
+          resultEl.innerHTML = "";
+          runBtn.disabled = true;
+          combinedBib = null;
+
+          var fd = new FormData();
+          fd.append("ids", ids);
+
+          fetch(API_BASE + "/bib-from-ids", { method: "POST", body: fd })
+            .then(function (resp) {
+              if (!resp.ok) return resp.json().then(function (p) { throw p; });
+              return resp.json();
+            })
+            .then(function (data) {
+              var ok = data.entries.filter(function (e) { return e.status === "ok"; }).length;
+              statusEl.textContent = "Done — " + ok + " of " + data.entries.length + (data.entries.length === 1 ? " entry" : " entries") + " found.";
+              runBtn.disabled = false;
+              combinedBib = data.combined_bib;
+              renderBibResults(data.entries);
+            })
+            .catch(function (err) {
+              statusEl.textContent = "";
+              runBtn.disabled = false;
+              var msg = (err && err.detail) ? escapeHtml(err.detail) : "Something went wrong. Please try again.";
+              resultEl.innerHTML = '<div class="tool-error" role="alert">' + msg + "</div>";
+            });
+        });
+
+        function renderBibResults(entries) {
+          var ok = entries.filter(function (e) { return e.status === "ok"; }).length;
+          var html = '';
+
+          html += '<div class="bb-table-wrap"><table class="bb-table">';
+          html += '<caption class="sr-only">BibTeX fetch results</caption>' +
+          '<thead><tr><th scope="col">ID</th><th scope="col">Type</th><th scope="col">Result</th></tr></thead><tbody>';
+          entries.forEach(function (e) {
+            var rowCls = e.status === "ok" ? "row-ok" : "row-err";
+            html += '<tr class="' + rowCls + '">';
+            html += '<td><span class="bb-key">' + escapeHtml(e.id || "") + "</span></td>";
+            html += '<td>' + escapeHtml(e.type || "") + "</td>";
+            if (e.status === "ok") {
+              html += '<td><span class="bb-ok"><span aria-hidden="true">✓</span><span class="sr-only">Found</span></span></td>';
+            } else if (e.status === "not_found") {
+              html += '<td><span class="bb-err"><span aria-hidden="true">✗</span><span class="sr-only">Not found</span></span></td>';
+            } else {
+              html += '<td><span class="bb-err"><span aria-hidden="true">✗</span><span class="sr-only">Error</span></span></td>';
+            }
+            html += "</tr>";
+          });
+          html += "</tbody></table></div>";
+
+          if (combinedBib) {
+            html += '<div style="margin-top:1rem"><button class="btn btn-secondary" id="dl-bib">Download .bib (' + ok + ' ' + (ok === 1 ? "entry" : "entries") + ')</button></div>';
+          }
+          resultEl.innerHTML = html;
+
+          if (ok === 0) {
+            resultEl.insertAdjacentHTML('beforeend', '<p class="bb-muted" style="margin-top:0.75rem">No entries could be fetched — check your DOIs and arXiv IDs for typos.</p>');
+          }
+
+          if (combinedBib) {
+            document.getElementById("dl-bib").addEventListener("click", function () {
+              var blob = new Blob([combinedBib], { type: "text/plain" });
+              var url = URL.createObjectURL(blob);
+              var a = document.createElement("a");
+              a.href = url; a.download = "references.bib"; a.click();
+              URL.revokeObjectURL(url);
+            });
+          }
+        }
+      })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>

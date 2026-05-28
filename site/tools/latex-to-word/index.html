@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Convert LaTeX to Word Online — Free | Purplelink LLC</title>
-    <meta name="description" content="Free online LaTeX to Word converter. Upload a .tex file and download a standard double-spaced manuscript .docx. Files are never stored.">
+    <meta name="description" content="Free online LaTeX to Word converter. Upload a .tex file or project .zip (with .bib) and download a standard double-spaced manuscript .docx. Files are never stored.">
     <link rel="canonical" href="https://purplelink.llc/tools/latex-to-word/">
     <meta property="og:title" content="Convert LaTeX to Word Online — Free">
-    <meta property="og:description" content="Free online LaTeX to Word converter. Upload a .tex file and download a standard double-spaced manuscript .docx. Files are never stored.">
+    <meta property="og:description" content="Free online LaTeX to Word converter. Upload a .tex file or project .zip (with .bib) and download a standard double-spaced manuscript .docx. Files are never stored.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/latex-to-word/">
     <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Convert LaTeX to Word Online — Free">
-    <meta name="twitter:description" content="Free online LaTeX to Word converter. Upload a .tex file and download a standard double-spaced manuscript .docx. Files are never stored.">
+    <meta name="twitter:description" content="Free online LaTeX to Word converter. Upload a .tex file or project .zip (with .bib) and download a standard double-spaced manuscript .docx. Files are never stored.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
     <script type="application/ld+json">
     {
@@ -27,10 +27,11 @@
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free online LaTeX to Word converter. Upload a .tex paper and download a standard double-spaced manuscript .docx — Times New Roman 12pt, numbered headings, and formatted figures and tables. Files are never stored.",
+          "description": "A free online LaTeX to Word converter. Upload a .tex paper or a project .zip (with .bib for editable citations) and download a standard double-spaced manuscript .docx — Times New Roman 12pt, numbered headings, and formatted figures and tables. Files are never stored.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
-            "Convert .tex to a standard double-spaced .docx manuscript",
+            "Convert .tex or project .zip to a standard double-spaced .docx manuscript",
+            "Multi-file project support: include .bib for processed citations",
             "Times New Roman 12pt body, 1-inch margins, numbered headings",
             "Optional anonymize mode for double-blind submission",
             "Zero file retention — nothing is stored"
@@ -47,8 +48,8 @@
             },
             {
               "@type": "Question",
-              "name": "Will my citations become editable Word references?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Not yet. Native, editable Word citations need your .bib file, which this single-file tool doesn't accept. For now the reference list is rendered as static text. Multi-file project support is planned." }
+              "name": "Will my citations become processed references in Word?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, when you upload a project .zip that includes your .bib file. The tool runs pandoc --citeproc to resolve \\cite{} commands into a formatted reference list. Upload a single .tex without a .bib and citations are left as static text." }
             },
             {
               "@type": "Question",
@@ -104,28 +105,34 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>Convert LaTeX to Word</h1>
-        <p>Upload a <code>.tex</code> paper and download a standard double-spaced manuscript <code>.docx</code> — Times New Roman 12pt, numbered headings, formatted figures and tables. <strong>Your file is never stored.</strong></p>
+        <p>Upload a <code>.tex</code> paper or a project <code>.zip</code> (with <code>.bib</code> for processed citations) and download a standard double-spaced manuscript <code>.docx</code> — Times New Roman 12pt, numbered headings, formatted figures and tables. <strong>Your files are never stored.</strong></p>
       </div>
 
       <div class="tool-app">
-        <div class="dropzone" id="dropzone" aria-label="Upload a .tex file">
-          <input type="file" id="file" accept=".tex">
-          <p>Drag a <code>.tex</code> file here, or click to choose. Max 5 MB.</p>
+        <div class="dropzone" id="dropzone" aria-label="Upload a .tex file or project .zip">
+          <input type="file" id="file" accept=".tex,.zip">
+          <p>Drag a <code>.tex</code> file or project <code>.zip</code> here, or click to choose. Max 5 MB (.tex) / 10 MB (.zip).</p>
           <p id="filename" class="tool-privacy"></p>
         </div>
         <div class="tool-options">
+          <label for="style">Style:</label>
+          <select id="style">
+            <option value="manuscript">Manuscript — double-spaced, 12pt, submission-ready</option>
+            <option value="preprint">Preprint — single-spaced, 11pt, tighter margins</option>
+          </select>
           <label><input type="checkbox" id="anonymize"> Anonymize (remove author block)</label>
           <button class="btn btn-primary" id="run" disabled>Convert to Word</button>
         </div>
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
-        <p class="tool-privacy">Single self-contained .tex only. Complex custom macros may not convert perfectly. Files are never written to disk.</p>
+        <p class="tool-privacy">Accepts a single <code>.tex</code> or a project <code>.zip</code> with main.tex at the root. Complex custom macros may not convert perfectly. Files are never written to disk.</p>
       </div>
 
       <section class="tool-howto">
         <h2>How to convert LaTeX to Word online</h2>
         <ol>
-          <li>Drag your <code>.tex</code> paper onto the upload area, or click to choose it (up to 5 MB).</li>
+          <li><strong>Single file:</strong> drag your <code>.tex</code> paper onto the upload area, or click to choose it (up to 5 MB).</li>
+          <li><strong>Multi-file project:</strong> zip your project with <code>main.tex</code> at the root — include your <code>.bib</code> file to get processed citations in the output Word document. Upload the <code>.zip</code> (up to 10 MB).</li>
           <li>Optionally tick <strong>Anonymize</strong> to strip the author block for double-blind submission.</li>
           <li>Click <strong>Convert to Word</strong> and download the formatted <code>.docx</code> manuscript.</li>
         </ol>
@@ -133,9 +140,9 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This converts your LaTeX to a Word document using pandoc, then reformats it to a standard double-spaced manuscript: Times New Roman 12pt body, 1-inch margins, multilevel-numbered headings, and "Figure N." / "Table N." captions.</p>
-        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your file is converted in an ephemeral container and discarded immediately.</div></details>
-        <details><summary>Will my citations become editable Word references?</summary><div class="faq-body">Not yet. Native, editable Word citations need your .bib file, which this single-file tool doesn't accept. For now the reference list is rendered as static text. Multi-file project support is planned.</div></details>
+        <p>This converts your LaTeX to a Word document using pandoc, then reformats it to a standard double-spaced manuscript: Times New Roman 12pt body, 1-inch margins, multilevel-numbered headings, and "Figure N." / "Table N." captions. Upload a single <code>.tex</code> or a full project <code>.zip</code>. Choose <strong>Manuscript</strong> for a standard submission-ready document or <strong>Preprint</strong> for a compact single-spaced layout (11pt, 0.75-inch margins).</p>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your files are converted in an ephemeral container and discarded immediately.</div></details>
+        <details><summary>Will my citations become processed references?</summary><div class="faq-body">Yes, when you include your .bib file in the project .zip. The tool runs pandoc with --citeproc so \cite{} commands are resolved into a formatted reference list in the Word document. Upload a single .tex without a .bib and citations are left as static text.</div></details>
         <details><summary>What does "anonymize" do?</summary><div class="faq-body">It removes the author block for double-blind submission. Leave it unchecked to keep your author line.</div></details>
         <details><summary>Why doesn't my custom formatting carry over?</summary><div class="faq-body">Pandoc handles standard LaTeX well, but heavily customized macros and packages may degrade. The tool targets a clean, standard manuscript layout.</div></details>
       </section>
@@ -164,12 +171,16 @@
             if (!validClientSide(f, statusEl)) { chosen = null; runBtn.disabled = true; nameEl.textContent = ""; return; }
             chosen = f; nameEl.textContent = f.name; statusEl.textContent = ""; runBtn.disabled = false;
           });
-          runBtn.addEventListener("click", function () {
+          runBtn.addEventListener("click", async function () {
             if (!chosen) return;
+            runBtn.disabled = true;
             const fd = new FormData();
             fd.append("file", chosen);
             fd.append("anonymize", document.getElementById("anonymize").checked ? "true" : "false");
-            postForDownload("/convert", fd, statusEl, resultEl, "manuscript.docx", DOCX_MIME);
+            fd.append("style", document.getElementById("style").value);
+            const filename = document.getElementById("style").value === "preprint" ? "preprint.docx" : "manuscript.docx";
+            await postForDownload("/convert", fd, statusEl, resultEl, filename, DOCX_MIME);
+            runBtn.disabled = false;
           });
         })();
       </script>

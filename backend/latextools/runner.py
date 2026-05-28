@@ -24,12 +24,17 @@ class CompileResult:
 
 
 def run_compile(
-    workdir: Path, tex_source: str, engine: str, timeout: int
+    workdir: Path, tex_source: str | None, engine: str, timeout: int
 ) -> CompileResult:
-    """Write *tex_source* to workdir/main.tex and compile it with latexmk."""
+    """Compile workdir/main.tex with latexmk.
+
+    If *tex_source* is given it is written to main.tex first; pass None when
+    the file already exists in *workdir* (e.g. extracted from a project ZIP).
+    """
     cmd = core.build_latexmk_command(engine, "main")  # validates engine; raises on bad
-    tex_path = Path(workdir) / "main.tex"
-    tex_path.write_text(tex_source, encoding="utf-8")
+    if tex_source is not None:
+        tex_path = Path(workdir) / "main.tex"
+        tex_path.write_text(tex_source, encoding="utf-8")
 
     proc = subprocess.Popen(
         cmd, cwd=workdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -53,20 +58,26 @@ def run_compile(
 
 def run_diff(
     workdir: Path,
-    old_source: str,
-    new_source: str,
+    old_source: str | None,
+    new_source: str | None,
     engine: str,
     timeout: int,
     add_legend: bool,
 ) -> CompileResult:
     """Run latexdiff(old,new) -> main.tex, then compile it.
 
+    Pass None for *old_source* / *new_source* when the corresponding
+    old.tex / new.tex already exist in *workdir* (e.g. extracted from project
+    ZIPs by the caller).
+
     The *timeout* budget is split: latexdiff (a fast Perl pass) gets a small
     slice, the compile gets the remainder, so the total stays within one
     *timeout* window (avoids exceeding the Modal wall-clock limit).
     """
-    (Path(workdir) / "old.tex").write_text(old_source, encoding="utf-8")
-    (Path(workdir) / "new.tex").write_text(new_source, encoding="utf-8")
+    if old_source is not None:
+        (Path(workdir) / "old.tex").write_text(old_source, encoding="utf-8")
+    if new_source is not None:
+        (Path(workdir) / "new.tex").write_text(new_source, encoding="utf-8")
     diff_cmd = core.build_latexdiff_command("old.tex", "new.tex")
     diff_timeout = max(10, timeout // 4)
 
@@ -102,13 +113,15 @@ class ConvertResult:
 
 
 def convert_to_manuscript(
-    workdir: Path, tex_source: str, anonymize: bool
+    workdir: Path, tex_source: str | None, anonymize: bool,
+    style: str = "manuscript",
 ) -> ConvertResult:
     """pandoc(.tex) -> base.docx, then apply the manuscript post-processor.
 
-    Single-file MVP: no .bib, so native Word citations are skipped (the
-    post-processor guards that internally). tex_path is passed so keyword
-    injection and cross-references work.
+    If *tex_source* is given it is written to main.tex first; pass None when
+    the file already exists in *workdir* (e.g. extracted from a project ZIP).
+    When a .bib file is present in *workdir*, pandoc --bibliography --citeproc
+    is used so citations become editable Word references.
     """
     from latextools import docx_format
 
@@ -116,11 +129,18 @@ def convert_to_manuscript(
     tex_path = work / "main.tex"
     base_docx = work / "base.docx"
     out_docx = work / "manuscript.docx"
-    tex_path.write_text(tex_source, encoding="utf-8")
+
+    if tex_source is not None:
+        tex_path.write_text(tex_source, encoding="utf-8")
+
+    cmd = ["pandoc", str(tex_path), "-o", str(base_docx)]
+    bib_files = sorted(work.glob("*.bib"))
+    if bib_files:
+        cmd += ["--bibliography", str(bib_files[0]), "--citeproc"]
 
     try:
         proc = subprocess.run(
-            ["pandoc", str(tex_path), "-o", str(base_docx)],
+            cmd,
             cwd=workdir, capture_output=True, text=True, timeout=60,
         )
     except subprocess.TimeoutExpired:
@@ -130,7 +150,8 @@ def convert_to_manuscript(
 
     try:
         docx_format.format_docx(
-            str(base_docx), str(out_docx), tex_path=str(tex_path), anonymize=anonymize
+            str(base_docx), str(out_docx), tex_path=str(tex_path),
+            anonymize=anonymize, style=style,
         )
     except Exception as exc:
         return ConvertResult(False, None, f"Post-processing failed: {exc}"[:500])

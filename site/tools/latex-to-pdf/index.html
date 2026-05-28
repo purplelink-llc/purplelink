@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Compile LaTeX to PDF Online — Free | Purplelink LLC</title>
-    <meta name="description" content="Free online LaTeX compiler. Upload a .tex file and download a PDF, compiled with pdfLaTeX or XeLaTeX. Files are never stored.">
+    <meta name="description" content="Free online LaTeX compiler. Upload a .tex file or a project .zip and download a PDF, compiled with pdfLaTeX or XeLaTeX. Files are never stored.">
     <link rel="canonical" href="https://purplelink.llc/tools/latex-to-pdf/">
     <meta property="og:title" content="Compile LaTeX to PDF Online — Free">
-    <meta property="og:description" content="Free online LaTeX compiler. Upload a .tex file and download a PDF, compiled with pdfLaTeX or XeLaTeX. Files are never stored.">
+    <meta property="og:description" content="Free online LaTeX compiler. Upload a .tex file or a project .zip and download a PDF, compiled with pdfLaTeX or XeLaTeX. Files are never stored.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/latex-to-pdf/">
     <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Compile LaTeX to PDF Online — Free">
-    <meta name="twitter:description" content="Free online LaTeX compiler. Upload a .tex file and download a PDF, compiled with pdfLaTeX or XeLaTeX. Files are never stored.">
+    <meta name="twitter:description" content="Free online LaTeX compiler. Upload a .tex file or a project .zip and download a PDF, compiled with pdfLaTeX or XeLaTeX. Files are never stored.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
     <script type="application/ld+json">
     {
@@ -27,10 +27,11 @@
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free online LaTeX compiler. Upload a self-contained .tex file and download a PDF compiled with pdfLaTeX or XeLaTeX. Files are processed in memory and never stored.",
+          "description": "A free online LaTeX compiler. Upload a single .tex file or a full project .zip (with figures, .bib, .sty, etc.) and download a PDF compiled with pdfLaTeX or XeLaTeX. Files are processed in memory and never stored.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
-            "Compile .tex to PDF with pdfLaTeX or XeLaTeX",
+            "Compile .tex or project .zip to PDF with pdfLaTeX or XeLaTeX",
+            "Multi-file project support: figures, .bib, .cls, .sty, and more",
             "Automatic multi-pass build via latexmk",
             "Plain-language compile error messages with line numbers",
             "Zero file retention — nothing is stored"
@@ -47,8 +48,8 @@
             },
             {
               "@type": "Question",
-              "name": "Why did my LaTeX document fail to compile?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The tool accepts a single self-contained .tex file. Documents needing separate .bib, .sty, or image files won't find them yet — multi-file projects are coming. Compilation errors are shown with line numbers." }
+              "name": "Can I upload a multi-file LaTeX project?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Zip your project with main.tex at the root (the same layout Overleaf exports), include any figures, .bib, .cls, or .sty files, and upload the .zip. The tool extracts and compiles it automatically." }
             },
             {
               "@type": "Question",
@@ -99,13 +100,13 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>Compile LaTeX to PDF</h1>
-        <p>Upload a self-contained <code>.tex</code> file and download a compiled PDF. <strong>Your file is processed in memory and never stored.</strong></p>
+        <p>Upload a <code>.tex</code> file or a project <code>.zip</code> (figures, <code>.bib</code>, <code>.sty</code> included) and download a compiled PDF. <strong>Your files are processed in memory and never stored.</strong></p>
       </div>
 
       <div class="tool-app">
-        <div class="dropzone" id="dropzone" aria-label="Upload a .tex file">
-          <input type="file" id="file" accept=".tex">
-          <p>Drag a <code>.tex</code> file here, or click to choose. Max 5 MB.</p>
+        <div class="dropzone" id="dropzone" aria-label="Upload a .tex file or project .zip">
+          <input type="file" id="file" accept=".tex,.zip">
+          <p>Drag a <code>.tex</code> file or project <code>.zip</code> here, or click to choose. Max 5 MB (.tex) / 10 MB (.zip).</p>
           <p id="filename" class="tool-privacy"></p>
         </div>
         <div class="tool-options">
@@ -119,13 +120,14 @@
         </div>
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
-        <p class="tool-privacy">Single self-contained .tex only (no .bib/figures yet). Files are never written to disk.</p>
+        <p class="tool-privacy">Accepts a single <code>.tex</code> or a project <code>.zip</code> with main.tex at the root. Files are never written to disk.</p>
       </div>
 
       <section class="tool-howto">
         <h2>How to compile LaTeX to PDF online</h2>
         <ol>
-          <li>Drag your <code>.tex</code> file onto the upload area, or click to choose it (up to 5 MB).</li>
+          <li><strong>Single file:</strong> drag your <code>.tex</code> onto the upload area, or click to choose it (up to 5 MB).</li>
+          <li><strong>Multi-file project:</strong> zip your project with <code>main.tex</code> at the root — the same layout Overleaf exports — and upload the <code>.zip</code> (up to 10 MB).</li>
           <li>Pick your engine — pdfLaTeX (default) or XeLaTeX.</li>
           <li>Click <strong>Compile to PDF</strong>. The PDF previews in your browser and downloads with one click.</li>
         </ol>
@@ -133,9 +135,9 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This is a free online LaTeX compiler. It runs <code>latexmk</code> with your chosen engine, handling the multi-pass build automatically. It's designed for quick checks of a single self-contained document.</p>
-        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your file is compiled in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs.</div></details>
-        <details><summary>Why did my document fail to compile?</summary><div class="faq-body">The tool accepts a single self-contained .tex file. Documents needing separate .bib, .sty, or image files won't find them yet — multi-file projects are coming. Compilation errors are shown with line numbers.</div></details>
+        <p>This is a free online LaTeX compiler. It runs <code>latexmk</code> with your chosen engine, handling the multi-pass build (including BibTeX/Biber) automatically. Upload a single <code>.tex</code> or a full project <code>.zip</code>.</p>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your files are compiled in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs.</div></details>
+        <details><summary>Can I upload a project with figures and a .bib file?</summary><div class="faq-body">Yes. Zip your project with main.tex at the root (figures, .bib, .cls, .sty, etc. can be in subdirectories) and upload the .zip. The tool extracts everything and compiles with latexmk, including biber/bibtex passes.</div></details>
         <details><summary>Which engines are supported?</summary><div class="faq-body">pdfLaTeX and XeLaTeX. LuaLaTeX is not supported for security reasons.</div></details>
       </section>
 

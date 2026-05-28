@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>LaTeX Diff Online — Compare Two Versions | Purplelink LLC</title>
-    <meta name="description" content="Free online latexdiff tool. Upload an old and new .tex file and download a PDF with additions and deletions marked. Files are never stored.">
+    <meta name="description" content="Free online latexdiff tool. Upload old and new .tex files or project .zips and download a PDF with additions and deletions marked. Files are never stored.">
     <link rel="canonical" href="https://purplelink.llc/tools/latex-diff/">
     <meta property="og:title" content="LaTeX Diff Online — Compare Two Versions">
-    <meta property="og:description" content="Free online latexdiff tool. Upload an old and new .tex file and download a PDF with additions and deletions marked. Files are never stored.">
+    <meta property="og:description" content="Free online latexdiff tool. Upload old and new .tex files or project .zips and download a PDF with additions and deletions marked. Files are never stored.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/latex-diff/">
     <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="LaTeX Diff Online — Compare Two Versions">
-    <meta name="twitter:description" content="Free online latexdiff tool. Upload an old and new .tex file and download a PDF with additions and deletions marked. Files are never stored.">
+    <meta name="twitter:description" content="Free online latexdiff tool. Upload old and new .tex files or project .zips and download a PDF with additions and deletions marked. Files are never stored.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
     <script type="application/ld+json">
     {
@@ -27,10 +27,11 @@
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free online latexdiff tool. Upload an old and a new .tex file and download a PDF with additions and deletions marked. Files are never stored.",
+          "description": "A free online latexdiff tool. Upload old and new .tex files or full project .zips and download a PDF with additions and deletions marked. Files are never stored.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Mark additions and deletions between two LaTeX versions",
+            "Multi-file project support: upload .zip archives with figures, .bib, and styles",
             "Table-safe latexdiff defaults to avoid alignment corruption",
             "Optional color legend in the output PDF",
             "Zero file retention — nothing is stored"
@@ -94,18 +95,18 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>Compare two LaTeX versions</h1>
-        <p>Upload the old and new <code>.tex</code> files to get a PDF with additions and deletions marked (powered by <code>latexdiff</code>). <strong>Your files are never stored.</strong></p>
+        <p>Upload the old and new <code>.tex</code> files (or project <code>.zip</code> archives) to get a PDF with additions and deletions marked (powered by <code>latexdiff</code>). <strong>Your files are never stored.</strong></p>
       </div>
 
       <div class="tool-app">
-        <div class="dropzone" id="dz-old" aria-label="Upload the old .tex version">
-          <input type="file" id="file-old" accept=".tex">
-          <p><strong>Old version</strong> — drag a .tex here or click. Max 5 MB.</p>
+        <div class="dropzone" id="dz-old" aria-label="Upload the old .tex file or project .zip">
+          <input type="file" id="file-old" accept=".tex,.zip">
+          <p><strong>Old version</strong> — drag a <code>.tex</code> or project <code>.zip</code> here or click. Max 5 MB (.tex) / 10 MB (.zip).</p>
           <p id="name-old" class="tool-privacy"></p>
         </div>
-        <div class="dropzone" id="dz-new" aria-label="Upload the new .tex version">
-          <input type="file" id="file-new" accept=".tex">
-          <p><strong>New version</strong> — drag a .tex here or click. Max 5 MB.</p>
+        <div class="dropzone" id="dz-new" aria-label="Upload the new .tex file or project .zip">
+          <input type="file" id="file-new" accept=".tex,.zip">
+          <p><strong>New version</strong> — drag a <code>.tex</code> or project <code>.zip</code> here or click. Max 5 MB (.tex) / 10 MB (.zip).</p>
           <p id="name-new" class="tool-privacy"></p>
         </div>
         <div class="tool-options">
@@ -126,7 +127,7 @@
       <section class="tool-howto">
         <h2>How to compare two LaTeX versions online</h2>
         <ol>
-          <li>Upload your <strong>old</strong> <code>.tex</code> file and your <strong>new</strong> <code>.tex</code> file (up to 5 MB each).</li>
+          <li>Upload your <strong>old</strong> and <strong>new</strong> versions — either a plain <code>.tex</code> file (up to 5 MB) or a project <code>.zip</code> with <code>main.tex</code> at the root (up to 10 MB).</li>
           <li>Choose an engine and, optionally, tick the color legend.</li>
           <li>Click <strong>Generate diff PDF</strong>. Additions appear blue and underlined; deletions appear red and struck through.</li>
         </ol>
@@ -134,8 +135,9 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This runs <code>latexdiff</code> with table-safe defaults, then compiles the result. Added text is blue and underlined; deleted text is red and struck through.</p>
+        <p>This runs <code>latexdiff</code> with table-safe defaults, then compiles the result. Added text is blue and underlined; deleted text is red and struck through. Upload plain <code>.tex</code> files or full project <code>.zip</code> archives.</p>
         <details><summary>Are my files stored?</summary><div class="faq-body">No. Both files are processed in an ephemeral container and discarded immediately.</div></details>
+        <details><summary>Can I diff a project with figures?</summary><div class="faq-body">Yes. Zip each version with main.tex at the root and upload the .zip files. The new version's assets (figures, styles) are used for compilation so the output PDF renders correctly.</div></details>
         <details><summary>Why aren't changes inside my tables marked?</summary><div class="faq-body">Tables are treated as opaque blocks to prevent column-alignment corruption. Edited tables appear in their final form only.</div></details>
       </section>
 

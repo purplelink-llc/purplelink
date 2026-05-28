@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>BibTeX Validator — Detect AI Hallucinations | Purplelink LLC</title>
+    <meta name="description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
+    <link rel="canonical" href="https://purplelink.llc/tools/bib-validator/">
+    <meta property="og:title" content="BibTeX Validator — Detect AI Hallucinations">
+    <meta property="og:description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/bib-validator/">
+    <meta property="og:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="BibTeX Validator — Detect AI Hallucinations">
+    <meta name="twitter:description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/purplelink-logo.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "BibTeX Validator",
+          "url": "https://purplelink.llc/tools/bib-validator/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online BibTeX validator. Upload a .bib file to check syntax and required fields, verify DOIs resolve, and cross-reference titles against CrossRef and Semantic Scholar to catch AI-hallucinated citations.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Syntax and required-field validation per BibTeX entry type",
+            "DOI resolution check (verifies the link is alive)",
+            "CrossRef title verification (catches hallucinated papers)",
+            "Semantic Scholar title verification",
+            "Annotated .bib download with inline warnings",
+            "Zero file retention — nothing is stored"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does this tool check?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It checks four things: (1) BibTeX syntax and required fields per entry type, (2) whether DOIs in your file actually resolve, (3) whether titles match real papers in CrossRef, (4) whether titles match real papers in Semantic Scholar. The last three are opt-in because they send data to external APIs." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can it detect AI-hallucinated citations?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title matches a real paper. Low-confidence matches are flagged as potential hallucinations." }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my files stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to CrossRef and/or Semantic Scholar — that is disclosed clearly before you run the check." }
+            },
+            {
+              "@type": "Question",
+              "name": "What does the annotated .bib download contain?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Your original .bib file with a comment line prepended to each entry showing its validation status: missing fields, DOI result, and database confidence scores. You can paste it straight back into your editor." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "BibTeX Validator", "item": "https://purplelink.llc/tools/bib-validator/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <style>
+      .bib-checks { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem; }
+      .bib-checks label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; cursor: pointer; }
+      .bib-checks input[type=checkbox]:disabled + span { opacity: 0.55; }
+      .bib-privacy-notice { font-size: 0.85rem; color: var(--color-muted, #9ca3af); margin: 0.25rem 0 0; display: none; }
+      .bib-privacy-notice.visible { display: block; }
+
+      .bib-summary { display: flex; gap: 1rem; margin: 1.25rem 0 0.75rem; flex-wrap: wrap; }
+      .bib-badge { padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
+      .bib-badge-ok   { background: #14532d22; color: #4ade80; border: 1px solid #4ade8044; }
+      .bib-badge-warn { background: #78350f22; color: #fbbf24; border: 1px solid #fbbf2444; }
+      .bib-badge-err  { background: #4c1d1d22; color: #f87171; border: 1px solid #f8717144; }
+
+      .bib-table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+      .bib-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+      .bib-table th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ffffff18; color: var(--color-muted, #9ca3af); font-weight: 600; white-space: nowrap; }
+      .bib-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #ffffff0a; vertical-align: top; }
+      .bib-table tr.row-ok   td:first-child { border-left: 3px solid #4ade80; }
+      .bib-table tr.row-warn td:first-child { border-left: 3px solid #fbbf24; }
+      .bib-table tr.row-err  td:first-child { border-left: 3px solid #f87171; }
+      .bib-key { font-family: monospace; font-size: 0.8rem; }
+      .bib-ok   { color: #4ade80; }
+      .bib-warn { color: #fbbf24; }
+      .bib-err  { color: #f87171; }
+      .bib-na   { color: #6b7280; }
+      .bib-conf { font-size: 0.8rem; }
+      .bib-found-title { font-size: 0.75rem; color: #9ca3af; display: block; margin-top: 0.1rem; max-width: 22ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .bib-copy-doi { font-size: 0.7rem; padding: 0.1rem 0.45rem; margin-top: 0.25rem; display: inline-block; background: #1e1e2e; border: 1px solid #ffffff22; border-radius: 3px; color: #a5b4fc; cursor: pointer; line-height: 1.5; }
+      .bib-copy-doi:hover { background: #2a2a3e; }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>BibTeX Validator</h1>
+        <p>Upload a <code>.bib</code> file to check syntax, missing fields, dead DOIs, and verify your citations actually exist — useful for catching AI-hallucinated references. <strong>Files are never stored.</strong></p>
+      </div>
+
+      <div class="tool-app">
+        <div class="dropzone" id="dropzone" aria-label="Upload a .bib file">
+          <input type="file" id="file" accept=".bib">
+          <p>Drag a <code>.bib</code> file here, or click to choose. Max 2 MB.</p>
+          <p id="filename" class="tool-privacy"></p>
+        </div>
+
+        <div class="tool-options">
+          <fieldset style="border:none;padding:0;margin:0">
+            <legend style="font-weight:600;margin-bottom:0.5rem">Checks to run</legend>
+            <div class="bib-checks">
+              <label>
+                <input type="checkbox" checked disabled>
+                <span>Syntax &amp; required fields <em style="font-weight:400;opacity:0.7">(always on)</em></span>
+              </label>
+              <label>
+                <input type="checkbox" id="check-doi">
+                <span>DOI resolution — verify each DOI is a live link</span>
+              </label>
+              <label>
+                <input type="checkbox" id="check-crossref">
+                <span>CrossRef — check titles exist in CrossRef (catches hallucinations)</span>
+              </label>
+              <label>
+                <input type="checkbox" id="check-s2">
+                <span>Semantic Scholar — check titles in Semantic Scholar</span>
+              </label>
+            </div>
+          </fieldset>
+          <p id="privacy-notice" class="bib-privacy-notice" role="note">
+            Enabling DOI or database checks will send entry titles and authors to external services (doi.org, CrossRef, Semantic Scholar).
+          </p>
+          <button class="btn btn-primary" id="run" disabled>Validate .bib</button>
+        </div>
+
+        <p class="tool-status" id="status" aria-live="polite"></p>
+        <div class="tool-result" id="result"></div>
+        <p class="tool-privacy">Files are never written to disk or logged.</p>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to validate a BibTeX file online</h2>
+        <ol>
+          <li>Drag your <code>.bib</code> file onto the upload area, or click to choose it (up to 2 MB).</li>
+          <li>Syntax and required-field checks run automatically. Optionally enable DOI resolution and/or database checks to catch hallucinated citations.</li>
+          <li>Click <strong>Validate .bib</strong>. A color-coded table shows the status of each entry. Download the annotated <code>.bib</code> with inline warning comments for your editor.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>This tool validates BibTeX files in four layers: syntax + completeness (always), DOI resolution (opt-in), and title existence checks against CrossRef and Semantic Scholar (opt-in). It's particularly useful for catching AI-hallucinated citations that have plausible-looking metadata but don't correspond to real papers.</p>
+        <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title matches a real paper. Low-confidence matches (below 50%) are flagged as likely hallucinations.</div></details>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services — this is disclosed before you run the check.</div></details>
+        <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry showing its validation status: missing required fields, DOI result, and database confidence scores. Paste it straight back into your editor.</div></details>
+        <details><summary>What BibTeX entry types are supported?</summary><div class="faq-body">article, book, inproceedings, proceedings, phdthesis, mastersthesis, techreport, misc, incollection, inbook, booklet, manual, conference, unpublished, and thesis.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free LaTeX tools</h2>
+        <ul>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF →</a></li>
+          <li><a href="/tools/latex-to-word/">Convert LaTeX to Word →</a></li>
+          <li><a href="/tools/latex-diff/">Compare two LaTeX versions (latexdiff) →</a></li>
+          <li><a href="/tools/">All LaTeX tools →</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+
+      <script src="/tools/tools.js"></script>
+      <script>
+      (function () {
+        var chosen = null;
+        var annotatedBib = null;
+        var statusEl = document.getElementById("status");
+        var resultEl  = document.getElementById("result");
+        var runBtn    = document.getElementById("run");
+        var nameEl    = document.getElementById("filename");
+        var privNote  = document.getElementById("privacy-notice");
+        var chkDoi    = document.getElementById("check-doi");
+        var chkCr     = document.getElementById("check-crossref");
+        var chkS2     = document.getElementById("check-s2");
+
+        function updatePrivacyNotice() {
+          if (chkDoi.checked || chkCr.checked || chkS2.checked) {
+            privNote.classList.add("visible");
+          } else {
+            privNote.classList.remove("visible");
+          }
+        }
+        [chkDoi, chkCr, chkS2].forEach(function (cb) {
+          cb.addEventListener("change", updatePrivacyNotice);
+        });
+
+        wireDropzone("dropzone", "file", function (f) {
+          if (!validBibClientSide(f, statusEl)) {
+            chosen = null; runBtn.disabled = true; nameEl.textContent = ""; return;
+          }
+          chosen = f; nameEl.textContent = f.name; statusEl.textContent = ""; runBtn.disabled = false;
+        });
+
+        runBtn.addEventListener("click", function () {
+          if (!chosen) return;
+          var fd = new FormData();
+          fd.append("file", chosen);
+          fd.append("check_doi",      chkDoi.checked ? "true" : "false");
+          fd.append("check_crossref", chkCr.checked  ? "true" : "false");
+          fd.append("check_s2",       chkS2.checked   ? "true" : "false");
+
+          statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>Validating… this may take a moment.';
+          resultEl.innerHTML = "";
+          annotatedBib = null;
+
+          fetch(API_BASE + "/validate-bib", { method: "POST", body: fd })
+            .then(function (resp) {
+              if (!resp.ok) {
+                return resp.json().then(function (p) { throw p; });
+              }
+              return resp.json();
+            })
+            .then(function (data) {
+              statusEl.textContent = "Done.";
+              annotatedBib = data.annotated_bib;
+              renderResults(data);
+            })
+            .catch(function (err) {
+              statusEl.textContent = "";
+              var msg = (err && err.detail) ? escapeHtml(err.detail) : "Something went wrong. Please try again.";
+              resultEl.innerHTML = '<div class="tool-error" role="alert">' + msg + "</div>";
+            });
+        });
+
+        function renderResults(data) {
+          var s = data.summary;
+          var html = '<div class="bib-summary">';
+          html += badge(s.ok,      "ok",   s.ok      + " OK");
+          html += badge(s.warning, "warn", s.warning + " warning" + (s.warning !== 1 ? "s" : ""));
+          html += badge(s.error,   "err",  s.error   + " error"   + (s.error   !== 1 ? "s" : ""));
+          html += " <span style='font-size:0.85rem;color:#9ca3af'>" + s.total + " entries total</span></div>";
+
+          var doiCol   = data.entries.some(function (e) { return e.doi_ok !== null; });
+          var crCol    = data.entries.some(function (e) { return e.crossref_confidence !== null; });
+          var s2Col    = data.entries.some(function (e) { return e.s2_confidence !== null; });
+
+          html += '<div class="bib-table-wrap"><table class="bib-table">';
+          html += '<thead><tr><th scope="col">Entry key</th><th scope="col">Type</th><th scope="col">Fields</th>';
+          if (doiCol) html += '<th scope="col">DOI</th>';
+          if (crCol)  html += '<th scope="col">CrossRef</th>';
+          if (s2Col)  html += '<th scope="col">Semantic Scholar</th>';
+          html += '<th scope="col">Overall</th></tr></thead><tbody>';
+
+          data.entries.forEach(function (e) {
+            var rowClass = "row-" + (e.overall === "ok" ? "ok" : e.overall === "warning" ? "warn" : "err");
+            html += '<tr class="' + rowClass + '">';
+            html += "<td><span class='bib-key'>" + escapeHtml(e.key) + "</span></td>";
+            html += "<td>" + escapeHtml(e.type) + "</td>";
+            html += "<td>" + fieldsCell(e) + "</td>";
+            if (doiCol) html += "<td>" + doiCell(e) + "</td>";
+            if (crCol)  html += "<td>" + confCell(e.crossref_confidence, e.crossref_title, e.crossref_doi) + "</td>";
+            if (s2Col)  html += "<td>" + confCell(e.s2_confidence,       e.s2_title,       null)           + "</td>";
+            html += "<td>" + overallCell(e.overall) + "</td>";
+            html += "</tr>";
+          });
+
+          html += "</tbody></table></div>";
+          html += '<div style="margin-top:1rem"><button class="btn btn-secondary" id="dl-bib">Download annotated .bib</button></div>';
+
+          resultEl.innerHTML = html;
+
+          // Wire copy-DOI buttons
+          resultEl.querySelectorAll(".bib-copy-doi").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              var doi = btn.dataset.doi;
+              navigator.clipboard.writeText(doi).then(function () {
+                var orig = btn.textContent;
+                btn.textContent = "Copied!";
+                clearTimeout(btn._copyTimer);
+                btn._copyTimer = setTimeout(function () { btn.textContent = orig; }, 2000);
+              }).catch(function () {
+                var orig = btn.textContent;
+                btn.textContent = "Copy failed";
+                clearTimeout(btn._copyTimer);
+                btn._copyTimer = setTimeout(function () { btn.textContent = orig; }, 2000);
+              });
+            });
+          });
+
+          document.getElementById("dl-bib").addEventListener("click", function () {
+            var blob = new Blob([annotatedBib], { type: "text/plain" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url; a.download = "validated.bib"; a.click();
+            URL.revokeObjectURL(url);
+          });
+        }
+
+        function badge(n, cls, label) {
+          return '<span class="bib-badge bib-badge-' + cls + '">' + escapeHtml(String(label)) + "</span>";
+        }
+
+        function fieldsCell(e) {
+          if (e.parse_error) return '<span class="bib-err">parse error</span>';
+          if (!e.missing_fields.length) return '<span class="bib-ok">✓</span>';
+          return '<span class="bib-err">✗ missing: ' + escapeHtml(e.missing_fields.join(", ")) + "</span>";
+        }
+
+        function doiCell(e) {
+          if (!e.doi)       return '<span class="bib-na">—</span>';
+          if (e.doi_ok === null) return '<span class="bib-na">?</span>';
+          if (e.doi_ok)    return '<span class="bib-ok">✓</span>';
+          return '<span class="bib-err">✗ ' + (e.doi_status || "dead") + "</span>";
+        }
+
+        function confCell(conf, foundTitle, doi) {
+          if (conf === null || conf === undefined) return '<span class="bib-na">—</span>';
+          var pct = Math.round(conf * 100);
+          var cls = conf >= 0.85 ? "bib-ok" : conf >= 0.50 ? "bib-warn" : "bib-err";
+          var label = conf >= 0.85 ? "✓ " : conf >= 0.50 ? "⚠ " : "✗ ";
+          var out = '<span class="bib-conf ' + cls + '">' + label + pct + "%</span>";
+          if (foundTitle && conf < 0.85) {
+            out += '<span class="bib-found-title" title="' + escapeHtml(foundTitle) + '">' + escapeHtml(foundTitle) + "</span>";
+          }
+          if (doi && conf !== null && conf !== undefined && conf < 0.85) {
+            out += '<button type="button" class="bib-copy-doi" data-doi="' + escapeHtml(doi) + '" title="Copy corrected DOI to clipboard">Copy DOI</button>';
+          }
+          return out;
+        }
+
+        function overallCell(o) {
+          if (o === "ok")      return '<span class="bib-ok">OK</span>';
+          if (o === "warning") return '<span class="bib-warn">Warning</span>';
+          return '<span class="bib-err">Error</span>';
+        }
+      })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>

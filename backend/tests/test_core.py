@@ -116,6 +116,99 @@ def test_validate_upload_rejects_backslash_and_nullbyte():
         core.validate_upload("evil\x00.tex", 10)
 
 
+# ---------------------------------------------------------------------------
+# ZIP upload validation
+# ---------------------------------------------------------------------------
+
+def test_validate_zip_upload_accepts_zip():
+    core.validate_zip_upload("project.zip", 1024)  # should not raise
+
+
+def test_validate_zip_upload_rejects_wrong_extension():
+    with pytest.raises(core.ValidationError, match="must be a .zip"):
+        core.validate_zip_upload("project.tex", 1024)
+
+
+def test_validate_zip_upload_rejects_too_large():
+    with pytest.raises(core.ValidationError, match="too large"):
+        core.validate_zip_upload("project.zip", core.MAX_ZIP_UPLOAD_BYTES + 1)
+
+
+def test_validate_zip_upload_rejects_empty():
+    with pytest.raises(core.ValidationError, match="empty"):
+        core.validate_zip_upload("project.zip", 0)
+
+
+def test_validate_zip_upload_rejects_path_traversal_name():
+    with pytest.raises(core.ValidationError, match="invalid filename"):
+        core.validate_zip_upload("../../evil.zip", 10)
+
+
+# ---------------------------------------------------------------------------
+# ZIP extraction helpers
+# ---------------------------------------------------------------------------
+
+import io
+import zipfile
+from pathlib import Path
+
+
+def _make_zip(files: dict) -> bytes:
+    """Build an in-memory ZIP from {member_name: bytes_content}."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        for name, content in files.items():
+            zf.writestr(name, content)
+    return buf.getvalue()
+
+
+def test_extract_project_zip_basic(tmp_path):
+    z = _make_zip({"main.tex": b"\\documentclass{article}", "fig/f.png": b"\x89PNG"})
+    core.extract_project_zip(z, tmp_path)
+    assert (tmp_path / "main.tex").read_bytes() == b"\\documentclass{article}"
+    assert (tmp_path / "fig" / "f.png").read_bytes() == b"\x89PNG"
+
+
+def test_extract_project_zip_requires_main_tex(tmp_path):
+    z = _make_zip({"other.tex": b"hello"})
+    with pytest.raises(core.ValidationError, match="main.tex"):
+        core.extract_project_zip(z, tmp_path)
+
+
+def test_extract_project_zip_rejects_path_traversal(tmp_path):
+    z = _make_zip({"../evil.tex": b"bad"})
+    with pytest.raises(core.ValidationError, match="path traversal|escapes workdir"):
+        core.extract_project_zip(z, tmp_path)
+
+
+def test_extract_project_zip_rejects_bad_extension(tmp_path):
+    z = _make_zip({"main.tex": b"ok", "script.sh": b"rm -rf /"})
+    with pytest.raises(core.ValidationError, match="unsupported file type"):
+        core.extract_project_zip(z, tmp_path)
+
+
+def test_extract_project_zip_rejects_too_many_files(tmp_path):
+    files = {"main.tex": b"ok"}
+    for i in range(core.MAX_ZIP_FILES):
+        files[f"fig/f{i}.png"] = b"\x89PNG"
+    z = _make_zip(files)
+    with pytest.raises(core.ValidationError, match="too many files"):
+        core.extract_project_zip(z, tmp_path)
+
+
+def test_extract_project_zip_rejects_zip_bomb(tmp_path, monkeypatch):
+    # Lower the limit so a small real file triggers the guard.
+    monkeypatch.setattr(core, "MAX_UNCOMPRESSED_BYTES", 5)
+    z = _make_zip({"main.tex": b"x" * 10})
+    with pytest.raises(core.ValidationError, match="uncompressed"):
+        core.extract_project_zip(z, tmp_path)
+
+
+def test_extract_project_zip_rejects_bad_zip(tmp_path):
+    with pytest.raises(core.ValidationError, match="valid ZIP"):
+        core.extract_project_zip(b"not a zip at all", tmp_path)
+
+
 def test_rate_limit_check_allows_under_limit():
     store = {}
     for i in range(core.DAILY_LIMIT):
