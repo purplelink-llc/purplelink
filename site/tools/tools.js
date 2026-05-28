@@ -56,7 +56,7 @@ function showPdf(resultEl, blob, downloadName) {
   resultEl.dataset.blobUrl = url;
   resultEl.innerHTML =
     `<a class="btn btn-primary" href="${url}" download="${escapeHtml(downloadName)}">Download ${escapeHtml(downloadName)}</a>` +
-    `<div style="margin-top:14px"><iframe title="PDF preview" src="${url}"></iframe></div>`;
+    `<div class="tool-preview"><iframe title="PDF preview" src="${url}"></iframe></div>`;
 }
 
 // POST a FormData to API_BASE+path; on PDF success call showPdf, else renderError.
