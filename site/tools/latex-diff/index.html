@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>LaTeX Diff Online — Compare Two Versions | Purplelink LLC</title>
+    <meta name="description" content="Free online latexdiff tool. Upload an old and new .tex file and download a PDF with additions and deletions marked. Files are never stored.">
+    <link rel="canonical" href="https://purplelink.llc/tools/latex-diff/">
+    <meta property="og:title" content="LaTeX Diff Online — Compare Two Versions">
+    <meta property="og:description" content="Free online latexdiff tool. Upload an old and new .tex file and download a PDF with additions and deletions marked. Files are never stored.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/latex-diff/">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Compare two LaTeX versions</h1>
+        <p>Upload the old and new <code>.tex</code> files to get a PDF with additions and deletions marked (powered by <code>latexdiff</code>). <strong>Your files are never stored.</strong></p>
+      </div>
+
+      <div class="tool-app">
+        <div class="dropzone" id="dz-old">
+          <input type="file" id="file-old" accept=".tex">
+          <p><strong>Old version</strong> — drag a .tex here or click. Max 5 MB.</p>
+          <p id="name-old" class="tool-privacy"></p>
+        </div>
+        <div class="dropzone" id="dz-new" style="margin-top:16px">
+          <input type="file" id="file-new" accept=".tex">
+          <p><strong>New version</strong> — drag a .tex here or click. Max 5 MB.</p>
+          <p id="name-new" class="tool-privacy"></p>
+        </div>
+        <div class="tool-options">
+          <label>Engine:
+            <select id="engine">
+              <option value="pdflatex">pdfLaTeX</option>
+              <option value="xelatex">XeLaTeX</option>
+            </select>
+          </label>
+          <label><input type="checkbox" id="legend"> Add a legend explaining the colors</label>
+          <button class="btn btn-primary" id="run" disabled>Generate diff PDF</button>
+        </div>
+        <p class="tool-status" id="status"></p>
+        <div class="tool-result" id="result"></div>
+        <p class="tool-privacy">Changes inside tables are shown in final form only (not marked). Files are never written to disk.</p>
+      </div>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>This runs <code>latexdiff</code> with table-safe defaults, then compiles the result. Added text is blue and underlined; deleted text is red and struck through.</p>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Both files are processed in an ephemeral container and discarded immediately.</div></details>
+        <details><summary>Why aren't changes inside my tables marked?</summary><div class="faq-body">Tables are treated as opaque blocks to prevent column-alignment corruption. Edited tables appear in their final form only.</div></details>
+      </section>
+
+      <script src="/tools/tools.js"></script>
+      <script>
+        (function () {
+          let oldF = null, newF = null;
+          const statusEl = document.getElementById("status");
+          const resultEl = document.getElementById("result");
+          const runBtn = document.getElementById("run");
+          function refresh() { runBtn.disabled = !(oldF && newF); }
+          wireDropzone("dz-old", "file-old", function (f) {
+            if (!validClientSide(f, statusEl)) { oldF = null; refresh(); return; }
+            oldF = f; document.getElementById("name-old").textContent = f.name; statusEl.textContent = ""; refresh();
+          });
+          wireDropzone("dz-new", "file-new", function (f) {
+            if (!validClientSide(f, statusEl)) { newF = null; refresh(); return; }
+            newF = f; document.getElementById("name-new").textContent = f.name; statusEl.textContent = ""; refresh();
+          });
+          runBtn.addEventListener("click", function () {
+            if (!(oldF && newF)) return;
+            const fd = new FormData();
+            fd.append("old", oldF);
+            fd.append("new", newF);
+            fd.append("engine", document.getElementById("engine").value);
+            fd.append("legend", document.getElementById("legend").checked ? "true" : "false");
+            postForPdf("/diff", fd, statusEl, resultEl, "diff.pdf");
+          });
+        })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>
