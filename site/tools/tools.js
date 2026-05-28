@@ -62,6 +62,8 @@ function showPdf(resultEl, blob, downloadName) {
 // POST a FormData; on a file response, offer a download link (no preview).
 async function postForDownload(path, formData, statusEl, resultEl, downloadName, mime) {
   statusEl.textContent = "Working… this can take up to a minute.";
+  const prevUrl = resultEl.dataset.blobUrl;
+  if (prevUrl) { URL.revokeObjectURL(prevUrl); delete resultEl.dataset.blobUrl; }
   resultEl.innerHTML = "";
   try {
     const resp = await fetch(API_BASE + path, { method: "POST", body: formData });
@@ -69,9 +71,10 @@ async function postForDownload(path, formData, statusEl, resultEl, downloadName,
     if (resp.ok && ctype.includes(mime)) {
       const blob = await resp.blob();
       const url = URL.createObjectURL(blob);
+      resultEl.dataset.blobUrl = url;
       statusEl.textContent = "Done.";
       resultEl.innerHTML =
-        `<a class="btn btn-primary" href="${url}" download="${downloadName}">Download ${downloadName}</a>`;
+        `<a class="btn btn-primary" href="${url}" download="${escapeHtml(downloadName)}">Download ${escapeHtml(downloadName)}</a>`;
     } else {
       let payload = null;
       try { payload = await resp.json(); } catch (_) {}

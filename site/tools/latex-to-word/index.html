@@ -79,7 +79,7 @@
           const nameEl = document.getElementById("filename");
           const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
           wireDropzone("dropzone", "file", function (f) {
-            if (!validClientSide(f, statusEl)) { chosen = null; runBtn.disabled = true; return; }
+            if (!validClientSide(f, statusEl)) { chosen = null; runBtn.disabled = true; nameEl.textContent = ""; return; }
             chosen = f; nameEl.textContent = f.name; statusEl.textContent = ""; runBtn.disabled = false;
           });
           runBtn.addEventListener("click", function () {
