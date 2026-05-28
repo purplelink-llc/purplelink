@@ -26,8 +26,10 @@ def test_convert_anonymize_removes_author(tmp_path):
     from docx import Document
 
     tex = (FIXTURES / "manuscript.tex").read_text()
-    anon = runner.convert_to_manuscript(tmp_path, tex, anonymize=True)
-    named = runner.convert_to_manuscript(tmp_path, tex, anonymize=False)
+    (tmp_path / "anon").mkdir(exist_ok=True)
+    (tmp_path / "named").mkdir(exist_ok=True)
+    anon = runner.convert_to_manuscript(tmp_path / "anon", tex, anonymize=True)
+    named = runner.convert_to_manuscript(tmp_path / "named", tex, anonymize=False)
     anon_text = "\n".join(p.text for p in Document(io.BytesIO(anon.docx_bytes)).paragraphs)
     named_text = "\n".join(p.text for p in Document(io.BytesIO(named.docx_bytes)).paragraphs)
     assert "Jane Researcher" in named_text

@@ -128,7 +128,10 @@ def convert_to_manuscript(
     if proc.returncode != 0 or not base_docx.exists():
         return ConvertResult(False, None, proc.stderr.strip()[:500] or "pandoc failed")
 
-    docx_format.format_docx(
-        str(base_docx), str(out_docx), tex_path=str(tex_path), anonymize=anonymize
-    )
+    try:
+        docx_format.format_docx(
+            str(base_docx), str(out_docx), tex_path=str(tex_path), anonymize=anonymize
+        )
+    except Exception as exc:
+        return ConvertResult(False, None, f"Post-processing failed: {exc}"[:500])
     return ConvertResult(True, out_docx.read_bytes())
