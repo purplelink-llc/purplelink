@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the ModernTex CTA block is present and correct on all 19 pages."""
+"""Verify the ModernTex CTA block is present and correct on every funnel page."""
 import sys
 
 from cta_pages import MARKER, targets
@@ -37,14 +37,16 @@ def check(path, source):
 
 def main():
     all_errors = []
+    page_count = 0
     for path, source in targets():
+        page_count += 1
         all_errors.extend(check(path, source))
     if all_errors:
         for e in all_errors:
             print("FAIL", e)
         print(f"\n{len(all_errors)} problems across pages")
         sys.exit(1)
-    print("OK: all 19 pages have a correct, unique ModernTex CTA block")
+    print(f"OK: all {page_count} pages have a correct, unique ModernTex CTA block")
 
 
 if __name__ == "__main__":
