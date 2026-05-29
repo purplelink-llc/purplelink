@@ -127,6 +127,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - LaTeX Table Generator: https://purplelink.llc/tools/latex-table-generator/ — build LaTeX tabular code from a visual grid, runs in your browser.
 - Word & Character Counter: https://purplelink.llc/tools/word-counter/ — count words, characters, sentences, and reading time, runs in your browser.
 - PDF Tools: https://purplelink.llc/tools/pdf-tools/ — merge, split, and compress PDF files, files never stored.
+- File to Markdown: https://purplelink.llc/tools/file-to-markdown/ - convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to Markdown, files never stored.
 - Tools hub: https://purplelink.llc/tools/
 
 ## Guides (free how-to articles)

@@ -7,9 +7,9 @@ verification. To add a page to the funnel, edit only this file.
 
 TOOL_SLUGS = [
     "bib-builder", "bib-validator", "citation-generator", "equation-renderer",
-    "latex-diff", "latex-table-generator", "latex-to-pdf", "latex-to-word",
-    "markdown-to-pdf", "pdf-tools", "reference-converter", "word-counter",
-    "word-to-latex",
+    "file-to-markdown", "latex-diff", "latex-table-generator", "latex-to-pdf",
+    "latex-to-word", "markdown-to-pdf", "pdf-tools", "reference-converter",
+    "word-counter", "word-to-latex",
 ]
 GUIDE_SLUGS = [
     "citation-styles-explained", "doi-to-bibtex", "fix-bibtex-errors",
