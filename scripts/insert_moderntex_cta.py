@@ -8,18 +8,8 @@ surrounding <main> content.
 """
 import sys
 
-TOOL_SLUGS = [
-    "bib-builder", "bib-validator", "citation-generator", "equation-renderer",
-    "latex-diff", "latex-table-generator", "latex-to-pdf", "latex-to-word",
-    "markdown-to-pdf", "pdf-tools", "reference-converter", "word-counter",
-    "word-to-latex",
-]
-GUIDE_SLUGS = [
-    "citation-styles-explained", "doi-to-bibtex", "fix-bibtex-errors",
-    "latex-to-word", "latex-track-changes", "latex-word-count",
-]
+from cta_pages import MARKER, targets
 
-MARKER = "<!-- moderntex-cta -->"
 ANCHOR = '      <nav class="tool-related"'
 
 
@@ -37,7 +27,7 @@ def block(source):
         f'          <input type="hidden" name="source" value="{source}">\n'
         '          <p hidden><input name="bot-field"></p>\n'
         '          <input type="email" name="email" placeholder="your@email.com" '
-        'required autocomplete="email">\n'
+        'required autocomplete="email" aria-label="Email address">\n'
         '          <button type="submit">Notify me at launch</button>\n'
         "        </form>\n"
         '        <p class="waitlist-fine-print">We\'ll only use your email to '
@@ -45,13 +35,6 @@ def block(source):
         '<a href="/moderntex/">Learn more about ModernTex →</a></p>\n'
         "      </section>\n\n"
     )
-
-
-def targets():
-    for s in TOOL_SLUGS:
-        yield f"site/tools/{s}/index.html", f"tool:{s}"
-    for s in GUIDE_SLUGS:
-        yield f"site/guides/{s}/index.html", f"guide:{s}"
 
 
 def main():

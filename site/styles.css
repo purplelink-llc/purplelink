@@ -997,6 +997,7 @@ dd {
 .waitlist-form input[type="email"] {
   flex: 1;
   min-width: 220px;
+  min-height: 44px;
   padding: 12px 18px;
   border: 1.5px solid var(--line);
   border-radius: 100px;
@@ -1004,7 +1005,6 @@ dd {
   font-family: var(--font-body);
   font-size: 0.9rem;
   color: var(--ink);
-  outline: none;
   transition: border-color 0.15s;
 }
 
@@ -1579,7 +1579,7 @@ dd {
 
 .footer-links a {
   font-size: 0.78rem;
-  color: oklch(99% 0.003 310 / 0.45);
+  color: oklch(99% 0.003 310 / 0.62);
   text-decoration: none;
   transition: color 0.15s;
 }
@@ -1920,5 +1920,18 @@ dd {
     background: oklch(28% 0.06 25);
     color: oklch(85% 0.10 25);
   }
+
+  /* Inverted brand panels: their backgrounds use var(--ink)/var(--purple),
+     which invert to light in dark mode and leave white text unreadable.
+     Pin them to fixed dark surfaces so white text keeps high contrast. */
+  .section-contact,
+  .footer { background: oklch(14% 0.02 310); }
+  .section-oss { background: oklch(32% 0.10 310); }
+
+  /* Primary buttons / skip link sit on var(--purple), which is light (72% L)
+     in dark mode — hardcoded white label text fails (2.58:1). Use dark text. */
+  .btn-primary,
+  .waitlist-form button,
+  .skip-link { color: oklch(18% 0.06 310); }
 }
 

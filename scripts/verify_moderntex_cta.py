@@ -2,25 +2,7 @@
 """Verify the ModernTex CTA block is present and correct on all 19 pages."""
 import sys
 
-TOOL_SLUGS = [
-    "bib-builder", "bib-validator", "citation-generator", "equation-renderer",
-    "latex-diff", "latex-table-generator", "latex-to-pdf", "latex-to-word",
-    "markdown-to-pdf", "pdf-tools", "reference-converter", "word-counter",
-    "word-to-latex",
-]
-GUIDE_SLUGS = [
-    "citation-styles-explained", "doi-to-bibtex", "fix-bibtex-errors",
-    "latex-to-word", "latex-track-changes", "latex-word-count",
-]
-
-MARKER = "<!-- moderntex-cta -->"
-
-
-def targets():
-    for s in TOOL_SLUGS:
-        yield f"site/tools/{s}/index.html", f"tool:{s}"
-    for s in GUIDE_SLUGS:
-        yield f"site/guides/{s}/index.html", f"guide:{s}"
+from cta_pages import MARKER, targets
 
 
 def check(path, source):
