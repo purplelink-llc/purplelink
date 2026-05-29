@@ -763,4 +763,61 @@ def web():
             },
         )
 
+    # ------------------------------------------------------------------
+    # /file-to-markdown — convert PDF/Office/HTML/CSV/EPUB to Markdown
+    # ------------------------------------------------------------------
+    @api.post("/file-to-markdown")
+    async def file_to_markdown_endpoint(
+        request: Request,
+        file: UploadFile = File(...),
+    ):
+        if not _enforce_rate_limit(request, "file-to-markdown"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if _too_large(request, core.MAX_DOC2MD_UPLOAD_BYTES):
+            return JSONResponse(
+                {"error": "invalid", "detail": "File is too large (max 20 MB)."},
+                status_code=400,
+            )
+        filename = file.filename or ""
+        data = await file.read()
+        try:
+            core.validate_doc2md_upload(filename, len(data))
+        except core.ValidationError as e:
+            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+        if not core.doc2md_signature_ok(filename, data):
+            return JSONResponse(
+                {"error": "invalid", "detail": "File contents do not match its type."},
+                status_code=400,
+            )
+
+        import os.path
+
+        from latextools import doc2md
+
+        def _do():
+            with tempfile.TemporaryDirectory(dir="/tmp") as d:
+                suffix = os.path.splitext(filename)[1].lower()
+                in_path = Path(d) / f"input{suffix}"
+                in_path.write_bytes(data)
+                return doc2md.convert_to_markdown(str(in_path))
+
+        try:
+            md = await run_in_threadpool(_do)
+        except Exception:
+            # markitdown raises a variety of parser errors; the container's
+            # request timeout bounds any pathological/slow input.
+            return JSONResponse(
+                {"error": "convert", "detail": "Couldn't convert this file."},
+                status_code=422,
+            )
+        if not md or not md.strip():
+            return JSONResponse(
+                {"error": "convert", "detail": "No text could be extracted from this file."},
+                status_code=422,
+            )
+        return JSONResponse(
+            {"markdown": md, "filename": filename},
+            headers={"X-Content-Type-Options": "nosniff"},
+        )
+
     return api
