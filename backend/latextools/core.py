@@ -114,6 +114,44 @@ def validate_pdf_upload(filename: str, size_bytes: int) -> None:
         raise ValidationError("File must be a .pdf file.")
 
 
+MAX_DOC2MD_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB cap for files converted to Markdown
+
+DOC2MD_ALLOWED_EXTENSIONS = (
+    ".pdf", ".docx", ".pptx", ".xlsx", ".html", ".htm", ".csv", ".epub",
+)
+
+
+def validate_doc2md_upload(filename: str, size_bytes: int) -> None:
+    """Validate a file-to-markdown upload's name and size. Raises ValidationError."""
+    if size_bytes <= 0:
+        raise ValidationError("File is empty.")
+    if size_bytes > MAX_DOC2MD_UPLOAD_BYTES:
+        raise ValidationError(
+            f"File is too large (max {MAX_DOC2MD_UPLOAD_BYTES // (1024 * 1024)} MB)."
+        )
+    if any(c in filename for c in ("/", "\\", "\x00")) or filename in ("", ".", ".."):
+        raise ValidationError("invalid filename")
+    if not filename.lower().endswith(DOC2MD_ALLOWED_EXTENSIONS):
+        raise ValidationError(
+            "Unsupported file type. Allowed: PDF, DOCX, PPTX, XLSX, HTML, CSV, EPUB."
+        )
+
+
+def doc2md_signature_ok(filename: str, data: bytes) -> bool:
+    """Lightweight magic-byte check for binary doc2md formats.
+
+    PDF starts with %PDF-; the ZIP-based Office/EPUB formats start with the
+    local-file-header signature PK\\x03\\x04. Text formats (.html/.htm/.csv)
+    have no reliable signature and pass.
+    """
+    name = filename.lower()
+    if name.endswith(".pdf"):
+        return data[:5] == b"%PDF-"
+    if name.endswith((".docx", ".pptx", ".xlsx", ".epub")):
+        return data[:4] == b"PK\x03\x04"
+    return True
+
+
 def validate_zip_upload(filename: str, size_bytes: int) -> None:
     """Validate a project ZIP upload's name and compressed size. Raises ValidationError."""
     if size_bytes <= 0:
