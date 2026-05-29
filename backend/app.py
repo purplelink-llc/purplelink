@@ -1,8 +1,11 @@
 """Modal app for the purplelink LaTeX tools backend."""
 import datetime
+import logging
 import os
 
 import modal
+
+logger = logging.getLogger(__name__)
 
 from latextools import core
 
@@ -790,13 +793,11 @@ def web():
                 status_code=400,
             )
 
-        import os.path
-
         from latextools import doc2md
 
         def _do():
             with tempfile.TemporaryDirectory(dir="/tmp") as d:
-                suffix = os.path.splitext(filename)[1].lower()
+                suffix = Path(filename).suffix.lower()
                 in_path = Path(d) / f"input{suffix}"
                 in_path.write_bytes(data)
                 return doc2md.convert_to_markdown(str(in_path))
@@ -806,6 +807,7 @@ def web():
         except Exception:
             # markitdown raises a variety of parser errors; the container's
             # request timeout bounds any pathological/slow input.
+            logger.exception("file-to-markdown conversion failed")
             return JSONResponse(
                 {"error": "convert", "detail": "Couldn't convert this file."},
                 status_code=422,
