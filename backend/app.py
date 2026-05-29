@@ -29,6 +29,7 @@ image = (
         "lxml==5.3.0",
         "bibtexparser>=1.3,<2",
         "httpx==0.27.2",
+        "markitdown[pdf,docx,pptx,xlsx]==0.1.6",
     )
     # Append paranoid hardening to the texmf config via the Debian texmf.d
     # mechanism, then verify it took effect at build time (fail the build if not).
