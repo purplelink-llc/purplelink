@@ -5,6 +5,7 @@ const MAX_TEX_BYTES = 5 * 1024 * 1024;   // 5 MB for a single .tex file
 const MAX_ZIP_BYTES = 10 * 1024 * 1024;  // 10 MB for a project .zip
 const MAX_BIB_BYTES = 2 * 1024 * 1024;   // 2 MB for a .bib file
 const MAX_DOCX_BYTES = 5 * 1024 * 1024;  // 5 MB for a .docx file
+const MAX_DOC2MD_BYTES = 20 * 1024 * 1024; // 20 MB for file-to-markdown uploads
 
 function escapeHtml(s) {
   const d = document.createElement("div");

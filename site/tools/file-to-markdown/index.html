@@ -158,7 +158,6 @@
       <script src="/tools/tools.js"></script>
       <script>
         (function () {
-          const fileInput = document.getElementById("file");
           const runBtn = document.getElementById("run");
           const statusEl = document.getElementById("status");
           const resultWrap = document.getElementById("result-wrap");
@@ -166,14 +165,20 @@
           const filenameEl = document.getElementById("filename");
           let chosen = null;
 
-          fileInput.addEventListener("change", function () {
-            chosen = fileInput.files[0] || null;
-            filenameEl.textContent = chosen ? chosen.name : "";
-            runBtn.disabled = !chosen;
+          wireDropzone("drop", "file", function (f) {
+            chosen = f;
+            filenameEl.textContent = f.name;
+            runBtn.disabled = false;
+            statusEl.textContent = "";
           });
 
           runBtn.addEventListener("click", async function () {
             if (!chosen) return;
+            if (chosen.size > MAX_DOC2MD_BYTES) {
+              statusEl.textContent = "File is too large (max 20 MB).";
+              runBtn.disabled = false;
+              return;
+            }
             runBtn.disabled = true;
             statusEl.textContent = "Converting...";
             resultWrap.hidden = true;
