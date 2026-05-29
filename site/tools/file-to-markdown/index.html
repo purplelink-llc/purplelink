@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>File to Markdown | Purplelink LLC</title>
+    <meta name="description" content="Upload a PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB file and get clean Markdown. Converted on our server with Microsoft markitdown. Nothing is stored.">
+    <link rel="canonical" href="https://purplelink.llc/tools/file-to-markdown/">
+    <meta property="og:title" content="File to Markdown - Free Online Converter">
+    <meta property="og:description" content="Upload a PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB file and get clean Markdown. Nothing is stored.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/file-to-markdown/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/file-to-markdown.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="File to Markdown - Free Online Converter">
+    <meta name="twitter:description" content="Upload a PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB file and get clean Markdown. Nothing is stored.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/file-to-markdown.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "File to Markdown Converter",
+          "url": "https://purplelink.llc/tools/file-to-markdown/",
+          "applicationCategory": "UtilityApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free online tool to convert PDF, Word, PowerPoint, Excel, HTML, CSV, and EPUB files to clean Markdown using Microsoft markitdown. Files are processed on the server and never stored.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Convert PDF to Markdown",
+            "Convert Word (.docx) to Markdown",
+            "Convert PowerPoint (.pptx) to Markdown",
+            "Convert Excel (.xlsx) to Markdown",
+            "Convert HTML, CSV, and EPUB to Markdown",
+            "Zero file retention - nothing is stored"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "File to Markdown", "item": "https://purplelink.llc/tools/file-to-markdown/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .md-textarea { width:100%; min-height:18rem; resize:vertical; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.9rem; line-height:1.5; padding:0.9rem 1rem; border-radius:10px; border:1px solid #ffffff1f; background:#0a0a0a; color:#e5e5e5; }
+      .md-textarea:focus { outline:2px solid #7c3aed; outline-offset:1px; }
+    </style>
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>File to Markdown</h1>
+        <p>Upload a PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB file and get clean Markdown. Converted on our server with Microsoft markitdown and never stored.</p>
+      </div>
+
+      <div class="tool-app">
+        <div class="dropzone" id="drop" aria-label="Choose a file to convert">
+          <input type="file" id="file"
+                 accept=".pdf,.docx,.pptx,.xlsx,.html,.htm,.csv,.epub">
+          <p>Drop a file here or click to choose</p>
+          <p id="filename" class="tool-privacy"></p>
+        </div>
+        <div class="tool-options">
+          <button class="btn btn-primary" id="run" disabled>Convert to Markdown</button>
+        </div>
+        <p class="tool-status" id="status" aria-live="polite"></p>
+
+        <div id="result-wrap" hidden>
+          <textarea id="result" class="md-textarea" readonly aria-label="Markdown result"></textarea>
+          <div class="tool-options">
+            <button class="btn btn-ghost" id="copy">Copy Markdown</button>
+            <button class="btn btn-ghost" id="download">Download .md</button>
+          </div>
+        </div>
+        <p class="tool-privacy">Files are converted on our server and deleted right after. Nothing is stored.</p>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to convert a file to Markdown</h2>
+        <ol>
+          <li>Click the dropzone (or drag a file onto it) to choose your file.</li>
+          <li>Click <strong>Convert to Markdown</strong> and wait a moment.</li>
+          <li>Copy the result or download it as a <code>.md</code> file.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>This uses <a href="https://github.com/microsoft/markitdown" target="_blank" rel="noopener">Microsoft markitdown</a> to extract text and structure from your file and render it as clean Markdown. Useful for ingesting documents into LLM pipelines, static sites, or plain-text workflows.</p>
+        <details><summary>Which file types are supported?</summary><div class="faq-body">PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx), HTML, CSV, and EPUB. Plain text and image-only PDFs may produce limited output.</div></details>
+        <details><summary>Is my file stored anywhere?</summary><div class="faq-body">No. Your file is uploaded over an encrypted connection, converted in an ephemeral container, and discarded immediately. Nothing is written to durable storage.</div></details>
+        <details><summary>Why does the output look incomplete for some PDFs?</summary><div class="faq-body">Image-only (scanned) PDFs contain no extractable text, so output will be minimal. PDFs with embedded text convert much better.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>Related tools</h2>
+        <ul>
+          <li><a href="/tools/markdown-to-pdf/">Markdown to PDF / Word</a></li>
+          <li><a href="/tools/word-to-latex/">Word to LaTeX</a></li>
+          <li><a href="/tools/pdf-tools/">PDF tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">&#9749; Buy me a coffee</a> to help keep these tools free and online.</p>
+
+      <script src="/tools/tools.js"></script>
+      <script>
+        (function () {
+          const fileInput = document.getElementById("file");
+          const runBtn = document.getElementById("run");
+          const statusEl = document.getElementById("status");
+          const resultWrap = document.getElementById("result-wrap");
+          const resultEl = document.getElementById("result");
+          const filenameEl = document.getElementById("filename");
+          let chosen = null;
+
+          fileInput.addEventListener("change", function () {
+            chosen = fileInput.files[0] || null;
+            filenameEl.textContent = chosen ? chosen.name : "";
+            runBtn.disabled = !chosen;
+          });
+
+          runBtn.addEventListener("click", async function () {
+            if (!chosen) return;
+            runBtn.disabled = true;
+            statusEl.textContent = "Converting...";
+            resultWrap.hidden = true;
+            const fd = new FormData();
+            fd.append("file", chosen);
+            try {
+              const resp = await fetch(API_BASE + "/file-to-markdown", { method: "POST", body: fd });
+              if (!resp.ok) {
+                let detail = "Conversion failed.";
+                try { detail = (await resp.json()).detail || detail; } catch (e) {}
+                if (resp.status === 429) detail = "Too many conversions right now. Try again in a bit.";
+                statusEl.textContent = detail;
+                runBtn.disabled = false;
+                return;
+              }
+              const json = await resp.json();
+              resultEl.value = json.markdown || "";
+              resultWrap.hidden = false;
+              statusEl.textContent = "Done.";
+            } catch (e) {
+              statusEl.textContent = "Couldn't reach the converter. Check your connection and try again.";
+            } finally {
+              runBtn.disabled = false;
+            }
+          });
+
+          document.getElementById("copy").addEventListener("click", async function () {
+            try {
+              await navigator.clipboard.writeText(resultEl.value);
+              statusEl.textContent = "Copied to clipboard.";
+            } catch (e) {
+              resultEl.select();
+              statusEl.textContent = "Press Cmd/Ctrl+C to copy.";
+            }
+          });
+
+          document.getElementById("download").addEventListener("click", function () {
+            const base = (chosen && chosen.name ? chosen.name.replace(/\.[^.]+$/, "") : "converted");
+            const blob = new Blob([resultEl.value], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = base + ".md";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+          });
+        })();
+      </script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>
