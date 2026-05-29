@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Free PDF Tools — Merge, Split &amp; Compress | Purplelink LLC</title>
+    <title>Free PDF Tools - Merge, Split &amp; Compress | Purplelink LLC</title>
     <meta name="description" content="Free online PDF tools. Merge several PDFs into one, split out a page range, or compress a PDF to a smaller size. Merge and split run in your browser; nothing is stored.">
     <link rel="canonical" href="https://purplelink.llc/tools/pdf-tools/">
-    <meta property="og:title" content="Free PDF Tools — Merge, Split & Compress">
+    <meta property="og:title" content="Free PDF Tools - Merge, Split & Compress">
     <meta property="og:description" content="Merge several PDFs into one, split out a page range, or compress a PDF. Merge and split run in your browser; nothing is stored.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/pdf-tools/">
@@ -15,7 +15,7 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Free PDF Tools — Merge, Split & Compress">
+    <meta name="twitter:title" content="Free PDF Tools - Merge, Split & Compress">
     <meta name="twitter:description" content="Merge several PDFs into one, split out a page range, or compress a PDF. Merge and split run in your browser; nothing is stored.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/pdf-tools.png">
     <script type="application/ld+json">
@@ -24,7 +24,7 @@
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "PDF Tools — Merge, Split & Compress",
+          "name": "PDF Tools - Merge, Split & Compress",
           "url": "https://purplelink.llc/tools/pdf-tools/",
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
@@ -35,7 +35,7 @@
             "Merge multiple PDFs into one document, in your browser",
             "Split out a page or page range, in your browser",
             "Compress a PDF to a smaller file size",
-            "Zero file retention — nothing is stored"
+            "Zero file retention - nothing is stored"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -45,7 +45,7 @@
             {
               "@type": "Question",
               "name": "Do my PDFs get uploaded?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Merge and split run entirely in your browser — those files never leave your device. Compression sends the file to a hosted backend that processes it in memory and discards it immediately; nothing is stored or logged." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Merge and split run entirely in your browser - those files never leave your device. Compression sends the file to a hosted backend that processes it in memory and discards it immediately; nothing is stored or logged." }
             },
             {
               "@type": "Question",
@@ -191,8 +191,8 @@
 
       <section class="tool-faq">
         <h2>About these tools</h2>
-        <p>Merge and split run with <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> directly in your browser — your files never leave your device. Compression uses Ghostscript on a hosted backend that processes the file in memory and discards it immediately.</p>
-        <details><summary>Do my PDFs get uploaded?</summary><div class="faq-body">For merge and split, no — everything happens locally. For compress, the file is sent over an encrypted connection, processed in an ephemeral container, and discarded right away.</div></details>
+        <p>Merge and split run with <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> directly in your browser - your files never leave your device. Compression uses Ghostscript on a hosted backend that processes the file in memory and discards it immediately.</p>
+        <details><summary>Do my PDFs get uploaded?</summary><div class="faq-body">For merge and split, no - everything happens locally. For compress, the file is sent over an encrypted connection, processed in an ephemeral container, and discarded right away.</div></details>
         <details><summary>How much smaller will compression make my PDF?</summary><div class="faq-body">It depends on the file. Image-heavy PDFs shrink a lot at lower quality levels; text-only PDFs may barely change. Try "Balanced" first.</div></details>
         <details><summary>Is there a size limit?</summary><div class="faq-body">Compression accepts PDFs up to 20 MB. Merge and split are limited only by your device's memory.</div></details>
       </section>
@@ -201,7 +201,7 @@
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>We're building ModernTex — a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
+        <p>We're building ModernTex - a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
         <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="waitlist-moderntex">
           <input type="hidden" name="source" value="tool:pdf-tools">
@@ -372,7 +372,7 @@
                 clearResult(); resultEl.dataset.blobUrl = url;
                 const saved = orig && comp ? Math.max(0, Math.round((1 - comp / orig) * 100)) : 0;
                 const kb = function (n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.round(n / 1024) + " KB"; };
-                statusEl.textContent = comp >= orig ? "Done — this PDF was already well optimized." : "Done — " + saved + "% smaller (" + kb(orig) + " → " + kb(comp) + ").";
+                statusEl.textContent = comp >= orig ? "Done - this PDF was already well optimized." : "Done - " + saved + "% smaller (" + kb(orig) + " → " + kb(comp) + ").";
                 resultEl.innerHTML = '<a class="btn btn-primary" href="' + url + '" download="compressed.pdf">Download compressed.pdf</a>';
               } else {
                 let payload = null; try { payload = await resp.json(); } catch (_) {}

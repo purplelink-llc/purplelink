@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>BibTeX Validator — Detect AI Hallucinations | Purplelink LLC</title>
+    <title>BibTeX Validator - Detect AI Hallucinations | Purplelink LLC</title>
     <meta name="description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
     <link rel="canonical" href="https://purplelink.llc/tools/bib-validator/">
-    <meta property="og:title" content="BibTeX Validator — Detect AI Hallucinations">
+    <meta property="og:title" content="BibTeX Validator - Detect AI Hallucinations">
     <meta property="og:description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/bib-validator/">
@@ -15,7 +15,7 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="BibTeX Validator — Detect AI Hallucinations">
+    <meta name="twitter:title" content="BibTeX Validator - Detect AI Hallucinations">
     <meta name="twitter:description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
     <script type="application/ld+json">
@@ -37,7 +37,7 @@
             "CrossRef title verification (catches hallucinated papers)",
             "Semantic Scholar title verification",
             "Annotated .bib download with inline warnings",
-            "Zero file retention — nothing is stored"
+            "Zero file retention - nothing is stored"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -57,7 +57,7 @@
             {
               "@type": "Question",
               "name": "Are my files stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to CrossRef and/or Semantic Scholar — that is disclosed clearly before you run the check." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to CrossRef and/or Semantic Scholar - that is disclosed clearly before you run the check." }
             },
             {
               "@type": "Question",
@@ -141,7 +141,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>BibTeX Validator</h1>
-        <p>Upload a <code>.bib</code> file to check syntax, missing fields, dead DOIs, and verify your citations actually exist — useful for catching AI-hallucinated references. <strong>Files are never stored.</strong></p>
+        <p>Upload a <code>.bib</code> file to check syntax, missing fields, dead DOIs, and verify your citations actually exist - useful for catching AI-hallucinated references. <strong>Files are never stored.</strong></p>
       </div>
 
       <div class="tool-app">
@@ -160,15 +160,15 @@
             </label>
             <label>
               <input type="checkbox" id="check-doi">
-              <span>DOI resolution — verify each DOI is a live link</span>
+              <span>DOI resolution - verify each DOI is a live link</span>
             </label>
             <label>
               <input type="checkbox" id="check-crossref">
-              <span>CrossRef — check titles exist in CrossRef (catches hallucinations)</span>
+              <span>CrossRef - check titles exist in CrossRef (catches hallucinations)</span>
             </label>
             <label>
               <input type="checkbox" id="check-s2">
-              <span>Semantic Scholar — check titles in Semantic Scholar</span>
+              <span>Semantic Scholar - check titles in Semantic Scholar</span>
             </label>
           </div>
           <p id="privacy-notice" class="bib-privacy-notice" role="note">
@@ -197,7 +197,7 @@
         <h2>About this tool</h2>
         <p>This tool validates BibTeX files in four layers: syntax + completeness (always), DOI resolution (opt-in), and title existence checks against CrossRef and Semantic Scholar (opt-in). It's particularly useful for catching AI-hallucinated citations that have plausible-looking metadata but don't correspond to real papers.</p>
         <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title matches a real paper. Low-confidence matches (below 50%) are flagged as likely hallucinations.</div></details>
-        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services — this is disclosed before you run the check.</div></details>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services - this is disclosed before you run the check.</div></details>
         <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry showing its validation status: missing required fields, DOI result, and database confidence scores. Paste it straight back into your editor.</div></details>
         <details><summary>What BibTeX entry types are supported?</summary><div class="faq-body">article, book, inproceedings, proceedings, phdthesis, mastersthesis, techreport, misc, incollection, inbook, booklet, manual, conference, unpublished, and thesis.</div></details>
       </section>
@@ -206,7 +206,7 @@
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>We're building ModernTex — a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
+        <p>We're building ModernTex - a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
         <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="waitlist-moderntex">
           <input type="hidden" name="source" value="tool:bib-validator">
@@ -368,14 +368,14 @@
         }
 
         function doiCell(e) {
-          if (!e.doi)       return '<span class="bib-na">—</span>';
+          if (!e.doi)       return '<span class="bib-na">-</span>';
           if (e.doi_ok === null) return '<span class="bib-na">?</span>';
           if (e.doi_ok)    return '<span class="bib-ok">✓</span>';
           return '<span class="bib-err">✗ ' + (e.doi_status || "dead") + "</span>";
         }
 
         function confCell(conf, foundTitle, doi) {
-          if (conf === null || conf === undefined) return '<span class="bib-na">—</span>';
+          if (conf === null || conf === undefined) return '<span class="bib-na">-</span>';
           var pct = Math.round(conf * 100);
           var cls = conf >= 0.85 ? "bib-ok" : conf >= 0.50 ? "bib-warn" : "bib-err";
           var label = conf >= 0.85 ? "✓ " : conf >= 0.50 ? "⚠ " : "✗ ";

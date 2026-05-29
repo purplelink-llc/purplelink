@@ -239,20 +239,6 @@ nav a:hover { color: var(--ink); }
   color: var(--muted);
 }
 
-.status-dot {
-  width: 7px;
-  height: 7px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--purple);
-  animation: pulse 2.8s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1;   transform: scale(1);   }
-  50%       { opacity: 0.4; transform: scale(0.75); }
-}
-
 .hero-title {
   display: flex;
   flex-direction: column;
@@ -822,7 +808,6 @@ dd {
 /* ─── Reduced motion ──────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
-  .status-dot   { animation: none; }
   .orbit-ring   { animation: none; }
   .btn:hover    { transform: none; }
 }

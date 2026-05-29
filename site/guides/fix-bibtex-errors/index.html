@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>How to Fix Common BibTeX Errors | Purplelink LLC</title>
-    <meta name="description" content="The most common BibTeX errors and how to fix them — missing fields, unbalanced braces, duplicate keys, and bad characters — plus a free in-browser .bib validator.">
+    <meta name="description" content="The most common BibTeX errors and how to fix them - missing fields, unbalanced braces, duplicate keys, and bad characters - plus a free in-browser .bib validator.">
     <link rel="canonical" href="https://purplelink.llc/guides/fix-bibtex-errors/">
     <meta property="og:title" content="How to Fix Common BibTeX Errors">
-    <meta property="og:description" content="The most common BibTeX errors and how to fix them — missing fields, unbalanced braces, duplicate keys, and bad characters — plus a free in-browser .bib validator.">
+    <meta property="og:description" content="The most common BibTeX errors and how to fix them - missing fields, unbalanced braces, duplicate keys, and bad characters - plus a free in-browser .bib validator.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/fix-bibtex-errors/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/tools-launch.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="How to Fix Common BibTeX Errors">
-    <meta name="twitter:description" content="The most common BibTeX errors and how to fix them — missing fields, unbalanced braces, duplicate keys, and bad characters — plus a free in-browser .bib validator.">
+    <meta name="twitter:description" content="The most common BibTeX errors and how to fix them - missing fields, unbalanced braces, duplicate keys, and bad characters - plus a free in-browser .bib validator.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
     <script type="application/ld+json">
     {
@@ -25,7 +25,7 @@
         {
           "@type": "Article",
           "headline": "How to fix common BibTeX errors",
-          "description": "The most common BibTeX errors and how to fix them — missing fields, unbalanced braces, duplicate keys, and bad characters — plus a free in-browser .bib validator.",
+          "description": "The most common BibTeX errors and how to fix them - missing fields, unbalanced braces, duplicate keys, and bad characters - plus a free in-browser .bib validator.",
           "author": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
           "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
           "mainEntityOfPage": "https://purplelink.llc/guides/fix-bibtex-errors/",
@@ -39,7 +39,7 @@
         { "@type": "Question", "name": "Why does one BibTeX error break everything?", "acceptedAnswer": { "@type": "Answer", "text": "An unbalanced brace or missing comma can cause the parser to misread every entry that follows. Fix the entry just before the first reported error and re-check." } },
         { "@type": "Question", "name": "What fields does each entry type require?", "acceptedAnswer": { "@type": "Answer", "text": "An @article needs author, title, journal, and year; @inproceedings needs booktitle; @book needs publisher. The validator flags missing required fields per entry type." } },
         { "@type": "Question", "name": "How do I escape special characters in BibTeX?", "acceptedAnswer": { "@type": "Answer", "text": "Escape LaTeX-special characters with a backslash: ampersand, percent, and hash all need a leading backslash. Underscores in titles should be escaped or wrapped in math mode." } },
-        { "@type": "Question", "name": "Is the BibTeX validator free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The validator runs entirely in your browser — your .bib file is never uploaded or stored." } }
+        { "@type": "Question", "name": "Is the BibTeX validator free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The validator runs entirely in your browser - your .bib file is never uploaded or stored." } }
           ]
         },
         {
@@ -97,7 +97,7 @@
         <h2>4. Unescaped special characters</h2>
         <p>Characters like <code>&amp;</code>, <code>%</code>, <code>#</code>, and <code>_</code> are special in LaTeX. In a title or journal name, escape them (<code>\&amp;</code>, <code>\%</code>) or they will break the build.</p>
         <h2>5. Missing commas between fields</h2>
-        <p>Fields are separated by commas. Forgetting one — especially after a closing brace — produces a confusing parse error. Make sure every field line except the last ends in a comma.</p>
+        <p>Fields are separated by commas. Forgetting one - especially after a closing brace - produces a confusing parse error. Make sure every field line except the last ends in a comma.</p>
         <h2>6. Smart quotes and stray Unicode</h2>
         <p>Pasting from a website or PDF can introduce curly quotes or non-ASCII characters that BibTeX chokes on. Replace them with plain ASCII, or use a UTF-8-aware engine like Biber.</p>
         <p>Running your file through the <a href="/tools/bib-validator/">validator</a> catches all six categories before you waste a compile cycle.</p>
@@ -108,14 +108,14 @@
         <details><summary>Why does one BibTeX error break everything?</summary><div class="faq-body">An unbalanced brace or missing comma can cause the parser to misread every entry that follows. Fix the entry just before the first reported error and re-check.</div></details>
         <details><summary>What fields does each entry type require?</summary><div class="faq-body">An @article needs author, title, journal, and year; @inproceedings needs booktitle; @book needs publisher. The <a href="/tools/bib-validator/">validator</a> flags missing required fields per entry type.</div></details>
         <details><summary>How do I escape special characters in BibTeX?</summary><div class="faq-body">Escape LaTeX-special characters with a backslash: \&amp; for ampersand, \% for percent, \# for hash. Underscores in titles should be escaped or wrapped in math mode.</div></details>
-        <details><summary>Is the BibTeX validator free and private?</summary><div class="faq-body">Yes. The validator runs entirely in your browser — your .bib file is never uploaded or stored.</div></details>
+        <details><summary>Is the BibTeX validator free and private?</summary><div class="faq-body">Yes. The validator runs entirely in your browser - your .bib file is never uploaded or stored.</div></details>
       </section>
 
       <!-- moderntex-cta -->
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>We're building ModernTex — a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
+        <p>We're building ModernTex - a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
         <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="waitlist-moderntex">
           <input type="hidden" name="source" value="guide:fix-bibtex-errors">

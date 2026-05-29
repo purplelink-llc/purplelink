@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>How to Get BibTeX from a DOI or arXiv ID | Purplelink LLC</title>
-    <meta name="description" content="How to turn a DOI or arXiv ID into a clean BibTeX entry — where the data comes from, what to clean up, and a free in-browser BibTeX builder.">
+    <meta name="description" content="How to turn a DOI or arXiv ID into a clean BibTeX entry - where the data comes from, what to clean up, and a free in-browser BibTeX builder.">
     <link rel="canonical" href="https://purplelink.llc/guides/doi-to-bibtex/">
     <meta property="og:title" content="Get BibTeX from a DOI or arXiv ID">
-    <meta property="og:description" content="How to turn a DOI or arXiv ID into a clean BibTeX entry — where the data comes from, what to clean up, and a free in-browser BibTeX builder.">
+    <meta property="og:description" content="How to turn a DOI or arXiv ID into a clean BibTeX entry - where the data comes from, what to clean up, and a free in-browser BibTeX builder.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/doi-to-bibtex/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/tools-launch.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Get BibTeX from a DOI or arXiv ID">
-    <meta name="twitter:description" content="How to turn a DOI or arXiv ID into a clean BibTeX entry — where the data comes from, what to clean up, and a free in-browser BibTeX builder.">
+    <meta name="twitter:description" content="How to turn a DOI or arXiv ID into a clean BibTeX entry - where the data comes from, what to clean up, and a free in-browser BibTeX builder.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
     <script type="application/ld+json">
     {
@@ -25,7 +25,7 @@
         {
           "@type": "Article",
           "headline": "How to get BibTeX from a DOI or arXiv ID",
-          "description": "How to turn a DOI or arXiv ID into a clean BibTeX entry — where the data comes from, what to clean up, and a free in-browser BibTeX builder.",
+          "description": "How to turn a DOI or arXiv ID into a clean BibTeX entry - where the data comes from, what to clean up, and a free in-browser BibTeX builder.",
           "author": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
           "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
           "mainEntityOfPage": "https://purplelink.llc/guides/doi-to-bibtex/",
@@ -38,7 +38,7 @@
           "mainEntity": [
         { "@type": "Question", "name": "Where does the BibTeX data come from?", "acceptedAnswer": { "@type": "Answer", "text": "DOIs are resolved via Crossref, the publisher metadata registry; arXiv IDs use arXiv's metadata. Both are authoritative sources, so the core fields are usually correct." } },
         { "@type": "Question", "name": "What if the title's capitalization is wrong?", "acceptedAnswer": { "@type": "Answer", "text": "BibTeX lowercases titles unless you protect words with braces. Wrap proper nouns or acronyms in braces to keep their capitalization." } },
-        { "@type": "Question", "name": "Is the BibTeX builder free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The builder fetches the entry and stores nothing — the identifier and result are not retained." } },
+        { "@type": "Question", "name": "Is the BibTeX builder free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The builder fetches the entry and stores nothing - the identifier and result are not retained." } },
         { "@type": "Question", "name": "Can I get BibTeX from an arXiv ID without a DOI?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Paste the arXiv ID directly; the builder retrieves the metadata from arXiv." } }
           ]
         },
@@ -87,7 +87,7 @@
       </div>
 
       <article class="post-body">
-        <p>Most modern papers have a DOI (a string like <code>10.1145/3292500.3330701</code>) or an arXiv ID (like <code>2103.00020</code>). Either one is enough to pull a complete BibTeX entry. Our free <a href="/tools/bib-builder/">BibTeX builder</a> does this — paste the identifier and get an entry back, with nothing stored.</p>
+        <p>Most modern papers have a DOI (a string like <code>10.1145/3292500.3330701</code>) or an arXiv ID (like <code>2103.00020</code>). Either one is enough to pull a complete BibTeX entry. Our free <a href="/tools/bib-builder/">BibTeX builder</a> does this - paste the identifier and get an entry back, with nothing stored.</p>
         <h2>Where the data comes from</h2>
         <p>For a DOI, the entry is fetched from <strong>Crossref</strong>, the registry that publishers submit metadata to. For an arXiv ID, it comes from arXiv's own metadata. Because it's pulled from the authoritative source, the title, authors, year, and venue are usually correct out of the box.</p>
         <h2>How to do it</h2>
@@ -110,7 +110,7 @@
         <h2>Frequently asked questions</h2>
         <details><summary>Where does the BibTeX data come from?</summary><div class="faq-body">DOIs are resolved via Crossref, the publisher metadata registry; arXiv IDs use arXiv's metadata. Both are authoritative sources, so the core fields are usually correct.</div></details>
         <details><summary>What if the title's capitalization is wrong?</summary><div class="faq-body">BibTeX lowercases titles unless you protect words with braces. Wrap proper nouns or acronyms in braces, like {LaTeX}, to keep their capitalization.</div></details>
-        <details><summary>Is the BibTeX builder free and private?</summary><div class="faq-body">Yes. The <a href="/tools/bib-builder/">builder</a> fetches the entry and stores nothing — the identifier and result are not retained.</div></details>
+        <details><summary>Is the BibTeX builder free and private?</summary><div class="faq-body">Yes. The <a href="/tools/bib-builder/">builder</a> fetches the entry and stores nothing - the identifier and result are not retained.</div></details>
         <details><summary>Can I get BibTeX from an arXiv ID without a DOI?</summary><div class="faq-body">Yes. Paste the arXiv ID (e.g. 2103.00020) directly; the builder retrieves the metadata from arXiv.</div></details>
       </section>
 
@@ -118,7 +118,7 @@
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>We're building ModernTex — a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
+        <p>We're building ModernTex - a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
         <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="waitlist-moderntex">
           <input type="hidden" name="source" value="guide:doi-to-bibtex">

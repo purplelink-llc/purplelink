@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>BibTeX Builder — DOI & arXiv to .bib | Purplelink LLC</title>
+    <title>BibTeX Builder - DOI & arXiv to .bib | Purplelink LLC</title>
     <meta name="description" content="Free online BibTeX builder. Paste DOIs or arXiv IDs and download a ready-to-use .bib file. No sign-up. Files are never stored.">
     <link rel="canonical" href="https://purplelink.llc/tools/bib-builder/">
-    <meta property="og:title" content="BibTeX Builder — DOI & arXiv to .bib">
+    <meta property="og:title" content="BibTeX Builder - DOI & arXiv to .bib">
     <meta property="og:description" content="Free online BibTeX builder. Paste DOIs or arXiv IDs and download a ready-to-use .bib file.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/bib-builder/">
@@ -15,7 +15,7 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="BibTeX Builder — DOI & arXiv to .bib">
+    <meta name="twitter:title" content="BibTeX Builder - DOI & arXiv to .bib">
     <meta name="twitter:description" content="Paste DOIs or arXiv IDs and download a ready-to-use .bib file.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-builder.png">
     <script type="application/ld+json">
@@ -29,7 +29,7 @@
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free online BibTeX builder. Paste a list of DOIs or arXiv IDs and download a formatted .bib file — each entry fetched directly from CrossRef or the arXiv API.",
+          "description": "A free online BibTeX builder. Paste a list of DOIs or arXiv IDs and download a formatted .bib file - each entry fetched directly from CrossRef or the arXiv API.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Convert DOIs to BibTeX via CrossRef",
@@ -111,7 +111,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>BibTeX Builder</h1>
-        <p>Paste a list of DOIs or arXiv IDs — one per line — and download a formatted <code>.bib</code> file. Entries are fetched directly from CrossRef and the arXiv API. <strong>Up to 50 entries per request.</strong></p>
+        <p>Paste a list of DOIs or arXiv IDs - one per line - and download a formatted <code>.bib</code> file. Entries are fetched directly from CrossRef and the arXiv API. <strong>Up to 50 entries per request.</strong></p>
       </div>
 
       <div class="tool-app">
@@ -128,7 +128,7 @@
       <section class="tool-howto">
         <h2>How to build a .bib file from DOIs and arXiv IDs</h2>
         <ol>
-          <li>Paste your DOIs and arXiv IDs into the text area — one per line. You can mix both formats and paste full URLs.</li>
+          <li>Paste your DOIs and arXiv IDs into the text area - one per line. You can mix both formats and paste full URLs.</li>
           <li>Click <strong>Build .bib</strong>. Each ID is looked up in CrossRef (for DOIs) or the arXiv API (for arXiv IDs).</li>
           <li>Download the combined <code>.bib</code> file and drop it into your LaTeX project.</li>
         </ol>
@@ -136,7 +136,7 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This fetches BibTeX entries from CrossRef (for DOIs) and the arXiv API (for arXiv IDs) and combines them into a single <code>.bib</code> file. It's a companion to the <a href="/tools/bib-validator/">BibTeX Validator</a> — build your bibliography here, then validate it there.</p>
+        <p>This fetches BibTeX entries from CrossRef (for DOIs) and the arXiv API (for arXiv IDs) and combines them into a single <code>.bib</code> file. It's a companion to the <a href="/tools/bib-validator/">BibTeX Validator</a> - build your bibliography here, then validate it there.</p>
         <details><summary>What formats are accepted?</summary><div class="faq-body">DOIs (starting with 10., or as doi.org URLs), and arXiv IDs (e.g. 2301.12345, arXiv:2301.12345, or full arxiv.org URLs). One per line, up to 50.</div></details>
         <details><summary>Where does the BibTeX come from?</summary><div class="faq-body">DOI entries use CrossRef content negotiation (the same source as most reference managers). arXiv entries are formatted as @misc with eprint, archivePrefix, primaryClass, and a URL field.</div></details>
         <details><summary>What if an ID isn't found?</summary><div class="faq-body">The table marks that entry as "not found" and omits it from the downloaded .bib. Check the DOI or arXiv ID for typos.</div></details>
@@ -146,7 +146,7 @@
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>We're building ModernTex — a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
+        <p>We're building ModernTex - a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
         <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="waitlist-moderntex">
           <input type="hidden" name="source" value="tool:bib-builder">
@@ -196,7 +196,7 @@
             })
             .then(function (data) {
               var ok = data.entries.filter(function (e) { return e.status === "ok"; }).length;
-              statusEl.textContent = "Done — " + ok + " of " + data.entries.length + (data.entries.length === 1 ? " entry" : " entries") + " found.";
+              statusEl.textContent = "Done - " + ok + " of " + data.entries.length + (data.entries.length === 1 ? " entry" : " entries") + " found.";
               runBtn.disabled = false;
               combinedBib = data.combined_bib;
               renderBibResults(data.entries);
@@ -238,7 +238,7 @@
           resultEl.innerHTML = html;
 
           if (ok === 0) {
-            resultEl.insertAdjacentHTML('beforeend', '<p class="bb-muted" style="margin-top:0.75rem">No entries could be fetched — check your DOIs and arXiv IDs for typos.</p>');
+            resultEl.insertAdjacentHTML('beforeend', '<p class="bb-muted" style="margin-top:0.75rem">No entries could be fetched - check your DOIs and arXiv IDs for typos.</p>');
           }
 
           if (combinedBib) {

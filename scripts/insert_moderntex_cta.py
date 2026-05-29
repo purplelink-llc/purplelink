@@ -19,7 +19,7 @@ def block(source):
         '      <section class="waitlist-section">\n'
         '        <p class="eyebrow">From the team behind these tools</p>\n'
         "        <h2>Writing LaTeX on a Mac?</h2>\n"
-        "        <p>We're building ModernTex — a native macOS LaTeX studio. "
+        "        <p>We're building ModernTex - a native macOS LaTeX studio. "
         "Join the waitlist for one email at launch.</p>\n"
         '        <form class="waitlist-form" name="waitlist-moderntex" '
         'method="POST" data-netlify="true" data-netlify-honeypot="bot-field">\n'

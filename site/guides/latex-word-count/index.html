@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>How to Count Words in a LaTeX Document | Purplelink LLC</title>
-    <meta name="description" content="How to get an accurate word count for a LaTeX document — why \wc and editor counts disagree, what counts, and a free word counter that works on .tex source.">
+    <meta name="description" content="How to get an accurate word count for a LaTeX document - why \wc and editor counts disagree, what counts, and a free word counter that works on .tex source.">
     <link rel="canonical" href="https://purplelink.llc/guides/latex-word-count/">
     <meta property="og:title" content="How to Count Words in a LaTeX Document">
-    <meta property="og:description" content="How to get an accurate word count for a LaTeX document — why \wc and editor counts disagree, what counts, and a free word counter that works on .tex source.">
+    <meta property="og:description" content="How to get an accurate word count for a LaTeX document - why \wc and editor counts disagree, what counts, and a free word counter that works on .tex source.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/latex-word-count/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/tools-launch.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="How to Count Words in a LaTeX Document">
-    <meta name="twitter:description" content="How to get an accurate word count for a LaTeX document — why \wc and editor counts disagree, what counts, and a free word counter that works on .tex source.">
+    <meta name="twitter:description" content="How to get an accurate word count for a LaTeX document - why \wc and editor counts disagree, what counts, and a free word counter that works on .tex source.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
     <script type="application/ld+json">
     {
@@ -25,7 +25,7 @@
         {
           "@type": "Article",
           "headline": "How to count words in a LaTeX document",
-          "description": "How to get an accurate word count for a LaTeX document — why \\wc and editor counts disagree, what counts, and a free word counter that works on .tex source.",
+          "description": "How to get an accurate word count for a LaTeX document - why \\wc and editor counts disagree, what counts, and a free word counter that works on .tex source.",
           "author": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
           "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
           "mainEntityOfPage": "https://purplelink.llc/guides/latex-word-count/",
@@ -37,7 +37,7 @@
           "@type": "FAQPage",
           "mainEntity": [
         { "@type": "Question", "name": "Why is my LaTeX word count different from Word's?", "acceptedAnswer": { "@type": "Answer", "text": "LaTeX source includes markup commands that aren't prose. Counting the raw .tex inflates the number, while tools like texcount or counting the compiled text give a closer match to what a reader sees." } },
-        { "@type": "Question", "name": "Does the bibliography count toward a word limit?", "acceptedAnswer": { "@type": "Answer", "text": "Usually not, but it is venue-dependent. Check the call for papers — some limits exclude references, captions, and appendices, and some don't." } },
+        { "@type": "Question", "name": "Does the bibliography count toward a word limit?", "acceptedAnswer": { "@type": "Answer", "text": "Usually not, but it is venue-dependent. Check the call for papers - some limits exclude references, captions, and appendices, and some don't." } },
         { "@type": "Question", "name": "Can I count words without compiling?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Paste your body text into the free word counter for an instant count. It runs entirely in your browser and stores nothing." } },
         { "@type": "Question", "name": "Does the counter handle LaTeX commands?", "acceptedAnswer": { "@type": "Answer", "text": "The counter treats any non-whitespace sequence as a word, so raw commands are counted as written. For prose-only counts, paste the text without the surrounding markup." } }
           ]
@@ -92,12 +92,12 @@
         <p>Three methods give three different numbers:</p>
         <ul>
           <li><strong>Counting the .tex source</strong> includes commands like <code>\section</code> and <code>\cite</code> as "words," inflating the count.</li>
-          <li><strong>texcount</strong> (a Perl tool) tries to count only prose, skipping most markup — usually the most accurate for submission limits.</li>
+          <li><strong>texcount</strong> (a Perl tool) tries to count only prose, skipping most markup - usually the most accurate for submission limits.</li>
           <li><strong>Counting the compiled PDF</strong> counts what the reader sees but includes figure captions, references, and headers unless you exclude them.</li>
         </ul>
         <h2>The practical approach</h2>
         <ol>
-          <li>For a quick estimate, paste your body text into the <a href="/tools/word-counter/">word counter</a> — it reports words, characters, sentences, and reading time live.</li>
+          <li>For a quick estimate, paste your body text into the <a href="/tools/word-counter/">word counter</a> - it reports words, characters, sentences, and reading time live.</li>
           <li>For a strict submission limit, decide what the venue counts: does the limit include the abstract? References? Captions? Read the call for papers.</li>
           <li>Count the relevant sections only, excluding the bibliography and any appendices that don't count toward the limit.</li>
         </ol>
@@ -114,7 +114,7 @@
       <section class="tool-faq">
         <h2>Frequently asked questions</h2>
         <details><summary>Why is my LaTeX word count different from Word's?</summary><div class="faq-body">LaTeX source includes markup commands that aren't prose. Counting the raw .tex inflates the number, while tools like texcount or counting the compiled text give a closer match to what a reader sees.</div></details>
-        <details><summary>Does the bibliography count toward a word limit?</summary><div class="faq-body">Usually not, but it is venue-dependent. Check the call for papers — some limits exclude references, captions, and appendices, and some don't.</div></details>
+        <details><summary>Does the bibliography count toward a word limit?</summary><div class="faq-body">Usually not, but it is venue-dependent. Check the call for papers - some limits exclude references, captions, and appendices, and some don't.</div></details>
         <details><summary>Can I count words without compiling?</summary><div class="faq-body">Yes. Paste your body text into the free <a href="/tools/word-counter/">word counter</a> for an instant count. It runs entirely in your browser and stores nothing.</div></details>
         <details><summary>Does the counter handle LaTeX commands?</summary><div class="faq-body">The counter treats any non-whitespace sequence as a word, so raw commands are counted as written. For prose-only counts, paste the text without the surrounding markup.</div></details>
       </section>
@@ -123,7 +123,7 @@
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>We're building ModernTex — a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
+        <p>We're building ModernTex - a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
         <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="waitlist-moderntex">
           <input type="hidden" name="source" value="guide:latex-word-count">

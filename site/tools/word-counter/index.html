@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Free Word &amp; Character Counter | Purplelink LLC</title>
-    <meta name="description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time — instantly, in your browser. Nothing is stored.">
+    <meta name="description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time - instantly, in your browser. Nothing is stored.">
     <link rel="canonical" href="https://purplelink.llc/tools/word-counter/">
     <meta property="og:title" content="Free Word &amp; Character Counter">
-    <meta property="og:description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time — instantly, in your browser. Nothing is stored.">
+    <meta property="og:description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time - instantly, in your browser. Nothing is stored.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/word-counter/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/word-counter.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Free Word &amp; Character Counter">
-    <meta name="twitter:description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time — instantly, in your browser. Nothing is stored.">
+    <meta name="twitter:description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time - instantly, in your browser. Nothing is stored.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/word-counter.png">
     <script type="application/ld+json">
     {
@@ -29,13 +29,13 @@
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time — instantly, in your browser. Nothing is stored.",
+          "description": "A free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time - instantly, in your browser. Nothing is stored.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Live word, character, sentence, and paragraph counts",
             "Estimated reading and speaking time",
             "Optional word-limit tracking",
-            "100% client-side — your text never leaves your browser"
+            "100% client-side - your text never leaves your browser"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -123,7 +123,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>🔢 Word Counter</h1>
-        <p>Paste or type your text to count <strong>words, characters, sentences, paragraphs</strong>, and estimated reading time — live, as you type. Everything runs in your browser.</p>
+        <p>Paste or type your text to count <strong>words, characters, sentences, paragraphs</strong>, and estimated reading time - live, as you type. Everything runs in your browser.</p>
       </div>
 
       <div class="tool-app">
@@ -150,14 +150,14 @@
           <li class="wc-stat"><span class="wc-num" id="s-speaking">0 min</span><span class="wc-lbl">Speaking time</span></li>
         </ul>
 
-        <p class="tool-privacy" id="wc-privacy">Your text never leaves your browser — there's no upload and nothing is stored.</p>
+        <p class="tool-privacy" id="wc-privacy">Your text never leaves your browser - there's no upload and nothing is stored.</p>
       </div>
 
       <section class="tool-howto">
         <h2>How to count words and characters</h2>
         <ol>
           <li>Type directly in the box, or paste text copied from anywhere.</li>
-          <li>Watch the stats update live — words, characters, sentences, paragraphs, and time estimates.</li>
+          <li>Watch the stats update live - words, characters, sentences, paragraphs, and time estimates.</li>
           <li>Optionally set a <strong>word limit</strong> to track how many words you have left (or how far over you are).</li>
           <li>Press <strong>Clear</strong> to start fresh.</li>
         </ol>
@@ -165,7 +165,7 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>A fast, private word and character counter. It updates as you type and never sends your text anywhere — all counting happens locally in your browser.</p>
+        <p>A fast, private word and character counter. It updates as you type and never sends your text anywhere - all counting happens locally in your browser.</p>
         <details><summary>How is reading time calculated?</summary><div class="faq-body">Reading time is your word count divided by 200 words per minute (a common average for silent reading), rounded up to the nearest minute. Speaking time uses 130 words per minute, a typical presentation pace.</div></details>
         <details><summary>Is my text stored?</summary><div class="faq-body">No. The counter runs entirely in JavaScript on your device. Your text is never uploaded, sent over the network, logged, or saved.</div></details>
         <details><summary>Does it count LaTeX commands?</summary><div class="faq-body">Yes. Any non-whitespace sequence counts as a word, so LaTeX commands like <code>\section</code> or <code>\textbf</code> are counted as written. The tool does not strip markup, so counts reflect your raw source.</div></details>
@@ -176,7 +176,7 @@
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>We're building ModernTex — a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
+        <p>We're building ModernTex - a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
         <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="waitlist-moderntex">
           <input type="hidden" name="source" value="tool:word-counter">
@@ -250,10 +250,10 @@
               return;
             }
             if (words > limit) {
-              limitReadout.textContent = words + " / " + limit + " — " + (words - limit) + " over";
+              limitReadout.textContent = words + " / " + limit + " - " + (words - limit) + " over";
               limitReadout.classList.add("over");
             } else {
-              limitReadout.textContent = words + " / " + limit + " — " + (limit - words) + " left";
+              limitReadout.textContent = words + " / " + limit + " - " + (limit - words) + " left";
               limitReadout.classList.remove("over");
             }
           }
