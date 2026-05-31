@@ -18,15 +18,57 @@
     <meta name="twitter:title" content="Get BibTeX from a DOI or arXiv ID">
     <meta name="twitter:description" content="How to turn a DOI or arXiv ID into a clean BibTeX entry - where the data comes from, what to clean up, and a free in-browser BibTeX builder.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
+    <meta name="twitter:image:alt" content="Get BibTeX from a DOI or arXiv ID">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "HowTo",
+          "name": "How to get a BibTeX entry from a DOI",
+          "totalTime": "PT2M",
+          "tool": [
+            {
+              "@type": "HowToTool",
+              "name": "BibTeX builder"
+            },
+            {
+              "@type": "HowToTool",
+              "name": "Any DOI"
+            }
+          ],
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Locate the DOI",
+              "text": "Find the DOI on the publisher's article page \u2014 usually formatted as 10.xxxx/yyyy near the title or abstract."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Paste into the builder",
+              "text": "Open the BibTeX Builder and paste the DOI into the input field. ArXiv IDs also work."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Generate the entry",
+              "text": "Click Build to fetch metadata from CrossRef and produce a ready-to-paste BibTeX entry with author, title, journal, year, and DOI fields."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Verify and add to your .bib",
+              "text": "Spot-check the title and author list, then paste the entry into your bibliography file."
+            }
+          ]
+        },
+        {
           "@type": "Article",
           "headline": "How to get BibTeX from a DOI or arXiv ID",
           "description": "How to turn a DOI or arXiv ID into a clean BibTeX entry - where the data comes from, what to clean up, and a free in-browser BibTeX builder.",
-          "author": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+          "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
           "mainEntityOfPage": "https://purplelink.llc/guides/doi-to-bibtex/",
           "datePublished": "2026-05-28",
@@ -82,27 +124,77 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to get BibTeX from a DOI or arXiv ID</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-28">May 28, 2026</time></p>
         <p class="post-lede">Typing BibTeX by hand is error-prone. If a paper has a DOI or an arXiv ID, you can fetch a clean entry automatically. Here's how, and what to double-check.</p>
       </div>
 
       <article class="post-body">
-        <p>Most modern papers have a DOI (a string like <code>10.1145/3292500.3330701</code>) or an arXiv ID (like <code>2103.00020</code>). Either one is enough to pull a complete BibTeX entry. Our free <a href="/tools/bib-builder/">BibTeX builder</a> does this - paste the identifier and get an entry back, with nothing stored.</p>
-        <h2>Where the data comes from</h2>
-        <p>For a DOI, the entry is fetched from <strong>Crossref</strong>, the registry that publishers submit metadata to. For an arXiv ID, it comes from arXiv's own metadata. Because it's pulled from the authoritative source, the title, authors, year, and venue are usually correct out of the box.</p>
-        <h2>How to do it</h2>
-        <ol>
-          <li>Find the DOI (on the paper's first page or the publisher's site) or the arXiv ID (in the URL or PDF header).</li>
-          <li>Paste it into the <a href="/tools/bib-builder/">BibTeX builder</a>.</li>
-          <li>Copy the generated entry into your <code>.bib</code> file.</li>
-        </ol>
-        <h2>What to double-check</h2>
+        <p>Manually typing a BibTeX entry from a paper PDF is busywork and a frequent source of citation errors — typos in author names, wrong year, mangled diacritics, miscategorized entry type. Every modern academic paper has a stable identifier you can use instead: a <strong>DOI</strong> (e.g., <code>10.1145/3292500.3330701</code>) for published work, or an <strong>arXiv ID</strong> (e.g., <code>2103.00020</code>) for preprints. Paste either one into the free <a href="/tools/bib-builder/">BibTeX Builder</a> and you'll get back a well-formed BibTeX entry in about a second. This guide walks through the workflow, what to verify after import, and the common edge cases.</p>
+
+        <h2>Where the metadata comes from</h2>
+        <p>Different identifiers route to different authoritative sources:</p>
         <ul>
-          <li><strong>Author accents and special characters.</strong> Names with diacritics sometimes need a quick review.</li>
-          <li><strong>Title capitalization.</strong> Wrap words you want to keep capitalized in braces, e.g. <code>{LaTeX}</code>, so BibTeX doesn't lowercase them.</li>
-          <li><strong>Entry type.</strong> A preprint may come back as <code>@misc</code> or <code>@article</code>; pick what your bibliography style expects.</li>
-          <li><strong>The citation key.</strong> Rename it to match your own convention (e.g. <code>author2021keyword</code>).</li>
+          <li><strong>DOI</strong> → <a href="https://www.crossref.org/" rel="noopener">CrossRef</a>, the registry where publishers submit canonical metadata. CrossRef provides title, full author list, journal or proceedings name, volume, issue, page range, year, publisher, and the DOI itself.</li>
+          <li><strong>arXiv ID</strong> → arXiv's own API. Returns title, authors (cleanly formatted), abstract, category, and submission date. Note that an arXiv preprint often has a separately-registered DOI on the journal version — see "Preprint vs published" below.</li>
         </ul>
-        <p>Then run the result through the <a href="/tools/bib-validator/">validator</a> to be sure it's clean before you compile.</p>
+        <p>Because the data comes from the publisher's own submission, it's typically accurate. The Builder doesn't store any of this — your identifier is sent to CrossRef or arXiv, the response is formatted as BibTeX, and the result is returned to your browser without touching durable storage.</p>
+
+        <h2>Step-by-step</h2>
+        <ol>
+          <li><strong>Find the DOI.</strong> On the publisher's article page it's usually shown near the title (e.g., "doi.org/10.1145/3292500.3330701") or in the citation block. In a PDF, the DOI is often in the header or footer of the first page. Format: <code>10.{registrant}/{suffix}</code>. You can include the leading <code>https://doi.org/</code> or just the bare DOI — the Builder strips the prefix either way.</li>
+          <li><strong>Or find the arXiv ID.</strong> In the URL: <code>arxiv.org/abs/<strong>2103.00020</strong></code>. In the PDF header: usually <code>arXiv:2103.00020</code>. Either format works.</li>
+          <li><strong>Paste into the Builder.</strong> Open the <a href="/tools/bib-builder/">BibTeX Builder</a> and paste your identifier. Multiple identifiers separated by newlines also work for batch-importing a reading list.</li>
+          <li><strong>Click "Build."</strong> The tool queries CrossRef or arXiv with proper User-Agent attribution and formats the response as BibTeX.</li>
+          <li><strong>Copy into your <code>.bib</code>.</strong> Paste the entry into your bibliography file and rename the auto-generated key if you have a project naming convention (see below).</li>
+        </ol>
+
+        <h2>What to verify after import</h2>
+        <p>CrossRef and arXiv metadata is generally clean, but four things are worth a quick check:</p>
+
+        <h3>Author names with diacritics</h3>
+        <p>Names like "Müller", "Lévy", "Søndergaard" usually come back correctly encoded in UTF-8. If your build is using classic 8-bit BibTeX (not Biber), convert these to LaTeX accent macros (<code>{\"u}</code>, <code>{\'e}</code>, <code>{\o}</code>) — or switch to Biber, which handles UTF-8 natively. The <a href="/tools/bib-validator/">validator</a> accepts either form, but legacy BibTeX will mangle UTF-8 silently.</p>
+
+        <h3>Title capitalization</h3>
+        <p>BibTeX styles lowercase title words automatically unless you protect them with braces. If your paper title contains a proper noun, acronym, or programming language name, wrap it:</p>
+        <pre><code><!-- CrossRef returns this -->
+title = {Bert: pre-training of deep bidirectional transformers for language understanding}
+
+<!-- For most journal styles you want -->
+title = {{BERT}: Pre-training of Deep Bidirectional Transformers for Language Understanding}</code></pre>
+        <p>This is the single most common post-import edit. The Builder doesn't make this judgment automatically because what to protect depends on your bibliography style.</p>
+
+        <h3>Entry type</h3>
+        <p>For a preprint, CrossRef may return <code>@misc</code> or <code>@article</code> depending on the registrant. For a workshop paper, you may get <code>@inproceedings</code> or <code>@article</code> depending on venue classification. Adjust to match what your bibliography style expects — e.g., ACM's <code>acmart</code> style cares whether a paper is <code>@inproceedings</code> vs <code>@article</code>.</p>
+
+        <h3>Citation key</h3>
+        <p>The Builder generates a default key from the first author and year (e.g., <code>vaswani2017</code>). If you use a longer convention (<code>vaswani2017attention</code>, <code>vaswani-attention-2017</code>) rename it. Consistency across your <code>.bib</code> matters more than the exact format; the <a href="/tools/bib-validator/">validator</a> flags duplicate keys if you accidentally collide with an existing entry.</p>
+
+        <h2>Edge case: preprint vs published version</h2>
+        <p>Many papers exist as both an arXiv preprint and a peer-reviewed publication with a different DOI. The published version is canonical for citation (it's the version of record), but the arXiv preprint is often open-access where the publisher's PDF is paywalled.</p>
+        <p>Best-practice <code>.bib</code> entry:</p>
+        <ol>
+          <li>Use the published version's <strong>DOI</strong> as the primary identifier and the published venue as the source.</li>
+          <li>Add an <code>eprint</code> field with the arXiv ID. BibLaTeX renders this as an additional eprint link in the reference list.</li>
+        </ol>
+        <pre><code>@article{vaswani2017,
+  author     = {Vaswani, Ashish and Shazeer, Noam and others},
+  title      = {Attention Is All You Need},
+  journal    = {Advances in Neural Information Processing Systems},
+  volume     = {30},
+  year       = {2017},
+  doi        = {10.48550/arXiv.1706.03762},
+  eprint     = {1706.03762},
+  eprinttype = {arxiv},
+}</code></pre>
+
+        <h2>What if the DOI doesn't resolve?</h2>
+        <p>Most failures are typos: a missing character, a confused 0/O or 1/l. Paste the DOI into <code>https://doi.org/</code> in your browser — if it doesn't redirect to a real page, the DOI is wrong. Check the original source again. If the DOI is correct but CrossRef has no record, it may be too new (CrossRef ingestion can lag a few days) or the publisher hasn't registered it (rare but happens with smaller venues).</p>
+        <p>For AI-generated or hallucinated DOIs, the <a href="/tools/bib-validator/">BibTeX Validator</a>'s "Check DOI resolution" flag spots them — every DOI that returns a 404 against doi.org is reported with its HTTP status. Combine with the CrossRef title-match check and you'll catch a hallucinated citation before submission.</p>
+
+        <h2>Batch import</h2>
+        <p>For a reading-list export from your reference manager (Zotero, Mendeley, Paperpile, etc.), the manager itself usually produces clean BibTeX. But if you have a list of DOIs or arXiv IDs you've collected by hand, paste them as one-per-line into the Builder. It fetches all of them in parallel (with polite rate-limiting against CrossRef) and returns a single concatenated <code>.bib</code> you can save.</p>
+
+        <p>Once the entry is in your file, run the whole <code>.bib</code> through the <a href="/tools/bib-validator/">validator</a> to verify the new entry doesn't conflict with anything you already had — duplicate keys, missing required fields, dead DOIs. The validator returns an annotated <code>.bib</code> with one comment per entry summarizing its state, which is exactly what you want for a final pre-submission sanity check.</p>
       </article>
 
       <section class="tool-faq">

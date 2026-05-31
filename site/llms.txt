@@ -133,6 +133,11 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 ## Guides (free how-to articles)
 - Guides index: https://purplelink.llc/guides/
+- LaTeX hub: https://purplelink.llc/guides/latex/ — pillar page covering the full academic LaTeX workflow.
+- BibTeX hub: https://purplelink.llc/guides/bibtex/ — pillar page covering bibliography management.
+- Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
+- GlobePin vs Polarsteps vs Visited: https://purplelink.llc/guides/globepin-vs-polarsteps/ — comparison of three iOS travel-mapping approaches.
+- Best on-device health apps for iPhone: https://purplelink.llc/guides/best-on-device-health-apps/ — comparison of Apple Health, Bearable, Welltory, and Haea.
 - Convert a LaTeX paper to Word: https://purplelink.llc/guides/latex-to-word/ — step-by-step .tex → .docx for journal submission.
 - Fix common BibTeX errors: https://purplelink.llc/guides/fix-bibtex-errors/ — diagnose and repair the most frequent .bib mistakes.
 - IEEE vs APA vs MLA vs Chicago: https://purplelink.llc/guides/citation-styles-explained/ — how the four major citation styles differ and when to use each.

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>LaTeX for academic writing | Purplelink</title>
+    <meta name="description" content="A practical hub for writing academic papers in LaTeX: compile, convert to Word, diff versions, render equations, and build tables. Plus the tools to do each one in your browser.">
+    <link rel="canonical" href="https://purplelink.llc/guides/latex/">
+    <meta property="og:title" content="LaTeX for academic writing | Purplelink">
+    <meta property="og:description" content="A practical hub for writing academic papers in LaTeX — compile, convert, diff, render. Free in-browser tools and guides.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/guides/latex/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/tools-launch.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LaTeX for academic writing | Purplelink">
+    <meta name="twitter:description" content="A practical hub for writing academic papers in LaTeX — compile, convert, diff, render.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
+    <meta name="twitter:image:alt" content="Free LaTeX tools and guides">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "name": "LaTeX for academic writing",
+          "url": "https://purplelink.llc/guides/latex/",
+          "description": "A hub of free guides and tools for academic LaTeX writing: compile to PDF, convert to and from Word, diff revisions, render equations, build tables, manage bibliographies.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-05-31",
+          "dateModified": "2026-05-31"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "LaTeX",  "item": "https://purplelink.llc/guides/latex/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Topic hub</p>
+        <h1 class="post-title">LaTeX for academic writing</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time></p>
+        <p class="post-lede">Practical guides and free in-browser tools for the academic LaTeX workflow — from compiling your manuscript to handing off a clean Word document for the journal. No installs, nothing stored.</p>
+      </div>
+
+      <article class="post-body">
+        <p>This is the hub page for everything LaTeX-related on Purplelink. If you're writing a dissertation, a journal submission, or a conference paper, the guides and tools below cover the workflow end-to-end: compilation, multi-file projects, equations, tables, bibliography management, format conversion, tracked changes, word counts. Every tool runs in your browser against a hosted backend that processes files in memory and discards them when your download finishes — no account, no install, no retention.</p>
+
+        <h2>Compile and render</h2>
+        <p>Getting a LaTeX manuscript to compile reliably is the foundation. Plain pdfLaTeX handles most of what most papers need; XeLaTeX adds OpenType font support; Biber + BibLaTeX modernizes the bibliography engine.</p>
+        <ul>
+          <li><strong><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></strong> — upload a <code>.tex</code> file (or a <code>.zip</code> with your figures and styles) and get a compiled PDF back, using pdfLaTeX or XeLaTeX. Useful when you're on a machine without a TeX install, or want to compile someone else's project quickly.</li>
+          <li><strong><a href="/tools/equation-renderer/">Equation Renderer</a></strong> — paste LaTeX math and download a high-resolution PNG. Useful for slides, posters, or anywhere you need a typeset equation outside a LaTeX document.</li>
+          <li><strong><a href="/tools/latex-table-generator/">LaTeX Table Generator</a></strong> — paste CSV or TSV data and get a clean booktabs LaTeX table with the formatting your editor expects.</li>
+        </ul>
+
+        <h2>Convert between formats</h2>
+        <p>Many journals only accept Word for submission. Many co-authors only write in Word. Some style requirements force Markdown. The conversion tools below handle every direction without losing references or equations.</p>
+        <ul>
+          <li><strong><a href="/tools/latex-to-word/">LaTeX to Word</a></strong> — convert a <code>.tex</code> manuscript to a clean double-spaced <code>.docx</code> for submission. Powered by Pandoc with an academic-manuscript template. Optional anonymize-for-blind-review.</li>
+          <li><strong><a href="/tools/word-to-latex/">Word to LaTeX</a></strong> — go the other direction: upload a <code>.docx</code> and download a <code>.tex</code> starting point. Pandoc handles the conversion; you'll usually want to polish formatting and citations after.</li>
+          <li><strong><a href="/tools/markdown-to-pdf/">Markdown to PDF or Word</a></strong> — for shorter pieces, write in Markdown and export to a typeset PDF or a <code>.docx</code>.</li>
+          <li><strong><a href="/tools/file-to-markdown/">File to Markdown</a></strong> — convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to clean Markdown. Useful when you want to start a paper from an outline that exists in another format.</li>
+          <li><strong><a href="/guides/latex-to-word/">Guide: converting LaTeX to Word for submission →</a></strong></li>
+        </ul>
+
+        <h2>Manuscript revisions and tracked changes</h2>
+        <p>Co-authors and reviewers expect to see what changed between drafts. LaTeX doesn't have built-in Word-style track changes, but <code>latexdiff</code> generates a PDF with deletions struck through and additions in color — and our tool runs it for you against any two <code>.tex</code> versions.</p>
+        <ul>
+          <li><strong><a href="/tools/latex-diff/">LaTeX Diff</a></strong> — upload two versions and get a tracked-changes PDF.</li>
+          <li><strong><a href="/guides/latex-track-changes/">Guide: showing changes between two LaTeX versions →</a></strong></li>
+        </ul>
+
+        <h2>Word counts and submission limits</h2>
+        <p>Most journals impose word-count limits, and counting words in a LaTeX file is harder than it sounds — comments, math, captions, and bibliography all need different treatment.</p>
+        <ul>
+          <li><strong><a href="/tools/word-counter/">Word Counter</a></strong> — live word, character, sentence, and reading-time stats in your browser.</li>
+          <li><strong><a href="/guides/latex-word-count/">Guide: counting words in a LaTeX document →</a></strong></li>
+        </ul>
+
+        <h2>Citations and bibliographies</h2>
+        <p>BibTeX is its own world, deep enough to warrant a dedicated hub: <strong><a href="/guides/bibtex/">BibTeX and citations →</a></strong></p>
+        <p>Quick links to the most-used tools and guides in that hub:</p>
+        <ul>
+          <li><a href="/tools/bib-validator/">BibTeX Validator</a> — check for missing fields, dead DOIs, and AI-hallucinated citations.</li>
+          <li><a href="/tools/bib-builder/">BibTeX Builder</a> — fetch entries from DOIs or arXiv IDs.</li>
+          <li><a href="/tools/citation-generator/">Citation Generator</a> — format any reference in APA, MLA, Chicago, or IEEE.</li>
+          <li><a href="/guides/fix-bibtex-errors/">Guide: fix common BibTeX errors →</a></li>
+          <li><a href="/guides/citation-styles-explained/">Guide: IEEE vs APA vs MLA vs Chicago →</a></li>
+        </ul>
+
+        <h2>Coming: ModernTex</h2>
+        <p>The tools above run in a browser. If you write LaTeX manuscripts seriously on a Mac, the native experience matters — and that's what <strong><a href="/moderntex/">ModernTex</a></strong> is for. A native macOS editor built around the academic manuscript workflow: multi-file projects, synchronized PDF preview, plain-language compile errors, BibTeX autocomplete that searches by author or title, revision snapshots, and submission-readiness checks. Currently in development; the waitlist gets one email at launch.</p>
+
+        <h2>About these tools</h2>
+        <p>Every web tool listed here is free, runs without an account, and processes files in memory only. The backend container is recreated per-request and never writes your file to durable storage. If you need stronger guarantees, the entire codebase is observable: most validation logic ships open-source, and the tools page itself documents the backend architecture. Files you upload are also covered under the <a href="/terms/">Terms of Service</a> and the <a href="/privacy/">Privacy Policy</a>.</p>
+      </article>
+
+      <section class="waitlist-section">
+        <p class="eyebrow">From the team behind these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>I'm building ModernTex — a native macOS LaTeX studio. Drop your email and I'll send you one note when it ships.</p>
+        <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="waitlist-moderntex">
+          <input type="hidden" name="source" value="hub:latex">
+          <p hidden><input name="bot-field"></p>
+          <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+          <button type="submit">Notify me at launch</button>
+        </form>
+        <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a> · <a href="/moderntex/">Learn more about ModernTex →</a></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>

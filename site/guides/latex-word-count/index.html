@@ -18,15 +18,59 @@
     <meta name="twitter:title" content="How to Count Words in a LaTeX Document">
     <meta name="twitter:description" content="How to get an accurate word count for a LaTeX document - why \wc and editor counts disagree, what counts, and a free word counter that works on .tex source.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
+    <meta name="twitter:image:alt" content="How to Count Words in a LaTeX Document">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "HowTo",
+          "name": "How to count words in a LaTeX document",
+          "totalTime": "PT2M",
+          "tool": [
+            {
+              "@type": "HowToTool",
+              "name": "texcount (typically bundled with TeX distributions)"
+            }
+          ],
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Open a terminal",
+              "text": "Open the terminal in the directory containing your .tex file."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Run texcount",
+              "text": "Run `texcount main.tex` (replace main.tex with your root file). texcount parses the LaTeX, ignores comments and markup, and reports a word count."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Add per-section breakdown",
+              "text": "Add the `-sub` flag for per-section counts: `texcount -sub main.tex`. Useful when journals impose section-level limits."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Account for multi-file projects",
+              "text": "Use `-inc` to include input/include files: `texcount -inc main.tex`."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Cross-check with the journal's requirements",
+              "text": "Different journals count differently (with vs without abstract, footnotes, captions). Read the submission guidelines carefully."
+            }
+          ]
+        },
+        {
           "@type": "Article",
           "headline": "How to count words in a LaTeX document",
           "description": "How to get an accurate word count for a LaTeX document - why \\wc and editor counts disagree, what counts, and a free word counter that works on .tex source.",
-          "author": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+          "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
           "mainEntityOfPage": "https://purplelink.llc/guides/latex-word-count/",
           "datePublished": "2026-05-28",
@@ -82,6 +126,7 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to count words in a LaTeX document</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-28">May 28, 2026</time></p>
         <p class="post-lede">Word limits are strict in many venues, but counting words in LaTeX is surprisingly fiddly because of all the markup. Here's how to get a number you can trust.</p>
       </div>
 

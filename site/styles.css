@@ -299,6 +299,18 @@ nav a:hover { color: var(--ink); }
   line-height: 1.7;
 }
 
+/* Factual lede above the hero CTA — citable passage for AI search engines.
+   Wider max-width than hero-desc so the full sentence reads without ragged
+   line breaks; slightly darker color than --muted to mark it as content,
+   not chrome. */
+.hero-lede {
+  max-width: 640px;
+  margin: 0 0 14px;
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
 .hero-actions {
   display: flex;
   gap: 10px;
@@ -817,6 +829,9 @@ dd {
     width: 100%;
     overflow-x: auto;
     padding-bottom: 2px;
+    /* Affordance: subtle right-edge fade so users see there's more nav off-screen. */
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+            mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
   }
 
   .hero-orbit { opacity: 0.25; right: -140px; }
@@ -1239,6 +1254,19 @@ dd {
   line-height: 1.65;
   max-width: 56ch;
 }
+
+.post-byline {
+  margin: -10px 0 22px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.post-byline a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.post-byline a:hover { color: var(--purple); border-bottom-color: var(--purple-dim); }
+.post-byline time { font-variant-numeric: tabular-nums; }
 
 .post-body {
   padding: clamp(40px, 5vw, 72px) clamp(24px, 6vw, 80px);

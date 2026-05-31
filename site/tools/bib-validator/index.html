@@ -18,6 +18,7 @@
     <meta name="twitter:title" content="BibTeX Validator - Detect AI Hallucinations">
     <meta name="twitter:description" content="Free online BibTeX validator. Check syntax, dead DOIs, author and year correctness. Download a corrected .bib. Catches AI-hallucinated citations.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
+    <meta name="twitter:image:alt" content="BibTeX Validator - Detect AI Hallucinations">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -29,6 +30,7 @@
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
+          "image": "https://purplelink.llc/assets/og/bib-validator.png",
           "description": "A free online BibTeX validator. Upload or paste a .bib file to check syntax and required fields, verify DOIs resolve, and cross-reference titles, authors, and publication years against CrossRef and Semantic Scholar to catch AI-hallucinated citations. Download a corrected .bib for high-confidence matches.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
@@ -219,7 +221,8 @@
       <nav class="tool-related" aria-label="Related tools">
         <h2>More free LaTeX tools</h2>
         <ul>
-          <li><a href="/guides/fix-bibtex-errors/">Guide: Fix common BibTeX errors →</a></li>
+                    <li><strong>Related guide:</strong> <a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors →</a></li>
+<li><a href="/guides/fix-bibtex-errors/">Guide: Fix common BibTeX errors →</a></li>
           <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF →</a></li>
           <li><a href="/tools/latex-to-word/">Convert LaTeX to Word →</a></li>
           <li><a href="/tools/latex-diff/">Compare two LaTeX versions (latexdiff) →</a></li>
@@ -229,7 +232,7 @@
 
       <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
-      <script src="/tools/tools.js"></script>
+      <script src="/tools/tools.js" defer></script>
       <script>
       (function () {
         var MAX_BIB_BYTES = 2 * 1024 * 1024;  // mirror backend MAX_BIB_UPLOAD_BYTES

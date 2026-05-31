@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>BibTeX and citations | Purplelink</title>
+    <meta name="description" content="A practical hub for managing BibTeX bibliographies: fetch entries from DOIs, validate against CrossRef, convert between formats, and switch citation styles.">
+    <link rel="canonical" href="https://purplelink.llc/guides/bibtex/">
+    <meta property="og:title" content="BibTeX and citations | Purplelink">
+    <meta property="og:description" content="A practical hub for managing BibTeX bibliographies. Free tools and guides.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/guides/bibtex/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/bib-validator.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BibTeX and citations | Purplelink">
+    <meta name="twitter:description" content="A practical hub for managing BibTeX bibliographies. Free tools and guides.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
+    <meta name="twitter:image:alt" content="Free BibTeX tools and citation guides">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "name": "BibTeX and citations",
+          "url": "https://purplelink.llc/guides/bibtex/",
+          "description": "A hub of free guides and tools for managing BibTeX bibliographies: fetch from DOIs, validate against CrossRef, convert formats, switch citation styles.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-05-31",
+          "dateModified": "2026-05-31"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "BibTeX", "item": "https://purplelink.llc/guides/bibtex/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Topic hub</p>
+        <h1 class="post-title">BibTeX and citations</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time></p>
+        <p class="post-lede">Build, validate, and reformat academic bibliographies. Free in-browser tools and practical guides covering every step from DOI to camera-ready reference list.</p>
+      </div>
+
+      <article class="post-body">
+        <p>BibTeX is a 1985-vintage bibliography system that's still the engine behind nearly every academic LaTeX submission. It works well when your <code>.bib</code> file is clean and the entry types are right; it fails in confusing ways when they aren't. This hub collects the guides and free tools that cover the lifecycle of a research bibliography: pulling entries from authoritative sources, validating the file before you compile, fixing the recurring errors, and switching citation styles when you move a paper between venues.</p>
+
+        <h2>Build entries from identifiers</h2>
+        <p>Manually typing BibTeX from a PDF is busywork and a source of errors. Every modern paper has a DOI; every arXiv preprint has an arXiv ID. Use either to pull a clean entry from CrossRef or arXiv.</p>
+        <ul>
+          <li><strong><a href="/tools/bib-builder/">BibTeX Builder</a></strong> — paste a DOI or arXiv ID (or a list of them), get back well-formed BibTeX. Nothing stored.</li>
+          <li><strong><a href="/guides/doi-to-bibtex/">Guide: get BibTeX from a DOI or arXiv ID →</a></strong> — workflow, common edge cases (preprint vs published, diacritics, title capitalization), batch import.</li>
+        </ul>
+
+        <h2>Validate before you compile</h2>
+        <p>Most BibTeX failures fall into a handful of recurring categories: missing required fields, unbalanced braces, duplicate keys, unescaped special characters, missing commas, stray Unicode. With the rise of AI-assisted writing tools, hallucinated DOIs and fabricated citations are an added concern.</p>
+        <ul>
+          <li><strong><a href="/tools/bib-validator/">BibTeX Validator</a></strong> — checks syntax, required fields, dead DOIs, and author + year correctness against CrossRef and Semantic Scholar. Downloads an annotated <code>.bib</code> with one comment per entry, plus an optional <em>corrected</em> <code>.bib</code> where high-confidence matches have been rewritten from authoritative metadata.</li>
+          <li><strong><a href="/guides/fix-bibtex-errors/">Guide: fix common BibTeX errors →</a></strong> — eight recurring errors with before-and-after examples and a debugging strategy when nothing else works.</li>
+        </ul>
+
+        <h2>Format citations in any style</h2>
+        <p>Different fields use different styles. Engineering uses IEEE, social sciences use APA, the humanities use MLA or Chicago. Most submission systems require the right style and reject manuscripts in the wrong one.</p>
+        <ul>
+          <li><strong><a href="/tools/citation-generator/">Citation Generator</a></strong> — paste a DOI, ISBN, or arXiv ID and get a single formatted reference in APA, MLA, Chicago, or IEEE.</li>
+          <li><strong><a href="/tools/reference-converter/">Reference Converter</a></strong> — convert citation lists between BibTeX, RIS, and EndNote formats. Useful when moving between reference managers or switching venues that expect different file formats.</li>
+          <li><strong><a href="/guides/citation-styles-explained/">Guide: IEEE vs APA vs MLA vs Chicago →</a></strong> — what each style looks like, when each is used, how to switch.</li>
+        </ul>
+
+        <h2>The hallucinated-citation problem</h2>
+        <p>If you used an AI writing assistant for any part of a literature review, run your <code>.bib</code> through the validator with both the CrossRef and Semantic Scholar checks enabled. Hallucinated citations typically have plausible author names, a plausible journal, and a plausible year — but the title doesn't match any real paper. The validator surfaces these by comparing your title against the closest match in each database and reporting a similarity score. Anything below 50% is almost certainly a fake citation. A 4-week-old academic publishing convention has caught up to this — several journals and conferences now flag suspect citations during the submission process.</p>
+
+        <h2>The validator and builder, together</h2>
+        <p>A clean academic-writing workflow looks like:</p>
+        <ol>
+          <li>Find a paper you want to cite. Note its DOI.</li>
+          <li>Paste the DOI into the <a href="/tools/bib-builder/">Builder</a>. Add the returned entry to your <code>.bib</code>.</li>
+          <li>Repeat for every reference.</li>
+          <li>Run the whole file through the <a href="/tools/bib-validator/">Validator</a> before each compile.</li>
+          <li>Before submission, run the Validator one last time with DOI resolution + CrossRef check enabled. Address anything that flags.</li>
+        </ol>
+        <p>The combination catches roughly 95% of pre-submission bibliography problems. The remaining 5% are usually stylistic — title capitalization, author order, abbreviated venue names — and those are caught at the proofread stage.</p>
+
+        <h2>BibLaTeX and Biber</h2>
+        <p>Classic BibTeX (the executable that ships with most TeX distributions) is showing its age. Biber + BibLaTeX is the modern stack: UTF-8 native, more sophisticated style support, better cross-referencing, and richer entry types. If you're starting a new LaTeX project today, use BibLaTeX:</p>
+        <pre><code>\usepackage[backend=biber,style=ieee]{biblatex}
+\addbibresource{refs.bib}
+% ...
+\printbibliography</code></pre>
+        <p>Your build chain becomes <code>pdflatex → biber → pdflatex → pdflatex</code> (or whatever your IDE wires up). Most popular styles (IEEE, APA, MLA, Chicago) have a BibLaTeX implementation; the official <code>biblatex-ieee</code>, <code>biblatex-apa</code>, and <code>biblatex-chicago</code> packages are well-maintained and match the latest editions.</p>
+
+        <h2>What's in your <code>.bib</code> matters more than which engine processes it</h2>
+        <p>Whether you use classic BibTeX or BibLaTeX, the bibliography quality comes from the source data — well-formed entries, correct entry types, complete required fields, real DOIs. The tools above optimize for that source quality. If your <code>.bib</code> is clean, switching engines is a one-line change in your preamble.</p>
+
+        <p>Related: <strong><a href="/guides/latex/">LaTeX for academic writing →</a></strong> — the parent hub covering compilation, conversion, equations, tables, and tracked changes.</p>
+      </article>
+
+      <nav class="tool-related" aria-label="All BibTeX tools and guides">
+        <h2>Everything BibTeX</h2>
+        <ul>
+          <li><a href="/tools/bib-validator/">BibTeX Validator →</a></li>
+          <li><a href="/tools/bib-builder/">BibTeX Builder →</a></li>
+          <li><a href="/tools/citation-generator/">Citation Generator →</a></li>
+          <li><a href="/tools/reference-converter/">Reference Converter →</a></li>
+          <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors →</a></li>
+          <li><a href="/guides/doi-to-bibtex/">Get BibTeX from a DOI or arXiv ID →</a></li>
+          <li><a href="/guides/citation-styles-explained/">IEEE vs APA vs MLA vs Chicago →</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>

@@ -18,15 +18,63 @@
     <meta name="twitter:title" content="Convert a LaTeX Paper to Word (Free)">
     <meta name="twitter:description" content="How to convert a LaTeX .tex paper into a Word .docx manuscript for free - what survives the conversion, what to check, and a free in-browser converter.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
+    <meta name="twitter:image:alt" content="Convert a LaTeX Paper to Word (Free)">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "HowTo",
+          "name": "How to convert a LaTeX paper to a Word document",
+          "totalTime": "PT5M",
+          "tool": [
+            {
+              "@type": "HowToTool",
+              "name": "LaTeX to Word converter"
+            },
+            {
+              "@type": "HowToTool",
+              "name": "Pandoc (runs server-side)"
+            }
+          ],
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Prepare the .tex file",
+              "text": "Make sure your manuscript compiles cleanly with pdfLaTeX. Resolve any unresolved citations or missing figures first."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Upload the file",
+              "text": "Open the LaTeX to Word tool and upload your .tex file. The tool runs Pandoc on the server in an ephemeral container."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Choose the output style",
+              "text": "Select manuscript (double-spaced, 12pt) or preprint formatting depending on what your target journal expects."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Download the .docx",
+              "text": "Click Convert. The resulting .docx contains your manuscript with citations, figures, and tables converted to Word-native elements."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Review and polish",
+              "text": "Word handles equations and citations slightly differently \u2014 review the document for formatting touches before submission."
+            }
+          ]
+        },
+        {
           "@type": "Article",
           "headline": "How to convert a LaTeX paper to Word",
           "description": "How to convert a LaTeX .tex paper into a Word .docx manuscript for free - what survives the conversion, what to check, and a free in-browser converter.",
-          "author": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+          "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
           "mainEntityOfPage": "https://purplelink.llc/guides/latex-to-word/",
           "datePublished": "2026-05-28",
@@ -82,6 +130,7 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to convert a LaTeX paper to Word</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-28">May 28, 2026</time></p>
         <p class="post-lede">Plenty of journals and co-authors still want a Word .docx. Here's how to convert a LaTeX manuscript to Word without losing your structure - and what to check afterward.</p>
       </div>
 

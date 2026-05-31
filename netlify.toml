@@ -8,12 +8,27 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Content-Security-Policy = "default-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; connect-src 'self' https://ben-ampel--purplelink-latextools-web.modal.run https://cloudflareinsights.com; frame-src 'self' blob:; object-src 'self' blob:"
+
+# Fonts and self-hosted vendor scripts are inherently stable — keep them
+# immutable. The catch-all /assets/* rule below uses a shorter cache so that
+# non-fingerprinted assets (logos, icons, OG cards) can be replaced in place
+# without serving stale copies for up to a year.
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/vendor/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/assets/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=604800"
 
 # Root CSS/JS are not fingerprinted, so they can't be immutable. A 1-day cache
 # with a 7-day stale-while-revalidate gives instant repeat loads (no
@@ -50,6 +65,13 @@
   [headers.values]
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
+
+# The OG-image generator is a build-time utility, not a public page.
+# 404 any direct hit so it doesn't get crawled or indexed.
+[[redirects]]
+  from = "/assets/og/_gen.html"
+  to = "/404.html"
+  status = 404
 
 [[redirects]]
   from = "/*"

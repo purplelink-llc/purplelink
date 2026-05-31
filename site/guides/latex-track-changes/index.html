@@ -18,15 +18,63 @@
     <meta name="twitter:title" content="Track Changes Between Two LaTeX Versions">
     <meta name="twitter:description" content="How to show tracked changes between two versions of a LaTeX document using latexdiff - what it marks, common pitfalls, and a free in-browser diff tool.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
+    <meta name="twitter:image:alt" content="Track Changes Between Two LaTeX Versions">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "HowTo",
+          "name": "How to track changes between two LaTeX versions",
+          "totalTime": "PT5M",
+          "tool": [
+            {
+              "@type": "HowToTool",
+              "name": "LaTeX Diff tool"
+            },
+            {
+              "@type": "HowToTool",
+              "name": "latexdiff (runs server-side)"
+            }
+          ],
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Save the original version",
+              "text": "Keep an unedited copy of your manuscript before making changes for the new revision."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Edit the new version",
+              "text": "Make your revisions in a separate copy of the .tex file."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Upload both files",
+              "text": "Open the LaTeX Diff tool. Upload the original as 'old' and the revised file as 'new'."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Run the diff",
+              "text": "Click Generate. The tool runs latexdiff and compiles the result into a single PDF showing deletions struck through and additions in color."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Share with co-authors",
+              "text": "Send the resulting PDF to your collaborators or use it as a change log for journal revisions."
+            }
+          ]
+        },
+        {
           "@type": "Article",
           "headline": "How to show changes between two LaTeX versions",
           "description": "How to show tracked changes between two versions of a LaTeX document using latexdiff - what it marks, common pitfalls, and a free in-browser diff tool.",
-          "author": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+          "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
           "mainEntityOfPage": "https://purplelink.llc/guides/latex-track-changes/",
           "datePublished": "2026-05-28",
@@ -82,6 +130,7 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to show changes between two LaTeX versions</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-28">May 28, 2026</time></p>
         <p class="post-lede">Reviewers and co-authors often want a "track changes" PDF. LaTeX doesn't have it built in, but latexdiff produces exactly that. Here's how it works.</p>
       </div>
 

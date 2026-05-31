@@ -9,13 +9,16 @@
     <link rel="canonical" href="https://purplelink.llc/globepin/">
     <meta property="og:title" content="GlobePin - Track Every Place You've Been">
     <meta property="og:description" content="Pin the places you've been. Track the flights you've taken. Set goals for where you're going next. GlobePin puts your travel on the map.">
-    <meta property="og:image" content="https://purplelink.llc/assets/globepin-icon.png">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/globepin.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/globepin/">
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="GlobePin - Track Every Place You've Been">
     <meta name="twitter:description" content="Pin the places you've been. Track the flights you've taken. Set goals for where you're going next. GlobePin puts your travel on the map.">
-    <meta name="twitter:image" content="https://purplelink.llc/assets/globepin-icon.png">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/globepin.png">
+    <meta name="twitter:image:alt" content="GlobePin — travel mapping for iOS">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
@@ -28,6 +31,19 @@
     {
       "@context": "https://schema.org",
       "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "GlobePin",
+          "applicationCategory": "TravelApplication",
+          "applicationSubCategory": "Personal travel mapping",
+          "operatingSystem": "iOS 17+",
+          "url": "https://purplelink.llc/globepin/",
+          "image": "https://purplelink.llc/assets/og/globepin.png",
+          "description": "A personal travel-mapping iOS app that tracks every place visited, every flight taken, and every destination on the list. Visual record on a 3D globe; iCloud sync, no separate account.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/PreOrder" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
         {
           "@type": "FAQPage",
           "mainEntity": [
@@ -92,7 +108,7 @@
     <a class="back-link" href="/">← All products</a>
 
     <div id="main-content" class="app-hero">
-      <img class="app-hero-icon" src="/assets/globepin-icon.png" width="120" height="120" fetchpriority="high" alt="GlobePin app icon">
+      <img class="app-hero-icon" src="/assets/globepin-icon.png" width="120" height="120" fetchpriority="high" alt="GlobePin app icon — pin marker on a 3D globe">
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-ios">iOS</span>
@@ -172,14 +188,14 @@
     <section class="waitlist-section" id="waitlist">
       <p class="eyebrow">Early access</p>
       <h2>Be first to know when GlobePin ships.</h2>
-      <p>Leave your email and we'll notify you at launch - no spam, just one email when it's ready.</p>
+      <p>Sign up and I'll let you know the moment GlobePin lands on the App Store. One email, then quiet.</p>
       <form class="waitlist-form" name="waitlist-globepin" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="waitlist-globepin">
         <p hidden><input name="bot-field"></p>
         <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
         <button type="submit">Notify me at launch</button>
       </form>
-      <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a></p>
+      <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a> · <a href="/blog/what-globepin-does-differently/">What makes GlobePin different →</a></p>
     </section>
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">

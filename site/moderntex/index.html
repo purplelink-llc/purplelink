@@ -9,13 +9,16 @@
     <link rel="canonical" href="https://purplelink.llc/moderntex/">
     <meta property="og:title" content="ModernTex - Native macOS LaTeX Studio">
     <meta property="og:description" content="A native macOS LaTeX editor built around the academic manuscript workflow — multi-file projects, synced preview, plain-language compile errors.">
-    <meta property="og:image" content="https://purplelink.llc/assets/moderntex-icon.png">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/moderntex.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/moderntex/">
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="ModernTex - Native macOS LaTeX Studio">
     <meta name="twitter:description" content="A native macOS LaTeX editor built around the academic manuscript workflow — multi-file projects, synced preview, plain-language compile errors.">
-    <meta name="twitter:image" content="https://purplelink.llc/assets/moderntex-icon.png">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/moderntex.png">
+    <meta name="twitter:image:alt" content="ModernTex — native macOS LaTeX studio">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
@@ -28,6 +31,19 @@
     {
       "@context": "https://schema.org",
       "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "ModernTex",
+          "applicationCategory": "DeveloperApplication",
+          "applicationSubCategory": "LaTeX editor",
+          "operatingSystem": "macOS 14+",
+          "url": "https://purplelink.llc/moderntex/",
+          "image": "https://purplelink.llc/assets/og/moderntex.png",
+          "description": "ModernTex is a native macOS LaTeX editor built for the academic manuscript workflow: multi-file projects, synchronized PDF preview, plain-language compile errors, BibTeX autocomplete, and submission-readiness checks.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/PreOrder" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
         {
           "@type": "FAQPage",
           "mainEntity": [
@@ -49,7 +65,7 @@
             {
               "@type": "Question",
               "name": "How is ModernTex different from TeXShop or Overleaf?",
-              "acceptedAnswer": { "@type": "Answer", "text": "ModernTex is a native macOS app designed specifically for the academic manuscript workflow - not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks in one coherent interface built for researchers." }
+              "acceptedAnswer": { "@type": "Answer", "text": "ModernTex is a native macOS app designed specifically for the academic manuscript workflow - not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks — built around how researchers actually write." }
             },
             {
               "@type": "Question",
@@ -92,7 +108,7 @@
     <a class="back-link" href="/">← All products</a>
 
     <div id="main-content" class="app-hero">
-      <img class="app-hero-icon" src="/assets/moderntex-icon.png" width="120" height="120" fetchpriority="high" alt="ModernTex icon">
+      <img class="app-hero-icon" src="/assets/moderntex-icon.png" width="120" height="120" fetchpriority="high" alt="ModernTex app icon — serif M monogram in brand purple">
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
@@ -188,7 +204,7 @@
     <section class="waitlist-section" id="waitlist">
       <p class="eyebrow">Early access</p>
       <h2>Be first to know when ModernTex ships.</h2>
-      <p>Leave your email and we'll notify you at launch - no spam, just one email when it's ready.</p>
+      <p>Drop your email and I'll send you one note when ModernTex hits the Mac App Store. No newsletters, no follow-ups.</p>
       <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="waitlist-moderntex">
         <input type="hidden" name="source" value="moderntex-page">
@@ -196,7 +212,7 @@
         <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
         <button type="submit">Notify me at launch</button>
       </form>
-      <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a></p>
+      <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a> · <a href="/blog/the-latex-editor-academics-want/">Why ModernTex →</a></p>
     </section>
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">
@@ -216,7 +232,7 @@
         </details>
         <details class="faq-item">
           <summary>How is ModernTex different from TeXShop or Overleaf?</summary>
-          <div class="faq-body">ModernTex is a native macOS app designed specifically for the academic manuscript workflow - not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks in one coherent interface. It was designed for researchers, not programmers.</div>
+          <div class="faq-body">ModernTex is a native macOS app designed specifically for the academic manuscript workflow - not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers.</div>
         </details>
         <details class="faq-item">
           <summary>Does ModernTex support multi-file projects?</summary>

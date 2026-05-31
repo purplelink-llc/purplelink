@@ -9,13 +9,16 @@
     <link rel="canonical" href="https://purplelink.llc/haea/">
     <meta property="og:title" content="Haea - On-Device Health Analytics">
     <meta property="og:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your data never leaves your phone.">
-    <meta property="og:image" content="https://purplelink.llc/assets/haea-icon.png">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/haea.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/haea/">
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Haea - On-Device Health Analytics">
     <meta name="twitter:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your data never leaves your phone.">
-    <meta name="twitter:image" content="https://purplelink.llc/assets/haea-icon.png">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/haea.png">
+    <meta name="twitter:image:alt" content="Haea — on-device iOS health analytics">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
@@ -28,6 +31,23 @@
     {
       "@context": "https://schema.org",
       "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Haea",
+          "applicationCategory": "HealthApplication",
+          "applicationSubCategory": "On-device health analytics",
+          "operatingSystem": "iOS 17+",
+          "url": "https://purplelink.llc/haea/",
+          "image": "https://purplelink.llc/assets/og/haea.png",
+          "description": "An on-device iOS health app for sleep, nutrition, activity, and biometrics. All analysis runs locally — no cloud sync, no third-party SDKs, no analytics.",
+          "offers": [
+            { "@type": "Offer", "price": "0",     "priceCurrency": "USD", "name": "Free tier",       "availability": "https://schema.org/PreOrder" },
+            { "@type": "Offer", "price": "1.99",  "priceCurrency": "USD", "name": "Premium monthly", "availability": "https://schema.org/PreOrder" },
+            { "@type": "Offer", "price": "14.99", "priceCurrency": "USD", "name": "Premium annual",  "availability": "https://schema.org/PreOrder" }
+          ],
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
         {
           "@type": "FAQPage",
           "mainEntity": [
@@ -92,7 +112,7 @@
     <a class="back-link" href="/">← All products</a>
 
     <div id="main-content" class="app-hero">
-      <img class="app-hero-icon" src="/assets/haea-icon.png" width="120" height="120" fetchpriority="high" alt="Haea app icon">
+      <img class="app-hero-icon" src="/assets/haea-icon.png" width="120" height="120" fetchpriority="high" alt="Haea app icon — heart-rhythm waveform on a dark gradient">
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-ios">iOS</span>
@@ -186,14 +206,14 @@
     <section class="waitlist-section" id="waitlist">
       <p class="eyebrow">Early access</p>
       <h2>Be first to know when Haea ships.</h2>
-      <p>Leave your email and we'll notify you at launch - no spam, just one email when it's ready.</p>
+      <p>Add your email and you'll get one message the day Haea hits the App Store. Nothing else.</p>
       <form class="waitlist-form" name="waitlist-haea" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="waitlist-haea">
         <p hidden><input name="bot-field"></p>
         <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
         <button type="submit">Notify me at launch</button>
       </form>
-      <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a></p>
+      <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a> · <a href="/blog/why-haea-is-on-device/">Why on-device →</a></p>
     </section>
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">

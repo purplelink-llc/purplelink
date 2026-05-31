@@ -18,6 +18,7 @@
     <meta name="twitter:title" content="LaTeX Diff Online - Compare Two Versions">
     <meta name="twitter:description" content="Free online latexdiff tool. Upload old and new .tex files or project .zips and download a PDF with additions and deletions marked. Files are never stored.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-diff.png">
+    <meta name="twitter:image:alt" content="LaTeX Diff Online - Compare Two Versions">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -29,6 +30,7 @@
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
+          "image": "https://purplelink.llc/assets/og/latex-diff.png",
           "description": "A free online latexdiff tool. Upload old and new .tex files or full project .zips and download a PDF with additions and deletions marked. Files are never stored.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
@@ -160,7 +162,8 @@
       <nav class="tool-related" aria-label="Related tools">
         <h2>More free LaTeX tools</h2>
         <ul>
-          <li><a href="/guides/latex-track-changes/">Guide: Track changes in LaTeX →</a></li>
+                    <li><strong>Related guide:</strong> <a href="/guides/latex-track-changes/">Show changes between two LaTeX versions →</a></li>
+<li><a href="/guides/latex-track-changes/">Guide: Track changes in LaTeX →</a></li>
           <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF →</a></li>
           <li><a href="/tools/latex-to-word/">Convert LaTeX to Word →</a></li>
           <li><a href="/tools/">All LaTeX tools →</a></li>
@@ -169,7 +172,7 @@
 
       <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
-      <script src="/tools/tools.js"></script>
+      <script src="/tools/tools.js" defer></script>
       <script>
         (function () {
           let oldF = null, newF = null;
