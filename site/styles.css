@@ -1835,8 +1835,8 @@ dd {
    the bare grid (no max-width / padding of its own). */
 .tools-section { max-width: 1040px; margin: 40px auto 0; padding: 0 24px; }
 .tools-section:first-of-type { margin-top: 28px; }
-.tools-section-heading { font-family: var(--font-display); margin: 0 0 4px; font-size: 1.35rem; color: var(--ink); }
-.tools-section-intro { color: var(--muted); margin: 0 0 16px; max-width: 64ch; font-size: 0.95rem; }
+.tools-section-heading { font-family: var(--font-display); margin: 0 0 4px; font-size: 1.35rem; color: var(--ink); text-align: center; }
+.tools-section-intro { color: var(--muted); margin: 0 auto 16px; max-width: 64ch; font-size: 0.95rem; text-align: center; }
 .tools-grid {
   display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr);
 }
