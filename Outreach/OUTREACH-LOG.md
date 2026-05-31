@@ -53,7 +53,7 @@ After 4 weeks with no response, mark `no-response` and move on.
 | Date | Platform | URL | Status |
 |---|---|---|---|
 | 2026-05-31 | LinkedIn | https://www.linkedin.com/company/purplelink-llc/ | live |
-| | GitHub | github.com/purplelink-llc | |
+| 2026-05-31 | GitHub | https://github.com/purplelink-llc | live (logo upload TBD) |
 | | Bluesky | bsky.app/profile/purplelink.llc | |
 
 ---
