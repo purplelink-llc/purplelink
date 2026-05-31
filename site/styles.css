@@ -376,7 +376,9 @@ nav a:hover { color: var(--ink); }
   padding: 4px 11px;
   border-radius: 100px;
   background: var(--purple-light);
-  color: var(--purple-dim);
+  /* Deliberately darker than --purple-dim so this small-text pill meets WCAG
+     AA 4.5:1 on the --purple-light background. Dark-mode override below. */
+  color: oklch(35% 0.20 310);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -689,7 +691,7 @@ dd {
 
 .eyebrow-light {
   color: oklch(99% 0.003 310);
-  opacity: 0.5;
+  opacity: 0.75;
 }
 
 .contact-heading {
@@ -703,7 +705,9 @@ dd {
 
 .contact-heading em {
   font-style: italic;
-  color: var(--purple-light);
+  /* Use the higher-chroma --purple so this stays legible in dark mode
+     (where --purple-light remaps to a dark color and would vanish). */
+  color: var(--purple);
 }
 
 .contact-sub {
@@ -1353,7 +1357,7 @@ dd {
 }
 
 .tag-launch   { background: oklch(91% 0.08 145); color: oklch(30% 0.14 145); }
-.tag-update   { background: var(--purple-light); color: var(--purple-dim); }
+.tag-update   { background: var(--purple-light); color: oklch(35% 0.20 310); }
 .tag-product  { background: oklch(91% 0.06 250); color: oklch(30% 0.12 250); }
 
 .changelog-content p,

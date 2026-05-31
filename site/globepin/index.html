@@ -21,7 +21,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="preload" href="/assets/globepin-icon.png" as="image" fetchpriority="high">
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
     <script type="application/ld+json">
@@ -80,7 +80,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#projects" aria-current="page">Products</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -92,7 +92,7 @@
     <a class="back-link" href="/">← All products</a>
 
     <div id="main-content" class="app-hero">
-      <img class="app-hero-icon" src="/assets/globepin-icon.png" alt="GlobePin app icon">
+      <img class="app-hero-icon" src="/assets/globepin-icon.png" width="120" height="120" fetchpriority="high" alt="GlobePin app icon">
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-ios">iOS</span>
@@ -135,42 +135,34 @@
       </div>
       <div class="features-grid">
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">📍</span>
           <h3>Place tracking</h3>
           <p>Log every city, landmark, and destination you've visited. Pin them to a map and build a visual record of everywhere you've been.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">✈️</span>
           <h3>Flight tracking</h3>
           <p>Scan your boarding pass to log a flight in seconds. GlobePin builds a route map of every flight you've ever taken, with stats on total distance and airports visited.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🌍</span>
           <h3>Globe visualization</h3>
           <p>See your travel history rendered on a 3D interactive globe. Spin it, zoom in, and see your pins as a spatial record of your life's movement.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">📊</span>
           <h3>Stats dashboard</h3>
           <p>Countries visited, cities logged, total distance traveled, continents covered. The numbers that tell the story of where you've been.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🎯</span>
           <h3>Travel goals</h3>
           <p>Set goals for destinations you want to reach - countries, continents, bucket-list places. Track progress and watch the gap close.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🖼️</span>
           <h3>Shareable postcards</h3>
-          <p>Generate beautiful travel postcards from your visit history. Share them on Instagram or keep them as personal mementos.</p>
+          <p>Generate shareable travel postcards from your visit history. Share them on Instagram or keep them as personal mementos.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">☁️</span>
           <h3>iCloud sync</h3>
-          <p>Your travel data stays in sync across all your devices via CloudKit. Seamless, automatic, and private.</p>
+          <p>Your travel data stays in sync across all your devices via CloudKit. Syncs automatically. Stays private.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🗓️</span>
           <h3>Anniversary reminders</h3>
           <p>Get notified when it's been a year since you visited a place. A quiet nudge to return - or a reminder of how far you've traveled.</p>
         </div>
@@ -219,7 +211,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -228,6 +220,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

@@ -70,23 +70,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
-    <style>
-      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
-      .pdf-tabs { display:flex; gap:0.5rem; margin-bottom:1.25rem; flex-wrap:wrap; }
-      .pdf-tab { padding:0.5rem 1.1rem; border-radius:999px; border:1px solid #ffffff24; background:transparent; color:#cbd5e1; font:inherit; font-size:0.9rem; cursor:pointer; }
-      .pdf-tab[aria-selected="true"] { background:#7c3aed; border-color:#7c3aed; color:#fff; }
-      .pdf-tab:focus-visible { outline:2px solid #a78bfa; outline-offset:2px; }
-      .pdf-panel[hidden] { display:none; }
-      .pdf-filelist { list-style:none; padding:0; margin:0.75rem 0 0; display:flex; flex-direction:column; gap:0.4rem; }
-      .pdf-filelist li { display:flex; align-items:center; gap:0.6rem; background:#0a0a0a; border:1px solid #ffffff16; border-radius:8px; padding:0.5rem 0.7rem; font-size:0.85rem; }
-      .pdf-filelist .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-      .pdf-filelist button { background:none; border:none; color:#cbd5e1; cursor:pointer; font-size:0.95rem; padding:0.1rem 0.4rem; border-radius:4px; }
-      .pdf-filelist button:hover { color:#fff; background:#ffffff14; }
-      .pdf-field { display:flex; flex-direction:column; gap:0.35rem; margin:0.5rem 0; max-width:24rem; }
-      .pdf-field label { font-size:0.85rem; color:#cbd5e1; }
-      .pdf-field input, .pdf-field select { padding:0.55rem 0.7rem; border-radius:8px; border:1px solid #ffffff24; background:#0a0a0a; color:#e5e5e5; font:inherit; }
-      .pdf-field input:focus, .pdf-field select:focus { outline:2px solid #7c3aed; outline-offset:1px; }
-    </style>
+    <link rel="stylesheet" href="/tools/pdf-tools/pdf-tools.css">
     <script src="/site.js" defer></script>
   </head>
   <body>
@@ -117,9 +101,9 @@
 
       <div class="tool-app">
         <div class="pdf-tabs" role="tablist" aria-label="PDF operation">
-          <button class="pdf-tab" id="tab-merge" role="tab" aria-selected="true" aria-controls="panel-merge">Merge</button>
-          <button class="pdf-tab" id="tab-split" role="tab" aria-selected="false" aria-controls="panel-split">Split</button>
-          <button class="pdf-tab" id="tab-compress" role="tab" aria-selected="false" aria-controls="panel-compress">Compress</button>
+          <button type="button" class="pdf-tab" id="tab-merge" role="tab" aria-selected="true" aria-controls="panel-merge">Merge</button>
+          <button type="button" class="pdf-tab" id="tab-split" role="tab" aria-selected="false" aria-controls="panel-split">Split</button>
+          <button type="button" class="pdf-tab" id="tab-compress" role="tab" aria-selected="false" aria-controls="panel-compress">Compress</button>
         </div>
 
         <!-- MERGE -->
@@ -131,7 +115,7 @@
           </div>
           <ul class="pdf-filelist" id="merge-list" aria-live="polite"></ul>
           <div class="tool-options">
-            <button class="btn btn-primary" id="merge-run" disabled>Merge PDFs</button>
+            <button type="button" class="btn btn-primary" id="merge-run" disabled>Merge PDFs</button>
           </div>
         </section>
 
@@ -148,7 +132,7 @@
             <input type="text" id="split-range" placeholder="1-3, 5" autocomplete="off">
           </div>
           <div class="tool-options">
-            <button class="btn btn-primary" id="split-run" disabled>Extract pages</button>
+            <button type="button" class="btn btn-primary" id="split-run" disabled>Extract pages</button>
           </div>
         </section>
 
@@ -170,7 +154,7 @@
             </select>
           </div>
           <div class="tool-options">
-            <button class="btn btn-primary" id="compress-run" disabled>Compress PDF</button>
+            <button type="button" class="btn btn-primary" id="compress-run" disabled>Compress PDF</button>
           </div>
         </section>
 
@@ -220,10 +204,10 @@
         </ul>
       </nav>
 
-      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
       <script src="/tools/tools.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+      <script defer src="/assets/vendor/pdf-lib.min.js"></script>
       <script>
         (function () {
           const statusEl = document.getElementById("status");
@@ -387,7 +371,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -396,6 +380,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

@@ -71,21 +71,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
-    <style>
-      .bb-textarea { width: 100%; min-height: 10rem; font-family: monospace; font-size: 0.85rem; background: #1a1a2e; color: #e2e8f0; border: 1px dashed #ffffff33; border-radius: 8px; padding: 0.75rem 1rem; resize: vertical; box-sizing: border-box; }
-      .bb-textarea:focus { outline: 2px solid #7c3aed; border-color: transparent; }
-      .bb-table-wrap { overflow-x: auto; margin-top: 0.75rem; }
-      .bb-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-      .bb-table th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ffffff18; color: #9ca3af; font-weight: 600; }
-      .bb-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #ffffff0a; vertical-align: top; }
-      .bb-table tr.row-ok   td:first-child { border-left: 3px solid #4ade80; }
-      .bb-table tr.row-err  td:first-child { border-left: 3px solid #f87171; }
-      .bb-ok  { color: #4ade80; }
-      .bb-err { color: #f87171; }
-      .bb-muted { color: #6b7280; font-size: 0.8rem; }
-      .bb-key { font-family: monospace; font-size: 0.8rem; }
-      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
-    </style>
+    <link rel="stylesheet" href="/tools/bib-builder/bib-builder.css">
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -118,7 +104,7 @@
         <textarea id="ids" class="bb-textarea" placeholder="10.1145/3544548.3581542&#10;2301.12345&#10;https://doi.org/10.1038/s41586-021-03819-2&#10;https://arxiv.org/abs/1706.03762"></textarea>
         <p class="tool-privacy" style="margin-top:0.35rem">DOIs and arXiv IDs are sent to CrossRef and the arXiv API to look up BibTeX data.</p>
         <div class="tool-options" style="margin-top:0.75rem">
-          <button class="btn btn-primary" id="run">Build .bib</button>
+          <button type="button" class="btn btn-primary" id="run">Build .bib</button>
         </div>
         <p class="tool-status" id="status" role="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
@@ -166,7 +152,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
       <script src="/tools/tools.js"></script>
       <script>
@@ -232,7 +218,7 @@
           html += "</tbody></table></div>";
 
           if (combinedBib) {
-            html += '<div style="margin-top:1rem"><button class="btn btn-secondary" id="dl-bib">Download .bib (' + ok + ' ' + (ok === 1 ? "entry" : "entries") + ')</button></div>';
+            html += '<div style="margin-top:1rem"><button type="button" class="btn btn-secondary" id="dl-bib">Download .bib (' + ok + ' ' + (ok === 1 ? "entry" : "entries") + ')</button></div>';
           }
           resultEl.innerHTML = html;
 
@@ -257,7 +243,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -266,6 +252,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>BibTeX Validator - Detect AI Hallucinations | Purplelink LLC</title>
-    <meta name="description" content="Free online BibTeX validator. Upload or paste a .bib file to check syntax, missing fields, dead DOIs, author and year correctness, and download a corrected .bib for high-confidence matches.">
+    <meta name="description" content="Free online BibTeX validator. Check syntax, dead DOIs, author and year correctness. Download a corrected .bib. Catches AI-hallucinated citations.">
     <link rel="canonical" href="https://purplelink.llc/tools/bib-validator/">
     <meta property="og:title" content="BibTeX Validator - Detect AI Hallucinations">
-    <meta property="og:description" content="Free online BibTeX validator. Upload or paste a .bib file to check syntax, missing fields, dead DOIs, author and year correctness, and download a corrected .bib for high-confidence matches.">
+    <meta property="og:description" content="Free online BibTeX validator. Check syntax, dead DOIs, author and year correctness. Download a corrected .bib. Catches AI-hallucinated citations.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/bib-validator/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/bib-validator.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="BibTeX Validator - Detect AI Hallucinations">
-    <meta name="twitter:description" content="Free online BibTeX validator. Upload or paste a .bib file to check syntax, missing fields, dead DOIs, author and year correctness, and download a corrected .bib for high-confidence matches.">
+    <meta name="twitter:description" content="Free online BibTeX validator. Check syntax, dead DOIs, author and year correctness. Download a corrected .bib. Catches AI-hallucinated citations.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
     <script type="application/ld+json">
     {
@@ -172,7 +172,7 @@
           </p>
         </fieldset>
         <div class="tool-options" style="margin-top:0.75rem">
-          <button class="btn btn-primary" id="run" disabled>Validate .bib</button>
+          <button type="button" class="btn btn-primary" id="run" disabled>Validate .bib</button>
         </div>
 
         <p class="tool-status" id="status" aria-live="polite"></p>
@@ -227,7 +227,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
       <script src="/tools/tools.js"></script>
       <script>
@@ -402,9 +402,9 @@
           html += "</tbody></table></div>";
 
           html += '<div class="bib-downloads">';
-          html += '<button class="btn btn-secondary" id="dl-annotated">Download annotated .bib</button>';
+          html += '<button type="button" class="btn btn-secondary" id="dl-annotated">Download annotated .bib</button>';
           if (correctedBib && correctedBib.indexOf("CORRECTED from CrossRef") !== -1) {
-            html += '<button class="btn btn-primary" id="dl-corrected">Download corrected .bib</button>';
+            html += '<button type="button" class="btn btn-primary" id="dl-corrected">Download corrected .bib</button>';
           }
           html += "</div>";
 
@@ -580,7 +580,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -589,6 +589,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

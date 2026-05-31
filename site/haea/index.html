@@ -8,20 +8,20 @@
     <meta name="description" content="Haea is an on-device iOS health analytics app tracking sleep, nutrition, exercise, and biometrics, surfacing patterns with ML. Data stays on your phone.">
     <link rel="canonical" href="https://purplelink.llc/haea/">
     <meta property="og:title" content="Haea - On-Device Health Analytics">
-    <meta property="og:description" content="Your complete health picture, on your phone. Advanced analytics for sleep, nutrition, activity, and biometrics - no cloud, no compromise.">
+    <meta property="og:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your data never leaves your phone.">
     <meta property="og:image" content="https://purplelink.llc/assets/haea-icon.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/haea/">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Haea - On-Device Health Analytics">
-    <meta name="twitter:description" content="Your complete health picture, on your phone. Advanced analytics for sleep, nutrition, activity, and biometrics - no cloud, no compromise.">
+    <meta name="twitter:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your data never leaves your phone.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/haea-icon.png">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="preload" href="/assets/haea-icon.png" as="image" fetchpriority="high">
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
     <script type="application/ld+json">
@@ -80,7 +80,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#projects" aria-current="page">Products</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -92,7 +92,7 @@
     <a class="back-link" href="/">← All products</a>
 
     <div id="main-content" class="app-hero">
-      <img class="app-hero-icon" src="/assets/haea-icon.png" alt="Haea app icon">
+      <img class="app-hero-icon" src="/assets/haea-icon.png" width="120" height="120" fetchpriority="high" alt="Haea app icon">
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-ios">iOS</span>
@@ -128,28 +128,24 @@
     <section class="features-section">
       <div class="features-header">
         <p class="eyebrow">Free</p>
-        <h2>The essentials, done right</h2>
+        <h2>Free features</h2>
       </div>
       <div class="features-grid">
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">📝</span>
           <h3>Complete logging</h3>
           <p>Log food, weight, water, exercise, and mood in one place. Fast entry, no friction. Connects to HealthKit to pull in data you've already logged.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">📈</span>
           <h3>Trend charts</h3>
           <p>7-day and 30-day views of every metric. See where things are heading at a glance without digging through tables.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🕐</span>
           <h3>Activity timeline</h3>
           <p>A unified feed of everything you've logged - workouts, meals, weight entries, sleep - in chronological context.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🔔</span>
           <h3>Daily briefing</h3>
-          <p>An optional 8am summary of your key metrics from the day before. One notification, all signal, no noise.</p>
+          <p>An optional 8am summary of your key metrics from the day before. One short morning summary.</p>
         </div>
       </div>
     </section>
@@ -157,36 +153,30 @@
     <section class="features-section bg-purple-xlight">
       <div class="features-header">
         <p class="eyebrow">Premium - $1.99 / month or $14.99 / year</p>
-        <h2>Intelligence that goes deeper</h2>
+        <h2>Premium analytics</h2>
       </div>
       <div class="features-grid">
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">⚡</span>
           <h3>Energy Balance &amp; TDEE</h3>
           <p>Calculate your true daily energy expenditure from actual weight and calorie data. Auto-detects eating patterns and surfaces your real caloric balance over rolling windows.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🌙</span>
           <h3>Circadian Rhythm Intelligence</h3>
           <p>Tracks your biological circadian phase. Identifies your optimal windows for energy, focus, and sleep - then shows the transition between active and wind-down phases.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🏃</span>
           <h3>Running Analytics</h3>
           <p>FIT file export, colored route maps with pace visualization, mean max power curves, and polarized training zone breakdown for serious runners.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🧠</span>
           <h3>Advanced ML models</h3>
           <p>Dose-response curves, Granger causality analysis, adaptation tracking, and Kalman-filtered recovery state estimation. What actually causes what in your health data.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🧬</span>
           <h3>Biological metrics</h3>
           <p>Biological age estimation, VO₂ max tracking, DFA-α1 heart rate variability analysis, and circadian age (CosinorAge). Metrics that move, not just snapshots.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🔒</span>
           <h3>Private by design</h3>
           <p>No cloud sync. No third-party SDKs. No ads. All analytics run on-device using GRDB.sqlite local storage. Your health data never leaves your phone.</p>
         </div>
@@ -215,7 +205,7 @@
         </details>
         <details class="faq-item">
           <summary>Is there a free tier?</summary>
-          <div class="faq-body">Yes. Haea has a free tier for core health logging and charts. Premium features ($1.99/month or $14.99/year) unlock advanced analytics including Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation.</div>
+          <div class="faq-body">Yes. Haea has a free tier for core health logging and charts. Premium features ($1.99/month or $14.99/year) premium adds: Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation.</div>
         </details>
         <details class="faq-item">
           <summary>Does Haea sync to the cloud?</summary>
@@ -235,7 +225,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -244,6 +234,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

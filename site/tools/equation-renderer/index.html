@@ -76,15 +76,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
-    <style>
-      .eq-textarea { width: 100%; min-height: 7rem; font-family: monospace; font-size: 0.9rem; background: #1a1a2e; color: #e2e8f0; border: 1px dashed #ffffff33; border-radius: 8px; padding: 0.75rem 1rem; resize: vertical; box-sizing: border-box; }
-      .eq-textarea:focus { outline: 2px solid #7c3aed; border-color: transparent; }
-      .eq-preview { margin-top: 1.25rem; text-align: center; background: #fff; border-radius: 8px; padding: 1.5rem 1rem; border: 1px solid #ffffff18; }
-      .eq-preview img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
-      .eq-examples { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-      .eq-example { background: #1a1a2e; border: 1px solid #ffffff22; border-radius: 6px; padding: 0.25rem 0.6rem; font-family: monospace; font-size: 0.78rem; color: #9ca3af; cursor: pointer; white-space: nowrap; }
-      .eq-example:hover { border-color: #7c3aed; color: #c4b5fd; }
-    </style>
+    <link rel="stylesheet" href="/tools/equation-renderer/equation-renderer.css">
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -135,7 +127,7 @@
               <option value="600">600 DPI - high resolution</option>
             </select>
           </label>
-          <button class="btn btn-primary" id="run">Render equation</button>
+          <button type="button" class="btn btn-primary" id="run">Render equation</button>
         </div>
         <p class="tool-status" id="status" role="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
@@ -184,7 +176,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
       <script src="/tools/tools.js"></script>
       <script>
@@ -261,7 +253,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -270,6 +262,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

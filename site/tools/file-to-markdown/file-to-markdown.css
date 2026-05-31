@@ -1,0 +1,6 @@
+/* file-to-markdown — page-specific styles.
+   External file so the strict CSP (style-src 'self') permits it. */
+
+.md-textarea { width:100%; min-height:18rem; resize:vertical; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.9rem; line-height:1.5; padding:0.9rem 1rem; border-radius:10px; border:1px solid #ffffff1f; background:#0a0a0a; color:#e5e5e5; }
+.md-textarea:focus { outline:2px solid #7c3aed; outline-offset:1px; }
+    

@@ -1,0 +1,19 @@
+/* pdf-tools — page-specific styles.
+   External file so the strict CSP (style-src 'self') permits it. */
+
+.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+.pdf-tabs { display:flex; gap:0.5rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+.pdf-tab { padding:0.5rem 1.1rem; border-radius:999px; border:1px solid #ffffff24; background:transparent; color:#cbd5e1; font:inherit; font-size:0.9rem; cursor:pointer; }
+.pdf-tab[aria-selected="true"] { background:#7c3aed; border-color:#7c3aed; color:#fff; }
+.pdf-tab:focus-visible { outline:2px solid #a78bfa; outline-offset:2px; }
+.pdf-panel[hidden] { display:none; }
+.pdf-filelist { list-style:none; padding:0; margin:0.75rem 0 0; display:flex; flex-direction:column; gap:0.4rem; }
+.pdf-filelist li { display:flex; align-items:center; gap:0.6rem; background:#0a0a0a; border:1px solid #ffffff16; border-radius:8px; padding:0.5rem 0.7rem; font-size:0.85rem; }
+.pdf-filelist .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.pdf-filelist button { background:none; border:none; color:#cbd5e1; cursor:pointer; font-size:0.95rem; padding:0.1rem 0.4rem; border-radius:4px; }
+.pdf-filelist button:hover { color:#fff; background:#ffffff14; }
+.pdf-field { display:flex; flex-direction:column; gap:0.35rem; margin:0.5rem 0; max-width:24rem; }
+.pdf-field label { font-size:0.85rem; color:#cbd5e1; }
+.pdf-field input, .pdf-field select { padding:0.55rem 0.7rem; border-radius:8px; border:1px solid #ffffff24; background:#0a0a0a; color:#e5e5e5; font:inherit; }
+.pdf-field input:focus, .pdf-field select:focus { outline:2px solid #7c3aed; outline-offset:1px; }
+    

@@ -8,20 +8,20 @@
     <meta name="description" content="ModernTex is a native macOS LaTeX studio for researchers: multi-file editing, synchronized PDF preview, citation management, and submission-readiness checks.">
     <link rel="canonical" href="https://purplelink.llc/moderntex/">
     <meta property="og:title" content="ModernTex - Native macOS LaTeX Studio">
-    <meta property="og:description" content="A sleek, high-performance LaTeX studio for macOS. Built for academic authors who are serious about their work.">
+    <meta property="og:description" content="A native macOS LaTeX editor built around the academic manuscript workflow — multi-file projects, synced preview, plain-language compile errors.">
     <meta property="og:image" content="https://purplelink.llc/assets/moderntex-icon.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/moderntex/">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="ModernTex - Native macOS LaTeX Studio">
-    <meta name="twitter:description" content="A sleek, high-performance LaTeX studio for macOS. Built for academic authors who are serious about their work.">
+    <meta name="twitter:description" content="A native macOS LaTeX editor built around the academic manuscript workflow — multi-file projects, synced preview, plain-language compile errors.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/moderntex-icon.png">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="preload" href="/assets/moderntex-icon.png" as="image" fetchpriority="high">
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
     <script type="application/ld+json">
@@ -80,7 +80,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#projects" aria-current="page">Products</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -92,7 +92,7 @@
     <a class="back-link" href="/">← All products</a>
 
     <div id="main-content" class="app-hero">
-      <img class="app-hero-icon" src="/assets/moderntex-icon.png" alt="ModernTex icon">
+      <img class="app-hero-icon" src="/assets/moderntex-icon.png" width="120" height="120" fetchpriority="high" alt="ModernTex icon">
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
@@ -130,42 +130,34 @@
       </div>
       <div class="features-grid">
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">📄</span>
           <h3>Multi-file manuscript navigation</h3>
           <p>Navigate complex projects with root file detection and a structured sidebar. Jump between chapters, sections, and bibliography files without losing context.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">⚡</span>
           <h3>Three compile modes</h3>
           <p>Fast, Live, and Full compile modes let you move at the speed you need. Live mode keeps the PDF in sync as you type. Full mode does the deep pass before submission.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">📖</span>
           <h3>Synchronized PDF preview</h3>
           <p>Forward and inverse search - click the source to jump the PDF, click the PDF to jump the source. Side-by-side, always in sync.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">📚</span>
           <h3>Citation management</h3>
           <p>BibTeX autocomplete that actually works. Search your bibliography by author, title, or key. Cite-as-you-type with smart suggestions from your .bib files.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🔍</span>
           <h3>Plain-language error diagnostics</h3>
           <p>LaTeX error messages are hostile by design. ModernTex translates them into clear explanations with suggested fixes, reducing the debugging spiral that breaks flow.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">📦</span>
           <h3>Submission readiness checks</h3>
           <p>Automatically check anonymization, page limits, required sections, and submission packaging before you hit send. No more desk rejections over avoidable issues.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🔀</span>
           <h3>Version snapshots</h3>
           <p>Take semantic snapshots at any point - before a major revision, after peer review, before resubmission. Diff between snapshots with meaningful context.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🍎</span>
           <h3>Native macOS experience</h3>
           <p>Built in Swift for macOS 14+. Native dark and light mode, system fonts, proper keyboard shortcuts, and performance that doesn't make you wait.</p>
         </div>
@@ -175,21 +167,18 @@
     <section class="features-section bg-purple-xlight">
       <div class="features-header">
         <p class="eyebrow">Who it's for</p>
-        <h2>Built for serious academic authors</h2>
+        <h2>For academic authors</h2>
       </div>
       <div class="features-grid">
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🎓</span>
           <h3>PhD students</h3>
           <p>Writing dissertation chapters and conference papers across multiple files, with deadlines and a committee watching over your shoulder.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🏫</span>
           <h3>Faculty &amp; researchers</h3>
           <p>Managing journal submissions, coauthor workflows, multiple concurrent manuscripts, and the full resubmission lifecycle.</p>
         </div>
         <div class="feature-item">
-          <span class="feature-icon" aria-hidden="true">🤝</span>
           <h3>Technical coauthors</h3>
           <p>Jumping into someone else's LaTeX project and needing to understand the structure, fix compilation issues, and contribute without breaking things.</p>
         </div>
@@ -238,7 +227,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -247,6 +236,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

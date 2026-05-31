@@ -70,14 +70,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
-    <style>
-      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
-      .md-textarea { width:100%; min-height:18rem; resize:vertical; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.9rem; line-height:1.5; padding:0.9rem 1rem; border-radius:10px; border:1px solid #ffffff1f; background:#0a0a0a; color:#e5e5e5; }
-      .md-textarea:focus { outline:2px solid #7c3aed; outline-offset:1px; }
-      .md-target { display:flex; gap:1.25rem; flex-wrap:wrap; align-items:center; margin:0.4rem 0; }
-      .md-target label { display:inline-flex; gap:0.4rem; align-items:center; cursor:pointer; }
-      .md-orfile { margin-top:0.5rem; font-size:0.85rem; color:#9ca3af; }
-    </style>
+    <link rel="stylesheet" href="/tools/markdown-to-pdf/markdown-to-pdf.css">
     <script src="/site.js" defer></script>
   </head>
   <body>
@@ -122,7 +115,7 @@
             <label><input type="radio" name="target" value="pdf" checked> PDF</label>
             <label><input type="radio" name="target" value="docx"> Word (.docx)</label>
           </div>
-          <button class="btn btn-primary" id="run">Convert</button>
+          <button type="button" class="btn btn-primary" id="run">Convert</button>
         </div>
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
@@ -170,7 +163,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
       <script src="/tools/tools.js"></script>
       <script>
@@ -217,7 +210,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -226,6 +219,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

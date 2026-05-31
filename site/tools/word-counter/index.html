@@ -75,28 +75,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
-    <style>
-      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
-      .wc-textarea { width:100%; min-height:240px; resize:vertical; font:inherit; line-height:1.6;
-        color:inherit; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.14);
-        border-radius:12px; padding:1rem 1.1rem; box-sizing:border-box }
-      .wc-textarea:focus { outline:2px solid #7c3aed; outline-offset:2px; border-color:#7c3aed }
-      .wc-field { margin-top:1rem; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap }
-      .wc-field label { font-weight:600 }
-      .wc-field input[type=number] { width:7rem; font:inherit; color:inherit;
-        background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.14);
-        border-radius:8px; padding:.45rem .6rem; box-sizing:border-box }
-      .wc-field input[type=number]:focus { outline:2px solid #7c3aed; outline-offset:2px }
-      .wc-limit { font-weight:600 }
-      .wc-limit.over { color:#fca5a5 }
-      .wc-stats { list-style:none; padding:0; margin:1.25rem 0 0;
-        display:grid; gap:.75rem; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
-      .wc-stat { background:rgba(124,58,237,0.10); border:1px solid rgba(124,58,237,0.28);
-        border-radius:12px; padding:.85rem 1rem }
-      .wc-stat .wc-num { display:block; font-family:"Fraunces",serif; font-size:1.7rem; font-weight:700; line-height:1.1 }
-      .wc-stat .wc-lbl { display:block; margin-top:.25rem; font-size:.8rem; letter-spacing:.02em;
-        text-transform:uppercase; opacity:.78 }
-    </style>
+    <link rel="stylesheet" href="/tools/word-counter/word-counter.css">
     <script src="/site.js" defer></script>
   </head>
   <body>
@@ -121,7 +100,7 @@
       <a class="back-link" href="/tools/">← All tools</a>
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
-        <h1>🔢 Word Counter</h1>
+        <h1>Word Counter</h1>
         <p>Paste or type your text to count <strong>words, characters, sentences, paragraphs</strong>, and estimated reading time - live, as you type. Everything runs in your browser.</p>
       </div>
 
@@ -196,7 +175,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
       <script>
         (function () {
@@ -286,7 +265,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -295,6 +274,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

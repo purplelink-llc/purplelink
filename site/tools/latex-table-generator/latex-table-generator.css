@@ -1,0 +1,25 @@
+/* latex-table-generator — page-specific styles.
+   External file so the strict CSP (style-src 'self') permits it. */
+
+.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+.ttg-field { display:block;margin-bottom:1rem }
+.ttg-field > label { display:block;font-weight:600;margin-bottom:.4rem }
+.ttg-input {
+  width:100%;box-sizing:border-box;font:inherit;color:inherit;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.16);
+  border-radius:8px;padding:.6rem .7rem
+}
+textarea.ttg-input { min-height:9rem;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;line-height:1.5 }
+.ttg-options-grid { display:flex;flex-wrap:wrap;gap:.8rem 1.4rem;align-items:flex-start }
+.ttg-opt { display:flex;align-items:center;gap:.5rem }
+.ttg-opt label, .ttg-opt-inline label { font-weight:500 }
+.ttg-opt-inline { display:flex;flex-direction:column;gap:.3rem }
+.ttg-opt-inline select, .ttg-opt-inline input {
+  font:inherit;color:inherit;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:.4rem .55rem
+}
+.ttg-result-head { display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.5rem }
+.ttg-result-head h2 { margin:0 }
+.tool-result pre { overflow:auto;margin:0 }
+.tool-result code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre }
+    

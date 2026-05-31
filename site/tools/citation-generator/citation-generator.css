@@ -1,0 +1,18 @@
+/* citation-generator — page-specific styles.
+   External file so the strict CSP (style-src 'self') permits it. */
+
+.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+.cg-form { display:flex; gap:.5rem; flex-wrap:wrap; align-items:flex-end }
+.cg-form label { display:block; font-weight:600; font-size:.9rem; margin-bottom:.25rem }
+.cg-form input[type=text] { width:100%; box-sizing:border-box; padding:.6rem .75rem; border-radius:.5rem; border:1px solid var(--line,#3a3550); background:rgba(255,255,255,.04); color:inherit; font:inherit }
+.cg-id-row { flex:1 1 320px }
+.cg-manual { margin-top:1rem; border-top:1px solid var(--line,#3a3550); padding-top:1rem }
+.cg-manual-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.75rem; margin:.75rem 0 }
+.cg-manual-grid .cg-field-full { grid-column:1 / -1 }
+.cg-manual select { width:100%; box-sizing:border-box; padding:.6rem .75rem; border-radius:.5rem; border:1px solid var(--line,#3a3550); background:rgba(255,255,255,.04); color:inherit; font:inherit }
+.cg-cite { border:1px solid var(--line,#3a3550); border-radius:.6rem; padding:.85rem 1rem; margin:.75rem 0 }
+.cg-cite h3 { margin:0 0 .4rem; font-size:1rem }
+.cg-cite p { margin:0 0 .6rem; line-height:1.5 }
+.cg-cite .btn { font-size:.85rem; padding:.35rem .8rem }
+.cg-toggle { background:none; border:none; color:inherit; cursor:pointer; text-decoration:underline; font:inherit; padding:0 }
+    

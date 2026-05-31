@@ -1,3 +1,44 @@
+// Accessibility — WAI-ARIA APG keyboard support for [role="tablist"].
+// Runs regardless of reduced-motion. Wires arrow / Home / End navigation,
+// maintains roving tabindex, and triggers click on the target tab so each
+// page's own tab-switch handler still runs.
+(() => {
+  const init = (tablist) => {
+    const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+    if (!tabs.length) return;
+
+    const setActive = (idx, focus = true) => {
+      tabs.forEach((t, i) => {
+        t.tabIndex = i === idx ? 0 : -1;
+      });
+      if (focus) tabs[idx].focus();
+      tabs[idx].click();
+    };
+
+    // Initial roving-tabindex state: 0 on the currently-selected tab, -1 elsewhere.
+    let initial = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+    if (initial < 0) initial = 0;
+    tabs.forEach((t, i) => { t.tabIndex = i === initial ? 0 : -1; });
+
+    tablist.addEventListener('keydown', (e) => {
+      const i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      let target = null;
+      switch (e.key) {
+        case 'ArrowLeft':  target = (i - 1 + tabs.length) % tabs.length; break;
+        case 'ArrowRight': target = (i + 1) % tabs.length; break;
+        case 'Home':       target = 0; break;
+        case 'End':        target = tabs.length - 1; break;
+      }
+      if (target === null) return;
+      e.preventDefault();
+      setActive(target);
+    });
+  };
+
+  document.querySelectorAll('[role="tablist"]').forEach(init);
+})();
+
 (() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 

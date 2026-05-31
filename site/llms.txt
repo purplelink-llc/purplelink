@@ -112,6 +112,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 - Project inquiries: ben@purplelink.llc with subject "Purplelink LLC"
 - The company is a sole-proprietor LLC operated out of Atlanta, Georgia
+- **Website analytics:** the purplelink.llc marketing site uses Cloudflare Web Analytics (cookieless, no PII, aggregate page-view counts only). All of Purplelink's apps remain analytics-free as described per product above.
 
 ## Tools (free web tools)
 - LaTeX to PDF: https://purplelink.llc/tools/latex-to-pdf/ — compile a .tex file to PDF (pdfLaTeX/XeLaTeX), files never stored.

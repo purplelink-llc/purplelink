@@ -1,0 +1,17 @@
+/* bib-builder — page-specific styles.
+   External file so the strict CSP (style-src 'self') permits it. */
+
+.bb-textarea { width: 100%; min-height: 10rem; font-family: monospace; font-size: 0.85rem; background: #1a1a2e; color: #e2e8f0; border: 1px dashed #ffffff33; border-radius: 8px; padding: 0.75rem 1rem; resize: vertical; box-sizing: border-box; }
+.bb-textarea:focus { outline: 2px solid #7c3aed; border-color: transparent; }
+.bb-table-wrap { overflow-x: auto; margin-top: 0.75rem; }
+.bb-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.bb-table th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ffffff18; color: #9ca3af; font-weight: 600; }
+.bb-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #ffffff0a; vertical-align: top; }
+.bb-table tr.row-ok   td:first-child { border-left: 3px solid #4ade80; }
+.bb-table tr.row-err  td:first-child { border-left: 3px solid #f87171; }
+.bb-ok  { color: #4ade80; }
+.bb-err { color: #f87171; }
+.bb-muted { color: #6b7280; font-size: 0.8rem; }
+.bb-key { font-family: monospace; font-size: 0.8rem; }
+.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+    

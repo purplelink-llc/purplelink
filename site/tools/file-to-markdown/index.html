@@ -57,10 +57,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
-    <style>
-      .md-textarea { width:100%; min-height:18rem; resize:vertical; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:0.9rem; line-height:1.5; padding:0.9rem 1rem; border-radius:10px; border:1px solid #ffffff1f; background:#0a0a0a; color:#e5e5e5; }
-      .md-textarea:focus { outline:2px solid #7c3aed; outline-offset:1px; }
-    </style>
+    <link rel="stylesheet" href="/tools/file-to-markdown/file-to-markdown.css">
     <script src="/site.js" defer></script>
   </head>
   <body>
@@ -97,15 +94,15 @@
           <p id="filename" class="tool-privacy"></p>
         </div>
         <div class="tool-options">
-          <button class="btn btn-primary" id="run" disabled>Convert to Markdown</button>
+          <button type="button" class="btn btn-primary" id="run" disabled>Convert to Markdown</button>
         </div>
         <p class="tool-status" id="status" aria-live="polite"></p>
 
         <div id="result-wrap" hidden>
           <textarea id="result" class="md-textarea" readonly aria-label="Markdown result"></textarea>
           <div class="tool-options">
-            <button class="btn btn-ghost" id="copy">Copy Markdown</button>
-            <button class="btn btn-ghost" id="download">Download .md</button>
+            <button type="button" class="btn btn-ghost" id="copy">Copy Markdown</button>
+            <button type="button" class="btn btn-ghost" id="download">Download .md</button>
           </div>
         </div>
         <p class="tool-privacy">Files are converted on our server and deleted right after. Nothing is stored.</p>
@@ -233,7 +230,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -242,6 +239,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

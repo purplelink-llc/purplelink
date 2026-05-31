@@ -1,0 +1,5 @@
+/* word-to-latex — page-specific styles.
+   External file so the strict CSP (style-src 'self') permits it. */
+
+.sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
+    

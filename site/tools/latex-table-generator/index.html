@@ -74,29 +74,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
-    <style>
-      .sr-only { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap }
-      .ttg-field { display:block;margin-bottom:1rem }
-      .ttg-field > label { display:block;font-weight:600;margin-bottom:.4rem }
-      .ttg-input {
-        width:100%;box-sizing:border-box;font:inherit;color:inherit;
-        background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.16);
-        border-radius:8px;padding:.6rem .7rem
-      }
-      textarea.ttg-input { min-height:9rem;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;line-height:1.5 }
-      .ttg-options-grid { display:flex;flex-wrap:wrap;gap:.8rem 1.4rem;align-items:flex-start }
-      .ttg-opt { display:flex;align-items:center;gap:.5rem }
-      .ttg-opt label, .ttg-opt-inline label { font-weight:500 }
-      .ttg-opt-inline { display:flex;flex-direction:column;gap:.3rem }
-      .ttg-opt-inline select, .ttg-opt-inline input {
-        font:inherit;color:inherit;background:rgba(255,255,255,.04);
-        border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:.4rem .55rem
-      }
-      .ttg-result-head { display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.5rem }
-      .ttg-result-head h2 { margin:0 }
-      .tool-result pre { overflow:auto;margin:0 }
-      .tool-result code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre }
-    </style>
+    <link rel="stylesheet" href="/tools/latex-table-generator/latex-table-generator.css">
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -120,7 +98,7 @@
       <a class="back-link" href="/tools/">← All tools</a>
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
-        <h1>LaTeX Table Generator 📊</h1>
+        <h1>LaTeX Table Generator</h1>
         <p>Paste your CSV or TSV data and get a clean, ready-to-paste LaTeX table - with <code>booktabs</code> rules, alignment, a header row, and an optional <code>table</code> environment with caption and label. Runs entirely in your browser.</p>
       </div>
 
@@ -230,7 +208,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">Find this useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
       <script>
         (function () {
@@ -405,7 +383,7 @@
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="Purplelink" width="26" height="26">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
@@ -414,6 +392,7 @@
         <a href="/about/">About</a>
         <a href="/press/">Press</a>
         <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>

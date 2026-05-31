@@ -1,0 +1,11 @@
+/* equation-renderer — page-specific styles.
+   External file so the strict CSP (style-src 'self') permits it. */
+
+.eq-textarea { width: 100%; min-height: 7rem; font-family: monospace; font-size: 0.9rem; background: #1a1a2e; color: #e2e8f0; border: 1px dashed #ffffff33; border-radius: 8px; padding: 0.75rem 1rem; resize: vertical; box-sizing: border-box; }
+.eq-textarea:focus { outline: 2px solid #7c3aed; border-color: transparent; }
+.eq-preview { margin-top: 1.25rem; text-align: center; background: #fff; border-radius: 8px; padding: 1.5rem 1rem; border: 1px solid #ffffff18; }
+.eq-preview img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.eq-examples { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.eq-example { background: #1a1a2e; border: 1px solid #ffffff22; border-radius: 6px; padding: 0.25rem 0.6rem; font-family: monospace; font-size: 0.78rem; color: #9ca3af; cursor: pointer; white-space: nowrap; }
+.eq-example:hover { border-color: #7c3aed; color: #c4b5fd; }
+    
