@@ -512,14 +512,16 @@ def web():
             pass  # network failure → leave doi_ok as None
 
     async def _crossref_check(client, r) -> None:
-        from latextools.bibcheck import title_similarity
+        from latextools.bibcheck import author_similarity, title_similarity
         if not r.title:
             return
         params = {
             "query.bibliographic": r.title[:200],
             "query.author": r.author[:100] if r.author else "",
             "rows": "1",
-            "select": "title,DOI",
+            # Pull everything we need for both verification *and* the
+            # corrected-bib output in a single round trip.
+            "select": "title,DOI,author,issued,container-title,page,volume,issue,publisher",
             "mailto": "ben@purplelink.llc",
         }
         try:
@@ -533,20 +535,48 @@ def web():
             if not items:
                 r.crossref_confidence = 0.0
                 return
-            found_title = (items[0].get("title") or [""])[0]
+            item = items[0]
+            found_title = (item.get("title") or [""])[0]
             r.crossref_confidence = title_similarity(r.title, found_title)
             r.crossref_title = found_title
-            r.crossref_doi = items[0].get("DOI", "")
+            r.crossref_doi = item.get("DOI", "")
+
+            # Authors: CrossRef returns [{given, family, ...}, ...].
+            authors_raw = item.get("author") or []
+            r.crossref_authors = [
+                _crossref_author_string(a) for a in authors_raw if a
+            ] or None
+
+            # Year is the first element of issued.date-parts[0].
+            issued = item.get("issued") or {}
+            parts = (issued.get("date-parts") or [[]])[0]
+            if parts and isinstance(parts[0], int):
+                r.crossref_year = parts[0]
+
+            # Container title (journal/booktitle) is a list — take the first.
+            ct = item.get("container-title") or []
+            if ct:
+                r.crossref_journal = ct[0]
+            r.crossref_volume = item.get("volume") or None
+            r.crossref_issue = item.get("issue") or None
+            r.crossref_pages = item.get("page") or None
+            r.crossref_publisher = item.get("publisher") or None
+
+            # Author comparison (only meaningful when title actually matched).
+            if r.author and r.crossref_authors:
+                score = author_similarity(r.author, r.crossref_authors)
+                if r.author_match is None or score > r.author_match:
+                    r.author_match = score
         except Exception:
             pass
 
     async def _s2_check(client, r) -> None:
-        from latextools.bibcheck import title_similarity
+        from latextools.bibcheck import author_similarity, title_similarity
         if not r.title:
             return
         params = {
             "query": r.title[:200],
-            "fields": "title,authors,year",
+            "fields": "title,authors,year,venue",
             "limit": "1",
         }
         try:
@@ -565,8 +595,27 @@ def web():
             r.s2_confidence = title_similarity(r.title, found_title)
             r.s2_title = found_title
             r.s2_year = found.get("year")
+            authors = found.get("authors") or []
+            r.s2_authors = [a.get("name", "") for a in authors if a.get("name")] or None
+
+            if r.author and r.s2_authors:
+                score = author_similarity(r.author, r.s2_authors)
+                # Prefer the higher of CrossRef / S2 author scores
+                if r.author_match is None or score > r.author_match:
+                    r.author_match = score
         except Exception:
             pass
+
+    def _crossref_author_string(author: dict) -> str:
+        """Render a CrossRef author object as "Family, Given" if possible."""
+        family = (author.get("family") or "").strip()
+        given = (author.get("given") or "").strip()
+        name = (author.get("name") or "").strip()  # corporate / single-string author
+        if family and given:
+            return f"{family}, {given}"
+        if family:
+            return family
+        return name
 
     @api.post("/validate-bib")
     async def validate_bib_endpoint(
@@ -614,6 +663,7 @@ def web():
             "entries": [r.to_dict() for r in results],
             "summary": bibcheck.summarize(results),
             "annotated_bib": bibcheck.annotate_bib(bib_text, results),
+            "corrected_bib": bibcheck.correct_bib(bib_text, results),
         })
 
     # ------------------------------------------------------------------

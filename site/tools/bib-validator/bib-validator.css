@@ -1,0 +1,73 @@
+/* BibTeX Validator — page-specific styles.
+   Lives as an external file (not inline) so the strict CSP (style-src 'self')
+   permits it. Loaded via <link rel="stylesheet"> from /tools/bib-validator/. */
+
+/* Input mode tabs (Upload vs Paste) */
+.bib-input-tabs { display: flex; gap: 0.5rem; margin: 0 0 0.6rem; }
+.bib-input-tabs button { background: transparent; border: 1px solid #ffffff22; color: #d4d4d4; padding: 0.35rem 0.85rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
+.bib-input-tabs button[aria-selected="true"] { background: #7c3aed22; border-color: #7c3aed88; color: #ffffff; }
+.bib-input-tabs button:hover { background: #ffffff10; }
+.bib-input-tabs button[aria-selected="true"]:hover { background: #7c3aed33; }
+.bib-paste-pane { display: none; }
+.bib-paste-pane.active { display: block; }
+.bib-paste-pane textarea { width: 100%; min-height: 12rem; padding: 0.6rem 0.75rem; border: 1px solid #ffffff22; border-radius: 8px; background: #0a0a0a; color: #d4d4d4; font-family: monospace; font-size: 0.82rem; line-height: 1.4; resize: vertical; box-sizing: border-box; }
+.bib-paste-pane textarea:focus { outline: 2px solid #7c3aed88; border-color: #7c3aed88; }
+.bib-paste-hint { font-size: 0.78rem; color: #9ca3af; margin: 0.3rem 0 0; }
+
+/* Checks fieldset — stack with flexbox so external CSS overrides can't
+   collapse the labels back to inline rendering. */
+.bib-checks-fieldset { border: 1px solid #ffffff18; border-radius: 8px; padding: 0.75rem 1rem; margin: 1rem 0 0; }
+.bib-checks-fieldset legend { font-weight: 600; padding: 0 0.25rem; }
+.bib-checks { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.4rem; }
+.bib-checks label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; cursor: pointer; line-height: 1.4; }
+.bib-checks label input[type=checkbox] { width: 16px; height: 16px; flex-shrink: 0; margin: 0; }
+.bib-checks input[type=checkbox]:disabled + span { opacity: 0.55; }
+.bib-privacy-notice { font-size: 0.85rem; color: var(--color-muted, #9ca3af); margin: 0.5rem 0 0; display: none; }
+.bib-privacy-notice.visible { display: block; }
+
+/* Summary badges + filter chips */
+.bib-summary { display: flex; gap: 1rem; margin: 1.25rem 0 0.75rem; flex-wrap: wrap; align-items: center; }
+.bib-badge { padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
+.bib-badge-ok   { background: #14532d22; color: #4ade80; border: 1px solid #4ade8044; }
+.bib-badge-warn { background: #78350f22; color: #fbbf24; border: 1px solid #fbbf2444; }
+.bib-badge-err  { background: #4c1d1d22; color: #f87171; border: 1px solid #f8717144; }
+.bib-filter-row { display: flex; gap: 0.4rem; margin: 0.5rem 0 0.4rem; flex-wrap: wrap; }
+.bib-filter-chip { background: transparent; border: 1px solid #ffffff22; color: #d4d4d4; padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.78rem; cursor: pointer; }
+.bib-filter-chip[aria-pressed="true"] { background: #7c3aed22; border-color: #7c3aed88; color: #ffffff; }
+.bib-filter-chip:hover { background: #ffffff10; }
+.bib-filter-chip[aria-pressed="true"]:hover { background: #7c3aed33; }
+
+/* Results table */
+.bib-table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+.bib-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.bib-table th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ffffff18; color: var(--color-muted, #9ca3af); font-weight: 600; white-space: nowrap; }
+.bib-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #ffffff0a; vertical-align: top; }
+.bib-table tr.row-ok   td:first-child { border-left: 3px solid #4ade80; }
+.bib-table tr.row-warn td:first-child { border-left: 3px solid #fbbf24; }
+.bib-table tr.row-err  td:first-child { border-left: 3px solid #f87171; }
+.bib-table tr.row-data { cursor: pointer; }
+.bib-table tr.row-data:hover td { background: #ffffff05; }
+.bib-table tr.row-detail td { padding: 0; border-left: none !important; background: #0a0a0a; }
+.bib-table tr.row-detail.hidden { display: none; }
+.bib-row-expander { font-size: 0.7rem; color: #6b7280; user-select: none; display: inline-block; width: 0.9rem; transition: transform 0.15s ease; }
+.bib-table tr.row-data.expanded .bib-row-expander { transform: rotate(90deg); color: #a5b4fc; }
+.bib-key { font-family: monospace; font-size: 0.8rem; }
+.bib-ok   { color: #4ade80; }
+.bib-warn { color: #fbbf24; }
+.bib-err  { color: #f87171; }
+.bib-na   { color: #6b7280; }
+.bib-conf { font-size: 0.8rem; }
+.bib-found-title { font-size: 0.75rem; color: #9ca3af; display: block; margin-top: 0.1rem; max-width: 22ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bib-copy-doi { font-size: 0.7rem; padding: 0.1rem 0.45rem; margin-top: 0.25rem; display: inline-block; background: #1e1e2e; border: 1px solid #ffffff22; border-radius: 3px; color: #a5b4fc; cursor: pointer; line-height: 1.5; }
+.bib-copy-doi:hover { background: #2a2a3e; }
+
+/* Detail row — original vs corrected, side by side */
+.bib-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0.8rem 1rem; }
+.bib-detail-grid.single { grid-template-columns: 1fr; }
+.bib-detail-pane h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; margin: 0 0 0.35rem; font-weight: 600; }
+.bib-detail-pane h4 .pane-label-corrected { color: #4ade80; }
+.bib-detail-pane pre { background: #0f0f17; border: 1px solid #ffffff12; border-radius: 4px; padding: 0.5rem 0.65rem; font-size: 0.74rem; line-height: 1.45; color: #d4d4d4; margin: 0; white-space: pre-wrap; overflow-x: auto; max-height: 14rem; overflow-y: auto; }
+@media (max-width: 740px) { .bib-detail-grid { grid-template-columns: 1fr; } }
+
+/* Download row */
+.bib-downloads { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }

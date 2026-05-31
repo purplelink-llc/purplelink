@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>BibTeX Validator - Detect AI Hallucinations | Purplelink LLC</title>
-    <meta name="description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
+    <meta name="description" content="Free online BibTeX validator. Upload or paste a .bib file to check syntax, missing fields, dead DOIs, author and year correctness, and download a corrected .bib for high-confidence matches.">
     <link rel="canonical" href="https://purplelink.llc/tools/bib-validator/">
     <meta property="og:title" content="BibTeX Validator - Detect AI Hallucinations">
-    <meta property="og:description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
+    <meta property="og:description" content="Free online BibTeX validator. Upload or paste a .bib file to check syntax, missing fields, dead DOIs, author and year correctness, and download a corrected .bib for high-confidence matches.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/bib-validator/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/bib-validator.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="BibTeX Validator - Detect AI Hallucinations">
-    <meta name="twitter:description" content="Free online BibTeX validator. Upload a .bib file to check syntax, missing fields, dead DOIs, and verify citations exist in CrossRef and Semantic Scholar.">
+    <meta name="twitter:description" content="Free online BibTeX validator. Upload or paste a .bib file to check syntax, missing fields, dead DOIs, author and year correctness, and download a corrected .bib for high-confidence matches.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
     <script type="application/ld+json">
     {
@@ -29,14 +29,19 @@
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free online BibTeX validator. Upload a .bib file to check syntax and required fields, verify DOIs resolve, and cross-reference titles against CrossRef and Semantic Scholar to catch AI-hallucinated citations.",
+          "description": "A free online BibTeX validator. Upload or paste a .bib file to check syntax and required fields, verify DOIs resolve, and cross-reference titles, authors, and publication years against CrossRef and Semantic Scholar to catch AI-hallucinated citations. Download a corrected .bib for high-confidence matches.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Syntax and required-field validation per BibTeX entry type",
             "DOI resolution check (verifies the link is alive)",
             "CrossRef title verification (catches hallucinated papers)",
             "Semantic Scholar title verification",
+            "Author-list correctness check against CrossRef and Semantic Scholar",
+            "Publication-year mismatch detection",
             "Annotated .bib download with inline warnings",
+            "Corrected .bib download — replaces fields from CrossRef for high-confidence matches",
+            "Paste-text input as alternative to file upload",
+            "Filter results by status and inspect original vs corrected entries inline",
             "Zero file retention - nothing is stored"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
@@ -62,7 +67,12 @@
             {
               "@type": "Question",
               "name": "What does the annotated .bib download contain?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Your original .bib file with a comment line prepended to each entry showing its validation status: missing fields, DOI result, and database confidence scores. You can paste it straight back into your editor." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Your original .bib file with a comment line prepended to each entry showing its validation status: missing fields, DOI result, title and author confidence scores, and any year mismatch. You can paste it straight back into your editor." }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the corrected .bib download?",
+              "acceptedAnswer": { "@type": "Answer", "text": "When CrossRef returns a high-confidence match (title similarity at least 85%) for an entry, the corrected .bib replaces that entry's fields with authoritative metadata from CrossRef: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a high-confidence match are passed through unchanged. Each rewritten entry is marked with a comment so you can audit the changes." }
             }
           ]
         },
@@ -83,39 +93,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
-    <style>
-      .bib-checks-fieldset { border: 1px solid #ffffff18; border-radius: 8px; padding: 0.75rem 1rem; margin: 1rem 0 0; }
-      .bib-checks-fieldset legend { font-weight: 600; padding: 0 0.25rem; }
-      .bib-checks { margin-top: 0.4rem; }
-      .bib-checks label { display: block; font-size: 0.95rem; cursor: pointer; margin-bottom: 0.5rem; line-height: 1.4; }
-      .bib-checks label input[type=checkbox] { vertical-align: middle; margin-right: 0.4rem; width: 16px; height: 16px; }
-      .bib-checks input[type=checkbox]:disabled + span { opacity: 0.55; }
-      .bib-privacy-notice { font-size: 0.85rem; color: var(--color-muted, #9ca3af); margin: 0.25rem 0 0; display: none; }
-      .bib-privacy-notice.visible { display: block; }
-
-      .bib-summary { display: flex; gap: 1rem; margin: 1.25rem 0 0.75rem; flex-wrap: wrap; }
-      .bib-badge { padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
-      .bib-badge-ok   { background: #14532d22; color: #4ade80; border: 1px solid #4ade8044; }
-      .bib-badge-warn { background: #78350f22; color: #fbbf24; border: 1px solid #fbbf2444; }
-      .bib-badge-err  { background: #4c1d1d22; color: #f87171; border: 1px solid #f8717144; }
-
-      .bib-table-wrap { overflow-x: auto; margin-top: 0.5rem; }
-      .bib-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-      .bib-table th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #ffffff18; color: var(--color-muted, #9ca3af); font-weight: 600; white-space: nowrap; }
-      .bib-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid #ffffff0a; vertical-align: top; }
-      .bib-table tr.row-ok   td:first-child { border-left: 3px solid #4ade80; }
-      .bib-table tr.row-warn td:first-child { border-left: 3px solid #fbbf24; }
-      .bib-table tr.row-err  td:first-child { border-left: 3px solid #f87171; }
-      .bib-key { font-family: monospace; font-size: 0.8rem; }
-      .bib-ok   { color: #4ade80; }
-      .bib-warn { color: #fbbf24; }
-      .bib-err  { color: #f87171; }
-      .bib-na   { color: #6b7280; }
-      .bib-conf { font-size: 0.8rem; }
-      .bib-found-title { font-size: 0.75rem; color: #9ca3af; display: block; margin-top: 0.1rem; max-width: 22ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .bib-copy-doi { font-size: 0.7rem; padding: 0.1rem 0.45rem; margin-top: 0.25rem; display: inline-block; background: #1e1e2e; border: 1px solid #ffffff22; border-radius: 3px; color: #a5b4fc; cursor: pointer; line-height: 1.5; }
-      .bib-copy-doi:hover { background: #2a2a3e; }
-    </style>
+    <link rel="stylesheet" href="/tools/bib-validator/bib-validator.css">
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -140,14 +118,33 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>BibTeX Validator</h1>
-        <p>Upload a <code>.bib</code> file to check syntax, missing fields, dead DOIs, and verify your citations actually exist - useful for catching AI-hallucinated references. <strong>Files are never stored.</strong></p>
+        <p>Upload or paste a <code>.bib</code> file to check syntax, missing fields, dead DOIs, and verify your citations actually exist — including author and year correctness. Download a corrected <code>.bib</code> where CrossRef returns a confident match. Useful for catching AI-hallucinated references. <strong>Files are never stored.</strong></p>
       </div>
 
       <div class="tool-app">
-        <div class="dropzone" id="dropzone" aria-label="Upload a .bib file">
-          <input type="file" id="file" accept=".bib">
-          <p>Drag a <code>.bib</code> file here, or click to choose. Max 2 MB.</p>
-          <p id="filename" class="tool-privacy"></p>
+        <div class="bib-input-tabs" role="tablist" aria-label="Input mode">
+          <button type="button" id="tab-upload" role="tab" aria-selected="true" aria-controls="pane-upload">Upload file</button>
+          <button type="button" id="tab-paste"  role="tab" aria-selected="false" aria-controls="pane-paste">Paste text</button>
+        </div>
+
+        <div id="pane-upload" role="tabpanel" aria-labelledby="tab-upload">
+          <div class="dropzone" id="dropzone" aria-label="Upload a .bib file">
+            <input type="file" id="file" accept=".bib">
+            <p>Drag a <code>.bib</code> file here, or click to choose. Max 2 MB.</p>
+            <p id="filename" class="tool-privacy"></p>
+          </div>
+        </div>
+
+        <div id="pane-paste" class="bib-paste-pane" role="tabpanel" aria-labelledby="tab-paste" hidden>
+          <textarea id="paste-text" spellcheck="false" aria-label="BibTeX text"
+            placeholder="@article{key2024,
+  author  = {Lastname, Firstname},
+  title   = {Paper title},
+  journal = {Journal of Things},
+  year    = {2024},
+  doi     = {10.1234/example},
+}"></textarea>
+          <p class="bib-paste-hint">Paste up to 2 MB of BibTeX directly. Same checks, no file needed.</p>
         </div>
 
         <fieldset class="bib-checks-fieldset">
@@ -186,18 +183,21 @@
       <section class="tool-howto">
         <h2>How to validate a BibTeX file online</h2>
         <ol>
-          <li>Drag your <code>.bib</code> file onto the upload area, or click to choose it (up to 2 MB).</li>
-          <li>Syntax and required-field checks run automatically. Optionally enable DOI resolution and/or database checks to catch hallucinated citations.</li>
-          <li>Click <strong>Validate .bib</strong>. A color-coded table shows the status of each entry. Download the annotated <code>.bib</code> with inline warning comments for your editor.</li>
+          <li>Upload your <code>.bib</code> file (drag-and-drop or click), or switch to <strong>Paste text</strong> and drop the BibTeX directly. Up to 2 MB.</li>
+          <li>Syntax and required-field checks run automatically. Enable DOI resolution and/or CrossRef / Semantic Scholar checks to verify your citations actually exist (and that authors and years match).</li>
+          <li>Click <strong>Validate .bib</strong>. A color-coded table shows each entry. Click any row to see the original BibTeX, plus the corrected version when CrossRef returned a confident match. Use the filter chips to focus on warnings or errors.</li>
+          <li>Download the <strong>annotated</strong> <code>.bib</code> (your file with status comments) or the <strong>corrected</strong> <code>.bib</code> (entries rewritten from CrossRef metadata where confidence is high).</li>
         </ol>
       </section>
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This tool validates BibTeX files in four layers: syntax + completeness (always), DOI resolution (opt-in), and title existence checks against CrossRef and Semantic Scholar (opt-in). It's particularly useful for catching AI-hallucinated citations that have plausible-looking metadata but don't correspond to real papers.</p>
-        <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title matches a real paper. Low-confidence matches (below 50%) are flagged as likely hallucinations.</div></details>
+        <p>This tool validates BibTeX files in layers: syntax + completeness (always), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. It's particularly useful for catching AI-hallucinated citations that have plausible-looking metadata but don't correspond to real papers.</p>
+        <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title and author list match a real paper, and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations.</div></details>
         <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services - this is disclosed before you run the check.</div></details>
-        <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry showing its validation status: missing required fields, DOI result, and database confidence scores. Paste it straight back into your editor.</div></details>
+        <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry showing its validation status: missing required fields, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.</div></details>
+        <details><summary>What is the corrected .bib?</summary><div class="faq-body">For each entry where CrossRef returned a high-confidence match (title similarity at least 85%), the corrected .bib replaces the entry's fields with authoritative metadata: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a confident match are passed through unchanged. Each rewritten entry is marked with a "CORRECTED from CrossRef" comment so you can audit the changes.</div></details>
+        <details><summary>How does the author check work?</summary><div class="faq-body">Names are normalized to canonical last-name tokens (folding "John Smith", "Smith, John", "J. Smith", and "Müller" → "muller" all to the same key) and compared as a set against the authoritative author list. The score is the Jaccard overlap, so partial matches still get partial credit.</div></details>
         <details><summary>What BibTeX entry types are supported?</summary><div class="faq-body">article, book, inproceedings, proceedings, phdthesis, mastersthesis, techreport, misc, incollection, inbook, booklet, manual, conference, unpublished, and thesis.</div></details>
       </section>
 
@@ -232,9 +232,13 @@
       <script src="/tools/tools.js"></script>
       <script>
       (function () {
-        var chosen = null;
+        var MAX_BIB_BYTES = 2 * 1024 * 1024;  // mirror backend MAX_BIB_UPLOAD_BYTES
+
+        var chosen = null;                  // File from upload mode
         var annotatedBib = null;
-        var statusEl = document.getElementById("status");
+        var correctedBib = null;
+        var lastSourceBib = "";             // full .bib text we just sent (for per-entry extraction)
+        var statusEl  = document.getElementById("status");
         var resultEl  = document.getElementById("result");
         var runBtn    = document.getElementById("run");
         var nameEl    = document.getElementById("filename");
@@ -242,36 +246,88 @@
         var chkDoi    = document.getElementById("check-doi");
         var chkCr     = document.getElementById("check-crossref");
         var chkS2     = document.getElementById("check-s2");
+        var tabUp     = document.getElementById("tab-upload");
+        var tabPa     = document.getElementById("tab-paste");
+        var paneUp    = document.getElementById("pane-upload");
+        var panePa    = document.getElementById("pane-paste");
+        var pasteEl   = document.getElementById("paste-text");
+        var mode      = "upload";            // "upload" | "paste"
 
+        // -------------------------- Tab handling --------------------------
+        function setMode(next) {
+          mode = next;
+          var isUpload = next === "upload";
+          tabUp.setAttribute("aria-selected", isUpload ? "true" : "false");
+          tabPa.setAttribute("aria-selected", isUpload ? "false" : "true");
+          paneUp.hidden = !isUpload;
+          panePa.hidden = isUpload;
+          panePa.classList.toggle("active", !isUpload);
+          updateRunState();
+        }
+        tabUp.addEventListener("click", function () { setMode("upload"); });
+        tabPa.addEventListener("click", function () { setMode("paste"); });
+
+        // ---------------------- Privacy-notice visibility -----------------
         function updatePrivacyNotice() {
-          if (chkDoi.checked || chkCr.checked || chkS2.checked) {
-            privNote.classList.add("visible");
-          } else {
-            privNote.classList.remove("visible");
-          }
+          privNote.classList.toggle(
+            "visible",
+            chkDoi.checked || chkCr.checked || chkS2.checked
+          );
         }
         [chkDoi, chkCr, chkS2].forEach(function (cb) {
           cb.addEventListener("change", updatePrivacyNotice);
         });
 
+        // ---------------------- Upload-mode dropzone ----------------------
         wireDropzone("dropzone", "file", function (f) {
           if (!validBibClientSide(f, statusEl)) {
-            chosen = null; runBtn.disabled = true; nameEl.textContent = ""; return;
+            chosen = null; nameEl.textContent = ""; updateRunState(); return;
           }
-          chosen = f; nameEl.textContent = f.name; statusEl.textContent = ""; runBtn.disabled = false;
+          chosen = f; nameEl.textContent = f.name; statusEl.textContent = "";
+          updateRunState();
         });
 
+        // ---------------------- Paste-mode text input ---------------------
+        pasteEl.addEventListener("input", updateRunState);
+
+        function updateRunState() {
+          if (mode === "upload") {
+            runBtn.disabled = !chosen;
+          } else {
+            var t = pasteEl.value || "";
+            runBtn.disabled = !t.trim() || t.length > MAX_BIB_BYTES;
+          }
+        }
+
+        // ---------------------- Validate button ---------------------------
         runBtn.addEventListener("click", function () {
-          if (!chosen) return;
           var fd = new FormData();
-          fd.append("file", chosen);
+          var fileBlob, displayName;
+          if (mode === "upload") {
+            if (!chosen) return;
+            fileBlob = chosen; displayName = chosen.name;
+            // Best-effort capture of source text for the per-entry detail view
+            chosen.text().then(function (t) { lastSourceBib = t; }).catch(function () {});
+          } else {
+            var text = pasteEl.value.trim();
+            if (!text) return;
+            if (text.length > MAX_BIB_BYTES) {
+              statusEl.innerHTML = '<span class="bib-err">Pasted text is over the 2 MB limit.</span>';
+              return;
+            }
+            fileBlob = new Blob([text], { type: "text/x-bibtex" });
+            displayName = "pasted.bib";
+            lastSourceBib = text;
+          }
+          fd.append("file", fileBlob, displayName);
           fd.append("check_doi",      chkDoi.checked ? "true" : "false");
           fd.append("check_crossref", chkCr.checked  ? "true" : "false");
-          fd.append("check_s2",       chkS2.checked   ? "true" : "false");
+          fd.append("check_s2",       chkS2.checked  ? "true" : "false");
 
           statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>Validating… this may take a moment.';
           resultEl.innerHTML = "";
           annotatedBib = null;
+          correctedBib = null;
 
           fetch(API_BASE + "/validate-bib", { method: "POST", body: fd })
             .then(function (resp) {
@@ -283,6 +339,7 @@
             .then(function (data) {
               statusEl.textContent = "Done.";
               annotatedBib = data.annotated_bib;
+              correctedBib = data.corrected_bib;
               renderResults(data);
             })
             .catch(function (err) {
@@ -292,46 +349,112 @@
             });
         });
 
+        // ---------------------- Results rendering -------------------------
         function renderResults(data) {
           var s = data.summary;
           var html = '<div class="bib-summary">';
-          html += badge(s.ok,      "ok",   s.ok      + " OK");
-          html += badge(s.warning, "warn", s.warning + " warning" + (s.warning !== 1 ? "s" : ""));
-          html += badge(s.error,   "err",  s.error   + " error"   + (s.error   !== 1 ? "s" : ""));
+          html += badge("ok",   s.ok      + " OK");
+          html += badge("warn", s.warning + " warning" + (s.warning !== 1 ? "s" : ""));
+          html += badge("err",  s.error   + " error"   + (s.error   !== 1 ? "s" : ""));
           html += " <span style='font-size:0.85rem;color:#9ca3af'>" + s.total + " entries total</span></div>";
 
-          var doiCol   = data.entries.some(function (e) { return e.doi_ok !== null; });
-          var crCol    = data.entries.some(function (e) { return e.crossref_confidence !== null; });
-          var s2Col    = data.entries.some(function (e) { return e.s2_confidence !== null; });
+          html += '<div class="bib-filter-row" role="group" aria-label="Filter results">';
+          html += '<button type="button" class="bib-filter-chip" data-filter="all"  aria-pressed="true">All</button>';
+          html += '<button type="button" class="bib-filter-chip" data-filter="ok"   aria-pressed="false">OK</button>';
+          html += '<button type="button" class="bib-filter-chip" data-filter="warn" aria-pressed="false">Warnings</button>';
+          html += '<button type="button" class="bib-filter-chip" data-filter="err"  aria-pressed="false">Errors</button>';
+          html += "</div>";
+
+          var doiCol = data.entries.some(function (e) { return e.doi_ok !== null; });
+          var crCol  = data.entries.some(function (e) { return e.crossref_confidence !== null; });
+          var s2Col  = data.entries.some(function (e) { return e.s2_confidence !== null; });
+          var auCol  = data.entries.some(function (e) { return e.author_match !== null && e.author_match !== undefined; });
+          var yrCol  = data.entries.some(function (e) { return e.year_mismatch === true; });
 
           html += '<div class="bib-table-wrap"><table class="bib-table">';
-          html += '<thead><tr><th scope="col">Entry key</th><th scope="col">Type</th><th scope="col">Fields</th>';
+          html += '<thead><tr><th scope="col" style="width:1.2rem"></th><th scope="col">Entry key</th><th scope="col">Type</th><th scope="col">Fields</th>';
           if (doiCol) html += '<th scope="col">DOI</th>';
           if (crCol)  html += '<th scope="col">CrossRef</th>';
           if (s2Col)  html += '<th scope="col">Semantic Scholar</th>';
+          if (auCol)  html += '<th scope="col">Authors</th>';
+          if (yrCol)  html += '<th scope="col">Year</th>';
           html += '<th scope="col">Overall</th></tr></thead><tbody>';
 
-          data.entries.forEach(function (e) {
-            var rowClass = "row-" + (e.overall === "ok" ? "ok" : e.overall === "warning" ? "warn" : "err");
-            html += '<tr class="' + rowClass + '">';
+          data.entries.forEach(function (e, idx) {
+            var rowClass = "row-data row-" + (e.overall === "ok" ? "ok" : e.overall === "warning" ? "warn" : "err");
+            var colspan = 5 + (doiCol?1:0) + (crCol?1:0) + (s2Col?1:0) + (auCol?1:0) + (yrCol?1:0);
+            html += '<tr class="' + rowClass + '" data-status="' + e.overall + '" data-idx="' + idx + '">';
+            html += '<td><span class="bib-row-expander" aria-hidden="true">▶</span></td>';
             html += "<td><span class='bib-key'>" + escapeHtml(e.key) + "</span></td>";
             html += "<td>" + escapeHtml(e.type) + "</td>";
             html += "<td>" + fieldsCell(e) + "</td>";
             if (doiCol) html += "<td>" + doiCell(e) + "</td>";
             if (crCol)  html += "<td>" + confCell(e.crossref_confidence, e.crossref_title, e.crossref_doi) + "</td>";
             if (s2Col)  html += "<td>" + confCell(e.s2_confidence,       e.s2_title,       null)           + "</td>";
+            if (auCol)  html += "<td>" + authorCell(e) + "</td>";
+            if (yrCol)  html += "<td>" + yearCell(e)   + "</td>";
             html += "<td>" + overallCell(e.overall) + "</td>";
             html += "</tr>";
+            // Detail row (hidden until expansion)
+            html += '<tr class="row-detail hidden" data-detail-for="' + idx + '"><td colspan="' + colspan + '">' + detailPanel(e) + "</td></tr>";
           });
 
           html += "</tbody></table></div>";
-          html += '<div style="margin-top:1rem"><button class="btn btn-secondary" id="dl-bib">Download annotated .bib</button></div>';
+
+          html += '<div class="bib-downloads">';
+          html += '<button class="btn btn-secondary" id="dl-annotated">Download annotated .bib</button>';
+          if (correctedBib && correctedBib.indexOf("CORRECTED from CrossRef") !== -1) {
+            html += '<button class="btn btn-primary" id="dl-corrected">Download corrected .bib</button>';
+          }
+          html += "</div>";
 
           resultEl.innerHTML = html;
 
+          // Wire filter chips
+          resultEl.querySelectorAll(".bib-filter-chip").forEach(function (chip) {
+            chip.addEventListener("click", function () {
+              var f = chip.dataset.filter;
+              resultEl.querySelectorAll(".bib-filter-chip").forEach(function (c) {
+                c.setAttribute("aria-pressed", c === chip ? "true" : "false");
+              });
+              resultEl.querySelectorAll("tr.row-data").forEach(function (row) {
+                var status = row.dataset.status;
+                var keep =
+                  f === "all" ||
+                  (f === "ok"   && status === "ok") ||
+                  (f === "warn" && status === "warning") ||
+                  (f === "err"  && status === "error");
+                row.style.display = keep ? "" : "none";
+                // Collapse + hide its detail row too
+                if (!keep) {
+                  row.classList.remove("expanded");
+                  var det = resultEl.querySelector('tr.row-detail[data-detail-for="' + row.dataset.idx + '"]');
+                  if (det) { det.classList.add("hidden"); det.style.display = "none"; }
+                } else {
+                  var det2 = resultEl.querySelector('tr.row-detail[data-detail-for="' + row.dataset.idx + '"]');
+                  if (det2) det2.style.display = "";
+                }
+              });
+            });
+          });
+
+          // Wire row click → expand/collapse details
+          resultEl.querySelectorAll("tr.row-data").forEach(function (row) {
+            row.addEventListener("click", function (ev) {
+              // Don't toggle when clicking a button inside the row
+              if (ev.target.closest("button")) return;
+              var idx = row.dataset.idx;
+              var detail = resultEl.querySelector('tr.row-detail[data-detail-for="' + idx + '"]');
+              if (!detail) return;
+              var nowHidden = detail.classList.toggle("hidden");
+              row.classList.toggle("expanded", !nowHidden);
+            });
+          });
+
           // Wire copy-DOI buttons
           resultEl.querySelectorAll(".bib-copy-doi").forEach(function (btn) {
-            btn.addEventListener("click", function () {
+            btn.addEventListener("click", function (ev) {
+              ev.stopPropagation();
               var doi = btn.dataset.doi;
               navigator.clipboard.writeText(doi).then(function () {
                 var orig = btn.textContent;
@@ -347,16 +470,59 @@
             });
           });
 
-          document.getElementById("dl-bib").addEventListener("click", function () {
-            var blob = new Blob([annotatedBib], { type: "text/plain" });
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement("a");
-            a.href = url; a.download = "validated.bib"; a.click();
-            URL.revokeObjectURL(url);
-          });
+          // Wire downloads
+          var dlA = document.getElementById("dl-annotated");
+          if (dlA) dlA.addEventListener("click", function () { downloadText(annotatedBib, "annotated.bib"); });
+          var dlC = document.getElementById("dl-corrected");
+          if (dlC) dlC.addEventListener("click", function () { downloadText(correctedBib, "corrected.bib"); });
         }
 
-        function badge(n, cls, label) {
+        function downloadText(text, name) {
+          if (!text) return;
+          var blob = new Blob([text], { type: "text/plain" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url; a.download = name; a.click();
+          URL.revokeObjectURL(url);
+        }
+
+        // ---------------- Detail panel: original vs corrected -------------
+        function detailPanel(e) {
+          var orig = extractEntryFromText(lastSourceBib, e.key);
+          var corr = (correctedBib && e.crossref_confidence !== null && e.crossref_confidence >= 0.85)
+            ? extractEntryFromText(correctedBib, e.key)
+            : "";
+          var hasCorr = !!corr && corr !== orig;
+          var html = '<div class="bib-detail-grid' + (hasCorr ? "" : " single") + '">';
+          html += '<div class="bib-detail-pane"><h4>Original</h4><pre>' + escapeHtml(orig || "(could not extract)") + "</pre></div>";
+          if (hasCorr) {
+            html += '<div class="bib-detail-pane"><h4><span class="pane-label-corrected">Corrected (CrossRef)</span></h4><pre>' + escapeHtml(corr) + "</pre></div>";
+          }
+          html += "</div>";
+          return html;
+        }
+
+        // Pull a single @entry{key,...} block out of bib text. Brace-counting.
+        function extractEntryFromText(text, key) {
+          if (!text) return "";
+          // Match @<type>{<key>, ...   then walk braces.
+          var re = new RegExp("@\\w+\\s*\\{\\s*" + escapeRe(key) + "\\b", "i");
+          var m = re.exec(text);
+          if (!m) return "";
+          var start = m.index;
+          var depth = 0, seenOpen = false;
+          for (var i = start; i < text.length; i++) {
+            var c = text.charAt(i);
+            if (c === "{") { depth++; seenOpen = true; }
+            else if (c === "}") { depth--; if (seenOpen && depth === 0) return text.slice(start, i + 1); }
+          }
+          return text.slice(start);
+        }
+
+        function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+
+        // ---------------- Cell renderers ---------------------------------
+        function badge(cls, label) {
           return '<span class="bib-badge bib-badge-' + cls + '">' + escapeHtml(String(label)) + "</span>";
         }
 
@@ -367,9 +533,9 @@
         }
 
         function doiCell(e) {
-          if (!e.doi)       return '<span class="bib-na">-</span>';
+          if (!e.doi)            return '<span class="bib-na">-</span>';
           if (e.doi_ok === null) return '<span class="bib-na">?</span>';
-          if (e.doi_ok)    return '<span class="bib-ok">✓</span>';
+          if (e.doi_ok)          return '<span class="bib-ok">✓</span>';
           return '<span class="bib-err">✗ ' + (e.doi_status || "dead") + "</span>";
         }
 
@@ -382,10 +548,24 @@
           if (foundTitle && conf < 0.85) {
             out += '<span class="bib-found-title" title="' + escapeHtml(foundTitle) + '">' + escapeHtml(foundTitle) + "</span>";
           }
-          if (doi && conf !== null && conf !== undefined && conf < 0.85) {
+          if (doi && conf < 0.85) {
             out += '<button type="button" class="bib-copy-doi" data-doi="' + escapeHtml(doi) + '" title="Copy corrected DOI to clipboard">Copy DOI</button>';
           }
           return out;
+        }
+
+        function authorCell(e) {
+          if (e.author_match === null || e.author_match === undefined) return '<span class="bib-na">-</span>';
+          var pct = Math.round(e.author_match * 100);
+          var cls = e.author_match >= 0.85 ? "bib-ok" : e.author_match >= 0.50 ? "bib-warn" : "bib-err";
+          var label = e.author_match >= 0.85 ? "✓ " : e.author_match >= 0.50 ? "⚠ " : "✗ ";
+          return '<span class="bib-conf ' + cls + '">' + label + pct + "%</span>";
+        }
+
+        function yearCell(e) {
+          if (!e.year_mismatch) return '<span class="bib-ok">✓</span>';
+          var ref = e.crossref_year || e.s2_year;
+          return '<span class="bib-err" title="bib: ' + escapeHtml(e.year || "?") + ' vs reference: ' + escapeHtml(String(ref)) + '">✗ ' + escapeHtml(e.year || "?") + ' / ' + escapeHtml(String(ref)) + "</span>";
         }
 
         function overallCell(o) {
@@ -414,5 +594,6 @@
         <a href="/changelog/">Changelog</a>
       </nav>
     </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
   </body>
 </html>

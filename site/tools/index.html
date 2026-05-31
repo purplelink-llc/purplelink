@@ -108,79 +108,89 @@
         <p>Compile, convert, compare, and render LaTeX - right in your browser. No account, no install. <strong>Your files are processed in memory and never stored.</strong></p>
       </div>
 
-      <h2 class="tools-grid-heading">Choose a tool</h2>
-      <div class="tools-grid">
-        <a class="tool-card" href="/tools/latex-to-pdf/">
-          <span class="tool-emoji" aria-hidden="true">📄</span>
-          <h3>LaTeX → PDF</h3>
-          <p>Upload a .tex file and get a compiled PDF. pdfLaTeX or XeLaTeX.</p>
-        </a>
-        <a class="tool-card" href="/tools/latex-to-word/">
-          <span class="tool-emoji" aria-hidden="true">📝</span>
-          <h3>LaTeX → Word</h3>
-          <p>Convert a .tex paper into a standard double-spaced Word manuscript.</p>
-        </a>
-        <a class="tool-card" href="/tools/latex-diff/">
-          <span class="tool-emoji" aria-hidden="true">🔀</span>
-          <h3>LaTeX Diff</h3>
-          <p>Upload two versions and get a tracked-changes comparison PDF.</p>
-        </a>
-        <a class="tool-card" href="/tools/bib-validator/">
-          <span class="tool-emoji" aria-hidden="true">📚</span>
-          <h3>BibTeX Validator</h3>
-          <p>Check citations for missing fields, dead DOIs, and AI hallucinations.</p>
-        </a>
-        <a class="tool-card" href="/tools/bib-builder/">
-          <span class="tool-emoji" aria-hidden="true">🔍</span>
-          <h3>BibTeX Builder</h3>
-          <p>Paste DOIs or arXiv IDs and download a ready-to-use .bib file.</p>
-        </a>
-        <a class="tool-card" href="/tools/equation-renderer/">
-          <span class="tool-emoji" aria-hidden="true">∑</span>
-          <h3>Equation Renderer</h3>
-          <p>Paste LaTeX math and download a high-resolution PNG image.</p>
-        </a>
-        <a class="tool-card" href="/tools/word-to-latex/">
-          <span class="tool-emoji" aria-hidden="true">🔄</span>
-          <h3>Word → LaTeX</h3>
-          <p>Upload a .docx and download a .tex starting point via Pandoc.</p>
-        </a>
-        <a class="tool-card" href="/tools/markdown-to-pdf/">
-          <span class="tool-emoji" aria-hidden="true">📰</span>
-          <h3>Markdown → PDF / Word</h3>
-          <p>Paste or upload Markdown and download a clean PDF or .docx.</p>
-        </a>
-        <a class="tool-card" href="/tools/pdf-tools/">
-          <span class="tool-emoji" aria-hidden="true">📑</span>
-          <h3>PDF Tools</h3>
-          <p>Merge, split, and compress PDFs. Merge and split run in your browser.</p>
-        </a>
-        <a class="tool-card" href="/tools/citation-generator/">
-          <span class="tool-emoji" aria-hidden="true">🎓</span>
-          <h3>Citation Generator</h3>
-          <p>Look up a DOI, ISBN, or arXiv ID and get APA, MLA, Chicago, or IEEE.</p>
-        </a>
-        <a class="tool-card" href="/tools/reference-converter/">
-          <span class="tool-emoji" aria-hidden="true">🔁</span>
-          <h3>Reference Converter</h3>
-          <p>Convert citations between BibTeX, RIS, and EndNote formats.</p>
-        </a>
-        <a class="tool-card" href="/tools/latex-table-generator/">
-          <span class="tool-emoji" aria-hidden="true">📊</span>
-          <h3>LaTeX Table Generator</h3>
-          <p>Paste CSV or TSV data and get a clean booktabs LaTeX table.</p>
-        </a>
-        <a class="tool-card" href="/tools/word-counter/">
-          <span class="tool-emoji" aria-hidden="true">🔢</span>
-          <h3>Word Counter</h3>
-          <p>Live word, character, sentence, and reading-time stats in your browser.</p>
-        </a>
-        <a class="tool-card" href="/tools/file-to-markdown/">
-          <span class="tool-emoji" aria-hidden="true">📝</span>
-          <h3>File to Markdown</h3>
-          <p>Convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to clean Markdown. Nothing stored.</p>
-        </a>
-      </div>
+      <section class="tools-section" aria-labelledby="grp-latex">
+        <h2 class="tools-section-heading" id="grp-latex">LaTeX manuscript tools</h2>
+        <p class="tools-section-intro">Compile, compare, and produce publication-ready artifacts from <code>.tex</code> sources.</p>
+        <div class="tools-grid">
+          <a class="tool-card" href="/tools/latex-to-pdf/">
+            <h3>LaTeX to PDF</h3>
+            <p>Upload a .tex file and get a compiled PDF. pdfLaTeX or XeLaTeX.</p>
+          </a>
+          <a class="tool-card" href="/tools/latex-diff/">
+            <h3>LaTeX Diff</h3>
+            <p>Upload two versions and get a tracked-changes comparison PDF.</p>
+          </a>
+          <a class="tool-card" href="/tools/equation-renderer/">
+            <h3>Equation Renderer</h3>
+            <p>Paste LaTeX math and download a high-resolution PNG image.</p>
+          </a>
+          <a class="tool-card" href="/tools/latex-table-generator/">
+            <h3>LaTeX Table Generator</h3>
+            <p>Paste CSV or TSV data and get a clean booktabs LaTeX table.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="tools-section" aria-labelledby="grp-convert">
+        <h2 class="tools-section-heading" id="grp-convert">Convert between formats</h2>
+        <p class="tools-section-intro">Move documents in and out of LaTeX, Markdown, and Word.</p>
+        <div class="tools-grid">
+          <a class="tool-card" href="/tools/latex-to-word/">
+            <h3>LaTeX to Word</h3>
+            <p>Convert a .tex paper into a standard double-spaced Word manuscript.</p>
+          </a>
+          <a class="tool-card" href="/tools/word-to-latex/">
+            <h3>Word to LaTeX</h3>
+            <p>Upload a .docx and download a .tex starting point via Pandoc.</p>
+          </a>
+          <a class="tool-card" href="/tools/markdown-to-pdf/">
+            <h3>Markdown to PDF or Word</h3>
+            <p>Paste or upload Markdown and download a clean PDF or .docx.</p>
+          </a>
+          <a class="tool-card" href="/tools/file-to-markdown/">
+            <h3>File to Markdown</h3>
+            <p>Convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to clean Markdown.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="tools-section" aria-labelledby="grp-cites">
+        <h2 class="tools-section-heading" id="grp-cites">Citations and bibliographies</h2>
+        <p class="tools-section-intro">Build, verify, and convert reference lists across the major formats.</p>
+        <div class="tools-grid">
+          <a class="tool-card" href="/tools/bib-validator/">
+            <h3>BibTeX Validator</h3>
+            <p>Check citations for missing fields, dead DOIs, and AI hallucinations.</p>
+          </a>
+          <a class="tool-card" href="/tools/bib-builder/">
+            <h3>BibTeX Builder</h3>
+            <p>Paste DOIs or arXiv IDs and download a ready-to-use .bib file.</p>
+          </a>
+          <a class="tool-card" href="/tools/citation-generator/">
+            <h3>Citation Generator</h3>
+            <p>Look up a DOI, ISBN, or arXiv ID and get APA, MLA, Chicago, or IEEE.</p>
+          </a>
+          <a class="tool-card" href="/tools/reference-converter/">
+            <h3>Reference Converter</h3>
+            <p>Convert citations between BibTeX, RIS, and EndNote formats.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="tools-section" aria-labelledby="grp-util">
+        <h2 class="tools-section-heading" id="grp-util">Utilities</h2>
+        <p class="tools-section-intro">A few odds and ends that pair well with the tools above.</p>
+        <div class="tools-grid">
+          <a class="tool-card" href="/tools/pdf-tools/">
+            <h3>PDF Tools</h3>
+            <p>Merge, split, and compress PDFs. Merge and split run in your browser.</p>
+          </a>
+          <a class="tool-card" href="/tools/word-counter/">
+            <h3>Word Counter</h3>
+            <p>Live word, character, sentence, and reading-time stats in your browser.</p>
+          </a>
+        </div>
+      </section>
 
       <section class="tool-prose">
         <h2>Free, privacy-respecting LaTeX tools</h2>
@@ -194,7 +204,7 @@
         <details><summary>Do I need to install anything?</summary><div class="faq-body">No. The tools run entirely in your browser against a hosted backend - no LaTeX installation, account, or sign-up needed.</div></details>
       </section>
 
-      <p class="tool-support">Find these tools useful? <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ Buy me a coffee</a> to help keep them free and online.</p>
+      <p class="tool-support">If these save you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep them free and online.</p>
     </main>
 
     <footer class="footer">
@@ -214,5 +224,6 @@
         <a href="/changelog/">Changelog</a>
       </nav>
     </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
   </body>
 </html>
