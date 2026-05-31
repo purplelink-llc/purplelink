@@ -20,11 +20,21 @@ Run after a netlify deploy. The IndexNow key file already lives at
 site/<key>.txt; the constant below matches.
 """
 import datetime
+import ssl
 import sys
 import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
+
+# macOS Python ships without a CA bundle by default; use certifi if available
+# to avoid SSL verify failures. Falls back to system default if certifi is
+# missing (Linux + Modal container both have one wired up correctly).
+try:
+    import certifi
+    _SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
+except ImportError:
+    _SSL_CONTEXT = ssl.create_default_context()
 
 HOST = "purplelink.llc"
 KEY = "7c6ea98702bc415eccb029b334bc63fef6905e06458c01f93ea762fa140019cf"
@@ -69,7 +79,7 @@ def ping(urls):
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=10, context=_SSL_CONTEXT) as resp:
             print(f"IndexNow {resp.status} {resp.reason}: pinged {len(urls)} URL(s)")
             for u in urls:
                 print(f"  · {u}")
