@@ -68,10 +68,13 @@
 
 # The OG-image generator is a build-time utility, not a public page.
 # 404 any direct hit so it doesn't get crawled or indexed.
+# `force = true` because the file still exists on disk; without it Netlify
+# would serve the existing file rather than apply this redirect.
 [[redirects]]
   from = "/assets/og/_gen.html"
   to = "/404.html"
   status = 404
+  force = true
 
 [[redirects]]
   from = "/*"
