@@ -9,6 +9,7 @@
 - **Location:** 8735 Dunwoody Place #12398, Atlanta, GA 30350
 - **Founded:** 2026
 - **Contact:** ben@purplelink.llc
+- **LinkedIn:** https://www.linkedin.com/company/purplelink-llc/
 - **CEO:** Benjamin Ampel
 - **Website:** https://purplelink.llc/
 - **Mission:** Making software that lasts.
