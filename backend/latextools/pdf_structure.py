@@ -3,9 +3,14 @@
 Resolved interface (OpenDataLoader-PDF v2.4.7, Apache-2.0):
   - Install: `pip install opendataloader-pdf` (bundles the CLI JAR + LICENSE/
     NOTICE/THIRD_PARTY). Needs a JRE (Java 17) on PATH.
-  - Run: opendataloader_pdf.convert(input_path=..., output_folder=...,
-    generate_markdown=True). JSON is on by default. It WRITES files; default
-    mode is deterministic-local (NO OCR / hybrid / picture description).
+  - Run: opendataloader_pdf.convert(input_path=..., output_dir=...,
+    format=["json","markdown"]). `format` defaults to JSON-only, so both
+    formats are passed explicitly. It WRITES files; default mode is
+    deterministic-local (OCR / hybrid / picture description are hybrid-server
+    parameters only and `hybrid` defaults off).
+    NOTE: `output_folder` / `generate_markdown` belong to the DEPRECATED
+    `run()` wrapper, NOT `convert()`. Passing them to convert() raises
+    TypeError. Verified against convert_generated.py upstream.
   - Output JSON root: {"number of pages": int, "kids": [ ...recursive blocks ]};
     each block has "type" (heading/paragraph/table/image/figure/...) and
     "content" (text), and may have its own "kids".
@@ -21,13 +26,20 @@ import re
 _WORD = re.compile(r"\b\w+\b")
 
 
-def safe_convert_kwargs(input_path: str, output_folder: str) -> dict:
-    """Kwargs for opendataloader_pdf.convert() — Markdown + (default) JSON,
-    and explicitly NO OCR / hybrid / picture-description."""
+def safe_convert_kwargs(input_path: str, output_dir: str) -> dict:
+    """Kwargs for opendataloader_pdf.convert() (the modern API).
+
+    convert() takes `output_dir` + a `format` list; `format` defaults to JSON
+    only, so we pass both "json" and "markdown" explicitly. OCR / picture
+    description are NOT convert() parameters (hybrid-server-only; `hybrid`
+    defaults off), so default convert() is deterministic + local.
+    `pages="1-50"` bounds CPU/cost per the design's page cap.
+    """
     return {
         "input_path": input_path,
-        "output_folder": output_folder,
-        "generate_markdown": True,
+        "output_dir": output_dir,
+        "format": ["json", "markdown"],
+        "pages": "1-50",
     }
 
 

@@ -7,11 +7,17 @@ if str(BACKEND) not in sys.path:
 from latextools import pdf_structure as ps
 
 
-def test_safe_convert_kwargs_markdown_on_no_ocr_or_hybrid():
+def test_safe_convert_kwargs_uses_modern_convert_signature():
+    # convert() takes output_dir + format=[...]; output_folder/generate_markdown
+    # belong to the DEPRECATED run() wrapper and would raise TypeError here.
     kw = ps.safe_convert_kwargs("/in/input.pdf", "/out")
     assert kw["input_path"] == "/in/input.pdf"
-    assert kw["output_folder"] == "/out"
-    assert kw["generate_markdown"] is True
+    assert kw["output_dir"] == "/out"
+    assert "json" in kw["format"] and "markdown" in kw["format"]
+    # Guard against accidentally reintroducing the deprecated kwargs.
+    assert "output_folder" not in kw
+    assert "generate_markdown" not in kw
+    # OCR / hybrid / picture-description must never be enabled.
     blob = " ".join(str(k).lower() for k in kw)
     assert "ocr" not in blob
     assert "hybrid" not in blob
