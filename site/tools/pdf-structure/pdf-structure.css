@@ -1,0 +1,19 @@
+/* PDF to Structured Data — page styles. External file (CSP style-src 'self').
+   Theme tokens only, so it adapts to light and dark mode. */
+.ps-summary { display:flex; flex-wrap:wrap; gap:1rem; margin:1.25rem 0 0.5rem; font-size:.9rem; color:var(--muted); }
+.ps-summary span { display:inline-flex; gap:.3rem; }
+.ps-summary strong { color:var(--ink); font-variant-numeric:tabular-nums; }
+.ps-tabs { display:flex; gap:.5rem; margin:1.25rem 0 .6rem; }
+.ps-tabs button { background:transparent; border:1px solid var(--line); color:var(--muted); padding:.35rem .85rem; border-radius:8px; font:inherit; font-size:.85rem; cursor:pointer; }
+.ps-tabs button[aria-selected="true"] { background:color-mix(in oklch, var(--purple) 14%, transparent); border-color:color-mix(in oklch, var(--purple) 55%, transparent); color:var(--ink); font-weight:600; }
+.ps-tabs button:hover { background:color-mix(in oklch, var(--purple) 8%, transparent); }
+.ps-actions { display:flex; gap:.6rem; margin-bottom:.6rem; flex-wrap:wrap; }
+.ps-md { line-height:1.6; color:var(--ink); border:1px solid var(--line); border-radius:8px; padding:1rem 1.2rem; max-height:32rem; overflow:auto; background:var(--panel); }
+.ps-md h1,.ps-md h2,.ps-md h3 { font-family:"Fraunces",Georgia,serif; }
+.ps-md table { border-collapse:collapse; width:100%; font-size:.9rem; }
+.ps-md th,.ps-md td { border:1px solid var(--line); padding:.35rem .6rem; text-align:left; }
+.ps-md pre { background:#0f0f17; color:#e3e3ea; border-radius:4px; padding:.6rem .85rem; overflow-x:auto; font-size:.8rem; }
+.ps-md code { background:color-mix(in oklch, var(--ink) 8%, transparent); padding:.05em .35em; border-radius:3px; font-size:.88em; }
+.ps-md pre code { background:none; }
+.ps-json { background:#0f0f17; color:#e3e3ea; border:1px solid color-mix(in oklch, var(--ink) 20%, transparent); border-radius:8px; padding:.8rem 1rem; font-size:.78rem; line-height:1.5; max-height:32rem; overflow:auto; white-space:pre; }
+.ps-err { color:#c0392b; font-weight:600; }

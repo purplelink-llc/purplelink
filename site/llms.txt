@@ -117,6 +117,42 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - The company is a sole-proprietor LLC operated out of Atlanta, Georgia
 - **Website analytics:** the purplelink.llc marketing site uses Cloudflare Web Analytics (cookieless, no PII, aggregate page-view counts only). All of Purplelink's apps remain analytics-free as described per product above.
 
+## Paid tools
+
+### Paper Review (multiple tiers)
+- **URL:** https://purplelink.llc/tools/paper-review/
+- **Standard:** $3 — single-pass 4-persona red team + figure scan + live citation check + annotated PDF download. **Anonymity Check bundled free.**
+- **Standard + Journal Pack:** $5 — adds a compliance check against the target journal's submission rules (25+ journals supported including Nature, Cell, NeurIPS, ICML, JACS, Lancet, etc.). Anonymity Check still bundled.
+- **Deep Review:** $8 — two-pass adversarial debate where each persona sees the others' first-pass findings, plus bundled Anonymity Check and Journal Pack.
+- **Volume packs:** 5 reviews for $12 (20% off vs 5×$3) at https://purplelink.llc/tools/paper-review/packs/ or 20 for $40 (33% off vs 20×$3). Tokens emailed at purchase, never expire.
+- **Delivery:** Async polling page; typically 4-8 minutes per manuscript (standard) or 10-15 minutes (deep).
+- **Output:** Markdown report with What's Working / Critical Blind Spots (with per-finding confidence tags) / Data-to-Claim Contradictions / Rectification Checklist (A/B/C priority) / True Novelty Estimate / Reference Verification Summary / Panel Transcript. Plus an annotated PDF with sticky-note comments at the right pages.
+- **Privacy disclosure:** Manuscript sent to Anthropic Claude API (30-day input retention for abuse monitoring; never used for training). Purplelink retains nothing after delivery — the review is deleted on first retrieval.
+- **Refunds:** Full refund within 14 days; email ben@purplelink.llc.
+
+### Cover Letter Generator — $1
+- **URL:** https://purplelink.llc/tools/cover-letter/
+- Draft journal cover letter from abstract + target journal name. Privacy-preserving: never receives full manuscript.
+
+### Anonymity Check — $1
+- **URL:** https://purplelink.llc/tools/anonymity-check/
+- Scans manuscript for identifying info before double-blind submission (author names, institutions, funder acknowledgements, self-citation patterns, IRB numbers, author-owned URLs).
+
+### Citation Gap Analysis — $2
+- **URL:** https://purplelink.llc/tools/citation-gap/
+- Reverse citation check: finds prior art the manuscript should cite but doesn't.
+
+### Revision Review — $1
+- **URL:** https://purplelink.llc/tools/paper-review/revision/
+- Second-pass review after revisions. Requires the original review's Markdown file. Tracks which checklist items were addressed and flags new issues introduced by the revision.
+
+### Response to Reviewers — $4
+- **URL:** https://purplelink.llc/tools/response-review/
+- Three-persona AI panel that red-teams the author's response letter: per-comment verdicts, tone concerns, missing replies, accept/revise prediction.
+
+### Receipts and invoices
+- Available on the Paper Review status page after delivery via "Get invoice for reimbursement" button. PDF invoice generated through Stripe, emailed via Resend. Custom tax-ID line supported for institutional reimbursement.
+
 ## Tools (free web tools)
 - LaTeX to PDF: https://purplelink.llc/tools/latex-to-pdf/ — compile a .tex file to PDF (pdfLaTeX/XeLaTeX), files never stored.
 - LaTeX Diff: https://purplelink.llc/tools/latex-diff/ — compare two .tex versions, output a marked-up PDF via latexdiff, files never stored.
@@ -132,6 +168,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Word & Character Counter: https://purplelink.llc/tools/word-counter/ — count words, characters, sentences, and reading time, runs in your browser.
 - PDF Tools: https://purplelink.llc/tools/pdf-tools/ — merge, split, and compress PDF files, files never stored.
 - File to Markdown: https://purplelink.llc/tools/file-to-markdown/ - convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to Markdown, files never stored.
+- PDF to Structured Data: https://purplelink.llc/tools/pdf-structure/ - convert a PDF to reading-order Markdown and RAG-ready JSON (tables, math as LaTeX, figure captions), powered by OpenDataLoader (Apache-2.0), files never stored.
 - Tools hub: https://purplelink.llc/tools/
 
 ## Guides (free how-to articles)
