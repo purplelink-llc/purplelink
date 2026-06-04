@@ -20,6 +20,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
+from latextools import safety as _safety
 from .papercheck import _anthropic_message, _parse_json_findings
 
 logger = logging.getLogger(__name__)
@@ -315,7 +316,7 @@ class AuditFinding:
         return dataclasses.asdict(self)
 
 
-_ASSESS_SYSTEM = (
+_ASSESS_SYSTEM_CORE = (
     "You audit academic citations. For each numbered item you are given a "
     "CLAIM from a manuscript and the ABSTRACT of the source it cites. Decide "
     "whether the abstract supports the claim. Reply ONLY with a JSON array; "
@@ -327,6 +328,7 @@ _ASSESS_SYSTEM = (
     "\"Not supported by abstract\", not a failure of the paper. Use hedged, "
     "non-accusatory language in the rationale."
 )
+_ASSESS_SYSTEM = _safety.SAFETY_PREAMBLE + "\n\n" + _ASSESS_SYSTEM_CORE
 
 
 def _clamp_verdict(v: str) -> str:
@@ -340,10 +342,13 @@ def _clamp_verdict(v: str) -> str:
 def _build_assess_prompt(batch: list) -> str:
     lines = []
     for i, (claim, src) in enumerate(batch):
-        lines.append(
-            f"[{i}] CLAIM: {claim.claim_sentence}\n"
-            f"    ABSTRACT: {(src.text or '')[:2000]}"
-        )
+        abstract_clean = _safety.sanitize_user_text(
+            src.text or "", max_len=2000, field_name="source_abstract",
+            keep_newlines=False,
+        ).text
+        claim_fence = _safety.wrap_user_content(claim.claim_sentence, "claim")
+        abstract_fence = _safety.wrap_user_content(abstract_clean, "source_abstract")
+        lines.append(f"[{i}]\nCLAIM:\n{claim_fence}\nABSTRACT:\n{abstract_fence}")
     return "\n\n".join(lines)
 
 
