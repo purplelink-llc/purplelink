@@ -126,7 +126,7 @@ def test_fetch_source_abstract_openalex_hit():
             "title": "Deep nets",
         })),
     ])
-    out = asyncio.get_event_loop().run_until_complete(
+    out = asyncio.run(
         ca.fetch_source_abstract(client, "1", ref)
     )
     assert out.status == "ok"
@@ -137,8 +137,21 @@ def test_fetch_source_abstract_openalex_hit():
 def test_fetch_source_abstract_all_miss_is_unavailable():
     ref = PaperReference(raw="x", title="Ghost paper")
     client = _FakeClient([])        # every route 404 / empty
-    out = asyncio.get_event_loop().run_until_complete(
+    out = asyncio.run(
         ca.fetch_source_abstract(client, "1", ref)
     )
     assert out.status == "unavailable"
     assert out.text is None
+
+
+def test_fetch_source_abstract_all_three_http_miss():
+    # DOI present so every fetcher reaches the network; all routes 404. This
+    # exercises the Semantic Scholar + CrossRef HTTP-failure fallback paths.
+    ref = PaperReference(raw="x", title="Ghost paper", doi="10.9/missing")
+    client = _FakeClient([])        # every route -> _FakeResp(404)
+    out = asyncio.run(
+        ca.fetch_source_abstract(client, "7", ref)
+    )
+    assert out.status == "unavailable"
+    assert out.text is None
+    assert out.ref_key == "7"
