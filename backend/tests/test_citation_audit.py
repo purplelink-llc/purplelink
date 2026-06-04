@@ -270,3 +270,10 @@ def test_layer2_audit_key_is_attached():
     merged = papercheck.attach_audit(dict(base_l2), audit)
     assert merged["checked"] == 2          # existing keys preserved
     assert merged["audit"]["audited"] == 1
+
+
+def test_l4_prompt_includes_citation_support_audit_section():
+    from latextools import papercheck
+    assert "## Citation Support Audit" in papercheck._L4_SYSTEM_CORE
+    # The instruction names the cap/unavailable footnote behaviour.
+    assert "not audited" in papercheck._L4_SYSTEM_CORE.lower()

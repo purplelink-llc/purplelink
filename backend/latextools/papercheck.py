@@ -1353,6 +1353,22 @@ what's incremental over prior art. End with a one-sentence verdict:
 A short paragraph summarising how many references verified cleanly, how many
 look dead or hallucinated, and which specific ones to manually re-check.
 
+## Citation Support Audit
+Render the deep citation audit supplied in layer_2_citations.audit. This audit
+fetched the abstract of each cited source and judged whether it supports the
+claim it was attached to. Produce:
+- A one-line tally: counts per verdict (Supported, Partially supported, Not
+  supported by abstract, Contradicted, Source unavailable).
+- A Markdown table of the most important non-Supported findings (skip
+  "Supported" rows to keep it focused), columns: Claim (quoted, trimmed) |
+  Cited ref | Verdict | What the source's abstract says (source_quote).
+- If audit.skipped > 0, add a final italic line: "_N citations with weaker
+  claims were not audited (per-run cap)._" using the real number.
+- If audit.audited == 0, write exactly: "No in-text citations were available
+  to audit at the abstract level."
+Keep wording hedged: "Not supported by abstract" means verify against the full
+text, not that the citation is wrong.
+
 ## Panel Transcript
 A subsection per persona showing their raw findings as you received them.
 Format:
