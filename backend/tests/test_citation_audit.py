@@ -258,3 +258,15 @@ def test_run_citation_audit_caps_and_reports_skipped(monkeypatch):
     audit = asyncio.run(ca.run_citation_audit(object(), struct))
     assert audit["audited"] == ca.MAX_AUDIT_PAIRS
     assert audit["skipped"] == 59 - ca.MAX_AUDIT_PAIRS
+
+
+def test_layer2_audit_key_is_attached():
+    # Prove the orchestrator attaches audit onto the l2 dict additively.
+    from latextools import papercheck
+
+    base_l2 = {"checked": 2, "verified": 2, "issues": []}
+    audit = {"audited": 1, "skipped": 0,
+             "by_verdict": {v: 0 for v in ca.VERDICTS}, "findings": []}
+    merged = papercheck.attach_audit(dict(base_l2), audit)
+    assert merged["checked"] == 2          # existing keys preserved
+    assert merged["audit"]["audited"] == 1
