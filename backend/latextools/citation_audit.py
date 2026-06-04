@@ -161,6 +161,113 @@ def reconstruct_abstract(inverted_index: Optional[dict]) -> Optional[str]:
     return " ".join(word for _, word in positions)
 
 
+_MAILTO = "ben@purplelink.llc"
+_UA = "purplelink-paper-review/1.0 (mailto:ben@purplelink.llc)"
+
+
+async def _openalex(client, ref) -> Optional[SourceAbstract]:
+    try:
+        if getattr(ref, "doi", ""):
+            resp = await client.get(
+                f"https://api.openalex.org/works/https://doi.org/{ref.doi}",
+                params={"mailto": _MAILTO}, timeout=10.0,
+            )
+        elif getattr(ref, "title", ""):
+            resp = await client.get(
+                "https://api.openalex.org/works",
+                params={"search": ref.title[:200], "per-page": "1", "mailto": _MAILTO},
+                timeout=10.0,
+            )
+        else:
+            return None
+        if resp.status_code != 200:
+            return None
+        data = resp.json()
+        work = data
+        if "results" in data:
+            results = data.get("results") or []
+            if not results:
+                return None
+            work = results[0]
+        text = reconstruct_abstract(work.get("abstract_inverted_index"))
+        if not text:
+            return None
+        return SourceAbstract(
+            ref_key="", text=text, status="ok", source="openalex",
+            title=work.get("title") or "",
+        )
+    except Exception:
+        return None
+
+
+async def _semantic_scholar(client, ref) -> Optional[SourceAbstract]:
+    try:
+        if getattr(ref, "doi", ""):
+            ident = f"DOI:{ref.doi}"
+        elif getattr(ref, "arxiv_id", ""):
+            ident = f"arXiv:{ref.arxiv_id}"
+        else:
+            return None
+        resp = await client.get(
+            f"https://api.semanticscholar.org/graph/v1/paper/{ident}",
+            params={"fields": "title,abstract,tldr"}, timeout=10.0,
+        )
+        if resp.status_code != 200:
+            return None
+        data = resp.json()
+        text = data.get("abstract")
+        tldr = (data.get("tldr") or {}).get("text") if data.get("tldr") else None
+        body = text or tldr
+        if not body:
+            return None
+        return SourceAbstract(
+            ref_key="", text=body, status="ok", source="semantic_scholar",
+            title=data.get("title") or "",
+        )
+    except Exception:
+        return None
+
+
+async def _crossref_abstract(client, ref) -> Optional[SourceAbstract]:
+    try:
+        if not getattr(ref, "doi", ""):
+            return None
+        resp = await client.get(
+            f"https://api.crossref.org/works/{ref.doi}",
+            params={"mailto": _MAILTO}, headers={"User-Agent": _UA}, timeout=10.0,
+        )
+        if resp.status_code != 200:
+            return None
+        msg = (resp.json() or {}).get("message") or {}
+        raw = msg.get("abstract")
+        if not raw:
+            return None
+        text = re.sub(r"<[^>]+>", " ", raw)        # strip JATS-XML tags
+        text = re.sub(r"\s+", " ", text).strip()
+        if not text:
+            return None
+        return SourceAbstract(
+            ref_key="", text=text, status="ok", source="crossref",
+            title=(msg.get("title") or [""])[0],
+        )
+    except Exception:
+        return None
+
+
+async def fetch_source_abstract(client, ref_key: str, ref) -> SourceAbstract:
+    """Try OpenAlex -> Semantic Scholar -> CrossRef. Never raises.
+
+    Returns a SourceAbstract with status 'unavailable' if no source yields an
+    abstract — that is a first-class, honest outcome, never guessed.
+    """
+    for fetcher in (_openalex, _semantic_scholar, _crossref_abstract):
+        got = await fetcher(client, ref)
+        if got is not None:
+            got.ref_key = ref_key
+            return got
+    return SourceAbstract(ref_key=ref_key, text=None, status="unavailable")
+
+
 def _resolve_ref(ref_key: str, references: list) -> Optional["PaperReference"]:
     """Map a citation marker to a PaperReference.
 

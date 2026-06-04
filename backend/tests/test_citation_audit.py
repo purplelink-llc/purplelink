@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from pathlib import Path
 BACKEND = Path(__file__).resolve().parent.parent
@@ -94,3 +95,50 @@ def test_resolve_ref_lowercase_prefix_surname():
     ]
     # The captured surname ("Berg") + year must resolve past the particles.
     assert ca._resolve_ref("van der Berg et al., 2021", refs) is refs[0]
+
+
+class _FakeResp:
+    def __init__(self, status_code=200, payload=None):
+        self.status_code = status_code
+        self._payload = payload or {}
+
+    def json(self):
+        return self._payload
+
+
+class _FakeClient:
+    """Returns queued responses keyed by URL substring."""
+    def __init__(self, routes):
+        self.routes = routes          # list of (url_substr, _FakeResp)
+
+    async def get(self, url, **kwargs):
+        for sub, resp in self.routes:
+            if sub in url:
+                return resp
+        return _FakeResp(404, {})
+
+
+def test_fetch_source_abstract_openalex_hit():
+    ref = PaperReference(raw="x", title="Deep nets", doi="10.1/x")
+    client = _FakeClient([
+        ("openalex.org", _FakeResp(200, {
+            "abstract_inverted_index": {"Deep": [0], "nets": [1]},
+            "title": "Deep nets",
+        })),
+    ])
+    out = asyncio.get_event_loop().run_until_complete(
+        ca.fetch_source_abstract(client, "1", ref)
+    )
+    assert out.status == "ok"
+    assert out.source == "openalex"
+    assert out.text == "Deep nets"
+
+
+def test_fetch_source_abstract_all_miss_is_unavailable():
+    ref = PaperReference(raw="x", title="Ghost paper")
+    client = _FakeClient([])        # every route 404 / empty
+    out = asyncio.get_event_loop().run_until_complete(
+        ca.fetch_source_abstract(client, "1", ref)
+    )
+    assert out.status == "unavailable"
+    assert out.text is None
