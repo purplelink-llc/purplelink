@@ -34,3 +34,14 @@ def test_extract_author_year_and_numeric_range():
     claims = ca.extract_claim_citations(struct)
     assert claims[0].ref_keys == ["Smith et al., 2021"]
     assert claims[1].ref_keys == ["5", "6", "7"]
+
+
+def test_extract_author_year_lowercase_prefix_surnames():
+    body = (
+        "This was first shown by (van der Berg et al., 2021). "
+        "It was later refined (de Bruijn and Smith, 2018)."
+    )
+    struct = PaperStructure(body=body)
+    claims = ca.extract_claim_citations(struct)
+    assert claims[0].ref_keys == ["van der Berg et al., 2021"]
+    assert claims[1].ref_keys == ["de Bruijn and Smith, 2018"]

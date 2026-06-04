@@ -32,10 +32,14 @@ VERDICTS = (
 _SENT_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z(\[])")
 # Numeric citation markers: [12], [3, 4], [5-7], [5–7].
 _NUM_CITE = re.compile(r"\[(\d{1,3}(?:\s*[,\-–]\s*\d{1,3})*)\]")
-# Author-year markers: (Smith et al., 2021), (Smith and Jones, 2020), (Smith, 2019a).
+# An author token: optional lowercase nobiliary particles ("van der", "de")
+# followed by a capitalized surname.
+_AUTHOR = r"(?:[a-z]+\s+){0,2}[A-Z][A-Za-z\-]+"
+# Author-year markers: (Smith et al., 2021), (van der Berg et al., 2021),
+# (de Bruijn and Smith, 2018), (Smith, 2019a).
 _AY_CITE = re.compile(
-    r"\(([A-Z][A-Za-z\-]+(?:\s+et al\.?)?"
-    r"(?:\s+(?:&|and)\s+[A-Z][A-Za-z\-]+)?,?\s+\d{4}[a-z]?)\)"
+    r"\((" + _AUTHOR + r"(?:\s+et al\.?)?"
+    r"(?:\s+(?:&|and)\s+" + _AUTHOR + r")?,?\s+\d{4}[a-z]?)\)"
 )
 
 
@@ -65,7 +69,7 @@ def _expand_numeric(inner: str) -> list[str]:
     return keys
 
 
-def _split_sentences(text: str) -> list[str]:
+def _split_sentences(text: Optional[str]) -> list[str]:
     parts = _SENT_SPLIT.split(text or "")
     return [p.strip() for p in parts if p.strip()]
 
