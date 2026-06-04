@@ -62,4 +62,4 @@ def test_rank_claims_is_stable_for_ties():
     a = ca.ClaimCitation("A plain mention [1].", ["1"])
     b = ca.ClaimCitation("Another plain mention [2].", ["2"])
     ranked = ca.rank_claims([a, b])
-    assert ranked == [a, b]             # equal salience keeps input order
+    assert ranked[0] is a and ranked[1] is b   # equal salience keeps input order
