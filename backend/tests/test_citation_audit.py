@@ -277,3 +277,25 @@ def test_l4_prompt_includes_citation_support_audit_section():
     assert "## Citation Support Audit" in papercheck._L4_SYSTEM_CORE
     # The instruction names the cap/unavailable footnote behaviour.
     assert "not audited" in papercheck._L4_SYSTEM_CORE.lower()
+
+
+def test_persona_content_includes_audit_block():
+    import json
+    from latextools import papercheck
+    from latextools.papercheck import PaperStructure
+    struct = PaperStructure(body="Body text here.")
+    l2 = {"issues": [], "audit": {"audited": 1, "skipped": 0,
+          "by_verdict": {}, "findings": [
+              {"claim_sentence": "X improves Y.", "ref_key": "1",
+               "verdict": "Contradicted", "source_quote": "We found no effect.",
+               "rationale": "Abstract reports the opposite."}]}}
+    content = papercheck._build_persona_user_content(
+        "PERSONA", struct, {"findings": []}, l2, "general")
+    blob = json.dumps(content)
+    assert "citation_support_audit" in blob
+    assert "Contradicted" in blob
+
+
+def test_literature_persona_prompt_mentions_audit():
+    from latextools import papercheck
+    assert "citation_support_audit" in papercheck._LITERATURE_AUDITOR

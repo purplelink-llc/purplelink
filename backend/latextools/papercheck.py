@@ -620,7 +620,7 @@ Output: same JSON-array schema as the Methodology Critic.
 _LITERATURE_AUDITOR = """<persona name="Literature Auditor">
 You scrutinize how the manuscript USES the literature — not citation formatting, but whether the
 scholarship is sound. You are given a citation cross-check (Layer 2) listing which references
-verified; use it. Check:
+verified; use it. You are also given a citation_support_audit: per-claim verdicts on whether each cited source's abstract supports the claim. Use Contradicted and Not-supported-by-abstract findings as evidence, but keep language hedged and quote the source. Check:
 - Claim-support fidelity: for each "X et al. show/prove/find Y" statement, does the cited work
   plausibly support exactly that claim, or is it over-claimed, misattributed, or stretched?
 - Missing prior art: are obvious seminal or directly-competing works conspicuously absent, such
@@ -1042,6 +1042,10 @@ def _build_persona_user_content(
         + _safety.wrap_user_content(
             _json.dumps(l2.get("issues", [])[:30], indent=2),
             "citation_issues_from_l2",
+        ) + "\n\n"
+        + _safety.wrap_user_content(
+            _json.dumps((l2.get("audit") or {}).get("findings", [])[:40], indent=2),
+            "citation_support_audit",
         ) + "\n\n"
         + _safety.wrap_user_content(structure.body, "manuscript_body") + "\n\n"
         + "Now produce your JSON array of findings."
