@@ -18,7 +18,12 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
+import asyncio
+import logging
+
 from .papercheck import _anthropic_message, _parse_json_findings
+
+logger = logging.getLogger(__name__)
 
 MAX_AUDIT_PAIRS = 40
 ASSESS_BATCH_SIZE = 8
@@ -398,3 +403,60 @@ async def assess_claims(client, pairs: list) -> list:
                 location=claim.location,
             ))
     return findings
+
+
+def _empty_audit() -> dict:
+    return {"audited": 0, "skipped": 0,
+            "by_verdict": {v: 0 for v in VERDICTS}, "findings": []}
+
+
+async def run_citation_audit(client, structure) -> dict:
+    """End-to-end deep citation audit. Returns a dict shaped for l2['audit'].
+
+    {audited, skipped, by_verdict: {verdict: count}, findings: [AuditFinding]}.
+    Never raises — on any failure returns an empty audit so the surrounding
+    review pipeline is unaffected.
+    """
+    try:
+        claims = extract_claim_citations(structure)
+        if not claims:
+            return _empty_audit()
+        ranked = rank_claims(claims)
+        selected = ranked[:MAX_AUDIT_PAIRS]
+        skipped = max(0, len(ranked) - len(selected))
+
+        references = getattr(structure, "references", []) or []
+        pairs: list = []
+        for claim in selected:
+            key = claim.ref_keys[0] if claim.ref_keys else ""
+            ref = _resolve_ref(key, references) if key else None
+            if ref is None:
+                pairs.append((claim, SourceAbstract(ref_key=key, text=None,
+                                                     status="unavailable")))
+            else:
+                pairs.append((claim, ref))
+
+        # Fetch abstracts concurrently for the resolved refs.
+        async def _maybe_fetch(claim, ref_or_src):
+            if isinstance(ref_or_src, SourceAbstract):
+                return (claim, ref_or_src)
+            key = claim.ref_keys[0] if claim.ref_keys else ""
+            src = await fetch_source_abstract(client, key, ref_or_src)
+            return (claim, src)
+
+        fetched = await asyncio.gather(*[_maybe_fetch(c, r) for c, r in pairs])
+
+        findings = await assess_claims(client, list(fetched))
+
+        by_verdict = {v: 0 for v in VERDICTS}
+        for f in findings:
+            by_verdict[f.verdict] = by_verdict.get(f.verdict, 0) + 1
+        return {
+            "audited": len(findings),
+            "skipped": skipped,
+            "by_verdict": by_verdict,
+            "findings": [f.to_dict() for f in findings],
+        }
+    except Exception:
+        logger.exception("run_citation_audit failed")
+        return _empty_audit()

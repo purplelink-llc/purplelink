@@ -203,3 +203,58 @@ def test_assess_claims_clamps_unknown_verdict(monkeypatch):
     )
     # Unknown verdicts clamp to the conservative "Not supported by abstract".
     assert findings[0].verdict == "Not supported by abstract"
+
+
+def test_run_citation_audit_end_to_end(monkeypatch):
+    refs = [
+        PaperReference(raw="[1] Smith 2021 Deep nets", title="Deep nets", doi="10.1/x"),
+        PaperReference(raw="[2] Jones 2019 Shallow nets", title="Shallow nets"),
+    ]
+    body = (
+        "Our method significantly outperforms baselines [1]. "
+        "Related work mentions this [2]."
+    )
+    struct = PaperStructure(body=body, references=refs)
+
+    async def _fake_fetch(client, ref_key, ref):
+        if ref_key == "1":
+            return ca.SourceAbstract(ref_key="1", text="We show big gains.", status="ok")
+        return ca.SourceAbstract(ref_key="2", text=None, status="unavailable")
+    monkeypatch.setattr(ca, "fetch_source_abstract", _fake_fetch)
+
+    async def _fake_assess(client, pairs):
+        out = []
+        for claim, src in pairs:
+            if src.status == "ok":
+                out.append(ca.AuditFinding(claim.claim_sentence, src.ref_key,
+                                           "Supported", "We show big gains.", "ok"))
+            else:
+                out.append(ca.AuditFinding(claim.claim_sentence, src.ref_key,
+                                           "Source unavailable"))
+        return out
+    monkeypatch.setattr(ca, "assess_claims", _fake_assess)
+
+    audit = asyncio.run(ca.run_citation_audit(object(), struct))
+    assert audit["audited"] == 2
+    assert audit["skipped"] == 0
+    assert audit["by_verdict"]["Supported"] == 1
+    assert audit["by_verdict"]["Source unavailable"] == 1
+    # The load-bearing claim is audited first.
+    assert "outperforms" in audit["findings"][0]["claim_sentence"]
+
+
+def test_run_citation_audit_caps_and_reports_skipped(monkeypatch):
+    refs = [PaperReference(raw=f"[{i}] ref", title=f"t{i}") for i in range(1, 60)]
+    body = " ".join(f"Claim number {i} shows an effect [{i}]." for i in range(1, 60))
+    struct = PaperStructure(body=body, references=refs)
+
+    async def _fake_fetch(client, ref_key, ref):
+        return ca.SourceAbstract(ref_key=ref_key, text="abstract", status="ok")
+    async def _fake_assess(client, pairs):
+        return [ca.AuditFinding(c.claim_sentence, s.ref_key, "Supported") for c, s in pairs]
+    monkeypatch.setattr(ca, "fetch_source_abstract", _fake_fetch)
+    monkeypatch.setattr(ca, "assess_claims", _fake_assess)
+
+    audit = asyncio.run(ca.run_citation_audit(object(), struct))
+    assert audit["audited"] == ca.MAX_AUDIT_PAIRS
+    assert audit["skipped"] == 59 - ca.MAX_AUDIT_PAIRS
