@@ -161,7 +161,7 @@ def reconstruct_abstract(inverted_index: Optional[dict]) -> Optional[str]:
     return " ".join(word for _, word in positions)
 
 
-def _resolve_ref(ref_key: str, references: list) -> Optional["object"]:
+def _resolve_ref(ref_key: str, references: list) -> Optional["PaperReference"]:
     """Map a citation marker to a PaperReference.
 
     Numeric keys index 1-based into the reference list. Author-year keys match
@@ -174,8 +174,10 @@ def _resolve_ref(ref_key: str, references: list) -> Optional["object"]:
         if 0 <= i < len(references):
             return references[i]
         return None
-    # Author-year: pull surname + 4-digit year, look for both in raw.
-    surname = re.match(r"([A-Z][A-Za-z\-]+)", key)
+    # Author-year: pull surname + 4-digit year, look for both in raw. Skip
+    # lowercase nobiliary particles ("van der", "de") so the captured surname
+    # matches the keys extract_claim_citations produces (e.g. "van der Berg").
+    surname = re.match(r"(?:[a-z]+\s+){0,2}([A-Z][A-Za-z\-]+)", key)
     year = re.search(r"\d{4}", key)
     if not surname or not year:
         return None

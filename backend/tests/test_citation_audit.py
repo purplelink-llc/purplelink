@@ -85,3 +85,12 @@ def test_resolve_ref_numeric_and_author_year():
     assert ca._resolve_ref("Smith, 2021", refs) is refs[0]
     # Unknown key -> None.
     assert ca._resolve_ref("Nobody, 1900", refs) is None
+
+
+def test_resolve_ref_lowercase_prefix_surname():
+    refs = [
+        PaperReference(raw="[1] van der Berg M. 2021. Graph nets.", title="Graph nets",
+                       year="2021", authors="van der Berg M."),
+    ]
+    # The captured surname ("Berg") + year must resolve past the particles.
+    assert ca._resolve_ref("van der Berg et al., 2021", refs) is refs[0]
