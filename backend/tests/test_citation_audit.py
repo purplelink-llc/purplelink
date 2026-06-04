@@ -299,3 +299,30 @@ def test_persona_content_includes_audit_block():
 def test_literature_persona_prompt_mentions_audit():
     from latextools import papercheck
     assert "citation_support_audit" in papercheck._LITERATURE_AUDITOR
+
+
+def test_audit_annotation_text_renders_verdict():
+    from latextools import pdf_annotate
+    finding = {
+        "claim_sentence": "X improves Y.", "ref_key": "12",
+        "verdict": "Contradicted", "source_quote": "We found no effect.",
+        "rationale": "Abstract reports the opposite.",
+    }
+    body = pdf_annotate._make_audit_annotation_text(finding)
+    assert "Contradicted" in body
+    assert "[12]" in body or "12" in body
+    assert "We found no effect." in body
+
+
+def test_audit_findings_selected_for_annotation():
+    from latextools import pdf_annotate
+    findings = [
+        {"claim_sentence": "a", "ref_key": "1", "verdict": "Supported"},
+        {"claim_sentence": "b", "ref_key": "2", "verdict": "Contradicted"},
+        {"claim_sentence": "c", "ref_key": "3", "verdict": "Not supported by abstract"},
+        {"claim_sentence": "d", "ref_key": "4", "verdict": "Source unavailable"},
+    ]
+    selected = pdf_annotate._audit_findings_to_annotate(findings)
+    verdicts = {f["verdict"] for f in selected}
+    # Only Contradicted + Not-supported are worth a margin note.
+    assert verdicts == {"Contradicted", "Not supported by abstract"}
