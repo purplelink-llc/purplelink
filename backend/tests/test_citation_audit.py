@@ -63,3 +63,25 @@ def test_rank_claims_is_stable_for_ties():
     b = ca.ClaimCitation("Another plain mention [2].", ["2"])
     ranked = ca.rank_claims([a, b])
     assert ranked[0] is a and ranked[1] is b   # equal salience keeps input order
+
+
+def test_reconstruct_abstract_from_inverted_index():
+    inv = {"The": [0], "cat": [1], "sat": [2]}
+    assert ca.reconstruct_abstract(inv) == "The cat sat"
+    assert ca.reconstruct_abstract(None) is None
+    assert ca.reconstruct_abstract({}) is None
+
+
+def test_resolve_ref_numeric_and_author_year():
+    refs = [
+        PaperReference(raw="[1] Smith J. 2021. Deep nets. doi:10.1/x", title="Deep nets",
+                       doi="10.1/x", year="2021", authors="Smith J."),
+        PaperReference(raw="[2] Jones A. 2019. Shallow nets.", title="Shallow nets",
+                       year="2019", authors="Jones A."),
+    ]
+    # Numeric key indexes 1-based into the reference list.
+    assert ca._resolve_ref("2", refs) is refs[1]
+    # Author-year key matches on surname + year in the raw text.
+    assert ca._resolve_ref("Smith, 2021", refs) is refs[0]
+    # Unknown key -> None.
+    assert ca._resolve_ref("Nobody, 1900", refs) is None

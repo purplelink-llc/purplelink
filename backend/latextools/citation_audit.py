@@ -132,3 +132,56 @@ def rank_claims(claims: list[ClaimCitation]) -> list[ClaimCitation]:
     for c in claims:
         c.salience = _salience(c.claim_sentence)
     return sorted(claims, key=lambda c: c.salience, reverse=True)
+
+
+@dataclass
+class SourceAbstract:
+    """An abstract fetched (or not) for one cited reference."""
+    ref_key: str
+    text: Optional[str]
+    status: str               # "ok" | "unavailable"
+    source: str = ""          # "openalex" | "semantic_scholar" | "crossref"
+    title: str = ""
+
+    def to_dict(self) -> dict:
+        return dataclasses.asdict(self)
+
+
+def reconstruct_abstract(inverted_index: Optional[dict]) -> Optional[str]:
+    """Rebuild plain text from an OpenAlex abstract_inverted_index."""
+    if not inverted_index:
+        return None
+    positions: list[tuple[int, str]] = []
+    for word, idxs in inverted_index.items():
+        for i in idxs:
+            positions.append((i, word))
+    if not positions:
+        return None
+    positions.sort(key=lambda p: p[0])
+    return " ".join(word for _, word in positions)
+
+
+def _resolve_ref(ref_key: str, references: list) -> Optional["object"]:
+    """Map a citation marker to a PaperReference.
+
+    Numeric keys index 1-based into the reference list. Author-year keys match
+    the first author surname + year against each reference's raw text.
+    Returns None when no confident match exists.
+    """
+    key = ref_key.strip()
+    if key.isdigit():
+        i = int(key) - 1
+        if 0 <= i < len(references):
+            return references[i]
+        return None
+    # Author-year: pull surname + 4-digit year, look for both in raw.
+    surname = re.match(r"([A-Z][A-Za-z\-]+)", key)
+    year = re.search(r"\d{4}", key)
+    if not surname or not year:
+        return None
+    sn, yr = surname.group(1).lower(), year.group(0)
+    for ref in references:
+        raw = (getattr(ref, "raw", "") or "").lower()
+        if sn in raw and yr in raw:
+            return ref
+    return None
