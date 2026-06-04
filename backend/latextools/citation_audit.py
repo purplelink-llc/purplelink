@@ -18,8 +18,6 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
-import json as _json
-
 from .papercheck import _anthropic_message, _parse_json_findings
 
 MAX_AUDIT_PAIRS = 40
