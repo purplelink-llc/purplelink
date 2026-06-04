@@ -45,3 +45,21 @@ def test_extract_author_year_lowercase_prefix_surnames():
     claims = ca.extract_claim_citations(struct)
     assert claims[0].ref_keys == ["van der Berg et al., 2021"]
     assert claims[1].ref_keys == ["de Bruijn and Smith, 2018"]
+
+
+def test_rank_claims_prioritizes_load_bearing():
+    weak = ca.ClaimCitation("Related work also touches this area [1].", ["1"])
+    strong = ca.ClaimCitation(
+        "Our method significantly outperforms all baselines by 12% [2].", ["2"]
+    )
+    ranked = ca.rank_claims([weak, strong])
+    assert ranked[0] is strong          # causal verb + number rank first
+    assert ranked[1] is weak
+    assert ranked[0].salience > ranked[1].salience
+
+
+def test_rank_claims_is_stable_for_ties():
+    a = ca.ClaimCitation("A plain mention [1].", ["1"])
+    b = ca.ClaimCitation("Another plain mention [2].", ["2"])
+    ranked = ca.rank_claims([a, b])
+    assert ranked == [a, b]             # equal salience keeps input order

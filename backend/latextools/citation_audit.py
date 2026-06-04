@@ -94,3 +94,41 @@ def extract_claim_citations(structure) -> list[ClaimCitation]:
             uniq = [k for k in keys if not (k in seen or seen.add(k))]
             claims.append(ClaimCitation(claim_sentence=sent, ref_keys=uniq))
     return claims
+
+
+_CAUSAL = re.compile(
+    r"\b(show|shows|showed|demonstrate|demonstrates|demonstrated|prove|proves|"
+    r"cause|causes|caused|improve|improves|improved|outperform|outperforms|"
+    r"outperformed|increase|increases|increased|reduce|reduces|reduced|"
+    r"significant|significantly|correlate|correlates|correlated|lead|leads)\b",
+    re.IGNORECASE,
+)
+_SUPERLATIVE = re.compile(
+    r"\b(first|best|state[- ]of[- ]the[- ]art|novel|unprecedented|only|"
+    r"highest|lowest|largest|strongest)\b",
+    re.IGNORECASE,
+)
+_HAS_NUMBER = re.compile(r"\d")
+
+
+def _salience(sentence: str) -> float:
+    """Higher = more load-bearing (the kind of claim a reviewer challenges)."""
+    s = 0.0
+    if _CAUSAL.search(sentence):
+        s += 2.0
+    if _HAS_NUMBER.search(sentence):
+        s += 1.0
+    if _SUPERLATIVE.search(sentence):
+        s += 1.0
+    return s
+
+
+def rank_claims(claims: list[ClaimCitation]) -> list[ClaimCitation]:
+    """Return claims ordered by salience (desc), stable for ties.
+
+    Mutates each claim's `salience` field as a side effect so the report can
+    show why a claim was prioritised.
+    """
+    for c in claims:
+        c.salience = _salience(c.claim_sentence)
+    return sorted(claims, key=lambda c: c.salience, reverse=True)
