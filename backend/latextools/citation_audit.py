@@ -13,13 +13,12 @@ Flow:
 """
 from __future__ import annotations
 
+import asyncio
 import dataclasses
+import logging
 import re
 from dataclasses import dataclass, field
 from typing import Optional
-
-import asyncio
-import logging
 
 from .papercheck import _anthropic_message, _parse_json_findings
 
@@ -413,7 +412,8 @@ def _empty_audit() -> dict:
 async def run_citation_audit(client, structure) -> dict:
     """End-to-end deep citation audit. Returns a dict shaped for l2['audit'].
 
-    {audited, skipped, by_verdict: {verdict: count}, findings: [AuditFinding]}.
+    {audited, skipped, by_verdict: {verdict: count}, findings: [dict]} where
+    each finding is an AuditFinding.to_dict().
     Never raises — on any failure returns an empty audit so the surrounding
     review pipeline is unaffected.
     """
