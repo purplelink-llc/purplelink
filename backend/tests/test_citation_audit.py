@@ -155,3 +155,51 @@ def test_fetch_source_abstract_all_three_http_miss():
     assert out.status == "unavailable"
     assert out.text is None
     assert out.ref_key == "7"
+
+
+def test_assess_claims_short_circuits_unavailable(monkeypatch):
+    # When the abstract is unavailable, no LLM call happens and the verdict
+    # is "Source unavailable".
+    async def _boom(*a, **k):
+        raise AssertionError("LLM must not be called for unavailable sources")
+    monkeypatch.setattr(ca, "_anthropic_message", _boom)
+
+    claim = ca.ClaimCitation("A claim [1].", ["1"])
+    src = ca.SourceAbstract(ref_key="1", text=None, status="unavailable")
+    findings = asyncio.run(
+        ca.assess_claims(object(), [(claim, src)])
+    )
+    assert len(findings) == 1
+    assert findings[0].verdict == "Source unavailable"
+    assert findings[0].source_quote is None
+
+
+def test_assess_claims_parses_llm_verdicts(monkeypatch):
+    async def _fake_llm(client, system, user_content, max_tokens, **k):
+        return (
+            '[{"index": 0, "verdict": "Supported", '
+            '"source_quote": "We show X improves Y.", '
+            '"rationale": "Abstract states the same result."}]'
+        )
+    monkeypatch.setattr(ca, "_anthropic_message", _fake_llm)
+
+    claim = ca.ClaimCitation("X improves Y [1].", ["1"])
+    src = ca.SourceAbstract(ref_key="1", text="We show X improves Y.", status="ok")
+    findings = asyncio.run(
+        ca.assess_claims(object(), [(claim, src)])
+    )
+    assert findings[0].verdict == "Supported"
+    assert findings[0].source_quote == "We show X improves Y."
+
+
+def test_assess_claims_clamps_unknown_verdict(monkeypatch):
+    async def _fake_llm(client, system, user_content, max_tokens, **k):
+        return '[{"index": 0, "verdict": "Totally Made Up", "rationale": "x"}]'
+    monkeypatch.setattr(ca, "_anthropic_message", _fake_llm)
+    claim = ca.ClaimCitation("X [1].", ["1"])
+    src = ca.SourceAbstract(ref_key="1", text="abstract", status="ok")
+    findings = asyncio.run(
+        ca.assess_claims(object(), [(claim, src)])
+    )
+    # Unknown verdicts clamp to the conservative "Not supported by abstract".
+    assert findings[0].verdict == "Not supported by abstract"

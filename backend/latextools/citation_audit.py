@@ -18,6 +18,10 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
+import json as _json
+
+from .papercheck import _anthropic_message, _parse_json_findings
+
 MAX_AUDIT_PAIRS = 40
 ASSESS_BATCH_SIZE = 8
 VERDICTS = (
@@ -294,3 +298,105 @@ def _resolve_ref(ref_key: str, references: list) -> Optional["PaperReference"]:
         if sn in raw and yr in raw:
             return ref
     return None
+
+
+@dataclass
+class AuditFinding:
+    claim_sentence: str
+    ref_key: str
+    verdict: str
+    source_quote: Optional[str] = None
+    rationale: str = ""
+    location: str = ""
+
+    def to_dict(self) -> dict:
+        return dataclasses.asdict(self)
+
+
+_ASSESS_SYSTEM = (
+    "You audit academic citations. For each numbered item you are given a "
+    "CLAIM from a manuscript and the ABSTRACT of the source it cites. Decide "
+    "whether the abstract supports the claim. Reply ONLY with a JSON array; "
+    "one object per item with keys: index (int), verdict (one of "
+    "\"Supported\", \"Partially supported\", \"Not supported by abstract\", "
+    "\"Contradicted\"), source_quote (the abstract sentence that most bears "
+    "on the claim, or null), rationale (one short sentence). Judge ONLY "
+    "against the abstract text provided; if the abstract is silent, that is "
+    "\"Not supported by abstract\", not a failure of the paper. Use hedged, "
+    "non-accusatory language in the rationale."
+)
+
+
+def _clamp_verdict(v: str) -> str:
+    v = (v or "").strip()
+    for canonical in VERDICTS:
+        if v.lower() == canonical.lower():
+            return canonical
+    return "Not supported by abstract"
+
+
+def _build_assess_prompt(batch: list) -> str:
+    lines = []
+    for i, (claim, src) in enumerate(batch):
+        lines.append(
+            f"[{i}] CLAIM: {claim.claim_sentence}\n"
+            f"    ABSTRACT: {(src.text or '')[:2000]}"
+        )
+    return "\n\n".join(lines)
+
+
+async def assess_claims(client, pairs: list) -> list:
+    """Assess (ClaimCitation, SourceAbstract) pairs into AuditFindings.
+
+    Unavailable sources short-circuit to 'Source unavailable' with no LLM
+    call. Available pairs are batched (ASSESS_BATCH_SIZE per call) to bound
+    cost. Never raises; on an LLM/parse error the affected pairs fall back to
+    'Source unavailable' so the run always completes.
+    """
+    findings: list[AuditFinding] = []
+    assessable: list = []
+    for claim, src in pairs:
+        if src.status != "ok" or not src.text:
+            findings.append(AuditFinding(
+                claim_sentence=claim.claim_sentence,
+                ref_key=src.ref_key or (claim.ref_keys[0] if claim.ref_keys else ""),
+                verdict="Source unavailable",
+                source_quote=None,
+                rationale="No abstract could be retrieved for this source.",
+                location=claim.location,
+            ))
+        else:
+            assessable.append((claim, src))
+
+    for start in range(0, len(assessable), ASSESS_BATCH_SIZE):
+        batch = assessable[start:start + ASSESS_BATCH_SIZE]
+        try:
+            raw = await _anthropic_message(
+                client,
+                system=_ASSESS_SYSTEM,
+                user_content=[{"type": "text", "text": _build_assess_prompt(batch)}],
+                max_tokens=1500,
+            )
+            parsed = _parse_json_findings(raw)
+            by_index = {int(o.get("index", -1)): o for o in parsed if isinstance(o, dict)}
+        except Exception:
+            by_index = {}
+        for i, (claim, src) in enumerate(batch):
+            o = by_index.get(i)
+            if o is None:
+                findings.append(AuditFinding(
+                    claim_sentence=claim.claim_sentence, ref_key=src.ref_key,
+                    verdict="Source unavailable",
+                    rationale="Assessment could not be completed for this item.",
+                    location=claim.location,
+                ))
+                continue
+            findings.append(AuditFinding(
+                claim_sentence=claim.claim_sentence,
+                ref_key=src.ref_key,
+                verdict=_clamp_verdict(o.get("verdict")),
+                source_quote=o.get("source_quote") or None,
+                rationale=(o.get("rationale") or "").strip(),
+                location=claim.location,
+            ))
+    return findings
