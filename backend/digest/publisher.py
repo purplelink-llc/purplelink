@@ -61,11 +61,11 @@ def render_html(digest: DigestData) -> str:
     """Render the full blog post HTML for a digest issue."""
     date_str = _fmt_date(digest.date)
     iso_date = digest.date.isoformat()
-    title = f"Daily Digest #{digest.number} — {date_str}"
+    title = f"Purplelink Daily Digest #{digest.number} — {date_str}"
     sections_html = _render_sections_html(digest)
     desc = _meta_desc(digest)
     topic_labels = list(digest.sections.keys())
-    keywords = ", ".join(topic_labels + ["daily digest", "Benjamin Ampel", "cybersecurity research", "AI papers"])
+    keywords = ", ".join(topic_labels + ["Purplelink Daily Digest", "Benjamin Ampel", "cybersecurity research", "AI papers"])
 
     return f"""<!doctype html>
 <html lang="en">
@@ -78,7 +78,7 @@ def render_html(digest: DigestData) -> str:
     <meta name="keywords" content="{html.escape(keywords)}">
     <meta name="author" content="Benjamin Ampel">
     <link rel="canonical" href="{SITE_URL}/blog/digest/{iso_date}.html">
-    <link rel="alternate" type="application/rss+xml" title="Daily Digest by Benjamin Ampel" href="{SITE_URL}/blog/digest/feed.xml">
+    <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="{SITE_URL}/blog/digest/feed.xml">
     <meta property="og:title" content="{title}">
     <meta property="og:description" content="{desc}">
     <meta property="og:type" content="article">
@@ -158,7 +158,7 @@ def render_html(digest: DigestData) -> str:
     </article>
 
     <div class="post-footer digest-footer">
-      <p>Get this in your inbox. <a href="/blog/digest/">Subscribe to the Daily Digest</a>.</p>
+      <p>Get this in your inbox. <a href="/blog/digest/">Subscribe to Purplelink Daily Digest</a>.</p>
       <a class="back-link" href="/blog/digest/">← All issues</a>
     </div>
 
@@ -189,7 +189,7 @@ def render_html(digest: DigestData) -> str:
 def render_email_html(digest: DigestData, unsubscribe_url: str = "") -> str:
     """Render email-safe HTML: no nav/footer, inline-friendly."""
     date_str = _fmt_date(digest.date)
-    title = f"Daily Digest #{digest.number} — {date_str}"
+    title = f"Purplelink Daily Digest #{digest.number} — {date_str}"
     sections_html = _render_sections_html(digest)
     unsub_line = (
         f'<p style="font-size:12px;color:#888;margin-top:24px;">'
@@ -224,7 +224,7 @@ def render_index_entry(digest: DigestData) -> str:
     """Render a single <a> block for the digest index page."""
     date_str = _fmt_date(digest.date)
     iso = digest.date.isoformat()
-    title = f"Daily Digest #{digest.number}"
+    title = f"Purplelink Daily Digest #{digest.number}"
     return (
         f'      <a class="blog-post-item" href="/blog/digest/{iso}.html">\n'
         f'        <span class="blog-post-date">{date_str}</span>\n'
@@ -242,7 +242,7 @@ _RSS_SKELETON = """\
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>Daily Digest by Benjamin Ampel</title>
+    <title>Purplelink Daily Digest by Benjamin Ampel</title>
     <link>https://purplelink.llc/blog/digest/</link>
     <description>Daily curated reading at the intersection of cybersecurity, AI, research, and entrepreneurship. Curated by Benjamin Ampel.</description>
     <language>en</language>
@@ -257,7 +257,7 @@ def render_rss_item(digest: DigestData) -> str:
     """Render a single RSS <item> block for the digest."""
     date_str = _fmt_date(digest.date)
     iso = digest.date.isoformat()
-    title = html.escape(f"Daily Digest #{digest.number} — {date_str}")
+    title = html.escape(f"Purplelink Daily Digest #{digest.number} — {date_str}")
     link = f"{SITE_URL}/blog/digest/{iso}.html"
     desc = html.escape(digest.intro)
     pub_dt = datetime.datetime.combine(digest.date, datetime.time(10, 0),

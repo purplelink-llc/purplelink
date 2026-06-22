@@ -20,7 +20,7 @@ import httpx
 logger = logging.getLogger(__name__)
 
 RESEND_API = "https://api.resend.com/emails"
-FROM_EMAIL = "Daily Digest <ben@purplelink.llc>"
+FROM_EMAIL = "Purplelink Daily Digest <ben@purplelink.llc>"
 SITE_URL = "https://purplelink.llc"
 SUBSCRIBERS_URL = f"{SITE_URL}/.netlify/functions/subscribers-list"
 
@@ -85,7 +85,7 @@ async def mail_digest(
             logger.info("mailer: no subscribers, skipping email send")
             return 0
 
-        subject = f"Daily Digest #{digest.number} — {_fmt_date(digest.date)}"
+        subject = f"Purplelink Daily Digest #{digest.number} — {_fmt_date(digest.date)}"
         sent = 0
 
         for email in subscribers:
