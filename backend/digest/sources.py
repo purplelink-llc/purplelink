@@ -110,13 +110,6 @@ SOURCES: list[SourceDef] = [
         category="ai_tech",
     ),
     SourceDef(
-        name="Import AI",
-        type=SourceType.RSS,
-        url="https://importai.substack.com/feed",
-        category="ai_tech",
-        params={"user_agent": "Mozilla/5.0 (compatible; RSS reader)"},
-    ),
-    SourceDef(
         name="The Gradient",
         type=SourceType.RSS,
         url="https://thegradient.pub/feed/",
@@ -222,12 +215,6 @@ SOURCES: list[SourceDef] = [
         category="finance",
     ),
     # ── Entrepreneurship & Startups ──────────────────────────────────────
-    SourceDef(
-        name="First Round Review",
-        type=SourceType.RSS,
-        url="https://review.firstround.com/feed",
-        category="entrepreneurship",
-    ),
     SourceDef(
         name="Paul Graham",
         type=SourceType.RSS,
