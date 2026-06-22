@@ -277,3 +277,56 @@ def test_fetch_huggingface_papers_returns_items():
     assert len(items) == 1
     assert items[0].title == "Diffusion Agents for Code"
     assert "arxiv.org" in items[0].url
+
+
+from unittest.mock import AsyncMock
+from digest.harvester import harvest_all, RawItem as _RawItem  # noqa: F401 — ensures RawItem in scope
+
+# Alias so the test body can use the name directly
+RawItem = _RawItem
+
+
+def test_harvest_all_deduplicates_by_url(monkeypatch):
+    """Two sources returning the same URL (trailing slash differs) → one item."""
+    item_a = RawItem("Title A", "https://example.com/post", "Source A",
+                     "snippet a", datetime.datetime.now(datetime.timezone.utc), "ai_tech")
+    item_b = RawItem("Title B", "https://example.com/post/", "Source B",
+                     "snippet b", datetime.datetime.now(datetime.timezone.utc), "cybersecurity")
+
+    async def _fake_rss(client, src): return [item_a]
+    async def _fake_rss2(client, src): return [item_b]
+    async def _fake_empty(client, src): return []
+
+    monkeypatch.setattr("digest.harvester.fetch_rss", _fake_rss)
+    monkeypatch.setattr("digest.harvester.fetch_hn_algolia", _fake_empty)
+    monkeypatch.setattr("digest.harvester.fetch_arxiv_oai", _fake_empty)
+    monkeypatch.setattr("digest.harvester.fetch_semantic_scholar", _fake_empty)
+    monkeypatch.setattr("digest.harvester.fetch_openalex", _fake_empty)
+    monkeypatch.setattr("digest.harvester.fetch_huggingface_papers", _fake_empty)
+
+    import digest.sources as _src_mod
+    from digest.sources import SourceType, SourceDef
+    orig_sources = list(_src_mod.SOURCES)
+    _src_mod.SOURCES = [
+        SourceDef("S1", SourceType.RSS, "https://s1.com/feed", "ai_tech"),
+        SourceDef("S2", SourceType.RSS, "https://s2.com/feed", "cybersecurity"),
+    ]
+    try:
+        items = asyncio.run(harvest_all(object()))
+    finally:
+        _src_mod.SOURCES = orig_sources
+
+    # Both items have the same normalized URL → only one survives.
+    assert len(items) == 1
+
+
+def test_harvest_all_source_failure_does_not_block(monkeypatch):
+    """If all fetchers return empty, harvest_all returns []."""
+    monkeypatch.setattr("digest.harvester.fetch_rss", AsyncMock(return_value=[]))
+    monkeypatch.setattr("digest.harvester.fetch_hn_algolia", AsyncMock(return_value=[]))
+    monkeypatch.setattr("digest.harvester.fetch_arxiv_oai", AsyncMock(return_value=[]))
+    monkeypatch.setattr("digest.harvester.fetch_semantic_scholar", AsyncMock(return_value=[]))
+    monkeypatch.setattr("digest.harvester.fetch_openalex", AsyncMock(return_value=[]))
+    monkeypatch.setattr("digest.harvester.fetch_huggingface_papers", AsyncMock(return_value=[]))
+    items = asyncio.run(harvest_all(object()))
+    assert items == []

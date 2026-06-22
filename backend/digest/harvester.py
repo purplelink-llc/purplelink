@@ -359,3 +359,53 @@ async def fetch_huggingface_papers(client, source_def) -> list[RawItem]:
             category=source_def.category,
         ))
     return items
+
+
+import digest.sources as _sources_mod
+from digest.sources import SourceType as _SourceType
+
+
+def _get_fetcher(source_type):
+    """Look up fetcher by SourceType using current module globals (monkeypatch-friendly)."""
+    import sys
+    _self = sys.modules[__name__]
+    mapping = {
+        _SourceType.RSS: "fetch_rss",
+        _SourceType.HN_ALGOLIA: "fetch_hn_algolia",
+        _SourceType.ARXIV_OAI: "fetch_arxiv_oai",
+        _SourceType.SEMANTIC_SCHOLAR: "fetch_semantic_scholar",
+        _SourceType.OPENALEX: "fetch_openalex",
+        _SourceType.HF_PAPERS: "fetch_huggingface_papers",
+    }
+    name = mapping.get(source_type)
+    return getattr(_self, name) if name else None
+
+
+async def harvest_all(client) -> list[RawItem]:
+    """Fetch all sources concurrently, deduplicate by URL, return fresh items."""
+    sources = _sources_mod.SOURCES
+    tasks = []
+    for src in sources:
+        fetcher = _get_fetcher(src.type)
+        if fetcher:
+            tasks.append(fetcher(client, src))
+        else:
+            logger.warning("No fetcher for SourceType %s", src.type)
+
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    seen_urls: set[str] = set()
+    items: list[RawItem] = []
+    for result in results:
+        if isinstance(result, Exception):
+            logger.error("harvest_all task error: %s", result)
+            continue
+        for item in result:
+            norm = _normalize_url(item.url)
+            if norm not in seen_urls:
+                seen_urls.add(norm)
+                item.url = norm
+                items.append(item)
+
+    logger.info("harvest_all: %d unique items from %d sources", len(items), len(sources))
+    return items
