@@ -62,12 +62,12 @@
       <p class="post-date">June 22, 2026</p>
       <h1 class="post-title">Daily Digest #2 — June 22, 2026</h1>
       <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-06-22">June 22, 2026</time></p>
-      <p class="post-lede">754 sources reviewed. 15 selected.</p>
+      <p class="post-lede">750 sources reviewed. 13 selected.</p>
     </div>
 
     <article id="main-content" class="post-body digest-body">
 
-      <p class="digest-intro">Thin pickings in the papers pile today — the Semantic Scholar feed is dominated by surveys, reviews, and low-signal incremental work, with a few genuinely interesting exceptions. Cybersecurity news has two items worth attention: a novel botnet with an unusual reconnaissance-proxy architecture, and a legally unprecedented Canadian intelligence operation. On the finance side, the Getty-OpenAI licensing deal is the most structurally interesting story for anyone watching how content IP gets priced in the AI era.</p>
+      <p class="digest-intro">Today&#x27;s feed is dominated by a flood of low-signal Semantic Scholar papers — mostly surveys, reviews, and incremental LLM-for-cybersecurity work with no snippets or distinguishing empirical claims. I&#x27;ve filtered hard for the handful with specific, non-obvious angles. On the news side, Canada&#x27;s CSIS botnet warrant and the Codex logging bug are both worth a look, and the Getty/OpenAI licensing deal has real implications for the academic publishing and IP space.</p>
 
     <section class="digest-section">
       <h2>Papers & Research</h2>
@@ -76,42 +76,42 @@
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/3df1e3ec312fcd093dce31a0fe18805369b34d30" target="_blank" rel="noopener">LLM-Guided Classification and Extension of the MISP Taxonomy for Dark Web Q&amp;A Forums</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">Directly in your lane: using LLMs to classify and extend MISP taxonomy against Tor-hosted Q&amp;A forums. The interesting angle is taxonomy extension rather than just classification — the model is being used to propose new categories, not just assign existing ones. Worth checking whether they evaluate label quality against human analysts or just measure coverage.</p>
+        <p class="digest-item-note">Directly in your wheelhouse: using LLMs to classify and extend MISP taxonomy on Tor-hosted Q&amp;A forums. The angle of extending an existing threat intelligence taxonomy rather than building from scratch is more practically grounded than most dark web NLP work. Worth checking whether they release the extended taxonomy or just describe it.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/2d10dfd240856cde0476b83d5c22028e227efd5b" target="_blank" rel="noopener">A Temporal Paradox in Software Vulnerability Prioritization: Why Do Large Language Models Perform Better Post-Knowledge Cutoff Date?</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">The title alone is worth investigating — if LLMs perform better on CVEs published after their training cutoff, that&#x27;s a counterintuitive finding that demands a mechanistic explanation. Could be a data contamination artifact, could be something more interesting about how vulnerability descriptions evolve over time. The kind of empirical anomaly that tends to get ignored in survey papers.</p>
+        <p class="digest-item-note">The title alone is worth investigating — if LLMs score better on vulnerabilities disclosed after their training cutoff, that&#x27;s a counterintuitive empirical finding that challenges naive assumptions about knowledge cutoff effects. Could point to data contamination, benchmark leakage, or something more interesting about how CVE descriptions are written over time.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/7af4f5d7e5cec6bfacd1aa52fc66e6dc2e34a2e3" target="_blank" rel="noopener">Safe-Unsafe Concept Separation Emerges from a Single Direction in Language Models Activation Space</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">Mechanistic interpretability applied to safety alignment: the claim is that safe/unsafe concept separation is geometrically simple — a single linear direction in activation space. If that holds up, it has direct implications for both alignment bypass (adversarial ML angle) and lightweight steering without fine-tuning. More actionable than most alignment work.</p>
+        <p class="digest-item-note">Mechanistic finding: safety vs. unsafe content separates along a single linear direction in activation space, which has direct implications for both alignment and adversarial attacks. If this direction is stable and transferable, it&#x27;s a cleaner attack surface than jailbreak prompt engineering — relevant to your adversarial ML work.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.semanticscholar.org/paper/3666de076b2429e73f011fdf5b673cacf0b9730b" target="_blank" rel="noopener">TinySecGPT: Small-Parameter LLMS Can Outperform Large-Parameter LLMS in Cybersecurity</a>
+          <span class="digest-item-source">Semantic Scholar</span>
+        </div>
+        <p class="digest-item-note">Claims small fine-tuned models beat large general models on cybersecurity tasks — a practically important result if it holds up empirically. Relevant both to your research on LLMs in cybersecurity and to inference infrastructure concerns for deployment in constrained environments.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/63cedfb46d46148dcf7a576b8fb515108be87419" target="_blank" rel="noopener">Hierarchical Approaches for Development of an MCP Security Framework</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">Model Context Protocol is proliferating fast and the security design is clearly an afterthought — this paper attempts a formal security framework for it, referencing the postmark-mcp incident as a concrete motivating case. Relevant both for your research on agentic AI threats and for Purplelink if you&#x27;re building anything that touches MCP-connected tooling.</p>
-      </div>
-      <div class="digest-item">
-        <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.semanticscholar.org/paper/aff6f65d1aa8971f924545c0e03046260eca1514" target="_blank" rel="noopener">The Promptware Kill Chain: How Prompt Injections Gradually Evolved Into a Multi-Step Malware</a>
-          <span class="digest-item-source">Semantic Scholar</span>
-        </div>
-        <p class="digest-item-note">Frames prompt injection not as a one-shot attack but as a multi-stage kill chain analogous to traditional malware — a conceptual reframe that has practical implications for detection and response. The kill chain framing maps well to existing threat modeling vocabulary, which makes it more useful for practitioners than most prompt injection papers.</p>
+        <p class="digest-item-note">Model Context Protocol is proliferating fast without formal security design, and this paper attempts a security framework for it. The postmark-mcp incident mentioned in the snippet suggests real exploits have already materialized. Given MCP&#x27;s role in agentic AI tooling, this is timely for both your research and your software work.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/96aed2d81ea8ee86e078cfbf85c442e4f0553b5c" target="_blank" rel="noopener">Geolocation-Driven Variability in Large Language Model Outputs and its Implications for Hybrid Threats</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">Empirically tests whether GPT-5, DeepSeek V3, and Claude 3 Sonnet produce different outputs depending on VPN endpoint location across six geopolitical contexts. The hybrid threats angle is the non-obvious part — if model outputs vary systematically by perceived user geography, that&#x27;s an exploitable asymmetry for influence operations. Methodology is straightforward enough to be reproducible.</p>
+        <p class="digest-item-note">Tests GPT-5, DeepSeek V3, and Claude 3 Sonnet via VPN endpoints in six geopolitical regions to measure output variation. The finding that LLM outputs shift based on perceived user location has direct implications for threat intelligence and disinformation research — a non-obvious empirical angle most LLM papers skip entirely.</p>
       </div>
     </section>
 
@@ -119,17 +119,17 @@
       <h2>AI & Technology</h2>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.marble.onl/posts/cancel_claude.html" target="_blank" rel="noopener">There is minimal downside to switching to open models</a>
-          <span class="digest-item-source">Hacker News</span>
-        </div>
-        <p class="digest-item-note">A practitioner&#x27;s cost-benefit analysis of dropping Claude for open models — relevant for Purplelink&#x27;s inference cost decisions and for your research infrastructure. The argument is less about capability parity and more about the risk profile of API dependency versus self-hosted inference. Worth reading for the specific workload comparisons rather than the headline claim.</p>
-      </div>
-      <div class="digest-item">
-        <div class="digest-item-meta">
           <a class="digest-item-title" href="https://github.com/openai/codex/issues/28224" target="_blank" rel="noopener">Codex logging bug may write TBs to local SSDs</a>
           <span class="digest-item-source">Hacker News</span>
         </div>
-        <p class="digest-item-note">Operational issue in OpenAI&#x27;s Codex CLI that can silently fill local storage — directly relevant if you&#x27;re using Codex in any development workflow. The bug report thread has workarounds. Low-glamour but the kind of thing that causes real problems if you hit it unexpectedly on a dev machine.</p>
+        <p class="digest-item-note">A confirmed bug in OpenAI&#x27;s Codex CLI that can silently fill local SSDs with logs — relevant if you&#x27;re running Codex in any automated pipeline or evaluating it for security tooling. The failure mode (unbounded local writes) is the kind of thing that bites you in production before you notice.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.marble.onl/posts/cancel_claude.html" target="_blank" rel="noopener">There is minimal downside to switching to open models</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">A practitioner&#x27;s argument that open-weight models have closed the gap enough that the switching cost from Claude is now near zero for most use cases. Worth reading as a counterpoint to the default assumption that frontier closed models are necessary — directly relevant to your inference infrastructure and tooling interests.</p>
       </div>
     </section>
 
@@ -137,24 +137,17 @@
       <h2>Cybersecurity</h2>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://thehackernews.com/2026/06/arystinger-malware-infects-4300-legacy.html" target="_blank" rel="noopener">AryStinger Malware Infects 4,300 Legacy Routers to Build Reconnaissance Proxy Network</a>
-          <span class="digest-item-source">The Hacker News</span>
-        </div>
-        <p class="digest-item-note">What distinguishes AryStinger from the usual router botnet is the stated purpose: reconnaissance and proxying rather than DDoS. That&#x27;s a more operationally sophisticated use of compromised infrastructure and suggests a threat actor with specific intelligence-gathering goals. The XLab writeup is worth reading for the C2 and persistence details.</p>
-      </div>
-      <div class="digest-item">
-        <div class="digest-item-meta">
           <a class="digest-item-title" href="https://thehackernews.com/2026/06/canadas-spy-agency-used-first-of-its.html" target="_blank" rel="noopener">Canada&#x27;s Spy Agency Used First-of-Its-Kind Warrant to Clean Botnet-Infected Devices</a>
           <span class="digest-item-source">The Hacker News</span>
         </div>
-        <p class="digest-item-note">CSIS obtained judicial authorization to remotely remediate botnet-infected devices on Canadian soil — the first public instance of a Western intelligence agency using a court warrant for active cyber defense on civilian infrastructure. The legal precedent here matters as much as the technical operation; the Federal Court ruling is publicly available and worth reading directly.</p>
+        <p class="digest-item-note">CSIS obtained judicial authorization to remotely remediate botnet-infected devices on Canadian soil — a legal first. The precedent matters: it&#x27;s the first public case of a Western intelligence agency using a court warrant for active cyber defense on civilian infrastructure, with implications for how botnet takedowns get legally structured going forward.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/microsoft-links-mastra-ai-supply-chain-attack-to-north-korean-hackers" target="_blank" rel="noopener">Microsoft links Mastra AI supply chain attack to North Korean hackers</a>
-          <span class="digest-item-source">Bleeping Computer</span>
+          <a class="digest-item-title" href="https://thehackernews.com/2026/06/arystinger-malware-infects-4300-legacy.html" target="_blank" rel="noopener">AryStinger Malware Infects 4,300 Legacy Routers to Build Reconnaissance Proxy Network</a>
+          <span class="digest-item-source">The Hacker News</span>
         </div>
-        <p class="digest-item-note">Sapphire Sleet (BlueNoroff) compromising 140+ npm packages via the Mastra AI framework is a notable escalation in AI toolchain supply chain attacks. North Korean groups have been systematically targeting developer tooling; this extends that pattern into the AI/ML ecosystem specifically. Worth tracking which packages were affected if you have any npm dependencies in your stack.</p>
+        <p class="digest-item-note">Unlike typical router botnets used for DDoS, AryStinger is purpose-built for reconnaissance and proxying — a more targeted operational profile. The XLab attribution and the specific focus on legacy home routers as persistent proxy infrastructure is worth tracking for dark web and threat intelligence research.</p>
       </div>
     </section>
 
@@ -165,14 +158,7 @@
           <a class="digest-item-title" href="https://www.bloomberg.com/news/articles/2026-06-22/getty-images-soars-200-in-early-trading-after-openai-deal" target="_blank" rel="noopener">Getty Images Soars 200% in Early Trading After OpenAI Deal</a>
           <span class="digest-item-source">Bloomberg Technology</span>
         </div>
-        <p class="digest-item-note">The market reaction is the signal here — a 200% jump on a licensing deal suggests investors think Getty found a template for monetizing content IP against AI training that others will follow. For anyone watching how the academic publishing business intersects with AI training data economics, this is a relevant data point on how content owners are starting to extract value.</p>
-      </div>
-      <div class="digest-item">
-        <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.saastr.com/the-pik-fuse-how-private-equity-software-deals-like-medallia-actually-blow-up-and-exactly-whos-next" target="_blank" rel="noopener">The PIK Fuse: How Private Equity Software Deals Like Medallia Actually Blow Up, and Exactly Who&#x27;s Next</a>
-          <span class="digest-item-source">SaaStr</span>
-        </div>
-        <p class="digest-item-note">Concrete post-mortem on how Thoma Bravo&#x27;s $6.4B Medallia deal ended with lenders taking control and $5.1B in equity wiped out. The PIK (payment-in-kind) debt structure is the mechanism — worth understanding if you&#x27;re watching the broader PE software rollup wave, which has implications for which enterprise security vendors are structurally fragile right now.</p>
+        <p class="digest-item-note">Getty licensing its image corpus to OpenAI is a significant data point for the academic publishing and IP space you follow: it establishes a market price signal for bulk content licensing to AI labs. The 200% stock move suggests the market had not priced in this kind of deal, which has implications for other content holders negotiating similar arrangements.</p>
       </div>
     </section>
 
@@ -180,10 +166,10 @@
       <h2>Entrepreneurship</h2>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.saastr.com/ripplings-ai-bet-the-data-graph-is-the-moat" target="_blank" rel="noopener">Rippling&#x27;s AI Bet: The Data Graph Is the Moat</a>
+          <a class="digest-item-title" href="https://www.saastr.com/the-pik-fuse-how-private-equity-software-deals-like-medallia-actually-blow-up-and-exactly-whos-next" target="_blank" rel="noopener">The PIK Fuse: How Private Equity Software Deals Like Medallia Actually Blow Up, and Exactly Who&#x27;s Next</a>
           <span class="digest-item-source">SaaStr</span>
         </div>
-        <p class="digest-item-note">Rippling&#x27;s thesis is that a unified data graph across HR, IT, and finance creates an AI advantage that point solutions can&#x27;t replicate. The strategic argument — that the moat is the data schema, not the model — is a useful frame for thinking about where AI creates durable competitive advantage versus where it commoditizes. Relevant for thinking about product positioning in any vertical.</p>
+        <p class="digest-item-note">Detailed post-mortem on how Thoma Bravo&#x27;s $6.4B Medallia buyout ended in a lender takeover, with a framework for identifying which other PE-owned SaaS companies are structurally similar. Useful for understanding the macro dynamics of the enterprise software market that affects pricing and competition for indie and small software businesses.</p>
       </div>
     </section>
 
@@ -191,10 +177,10 @@
       <h2>Worth Reading</h2>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.wired.com/story/a-critical-deadline-is-approaching-for-windows-and-linux-security" target="_blank" rel="noopener">A Critical Deadline Is Approaching for Windows and Linux Security</a>
-          <span class="digest-item-source">Wired</span>
+          <a class="digest-item-title" href="https://arstechnica.com/tech-policy/2026/06/the-uk-will-scan-asylum-seekers-faces-for-age-checks-despite-knowing-the-tech-is-flawed" target="_blank" rel="noopener">The UK will scan asylum-seekers&#x27; faces for age checks — despite knowing the tech is flawed</a>
+          <span class="digest-item-source">Ars Technica</span>
         </div>
-        <p class="digest-item-note">Secure Boot cryptographic keys start expiring June 24 — this is a concrete operational deadline, not a theoretical future risk. macOS is not directly affected but if you&#x27;re running any Windows or Linux VMs or dual-boot setups, or advising clients who do, this needs attention before the date. The Wired piece has the practical steps.</p>
+        <p class="digest-item-note">A concrete case of a government deploying biometric ML in a high-stakes context while internally acknowledging known accuracy problems. The gap between known failure rates and deployment decisions is a useful empirical data point for adversarial ML and AI governance research.</p>
       </div>
     </section>
 
