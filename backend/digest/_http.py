@@ -11,6 +11,8 @@ import logging
 import os
 from typing import Any, Optional
 
+import httpx
+
 logger = logging.getLogger(__name__)
 
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
@@ -52,7 +54,10 @@ async def anthropic_message(
     last_exc: Optional[Exception] = None
     for attempt in range(1, max_attempts + 1):
         try:
-            resp = await client.post(ANTHROPIC_API_URL, json=body, headers=headers)
+            resp = await client.post(
+                ANTHROPIC_API_URL, json=body, headers=headers,
+                timeout=httpx.Timeout(connect=10.0, read=180.0, write=30.0, pool=5.0),
+            )
         except (httpx.TimeoutException, httpx.TransportError) as e:
             last_exc = e
             if attempt < max_attempts:
