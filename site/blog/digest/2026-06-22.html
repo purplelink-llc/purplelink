@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Daily Digest #1 — June 22, 2026 | Purplelink LLC</title>
+    <title>Daily Digest #2 — June 22, 2026 | Purplelink LLC</title>
     <meta name="description" content="Daily curated reading at the intersection of cybersecurity, AI, and entrepreneurship.">
     <link rel="canonical" href="https://purplelink.llc/blog/digest/2026-06-22.html">
-    <meta property="og:title" content="Daily Digest #1 — June 22, 2026">
+    <meta property="og:title" content="Daily Digest #2 — June 22, 2026">
     <meta property="og:description" content="Daily curated reading at the intersection of cybersecurity, AI, and entrepreneurship.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/blog/digest/2026-06-22.html">
@@ -15,7 +15,7 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Daily Digest #1 — June 22, 2026">
+    <meta name="twitter:title" content="Daily Digest #2 — June 22, 2026">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
@@ -28,7 +28,7 @@
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
-      "headline": "Daily Digest #1 — June 22, 2026",
+      "headline": "Daily Digest #2 — June 22, 2026",
       "datePublished": "2026-06-22",
       "author": { "@id": "https://purplelink.llc/about/#person" },
       "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
@@ -60,14 +60,14 @@
 
     <div class="post-hero">
       <p class="post-date">June 22, 2026</p>
-      <h1 class="post-title">Daily Digest #1 — June 22, 2026</h1>
+      <h1 class="post-title">Daily Digest #2 — June 22, 2026</h1>
       <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-06-22">June 22, 2026</time></p>
-      <p class="post-lede">748 sources reviewed. 15 selected.</p>
+      <p class="post-lede">754 sources reviewed. 15 selected.</p>
     </div>
 
     <article id="main-content" class="post-body digest-body">
 
-      <p class="digest-intro">Today&#x27;s feed is dominated by a flood of low-signal Semantic Scholar papers — mostly surveys, reviews, and incremental LLM-for-cybersecurity work with no snippets or distinguishing empirical claims. I&#x27;ve filtered hard for the handful that have a specific, non-obvious angle. On the news side, the North Korean AI supply chain attack on Mastra is the most operationally significant cybersecurity item, and Canada&#x27;s novel legal warrant to remotely clean botnet-infected devices is worth tracking as a policy precedent. The Getty/OpenAI licensing deal and the Taiko bridge exploit round out the finance and crypto angles worth a few minutes.</p>
+      <p class="digest-intro">Thin pickings in the papers pile today — the Semantic Scholar feed is dominated by surveys, reviews, and low-signal incremental work, with a few genuinely interesting exceptions. Cybersecurity news has two items worth attention: a novel botnet with an unusual reconnaissance-proxy architecture, and a legally unprecedented Canadian intelligence operation. On the finance side, the Getty-OpenAI licensing deal is the most structurally interesting story for anyone watching how content IP gets priced in the AI era.</p>
 
     <section class="digest-section">
       <h2>Papers & Research</h2>
@@ -76,42 +76,42 @@
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/3df1e3ec312fcd093dce31a0fe18805369b34d30" target="_blank" rel="noopener">LLM-Guided Classification and Extension of the MISP Taxonomy for Dark Web Q&amp;A Forums</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">Directly in your lane: using LLMs to classify and extend the MISP dark web taxonomy against Tor-hosted Q&amp;A forums. The angle of extending an existing structured threat taxonomy rather than building from scratch is more practically grounded than most dark web NLP work. Worth checking whether they release the extended taxonomy or just the classification pipeline.</p>
+        <p class="digest-item-note">Directly in your lane: using LLMs to classify and extend MISP taxonomy against Tor-hosted Q&amp;A forums. The interesting angle is taxonomy extension rather than just classification — the model is being used to propose new categories, not just assign existing ones. Worth checking whether they evaluate label quality against human analysts or just measure coverage.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/2d10dfd240856cde0476b83d5c22028e227efd5b" target="_blank" rel="noopener">A Temporal Paradox in Software Vulnerability Prioritization: Why Do Large Language Models Perform Better Post-Knowledge Cutoff Date?</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">The title alone is worth investigating — if LLMs score better on CVEs published after their training cutoff, that&#x27;s a methodological problem for every benchmark in this space and suggests data contamination or indirect leakage through patch notes and advisories. This has direct implications for how you evaluate any LLM-based vuln triage system.</p>
+        <p class="digest-item-note">The title alone is worth investigating — if LLMs perform better on CVEs published after their training cutoff, that&#x27;s a counterintuitive finding that demands a mechanistic explanation. Could be a data contamination artifact, could be something more interesting about how vulnerability descriptions evolve over time. The kind of empirical anomaly that tends to get ignored in survey papers.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/7af4f5d7e5cec6bfacd1aa52fc66e6dc2e34a2e3" target="_blank" rel="noopener">Safe-Unsafe Concept Separation Emerges from a Single Direction in Language Models Activation Space</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">Finds that safety-relevant concepts in LLMs are linearly separable in activation space along a single direction — which has immediate implications for both alignment and adversarial attacks. If you can identify and manipulate that direction, you have a more surgical jailbreak or defense than current prompt-level approaches. Relevant to your adversarial ML work.</p>
+        <p class="digest-item-note">Mechanistic interpretability applied to safety alignment: the claim is that safe/unsafe concept separation is geometrically simple — a single linear direction in activation space. If that holds up, it has direct implications for both alignment bypass (adversarial ML angle) and lightweight steering without fine-tuning. More actionable than most alignment work.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/63cedfb46d46148dcf7a576b8fb515108be87419" target="_blank" rel="noopener">Hierarchical Approaches for Development of an MCP Security Framework</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">Model Context Protocol is proliferating fast and the security design is being retrofitted after the fact — this paper apparently analyzes real vulnerabilities that materialized through the postmark-mcp incident. Given MCP&#x27;s role in agentic tool use, this is a timely gap to understand before it becomes a standard attack surface.</p>
-      </div>
-      <div class="digest-item">
-        <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.semanticscholar.org/paper/96aed2d81ea8ee86e078cfbf85c442e4f0553b5c" target="_blank" rel="noopener">Geolocation-Driven Variability in Large Language Model Outputs and its Implications for Hybrid Threats</a>
-          <span class="digest-item-source">Semantic Scholar</span>
-        </div>
-        <p class="digest-item-note">Tests GPT-5, DeepSeek V3, and Claude 3 Sonnet via VPN endpoints in six geopolitical regions and measures output variation. The finding that LLM outputs differ by apparent user location has direct implications for threat intelligence and disinformation research — a model that behaves differently for a Russian vs. US IP is a meaningful security and epistemic concern.</p>
+        <p class="digest-item-note">Model Context Protocol is proliferating fast and the security design is clearly an afterthought — this paper attempts a formal security framework for it, referencing the postmark-mcp incident as a concrete motivating case. Relevant both for your research on agentic AI threats and for Purplelink if you&#x27;re building anything that touches MCP-connected tooling.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.semanticscholar.org/paper/aff6f65d1aa8971f924545c0e03046260eca1514" target="_blank" rel="noopener">The Promptware Kill Chain: How Prompt Injections Gradually Evolved Into a Multi-Step Malware</a>
           <span class="digest-item-source">Semantic Scholar</span>
         </div>
-        <p class="digest-item-note">Frames prompt injection as a kill chain rather than a one-shot exploit — the multi-step framing maps well onto how APT-style attacks actually work and is more useful for defenders than single-turn jailbreak research. The &#x27;promptware&#x27; framing may be worth tracking as a conceptual anchor for this class of threat.</p>
+        <p class="digest-item-note">Frames prompt injection not as a one-shot attack but as a multi-stage kill chain analogous to traditional malware — a conceptual reframe that has practical implications for detection and response. The kill chain framing maps well to existing threat modeling vocabulary, which makes it more useful for practitioners than most prompt injection papers.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.semanticscholar.org/paper/96aed2d81ea8ee86e078cfbf85c442e4f0553b5c" target="_blank" rel="noopener">Geolocation-Driven Variability in Large Language Model Outputs and its Implications for Hybrid Threats</a>
+          <span class="digest-item-source">Semantic Scholar</span>
+        </div>
+        <p class="digest-item-note">Empirically tests whether GPT-5, DeepSeek V3, and Claude 3 Sonnet produce different outputs depending on VPN endpoint location across six geopolitical contexts. The hybrid threats angle is the non-obvious part — if model outputs vary systematically by perceived user geography, that&#x27;s an exploitable asymmetry for influence operations. Methodology is straightforward enough to be reproducible.</p>
       </div>
     </section>
 
@@ -119,17 +119,17 @@
       <h2>AI & Technology</h2>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://github.com/openai/codex/issues/28224" target="_blank" rel="noopener">Codex logging bug may write TBs to local SSDs</a>
-          <span class="digest-item-source">Hacker News</span>
-        </div>
-        <p class="digest-item-note">Practical operational issue for anyone running OpenAI Codex locally — a logging bug can silently fill SSDs. Relevant if you&#x27;re using Codex in any local inference or dev pipeline, and a good example of the kind of infrastructure debt that accumulates in fast-shipped AI tooling.</p>
-      </div>
-      <div class="digest-item">
-        <div class="digest-item-meta">
           <a class="digest-item-title" href="https://www.marble.onl/posts/cancel_claude.html" target="_blank" rel="noopener">There is minimal downside to switching to open models</a>
           <span class="digest-item-source">Hacker News</span>
         </div>
-        <p class="digest-item-note">A practitioner&#x27;s argument that open models have closed the gap enough that the switching cost from Claude/GPT is now near zero for most workloads. Contrarian relative to the current consensus and worth reading critically — the specific capability gaps they identify (or don&#x27;t) matter more than the headline claim.</p>
+        <p class="digest-item-note">A practitioner&#x27;s cost-benefit analysis of dropping Claude for open models — relevant for Purplelink&#x27;s inference cost decisions and for your research infrastructure. The argument is less about capability parity and more about the risk profile of API dependency versus self-hosted inference. Worth reading for the specific workload comparisons rather than the headline claim.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://github.com/openai/codex/issues/28224" target="_blank" rel="noopener">Codex logging bug may write TBs to local SSDs</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">Operational issue in OpenAI&#x27;s Codex CLI that can silently fill local storage — directly relevant if you&#x27;re using Codex in any development workflow. The bug report thread has workarounds. Low-glamour but the kind of thing that causes real problems if you hit it unexpectedly on a dev machine.</p>
       </div>
     </section>
 
@@ -137,24 +137,24 @@
       <h2>Cybersecurity</h2>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/microsoft-links-mastra-ai-supply-chain-attack-to-north-korean-hackers" target="_blank" rel="noopener">Microsoft links Mastra AI supply chain attack to North Korean hackers</a>
-          <span class="digest-item-source">Bleeping Computer</span>
+          <a class="digest-item-title" href="https://thehackernews.com/2026/06/arystinger-malware-infects-4300-legacy.html" target="_blank" rel="noopener">AryStinger Malware Infects 4,300 Legacy Routers to Build Reconnaissance Proxy Network</a>
+          <span class="digest-item-source">The Hacker News</span>
         </div>
-        <p class="digest-item-note">Sapphire Sleet (BlueNoroff) compromised 140+ npm packages via the Mastra AI framework — this is a significant escalation in DPRK targeting of AI developer tooling specifically. The supply chain vector through AI libraries is newer than the typical crypto-theft playbook and worth watching for follow-on campaigns.</p>
+        <p class="digest-item-note">What distinguishes AryStinger from the usual router botnet is the stated purpose: reconnaissance and proxying rather than DDoS. That&#x27;s a more operationally sophisticated use of compromised infrastructure and suggests a threat actor with specific intelligence-gathering goals. The XLab writeup is worth reading for the C2 and persistence details.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
           <a class="digest-item-title" href="https://thehackernews.com/2026/06/canadas-spy-agency-used-first-of-its.html" target="_blank" rel="noopener">Canada&#x27;s Spy Agency Used First-of-Its-Kind Warrant to Clean Botnet-Infected Devices</a>
           <span class="digest-item-source">The Hacker News</span>
         </div>
-        <p class="digest-item-note">CSIS obtained a Federal Court warrant to remotely access and remediate botnet-infected devices on Canadian soil — the first public instance of a Western intelligence agency using legal process to actively clean civilian infrastructure. The legal and operational precedent here is more interesting than the botnet itself.</p>
+        <p class="digest-item-note">CSIS obtained judicial authorization to remotely remediate botnet-infected devices on Canadian soil — the first public instance of a Western intelligence agency using a court warrant for active cyber defense on civilian infrastructure. The legal precedent here matters as much as the technical operation; the Federal Court ruling is publicly available and worth reading directly.</p>
       </div>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://thehackernews.com/2026/06/arystinger-malware-infects-4300-legacy-routers-worldwide.html" target="_blank" rel="noopener">AryStinger Malware Infects 4,300 Legacy Routers to Build Reconnaissance Proxy Network</a>
-          <span class="digest-item-source">The Hacker News</span>
+          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/microsoft-links-mastra-ai-supply-chain-attack-to-north-korean-hackers" target="_blank" rel="noopener">Microsoft links Mastra AI supply chain attack to North Korean hackers</a>
+          <span class="digest-item-source">Bleeping Computer</span>
         </div>
-        <p class="digest-item-note">AryStinger is notable because it builds a reconnaissance and proxy network rather than a DDoS botnet — the operational purpose is intelligence collection and traffic laundering, which is a different threat model than typical router malware. QiAnXin&#x27;s XLab attribution and the D-Link targeting pattern are worth cross-referencing with your dark web intelligence work.</p>
+        <p class="digest-item-note">Sapphire Sleet (BlueNoroff) compromising 140+ npm packages via the Mastra AI framework is a notable escalation in AI toolchain supply chain attacks. North Korean groups have been systematically targeting developer tooling; this extends that pattern into the AI/ML ecosystem specifically. Worth tracking which packages were affected if you have any npm dependencies in your stack.</p>
       </div>
     </section>
 
@@ -165,7 +165,14 @@
           <a class="digest-item-title" href="https://www.bloomberg.com/news/articles/2026-06-22/getty-images-soars-200-in-early-trading-after-openai-deal" target="_blank" rel="noopener">Getty Images Soars 200% in Early Trading After OpenAI Deal</a>
           <span class="digest-item-source">Bloomberg Technology</span>
         </div>
-        <p class="digest-item-note">The Getty/OpenAI licensing deal is a data point in the ongoing question of how content owners will monetize AI training rights — a 200% single-day move suggests the market had priced in near-zero probability of this outcome. Worth watching as a template for how other content libraries (academic publishers included) might structure similar deals.</p>
+        <p class="digest-item-note">The market reaction is the signal here — a 200% jump on a licensing deal suggests investors think Getty found a template for monetizing content IP against AI training that others will follow. For anyone watching how the academic publishing business intersects with AI training data economics, this is a relevant data point on how content owners are starting to extract value.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/the-pik-fuse-how-private-equity-software-deals-like-medallia-actually-blow-up-and-exactly-whos-next" target="_blank" rel="noopener">The PIK Fuse: How Private Equity Software Deals Like Medallia Actually Blow Up, and Exactly Who&#x27;s Next</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Concrete post-mortem on how Thoma Bravo&#x27;s $6.4B Medallia deal ended with lenders taking control and $5.1B in equity wiped out. The PIK (payment-in-kind) debt structure is the mechanism — worth understanding if you&#x27;re watching the broader PE software rollup wave, which has implications for which enterprise security vendors are structurally fragile right now.</p>
       </div>
     </section>
 
@@ -173,17 +180,10 @@
       <h2>Entrepreneurship</h2>
       <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://www.saastr.com/the-pik-fuse-how-private-equity-software-deals-like-medallia-actually-blow-up-and-exactly-whos-next" target="_blank" rel="noopener">The PIK Fuse: How Private Equity Software Deals Like Medallia Actually Blow Up, and Exactly Who&#x27;s Next</a>
+          <a class="digest-item-title" href="https://www.saastr.com/ripplings-ai-bet-the-data-graph-is-the-moat" target="_blank" rel="noopener">Rippling&#x27;s AI Bet: The Data Graph Is the Moat</a>
           <span class="digest-item-source">SaaStr</span>
         </div>
-        <p class="digest-item-note">Detailed post-mortem on how Thoma Bravo&#x27;s $6.4B Medallia buyout ended in a lender takeover, with a framework for identifying which other PE-owned SaaS companies are next in line. The PIK interest mechanics and the specific financial triggers are explained clearly — useful context for understanding the current SaaS M&amp;A environment.</p>
-      </div>
-      <div class="digest-item">
-        <div class="digest-item-meta">
-          <a class="digest-item-title" href="https://brandur.org/minimum-viable-unit" target="_blank" rel="noopener">The minimum viable unit of saleable software</a>
-          <span class="digest-item-source">Hacker News</span>
-        </div>
-        <p class="digest-item-note">Argues for a specific, opinionated definition of what makes a software product actually sellable as a standalone unit — relevant for a one-person macOS/iOS studio thinking about product scoping. The framing around &#x27;unit&#x27; rather than &#x27;product&#x27; or &#x27;feature&#x27; is the interesting part.</p>
+        <p class="digest-item-note">Rippling&#x27;s thesis is that a unified data graph across HR, IT, and finance creates an AI advantage that point solutions can&#x27;t replicate. The strategic argument — that the moat is the data schema, not the model — is a useful frame for thinking about where AI creates durable competitive advantage versus where it commoditizes. Relevant for thinking about product positioning in any vertical.</p>
       </div>
     </section>
 
@@ -194,7 +194,7 @@
           <a class="digest-item-title" href="https://www.wired.com/story/a-critical-deadline-is-approaching-for-windows-and-linux-security" target="_blank" rel="noopener">A Critical Deadline Is Approaching for Windows and Linux Security</a>
           <span class="digest-item-source">Wired</span>
         </div>
-        <p class="digest-item-note">Secure Boot cryptographic keys start expiring June 24 — this is an operational issue that could affect boot security on unpatched systems and has implications for endpoint security tooling. Worth flagging for anyone running security research infrastructure on Windows or Linux.</p>
+        <p class="digest-item-note">Secure Boot cryptographic keys start expiring June 24 — this is a concrete operational deadline, not a theoretical future risk. macOS is not directly affected but if you&#x27;re running any Windows or Linux VMs or dual-boot setups, or advising clients who do, this needs attention before the date. The Wired piece has the practical steps.</p>
       </div>
     </section>
 
