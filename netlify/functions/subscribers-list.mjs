@@ -18,14 +18,18 @@ export default async function handler(request) {
     return new Response("Unauthorized", { status: 401 })
   }
 
-  const store = getStore("subscribers")
-  const emails = []
+  try {
+    const store = getStore("subscribers")
+    const { blobs } = await store.list()
+    const emails = blobs.map(b => b.key)
 
-  for await (const { key } of store.list()) {
-    emails.push(key)
+    return new Response(JSON.stringify({ emails, count: emails.length }), {
+      headers: { "Content-Type": "application/json" },
+    })
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err?.message ?? String(err) }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    })
   }
-
-  return new Response(JSON.stringify({ emails, count: emails.length }), {
-    headers: { "Content-Type": "application/json" },
-  })
 }

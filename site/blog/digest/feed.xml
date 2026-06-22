@@ -9,20 +9,12 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
-      <title>Daily Digest #2 — June 22, 2026</title>
-      <link>https://purplelink.llc/blog/digest/2026-06-22.html</link>
-      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-22.html</guid>
-      <pubDate>Mon, 22 Jun 2026 10:00:00 +0000</pubDate>
-      <dc:creator>Benjamin Ampel</dc:creator>
-      <description>LLM-guided dark web taxonomy, MCP security vulnerabilities, AryStinger proxy botnet, Canada&#x27;s first CSIS botnet-remediation warrant, and SpaceX&#x27;s $20B post-IPO bond sale headline today&#x27;s digest.</description>
-    </item>
-    <item>
       <title>Daily Digest #1 — June 22, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-06-22.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-22.html</guid>
       <pubDate>Mon, 22 Jun 2026 10:00:00 +0000</pubDate>
       <dc:creator>Benjamin Ampel</dc:creator>
-      <description>North Korean Sapphire Sleet poisons 140+ npm packages, AryStinger botnet builds 4,300-router proxy network, and LLM safety geometry research surfaces a single linear direction separating safe from unsafe concepts.</description>
+      <description>LLM-guided dark web taxonomy, MCP security vulnerabilities, AryStinger proxy botnet, Canada&#x27;s first CSIS botnet-remediation warrant, and SpaceX&#x27;s $20B post-IPO bond sale headline today&#x27;s digest.</description>
     </item>
   </channel>
 </rss>
