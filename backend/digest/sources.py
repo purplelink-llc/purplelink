@@ -38,7 +38,7 @@ SOURCES: list[SourceDef] = [
     SourceDef(
         name="arXiv",
         type=SourceType.ARXIV_OAI,
-        url="http://export.arxiv.org/oai2",
+        url="https://oaipmh.arxiv.org/oai",
         category="papers",
         params={"sets": ["cs:AI", "cs:LG", "cs:CR", "stat:ML", "q-fin"]},
     ),
@@ -114,12 +114,14 @@ SOURCES: list[SourceDef] = [
         type=SourceType.RSS,
         url="https://importai.substack.com/feed",
         category="ai_tech",
+        params={"user_agent": "Mozilla/5.0 (compatible; RSS reader)"},
     ),
     SourceDef(
         name="The Gradient",
         type=SourceType.RSS,
         url="https://thegradientpub.substack.com/feed",
         category="ai_tech",
+        params={"user_agent": "Mozilla/5.0 (compatible; RSS reader)"},
     ),
     SourceDef(
         name="Hacker News",

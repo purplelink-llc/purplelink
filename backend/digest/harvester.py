@@ -72,9 +72,10 @@ async def fetch_rss(client, source_def) -> list[RawItem]:
     """Fetch an RSS or Atom feed and return fresh RawItems."""
     import feedparser
     try:
+        ua = source_def.params.get("user_agent", _USER_AGENT)
         resp = await client.get(
             source_def.url,
-            headers={"User-Agent": _USER_AGENT},
+            headers={"User-Agent": ua},
             timeout=10.0,
             follow_redirects=True,
         )
