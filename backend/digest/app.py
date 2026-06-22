@@ -41,6 +41,9 @@ _image = (
     timeout=600,
 )
 async def run_daily_digest():
+    import logging as _logging
+    _logging.basicConfig(level=_logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+
     import httpx
     from digest.harvester import harvest_all
     from digest.curator import curate
