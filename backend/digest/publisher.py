@@ -303,3 +303,54 @@ async def github_update_digest_index(
         token=token, sha=sha,
     )
     logger.info("github_update_digest_index: updated index")
+
+
+async def buttondown_send(
+    client, digest: DigestData, email_html: str, key: str,
+) -> None:
+    date_str = _fmt_date(digest.date)
+    subject = f"Daily Digest #{digest.number} — {date_str}"
+    body = {
+        "subject": subject,
+        "body": email_html,
+        "status": "about_to_send",
+    }
+    headers = {
+        "Authorization": f"Token {key}",
+        "Content-Type": "application/json",
+    }
+    try:
+        resp = await client.post(
+            f"{BUTTONDOWN_API}/emails",
+            headers=headers,
+            json=body,
+            timeout=20.0,
+        )
+        resp.raise_for_status()
+        logger.info("buttondown_send: broadcast created id=%s", resp.json().get("id"))
+    except Exception as exc:
+        logger.error("buttondown_send failed (post is already live): %s", exc)
+
+
+async def publish(
+    digest: DigestData,
+    github_token: str,
+    buttondown_key: str,
+) -> None:
+    import httpx
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        count = await github_count_digests(client, github_token)
+        digest.number = count + 1
+
+        html_content = render_html(digest)
+        email_html = render_email_html(digest)
+        entry = render_index_entry(digest)
+
+        await github_write_digest(client, html_content, digest, github_token)
+        await github_update_digest_index(client, entry, github_token)
+        await buttondown_send(client, digest, email_html, buttondown_key)
+
+    logger.info(
+        "publish complete: Digest #%d, %d items, %s",
+        digest.number, digest.items_selected, digest.date,
+    )

@@ -88,6 +88,8 @@ from digest.publisher import (
     github_count_digests,
     github_write_digest,
     github_update_digest_index,
+    buttondown_send,
+    publish,
 )
 
 
@@ -158,3 +160,45 @@ def test_github_update_digest_index_prepends_entry():
         content = base64.b64decode(put_body["content"]).decode()
         assert "Daily Digest #7" in content
     asyncio.run(run())
+
+
+def test_buttondown_send_posts_email():
+    async def run():
+        client = AsyncMock()
+        client.post.return_value = MagicMock(
+            status_code=201,
+            raise_for_status=lambda: None,
+            json=lambda: {"id": "abc"},
+        )
+        digest = _make_digest()
+        email_html = render_email_html(digest)
+        await buttondown_send(client, digest, email_html, "bd_key_123")
+        assert client.post.called
+        call_kwargs = client.post.call_args[1]["json"]
+        assert "Daily Digest #7" in call_kwargs["subject"]
+        assert call_kwargs["status"] == "about_to_send"
+    asyncio.run(run())
+
+
+def test_publish_calls_all_three_steps(monkeypatch):
+    write_called = []
+    index_called = []
+    bd_called = []
+
+    async def _fake_count(client, token): return 6
+    async def _fake_write(client, html, digest, token): write_called.append(1)
+    async def _fake_index(client, entry, token): index_called.append(1)
+    async def _fake_bd(client, digest, email_html, key): bd_called.append(1)
+
+    monkeypatch.setattr("digest.publisher.github_count_digests", _fake_count)
+    monkeypatch.setattr("digest.publisher.github_write_digest", _fake_write)
+    monkeypatch.setattr("digest.publisher.github_update_digest_index", _fake_index)
+    monkeypatch.setattr("digest.publisher.buttondown_send", _fake_bd)
+
+    digest = _make_digest()
+    asyncio.run(publish(digest, "gh_token", "bd_key"))
+
+    assert write_called, "github_write_digest was not called"
+    assert index_called, "github_update_digest_index was not called"
+    assert bd_called, "buttondown_send was not called"
+    assert digest.number == 7
