@@ -2,8 +2,10 @@
 """Publisher: render HTML, push to GitHub, send via Buttondown."""
 from __future__ import annotations
 
+import base64
 import datetime
 import logging
+from typing import Optional
 
 from digest.curator import DigestData, DigestItem
 
@@ -194,3 +196,109 @@ def render_index_entry(digest: DigestData) -> str:
         f'        </div>\n'
         f'      </a>'
     )
+
+
+def _gh_headers(token: str) -> dict:
+    return {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "PurplelinkDigest/1.0",
+    }
+
+
+async def github_count_digests(client, token: str) -> int:
+    """Count existing digest HTML files (excluding index.html)."""
+    url = f"{GITHUB_API}/repos/{GITHUB_REPO}/contents/{DIGEST_DIR}"
+    try:
+        resp = await client.get(url, headers=_gh_headers(token), timeout=15.0)
+        resp.raise_for_status()
+        files = [f for f in resp.json()
+                 if f.get("type") == "file"
+                 and f.get("name", "").endswith(".html")
+                 and f.get("name") != "index.html"]
+        return len(files)
+    except Exception as exc:
+        logger.warning("github_count_digests failed: %s", exc)
+        return 0
+
+
+async def _github_get_file(client, path: str, token: str) -> tuple[Optional[str], Optional[str]]:
+    """Return (decoded content, sha) for a file, or (None, None) if not found."""
+    url = f"{GITHUB_API}/repos/{GITHUB_REPO}/contents/{path}"
+    try:
+        resp = await client.get(url, headers=_gh_headers(token), timeout=15.0)
+        if resp.status_code == 404:
+            return None, None
+        resp.raise_for_status()
+        data = resp.json()
+        content = base64.b64decode(data["content"]).decode("utf-8")
+        return content, data["sha"]
+    except Exception as exc:
+        logger.warning("_github_get_file %s failed: %s", path, exc)
+        return None, None
+
+
+async def _github_put_file(
+    client, path: str, content: str, message: str,
+    token: str, sha: Optional[str] = None,
+) -> None:
+    import asyncio as _asyncio
+    url = f"{GITHUB_API}/repos/{GITHUB_REPO}/contents/{path}"
+    body: dict = {
+        "message": message,
+        "content": base64.b64encode(content.encode("utf-8")).decode(),
+    }
+    if sha:
+        body["sha"] = sha
+    for attempt in range(1, 4):
+        try:
+            resp = await client.put(url, headers=_gh_headers(token), json=body, timeout=20.0)
+            resp.raise_for_status()
+            return
+        except Exception as exc:
+            if attempt < 3:
+                await _asyncio.sleep(attempt * 3)
+            else:
+                raise RuntimeError(f"_github_put_file {path} failed: {exc}") from exc
+
+
+async def github_write_digest(
+    client, html: str, digest: DigestData, token: str,
+) -> None:
+    """Write the digest HTML file to the repo."""
+    iso = digest.date.isoformat()
+    path = f"{DIGEST_DIR}/{iso}.html"
+    _, existing_sha = await _github_get_file(client, path, token)
+    await _github_put_file(
+        client, path, html,
+        message=f"chore(digest): Daily Digest #{digest.number} ({iso})",
+        token=token,
+        sha=existing_sha,
+    )
+    logger.info("github_write_digest: wrote %s", path)
+
+
+_INDEX_LIST_MARKER = "<!-- DIGEST_LIST_START -->"
+
+
+async def github_update_digest_index(
+    client, entry_html: str, token: str,
+) -> None:
+    """Prepend entry_html to the digest index page list."""
+    current, sha = await _github_get_file(client, DIGEST_INDEX_PATH, token)
+    if current is None:
+        logger.warning("github_update_digest_index: index file not found, skipping")
+        return
+    if _INDEX_LIST_MARKER not in current:
+        logger.warning("github_update_digest_index: marker not found in index, skipping")
+        return
+    updated = current.replace(
+        _INDEX_LIST_MARKER,
+        f"{_INDEX_LIST_MARKER}\n{entry_html}",
+    )
+    await _github_put_file(
+        client, DIGEST_INDEX_PATH, updated,
+        message="chore(digest): update digest index",
+        token=token, sha=sha,
+    )
+    logger.info("github_update_digest_index: updated index")
