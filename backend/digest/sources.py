@@ -119,9 +119,8 @@ SOURCES: list[SourceDef] = [
     SourceDef(
         name="The Gradient",
         type=SourceType.RSS,
-        url="https://thegradientpub.substack.com/feed",
+        url="https://thegradient.pub/feed/",
         category="ai_tech",
-        params={"user_agent": "Mozilla/5.0 (compatible; RSS reader)"},
     ),
     SourceDef(
         name="Hacker News",
@@ -199,15 +198,9 @@ SOURCES: list[SourceDef] = [
     ),
     # ── Finance & Business ───────────────────────────────────────────────
     SourceDef(
-        name="Morning Brew",
+        name="Bloomberg Technology",
         type=SourceType.RSS,
-        url="https://www.morningbrew.com/daily/rss",
-        category="finance",
-    ),
-    SourceDef(
-        name="The Hustle",
-        type=SourceType.RSS,
-        url="https://thehustle.co/feed/",
+        url="https://feeds.bloomberg.com/technology/news.rss",
         category="finance",
     ),
     SourceDef(
@@ -230,15 +223,9 @@ SOURCES: list[SourceDef] = [
     ),
     # ── Entrepreneurship & Startups ──────────────────────────────────────
     SourceDef(
-        name="a16z",
-        type=SourceType.RSS,
-        url="https://a16z.com/feed/",
-        category="entrepreneurship",
-    ),
-    SourceDef(
         name="First Round Review",
         type=SourceType.RSS,
-        url="https://review.firstround.com/rss",
+        url="https://review.firstround.com/feed",
         category="entrepreneurship",
     ),
     SourceDef(
