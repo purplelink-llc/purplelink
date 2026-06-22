@@ -48,8 +48,16 @@ SOURCES: list[SourceDef] = [
         url="https://api.semanticscholar.org/graph/v1/paper/search/bulk",
         category="papers",
         params={
-            "queries": ["cybersecurity LLM", "adversarial machine learning",
-                        "information systems AI", "large language models"],
+            "queries": [
+                "cybersecurity LLM",
+                "adversarial machine learning",
+                "large language model security",
+                "dark web intelligence",
+                "LLM red-teaming jailbreak",
+                "threat intelligence extraction NLP",
+                "vulnerability detection neural network",
+                "information systems AI",
+            ],
             "api_key_env": "SEMANTIC_SCHOLAR_API_KEY",
         },
     ),
@@ -58,7 +66,12 @@ SOURCES: list[SourceDef] = [
         type=SourceType.OPENALEX,
         url="https://api.openalex.org/works",
         category="papers",
-        params={"topics": ["cybersecurity", "artificial intelligence", "information systems"]},
+        params={
+            "topics": ["cybersecurity", "artificial intelligence", "information systems"],
+            # Scope title+abstract search before date-filtering; without this,
+            # OpenAlex returns all recent works across every field.
+            "search": "cybersecurity OR \"large language model\" OR adversarial OR \"threat intelligence\"",
+        },
     ),
     SourceDef(
         name="HuggingFace Daily Papers",
@@ -259,9 +272,16 @@ SOURCES: list[SourceDef] = [
         category="general_tech",
     ),
     SourceDef(
-        name="Wired",
+        name="Wired Security",
         type=SourceType.RSS,
         url="https://www.wired.com/feed/category/security/latest/rss",
-        category="general_tech",
+        # This feed is security-only; general_tech was a miscategorization.
+        category="cybersecurity",
+    ),
+    SourceDef(
+        name="Simon Willison",
+        type=SourceType.RSS,
+        url="https://simonwillison.net/atom/everything/",
+        category="ai_tech",
     ),
 ]

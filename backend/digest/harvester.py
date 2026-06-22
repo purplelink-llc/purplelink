@@ -284,15 +284,20 @@ async def fetch_openalex(client, source_def) -> list[RawItem]:
     yesterday = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=48)).strftime("%Y-%m-%d")
     items: list[RawItem] = []
 
+    search_term = source_def.params.get("search", "")
+    api_params: dict = {
+        "filter": f"from_publication_date:{yesterday}",
+        "sort": "publication_date:desc",
+        "per-page": 25,
+        "select": "id,title,abstract_inverted_index,publication_date,primary_location",
+    }
+    if search_term:
+        api_params["search"] = search_term
+
     try:
         resp = await client.get(
             source_def.url,
-            params={
-                "filter": f"from_publication_date:{yesterday}",
-                "sort": "publication_date:desc",
-                "per-page": 25,
-                "select": "id,title,abstract_inverted_index,publication_date,primary_location",
-            },
+            params=api_params,
             headers={
                 "User-Agent": _USER_AGENT,
                 "mailto": "contact@purplelink.llc",

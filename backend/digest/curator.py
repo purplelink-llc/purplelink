@@ -19,6 +19,10 @@ logger = logging.getLogger(__name__)
 
 MIN_ITEMS_TO_PUBLISH = 5
 
+# Max items per category passed to Claude. Prevents context-window saturation
+# (781 raw items → attention degrades; ~100 curated candidates → better picks).
+_INPUT_CAP_PER_CATEGORY = 18
+
 SECTION_CAPS: dict[str, int] = {
     "papers":         6,
     "ai_tech":        5,
@@ -61,7 +65,9 @@ already seen. Skip surveys, literature reviews, and incremental "we fine-tuned
 GPT on X dataset" papers unless the dataset itself is exceptional.
 
 VOICE — strict rules, no exceptions:
-- Write like a sharp researcher talking to a peer, not a newsletter
+- Write in third person. Never use "you" or "your". Address the reader as a
+  technically sophisticated peer: "Security defenders building triage pipelines
+  will care because..." not "This matters to you because..."
 - Be specific: cite numbers, method names, dataset sizes, threat actors, tickers
 - Lead with the finding or implication, not the methodology
 - Short sentences. Active voice. No filler.
@@ -73,8 +79,27 @@ VOICE — strict rules, no exceptions:
 
 EDITORIAL NOTE format (2-3 sentences):
   Sentence 1: The specific finding, result, or claim (with numbers if available)
-  Sentence 2: Why it matters to this reader or what's surprising/non-obvious
-  Sentence 3 (optional): A caveat, limitation, or follow-on question worth considering
+  Sentence 2: Why it matters and what's surprising or non-obvious
+  Sentence 3 (optional): A caveat, limitation, or a specific follow-on question
+  If two selected items are directly related (same threat actor, technology, or
+  event), end the second item's note with: "Connects to: [first item title]."
+
+AI TECH SELECTION — aim to include 2-3 items when strong content exists:
+  Prefer: technical posts from Anthropic/OpenAI/DeepMind/Mistral on model
+  capabilities, inference techniques, or safety findings; TLDR AI items on
+  significant benchmark results or infrastructure shifts; HuggingFace/The
+  Gradient posts with specific empirical findings.
+  Reject: press releases without technical substance, "AI is transforming X"
+  think-pieces, incremental model version announcements with no new capability.
+
+FINANCE SELECTION — strict bar, reject noise:
+  Only include items with a direct, specific connection to AI infrastructure
+  economics, cybersecurity market dynamics, software-startup mechanics, or
+  quantitative methods with reproducible signals.
+  Reject: generic macro commentary, IPO market predictions, crypto price action,
+  earnings summaries, market crash takes, and anything that reads like Bloomberg
+  opinion. Ask: would a PhD researcher in cybersecurity or AI learn something
+  operationally or strategically specific from this? If no, skip it.
 
 INTRO format (1-2 sentences, 100-140 characters ideal for SEO):
   State what's actually in today's digest — specific topics, not a meta-comment
@@ -124,12 +149,34 @@ class DigestData:
     items_selected: int
 
 
+def _prefilter(items: list[RawItem]) -> list[RawItem]:
+    """Reduce candidate pool before the LLM call.
+
+    Passes at most _INPUT_CAP_PER_CATEGORY items per category to Claude,
+    sorted by recency. This prevents context-window saturation (781 raw items
+    degrade attention quality) while keeping the full freshness signal.
+    """
+    from collections import defaultdict
+    buckets: dict[str, list[RawItem]] = defaultdict(list)
+    for it in items:
+        buckets[it.category].append(it)
+    result: list[RawItem] = []
+    for cat, cat_items in buckets.items():
+        cat_items.sort(key=lambda x: x.published_at, reverse=True)
+        result.extend(cat_items[:_INPUT_CAP_PER_CATEGORY])
+    logger.info("prefilter: %d -> %d items (%d categories)",
+                len(items), len(result), len(buckets))
+    return result
+
+
 async def curate(client, items: list[RawItem]) -> Optional[DigestData]:
     """Run curation. Returns None if too few input items to bother calling LLM."""
     if len(items) < MIN_ITEMS_TO_PUBLISH:
         logger.warning("curate: only %d items, below minimum %d — aborting",
                        len(items), MIN_ITEMS_TO_PUBLISH)
         return None
+
+    candidates = _prefilter(items)
 
     item_list = [
         {
@@ -139,7 +186,7 @@ async def curate(client, items: list[RawItem]) -> Optional[DigestData]:
             "category": it.category,
             "snippet": it.snippet[:300],
         }
-        for it in items
+        for it in candidates
     ]
 
     raw = await anthropic_message(
