@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Daily Digest by Benjamin Ampel</title>
+    <link>https://purplelink.llc/blog/digest/</link>
+    <description>Daily curated reading at the intersection of cybersecurity, AI, research, and entrepreneurship. Curated by Benjamin Ampel.</description>
+    <language>en</language>
+    <managingEditor>ben@purplelink.llc (Benjamin Ampel)</managingEditor>
+    <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
+    <!-- DIGEST_RSS_START -->
+    <item>
+      <title>Daily Digest #1 — June 22, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-06-22.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-22.html</guid>
+      <pubDate>Mon, 22 Jun 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>North Korean Sapphire Sleet poisons 140+ npm packages, AryStinger botnet builds 4,300-router proxy network, and LLM safety geometry research surfaces a single linear direction separating safe from unsafe concepts.</description>
+    </item>
+  </channel>
+</rss>
