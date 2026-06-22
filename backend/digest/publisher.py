@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import datetime
+import html
 import logging
 from typing import Optional
 
@@ -30,10 +31,10 @@ def _fmt_date(d: datetime.date) -> str:
 def _render_item_html(item: DigestItem) -> str:
     return f"""      <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="{item.url}" target="_blank" rel="noopener">{item.title}</a>
-          <span class="digest-item-source">{item.source_name}</span>
+          <a class="digest-item-title" href="{html.escape(item.url, quote=True)}" target="_blank" rel="noopener">{html.escape(item.title)}</a>
+          <span class="digest-item-source">{html.escape(item.source_name)}</span>
         </div>
-        <p class="digest-item-note">{item.editorial_note}</p>
+        <p class="digest-item-note">{html.escape(item.editorial_note)}</p>
       </div>"""
 
 
@@ -124,7 +125,7 @@ def render_html(digest: DigestData) -> str:
 
     <article id="main-content" class="post-body digest-body">
 
-      <p class="digest-intro">{digest.intro}</p>
+      <p class="digest-intro">{html.escape(digest.intro)}</p>
 
 {sections_html}
 
@@ -174,7 +175,7 @@ def render_email_html(digest: DigestData) -> str:
 </head>
 <body>
   <h1>{title}</h1>
-  <p>{digest.intro}</p>
+  <p>{html.escape(digest.intro)}</p>
 {sections_html}
   <hr>
   <p><a href="https://purplelink.llc/blog/digest/{digest.date.isoformat()}.html">Read on the web</a> &middot; <a href="https://purplelink.llc/blog/digest/">All issues</a></p>
@@ -192,7 +193,7 @@ def render_index_entry(digest: DigestData) -> str:
         f'        <span class="blog-post-date">{date_str}</span>\n'
         f'        <div>\n'
         f'          <div class="blog-post-title">{title}</div>\n'
-        f'          <p class="blog-post-excerpt">{digest.intro[:180]}...</p>\n'
+        f'          <p class="blog-post-excerpt">{html.escape(digest.intro[:180])}...</p>\n'
         f'        </div>\n'
         f'      </a>'
     )
