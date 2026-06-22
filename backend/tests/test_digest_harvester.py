@@ -22,3 +22,13 @@ def test_every_source_has_required_fields():
             "papers", "ai_tech", "cybersecurity",
             "finance", "entrepreneurship", "general_tech",
         }
+
+
+def test_no_duplicate_urls():
+    urls = [s.url for s in SOURCES]
+    assert len(urls) == len(set(urls)), "Duplicate URLs found in SOURCES"
+
+
+def test_no_duplicate_names():
+    names = [s.name for s in SOURCES]
+    assert len(names) == len(set(names)), "Duplicate names found in SOURCES"
