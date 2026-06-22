@@ -335,7 +335,7 @@ async def buttondown_send(
 async def publish(
     digest: DigestData,
     github_token: str,
-    buttondown_key: str,
+    buttondown_key: str = "",
 ) -> None:
     import httpx
     async with httpx.AsyncClient(timeout=30.0) as client:
@@ -343,12 +343,14 @@ async def publish(
         digest.number = count + 1
 
         html_content = render_html(digest)
-        email_html = render_email_html(digest)
         entry = render_index_entry(digest)
 
         await github_write_digest(client, html_content, digest, github_token)
         await github_update_digest_index(client, entry, github_token)
-        await buttondown_send(client, digest, email_html, buttondown_key)
+
+        if buttondown_key:
+            email_html = render_email_html(digest)
+            await buttondown_send(client, digest, email_html, buttondown_key)
 
     logger.info(
         "publish complete: Digest #%d, %d items, %s",

@@ -1,13 +1,15 @@
 """Modal scheduled function for the daily digest.
 
 Runs daily at 10:00 UTC (6am ET). Set DRY_RUN=1 to skip GitHub push
-and Buttondown send; HTML is printed to stdout instead.
+and print a preview to stdout instead.
 
 Required Modal secrets:
   anthropic          -> ANTHROPIC_API_KEY
   github             -> GITHUB_TOKEN
-  buttondown         -> BUTTONDOWN_API_KEY
-  semantic-scholar   -> SEMANTIC_SCHOLAR_API_KEY (optional but recommended)
+
+Optional Modal secrets:
+  semantic-scholar   -> SEMANTIC_SCHOLAR_API_KEY
+  buttondown         -> BUTTONDOWN_API_KEY (add later for email delivery)
 """
 import logging
 import os
@@ -35,8 +37,6 @@ _image = (
     secrets=[
         modal.Secret.from_name("anthropic"),
         modal.Secret.from_name("github"),
-        modal.Secret.from_name("buttondown"),
-        modal.Secret.from_name("semantic-scholar"),
     ],
     timeout=600,
 )
