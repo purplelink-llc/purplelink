@@ -214,7 +214,9 @@ nav a:hover { color: var(--ink); }
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--purple);
-  opacity: 0.55;
+  /* No opacity blend: at 0.55 the brand purple dropped to ~2.5:1 on the
+     light sections (WCAG AA fail for this small/bold size). Full --purple
+     clears 4.5:1. Dark/purple sections override color+opacity below. */
   margin-bottom: 6px;
 }
 
@@ -281,7 +283,9 @@ nav a:hover { color: var(--ink); }
 
 .hero-italic {
   font-style: italic;
-  color: var(--purple);
+  /* Slightly darker than --purple so the large display word clears the 3:1
+     large-text minimum on the near-white hero (was 2.91:1). */
+  color: oklch(45% 0.24 310);
 }
 
 .hero-bottom {
@@ -567,7 +571,10 @@ nav a:hover { color: var(--ink); }
 .section-oss {
   padding: clamp(60px, 8vw, 112px) clamp(24px, 6vw, 80px);
   border-bottom: 1px solid var(--line);
-  background: var(--purple);
+  /* Richer purple than --purple (0.50): white text at reduced opacity
+     couldn't clear 4.5:1 on the lighter shade. Darker shade fixes AA and
+     reads as a deliberate feature section. */
+  background: oklch(38% 0.16 310);
   color: oklch(99% 0.003 310);
 }
 
@@ -578,8 +585,8 @@ nav a:hover { color: var(--ink); }
   margin-bottom: clamp(36px, 5vw, 60px);
 }
 
-.oss-label .section-num { color: oklch(99% 0.003 310); opacity: 0.45; }
-.oss-label .eyebrow     { color: oklch(99% 0.003 310); opacity: 0.65; }
+.oss-label .section-num { color: oklch(99% 0.003 310); opacity: 0.85; }
+.oss-label .eyebrow     { color: oklch(99% 0.003 310); opacity: 0.9; }
 
 .oss-feature {
   display: grid;
@@ -593,7 +600,7 @@ nav a:hover { color: var(--ink); }
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  opacity: 0.65;
+  opacity: 0.9;
   margin-bottom: 14px;
 }
 
@@ -610,7 +617,7 @@ nav a:hover { color: var(--ink); }
   max-width: 500px;
   font-size: 1rem;
   line-height: 1.7;
-  opacity: 0.75;
+  opacity: 0.92;
   margin-bottom: 28px;
 }
 
@@ -643,7 +650,10 @@ nav a:hover { color: var(--ink); }
 .section-operations {
   padding: clamp(60px, 8vw, 112px) clamp(24px, 6vw, 80px);
   border-bottom: 1px solid var(--line);
-  background: oklch(97% 0.012 310);
+  /* Token-based tint (not a hardcoded light value) so the panel inverts with
+     the theme: soft lavender in light mode, dark purple-tint in dark mode.
+     A hardcoded light bg left inverted light text unreadable in dark mode. */
+  background: color-mix(in oklch, var(--bg) 86%, var(--purple) 14%);
 }
 
 .facts {
@@ -699,7 +709,7 @@ dd {
   margin-bottom: clamp(28px, 4vw, 48px);
 }
 
-.contact-num { color: oklch(99% 0.003 310); opacity: 0.35; }
+.contact-num { color: oklch(99% 0.003 310); opacity: 0.7; }
 
 .eyebrow-light {
   color: oklch(99% 0.003 310);
@@ -717,9 +727,9 @@ dd {
 
 .contact-heading em {
   font-style: italic;
-  /* Use the higher-chroma --purple so this stays legible in dark mode
-     (where --purple-light remaps to a dark color and would vanish). */
-  color: var(--purple);
+  /* Lighter purple than --purple (0.50): on the dark --ink contact section,
+     0.50 only reached 2.91:1; this clears the 3:1 large-text minimum. */
+  color: oklch(62% 0.22 310);
 }
 
 .contact-sub {
@@ -786,7 +796,7 @@ dd {
 
 .footer-loc {
   font-size: 0.78rem;
-  opacity: 0.35;
+  opacity: 0.6;
 }
 
 /* ─── Responsive ──────────────────────────────────────────────────────── */
@@ -1314,6 +1324,116 @@ dd {
   border-top: 1px solid var(--line);
 }
 
+/* ─── Daily Digest ─────────────────────────────────────────────────────── */
+
+.digest-body {
+  padding-top: 0;
+}
+
+.digest-intro {
+  font-size: clamp(1.05rem, 1.6vw, 1.15rem);
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 62ch;
+  margin-bottom: 2.5em;
+}
+
+.digest-section {
+  margin-bottom: 3em;
+}
+
+.digest-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.5em;
+}
+
+.digest-item {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.digest-item:last-child { border-bottom: none; }
+
+.digest-item-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.digest-item-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.digest-item-title:hover {
+  color: var(--purple);
+  border-bottom-color: var(--purple-dim);
+}
+
+.digest-item-source {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--purple);
+  white-space: nowrap;
+}
+
+.digest-item-note {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: oklch(32% 0.05 310);
+  max-width: 66ch;
+  margin: 0;
+}
+
+.digest-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* ─── Digest subscribe form (on digest index page) ──────────────────── */
+
+.digest-subscribe {
+  padding: clamp(40px, 5vw, 64px) clamp(24px, 6vw, 80px);
+  border-top: 1px solid var(--line);
+}
+
+.digest-subscribe h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.digest-subscribe p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  margin-bottom: 20px;
+  max-width: 52ch;
+}
+
+.subscribe-iframe { border: none; display: block; }
+
+@media (prefers-color-scheme: dark) {
+  .digest-item-note { color: oklch(76% 0.04 310); }
+}
+
 /* ─── Changelog ────────────────────────────────────────────────────────── */
 
 .changelog-hero {
@@ -1365,7 +1485,7 @@ dd {
   padding-top: 5px;
 }
 
-.changelog-content h3 {
+.changelog-content h2 {
   font-family: var(--font-display);
   font-size: clamp(1.3rem, 2vw, 1.7rem);
   font-weight: 700;
@@ -1975,10 +2095,103 @@ dd {
   .footer { background: oklch(14% 0.02 310); }
   .section-oss { background: oklch(32% 0.10 310); }
 
+  /* The light-mode hero italic is pinned to a dark purple (45% L) to clear
+     3:1 on the near-white hero. In dark mode the hero bg is dark, so restore
+     the light --purple (72% L) for contrast. */
+  .hero-italic { color: var(--purple); }
+
   /* Primary buttons / skip link sit on var(--purple), which is light (72% L)
      in dark mode — hardcoded white label text fails (2.58:1). Use dark text. */
   .btn-primary,
   .waitlist-form button,
   .skip-link { color: oklch(18% 0.06 310); }
+}
+
+/* ─── "Coming soon" purchase buttons ─────────────────────────────────── */
+/* All Stripe-checkout buttons are disabled while we wait for Stripe
+   activation. The site.js IIFE swaps the label to "Coming soon · $X" and
+   adds .btn-coming-soon. Remove the IIFE in site.js to re-enable. */
+.btn.btn-coming-soon,
+button.btn-coming-soon {
+  opacity: 0.55;
+  cursor: not-allowed !important;
+  background: var(--muted) !important;
+  color: var(--bg) !important;
+  border-color: var(--muted) !important;
+  box-shadow: none !important;
+  filter: grayscale(35%);
+}
+.btn.btn-coming-soon:hover,
+button.btn-coming-soon:hover {
+  /* explicit no-op hover so users don't get a misleading affordance */
+  background: var(--muted) !important;
+  transform: none !important;
+}
+.btn.btn-coming-soon:focus-visible,
+button.btn-coming-soon:focus-visible {
+  outline: 2px dashed var(--muted);
+  outline-offset: 3px;
+}
+
+/* ─── Under-construction banner ──────────────────────────────────────── */
+/* Site-wide notice injected by site.js at the top of every page.
+   Dismissible per browser; CSS lives here so the CSP `style-src 'self'`
+   rule is honoured (no inline styles). */
+.uc-banner {
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  color: #ffffff;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+.uc-banner-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.uc-banner-text { flex: 1; }
+.uc-banner-text strong { font-weight: 700; }
+.uc-banner-close {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.uc-banner-close:hover { background: rgba(255, 255, 255, 0.32); }
+.uc-banner-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+@media (max-width: 640px) {
+  .uc-banner-inner { padding: 0.6rem 1rem; align-items: flex-start; }
+  .uc-banner-text { font-size: 0.82rem; }
+}
+/* Dark-mode override — the gradient already gives strong contrast, keep
+   the lighter purple tone in dark mode so it doesn't go too dim. */
+@media (prefers-color-scheme: dark) {
+  .uc-banner {
+    background: linear-gradient(90deg, oklch(48% 0.20 295), oklch(72% 0.12 295));
+    color: oklch(18% 0.06 310);
+    border-bottom-color: rgba(0, 0, 0, 0.35);
+  }
+  .uc-banner-close {
+    background: rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 0, 0, 0.3);
+    color: oklch(18% 0.06 310);
+  }
+  .uc-banner-close:hover { background: rgba(0, 0, 0, 0.25); }
 }
 
