@@ -181,11 +181,14 @@ def test_buttondown_send_posts_email():
 
 
 def test_publish_calls_all_three_steps(monkeypatch):
+    count_called = []
     write_called = []
     index_called = []
     bd_called = []
 
-    async def _fake_count(client, token): return 6
+    async def _fake_count(client, token):
+        count_called.append(1)
+        return 6
     async def _fake_write(client, html, digest, token): write_called.append(1)
     async def _fake_index(client, entry, token): index_called.append(1)
     async def _fake_bd(client, digest, email_html, key): bd_called.append(1)
@@ -198,6 +201,7 @@ def test_publish_calls_all_three_steps(monkeypatch):
     digest = _make_digest()
     asyncio.run(publish(digest, "gh_token", "bd_key"))
 
+    assert count_called, "github_count_digests was not called"
     assert write_called, "github_write_digest was not called"
     assert index_called, "github_update_digest_index was not called"
     assert bd_called, "buttondown_send was not called"
