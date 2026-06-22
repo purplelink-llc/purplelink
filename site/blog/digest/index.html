@@ -24,6 +24,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="alternate" type="application/rss+xml" title="Daily Digest by Benjamin Ampel" href="/blog/digest/feed.xml">
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
     <script type="application/ld+json">
@@ -67,34 +68,25 @@
 
     <div class="blog-list">
 <!-- DIGEST_LIST_START -->
-      <a class="blog-post-item" href="/blog/digest/2026-06-22.html">
-        <span class="blog-post-date">June 22, 2026</span>
-        <div>
-          <div class="blog-post-title">Daily Digest #2</div>
-          <p class="blog-post-excerpt">Today&#x27;s feed is dominated by a flood of low-signal Semantic Scholar papers — mostly surveys, reviews, and incremental LLM-for-cybersecurity work with no snippets or distinguishing ...</p>
-        </div>
-      </a>
-      <a class="blog-post-item" href="/blog/digest/2026-06-22.html">
-        <span class="blog-post-date">June 22, 2026</span>
-        <div>
-          <div class="blog-post-title">Daily Digest #2</div>
-          <p class="blog-post-excerpt">Thin pickings in the papers pile today — the Semantic Scholar feed is dominated by surveys, reviews, and low-signal incremental work, with a few genuinely interesting exceptions. C...</p>
-        </div>
-      </a>
     </div>
 
     <div class="digest-subscribe">
       <h2>Get it in your inbox</h2>
-      <p>One email per day. No tracking. Unsubscribe any time.</p>
-      <iframe
-        scrolling="no"
-        src="https://buttondown.email/purplelink/embed"
-        width="100%"
-        height="60"
-        class="subscribe-iframe"
-        title="Subscribe to the Daily Digest"
-        loading="lazy"
-      ></iframe>
+      <p>One email per day. Unsubscribe any time.</p>
+      <form class="subscribe-form" id="subscribe-form" novalidate>
+        <input
+          type="email"
+          name="email"
+          class="subscribe-input"
+          placeholder="you@example.com"
+          required
+          autocomplete="email"
+          aria-label="Email address"
+        >
+        <button type="submit" class="btn btn-primary subscribe-btn">Subscribe</button>
+      </form>
+      <p class="subscribe-status" id="subscribe-status" aria-live="polite"></p>
+      <noscript><p class="subscribe-status">Please enable JavaScript to subscribe.</p></noscript>
     </div>
 
     <footer class="footer">

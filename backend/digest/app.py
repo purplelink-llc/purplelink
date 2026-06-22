@@ -4,12 +4,12 @@ Runs daily at 10:00 UTC (6am ET). Set DRY_RUN=1 to skip GitHub push
 and print a preview to stdout instead.
 
 Required Modal secrets:
-  anthropic          -> ANTHROPIC_API_KEY
+  anthropic-secret   -> ANTHROPIC_API_KEY
   github             -> GITHUB_TOKEN
 
 Optional Modal secrets:
-  semantic-scholar   -> SEMANTIC_SCHOLAR_API_KEY
-  buttondown         -> BUTTONDOWN_API_KEY (add later for email delivery)
+  subscribe-secret   -> SUBSCRIBE_SECRET (enables email sending)
+  resend             -> RESEND_API_KEY   (enables email sending)
 """
 import logging
 import os
@@ -37,6 +37,8 @@ _image = (
     secrets=[
         modal.Secret.from_name("anthropic-secret"),
         modal.Secret.from_name("github"),
+        modal.Secret.from_name("subscribe-secret"),
+        modal.Secret.from_name("resend"),
     ],
     timeout=600,
 )
@@ -51,7 +53,8 @@ async def run_daily_digest():
 
     dry_run = os.environ.get("DRY_RUN", "").lower() in ("1", "true", "yes")
     github_token = os.environ.get("GITHUB_TOKEN", "")
-    buttondown_key = os.environ.get("BUTTONDOWN_API_KEY", "")
+    subscribe_secret = os.environ.get("SUBSCRIBE_SECRET", "")
+    resend_key = os.environ.get("RESEND_API_KEY", "")
 
     logger.info("digest: starting (dry_run=%s)", dry_run)
 
@@ -81,8 +84,16 @@ async def run_daily_digest():
         print(render_html(digest)[:500])
         return
 
-    await publish(digest, github_token, buttondown_key)
+    await publish(digest, github_token)
     logger.info("digest: published successfully")
+
+    if subscribe_secret and resend_key:
+        from digest.mailer import mail_digest
+        from digest.publisher import render_email_html
+        sent = await mail_digest(digest, render_email_html, subscribe_secret, resend_key)
+        logger.info("digest: emailed %d subscribers", sent)
+    else:
+        logger.info("digest: email skipped (SUBSCRIBE_SECRET or RESEND_API_KEY not set)")
 
 
 if __name__ == "__main__":

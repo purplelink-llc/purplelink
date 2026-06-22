@@ -1,5 +1,46 @@
 # Netlify Functions
 
+## `checkout`
+
+Creates a Stripe Checkout session for the paid Paper Review tool. Hit by the
+"Start review — $5" button on `/tools/paper-review/`. Returns the hosted
+Stripe Checkout URL; the browser is redirected to Stripe, payment is
+captured there, and on success Stripe sends the user back to
+`/tools/paper-review/upload/?session_id=…`.
+
+**Function URL:** `https://purplelink.llc/.netlify/functions/checkout`
+
+Required env vars (set via `netlify env:set --context production`):
+- `STRIPE_SECRET_KEY` — `sk_test_…` while testing, `sk_live_…` once live.
+- `STRIPE_PRICE_ID` — `price_…` of the $5 Paper Review one-time price.
+
+## `stripe-webhook`
+
+Receives Stripe webhook events. Only acts on `checkout.session.completed`.
+Verifies the Stripe signature using HMAC-SHA256, extracts session_id +
+customer email + amount, and forwards to the Modal backend's
+`/paper-review/register-token` endpoint so the backend can mint a
+redemption token for that session.
+
+**Function URL:** `https://purplelink.llc/.netlify/functions/stripe-webhook`
+
+Required env vars:
+- `STRIPE_WEBHOOK_SECRET` — `whsec_…` signing secret from the Stripe
+  webhook endpoint configuration.
+- `BACKEND_WEBHOOK_SECRET` — same value as the Modal secret
+  `paper-review-shared`. Authenticates the function -> Modal call.
+
+**Wiring it into Stripe:**
+
+1. In the Stripe dashboard, add a webhook endpoint at
+   `https://purplelink.llc/.netlify/functions/stripe-webhook`.
+2. Subscribe to the single event `checkout.session.completed`.
+3. Copy the signing secret (`whsec_…`) and set it as
+   `STRIPE_WEBHOOK_SECRET` in Netlify.
+
+Detailed end-to-end Stripe + Modal setup is in
+[`docs/paper-review-runbook.md`](../../docs/paper-review-runbook.md).
+
 ## `indexnow-ping`
 
 Pings the IndexNow shared endpoint (Bing / Yandex / Seznam / Naver) with URLs from the live sitemap whose `<lastmod>` matches today. Triggered automatically after every production deploy via a Netlify outgoing webhook.

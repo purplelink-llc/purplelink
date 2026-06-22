@@ -1428,7 +1428,43 @@ dd {
   max-width: 52ch;
 }
 
-.subscribe-iframe { border: none; display: block; }
+.subscribe-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 480px;
+}
+
+.subscribe-input {
+  flex: 1 1 200px;
+  padding: 10px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 100px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.subscribe-input:focus {
+  border-color: var(--purple);
+}
+
+.subscribe-btn {
+  flex-shrink: 0;
+}
+
+.subscribe-status {
+  font-size: 0.9rem;
+  margin-top: 12px;
+  min-height: 1.2em;
+}
+
+.subscribe-status--ok { color: oklch(55% 0.14 160); }
+.subscribe-status--err { color: oklch(52% 0.16 25); }
 
 @media (prefers-color-scheme: dark) {
   .digest-item-note { color: oklch(76% 0.04 310); }

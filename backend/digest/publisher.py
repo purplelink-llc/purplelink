@@ -1,9 +1,10 @@
 # backend/digest/publisher.py
-"""Publisher: render HTML, push to GitHub, send via Buttondown."""
+"""Publisher: render HTML + RSS, push to GitHub."""
 from __future__ import annotations
 
 import base64
 import datetime
+import email.utils
 import html
 import logging
 from typing import Optional
@@ -16,7 +17,8 @@ GITHUB_REPO = "purplelink-llc/purplelink"
 GITHUB_API = "https://api.github.com"
 DIGEST_DIR = "site/blog/digest"
 DIGEST_INDEX_PATH = f"{DIGEST_DIR}/index.html"
-BUTTONDOWN_API = "https://api.buttondown.email/v1"
+DIGEST_FEED_PATH = f"{DIGEST_DIR}/feed.xml"
+SITE_URL = "https://purplelink.llc"
 
 _MONTHS = [
     "", "January", "February", "March", "April", "May", "June",
@@ -49,12 +51,21 @@ def _render_sections_html(digest: DigestData) -> str:
     return "\n\n".join(parts)
 
 
+def _meta_desc(digest: DigestData, max_len: int = 155) -> str:
+    """Plain-text intro truncated for meta description."""
+    text = digest.intro.replace('"', '&quot;').replace('\n', ' ').strip()
+    return text[:max_len]
+
+
 def render_html(digest: DigestData) -> str:
     """Render the full blog post HTML for a digest issue."""
     date_str = _fmt_date(digest.date)
     iso_date = digest.date.isoformat()
     title = f"Daily Digest #{digest.number} — {date_str}"
     sections_html = _render_sections_html(digest)
+    desc = _meta_desc(digest)
+    topic_labels = list(digest.sections.keys())
+    keywords = ", ".join(topic_labels + ["daily digest", "Benjamin Ampel", "cybersecurity research", "AI papers"])
 
     return f"""<!doctype html>
 <html lang="en">
@@ -63,17 +74,24 @@ def render_html(digest: DigestData) -> str:
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>{title} | Purplelink LLC</title>
-    <meta name="description" content="Daily curated reading at the intersection of cybersecurity, AI, and entrepreneurship.">
-    <link rel="canonical" href="https://purplelink.llc/blog/digest/{iso_date}.html">
+    <meta name="description" content="{desc}">
+    <meta name="keywords" content="{html.escape(keywords)}">
+    <meta name="author" content="Benjamin Ampel">
+    <link rel="canonical" href="{SITE_URL}/blog/digest/{iso_date}.html">
+    <link rel="alternate" type="application/rss+xml" title="Daily Digest by Benjamin Ampel" href="{SITE_URL}/blog/digest/feed.xml">
     <meta property="og:title" content="{title}">
-    <meta property="og:description" content="Daily curated reading at the intersection of cybersecurity, AI, and entrepreneurship.">
+    <meta property="og:description" content="{desc}">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://purplelink.llc/blog/digest/{iso_date}.html">
-    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:url" content="{SITE_URL}/blog/digest/{iso_date}.html">
+    <meta property="og:image" content="{SITE_URL}/assets/og/purplelink-card.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="article:published_time" content="{iso_date}">
+    <meta property="article:author" content="Benjamin Ampel">
+    <meta property="article:section" content="Research Digest">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{title}">
+    <meta name="twitter:description" content="{desc}">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
@@ -87,10 +105,18 @@ def render_html(digest: DigestData) -> str:
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": "{title}",
+      "description": "{desc}",
+      "keywords": "{html.escape(keywords)}",
       "datePublished": "{iso_date}",
-      "author": {{ "@id": "https://purplelink.llc/about/#person" }},
-      "publisher": {{ "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }},
-      "url": "https://purplelink.llc/blog/digest/{iso_date}.html"
+      "author": {{
+        "@type": "Person",
+        "@id": "{SITE_URL}/about/#person",
+        "name": "Benjamin Ampel",
+        "url": "{SITE_URL}/about/"
+      }},
+      "publisher": {{ "@type": "Organization", "name": "Purplelink LLC", "url": "{SITE_URL}/" }},
+      "url": "{SITE_URL}/blog/digest/{iso_date}.html",
+      "isPartOf": {{ "@type": "Blog", "url": "{SITE_URL}/blog/digest/" }}
     }}
     </script>
   </head>
@@ -160,11 +186,17 @@ def render_html(digest: DigestData) -> str:
 </html>"""
 
 
-def render_email_html(digest: DigestData) -> str:
-    """Render email-safe HTML: no nav/footer."""
+def render_email_html(digest: DigestData, unsubscribe_url: str = "") -> str:
+    """Render email-safe HTML: no nav/footer, inline-friendly."""
     date_str = _fmt_date(digest.date)
     title = f"Daily Digest #{digest.number} — {date_str}"
     sections_html = _render_sections_html(digest)
+    unsub_line = (
+        f'<p style="font-size:12px;color:#888;margin-top:24px;">'
+        f'You\'re receiving this because you subscribed at purplelink.llc. '
+        f'<a href="{html.escape(unsubscribe_url, quote=True)}" style="color:#888;">Unsubscribe</a>'
+        f'</p>'
+    ) if unsubscribe_url else ""
 
     return f"""<!doctype html>
 <html lang="en">
@@ -173,12 +205,17 @@ def render_email_html(digest: DigestData) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{title}</title>
 </head>
-<body>
-  <h1>{title}</h1>
-  <p>{html.escape(digest.intro)}</p>
+<body style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:24px 16px;color:#1a1a1a;">
+  <h1 style="font-size:22px;margin-bottom:8px;">{title}</h1>
+  <p style="color:#555;margin-bottom:24px;">{html.escape(digest.intro)}</p>
 {sections_html}
-  <hr>
-  <p><a href="https://purplelink.llc/blog/digest/{digest.date.isoformat()}.html">Read on the web</a> &middot; <a href="https://purplelink.llc/blog/digest/">All issues</a></p>
+  <hr style="border:none;border-top:1px solid #e0e0e0;margin:24px 0;">
+  <p style="font-size:13px;color:#555;">
+    <a href="https://purplelink.llc/blog/digest/{digest.date.isoformat()}.html">Read on the web</a>
+    &middot;
+    <a href="https://purplelink.llc/blog/digest/">All issues</a>
+  </p>
+  {unsub_line}
 </body>
 </html>"""
 
@@ -196,6 +233,45 @@ def render_index_entry(digest: DigestData) -> str:
         f'          <p class="blog-post-excerpt">{html.escape(digest.intro[:180])}...</p>\n'
         f'        </div>\n'
         f'      </a>'
+    )
+
+
+_RSS_MARKER = "<!-- DIGEST_RSS_START -->"
+
+_RSS_SKELETON = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Daily Digest by Benjamin Ampel</title>
+    <link>https://purplelink.llc/blog/digest/</link>
+    <description>Daily curated reading at the intersection of cybersecurity, AI, research, and entrepreneurship. Curated by Benjamin Ampel.</description>
+    <language>en</language>
+    <managingEditor>ben@purplelink.llc (Benjamin Ampel)</managingEditor>
+    <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
+    <!-- DIGEST_RSS_START -->
+  </channel>
+</rss>"""
+
+
+def render_rss_item(digest: DigestData) -> str:
+    """Render a single RSS <item> block for the digest."""
+    date_str = _fmt_date(digest.date)
+    iso = digest.date.isoformat()
+    title = html.escape(f"Daily Digest #{digest.number} — {date_str}")
+    link = f"{SITE_URL}/blog/digest/{iso}.html"
+    desc = html.escape(digest.intro)
+    pub_dt = datetime.datetime.combine(digest.date, datetime.time(10, 0),
+                                       tzinfo=datetime.timezone.utc)
+    pub_date = email.utils.format_datetime(pub_dt)
+    return (
+        f"    <item>\n"
+        f"      <title>{title}</title>\n"
+        f"      <link>{link}</link>\n"
+        f"      <guid isPermaLink=\"true\">{link}</guid>\n"
+        f"      <pubDate>{pub_date}</pubDate>\n"
+        f"      <dc:creator>Benjamin Ampel</dc:creator>\n"
+        f"      <description>{desc}</description>\n"
+        f"    </item>"
     )
 
 
@@ -305,37 +381,26 @@ async def github_update_digest_index(
     logger.info("github_update_digest_index: updated index")
 
 
-async def buttondown_send(
-    client, digest: DigestData, email_html: str, key: str,
+async def github_update_rss_feed(
+    client, rss_item: str, token: str,
 ) -> None:
-    date_str = _fmt_date(digest.date)
-    subject = f"Daily Digest #{digest.number} — {date_str}"
-    body = {
-        "subject": subject,
-        "body": email_html,
-        "status": "about_to_send",
-    }
-    headers = {
-        "Authorization": f"Token {key}",
-        "Content-Type": "application/json",
-    }
-    try:
-        resp = await client.post(
-            f"{BUTTONDOWN_API}/emails",
-            headers=headers,
-            json=body,
-            timeout=20.0,
-        )
-        resp.raise_for_status()
-        logger.info("buttondown_send: broadcast created id=%s", resp.json().get("id"))
-    except Exception as exc:
-        logger.error("buttondown_send failed (post is already live): %s", exc)
+    """Prepend rss_item to feed.xml, creating the file if it doesn't exist."""
+    current, sha = await _github_get_file(client, DIGEST_FEED_PATH, token)
+    if current is None or _RSS_MARKER not in current:
+        current = _RSS_SKELETON
+        sha = None
+    updated = current.replace(_RSS_MARKER, f"{_RSS_MARKER}\n{rss_item}")
+    await _github_put_file(
+        client, DIGEST_FEED_PATH, updated,
+        message="chore(digest): update RSS feed",
+        token=token, sha=sha,
+    )
+    logger.info("github_update_rss_feed: updated feed.xml")
 
 
 async def publish(
     digest: DigestData,
     github_token: str,
-    buttondown_key: str = "",
 ) -> None:
     import httpx
     async with httpx.AsyncClient(timeout=30.0) as client:
@@ -344,13 +409,11 @@ async def publish(
 
         html_content = render_html(digest)
         entry = render_index_entry(digest)
+        rss_item = render_rss_item(digest)
 
         await github_write_digest(client, html_content, digest, github_token)
         await github_update_digest_index(client, entry, github_token)
-
-        if buttondown_key:
-            email_html = render_email_html(digest)
-            await buttondown_send(client, digest, email_html, buttondown_key)
+        await github_update_rss_feed(client, rss_item, github_token)
 
     logger.info(
         "publish complete: Digest #%d, %d items, %s",
