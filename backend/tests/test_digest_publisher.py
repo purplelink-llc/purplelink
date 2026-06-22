@@ -80,3 +80,81 @@ def test_render_email_html_has_no_nav():
     email = render_email_html(_make_digest())
     assert 'class="topbar"' not in email
     assert "Adversarial Attacks on LLMs" in email
+
+
+import asyncio
+from unittest.mock import AsyncMock, MagicMock
+from digest.publisher import (
+    github_count_digests,
+    github_write_digest,
+    github_update_digest_index,
+)
+
+
+class FakeGitHubListResp:
+    status_code = 200
+    def raise_for_status(self): pass
+    def json(self):
+        return [
+            {"name": "2026-06-21.html", "type": "file"},
+            {"name": "2026-06-20.html", "type": "file"},
+            {"name": "index.html", "type": "file"},   # should not count
+        ]
+
+
+class FakeGitHubGetResp:
+    status_code = 200
+    def raise_for_status(self): pass
+    def json(self):
+        import base64
+        content = "<html><body><!-- DIGEST_LIST_START --></body></html>"
+        return {
+            "content": base64.b64encode(content.encode()).decode(),
+            "sha": "abc123",
+            "encoding": "base64",
+        }
+
+
+class FakeGitHubPutResp:
+    status_code = 201
+    def raise_for_status(self): pass
+    def json(self): return {}
+
+
+def test_github_count_digests():
+    async def run():
+        client = AsyncMock()
+        client.get.return_value = FakeGitHubListResp()
+        return await github_count_digests(client, "token123")
+    count = asyncio.run(run())
+    assert count == 2
+
+
+def test_github_write_digest_calls_put():
+    async def run():
+        client = AsyncMock()
+        client.get.return_value = MagicMock(status_code=404, json=lambda: {})
+        client.get.return_value.raise_for_status = lambda: None
+        client.put.return_value = FakeGitHubPutResp()
+        digest = _make_digest()
+        await github_write_digest(client, "<html>test</html>", digest, "token123")
+        assert client.put.called
+        call_kwargs = client.put.call_args
+        assert "2026-06-22.html" in str(call_kwargs)
+    asyncio.run(run())
+
+
+def test_github_update_digest_index_prepends_entry():
+    async def run():
+        client = AsyncMock()
+        client.get.return_value = FakeGitHubGetResp()
+        client.put.return_value = FakeGitHubPutResp()
+        digest = _make_digest()
+        entry = render_index_entry(digest)
+        await github_update_digest_index(client, entry, "token123")
+        assert client.put.called
+        put_body = client.put.call_args[1]["json"]
+        import base64
+        content = base64.b64decode(put_body["content"]).decode()
+        assert "Daily Digest #7" in content
+    asyncio.run(run())
