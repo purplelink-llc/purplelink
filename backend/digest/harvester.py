@@ -150,3 +150,212 @@ async def fetch_hn_algolia(client, source_def) -> list[RawItem]:
             category=source_def.category,
         ))
     return items
+
+
+async def fetch_arxiv_oai(client, source_def) -> list[RawItem]:
+    """Fetch arXiv papers via OAI-PMH for each configured set."""
+    import xml.etree.ElementTree as ET
+
+    yesterday = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=48)).strftime("%Y-%m-%d")
+    sets = source_def.params.get("sets", ["cs"])
+    items: list[RawItem] = []
+
+    for set_spec in sets:
+        try:
+            resp = await client.get(
+                source_def.url,
+                params={
+                    "verb": "ListRecords",
+                    "metadataPrefix": "oai_dc",
+                    "set": set_spec,
+                    "from": yesterday,
+                },
+                headers={"User-Agent": _USER_AGENT},
+                timeout=15.0,
+            )
+            resp.raise_for_status()
+        except Exception as exc:
+            logger.warning("fetch_arxiv_oai set=%s failed: %s", set_spec, exc)
+            continue
+
+        try:
+            root = ET.fromstring(resp.content)
+        except ET.ParseError as exc:
+            logger.warning("fetch_arxiv_oai XML parse error: %s", exc)
+            continue
+
+        ns = {
+            "oai": "http://www.openarchives.org/OAI/2.0/",
+            "dc": "http://purl.org/dc/elements/1.1/",
+            "oai_dc": "http://www.openarchives.org/OAI/2.0/oai_dc/",
+        }
+        for record in root.findall(".//oai:record", ns):
+            dc = record.find(".//oai_dc:dc", ns)
+            if dc is None:
+                continue
+            title = (dc.findtext("dc:title", namespaces=ns) or "").strip()
+            desc = (dc.findtext("dc:description", namespaces=ns) or "").strip()[:500]
+            date_str = dc.findtext("dc:date", namespaces=ns) or ""
+            identifier = dc.findtext("dc:identifier", namespaces=ns) or ""
+            url = next((v for v in [identifier] if "arxiv.org" in v), "")
+            if not url or not title:
+                continue
+            pub = _parse_dt(date_str)
+            if not _is_fresh(pub):
+                continue
+            items.append(RawItem(
+                title=title,
+                url=_normalize_url(url),
+                source_name=source_def.name,
+                snippet=desc,
+                published_at=pub or datetime.datetime.now(datetime.timezone.utc),
+                category=source_def.category,
+            ))
+    return items
+
+
+async def fetch_semantic_scholar(client, source_def) -> list[RawItem]:
+    """Fetch recent papers from Semantic Scholar bulk search."""
+    import os
+
+    api_key = ""
+    key_env = source_def.params.get("api_key_env", "")
+    if key_env:
+        api_key = os.environ.get(key_env, "")
+
+    headers = {"User-Agent": _USER_AGENT}
+    if api_key:
+        headers["x-api-key"] = api_key
+
+    fields = "paperId,title,abstract,publicationDate,externalIds"
+    items: list[RawItem] = []
+    seen_ids: set[str] = set()
+
+    for query in source_def.params.get("queries", []):
+        try:
+            resp = await client.get(
+                source_def.url,
+                params={"query": query, "fields": fields, "limit": 10},
+                headers=headers,
+                timeout=12.0,
+            )
+            resp.raise_for_status()
+        except Exception as exc:
+            logger.warning("fetch_semantic_scholar query=%r failed: %s", query, exc)
+            continue
+
+        for paper in resp.json().get("data", []):
+            pid = paper.get("paperId", "")
+            if pid in seen_ids:
+                continue
+            seen_ids.add(pid)
+            arxiv_id = (paper.get("externalIds") or {}).get("ArXiv", "")
+            url = (f"https://arxiv.org/abs/{arxiv_id}" if arxiv_id
+                   else f"https://www.semanticscholar.org/paper/{pid}")
+            pub = _parse_dt(paper.get("publicationDate"))
+            if not _is_fresh(pub):
+                continue
+            items.append(RawItem(
+                title=(paper.get("title") or "").strip(),
+                url=_normalize_url(url),
+                source_name=source_def.name,
+                snippet=(paper.get("abstract") or "")[:500],
+                published_at=pub or datetime.datetime.now(datetime.timezone.utc),
+                category=source_def.category,
+            ))
+    return items
+
+
+def _reconstruct_abstract(inverted_index: Optional[dict]) -> str:
+    """Reconstruct abstract text from OpenAlex inverted index."""
+    if not inverted_index:
+        return ""
+    positions: list[tuple[int, str]] = []
+    for word, idxs in inverted_index.items():
+        for pos in idxs:
+            positions.append((pos, word))
+    positions.sort()
+    return " ".join(w for _, w in positions)
+
+
+async def fetch_openalex(client, source_def) -> list[RawItem]:
+    """Fetch recent works from OpenAlex."""
+    yesterday = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=48)).strftime("%Y-%m-%d")
+    items: list[RawItem] = []
+
+    try:
+        resp = await client.get(
+            source_def.url,
+            params={
+                "filter": f"from_publication_date:{yesterday}",
+                "sort": "publication_date:desc",
+                "per-page": 25,
+                "select": "id,title,abstract_inverted_index,publication_date,primary_location",
+            },
+            headers={
+                "User-Agent": _USER_AGENT,
+                "mailto": "contact@purplelink.llc",
+            },
+            timeout=12.0,
+        )
+        resp.raise_for_status()
+    except Exception as exc:
+        logger.warning("fetch_openalex failed: %s", exc)
+        return []
+
+    for work in resp.json().get("results", []):
+        title = (work.get("title") or "").strip()
+        if not title:
+            continue
+        url = ((work.get("primary_location") or {}).get("landing_page_url")
+               or work.get("id") or "")
+        if not url:
+            continue
+        pub = _parse_dt(work.get("publication_date"))
+        if not _is_fresh(pub):
+            continue
+        snippet = _reconstruct_abstract(work.get("abstract_inverted_index"))[:500]
+        items.append(RawItem(
+            title=title,
+            url=_normalize_url(url),
+            source_name=source_def.name,
+            snippet=snippet,
+            published_at=pub or datetime.datetime.now(datetime.timezone.utc),
+            category=source_def.category,
+        ))
+    return items
+
+
+async def fetch_huggingface_papers(client, source_def) -> list[RawItem]:
+    """Fetch daily trending papers from HuggingFace."""
+    try:
+        resp = await client.get(
+            source_def.url,
+            headers={"User-Agent": _USER_AGENT},
+            timeout=10.0,
+        )
+        resp.raise_for_status()
+    except Exception as exc:
+        logger.warning("fetch_huggingface_papers failed: %s", exc)
+        return []
+
+    items: list[RawItem] = []
+    for entry in resp.json():
+        paper = entry.get("paper") or {}
+        arxiv_id = paper.get("id", "")
+        title = (paper.get("title") or "").strip()
+        if not title or not arxiv_id:
+            continue
+        url = f"https://arxiv.org/abs/{arxiv_id}"
+        pub = _parse_dt(paper.get("publishedAt"))
+        if not _is_fresh(pub):
+            continue
+        items.append(RawItem(
+            title=title,
+            url=_normalize_url(url),
+            source_name=source_def.name,
+            snippet=(paper.get("summary") or "")[:500],
+            published_at=pub or datetime.datetime.now(datetime.timezone.utc),
+            category=source_def.category,
+        ))
+    return items

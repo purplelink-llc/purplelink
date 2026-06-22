@@ -151,3 +151,129 @@ def test_fetch_hn_algolia_returns_items():
         items = asyncio.run(fetch_hn_algolia(FakeClient(HNResp()), src))
     assert len(items) == 1
     assert items[0].title == "Show HN: Something cool"
+
+
+from digest.harvester import (
+    fetch_arxiv_oai,
+    fetch_semantic_scholar,
+    fetch_openalex,
+    fetch_huggingface_papers,
+)
+
+FAKE_OAI_RESPONSE = b"""<?xml version="1.0"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/">
+  <ListRecords>
+    <record>
+      <metadata>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                   xmlns:dc="http://purl.org/dc/elements/1.1/">
+          <dc:title>Adversarial Attacks on LLMs</dc:title>
+          <dc:identifier>https://arxiv.org/abs/2606.12345</dc:identifier>
+          <dc:description>We study adversarial attacks on large language models.</dc:description>
+          <dc:date>2026-06-22</dc:date>
+        </oai_dc:dc>
+      </metadata>
+    </record>
+  </ListRecords>
+</OAI-PMH>"""
+
+
+def test_fetch_arxiv_oai_returns_items():
+    src = SourceDef("arXiv", SourceType.ARXIV_OAI,
+                    "http://export.arxiv.org/oai2", "papers",
+                    params={"sets": ["cs:AI"]})
+    client = FakeClient(FakeResp(FAKE_OAI_RESPONSE))
+    with patch("digest.harvester._is_fresh", return_value=True):
+        items = asyncio.run(fetch_arxiv_oai(client, src))
+    assert len(items) == 1
+    assert items[0].title == "Adversarial Attacks on LLMs"
+    assert "arxiv.org" in items[0].url
+
+
+FAKE_S2_RESPONSE = {
+    "data": [
+        {
+            "paperId": "abc123",
+            "title": "LLM Security Survey",
+            "abstract": "A survey of security issues in LLMs.",
+            "publicationDate": "2026-06-21",
+            "externalIds": {"ArXiv": "2606.99999"},
+        }
+    ],
+    "token": None,
+}
+
+
+def test_fetch_semantic_scholar_returns_items():
+    src = SourceDef("Semantic Scholar", SourceType.SEMANTIC_SCHOLAR,
+                    "https://api.semanticscholar.org/graph/v1/paper/search/bulk",
+                    "papers", params={"queries": ["cybersecurity LLM"]})
+
+    class S2Resp:
+        status_code = 200
+        def raise_for_status(self): pass
+        def json(self): return FAKE_S2_RESPONSE
+
+    with patch("digest.harvester._is_fresh", return_value=True):
+        items = asyncio.run(fetch_semantic_scholar(FakeClient(S2Resp()), src))
+    assert len(items) == 1
+    assert items[0].title == "LLM Security Survey"
+    assert items[0].snippet == "A survey of security issues in LLMs."
+
+
+FAKE_OPENALEX_RESPONSE = {
+    "results": [
+        {
+            "id": "https://openalex.org/W9999",
+            "title": "Cyber Threat Detection via ML",
+            "abstract_inverted_index": {"Cyber": [0], "threats": [1], "detected": [2]},
+            "publication_date": "2026-06-20",
+            "primary_location": {
+                "landing_page_url": "https://doi.org/10.1/test"
+            },
+        }
+    ]
+}
+
+
+def test_fetch_openalex_returns_items():
+    src = SourceDef("OpenAlex", SourceType.OPENALEX,
+                    "https://api.openalex.org/works", "papers")
+
+    class OAResp:
+        status_code = 200
+        def raise_for_status(self): pass
+        def json(self): return FAKE_OPENALEX_RESPONSE
+
+    with patch("digest.harvester._is_fresh", return_value=True):
+        items = asyncio.run(fetch_openalex(FakeClient(OAResp()), src))
+    assert len(items) == 1
+    assert items[0].title == "Cyber Threat Detection via ML"
+
+
+FAKE_HF_PAPERS = [
+    {
+        "paper": {
+            "id": "2606.11111",
+            "title": "Diffusion Agents for Code",
+            "summary": "We propose a new approach using diffusion.",
+            "publishedAt": "2026-06-22T00:00:00.000Z",
+        }
+    }
+]
+
+
+def test_fetch_huggingface_papers_returns_items():
+    src = SourceDef("HuggingFace Daily Papers", SourceType.HF_PAPERS,
+                    "https://huggingface.co/api/daily_papers", "papers")
+
+    class HFResp:
+        status_code = 200
+        def raise_for_status(self): pass
+        def json(self): return FAKE_HF_PAPERS
+
+    with patch("digest.harvester._is_fresh", return_value=True):
+        items = asyncio.run(fetch_huggingface_papers(FakeClient(HFResp()), src))
+    assert len(items) == 1
+    assert items[0].title == "Diffusion Agents for Code"
+    assert "arxiv.org" in items[0].url
