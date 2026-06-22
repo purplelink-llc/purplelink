@@ -35,7 +35,7 @@ _image = (
     image=_image,
     schedule=modal.Cron("0 10 * * *"),
     secrets=[
-        modal.Secret.from_name("anthropic"),
+        modal.Secret.from_name("anthropic-secret"),
         modal.Secret.from_name("github"),
     ],
     timeout=600,
