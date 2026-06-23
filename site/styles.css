@@ -1292,6 +1292,11 @@ dd {
   max-width: 66ch;
   margin-bottom: 1.4em;
 }
+@media (prefers-color-scheme: dark) {
+  .post-body p,
+  .post-body ul,
+  .post-body ol { color: var(--muted); }
+}
 
 .post-body h2 {
   font-family: var(--font-display);
