@@ -1,5 +1,5 @@
 # backend/digest/publisher.py
-"""Publisher: render HTML + RSS, push to GitHub."""
+"""Publisher: render HTML + RSS, push to GitHub, ping WebSub, post to LinkedIn."""
 from __future__ import annotations
 
 import base64
@@ -398,9 +398,87 @@ async def github_update_rss_feed(
     logger.info("github_update_rss_feed: updated feed.xml")
 
 
+_WEBSUB_HUB = "https://pubsubhubbub.appspot.com/"
+_FEED_URL = f"{SITE_URL}/blog/digest/feed.xml"
+
+_LINKEDIN_API = "https://api.linkedin.com/v2"
+_LINKEDIN_HASHTAGS = "#cybersecurity #AI #infosec #research #entrepreneurship"
+
+
+async def ping_websub(client) -> None:
+    """Notify the WebSub hub that the RSS feed has been updated."""
+    try:
+        resp = await client.post(
+            _WEBSUB_HUB,
+            content=f"hub.mode=publish&hub.url={_FEED_URL}",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            timeout=10.0,
+        )
+        if resp.status_code in (200, 204):
+            logger.info("ping_websub: hub notified")
+        else:
+            logger.warning("ping_websub: unexpected status %d", resp.status_code)
+    except Exception as exc:
+        logger.warning("ping_websub failed: %s", exc)
+
+
+async def post_linkedin(
+    client,
+    digest: DigestData,
+    access_token: str,
+    author_urn: str,
+) -> None:
+    """Post a digest announcement to LinkedIn (person or organization)."""
+    iso = digest.date.isoformat()
+    page_url = f"{SITE_URL}/blog/digest/{iso}.html"
+    title = f"Purplelink Daily Digest #{digest.number} — {_fmt_date(digest.date)}"
+
+    # Keep post text concise: intro + link + hashtags
+    intro = digest.intro[:500].rstrip()
+    post_text = f"{title}\n\n{intro}\n\n{page_url}\n\n{_LINKEDIN_HASHTAGS}"
+
+    payload = {
+        "author": author_urn,
+        "lifecycleState": "PUBLISHED",
+        "specificContent": {
+            "com.linkedin.ugc.ShareContent": {
+                "shareCommentary": {"text": post_text},
+                "shareMediaCategory": "ARTICLE",
+                "media": [{
+                    "status": "READY",
+                    "description": {"text": digest.intro[:200]},
+                    "originalUrl": page_url,
+                    "title": {"text": title},
+                }],
+            }
+        },
+        "visibility": {
+            "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
+        },
+    }
+    try:
+        resp = await client.post(
+            f"{_LINKEDIN_API}/ugcPosts",
+            json=payload,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "X-Restli-Protocol-Version": "2.0.0",
+                "Content-Type": "application/json",
+            },
+            timeout=15.0,
+        )
+        resp.raise_for_status()
+        post_id = resp.json().get("id", "unknown")
+        logger.info("post_linkedin: posted %s", post_id)
+    except Exception as exc:
+        logger.warning("post_linkedin failed: %s", exc)
+
+
 async def publish(
     digest: DigestData,
     github_token: str,
+    linkedin_token: str = "",
+    linkedin_author_urn: str = "",
 ) -> None:
     import httpx
     async with httpx.AsyncClient(timeout=30.0) as client:
@@ -414,6 +492,12 @@ async def publish(
         await github_write_digest(client, html_content, digest, github_token)
         await github_update_digest_index(client, entry, github_token)
         await github_update_rss_feed(client, rss_item, github_token)
+        await ping_websub(client)
+
+        if linkedin_token and linkedin_author_urn:
+            await post_linkedin(client, digest, linkedin_token, linkedin_author_urn)
+        else:
+            logger.info("post_linkedin: skipped (no credentials)")
 
     logger.info(
         "publish complete: Digest #%d, %d items, %s",

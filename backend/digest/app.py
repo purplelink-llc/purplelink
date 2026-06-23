@@ -8,8 +8,10 @@ Required Modal secrets:
   github             -> GITHUB_TOKEN
 
 Optional Modal secrets:
-  subscribe-secret   -> SUBSCRIBE_SECRET (enables email sending)
-  resend             -> RESEND_API_KEY   (enables email sending)
+  subscribe-secret   -> SUBSCRIBE_SECRET      (enables email sending)
+  resend             -> RESEND_API_KEY         (enables email sending)
+  linkedin           -> LINKEDIN_ACCESS_TOKEN  (enables LinkedIn post)
+                     -> LINKEDIN_AUTHOR_URN    (person or org URN)
 """
 import logging
 import os
@@ -39,6 +41,7 @@ _image = (
         modal.Secret.from_name("github"),
         modal.Secret.from_name("subscribe-secret"),
         modal.Secret.from_name("resend"),
+        modal.Secret.from_name("linkedin", required=False),
     ],
     timeout=600,
 )
@@ -55,6 +58,8 @@ async def run_daily_digest():
     github_token = os.environ.get("GITHUB_TOKEN", "")
     subscribe_secret = os.environ.get("SUBSCRIBE_SECRET", "")
     resend_key = os.environ.get("RESEND_API_KEY", "")
+    linkedin_token = os.environ.get("LINKEDIN_ACCESS_TOKEN", "")
+    linkedin_author_urn = os.environ.get("LINKEDIN_AUTHOR_URN", "")
 
     logger.info("digest: starting (dry_run=%s)", dry_run)
 
@@ -84,7 +89,7 @@ async def run_daily_digest():
         print(render_html(digest)[:500])
         return
 
-    await publish(digest, github_token)
+    await publish(digest, github_token, linkedin_token, linkedin_author_urn)
     logger.info("digest: published successfully")
 
     if subscribe_secret and resend_key:
