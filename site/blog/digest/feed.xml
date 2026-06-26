@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #5 — June 26, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-06-26.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-26.html</guid>
+      <pubDate>Fri, 26 Jun 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Turla&#x27;s new STOCKSTAY .NET backdoor, Gamaredon arsenal upgrades, macOS &#x27;Gaslight&#x27; malware evading AI analysis, Alibaba&#x27;s 28.8M-exchange Claude cloning attack, and a German court ruling on AI liability shape today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #4 — June 25, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-06-25.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-25.html</guid>
