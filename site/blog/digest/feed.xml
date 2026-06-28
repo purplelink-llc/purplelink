@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #7 — June 28, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-06-28.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-28.html</guid>
+      <pubDate>Sun, 28 Jun 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Russian GRU pivots to stealing Signal backup recovery keys, a clean-repo malware technique blinds AI coding agents, DSpark speculative decoding cuts LLM inference latency, and Asian AI startups fill the Anthropic export-ban vacuum.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #6 — June 27, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-06-27.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-27.html</guid>
