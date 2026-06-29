@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #8 — June 29, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-06-29.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-29.html</guid>
+      <pubDate>Mon, 29 Jun 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>GLM 5.2 outperforms Claude on cybersecurity benchmarks, StegoAd hides malware in Edge extension images, and a client-side libssh2 RCE flaw gets a public PoC.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #7 — June 28, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-06-28.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-28.html</guid>
