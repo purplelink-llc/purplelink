@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #9 — June 30, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-06-30.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-30.html</guid>
+      <pubDate>Tue, 30 Jun 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Apple patches AI-discovered WebKit bugs, BioShocking attack leaks credentials from AI browsers, BlueHammer ransomware exploitation confirmed, and Databricks&#x27; $6.9B run-rate signals enterprise AI budget shifts.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #8 — June 29, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-06-29.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-29.html</guid>
