@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>One curation call per day | Purplelink LLC</title>
+    <meta name="description" content="The Purplelink Daily Digest harvests 400-800 items daily and picks 20 to publish. Here's why the design uses a single AI curation call instead of scoring items one at a time.">
+    <link rel="canonical" href="https://purplelink.llc/blog/one-curation-call-per-day/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta name="twitter:image:alt" content="One curation call per day">
+    <meta property="og:title" content="One curation call per day">
+    <meta property="og:description" content="The Purplelink Daily Digest harvests 400-800 items daily and picks 20 to publish. Here's why the design uses a single AI curation call instead of scoring items one at a time.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/one-curation-call-per-day/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="One curation call per day">
+    <meta name="twitter:description" content="The Purplelink Daily Digest harvests 400-800 items daily and picks 20 to publish. Here's why the design uses a single AI curation call instead of scoring items one at a time.">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "One curation call per day",
+      "description": "The Purplelink Daily Digest harvests 400-800 items daily and picks 20 to publish. Here's why the design uses a single AI curation call instead of scoring items one at a time.",
+      "datePublished": "2026-07-01",
+      "dateModified": "2026-07-01",
+      "author": { "@id": "https://purplelink.llc/about/#person" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/"
+      },
+      "url": "https://purplelink.llc/blog/one-curation-call-per-day/"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://purplelink.llc/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "One curation call per day", "item": "https://purplelink.llc/blog/one-curation-call-per-day/" }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/">← All posts</a>
+
+    <div class="post-hero">
+      <p class="post-date">July 1, 2026</p>
+      <h1 class="post-title">One curation call per day</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-07-01">July 1, 2026</time></p>
+      <p class="post-lede">The Purplelink Daily Digest harvests 400-800 items daily and picks 20 to publish. Here's why the design uses a single AI curation call instead of scoring items one at a time.</p>
+    </div>
+
+    <article id="main-content" class="post-body">
+      <p>The Daily Digest pulls from about 35 sources each morning and collects somewhere between 400 and 800 raw items. Every day I need to pick 20 of them to publish. The question I had to answer early was how to structure the AI call that does that selection.</p>
+
+      <p>The obvious approach is per-item scoring: send each item to a model and ask whether it belongs in the digest, given a description of the reader. Aggregate the scores, pick the top 20. Simple to reason about, easy to test in isolation.</p>
+
+      <p>The problem is that relevance isn't absolute. A paper on LLM red-teaming might be a clear pick if it's the only one this week, and a clear skip if three similar papers landed in the same batch. An AI lab announcement matters more when no other lab said the same thing yesterday. Per-item scoring can't see any of that. Each call is blind to the rest of the batch.</p>
+
+      <p>Per-item also has an economics problem: somewhere between 400 and 800 API calls per run, every single morning. That's both slow and expensive for what is, in the end, a morning briefing.</p>
+
+      <p>The design I landed on is a two-step process. A pre-filter first: sort each source category by recency and cap it at 18 candidates. This collapses 700-plus raw items to roughly 100. Then one Claude call sees all 100 candidates and picks and annotates the final 20 in a single pass.</p>
+
+      <p>That pre-filter step had a non-obvious constraint. Early tests sent all raw items (sometimes 700-plus) in a single call without any cap. The context limit wasn't the bottleneck. Attention degradation was. Picks from the bottom of a 700-item JSON array weren't as sharp as picks from a 100-item one.</p>
+
+      <p>Capping at 18 per category is a heuristic, not a derived number. The underlying principle: reduce the candidate pool to something the model can reason across coherently before asking it to rank. That constraint made a visible difference in output quality.</p>
+
+      <p>The single-call approach does something per-item scoring can't: catch relationships between items. The curation prompt asks the model to flag connections between selected items: same threat actor, same technology, same underlying event. That cross-item annotation only works when everything is in context at once.</p>
+
+      <p>One call per day. The whole run takes about 90 seconds from cron fire to published post.</p>
+    </article>
+
+    <div class="post-footer">
+      <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
