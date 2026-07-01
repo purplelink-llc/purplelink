@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #10 — July 1, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-01.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-01.html</guid>
+      <pubDate>Wed, 01 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Phantom squatting exploits AI-hallucinated domains, ClickFix malware shifts to API-driven polymorphic delivery, BioShocking prompt injection bypasses AI browser guardrails, and Claude Sonnet 5 launches near Opus 4.8 performance as export controls on Fable 5 and Mythos 5 lift.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #9 — June 30, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-06-30.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-06-30.html</guid>
