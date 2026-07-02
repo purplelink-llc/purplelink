@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Purplelink Daily Digest #11 — July 2, 2026 | Purplelink LLC</title>
+    <meta name="description" content="AI-autonomous ransomware (JADEPUFFER), ChocoPoC RAT targeting security researchers, FortiBleed linked to Lynx/INC, and adversarial detection via loss-lands">
+    <meta name="keywords" content="Papers &amp; Research, AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Worth Reading, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers">
+    <meta name="author" content="Benjamin Ampel">
+    <link rel="canonical" href="https://purplelink.llc/blog/digest/2026-07-02.html">
+    <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="https://purplelink.llc/blog/digest/feed.xml">
+    <meta property="og:title" content="Purplelink Daily Digest #11 — July 2, 2026">
+    <meta property="og:description" content="AI-autonomous ransomware (JADEPUFFER), ChocoPoC RAT targeting security researchers, FortiBleed linked to Lynx/INC, and adversarial detection via loss-lands">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/digest/2026-07-02.html">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="article:published_time" content="2026-07-02">
+    <meta property="article:author" content="Benjamin Ampel">
+    <meta property="article:section" content="Research Digest">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Purplelink Daily Digest #11 — July 2, 2026">
+    <meta name="twitter:description" content="AI-autonomous ransomware (JADEPUFFER), ChocoPoC RAT targeting security researchers, FortiBleed linked to Lynx/INC, and adversarial detection via loss-lands">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Purplelink Daily Digest #11 — July 2, 2026",
+      "description": "AI-autonomous ransomware (JADEPUFFER), ChocoPoC RAT targeting security researchers, FortiBleed linked to Lynx/INC, and adversarial detection via loss-lands",
+      "keywords": "Papers &amp; Research, AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Worth Reading, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers",
+      "datePublished": "2026-07-02",
+      "author": {
+        "@type": "Person",
+        "@id": "https://purplelink.llc/about/#person",
+        "name": "Benjamin Ampel",
+        "url": "https://purplelink.llc/about/"
+      },
+      "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+      "url": "https://purplelink.llc/blog/digest/2026-07-02.html",
+      "isPartOf": { "@type": "Blog", "url": "https://purplelink.llc/blog/digest/" }
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/digest/">← All issues</a>
+
+    <div class="post-hero">
+      <p class="post-date">July 2, 2026</p>
+      <h1 class="post-title">Purplelink Daily Digest #11 — July 2, 2026</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-07-02">July 2, 2026</time></p>
+      <p class="post-lede">850 sources reviewed. 11 selected.</p>
+    </div>
+
+    <article id="main-content" class="post-body digest-body">
+
+      <p class="digest-intro">AI-autonomous ransomware (JADEPUFFER), ChocoPoC RAT targeting security researchers, FortiBleed linked to Lynx/INC, and adversarial detection via loss-landscape sharpness headline today&#x27;s digest.</p>
+
+    <section class="digest-section">
+      <h2>Papers & Research</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.semanticscholar.org/paper/25abc4e828aafe321cf250010323ec29b03d1f6b" target="_blank" rel="noopener">Detecting Adversarial Samples through Sharpness of Loss Landscape</a>
+          <span class="digest-item-source">Semantic Scholar</span>
+        </div>
+        <p class="digest-item-note">Adversarial inputs occupy sharper regions of the loss landscape than clean inputs, and this geometric property is exploitable as a detection signal without requiring access to adversarial examples during training. The approach is non-obvious because sharpness metrics (e.g., Hessian trace or gradient norm proxies) are typically used for generalization analysis, not adversarial detection, and the method is architecture-agnostic. The open question is whether adaptive adversaries who explicitly minimize loss-landscape sharpness during attack generation can evade this detector.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.semanticscholar.org/paper/24e42ebbe9d30c89048569016b5285a2284f155a" target="_blank" rel="noopener">A Novel Dataset for Experimentation With Intrusion Detection Systems in SCADA Networks Using IEC 60870-5-104 Standard</a>
+          <span class="digest-item-source">Semantic Scholar</span>
+        </div>
+        <p class="digest-item-note">IEC 60870-5-104 is the dominant protocol for telecontrol of RTUs in European and Asian power grids, yet publicly available labeled attack datasets for it are nearly nonexistent compared to Modbus or DNP3. A reproducible, publicly available dataset targeting this protocol fills a concrete gap for IDS research on critical infrastructure. Researchers working on OT/ICS threat detection should evaluate whether the attack taxonomy covers protocol-specific abuse cases like spoofed ASDU frames, not just generic network-layer DoS.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>AI & Technology</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://tldr.tech/ai/2026-07-01" target="_blank" rel="noopener">Claude Sonnet 5 🎭, Fable approved 🚀, Nano Banana 2 Lite 🍌</a>
+          <span class="digest-item-source">TLDR AI</span>
+        </div>
+        <p class="digest-item-note">Claude Sonnet 5 ships alongside the US government clearing Anthropic&#x27;s Fable and Mythos models for global release after a safety-testing intervention that reportedly influenced Trump administration export policy. The regulatory pathway Anthropic navigated, where proactively spooking the administration into requiring safety tests then passing them, is a replicable playbook for frontier labs seeking export clearance without formal ITAR classification. The Fable/Mythos global release directly expands the attack surface for adversarial prompting research across non-US deployments.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://huggingface.co/blog/cerebras-gemma4-voice-ai" target="_blank" rel="noopener">Hugging Face and Cerebras bring Gemma 4 to real-time voice AI</a>
+          <span class="digest-item-source">HuggingFace Blog</span>
+        </div>
+        <p class="digest-item-note">Cerebras wafer-scale inference running Gemma 4 achieves latency low enough for real-time voice interaction, which matters because voice pipelines have a hard ~200ms perceptual threshold that GPU clusters struggle to hit at scale. The pairing of an open-weight model with proprietary inference silicon creates a reproducible benchmark for anyone evaluating whether wafer-scale chips justify their cost premium over H100 clusters for latency-sensitive workloads. Indie developers building macOS/iOS voice features should note this as a potential backend alternative to OpenAI Realtime API.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>Cybersecurity</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/07/ai-agent-exploits-langflow-rce-to.html" target="_blank" rel="noopener">AI Agent Exploits Langflow RCE to Automate Database Ransomware Attack</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">Sysdig&#x27;s threat research team attributes the first fully LLM-orchestrated ransomware campaign to a threat actor they call JADEPUFFER, where the model handled initial access via Langflow RCE, lateral movement, credential theft, and ransom deployment without human-in-the-loop intervention. The non-obvious implication is that Langflow&#x27;s visual agent-builder attack surface is now a confirmed initial access vector in production ransomware, not just a theoretical concern from red-team exercises. Defenders building triage pipelines should treat Langflow instances as high-value targets equivalent to exposed RDP or VPN appliances.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/07/new-chocopoc-rat-targets-vulnerability-researchers.html" target="_blank" rel="noopener">New ChocoPoC RAT Targets Vulnerability Researchers via Fake PoC Exploit Repos</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">ChocoPoC is a Python-based RAT distributed through GitHub repositories masquerading as PoC exploits for current CVEs, specifically targeting the security research community rather than enterprise end-users. The targeting inversion is significant: researchers who routinely clone and execute PoC repos are a high-value supply-chain node, and compromising them yields credentials, internal tooling, and pre-disclosure vulnerability data. Any researcher running unvetted PoC code in a non-sandboxed environment should treat this as a direct operational threat.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/07/fortibleed-credential-theft-linked-to.html" target="_blank" rel="noopener">FortiBleed Credential Theft Linked to INC and Lynx Ransomware Operations</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">The FortiBleed campaign, which harvested Fortinet credentials at scale, has been attributed to operators actively negotiating with both INC and Lynx ransomware affiliates, confirming the stolen credentials are being brokered as initial access rather than used directly. This access-broker-to-RaaS pipeline model means organizations that patched Fortinet vulnerabilities after the fact may still face imminent intrusion if their credentials were already exfiltrated and sold. The timeline between credential theft and ransomware deployment in these brokered deals is typically days to weeks, not months.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/dhs-confirms-hackers-breached-hsin-info-sharing-platform" target="_blank" rel="noopener">DHS confirms hackers breached HSIN info-sharing platform</a>
+          <span class="digest-item-source">Bleeping Computer</span>
+        </div>
+        <p class="digest-item-note">The Homeland Security Information Network breach is particularly damaging because HSIN is the primary channel through which federal, state, local, and private-sector partners share sensitive threat intelligence and incident data. An attacker with HSIN access gains visibility into active investigations, defender TTPs, and the identities of private-sector security contacts, effectively inverting the intelligence advantage. The breach&#x27;s scope and attribution have not been publicly confirmed, which is itself a signal about the sensitivity of what was accessed.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>Finance & Business</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.marketwatch.com/story/openai-reportedly-considers-handing-5-stake-to-the-government-heres-why-the-ai-lab-would-consider-that-move-8c2871cb?mod=mw_rss_topstories" target="_blank" rel="noopener">OpenAI reportedly considers handing 5% stake to the government. Here&#x27;s why the AI lab would consider that move.</a>
+          <span class="digest-item-source">MarketWatch</span>
+        </div>
+        <p class="digest-item-note">A 5% government equity stake in OpenAI would be structurally unprecedented for a US AI lab and would likely function as a regulatory moat, making it politically costly for the FTC or DOJ to pursue antitrust action against a company in which the government holds financial interest. The strategic logic mirrors sovereign wealth fund investments in critical infrastructure, not standard venture dynamics. The downstream effect on competitors like Anthropic and Google DeepMind, who lack this political hedge, is the more interesting second-order question.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>Entrepreneurship</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/figma-grows-46-and-trades-at-6x-everyone-else-growing-30-trades-at-15-36x" target="_blank" rel="noopener">Figma Grows 46% and Trades at 6x. Everyone Else Growing 30%+ Trades at 15-36x.</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Figma&#x27;s post-IPO collapse from a $68B peak to ~$10B at a 6x revenue multiple, despite 46% growth, reflects a market repricing of design-tool moats in an era where AI code generation threatens the Figma-to-engineer handoff workflow. The valuation gap between Figma at 6x and comparable-growth SaaS at 15-36x is a specific, quantified signal that public markets are discounting category-specific AI disruption risk, not just applying a uniform multiple compression. Indie developers building macOS/iOS tools in adjacent creative or productivity categories should treat this as a data point on how quickly perceived moats can reprice.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>Worth Reading</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://arstechnica.com/information-technology/2026/07/t-mobile-moving-tens-of-thousands-of-virtual-machines-off-vmware-amid-lawsuit" target="_blank" rel="noopener">T-Mobile moving tens of thousands of virtual machines off VMware amid lawsuit</a>
+          <span class="digest-item-source">Ars Technica</span>
+        </div>
+        <p class="digest-item-note">T-Mobile&#x27;s migration of tens of thousands of VMs off VMware is a concrete data point on the scale of enterprise defection following Broadcom&#x27;s post-acquisition licensing restructuring, which eliminated perpetual licenses and forced subscription conversions. The lawsuit context means T-Mobile is simultaneously migrating and litigating, suggesting the financial exposure from Broadcom&#x27;s terms exceeded the migration cost, which for tens of thousands of VMs is not trivial. This is the clearest public evidence yet that Broadcom&#x27;s VMware strategy is generating forced infrastructure churn at carrier scale.</p>
+      </div>
+    </section>
+
+    </article>
+
+    <div class="post-footer digest-footer">
+      <p>Get this in your inbox. <a href="/blog/digest/">Subscribe to Purplelink Daily Digest</a>.</p>
+      <a class="back-link" href="/blog/digest/">← All issues</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
