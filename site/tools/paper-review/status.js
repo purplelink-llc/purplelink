@@ -356,7 +356,7 @@
         fetch(API_BASE + "/paper-review/invoice", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ session_id: sessionId, tax_id_line: taxLine }),
+          body: JSON.stringify({ session_id: sessionId, tax_id_line: taxLine, token: token }),
         })
           .then(function (resp) {
             if (!resp.ok) return resp.json().then(function (p) { throw p; });
