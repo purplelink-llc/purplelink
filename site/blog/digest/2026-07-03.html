@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Purplelink Daily Digest #12 — July 3, 2026 | Purplelink LLC</title>
+    <meta name="description" content="PamStealer macOS infostealer, FortiBleed ransomware monetization, FBI NetNut proxy seizure, and AI compute ROI crisis dominate today's digest.">
+    <meta name="keywords" content="AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Worth Reading, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers">
+    <meta name="author" content="Benjamin Ampel">
+    <link rel="canonical" href="https://purplelink.llc/blog/digest/2026-07-03.html">
+    <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="https://purplelink.llc/blog/digest/feed.xml">
+    <meta property="og:title" content="Purplelink Daily Digest #12 — July 3, 2026">
+    <meta property="og:description" content="PamStealer macOS infostealer, FortiBleed ransomware monetization, FBI NetNut proxy seizure, and AI compute ROI crisis dominate today's digest.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/digest/2026-07-03.html">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="article:published_time" content="2026-07-03">
+    <meta property="article:author" content="Benjamin Ampel">
+    <meta property="article:section" content="Research Digest">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Purplelink Daily Digest #12 — July 3, 2026">
+    <meta name="twitter:description" content="PamStealer macOS infostealer, FortiBleed ransomware monetization, FBI NetNut proxy seizure, and AI compute ROI crisis dominate today's digest.">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Purplelink Daily Digest #12 — July 3, 2026",
+      "description": "PamStealer macOS infostealer, FortiBleed ransomware monetization, FBI NetNut proxy seizure, and AI compute ROI crisis dominate today's digest.",
+      "keywords": "AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Worth Reading, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers",
+      "datePublished": "2026-07-03",
+      "author": {
+        "@type": "Person",
+        "@id": "https://purplelink.llc/about/#person",
+        "name": "Benjamin Ampel",
+        "url": "https://purplelink.llc/about/"
+      },
+      "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+      "url": "https://purplelink.llc/blog/digest/2026-07-03.html",
+      "isPartOf": { "@type": "Blog", "url": "https://purplelink.llc/blog/digest/" }
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/digest/">← All issues</a>
+
+    <div class="post-hero">
+      <p class="post-date">July 3, 2026</p>
+      <h1 class="post-title">Purplelink Daily Digest #12 — July 3, 2026</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-07-03">July 3, 2026</time></p>
+      <p class="post-lede">644 sources reviewed. 10 selected.</p>
+    </div>
+
+    <article id="main-content" class="post-body digest-body">
+
+      <p class="digest-intro">PamStealer macOS infostealer, FortiBleed ransomware monetization, FBI NetNut proxy seizure, and AI compute ROI crisis dominate today&#x27;s digest.</p>
+
+    <section class="digest-section">
+      <h2>AI & Technology</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://simonwillison.net/2026/Jul/2/dspy-datasette-agent-prompts" target="_blank" rel="noopener">Using DSPy to evaluate and improve Datasette Agent&#x27;s SQL system prompts</a>
+          <span class="digest-item-source">Simon Willison</span>
+        </div>
+        <p class="digest-item-note">Simon Willison applied DSPy&#x27;s prompt optimization loop to the Datasette Agent SQL system prompt, running asynchronous evaluation against a benchmark to measure prompt quality improvements empirically rather than by intuition. The practical implication for anyone building LLM agents with structured outputs: DSPy&#x27;s metric-driven prompt compilation can replace manual prompt iteration cycles with a reproducible optimization pipeline, which is directly applicable to cybersecurity triage agents where SQL or structured query generation accuracy is measurable. The async execution model Willison describes also suggests DSPy evaluations are cheap enough to run as part of a CI pipeline.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>Cybersecurity</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/07/pamstealer-uses-fake-maccy-sites-and.html" target="_blank" rel="noopener">PamStealer Uses Fake Maccy Sites and PAM Checks to Steal Mac Login Passwords</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">PamStealer distributes as a compiled AppleScript (.scpt) impersonating the Maccy clipboard manager, then abuses PAM (Pluggable Authentication Modules) to harvest macOS login credentials without triggering standard security prompts. The PAM abuse vector is operationally significant for macOS defenders: it sidesteps the typical osascript password dialog that most endpoint detections key on, making behavioral signatures based on AppleScript prompts insufficient. Purplelink&#x27;s macOS distribution surface makes this directly relevant to supply-chain and notarization trust assumptions.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://krebsonsecurity.com/2026/07/fbi-seizes-netnut-proxy-platform-popa-botnet" target="_blank" rel="noopener">FBI Seizes NetNut Proxy Platform, Popa Botnet</a>
+          <span class="digest-item-source">Krebs on Security</span>
+        </div>
+        <p class="digest-item-note">The FBI seized hundreds of domains tied to NetNut, operated by publicly-traded Israeli firm Alarum Technologies (NASDAQ: ALAR), marking a rare law enforcement action against a commercially listed residential proxy provider rather than a purely criminal operation. The ALAR ticker angle is non-obvious: this creates legal and reputational exposure for a company with public shareholders, potentially setting precedent for treating legitimate proxy-as-a-service businesses as criminal infrastructure when abuse thresholds are crossed. The Popa botnet seizure in the same action suggests coordinated supply-side disruption of the residential proxy ecosystem used heavily by fraud and credential-stuffing operations.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/07/google-disrupts-netnut-residential.html" target="_blank" rel="noopener">Google Disrupts NetNut Residential Proxy Network Spanning 2 Million Home Devices</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">Google&#x27;s Threat Intelligence Group (GTIG), working alongside the FBI, Lumen, and others, reduced NetNut&#x27;s usable device pool from a network spanning 2 million home devices. The multi-party private-public takedown model here is worth noting: GTIG&#x27;s network-level degradation complements FBI domain seizures, suggesting a maturing playbook for dismantling proxy infrastructure that doesn&#x27;t rely solely on legal process. Connects to: FBI Seizes NetNut Proxy Platform, Popa Botnet.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.darkreading.com/threat-intelligence/fortibleed-actors-inc-lynx-ransomware-gangs" target="_blank" rel="noopener">FortiBleed Actors Collaborating With Inc, Lynx Ransomware Gangs</a>
+          <span class="digest-item-source">Dark Reading</span>
+        </div>
+        <p class="digest-item-note">Threat actors who established persistent access across thousands of Fortinet firewalls via the FortiBleed vulnerability are now monetizing that access through affiliations with Inc and Lynx ransomware groups, while also stacking a Nextcloud zero-day on top of existing footholds. The access-broker-to-ransomware pipeline materializing here is faster than typical: the transition from initial access to ransomware deployment is compressing, and the Nextcloud zero-day layering suggests actors are expanding lateral movement options before encryption. Defenders with Fortinet perimeter devices who haven&#x27;t confirmed clean remediation of FortiBleed should treat this as active threat intelligence, not historical.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>Finance & Business</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bloomberg.com/news/videos/2026-07-03/windsor-market-has-mistaken-demand-for-ai-compute-video" target="_blank" rel="noopener">Windsor: Market Has Mistaken Demand for AI Compute</a>
+          <span class="digest-item-source">Bloomberg Technology</span>
+        </div>
+        <p class="digest-item-note">Richard Windsor of Radio Free Mobile argues the market has conflated capex commitments from hyperscalers with actual end-user demand for AI compute, as the Philadelphia Semiconductor Index fell up to 6% on July 2 after an 88% advance in Q2. The distinction Windsor draws is operationally specific: hyperscaler GPU orders reflect competitive hedging and supply-chain positioning, not validated inference workload demand, meaning the demand signal the market priced in may be structurally overstated. This connects directly to the token ROI crisis narrative: if enterprise token spend isn&#x27;t generating revenue lift, inference demand growth has a ceiling the capex buildout hasn&#x27;t priced.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bloomberg.com/news/articles/2026-07-03/ai-factories-create-winners-and-losers-in-power-equipment-market" target="_blank" rel="noopener">AI Factories Create Winners and Losers in Power Equipment Market</a>
+          <span class="digest-item-source">Bloomberg Technology</span>
+        </div>
+        <p class="digest-item-note">Next-generation AI data centers are forcing power equipment manufacturers to redesign product portfolios for a market projected to exceed $200 billion annually, with clear divergence emerging between firms positioned for high-density liquid cooling and those still optimized for traditional air-cooled deployments. The non-obvious angle is the supply chain bottleneck: power equipment lead times, not GPU availability, are now the binding constraint on AI factory deployment timelines, creating durable pricing power for a small set of transformer and switchgear manufacturers. This is a more specific infrastructure economics signal than generic AI capex commentary.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>Entrepreneurship</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/20vc-x-saastr-the-token-roi-crisis-comes-for-everyone-anthropic-wants-chinese-open-source-banned-and-microsoft-has-its-worst-month-since-2000" target="_blank" rel="noopener">20VC x SaaStr: The Token ROI Crisis Comes for Everyone, Anthropic Wants Chinese Open Source Banned, and Microsoft Has Its Worst Month Since 2000</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Companies quintupled token spend in H1 2026 with almost no attributable revenue lift, per Harry Stebbings and Jason Lemkin&#x27;s end-of-June recording. The structural problem this surfaces for AI-native SaaS builders: token cost is now a COGS line that scales with usage but doesn&#x27;t yet correlate with customer willingness to pay, creating margin compression at exactly the growth inflection point. The Anthropic-wants-Chinese-open-source-banned thread is worth tracking separately as a potential regulatory moat play.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/vercel-took-a-10-person-sdr-team-down-to-1-the-whole-thing-costs-5000-a-year-with-vercels-coo-jeanne-dewitt-grosser" target="_blank" rel="noopener">Vercel Took a 10-Person SDR Team Down to 1. The Whole Thing Costs $5,000 a Year. With Vercel&#x27;s COO Jeanne DeWitt Grosser.</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Vercel collapsed a 10-person SDR function to 1 headcount at $5,000 annual total cost using AI agents, six weeks after their COO joined from Google and Stripe. The specific cost figure is the signal: $5K/year for outbound at Vercel&#x27;s scale implies the unit economics of AI-replaced GTM roles are already an order of magnitude better than human equivalents, not marginally better. For a one-person software studio, this validates aggressive agent-first GTM as viable without the traditional SDR ramp cost.</p>
+      </div>
+    </section>
+
+    <section class="digest-section">
+      <h2>Worth Reading</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://arstechnica.com/security/2026/07/new-pamstealer-macos-malware-uses-clever-tradecraft-to-remain-stealthy" target="_blank" rel="noopener">Newly discovered PamStealer isn&#x27;t your typical macOS malware</a>
+          <span class="digest-item-source">Ars Technica</span>
+        </div>
+        <p class="digest-item-note">Ars adds context that PamStealer&#x27;s tradecraft reflects a broader trend of increased investment in Mac infostealers, with threat actors now matching the operational sophistication previously reserved for Windows-targeting campaigns. The stealth angle worth tracking: compiled AppleScript bypasses many static analysis pipelines that scan for shell scripts or Mach-O binaries, not .scpt bundles. Connects to: PamStealer Uses Fake Maccy Sites and PAM Checks to Steal Mac Login Passwords.</p>
+      </div>
+    </section>
+
+    </article>
+
+    <div class="post-footer digest-footer">
+      <p>Get this in your inbox. <a href="/blog/digest/">Subscribe to Purplelink Daily Digest</a>.</p>
+      <a class="back-link" href="/blog/digest/">← All issues</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
