@@ -36,6 +36,7 @@ After 4 weeks with no response, mark `no-response` and move on.
 | Date | Platform | Post # / topic | Impressions 7d | Notes |
 |---|---|---|---|---|
 | 2026-05-31 | Bluesky | Post 1 (studio intro) | TBD | pinned to profile |
+| 2026-06-01 | LinkedIn | Post 1 (studio intro) | TBD | posted to company page (purplelink-llc) |
 
 ## Newsletter pitches
 
@@ -53,7 +54,7 @@ After 4 weeks with no response, mark `no-response` and move on.
 | Date | Platform | URL | Status |
 |---|---|---|---|
 | 2026-05-31 | LinkedIn | https://www.linkedin.com/company/purplelink-llc/ | live |
-| 2026-05-31 | GitHub | https://github.com/purplelink-llc | live (logo upload TBD) |
+| 2026-05-31 | GitHub | https://github.com/purplelink-llc | live (logo uploaded) |
 | 2026-05-31 | Bluesky | https://bsky.app/profile/purplelink.llc | live + populated (custom-domain `@purplelink.llc` verified via _atproto TXT; banner, bio, first post pinned) |
 
 ---

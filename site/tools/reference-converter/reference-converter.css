@@ -11,7 +11,7 @@
 .rc-selects select { padding:.55rem .6rem; border-radius:10px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.04); color:inherit; font-size:.95rem }
 .rc-selects select:focus-visible { outline:2px solid #7c3aed; outline-offset:2px }
 .rc-result-head { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.5rem }
-.rc-result-head h3 { margin:0; font-size:1rem }
+.rc-result-head h2 { margin:0; font-size:1rem }
 .rc-out { white-space:pre-wrap; word-break:break-word; margin:0; padding:.75rem; border-radius:10px; background:rgba(0,0,0,.35); overflow:auto; max-height:420px }
 .rc-out code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.85rem; line-height:1.5; white-space:inherit }
 .rc-detected { font-size:.85rem; opacity:.8; margin:.25rem 0 0 }

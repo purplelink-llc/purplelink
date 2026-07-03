@@ -100,6 +100,7 @@ def render_html(digest: DigestData) -> str:
     <link rel="preload" href="/assets/purplelink-logo.png" as="image">
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
     <script type="application/ld+json">
     {{
       "@context": "https://schema.org",

@@ -4,40 +4,48 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Free Word &amp; Character Counter | Purplelink LLC</title>
-    <meta name="description" content="Free online word counter. Count words, characters, sentences, paragraphs, and estimated reading time instantly in your browser. Nothing is stored.">
+    <title>Word Counter &amp; Document Insights - Readability, Sections, Stats | Purplelink</title>
+    <meta name="description" content="Free document statistics dashboard. Upload PDF, Word, LaTeX, Markdown, EPUB and more — get word counts, per-section splits (with/without references), readability scores, and writing diagnostics. Counting runs in your browser.">
     <link rel="canonical" href="https://purplelink.llc/tools/word-counter/">
-    <meta property="og:title" content="Free Word &amp; Character Counter">
-    <meta property="og:description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time - instantly, in your browser. Nothing is stored.">
+    <meta property="og:title" content="Word Counter &amp; Document Insights">
+    <meta property="og:description" content="Upload any document and get detailed counts, per-section word splits, readability scores (Flesch-Kincaid, Gunning Fog, SMOG), and writing diagnostics. Free and privacy-respecting.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/word-counter/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/word-counter.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Free Word &amp; Character Counter">
-    <meta name="twitter:description" content="Free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time - instantly, in your browser. Nothing is stored.">
+    <meta name="twitter:title" content="Word Counter &amp; Document Insights">
+    <meta name="twitter:description" content="Upload any document and get detailed counts, per-section word splits, readability scores, and writing diagnostics. Free and privacy-respecting.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/word-counter.png">
-    <meta name="twitter:image:alt" content="Free Word &amp; Character Counter">
+    <meta name="twitter:image:alt" content="Word Counter and Document Insights">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "Word & Character Counter",
+          "name": "Word Counter & Document Insights",
           "url": "https://purplelink.llc/tools/word-counter/",
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
           "image": "https://purplelink.llc/assets/og/word-counter.png",
-          "description": "A free online word counter. Paste your text to count words, characters, sentences, paragraphs, and estimated reading time - instantly, in your browser. Nothing is stored.",
+          "description": "A free document statistics dashboard. Paste text or upload PDF, Word, LaTeX, Markdown, EPUB, RTF, ODT, or HTML to get detailed word counts, per-section splits (with or without references and appendix), readability scores, vocabulary diversity, and writing-quality diagnostics. All statistics are computed in your browser.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Live word, character, sentence, and paragraph counts",
-            "Estimated reading and speaking time",
-            "Optional word-limit tracking",
-            "100% client-side - your text never leaves your browser"
+            "Upload PDF, DOCX, ODT, RTF, EPUB, HTML, LaTeX, Markdown, and plain text",
+            "Academic section splicing - count with or without references, appendix, abstract",
+            "Readability scores: Flesch Reading Ease, Flesch-Kincaid, Gunning Fog, SMOG, Coleman-Liau, ARI",
+            "Vocabulary diversity, type-token ratio, hapax legomena, top words and bigrams",
+            "Sentence-length distribution",
+            "Style flags: passive voice, adverbs, weasel words, hedges, academic clichés",
+            "AI-writing-pattern audit (flagged phrases, not a verdict)",
+            "Character-set anomaly detection",
+            "Citation density",
+            "CSV export of all statistics",
+            "Statistics computed client-side - your text is never stored"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -46,18 +54,28 @@
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "How is reading time calculated?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Reading time is your word count divided by 200 words per minute, a common average for silent reading. Speaking time uses 130 words per minute, a typical pace for presentations. Both are rounded up to the nearest minute as rough estimates." }
+              "name": "What file formats can I upload?",
+              "acceptedAnswer": { "@type": "Answer", "text": "PDF, Word (.docx), OpenDocument (.odt), RTF, EPUB, HTML, LaTeX (.tex), Markdown (.md), and plain text. Uploads up to 20 MB are converted to text on our server (which stores nothing), then all statistics are computed in your browser." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can it count words without the references or appendix?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. For academic papers, the tool splits your document into sections (abstract, methods, results, discussion, references, appendix, figure captions) and lets you toggle which sections to include in the total - so you can get 'main text without references and appendix' in one click." }
+            },
+            {
+              "@type": "Question",
+              "name": "What readability scores does it compute?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog Index, SMOG, Coleman-Liau Index, and the Automated Readability Index, plus average words-per-sentence and syllables-per-word." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does the AI-writing audit detect AI-generated text?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. It flags phrases and stylistic patterns that appear frequently in AI-generated text and shows you where they occur. It does NOT output a probability or verdict. AI-detection tools are unreliable and disproportionately false-flag non-native English writers, so we deliberately do not claim to detect AI authorship." }
             },
             {
               "@type": "Question",
               "name": "Is my text stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. The counter runs entirely in your browser with JavaScript. Your text is never uploaded, never sent over the network, and nothing is stored or logged." }
-            },
-            {
-              "@type": "Question",
-              "name": "Does it count LaTeX commands?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes. The counter treats any non-whitespace sequence as a word, so LaTeX commands like \\section or \\textbf are counted as words. It does not strip markup, so counts include your source as written." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Pasted text never leaves your browser. Uploaded files are converted to text in an ephemeral container that is discarded immediately - nothing is written to durable storage or logs. All statistics are then computed locally in your browser." }
             }
           ]
         },
@@ -102,13 +120,28 @@
       <a class="back-link" href="/tools/">← All tools</a>
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
-        <h1>Word Counter</h1>
-        <p>Paste or type your text to count <strong>words, characters, sentences, paragraphs</strong>, and estimated reading time - live, as you type. Everything runs in your browser.</p>
+        <h1>Word Counter &amp; Document Insights</h1>
+        <p>Paste text or upload a document — <strong>PDF, Word, LaTeX, Markdown, EPUB, RTF, ODT, HTML</strong> — for detailed counts, per-section word splits, readability scores, and writing diagnostics. Basic counts update as you type; click <strong>Analyse</strong> for the full report.</p>
       </div>
 
       <div class="tool-app">
-        <label for="wc-input" class="wc-field" style="margin-top:0">Your text</label>
-        <textarea id="wc-input" class="wc-textarea" rows="12" placeholder="Start typing or paste your text here…" aria-describedby="wc-privacy"></textarea>
+        <div class="wc-input-tabs" role="tablist" aria-label="Input mode">
+          <button type="button" id="wc-tab-paste" role="tab" aria-selected="true" aria-controls="wc-pane-paste">Paste text</button>
+          <button type="button" id="wc-tab-upload" role="tab" aria-selected="false" aria-controls="wc-pane-upload">Upload a file</button>
+        </div>
+
+        <div id="wc-pane-paste" role="tabpanel" aria-labelledby="wc-tab-paste">
+          <label for="wc-input" class="wc-field" style="margin-top:0">Your text</label>
+          <textarea id="wc-input" class="wc-textarea" rows="12" placeholder="Start typing or paste your text here…" aria-describedby="wc-privacy"></textarea>
+        </div>
+
+        <div id="wc-pane-upload" role="tabpanel" aria-labelledby="wc-tab-upload" hidden>
+          <div class="dropzone wc-dropzone" id="wc-dropzone" aria-label="Upload a document">
+            <input type="file" id="wc-file" accept=".pdf,.docx,.odt,.rtf,.epub,.html,.htm,.csv,.tex,.md,.markdown,.txt">
+            <p>Drag a document here, or click to choose. PDF, Word, LaTeX, Markdown, EPUB, RTF, ODT, HTML — up to 20 MB.</p>
+            <p id="wc-filename" class="tool-privacy"></p>
+          </div>
+        </div>
 
         <div class="wc-field">
           <label for="wc-limit">Word limit (optional)</label>
@@ -117,8 +150,12 @@
         </div>
 
         <div class="tool-options">
-          <button class="btn btn-primary" id="wc-clear" type="button">Clear</button>
+          <button class="btn btn-primary" id="wc-analyse" type="button">Analyse</button>
+          <button class="btn btn-secondary" id="wc-clear" type="button">Clear</button>
+          <button class="btn btn-secondary" id="wc-csv" type="button" hidden>Download CSV</button>
         </div>
+
+        <p class="tool-status" id="wc-status" aria-live="polite"></p>
 
         <ul class="wc-stats" id="wc-stats" aria-live="polite" aria-label="Text statistics">
           <li class="wc-stat"><span class="wc-num" id="s-words">0</span><span class="wc-lbl">Words</span></li>
@@ -130,26 +167,31 @@
           <li class="wc-stat"><span class="wc-num" id="s-speaking">0 min</span><span class="wc-lbl">Speaking time</span></li>
         </ul>
 
-        <p class="tool-privacy" id="wc-privacy">Your text never leaves your browser - there's no upload and nothing is stored.</p>
+        <!-- Deep-analysis cards rendered here on Analyse -->
+        <div id="wc-report"></div>
+
+        <p class="tool-privacy" id="wc-privacy">Pasted text never leaves your browser. Uploaded files are converted to text in an ephemeral container that's discarded immediately — then all statistics are computed locally in your browser. Nothing is stored.</p>
       </div>
 
       <section class="tool-howto">
-        <h2>How to count words and characters</h2>
+        <h2>How to get document statistics</h2>
         <ol>
-          <li>Type directly in the box, or paste text copied from anywhere.</li>
-          <li>Watch the stats update live - words, characters, sentences, paragraphs, and time estimates.</li>
-          <li>Optionally set a <strong>word limit</strong> to track how many words you have left (or how far over you are).</li>
-          <li>Press <strong>Clear</strong> to start fresh.</li>
+          <li><strong>Paste</strong> text for live counts, or switch to <strong>Upload a file</strong> and drop a PDF, Word, LaTeX, Markdown, EPUB, RTF, ODT, or HTML document.</li>
+          <li>Basic counts (words, characters, sentences, paragraphs, reading time) update instantly as you type.</li>
+          <li>Click <strong>Analyse</strong> for the full report: readability scores, vocabulary diversity, sentence-length distribution, style flags, citation density, and an AI-writing-pattern audit.</li>
+          <li>For academic papers, use the <strong>section toggles</strong> to count with or without references, appendix, or abstract.</li>
+          <li>Click <strong>Download CSV</strong> to export every statistic.</li>
         </ol>
       </section>
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>A fast, private word and character counter. It updates as you type and never sends your text anywhere - all counting happens locally in your browser.</p>
-        <details><summary>How is reading time calculated?</summary><div class="faq-body">Reading time is your word count divided by 200 words per minute (a common average for silent reading), rounded up to the nearest minute. Speaking time uses 130 words per minute, a typical presentation pace.</div></details>
-        <details><summary>Is my text stored?</summary><div class="faq-body">No. The counter runs entirely in JavaScript on your device. Your text is never uploaded, sent over the network, logged, or saved.</div></details>
-        <details><summary>Does it count LaTeX commands?</summary><div class="faq-body">Yes. Any non-whitespace sequence counts as a word, so LaTeX commands like <code>\section</code> or <code>\textbf</code> are counted as written. The tool does not strip markup, so counts reflect your raw source.</div></details>
-        <details><summary>How are words, sentences, and paragraphs counted?</summary><div class="faq-body">Words are non-empty chunks separated by whitespace. Sentences are runs of text ending in <code>.</code>, <code>!</code>, or <code>?</code>. Paragraphs are blocks of text separated by one or more blank lines.</div></details>
+        <p>A complete document-statistics dashboard for writers and researchers. Upload almost any format and get counts, per-section splits, readability grades, and writing diagnostics — all computed in your browser.</p>
+        <details><summary>What file formats can I upload?</summary><div class="faq-body">PDF, Word (.docx), OpenDocument (.odt), RTF, EPUB, HTML, LaTeX (.tex), Markdown (.md), and plain text. Uploads up to 20 MB are converted to text on our server (which stores nothing), then all statistics are computed in your browser.</div></details>
+        <details><summary>Can it count words without the references or appendix?</summary><div class="faq-body">Yes. For academic papers, the tool splits your document into sections and lets you toggle which sections to include — so you can get "main text without references and appendix" in one click.</div></details>
+        <details><summary>What readability scores does it compute?</summary><div class="faq-body">Flesch Reading Ease, Flesch-Kincaid Grade, Gunning Fog, SMOG, Coleman-Liau, and the Automated Readability Index, plus average words-per-sentence and syllables-per-word.</div></details>
+        <details><summary>Does the AI-writing audit detect AI-generated text?</summary><div class="faq-body">No, and we're deliberate about this. It flags phrases and patterns that appear often in AI-generated prose and shows you where they occur — it never outputs a probability or verdict. AI-detection tools are unreliable and disproportionately false-flag non-native English writers, so we don't claim to detect AI authorship. Treat the audit as a writing-style mirror, not evidence.</div></details>
+        <details><summary>Is my text stored?</summary><div class="faq-body">Pasted text never leaves your browser. Uploaded files are converted to text in an ephemeral container that's discarded immediately — nothing is written to durable storage or logs.</div></details>
       </section>
 
       <!-- moderntex-cta -->
@@ -168,101 +210,20 @@
       </section>
 
       <nav class="tool-related" aria-label="Related tools">
-        <h2>More free LaTeX tools</h2>
+        <h2>More free tools</h2>
         <ul>
-                    <li><strong>Related guide:</strong> <a href="/guides/latex-word-count/">Count words in a LaTeX document →</a></li>
-<li><a href="/guides/latex-word-count/">Guide: Count words in a LaTeX document →</a></li>
-          <li><a href="/tools/latex-table-generator/">LaTeX Table Generator →</a></li>
-          <li><a href="/tools/word-to-latex/">Convert Word to LaTeX →</a></li>
-          <li><a href="/tools/">All LaTeX tools →</a></li>
+          <li><strong>Related guide:</strong> <a href="/guides/latex-word-count/">Count words in a LaTeX document →</a></li>
+          <li><a href="/tools/file-to-markdown/">Convert a file to Markdown →</a></li>
+          <li><a href="/tools/bib-validator/">BibTeX Validator →</a></li>
+          <li><a href="/tools/">All free tools →</a></li>
         </ul>
       </nav>
 
       <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
 
-      <script>
-        (function () {
-          var input = document.getElementById("wc-input");
-          var limitInput = document.getElementById("wc-limit");
-          var limitReadout = document.getElementById("wc-limit-readout");
-          var clearBtn = document.getElementById("wc-clear");
-
-          var elWords = document.getElementById("s-words");
-          var elChars = document.getElementById("s-chars");
-          var elCharsNoSpace = document.getElementById("s-chars-nospace");
-          var elSentences = document.getElementById("s-sentences");
-          var elParagraphs = document.getElementById("s-paragraphs");
-          var elReading = document.getElementById("s-reading");
-          var elSpeaking = document.getElementById("s-speaking");
-
-          function countWords(text) {
-            var t = text.trim();
-            if (!t) return 0;
-            return t.split(/\s+/).filter(function (w) { return w.length > 0; }).length;
-          }
-
-          function countSentences(text) {
-            var matches = text.match(/[^.!?]+[.!?]+/g);
-            if (matches) return matches.length;
-            // Fallback: any non-whitespace content counts as one sentence.
-            return text.trim().length > 0 ? 1 : 0;
-          }
-
-          function countParagraphs(text) {
-            if (!text.trim()) return 0;
-            return text
-              .split(/\n\s*\n+/)
-              .map(function (p) { return p.trim(); })
-              .filter(function (p) { return p.length > 0; }).length;
-          }
-
-          function minutesLabel(words, wpm) {
-            if (words === 0) return "0 min";
-            var mins = Math.ceil(words / wpm);
-            return mins + " min";
-          }
-
-          function updateLimit(words) {
-            var raw = limitInput.value.trim();
-            var limit = parseInt(raw, 10);
-            if (!raw || isNaN(limit) || limit <= 0) {
-              limitReadout.textContent = "";
-              limitReadout.classList.remove("over");
-              return;
-            }
-            if (words > limit) {
-              limitReadout.textContent = words + " / " + limit + " - " + (words - limit) + " over";
-              limitReadout.classList.add("over");
-            } else {
-              limitReadout.textContent = words + " / " + limit + " - " + (limit - words) + " left";
-              limitReadout.classList.remove("over");
-            }
-          }
-
-          function update() {
-            var text = input.value;
-            var words = countWords(text);
-            elWords.textContent = words.toLocaleString();
-            elChars.textContent = text.length.toLocaleString();
-            elCharsNoSpace.textContent = text.replace(/\s/g, "").length.toLocaleString();
-            elSentences.textContent = countSentences(text).toLocaleString();
-            elParagraphs.textContent = countParagraphs(text).toLocaleString();
-            elReading.textContent = minutesLabel(words, 200);
-            elSpeaking.textContent = minutesLabel(words, 130);
-            updateLimit(words);
-          }
-
-          input.addEventListener("input", update);
-          limitInput.addEventListener("input", update);
-          clearBtn.addEventListener("click", function () {
-            input.value = "";
-            update();
-            input.focus();
-          });
-
-          update();
-        })();
-      </script>
+      <script src="/tools/tools.js" defer></script>
+      <script src="/tools/word-counter/wordstats.js" defer></script>
+      <script src="/tools/word-counter/word-counter.js" defer></script>
     </main>
 
     <footer class="footer">
