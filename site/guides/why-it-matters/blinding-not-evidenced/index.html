@@ -18,15 +18,55 @@
     <script src="/site.js" defer></script>
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+  "@context": "https://schema.org",
+  "@graph": [
+    {
       "@type": "TechArticle",
-      "headline": "blinding not evidenced — why it matters",
+      "headline": "blinding not evidenced \u2014 why it matters",
       "description": "Claiming blinding without methods support",
       "url": "https://purplelink.llc/guides/why-it-matters/blinding-not-evidenced/",
-      "author": { "@type": "Organization", "name": "Purplelink LLC" },
-      "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+      "author": {
+        "@type": "Organization",
+        "name": "Purplelink LLC"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/"
+      },
       "mainEntityOfPage": "https://purplelink.llc/guides/why-it-matters/blinding-not-evidenced/"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is blinding not evidenced?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Blinding \u2014 keeping the researcher or rater unaware of which condition a participant is in \u2014 controls for expectancy effects. A paper that asserts 'all experiments were performed blind to condition' without describing HOW gives reviewers no way to verify the claim. Common gaps: who labelled the samples? When was the unblinding key generated? Did the analyst know which tubes were which?"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does a reviewer care about blinding not evidenced?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Reviewers ask: what specifically was blinded, when, and by whom? Was a blinding check performed (can the rater guess the condition above chance)? Where automated, what was the random assignment procedure?"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I fix blinding not evidenced?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Describe the blinding procedure in concrete terms: who randomized, who handled samples, when blinding was broken, whether an audit trail exists. If blinding was impossible (e.g. obvious physical differences), say so and discuss the threat."
+          }
+        }
+      ]
     }
+  ]
+}
     </script>
   </head>
   <body>
@@ -47,7 +87,7 @@
       <h2>How to fix it</h2>
       <p>Describe the blinding procedure in concrete terms: who randomized, who handled samples, when blinding was broken, whether an audit trail exists. If blinding was impossible (e.g. obvious physical differences), say so and discuss the threat.</p>
 
-      <hr style="border:none;border-top:1px solid #ffffff14;margin:2rem 0">
+      <hr class="divider">
       <p>This is one of <a href="/guides/why-it-matters/">~15 canonical methodology explainers</a> Paper Review's red-team report links to. To get a full review of your manuscript, <a href="/tools/paper-review/" class="link-strong">start a Paper Review — $9</a>.</p>
     </main>
     <footer class="footer"><div class="footer-top"><div class="footer-brand"><img src="/assets/purplelink-logo.png" alt="" width="26" height="26"><span>Purplelink LLC</span></div><span class="footer-loc">Atlanta, Georgia · Est. 2026</span></div><nav class="footer-links" aria-label="Footer navigation"><a href="/about/">About</a><a href="/press/">Press</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/blog/">Blog</a><a href="/guides/">Guides</a><a href="/changelog/">Changelog</a></nav></footer>

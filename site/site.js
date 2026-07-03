@@ -101,6 +101,7 @@
   if (!form) return;
 
   const status = document.getElementById("subscribe-status");
+  const refCode = new URLSearchParams(window.location.search).get("ref") || "";
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -115,13 +116,17 @@
       const res = await fetch("/.netlify/functions/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, ref: refCode }),
       });
 
       if (res.ok) {
+        const data = await res.json().catch(() => ({}));
         status.textContent = "Subscribed. You'll get the next issue in your inbox.";
         status.classList.add("subscribe-status--ok");
         form.reset();
+        if (data.referralCode) {
+          showReferralLink(data.referralCode);
+        }
       } else {
         const data = await res.json().catch(() => ({}));
         status.textContent = data.error || "Something went wrong. Please try again.";
@@ -134,4 +139,44 @@
       btn.disabled = false;
     }
   });
+
+  function showReferralLink(code) {
+    const existing = document.getElementById("referral-box");
+    if (existing) existing.remove();
+
+    const url = `${window.location.origin}/blog/digest/?ref=${encodeURIComponent(code)}`;
+    const box = document.createElement("div");
+    box.id = "referral-box";
+    box.className = "referral-box";
+
+    const p = document.createElement("p");
+    p.textContent = "Know someone who'd like this? Share your link:";
+    box.appendChild(p);
+
+    const row = document.createElement("div");
+    row.className = "referral-row";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.readOnly = true;
+    input.value = url;
+    input.className = "referral-input";
+    input.setAttribute("aria-label", "Your referral link");
+    row.appendChild(input);
+
+    const copyBtn = document.createElement("button");
+    copyBtn.type = "button";
+    copyBtn.className = "btn";
+    copyBtn.textContent = "Copy";
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard?.writeText(url).then(() => {
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => { copyBtn.textContent = "Copy"; }, 1500);
+      });
+    });
+    row.appendChild(copyBtn);
+
+    box.appendChild(row);
+    status.insertAdjacentElement("afterend", box);
+  }
 })();

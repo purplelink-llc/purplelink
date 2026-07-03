@@ -9,7 +9,7 @@ import html
 import logging
 from typing import Optional
 
-from digest.curator import DigestData, DigestItem
+from digest.curator import DigestData, DigestItem, _SECTION_LABELS
 
 logger = logging.getLogger(__name__)
 
@@ -40,11 +40,16 @@ def _render_item_html(item: DigestItem) -> str:
       </div>"""
 
 
+_LABEL_TO_SLUG = {label: slug for slug, label in _SECTION_LABELS.items()}
+
+
 def _render_sections_html(digest: DigestData) -> str:
     parts = []
     for section_label, items in digest.sections.items():
         items_html = "\n".join(_render_item_html(it) for it in items)
-        parts.append(f"""    <section class="digest-section">
+        slug = _LABEL_TO_SLUG.get(section_label, "")
+        anchor = f' id="section-{slug}"' if slug else ""
+        parts.append(f"""    <section class="digest-section"{anchor}>
       <h2>{section_label}</h2>
 {items_html}
     </section>""")
@@ -237,6 +242,113 @@ def render_index_entry(digest: DigestData) -> str:
     )
 
 
+TOPIC_HUB_DIR = f"{DIGEST_DIR}/topics"
+
+
+def render_topic_entry(digest: DigestData, section_label: str, items: list[DigestItem]) -> str:
+    """Render a single <a> block for a topic hub page. Unlike the main
+    index entry (which excerpts the whole day's intro), this excerpts the
+    specific items that landed in this topic, since that's what a reader
+    arriving at a topic hub actually wants to see."""
+    date_str = _fmt_date(digest.date)
+    iso = digest.date.isoformat()
+    slug = _LABEL_TO_SLUG.get(section_label, "")
+    anchor = f"#section-{slug}" if slug else ""
+    title = f"Purplelink Daily Digest #{digest.number}"
+    titles = "; ".join(it.title for it in items[:3])
+    return (
+        f'      <a class="blog-post-item" href="/blog/digest/{iso}.html{anchor}">\n'
+        f'        <span class="blog-post-date">{date_str}</span>\n'
+        f'        <div>\n'
+        f'          <div class="blog-post-title">{title} — {html.escape(section_label)}</div>\n'
+        f'          <p class="blog-post-excerpt">{html.escape(titles)}</p>\n'
+        f'        </div>\n'
+        f'      </a>'
+    )
+
+
+def _topic_hub_skeleton(section_label: str, slug: str) -> str:
+    """Initial shell for a topic hub page, created on first use (mirrors
+    the RSS feed's create-on-first-write pattern in github_update_rss_feed
+    below). Cross-links every past digest that had an item in this topic,
+    so the archive compounds into a real crawlable page per topic instead
+    of only existing as a flat reverse-chronological list."""
+    canonical = f"{SITE_URL}/blog/digest/topics/{slug}/"
+    title = f"{section_label} — Purplelink Daily Digest"
+    return f"""<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>{html.escape(title)} | Purplelink LLC</title>
+    <meta name="description" content="Every Purplelink Daily Digest issue that covered {html.escape(section_label)}, newest first.">
+    <link rel="canonical" href="{canonical}">
+    <meta property="og:title" content="{html.escape(title)}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{canonical}">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="/blog/digest/feed.xml">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+    {{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" }},
+        {{ "@type": "ListItem", "position": 2, "name": "Daily Digest", "item": "https://purplelink.llc/blog/digest/" }},
+        {{ "@type": "ListItem", "position": 3, "name": "{html.escape(section_label)}", "item": "{canonical}" }}
+      ]
+    }}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+    <a class="back-link" href="/blog/digest/">← All digest issues</a>
+    <div class="blog-hero" id="main-content">
+      <h1>{html.escape(section_label)}</h1>
+      <p>Every Purplelink Daily Digest issue that covered {html.escape(section_label)}, newest first.</p>
+    </div>
+    <div class="blog-list">
+<!-- DIGEST_LIST_START -->
+    </div>
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia &middot; Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>"""
+
+
 _RSS_MARKER = "<!-- DIGEST_RSS_START -->"
 
 _RSS_SKELETON = """\
@@ -399,6 +511,33 @@ async def github_update_rss_feed(
     logger.info("github_update_rss_feed: updated feed.xml")
 
 
+async def github_update_topic_hub(
+    client, section_label: str, entry_html: str, token: str,
+) -> None:
+    """Prepend entry_html to a topic hub page, creating it from
+    _topic_hub_skeleton on first use — same create-on-first-write pattern
+    as github_update_rss_feed above."""
+    slug = _LABEL_TO_SLUG.get(section_label)
+    if not slug:
+        logger.warning("github_update_topic_hub: unknown section_label %r, skipping", section_label)
+        return
+    path = f"{TOPIC_HUB_DIR}/{slug}/index.html"
+    current, sha = await _github_get_file(client, path, token)
+    if current is None or _INDEX_LIST_MARKER not in current:
+        current = _topic_hub_skeleton(section_label, slug)
+        sha = None
+    updated = current.replace(
+        _INDEX_LIST_MARKER,
+        f"{_INDEX_LIST_MARKER}\n{entry_html}",
+    )
+    await _github_put_file(
+        client, path, updated,
+        message=f"chore(digest): update {slug} topic hub",
+        token=token, sha=sha,
+    )
+    logger.info("github_update_topic_hub: updated %s", slug)
+
+
 _WEBSUB_HUB = "https://pubsubhubbub.appspot.com/"
 _FEED_URL = f"{SITE_URL}/blog/digest/feed.xml"
 
@@ -493,6 +632,11 @@ async def publish(
         await github_write_digest(client, html_content, digest, github_token)
         await github_update_digest_index(client, entry, github_token)
         await github_update_rss_feed(client, rss_item, github_token)
+
+        for section_label, items in digest.sections.items():
+            topic_entry = render_topic_entry(digest, section_label, items)
+            await github_update_topic_hub(client, section_label, topic_entry, github_token)
+
         await ping_websub(client)
 
         if linkedin_token and linkedin_author_urn:

@@ -41,7 +41,7 @@ _image = (
         modal.Secret.from_name("github"),
         modal.Secret.from_name("subscribe-secret"),
         modal.Secret.from_name("resend"),
-        modal.Secret.from_name("linkedin", required=False),
+        modal.Secret.from_name("linkedin"),
     ],
     timeout=600,
 )

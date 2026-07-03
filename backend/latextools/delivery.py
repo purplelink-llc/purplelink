@@ -273,3 +273,123 @@ def html_invoice_ready(*, invoice_url: str, amount_cents: int) -> str:
   <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC.</p>
 </div>
 """
+
+
+def _lifecycle_footer(unsubscribe_url: str) -> str:
+    return f"""
+  <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
+  <p style="color: #888; font-size: 0.85em;">
+    Sent by Purplelink LLC because you bought a Paper Review. Occasional
+    purchase-related email only — no lists, no spam.
+    <a href="{unsubscribe_url}" style="color: #888;">Unsubscribe</a>.
+  </p>
+"""
+
+
+def html_lifecycle_tips(*, manuscript_title: str = "", unsubscribe_url: str) -> str:
+    title = _html.escape((manuscript_title or "your manuscript")[:200])
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Getting the most out of your review</h2>
+  <p>A few days ago you ran a Paper Review on {title}. A couple of things
+  that help authors get more out of it:</p>
+  <ul style="padding-left: 20px;">
+    <li>Work top-down through the flagged issues by severity, not by
+    section order — the highest-severity ones are what a real reviewer
+    would raise first.</li>
+    <li>Where the review disagrees with a choice you made deliberately,
+    that disagreement is still useful: it tells you the reasoning isn't
+    landing on the page and needs to be made explicit.</li>
+    <li>If you revise and resubmit, a fresh review will catch anything
+    the edits introduced — reviewers do this in practice too.</li>
+  </ul>
+  <p>
+    <a href="https://purplelink.llc/tools/paper-review/"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Run another review
+    </a>
+  </p>
+  {_lifecycle_footer(unsubscribe_url)}
+</div>
+"""
+
+
+def html_lifecycle_review_request(*, manuscript_title: str = "", unsubscribe_url: str) -> str:
+    title = _html.escape((manuscript_title or "your manuscript")[:200])
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">How did the review hold up?</h2>
+  <p>You ran a Paper Review on {title} a little while ago. If it caught
+  something a real reviewer later raised too — or missed something they
+  did catch — I'd genuinely like to know. Just reply to this email.</p>
+  <p>That feedback goes directly into what gets fixed next; this is a
+  small, actively-maintained tool, not a product team.</p>
+  <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
+  <p style="color: #555; font-size: 0.9em;">
+    Submitting elsewhere soon? A second pass on the camera-ready draft
+    often catches things a first pass misses.
+  </p>
+  <p>
+    <a href="https://purplelink.llc/tools/paper-review/"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Run another review
+    </a>
+  </p>
+  {_lifecycle_footer(unsubscribe_url)}
+</div>
+"""
+
+
+def html_lifecycle_winback(*, unsubscribe_url: str) -> str:
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Still writing?</h2>
+  <p>It's been a while since your last Paper Review. If you've got a new
+  manuscript, a fresh red-team pass before submission is usually cheap
+  insurance against the reviews that actually sting.</p>
+  <p>
+    <a href="https://purplelink.llc/tools/paper-review/"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Start a review
+    </a>
+  </p>
+  {_lifecycle_footer(unsubscribe_url)}
+</div>
+"""
+
+
+def html_referral_credit(*, promo_code: str, reason: str) -> str:
+    """Sent when a referral credit is earned — either the referrer (a
+    colleague they referred bought a review with a .edu email) or the
+    referee (they bought using a referral link with a .edu email). `reason`
+    is the one line explaining which of those this is, written by the
+    caller so this template doesn't need to encode that branching itself."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">You've got a referral credit</h2>
+  <p>{reason}</p>
+  <p style="font-size: 1.3em; font-weight: 700; letter-spacing: 0.04em;
+     background: #f7f5fb; padding: 10px 16px; border-radius: 8px;
+     display: inline-block;">
+    {promo_code}
+  </p>
+  <p>$2 off your next Paper Review purchase — enter this code at checkout.
+  One-time use.</p>
+  <p>
+    <a href="https://purplelink.llc/tools/paper-review/"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Use it now
+    </a>
+  </p>
+  <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
+  <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC.</p>
+</div>
+"""

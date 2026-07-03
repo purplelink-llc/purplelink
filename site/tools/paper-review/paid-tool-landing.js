@@ -5,6 +5,7 @@
   var statusEl = document.getElementById("checkout-status");
   if (!btn) return;
   var product = btn.dataset.product || "paper-review-standard";
+  var referralCode = new URLSearchParams(window.location.search).get("ref") || "";
 
   function setStatus(msg, isError) {
     if (!statusEl) return;
@@ -18,7 +19,7 @@
     fetch("/.netlify/functions/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ product: product }),
+      body: JSON.stringify({ product: product, ref: referralCode }),
     })
       .then(function (resp) {
         if (!resp.ok) return resp.json().then(function (p) { throw p; });

@@ -60,6 +60,38 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/tools/file-to-markdown/file-to-markdown.css">
     <script src="/site.js" defer></script>
+      <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Which file types are supported?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx), HTML, CSV, and EPUB. Plain text and image-only PDFs may produce limited output."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my file stored anywhere?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Your file is uploaded over an encrypted connection, converted in an ephemeral container, and discarded immediately. Nothing is written to durable storage."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the output look incomplete for some PDFs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Image-only (scanned) PDFs contain no extractable text, so output will be minimal. PDFs with embedded text convert much better."
+      }
+    }
+  ]
+}
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>

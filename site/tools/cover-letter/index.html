@@ -30,6 +30,46 @@
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
     <link rel="stylesheet" href="/tools/paper-review/paper-review.css">
+      <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why no PDF upload?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cover letters are 95% built from the abstract and the target journal's scope. Skipping the full manuscript means we send much less of your unpublished IP to a third-party AI service. The trade-off: the letter cites the manuscript only at the level of detail your abstract supports."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you target a specific reviewer or editor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can paste an \"author note\" with that context when you compose. The model will weave it into the letter if it fits naturally."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What model produces the letter?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Anthropic's Claude Sonnet 4.5 with temperature 0.1. The same model + settings that power our main Paper Review tool."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does Purplelink retain?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nothing after delivery. The letter is deleted from our servers the moment you retrieve it. Your abstract and journal name are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring \u2014 never for training."
+      }
+    }
+  ]
+}
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>

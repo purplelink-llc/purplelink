@@ -161,6 +161,10 @@ export default async function handler(request) {
   const product =
     (session.metadata && session.metadata.product) ||
     "paper-review-standard";
+  // See checkout.mjs — passed through unchanged so the backend can credit
+  // the referral loop (task: "co-author exposure referral loop"). Validated
+  // server-side against referral_dict there, not trusted here.
+  const referralCode = (session.metadata && session.metadata.referral_code) || "";
 
   // Forward to the Modal backend so a redemption token is minted.
   let registerResp;
@@ -176,6 +180,7 @@ export default async function handler(request) {
         email,
         amount_paid: amountPaid,
         product,
+        referral_code: referralCode,
       }),
     });
   } catch (err) {

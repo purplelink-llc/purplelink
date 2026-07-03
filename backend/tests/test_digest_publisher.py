@@ -6,7 +6,10 @@ if str(BACKEND) not in sys.path:
     sys.path.insert(0, str(BACKEND))
 
 from digest.curator import DigestData, DigestItem
-from digest.publisher import render_html, render_email_html, render_index_entry
+from digest.publisher import (
+    render_html, render_email_html, render_index_entry,
+    render_topic_entry, github_update_topic_hub,
+)
 
 
 def _make_digest():
@@ -173,6 +176,7 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
     write_called = []
     index_called = []
     rss_called = []
+    topic_hub_called = []
     websub_called = []
     linkedin_called = []
 
@@ -182,6 +186,7 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
     async def _fake_write(client, html, digest, token): write_called.append(1)
     async def _fake_index(client, entry, token): index_called.append(1)
     async def _fake_rss(client, rss_item, token): rss_called.append(1)
+    async def _fake_topic_hub(client, section_label, entry, token): topic_hub_called.append(section_label)
     async def _fake_websub(client): websub_called.append(1)
     async def _fake_linkedin(client, digest, access_token, author_urn): linkedin_called.append(1)
 
@@ -189,6 +194,7 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
     monkeypatch.setattr("digest.publisher.github_write_digest", _fake_write)
     monkeypatch.setattr("digest.publisher.github_update_digest_index", _fake_index)
     monkeypatch.setattr("digest.publisher.github_update_rss_feed", _fake_rss)
+    monkeypatch.setattr("digest.publisher.github_update_topic_hub", _fake_topic_hub)
     monkeypatch.setattr("digest.publisher.ping_websub", _fake_websub)
     monkeypatch.setattr("digest.publisher.post_linkedin", _fake_linkedin)
 
@@ -199,6 +205,7 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
     assert write_called, "github_write_digest was not called"
     assert index_called, "github_update_digest_index was not called"
     assert rss_called, "github_update_rss_feed was not called"
+    assert sorted(topic_hub_called) == sorted(digest.sections.keys()), "github_update_topic_hub should be called once per section"
     assert websub_called, "ping_websub was not called"
     assert not linkedin_called, "post_linkedin should be skipped without credentials"
     assert digest.number == 7
@@ -216,6 +223,7 @@ def test_publish_posts_linkedin_when_credentials_given(monkeypatch):
     monkeypatch.setattr("digest.publisher.github_write_digest", _noop)
     monkeypatch.setattr("digest.publisher.github_update_digest_index", _noop)
     monkeypatch.setattr("digest.publisher.github_update_rss_feed", _noop)
+    monkeypatch.setattr("digest.publisher.github_update_topic_hub", _noop)
     monkeypatch.setattr("digest.publisher.ping_websub", _noop)
     monkeypatch.setattr("digest.publisher.post_linkedin", _fake_linkedin)
 
@@ -223,3 +231,50 @@ def test_publish_posts_linkedin_when_credentials_given(monkeypatch):
     asyncio.run(publish(digest, "gh_token", "li_token", "urn:li:organization:123"))
 
     assert linkedin_called == [("li_token", "urn:li:organization:123")]
+
+
+def test_render_html_section_has_anchor_id():
+    html = render_html(_make_digest())
+    assert 'id="section-papers"' in html
+    assert 'id="section-cybersecurity"' in html
+
+
+def test_render_topic_entry_links_to_section_anchor():
+    digest = _make_digest()
+    items = digest.sections["Papers & Research"]
+    entry = render_topic_entry(digest, "Papers & Research", items)
+    assert 'href="/blog/digest/2026-06-22.html#section-papers"' in entry
+    assert "Adversarial Attacks on LLMs" in entry
+
+
+def test_render_topic_entry_unknown_label_has_no_anchor():
+    digest = _make_digest()
+    entry = render_topic_entry(digest, "Not A Real Section", [])
+    assert "#section-" not in entry
+
+
+def test_github_update_topic_hub_creates_file_from_skeleton():
+    async def run():
+        client = AsyncMock()
+        client.get.return_value = MagicMock(status_code=404, json=lambda: {})
+        client.get.return_value.raise_for_status = lambda: None
+        client.put.return_value = FakeGitHubPutResp()
+        await github_update_topic_hub(client, "Cybersecurity", "<a>entry</a>", "token123")
+        assert client.put.called
+        put_body = client.put.call_args[1]["json"]
+        import base64
+        content = base64.b64decode(put_body["content"]).decode()
+        assert "<a>entry</a>" in content
+        assert "Cybersecurity" in content
+        call_kwargs = client.put.call_args
+        assert "topics/cybersecurity/index.html" in str(call_kwargs)
+    asyncio.run(run())
+
+
+def test_github_update_topic_hub_skips_unknown_section():
+    async def run():
+        client = AsyncMock()
+        await github_update_topic_hub(client, "Not A Real Section", "<a>entry</a>", "token123")
+        assert not client.get.called
+        assert not client.put.called
+    asyncio.run(run())

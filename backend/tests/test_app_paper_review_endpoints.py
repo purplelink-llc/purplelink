@@ -111,6 +111,9 @@ def client(monkeypatch):
     monkeypatch.setattr(backend_app, "paper_token_claims_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "paper_token_index_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "rate_dict", {})
+    monkeypatch.setattr(backend_app, "customer_lifecycle_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "lifecycle_optout_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "referral_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "paper_review_pipeline", _FakeSpawnFunction())
     monkeypatch.setattr(backend_app, "adjacent_tool_pipeline", _FakeSpawnFunction())
 
@@ -193,6 +196,111 @@ def test_register_token_mints_and_is_idempotent(client, monkeypatch):
     body2 = r2.json()
     assert body2["status"] == "exists"
     assert body2["tokens"] == body1["tokens"]
+
+
+def test_register_token_credits_valid_edu_referral(client, monkeypatch):
+    """A .edu buyer using a live referral code (registered by an earlier
+    purchaser's completed review — see paper_review_pipeline._run) should
+    trigger _credit_referral. We don't hit real Stripe/Resend here — just
+    assert the crediting path is invoked with the right two emails."""
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    headers = {"x-webhook-secret": "correct-secret"}
+
+    referrer_email = "referrer@example.com"
+    code = backend_app._paper_referral_code(referrer_email)
+    backend_app.referral_dict[code] = referrer_email
+
+    calls = []
+    async def _fake_credit(referrer, referee):
+        calls.append((referrer, referee))
+    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
+
+    payload = {
+        "session_id": "s-edu-referral",
+        "product": "paper-review-standard",
+        "email": "student@school.edu",
+        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
+        "referral_code": code,
+    }
+    r = http.post("/paper-review/register-token", json=payload, headers=headers)
+    assert r.status_code == 200
+    assert calls == [(referrer_email, "student@school.edu")]
+
+
+def test_register_token_skips_credit_for_non_edu_email(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    headers = {"x-webhook-secret": "correct-secret"}
+
+    referrer_email = "referrer@example.com"
+    code = backend_app._paper_referral_code(referrer_email)
+    backend_app.referral_dict[code] = referrer_email
+
+    calls = []
+    async def _fake_credit(referrer, referee):
+        calls.append((referrer, referee))
+    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
+
+    payload = {
+        "session_id": "s-non-edu",
+        "product": "paper-review-standard",
+        "email": "buyer@gmail.com",
+        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
+        "referral_code": code,
+    }
+    r = http.post("/paper-review/register-token", json=payload, headers=headers)
+    assert r.status_code == 200
+    assert calls == []
+
+
+def test_register_token_skips_credit_for_unknown_referral_code(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    headers = {"x-webhook-secret": "correct-secret"}
+
+    calls = []
+    async def _fake_credit(referrer, referee):
+        calls.append((referrer, referee))
+    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
+
+    payload = {
+        "session_id": "s-unknown-code",
+        "product": "paper-review-standard",
+        "email": "student@school.edu",
+        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
+        "referral_code": "not-a-real-code",
+    }
+    r = http.post("/paper-review/register-token", json=payload, headers=headers)
+    assert r.status_code == 200
+    assert calls == []
+
+
+def test_register_token_skips_credit_for_self_referral(client, monkeypatch):
+    """A buyer can't credit themselves by reusing their own code."""
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    headers = {"x-webhook-secret": "correct-secret"}
+
+    same_email = "person@school.edu"
+    code = backend_app._paper_referral_code(same_email)
+    backend_app.referral_dict[code] = same_email
+
+    calls = []
+    async def _fake_credit(referrer, referee):
+        calls.append((referrer, referee))
+    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
+
+    payload = {
+        "session_id": "s-self-referral",
+        "product": "paper-review-standard",
+        "email": same_email,
+        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
+        "referral_code": code,
+    }
+    r = http.post("/paper-review/register-token", json=payload, headers=headers)
+    assert r.status_code == 200
+    assert calls == []
 
 
 def test_register_token_rejects_amount_mismatch(client, monkeypatch):
@@ -1291,6 +1399,61 @@ def test_status_done_job_concurrent_polls_both_get_result(client):
 
 
 # ---------------------------------------------------------------------------
+# referral footer + code registration
+# ---------------------------------------------------------------------------
+
+def test_paper_referral_code_is_deterministic_and_namespaced(monkeypatch):
+    import app as backend_app
+    monkeypatch.setenv("SUBSCRIBE_SECRET", "test-secret")
+
+    code1 = backend_app._paper_referral_code("a@b.com")
+    code2 = backend_app._paper_referral_code("a@b.com")
+    code3 = backend_app._paper_referral_code("different@b.com")
+    assert code1 == code2
+    assert code1 != code3
+    assert len(code1) == 10
+
+
+def test_referral_footer_contains_working_link(monkeypatch):
+    import app as backend_app
+    monkeypatch.setenv("SUBSCRIBE_SECRET", "test-secret")
+
+    footer = backend_app._referral_footer_md("a@b.com")
+    code = backend_app._paper_referral_code("a@b.com")
+    assert f"?ref={code}" in footer
+    assert "purplelink.llc/tools/paper-review/" in footer
+
+
+def test_paper_review_pipeline_appends_referral_footer_and_registers_code(monkeypatch):
+    import app as backend_app
+    from latextools import papercheck
+    monkeypatch.setattr(backend_app, "paper_jobs_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "referral_dict", _FakeDict())
+    monkeypatch.setenv("SUBSCRIBE_SECRET", "test-secret")
+
+    async def _fake_run_review_pipeline(pdf_bytes, domain, on_progress=None, **kwargs):
+        return {"status": "done", "result_md": "# Review\n\nfindings...",
+                "structure_summary": {"title": "A Great Paper"}}
+
+    async def _noop_send_email(*args, **kwargs):
+        return {"status": "ok"}
+
+    from latextools import delivery
+    monkeypatch.setattr(papercheck, "run_review_pipeline", _fake_run_review_pipeline)
+    monkeypatch.setattr(delivery, "send_email", _noop_send_email)
+
+    token = "tok-referral-footer"
+    backend_app.paper_review_pipeline.local(
+        token, PDF_BYTES, "cs", tier="standard", deliver_email="buyer@example.com",
+    )
+
+    entry = backend_app.paper_jobs_dict.get(token)
+    code = backend_app._paper_referral_code("buyer@example.com")
+    assert f"?ref={code}" in entry["result_md"]
+    assert backend_app.referral_dict.get(code) == "buyer@example.com"
+
+
+# ---------------------------------------------------------------------------
 # delivery-email failure must not clobber an already-persisted result
 #
 # paper_review_pipeline / adjacent_tool_pipeline write the finished result to
@@ -1327,7 +1490,10 @@ def test_paper_review_pipeline_email_failure_preserves_done_result(monkeypatch):
     entry = backend_app.paper_jobs_dict.get(token)
     assert entry is not None
     assert entry["status"] == "done"
-    assert entry["result_md"] == "# Review\n\nfindings..."
+    # result_md now has the referral footer appended (see
+    # _referral_footer_md) — assert on the original content being intact
+    # rather than an exact match against the pre-footer literal.
+    assert entry["result_md"].startswith("# Review\n\nfindings...")
 
 
 def test_adjacent_tool_pipeline_email_failure_preserves_done_result(monkeypatch):

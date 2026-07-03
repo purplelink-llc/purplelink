@@ -33,6 +33,8 @@
     }
   }
 
+  var referralCode = new URLSearchParams(window.location.search).get("ref") || "";
+
   btn.addEventListener("click", function () {
     var product = (document.querySelector('input[name="tier"]:checked') || {}).value || "paper-review-standard";
     btn.disabled = true;
@@ -40,7 +42,7 @@
     fetch("/.netlify/functions/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ product: product }),
+      body: JSON.stringify({ product: product, ref: referralCode }),
     })
       .then(function (resp) {
         if (!resp.ok) return resp.json().then(function (p) { throw p; });

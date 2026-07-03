@@ -127,6 +127,12 @@ export default async function handler(request) {
   if (!entry) {
     return jsonResponse(400, { error: "unknown_product", detail: product });
   }
+  // Referral code from a shared report's footer link (?ref=...), passed
+  // through as Stripe metadata so stripe-webhook.mjs can forward it to
+  // the backend's register-token endpoint. Untrusted input — just a short
+  // opaque string, validated server-side against referral_dict, not used
+  // for anything here.
+  const referralCode = typeof body?.ref === "string" ? body.ref.trim().slice(0, 32) : "";
 
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   const priceId = Netlify.env.get(entry.envKey);
@@ -165,6 +171,9 @@ export default async function handler(request) {
     "metadata[product]": product,
     "metadata[product_category]": product.startsWith("paper-review") ? "paper-review" : product,
   };
+  if (referralCode) {
+    params["metadata[referral_code]"] = referralCode;
+  }
 
   let resp;
   try {

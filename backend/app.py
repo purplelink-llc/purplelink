@@ -101,6 +101,25 @@ paper_token_index_dict = modal.Dict.from_name("paper-review-token-index", create
 #   }
 usage_ledger_dict = modal.Dict.from_name("paper-review-usage-ledger", create_if_missing=True)
 
+# Lifecycle email automation — post-purchase tips/review-request/win-back
+# sequence, driven entirely by lifecycle_email_sweep() below.
+#   customer_lifecycle_dict[session_id] = {
+#       email, manuscript_title, purchased_at, last_stage_sent, last_sent_at,
+#   }
+#   lifecycle_optout_dict[email] = True   # written by /lifecycle/unsubscribe
+customer_lifecycle_dict = modal.Dict.from_name("paper-review-lifecycle", create_if_missing=True)
+lifecycle_optout_dict = modal.Dict.from_name("paper-review-lifecycle-optout", create_if_missing=True)
+
+# Co-author exposure referral loop — a Paper Review buyer's completed
+# report carries a personal referral code in its footer (see
+# _referral_footer_md below). If a co-author they shared it with buys a
+# review using that code AND a .edu email, both sides get a one-time $2
+# credit (see _credit_referral). referral_dict maps code -> the original
+# purchaser's email; codes only become live once that purchaser's own
+# review completes (see paper_review_pipeline._run), since you can't share
+# a code from a report you don't have yet.
+referral_dict = modal.Dict.from_name("paper-review-referral", create_if_missing=True)
+
 # Module-level (not just a local inside web()) so the scheduled sweep below
 # can reference the same constant instead of hardcoding a second copy of
 # the TTL.
@@ -122,6 +141,7 @@ PAPER_RESULT_GRACE_SECONDS = 30 * 60       # 30 minutes after first delivery
 anthropic_secret = modal.Secret.from_name("anthropic-secret")
 paper_review_shared_secret = modal.Secret.from_name("paper-review-shared")
 stripe_secret = modal.Secret.from_name("stripe-secret")
+subscribe_secret = modal.Secret.from_name("subscribe-secret")
 resend_secret = modal.Secret.from_name("resend-secret")
 
 # Product catalog — single source of truth shared between the webhook
@@ -249,6 +269,109 @@ def _reissue_token_on_failure(token: str) -> str | None:
         return None
 
 
+def _paper_referral_code(email: str) -> str:
+    """Deterministic per-email referral code, namespaced separately from
+    the lifecycle-unsubscribe token (see _lifecycle_unsubscribe_token in
+    web()) and the digest's own referral code — same SUBSCRIBE_SECRET
+    reuse pattern, different namespace prefix, so none of these can be
+    used to derive each other."""
+    import hashlib as _hashlib
+    import hmac as _hmac_local
+    secret = os.environ.get("SUBSCRIBE_SECRET", "")
+    return _hmac_local.new(
+        secret.encode(), f"paper-referral:{email}".encode(), _hashlib.sha256
+    ).hexdigest()[:10]
+
+
+def _referral_footer_md(email: str) -> str:
+    """Quiet, one-line footer appended to a completed Paper Review report
+    (see paper_review_pipeline._run below). Deliberately not a banner or
+    a repeated pitch — the report itself is the value; this is one line at
+    the very end for a co-author reading a shared copy to notice."""
+    code = _paper_referral_code(email)
+    link = f"https://purplelink.llc/tools/paper-review/?ref={code}"
+    return (
+        f"\n\n---\n\n*Reviewed with [Purplelink Paper Review]({link}). "
+        f".edu referrals earn both of you a $2 credit.*\n"
+    )
+
+
+async def _mint_referral_promo_code(client, email: str) -> str | None:
+    """Create a single-use Stripe promotion code against the shared
+    'purplelink-referral-2usd' coupon (see backend/setup_referral_coupon.py)
+    for one recipient. Returns the code string, or None on failure — a
+    failed mint should log and skip that recipient's email, not crash the
+    whole crediting flow for both sides."""
+    import secrets as _secrets
+
+    stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+    if not stripe_key:
+        logger.warning("_mint_referral_promo_code: STRIPE_SECRET_KEY not set")
+        return None
+    code = "REFER-" + _secrets.token_hex(4).upper()
+    try:
+        resp = await client.post(
+            "https://api.stripe.com/v1/promotion_codes",
+            auth=(stripe_key, ""),
+            data={
+                # This account's Stripe API version (2026-06-24.dahlia)
+                # nests the coupon reference under promotion[...] rather
+                # than a flat "coupon" field — verified live against a
+                # 400 parameter_unknown error before landing this.
+                "promotion[type]": "coupon",
+                "promotion[coupon]": "purplelink-referral-2usd",
+                "code": code,
+                "max_redemptions": "1",
+                "metadata[recipient_email]": email[:200],
+            },
+            timeout=15.0,
+        )
+        resp.raise_for_status()
+        return resp.json().get("code", code)
+    except Exception:
+        logger.exception("_mint_referral_promo_code failed for %s", email[:40])
+        return None
+
+
+async def _credit_referral(referrer_email: str, referee_email: str) -> None:
+    """Best-effort: mint a promo code for each side and email it. Called
+    from paper_review_register_token after a new purchase's payload names
+    a valid, live referral_code and a .edu buyer email — see the call site
+    for the eligibility checks. Never raises; a failure here must not
+    affect the purchase that's already been charged and registered."""
+    import httpx
+
+    from latextools import delivery
+
+    try:
+        async with httpx.AsyncClient(timeout=20.0) as client:
+            referrer_code = await _mint_referral_promo_code(client, referrer_email)
+            referee_code = await _mint_referral_promo_code(client, referee_email)
+
+            if referrer_code:
+                await delivery.send_email(
+                    client, to=referrer_email,
+                    subject="You've got a referral credit",
+                    html=delivery.html_referral_credit(
+                        promo_code=referrer_code,
+                        reason="A colleague you referred bought a Paper Review with a .edu email.",
+                    ),
+                    tags=[{"name": "referral", "value": "referrer"}],
+                )
+            if referee_code:
+                await delivery.send_email(
+                    client, to=referee_email,
+                    subject="You've got a referral credit",
+                    html=delivery.html_referral_credit(
+                        promo_code=referee_code,
+                        reason="Thanks for using a referral link with your .edu email.",
+                    ),
+                    tags=[{"name": "referral", "value": "referee"}],
+                )
+    except Exception:
+        logger.exception("_credit_referral failed for %s -> %s", referrer_email[:40], referee_email[:40])
+
+
 # ---------------------------------------------------------------------------
 # Paper Review pipeline (paid tool) — heavy multi-Sonnet orchestration.
 #
@@ -313,6 +436,15 @@ def paper_review_pipeline(
                     # The token was still spawned/consumed, so treat this the
                     # same as the except-Exception crash path below.
                     replacement_token = _reissue_token_on_failure(token)
+                elif deliver_email and final.get("result_md"):
+                    # Register this buyer's referral code and append the
+                    # quiet footer now that they actually have a report to
+                    # share — see referral_dict's docstring above.
+                    try:
+                        referral_dict[_paper_referral_code(deliver_email)] = deliver_email
+                        final["result_md"] += _referral_footer_md(deliver_email)
+                    except Exception:
+                        logger.exception("referral footer/registration failed for token=%s", token[:12])
                 paper_jobs_dict[token] = {
                     **final,
                     "product": "paper-review",
@@ -770,9 +902,11 @@ def pdf_structure_run(pdf_bytes: bytes) -> dict:
     max_containers=6,
     # Web function needs: shared webhook secret (verify webhook calls),
     # Stripe key (invoice generation endpoint), Resend key (volume-pack
-    # token email + invoice email). Anthropic key is NOT mounted here;
-    # only the heavy pipelines need it.
-    secrets=[paper_review_shared_secret, stripe_secret, resend_secret],
+    # token email + invoice email), subscribe secret (HMAC-verifies
+    # lifecycle unsubscribe links — reuses the digest's SUBSCRIBE_SECRET,
+    # namespaced, rather than minting a new one). Anthropic key is NOT
+    # mounted here; only the heavy pipelines need it.
+    secrets=[paper_review_shared_secret, stripe_secret, resend_secret, subscribe_secret],
 )
 @modal.concurrent(max_inputs=4)
 @modal.asgi_app()
@@ -1882,6 +2016,8 @@ def web():
         email = (payload or {}).get("email", "")
         amount_paid = (payload or {}).get("amount_paid", 0)
         product_key = (payload or {}).get("product", "paper-review-standard")
+        referral_code = (payload or {}).get("referral_code", "")
+        referral_code = referral_code.strip()[:32] if isinstance(referral_code, str) else ""
         if not session_id or not isinstance(session_id, str) or len(session_id) > 200:
             return JSONResponse({"error": "missing_session_id"}, status_code=400)
 
@@ -1941,6 +2077,35 @@ def web():
         for _tok in tokens:
             paper_token_index_dict[_tok] = session_id
 
+        # Seed the lifecycle-email sequence for this purchase (tips, later
+        # review-request, eventual win-back). Skipped if the buyer's email
+        # already opted out. manuscript_title starts blank — the buyer
+        # hasn't uploaded anything yet at purchase time; lifecycle_email_sweep
+        # falls back to "your manuscript" when rendering.
+        if entry["email"] and not lifecycle_optout_dict.get(entry["email"]):
+            customer_lifecycle_dict[session_id] = {
+                "email": entry["email"],
+                "manuscript_title": "",
+                "purchased_at": entry["created_at"],
+                "last_stage_sent": None,
+                "last_sent_at": None,
+            }
+
+        # Co-author exposure referral loop (task tracked as "referral loop"):
+        # a .edu buyer who came in via a live referral code credits both
+        # themselves and whoever referred them. Gated to .edu specifically
+        # per spec — this is meant to spread within academic circles, not
+        # become a general-purpose discount code.
+        buyer_email = entry["email"]
+        if referral_code and buyer_email and buyer_email.lower().endswith(".edu"):
+            referrer_email = referral_dict.get(referral_code)
+            if referrer_email and referrer_email != buyer_email:
+                # Awaited (not backgrounded) to match the volume-pack email
+                # pattern below — best-effort internally (never raises), so
+                # this can't fail the purchase itself, just adds a couple
+                # seconds of webhook latency, which Stripe/Netlify tolerate.
+                await _credit_referral(referrer_email, buyer_email)
+
         # Volume-pack tokens: email them all immediately
         if qty > 1 and entry["email"]:
             try:
@@ -1968,6 +2133,112 @@ def web():
             "qty": qty,
             "status": "registered",
         })
+
+    def _lifecycle_unsubscribe_token(email: str) -> str:
+        """Namespaced so lifecycle-unsubscribe tokens can't be replayed
+        against the digest's own unsubscribe link (or vice versa), while
+        still reusing SUBSCRIBE_SECRET instead of minting a new secret."""
+        import hashlib as _hashlib
+        import hmac as _hmac_local
+        secret = os.environ.get("SUBSCRIBE_SECRET", "")
+        return _hmac_local.new(
+            secret.encode(), f"lifecycle:{email}".encode(), _hashlib.sha256
+        ).hexdigest()
+
+    def _lifecycle_unsubscribe_url(email: str) -> str:
+        token = _lifecycle_unsubscribe_token(email)
+        from urllib.parse import quote as _quote
+        return (
+            "https://purplelink.llc/paper-review/lifecycle/unsubscribe"
+            f"?email={_quote(email)}&token={token}"
+        )
+
+    def _lifecycle_page(title: str, heading: str, body_html: str, status: int = 200) -> "HTMLResponse":
+        from fastapi.responses import HTMLResponse
+        html = f"""<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{title} | Purplelink LLC</title>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+    <div id="main-content" class="post-hero">
+      <h1>{heading}</h1>
+      {body_html}
+    </div>
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia &middot; Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  </body>
+</html>"""
+        return HTMLResponse(html, status_code=status)
+
+    @api.get("/paper-review/lifecycle/unsubscribe")
+    async def paper_review_lifecycle_unsubscribe(request: Request):
+        """One-click unsubscribe for lifecycle purchase emails. Mirrors
+        netlify/functions/unsubscribe.mjs's HMAC pattern but writes to
+        lifecycle_optout_dict (a Modal Dict) instead of Netlify Blobs, so
+        the write and the cron read that respects it live on one system."""
+        email = (request.query_params.get("email") or "").strip().lower()
+        token = request.query_params.get("token") or ""
+
+        if not email or not token or not os.environ.get("SUBSCRIBE_SECRET"):
+            return _lifecycle_page(
+                "Invalid link", "Invalid link",
+                "<p>This unsubscribe link is missing required parameters.</p>",
+                status=400,
+            )
+
+        import hmac as _hmac_local
+        expected = _lifecycle_unsubscribe_token(email)
+        if not _hmac_local.compare_digest(token, expected):
+            return _lifecycle_page(
+                "Invalid link", "Invalid link",
+                "<p>This unsubscribe link is not valid. It may have been altered.</p>",
+                status=400,
+            )
+
+        lifecycle_optout_dict[email] = True
+        import html as _html_module
+        return _lifecycle_page(
+            "Unsubscribed", "Unsubscribed",
+            "<p class=\"post-lede\">You've been removed from purchase-related "
+            f"emails. No more emails will be sent to {_html_module.escape(email)}.</p>",
+        )
 
     @api.post("/paper-review/redeem-session")
     async def paper_review_redeem_session(request: Request):
@@ -2989,3 +3260,128 @@ def sweep_stale_paper_jobs() -> int:
     if purged:
         logger.info("sweep_stale_paper_jobs purged %d stale job entr%s", purged, "y" if purged == 1 else "ies")
     return purged
+
+
+# ---------------------------------------------------------------------------
+# Scheduled lifecycle-email sequence — post-purchase tips, then a review
+# request, then an eventual win-back nudge. One stage per run per customer;
+# advances customer_lifecycle_dict[session_id]["last_stage_sent"] so a
+# customer is never sent the same stage twice, and stops entirely once
+# lifecycle_optout_dict[email] is set (checked fresh on every send, not just
+# at signup, so an opt-out always takes effect on the next scheduled run).
+# See /privacy/ for the disclosure this sequence is scoped to.
+# ---------------------------------------------------------------------------
+
+LIFECYCLE_STAGES = [
+    # (stage_name, days_after_purchase, template_fn_name)
+    ("tips", 3, "html_lifecycle_tips"),
+    ("review_request", 14, "html_lifecycle_review_request"),
+    ("winback", 90, "html_lifecycle_winback"),
+]
+LIFECYCLE_STAGE_ORDER = [s[0] for s in LIFECYCLE_STAGES]
+
+
+@app.function(
+    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx"),
+    schedule=modal.Cron("0 14 * * *"),  # daily, 14:00 UTC — mid-morning US
+    timeout=600,
+    secrets=[resend_secret, subscribe_secret],
+)
+def lifecycle_email_sweep() -> dict:
+    """Advance every customer_lifecycle_dict entry to its next due stage.
+
+    Each entry starts at 'tips' 3 days after purchase, then 'review_request'
+    at 14 days, then 'winback' at 90 days (final stage — entry is left in
+    place afterward so a customer is never re-sent 'winback' on a later
+    run). Runs synchronously over the dict since volumes here are small
+    (paid manuscript reviews, not a mailing list); revisit with batching
+    if that stops being true.
+    """
+    import asyncio
+    import time as _time
+
+    import httpx
+
+    from latextools import delivery as _delivery
+
+    now = _time.time()
+    sent = {"tips": 0, "review_request": 0, "winback": 0}
+    skipped_optout = 0
+
+    async def _run():
+        nonlocal skipped_optout
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            for session_id, entry in list(customer_lifecycle_dict.items()):
+                if not isinstance(entry, dict):
+                    continue
+                email = entry.get("email", "")
+                if not email:
+                    continue
+                if lifecycle_optout_dict.get(email):
+                    skipped_optout += 1
+                    continue
+
+                last_stage = entry.get("last_stage_sent")
+                next_index = 0 if last_stage is None else LIFECYCLE_STAGE_ORDER.index(last_stage) + 1
+                if next_index >= len(LIFECYCLE_STAGES):
+                    continue  # already sent the final stage
+
+                stage_name, days_after, template_fn_name = LIFECYCLE_STAGES[next_index]
+                due_at = entry.get("purchased_at", 0) + days_after * 86400
+                if now < due_at:
+                    continue
+
+                unsubscribe_url = _lifecycle_unsubscribe_url_standalone(email)
+                template_fn = getattr(_delivery, template_fn_name)
+                if stage_name == "winback":
+                    html = template_fn(unsubscribe_url=unsubscribe_url)
+                else:
+                    html = template_fn(
+                        manuscript_title=entry.get("manuscript_title", ""),
+                        unsubscribe_url=unsubscribe_url,
+                    )
+
+                subject = {
+                    "tips": "Getting the most out of your review",
+                    "review_request": "How did the review hold up?",
+                    "winback": "Still writing?",
+                }[stage_name]
+
+                result = await _delivery.send_email(
+                    client,
+                    to=email,
+                    subject=subject,
+                    html=html,
+                    tags=[{"name": "lifecycle_stage", "value": stage_name}],
+                )
+                if result.get("status") == "ok":
+                    entry["last_stage_sent"] = stage_name
+                    entry["last_sent_at"] = now
+                    customer_lifecycle_dict[session_id] = entry
+                    sent[stage_name] += 1
+                else:
+                    logger.warning(
+                        "lifecycle email stage=%s session_id=%s not sent: %s",
+                        stage_name, session_id, result,
+                    )
+
+    def _lifecycle_unsubscribe_url_standalone(email: str) -> str:
+        import hashlib as _hashlib
+        import hmac as _hmac_local
+        from urllib.parse import quote as _quote
+        secret = os.environ.get("SUBSCRIBE_SECRET", "")
+        token = _hmac_local.new(
+            secret.encode(), f"lifecycle:{email}".encode(), _hashlib.sha256
+        ).hexdigest()
+        return (
+            "https://purplelink.llc/paper-review/lifecycle/unsubscribe"
+            f"?email={_quote(email)}&token={token}"
+        )
+
+    asyncio.run(_run())
+    total_sent = sum(sent.values())
+    if total_sent or skipped_optout:
+        logger.info(
+            "lifecycle_email_sweep sent=%s skipped_optout=%d", sent, skipped_optout,
+        )
+    return {**sent, "skipped_optout": skipped_optout}
