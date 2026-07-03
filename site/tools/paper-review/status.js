@@ -284,12 +284,13 @@
     if (payload.annotated_pdf_b64) {
       html += '<button type="button" class="btn btn-primary" id="dl-pdf">Download annotated PDF</button>';
     }
+    html += '<button type="button" class="btn btn-secondary" id="print-pdf">Print / Save as PDF</button>';
     html += '<button type="button" class="btn btn-secondary" id="copy-md">Copy to clipboard</button>';
     if (sessionId) {
       html += '<button type="button" class="btn btn-secondary" id="get-invoice">Get invoice for reimbursement</button>';
     }
     if (product === "paper-review") {
-      html += '<a class="btn btn-secondary" href="/tools/cover-letter/?utm=after-review">Add a cover letter — $3</a>';
+      html += '<a class="btn btn-secondary" href="/tools/cover-letter/?utm=after-review">Add a cover letter — $2</a>';
       html += '<a class="btn btn-secondary" href="/tools/paper-review/revision/?utm=after-review">Re-review on revision — $2</a>';
     }
     html += "</div>";
@@ -328,6 +329,15 @@
         a.href = url; a.download = prettyName + "-annotated.pdf"; a.click();
         URL.revokeObjectURL(url);
       });
+    }
+
+    var printBtn = document.getElementById("print-pdf");
+    if (printBtn) {
+      // Reuses the already-rendered report HTML — a print stylesheet
+      // (paper-review.css, @media print) hides site chrome and the action
+      // buttons so only the report prints. "Save as PDF" is a destination
+      // in every modern browser's print dialog.
+      printBtn.addEventListener("click", function () { window.print(); });
     }
 
     var copyBtn = document.getElementById("copy-md");
