@@ -5,12 +5,14 @@
 // the click handler at the source rather than letting users get a
 // confusing 500 from an unconfigured Stripe endpoint.
 //
-// To re-enable purchases later, just delete this IIFE.
-//
-// TEMPORARILY DISABLED 2026-07-03 for a live Stripe test-mode click-through
-// (all 10 products + webhook wired, verified via API). Re-enable by
-// uncommenting this block before going live for real.
-/*
+// RE-ENABLED 2026-07-03: live Stripe products/prices + webhook are created
+// (see docs/paper-review-runbook.md), but STRIPE_SECRET_KEY and
+// STRIPE_WEBHOOK_SECRET in Netlify are still the old test-mode values —
+// setting those requires pasting live credentials, which is the site
+// owner's action, not an agent's. Checkout stays disabled here until both
+// are set to their sk_live_.../whsec_... values, to avoid a broken state
+// where live Price IDs are referenced with a test-mode secret key. Once
+// those are set and verified, delete this IIFE to go live for real.
 (() => {
   const COMING_SOON_FLAG = "data-coming-soon";
 
@@ -25,29 +27,44 @@
     if (legacy) buttons.add(legacy);
 
     buttons.forEach((btn) => {
-      if (btn.hasAttribute(COMING_SOON_FLAG)) return;
-      btn.setAttribute(COMING_SOON_FLAG, "1");
-      btn.disabled = true;
-      btn.setAttribute("aria-disabled", "true");
-      btn.classList.add("btn-coming-soon");
-      // Preserve any "— $X" suffix in the original label so the price is
-      // still legible to the user.
-      const original = btn.textContent.trim();
-      const priceMatch = original.match(/(\$\d+(?:\.\d{2})?)/);
-      btn.textContent = priceMatch
-        ? "Coming soon · " + priceMatch[1]
-        : "Coming soon";
-      btn.setAttribute("title", "Checkout opens once Stripe is activated.");
+      if (!btn.hasAttribute(COMING_SOON_FLAG)) {
+        btn.setAttribute(COMING_SOON_FLAG, "1");
+        btn.disabled = true;
+        btn.setAttribute("aria-disabled", "true");
+        btn.classList.add("btn-coming-soon");
+        btn.setAttribute("title", "Checkout opens once Stripe is activated.");
+        // Preserve any "— $X" suffix in the original label so the price is
+        // still legible to the user. Cache the computed label so later
+        // passes (see run() below) can re-assert it without re-deriving
+        // from textContent, which we're about to overwrite.
+        const original = btn.textContent.trim();
+        const priceMatch = original.match(/(\$\d+(?:\.\d{2})?)/);
+        btn.dataset.comingSoonLabel = priceMatch
+          ? "Coming soon · " + priceMatch[1]
+          : "Coming soon";
+      }
+      // Re-assert every pass: some pages set a button's label from their
+      // own tier-picker init (e.g. paper-review.js), which can run after
+      // this script and clobber the text back to the live price label.
+      if (btn.textContent !== btn.dataset.comingSoonLabel) {
+        btn.textContent = btn.dataset.comingSoonLabel;
+      }
     });
   };
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", apply, { once: true });
-  } else {
+  const run = () => {
     apply();
+    // Re-run on the next tick to win the last write over any other
+    // same-tick DOMContentLoaded listener that sets button labels.
+    setTimeout(apply, 0);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run, { once: true });
+  } else {
+    run();
   }
 })();
-*/
 
 // Under-construction banner — site-wide notice that the paid manuscript
 // tools (Paper Review, Cover Letter, Anonymity Check, Citation Gap,
