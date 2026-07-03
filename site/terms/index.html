@@ -62,7 +62,7 @@
       <h1>Terms of Service</h1>
       <p class="page-meta">Effective date: May 30, 2026 · <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a></p>
 
-      <p>These Terms govern your use of the purplelink.llc website and the free web tools published there ("the Services"), provided by Purplelink LLC, a Georgia limited liability company ("Purplelink", "we"). By using the Services you agree to these Terms. If you do not agree, do not use the Services.</p>
+      <p>These Terms govern your use of the purplelink.llc website, the free web tools published there, and the paid Paper Review tool (collectively, "the Services"), provided by Purplelink LLC, a Georgia limited liability company ("Purplelink", "we"). By using the Services you agree to these Terms. If you do not agree, do not use the Services.</p>
 
       <h2>The Services are provided as-is</h2>
       <p>The Services are provided "as is" and "as available", without warranty of any kind, express or implied, including but not limited to merchantability, fitness for a particular purpose, accuracy, or non-infringement. Purplelink does not warrant that the Services will be uninterrupted, error-free, secure, or that any defect will be corrected.</p>
@@ -80,18 +80,30 @@
       <p>We may rate-limit, throttle, or refuse service to any IP or pattern of use that we reasonably believe violates these terms or threatens the stability of the Services.</p>
 
       <h2>Your content</h2>
-      <p>Files you upload are processed in memory in an ephemeral container and discarded immediately when your request completes. We do not retain copies of your files. See the <a href="/privacy/">Privacy Policy</a> for the full data-handling description.</p>
-      <p>You retain all ownership of the content you upload. You grant Purplelink only the limited, temporary right to process that content for the purpose of returning the requested output. This grant terminates the moment your request completes.</p>
+      <p><strong>Free tools.</strong> Files you upload to the free in-browser tools are processed in memory in an ephemeral container and discarded immediately when your request completes. We do not retain copies of your files.</p>
+      <p><strong>Paid Paper Review.</strong> The manuscript PDF you upload is sent to Anthropic's Claude API for analysis. Per Anthropic's commercial Terms, inputs are retained by Anthropic for up to 30 days for abuse monitoring and are not used to train models. Purplelink itself does not retain the manuscript or the resulting review after delivery: the review is deleted from Purplelink's storage on first retrieval, or after 24 hours, whichever comes first. References extracted from the bibliography are sent to CrossRef for verification.</p>
+      <p>You retain all ownership of the content you upload. You grant Purplelink only the limited, temporary right to process that content for the purpose of returning the requested output. This grant terminates the moment your request completes (free tools) or your review is retrieved (Paper Review).</p>
+      <p>See the <a href="/privacy/">Privacy Policy</a> for the full data-handling description.</p>
+
+      <h2>Paid services — additional terms</h2>
+      <p>Purplelink offers several paid Services: Paper Review (tiered: Standard $9 with Anonymity Check bundled free, Standard + Journal Pack $11, Deep $15 with everything bundled), Paper Review volume packs (5-pack $38, 20-pack $150), Cover Letter Generator ($2), Anonymity Check ($2 standalone, free with Paper Review), Citation Gap Analysis ($3), Revision Review ($2), and Response to Reviewers ($6). By submitting a Stripe Checkout payment you agree to the following additional terms, which apply only to paid Services:</p>
+      <ul>
+        <li><strong>Tokens.</strong> Each successful payment mints one or more redemption tokens (one per single purchase; multiple per volume pack). Tokens for single purchases expire 7 days after issuance. Tokens minted from a volume pack do not expire. Each token is single-use.</li>
+        <li><strong>No professional advice.</strong> The review is produced by an AI system. It is provided for your convenience as a first-pass red team only. It is not peer review, not legal advice, not medical advice, and not a substitute for a human expert. You are responsible for reviewing every finding before relying on it for academic, professional, or any other consequential use.</li>
+        <li><strong>Refunds.</strong> If a specific review reads as low-quality, email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of the purchase and we will refund the amount you paid for that Service to the original payment method. Refunds are issued at Purplelink's discretion.</li>
+        <li><strong>Content responsibility.</strong> Do not submit manuscripts containing unredacted patient health information, classified material, or content you do not have the right to share with third-party AI services. You warrant that you have the rights necessary to submit the manuscript for processing.</li>
+        <li><strong>Liability cap for paid Services.</strong> Purplelink's total cumulative liability to you for all claims arising out of or related to a paid Service will not exceed the greater of: (i) five times the amount you paid for that Service in the preceding 90 days; or (ii) USD $25. This cap supersedes the $100 cap below for paid-Service claims.</li>
+      </ul>
 
       <h2>Indemnity</h2>
       <p>You agree to defend, indemnify, and hold harmless Purplelink LLC and its sole member, officers, and contractors from any third-party claim, loss, damage, liability, or expense (including reasonable attorneys' fees) arising out of: (a) your use of the Services, (b) your violation of these Terms, (c) your violation of any applicable law, or (d) any content you upload through the Services, including any claim that the content infringes a third party's rights.</p>
 
       <h2>Limitation of liability</h2>
       <p>To the maximum extent permitted by law, Purplelink will not be liable for any indirect, incidental, consequential, special, or punitive damages, or for any loss of profits, data, goodwill, or business opportunity, arising out of your use of the Services — even if we have been advised of the possibility of such damages.</p>
-      <p>Purplelink's total cumulative liability to you for all claims arising out of or related to the Services will not exceed one hundred U.S. dollars (USD $100). You acknowledge that the Services are provided free of charge and that this liability cap is a fundamental basis of the bargain.</p>
+      <p>For free Services, Purplelink's total cumulative liability to you for all claims arising out of or related to the free Services will not exceed one hundred U.S. dollars (USD $100). You acknowledge that the free Services are provided free of charge and that this liability cap is a fundamental basis of the bargain. For paid Services, the higher cap described under "Paid services — additional terms" applies.</p>
 
       <h2>Third-party services</h2>
-      <p>The Services use a small number of third-party providers: Netlify (hosting and form delivery), Modal (compute for the backend tools), Cloudflare (privacy-respecting web analytics), and external academic APIs you opt into (CrossRef, Semantic Scholar, doi.org). Their terms apply to your use of those underlying systems. Purplelink is not responsible for third-party outages.</p>
+      <p>The Services use a small number of third-party providers: Netlify (hosting, form delivery, and serverless functions), Modal (compute for the backend tools), Cloudflare (privacy-respecting web analytics), Stripe (payment processing for paid Services), Anthropic (Claude AI model that powers Paper Review), and external academic APIs (CrossRef, Semantic Scholar, doi.org). Their terms apply to your use of those underlying systems. Purplelink is not responsible for third-party outages.</p>
 
       <h2>Changes to these Terms</h2>
       <p>We may update these Terms when the Services change. Material updates will bump the effective date at the top of this page. Continued use of the Services after a change indicates acceptance of the updated Terms.</p>

@@ -115,6 +115,25 @@ def validate_pdf_upload(filename: str, size_bytes: int) -> None:
 
 
 MAX_DOC2MD_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB cap for files converted to Markdown
+MAX_PAPER_UPLOAD_BYTES = 20 * 1024 * 1024   # 20 MB cap for paper-review submissions
+
+
+def validate_paper_upload(filename: str, size_bytes: int) -> None:
+    """Validate a Paper Review upload's name and size. Raises ValidationError.
+
+    Paper Review accepts only PDF manuscripts; the magic-byte check happens
+    in the endpoint to keep this helper pure.
+    """
+    if size_bytes <= 0:
+        raise ValidationError("File is empty.")
+    if size_bytes > MAX_PAPER_UPLOAD_BYTES:
+        raise ValidationError(
+            f"File is too large (max {MAX_PAPER_UPLOAD_BYTES // (1024 * 1024)} MB)."
+        )
+    if any(c in filename for c in ("/", "\\", "\x00")) or filename in ("", ".", ".."):
+        raise ValidationError("invalid filename")
+    if not filename.lower().endswith(".pdf"):
+        raise ValidationError("File must be a .pdf manuscript.")
 
 DOC2MD_ALLOWED_EXTENSIONS = (
     ".pdf", ".docx", ".pptx", ".xlsx", ".html", ".htm", ".csv", ".epub",
@@ -134,6 +153,32 @@ def validate_doc2md_upload(filename: str, size_bytes: int) -> None:
     if not filename.lower().endswith(DOC2MD_ALLOWED_EXTENSIONS):
         raise ValidationError(
             "Unsupported file type. Allowed: PDF, DOCX, PPTX, XLSX, HTML, CSV, EPUB."
+        )
+
+
+# Word-stats accepts everything doc2md does PLUS plain-text-shaped formats
+# (the stat engine just needs text). .tex/.md/.txt are read directly; .rtf
+# and .odt go through markitdown.
+WORDSTATS_ALLOWED_EXTENSIONS = DOC2MD_ALLOWED_EXTENSIONS + (
+    ".txt", ".md", ".markdown", ".tex", ".rtf", ".odt",
+)
+WORDSTATS_PLAINTEXT_EXTENSIONS = (".txt", ".md", ".markdown", ".tex")
+
+
+def validate_wordstats_upload(filename: str, size_bytes: int) -> None:
+    """Validate a Word Counter (Document Insights) upload. Raises ValidationError."""
+    if size_bytes <= 0:
+        raise ValidationError("File is empty.")
+    if size_bytes > MAX_DOC2MD_UPLOAD_BYTES:
+        raise ValidationError(
+            f"File is too large (max {MAX_DOC2MD_UPLOAD_BYTES // (1024 * 1024)} MB)."
+        )
+    if any(c in filename for c in ("/", "\\", "\x00")) or filename in ("", ".", ".."):
+        raise ValidationError("invalid filename")
+    if not filename.lower().endswith(WORDSTATS_ALLOWED_EXTENSIONS):
+        raise ValidationError(
+            "Unsupported file type. Allowed: PDF, DOCX, ODT, RTF, EPUB, HTML, "
+            "CSV, LaTeX (.tex), Markdown, and plain text."
         )
 
 
@@ -359,21 +404,27 @@ def _is_public_ip(ip: str) -> bool:
 def client_ip_from_forwarded(xff: str, peer: str | None) -> str:
     """Resolve the rate-limiting identity from an X-Forwarded-For chain.
 
-    X-Forwarded-For is fully caller-controllable *except* the entry the trusted
-    ingress appends after the request arrives. We scan the chain right-to-left
-    and return the first globally-routable address: a caller can prepend fake
-    entries but cannot forge the real client address recorded after them, nor
-    collapse everyone onto a shared private proxy hop (those are skipped). Falls
-    back to the direct socket peer when no usable forwarded address exists.
+    X-Forwarded-For is fully caller-controllable *except* the single entry the
+    trusted ingress appends after the request arrives. We therefore only ever
+    trust the *last* entry in the chain -- the one position a caller cannot
+    write to, because the proxy appends after any client-supplied value and
+    does not let the client add anything after that. We do NOT keep scanning
+    further left looking for "the first public-looking address": doing so
+    would let a caller smuggle a fabricated public IP one hop earlier and have
+    it accepted whenever the true last hop happens to be private, malformed,
+    or missing (e.g. a proxy quirk, an added CDN hop, or a bare peer socket).
+    If that last entry isn't a well-formed public address, the chain is not
+    trustworthy and we fall back to the direct socket peer instead.
 
-    NOTE: this assumes the ingress appends the observed client IP to the right
-    of XFF. Verify against the deployment's proxy before relying on it as a hard
-    security boundary; today it is a soft cost-control, not an auth gate.
+    NOTE: this assumes the ingress appends exactly one trusted hop to the
+    right of XFF and never forwards a client-supplied XFF verbatim. Verify
+    against the deployment's proxy before relying on it as a hard security
+    boundary; today it is a soft cost-control, not an auth gate.
     """
     if xff:
-        for part in reversed([p.strip() for p in xff.split(",") if p.strip()]):
-            if _is_public_ip(part):
-                return part
+        parts = [p.strip() for p in xff.split(",") if p.strip()]
+        if parts and _is_public_ip(parts[-1]):
+            return parts[-1]
     if peer and _is_public_ip(peer):
         return peer
     return peer or "0.0.0.0"

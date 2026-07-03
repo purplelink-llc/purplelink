@@ -1,0 +1,338 @@
+[
+ {
+  "section": "Introduction/General",
+  "priority": "Must-have",
+  "number": "1",
+  "question": "Are the goals and contributions of applying NCA explicitly stated?",
+  "recommendation": "State the primary and (possibly) secondary goals and contributions of the empirical NCA study. The study may primarily contribute to theory development by, for example, developing and testing new necessity hypotheses, developing an existing necessity claim further toward a formal necessity hypothesis and testing it with NCA, or replicating results of previously tested necessity hypotheses. Secondary goals could be methodological (e.g., introducing NCA to a new field/phenomenon), or practical (e.g., using results of NCA for practically meaningful recommendations/insights).",
+  "further_reading": "Articles: Bokrantz & Dul ( 2023 ) ; Dul ( 2024a ) ; Hollenbeck & Wright ( 2017 ) ; Köhler & Cortina ( 2023 ) ; Bergh et al. ( 2022 ) ; Book: Chapter 7 and Section 10.2"
+ },
+ {
+  "section": "Introduction/General",
+  "priority": "Must-have",
+  "number": "2",
+  "question": "When referring to necessity, are only words that correctly describe a necessity relationship used?",
+  "recommendation": "When referring to necessity relationships, use appropriate terminology. In practice, this means using equivalents/derivatives of the statement that 𝑋 is necessary for 𝑌. Avoid ambiguous statements (𝑋 causes 𝑌, 𝑋 correlates with 𝑌, 𝑋 is associated with 𝑌, 𝑋 affects 𝑌), or incorrect (sufficiency-based) statements such as 𝑋 produces 𝑌, 𝑋 drives 𝑌, 𝑋 increases/decreases 𝑌, etc.",
+  "further_reading": "Book: Table 7.1"
+ },
+ {
+  "section": "Introduction/General",
+  "priority": "Must-have",
+  "number": "3",
+  "question": "Is it explained that NCA is an approach that combines both a specific causal logic (methodology) and the related data analysis technique (method)?",
+  "recommendation": "Refer to NCA as a methodological approach that combines the theoretical perspective of necessity causality (rather than common probabilistic or configurational causality) with a corresponding data analysis method, ensuring theory-method fit. Emphasize that NCA entails more than just a data analysis or statistical method.",
+  "further_reading": "Article: Dul ( 2024a ) ; Book: Chapters 1, 2, 5"
+ },
+ {
+  "section": "Introduction/General",
+  "priority": "Must-have",
+  "number": "4",
+  "question": "Is a proper comparison made between NCA’s causal perspective and conventional causal perspectives (e.g., probabilistic sufficiency, configurational sufficiency)?",
+  "recommendation": "When, in the context of an NCA study, a comparison is made between NCA’s causal perspective and the causal perspective inferred from conventional regression-based/statistical approaches, use the term probabilistic sufficiency for the latter, and not just sufficiency. The term sufficiency suggests determinism (as applied in QCA’s configurational sufficiency logic). This recommendation is often violated in studies that combine NCA with SEM. When NCA is compared with QCA’s necessity analysis, use the term necessity analysis of QCA for the latter (and not NCA) and explain the differences between the necessity analysis of QCA (only necessity-in-kind) and that of NCA (also necessity-in-degree).",
+  "further_reading": "Articles: Dul ( 2024a ) ; Dul ( 2016a ) ; Vis & Dul ( 2018 ) ; Dul ( 2022 ) ; Book: Sections 2.3, 2.4"
+ },
+ {
+  "section": "Introduction/General",
+  "priority": "Must-have",
+  "number": "5",
+  "question": "In multimethod studies, is NCA described and used as an approach with a specific perspective on causality and data analysis, and not merely as a robustness check or an add-on to other methods (and vice versa).",
+  "recommendation": "In multimethod studies, use and refer to NCA as an approach with a specific perspective on causality and data analysis, and do not incorrectly refer to it as a robustness check or add-on to other methods (and vice versa). This recommendation is often violated in studies that combine NCA with SEM.",
+  "further_reading": "Article: Dul ( 2024a ) ; Book: Sections 2.7, 11.4, 11.5"
+ },
+ {
+  "section": "Introduction/General",
+  "priority": "Nice-to-have",
+  "number": "6",
+  "question": "If the necessity analysis is a prominent part of the publication, do the title and abstract reflect this necessity perspective/NCA?",
+  "recommendation": "If important parts of the publication and/or its conclusions are based on necessity logic and NCA, ensure that this is reflected in the title and abstract by using words that reflect necessity logic or NCA.",
+  "further_reading": "Book: Table 7.1"
+ },
+ {
+  "section": "Theory/Hypotheses",
+  "priority": "Must-have",
+  "number": "7",
+  "question": "Is the hypothesized necessity relationship explicitly formulated as: 𝑋 is necessary for 𝑌, or similar?",
+  "recommendation": "Formulate the necessity relationship explicitly as a necessary condition hypothesis: “𝑋 is necessary for 𝑌”. For a deductive study, this is done before data analysis; for an explorative study, this is done after data analysis when indications for a necessity relationship are found.",
+  "further_reading": "Book: Section 7.5"
+ },
+ {
+  "section": "Theory/Hypotheses",
+  "priority": "Must-have",
+  "number": "8",
+  "question": "Are the four elements of a necessity theory precisely defined: concepts 𝑋 and 𝑌, direction of the hypothesis, focal unit, theoretical domain?",
+  "recommendation": "To obtain a formal necessity hypothesis that is ready for testing, precisely define the four elements of the necessity theory. (1) Define the concepts 𝑋 and 𝑌 according to their meaning in the hypothesis. (2) Specify the hypothesis and its direction, which indicates which corner of the 𝑋𝑌-plot is expected to be empty, particularly if the expected corner is not the default upper-left corner. (3) Specify the focal unit of which 𝑋 and 𝑌 of the hypothesis are characteristics. (4) Define the theoretical domain where it is claimed/expected that the hypothesis will hold, given its boundary conditions. Note that the theoretical domain is usually larger than a population from which cases are selected.",
+  "further_reading": "Book: Section 3.2, Chapter 7 in particular Section 7.5"
+ },
+ {
+  "section": "Theory/Hypotheses",
+  "priority": "Must-have",
+  "number": "9",
+  "question": "Is a causal explanation provided WHY 𝑋 is necessary for 𝑌 using necessity causal logic to justify the necessity hypothesis by addressing three questions? Why does 𝑋 enable 𝑌? Why does the absence of 𝑋 lead to the absence of 𝑌? Why is the absence of 𝑋 not compensable?",
+  "recommendation": "Explain why 𝑋 is necessary for 𝑌 using a causal explanation (narrative) by answering three questions: (1) Why does 𝑋 enable 𝑌 (𝑋 is an enabler). The existing literature may be a source of information; (2) Why does the absence of 𝑋 lead to the absence of 𝑌 (𝑋 is a constraint); (3) Why is the absence of 𝑋 not compensable (no substitution for 𝑋). Making the narrative complete is a creative process, supported by literature and experiences of scholars and practitioners.",
+  "further_reading": "Book: Chapter 7 in particular Section 7.5.3"
+ },
+ {
+  "section": "Theory/Hypotheses",
+  "priority": "Must-have",
+  "number": "10",
+  "question": "Are temporal aspects considered including specification of the temporal order of 𝑋 and 𝑌 if this is not obvious?",
+  "recommendation": "If this is not self-evident, include a plausible explanation of the temporal order (first 𝑋 then 𝑌) in the description of why the necessity causal relationship exists. If the data support 𝑋 is necessary for 𝑌, explain why the alternative reverse explanation, namely that 𝑌 is sufficient for 𝑋 (or in terms of necessity: absence of 𝑌 is necessary for absence of 𝑋) that would also be consistent with the expected empty space, is not plausible. Also consider other temporal aspects of the hypothesis such as whether 𝑋 is necessary for the onset or continuation of 𝑌, or whether the hypothesis holds in all time periods.",
+  "further_reading": "Book: Section 2.5, Chapter 7 in particular Section 7.5.3"
+ },
+ {
+  "section": "Theory/Hypotheses",
+  "priority": "Should-have",
+  "number": "11",
+  "question": "Is the existing literature about the relationship between 𝑋 and 𝑌 re-considered from a necessity causal perspective?",
+  "recommendation": "Review existing literature (that commonly describes probabilistic relationships between your variables 𝑋 and 𝑌), to find hints for necessity causality. Avoid just describing, summarizing, or referring to probabilistic findings/ideas. Where possible, include quotes in the literature that hint to necessity logic. Avoid using sufficiency/probabilistic causal logic for making a justification for necessity causal logic. Note that only describing, summarizing, or quoting prior work (often based on probabilistic sufficiency logic) does not constitute a valid theoretical justification of a necessity hypothesis.",
+  "further_reading": "Book: Section 7.4.1, Table 7.1"
+ },
+ {
+  "section": "Theory/Hypotheses",
+  "priority": "Nice-to-have",
+  "number": "12",
+  "question": "If applicable, is an “nc” symbol added near the arrow in a figure that represents a necessity relationship?",
+  "recommendation": "In a diagram representing an (expected) necessity relationship between two variables using an arrow, add a relevant symbol (+nc+, -nc+, -nc-, or +nc-) near the arrow to show the direction of necessity.",
+  "further_reading": "Book: Section 3.5"
+ },
+ {
+  "section": "Theory/Hypotheses",
+  "priority": "Nice-to-have",
+  "number": "13",
+  "question": "Is it specified if rare exceptions are allowed?",
+  "recommendation": "Explain whether the necessity theory allows for rare exceptions (i.e., a typicality perspective on necessity), or whether any exception leads to a rejection of the theory (i.e., a deterministic perspective on necessity). The typicality perspective is not a solution for poor measurement and should not be used in a probabilistic manner (e.g., ignoring a certain percentage of cases above the ceiling).",
+  "further_reading": "Article: Dul ( 2024a ) ; Book: Sections 2.4.3, 9.8, 4.5.4"
+ },
+ {
+  "section": "Methods - data",
+  "priority": "Must-have",
+  "number": "14",
+  "question": "Is the study design (observational study, longitudinal study, case study, experimental study) adequate?",
+  "recommendation": "Possible study designs for NCA include the large-n observational study (both 𝑋 and 𝑌 are observed), the longitudinal study (𝑋 and 𝑌 data from different time points), the small-n case study (𝑋 and 𝑌 are observed), and the experiment (𝑋 is manipulated and 𝑌 is observed). The general principles for good study design apply. For case selection and experiments, there is an NCA-specific approach.",
+  "further_reading": "Book: Section 8.2"
+ },
+ {
+  "section": "Methods - data",
+  "priority": "Should-have",
+  "number": "15",
+  "question": "For large-n quantitative studies: are adequate sampling approaches used and is a pre-study power analysis reported?",
+  "recommendation": "For large-n quantitative studies the preferred sampling approach from the theoretical domain is random sampling with good coverage of the population of interest. The general principles for good sampling apply. Report if an NCA-specific pre-study power analysis was done to estimate the required sample size for finding necessity if it exists. Note that doing a post-hoc power analysis makes no sense for the present study, but could inform future studies.",
+  "further_reading": "Article: Dul ( 2024b ) ; Book: Sections 5.6, 8.3.1"
+ },
+ {
+  "section": "Methods - data",
+  "priority": "Should-have",
+  "number": "16",
+  "question": "For small-n qualitative studies: are adequate NCA-specific approaches used for purposive case selection?",
+  "recommendation": "For small-n qualitative NCA studies, aim to use purposive selection of cases from the theoretical domain, with cases being selected based on the presence of 𝑌 or absence of 𝑋. Always clearly state how cases were selected. Reflect on, and report the potential limitations when cases were not selected purposively based on the absence of 𝑋 or presence of 𝑌.",
+  "further_reading": "Article: Dul ( 2024b ) ; Book: Sections 8.2.3, 8.3.2"
+ },
+ {
+  "section": "Methods - data",
+  "priority": "Must-have",
+  "number": "17",
+  "question": "Are adequate measurement approaches used for getting scores of 𝑋 and 𝑌, and are these measures practically interpretable?",
+  "recommendation": "Ensure a proper measurement approach with valid, reliable, and meaningful data (scores of 𝑋 and 𝑌). Data are input to NCA, not part of NCA. General principles for good data (collection) apply to an NCA study. For interpretation of results, it is important that the scores have a practical meaning in terms of the levels of 𝑋 and 𝑌. Data are stored in a dataset. The dataset may consist of archival data.",
+  "further_reading": "Article: Dul et al. ( 2024 ) ; Book: Section 8.4"
+ },
+ {
+  "section": "Methods - data",
+  "priority": "Must-have",
+  "number": "18",
+  "question": "For simulation studies: are simulated data sampled from bounded distributions of 𝑋 and 𝑌?",
+  "recommendation": "For data generated by simulation, ensure that the variables 𝑋 and 𝑌 are bounded (have minimum and maximum values). Simulated data drawn from, for example, a normal distribution would not be eligible whereas data from a uniform or truncated normal distribution would be appropriate.",
+  "further_reading": "Book: Sections 4.3, 5.4"
+ },
+ {
+  "section": "Methods - data",
+  "priority": "Must-have",
+  "number": "19",
+  "question": "Are only data transformations that align with NCA employed?",
+  "recommendation": "Explain whether and how the data were transformed, and whether the transformation aligns with NCA. Affine transformations (including linear transformation) produces valid results. NCA’s data analysis does not require data transformation and non-transformed data are often more meaningful and better interpretable (e.g., levels of a Likert scale) than transformed data. This particularly applies to necessity-in-degree and interpretations of specific levels of 𝑋 being necessary for specific levels of 𝑌. Refrain from conducting non-linear data transformations (e.g., log-transformation, logistic transformation) unless the transformed data represent 𝑋 and 𝑌 as defined in the necessity hypothesis (e.g., log-transformed GDP). This recommendation may be violated in studies that combine NCA with QCA when the logistic transformation (S-curve) is applied mechanistically for calibration purposes.",
+  "further_reading": "Book: Section 8.5.2, Appendix D"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Must-have",
+  "number": "20",
+  "question": "Is the selected ceiling line specified and justified?",
+  "recommendation": "Specify and justify the selected ceiling line by considering theoretical expectations (border is linear or non-linear), type of data (discrete or continuous), observed border pattern (regular or irregular), balance between accuracy and generalizability (avoiding overfitting), and quality of the data (data with/without measurement error, simulated data).",
+  "further_reading": "Book: Sections 4.3.2, 9.3.2"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Should-have",
+  "number": "21",
+  "question": "Is the bounding box (with empirical or theoretical scope) deliberately selected and specified?",
+  "recommendation": "Specify and justify the selected bounding box (with empirical or theoretical scope). Commonly, the empirical scope is selected to avoid over-estimation of the effect size. The theoretical scope can be considered when 𝑋 and 𝑌 are measured on bounded scales (e.g. Likert scales, percentages).",
+  "further_reading": "Book: Sections 4.3.2, 9.3.1"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Should-have",
+  "number": "22",
+  "question": "Are the hypothesis evaluation criteria (thresholds for effect size, p-value, and possibly target outcome) deliberately specified and justified?",
+  "recommendation": "Specify and justify the selected threshold values for necessity effect size 𝑑 and 𝑝-value for identifying necessity-in-kind. This threshold depends on the specific context of the study. If no argument is available for a specific value, common benchmark values may be used (𝑑 = 0.10; 𝑝 = 0.05 with 10,000 permutations). Optionally, select a target outcome 𝑌 to evaluate a specific outcome of necessity-in-degree.",
+  "further_reading": "Article: Dul ( 2016b ) ; Book: Sections 4.4.1, 5.3, 9.4.1, 9.4.2, 9.4.3"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Should-have",
+  "number": "23",
+  "question": "Are the results of a visual inspection of the 𝑋𝑌-plot reported?",
+  "recommendation": "Conduct the analysis with the selected ceiling line and scope to obtain an 𝑋𝑌-plot for visual inspection. Evaluate whether the expected corner is empty, if the selected ceiling line is appropriate, if potential outliers are present, and what the data pattern in the rest of the plot is.",
+  "further_reading": "Book: Section 9.5"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Must-have",
+  "number": "24",
+  "question": "Is it explained how potential outliers are analyzed and handled, and are removed cases reported?",
+  "recommendation": "Conduct an outlier analysis with the selected ceiling line and scope to identify potential ceiling and scope outliers. If outliers are removed, report in detail which cases are removed and why, and compare the results with and without removing the outliers (see robustness checks).",
+  "further_reading": "Article: Dul ( 2016b ) ; Book: Section 9.8"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Should-have",
+  "number": "25",
+  "question": "Are all model fit parameters evaluated?",
+  "recommendation": "Conduct the analysis with the selected ceiling line and scope and evaluate the model fit parameters (complexity, fit, ceiling accuracy, noise, exceptions, support, spread, sharpness), and compare it with benchmark values.",
+  "further_reading": "Book: Sections 4.5, 6.5, 9.9"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Should-have",
+  "number": "26",
+  "question": "Are all NCA-related parameters, terms and concepts properly used and described?",
+  "recommendation": "Describe the NCA-related parameters, terms, and concepts properly, including using the term ‘permutation test’ (not terms like bootstrapping, (Monte Carlo) simulation, robustness check, or 𝑡-test) for NCA’s statistical test, and using ‘multiple NCA’ (not multivariate NCA) for analyses with several necessity hypotheses.",
+  "further_reading": "Book: Appendix A"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Nice-to-have",
+  "number": "27",
+  "question": "Is the utilized software, including its version number specified?",
+  "recommendation": "Specify which software and which version of the software was used to conduct NCA. The version number for the NCA package in R can be obtained with the command packageVersion(“NCA”).",
+  "further_reading": "Book: Appendix B"
+ },
+ {
+  "section": "Methods - data analysis",
+  "priority": "Nice-to-have",
+  "number": "28",
+  "question": "Is a short general description of NCA’s data analysis approach provided to serve readers who are less familiar with NCA?",
+  "recommendation": "Include a brief description of NCA’s main logic and data analysis elements (ceiling line, ceiling zone, scope, effect size) so that the study is easier to understand for readers unfamiliar with NCA. Consider adding references for further reading.",
+  "further_reading": "Articles: Dul ( 2024b ) , Dul ( 2025 )"
+ },
+ {
+  "section": "Results",
+  "priority": "Must-have",
+  "number": "29",
+  "question": "Are 𝑋𝑌-tables or 𝑋𝑌-plots of all tested/explored relationships shown?",
+  "recommendation": "Include the 𝑋𝑌-tables or 𝑋𝑌-plots of all tested/explored relationships, preferably in the main text. It is essential that readers are able to inspect them visually.",
+  "further_reading": "Book: Section 9.5"
+ },
+ {
+  "section": "Results",
+  "priority": "Should-have",
+  "number": "30",
+  "question": "Is only the ceiling line that is used to draw conclusions about the necessity relationship shown in the 𝑋𝑌-plot?",
+  "recommendation": "In the 𝑋𝑌-plot(s), include only the ceiling line that is used to draw conclusions about the necessity relationship. Note that the default output of the NCA software in R includes two ceiling lines, but that only one is usually selected for drawing conclusions about the hypothesis (𝑋𝑌-plots with other ceiling lines that were explored before the final selection was made, or that were evaluated during the robustness checks could be provided separately).",
+  "further_reading": "-"
+ },
+ {
+  "section": "Results",
+  "priority": "Must-have",
+  "number": "31",
+  "question": "For large-n quantitative study: are the effect size and its p-value properly reported?",
+  "recommendation": "Report the estimated effect size and its 𝑝-value. Preferably, report the effect size in two decimal places. This ensures that the result contains meaningful information about the precision, and that there is no unwarranted level of accuracy. Report the estimated 𝑝-value, preferably with three decimal places for the same reasons. Give exact 𝑝-values (or if applicable 𝑝 < 0.001) and do not use inequalities or stars (i.e., not p < 0.05 or *).",
+  "further_reading": "-"
+ },
+ {
+  "section": "Results",
+  "priority": "Must-have",
+  "number": "32",
+  "question": "Is the conclusion about necessity-in-kind based on three criteria: theoretical justification, effect size, and p-value?",
+  "recommendation": "Conclude about necessity-in-kind using three criteria: (1) Theoretical justification (the formal hypothesis), (2) Effect size not below the selected threshold value, (3) 𝑝-value below the selected threshold value. Note that for support all criteria apply and that missing just one of them is enough for a rejection. This implies, for example, that without theoretical justification the claim for a necessity relationship is rejected.",
+  "further_reading": "Book: Section 9.10"
+ },
+ {
+  "section": "Results",
+  "priority": "Should-have",
+  "number": "33",
+  "question": "Is the bottleneck table reported and necessity-in-degree evaluated?",
+  "recommendation": "Report the bottleneck table only for necessary conditions that were not rejected. This facilitates the evaluation of necessity-in-degree: which level of 𝑋 is necessary for which level of 𝑌.",
+  "further_reading": "Book: Section 9.11"
+ },
+ {
+  "section": "Results",
+  "priority": "Nice-to-have",
+  "number": "34",
+  "question": "If applicable: is the meaning of NN and NA in the bottleneck table explained?",
+  "recommendation": "Explain the meaning of NN or NA in the bottleneck table if it appears.",
+  "further_reading": "Book: Section 9.11.5"
+ },
+ {
+  "section": "Results",
+  "priority": "Should-have",
+  "number": "35",
+  "question": "Are the type of values used in the bottleneck analysis justified?",
+  "recommendation": "Justify the type of values for 𝑋 and 𝑌 that are displayed in the bottleneck table (e.g., percentage of range, actual values, percentiles). In particular, the actual values of 𝑌 and percentile values of 𝑋 might be informative about the percentage or number of cases unable to achieve a target outcome.",
+  "further_reading": "Book: Section 9.11"
+ },
+ {
+  "section": "Results",
+  "priority": "Must-have",
+  "number": "36",
+  "question": "Are the results of the robustness checks summarized?",
+  "recommendation": "Conduct robustness checks and summarize the results: is the main conclusion about necessity (support or rejection of the hypothesis) sensitive to choices by the analyst regarding ceiling line, scope, effect size threshold, 𝑝-value threshold, removing/keeping outliers, different choices for the target outcome? Conclude if the results are robust or fragile.",
+  "further_reading": "Book: Section 9.12"
+ },
+ {
+  "section": "Discussion",
+  "priority": "Must-have",
+  "number": "37",
+  "question": "Is it explained why all tested necessary conditions were (not) rejected?",
+  "recommendation": "Summarize the results of using NCA in terms of which necessary conditions were tested/explored, and which were rejected or not rejected. Assuming that (methodological) errors are unlikely, provide theoretical explanations for the results, referring to the necessity theory and hypotheses formulated earlier.",
+  "further_reading": "Book: Section 7.5.3"
+ },
+ {
+  "section": "Discussion",
+  "priority": "Must-have",
+  "number": "38",
+  "question": "For a multimethod study: is it explained how the results of NCA and of other methods complement each other?",
+  "recommendation": "When NCA is used in a causal-pluralism study by combining it with another method (e.g., regression-based methods or QCA), report how the results of NCA and the other method complement each other using NERT, NEST and BIPMA when applicable.",
+  "further_reading": "Book: Chapter 11."
+ },
+ {
+  "section": "Discussion",
+  "priority": "Must-have",
+  "number": "39",
+  "question": "Referring to the goals of the study (see introduction): is it discussed if the intended contribution is realized and what the key insights are?",
+  "recommendation": "For the primary and possibly secondary goals (see introduction), discuss if the intended contribution is realized and what key insights are gained.",
+  "further_reading": "Book: Section 10.2.1"
+ },
+ {
+  "section": "Discussion",
+  "priority": "Should-have",
+  "number": "40",
+  "question": "Are the results of the bottleneck analysis explained in terms of necessity-in-degree?",
+  "recommendation": "If necessity-in-kind is accepted, provide an interpretation of necessity-in-degree using the results of the bottleneck analysis. For example, explain what level of 𝑋 is necessary for a given target level of 𝑌.",
+  "further_reading": "Book: Section 9.11"
+ },
+ {
+  "section": "Discussion",
+  "priority": "Should-have",
+  "number": "41",
+  "question": "Are limitations of applying NCA mentioned?",
+  "recommendation": "Mention the study’s limitations. Discuss general limitations of NCA (e.g., exclusive focus on necessity; potential sensitivity to outliers), and specific limitations of applying NCA in the current study, and how this may affect the findings.",
+  "further_reading": "-"
+ },
+ {
+  "section": "Discussion",
+  "priority": "Should-have",
+  "number": "42",
+  "question": "Are potential future studies with NCA discussed?",
+  "recommendation": "Discuss potential future studies with NCA, for example conducting studies in other parts of the theoretical domain to assess the generalizability of the current findings, or applying NCA in related substantive areas that could benefit from the necessity causal perspective.",
+  "further_reading": "Article: Köhler & Cortina ( 2023 )"
+ }
+]

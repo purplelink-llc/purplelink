@@ -79,8 +79,40 @@ rate_dict = modal.Dict.from_name("latextools-rate", create_if_missing=True)
 # dispatch correctly. Keys are session_id from Stripe.
 #   paper_tokens_dict[session_id]       = { tokens: [token, ...], product, redeemed: bool, ... }
 #   paper_jobs_dict[token]              = pipeline progress / result dict
+#   paper_token_claims_dict[token]      = True (written once, atomically, to
+#                                          gate concurrent /submit races)
+#   paper_token_index_dict[token]       = session_id (reverse index so token
+#                                          lookups are O(1) instead of a full
+#                                          scan of paper_tokens_dict)
 paper_tokens_dict = modal.Dict.from_name("paper-review-tokens", create_if_missing=True)
 paper_jobs_dict = modal.Dict.from_name("paper-review-jobs", create_if_missing=True)
+paper_token_claims_dict = modal.Dict.from_name("paper-review-token-claims", create_if_missing=True)
+paper_token_index_dict = modal.Dict.from_name("paper-review-token-index", create_if_missing=True)
+
+# Permanent per-job cost ledger — unlike paper_jobs_dict (deleted on first
+# status read, by design, for data minimization), this never expires. Keyed
+# uniquely per job so concurrent writes never race on a shared list. Written
+# once, right after a job finishes (success or failure), by both pipeline
+# functions below. Used to calibrate pricing against real Anthropic usage —
+# see docs/paper-review-runbook.md "Cost & margin tracking".
+#   usage_ledger_dict["<token[:16]>_<finished_at>"] = {
+#       ts, product, tier, status, price_charged_usd,
+#       input_tokens, output_tokens, cost_usd, models,
+#   }
+usage_ledger_dict = modal.Dict.from_name("paper-review-usage-ledger", create_if_missing=True)
+
+# Module-level (not just a local inside web()) so the scheduled sweep below
+# can reference the same constant instead of hardcoding a second copy of
+# the TTL.
+PAPER_JOB_TTL_SECONDS = 24 * 3600          # 24h before stale jobs expire
+
+# How long a completed review stays retrievable *after* it has first been
+# successfully delivered. Protects against a refresh, a second tab, or a
+# dropped response (backgrounded mobile tab, laptop sleep, flaky wifi)
+# losing the only copy of a paid result. Short enough that we're not
+# meaningfully "storing" reviews, long enough to cover a re-poll or a user
+# noticing a blank tab and reloading it.
+PAPER_RESULT_GRACE_SECONDS = 30 * 60       # 30 minutes after first delivery
 
 # Secrets — create via:
 #   modal secret create anthropic-secret      ANTHROPIC_API_KEY="sk-ant-..."
@@ -98,24 +130,40 @@ resend_secret = modal.Secret.from_name("resend-secret")
 # endpoints (which dispatch to the right pipeline). Each entry can be
 # overridden by env vars at deploy time but the keys themselves are
 # stable.
+#
+# MAX_PACK_QTY is a defensive upper bound on "qty" for any catalog entry.
+# Today qty is only ever 1, 5, or 20 (static, not attacker-controlled), but
+# register-token mints `qty` tokens synchronously and emails them all in one
+# HTML message, so if qty is ever sourced from an env var override or a
+# future admin-configurable pack size, an unbounded value could blow up the
+# webhook (timeout, oversized email, Resend rejection). Enforced where qty
+# is consumed in paper_review_register_token below.
+MAX_PACK_QTY = 100
 PAID_PRODUCTS: dict[str, dict] = {
-    # Paper Review tiers. Community-first pricing: target ~25-67% margin
-    # rather than 60-85%. Standard now BUNDLES the Anonymity Check for free,
-    # consolidating what was a separate "+anonymity" tier.
-    "paper-review-standard":    {"category": "paper-review", "tier": "standard", "qty": 1, "amount": 300, "bundled_anonymity": True},
-    "paper-review-journal":     {"category": "paper-review", "tier": "standard", "qty": 1, "amount": 500, "bundled_anonymity": True, "bundled_journal": True},
-    "paper-review-deep":        {"category": "paper-review", "tier": "deep",     "qty": 1, "amount": 800, "bundled_anonymity": True, "bundled_journal": True},
-    # Volume packs (mint N tokens of standard Paper Review). Discounts vs.
-    # buying à la carte at $3 each: 5-pack = 20% off, 20-pack = 33% off.
-    "paper-review-pack-5":      {"category": "paper-review", "tier": "standard", "qty": 5,  "amount": 1200},
-    "paper-review-pack-20":     {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 4000},
-    # Auxiliary paid tools — minimum-price ($1) for the small ones, fair-
-    # value for the longer pipelines.
-    "cover-letter":             {"category": "cover-letter", "qty": 1, "amount": 100},
-    "anonymity-check":          {"category": "anonymity-check", "qty": 1, "amount": 100},
-    "citation-gap":             {"category": "citation-gap", "qty": 1, "amount": 200},
-    "revision-review":          {"category": "revision-review", "qty": 1, "amount": 100},
-    "response-review":          {"category": "response-review", "qty": 1, "amount": 400},
+    # Repriced 2026-07-03 for the Sonnet 4.5 -> Fable 5 model upgrade (see
+    # DEFAULT_MODEL in latextools/papercheck.py). Fable 5 is ~$10/$50 per
+    # MTok vs. Sonnet 4.5's $3/$15, and its newer tokenizer produces ~30%
+    # more tokens for the same text — roughly 4.3x the COGS per review.
+    # Prices below are sized off comment-estimated token counts (no real
+    # usage data existed yet at repricing time) to leave a modest ~15-30%
+    # margin after Anthropic + Stripe fees. Once backend/app.py's
+    # usage_ledger_dict has real per-job cost data (see _write_usage_ledger),
+    # revisit these against actual COGS — see docs/paper-review-runbook.md
+    # "Cost & margin tracking".
+    "paper-review-standard":    {"category": "paper-review", "tier": "standard", "qty": 1, "amount": 900, "bundled_anonymity": True},
+    "paper-review-journal":     {"category": "paper-review", "tier": "standard", "qty": 1, "amount": 1100, "bundled_anonymity": True, "bundled_journal": True},
+    "paper-review-deep":        {"category": "paper-review", "tier": "deep",     "qty": 1, "amount": 1500, "bundled_anonymity": True, "bundled_journal": True},
+    # Volume packs (mint N tokens of standard Paper Review). ~15-17% off vs.
+    # buying à la carte at $9 each.
+    "paper-review-pack-5":      {"category": "paper-review", "tier": "standard", "qty": 5,  "amount": 3800},
+    "paper-review-pack-20":     {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 15000},
+    # Auxiliary paid tools — single/few-call pipelines, cheap even at Fable
+    # rates, so these carry a wide margin rather than a thin one.
+    "cover-letter":             {"category": "cover-letter", "qty": 1, "amount": 200},
+    "anonymity-check":          {"category": "anonymity-check", "qty": 1, "amount": 200},
+    "citation-gap":             {"category": "citation-gap", "qty": 1, "amount": 300},
+    "revision-review":          {"category": "revision-review", "qty": 1, "amount": 200},
+    "response-review":          {"category": "response-review", "qty": 1, "amount": 600},
 }
 
 ALLOWED_ORIGINS = [
@@ -126,6 +174,79 @@ ALLOWED_ORIGINS = [
 # not advertise a cross-origin surface it never needs.
 if os.environ.get("ALLOW_LOCAL_CORS") == "1":
     ALLOWED_ORIGINS.append("http://localhost:4200")
+
+
+def _write_usage_ledger(token: str, product_key: str, status: str, usage) -> None:
+    """Persist a permanent per-job cost record. `usage` is a
+    papercheck.UsageTracker collected around the job's LLM calls (may have
+    zero records if the job errored before any call). Never raises — a
+    logging failure must not take down the pipeline."""
+    import time as _time
+
+    entry = PAID_PRODUCTS.get(product_key, {})
+    record = {
+        "ts": _time.time(),
+        "product_key": product_key,
+        "status": status,
+        "price_charged_usd": entry.get("amount", 0) / 100.0,
+        "input_tokens": usage.total_input_tokens,
+        "output_tokens": usage.total_output_tokens,
+        "cost_usd": round(usage.total_cost_usd, 4),
+        "models": usage.models_used(),
+    }
+    try:
+        usage_ledger_dict[f"{token[:16]}_{record['ts']}"] = record
+        logger.info("usage_ledger %s", record)
+    except Exception:
+        logger.exception("usage_ledger write failed for token=%s", token[:12])
+
+
+def _reissue_token_on_failure(token: str) -> str | None:
+    """Mint and register a replacement token for a job that failed *after*
+    the original token was consumed (spawn succeeded, but the pipeline body
+    itself later raised — LLM/API outage, PDF parse crash, timeout, etc.).
+
+    Spawn-before-consume (see `_consume_token` callers in the /submit
+    handlers) already protects the "spawn never happened" case by leaving
+    the token redeemable. This covers the remaining charged-without-result
+    gap: once spawned, a mid-pipeline crash left the customer with a spent
+    token and only a manual-support-email path. Since `paper_tokens_dict`
+    is a module-level Modal Dict, it's reachable from inside these
+    `@app.function`-decorated pipelines, not just the web() route handlers.
+
+    Returns the new token string on success, or None if the token's owning
+    session couldn't be found or the write failed (never raises — this must
+    not affect the error status already being persisted for the job).
+    """
+    import secrets as _secrets
+    import time as _time
+
+    try:
+        session_id = paper_token_index_dict.get(token)
+        if not session_id:
+            for _sid, _entry in list(paper_tokens_dict.items()):
+                if isinstance(_entry, dict) and token in (_entry.get("tokens") or []):
+                    session_id = _sid
+                    break
+        if not session_id:
+            return None
+
+        entry = paper_tokens_dict.get(session_id)
+        if not isinstance(entry, dict):
+            return None
+
+        new_token = _secrets.token_urlsafe(32)
+        tokens = list(entry.get("tokens") or [])
+        tokens.append(new_token)
+        entry["tokens"] = tokens
+        # Explicitly NOT added to consumed_tokens — it's redeemable.
+        entry["last_reissued_at"] = _time.time()
+        paper_tokens_dict[session_id] = entry
+        paper_token_index_dict[new_token] = session_id
+        return new_token
+    except Exception:
+        logger.exception("token reissue failed for token=%s", token[:12])
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -164,6 +285,7 @@ def paper_review_pipeline(
     from latextools import papercheck, journals, delivery
 
     journal_pack = journals.JOURNAL_SPECS.get(journal_key) if journal_key else None
+    product_key = "paper-review-deep" if tier == "deep" else ("paper-review-journal" if journal_key else "paper-review-standard")
 
     def _persist(progress) -> None:
         d = progress.to_dict()
@@ -174,37 +296,61 @@ def paper_review_pipeline(
         paper_jobs_dict[token] = d
 
     async def _run():
-        try:
-            final = await papercheck.run_review_pipeline(
-                pdf_bytes, domain=domain, on_progress=_persist,
-                tier=tier,
-                journal_pack=journal_pack,
-                anonymity_check=anonymity_check,
-            )
-            paper_jobs_dict[token] = {
-                **final,
-                "product": "paper-review",
-                "status": "done" if final.get("result_md") else "error",
-            }
-            if deliver_email and final.get("result_md"):
-                async with httpx.AsyncClient(timeout=10.0) as ec:
-                    await delivery.send_email(
-                        ec,
-                        to=deliver_email,
-                        subject="Your Paper Review is ready",
-                        html=delivery.html_review_ready(
-                            status_url=f"https://purplelink.llc/tools/paper-review/status/?token={token}",
-                            manuscript_title=(final.get("structure_summary") or {}).get("title", ""),
-                        ),
-                        tags=[{"name": "product", "value": "paper-review"}],
-                    )
-        except Exception as e:
-            logger.exception("paper_review_pipeline failed for token=%s", token[:12])
-            paper_jobs_dict[token] = {
-                "status": "error",
-                "error": f"{type(e).__name__}: {str(e)[:200]}",
-                "finished_at": _time.time(),
-            }
+        with papercheck.UsageTracker() as usage:
+            try:
+                final = await papercheck.run_review_pipeline(
+                    pdf_bytes, domain=domain, on_progress=_persist,
+                    tier=tier,
+                    journal_pack=journal_pack,
+                    anonymity_check=anonymity_check,
+                )
+                job_status = "done" if final.get("result_md") else "error"
+                replacement_token = None
+                if job_status == "error":
+                    # run_review_pipeline (and its AI-SCoRe delegate) can land on
+                    # status="error" via a normal return — extraction_failed,
+                    # empty_manuscript, L4-synthesis-failure — without raising.
+                    # The token was still spawned/consumed, so treat this the
+                    # same as the except-Exception crash path below.
+                    replacement_token = _reissue_token_on_failure(token)
+                paper_jobs_dict[token] = {
+                    **final,
+                    "product": "paper-review",
+                    "status": job_status,
+                    **({"replacement_token": replacement_token} if job_status == "error" else {}),
+                }
+                _write_usage_ledger(token, product_key, job_status, usage)
+                if deliver_email and final.get("result_md"):
+                    try:
+                        async with httpx.AsyncClient(timeout=10.0) as ec:
+                            _email_result = await delivery.send_email(
+                                ec,
+                                to=deliver_email,
+                                subject="Your Paper Review is ready",
+                                html=delivery.html_review_ready(
+                                    status_url=f"https://purplelink.llc/tools/paper-review/status/?token={token}",
+                                    manuscript_title=(final.get("structure_summary") or {}).get("title", ""),
+                                    amount_cents=PAID_PRODUCTS.get(product_key, {}).get("amount", 900),
+                                ),
+                                tags=[{"name": "product", "value": "paper-review"}],
+                            )
+                        if _email_result.get("status") != "ok":
+                            logger.warning(
+                                "paper_review_pipeline delivery email not sent for token=%s: %s",
+                                token[:12], _email_result,
+                            )
+                    except Exception:
+                        logger.exception("paper_review_pipeline delivery email failed for token=%s", token[:12])
+            except Exception:
+                logger.exception("paper_review_pipeline failed for token=%s", token[:12])
+                replacement_token = _reissue_token_on_failure(token)
+                paper_jobs_dict[token] = {
+                    "status": "error",
+                    "error": "pipeline_failed",
+                    "finished_at": _time.time(),
+                    "replacement_token": replacement_token,
+                }
+                _write_usage_ledger(token, product_key, "error", usage)
 
     _asyncio.run(_run())
 
@@ -246,6 +392,7 @@ def adjacent_tool_pipeline(
         paper_jobs_dict[token] = progress_dict
 
     async def _run():
+      with papercheck.UsageTracker() as usage:
         try:
             if product == "cover-letter":
                 # Cover letter uses pasted abstract + journal only — privacy-
@@ -298,11 +445,12 @@ def adjacent_tool_pipeline(
                         res = await paperreview_extras.run_citation_gap(client, struct)
                         md = _format_citation_gap_md(res)
                 paper_jobs_dict[token] = {
-                    "status": "done",
+                    "status": "done" if res.get("status") == "ok" else "error",
                     "progress_pct": 100,
                     "stage": "done",
                     "product": product,
                     "result_md": md,
+                    "error": "" if res.get("status") == "ok" else "analysis_failed",
                     "raw": res,
                     "finished_at": _time.time(),
                 }
@@ -324,12 +472,23 @@ def adjacent_tool_pipeline(
                     res = await paperreview_extras.run_revision_review(
                         client, struct, original_review_md or "",
                     )
+                # run_revision_review distinguishes "mismatch" (pasted review
+                # has no Rectification Checklist, or doesn't match this
+                # manuscript) from a hard "error". Both collapse to job
+                # status "error" here, but mismatch carries a specific,
+                # already customer-safe message — prefix it so the frontend
+                # (status.js friendlyError) can surface it verbatim instead
+                # of falling back to a generic message.
+                res_error = res.get("error", "")
+                if res.get("status") == "mismatch" and res_error:
+                    res_error = "revision_mismatch:" + res_error
                 paper_jobs_dict[token] = {
                     "status": "done" if res.get("status") == "ok" else "error",
                     "progress_pct": 100,
                     "stage": "done",
                     "product": product,
                     "result_md": res.get("markdown", ""),
+                    "error": res_error,
                     "finished_at": _time.time(),
                 }
 
@@ -358,24 +517,49 @@ def adjacent_tool_pipeline(
                 }
                 return
 
+            if paper_jobs_dict[token].get("status") == "error":
+                # Every branch above can land on status="error" via a normal
+                # return (analysis_failed, extraction exceptions caught deeper
+                # in paperreview_extras/response_review, etc.) without this
+                # try block itself raising. The token was already consumed,
+                # so reissue here too — mirrors the except-Exception path below.
+                paper_jobs_dict[token] = {
+                    **paper_jobs_dict[token],
+                    "replacement_token": _reissue_token_on_failure(token),
+                }
+
+            _write_usage_ledger(token, product, paper_jobs_dict[token].get("status", "unknown"), usage)
+
             if deliver_email:
-                async with httpx.AsyncClient(timeout=10.0) as ec:
-                    await delivery.send_email(
-                        ec, to=deliver_email,
-                        subject=f"Your {product.replace('-', ' ').title()} is ready",
-                        html=delivery.html_review_ready(
-                            status_url=f"https://purplelink.llc/tools/paper-review/status/?token={token}&product={product}",
-                        ),
-                        tags=[{"name": "product", "value": product}],
-                    )
-        except Exception as e:
+                try:
+                    async with httpx.AsyncClient(timeout=10.0) as ec:
+                        _email_result = await delivery.send_email(
+                            ec, to=deliver_email,
+                            subject=f"Your {product.replace('-', ' ').title()} is ready",
+                            html=delivery.html_review_ready(
+                                status_url=f"https://purplelink.llc/tools/paper-review/status/?token={token}&product={product}",
+                                amount_cents=PAID_PRODUCTS.get(product, {}).get("amount", 900),
+                            ),
+                            tags=[{"name": "product", "value": product}],
+                        )
+                    if _email_result.get("status") != "ok":
+                        logger.warning(
+                            "adjacent_tool_pipeline delivery email not sent for token=%s product=%s: %s",
+                            token[:12], product, _email_result,
+                        )
+                except Exception:
+                    logger.exception("adjacent_tool_pipeline delivery email failed for token=%s product=%s", token[:12], product)
+        except Exception:
             logger.exception("adjacent_tool_pipeline failed for token=%s product=%s", token[:12], product)
+            replacement_token = _reissue_token_on_failure(token)
             paper_jobs_dict[token] = {
                 "status": "error",
-                "error": f"{type(e).__name__}: {str(e)[:200]}",
+                "error": "pipeline_failed",
                 "finished_at": _time.time(),
                 "product": product,
+                "replacement_token": replacement_token,
             }
+            _write_usage_ledger(token, product, "error", usage)
 
     _asyncio.run(_run())
 
@@ -426,7 +610,30 @@ def _format_anonymity_md(res: dict) -> str:
 def _format_citation_gap_md(res: dict) -> str:
     """Render the citation-gap JSON as user-facing Markdown."""
     gaps = res.get("gaps", []) or []
+    truncation_note = ""
+    if res.get("references_truncated"):
+        truncation_note = (
+            f"\n**Note:** only the first {res.get('n_references_reviewed', 0)} of "
+            f"{res.get('n_references_total', 0)} references in the manuscript's "
+            "bibliography were reviewed. Gaps flagged below may already be "
+            "cited in the remainder of the reference list — verify before "
+            "acting.\n"
+        )
     if not gaps:
+        if res.get("no_references_extracted"):
+            return (
+                "# Citation Gap Analysis\n\n"
+                "**Result: no reference list was found in this manuscript.**\n\n"
+                "We could not extract any references to check the manuscript "
+                "against — this usually means the bibliography uses a "
+                "non-standard heading, is formatted in a way our extractor "
+                "doesn't recognise, or is a scanned/image-only section. This "
+                "is NOT a confirmation that the manuscript is well cited; it "
+                "means the check had nothing to verify. Please confirm your "
+                "manuscript includes a machine-readable reference list and "
+                "re-run this check.\n"
+                + truncation_note
+            )
         return (
             "# Citation Gap Analysis\n\n"
             "**Result: no obvious citation gaps detected.**\n\n"
@@ -434,6 +641,7 @@ def _format_citation_gap_md(res: dict) -> str:
             "prior work for its scope. Verify against your own field "
             "knowledge before submission — this check is a sanity net, "
             "not an exhaustive literature search.\n"
+            + truncation_note
         )
     parts = [
         "# Citation Gap Analysis\n",
@@ -442,7 +650,16 @@ def _format_citation_gap_md(res: dict) -> str:
         "Each entry below is a citation a domain reviewer might expect to "
         "see. Verify each suggestion against your own knowledge before "
         "adding — AI recall can be wrong.\n",
+        truncation_note,
     ]
+    _VERIFY_LABELS = {
+        "confirmed_exists": "Confirmed to exist (CrossRef match)",
+        "weak_match": "CrossRef found a similar but not confident match",
+        "not_found": "Not found on CrossRef — verify manually before citing",
+        "crossref_unavailable": "CrossRef lookup failed — unverified",
+        "network_error": "CrossRef lookup failed — unverified",
+        "not_searched": "No searchable title — AI recall only, unverified",
+    }
     for g in gaps:
         gap_type = g.get("gap_type", "qualitative_gap").replace("_", " ").title()
         topic = g.get("topic", "(no topic)")
@@ -452,16 +669,48 @@ def _format_citation_gap_md(res: dict) -> str:
         why = g.get("why_it_matters", "")
         where = g.get("where_in_paper", "")
         author_line = ", ".join(authors) if authors else "(unknown)"
+        verification = g.get("verification") or {}
+        v_status = verification.get("status", "not_searched")
+        v_label = _VERIFY_LABELS.get(v_status, v_status)
+        if v_status in ("confirmed_exists", "weak_match") and verification.get("found_doi"):
+            v_label += f" — DOI: {verification['found_doi']}"
         parts.append(
             f"\n### {topic}\n"
             f"- **Type:** {gap_type}\n"
             f"- **Suggested authors:** {author_line}\n"
             f"- **Title hint:** {title_hint or '(unknown)'}\n"
+            f"- **Verification:** {v_label}\n"
             f"- **What should be cited:** {desc}\n"
             f"- **Why a reviewer would notice:** {why}\n"
             f"- **Section to add it:** {where}\n"
         )
     return "".join(parts)
+
+
+def _looks_like_abstract(text: str) -> bool:
+    """Cheap sanity check that `text` resembles real abstract prose rather
+    than gibberish/placeholder input (e.g. "asdf asdf asdf", "test test").
+    Not a quality bar — just enough to stop obvious junk from burning a
+    paid LLM call. Deliberately permissive: short but real sentences must
+    still pass."""
+    words = text.split()
+    if len(words) < 8:
+        return False
+    unique_words = {w.strip(".,;:!?()\"'").lower() for w in words}
+    unique_words.discard("")
+    # Gibberish/placeholder text tends to repeat the same token(s) rather
+    # than using varied vocabulary.
+    if len(unique_words) < max(4, len(words) // 4):
+        return False
+    # Real abstracts contain ordinary prose words with vowels; keyboard-mash
+    # strings mostly don't.
+    alpha_words = [w for w in unique_words if w.isalpha()]
+    if not alpha_words:
+        return False
+    vowelly = [w for w in alpha_words if any(c in "aeiou" for c in w)]
+    if len(vowelly) / len(alpha_words) < 0.5:
+        return False
+    return True
 
 
 @app.function(
@@ -561,9 +810,10 @@ def web():
     def _too_large(request: Request, max_bytes: int) -> bool:
         """True when the declared Content-Length already exceeds the cap.
 
-        Rejects oversized uploads before they are read into memory. The
-        per-endpoint size validators remain the authoritative check (a client
-        can omit or understate Content-Length); this is an early-out only.
+        Rejects oversized uploads before they are read into memory. This is
+        an early-out only: a client can omit or understate Content-Length
+        (e.g. chunked transfer-encoding), so `_read_capped` below is the
+        actual enforcement point.
         """
         raw = request.headers.get("content-length")
         if not raw:
@@ -572,6 +822,29 @@ def web():
             return int(raw) > max_bytes
         except ValueError:
             return False
+
+    class _UploadTooLarge(Exception):
+        pass
+
+    async def _read_capped(upload: UploadFile, max_bytes: int) -> bytes:
+        """Read an UploadFile without buffering more than max_bytes+1.
+
+        `_too_large` only inspects Content-Length, which a client can omit
+        (chunked transfer-encoding) or understate. This reads in bounded
+        chunks and aborts as soon as the cap is exceeded, so an oversized
+        body is never fully buffered in memory before validation runs.
+        """
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            chunk = await upload.read(1024 * 1024)
+            if not chunk:
+                break
+            chunks.append(chunk)
+            total += len(chunk)
+            if total > max_bytes:
+                raise _UploadTooLarge()
+        return b"".join(chunks)
 
     async def _read_upload(upload: UploadFile) -> tuple[str | None, bytes | None]:
         """Return (tex_source, zip_bytes); exactly one is non-None."""
@@ -790,7 +1063,10 @@ def web():
             return JSONResponse({"error": "rate_limited"}, status_code=429)
         if _too_large(request, core.MAX_DOCX_UPLOAD_BYTES):
             return JSONResponse({"error": "invalid", "detail": "File is too large (max 5 MB)."}, status_code=400)
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_DOCX_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File is too large (max 5 MB)."}, status_code=400)
         try:
             core.validate_docx_upload(file.filename or "", len(data))
         except core.ValidationError as e:
@@ -970,13 +1246,18 @@ def web():
         if not r.doi:
             return
         try:
-            resp = await client.head(
-                f"https://doi.org/{r.doi}", follow_redirects=True
-            )
+            # doi.org is a legitimate redirector, but the redirect target is
+            # chosen by the (potentially attacker-controlled) DOI registrant,
+            # so we must not blindly follow it (SSRF via open redirect --
+            # see the identical guard used for papercheck.py's DOI lookup).
+            # _resolve_doi_redirects_safely walks the chain manually and
+            # vets every hop with _is_ssrf_safe_url before requesting it.
+            from latextools.papercheck import _resolve_doi_redirects_safely
+            resp = await _resolve_doi_redirects_safely(client, r.doi)
             r.doi_ok = resp.status_code < 400
             r.doi_status = resp.status_code
         except Exception:
-            pass  # network failure → leave doi_ok as None
+            pass  # network failure / unsafe redirect -> leave doi_ok as None
 
     async def _crossref_check(client, r) -> None:
         from latextools.bibcheck import author_similarity, title_similarity
@@ -1100,7 +1381,10 @@ def web():
             return JSONResponse({"error": "rate_limited"}, status_code=429)
         if _too_large(request, core.MAX_BIB_UPLOAD_BYTES):
             return JSONResponse({"error": "invalid", "detail": "File is too large (max 2 MB)."}, status_code=400)
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_BIB_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File is too large (max 2 MB)."}, status_code=400)
         try:
             core.validate_bib_upload(file.filename or "", len(data))
         except core.ValidationError as e:
@@ -1152,7 +1436,12 @@ def web():
             target = "pdf"
 
         if file is not None and (file.filename or ""):
-            data = await file.read()
+            try:
+                data = await _read_capped(file, core.MAX_MD_UPLOAD_BYTES)
+            except _UploadTooLarge:
+                return JSONResponse(
+                    {"error": "invalid", "detail": "Markdown is too large (max 2 MB)."}, status_code=400
+                )
             try:
                 core.validate_md_upload(file.filename or "", len(data))
             except core.ValidationError as e:
@@ -1236,7 +1525,10 @@ def web():
         if _too_large(request, core.MAX_PDF_UPLOAD_BYTES):
             return JSONResponse({"error": "invalid", "detail": "File is too large (max 20 MB)."}, status_code=400)
         gs_setting = _GS_LEVELS.get(level, "/ebook")
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_PDF_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File is too large (max 20 MB)."}, status_code=400)
         try:
             core.validate_pdf_upload(file.filename or "", len(data))
         except core.ValidationError as e:
@@ -1299,7 +1591,13 @@ def web():
                 status_code=400,
             )
         filename = file.filename or ""
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_DOC2MD_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse(
+                {"error": "invalid", "detail": "File is too large (max 20 MB)."},
+                status_code=400,
+            )
         try:
             core.validate_doc2md_upload(filename, len(data))
         except core.ValidationError as e:
@@ -1356,7 +1654,13 @@ def web():
                 {"error": "invalid", "detail": "File is too large (max 20 MB)."},
                 status_code=400,
             )
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_PDF_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse(
+                {"error": "invalid", "detail": "File is too large (max 20 MB)."},
+                status_code=400,
+            )
         try:
             core.validate_pdf_upload(file.filename or "", len(data))
         except core.ValidationError as e:
@@ -1421,7 +1725,13 @@ def web():
                 status_code=400,
             )
         filename = file.filename or ""
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_DOC2MD_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse(
+                {"error": "invalid", "detail": "File is too large (max 20 MB)."},
+                status_code=400,
+            )
         try:
             core.validate_wordstats_upload(filename, len(data))
         except core.ValidationError as e:
@@ -1515,15 +1825,19 @@ def web():
     #   4. UI POSTs PDF + domain to /submit with the token. We .spawn() the
     #      heavy pipeline and immediately return.
     #   5. UI polls /status?token=… until status == "done".
-    #   6. On first successful retrieval of result_md, the entry is deleted
-    #      so we hold zero copies of the review on our infrastructure.
+    #   6. On first successful retrieval of result_md, the entry is kept
+    #      for a short grace window (PAPER_RESULT_GRACE_SECONDS) so a
+    #      dropped response, refresh, or duplicate tab can still retrieve
+    #      it, then deleted — either inline on a later poll past the grace
+    #      window, or by the sweep_stale_paper_jobs cron backstop.
     # ------------------------------------------------------------------
 
     import secrets as _secrets_module
     import time as _time_module
 
     PAPER_TOKEN_TTL_SECONDS = 7 * 24 * 3600   # 7 days to redeem after pay
-    PAPER_JOB_TTL_SECONDS = 24 * 3600          # 24h before stale jobs expire
+    # PAPER_JOB_TTL_SECONDS lives at module scope (see top of file) so the
+    # scheduled sweep_stale_paper_jobs cron can share the same constant.
 
     def _gen_token() -> str:
         return _secrets_module.token_urlsafe(32)
@@ -1539,6 +1853,14 @@ def web():
         Volume packs mint multiple tokens; everything else mints one. All
         tokens for a session are stored under the same session_id key so
         the buyer can retrieve them all if needed.
+
+        Not IP-rate-limited: this is only reachable from the Netlify Stripe
+        webhook (server-to-server), so the caller's IP is Netlify's function
+        egress address shared across all purchases site-wide, not the buyer's.
+        An IP-keyed limit here would risk 429-ing legitimate concurrent
+        purchases rather than throttling an attacker. Auth is the header
+        secret above; that plus Stripe's own signature check on the Netlify
+        side is the real gate.
         """
         provided = request.headers.get("x-webhook-secret", "")
         expected = os.environ.get("BACKEND_WEBHOOK_SECRET", "")
@@ -1570,6 +1892,23 @@ def web():
                 status_code=400,
             )
 
+        # Defense-in-depth: the webhook is HMAC-authenticated, but a bug in
+        # the Netlify Stripe webhook (e.g. a price_id -> product_key mapping
+        # error) could still forward a product_key that doesn't match what
+        # was actually charged. Cross-check amount_paid against the
+        # catalog's expected amount for this product before minting tokens,
+        # so a mismapped 5-pack can't mint a 20-pack's worth of tokens.
+        expected_amount = product_cfg.get("amount")
+        paid_amount = amount_paid if isinstance(amount_paid, int) else 0
+        if expected_amount is not None and paid_amount != expected_amount:
+            return JSONResponse(
+                {
+                    "error": "amount_mismatch",
+                    "detail": f"product {product_key} expects {expected_amount}, got {paid_amount}",
+                },
+                status_code=400,
+            )
+
         # Idempotent: re-registering the same session_id returns the same tokens.
         existing = paper_tokens_dict.get(session_id)
         if existing and isinstance(existing, dict):
@@ -1580,6 +1919,12 @@ def web():
             })
 
         qty = int(product_cfg.get("qty", 1))
+        if qty < 1 or qty > MAX_PACK_QTY:
+            logger.error(
+                "product %s has out-of-bounds qty=%d (max %d); refusing to mint tokens",
+                product_key, qty, MAX_PACK_QTY,
+            )
+            return JSONResponse({"error": "invalid_product_qty"}, status_code=500)
         tokens = [_gen_token() for _ in range(qty)]
         entry = {
             "tokens": tokens,
@@ -1593,6 +1938,8 @@ def web():
             "expires_at": _time_module.time() + PAPER_TOKEN_TTL_SECONDS,
         }
         paper_tokens_dict[session_id] = entry
+        for _tok in tokens:
+            paper_token_index_dict[_tok] = session_id
 
         # Volume-pack tokens: email them all immediately
         if qty > 1 and entry["email"]:
@@ -1600,12 +1947,17 @@ def web():
                 from latextools import delivery as _delivery
                 import httpx as _httpx
                 async with _httpx.AsyncClient(timeout=10.0) as _ec:
-                    await _delivery.send_email(
+                    _email_result = await _delivery.send_email(
                         _ec,
                         to=entry["email"],
                         subject=f"Your {qty}-pack of Paper Reviews",
                         html=_delivery.html_volume_pack_tokens(tokens=tokens, pack_size=qty),
                         tags=[{"name": "product", "value": product_key}],
+                    )
+                if _email_result.get("status") != "ok":
+                    logger.warning(
+                        "volume pack email not sent for session_id=%s qty=%d: %s",
+                        session_id, qty, _email_result,
                     )
             except Exception:
                 logger.exception("volume pack email send failed")
@@ -1619,24 +1971,46 @@ def web():
 
     @api.post("/paper-review/redeem-session")
     async def paper_review_redeem_session(request: Request):
-        """Exchange a Stripe session_id for the job token(s).
+        """Exchange a Stripe session_id (or an already-issued job token) for
+        the job token(s).
 
         Returns the first unconsumed token for single-purchase products,
         or the full list for volume packs. Marks the session as redeemed.
+
+        Volume-pack buyers who saved a token from a previous redemption (the
+        "Use this token" link on the pack success page) can also look their
+        entry up by that token directly, without re-supplying the original
+        Stripe session_id — the token itself is already an unguessable,
+        payment-gated credential (see /paper-review/submit, which accepts
+        it directly), so trusting it here for lookup only is no weaker.
         """
+        if not _enforce_rate_limit(request, "paper-review-redeem-session"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
         try:
             payload = await request.json()
         except Exception:
             return JSONResponse({"error": "invalid_json"}, status_code=400)
         session_id = (payload or {}).get("session_id", "")
-        if not session_id or not isinstance(session_id, str) or len(session_id) > 200:
+        token_lookup = (payload or {}).get("token", "")
+
+        if session_id and isinstance(session_id, str) and len(session_id) <= 200:
+            entry = paper_tokens_dict.get(session_id)
+        elif token_lookup and isinstance(token_lookup, str) and len(token_lookup) <= 200:
+            session_id, entry = _lookup_token(token_lookup)
+        else:
             return JSONResponse({"error": "missing_session_id"}, status_code=400)
 
-        entry = paper_tokens_dict.get(session_id)
         if not entry or not isinstance(entry, dict):
             return JSONResponse({"error": "pending"}, status_code=404)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            # Purge on the app's own clock rather than relying on Modal
+            # Dict's inactivity-based TTL, which resets on any read/write
+            # to the dict (including unrelated lookups) and therefore
+            # cannot be trusted to actually evict logically-expired entries.
+            _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
+        if token_lookup and token_lookup in (entry.get("consumed_tokens") or []):
+            return JSONResponse({"error": "already_used"}, status_code=409)
 
         tokens: list[str] = entry.get("tokens") or []
         consumed = set(entry.get("consumed_tokens") or [])
@@ -1664,27 +2038,101 @@ def web():
             "status": "ok",
         })
 
+    def _expire_token_entry(session_id: str, entry: dict) -> None:
+        """Actively purge a logically-expired token entry.
+
+        modal.Dict has its own inactivity-based eviction (~7 days since the
+        *store* was last touched), which is independent of and cannot be
+        relied on to match our application-level `expires_at` field —
+        unrelated reads (e.g. `_lookup_token`'s fallback scan) keep expired
+        entries alive indefinitely, and idle entries with no traffic could
+        theoretically be evicted before `expires_at` even without ever being
+        marked expired here. We never rely on Modal's TTL for correctness;
+        this makes deletion of expired entries deterministic instead.
+        """
+        try:
+            for _tok in (entry.get("tokens") or []):
+                try:
+                    del paper_token_index_dict[_tok]
+                except Exception:
+                    pass
+            del paper_tokens_dict[session_id]
+        except Exception:
+            pass
+
     def _lookup_token(token: str):
         """Find the tokens entry containing this token. Returns
         (session_id, entry) or (None, None). For volume packs the entry
-        contains many tokens — we still return the same entry."""
+        contains many tokens — we still return the same entry.
+
+        Uses the token->session_id reverse index (paper_token_index_dict)
+        for an O(1) lookup. Falls back to a full linear scan of
+        paper_tokens_dict only for entries registered before the index
+        existed (or if the index is otherwise missing an entry), so older
+        in-flight sessions keep working during rollout.
+
+        Does NOT purge logically-expired entries itself — it still returns
+        them so callers can tell "expired" (410) apart from "never existed"
+        (404), matching the existing API contract. Callers that already
+        check `expires_at` are responsible for calling `_expire_token_entry`
+        once they've made that determination (see submit / redeem-session).
+        """
         if not token or not isinstance(token, str) or len(token) > 200:
             return None, None
+
+        session_id = paper_token_index_dict.get(token)
+        if session_id:
+            entry = paper_tokens_dict.get(session_id)
+            if isinstance(entry, dict) and token in (entry.get("tokens") or []):
+                return session_id, entry
+
+        # Fallback: pre-index entries or a stale/missing index record.
         for session_id, entry in list(paper_tokens_dict.items()):
             if not isinstance(entry, dict):
                 continue
             if token in (entry.get("tokens") or []):
+                # Backfill the index so subsequent lookups are O(1).
+                paper_token_index_dict[token] = session_id
                 return session_id, entry
         return None, None
 
+    def _claim_token(token: str) -> bool:
+        """Atomically claim a token for a single in-flight submission.
+
+        Backed by Modal Dict's compare-and-set `put(..., skip_if_exists=True)`,
+        which is atomic server-side. Returns True iff this call is the one
+        that created the claim (i.e. won the race); returns False if some
+        other concurrent request already holds it. Callers MUST check the
+        return value and bail out (without spawning a pipeline job) on False
+        — this is what prevents N concurrent requests for the same token
+        from all passing the "already_used" check and all spawning billable
+        pipeline runs.
+        """
+        return paper_token_claims_dict.put(token, _time_module.time(), skip_if_exists=True)
+
     def _consume_token(token: str, session_id: str, entry: dict) -> None:
-        """Mark a single token within a session entry as consumed."""
-        consumed = list(entry.get("consumed_tokens") or [])
-        if token not in consumed:
-            consumed.append(token)
-        entry["consumed_tokens"] = consumed
-        entry["last_consumed_at"] = _time_module.time()
-        paper_tokens_dict[session_id] = entry
+        """Mark a single token within a session entry as consumed.
+
+        This only updates the (eventually-consistent, non-atomic) bookkeeping
+        used for UI/status purposes. Billing-critical exclusivity is enforced
+        separately by `_claim_token`, which callers must invoke first.
+
+        Volume packs share one `entry` dict across all their tokens, so two
+        concurrent submissions for different tokens in the same pack can each
+        read the entry before the other's write lands. To avoid a last-write-
+        wins overwrite that silently drops the other request's consumed-token
+        bookkeeping, re-fetch the freshest copy of the entry from the dict
+        immediately before writing and union the consumed-token sets instead
+        of blindly replacing with the (possibly stale) `entry` passed in.
+        """
+        latest = paper_tokens_dict.get(session_id)
+        base = latest if isinstance(latest, dict) else entry
+        consumed = set(base.get("consumed_tokens") or [])
+        consumed |= set(entry.get("consumed_tokens") or [])
+        consumed.add(token)
+        base["consumed_tokens"] = list(consumed)
+        base["last_consumed_at"] = _time_module.time()
+        paper_tokens_dict[session_id] = base
 
     @api.post("/paper-review/submit")
     async def paper_review_submit(
@@ -1718,17 +2166,33 @@ def web():
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            # Purge on the app's own clock rather than relying on Modal
+            # Dict's inactivity-based TTL (see _expire_token_entry).
+            _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
 
         product_cfg = entry.get("product_cfg") or {}
-        if product_cfg.get("category", "paper-review") != "paper-review":
+        if product_cfg.get("category") != "paper-review":
             return JSONResponse(
                 {"error": "wrong_product",
                  "detail": "This token is for a different product."},
                 status_code=400,
             )
 
-        data = await file.read()
+        # Atomically claim the token before doing any expensive work. This
+        # closes the check-then-act race: only one concurrent request for
+        # the same token can win this CAS, so only one pipeline run is ever
+        # spawned per token, no matter how many requests race in.
+        if not _claim_token(token):
+            return JSONResponse({"error": "already_used"}, status_code=409)
+
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse(
+                {"error": "invalid", "detail": "File is too large (max 20 MB)."},
+                status_code=400,
+            )
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
@@ -1758,7 +2222,12 @@ def web():
                 chosen_journal = journal_key
 
         # Initialise the jobs_dict entry so the UI can poll immediately.
-        paper_jobs_dict[token] = {
+        # Uses the async Modal client (.put.aio / .spawn.aio) — calling the
+        # blocking equivalents from inside this async handler silently drops
+        # the write/spawn under load (confirmed via live testing: real
+        # customer submissions never actually enqueued the pipeline, leaving
+        # them stuck on "unknown_token" with no job ever created).
+        await paper_jobs_dict.put.aio(token, {
             "status": "queued",
             "stage": "queued",
             "progress_pct": 0,
@@ -1771,17 +2240,38 @@ def web():
             "layer_status": {},
             "tier": tier,
             "product": "paper-review",
-        }
+        })
+
+        # Only mark the token consumed once the pipeline has actually been
+        # handed off. If `.spawn()` itself throws (Modal control-plane
+        # error, container pool exhausted, serialization failure, etc.),
+        # release the claim so the token is still redeemable and report a
+        # 500 instead of silently burning the customer's paid credit on a
+        # job that never started.
+        try:
+            await paper_review_pipeline.spawn.aio(
+                token, data, domain,
+                tier=tier,
+                journal_key=chosen_journal,
+                anonymity_check=do_anonymity,
+                deliver_email=email if email and "@" in email and len(email) <= 254 else "",
+            )
+        except Exception:
+            logger.exception("paper_review_pipeline.spawn failed for token=%s", token[:12])
+            try:
+                await paper_jobs_dict.pop.aio(token)
+            except Exception:
+                pass
+            try:
+                await paper_token_claims_dict.pop.aio(token)
+            except Exception:
+                pass
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
 
         _consume_token(token, session_id, entry)
-
-        paper_review_pipeline.spawn(
-            token, data, domain,
-            tier=tier,
-            journal_key=chosen_journal,
-            anonymity_check=do_anonymity,
-            deliver_email=email if email and "@" in email and len(email) <= 254 else "",
-        )
 
         return JSONResponse({
             "token": token,
@@ -1794,6 +2284,14 @@ def web():
     # --- AI-SCoRe (NCA) dedicated endpoint -------------------------------------
     # Thin alias over the review pipeline's `nca` domain. Reuses all token / billing /
     # job-status plumbing; the only difference is the domain is fixed to AI-SCoRe.
+    #
+    # There is no dedicated 'aiscore' product category today — AI-SCoRe is sold
+    # as part of the paper-review catalog (same tokens, same tiers), so a
+    # 'paper-review' token is the only category this endpoint accepts. This
+    # gate is enforced here (not just inside paper_review_submit's own check)
+    # so the category this endpoint is willing to accept is explicit and
+    # doesn't silently widen if paper_review_submit's own gate is ever relaxed
+    # or a new adjacent-tool category is added to PAID_PRODUCTS.
     @api.post("/score/submit")
     async def aiscore_submit(
         request: Request,
@@ -1801,6 +2299,15 @@ def web():
         file: UploadFile = File(...),
         email: str = Form(""),
     ):
+        _, entry = _lookup_token(token)
+        if entry is not None:
+            product_cfg = entry.get("product_cfg") or {}
+            if product_cfg.get("category") != "paper-review":
+                return JSONResponse(
+                    {"error": "wrong_product",
+                     "detail": "This token is for a different product."},
+                    status_code=400,
+                )
         return await paper_review_submit(
             request, token=token, file=file, domain="nca", email=email,
         )
@@ -1819,8 +2326,56 @@ def web():
 
         status = entry.get("status", "running")
         if status == "done" and entry.get("result_md"):
-            # First successful retrieval of a completed review — delete
-            # the record so we don't retain the review text on our infra.
+            # Completed review. We used to atomically pop() the record on
+            # the very first successful retrieval so we'd hold zero copies
+            # of the review at rest. In practice that made delivery
+            # non-idempotent: a dropped response (backgrounded/throttled
+            # mobile tab, laptop sleep, flaky wifi eating the 200 after it
+            # left the server) or a second tab polling the same token would
+            # permanently lose the result even though the customer paid for
+            # it and never actually received it.
+            #
+            # Instead: keep serving the cached result for a short retrieval
+            # grace window after the first delivery, so refreshes/duplicate
+            # tabs/retries within that window still get it. The record is
+            # still deleted well before PAPER_JOB_TTL_SECONDS — either by
+            # this handler once the grace window elapses, or by the
+            # sweep_stale_paper_jobs cron as a backstop — so we don't retain
+            # manuscripts indefinitely.
+            now = _time_module.time()
+            delivered_at = entry.get("delivered_at")
+            if delivered_at is not None and (now - delivered_at) > PAPER_RESULT_GRACE_SECONDS:
+                # Grace window elapsed — this is a late poll arriving well
+                # after delivery. Clean up now rather than waiting for the
+                # daily sweep.
+                try:
+                    await paper_jobs_dict.pop.aio(token, None)
+                except Exception:
+                    pass
+                return JSONResponse({"error": "unknown_token"}, status_code=404)
+
+            if delivered_at is None:
+                # First successful retrieval — stamp it as delivered instead
+                # of deleting it. Written back with .put.aio so concurrent
+                # pollers (double-tab, retry) converge on the same
+                # delivered_at rather than racing a get-and-delete.
+                entry = {**entry, "delivered_at": now}
+                try:
+                    await paper_jobs_dict.put.aio(token, entry)
+                except Exception:
+                    logger.exception("failed to stamp delivered_at for token=%s", token[:12])
+
+            # Resolve the Stripe session_id server-side so the "Get invoice"
+            # button on the status page can work at all. We deliberately
+            # never put session_id in the status URL (it's a bearer
+            # credential for /paper-review/redeem-session — see upload.js —
+            # and would otherwise leak into browser history / Referer
+            # headers), so this is the only place the frontend can get it.
+            # By this point the token has already been consumed to produce
+            # this very result, so returning the session_id it belongs to
+            # reveals nothing the token holder doesn't already control.
+            session_id_for_invoice, _ = _lookup_token(token)
+
             payload = {
                 "status": "done",
                 "progress_pct": 100,
@@ -1836,12 +2391,9 @@ def web():
                 "compliance_result": entry.get("compliance_result"),
                 "anonymity_result": entry.get("anonymity_result"),
                 "deterministic_findings": entry.get("deterministic_findings"),
-                "_note": "This result has been deleted from server storage. Save it now.",
+                "session_id": session_id_for_invoice,
+                "_note": "This result will be deleted from server storage shortly. Save it now.",
             }
-            try:
-                del paper_jobs_dict[token]
-            except KeyError:
-                pass
             return JSONResponse({k: v for k, v in payload.items() if v is not None or k in ("annotated_pdf_b64",)})
 
         return JSONResponse({
@@ -1852,6 +2404,10 @@ def web():
             "tier": entry.get("tier", "standard"),
             "error": entry.get("error"),
             "layer_status": entry.get("layer_status", {}),
+            # Set only when a post-spawn pipeline crash burned the original
+            # token; a fresh, unconsumed token the customer can resubmit
+            # with instead of emailing support. See _reissue_token_on_failure.
+            "replacement_token": entry.get("replacement_token"),
         })
 
     # ------------------------------------------------------------------
@@ -1859,6 +2415,8 @@ def web():
     # ------------------------------------------------------------------
     @api.get("/paper-review/journals")
     async def paper_review_journals(request: Request, domain: str = "general"):
+        if not _enforce_rate_limit(request, "paper-review-journals"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
         from latextools import journals as _jnl
         return JSONResponse({
             "journals": _jnl.list_journals_for_domain(domain),
@@ -1868,15 +2426,55 @@ def web():
     # Adjacent paid-tool submit endpoints. Each validates the token,
     # confirms the product matches, and spawns the dispatcher.
     # ------------------------------------------------------------------
-    def _start_adjacent(token: str, session_id: str, entry: dict, *,
-                        product: str, spawn_kwargs: dict) -> None:
-        paper_jobs_dict[token] = {
+    async def _start_adjacent(token: str, session_id: str, entry: dict, *,
+                        product: str, spawn_kwargs: dict) -> str:
+        """Atomically claim `token` and spawn the adjacent-tool pipeline.
+
+        Returns one of:
+          - "claimed":      spawn succeeded, token is now consumed.
+          - "already_used": token was already claimed by a concurrent
+                             request — caller must respond with 409.
+          - "spawn_failed":  the claim was won but `.spawn()` raised; the
+                             claim/job-dict entry were rolled back and the
+                             token was NOT consumed, so the caller must
+                             respond with a retryable error (not 409).
+
+        Uses the async Modal client (.put.aio / .spawn.aio) rather than the
+        blocking calls — calling blocking Modal interfaces from inside an
+        async request handler silently drops the write/spawn under load
+        (confirmed via live testing: the synchronous .spawn() here never
+        actually enqueued the pipeline, leaving paying customers stuck on
+        "unknown_token" with no job ever created).
+
+        Only marks the token consumed once the pipeline has actually been
+        handed off. If `.spawn()` itself throws (Modal control-plane error,
+        container pool exhausted, serialization failure, etc.), release the
+        claim so the token is still redeemable instead of silently burning
+        the customer's paid credit on a job that never started. Mirrors the
+        spawn-before-consume ordering in `paper_review_submit` above.
+        """
+        if not _claim_token(token):
+            return "already_used"
+        await paper_jobs_dict.put.aio(token, {
             "status": "queued", "stage": "queued",
             "progress_pct": 0, "started_at": _time_module.time(),
             "product": product, "result_md": None,
-        }
+        })
+        try:
+            await adjacent_tool_pipeline.spawn.aio(token, product, **spawn_kwargs)
+        except Exception:
+            logger.exception("adjacent_tool_pipeline.spawn failed for token=%s product=%s", token[:12], product)
+            try:
+                await paper_jobs_dict.pop.aio(token)
+            except Exception:
+                pass
+            try:
+                await paper_token_claims_dict.pop.aio(token)
+            except Exception:
+                pass
+            return "spawn_failed"
         _consume_token(token, session_id, entry)
-        adjacent_tool_pipeline.spawn(token, product, **spawn_kwargs)
+        return "claimed"
 
     @api.post("/cover-letter/submit")
     async def cover_letter_submit(
@@ -1895,6 +2493,9 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
         if (entry.get("product_cfg") or {}).get("category") != "cover-letter":
             return JSONResponse({"error": "wrong_product"}, status_code=400)
         abstract = (abstract or "").strip()
@@ -1903,15 +2504,30 @@ def web():
                 {"error": "invalid", "detail": "Abstract is required and must be ≤ 5000 chars."},
                 status_code=400,
             )
+        if not _looks_like_abstract(abstract):
+            return JSONResponse(
+                {
+                    "error": "invalid",
+                    "detail": "That doesn't look like a paper abstract. Please paste your actual abstract text.",
+                },
+                status_code=400,
+            )
         if not journal_name or len(journal_name) > 300:
             return JSONResponse({"error": "invalid", "detail": "Journal name required."}, status_code=400)
-        _start_adjacent(token, session_id, entry, product="cover-letter", spawn_kwargs={
+        claimed = await _start_adjacent(token, session_id, entry, product="cover-letter", spawn_kwargs={
             "title_only": (title or "")[:300],
             "abstract_only": abstract,
             "journal_name": journal_name,
             "custom_note": (custom_note or "")[:1000],
             "deliver_email": email if email and "@" in email else "",
         })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
 
     @api.post("/anonymity-check/submit")
@@ -1930,19 +2546,32 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
         if (entry.get("product_cfg") or {}).get("category") != "anonymity-check":
             return JSONResponse({"error": "wrong_product"}, status_code=400)
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
             return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
-        _start_adjacent(token, session_id, entry, product="anonymity-check", spawn_kwargs={
+        claimed = await _start_adjacent(token, session_id, entry, product="anonymity-check", spawn_kwargs={
             "pdf_bytes": data,
             "deliver_email": email if email and "@" in email else "",
         })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
 
     @api.post("/citation-gap/submit")
@@ -1961,19 +2590,32 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
         if (entry.get("product_cfg") or {}).get("category") != "citation-gap":
             return JSONResponse({"error": "wrong_product"}, status_code=400)
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
             return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
-        _start_adjacent(token, session_id, entry, product="citation-gap", spawn_kwargs={
+        claimed = await _start_adjacent(token, session_id, entry, product="citation-gap", spawn_kwargs={
             "pdf_bytes": data,
             "deliver_email": email if email and "@" in email else "",
         })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
 
     @api.post("/revision-review/submit")
@@ -1993,22 +2635,35 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
         if (entry.get("product_cfg") or {}).get("category") != "revision-review":
             return JSONResponse({"error": "wrong_product"}, status_code=400)
         if not original_review_md or len(original_review_md) > 120_000:
             return JSONResponse({"error": "invalid", "detail": "Original review required (≤ 120k chars)."}, status_code=400)
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
             return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
-        _start_adjacent(token, session_id, entry, product="revision-review", spawn_kwargs={
+        claimed = await _start_adjacent(token, session_id, entry, product="revision-review", spawn_kwargs={
             "pdf_bytes": data,
             "original_review_md": original_review_md,
             "deliver_email": email if email and "@" in email else "",
         })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
 
     @api.post("/response-review/submit")
@@ -2029,25 +2684,38 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
         if (entry.get("product_cfg") or {}).get("category") != "response-review":
             return JSONResponse({"error": "wrong_product"}, status_code=400)
         if not reviewer_comments or len(reviewer_comments) > 60_000:
             return JSONResponse({"error": "invalid", "detail": "Reviewer comments required (≤ 60k)."}, status_code=400)
         if not author_response or len(author_response) > 60_000:
             return JSONResponse({"error": "invalid", "detail": "Author response required (≤ 60k)."}, status_code=400)
-        data = await file.read()
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
             return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
-        _start_adjacent(token, session_id, entry, product="response-review", spawn_kwargs={
+        claimed = await _start_adjacent(token, session_id, entry, product="response-review", spawn_kwargs={
             "pdf_bytes": data,
             "reviewer_comments": reviewer_comments,
             "author_response": author_response,
             "deliver_email": email if email and "@" in email else "",
         })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
 
     # ------------------------------------------------------------------
@@ -2059,19 +2727,32 @@ def web():
         for a past Checkout session, then email the hosted-invoice URL via
         Resend. The caller provides the Stripe session_id and (optionally)
         an institutional tax-ID line to append."""
+        if not _enforce_rate_limit(request, "paper-review-invoice"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
         try:
             payload = await request.json()
         except Exception:
             return JSONResponse({"error": "invalid_json"}, status_code=400)
         session_id = (payload or {}).get("session_id", "")
         tax_id_line = (payload or {}).get("tax_id_line", "")[:200]
+        token = (payload or {}).get("token", "")
         if not session_id or not isinstance(session_id, str):
             return JSONResponse({"error": "missing_session_id"}, status_code=400)
+        if not token or not isinstance(token, str):
+            return JSONResponse({"error": "missing_token"}, status_code=400)
 
         # We require the session_id be one we have on record
         token_entry = paper_tokens_dict.get(session_id)
         if not token_entry:
             return JSONResponse({"error": "unknown_session"}, status_code=404)
+
+        # session_id alone is not sufficient authorization: it is embedded
+        # in the post-checkout success URL and can leak via browser
+        # history/Referer/screenshots (see the comment on /paper-review/status
+        # above). Require proof of possession of the associated job token,
+        # matching the bar every submit/redeem endpoint already enforces.
+        if token not in (token_entry.get("tokens") or []):
+            return JSONResponse({"error": "invalid_token"}, status_code=403)
 
         stripe_key = os.environ.get("STRIPE_SECRET_KEY")
         if not stripe_key:
@@ -2091,13 +2772,12 @@ def web():
                     headers={"Authorization": f"Bearer {stripe_key}"},
                 )
                 if resp.status_code != 200:
-                    return JSONResponse(
-                        {"error": "stripe_lookup_failed", "detail": resp.text[:300]},
-                        status_code=502,
-                    )
+                    logger.error("stripe checkout session lookup failed: %s", resp.text[:300])
+                    return JSONResponse({"error": "stripe_lookup_failed"}, status_code=502)
                 session = resp.json()
-            except Exception as e:
-                return JSONResponse({"error": "stripe_unreachable", "detail": str(e)[:200]}, status_code=502)
+            except Exception:
+                logger.exception("stripe checkout session lookup unreachable")
+                return JSONResponse({"error": "stripe_unreachable"}, status_code=502)
 
             customer = session.get("customer")
             customer_email = (
@@ -2116,10 +2796,8 @@ def web():
                     data={"email": customer_email or "ben@purplelink.llc"},
                 )
                 if cust_resp.status_code >= 300:
-                    return JSONResponse(
-                        {"error": "stripe_customer_failed", "detail": cust_resp.text[:300]},
-                        status_code=502,
-                    )
+                    logger.error("stripe customer create failed: %s", cust_resp.text[:300])
+                    return JSONResponse({"error": "stripe_customer_failed"}, status_code=502)
                 customer = cust_resp.json().get("id")
 
             # Create a draft invoice tied to the customer
@@ -2138,10 +2816,8 @@ def web():
                 },
             )
             if inv_resp.status_code >= 300:
-                return JSONResponse(
-                    {"error": "stripe_invoice_failed", "detail": inv_resp.text[:300]},
-                    status_code=502,
-                )
+                logger.error("stripe invoice create failed: %s", inv_resp.text[:300])
+                return JSONResponse({"error": "stripe_invoice_failed"}, status_code=502)
             invoice = inv_resp.json()
             invoice_id = invoice.get("id")
 
@@ -2158,10 +2834,8 @@ def web():
                 },
             )
             if item_resp.status_code >= 300:
-                return JSONResponse(
-                    {"error": "stripe_invoice_item_failed", "detail": item_resp.text[:300]},
-                    status_code=502,
-                )
+                logger.error("stripe invoice item create failed: %s", item_resp.text[:300])
+                return JSONResponse({"error": "stripe_invoice_item_failed"}, status_code=502)
 
             # Finalise
             final_resp = await client.post(
@@ -2170,10 +2844,8 @@ def web():
                 data={"auto_advance": "false"},
             )
             if final_resp.status_code >= 300:
-                return JSONResponse(
-                    {"error": "stripe_finalize_failed", "detail": final_resp.text[:300]},
-                    status_code=502,
-                )
+                logger.error("stripe invoice finalize failed: %s", final_resp.text[:300])
+                return JSONResponse({"error": "stripe_finalize_failed"}, status_code=502)
             finalised = final_resp.json()
 
             invoice_pdf = finalised.get("invoice_pdf")
@@ -2183,7 +2855,7 @@ def web():
             if customer_email and invoice_pdf:
                 from latextools import delivery as _delivery
                 try:
-                    await _delivery.send_email(
+                    _email_result = await _delivery.send_email(
                         client,
                         to=customer_email,
                         subject="Your Purplelink invoice",
@@ -2193,6 +2865,11 @@ def web():
                         ),
                         tags=[{"name": "type", "value": "invoice"}],
                     )
+                    if _email_result.get("status") != "ok":
+                        logger.warning(
+                            "invoice email not sent for invoice_id=%s: %s",
+                            invoice_id, _email_result,
+                        )
                 except Exception:
                     logger.exception("invoice email failed")
 
@@ -2204,3 +2881,111 @@ def web():
         })
 
     return api
+
+
+# ---------------------------------------------------------------------------
+# Scheduled cleanup — proactive TTL sweep for paper_tokens_dict.
+#
+# The `expires_at` check inside /redeem-session and /submit (see
+# _expire_token_entry above) only purges an entry when someone actually
+# hits one of those endpoints for it. A token the buyer never redeems or
+# submits is never touched again, so its entry (email, product_cfg,
+# tokens, amount_paid, created_at) would otherwise sit in Modal Dict
+# storage forever — a much weaker guarantee than "tokens expire after 7
+# days" implies if read as a retention/deletion promise. This cron
+# actively deletes any entry whose `expires_at` has passed, regardless of
+# whether it was ever revisited.
+# ---------------------------------------------------------------------------
+
+@app.function(
+    image=modal.Image.debian_slim(python_version="3.11"),
+    schedule=modal.Cron("0 6 * * *"),  # daily, well under the 7-day TTL
+    timeout=300,
+)
+def sweep_expired_paper_tokens() -> int:
+    """Delete paper_tokens_dict (+ paper_token_index_dict) entries whose
+    expires_at has passed. Returns the number of entries purged."""
+    import time as _time
+
+    now = _time.time()
+    purged = 0
+    for session_id, entry in list(paper_tokens_dict.items()):
+        if not isinstance(entry, dict):
+            continue
+        expires_at = entry.get("expires_at", 0)
+        if not expires_at or expires_at >= now:
+            continue
+        for tok in (entry.get("tokens") or []):
+            try:
+                del paper_token_index_dict[tok]
+            except Exception:
+                pass
+        try:
+            del paper_tokens_dict[session_id]
+        except Exception:
+            pass
+        else:
+            purged += 1
+    if purged:
+        logger.info("sweep_expired_paper_tokens purged %d expired entr%s", purged, "y" if purged == 1 else "ies")
+    return purged
+
+
+# ---------------------------------------------------------------------------
+# Scheduled cleanup — proactive TTL sweep for paper_jobs_dict.
+#
+# /paper-review/status keeps a completed job around for
+# PAPER_RESULT_GRACE_SECONDS after first delivery (see `delivered_at`) so a
+# refresh, a second tab, or a dropped response doesn't permanently lose a
+# paid result, and reaps it itself once that window elapses *if the token
+# is polled again*. Jobs that ended in status == "error" (pipeline
+# exception, empty result_md), or a delivered job that is never polled
+# again after its grace window, are never touched by that inline path and
+# would otherwise sit in paper_jobs_dict indefinitely — PAPER_JOB_TTL_SECONDS
+# was previously just documentation, not an enforced limit. This cron
+# actively deletes any job entry whose grace window (if delivered) or
+# overall TTL (if not) has elapsed, regardless of whether it was ever
+# polled again. Error entries carry no manuscript text (only status
+# metadata + a truncated exception string), so this is a lower-severity
+# cleanup than the token sweep above, but it should still happen.
+# ---------------------------------------------------------------------------
+
+@app.function(
+    image=modal.Image.debian_slim(python_version="3.11"),
+    schedule=modal.Cron("30 6 * * *"),  # daily, offset from the token sweep
+    timeout=300,
+)
+def sweep_stale_paper_jobs() -> int:
+    """Delete paper_jobs_dict entries past their retention window.
+
+    Delivered jobs (delivered_at set) are purged PAPER_RESULT_GRACE_SECONDS
+    after delivery; everything else is purged PAPER_JOB_TTL_SECONDS after
+    it started. Covers jobs that ended in status == "error", were never
+    polled to completion, or were delivered but never polled again —
+    none of which are cleaned up by the normal /paper-review/status
+    "done" retrieval path. Returns the number of entries purged.
+    """
+    import time as _time
+
+    now = _time.time()
+    purged = 0
+    for token, entry in list(paper_jobs_dict.items()):
+        if not isinstance(entry, dict):
+            continue
+        delivered_at = entry.get("delivered_at")
+        if delivered_at is not None:
+            if (now - delivered_at) < PAPER_RESULT_GRACE_SECONDS:
+                continue
+        else:
+            started_at = entry.get("started_at", 0)
+            if not started_at or (now - started_at) < PAPER_JOB_TTL_SECONDS:
+                continue
+        try:
+            del paper_jobs_dict[token]
+        except Exception:
+            pass
+        else:
+            purged += 1
+    if purged:
+        logger.info("sweep_stale_paper_jobs purged %d stale job entr%s", purged, "y" if purged == 1 else "ies")
+    return purged

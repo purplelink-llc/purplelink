@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>hyperparameter asymmetry — why it matters | Purplelink</title>
+    <meta name="description" content="Tuning the proposed method, not the baselines. Canonical short explainer of hyperparameter asymmetry for academic authors.">
+    <link rel="canonical" href="https://purplelink.llc/guides/why-it-matters/hyperparameter-asymmetry/">
+    <meta property="og:title" content="hyperparameter asymmetry — why it matters">
+    <meta property="og:description" content="Tuning the proposed method, not the baselines.">
+    <meta property="og:url" content="https://purplelink.llc/guides/why-it-matters/hyperparameter-asymmetry/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/why-it-matters.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "hyperparameter asymmetry — why it matters",
+      "description": "Tuning the proposed method, not the baselines",
+      "url": "https://purplelink.llc/guides/why-it-matters/hyperparameter-asymmetry/",
+      "author": { "@type": "Organization", "name": "Purplelink LLC" },
+      "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+      "mainEntityOfPage": "https://purplelink.llc/guides/why-it-matters/hyperparameter-asymmetry/"
+    }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar"><a class="brand" href="/" aria-label="Purplelink home"><img src="/assets/purplelink-logo.png" alt="" width="30" height="30"><span>Purplelink</span></a><nav aria-label="Primary navigation"><a href="/#software">Software</a><a href="/#projects">Products</a><a href="/tools/">Tools</a><a href="/blog/">Blog</a><a href="/changelog/">Changelog</a><a href="/about/">About</a><a href="/#contact">Contact</a></nav></header>
+    <main id="main-content" class="static-page">
+      <a class="back-link" href="/guides/why-it-matters/">← Why it matters</a>
+      <p class="page-meta">Manuscript red-team reference · companion to <a href="/tools/paper-review/">Paper Review</a></p>
+      <h1>hyperparameter asymmetry</h1>
+      <p><strong>Tuning the proposed method, not the baselines.</strong></p>
+
+      <h2>What it is</h2>
+      <p>Your method might genuinely be better, OR you might have spent 100 GPU-days on hyperparameter search for your method and 5 minutes on default settings for the baselines. The empirical gap shrinks when both sides get matched search budgets — sometimes it disappears entirely.</p>
+
+      <h2>Why a reviewer cares</h2>
+      <p>Reviewers ask: what search budget did each method get? Were the same search ranges used? Did baselines have access to the same data augmentation, regularisation, and training recipe? An empirical comparison where only the proposed method's hyperparameters are tuned is not a fair comparison.</p>
+
+      <h2>How to fix it</h2>
+      <p>Match the hyperparameter search budget across all methods. If a baseline has fewer hyperparameters, give it the same number of search iterations. Report the search protocol explicitly in the methods. Where you can't match search budget, run an ablation showing what the gap looks like with matched effort.</p>
+
+      <hr style="border:none;border-top:1px solid #ffffff14;margin:2rem 0">
+      <p>This is one of <a href="/guides/why-it-matters/">~15 canonical methodology explainers</a> Paper Review's red-team report links to. To get a full review of your manuscript, <a href="/tools/paper-review/" class="link-strong">start a Paper Review — $9</a>.</p>
+    </main>
+    <footer class="footer"><div class="footer-top"><div class="footer-brand"><img src="/assets/purplelink-logo.png" alt="" width="26" height="26"><span>Purplelink LLC</span></div><span class="footer-loc">Atlanta, Georgia · Est. 2026</span></div><nav class="footer-links" aria-label="Footer navigation"><a href="/about/">About</a><a href="/press/">Press</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/blog/">Blog</a><a href="/guides/">Guides</a><a href="/changelog/">Changelog</a></nav></footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>

@@ -22,6 +22,8 @@ from __future__ import annotations
 import io
 import logging
 import re
+import unicodedata
+from collections import defaultdict
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -31,9 +33,53 @@ logger = logging.getLogger(__name__)
 MAX_ANNOTATIONS_TOTAL = 60
 MAX_ANNOTATIONS_PER_PAGE = 8
 
+# Mirrors papercheck.MAX_EXTRACT_PAGES: the primary extraction path already
+# bounds pdfplumber text extraction to the first N pages, so re-extracting
+# text here for annotation placement should honor the same bound rather than
+# re-parsing an unbounded number of pages a second time.
+MAX_ANNOTATE_TEXT_PAGES = 400
+
+# Defense in depth: even though these findings come from our own pipeline,
+# a successful prompt-injection upstream (e.g. via the L1 vision channel)
+# could steer L1/L3 output into arbitrary text that gets embedded verbatim
+# in a FreeText annotation on the user's downloaded PDF. Mirror the
+# invisible/control-character stripping that safety.sanitize_user_text
+# applies on the input side, plus a hard length cap per annotation, so a
+# manipulated finding can't smuggle hidden Unicode or blow up the PDF with
+# an oversized sticky note.
+MAX_ANNOTATION_TEXT_CHARS = 2_000
+
+_INVISIBLE_PATTERN = re.compile(
+    r"[​-‏‪-‮⁠-⁩⁪-⁯﻿؜]"
+)
+_CONTROL_PATTERN = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]")
+
+
+def _sanitize_annotation_text(text: str) -> str:
+    """Strip invisible/control characters and cap length for PDF annotations.
+
+    Applied to every string that ends up inside a FreeText annotation, since
+    that text is LLM-derived and (in a chained-exploit scenario) could carry
+    attacker-steered content through to a file the user forwards to others.
+    """
+    if not text:
+        return ""
+    text = unicodedata.normalize("NFKC", text)
+    text = _INVISIBLE_PATTERN.sub("", text)
+    text = _CONTROL_PATTERN.sub("", text)
+    if len(text) > MAX_ANNOTATION_TEXT_CHARS:
+        text = text[:MAX_ANNOTATION_TEXT_CHARS].rstrip() + "…"
+    return text
+
 
 def _build_page_text_map(pdf_bytes: bytes) -> dict[int, str]:
-    """Return {1-based page number: text} extracted via pdfplumber."""
+    """Return {1-based page number: text} extracted via pdfplumber.
+
+    Bounded by MAX_ANNOTATE_TEXT_PAGES (mirrors papercheck.MAX_EXTRACT_PAGES)
+    so a manuscript with a huge page count doesn't force a second unbounded
+    full-document pdfplumber pass here, on top of the one extract_paper()
+    already did.
+    """
     try:
         import pdfplumber
     except ImportError:
@@ -42,6 +88,13 @@ def _build_page_text_map(pdf_bytes: bytes) -> dict[int, str]:
     try:
         with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
             for idx, page in enumerate(pdf.pages, start=1):
+                if idx > MAX_ANNOTATE_TEXT_PAGES:
+                    logger.warning(
+                        "_build_page_text_map: PDF exceeds MAX_ANNOTATE_TEXT_PAGES "
+                        "(%d); truncating quote-search text extraction",
+                        MAX_ANNOTATE_TEXT_PAGES,
+                    )
+                    break
                 try:
                     out[idx] = page.extract_text() or ""
                 except Exception:
@@ -176,7 +229,10 @@ def annotate_pdf(
     page_texts = _build_page_text_map(pdf_bytes)
 
     # Gather (page, source, finding) triples, capped + balanced across pages.
-    page_buckets: dict[int, list[tuple[str, dict]]] = {p: [] for p in range(1, n_pages + 1)}
+    # A defaultdict avoids pre-allocating one entry per page up front, which
+    # matters for manuscripts with a very large page count (see
+    # MAX_ANNOTATE_TEXT_PAGES above for the matching text-extraction bound).
+    page_buckets: dict[int, list[tuple[str, dict]]] = defaultdict(list)
     total = 0
 
     def _add(page: int, source: str, f: dict) -> None:
@@ -253,7 +309,7 @@ def annotate_pdf(
             bottom = top - ann_height
             if bottom < 30:
                 break
-            text = _make_annotation_text(f, source)
+            text = _sanitize_annotation_text(_make_annotation_text(f, source))
             severity = (f.get("severity") or "minor").lower()
             # Colour by severity: critical = light red, major = light amber,
             # minor = light blue. RGB tuples in 0..1.

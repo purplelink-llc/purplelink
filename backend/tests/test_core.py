@@ -119,20 +119,22 @@ def test_rate_limit_key_buckets_are_independent():
     assert "203.0.113.7" not in compile_k  # raw IP still never stored
 
 
-def test_client_ip_prefers_rightmost_public_address():
+def test_client_ip_prefers_rightmost_address():
     # Attacker prepends a fake public IP; trusted ingress appends the real one.
     xff = "1.1.1.1, 8.8.8.8"
     assert core.client_ip_from_forwarded(xff, peer="9.9.9.9") == "8.8.8.8"
 
 
-def test_client_ip_skips_private_and_reserved_hops():
+def test_client_ip_does_not_skip_past_untrusted_last_hop():
+    # A caller-controlled non-public/malformed last entry must NOT cause the
+    # scan to fall through to an earlier, attacker-forged "public" entry --
+    # that earlier entry could be fabricated to mint a fresh rate-limit
+    # bucket on every request. Fail closed to peer instead.
     xff = "8.8.8.8, 10.0.0.1, 192.168.1.1"
-    assert core.client_ip_from_forwarded(xff, peer=None) == "8.8.8.8"
+    assert core.client_ip_from_forwarded(xff, peer="9.9.9.9") == "9.9.9.9"
 
-
-def test_client_ip_ignores_malformed_entries():
-    xff = "not-an-ip, 8.8.8.8"
-    assert core.client_ip_from_forwarded(xff, peer=None) == "8.8.8.8"
+    xff2 = "8.8.8.8, not-an-ip"
+    assert core.client_ip_from_forwarded(xff2, peer="9.9.9.9") == "9.9.9.9"
 
 
 def test_client_ip_falls_back_to_peer_when_no_public_forwarded():

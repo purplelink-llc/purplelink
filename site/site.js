@@ -6,6 +6,11 @@
 // confusing 500 from an unconfigured Stripe endpoint.
 //
 // To re-enable purchases later, just delete this IIFE.
+//
+// TEMPORARILY DISABLED 2026-07-03 for a live Stripe test-mode click-through
+// (all 10 products + webhook wired, verified via API). Re-enable by
+// uncommenting this block before going live for real.
+/*
 (() => {
   const COMING_SOON_FLAG = "data-coming-soon";
 
@@ -42,6 +47,7 @@
     apply();
   }
 })();
+*/
 
 // Under-construction banner — site-wide notice that the paid manuscript
 // tools (Paper Review, Cover Letter, Anonymity Check, Citation Gap,
