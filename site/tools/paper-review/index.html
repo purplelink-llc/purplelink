@@ -128,7 +128,8 @@
       </div>
 
       <section class="pr-sample">
-        <details open>
+        <h2 class="pr-sample-heading">Sample report</h2>
+        <details>
           <summary>What does the report look like? <span class="pr-sample-toggle">View sample</span></summary>
           <div class="pr-sample-body">
             <pre>
@@ -223,6 +224,7 @@ _5 citations with weaker claims were not audited (per-run cap)._
           </span>
         </label>
       </fieldset>
+      <p class="pr-packs-hint">Reviewing more than one manuscript? <a href="/tools/paper-review/packs/">Volume packs</a> save 16-17% per review.</p>
 
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn">Start review — $9</button>
@@ -265,78 +267,6 @@ _5 citations with weaker claims were not audited (per-run cap)._
             rectification checklist, and an honest novelty estimate.
           </li>
         </ol>
-      </section>
-
-      <section class="pr-sample">
-        <details>
-          <summary>What does the report look like? <span class="pr-sample-toggle">View sample</span></summary>
-          <div class="pr-sample-body">
-            <pre>
-# Manuscript Review
-
-## Critical Blind Spots
-
-- **Hyperparameter search asymmetry favors the proposed method.**
-  Quoted: "We tuned learning rate and batch size on the validation
-  set; baselines used reported defaults."
-  Surfaced by: Methodology Critic, Statistical Skeptic (consensus).
-  Fix: Match search budget for each baseline; report the protocol
-  in the methods section.
-
-- **Sample-size justification missing for Experiment 2.**
-  Quoted: "We collected 24 participants ... yielding sufficient
-  statistical power."
-  Surfaced by: Statistical Skeptic.
-  Fix: Provide an explicit power calculation with assumed effect
-  size and the source of that assumption. With n=24 and the
-  reported effect, post-hoc power is below 0.6.
-
-## Data-to-Claim Contradictions
-
-- Claim: "Our method beats all baselines by a wide margin."
-  Evidence: Table 2 shows the proposed method tied with Baseline C
-  within reported standard errors on 4 of 7 datasets.
-
-## Rectification Checklist
-
-- [A] Add hyperparameter search protocol to methods (page 5,
-  Section 3.2). Match search budget across all baselines.
-- [A] Replace "wide margin" framing in abstract and Section 5
-  with what the data actually shows.
-- [B] Add per-seed variance to all results tables.
-- [B] Reference [17] does not resolve to a CrossRef entry —
-  re-verify the citation.
-- [C] Figure 3's y-axis breaks 0–60 then jumps to 90; redraw on
-  a continuous scale.
-
-## True Novelty Estimate
-
-The core architectural contribution is genuinely novel and not
-covered by [11] or [23]. The empirical comparison, as currently
-framed, oversells the gap. Marginal advance: the proposed mechanism
-is interesting but the published evidence does not yet warrant the
-strength of the abstract's claim.
-
-## Reference Verification Summary
-
-47 of 52 references verified against CrossRef. 3 had weak title
-matches (re-check [12], [17], [31]). 2 had no DOI and could not be
-located by title — verify these are correctly cited.
-
-## Citation Support Audit
-
-Verdicts: 18 supported, 4 partially supported, 2 not supported by
-abstract, 1 contradicted, 3 source unavailable.
-
-| Claim | Cited ref | Verdict | What the source's abstract says |
-|---|---|---|---|
-| "Method X reduces error by 40%." | [14] | Contradicted | Abstract reports a 4% reduction, not 40%. Verify the figure. |
-| "Prior work proved this is optimal." | [9] | Not supported by abstract | Abstract describes a heuristic; optimality may be in the full text. |
-
-_5 citations with weaker claims were not audited (per-run cap)._
-            </pre>
-          </div>
-        </details>
       </section>
 
       <section class="pr-pricing">

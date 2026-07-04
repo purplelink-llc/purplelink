@@ -77,6 +77,9 @@
   background: color-mix(in oklch, var(--purple) 6%, var(--bg));
 }
 
+.pr-packs-hint { max-width: 820px; margin: 0 auto 0.4rem; padding: 0 24px; box-sizing: border-box; text-align: center; font-size: 0.85rem; color: var(--muted); }
+.pr-packs-hint a { color: var(--purple); font-weight: 600; }
+
 /* Checkout row — centered within the 820px content column, under a
    centered .tools-hero. justify-content: center keeps the button + meta
    line lined up with the centered hero text above instead of hugging the
@@ -133,6 +136,18 @@
   color: var(--ink);
 }
 .pr-sample summary::-webkit-details-marker { display: none; }
+/* Visually hidden but present in the heading outline, so screen-reader
+   users navigating by heading (not just by tab order) can find the sample
+   report section instead of skipping past the <summary>. */
+.pr-sample-heading {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 .pr-sample-toggle { font-size: 0.85rem; color: var(--purple); font-weight: 500; }
 .pr-sample[open] .pr-sample-toggle::after { content: " — close"; }
 /* The inner <pre> is intentionally a dark code block — sample reports
