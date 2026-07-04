@@ -291,16 +291,147 @@ _REF_DOI_RE = re.compile(r"\b(10\.\d{4,9}/[-._;()/:A-Za-z0-9]+)", re.IGNORECASE)
 _REF_ARXIV_RE = re.compile(r"\barXiv:\s*(\d{4}\.\d{4,5})", re.IGNORECASE)
 _REF_YEAR_RE = re.compile(r"\b(19\d{2}|20\d{2})\b")
 
+# pdfplumber's default x_tolerance (3) is too coarse for the tight,
+# justified inter-word spacing common in academic PDFs (esp. two-column
+# IEEE/ACM-style layouts) — it merges adjacent words with no space between
+# them (e.g. "Cameron,A.C.,Gelbach,J.B.,&Miller,D.L.(2008)."). A tighter
+# tolerance fixes this without observable cost on normally-spaced PDFs.
+_TEXT_X_TOLERANCE = 2
 
-def _looks_like_bibliography_heading(line: str) -> bool:
-    """Heuristic: is this line the start of the references section?"""
-    s = line.strip().lower()
-    if not s or len(s) > 40:
-        return False
-    return s in {
-        "references", "bibliography", "works cited", "literature cited",
-        "references cited", "reference list",
-    } or s.startswith("references") or s.startswith("bibliography")
+# Fraction of a page's width, centered on the midline, treated as the
+# "gutter" a two-column layout's text should not cross.
+_COLUMN_GUTTER_FRACTION = 0.03
+# If more than this fraction of words on a page cross the gutter band, the
+# page is treated as single-column (or a wide table/figure) rather than
+# two-column.
+_COLUMN_CROSSING_THRESHOLD = 0.05
+_COLUMN_MIN_WORDS = 20
+
+
+def _extract_page_text(page) -> str:
+    """Extract a page's text, correcting two pdfplumber defaults that
+    silently break heading/reference detection on real academic PDFs:
+
+    1. The default word-spacing tolerance is too coarse for tightly-kerned
+       justified text, so words merge together with no space between them.
+    2. The default reading order interleaves both columns of a two-column
+       layout onto the same output line (and can merge words from
+       different columns together too).
+
+    Either failure mode alone can prevent a "References" heading from ever
+    appearing as a clean, isolated line, silently dropping the entire
+    bibliography even though it's present and well-formed. Both are fixed
+    here: a tighter `x_tolerance` for accurate word boundaries, and a
+    gutter-detection heuristic that extracts a two-column page's halves
+    separately, left column fully before right column.
+    """
+    try:
+        words = page.extract_words(x_tolerance=_TEXT_X_TOLERANCE) or []
+    except Exception:
+        words = []
+    if len(words) < _COLUMN_MIN_WORDS:
+        return page.extract_text(x_tolerance=_TEXT_X_TOLERANCE) or ""
+
+    page_width = page.width
+    mid = page_width / 2
+    gutter_lo = mid - page_width * _COLUMN_GUTTER_FRACTION
+    gutter_hi = mid + page_width * _COLUMN_GUTTER_FRACTION
+    crossing_gutter = sum(
+        1 for w in words if w["x0"] < gutter_hi and w["x1"] > gutter_lo
+    )
+    if crossing_gutter > len(words) * _COLUMN_CROSSING_THRESHOLD:
+        # Words straddle the midline too often for this to be a clean
+        # two-column split (single column, or a wide table/figure caption).
+        return page.extract_text(x_tolerance=_TEXT_X_TOLERANCE) or ""
+
+    default_text = page.extract_text(x_tolerance=_TEXT_X_TOLERANCE) or ""
+    try:
+        left = page.crop((0, 0, mid, page.height)).extract_text(
+            x_tolerance=_TEXT_X_TOLERANCE
+        ) or ""
+        right = page.crop((mid, 0, page_width, page.height)).extract_text(
+            x_tolerance=_TEXT_X_TOLERANCE
+        ) or ""
+        cropped_text = left + "\n" + right
+        # Sanity check: cropping to the two halves should never lose
+        # meaningful content on a well-formed page — the halves' text
+        # should sum to roughly the same total as the uncropped page, just
+        # reordered. If it comes back much shorter, something's off (e.g. a
+        # malformed/generated PDF whose content extends past the page's own
+        # nominal bounding box, which `page.crop()` clips at) — trust the
+        # uncropped extraction instead of silently losing text.
+        if not cropped_text.strip() or len(cropped_text) < len(default_text) * 0.9:
+            return default_text
+        return cropped_text
+    except Exception:
+        return default_text
+
+
+_BIB_HEADING_PHRASES = (
+    "references", "bibliography", "works cited", "literature cited",
+    "references cited", "reference list",
+)
+_BIB_HEADING_ALTERNATION = "|".join(re.escape(p) for p in _BIB_HEADING_PHRASES)
+
+# A real heading line is (optionally) a leading section number, one of the
+# phrases above, and nothing else but trailing punctuation. This is
+# intentionally an exact-shape match rather than a prefix match: a table of
+# contents entry like "9 References 32" has the same leading-number-plus-
+# phrase shape but a trailing page number, which this regex's end anchor
+# correctly rejects.
+_BIB_HEADING_WHOLE_LINE_RE = re.compile(
+    rf"^\d*\.?\s*(?:{_BIB_HEADING_ALTERNATION})\s*[:.]?$", re.IGNORECASE
+)
+# Two-column PDF extraction sometimes merges a short section heading onto
+# the tail end of the previous column's last line ("...unmod- References"),
+# or onto the front of the next column's first reference entry
+# ("References DeSarbo, Wayne S., ..."). Both are the same underlying
+# artifact — two unrelated pieces of text landing on the same output line —
+# just in opposite directions. The suffix form requires a hyphenated
+# word-break immediately before the phrase (the actual merge mechanism);
+# without that anchor, ordinary prose ending "...and references" would
+# false-positive. The prefix form requires real content — specifically
+# something that looks like the start of a reference entry (a capitalized
+# word) — immediately after the phrase; that additional signal is what
+# distinguishes a merged heading+entry from prose that happens to start a
+# rare sentence with "References".
+_BIB_HEADING_SUFFIX_RE = re.compile(
+    rf"-\s+(?:{_BIB_HEADING_ALTERNATION})\s*$", re.IGNORECASE
+)
+_BIB_HEADING_PREFIX_RE = re.compile(
+    rf"^\d*\.?\s*(?:{_BIB_HEADING_ALTERNATION})\s+", re.IGNORECASE
+)
+
+
+def _bibliography_heading_split(line: str) -> Optional[int]:
+    """If `line` is (or contains) the references/bibliography heading,
+    return the character offset within the ORIGINAL `line` (not the
+    stripped version used for matching) where actual reference content
+    starts — or None if this line isn't a heading match.
+
+    A plain, isolated heading ("References") or one merged onto the tail of
+    unrelated preceding text ("...unmod- References") splits at the end of
+    the line, discarding everything on it. A heading merged onto the front
+    of the next column's first entry ("References DeSarbo, Wayne S., ...")
+    splits right after the heading phrase, so that entry isn't lost.
+    """
+    lstripped = line.lstrip()
+    leading_ws = len(line) - len(lstripped)
+    s = lstripped.rstrip()
+    if not s or len(s) > 400:
+        return None
+    if len(s) <= 40 and _BIB_HEADING_WHOLE_LINE_RE.match(s):
+        return leading_ws + len(s)
+    if _BIB_HEADING_SUFFIX_RE.search(s):
+        return leading_ws + len(s)
+    m = _BIB_HEADING_PREFIX_RE.match(s)
+    # Require a capital letter immediately after the phrase — the signal
+    # that this is a merged heading+entry, not prose that happens to start
+    # with "References". Checked against `s` directly (not case-folded)
+    # since the regex above is case-insensitive only for the phrase itself.
+    if m and m.end() < len(s) and s[m.end()].isupper():
+        return leading_ws + m.end()
+    return None
 
 
 def _split_references(refs_blob: str) -> list[str]:
@@ -438,7 +569,7 @@ def extract_paper(pdf_bytes: bytes) -> PaperStructure:
 
         for page_idx, page in enumerate(capped_pages, start=1):
             try:
-                page_text = page.extract_text() or ""
+                page_text = _extract_page_text(page)
             except Exception:
                 # pdfplumber occasionally chokes on malformed pages — skip
                 # and keep going rather than failing the whole review.
@@ -486,11 +617,15 @@ def extract_paper(pdf_bytes: bytes) -> PaperStructure:
             # Check for the references section starting on this page
             if not references_blob:
                 for line in page_text.split("\n"):
-                    if _looks_like_bibliography_heading(line):
-                        # Everything from this point forward across the rest
-                        # of the document is treated as the references blob.
-                        idx = page_text.find(line)
-                        references_blob = page_text[idx + len(line):]
+                    split_at = _bibliography_heading_split(line)
+                    if split_at is not None:
+                        # Everything from the split point forward — which is
+                        # the end of this line for a plain or tail-merged
+                        # heading, or right after the heading phrase for a
+                        # front-merged one — across the rest of the
+                        # document, is treated as the references blob.
+                        line_idx = page_text.find(line)
+                        references_blob = page_text[line_idx + split_at:]
                         break
                 else:
                     all_text_parts.append(page_text)
