@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #13 — July 4, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-04.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-04.html</guid>
+      <pubDate>Sat, 04 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>FortiBleed actors pivot to ransomware monetization, ARToken PhaaS exposes EvilTokens M365 toolkit, and the token ROI crisis hits SaaS operators hard.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #12 — July 3, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-03.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-03.html</guid>
