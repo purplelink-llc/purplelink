@@ -145,6 +145,7 @@
 
 /* Upload page */
 .pr-upload-wrap { margin-top: 1rem; }
+.pr-submit-row { margin-top: 0.75rem; }
 .pr-domain-pick { margin: 1rem 0; }
 .pr-domain-pick legend { font-weight: 600; margin-bottom: 0.5rem; }
 .pr-domain-pick label { display: flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.6rem; cursor: pointer; border-radius: 6px; transition: background 0.15s; }

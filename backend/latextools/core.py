@@ -135,6 +135,30 @@ def validate_paper_upload(filename: str, size_bytes: int) -> None:
     if not filename.lower().endswith(".pdf"):
         raise ValidationError("File must be a .pdf manuscript.")
 
+
+RESUME_ALLOWED_EXTENSIONS = (".pdf", ".docx")
+
+
+def validate_resume_upload(filename: str, size_bytes: int) -> None:
+    """Validate a Resume Review upload. Raises ValidationError.
+
+    Restricted to PDF and DOCX (unlike doc2md's broader format list) —
+    those are the two formats resumes actually get submitted in; accepting
+    PPTX/XLSX/HTML/CSV/EPUB here would just be surface area with no real
+    use case for this product.
+    """
+    if size_bytes <= 0:
+        raise ValidationError("File is empty.")
+    if size_bytes > MAX_PAPER_UPLOAD_BYTES:
+        raise ValidationError(
+            f"File is too large (max {MAX_PAPER_UPLOAD_BYTES // (1024 * 1024)} MB)."
+        )
+    if any(c in filename for c in ("/", "\\", "\x00")) or filename in ("", ".", ".."):
+        raise ValidationError("invalid filename")
+    if not filename.lower().endswith(RESUME_ALLOWED_EXTENSIONS):
+        raise ValidationError("File must be a .pdf or .docx resume.")
+
+
 DOC2MD_ALLOWED_EXTENSIONS = (
     ".pdf", ".docx", ".pptx", ".xlsx", ".html", ".htm", ".csv", ".epub",
 )

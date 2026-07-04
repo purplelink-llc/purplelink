@@ -26,6 +26,7 @@
  *   STRIPE_PRICE_CITATION_GAP              (citation-gap, $3)
  *   STRIPE_PRICE_REVISION_REVIEW           (revision-review, $2)
  *   STRIPE_PRICE_RESPONSE_REVIEW           (response-review, $6)
+ *   STRIPE_PRICE_RESUME_REVIEW             (resume-review, $5) — first non-academic product
  *   STRIPE_SECRET_KEY (shared, sk_test_… or sk_live_…)
  */
 
@@ -84,6 +85,7 @@ const PRODUCT_CATALOG = {
   "citation-gap":            { envKey: "STRIPE_PRICE_CITATION_GAP",            successPath: "/tools/citation-gap/upload/" },
   "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW",         successPath: "/tools/paper-review/revision/upload/" },
   "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW",         successPath: "/tools/response-review/upload/" },
+  "resume-review":           { envKey: "STRIPE_PRICE_RESUME_REVIEW",           successPath: "/tools/resume-review/upload/" },
 };
 
 function jsonResponse(status, body) {

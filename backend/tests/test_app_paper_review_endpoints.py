@@ -1205,6 +1205,102 @@ def test_adjacent_submit_expired_token_rejected(client):
     assert backend_app.paper_tokens_dict.get("s-adj-expired") is None
 
 
+def _register_resume_review(backend_app, *, session_id="sess-resume"):
+    product_cfg = backend_app.PAID_PRODUCTS["resume-review"]
+    token = "tok-" + session_id
+    entry = {
+        "tokens": [token],
+        "product_key": "resume-review",
+        "product_cfg": product_cfg,
+        "email": "buyer@example.com",
+        "amount_paid": product_cfg.get("amount", 0),
+        "redeemed": False,
+        "consumed_tokens": [],
+        "created_at": time.time(),
+        "expires_at": time.time() + 7 * 24 * 3600,
+    }
+    backend_app.paper_tokens_dict[session_id] = entry
+    return token
+
+
+def test_resume_review_submit_rejects_wrong_product(client):
+    http, backend_app = client
+    token = _register_cover_letter(backend_app, session_id="s-resume-wrong-product")
+
+    r = http.post(
+        "/resume-review/submit",
+        files={"file": ("resume.pdf", b"%PDF-1.4 fake", "application/pdf")},
+        data={"token": token},
+    )
+    assert r.status_code == 400
+    assert r.json()["error"] == "wrong_product"
+    assert len(backend_app.adjacent_tool_pipeline.calls) == 0
+
+
+def test_resume_review_submit_rejects_non_pdf_docx_extension(client):
+    http, backend_app = client
+    token = _register_resume_review(backend_app, session_id="s-resume-bad-ext")
+
+    r = http.post(
+        "/resume-review/submit",
+        files={"file": ("resume.txt", b"plain text resume", "text/plain")},
+        data={"token": token},
+    )
+    assert r.status_code == 400
+    assert r.json()["error"] == "invalid"
+    assert len(backend_app.adjacent_tool_pipeline.calls) == 0
+    assert token not in (backend_app.paper_tokens_dict["s-resume-bad-ext"].get("consumed_tokens") or [])
+
+
+def test_resume_review_submit_rejects_mismatched_signature(client):
+    """A .docx-named file that isn't actually a ZIP-based Office document
+    (wrong magic bytes) must be rejected before the pipeline is spawned."""
+    http, backend_app = client
+    token = _register_resume_review(backend_app, session_id="s-resume-bad-sig")
+
+    r = http.post(
+        "/resume-review/submit",
+        files={"file": ("resume.docx", b"not a real docx file", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+        data={"token": token},
+    )
+    assert r.status_code == 400
+    assert r.json()["error"] == "invalid"
+    assert len(backend_app.adjacent_tool_pipeline.calls) == 0
+
+
+def test_resume_review_submit_accepts_pdf_and_spawns_pipeline(client):
+    http, backend_app = client
+    token = _register_resume_review(backend_app, session_id="s-resume-pdf-ok")
+
+    r = http.post(
+        "/resume-review/submit",
+        files={"file": ("resume.pdf", b"%PDF-1.4 fake resume content", "application/pdf")},
+        data={"token": token},
+    )
+    assert r.status_code == 200
+    assert len(backend_app.adjacent_tool_pipeline.calls) == 1
+    assert token in backend_app.paper_tokens_dict["s-resume-pdf-ok"]["consumed_tokens"]
+    call_args, call_kwargs = backend_app.adjacent_tool_pipeline.calls[0]
+    assert call_args[1] == "resume-review"  # spawn.aio(token, product, **spawn_kwargs)
+    assert call_kwargs["resume_filename"] == "resume.pdf"
+
+
+def test_resume_review_submit_accepts_docx(client):
+    http, backend_app = client
+    token = _register_resume_review(backend_app, session_id="s-resume-docx-ok")
+
+    # Minimal valid ZIP local-file-header signature so doc2md_signature_ok passes.
+    fake_docx = b"PK\x03\x04" + b"0" * 50
+
+    r = http.post(
+        "/resume-review/submit",
+        files={"file": ("resume.docx", fake_docx, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+        data={"token": token},
+    )
+    assert r.status_code == 200
+    assert len(backend_app.adjacent_tool_pipeline.calls) == 1
+
+
 def test_register_token_populates_reverse_index(client, monkeypatch):
     """/register-token must populate paper_token_index_dict so `_lookup_token`
     (used by submit/status) is an O(1) get instead of a full scan of

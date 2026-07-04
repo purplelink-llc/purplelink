@@ -184,6 +184,12 @@ PAID_PRODUCTS: dict[str, dict] = {
     "citation-gap":             {"category": "citation-gap", "qty": 1, "amount": 300},
     "revision-review":          {"category": "revision-review", "qty": 1, "amount": 200},
     "response-review":          {"category": "response-review", "qty": 1, "amount": 600},
+    # First non-academic product — same 3-persona-panel shape as
+    # response-review (comparable cost), priced the same way ($5, between
+    # citation-gap's $3 and response-review's $6) rather than a subscription,
+    # to match the existing one-time-per-use pattern instead of introducing
+    # a second business model on day one.
+    "resume-review":            {"category": "resume-review", "qty": 1, "amount": 500},
 }
 
 ALLOWED_ORIGINS = [
@@ -507,18 +513,19 @@ def adjacent_tool_pipeline(
     author_response: str = "",
     abstract_only: str = "",
     title_only: str = "",
+    resume_filename: str = "",
     deliver_email: str = "",
 ) -> None:
     """Single dispatcher for cover-letter, anonymity-check, citation-gap,
-    revision-review, response-review jobs. The product field decides which
-    pipeline runs; all of them write progress + result into paper_jobs_dict
-    keyed by token."""
+    revision-review, response-review, resume-review jobs. The product field
+    decides which pipeline runs; all of them write progress + result into
+    paper_jobs_dict keyed by token."""
     import asyncio as _asyncio
     import base64 as _base64
     import time as _time
     import httpx
 
-    from latextools import papercheck, paperreview_extras, response_review, delivery
+    from latextools import papercheck, paperreview_extras, response_review, resume_review, delivery
 
     def _persist(progress_dict: dict) -> None:
         paper_jobs_dict[token] = progress_dict
@@ -637,6 +644,28 @@ def adjacent_tool_pipeline(
                 final = await response_review.run_response_review(
                     pdf_bytes, reviewer_comments or "", author_response or "",
                     on_progress=_emit,
+                )
+                paper_jobs_dict[token] = {
+                    **final, "product": product,
+                }
+
+            elif product == "resume-review":
+                def _emit_resume(progress) -> None:
+                    paper_jobs_dict[token] = {
+                        "status": progress.status,
+                        "progress_pct": progress.progress_pct,
+                        "stage": progress.stage,
+                        "product": product,
+                        "started_at": progress.started_at,
+                        "result_md": progress.result_md if progress.status == "done" else None,
+                    }
+                # pdf_bytes here holds whatever file the customer uploaded —
+                # PDF or DOCX, both accepted (see core.validate_resume_upload)
+                # — the shared param name is just inherited from the other
+                # branches above, not a PDF-only assumption for this one.
+                final = await resume_review.run_resume_review(
+                    pdf_bytes, resume_filename or "resume.pdf",
+                    on_progress=_emit_resume,
                 )
                 paper_jobs_dict[token] = {
                     **final, "product": product,
@@ -2978,6 +3007,56 @@ def web():
             "pdf_bytes": data,
             "reviewer_comments": reviewer_comments,
             "author_response": author_response,
+            "deliver_email": email if email and "@" in email else "",
+        })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
+        return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
+
+    @api.post("/resume-review/submit")
+    async def resume_review_submit(
+        request: Request,
+        token: str = Form(...),
+        file: UploadFile = File(...),
+        email: str = Form(""),
+    ):
+        """First non-academic paid product — see latextools/resume_review.py.
+        Same token/claim/spawn shape as the other adjacent tools above;
+        the only real difference is accepting PDF or DOCX (core.RESUME_
+        ALLOWED_EXTENSIONS) instead of PDF-only."""
+        if not _enforce_rate_limit(request, "resume-review"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if _too_large(request, core.MAX_PAPER_UPLOAD_BYTES):
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
+        session_id, entry = _lookup_token(token)
+        if entry is None:
+            return JSONResponse({"error": "unknown_token"}, status_code=404)
+        if token in (entry.get("consumed_tokens") or []):
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
+        if (entry.get("product_cfg") or {}).get("category") != "resume-review":
+            return JSONResponse({"error": "wrong_product"}, status_code=400)
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
+        filename = file.filename or "resume.pdf"
+        try:
+            core.validate_resume_upload(filename, len(data))
+        except core.ValidationError as e:
+            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+        if not core.doc2md_signature_ok(filename, data):
+            return JSONResponse({"error": "invalid", "detail": "File doesn't match its extension."}, status_code=400)
+        claimed = await _start_adjacent(token, session_id, entry, product="resume-review", spawn_kwargs={
+            "pdf_bytes": data,
+            "resume_filename": filename,
             "deliver_email": email if email and "@" in email else "",
         })
         if claimed == "already_used":

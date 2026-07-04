@@ -63,6 +63,7 @@ MAX_REFERENCE_CHARS = 400         # per reference entry
 MAX_REVIEW_MD_CHARS = 120_000     # revision review's "original_review_md"
 MAX_REVIEWER_COMMENTS_CHARS = 60_000
 MAX_AUTHOR_RESPONSE_CHARS = 60_000
+MAX_RESUME_CHARS = 15_000         # matches resume_review.MAX_RESUME_CHARS
 
 
 # ---------------------------------------------------------------------------
@@ -399,6 +400,11 @@ def safe_reviewer_comments(text: str) -> SanitizationResult:
 def safe_author_response(text: str) -> SanitizationResult:
     return sanitize_user_text(text, max_len=MAX_AUTHOR_RESPONSE_CHARS,
                               field_name="author_response")
+
+
+def safe_resume_text(text: str) -> SanitizationResult:
+    return sanitize_user_text(text, max_len=MAX_RESUME_CHARS,
+                              field_name="resume_text")
 
 
 # ---------------------------------------------------------------------------
