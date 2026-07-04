@@ -67,21 +67,58 @@
     <main id="main-content">
       <a class="back-link" href="/tools/">← All tools</a>
       <div class="tools-hero">
-        <p class="eyebrow">Paid tool · $6</p>
+        <p class="tools-kicker">$6 one-time · results in minutes</p>
         <h1>Response to Reviewers</h1>
-        <p>The dreaded reply letter, red-teamed before you send it. A three-persona AI panel — Skeptical Reviewer, Tone Editor, Editor-in-Chief — reads your reviewer comments, your draft response, and the revised manuscript. The output: per-comment verdicts, tone concerns, missing responses, and a final accept-or-revise estimate.</p>
+        <p>The dreaded reply letter, red-teamed before you send it. A three-persona AI panel, Skeptical Reviewer, Tone Editor, Editor-in-Chief, reads your reviewer comments, your draft response, and the revised manuscript. The output: per-comment verdicts, tone concerns, missing responses, and a final accept-or-revise estimate.</p>
       </div>
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="response-review">Start review — $6</button>
         <p class="pr-checkout-meta">Secure checkout via Stripe.</p>
+        <p class="pr-trust-line"><strong>Nothing is kept after delivery.</strong> The report is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $6.</p>
       </div>
       <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+      <section class="pr-sample">
+        <details>
+          <summary>What does the report look like? <span class="pr-sample-toggle">View sample</span></summary>
+          <div class="pr-sample-body">
+            <pre>
+# Response to Reviewers Review
+
+## Per-Comment Tracker
+
+| # | Reviewer comment | Verdict |
+|---|---|---|
+| R1.2 | "Sample size seems small for the claimed effect." | Addressed. Power analysis added to Section 3.2. |
+| R1.4 | "Figure 3 axis labels are unreadable." | Partially addressed. Labels enlarged, but the legend still overlaps the plot. |
+| R2.1 | "The related-work section ignores prior work by Chen et al." | Hand-waved. Response says "we are aware of this work" without adding a citation or comparison. |
+| R2.3 | "Why not compare against baseline X?" | Rejected with argument. Response explains X is not applicable to this setting; reasoning is sound. |
+
+## Tone Concerns
+
+- Response to R2.1 reads as dismissive: "As any reader familiar with
+  the field would understand, this comparison is unnecessary." Suggest:
+  "We agree this comparison is worth addressing directly. [reasoning]"
+
+## Missing Responses
+
+- R1.5 ("Please clarify the exclusion criteria for Experiment 2")
+  has no corresponding response letter entry.
+
+## Action Checklist
+
+- [A] Add a citation and one-sentence comparison to Chen et al. for R2.1.
+- [A] Write a response to the missing R1.5 comment.
+- [B] Fix the overlapping legend in Figure 3.
+            </pre>
+          </div>
+        </details>
+      </section>
       <section class="pr-layers">
         <h2>What the report includes</h2>
         <ol class="pr-layer-list">
-          <li><strong>Per-comment tracker.</strong> Every reviewer comment, paired with your response, marked as addressed / partially_addressed / hand_waved / rejected_with_argument / not_evaluable.</li>
+          <li><strong>Per-comment tracker.</strong> Every reviewer comment, paired with your response, marked as addressed, partially addressed, hand-waved, rejected with argument, or not evaluable.</li>
           <li><strong>Tone concerns.</strong> Defensive, dismissive, or argumentative phrasing the reviewer will notice. Suggested rewrites that say the same thing less abrasively.</li>
-          <li><strong>Missing responses.</strong> Reviewer comments you didn't address at all (it happens — easy to miss one).</li>
+          <li><strong>Missing responses.</strong> Reviewer comments you didn't address at all (it happens, easy to miss one).</li>
           <li><strong>Action checklist.</strong> A/B/C-prioritised list of what to fix in the response letter or manuscript before hitting submit.</li>
         </ol>
       </section>

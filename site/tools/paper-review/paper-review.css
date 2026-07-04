@@ -77,19 +77,34 @@
   background: color-mix(in oklch, var(--purple) 6%, var(--bg));
 }
 
-/* Checkout row — centered within the 820px content column. */
-.pr-checkout-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin: 1.25rem auto 0.4rem; }
+/* Checkout row — centered within the 820px content column, under a
+   centered .tools-hero. justify-content: center keeps the button + meta
+   line lined up with the centered hero text above instead of hugging the
+   left edge of the 820px column. */
+.pr-checkout-row { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; margin: 1.25rem auto 0.25rem; text-align: center; }
 .pr-checkout-btn { font-size: 1.05rem; padding: 0.85rem 1.6rem; }
 .pr-checkout-meta { font-size: 0.85rem; color: var(--muted); margin: 0; }
 .pr-checkout-meta strong { color: var(--ink); }
 .pr-checkout-meta a { color: var(--purple); font-weight: 600; }
+
+/* Trust line — sits directly under the checkout button, at the exact
+   moment (about to upload a personal document, about to pay) a buyer's
+   objections are highest. The privacy/refund answers already exist in the
+   FAQ; this repeats a compressed version where it will actually be read. */
+.pr-trust-line { font-size: 0.85rem; color: var(--muted); margin: 0; max-width: 56ch; }
+.pr-trust-line strong { color: var(--ink); font-weight: 600; }
+
+/* Sentence-case price kicker — replaces the tracked-uppercase .eyebrow
+   pattern (banned: see PRODUCT.md anti-references) while still surfacing
+   the price above the fold. */
+.tools-kicker { font-size: 0.85rem; font-weight: 600; color: var(--purple); margin: 0 0 6px; }
 
 /* Four-layer explainer */
 .pr-layers { margin-top: 2.5rem; margin-bottom: 1rem; }
 .pr-layers > h2 { margin-bottom: 0.6rem; }
 .pr-layers ul,
 .pr-layers ol,
-.pr-layer-list { padding-left: 1.5rem; }
+.pr-layer-list { padding-left: 1.5rem; max-width: 70ch; }
 .pr-layers li,
 .pr-layer-list li { margin: 0.6rem 0; line-height: 1.55; }
 .pr-layer-list li strong,

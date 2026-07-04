@@ -122,10 +122,82 @@
     <main id="main-content">
       <a class="back-link" href="/tools/">← All tools</a>
       <div class="tools-hero">
-        <p class="eyebrow">Paid tool · from $9 per review</p>
+        <p class="tools-kicker">From $9 per review · Anonymity Check bundled free</p>
         <h1>Paper Review</h1>
-        <p>A senior-reviewer-level red team for your manuscript. Catches the blind spots reviewers will flag — before they do. Four-persona adversarial debate, live citation cross-check, figure-integrity scan. Delivered in under 10 minutes. <strong>Anonymity Check bundled free with every tier.</strong></p>
+        <p>A senior-reviewer-level red team for your manuscript. Catches the blind spots reviewers will flag before they do. Four-persona adversarial debate, live citation cross-check, figure-integrity scan. Delivered in under 10 minutes.</p>
       </div>
+
+      <section class="pr-sample">
+        <details open>
+          <summary>What does the report look like? <span class="pr-sample-toggle">View sample</span></summary>
+          <div class="pr-sample-body">
+            <pre>
+# Manuscript Review
+
+## Critical Blind Spots
+
+- **Hyperparameter search asymmetry favors the proposed method.**
+  Quoted: "We tuned learning rate and batch size on the validation
+  set; baselines used reported defaults."
+  Surfaced by: Methodology Critic, Statistical Skeptic (consensus).
+  Fix: Match search budget for each baseline; report the protocol
+  in the methods section.
+
+- **Sample-size justification missing for Experiment 2.**
+  Quoted: "We collected 24 participants ... yielding sufficient
+  statistical power."
+  Surfaced by: Statistical Skeptic.
+  Fix: Provide an explicit power calculation with assumed effect
+  size and the source of that assumption. With n=24 and the
+  reported effect, post-hoc power is below 0.6.
+
+## Data-to-Claim Contradictions
+
+- Claim: "Our method beats all baselines by a wide margin."
+  Evidence: Table 2 shows the proposed method tied with Baseline C
+  within reported standard errors on 4 of 7 datasets.
+
+## Rectification Checklist
+
+- [A] Add hyperparameter search protocol to methods (page 5,
+  Section 3.2). Match search budget across all baselines.
+- [A] Replace "wide margin" framing in abstract and Section 5
+  with what the data actually shows.
+- [B] Add per-seed variance to all results tables.
+- [B] Reference [17] does not resolve to a CrossRef entry,
+  re-verify the citation.
+- [C] Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on
+  a continuous scale.
+
+## True Novelty Estimate
+
+The core architectural contribution is genuinely novel and not
+covered by [11] or [23]. The empirical comparison, as currently
+framed, oversells the gap. Marginal advance: the proposed mechanism
+is interesting but the published evidence does not yet warrant the
+strength of the abstract's claim.
+
+## Reference Verification Summary
+
+47 of 52 references verified against CrossRef. 3 had weak title
+matches (re-check [12], [17], [31]). 2 had no DOI and could not be
+located by title, verify these are correctly cited.
+
+## Citation Support Audit
+
+Verdicts: 18 supported, 4 partially supported, 2 not supported by
+abstract, 1 contradicted, 3 source unavailable.
+
+| Claim | Cited ref | Verdict | What the source's abstract says |
+|---|---|---|---|
+| "Method X reduces error by 40%." | [14] | Contradicted | Abstract reports a 4% reduction, not 40%. Verify the figure. |
+| "Prior work proved this is optimal." | [9] | Not supported by abstract | Abstract describes a heuristic; optimality may be in the full text. |
+
+_5 citations with weaker claims were not audited (per-run cap)._
+            </pre>
+          </div>
+        </details>
+      </section>
 
       <fieldset class="pr-tier-pick">
         <legend>Choose a tier</legend>
@@ -133,28 +205,29 @@
           <input type="radio" name="tier" value="paper-review-standard" checked>
           <span class="pr-tier-content">
             <span class="pr-tier-head"><strong>Standard</strong> · <em>$9</em></span>
-            <span class="pr-tier-desc">Single-pass four-persona review + figure scan + live citation check. Markdown report + annotated PDF. <strong>Anonymity Check bundled free</strong> (worth $2).</span>
+            <span class="pr-tier-desc">Single-pass four-persona review, figure scan, and live citation check. Markdown report and annotated PDF.</span>
           </span>
         </label>
         <label class="pr-tier-option">
           <input type="radio" name="tier" value="paper-review-journal">
           <span class="pr-tier-content">
             <span class="pr-tier-head"><strong>Standard + Journal Pack</strong> · <em>$11</em></span>
-            <span class="pr-tier-desc">Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.). <strong>Anonymity Check still bundled free.</strong></span>
+            <span class="pr-tier-desc">Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.).</span>
           </span>
         </label>
         <label class="pr-tier-option pr-tier-premium">
           <input type="radio" name="tier" value="paper-review-deep">
           <span class="pr-tier-content">
             <span class="pr-tier-head"><strong>Deep Review</strong> · <em>$15</em></span>
-            <span class="pr-tier-desc">Two-pass adversarial debate — each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. <strong>Journal Pack + Anonymity Check both bundled free</strong> (would be $13 separately).</span>
+            <span class="pr-tier-desc">Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.</span>
           </span>
         </label>
       </fieldset>
 
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn">Start review — $9</button>
-        <p class="pr-checkout-meta">Secure checkout via Stripe. One-time payment, no subscription. <strong>Save more with volume packs</strong> — <a href="/tools/paper-review/packs/">5 reviews for $38 (16% off)</a> or <a href="/tools/paper-review/packs/">20 for $150 (17% off)</a>.</p>
+        <p class="pr-checkout-meta">Secure checkout via Stripe. One-time payment, no subscription.</p>
+        <p class="pr-trust-line"><strong>Nothing is kept after delivery.</strong> The review is deleted from our servers the moment you retrieve it, and if a result reads as low-quality we'll refund the price. Advisory only, you decide what to change.</p>
       </div>
       <p class="tool-status" id="checkout-status" aria-live="polite"></p>
 
@@ -293,6 +366,7 @@ _5 citations with weaker claims were not audited (per-run cap)._
         <ul>
           <li><a href="/tools/bib-validator/">BibTeX Validator — free citation hallucination check →</a></li>
           <li><a href="/tools/latex-to-pdf/">LaTeX to PDF — compile your .tex before uploading →</a></li>
+          <li><a href="/tools/paper-review/packs/">Volume packs — reviewing multiple manuscripts? Save with a pack →</a></li>
           <li><a href="/tools/">All Purplelink tools →</a></li>
         </ul>
       </nav>

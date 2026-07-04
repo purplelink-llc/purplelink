@@ -93,15 +93,58 @@
     <main id="main-content">
       <a class="back-link" href="/tools/">← All tools</a>
       <div class="tools-hero">
-        <p class="eyebrow">Paid tool · $5</p>
+        <p class="tools-kicker">$5 one-time · results in minutes</p>
         <h1>Resume Review</h1>
         <p>Would this resume clear an ATS filter and make a hiring manager read past the first six seconds? A three-persona AI panel — ATS Screener, Hiring Manager Skeptic, Recruiter Red Flags — reads your resume the way the people actually screening it would.</p>
       </div>
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="resume-review">Start review — $5</button>
         <p class="pr-checkout-meta">Secure checkout via Stripe.</p>
+        <p class="pr-trust-line"><strong>Nothing is kept after delivery.</strong> The report is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $5.</p>
       </div>
       <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+      <section class="pr-sample">
+        <details>
+          <summary>What does the report look like? <span class="pr-sample-toggle">View sample</span></summary>
+          <div class="pr-sample-body">
+            <pre>
+# Resume Review
+
+## ATS Compatibility
+
+- Section header "Experience" is fine, but "Where I've Worked" (used for
+  the second job block) won't parse: most ATS filters look for a small
+  set of standard headers. Rename to "Experience" or "Work History."
+- Dates in "Jan 2022 - Present" format parse correctly. The single entry
+  written as "22-24" does not; spell out the years.
+
+## Content &amp; Impact
+
+- "Responsible for managing social media accounts" is a duty, not a
+  result. Rewrite using a number you already have on this resume:
+  "Grew Instagram following from 4,200 to 11,800 followers in 9 months."
+- Three bullets in the 2021 role start with "Helped with...": pick the
+  one concrete outcome each bullet is actually describing and lead with
+  that instead.
+
+## What a Recruiter Would Flag
+
+- 7-month gap between the Acme and Globex roles isn't explained anywhere
+  on the resume. Doesn't need a paragraph, just a single line ("Family
+  leave, 2022") to keep a recruiter from guessing.
+- Job title says "Senior Analyst" here but "Analyst II" on LinkedIn per
+  your notes; pick one and make them match.
+
+## Action Checklist
+
+- [A] Rename "Where I've Worked" to "Experience."
+- [A] Add the missing number to the social-media bullet.
+- [B] Add a one-line explanation for the 7-month gap.
+- [C] Reconcile the job title between this resume and LinkedIn.
+            </pre>
+          </div>
+        </details>
+      </section>
       <section class="pr-layers">
         <h2>What the report includes</h2>
         <ol class="pr-layer-list">
