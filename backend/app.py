@@ -3248,7 +3248,7 @@ def web():
 # ---------------------------------------------------------------------------
 
 @app.function(
-    image=modal.Image.debian_slim(python_version="3.11"),
+    image=modal.Image.debian_slim(python_version="3.11").add_local_python_source("latextools"),
     schedule=modal.Cron("0 6 * * *"),  # daily, well under the 7-day TTL
     timeout=300,
 )
@@ -3301,7 +3301,7 @@ def sweep_expired_paper_tokens() -> int:
 # ---------------------------------------------------------------------------
 
 @app.function(
-    image=modal.Image.debian_slim(python_version="3.11"),
+    image=modal.Image.debian_slim(python_version="3.11").add_local_python_source("latextools"),
     schedule=modal.Cron("30 6 * * *"),  # daily, offset from the token sweep
     timeout=300,
 )
@@ -3361,7 +3361,7 @@ LIFECYCLE_STAGE_ORDER = [s[0] for s in LIFECYCLE_STAGES]
 
 
 @app.function(
-    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx"),
+    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools"),
     schedule=modal.Cron("0 14 * * *"),  # daily, 14:00 UTC — mid-morning US
     timeout=600,
     secrets=[resend_secret, subscribe_secret],
