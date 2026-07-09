@@ -3,7 +3,12 @@
 Order matters: medical_safety runs first. Because a pass that doesn't approve
 is revised and re-run *in place* — the loop never restarts from
 medical_safety — a later pass's edit can never silently undo an earlier
-pass's safety-driven correction.
+pass's safety-driven correction by way of that pass being re-litigated. As an
+additional guard against a later pass's revision regressing something
+medical_safety already required (e.g. a disclaimer), medical_safety is
+re-verified once more after all four passes complete; if it no longer
+approves, it is resolved the same bounded way as the main loop rather than
+shipping a regressed draft.
 """
 import json
 import re
@@ -35,7 +40,11 @@ Respond with ONLY a JSON object: {{"approved": bool, "edits": [str, ...]}}. \
     "legal_compliance": """You are an FTC/legal compliance reviewer for a \
 consumer health product. Flag any deceptive or implied-medical-endorsement \
 health claim, any missing or inadequate disclaimer, and any claim of a \
-specific guaranteed outcome (e.g. "you will keep all your muscle").
+specific guaranteed outcome (e.g. "you will keep all your muscle"). Note: \
+this pass and the medical_safety pass both check for a disclaimer — that \
+overlap is intentional (medical-claim substantiation vs. FTC-adequacy of \
+the disclaimer's wording are distinct concerns), not duplicate work to be \
+removed.
 
 Respond with ONLY a JSON object: {{"approved": bool, "edits": [str, ...]}}.""",
     "voice": """You are a voice/style reviewer. Confirm the text is written \
@@ -56,8 +65,10 @@ Respond with ONLY a JSON object: {{"approved": bool, "edits": [str, ...]}}.""",
 
 _REVISION_SYSTEM_PROMPT = """You are revising a consumer health guide draft \
 to address specific required edits from a review pass. Apply every edit \
-listed below. Preserve the overall structure, citation keys, and academic \
-register. Output only the revised guide text (same "## " heading format), \
+listed below. Preserve the overall structure, citation keys, academic \
+register, and any medical disclaimer already present in the draft — never \
+remove or weaken a disclaimer or a citation-grounded claim while addressing \
+these edits. Output only the revised guide text (same "## " heading format), \
 nothing else.
 
 Required edits:
@@ -78,9 +89,12 @@ class RedTeamExhaustedError(RuntimeError):
 
 
 def _parse_verdict(raw: str, pass_name: str) -> PassVerdict:
-    """Parse a pass's JSON verdict. Tolerant of fenced code blocks. Treats
-    unparseable output as NOT approved with a generic edit request, rather
-    than raising — a malformed verdict must never silently pass content."""
+    """Parse a pass's JSON verdict. Tolerant of fenced code blocks and of
+    wrong-typed fields (e.g. "approved": "no", or "edits": null) — a
+    malformed or wrong-shaped verdict must never crash the pipeline or be
+    silently treated as an approval. Only an *exact* JSON `true` for
+    "approved" counts as approved; anything else (including a truthy
+    string) is treated as not approved."""
     s = raw.strip()
     s = re.sub(r"^```(?:json)?\s*", "", s)
     s = re.sub(r"\s*```$", "", s)
@@ -96,15 +110,21 @@ def _parse_verdict(raw: str, pass_name: str) -> PassVerdict:
         return PassVerdict(
             pass_name, False, ["Reviewer response was not valid JSON; re-run this pass."]
         )
-    return PassVerdict(
-        pass_name=pass_name,
-        approved=bool(data.get("approved", False)),
-        edits=[str(e) for e in data.get("edits", [])],
-    )
+    if not isinstance(data, dict):
+        return PassVerdict(
+            pass_name, False, ["Reviewer response was not a JSON object; re-run this pass."]
+        )
+    approved = data.get("approved") is True
+    raw_edits = data.get("edits", [])
+    edits = [str(e) for e in raw_edits] if isinstance(raw_edits, list) else []
+    if not approved and not edits:
+        edits = ["Reviewer did not approve but returned no specific edits; re-run this pass."]
+    return PassVerdict(pass_name=pass_name, approved=approved, edits=edits)
 
 
 async def _run_pass(client, pass_name: str, draft: str) -> PassVerdict:
-    system = _PASS_SYSTEM_PROMPTS[pass_name].format(citations=citation_block())
+    template = _PASS_SYSTEM_PROMPTS[pass_name]
+    system = template.format(citations=citation_block()) if pass_name == "medical_safety" else template
     raw = await _anthropic_message(
         client,
         system=system,
@@ -124,27 +144,43 @@ async def _revise_draft(client, draft: str, edits: list[str]) -> str:
     )
 
 
+async def _run_pass_until_approved(client, pass_name: str, draft: str) -> tuple[str, PassVerdict]:
+    """Run *pass_name* against *draft*, revising and re-running the same
+    pass (never a different pass) until it approves or
+    MAX_ITERATIONS_PER_PASS is exhausted. Returns (possibly-revised draft,
+    final approving verdict)."""
+    current = draft
+    verdict = await _run_pass(client, pass_name, current)
+    attempts = 1
+    while not verdict.approved:
+        if attempts >= MAX_ITERATIONS_PER_PASS:
+            raise RedTeamExhaustedError(
+                f"Pass '{pass_name}' did not approve after "
+                f"{MAX_ITERATIONS_PER_PASS} attempts. Last edits: {verdict.edits}"
+            )
+        current = await _revise_draft(client, current, verdict.edits)
+        verdict = await _run_pass(client, pass_name, current)
+        attempts += 1
+    return current, verdict
+
+
 async def run_redteam_passes(client, draft: str) -> tuple[str, list[PassVerdict]]:
-    """Run all four red-team passes in PASS_ORDER against *draft*, revising
-    and re-running a pass (never restarting from the first pass) until it
-    approves or MAX_ITERATIONS_PER_PASS is exhausted.
+    """Run all four red-team passes in PASS_ORDER against *draft*. Then
+    re-verify medical_safety once more, since a later pass's revision could
+    in principle regress something medical_safety already required (e.g. a
+    disclaimer) — if it no longer approves, resolve it the same bounded way
+    rather than shipping a regressed draft.
 
     Returns (final_text, verdicts) — verdicts holds each pass's final
-    approving PassVerdict, in PASS_ORDER.
+    approving PassVerdict, in PASS_ORDER order (verdicts[0] is the
+    post-recheck medical_safety verdict).
     """
     current = draft
     final_verdicts: list[PassVerdict] = []
     for pass_name in PASS_ORDER:
-        verdict = await _run_pass(client, pass_name, current)
-        attempts = 1
-        while not verdict.approved:
-            if attempts >= MAX_ITERATIONS_PER_PASS:
-                raise RedTeamExhaustedError(
-                    f"Pass '{pass_name}' did not approve after "
-                    f"{MAX_ITERATIONS_PER_PASS} attempts. Last edits: {verdict.edits}"
-                )
-            current = await _revise_draft(client, current, verdict.edits)
-            verdict = await _run_pass(client, pass_name, current)
-            attempts += 1
+        current, verdict = await _run_pass_until_approved(client, pass_name, current)
         final_verdicts.append(verdict)
+
+    current, safety_recheck = await _run_pass_until_approved(client, "medical_safety", current)
+    final_verdicts[0] = safety_recheck
     return current, final_verdicts
