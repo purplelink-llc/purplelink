@@ -9,6 +9,38 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #18 — July 9, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-09.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-09.html</guid>
+      <pubDate>Thu, 09 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>AI coding agents triggering EDR rules, GhostApproval symlink attacks, BYOVD ransomware, Mistral&#x27;s 8B navigation model, and SK Hynix&#x27;s 7x-oversubscribed Nasdaq listing dominate today&#x27;s digest.</description>
+    </item>
+    <item>
+      <title>Purplelink Daily Digest #17 — July 8, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-08.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-08.html</guid>
+      <pubDate>Wed, 08 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>LLM hallucination-based botnet assembly, GitHub agentic workflow data leakage, GhostLock Linux kernel root escape, UAT-7810 LONGLEASH malware, SambaNova&#x27;s $11B raise, and data center labor constraints dominate today&#x27;s digest.</description>
+    </item>
+    <item>
+      <title>Purplelink Daily Digest #16 — July 7, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-07.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-07.html</guid>
+      <pubDate>Tue, 07 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>LLM-driven ransomware (JadePuffer), KVM guest-to-host escape CVE-2026-53359, Tenda firmware backdoor, Iran&#x27;s Cavern C2 framework, and Anthropic&#x27;s covert user tracking dominate today&#x27;s digest.</description>
+    </item>
+    <item>
+      <title>Purplelink Daily Digest #15 — July 6, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-06.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-06.html</guid>
+      <pubDate>Mon, 06 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>JadePuffer ransomware runs entirely via LLM agent, SkillCloak evades AI agent skill scanners, TrojPix leaks air-gapped data via video cable RF emissions, and Samsung DRAM pricing signals AI infrastructure cost shifts.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #14 — July 5, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-05.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-05.html</guid>
