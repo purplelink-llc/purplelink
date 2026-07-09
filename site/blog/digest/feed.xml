@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #18 — July 9, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-09.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-09.html</guid>
+      <pubDate>Thu, 09 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>AI coding agents triggering EDR rules, GhostApproval symlink attacks, BYOVD ransomware, Mistral&#x27;s 8B navigation model, and SK Hynix&#x27;s 7x-oversubscribed Nasdaq listing dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #17 — July 8, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-08.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-08.html</guid>
