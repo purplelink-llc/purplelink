@@ -78,11 +78,20 @@ def test_parse_verdict_handles_non_dict_json():
     assert verdict.edits
 
 
-def test_all_pass_prompts_format_without_leaving_doubled_braces():
-    for name in redteam.PASS_ORDER:
-        formatted = redteam._PASS_SYSTEM_PROMPTS[name].format(citations=redteam.citation_block())
-        assert "{{" not in formatted
-        assert "}}" not in formatted
+@pytest.mark.asyncio
+async def test_run_pass_sends_formatted_prompt_without_doubled_braces():
+    for pass_name in redteam.PASS_ORDER:
+        client = _FakeClient([_verdict_resp(True)])
+        captured = {}
+
+        async def _capturing_post(url, json=None, headers=None):
+            captured["system"] = json["system"]
+            return _verdict_resp(True)
+
+        client.post = _capturing_post
+        await redteam._run_pass(client, pass_name, "some draft text")
+        assert "{{" not in captured["system"], f"{pass_name} leaked doubled braces"
+        assert "}}" not in captured["system"], f"{pass_name} leaked doubled braces"
 
 
 @pytest.mark.asyncio
