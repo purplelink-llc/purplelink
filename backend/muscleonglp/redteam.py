@@ -123,8 +123,7 @@ def _parse_verdict(raw: str, pass_name: str) -> PassVerdict:
 
 
 async def _run_pass(client, pass_name: str, draft: str) -> PassVerdict:
-    template = _PASS_SYSTEM_PROMPTS[pass_name]
-    system = template.format(citations=citation_block()) if pass_name == "medical_safety" else template
+    system = _PASS_SYSTEM_PROMPTS[pass_name].format(citations=citation_block())
     raw = await _anthropic_message(
         client,
         system=system,

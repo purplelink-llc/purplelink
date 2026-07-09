@@ -78,6 +78,13 @@ def test_parse_verdict_handles_non_dict_json():
     assert verdict.edits
 
 
+def test_all_pass_prompts_format_without_leaving_doubled_braces():
+    for name in redteam.PASS_ORDER:
+        formatted = redteam._PASS_SYSTEM_PROMPTS[name].format(citations=redteam.citation_block())
+        assert "{{" not in formatted
+        assert "}}" not in formatted
+
+
 @pytest.mark.asyncio
 async def test_run_redteam_passes_all_approve_first_try():
     # 4 passes approve first try, plus 1 final medical_safety recheck = 5 calls.
