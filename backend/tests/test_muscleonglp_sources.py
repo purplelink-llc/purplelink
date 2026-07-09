@@ -23,3 +23,11 @@ def test_non_preprint_is_not_flagged():
     for line in block.splitlines():
         if "step1_semaglutide" in line:
             assert "[PREPRINT]" not in line
+
+
+def test_citations_registry_is_well_formed():
+    assert len(CITATIONS) == 6
+    for c in CITATIONS.values():
+        assert c.key.strip()
+        assert c.citation_text.strip()
+        assert c.url.strip()

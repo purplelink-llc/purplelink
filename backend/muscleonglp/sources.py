@@ -62,11 +62,14 @@ CITATIONS: dict[str, Citation] = {
     "acsm_resistance_guidance": Citation(
         key="acsm_resistance_guidance",
         citation_text=(
-            "ACSM resistance-training guidance: 2-3 sessions per week, 8-12 "
-            "exercises per session, 2-3 sets of 8-15 reps at 60-80% of one-rep "
-            "max."
+            "American College of Sports Medicine Position Stand: Resistance "
+            "Training Prescription for Muscle Function, Hypertrophy, and "
+            "Physical Performance in Healthy Adults: An Overview of Reviews. "
+            "Guidance: 2-3 resistance-training sessions per week, 8-12 "
+            "exercises per session, 2-3 sets of 8-15 reps at 60-80% of "
+            "one-rep max."
         ),
-        url="https://www.moveyourbonespt.com/blog/2026-acsm-resistance-training-guidelines",
+        url="https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/",
     ),
     "nct06885736_active_trial": Citation(
         key="nct06885736_active_trial",
