@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #22 — July 13, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-13.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-13.html</guid>
+      <pubDate>Mon, 13 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>MCP server scanning, Evilginx phishing ops exposed by OPSEC failure, jscrambler supply chain compromise, RedHook Android ADB abuse, and Claude Code token overhead analysis in today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #21 — July 12, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-12.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-12.html</guid>
