@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Stats | Purplelink</title>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+      .stats-wrap { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+      .stats-form { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 1.5rem 0; }
+      .stats-form input, .stats-form select {
+        font: inherit; padding: 0.6rem 0.8rem; border: 1px solid var(--line);
+        border-radius: 8px; background: var(--bg); color: var(--ink);
+      }
+      .stats-form input { flex: 1 1 240px; min-width: 0; }
+      .stats-msg { flex: 1 1 100%; margin: 0.2rem 0 0; font-size: 0.9rem; color: var(--purple-dim); min-height: 1.1em; }
+      .stats-msg .err { color: #c0392b; }
+      .stats-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.9rem; margin: 1.5rem 0 2rem; }
+      .stats-card { background: var(--purple-xlight); border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.2rem; }
+      .stats-card .n { display: block; font-family: var(--font-display); font-size: 1.9rem; font-weight: 600; color: var(--purple); line-height: 1.1; }
+      .stats-card .l { font-size: 0.85rem; color: var(--purple-dim); }
+      .stats-wrap h3 { font-family: var(--font-display); margin: 2rem 0 0.5rem; }
+      .stats-scroll { overflow-x: auto; }
+      table.stats-t { width: 100%; border-collapse: collapse; font-size: 0.92rem; margin-bottom: 0.5rem; }
+      table.stats-t th, table.stats-t td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--line); }
+      table.stats-t th { color: var(--purple-dim); font-weight: 600; }
+      table.stats-t td.num { text-align: right; font-variant-numeric: tabular-nums; }
+      .stats-note { color: var(--purple-dim); font-size: 0.85rem; margin-top: 1.5rem; }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/tools/">Tools</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </header>
+
+    <main class="stats-wrap">
+      <h1>How the site is doing</h1>
+      <p>Paste your token to load the numbers: which tools get run, which articles get read, and where visitors come from. Counted without cookies; only you can see this.</p>
+      <form id="tokform" class="stats-form" novalidate>
+        <input type="password" id="tok" placeholder="Your token" autocomplete="off" aria-label="Stats token">
+        <select id="days" aria-label="Days">
+          <option value="7">Last 7 days</option>
+          <option value="30" selected>Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Load</button>
+        <p id="msg" class="stats-msg" role="status" aria-live="polite"></p>
+      </form>
+      <div id="out"></div>
+      <p class="stats-note">Client-side-only tools (e.g. the word counter) show as page views but not as runs, since they never call the server. Everything else records a run the moment it is used.</p>
+    </main>
+
+    <script src="/stats/stats.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Purplelink Daily Digest #22 — July 13, 2026 | Purplelink LLC</title>
+    <meta name="description" content="MCP server scanning, Evilginx phishing ops exposed by OPSEC failure, jscrambler supply chain compromise, RedHook Android ADB abuse, and Claude Code token o">
+    <meta name="keywords" content="AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers">
+    <meta name="author" content="Benjamin Ampel">
+    <link rel="canonical" href="https://purplelink.llc/blog/digest/2026-07-13.html">
+    <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="https://purplelink.llc/blog/digest/feed.xml">
+    <meta property="og:title" content="Purplelink Daily Digest #22 — July 13, 2026">
+    <meta property="og:description" content="MCP server scanning, Evilginx phishing ops exposed by OPSEC failure, jscrambler supply chain compromise, RedHook Android ADB abuse, and Claude Code token o">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/digest/2026-07-13.html">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="article:published_time" content="2026-07-13">
+    <meta property="article:author" content="Benjamin Ampel">
+    <meta property="article:section" content="Research Digest">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Purplelink Daily Digest #22 — July 13, 2026">
+    <meta name="twitter:description" content="MCP server scanning, Evilginx phishing ops exposed by OPSEC failure, jscrambler supply chain compromise, RedHook Android ADB abuse, and Claude Code token o">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Purplelink Daily Digest #22 — July 13, 2026",
+      "description": "MCP server scanning, Evilginx phishing ops exposed by OPSEC failure, jscrambler supply chain compromise, RedHook Android ADB abuse, and Claude Code token o",
+      "keywords": "AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers",
+      "datePublished": "2026-07-13",
+      "author": {
+        "@type": "Person",
+        "@id": "https://purplelink.llc/about/#person",
+        "name": "Benjamin Ampel",
+        "url": "https://purplelink.llc/about/"
+      },
+      "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+      "url": "https://purplelink.llc/blog/digest/2026-07-13.html",
+      "isPartOf": { "@type": "Blog", "url": "https://purplelink.llc/blog/digest/" }
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/digest/">← All issues</a>
+
+    <div class="post-hero">
+      <p class="post-date">July 13, 2026</p>
+      <h1 class="post-title">Purplelink Daily Digest #22 — July 13, 2026</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-07-13">July 13, 2026</time></p>
+      <p class="post-lede">963 sources reviewed. 9 selected.</p>
+    </div>
+
+    <article id="main-content" class="post-body digest-body">
+
+      <p class="digest-intro">MCP server scanning, Evilginx phishing ops exposed by OPSEC failure, jscrambler supply chain compromise, RedHook Android ADB abuse, and Claude Code token overhead analysis in today&#x27;s digest.</p>
+
+    <section class="digest-section" id="section-ai_tech">
+      <h2>AI & Technology</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://systima.ai/blog/claude-code-vs-opencode-token-overhead" target="_blank" rel="noopener">Claude Code sends 33k tokens before reading the prompt; OpenCode sends 7k</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">A wire-level measurement shows Claude Code consumes roughly 33,000 tokens of system prompt and context overhead before processing any user input, versus approximately 7,000 for OpenCode, a 4.7x difference in baseline cost per session. For solo developers or small studios running high-frequency agentic coding sessions, this overhead compounds into a material cost differential that is invisible in per-request pricing but significant at volume. The finding raises a broader question about whether frontier coding agents are optimizing for capability benchmarks at the expense of inference economics.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://gist.github.com/cereblab/dc9a40bc26120f4540e4e09b75ffb547" target="_blank" rel="noopener">What xAI&#x27;s Grok build CLI sends to xAI: A wire-level analysis</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">A packet-level inspection of xAI&#x27;s Grok build CLI reveals what telemetry and data the tool transmits to xAI servers during normal operation. Wire-level audits of AI developer tooling are rare and operationally valuable, particularly for security-conscious developers who need to understand data egress before deploying these tools in sensitive environments. Connects to: Claude Code sends 33k tokens before reading the prompt; OpenCode sends 7k.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://ploy.ai/blog/migrating-a-production-ai-agent-to-gpt-5-6" target="_blank" rel="noopener">Migrating a production AI agent to GPT-5.6: 2.2x faster, 27% cheaper</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">A production agentic workload migrated to GPT-5.6 achieved 2.2x latency improvement and 27% cost reduction simultaneously, a combination that historically required trading one for the other. For indie developers and small studios running inference-heavy pipelines, this data point suggests the cost-performance frontier shifted meaningfully with this model generation. The caveat is that single-operator benchmarks on specific workloads generalize poorly; the gains likely depend heavily on task structure and prompt length distribution.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-cybersecurity">
+      <h2>Cybersecurity</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://isc.sans.edu/diary/rss/33150" target="_blank" rel="noopener">Someone Is Scanning for Your MCP Servers and AI Assistant Credentials, (Mon, Jul 13th)</a>
+          <span class="digest-item-source">SANS ISC</span>
+        </div>
+        <p class="digest-item-note">Active internet-wide scanning for exposed Model Context Protocol servers and AI assistant credential endpoints is now being observed in the wild. This is the predictable next step after MCP adoption outpaced security hardening: developers spinning up local or cloud MCP instances without authentication are now a target class. Security teams building agentic pipelines need to audit MCP server exposure before threat actors automate credential harvesting at scale.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/07/misconfigured-server-reveals-three.html" target="_blank" rel="noopener">Misconfigured Server Reveals Three Evilginx Phishing Operations Targeting Microsoft 365</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">A single `python3 -m http.server 8080` command left in `.bash_history` on a public-facing server exposed the full infrastructure of three concurrent Evilginx-based adversary-in-the-middle phishing campaigns targeting Microsoft 365. The non-obvious finding is that OPSEC failures by attackers, not defensive tooling, remain the most reliable source of threat intelligence on live AiTM operations. Researchers building M365 phishing detection pipelines should treat exposed Evilginx config artifacts as a high-fidelity signal worth hunting for proactively.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/07/compromised-jscrambler-8140-npm-release.html" target="_blank" rel="noopener">Compromised jscrambler 8.14.0 npm Release Drops Rust Infostealer During Install</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">The jscrambler npm package version 8.14.0, published July 11 2026, executes a native Rust-compiled infostealer binary via a `preinstall` hook with separate builds for Windows, macOS, and Linux. The use of a Rust binary is significant: it evades most JavaScript-focused npm audit tooling and complicates dynamic analysis. Any macOS/iOS developer shop running jscrambler in CI pipelines should treat this as an active incident and rotate secrets accessible from those build environments.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/redhook-android-malware-now-uses-wireless-adb-for-shell-access" target="_blank" rel="noopener">RedHook Android malware now uses Wireless ADB for shell access</a>
+          <span class="digest-item-source">Bleeping Computer</span>
+        </div>
+        <p class="digest-item-note">RedHook&#x27;s updated variant abuses Android Wireless Debugging (introduced in Android 11) to establish a shell-level ADB session over the local network without requiring USB or a paired computer. This sidesteps the traditional ADB threat model, which assumed physical access was a prerequisite for shell exploitation. The attack surface is any device with Wireless Debugging enabled, a setting increasingly common among developers and power users, making this a meaningful escalation in Android post-compromise capability.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-finance">
+      <h2>Finance & Business</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bloomberg.com/news/articles/2026-07-13/meta-s-louisiana-data-center-to-surpass-250-billion-price-tag" target="_blank" rel="noopener">Meta&#x27;s Louisiana Data Center to Surpass $250 Billion Price Tag</a>
+          <span class="digest-item-source">Bloomberg Technology</span>
+        </div>
+        <p class="digest-item-note">Meta has committed an additional $40 billion to its Louisiana campus, pushing total planned spend past $250 billion for a single site, a concentration of AI compute capital that has no historical precedent in private infrastructure investment. The strategic implication is that hyperscaler AI infrastructure is consolidating into a small number of massive campuses rather than distributing geographically, which has downstream effects on power grid dependencies, supply chain concentration risk, and the competitive moat for any company that cannot match this capital intensity. Researchers tracking AI infrastructure economics should note this as a data point on the minimum viable scale for frontier model training.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-entrepreneurship">
+      <h2>Entrepreneurship</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/the-pe-software-backlog-will-1000-unicorns-ever-get-sold" target="_blank" rel="noopener">The PE Software Backlog: Will 1,000+ Unicorns Ever Get Sold or Go Public?</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Bain&#x27;s 2026 Global Private Equity Report counts roughly 32,000 unsold PE portfolio companies worth $3.8 trillion, with the software subset requiring an estimated nine years to clear at current exit rates. For indie and small-studio founders, the non-obvious implication is that acqui-hire and strategic acquisition channels from PE-backed software companies are likely to remain constrained, while the IPO window for mid-market SaaS stays narrow. This backlog also suppresses comparable transaction data, making valuation benchmarking for private software assets structurally harder.</p>
+      </div>
+    </section>
+
+    </article>
+
+    <div class="post-footer digest-footer">
+      <p>Get this in your inbox. <a href="/blog/digest/">Subscribe to Purplelink Daily Digest</a>.</p>
+      <a class="back-link" href="/blog/digest/">← All issues</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+  </body>
+</html>
