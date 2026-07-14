@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #23 — July 14, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-14.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-14.html</guid>
+      <pubDate>Tue, 14 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>CrashStealer macOS infostealer, ShinyHunters Salesforce OAuth attacks, Grok Build repo exfiltration, and defensive prompt injection techniques dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #22 — July 13, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-13.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-13.html</guid>
