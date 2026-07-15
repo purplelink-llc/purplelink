@@ -209,7 +209,7 @@ nav a:hover { color: var(--ink); }
 /* ─── Shared section atoms ────────────────────────────────────────────── */
 
 .section-num {
-  display: block;
+  display: none;   /* numbered 01–05 section markers removed: AI editorial-scaffold tell */
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -2253,7 +2253,7 @@ button.btn-coming-soon:focus-visible {
    Dismissible per browser; CSS lives here so the CSP `style-src 'self'`
    rule is honoured (no inline styles). */
 .uc-banner {
-  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  background: var(--purple);
   color: #ffffff;
   font-size: 0.88rem;
   line-height: 1.45;

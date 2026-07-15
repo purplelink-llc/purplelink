@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>How to catch AI-hallucinated citations in your bibliography (2026) | Purplelink</title>
+    <meta name="description" content="AI writing tools invent citations that look real. Here is what a hallucinated reference looks like, and an honest comparison of the ways to catch them: manual DOI checks, reference managers, and automated validators.">
+    <link rel="canonical" href="https://purplelink.llc/guides/catch-ai-hallucinated-citations/">
+    <meta property="og:title" content="How to catch AI-hallucinated citations in your bibliography (2026)">
+    <meta property="og:description" content="What a hallucinated reference looks like, and an honest comparison of how to catch them before a reviewer does.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/catch-ai-hallucinated-citations/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to catch AI-hallucinated citations in your bibliography (2026)">
+    <meta name="twitter:description" content="What a hallucinated reference looks like, and an honest comparison of how to catch them.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta name="twitter:image:alt" content="How to catch AI-hallucinated citations">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "How to catch AI-hallucinated citations in your bibliography (2026)",
+          "description": "AI writing tools invent citations that look real. What a hallucinated reference looks like, and an honest comparison of the ways to catch them.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-07-14",
+          "dateModified": "2026-07-14",
+          "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+          "mainEntityOfPage": "https://purplelink.llc/guides/catch-ai-hallucinated-citations/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "Catch AI-hallucinated citations", "item": "https://purplelink.llc/guides/catch-ai-hallucinated-citations/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do AI models really invent citations?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. A language model produces text by predicting plausible sequences of words, not by looking up a database of papers. So it can generate a reference that is formatted perfectly and reads convincingly but does not correspond to any real publication. Since 2023, studies and journal correction notices have repeatedly documented fabricated references in AI-assisted drafts across many fields." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I check whether a DOI is real?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Paste the DOI after https://doi.org/ and open it. A real DOI resolves to the publisher's page for that exact article. If it 404s, redirects to a homepage, or lands on a different paper than your citation claims, the reference is suspect. A DOI that is well-formed is not proof it exists: only resolution against the registry confirms it." }
+            },
+            {
+              "@type": "Question",
+              "name": "The authors are real people, so is the citation safe?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The most convincing hallucinations pair real, well-known authors with a title they never wrote, or attribute a real paper to the wrong year, journal, or volume. Verify the whole record, not just the names: title, authors, year, and venue all have to match one real publication." }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the fastest way to check a whole .bib file?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Run it through an automated validator that resolves each entry against scholarly databases such as Crossref, Semantic Scholar, or OpenAlex, then manually verify only the entries it flags. The tool does the tedious lookup at scale; you apply judgment to the handful that look wrong. Never publish on the validator's say-so alone." }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">&larr; All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">How to catch AI-hallucinated citations in your bibliography</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> &middot; <time datetime="2026-07-14">July 14, 2026</time></p>
+        <p class="post-lede">AI writing assistants invent references that are formatted perfectly and read convincingly, yet point to papers that were never written. Here is what a hallucinated citation actually looks like, and an honest comparison of the ways to catch one before a reviewer, an editor, or your own reputation does.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> one of the tools compared below is mine (the <a href="/tools/bib-validator/">BibTeX Validator</a>). I have tried to write this so it is useful even if you never touch it. Manual checking against a DOI is free and remains the gold standard; the automated tools, mine included, exist to make that checking fast enough that you actually do it.</p>
+
+        <h2>Why AI invents citations that look real</h2>
+        <p>A large language model does not look up a database of papers when you ask it for a reference. It predicts a plausible sequence of words. A citation is a very predictable sequence: an author surname, a year in parentheses, a title in the house style of the field, a journal name, a volume, a page range, maybe a DOI. The model has seen millions of these, so it can assemble one that is grammatically and stylistically flawless. Whether the paper behind it exists is a separate question the model was never actually answering.</p>
+        <p>This is why hallucinated references are dangerous in a way that a typo is not. A misspelled author name looks wrong. A hallucinated citation looks exactly right. Since 2023, journal correction notices, retraction reports, and methods papers across medicine, law, and the social sciences have repeatedly documented fabricated references slipping into submitted and even published work. The common thread is not carelessness; it is that the fake looks indistinguishable from the real until someone checks the source.</p>
+
+        <h2>What a hallucinated citation looks like</h2>
+        <p>Hallucinations are not random gibberish. They cluster into a few recognisable patterns. Learning them makes manual spot-checks much faster.</p>
+        <ul>
+          <li><strong>Real authors, invented title.</strong> The model pairs genuine, well-known researchers in a field with a paper title they never wrote. The names check out on Google Scholar, so a quick author search gives false comfort.</li>
+          <li><strong>Real paper, wrong metadata.</strong> A real study attributed to the wrong year, journal, volume, or page range. Everything is almost right, which is exactly what makes it slip through.</li>
+          <li><strong>Plausible but dead DOI.</strong> A DOI in the correct registrant format (for example a <code>10.1145/&hellip;</code> that looks like ACM) that resolves to nothing, or resolves to a completely different article.</li>
+          <li><strong>Frankenstein reference.</strong> First author from one paper, title from another, journal from a third. Each fragment is real; the combination is not.</li>
+          <li><strong>The confident near-match.</strong> A paper that almost exists: the model has blended two similar titles into one that reads perfectly and matches neither.</li>
+        </ul>
+        <p>The single most reliable tell is the source itself. If you cannot open the paper and see that its title, authors, year, and venue match your citation, treat the citation as unverified.</p>
+
+        <h2>The methods for catching them, compared</h2>
+        <p>There is no single right tool. The honest comparison is about trade-offs between reliability, speed, and how many references you have to check. Here is how the common approaches stack up.</p>
+
+        <div style="overflow-x:auto;margin:1.2rem 0">
+        <table style="border-collapse:collapse;font-size:0.92rem;min-width:660px">
+          <thead>
+            <tr><th>Method</th><th>What it reliably catches</th><th>Speed</th><th>Cost</th><th>Best for</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Manual DOI / Google Scholar check</td>
+              <td>Everything, if you are thorough</td>
+              <td>Slow (minutes per reference)</td>
+              <td>Free</td>
+              <td>The final, authoritative check on flagged entries</td>
+            </tr>
+            <tr>
+              <td>Reference manager (Zotero, Mendeley)</td>
+              <td>Formatting and duplicates; weak on existence</td>
+              <td>Fast to organise, not built to verify</td>
+              <td>Free / freemium</td>
+              <td>Managing a library, not detecting fabrication</td>
+            </tr>
+            <tr>
+              <td>Crossref / OpenAlex lookup (by hand or API)</td>
+              <td>Whether a DOI and title resolve to a real record</td>
+              <td>Medium</td>
+              <td>Free</td>
+              <td>Ground-truth verification if you are comfortable with an API</td>
+            </tr>
+            <tr>
+              <td>Automated bibliography validator</td>
+              <td>Missing DOIs, non-resolving entries, metadata mismatches, at scale</td>
+              <td>Fast (whole <code>.bib</code> in one pass)</td>
+              <td>Free tiers common</td>
+              <td>A first pass over a full reference list</td>
+            </tr>
+            <tr>
+              <td>Publisher / journal AI screening</td>
+              <td>Varies; opaque and out of your control</td>
+              <td>N/A to you</td>
+              <td>N/A</td>
+              <td>Nothing you can rely on pre-submission</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <h3>Manual checking</h3>
+        <p>Open <code>https://doi.org/</code> followed by the DOI, or search the exact title in Google Scholar or the publisher's site. Confirm the title, author list, year, and venue all match one real paper. This is the only method that catches every pattern above, because you are looking at the source. Its weakness is human: at forty references, thoroughness decays, and the one you skim past is the one that was fake. Manual checking is the right tool for the final verification of a handful of suspicious entries, not for grinding through an entire list.</p>
+
+        <h3>Reference managers</h3>
+        <p>Zotero and Mendeley are excellent at organising a library and generating consistent output, and if you added each reference by importing it from a real database, it is real by construction. But they were not built to answer the question "does this entry, which I pasted in from a chatbot, correspond to a real paper?" A reference manager will happily store a hallucination in perfect format. Use them for organisation, not for detection.</p>
+
+        <h3>Crossref and OpenAlex</h3>
+        <p>The scholarly metadata registries are the ground truth. A DOI either resolves to a record in Crossref or it does not; a title either matches a real work in OpenAlex or Semantic Scholar or it does not. If you are comfortable with an API, you can query these directly. Most researchers are not, which is the gap automated validators fill.</p>
+
+        <h3>Automated validators</h3>
+        <p>An automated bibliography checker parses your <code>.bib</code> file and resolves each entry against databases such as Crossref, Semantic Scholar, or OpenAlex, then reports which references are missing DOIs, fail to resolve, or have metadata that does not match the record it found. Several exist, and a genuinely useful comparison acknowledges that: some run as web tools, some as command-line utilities, some as browser extensions that check against Google Scholar. They differ in which databases they query, whether they check the full metadata or only the DOI, and how they present near-matches.</p>
+        <p>My own <a href="/tools/bib-validator/">BibTeX Validator</a> sits in this category: paste or upload a <code>.bib</code> file and it checks each entry against scholarly databases and flags the ones that look wrong, in one pass, with nothing stored. The honest limitation, true of every tool in this class, is that an automated pass is a filter, not a verdict. It narrows dozens of references down to the few worth a human look. It cannot certify that a reference is genuine; only that it found, or failed to find, a matching record. Treat any validator, mine included, as the first pass, and confirm the flagged entries by opening the source yourself.</p>
+
+        <h2>A workflow that actually gets done</h2>
+        <p>The best method is the one you will still be doing at reference forty. This one is fast enough to survive a real deadline:</p>
+        <ol>
+          <li><strong>Never paste a citation straight from a chatbot into your manuscript.</strong> If an AI tool suggests a source, treat it as a lead, not a reference. Find the real paper, then cite that.</li>
+          <li><strong>Run the whole <code>.bib</code> file through an <a href="/tools/bib-validator/">automated validator</a></strong> to flag missing DOIs, non-resolving entries, and metadata mismatches in one pass.</li>
+          <li><strong>Manually verify every flagged entry</strong> by opening its DOI or searching the exact title. Confirm title, authors, year, and venue against one real source.</li>
+          <li><strong>Spot-check a random sample of the entries that passed.</strong> Validators miss the Frankenstein and near-match patterns most, so open five or six that looked fine.</li>
+          <li><strong>Fix or remove anything you cannot verify.</strong> A missing citation is a weakness; a fabricated one is an integrity problem. If you cannot find the source, do not cite it.</li>
+        </ol>
+
+        <h2>Tools that pair well</h2>
+        <p>These free, in-browser utilities support the workflow above. Nothing is stored; files are processed in memory.</p>
+        <ul>
+          <li><a href="/tools/bib-validator/">BibTeX Validator</a> — the automated first pass: flags missing DOIs, non-resolving entries, and metadata mismatches across a whole <code>.bib</code> file.</li>
+          <li><a href="/tools/citation-generator/">Citation Generator</a> — build a clean, correct reference from a DOI or identifier so you are not hand-typing metadata.</li>
+          <li><a href="/tools/reference-converter/">Reference Converter</a> — move references between BibTeX, RIS, and EndNote without reformatting by hand.</li>
+        </ul>
+        <p>For the wider picture, see the <a href="/guides/bibtex/">BibTeX and citations hub</a>, the guide to <a href="/guides/fix-bibtex-errors/">fixing common BibTeX errors</a>, and <a href="/guides/doi-to-bibtex/">turning a DOI into a BibTeX entry</a>.</p>
+
+        <h2>The short version</h2>
+        <p>AI hallucinates citations because it predicts plausible text rather than retrieving real records, so the fakes look flawless. The only certain check is the source: does a real paper exist whose title, authors, year, and venue match your citation? Automated validators make that check fast enough to run on every reference; manual verification of the flagged ones makes it certain. Do both, and do not cite what you cannot open.</p>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia &middot; Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+  </body>
+</html>

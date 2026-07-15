@@ -32,9 +32,29 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
 const RESEND_API_URL = "https://api.resend.com/emails";
-const ALERT_FROM_ADDRESS = "Purplelink Alerts <alerts@mail.purplelink.llc>";
+// Resend verifies domains exactly. `purplelink.llc` is verified; the
+// `mail.purplelink.llc` subdomain is NOT, and sending from it returns HTTP 403
+// "domain is not verified" — so every operator alert was silently failing.
+const ALERT_FROM_ADDRESS = "Purplelink Alerts <alerts@purplelink.llc>";
 
 const MAX_SIG_AGE_SECONDS = 5 * 60;   // reject replays older than 5 min
+
+// Products this site actually sells. Must match checkout.mjs's PRODUCT_CATALOG.
+// Anything else on this Stripe account (e.g. muscleonglp.com's guides) belongs
+// to a different site's webhook and must not be forwarded to Modal.
+const PURPLELINK_PRODUCTS = new Set([
+  "paper-review-standard",
+  "paper-review-journal",
+  "paper-review-deep",
+  "paper-review-pack-5",
+  "paper-review-pack-20",
+  "cover-letter",
+  "anonymity-check",
+  "citation-gap",
+  "revision-review",
+  "response-review",
+  "resume-review",
+]);
 
 function jsonResponse(status, body) {
   return new Response(JSON.stringify(body), {
@@ -158,9 +178,23 @@ export default async function handler(request) {
   const amountPaid = session.amount_total || 0;   // in cents
   // The checkout function stamps the product key into metadata so we can
   // dispatch on it here without needing a separate price_id → product map.
-  const product =
-    (session.metadata && session.metadata.product) ||
-    "paper-review-standard";
+  const rawProduct = (session.metadata && session.metadata.product) || "";
+
+  // This Stripe account also serves muscleonglp.com, whose webhook endpoint is
+  // separate but which shares the account's event stream: Stripe fans every
+  // checkout.session.completed out to BOTH endpoints, signing each with that
+  // endpoint's own secret, so the signature check above passes for a purchase
+  // that has nothing to do with Paper Review. Forwarding one of those to Modal
+  // asks it to mint a redemption token for a product it has never heard of; it
+  // fails, we return 502, and Stripe retries for ~3 days while alerting the
+  // operator each time. Ignore anything that is not ours.
+  if (rawProduct && !PURPLELINK_PRODUCTS.has(rawProduct)) {
+    return jsonResponse(200, { status: "ignored_foreign_product", product: rawProduct });
+  }
+
+  // Sessions predating the metadata stamp are Paper Review's by definition:
+  // nothing else was selling on this account then.
+  const product = rawProduct || "paper-review-standard";
   // See checkout.mjs — passed through unchanged so the backend can credit
   // the referral loop (task: "co-author exposure referral loop"). Validated
   // server-side against referral_dict there, not trusted here.
