@@ -8,7 +8,7 @@ if str(BACKEND) not in sys.path:
 
 import pytest
 
-from research_digest.curator import _trim_reader_tail
+from research_digest.curator import _clean_action, _trim_reader_tail
 
 
 # The model habitually ends a "why it matters" sentence with a clause that only
@@ -56,3 +56,34 @@ def test_adds_terminal_period_and_never_blanks():
     assert _trim_reader_tail(only_tail) == only_tail
     # normal trimming restores a terminal period when the tail took it
     assert _trim_reader_tail("Big lean-mass effect, relevant to these patients").endswith(".")
+
+
+# The "action" field is the one place the curator is allowed to sound even
+# slightly prescriptive, and only within four general, non-paper-specific levers
+# (protein/training/monitor/clinician). Anything that reads as real medical
+# advice — a dose, a drug switch, an imperative command — must be DROPPED
+# (empty string), never rewritten into something safer.
+@pytest.mark.parametrize("raw", [
+    "This adds to the case for hitting a daily protein target during weight loss.",
+    "This is one more reason to prioritize resistance training alongside GLP-1 therapy.",
+    "Worth discussing with a prescribing clinician, especially for older adults.",
+    "This finding is worth tracking if you are monitoring strength over time.",
+])
+def test_clean_action_keeps_safe_general_nudges(raw):
+    assert _clean_action(raw) == raw
+
+
+@pytest.mark.parametrize("raw", [
+    "You should start taking a higher dose of tirzepatide.",
+    "Consider asking your doctor to increase your dose.",
+    "Switch from semaglutide to tirzepatide for better results.",
+    "Start taking creatine to offset this effect.",
+    "Increase your protein by 40mg per kg.",
+    "",
+])
+def test_clean_action_drops_prescriptive_or_empty(raw):
+    assert _clean_action(raw) == ""
+
+
+def test_clean_action_adds_terminal_period():
+    assert _clean_action("Worth discussing with a clinician").endswith(".")

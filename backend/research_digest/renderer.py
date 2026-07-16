@@ -91,6 +91,7 @@ def render_post_html(d: WeeklyDigest) -> str:
         <p class="rr-meta">{meta}</p>
         <p>{e(it.summary)}</p>
         {f'<p class="rr-why"><strong>Why it matters:</strong> {e(it.why_it_matters)}</p>' if it.why_it_matters else ''}
+        {f'<p class="rr-action"><strong>What this means for you:</strong> {e(it.action)}</p>' if it.action else ''}
         <p class="rr-source"><a href="{e(p.url)}" target="_blank" rel="noopener">Read the {'preprint' if p.is_preprint else 'paper'} &rarr;</a></p>
       </article>""")
 

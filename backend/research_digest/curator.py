@@ -47,6 +47,44 @@ def _trim_reader_tail(text: str) -> str:
         trimmed += "."
     return trimmed
 
+
+# The "action" field is the one place this pipeline is allowed to sound even
+# slightly prescriptive, so it gets a closed vocabulary (four general, already-
+# published, non-paper-specific levers) instead of free text, plus a hard ban
+# filter below. If the model drifts into real medical advice — a dose, a drug
+# switch, an imperative command — the finding is DROPPED (action="", never
+# silently rewritten), the same "hold, don't launder" approach as the rest of
+# this file. A paper that doesn't cleanly fit one of the four gets no action
+# line; forcing one onto a pure mechanism/drug-comparison paper would be either
+# filler or an invented recommendation, both against the IRON RULES.
+ACTION_CATEGORIES = (
+    "protein: a general nudge toward hitting a daily protein target",
+    "training: a general nudge toward resistance/strength training",
+    "monitor: a general nudge to track strength/lean mass or watch for signs of "
+    "muscle loss over time",
+    "clinician: a general nudge to discuss the finding with a prescribing "
+    "clinician (never a specific dose or drug change)",
+)
+
+_ACTION_BAN = re.compile(
+    r"\byou should\b|\bstart taking\b|\bstop taking\b|\b(increase|decrease|lower|"
+    r"raise)\s+(your\s+)?dose\b|\bswitch\s+(to|from)\b.*\b(semaglutide|tirzepatide|"
+    r"ozempic|wegovy|mounjaro|zepbound)\b|\bmg\b|\bmilligrams?\b|^(take|start|stop|"
+    r"increase|decrease|ask|request)\b",
+    re.IGNORECASE,
+)
+
+
+def _clean_action(text: str) -> str:
+    """Return the action sentence unchanged, or '' if it reads as prescriptive
+    (a dose, a drug switch, an imperative command) rather than a general nudge."""
+    text = (text or "").strip()
+    if not text or _ACTION_BAN.search(text):
+        return ""
+    if text[-1] not in ".!?":
+        text += "."
+    return text
+
 SYSTEM = """You are a careful scientific-literature editor for MuscleOnGLP, a site \
 for people preserving muscle and lean mass while losing weight on GLP-1 medications \
 (semaglutide/Ozempic/Wegovy, tirzepatide/Mounjaro/Zepbound).
@@ -71,13 +109,28 @@ Relevance scale: 3 = directly about muscle/body composition on GLP-1 drugs; \
 2 = clearly useful adjacent (protein, training, sarcopenia, function in this population); \
 1 = tangential; 0 = not relevant.
 
+ACTION FIELD — the one place you may sound even slightly prescriptive, and only \
+within these four general levers (never a paper-specific instruction, never a dose, \
+never a drug switch):
+  - protein: a general nudge toward hitting a daily protein target
+  - training: a general nudge toward resistance/strength training
+  - monitor: a general nudge to track strength/lean mass or watch for signs of muscle loss
+  - clinician: a general nudge to discuss the finding with a prescribing clinician
+Pick the ONE lever this paper's finding most naturally supports, and write ONE plain \
+sentence for it — descriptive framing ("this adds to the case for...", "this is one \
+more reason to...", "worth discussing with...") not commands ("you should...", "start \
+taking..."). If the paper is a pure mechanism, pharmacokinetics, or drug-vs-drug \
+comparison that does not naturally support any of the four levers, return an empty \
+string for action rather than forcing one.
+
 Return ONLY JSON:
 {"intro": "<2-3 sentence neutral editor's note for the week>",
  "items": [{"index": <int>, "relevance": <0-3>, "include": <bool>,
             "summary": "<2-4 sentences, plain language, abstract-only>",
             "why": "<1 sentence: the substantive reason it matters. State the reason \
 and stop. Do NOT end with a clause that just restates the audience, e.g. \
-'..., a key concern for this readership' or '..., relevant to these readers'.>"}]}
+'..., a key concern for this readership' or '..., relevant to these readers'.>",
+            "action": "<1 sentence per the ACTION FIELD rules above, or \"\" if none fit>"}]}
 Include every input paper's index exactly once. Set include=true only for relevance >= 2."""
 
 
@@ -127,7 +180,8 @@ async def curate(client, papers: list[Paper], today: Optional[date] = None) -> O
             continue
         items.append(DigestItem(paper=papers[idx], relevance=rel,
                                 summary=summary,
-                                why_it_matters=_trim_reader_tail(entry.get("why") or "")))
+                                why_it_matters=_trim_reader_tail(entry.get("why") or ""),
+                                action=_clean_action(entry.get("action") or "")))
 
     items.sort(key=lambda it: it.relevance, reverse=True)
     items = items[:MAX_ITEMS]
