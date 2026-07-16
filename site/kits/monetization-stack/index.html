@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>The Monetization Stack &mdash; owned analytics, affiliate, ads, deploys | Purplelink</title>
+    <meta name="description" content="Four small systems that make a static site earn: cookieless analytics you own, self-tagging affiliate links with FTC disclosure, safe Auto Ads config, and Git auto-deploy that never drifts. $39, one-time.">
+    <link rel="canonical" href="https://purplelink.llc/kits/monetization-stack/">
+    <meta property="og:title" content="The Monetization Stack">
+    <meta property="og:description" content="Owned analytics, self-tagging affiliate links, safe ad config, and drift-proof deploys for a static site. One-time $39, ships with a beautiful setup guide.">
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="https://purplelink.llc/kits/monetization-stack/">
+    <meta property="og:image" content="https://purplelink.llc/kits/assets/monetization-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Monetization Stack">
+    <meta name="twitter:description" content="Owned analytics, self-tagging affiliate links, safe ad config, and drift-proof deploys. One-time $39.">
+    <meta name="twitter:image" content="https://purplelink.llc/kits/assets/monetization-cover.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org", "@type": "Product",
+      "name": "The Monetization Stack",
+      "image": "https://purplelink.llc/kits/assets/monetization-cover.png",
+      "description": "Four small systems that make a static site earn: cookieless first-party analytics you own, self-tagging affiliate links with FTC disclosure, safe Auto Ads configuration, and Git auto-deploy that ends stale-content drift.",
+      "brand": { "@type": "Brand", "name": "Purplelink LLC" },
+      "offers": { "@type": "Offer", "price": "39", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/kits/monetization-stack/" }
+    }
+    </script>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/kits/" aria-current="page">Kits</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/kits/">&larr; All kits</a>
+
+      <div class="kit-product">
+        <aside class="kit-cover-lg">
+          <img src="/kits/assets/monetization-cover.png" alt="The Monetization Stack setup guide, cover page" width="420" height="594">
+          <div class="kit-product-buy" id="buy">
+            <span class="kit-price">$39</span>
+            <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="kit-monetization">Get the kit &mdash; $39</button>
+            <p class="kit-buy-meta">One-time. Instant download.</p>
+            <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+          </div>
+        </aside>
+
+        <div class="kit-detail">
+          <p class="eyebrow">Site monetization kit</p>
+          <h1>The Monetization Stack</h1>
+          <p class="kit-lede">Most monetization advice is a list of accounts to sign up for. This is the opposite: four small systems you drop into a static site once, then forget. They are already running in production on live sites, not sketches.</p>
+
+          <p>You get analytics you actually own with no monthly bill, affiliate links that tag and disclose themselves, an ad setup that will not fight your content-security policy, and a deploy pipeline that stops the single most common way a static site quietly ships stale content.</p>
+
+          <h2>The four systems</h2>
+          <h3>Owned analytics</h3>
+          <p>A cookieless first-party beacon, an edge function that stores hits in your host's own key-value store, and a private dashboard. No third-party script, no monthly fee, and the data is yours. It replaces a paid analytics subscription.</p>
+          <h3>Affiliate auto-tagging</h3>
+          <p>A small script finds every Amazon link on a page, appends your tag if one is not already there, and adds the disclosure markup the FTC expects. There is no per-link work and no double-tagging. Disclosure is a legal requirement, not a nicety, and a platform's built-in tag does not cover an outside Amazon link.</p>
+          <h3>Ads without breaking your CSP</h3>
+          <p>The exact content-security-policy origins and Auto Ads setup that let Google's ads render on a strict site, the list of pages to exclude to stay inside policy, and the ad categories to block so a serious brand does not serve junk.</p>
+          <h3>Drift-proof deploys</h3>
+          <p>The most common static-site failure is a local command publishing an out-of-date copy over what your pipeline pushed to Git. The fix is to make Git the single source of truth so every push publishes itself. This one habit removes the entire class of "why is the old version live" bugs.</p>
+
+          <h2>How you use it</h2>
+          <ol class="kit-steps">
+            <li>Add the analytics beacon and its two edge functions; set one secret and open your private dashboard.</li>
+            <li>Set your affiliate tag in one line and load the tagging script.</li>
+            <li>Paste the ad origins into your headers, add the loader, enable Auto Ads, and apply the category blocks.</li>
+            <li>Connect your repository for auto-deploy and retire the manual deploy command.</li>
+          </ol>
+          <p>Each piece is independent. Do them in any order; none depends on another. Plan on an afternoon.</p>
+
+          <div class="kit-note"><strong>What you get:</strong> the analytics beacon, collector, and dashboard; the affiliate tagger and disclosure component; the ad configuration and blocklist; the auto-deploy setup; and a beautifully typeset setup guide. The analytics and deploy pieces cost nothing to run.</div>
+
+          <h2>An honest note</h2>
+          <p>Ads and affiliates earn in proportion to traffic. This kit makes a site ready to earn and removes the recurring analytics bill. It does not manufacture visitors. Delivered as-is: third-party platform behaviour, ad approval, and pricing are outside anyone's control, and nothing here is legal or tax advice.</p>
+
+          <div class="kit-cta-row"><a class="btn btn-primary" href="#buy">Get the kit &mdash; $39</a><a class="btn" href="/kits/">Compare both kits</a></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia &middot; Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/kits/">Kits</a>
+        <a href="/tools/">Tools</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </footer>
+    <script src="/site.js" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js" defer></script>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>

@@ -2310,3 +2310,71 @@ button.btn-coming-soon:focus-visible {
   .uc-banner-close:hover { background: rgba(0, 0, 0, 0.25); }
 }
 
+
+/* ============================================================
+   Kits (/kits/): downloadable product pages
+   Uses the shared tokens; pill buttons come from .btn/.btn-primary.
+   ============================================================ */
+.kit-hero { max-width: 760px; margin: 0 auto; padding: 56px 24px 8px; text-align: center; }
+.kit-hero h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.08; margin: 8px 0 14px; color: var(--ink); text-wrap: balance; }
+.kit-hero p { color: var(--muted); font-size: 1.02rem; max-width: 66ch; margin: 0 auto; }
+
+.kit-grid { max-width: 1000px; margin: 40px auto 0; padding: 0 24px; display: grid; gap: 22px; grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 800px) { .kit-grid { grid-template-columns: 1fr; } }
+
+.kit-card { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.kit-card-cover { display: block; background: var(--purple-xlight); padding: 20px 20px 0; }
+.kit-card-cover img { display: block; width: 100%; max-width: 260px; margin: 0 auto; height: auto; border: 1px solid var(--line); border-radius: 7px; box-shadow: 0 8px 24px oklch(50% 0.24 310 / 0.10); }
+.kit-card-body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+.kit-card-body h2 { font-family: var(--font-display); font-size: 1.35rem; margin: 0 0 6px; line-height: 1.2; }
+.kit-card-body h2 a { color: var(--ink); text-decoration: none; }
+.kit-card-body h2 a:hover { color: var(--purple); }
+.kit-card-lede { color: var(--muted); font-size: 0.95rem; margin: 0 0 12px; }
+.kit-includes { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 7px; }
+.kit-includes li { position: relative; padding-left: 22px; font-size: 0.92rem; color: var(--ink); }
+.kit-includes li::before { content: ""; position: absolute; left: 2px; top: 0.5em; width: 8px; height: 8px; border-radius: 100px; background: var(--purple); }
+.kit-buy { margin-top: auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.kit-price { font-family: var(--font-display); font-size: 1.6rem; color: var(--ink); font-weight: 600; }
+
+/* bundle band */
+.kit-bundle { max-width: 1000px; margin: 34px auto 0; padding: 0 24px; }
+.kit-bundle-inner { background: var(--purple); border-radius: 16px; padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.kit-bundle-inner .eyebrow { color: var(--bg); opacity: 0.85; }
+.kit-bundle-inner h2 { font-family: var(--font-display); color: var(--bg); margin: 2px 0 6px; font-size: 1.7rem; }
+.kit-bundle-inner > div > p { color: var(--bg); opacity: 0.9; margin: 0; max-width: 42ch; }
+.kit-bundle-buy { text-align: right; }
+.kit-price-strike { color: var(--bg); opacity: 0.65; text-decoration: line-through; margin-right: 8px; }
+.kit-price-lg { color: var(--bg); font-size: 2rem; }
+.kit-bundle-buy .btn-primary { background: var(--bg); color: var(--purple); margin-top: 10px; }
+.kit-bundle-buy .btn-primary:hover { background: var(--panel); }
+.kit-buy-meta { color: var(--muted); font-size: 0.82rem; margin: 8px 0 0; }
+.kit-bundle .kit-buy-meta { color: var(--bg); opacity: 0.8; }
+.kit-cta-row { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* trust row */
+.kit-trust { max-width: 1000px; margin: 46px auto 20px; padding: 0 24px; }
+.kit-trust-grid { display: grid; gap: 20px; grid-template-columns: repeat(2, 1fr); margin-top: 16px; }
+@media (max-width: 700px) { .kit-trust-grid { grid-template-columns: 1fr; } }
+.kit-trust-grid h3 { font-size: 1rem; margin: 0 0 4px; color: var(--ink); }
+.kit-trust-grid p { color: var(--muted); font-size: 0.92rem; margin: 0; }
+
+/* product page: cover + details */
+.kit-product { max-width: 1000px; margin: 28px auto 0; padding: 0 24px; display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
+@media (max-width: 800px) { .kit-product { grid-template-columns: 1fr; gap: 22px; } }
+.kit-cover-lg { position: sticky; top: 24px; }
+.kit-cover-lg img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 12px 32px oklch(50% 0.24 310 / 0.12); }
+.kit-product-buy { margin-top: 16px; padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; text-align: center; }
+.kit-product-buy .kit-price { display: block; margin-bottom: 8px; }
+.kit-product-buy .btn { width: 100%; }
+.kit-detail h1 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.1; margin: 4px 0 10px; color: var(--ink); text-wrap: balance; }
+.kit-detail > p.kit-lede { font-size: 1.05rem; color: var(--muted); margin: 0 0 8px; }
+.kit-detail h2 { font-family: var(--font-display); font-size: 1.3rem; margin: 28px 0 8px; color: var(--ink); }
+.kit-detail h3 { font-size: 1rem; margin: 16px 0 4px; color: var(--purple-dim); }
+.kit-detail p { color: var(--ink); }
+.kit-steps { list-style: none; counter-reset: k; padding: 0; margin: 10px 0; display: grid; gap: 12px; }
+.kit-steps li { counter-increment: k; position: relative; padding-left: 42px; color: var(--ink); }
+.kit-steps li::before { content: counter(k); position: absolute; left: 0; top: -2px; width: 28px; height: 28px; border-radius: 100px; background: var(--purple); color: #fff; font-family: var(--font-display); font-weight: 600; display: grid; place-items: center; font-size: 0.9rem; }
+.kit-note { background: var(--purple-xlight); border: 1px solid var(--purple-light); border-radius: 10px; padding: 14px 16px; margin: 16px 0; color: var(--ink); font-size: 0.95rem; }
+.kit-note strong { color: var(--purple); }
+.kit-center { text-align: center; }
+.kit-dl-btn { display: block; margin: 10px auto; max-width: 440px; }

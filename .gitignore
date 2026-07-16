@@ -11,3 +11,6 @@ site/CC-Session-Logs/
 # Python build artifacts
 __pycache__/
 *.pyc
+
+# Paid kit deliverables — uploaded to the private kit-files Blobs store, never committed (public repo)
+kits-delivery/

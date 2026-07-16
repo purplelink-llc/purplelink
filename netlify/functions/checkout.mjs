@@ -86,6 +86,11 @@ const PRODUCT_CATALOG = {
   "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW",         successPath: "/tools/paper-review/revision/upload/" },
   "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW",         successPath: "/tools/response-review/upload/" },
   "resume-review":           { envKey: "STRIPE_PRICE_RESUME_REVIEW",           successPath: "/tools/resume-review/upload/" },
+  // Digital "kits" (downloadable products). Delivery is a token-gated PDF from
+  // the kits-delivery Blobs store; see download.mjs. Success page lists the links.
+  "kit-faceless":            { envKey: "STRIPE_PRICE_KIT_FACELESS",            successPath: "/kits/success/" },
+  "kit-monetization":        { envKey: "STRIPE_PRICE_KIT_MONETIZATION",        successPath: "/kits/success/" },
+  "kit-bundle":              { envKey: "STRIPE_PRICE_KIT_BUNDLE",              successPath: "/kits/success/" },
 };
 
 function jsonResponse(status, body) {
@@ -168,7 +173,7 @@ export default async function handler(request) {
     "line_items[0][price]": priceId,
     "line_items[0][quantity]": "1",
     success_url: `${origin}${entry.successPath}?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success)\/$/, "/")}`,
+    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success)\/$/, "/")}`,
     customer_creation: "if_required",
     "metadata[product]": product,
     "metadata[product_category]": product.startsWith("paper-review") ? "paper-review" : product,
