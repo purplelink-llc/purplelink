@@ -456,4 +456,19 @@
     <lastmod>2026-07-16</lastmod>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://purplelink.llc/kits/</loc>
+    <lastmod>2026-07-16</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/kits/faceless-content-pipeline/</loc>
+    <lastmod>2026-07-16</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/kits/monetization-stack/</loc>
+    <lastmod>2026-07-16</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>
