@@ -24,6 +24,52 @@
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "HowTo",
+          "name": "How to export a LaTeX equation as a PNG image",
+          "totalTime": "PT2M",
+          "tool": [
+            { "@type": "HowToTool", "name": "Equation renderer" }
+          ],
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Open the equation renderer",
+              "text": "Go to purplelink.llc/tools/equation-renderer/."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Paste the LaTeX math expression",
+              "text": "Enter only the math, without surrounding $ signs or \\[ delimiters."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Select a rendering mode",
+              "text": "Display renders the equation centered on its own line with larger symbols, suited for slides and posters. Inline renders it compactly, as it would appear inside a sentence."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Select a resolution",
+              "text": "300 DPI works for most documents and presentation slides. Use 600 DPI for large-format prints or posters."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Render the equation",
+              "text": "Click Render equation. The PNG appears below the controls within a few seconds."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Download the image",
+              "text": "Click Download equation.png to save the file, then drop it into the slide deck, poster, or Word document."
+            }
+          ]
+        },
+        {
           "@type": "Article",
           "headline": "How to Export a LaTeX Equation as a PNG Image",
           "description": "Researchers who need an equation image for a presentation, poster, or Word document can convert any LaTeX math expression to a high-resolution PNG using Purplelink's free equation renderer. No TeX installation required.",

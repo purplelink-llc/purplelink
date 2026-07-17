@@ -24,6 +24,47 @@
       "@context": "https://schema.org",
       "@graph": [
         {
+          "@type": "HowTo",
+          "name": "How to determine and switch between citation styles",
+          "totalTime": "PT10M",
+          "tool": [
+            { "@type": "HowToTool", "name": "Citation generator" },
+            { "@type": "HowToTool", "name": "Reference manager or BibLaTeX" }
+          ],
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Check the venue's current submission guidelines",
+              "text": "Confirm which citation style the target journal, conference, or instructor requires. Generic tutorials can be out of date; the venue's own guidelines are the source of truth."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Identify the citation family",
+              "text": "Determine whether the required style is numeric (IEEE), author-date (APA, Chicago author-date), or author-page (MLA), since that determines how in-text citations and the reference list are structured."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Reformat individual references",
+              "text": "Use the Citation Generator to rebuild any single reference in APA, MLA, Chicago, or IEEE from a DOI or ISBN."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Swap the BibLaTeX style for LaTeX manuscripts",
+              "text": "Change the biblatex style declaration in the preamble to the target style and recompile - no manual reference-list rewriting needed. Validate the .bib file has the fields the new style requires."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Switch the active style in a reference manager",
+              "text": "For Word or other manuscripts, switch the active style in Zotero, Mendeley, EndNote, or Paperpile and re-insert all citations."
+            }
+          ]
+        },
+        {
           "@type": "Article",
           "headline": "IEEE vs APA vs MLA vs Chicago: which citation style to use",
           "description": "How the four major citation styles - IEEE, APA, MLA, and Chicago - differ in in-text citations and reference formatting, and when to use each, with a free citation generator.",
