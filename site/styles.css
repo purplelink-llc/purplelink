@@ -2334,6 +2334,8 @@ button.btn-coming-soon:focus-visible {
 .kit-includes li { position: relative; padding-left: 22px; font-size: 0.92rem; color: var(--ink); }
 .kit-includes li::before { content: ""; position: absolute; left: 2px; top: 0.5em; width: 8px; height: 8px; border-radius: 100px; background: var(--purple); }
 .kit-buy { margin-top: auto; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.kit-buy-price { display: flex; flex-direction: column; gap: 1px; }
+.kit-buy-price .kit-launch-note { margin: 0; }
 .kit-price { font-family: var(--font-display); font-size: 1.6rem; color: var(--ink); font-weight: 600; }
 
 /* bundle band */
@@ -2349,6 +2351,9 @@ button.btn-coming-soon:focus-visible {
 .kit-bundle-buy .btn-primary:hover { background: var(--panel); }
 .kit-buy-meta { color: var(--muted); font-size: 0.82rem; margin: 8px 0 0; }
 .kit-bundle .kit-buy-meta { color: var(--bg); opacity: 0.8; }
+/* Honest launch-pricing note: states a genuine upcoming increase, not a former price. */
+.kit-launch-note { color: var(--purple-dim); font-size: 0.8rem; font-weight: 600; margin: 4px 0 0; letter-spacing: 0.01em; }
+.kit-bundle .kit-launch-note { color: var(--bg); opacity: 0.9; }
 .kit-cta-row { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
 
 /* trust row */

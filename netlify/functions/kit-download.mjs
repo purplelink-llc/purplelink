@@ -4,31 +4,46 @@
  *   GET /.netlify/functions/kit-download?session_id=cs_…            -> JSON list
  *   GET /.netlify/functions/kit-download?session_id=cs_…&file=key   -> the PDF
  *
- * The kit PDFs are NOT part of the published site. They are bundled into this
- * function only (see `included_files` in netlify.toml), so the sole way to get
- * one is through a paid Stripe Checkout Session. We verify the session exists
- * on our account, is paid, and grants the requested file (via the product key
- * checkout.mjs wrote into session metadata). The session id is a bearer token
- * for the file the buyer paid for; we send no-store so shared caches drop it.
+ * The kit files (setup guide PDF + full source ZIP) are NOT part of the
+ * published site. They live only in a private Netlify Blobs store, so the sole
+ * way to get one is through a paid Stripe Checkout Session. We verify the
+ * session exists on our account, is paid, and grants the requested file (via the
+ * product key checkout.mjs wrote into session metadata). The session id is a
+ * bearer token for the file the buyer paid for; we send no-store so shared
+ * caches drop it.
  */
 import { getStore } from "@netlify/blobs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
-// Private Blobs store the owner uploads the two PDFs into (see docs). The files
-// are NOT in the (public) repo, so this store is the only place they exist.
+// Private Blobs store the owner uploads the deliverables into (see docs). The
+// files are NOT in the (public) repo, so this store is the only place they exist.
 const FILE_STORE = "kit-files";
 
-// The two deliverable files, and which product keys entitle a buyer to each.
-// (Delivering the setup guides today; a code archive can be added here later.)
+// The deliverable files, and which product keys entitle a buyer to each. Every
+// kit ships two files: the setup guide (PDF) and the full source code (ZIP).
 const FILES = {
-  faceless: {
+  "faceless-guide": {
     name: "faceless-content-pipeline-guide.pdf",
-    label: "The Faceless Content Pipeline — setup guide",
+    label: "The Faceless Content Pipeline — setup guide (PDF)",
+    type: "application/pdf",
     grants: new Set(["kit-faceless", "kit-bundle"]),
   },
-  monetization: {
+  "faceless-source": {
+    name: "faceless-content-pipeline-source.zip",
+    label: "The Faceless Content Pipeline — full source code (ZIP)",
+    type: "application/zip",
+    grants: new Set(["kit-faceless", "kit-bundle"]),
+  },
+  "monetization-guide": {
     name: "monetization-stack-guide.pdf",
-    label: "The Monetization Stack — setup guide",
+    label: "The Monetization Stack — setup guide (PDF)",
+    type: "application/pdf",
+    grants: new Set(["kit-monetization", "kit-bundle"]),
+  },
+  "monetization-source": {
+    name: "monetization-stack-source.zip",
+    label: "The Monetization Stack — full source code (ZIP)",
+    type: "application/zip",
     grants: new Set(["kit-monetization", "kit-bundle"]),
   },
 };
@@ -81,7 +96,7 @@ export default async function handler(request) {
     return json(200, { product, files });
   }
 
-  // File mode: stream the entitled PDF.
+  // File mode: stream the entitled file (PDF guide or source ZIP).
   const entry = FILES[fileKey];
   if (!entry) return json(404, { error: "unknown_file" });
   if (!entry.grants.has(product)) return json(403, { error: "not_entitled", detail: "This order does not include that file." });
@@ -98,7 +113,7 @@ export default async function handler(request) {
   return new Response(bytes, {
     status: 200,
     headers: {
-      "Content-Type": "application/pdf",
+      "Content-Type": entry.type,
       "Content-Disposition": `attachment; filename="${entry.name}"`,
       "Content-Length": String(bytes.length),
       "Cache-Control": "private, no-store",

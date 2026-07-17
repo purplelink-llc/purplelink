@@ -1,51 +1,78 @@
-# /kits/ activation — owner steps
+# /kits/ — live status and pricing
 
-The two digital kits (Faceless Content Pipeline $79, Monetization Stack $39,
-bundle $99) are fully built and deployed: landing page, two product pages, a
-delivery-gated success page, and a paid-download function. Two owner-only steps
-remain before checkout works, matching the pending-Stripe state of the other
-paid tools.
+Both kits are **live and fully activated** on purplelink.llc/kits: landing page,
+two product pages, delivery-gated success page, paid-download function, Stripe
+prices, and gated file delivery. Each kit now ships **full source code plus the
+typeset setup guide** (not the guide alone).
 
-## 1. Create the three Stripe prices and set the env vars
+## Launch pricing (current)
 
-Create one Stripe Price per kit, then set these on the purplelink Netlify site
-(production context), same as the other `STRIPE_PRICE_*` vars:
+Honest introductory pricing: the launch prices are the real Stripe prices being
+charged, and the pages state a genuine upcoming increase (no fabricated "was"
+reference price).
 
-| Env var | Product | Price |
+| Kit | Product key | Launch price | Regular (rises to) |
+|---|---|---|---|
+| Faceless Content Pipeline | `kit-faceless` | **$49** | $79 |
+| Monetization Stack | `kit-monetization` | **$29** | $39 |
+| Both-kits bundle | `kit-bundle` | **$59** | $99 |
+
+Bundle is always the best value: buying the two at launch prices is $78, the
+bundle is $59.
+
+### Stripe price IDs (live mode)
+
+Env vars on the purplelink Netlify site (production context) point at the
+**launch** prices. The regular prices already exist on the same Stripe products;
+to end the launch, repoint each env var back to the regular price ID and redeploy.
+
+| Env var | Launch price ID (current) | Regular price ID (revert target) |
 |---|---|---|
-| `STRIPE_PRICE_KIT_FACELESS` | Faceless Content Pipeline | $79 |
-| `STRIPE_PRICE_KIT_MONETIZATION` | Monetization Stack | $39 |
-| `STRIPE_PRICE_KIT_BUNDLE` | Both kits | $99 |
+| `STRIPE_PRICE_KIT_FACELESS` | `price_1TtzmDJkzNxf3fKqorp62MHv` ($49) | `price_1TtzGMJkzNxf3fKqU8ahKYsH` ($79) |
+| `STRIPE_PRICE_KIT_MONETIZATION` | `price_1TtzmDJkzNxf3fKqZLhAa6yv` ($29) | `price_1TtzGNJkzNxf3fKqCDlXwo8x` ($39) |
+| `STRIPE_PRICE_KIT_BUNDLE` | `price_1TtzmDJkzNxf3fKqKFuooKsO` ($59) | `price_1TtzGNJkzNxf3fKqdC9TclsT` ($99) |
 
-`STRIPE_SECRET_KEY` is already shared with the rest of checkout. Until these are
-set, the buy buttons return "misconfigured", exactly like the other paid tools.
+To end the launch: repoint the three env vars to the regular IDs, then update the
+displayed prices in `site/kits/` (the `.kit-price`, `.kit-launch-note`, the
+`kit-price-strike`, the CTA buttons, the meta descriptions, and the JSON-LD
+`offers.price`), and remove the `.kit-launch-note` lines. All three checkouts were
+verified returning live `cs_live_` sessions at the launch prices.
 
-## 2. Upload the two PDFs to the private `kit-files` Blobs store
+## Delivery
 
-The paid PDFs are **not** in the repo (it is public). They live locally at
-`kits-delivery/*.pdf` and must be uploaded once to a private Netlify Blobs store
-that `netlify/functions/kit-download.mjs` reads from:
+`netlify/functions/kit-download.mjs` streams four files from the private
+`kit-files` Netlify Blobs store after verifying a paid session, one guide PDF and
+one source ZIP per kit:
+
+- `faceless-content-pipeline-guide.pdf` + `faceless-content-pipeline-source.zip`
+- `monetization-stack-guide.pdf` + `monetization-stack-source.zip`
+
+The bundle grants all four. The success page lists whatever the function returns,
+so no page change is needed when files change. The source archives and PDFs live
+only locally at `kits-delivery/` (gitignored) and in the Blobs store; they are
+never in the public repo. Re-upload after regenerating with:
 
 ```
-NETLIFY_AUTH_TOKEN=... node kits-delivery/upload-to-blobs.mjs
+node kits-delivery/upload-to-blobs.mjs   # needs NETLIFY_AUTH_TOKEN; skips missing files
 ```
 
-That is the only place the files exist; `kit-download.mjs` streams them only
-after verifying a paid Stripe session that includes the matching product.
+## Source packages (what buyers download)
 
-## What is NOT done yet (future scope)
+The genericized, de-branded source lives at `kit-src/` (gitignored):
 
-- The deliverable today is the **setup guide PDF**. If you want to also ship the
-  genericized skill/code as a downloadable archive, add it to `kit-files` and to
-  the `FILES` map in `kit-download.mjs` (the structure already supports it).
-- Consider a license-acceptance checkbox at checkout for the software license
-  (the paper-review flow has a TOS-store pattern to copy if you want it).
+- `kit-src/faceless-pipeline/` — the compliance-safe faceless video pipeline
+  (fetch → curate → render → drip-post), config-driven, no brand/keys. Zipped to
+  `faceless-content-pipeline-source.zip`.
+- `kit-src/monetization-stack/` — cookieless analytics (beacon + two functions +
+  dashboard), affiliate auto-tagger, AdSense config templates, README. Zipped to
+  `monetization-stack-source.zip`.
+
+Both passed a brand/PII/secret leak scan (zero hits) and compile/parse cleanly.
 
 ## Files
 
 - Pages: `site/kits/{index,faceless-content-pipeline,monetization-stack,success}/`
 - Delivery: `site/kits/success.js`, `netlify/functions/kit-download.mjs`
 - Catalog: `netlify/functions/checkout.mjs` (`kit-faceless`, `kit-monetization`, `kit-bundle`)
-- CSS: `.kit-*` block appended to `site/styles.css`
-- Source PDFs + uploader: `kits-delivery/` (gitignored)
-- PDF/LaTeX sources: session scratchpad `kitpdf/` (fonts, `purplekit.sty`, `kit-a.tex`, `kit-b.tex`)
+- CSS: `.kit-*` block in `site/styles.css`
+- Source (gitignored): `kit-src/`; deliverables + uploader (gitignored): `kits-delivery/`
