@@ -13,6 +13,7 @@ Exit codes: 0 posted  1 nothing to post  2 session expired  3 failed
 from __future__ import annotations
 
 import argparse
+import datetime
 import html as html_module
 import re
 import subprocess
@@ -109,7 +110,23 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
         try:
             print("Navigating to Purplelink LLC admin page...")
-            page.goto(COMPANY_URL, wait_until="domcontentloaded", timeout=30_000)
+            # Transient page-load timeouts happen (network blips, slow LinkedIn
+            # response) — retry the navigation itself before giving up, rather
+            # than only relying on launchd's 30-min external retry (2026-07-18:
+            # single Page.goto timeout burned the whole attempt with 5 launchd
+            # retries left in the day).
+            last_err: PWTimeout | None = None
+            for attempt in range(3):
+                try:
+                    page.goto(COMPANY_URL, wait_until="domcontentloaded", timeout=30_000)
+                    last_err = None
+                    break
+                except PWTimeout as e:
+                    last_err = e
+                    print(f"  navigation attempt {attempt + 1}/3 timed out, retrying...")
+                    page.wait_for_timeout(2_000)
+            if last_err is not None:
+                raise last_err
 
             if "login" in page.url or "signup" in page.url:
                 print("Session expired — re-run: python3 backend/scripts/linkedin_login.py")
@@ -163,6 +180,14 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
 
         except (PWTimeout, PWError) as e:
             print(f"Browser error: {e}")
+            try:
+                shot_dir = Path.home() / ".purplelink" / "linkedin-failures"
+                shot_dir.mkdir(parents=True, exist_ok=True)
+                shot_path = shot_dir / f"{datetime.datetime.now():%Y%m%d-%H%M%S}.png"
+                page.screenshot(path=str(shot_path))
+                print(f"Saved failure screenshot: {shot_path}")
+            except Exception:
+                pass
             _notify("LinkedIn post failed — see terminal.")
             return 3
         finally:
