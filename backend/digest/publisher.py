@@ -557,7 +557,7 @@ async def github_update_topic_hub(
 _WEBSUB_HUB = "https://pubsubhubbub.appspot.com/"
 _FEED_URL = f"{SITE_URL}/blog/digest/feed.xml"
 
-_LINKEDIN_API = "https://api.linkedin.com/v2"
+_LINKEDIN_API = "https://api.linkedin.com/rest"  # Posts API (replaces deprecated /v2/ugcPosts)
 _LINKEDIN_HASHTAGS = "#cybersecurity #AI #infosec #research #entrepreneurship"
 
 
@@ -595,36 +595,41 @@ async def post_linkedin(
 
     payload = {
         "author": author_urn,
-        "lifecycleState": "PUBLISHED",
-        "specificContent": {
-            "com.linkedin.ugc.ShareContent": {
-                "shareCommentary": {"text": post_text},
-                "shareMediaCategory": "ARTICLE",
-                "media": [{
-                    "status": "READY",
-                    "description": {"text": digest.intro[:200]},
-                    "originalUrl": page_url,
-                    "title": {"text": title},
-                }],
+        "commentary": post_text,
+        "visibility": "PUBLIC",
+        "distribution": {
+            "feedDistribution": "MAIN_FEED",
+            "targetEntities": [],
+            "thirdPartyDistributionChannels": [],
+        },
+        "content": {
+            "article": {
+                "source": page_url,
+                "title": title,
+                "description": digest.intro[:200],
             }
         },
-        "visibility": {
-            "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"
-        },
+        "lifecycleState": "PUBLISHED",
+        "isReshareDisabledByAuthor": False,
     }
+    # LinkedIn's versioned REST API requires a LinkedIn-Version: YYYYMM header
+    # on every call, matching a currently-active version (older ones 426).
+    li_version = datetime.date.today().strftime("%Y%m")
     try:
         resp = await client.post(
-            f"{_LINKEDIN_API}/ugcPosts",
+            f"{_LINKEDIN_API}/posts",
             json=payload,
             headers={
                 "Authorization": f"Bearer {access_token}",
                 "X-Restli-Protocol-Version": "2.0.0",
+                "LinkedIn-Version": li_version,
                 "Content-Type": "application/json",
             },
             timeout=15.0,
         )
         resp.raise_for_status()
-        post_id = resp.json().get("id", "unknown")
+        # 201 responses may have an empty body; the id is authoritative in the header.
+        post_id = resp.headers.get("x-restli-id", "unknown")
         logger.info("post_linkedin: posted %s", post_id)
     except httpx.HTTPStatusError as exc:
         logger.warning("post_linkedin failed: %s | body=%s", exc, exc.response.text[:1000])
