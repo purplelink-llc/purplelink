@@ -132,7 +132,13 @@
           "author": { "@id": "https://purplelink.llc/#organization" },
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "isAccessibleForFree": true,
-          "license": "https://opensource.org/licenses/MIT"
+          "license": "https://opensource.org/licenses/MIT",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.5",
+            "ratingCount": "16",
+            "bestRating": "5"
+          }
         },
         {
           "@type": "SoftwareApplication",
@@ -191,8 +197,7 @@
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#moderntex">Apps</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -216,11 +221,13 @@
         </h1>
 
         <div class="hero-bottom">
-          <p class="hero-lede">Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel. The studio ships native macOS and iOS apps with privacy as an architectural constraint, plus a set of free web tools for academic writing (<a href="/tools/latex-to-pdf/">LaTeX compilation</a>, <a href="/tools/bib-validator/">BibTeX validation</a>, <a href="/tools/citation-generator/">citation generation</a>, <a href="/tools/markdown-to-pdf/">Markdown conversion</a>) that process files in memory and never store them.</p>
-          <p class="hero-desc">macOS apps, iOS apps, and whatever comes next. Purplelink builds software with craft and intent. No shortcuts, no filler.</p>
+          <div class="hero-bottom-copy">
+            <p class="hero-lede">Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel. It builds native macOS and iOS apps for researchers and Apple-platform users, plus free in-browser tools for academic writing (<a href="/tools/latex-to-pdf/">LaTeX compilation</a>, <a href="/tools/bib-validator/">BibTeX validation</a>, <a href="/tools/citation-generator/">citation generation</a>) that process files in memory and never store them.</p>
+            <p class="hero-proof">Its free <a href="#scholar">Scholar Utility Belt</a> extension is used by <strong>1,000 researchers</strong> and rated <strong>4.5&#9733;</strong> on the Chrome Web Store.</p>
+          </div>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#software">View software</a>
-            <a class="btn btn-ghost" href="#contact">Get in touch</a>
+            <a class="btn btn-primary" href="/moderntex/#waitlist">Join the ModernTex waitlist</a>
+            <a class="btn btn-ghost" href="/tools/">Try the free tools</a>
           </div>
         </div>
 
@@ -234,51 +241,71 @@
         </div>
       </section>
 
-      <!-- ── Software ───────────────────────────────────── -->
-      <section id="software" class="section-software">
-        <div class="section-top">
-          <div class="section-top-left">
-            <p class="eyebrow">What we build</p>
+      <!-- ── ModernTex (flagship) ───────────────────────── -->
+      <section id="moderntex" class="flagship">
+        <div class="flagship-head">
+          <div class="flagship-meta">
+            <span class="platform-tag platform-macos">macOS</span>
+            <span class="product-status">In development</span>
           </div>
-          <h2 class="section-title">Software, tools &amp; services</h2>
+          <h2 class="flagship-title">The LaTeX studio built for how researchers write.</h2>
+          <p class="flagship-lede">ModernTex is a native macOS manuscript studio. Multi-file editing, a PDF preview that stays in sync, citation management, and submission-readiness checks — shaped around the manuscript workflow, not a generic text editor.</p>
+          <div class="flagship-actions">
+            <a class="btn btn-primary" href="/moderntex/#waitlist">Join the waitlist</a>
+            <a class="btn btn-ghost" href="/moderntex/">See ModernTex</a>
+          </div>
         </div>
 
-        <div class="service-grid">
-          <div class="service-item">
-            <div class="service-header">
-              <span class="service-tag">macOS / iOS</span>
+        <figure class="flagship-shot">
+          <img src="/assets/moderntex-screens/01-editor.webp" alt="ModernTex editor: document outline, LaTeX source with syntax highlighting, and a live PDF preview side by side" width="2940" height="1862" decoding="async" loading="lazy">
+        </figure>
+
+        <ul class="flagship-points">
+          <li class="flagship-point">Source and PDF stay in sync as you type, with click-to-locate between them.</li>
+          <li class="flagship-point">Three compile modes for drafting, full builds, and submission.</li>
+          <li class="flagship-point">Citation management with BibTeX autocomplete and reference checks.</li>
+          <li class="flagship-point">Submission-readiness checks before you upload to a journal.</li>
+        </ul>
+      </section>
+
+      <!-- ── Scholar Utility Belt (shipping, real traction) ── -->
+      <section id="scholar" class="section-scholar">
+        <div class="scholar-inner">
+          <div class="scholar-copy">
+            <p class="scholar-kicker">Shipping now · Chrome extension</p>
+            <h2 class="scholar-title">Scholar Utility Belt</h2>
+            <p class="scholar-lede">Journal quality badges (ABDC, FT50, UTD24, SJR), citation velocity, author metrics like h-index and g-index, academic lineage trees, and retraction alerts — added directly to Google Scholar. Rankings are bundled locally: no tracking, no accounts.</p>
+            <div class="scholar-actions">
+              <a class="btn btn-light" href="https://chromewebstore.google.com/detail/scholar-utility-belt/omcogfcgldfmihfogbffflbocdbjockn" target="_blank" rel="noopener noreferrer">Add to Chrome — free</a>
+              <span class="scholar-note">Free · MIT-licensed · privacy-first</span>
             </div>
-            <h3>Native apps</h3>
-            <p>Purpose-built applications for macOS and iOS that feel right at home on Apple platforms. Performance, aesthetics, and functionality - nothing left out.</p>
-            <a href="mailto:ben@purplelink.llc?subject=Purplelink%20native%20app" class="service-cta">Start a project →</a>
           </div>
 
-          <div class="service-item">
-            <div class="service-header">
-              <span class="service-tag">AI / Automation</span>
+          <div class="scholar-proof">
+            <div class="scholar-stat">
+              <span class="scholar-stat-num">1,000</span>
+              <span class="scholar-stat-label">researchers<br>use it</span>
             </div>
-            <h3>Applied AI tools</h3>
-            <p>Internal and client-facing tools that use AI to automate analysis, writing, research, and software workflows. Tools that automate real work.</p>
-            <a href="mailto:ben@purplelink.llc?subject=Purplelink%20AI%20tools" class="service-cta">Discuss a build →</a>
-          </div>
-
-          <div class="service-item">
-            <div class="service-header">
-              <span class="service-tag">Web / API</span>
+            <div class="scholar-divider" aria-hidden="true"></div>
+            <div class="scholar-stat">
+              <span class="scholar-stat-num">4.5<span class="scholar-stat-max">/5</span></span>
+              <span class="scholar-rating">
+                <span class="scholar-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                <span class="scholar-stat-label">16 ratings</span>
+              </span>
             </div>
-            <h3>Web &amp; automation</h3>
-            <p>Dashboards, portals, integrations, and backend services that connect tools and reduce manual work. Built to last, easy to maintain.</p>
-            <a href="mailto:ben@purplelink.llc?subject=Purplelink%20automation" class="service-cta">Plan an integration →</a>
+            <p class="scholar-source">Rating and install count from the Chrome Web Store.</p>
           </div>
         </div>
       </section>
 
-      <!-- ── Products ──────────────────────────────────────── -->
-      <section id="projects" class="section-projects">
-        <div class="projects-left">
-          <p class="eyebrow">macOS &amp; iOS</p>
-          <h2 class="section-title">Products</h2>
-          <p class="section-desc">Apps for macOS and iOS: one shipping now, three more in active development.</p>
+      <!-- ── Apps lineup ──────────────────────────────────── -->
+      <section id="apps" class="section-apps">
+        <div class="section-top">
+          <div class="section-top-left">
+            <p class="eyebrow">macOS &amp; iOS</p>
+          </div>
+          <h2 class="section-title">More from the studio</h2>
         </div>
 
         <ul class="product-list">
@@ -289,26 +316,10 @@
                 <div class="product-body">
                   <div class="product-meta">
                     <span class="platform-tag platform-macos">macOS</span>
-                    <span class="product-status" style="color:var(--green,#16a34a);font-weight:600;">Free · v0.1 Beta</span>
+                    <span class="product-status product-status-live">Free · v0.1 Beta · Available now</span>
                   </div>
                   <strong class="product-name">Vitae</strong>
                   <p class="product-desc">Academic research management for macOS: track submissions, grants, projects, and your CV in one local-first app. Free, notarized, no App Store required.</p>
-                </div>
-              </div>
-            </a>
-          </li>
-
-          <li>
-            <a class="product-item-link" href="/moderntex/">
-              <div class="product-item">
-                <img class="product-icon" src="assets/moderntex-icon.png" alt="ModernTex app icon" width="72" height="72" loading="lazy">
-                <div class="product-body">
-                  <div class="product-meta">
-                    <span class="platform-tag platform-macos">macOS</span>
-                    <span class="product-status">In development</span>
-                  </div>
-                  <strong class="product-name">ModernTex</strong>
-                  <p class="product-desc">A native LaTeX manuscript studio for academic researchers. Multi-file editing, synchronized PDF preview, citation management, and submission-readiness checks - designed around how researchers actually write.</p>
                 </div>
               </div>
             </a>
@@ -324,7 +335,7 @@
                     <span class="product-status">In development</span>
                   </div>
                   <strong class="product-name">Haea</strong>
-                  <p class="product-desc">A on-device iOS health app. Integrates sleep, nutrition, activity, and biometrics to surface patterns and trends through advanced ML - privately, entirely on-device.</p>
+                  <p class="product-desc">An on-device iOS health app. Integrates sleep, nutrition, activity, and biometrics to surface patterns and trends through advanced ML — privately, entirely on-device.</p>
                 </div>
               </div>
             </a>
@@ -340,7 +351,7 @@
                     <span class="product-status">In development</span>
                   </div>
                   <strong class="product-name">GlobePin</strong>
-                  <p class="product-desc">A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Beautiful map visualization, stats dashboards, and shareable travel postcards.</p>
+                  <p class="product-desc">A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Map visualization, stats dashboards, and shareable travel postcards.</p>
                 </div>
               </div>
             </a>
@@ -348,68 +359,27 @@
         </ul>
       </section>
 
-      <!-- ── OSS ────────────────────────────────────────── -->
-      <section id="oss" class="section-oss">
-        <div class="oss-label">
-          <p class="eyebrow">Open source</p>
-        </div>
-
-        <div class="oss-feature">
-          <div class="oss-copy">
-            <p class="oss-kicker">Chrome extension</p>
-            <h2 class="oss-title">Scholar<br>Utility Belt</h2>
-            <p>A browser utility for academic research workflows. Free, open, and publicly listed on the Chrome Web Store.</p>
-            <a class="btn btn-light" href="https://chromewebstore.google.com/detail/scholar-utility-belt/omcogfcgldfmihfogbffflbocdbjockn" target="_blank" rel="noopener noreferrer">Get it on Chrome Web Store</a>
-          </div>
-
-          <div class="oss-visual" aria-hidden="true">
-            <div class="oss-ring-badge">
-              <span class="oss-ring-icon">◉</span>
-              <span>Open Source</span>
+      <!-- ── Free tools (researcher front door) ──────────── -->
+      <section id="tools" class="section-tools">
+        <div class="tools-inner">
+          <div class="section-top">
+            <div class="section-top-left">
+              <p class="eyebrow">Free · in your browser</p>
             </div>
+            <h2 class="section-title">Free tools for academic writing</h2>
           </div>
+          <p class="tools-lede">LaTeX to PDF, BibTeX validation, citation generation, Markdown conversion, and more than twenty others. Everything runs in your browser or an ephemeral container.</p>
+          <p class="tools-privacy"><strong>Files are processed in memory and never stored.</strong> No account, no upload retention.</p>
+          <div class="tool-chips">
+            <a class="tool-chip" href="/tools/latex-to-pdf/">LaTeX to PDF</a>
+            <a class="tool-chip" href="/tools/bib-validator/">BibTeX validator</a>
+            <a class="tool-chip" href="/tools/citation-generator/">Citation generator</a>
+            <a class="tool-chip" href="/tools/latex-diff/">LaTeX diff</a>
+            <a class="tool-chip" href="/tools/markdown-to-pdf/">Markdown to PDF</a>
+            <a class="tool-chip" href="/tools/paper-review/">Paper review</a>
+          </div>
+          <a class="btn btn-ghost" href="/tools/">Browse all tools</a>
         </div>
-      </section>
-
-      <!-- ── Operations ─────────────────────────────────── -->
-      <section id="operations" class="section-operations">
-        <div class="section-top">
-          <div class="section-top-left">
-            <p class="eyebrow">Company record</p>
-          </div>
-          <h2 class="section-title">Operations</h2>
-        </div>
-
-        <dl class="facts">
-          <div class="fact">
-            <dt>Legal name</dt>
-            <dd>Purplelink LLC</dd>
-          </div>
-          <div class="fact">
-            <dt>Principal office</dt>
-            <dd>8735 Dunwoody Place #12398<br>Atlanta, GA 30350</dd>
-          </div>
-          <div class="fact">
-            <dt>Registered agent</dt>
-            <dd>Northwest Registered Agent Service, Inc.</dd>
-          </div>
-          <div class="fact">
-            <dt>Registered office</dt>
-            <dd>8735 Dunwoody Place STE N<br>Atlanta, GA 30350</dd>
-          </div>
-          <div class="fact">
-            <dt>Business classification</dt>
-            <dd>Custom Computer Programming Services<br><span class="fact-sub">NAICS 541511</span></dd>
-          </div>
-          <div class="fact">
-            <dt>Status</dt>
-            <dd>Formation submitted<br><span class="fact-sub">Georgia · May 27, 2026</span></dd>
-          </div>
-          <div class="fact">
-            <dt>CEO</dt>
-            <dd>Benjamin Ampel</dd>
-          </div>
-        </dl>
       </section>
 
       <!-- ── Contact ────────────────────────────────────── -->

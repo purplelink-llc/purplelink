@@ -799,9 +799,301 @@ dd {
   opacity: 0.6;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   HOME — restructured, product-led sections
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── Hero proof line ─────────────────────────────────────────────────── */
+
+.hero-bottom-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 640px;
+}
+
+.hero-proof {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.hero-proof strong { color: var(--ink); font-weight: 600; }
+.hero-proof a {
+  color: var(--purple);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ─── ModernTex flagship ──────────────────────────────────────────────── */
+
+.flagship {
+  padding: clamp(60px, 8vw, 120px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+}
+
+.flagship-head {
+  max-width: 760px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+}
+
+.flagship-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.flagship-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  margin-bottom: 18px;
+}
+
+.flagship-lede {
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 62ch;
+  margin-bottom: 26px;
+}
+
+.flagship-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.flagship-shot {
+  margin: 0 0 clamp(32px, 4vw, 52px);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--panel);
+  box-shadow: 0 26px 64px oklch(50% 0.24 310 / 0.15);
+}
+
+.flagship-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.flagship-points {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: clamp(18px, 3vw, 32px);
+}
+
+.flagship-point {
+  position: relative;
+  padding-left: 20px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.flagship-point::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--purple);
+}
+
+/* ─── Scholar Utility Belt (dark feature) ─────────────────────────────── */
+
+.section-scholar {
+  padding: clamp(60px, 8vw, 112px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+  /* Same AA-safe rich purple as .section-oss: white text clears 4.5:1. */
+  background: oklch(38% 0.16 310);
+  color: oklch(99% 0.003 310);
+}
+
+.scholar-inner {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
+.scholar-kicker {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-bottom: 16px;
+}
+
+.scholar-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.scholar-lede {
+  font-size: 1rem;
+  line-height: 1.7;
+  opacity: 0.92;
+  max-width: 54ch;
+  margin-bottom: 28px;
+}
+
+.scholar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.scholar-note {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* Real store credential — sourced numbers, not a decorative metric wall. */
+.scholar-proof {
+  border: 1px solid oklch(99% 0.003 310 / 0.22);
+  border-radius: 16px;
+  padding: clamp(26px, 3vw, 40px);
+  background: oklch(99% 0.003 310 / 0.045);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.scholar-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.scholar-stat-num {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3.1rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.scholar-stat-max {
+  font-size: 0.5em;
+  font-weight: 700;
+  opacity: 0.55;
+}
+
+.scholar-stat-label {
+  font-size: 0.85rem;
+  line-height: 1.35;
+  opacity: 0.78;
+}
+
+.scholar-rating {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.scholar-stars {
+  color: oklch(90% 0.05 310);
+  font-size: 1rem;
+  letter-spacing: 2px;
+}
+
+.scholar-divider {
+  height: 1px;
+  background: oklch(99% 0.003 310 / 0.16);
+}
+
+.scholar-source {
+  font-size: 0.74rem;
+  opacity: 0.6;
+  line-height: 1.5;
+}
+
+/* ─── Apps lineup ─────────────────────────────────────────────────────── */
+
+.section-apps {
+  padding: clamp(60px, 8vw, 112px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+  background: var(--purple-xlight);
+}
+
+.product-status-live {
+  color: oklch(45% 0.15 150);
+  font-weight: 600;
+}
+
+/* ─── Free tools ──────────────────────────────────────────────────────── */
+
+.section-tools {
+  padding: clamp(60px, 8vw, 112px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+}
+
+.tools-inner { max-width: 820px; }
+
+.tools-lede {
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 60ch;
+  margin-bottom: 8px;
+}
+
+.tools-privacy {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+.tools-privacy strong { color: var(--ink); font-weight: 600; }
+
+.tool-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.tool-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s, transform 0.15s;
+}
+
+.tool-chip:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+  transform: translateY(-1px);
+}
+
 /* ─── Responsive ──────────────────────────────────────────────────────── */
 
 @media (max-width: 960px) {
+  .scholar-inner { grid-template-columns: 1fr; }
   .service-grid {
     grid-template-columns: 1fr;
     border-inline: none;
@@ -2208,7 +2500,11 @@ dd {
      Pin them to fixed dark surfaces so white text keeps high contrast. */
   .section-contact,
   .footer { background: oklch(14% 0.02 310); }
-  .section-oss { background: oklch(32% 0.10 310); }
+  .section-oss,
+  .section-scholar { background: oklch(32% 0.10 310); }
+
+  /* "Available now" green needs to lift for AA on the dark apps-section tint. */
+  .product-status-live { color: oklch(78% 0.16 150); }
 
   /* The light-mode hero italic is pinned to a dark purple (45% L) to clear
      3:1 on the near-white hero. In dark mode the hero bg is dark, so restore
