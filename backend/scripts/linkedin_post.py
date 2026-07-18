@@ -119,9 +119,16 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
             # Click "Start a post" on the company admin page
             print("Opening post composer...")
             try:
-                page.get_by_text("Start a post", exact=False).first.click(timeout=10_000)
+                page.get_by_text("Start a post", exact=False).first.click(timeout=12_000)
             except PWTimeout:
-                page.locator('[data-test-id*="create"], button[aria-label*="post"], .org-share-box__trigger').first.click(timeout=10_000)
+                # Keep fallbacks narrow: a prior `button[aria-label*="post"]` substring
+                # match grabbed an unrelated "switch identity...this post" button and
+                # hung on the click (2026-07-13, 2026-07-15). Only match the real
+                # share-box trigger, never a generic "*post*" substring.
+                page.locator(
+                    '.org-share-box__trigger, [data-test-id="share-box-trigger"], '
+                    'button[aria-label="Start a post"]'
+                ).first.click(timeout=10_000)
             page.wait_for_timeout(1_500)
 
             # Type post text via clipboard paste (avoids garbled characters)

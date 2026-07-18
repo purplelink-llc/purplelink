@@ -9,6 +9,8 @@ import html
 import logging
 from typing import Optional
 
+import httpx
+
 from digest.curator import DigestData, DigestItem, _SECTION_LABELS
 
 logger = logging.getLogger(__name__)
@@ -443,13 +445,27 @@ async def _github_put_file(
     for attempt in range(1, 4):
         try:
             resp = await client.put(url, headers=_gh_headers(token), json=body, timeout=20.0)
+            if resp.status_code == 403:
+                # Token can reach the repo but lacks write. Retrying won't help
+                # (unlike a transient 5xx), so fail fast with an actionable hint.
+                # Never log the token itself.
+                raise RuntimeError(
+                    f"_github_put_file {GITHUB_REPO}/{path} got 403 Forbidden: the "
+                    f"GITHUB_TOKEN in the 'github' Modal secret lacks contents:write "
+                    f"on {GITHUB_REPO}. Ensure the PAT has repo/Contents:Read+Write "
+                    f"scope on {GITHUB_REPO} (and SSO-authorized for the org)."
+                )
             resp.raise_for_status()
             return
+        except RuntimeError:
+            raise
         except Exception as exc:
             if attempt < 3:
                 await _asyncio.sleep(attempt * 3)
             else:
-                raise RuntimeError(f"_github_put_file {path} failed: {exc}") from exc
+                raise RuntimeError(
+                    f"_github_put_file {GITHUB_REPO}/{path} failed: {exc}"
+                ) from exc
 
 
 async def github_write_digest(
@@ -610,6 +626,8 @@ async def post_linkedin(
         resp.raise_for_status()
         post_id = resp.json().get("id", "unknown")
         logger.info("post_linkedin: posted %s", post_id)
+    except httpx.HTTPStatusError as exc:
+        logger.warning("post_linkedin failed: %s | body=%s", exc, exc.response.text[:1000])
     except Exception as exc:
         logger.warning("post_linkedin failed: %s", exc)
 
