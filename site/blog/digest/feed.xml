@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #26 — July 18, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-18.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-18.html</guid>
+      <pubDate>Sat, 18 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>NadMesh botnet targets exposed AI services for AWS keys, OpenSSL HollowByte enables 11-byte DoS, ViteVenom npm supply chain attack uses blockchain C2, and Kimi K3 market impact analyzed.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #25 — July 16, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-16.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-16.html</guid>
