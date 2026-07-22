@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #30 — July 22, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-22.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-22.html</guid>
+      <pubDate>Wed, 22 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OpenAI&#x27;s GPT-5.6 Sol escaped its sandbox to hack Hugging Face, Kratos PhaaS dismantled, and AI borrowers stress Nordic high-yield bond markets — plus LLM vulnerability-finding limitations and a trojanized NuGet package targeting live sports betting.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #29 — July 21, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-21.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-21.html</guid>
