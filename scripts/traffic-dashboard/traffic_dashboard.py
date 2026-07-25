@@ -45,6 +45,15 @@ DASHBOARD_PATH = OUT_DIR / "dashboard.html"
 FETCH_DAYS = 30          # comfortably covers any gap since the last run
 TIMEOUT = 60
 
+# Metrics added after this archive already existed. The endpoints backfill a
+# new counter with zeros for earlier days, so the data cannot tell "started
+# today" apart from "nobody ever did it" — and reporting a day-old counter as
+# a conversion failure would be wrong. Dated explicitly here because it is
+# known, not inferable. Anything added later dates itself from first sight.
+METRIC_START_OVERRIDES = {
+    ("muscleonglp", "calcRuns"): "2026-07-25",
+}
+
 SITES = [
     {
         "key": "purplelink",
@@ -136,6 +145,7 @@ def merge_history(history: dict, key: str, payload: dict) -> None:
         "topUtm": payload.get("topUtm", [])[:8],
         "toolRuns": payload.get("toolRuns", [])[:8],
     }
+    _record_metric_starts(site_hist, key, payload)
     site_hist["latest"] = {
         "generatedAt": payload.get("generatedAt"),
         "topPaths": payload.get("topPaths", []),
@@ -146,6 +156,31 @@ def merge_history(history: dict, key: str, payload: dict) -> None:
     }
 
 
+def _record_metric_starts(site_hist: dict, key: str, payload: dict) -> None:
+    """Note the date each metric first appeared, so a brand-new counter is not
+    read as a failed one.
+
+    On the first pass every metric already in the archive is dated to the
+    earliest day with traffic: those counters were being collected for as long
+    as there is data. After that, a key we have never seen before is genuinely
+    new and dated from today.
+    """
+    seen = site_hist.setdefault("metricsFirstSeen", {})
+    by_day = site_hist.get("byDay", {})
+    active = sorted(d for d, m in by_day.items() if (m.get("pageviews") or 0) > 0)
+    first_seeding = not seen
+    default = (active[0] if active else _utc_today()) if first_seeding else _utc_today()
+
+    for metrics in (payload.get("byDay") or {}).values():
+        for k, v in metrics.items():
+            if isinstance(v, (int, float)) and k not in seen:
+                seen[k] = default
+
+    for (site_key, metric), date in METRIC_START_OVERRIDES.items():
+        if site_key == key:
+            seen[metric] = date
+
+
 # ---------------------------------------------------------------- analysis
 
 def _utc_today() -> str:
@@ -154,6 +189,17 @@ def _utc_today() -> str:
 
 def _daterange(end: dt.date, n: int) -> list[str]:
     return [(end - dt.timedelta(days=i)).isoformat() for i in range(n - 1, -1, -1)]
+
+
+def _days_since(iso_date: str | None, until: dt.date) -> int | None:
+    """Complete days between a start date and `until`, inclusive. None if unknown."""
+    if not iso_date:
+        return None
+    try:
+        start = dt.date.fromisoformat(iso_date)
+    except ValueError:
+        return None
+    return max(0, (until - start).days + 1)
 
 
 def summarise(site: dict, site_hist: dict) -> dict:
@@ -196,7 +242,15 @@ def summarise(site: dict, site_hist: dict) -> dict:
         "baseline_complete": baseline_complete,
         "uniques7": total(last7_days, "uniques"),
         "secondaries": [
-            {"key": k, "label": lbl, "value": total(last7_days, k)}
+            {
+                "key": k,
+                "label": lbl,
+                "value": total(last7_days, k),
+                "since": site_hist.get("metricsFirstSeen", {}).get(k),
+                # Complete days this counter has actually existed for. A zero
+                # over a window the counter did not span is not a finding.
+                "days_tracked": _days_since(site_hist.get("metricsFirstSeen", {}).get(k), yesterday),
+            }
             for k, lbl in site["secondaries"]
         ],
         "all_time": total(sorted(by_day), "pageviews"),
@@ -272,13 +326,20 @@ def observations(summaries: list[dict]) -> list[str]:
             out.append(f"{s['label']}: no external referrers recorded — visits are direct "
                        f"or the referrer was stripped.")
 
-        # Engagement / conversion honesty, per metric
+        # Engagement / conversion honesty, per metric. A zero only means
+        # something once the counter has covered the window being reported.
         for sec in s["secondaries"]:
-            if sec["value"] == 0:
+            days = sec["days_tracked"]
+            if sec["value"] > 0:
+                out.append(f"{s['label']}: {sec['value']} {sec['label']} in the last 7 days.")
+            elif days is not None and days < 7:
+                span = "today" if days <= 1 else f"{days} days ago"
+                out.append(f"{s['label']}: {sec['label']} have only been recorded since "
+                           f"{sec['since']} ({span}), so the 7-day window is not covered yet. "
+                           f"Zero here measures the counter's age, not the audience.")
+            else:
                 out.append(f"{s['label']}: zero {sec['label']} in the last 7 days. "
                            f"Traffic is arriving but not reaching that step.")
-            else:
-                out.append(f"{s['label']}: {sec['value']} {sec['label']} in the last 7 days.")
 
     # Cross-site
     ok = [s for s in summaries if not s.get("error")]

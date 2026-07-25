@@ -70,4 +70,13 @@ cannot erase history.
 - Week-over-week is **suppressed** when the prior week predates the first day of
   tracking. Otherwise the dashboard would report huge growth that only measures
   when the beacon was installed.
+- A **zero on a counter younger than the reporting window is not a finding**, and
+  is labelled as such. The stats endpoints backfill a new metric with zeros for
+  earlier days, so the data alone cannot tell "added yesterday" apart from
+  "nobody ever did it". First-sight dates live in `history.json` under
+  `metricsFirstSeen`; a metric that predates this archive is dated to the first
+  day with traffic, and anything genuinely new dates itself. Where that
+  inference would be wrong because a counter shipped after the archive already
+  existed, it is dated explicitly in `METRIC_START_OVERRIDES`. Once a counter
+  has covered a full 7 days, a zero goes back to meaning what it says.
 - Today's bar is always partial — it is drawn faded for that reason.
