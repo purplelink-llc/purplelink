@@ -91,6 +91,7 @@ const PRODUCT_CATALOG = {
   "kit-faceless":            { envKey: "STRIPE_PRICE_KIT_FACELESS",            successPath: "/kits/success/" },
   "kit-monetization":        { envKey: "STRIPE_PRICE_KIT_MONETIZATION",        successPath: "/kits/success/" },
   "kit-bundle":              { envKey: "STRIPE_PRICE_KIT_BUNDLE",              successPath: "/kits/success/" },
+  "kit-clip":                { envKey: "STRIPE_PRICE_KIT_CLIP",                successPath: "/kits/success/" },
 };
 
 function jsonResponse(status, body) {

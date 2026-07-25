@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>The Clip Pipeline &mdash; automated Twitch and YouTube clipping | Purplelink</title>
+    <meta name="description" content="Pull the best clips from a Twitch channel or a YouTube video, detect the streamer's facecam, render them vertical over a second video, caption them, and post on a schedule. Full Python source plus setup guide. $10, one-time.">
+    <link rel="canonical" href="https://purplelink.llc/kits/clip-pipeline/">
+    <meta property="og:title" content="The Clip Pipeline">
+    <meta property="og:description" content="Automated Twitch and YouTube clipping: facecam detection, vertical split-screen render, captions, scheduled publishing. Full source plus setup guide. One-time, $10.">
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="https://purplelink.llc/kits/clip-pipeline/">
+    <meta property="og:image" content="https://purplelink.llc/kits/assets/clip-cover.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Clip Pipeline">
+    <meta name="twitter:description" content="Automated Twitch and YouTube clipping: facecam detection, vertical split-screen render, captions, scheduled publishing. Full source plus setup guide. $10.">
+    <meta name="twitter:image" content="https://purplelink.llc/kits/assets/clip-cover.png">
+    <meta name="twitter:image:alt" content="The Clip Pipeline">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org", "@type": "Product",
+      "name": "The Clip Pipeline",
+      "image": "https://purplelink.llc/kits/assets/clip-cover.png",
+      "description": "An automated clipping pipeline for Twitch and YouTube. Downloads clips, detects the streamer's facecam, renders vertical split-screen shorts, writes captions and hashtags, and publishes on a schedule.",
+      "brand": { "@type": "Brand", "name": "Purplelink LLC" },
+      "offers": { "@type": "Offer", "price": "10", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/kits/clip-pipeline/" }
+    }
+    </script>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/kits/" aria-current="page">Kits</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/kits/">&larr; All kits</a>
+
+      <div class="kit-product">
+        <aside class="kit-cover-lg">
+          <img src="/kits/assets/clip-cover.png" alt="The Clip Pipeline setup guide, cover page" width="420" height="594">
+          <div class="kit-product-buy" id="buy">
+            <span class="kit-price">$10</span>
+            <p class="kit-launch-note">One-time. No subscription.</p>
+            <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="kit-clip">Get the kit &mdash; $10</button>
+            <p class="kit-buy-meta">Full source code plus setup guide. Instant download.</p>
+            <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+          </div>
+        </aside>
+
+        <div class="kit-detail">
+          <p class="eyebrow">Stream clipping kit</p>
+          <h1>The Clip Pipeline</h1>
+          <p class="kit-lede">Clip channels are made by hand: scrub the VOD, find the moment, crop it to vertical, hope the webcam is not cut off, write a caption, upload, repeat. It is an hour of work for forty seconds of video, and the work is identical every time.</p>
+
+          <p>This kit is that hour, automated. It reads a Twitch channel's top clips through the official API, or takes a YouTube URL, downloads the footage, finds the streamer's webcam in the frame, and renders a vertical short with the facecam on top and a second video underneath. It writes the caption and the hashtags, queues the result, and posts it. Point it at a different creator by changing one line.</p>
+
+          <h2>What it does</h2>
+          <h3>Finds the facecam, so the crop keeps the face</h3>
+          <p>A stream is a wide frame with gameplay filling most of it and a small webcam box in a corner. Crop that to vertical without thinking and you lose the streamer's face or keep it half sliced. The pipeline samples frames and runs a bundled face detector, pooling detections across frames rather than trusting any single one, so a moment where the streamer looks away does not move the crop. When there is no facecam to find, it falls back to a centre-weighted crop instead of guessing.</p>
+          <h3>Two sources, one path</h3>
+          <p>Twitch clips come through the official API, ranked and deduplicated. A YouTube video works too, and needs no Twitch credentials at all. Give it a start and end time and only that range is downloaded, so cutting forty seconds out of a two-hour upload fetches roughly forty seconds.</p>
+          <h3>The split screen, built for you</h3>
+          <p>The top half carries the clip, framed on the detected facecam. The bottom half carries a slice of a background video, taken from a random position each time so consecutive posts do not show the same footage. Swap the pool for your own footage in one list.</p>
+          <h3>Captions, hashtags, and a queue</h3>
+          <p>Every render gets a title, a description, and a hashtag set written for it, layered from your community tags, the clip's game, the content type, and broad reach tags. Finished videos go into a queue, and the included publisher posts from it.</p>
+
+          <h2>How you use it</h2>
+          <ol class="kit-steps">
+            <li>Install the pipeline and its dependencies (Python, ffmpeg, and yt-dlp, all free).</li>
+            <li>Add a free Twitch application's two credentials, or skip that entirely and use the YouTube route.</li>
+            <li>Set the channel or channels you want clips from. That is one line.</li>
+            <li>Run it on a single clip first and watch the file appear.</li>
+            <li>Connect the account you will post to, once, in a browser.</li>
+            <li>Put it on a schedule and let the queue drain at a measured pace.</li>
+          </ol>
+          <p>Plan on about half an hour end to end. You do not need to write code, and you do not need to know ffmpeg.</p>
+
+          <div class="kit-note"><strong>What you get:</strong> the full Python source (the pipeline, the bundled facecam detector, the renderer, the publisher, and a longform compiler that stitches a period's clips into one video), plus a typeset setup guide. Everything runs locally on your own machine and your own credentials. Nothing phones home.</div>
+
+          <h2>Before you buy</h2>
+          <p>The safest use of this kit is your own stream. The next safest is a creator who has given you written permission, and many streamers actively welcome clip channels. Re-uploading a creator's clips without permission is a copyright matter regardless of how the tooling works, and platforms separately demote or demonetise channels built on content you did not make. The guide has a full section on this. The kit gives you the mechanism; it does not give you the rights, and it cannot tell you what is true for your situation.</p>
+
+          <h2>Who it is not for</h2>
+          <p>If you want a hosted service with a dashboard, this is not that. It runs on your machine and you own every part of it. Delivered as-is: platform behaviour, moderation outcomes, API availability, and third-party pricing are outside anyone's control, and nothing here is legal advice.</p>
+
+          <div class="kit-cta-row"><a class="btn btn-primary" href="#buy">Get the kit &mdash; $10</a><a class="btn" href="/kits/">Compare all kits</a></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia &middot; Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/kits/">Kits</a>
+        <a href="/tools/">Tools</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </footer>
+    <script src="/site.js" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js" defer></script>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>

@@ -46,6 +46,18 @@ const FILES = {
     type: "application/zip",
     grants: new Set(["kit-monetization", "kit-bundle"]),
   },
+  "clip-guide": {
+    name: "clip-pipeline-guide.pdf",
+    label: "The Clip Pipeline — setup guide (PDF)",
+    type: "application/pdf",
+    grants: new Set(["kit-clip"]),
+  },
+  "clip-source": {
+    name: "clip-pipeline-source.zip",
+    label: "The Clip Pipeline — full source code (ZIP)",
+    type: "application/zip",
+    grants: new Set(["kit-clip"]),
+  },
 };
 
 function json(status, body) {
