@@ -33,13 +33,35 @@ if [ $RC -ne 0 ]; then
     exit 0
 fi
 
-# Commit + push only if the log actually changed
+# Commit + push only if the log actually changed.
+#
+# `git commit --only <path>` is deliberate: this runs unattended against the
+# same working copy a human uses, so a bare `git commit` would sweep up whatever
+# happened to be staged at the time and push it. --only commits that one file
+# and nothing else, regardless of the index state.
 if ! "$GIT" diff --quiet -- analytics/subscriber-growth.csv 2>/dev/null; then
-    "$GIT" add analytics/subscriber-growth.csv
-    "$GIT" commit -m "chore(analytics): record weekly subscriber count" --quiet
-    "$GIT" push --quiet 2>> "$LOG"
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Committed + pushed growth log" >> "$LOG"
-    notify "Subscriber count recorded for this week"
+    if ! "$GIT" commit --only analytics/subscriber-growth.csv \
+            -m "chore(analytics): record weekly subscriber count" --quiet; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] commit failed — leaving for manual review" >> "$LOG"
+        exit 0
+    fi
+
+    # Only push a fast-forward. If main has diverged (a local digest run, an
+    # unpushed commit), stop and let a human sort it out rather than forcing.
+    "$GIT" fetch origin main --quiet 2>> "$LOG"
+    BEHIND="$("$GIT" rev-list --count HEAD..origin/main 2>/dev/null || echo 0)"
+    if [ "$BEHIND" != "0" ]; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] main is $BEHIND behind origin — committed locally, not pushing" >> "$LOG"
+        notify "Subscriber count committed; push skipped (main behind origin)"
+        exit 0
+    fi
+
+    if "$GIT" push --quiet 2>> "$LOG"; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Committed + pushed growth log" >> "$LOG"
+        notify "Subscriber count recorded for this week"
+    else
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] push failed — commit is local only" >> "$LOG"
+    fi
 else
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] No change to commit" >> "$LOG"
 fi

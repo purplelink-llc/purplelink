@@ -1,0 +1,48 @@
+#!/bin/bash
+# Guard: the daily digest pages are generated and published by the Modal cron,
+# which commits them from its own throwaway clone. Committing them again from a
+# local working copy creates a second commit with the same content and a
+# different SHA, and the two histories then conflict on every generated file
+# (feed.xml, index.html, the topic hubs). That is exactly how local main and
+# origin diverged on 2026-07-24: Modal published 06:01, a local run committed
+# the same pages 16:09.
+#
+# So: the remote owns site/blog/digest/. Locally, sync it, never author it.
+#
+#   git fetch origin && git checkout origin/main -- site/blog/digest/
+#
+# Backend code under backend/research_digest/ is normal source and is NOT
+# blocked — only the generated output is.
+#
+# Escape hatch, for the rare deliberate case:
+#   ALLOW_DIGEST_COMMIT=1 git commit ...
+
+if [ -n "${ALLOW_DIGEST_COMMIT:-}" ]; then
+    exit 0
+fi
+
+staged_digest="$(git diff --cached --name-only --diff-filter=ACMR \
+    | grep '^site/blog/digest/' || true)"
+
+if [ -n "$staged_digest" ]; then
+    count="$(printf '%s\n' "$staged_digest" | wc -l | tr -d ' ')"
+    echo "" >&2
+    echo "BLOCKED: $count generated digest file(s) staged." >&2
+    echo "" >&2
+    printf '%s\n' "$staged_digest" | head -8 | sed 's/^/    /' >&2
+    [ "$count" -gt 8 ] && echo "    ... and $((count - 8)) more" >&2
+    echo "" >&2
+    echo "site/blog/digest/ is published by the Modal cron, not from here." >&2
+    echo "Committing it locally duplicates those commits and makes main diverge." >&2
+    echo "" >&2
+    echo "  Unstage and take the published version:" >&2
+    echo "    git restore --staged site/blog/digest/" >&2
+    echo "    git fetch origin && git checkout origin/main -- site/blog/digest/" >&2
+    echo "" >&2
+    echo "  If this really is deliberate:" >&2
+    echo "    ALLOW_DIGEST_COMMIT=1 git commit ..." >&2
+    echo "" >&2
+    exit 1
+fi
+
+exit 0
