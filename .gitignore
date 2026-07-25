@@ -14,3 +14,12 @@ __pycache__/
 
 # Paid kit deliverables — uploaded to the private kit-files Blobs store, never committed (public repo)
 kits-delivery/
+
+# Paid kit source archives — staged locally, delivered via Blobs, never committed (public repo)
+kit-src/
+
+# Internal outreach playbook: pitch wording works better unpublished, and this
+# repo is public. Keep local (decision 2026-07-20).
+docs/muscleonglp-outreach-kit.md
+docs/purplelink-tool-distribution-kit.md
+docs/muscleonglp-outreach-prospects.md
