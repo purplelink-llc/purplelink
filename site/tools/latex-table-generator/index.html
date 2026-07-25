@@ -358,12 +358,26 @@
             statusEl.textContent = "";
           }
 
+          // Usage tracking. This tool regenerates on every keystroke, so
+          // counting each generate() would report typing rather than use.
+          // Count once per visit, the first time real output exists.
+          var usageCounted = false;
+          function countUse() {
+            if (usageCounted) return;
+            if (!outputEl.textContent.trim()) return;
+            usageCounted = true;
+            if (window.plTrack) window.plTrack("tool_use");
+          }
+
           runBtn.addEventListener("click", generate);
+          runBtn.addEventListener("click", countUse);
           [dataEl, captionEl, labelEl].forEach(function (el) {
             el.addEventListener("input", generate);
+            el.addEventListener("input", countUse);
           });
           [delimEl, alignEl, booktabsEl, headerEl, wrapEl].forEach(function (el) {
             el.addEventListener("change", generate);
+            el.addEventListener("change", countUse);
           });
 
           copyBtn.addEventListener("click", function () {
