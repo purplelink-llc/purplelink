@@ -271,8 +271,12 @@ nav a:hover { color: var(--ink); }
 .hero-title {
   display: flex;
   flex-direction: column;
+  /* The floor has to keep the longest word ("software") inside the padded
+     content box on the narrowest phones. At 4.2rem it rendered ~392px wide in
+     a 327px box, and .hero's overflow:hidden then clipped the hero copy. */
+  min-width: 0;
   font-family: var(--font-display);
-  font-size: clamp(4.2rem, 11.5vw, 10.5rem);
+  font-size: clamp(2.8rem, 11.5vw, 10.5rem);
   font-weight: 800;
   line-height: 0.91;
   letter-spacing: -0.025em;
@@ -319,6 +323,11 @@ nav a:hover { color: var(--ink); }
   display: flex;
   gap: 10px;
   flex-shrink: 0;
+  /* Must wrap: two side-by-side buttons have a min-content width wider than a
+     phone, and because .hero is a grid with overflow:hidden that forced the
+     whole hero column past the viewport and clipped the copy. */
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 /* Orbit decoration */
@@ -2661,9 +2670,18 @@ button.btn-coming-soon:focus-visible {
 
 /* product page: cover + details */
 .kit-product { max-width: 1000px; margin: 28px auto 0; padding: 0 24px; display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
-@media (max-width: 800px) { .kit-product { grid-template-columns: 1fr; gap: 22px; } }
 .kit-cover-lg { position: sticky; top: 24px; }
 .kit-cover-lg img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 12px 32px oklch(50% 0.24 310 / 0.12); }
+/* Mobile overrides must follow the base rules above: same specificity, so
+   source order decides the winner. */
+@media (max-width: 800px) {
+  .kit-product { grid-template-columns: 1fr; gap: 22px; }
+  /* Sticky is only meaningful in the two-column desktop layout, where a short
+     sidebar tracks a long article. Stacked, the cover is most of a phone screen,
+     so pinning it leaves the body text scrolling behind a pinned image. */
+  .kit-cover-lg { position: static; top: auto; }
+  .kit-cover-lg img { max-height: 46vh; width: auto; max-width: 100%; display: block; margin: 0 auto; }
+}
 .kit-product-buy { margin-top: 16px; padding: 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; text-align: center; }
 .kit-product-buy .kit-price { display: block; margin-bottom: 8px; }
 .kit-product-buy .btn { width: 100%; }
