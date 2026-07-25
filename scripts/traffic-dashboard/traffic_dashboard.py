@@ -52,8 +52,8 @@ SITES = [
         "domain": "purplelink.llc",
         "url": "https://purplelink.llc/.netlify/functions/stats",
         "token_env": "PURPLELINK_STATS_TOKEN",
-        # (json key in byDay, display label)
-        "secondary": ("toolRuns", "tool runs"),
+        # (json key in byDay, display label) — engagement metrics beyond a visit
+        "secondaries": [("toolRuns", "tool runs")],
     },
     {
         "key": "muscleonglp",
@@ -61,7 +61,7 @@ SITES = [
         "domain": "getmuscleonglp.com",
         "url": "https://getmuscleonglp.com/.netlify/functions/stats",
         "token_env": "MUSCLEONGLP_STATS_TOKEN",
-        "secondary": ("subscribes", "subscribes"),
+        "secondaries": [("subscribes", "subscribes"), ("calcRuns", "calculator runs")],
     },
 ]
 
@@ -161,7 +161,6 @@ def summarise(site: dict, site_hist: dict) -> dict:
     by_day = site_hist.get("byDay", {})
     today = dt.datetime.now(dt.timezone.utc).date()
     yesterday = today - dt.timedelta(days=1)
-    sec_key, sec_label = site["secondary"]
 
     def total(days: list[str], field: str) -> int:
         return sum(int(by_day.get(d, {}).get(field, 0) or 0) for d in days)
@@ -196,8 +195,10 @@ def summarise(site: dict, site_hist: dict) -> dict:
         "delta_pct": delta_pct,
         "baseline_complete": baseline_complete,
         "uniques7": total(last7_days, "uniques"),
-        "secondary_value": total(last7_days, sec_key),
-        "secondary_label": sec_label,
+        "secondaries": [
+            {"key": k, "label": lbl, "value": total(last7_days, k)}
+            for k, lbl in site["secondaries"]
+        ],
         "all_time": total(sorted(by_day), "pageviews"),
         "first_day": first_day,
         "days_tracked": len(active),
@@ -209,6 +210,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
         "top_referrers": latest.get("topReferrers", [])[:6],
         "top_utm": latest.get("topUtm", [])[:5],
         "tool_runs": latest.get("toolRuns", [])[:5],
+        "calc_runs": latest.get("calcByTool", [])[:5],
         "error": site_hist.get("error"),
     }
 
@@ -270,12 +272,13 @@ def observations(summaries: list[dict]) -> list[str]:
             out.append(f"{s['label']}: no external referrers recorded — visits are direct "
                        f"or the referrer was stripped.")
 
-        # Conversion honesty
-        if s["secondary_value"] == 0:
-            out.append(f"{s['label']}: zero {s['secondary_label']} in the last 7 days. "
-                       f"Traffic is arriving but not converting to the next step.")
-        else:
-            out.append(f"{s['label']}: {s['secondary_value']} {s['secondary_label']} in the last 7 days.")
+        # Engagement / conversion honesty, per metric
+        for sec in s["secondaries"]:
+            if sec["value"] == 0:
+                out.append(f"{s['label']}: zero {sec['label']} in the last 7 days. "
+                           f"Traffic is arriving but not reaching that step.")
+            else:
+                out.append(f"{s['label']}: {sec['value']} {sec['label']} in the last 7 days.")
 
     # Cross-site
     ok = [s for s in summaries if not s.get("error")]
@@ -409,7 +412,9 @@ def site_card(s: dict) -> str:
       <div class="row">
         <div><span class="n">{s['today']}</span><span class="l">today so far</span></div>
         <div><span class="n">{s['uniques7']}</span><span class="l">visitors (7d)</span></div>
-        <div><span class="n">{s['secondary_value']}</span><span class="l">{html.escape(s['secondary_label'])} (7d)</span></div>
+        {"".join(f'<div><span class="n">{sec["value"]}</span>'
+                 f'<span class="l">{html.escape(sec["label"])} (7d)</span></div>'
+                 for sec in s['secondaries'])}
         <div><span class="n">{s['all_time']}</span><span class="l">tracked total</span></div>
       </div>
       {sparkline(s['spark'])}
@@ -425,10 +430,12 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
         tables += f"<h2>{html.escape(s['label'])} — detail</h2><div class='tables'>"
         tables += table("Top pages", s["top_paths"], "No pages recorded in this window.")
         tables += table("Top referrers", s["top_referrers"], "No external referrers recorded.")
-        extra = s["tool_runs"] or s["top_utm"]
-        if extra:
-            label = "Tool runs" if s["tool_runs"] else "Campaign sources"
-            tables += table(label, extra, "None recorded.")
+        if s["tool_runs"]:
+            tables += table("Tool runs", s["tool_runs"], "None recorded.")
+        if s["calc_runs"]:
+            tables += table("Calculator runs", s["calc_runs"], "None recorded.")
+        if s["top_utm"] and not (s["tool_runs"] or s["calc_runs"]):
+            tables += table("Campaign sources", s["top_utm"], "None recorded.")
         tables += "</div>"
 
     since = f" Tracking since {first_day}." if first_day else ""
