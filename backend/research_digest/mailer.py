@@ -11,6 +11,7 @@ import logging
 
 from .models import WeeklyDigest
 from .renderer import post_url
+from .reddit import build_body, build_title
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +38,31 @@ async def notify_review(client, digest: WeeklyDigest, resend_key: str) -> bool:
   <p style="margin:22px 0"><a href="{url}" style="background:#2f6f5e;color:#fff;padding:12px 24px;border-radius:100px;text-decoration:none;font-weight:600">Review the live post</a></p>
   <p style="font-weight:600;margin-bottom:6px">Papers included:</p>
   <ol style="padding-left:18px">{rows}</ol>
+  {reddit_block}
   <p style="font-size:13px;color:#8a9993;margin-top:24px">To pull a post, delete <code>research/{e(digest.slug)}/</code> from the repo (Netlify redeploys). Each summary is drawn from the abstract only.</p>
 </div>"""
+    # Reddit closed self-serve Data API app creation in 2026 (Responsible Builder
+    # Policy), so the cross-post cannot be automated without a manual approval we
+    # do not have. Ship the paste-ready post in this email instead: it is a
+    # 20-second copy-paste, and a human posting reads better in a small community
+    # than a bot feed anyway. If API access is ever granted, reddit.post_roundup
+    # takes over and this section becomes a fallback.
+    r_title = build_title(digest)
+    r_body = build_body(digest)
+    reddit_block = f"""
+  <hr style="border:none;border-top:1px solid #dde7e3;margin:28px 0">
+  <p style="font-weight:600;margin-bottom:6px">Paste-ready post for r/GLP_Research</p>
+  <p style="font-size:13px;color:#8a9993;margin-top:0">Title, then body. Post as a text post.</p>
+  <p style="font-size:13px;font-weight:600;margin-bottom:4px">Title</p>
+  <pre style="white-space:pre-wrap;word-break:break-word;background:#f4f8f6;border:1px solid #dde7e3;border-radius:10px;padding:12px 14px;font-size:13px;margin:0 0 14px">{e(r_title)}</pre>
+  <p style="font-size:13px;font-weight:600;margin-bottom:4px">Body</p>
+  <pre style="white-space:pre-wrap;word-break:break-word;background:#f4f8f6;border:1px solid #dde7e3;border-radius:10px;padding:12px 14px;font-size:13px;margin:0">{e(r_body)}</pre>
+"""
+
     text = (f"Weekly research roundup live: {digest.week_label} ({digest.count} papers).\n"
             f"Review: {url}\n\n" +
-            "\n".join(f"- {it.paper.title} ({it.paper.venue}) {it.paper.url}" for it in digest.items))
+            "\n".join(f"- {it.paper.title} ({it.paper.venue}) {it.paper.url}" for it in digest.items)
+            + f"\n\n--- paste-ready post for r/GLP_Research ---\n\n{r_title}\n\n{r_body}\n")
     try:
         resp = await client.post(
             RESEND_API_URL,

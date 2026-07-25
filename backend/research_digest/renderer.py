@@ -22,7 +22,7 @@ DISCLAIMER = (
 def _nav() -> str:
     return """<header class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="/"><span class="brand-mark">M</span> MuscleOnGLP</a>
+    <a class="brand" href="/"><img class="brand-logo" src="/assets/logo.png" alt="" width="32" height="32"> MuscleOnGLP</a>
     <nav class="nav-links" aria-label="Primary">
       <a href="/research/">Research</a>
       <a href="/learn/">Learn</a>
@@ -41,6 +41,10 @@ def _footer() -> str:
     <div class="foot-legal">
       <span>&copy; 2026 MuscleOnGLP. All rights reserved.</span>
       <span><a href="/terms/">Terms of Service</a></span>
+      <span><a href="/about/">About</a></span>
+      <span><a href="/contact/">Contact</a></span>
+      <span><a href="/editorial-policy/">Editorial policy</a></span>
+      <span><a href="/privacy/">Privacy</a></span>
       <span>Not affiliated with Novo Nordisk, Eli Lilly, or any medication manufacturer.</span>
     </div>
   </div>
@@ -154,7 +158,12 @@ def render_post_html(d: WeeklyDigest) -> str:
 
 
 def render_hub_html(posts: list[dict]) -> str:
-    """posts: list of {slug, week_label, date, count, blurb} newest-first."""
+    """posts: list of {slug, week_label, date, count, blurb} newest-first.
+
+    No AdSense loader on the hub: it is a short navigational index (~250 words),
+    and Google Publisher Policies forbid ads on screens with little publisher
+    content. Individual digests (800-1300 words) keep the loader.
+    """
     e = html.escape
     cards = []
     for m in posts:
@@ -192,7 +201,6 @@ def render_hub_html(posts: list[dict]) -> str:
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">{ld}</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
 <body>
 {_nav()}

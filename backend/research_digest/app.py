@@ -12,6 +12,9 @@ Required Modal secrets:
   github           -> GITHUB_TOKEN         (read+write to purplelink-llc/muscleonglp)
   netlify          -> NETLIFY_AUTH_TOKEN    (deploy the muscleonglp site)
   resend           -> RESEND_API_KEY        (review email; optional)
+  (no reddit secret: self-serve Data API app creation was closed in 2026, so the
+   weekly review email carries a paste-ready post instead. Add the secret and
+   re-add it to the decorator if API access is ever granted.)
 """
 import logging
 import os
@@ -111,6 +114,13 @@ async def run_weekly_roundup(dry_run: bool = False):
         from research_digest.mailer import notify_review
         sent = await notify_review(client, digest, resend_key)
         logger.info("roundup: review email sent=%s", sent)
+
+        # Cross-post to the community last, and never fatally: the site is
+        # already published by this point, so a Reddit outage or a credential
+        # problem must not fail the run.
+        from research_digest.reddit import post_roundup
+        posted = await post_roundup(client, digest)
+        logger.info("roundup: reddit posted=%s", posted)
 
 
 @app.local_entrypoint()
