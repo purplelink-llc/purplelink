@@ -50,13 +50,13 @@ const FILES = {
     name: "clip-pipeline-guide.pdf",
     label: "The Clip Pipeline — setup guide (PDF)",
     type: "application/pdf",
-    grants: new Set(["kit-clip"]),
+    grants: new Set(["kit-clip", "kit-bundle"]),
   },
   "clip-source": {
     name: "clip-pipeline-source.zip",
     label: "The Clip Pipeline — full source code (ZIP)",
     type: "application/zip",
-    grants: new Set(["kit-clip"]),
+    grants: new Set(["kit-clip", "kit-bundle"]),
   },
 };
 
