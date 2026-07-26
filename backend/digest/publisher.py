@@ -140,6 +140,7 @@ def render_html(digest: DigestData) -> str:
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
+        <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/" aria-current="page">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -316,6 +317,7 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
+        <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/" aria-current="page">Blog</a>
         <a href="/changelog/">Changelog</a>

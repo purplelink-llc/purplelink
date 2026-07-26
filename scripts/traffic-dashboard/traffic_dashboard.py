@@ -191,6 +191,24 @@ def _daterange(end: dt.date, n: int) -> list[str]:
     return [(end - dt.timedelta(days=i)).isoformat() for i in range(n - 1, -1, -1)]
 
 
+def _describe_age(iso_date: str | None) -> str:
+    """Plain-language age of a date relative to today: 'today', 'yesterday',
+    or 'N days ago'. Measured from the date itself, so a counter that began
+    yesterday is never described as having begun today."""
+    if not iso_date:
+        return "start date unknown"
+    try:
+        start = dt.date.fromisoformat(iso_date)
+    except ValueError:
+        return "start date unknown"
+    delta = (dt.datetime.now(dt.timezone.utc).date() - start).days
+    if delta <= 0:
+        return "today"
+    if delta == 1:
+        return "yesterday"
+    return f"{delta} days ago"
+
+
 def _days_since(iso_date: str | None, until: dt.date) -> int | None:
     """Complete days between a start date and `until`, inclusive. None if unknown."""
     if not iso_date:
@@ -333,9 +351,12 @@ def observations(summaries: list[dict]) -> list[str]:
             if sec["value"] > 0:
                 out.append(f"{s['label']}: {sec['value']} {sec['label']} in the last 7 days.")
             elif days is not None and days < 7:
-                span = "today" if days <= 1 else f"{days} days ago"
+                # Phrase the age from the start date itself, not from the count of
+                # complete days: a counter started yesterday has one full day of
+                # data, which is not the same as having started today.
+                started = _describe_age(sec["since"])
                 out.append(f"{s['label']}: {sec['label']} have only been recorded since "
-                           f"{sec['since']} ({span}), so the 7-day window is not covered yet. "
+                           f"{sec['since']} ({started}), so the 7-day window is not covered yet. "
                            f"Zero here measures the counter's age, not the audience.")
             else:
                 out.append(f"{s['label']}: zero {sec['label']} in the last 7 days. "
