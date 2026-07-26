@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #34 — July 26, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-26.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-26.html</guid>
+      <pubDate>Sun, 26 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>SourTrade malvertising assembles executables in-browser, Cl0p hits PTC Windchill with unauthenticated RCE, DeepSeek pauses fundraising after compute-gap leak, and Anthropic&#x27;s Opus 5 prompt-injection resistance gets quantified.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #33 — July 25, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-25.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-25.html</guid>
