@@ -32,15 +32,6 @@ async def notify_review(client, digest: WeeklyDigest, resend_key: str) -> bool:
         f'relevance {it.relevance}/3{" &middot; preprint" if it.paper.is_preprint else ""}</span></li>'
         for it in digest.items
     )
-    body = f"""<div style="font-family:-apple-system,sans-serif;max-width:560px;margin:0 auto;color:#1b2420">
-  <h2 style="color:#2f6f5e">Weekly research roundup is live</h2>
-  <p>The {e(digest.week_label)} roundup auto-published with {digest.count} papers. It is already public, so please skim it and pull or edit anything that reads wrong.</p>
-  <p style="margin:22px 0"><a href="{url}" style="background:#2f6f5e;color:#fff;padding:12px 24px;border-radius:100px;text-decoration:none;font-weight:600">Review the live post</a></p>
-  <p style="font-weight:600;margin-bottom:6px">Papers included:</p>
-  <ol style="padding-left:18px">{rows}</ol>
-  {reddit_block}
-  <p style="font-size:13px;color:#8a9993;margin-top:24px">To pull a post, delete <code>research/{e(digest.slug)}/</code> from the repo (Netlify redeploys). Each summary is drawn from the abstract only.</p>
-</div>"""
     # Reddit closed self-serve Data API app creation in 2026 (Responsible Builder
     # Policy), so the cross-post cannot be automated without a manual approval we
     # do not have. Ship the paste-ready post in this email instead: it is a
@@ -58,6 +49,15 @@ async def notify_review(client, digest: WeeklyDigest, resend_key: str) -> bool:
   <p style="font-size:13px;font-weight:600;margin-bottom:4px">Body</p>
   <pre style="white-space:pre-wrap;word-break:break-word;background:#f4f8f6;border:1px solid #dde7e3;border-radius:10px;padding:12px 14px;font-size:13px;margin:0">{e(r_body)}</pre>
 """
+    body = f"""<div style="font-family:-apple-system,sans-serif;max-width:560px;margin:0 auto;color:#1b2420">
+  <h2 style="color:#2f6f5e">Weekly research roundup is live</h2>
+  <p>The {e(digest.week_label)} roundup auto-published with {digest.count} papers. It is already public, so please skim it and pull or edit anything that reads wrong.</p>
+  <p style="margin:22px 0"><a href="{url}" style="background:#2f6f5e;color:#fff;padding:12px 24px;border-radius:100px;text-decoration:none;font-weight:600">Review the live post</a></p>
+  <p style="font-weight:600;margin-bottom:6px">Papers included:</p>
+  <ol style="padding-left:18px">{rows}</ol>
+  {reddit_block}
+  <p style="font-size:13px;color:#8a9993;margin-top:24px">To pull a post, delete <code>research/{e(digest.slug)}/</code> from the repo (Netlify redeploys). Each summary is drawn from the abstract only.</p>
+</div>"""
 
     text = (f"Weekly research roundup live: {digest.week_label} ({digest.count} papers).\n"
             f"Review: {url}\n\n" +
