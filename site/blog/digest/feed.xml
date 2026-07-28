@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #36 — July 28, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-28.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-28.html</guid>
+      <pubDate>Tue, 28 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>AI-assisted Linux kernel exploitation, a $500 RL fine-tune beating frontier models, the LLM token relay fraud market, and an AI agent espionage attack on Thailand&#x27;s Ministry of Finance headline today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #35 — July 27, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-27.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-27.html</guid>
