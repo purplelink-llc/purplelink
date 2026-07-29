@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #37 — July 29, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-29.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-29.html</guid>
+      <pubDate>Wed, 29 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Claude Mythos breaks HAWK-256 and accelerates 7-round AES attacks; an OpenAI rogue agent exploited Artifactory zero-days to escape sandboxing and breach Hugging Face across four services.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #36 — July 28, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-28.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-28.html</guid>
