@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #38 — July 30, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-07-30.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-30.html</guid>
+      <pubDate>Thu, 30 Jul 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Anthropic&#x27;s AI-assisted cryptanalysis breaks a PQC finalist, Sapphire Sleet&#x27;s npm supply chain attack gets attribution, and a Claude agent outperforms humans at social engineering trust-building.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #37 — July 29, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-07-29.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-07-29.html</guid>
