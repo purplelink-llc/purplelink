@@ -62,7 +62,10 @@ SITES = [
         "url": "https://purplelink.llc/.netlify/functions/stats",
         "token_env": "PURPLELINK_STATS_TOKEN",
         # (json key in byDay, display label) — engagement metrics beyond a visit
-        "secondaries": [("toolRuns", "tool runs")],
+        "secondaries": [("toolRuns", "tool runs"), ("signups", "waitlist signups")],
+        # Waitlists are Netlify Forms, so they never reach the analytics beacon.
+        # Without this they read as zero while people are actually signing up.
+        "netlify_site_id": "b264591f-fbbe-4048-9d9d-7051cf497823",
     },
     {
         "key": "muscleonglp",
@@ -111,6 +114,52 @@ def fetch_site(site: dict, token: str) -> dict:
         return json.loads(resp.read().decode("utf-8"))
 
 
+def _netlify_token() -> str | None:
+    """Reuse the Netlify CLI's stored token rather than keeping a second copy."""
+    if os.environ.get("NETLIFY_AUTH_TOKEN"):
+        return os.environ["NETLIFY_AUTH_TOKEN"]
+    for p in (Path.home() / "Library/Preferences/netlify/config.json",
+              Path.home() / ".config/netlify/config.json"):
+        try:
+            data = json.loads(p.read_text())
+        except Exception:
+            continue
+        for user in (data.get("users") or {}).values():
+            tok = (user.get("auth") or {}).get("token")
+            if tok:
+                return tok
+    return None
+
+
+def fetch_form_signups(site_id: str, token: str) -> tuple[dict, list]:
+    """Waitlist signups per day, plus a per-form breakdown.
+
+    Only dates and counts are read. Submissions carry email addresses; those
+    are never extracted, stored, or displayed — the archive stays free of
+    personal data.
+    """
+    def api(path):
+        req = urllib.request.Request(
+            f"https://api.netlify.com/api/v1/{path}",
+            headers={"Authorization": f"Bearer {token}",
+                     "User-Agent": "purplelink-traffic-dashboard"})
+        with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as r:
+            return json.loads(r.read().decode("utf-8"))
+
+    by_day: dict[str, int] = {}
+    per_form = []
+    for form in api(f"sites/{site_id}/forms"):
+        name = form.get("name", "form")
+        subs = api(f"forms/{form['id']}/submissions")
+        per_form.append({"key": name, "count": len(subs)})
+        for s in subs:
+            day = str(s.get("created_at", ""))[:10]
+            if day:
+                by_day[day] = by_day.get(day, 0) + 1
+    per_form.sort(key=lambda f: -f["count"])
+    return by_day, per_form
+
+
 def load_history() -> dict:
     if HISTORY_PATH.exists():
         try:
@@ -146,7 +195,18 @@ def merge_history(history: dict, key: str, payload: dict) -> None:
         "toolRuns": payload.get("toolRuns", [])[:8],
     }
     _record_metric_starts(site_hist, key, payload)
+    # Signups arrive with real history from Netlify, so date the metric from the
+    # first actual signup rather than from the day we started reading the API.
+    # Otherwise a counter with weeks of data reads as "recorded since today".
+    signup_days = sorted(d for d, m in (payload.get("byDay") or {}).items()
+                         if isinstance(m, dict) and m.get("signups"))
+    if signup_days:
+        seen = site_hist.setdefault("metricsFirstSeen", {})
+        if "signups" not in seen or signup_days[0] < seen["signups"]:
+            seen["signups"] = signup_days[0]
+
     site_hist["latest"] = {
+        "formBreakdown": payload.get("formBreakdown", []),
         "generatedAt": payload.get("generatedAt"),
         "topPaths": payload.get("topPaths", []),
         "topReferrers": payload.get("topReferrers", []),
@@ -283,6 +343,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
         "top_utm": latest.get("topUtm", [])[:5],
         "tool_runs": latest.get("toolRuns", [])[:5],
         "calc_runs": latest.get("calcByTool", [])[:5],
+        "form_breakdown": latest.get("formBreakdown", [])[:6],
         "error": site_hist.get("error"),
     }
 
@@ -516,6 +577,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
             tables += table("Tool runs", s["tool_runs"], "None recorded.")
         if s["calc_runs"]:
             tables += table("Calculator runs", s["calc_runs"], "None recorded.")
+        if s["form_breakdown"]:
+            tables += table("Waitlist signups", s["form_breakdown"], "None recorded.")
         if s["top_utm"] and not (s["tool_runs"] or s["calc_runs"]):
             tables += table("Campaign sources", s["top_utm"], "None recorded.")
         tables += "</div>"
@@ -570,10 +633,33 @@ def main() -> int:
                 payload = fetch_site(site, token)
                 if payload.get("error"):
                     raise RuntimeError(payload.get("detail") or payload["error"])
+
+                # Fold Netlify Forms signups into the same per-day shape the
+                # stats endpoint returns, so every downstream metric, table and
+                # observation treats them like any other counter.
+                forms_note = ""
+                if site.get("netlify_site_id"):
+                    nt = _netlify_token()
+                    if nt:
+                        try:
+                            by_day, per_form = fetch_form_signups(site["netlify_site_id"], nt)
+                            payload.setdefault("byDay", {})
+                            for day, n in by_day.items():
+                                payload["byDay"].setdefault(day, {})["signups"] = n
+                            payload["formBreakdown"] = per_form
+                            total = sum(by_day.values())
+                            forms_note = f", {total} waitlist signup(s)"
+                        except Exception as exc:
+                            print(f"  ! {site['label']}: form fetch failed ({str(exc)[:60]})",
+                                  file=sys.stderr)
+                    else:
+                        print(f"  ! {site['label']}: no Netlify token; skipping waitlists",
+                              file=sys.stderr)
+
                 merge_history(history, site["key"], payload)
                 entry.pop("error", None)
                 print(f"  ok {site['label']}: {payload.get('totals', {}).get('pageviews', 0)} "
-                      f"pageviews in last {FETCH_DAYS}d")
+                      f"pageviews in last {FETCH_DAYS}d{forms_note}")
             except (urllib.error.URLError, RuntimeError, ValueError, TimeoutError) as exc:
                 entry["error"] = str(exc)[:120]
                 print(f"  ! {site['label']} fetch failed: {exc}", file=sys.stderr)
