@@ -18,6 +18,11 @@ kits-delivery/
 # Paid kit source archives — staged locally, delivered via Blobs, never committed (public repo)
 kit-src/
 
+# Paid MuscleOnGLP guide PDFs (protein playbook, off-ramp, no-gym plan, complete
+# pack) plus their marketing assets. These are the products the site sells; this
+# repo is public. Never committed.
+muscleonglp-private/
+
 # Internal outreach playbook: pitch wording works better unpublished, and this
 # repo is public. Keep local (decision 2026-07-20).
 docs/muscleonglp-outreach-kit.md
