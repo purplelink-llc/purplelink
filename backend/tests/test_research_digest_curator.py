@@ -87,3 +87,71 @@ def test_clean_action_drops_prescriptive_or_empty(raw):
 
 def test_clean_action_adds_terminal_period():
     assert _clean_action("Worth discussing with a clinician").endswith(".")
+
+
+# ── failure signalling ───────────────────────────────────────────────────────
+# The 2026-08-03 roundup published nothing despite 27 harvested papers: the
+# curator's reply overflowed max_tokens, came back as truncated JSON, and the
+# parse error was reported as "nothing to publish this week". A broken run must
+# be distinguishable from a genuinely quiet one.
+
+def test_truncated_reply_is_named_as_truncation():
+    """A reply cut off at max_tokens must raise TruncatedResponse, not sail on
+    to die later inside json.loads with an opaque delimiter error pointing at
+    the truncation offset."""
+    import asyncio
+
+    from research_digest._http import TruncatedResponse, anthropic_message
+
+    class _Resp:
+        status_code = 200
+        headers: dict = {}
+        def raise_for_status(self): pass
+        def json(self):
+            return {"stop_reason": "max_tokens",
+                    "content": [{"text": '{"items": [{"index": 0,'}]}
+
+    class _Client:
+        async def post(self, *a, **k): return _Resp()
+
+    import os
+    os.environ.setdefault("ANTHROPIC_API_KEY", "test-key")
+    with pytest.raises(TruncatedResponse) as ei:
+        asyncio.run(anthropic_message(_Client(), system="s",
+                                      user_content=[{"type": "text", "text": "u"}],
+                                      max_tokens=10))
+    assert "max_tokens" in str(ei.value)
+
+
+def test_unparseable_output_raises_rather_than_looking_like_a_quiet_week():
+    """curate() must raise on unreadable output. Returning None would be
+    indistinguishable from 'no relevant papers', which is what let a failed run
+    skip a week with 27 candidates waiting."""
+    import asyncio
+
+    from research_digest import curator as C
+
+    async def _bad(*a, **k):
+        return "not json at all {{{"
+
+    papers = [C.Paper(title="t", authors="a", source="pubmed", is_preprint=False,
+                      venue="v", pub_date="2026-08-01", url="u", abstract="abs",
+                      doi="", pmid="")]
+    orig = C.anthropic_message
+    C.anthropic_message = _bad
+    try:
+        with pytest.raises(C.CurationError) as ei:
+            asyncio.run(C.curate(object(), papers))
+        # the message must state that papers WERE harvested, so the reader can
+        # tell this apart from an empty harvest
+        assert "1 papers were harvested" in str(ei.value)
+    finally:
+        C.anthropic_message = orig
+
+
+def test_empty_harvest_still_returns_none_quietly():
+    """The genuinely-quiet case stays a None, not an error."""
+    import asyncio
+
+    from research_digest import curator as C
+    assert asyncio.run(C.curate(object(), [])) is None

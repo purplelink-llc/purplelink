@@ -17,6 +17,13 @@ ANTHROPIC_VERSION = "2023-06-01"
 MODEL = "claude-sonnet-4-6"
 
 
+class TruncatedResponse(RuntimeError):
+    """The model stopped at max_tokens, so its reply is incomplete.
+
+    Distinct from a genuine parse failure: the caller must treat this as an
+    error to fix, never as "the model returned nothing useful"."""
+
+
 async def anthropic_message(
     client, *, system: str, user_content: list[dict],
     max_tokens: int, model: str = MODEL, temperature: float = 0.1,
@@ -40,7 +47,18 @@ async def anthropic_message(
             await asyncio.sleep(float(resp.headers.get("retry-after", attempt * 2)))
             continue
         resp.raise_for_status()
-        return resp.json()["content"][0]["text"]
+        payload = resp.json()
+        # A response cut off at max_tokens is not a usable answer: it comes back
+        # as valid-looking text that dies later in json.loads with a confusing
+        # "Expecting ',' delimiter" pointing at the truncation offset. That is
+        # exactly how the 2026-08-03 roundup failed — the caller read the parse
+        # error as "no relevant papers" and published nothing. Fail loudly here
+        # instead, naming the real cause.
+        if payload.get("stop_reason") == "max_tokens":
+            raise TruncatedResponse(
+                f"model hit max_tokens={max_tokens}; the reply is incomplete. "
+                f"Raise max_tokens or send fewer items.")
+        return payload["content"][0]["text"]
     raise RuntimeError("anthropic_message: exhausted retries") from last_exc
 
 

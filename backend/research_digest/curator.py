@@ -19,6 +19,15 @@ from .models import DigestItem, WeeklyDigest
 
 logger = logging.getLogger(__name__)
 
+
+class CurationError(RuntimeError):
+    """Curation failed for a fixable reason (unreadable model output).
+
+    Deliberately NOT the same as "no relevant papers this week": the caller
+    must be able to tell a broken run from a genuinely quiet one, because the
+    first needs fixing and the second is normal."""
+
+
 MIN_RELEVANCE = 2
 MIN_ITEMS = 2
 MAX_ITEMS = 8
@@ -159,13 +168,23 @@ async def curate(client, papers: list[Paper], today: Optional[date] = None) -> O
     raw = await anthropic_message(
         client, system=SYSTEM,
         user_content=[{"type": "text", "text": user}],
-        max_tokens=4000, temperature=0.1,
+        # 4000 was enough when a week yielded a handful of papers, but the
+        # harvest grew (27 on 2026-08-03) and each one costs a summary, a
+        # "why", and an action. The reply overflowed mid-JSON, the parse failed,
+        # and the week silently published nothing. Sized for the harvester's
+        # ceiling (retmax 30 + pageSize 30) with headroom.
+        max_tokens=16000, temperature=0.1,
     )
     try:
         data = parse_json(raw)
     except Exception as exc:
-        logger.warning("curate: could not parse model output: %s", exc)
-        return None
+        # NOT "nothing to publish". The model answered and we failed to read
+        # it — a bug to fix, not a quiet week. Returning None here is what let
+        # a truncated reply masquerade as "no relevant papers" and skipped a
+        # roundup with 27 candidates waiting.
+        raise CurationError(
+            f"could not parse model output ({exc}); {len(papers)} papers were "
+            f"harvested, so this is a failure, not an empty week") from exc
 
     items: list[DigestItem] = []
     for entry in data.get("items", []):
