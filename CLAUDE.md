@@ -48,7 +48,26 @@ Invoke design work with the impeccable skill (e.g. `/impeccable critique
 
 ## Paid tools status
 
-Paid manuscript tools (Paper Review + adjacent) are built but **checkout is
-disabled** ("Coming soon" buttons) pending Stripe activation. Modal secrets
-are placeholders — set real values before enabling. See
-`docs/paper-review-runbook.md` and `docs/security-paper-review.md`.
+**Checkout is LIVE and selling in Stripe live mode.** Verified end to end
+2026-08-05: all 13 product keys in `netlify/functions/checkout.mjs`'s
+`PRODUCT_CATALOG` return a real `cs_live_…` Checkout Session — every
+Paper Review tier, the five adjacent tools (cover-letter, anonymity-check,
+citation-gap, revision-review, response-review, resume-review), and the
+kits. No page carries a "Coming soon" button and no checkout button is
+disabled. Modal secrets are real, not placeholders.
+
+This supersedes the earlier note that checkout was disabled pending Stripe
+activation. That note was stale and wrong; do not act on it if it turns up
+in an old transcript or summary.
+
+**Delivery depends entirely on the Stripe webhook.** The chain is:
+`/.netlify/functions/checkout` → Stripe → `/.netlify/functions/stripe-webhook`
+→ Modal `/paper-review/register-token` → `paper_tokens_dict` → the upload
+page calls `/paper-review/redeem-session`. Note that `redeem-session` never
+contacts Stripe; it only reads that dict. So if the webhook stops firing or
+its dashboard URL changes, a customer pays, lands on the upload page, and
+gets `{"error":"pending"}` forever with no refund path. `stripe-webhook.mjs`
+sends an operator alert email when forwarding to Modal fails — treat that
+email as a paid-but-undelivered incident, not a warning.
+
+See `docs/paper-review-runbook.md` and `docs/security-paper-review.md`.
