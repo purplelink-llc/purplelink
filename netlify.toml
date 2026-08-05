@@ -17,7 +17,12 @@
     # (see CLAUDE.md "AdSense exception") to allow Google AdSense to render.
     # AdSense injects inline ad-container styles and loads script/frame/img
     # content from these origins; without this the ad units silently fail.
-    Content-Security-Policy = "default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google.com https://www.gstatic.com https://media.ethicalads.io https://www.google-analytics.com; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.googletagservices.com https://tpc.googlesyndication.com https://media.ethicalads.io https://www.googletagmanager.com; connect-src 'self' https://ben-ampel--purplelink-latextools-web.modal.run https://cloudflareinsights.com https://pagead2.googlesyndication.com https://server.ethicalads.io https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' blob: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com; object-src 'self' blob:"
+    #
+    # api.crossref.org and openlibrary.org in connect-src are the citation
+    # generator's DOI and ISBN lookups. They are called directly from the
+    # browser and both return Access-Control-Allow-Origin: *. Without them
+    # every lookup fails with "Network error" (found 2026-08-05).
+    Content-Security-Policy = "default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google.com https://www.gstatic.com https://media.ethicalads.io https://www.google-analytics.com; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.googletagservices.com https://tpc.googlesyndication.com https://media.ethicalads.io https://www.googletagmanager.com; connect-src 'self' https://ben-ampel--purplelink-latextools-web.modal.run https://api.crossref.org https://openlibrary.org https://cloudflareinsights.com https://pagead2.googlesyndication.com https://server.ethicalads.io https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' blob: https://googleads.g.doubleclick.net https://tpc.googlesyndication.com; object-src 'self' blob:"
 
 # Fonts and self-hosted vendor scripts are inherently stable — keep them
 # immutable. The catch-all /assets/* rule below uses a shorter cache so that
