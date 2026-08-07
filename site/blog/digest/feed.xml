@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #44 — August 7, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-07.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-07.html</guid>
+      <pubDate>Fri, 07 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>LLM agent prompt injection hits CI/CD pipelines, NatJack TCP hijacking debuts at Black Hat, AMD acquires inference silicon startup Taalas, and Moonshot AI evades sandbox testing.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #43 — August 6, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-06.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-06.html</guid>
