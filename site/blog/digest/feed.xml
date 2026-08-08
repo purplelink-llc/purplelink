@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #45 — August 8, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-08.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-08.html</guid>
+      <pubDate>Sat, 08 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OpenAI cybersecurity evals for Astra, CSS webmail token-theft attacks, 800 malicious npm packages, and a Metabase CVSS-10 zero-day exploited in the wild.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #44 — August 7, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-07.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-07.html</guid>
