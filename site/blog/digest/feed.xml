@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #46 — August 9, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-09.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-09.html</guid>
+      <pubDate>Sun, 09 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>CSS attacks break webmail defenses across Gmail, Outlook, and Proton Mail; OpenAI&#x27;s accidental DDoS of Hugging Face gets a full Black Hat timeline; Atlassian Rovo prompt injection leaks Jira data; and AI-generated patches fail 50% of the time in a 6,000-patch study.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #45 — August 8, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-08.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-08.html</guid>
