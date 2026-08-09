@@ -66,6 +66,11 @@ SITES = [
         # Waitlists are Netlify Forms, so they never reach the analytics beacon.
         # Without this they read as zero while people are actually signing up.
         "netlify_site_id": "b264591f-fbbe-4048-9d9d-7051cf497823",
+        # Search Console property id. Purplelink is a URL-prefix property, so
+        # the trailing slash is part of the id; getmuscleonglp is a domain
+        # property and takes the sc-domain: form. Using the wrong form returns
+        # a 403 that looks exactly like a missing permission.
+        "gsc_property": "https://purplelink.llc/",
     },
     {
         "key": "muscleonglp",
@@ -74,8 +79,16 @@ SITES = [
         "url": "https://getmuscleonglp.com/.netlify/functions/stats",
         "token_env": "MUSCLEONGLP_STATS_TOKEN",
         "secondaries": [("subscribes", "subscribes"), ("calcRuns", "calculator runs")],
+        "gsc_property": "sc-domain:getmuscleonglp.com",
     },
 ]
+
+# Service-account key for the Search Console API. Absent on a machine that has
+# not been set up; the dashboard degrades to beacon-only rather than failing.
+GSC_KEY_PATH = Path.home() / ".config" / "purplelink" / "gsc.json"
+GSC_DAYS = 28            # GSC's own default reporting window
+GSC_LAG_DAYS = 2         # Search Console data is ~48h behind; asking for
+                         # yesterday returns zeros and reads as a traffic drop.
 
 
 # ---------------------------------------------------------------- config/io
@@ -112,6 +125,70 @@ def fetch_site(site: dict, token: str) -> dict:
     req = urllib.request.Request(url, headers={"User-Agent": "purplelink-traffic-dashboard"})
     with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
         return json.loads(resp.read().decode("utf-8"))
+
+
+def fetch_gsc(site: dict) -> dict | None:
+    """Search Console clicks/impressions/position, plus top queries and pages.
+
+    Returns None when the integration is not set up or the property is not
+    readable. Every failure here is non-fatal: the beacon numbers are the
+    dashboard's job, and a Google outage or an expired key must not cost us
+    the daily run.
+    """
+    prop = site.get("gsc_property")
+    if not prop or not GSC_KEY_PATH.exists():
+        return None
+    try:
+        from google.oauth2 import service_account          # noqa: PLC0415
+        from googleapiclient.discovery import build        # noqa: PLC0415
+    except ImportError:
+        return {"error": "google-api-python-client not installed"}
+
+    end = dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=GSC_LAG_DAYS)
+    start = end - dt.timedelta(days=GSC_DAYS - 1)
+
+    def query(dimensions, limit):
+        body = {"startDate": start.isoformat(), "endDate": end.isoformat(),
+                "dimensions": dimensions, "rowLimit": limit}
+        return svc.searchanalytics().query(siteUrl=prop, body=body).execute()
+
+    try:
+        creds = service_account.Credentials.from_service_account_file(
+            str(GSC_KEY_PATH),
+            scopes=["https://www.googleapis.com/auth/webmasters.readonly"],
+        )
+        svc = build("searchconsole", "v1", credentials=creds, cache_discovery=False)
+
+        # No dimensions => one row of site-wide totals for the window.
+        totals = (query([], 1).get("rows") or [{}])[0]
+        queries = query(["query"], 10).get("rows") or []
+        pages = query(["page"], 10).get("rows") or []
+    except Exception as exc:                                # noqa: BLE001
+        detail = getattr(exc, "reason", None) or str(exc)
+        return {"error": detail[:200]}
+
+    def strip(u: str) -> str:
+        for pre in ("https://", "http://"):
+            if u.startswith(pre):
+                u = u[len(pre):]
+        return u
+
+    return {
+        "clicks": int(totals.get("clicks", 0) or 0),
+        "impressions": int(totals.get("impressions", 0) or 0),
+        "ctr": float(totals.get("ctr", 0) or 0) * 100,
+        "position": float(totals.get("position", 0) or 0),
+        "start": start.isoformat(),
+        "end": end.isoformat(),
+        "queries": [{"key": r["keys"][0], "count": int(r.get("clicks", 0) or 0),
+                     "impressions": int(r.get("impressions", 0) or 0),
+                     "position": round(float(r.get("position", 0) or 0), 1)}
+                    for r in queries],
+        "pages": [{"key": strip(r["keys"][0]), "count": int(r.get("clicks", 0) or 0),
+                   "impressions": int(r.get("impressions", 0) or 0),
+                   "position": round(float(r.get("position", 0) or 0), 1)}
+                  for r in pages],
+    }
 
 
 def _netlify_token() -> str | None:
@@ -359,6 +436,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
         "tool_runs": latest.get("toolRuns", [])[:5],
         "calc_runs": latest.get("calcByTool", [])[:5],
         "form_breakdown": latest.get("formBreakdown", [])[:6],
+        "gsc": site_hist.get("gsc"),
         "error": site_hist.get("error"),
     }
 
@@ -610,6 +688,48 @@ def funnel(s: dict) -> str:
             f"Rates are share of pageviews, not unique visitors.</p></div>")
 
 
+def gsc_card(g: dict) -> str:
+    """Headline Search Console figures.
+
+    Impressions and position are the useful pair here: position says whether
+    Google ranks the site at all, impressions say whether anyone is searching
+    for what it ranks for. Clicks alone can't separate those.
+    """
+    return (
+        f"<div class='card'><h2 style='margin-top:0'>Google Search</h2>"
+        f"<div class='row'>"
+        f"<div><span class='n'>{g['clicks']}</span><span class='l'>clicks</span></div>"
+        f"<div><span class='n'>{g['impressions']}</span><span class='l'>impressions</span></div>"
+        f"<div><span class='n'>{g['ctr']:.1f}%</span><span class='l'>CTR</span></div>"
+        f"<div><span class='n'>{g['position']:.1f}</span><span class='l'>avg position</span></div>"
+        f"</div>"
+        f"<p class='fnote'>{html.escape(g['start'])} to {html.escape(g['end'])}. "
+        f"Search Console lags about two days, so this window ends before the "
+        f"beacon figures above.</p></div>")
+
+
+def gsc_table(title: str, rows: list[dict], empty: str) -> str:
+    """Query/page table carrying impressions and position, not just clicks.
+
+    At this traffic level clicks are mostly zero, so a clicks-only table would
+    render as a column of noughts and say nothing.
+    """
+    if not rows:
+        return (f"<div class='card'><h2 style='margin-top:0'>{html.escape(title)}</h2>"
+                f"<p style='color:var(--muted);font-size:14px;margin:0'>{html.escape(empty)}</p></div>")
+    body = "".join(
+        f"<tr><td class='k'>{html.escape(str(r['key']))}</td>"
+        f"<td class='num'>{r['count']}</td>"
+        f"<td class='num'>{r['impressions']}</td>"
+        f"<td class='num'>{r['position']}</td></tr>"
+        for r in rows
+    )
+    return (f"<div class='card'><h2 style='margin-top:0'>{html.escape(title)}</h2>"
+            f"<table><thead><tr><th></th><th class='num'>clicks</th>"
+            f"<th class='num'>impr.</th><th class='num'>pos.</th></tr></thead>"
+            f"<tbody>{body}</tbody></table></div>")
+
+
 def table(title: str, rows: list[dict], empty: str) -> str:
     if not rows:
         return (f"<div class='card'><h2 style='margin-top:0'>{html.escape(title)}</h2>"
@@ -669,6 +789,12 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
                    f"<span class='win'>· last {FETCH_DAYS} days</span></h2><div class='tables'>")
         tables += funnel(s)
         tables += table("Channels", s["channels"], "No traffic recorded in this window.")
+        if s.get("gsc"):
+            tables += gsc_card(s["gsc"])
+            tables += gsc_table("Search queries", s["gsc"]["queries"],
+                                "No queries returned for this window.")
+            tables += gsc_table("Search landing pages", s["gsc"]["pages"],
+                                "No pages returned for this window.")
         tables += table("Top pages", s["top_paths"], "No pages recorded in this window.")
         tables += table("Top referrers", s["top_referrers"], "No external referrers recorded.")
         # Render these even when empty. "No tool runs at all this week" is a
@@ -763,6 +889,18 @@ def main() -> int:
                 entry.pop("error", None)
                 print(f"  ok {site['label']}: {payload.get('totals', {}).get('pageviews', 0)} "
                       f"pageviews in last {FETCH_DAYS}d{forms_note}")
+
+                # Search Console is a separate, optional source. Stored on the
+                # archive entry so a later --no-fetch re-render still shows the
+                # last known search numbers instead of dropping the section.
+                gsc = fetch_gsc(site)
+                if gsc and not gsc.get("error"):
+                    entry["gsc"] = gsc
+                    print(f"     search: {gsc['clicks']} clicks, "
+                          f"{gsc['impressions']} impressions, pos {gsc['position']:.1f}")
+                elif gsc:
+                    print(f"  ! {site['label']}: Search Console unavailable "
+                          f"({gsc['error'][:80]})", file=sys.stderr)
             except (urllib.error.URLError, RuntimeError, ValueError, TimeoutError) as exc:
                 entry["error"] = str(exc)[:120]
                 print(f"  ! {site['label']} fetch failed: {exc}", file=sys.stderr)
