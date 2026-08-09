@@ -292,6 +292,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
     last7_days = _daterange(yesterday, 7)      # complete days only
     prior7_days = _daterange(yesterday - dt.timedelta(days=7), 7)
     last14_days = _daterange(today, 14)        # for the sparkline, includes today
+    last30_days = _daterange(yesterday, 30)
 
     last7 = total(last7_days, "pageviews")
     prior7 = total(prior7_days, "pageviews")
@@ -324,6 +325,14 @@ def summarise(site: dict, site_hist: dict) -> dict:
                 "key": k,
                 "label": lbl,
                 "value": total(last7_days, k),
+                # Prior week for the same counter, so the card can show whether
+                # a number is moving rather than just its level. Only comparable
+                # when the counter already existed across the whole prior week.
+                "prior": total(prior7_days, k),
+                "comparable": bool(
+                    site_hist.get("metricsFirstSeen", {}).get(k)
+                    and prior7_days[0] >= site_hist["metricsFirstSeen"][k]
+                ),
                 "since": site_hist.get("metricsFirstSeen", {}).get(k),
                 # Complete days this counter has actually existed for. A zero
                 # over a window the counter did not span is not a finding.
@@ -331,6 +340,12 @@ def summarise(site: dict, site_hist: dict) -> dict:
             }
             for k, lbl in site["secondaries"]
         ],
+        "last30": total(last30_days, "pageviews"),
+        # topReferrers comes from the live payload, which is a FETCH_DAYS (30)
+        # window — not the 7-day one the headline uses. Pair it with the
+        # matching 30-day pageview total or the "unreferred remainder" is
+        # nonsense (it went negative and got silently suppressed once already).
+        "channels": channel_mix(latest.get("topReferrers", []), total(last30_days, "pageviews")),
         "all_time": total(sorted(by_day), "pageviews"),
         "first_day": first_day,
         "days_tracked": len(active),
@@ -350,6 +365,40 @@ def summarise(site: dict, site_hist: dict) -> dict:
 
 AI_REFERRERS = ("chatgpt", "perplexity", "claude.ai", "copilot", "gemini")
 SEARCH_REFERRERS = ("google", "bing", "duckduckgo", "brave", "ecosia", "yahoo")
+SOCIAL_REFERRERS = ("reddit", "twitter", "t.co", "x.com", "facebook", "linkedin",
+                    "instagram", "youtube", "news.ycombinator", "bsky", "mastodon")
+
+
+def channel_mix(referrers: list[dict], pageviews: int) -> list[dict]:
+    """Group referrers into channels, and infer the unreferred remainder.
+
+    Only referred visits appear in topReferrers, so "Direct / untagged" is
+    pageviews minus everything attributed. That bucket is not purely
+    bookmark-and-type traffic: Reddit and most link shorteners send
+    rel=noreferrer, and apps strip referrers entirely, so real referrals land
+    here too. Labelled accordingly rather than called "direct".
+    """
+    buckets = {"Search engines": 0, "AI assistants": 0, "Social & forums": 0, "Other referrers": 0}
+    for r in referrers:
+        host = str(r.get("key", "")).lower()
+        n = int(r.get("count", 0) or 0)
+        if any(t in host for t in SEARCH_REFERRERS):
+            buckets["Search engines"] += n
+        elif any(t in host for t in AI_REFERRERS):
+            buckets["AI assistants"] += n
+        elif any(t in host for t in SOCIAL_REFERRERS):
+            buckets["Social & forums"] += n
+        else:
+            buckets["Other referrers"] += n
+
+    referred = sum(buckets.values())
+    rows = [{"key": k, "count": v} for k, v in buckets.items() if v]
+    # Never render a negative remainder: the referrer list and the pageview
+    # window can disagree at the edges (the API's top-N truncates, and the
+    # windows are not guaranteed identical).
+    if pageviews > referred:
+        rows.append({"key": "Direct / untagged", "count": pageviews - referred})
+    return rows
 
 
 def observations(summaries: list[dict]) -> list[str]:
@@ -490,6 +539,15 @@ td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:top}
 td.num{text-align:right;font-variant-numeric:tabular-nums;width:64px;color:var(--muted)}
 td.k{word-break:break-word}
 .tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.funnel{display:flex;flex-direction:column;gap:10px}
+.fstep{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;
+  padding:9px 0;border-bottom:1px solid var(--line)}
+.fstep:last-child{border-bottom:0}
+.fstep .fn{font-size:20px;font-weight:640;font-variant-numeric:tabular-nums;min-width:56px}
+.fstep .fl{color:var(--ink);font-size:14px;flex:1;min-width:0}
+.fstep .fr{color:var(--muted);font-size:12px;white-space:nowrap}
+.fnote{color:var(--muted);font-size:12px;margin:12px 0 0}
+.win{font-weight:500;text-transform:none;letter-spacing:0}
 .err{border-color:var(--bad);color:var(--bad)}
 footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
   color:var(--muted);font-size:13px}
@@ -517,6 +575,39 @@ def sparkline(spark: list[dict]) -> str:
         + f"</svg><div class='spark-x'><span>{spark[0]['day'][5:]}</span>"
         f"<span>{spark[-1]['day'][5:]} (today)</span></div></div>"
     )
+
+
+def funnel(s: dict) -> str:
+    """Pageviews to the action that matters, as a rate rather than a count.
+
+    A raw count of tool runs says nothing about whether the traffic is
+    converting. Two runs off five visits and two off five hundred are
+    different problems.
+    """
+    steps = [{"label": "pageviews (7d)", "value": s["last7"], "rate": None}]
+    for sec in s["secondaries"]:
+        rate = (sec["value"] / s["last7"] * 100) if s["last7"] else None
+        steps.append({"label": sec["label"], "value": sec["value"], "rate": rate,
+                      "delta": sec["value"] - sec["prior"] if sec["comparable"] else None})
+
+    cells = ""
+    for st in steps:
+        rate = f"<span class='fr'>{st['rate']:.1f}% of visits</span>" if st.get("rate") is not None else ""
+        d = st.get("delta")
+        if d is None:
+            trend = ""
+        elif d > 0:
+            trend = f"<span class='delta up'>&#9650; {d}</span>"
+        elif d < 0:
+            trend = f"<span class='delta down'>&#9660; {abs(d)}</span>"
+        else:
+            trend = "<span class='delta flat'>=</span>"
+        cells += (f"<div class='fstep'><span class='fn'>{st['value']}{trend}</span>"
+                  f"<span class='fl'>{html.escape(st['label'])}</span>{rate}</div>")
+    return (f"<div class='card'><h2 style='margin-top:0'>Conversion</h2>"
+            f"<div class='funnel'>{cells}</div>"
+            f"<p class='fnote'>Arrows compare with the previous 7 days. "
+            f"Rates are share of pageviews, not unique visitors.</p></div>")
 
 
 def table(title: str, rows: list[dict], empty: str) -> str:
@@ -558,6 +649,7 @@ def site_card(s: dict) -> str:
         {"".join(f'<div><span class="n">{sec["value"]}</span>'
                  f'<span class="l">{html.escape(sec["label"])} (7d)</span></div>'
                  for sec in s['secondaries'])}
+        <div><span class="n">{s['last30']}</span><span class="l">last 30 days</span></div>
         <div><span class="n">{s['all_time']}</span><span class="l">tracked total</span></div>
       </div>
       {sparkline(s['spark'])}
@@ -570,15 +662,26 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
 
     tables = ""
     for s in summaries:
-        tables += f"<h2>{html.escape(s['label'])} — detail</h2><div class='tables'>"
+        # Everything below the Conversion card comes from the live payload,
+        # which is a 30-day window — say so, rather than letting it sit next to
+        # 7-day headline numbers looking like the same period.
+        tables += (f"<h2>{html.escape(s['label'])} — detail "
+                   f"<span class='win'>· last {FETCH_DAYS} days</span></h2><div class='tables'>")
+        tables += funnel(s)
+        tables += table("Channels", s["channels"], "No traffic recorded in this window.")
         tables += table("Top pages", s["top_paths"], "No pages recorded in this window.")
         tables += table("Top referrers", s["top_referrers"], "No external referrers recorded.")
-        if s["tool_runs"]:
-            tables += table("Tool runs", s["tool_runs"], "None recorded.")
-        if s["calc_runs"]:
-            tables += table("Calculator runs", s["calc_runs"], "None recorded.")
-        if s["form_breakdown"]:
-            tables += table("Waitlist signups", s["form_breakdown"], "None recorded.")
+        # Render these even when empty. "No tool runs at all this week" is a
+        # finding; a silently absent table reads as "not measured".
+        sec_keys = {sec["key"] for sec in s["secondaries"]}
+        if "toolRuns" in sec_keys:
+            tables += table("Tool runs, by tool", s["tool_runs"],
+                            "No tool was run this week.")
+        if "calcRuns" in sec_keys:
+            tables += table("Calculator runs, by tool", s["calc_runs"],
+                            "No calculator was run this week.")
+        if "signups" in sec_keys or s["form_breakdown"]:
+            tables += table("Waitlist signups", s["form_breakdown"], "None this week.")
         if s["top_utm"] and not (s["tool_runs"] or s["calc_runs"]):
             tables += table("Campaign sources", s["top_utm"], "None recorded.")
         tables += "</div>"
