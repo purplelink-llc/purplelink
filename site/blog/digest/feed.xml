@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #47 — August 10, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-10.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-10.html</guid>
+      <pubDate>Mon, 10 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OpenAI&#x27;s Astra model triggers a safety pause over cyber capabilities, Head Mare backdoors TrueConf installers, and Claude Code&#x27;s auto mode goes default — plus malicious VS Code extensions targeting Web3 developers.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #46 — August 9, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-09.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-09.html</guid>
