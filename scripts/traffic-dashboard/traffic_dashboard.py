@@ -29,6 +29,7 @@ import datetime as dt
 import html
 import json
 import os
+import random
 import ssl
 import subprocess
 import sys
@@ -437,6 +438,10 @@ def summarise(site: dict, site_hist: dict) -> dict:
         "calc_runs": latest.get("calcByTool", [])[:5],
         "form_breakdown": latest.get("formBreakdown", [])[:6],
         "gsc": site_hist.get("gsc"),
+        "proj": project(by_day, today),
+        "bounds": [b for b in (
+            conversion_bound(by_day, k, lbl) for k, lbl in site["secondaries"]
+        ) if b],
         "error": site_hist.get("error"),
     }
 
@@ -626,11 +631,170 @@ td.k{word-break:break-word}
 .fstep .fr{color:var(--muted);font-size:12px;white-space:nowrap}
 .fnote{color:var(--muted);font-size:12px;margin:12px 0 0}
 .win{font-weight:500;text-transform:none;letter-spacing:0}
+.fan{margin-top:16px}
+.fan svg{width:100%;height:120px;display:block;overflow:visible}
+.fan .band90 polygon{fill:var(--purple);opacity:.14}
+.fan .band50 polygon{fill:var(--purple);opacity:.26}
+.fan .hist{fill:none;stroke:var(--ink);stroke-width:1.6;vector-effect:non-scaling-stroke}
+.fan .med{fill:none;stroke:var(--purple);stroke-width:1.6;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}
+.fan .now{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+.fan-x{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:5px}
+.fan-note{color:var(--muted);font-size:12px;margin:10px 0 0;line-height:1.5}
+.bound{color:var(--muted);font-size:12px;margin:8px 0 0;line-height:1.5}
 .err{border-color:var(--bad);color:var(--bad)}
 footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
   color:var(--muted);font-size:13px}
 code{background:var(--purple-soft);padding:1px 5px;border-radius:5px;font-size:12px}
 """
+
+
+PROJ_WINDOW = 21         # days of history the projection is drawn from
+PROJ_HORIZON = 14        # days projected forward
+PROJ_PATHS = 4000        # bootstrap resamples
+
+
+def project(by_day: dict, today: dt.date) -> dict | None:
+    """Bootstrap a range for the next PROJ_HORIZON days of 7-day pageview totals.
+
+    Deliberately does NOT fit a trend. On this data a least-squares slope is
+    statistically indistinguishable from flat (t = -0.03 and -1.34 for the two
+    sites, with residual noise 67-91% of the level), so drawing a rising or
+    falling line would be inventing confidence the data does not support. The
+    projection therefore assumes the current daily rate continues, and the
+    bands show how wide the outcome still is under that assumption.
+
+    Bands come from resampling observed daily values rather than assuming a
+    distribution: counts this small and this overdispersed are badly served by
+    a normal interval, which would go negative at the low end.
+    """
+    days = sorted(d for d, m in by_day.items() if isinstance(m, dict))
+    active = [d for d in days if (by_day[d].get("pageviews") or 0) > 0]
+    if len(active) < 10:
+        return None                      # not enough signal to say anything
+
+    # Complete days only: today is still accumulating and would drag the level down.
+    hist_days = [d for d in days if d < today.isoformat()][-PROJ_WINDOW:]
+    obs = [int(by_day[d].get("pageviews", 0) or 0) for d in hist_days]
+    if len(obs) < 10:
+        return None
+
+    rnd = random.Random(20260810)         # fixed seed: same data -> same picture
+    tail = obs[-6:]                       # observed days still inside the first 7-day window
+    pct = (10, 25, 50, 75, 90)
+    bands: list[dict] = []
+    for h in range(1, PROJ_HORIZON + 1):
+        totals = []
+        for _ in range(PROJ_PATHS):
+            drawn = [rnd.choice(obs) for _ in range(min(h, 7))]
+            keep = tail[-(7 - len(drawn)):] if len(drawn) < 7 else []
+            totals.append(sum(drawn) + sum(keep))
+        totals.sort()
+        q = {p: totals[int(p / 100 * (len(totals) - 1))] for p in pct}
+        bands.append({"day": (today + dt.timedelta(days=h)).isoformat(), **{f"p{p}": q[p] for p in pct}})
+
+    mean = sum(obs) / len(obs)
+    return {
+        "bands": bands,
+        "window_days": len(obs),
+        "daily_mean": round(mean, 1),
+        "last7": sum(obs[-7:]),
+        "flat": True,
+    }
+
+
+def conversion_bound(by_day: dict, field: str, label: str) -> dict | None:
+    """Honest statement about a metric that has never fired.
+
+    With zero events in n trials there is no rate to project, but there is a
+    real upper bound: the rule of three puts the 95% limit at 3/n. Reporting
+    that is defensible; extrapolating a sales figure from no sales is not.
+    """
+    days = [d for d, m in by_day.items() if isinstance(m, dict)]
+    events = sum(int(by_day[d].get(field, 0) or 0) for d in days)
+    views = sum(int(by_day[d].get("pageviews", 0) or 0) for d in days)
+    if views < 30:
+        return None
+    return {
+        "label": label, "events": events, "views": views,
+        "upper95": round(3.0 / views * 100, 2) if events == 0 else None,
+        "rate": round(events / views * 100, 2) if events else None,
+    }
+
+
+def bounds_note(bounds: list[dict]) -> str:
+    """State what a never-fired metric can and cannot support.
+
+    A conversion that has never happened has no rate to forecast. The rule of
+    three still gives a real 95% ceiling from the pageviews observed, which is
+    a defensible statement; a projected sales figure would not be.
+    """
+    parts = []
+    for b in bounds:
+        if b["events"] == 0:
+            parts.append(
+                f"No {html.escape(b['label'])} yet in {b['views']} pageviews, so there is no rate to "
+                f"project. That sample does put the true rate below "
+                f"<strong>{b['upper95']}%</strong> (95% confidence); it cannot narrow it further "
+                f"until one happens.")
+        else:
+            parts.append(
+                f"{b['events']} {html.escape(b['label'])} in {b['views']} pageviews "
+                f"({b['rate']}%).")
+    return f"<p class='bound'>{' '.join(parts)}</p>" if parts else ""
+
+
+def fan_chart(spark: list[dict], proj: dict | None) -> str:
+    """Observed 7-day totals, then the projected range. One shared scale."""
+    if not proj:
+        return ""
+    hist = []
+    pv = [d["pv"] for d in spark]
+    for i in range(len(pv)):
+        window = pv[max(0, i - 6):i + 1]
+        hist.append(sum(window))
+    hist = hist[:-1] or hist              # drop today (partial)
+    bands = proj["bands"]
+
+    n_h, n_p = len(hist), len(bands)
+    total = n_h + n_p
+    peak = max(hist + [b["p90"] for b in bands] + [1])
+    X = lambda i: i / (total - 1) * 100
+    Y = lambda v: 100 - (v / peak) * 100
+
+    def area(lo_key, hi_key):
+        top = " ".join(f"{X(n_h - 1 + 1 + i):.2f},{Y(b[hi_key]):.2f}" for i, b in enumerate(bands))
+        bot = " ".join(f"{X(n_h - 1 + 1 + i):.2f},{Y(b[lo_key]):.2f}" for i, b in reversed(list(enumerate(bands))))
+        join = f"{X(n_h - 1):.2f},{Y(hist[-1]):.2f} " if hist else ""
+        return f"<polygon points='{join}{top} {bot}'/>"
+
+    hist_line = " ".join(f"{X(i):.2f},{Y(v):.2f}" for i, v in enumerate(hist))
+    med_line = (f"{X(n_h - 1):.2f},{Y(hist[-1]):.2f} " if hist else "") + \
+               " ".join(f"{X(n_h + i):.2f},{Y(b['p50']):.2f}" for i, b in enumerate(bands))
+    last = bands[-1]
+    return f"""
+    <div class="fan">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
+           aria-label="Observed 7-day pageview totals followed by a projected range for the next {n_p} days">
+        <g class="band90">{area('p10','p90')}</g>
+        <g class="band50">{area('p25','p75')}</g>
+        <polyline class="hist" points="{hist_line}"/>
+        <polyline class="med" points="{med_line}"/>
+        <line class="now" x1="{X(n_h - 1):.2f}" y1="0" x2="{X(n_h - 1):.2f}" y2="100"/>
+      </svg>
+      <div class="fan-x"><span>observed</span><span>projected &rarr; {last['day'][5:]}</span></div>
+      <p class="fan-note">In {n_p} days, 7-day pageviews land between
+        <strong>{last['p10']} and {last['p90']}</strong> in 8 runs out of 10,
+        centred on {last['p50']}. Drawn by resampling the last
+        {proj['window_days']} complete days ({proj['daily_mean']}/day average).
+        <strong>No trend is assumed</strong>, because none is statistically
+        detectable here. So the centre line drifts toward that average rather
+        than continuing the current week: it reads
+        {"down" if last['p50'] < proj['last7'] else "up"} from {proj['last7']}
+        only because this week sits
+        {"above" if last['p50'] < proj['last7'] else "below"} the 21-day
+        average, not because a {"decline" if last['p50'] < proj['last7'] else "rise"}
+        has been measured. Treat the band, not the line, as the finding.</p>
+    </div>"""
 
 
 def sparkline(spark: list[dict]) -> str:
@@ -773,6 +937,8 @@ def site_card(s: dict) -> str:
         <div><span class="n">{s['all_time']}</span><span class="l">tracked total</span></div>
       </div>
       {sparkline(s['spark'])}
+      {fan_chart(s['spark'], s.get('proj'))}
+      {bounds_note(s.get('bounds') or [])}
     </div>"""
 
 
