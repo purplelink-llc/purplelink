@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #48 — August 11, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-11.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-11.html</guid>
+      <pubDate>Tue, 11 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OT network breaches at Polish power plants, StormEncryptor ransomware tied to China&#x27;s Storm-1175, GhostJacking attacks on AI agents, and Meta&#x27;s 30B Apache-licensed Muse Glimmer model dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #47 — August 10, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-10.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-10.html</guid>
