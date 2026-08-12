@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Purplelink Daily Digest #49 — August 12, 2026 | Purplelink LLC</title>
+    <meta name="description" content="Reasoning trace theft from LLM APIs, prompt injection as honeypot defense, DeadLock ransomware's blockchain C2, and Sandworm's trojanized WireGuard campaig">
+    <meta name="keywords" content="AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Worth Reading, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers">
+    <meta name="author" content="Benjamin Ampel">
+    <link rel="canonical" href="https://purplelink.llc/blog/digest/2026-08-12.html">
+    <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="https://purplelink.llc/blog/digest/feed.xml">
+    <meta property="og:title" content="Purplelink Daily Digest #49 — August 12, 2026">
+    <meta property="og:description" content="Reasoning trace theft from LLM APIs, prompt injection as honeypot defense, DeadLock ransomware's blockchain C2, and Sandworm's trojanized WireGuard campaig">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/digest/2026-08-12.html">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="article:published_time" content="2026-08-12">
+    <meta property="article:author" content="Benjamin Ampel">
+    <meta property="article:section" content="Research Digest">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Purplelink Daily Digest #49 — August 12, 2026">
+    <meta name="twitter:description" content="Reasoning trace theft from LLM APIs, prompt injection as honeypot defense, DeadLock ransomware's blockchain C2, and Sandworm's trojanized WireGuard campaig">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Purplelink Daily Digest #49 — August 12, 2026",
+      "description": "Reasoning trace theft from LLM APIs, prompt injection as honeypot defense, DeadLock ransomware's blockchain C2, and Sandworm's trojanized WireGuard campaig",
+      "keywords": "AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Worth Reading, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers",
+      "datePublished": "2026-08-12",
+      "author": {
+        "@type": "Person",
+        "@id": "https://purplelink.llc/about/#person",
+        "name": "Benjamin Ampel",
+        "url": "https://purplelink.llc/about/"
+      },
+      "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+      "url": "https://purplelink.llc/blog/digest/2026-08-12.html",
+      "isPartOf": { "@type": "Blog", "url": "https://purplelink.llc/blog/digest/" }
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/digest/">← All issues</a>
+
+    <div class="post-hero">
+      <p class="post-date">August 12, 2026</p>
+      <h1 class="post-title">Purplelink Daily Digest #49 — August 12, 2026</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-08-12">August 12, 2026</time></p>
+      <p class="post-lede">928 sources reviewed. 10 selected.</p>
+    </div>
+
+    <article id="main-content" class="post-body digest-body">
+
+      <p class="digest-intro">Reasoning trace theft from LLM APIs, prompt injection as honeypot defense, DeadLock ransomware&#x27;s blockchain C2, and Sandworm&#x27;s trojanized WireGuard campaign dominate today&#x27;s digest.</p>
+
+    <section class="digest-section" id="section-ai_tech">
+      <h2>AI & Technology</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://stolen-thoughts.com" target="_blank" rel="noopener">Stealing Reasoning Traces from Proprietary LLM APIs</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">Anthropic, OpenAI, and Google return encrypted chain-of-thought blocks that can be replayed across sessions, users, and models, enabling a frontier model&#x27;s reasoning to be extracted and distilled into a cheaper local model. The attack surface is structural: the encrypted trace is client-visible, so any API consumer can capture and replay it without breaking encryption. Researchers building proprietary reasoning pipelines on top of these APIs should treat their chain-of-thought outputs as a competitive liability, not a protected asset.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-cybersecurity">
+      <h2>Cybersecurity</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.schneier.com/blog/archives/2026/08/prompt-injections-for-defense.html" target="_blank" rel="noopener">Prompt Injections for Defense</a>
+          <span class="digest-item-source">Schneier on Security</span>
+        </div>
+        <p class="digest-item-note">Tracebit found that embedding prompt injection strings alongside AWS secrets, SSH keys, and Kubernetes tokens was sufficient to redirect AI hacking agents away from those credentials. The non-obvious implication is that offensive AI agents are currently more susceptible to in-context manipulation than traditional credential scanners, creating an asymmetric defensive window that will likely close as agent developers add injection-resistance. The practical question is whether this technique survives against agents with explicit anti-injection system prompts or sandboxed tool-call architectures.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/08/malicious-litellm-releases-tied-to.html" target="_blank" rel="noopener">Malicious LiteLLM Releases Tied to Trivy Hack May Have Exposed 2,100+ Organizations</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">Two backdoored LiteLLM PyPI releases sat live for roughly 40 minutes in March, harvesting cloud keys, SSH keys, Kubernetes tokens, and database passwords from any system that installed them, with CloudSEK&#x27;s dataset analysis linking the campaign to the earlier Trivy supply chain compromise. The 2,100+ exposed organizations figure is striking given the 40-minute window, reflecting how aggressively CI/CD pipelines pull latest PyPI releases without pinning. LiteLLM&#x27;s position as a multi-provider LLM proxy means compromised installs had access to API keys for Anthropic, OpenAI, and Azure simultaneously.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/deadlock-ransomware-uses-blockchain-to-resist-infrastructure-takedown" target="_blank" rel="noopener">DeadLock ransomware uses blockchain to resist infrastructure takedown</a>
+          <span class="digest-item-source">Bleeping Computer</span>
+        </div>
+        <p class="digest-item-note">DeadLock routes victim communication and data-leak operations through blockchain-backed services, making the traditional law enforcement playbook of seizing C2 domains or hosting providers ineffective. This is a meaningful operational evolution beyond Tor-only infrastructure: blockchain records are immutable and globally replicated, so there is no single registrar or hosting provider to compel. Threat intelligence teams tracking this group will need to monitor on-chain activity patterns rather than domain registrations or IP blocklists.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/08/sandworm-linked-uac-0145-uses-fake-job.html" target="_blank" rel="noopener">Sandworm-Linked UAC-0145 Uses Fake Job Interviews to Push VPN That Can Run Commands</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">CERT-UA attributes UAC-0145 to Sandworm and documents a campaign active since at least May targeting Ukrainian IT professionals with trojanized WireGuard installers that include a remote command execution backdoor, delivered via fake recruiter personas. Targeting sysadmins and IT staff specifically is a deliberate pivot: these accounts hold privileged access to infrastructure that enables lateral movement at scale. The WireGuard lure is particularly effective because legitimate VPN client installation is a plausible step in a remote-work onboarding flow. Connects to: Sandworm hackers target IT pros with trojanized WireGuard VPN client.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-finance">
+      <h2>Finance & Business</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.coindesk.com/markets/2026/08/12/coreweave-surges-16-on-usd2-58-billion-revenue-quarter-as-ai-infrastructure-demand-eclipses-crypto" target="_blank" rel="noopener">CoreWeave surges 16% on $2.58 billion revenue quarter as AI infrastructure demand eclipses crypto</a>
+          <span class="digest-item-source">CoinDesk</span>
+        </div>
+        <p class="digest-item-note">CoreWeave posted $2.58 billion in quarterly revenue, a figure that operationally validates the GPU cloud thesis at a scale that was speculative at its IPO. The crypto-to-AI infrastructure transition is now complete in revenue terms: the same H100 clusters that were marginal crypto mining assets are generating hyperscaler-comparable revenue density. For anyone modeling AI inference cost curves, CoreWeave&#x27;s margin structure this quarter is a more reliable data point than analyst estimates.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/5-interesting-learnings-from-palo-alto-networks-at-11-4-billion-in-revenue-60-arr-growth-120-nrr-and-a-25b-acquisition-that-doubled-the-stock" target="_blank" rel="noopener">5 Interesting Learnings from Palo Alto Networks at $11.4 Billion in Revenue: 60% ARR Growth, 120% NRR, and a $25B Acquisition That Doubled the Stock</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Palo Alto Networks reached $11.4B revenue with 120% net revenue retention and 60% ARR growth, driven largely by a ~$29B acquisition spree that absorbed GAAP losses but produced a stock doubling to a $265B market cap. The non-obvious lesson is that platformization through M&amp;A, not organic product development, is the dominant growth mechanism in enterprise security at scale. For cybersecurity startups, this signals that building for acquisition by a platform consolidator is a more reliable exit path than competing on standalone ARR.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-entrepreneurship">
+      <h2>Entrepreneurship</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/how-mailchimp-went-from-1b-arr-and-20-growth-to-shrinking-inside-intuit" target="_blank" rel="noopener">How Mailchimp Went From $1B+ ARR to … Shrinking Inside Intuit. A Death Spiral in the Age of AI?</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Mailchimp went from $1B+ ARR with 20% growth to a shrinking line item that Intuit now excludes from reported figures, a collapse driven by product sprawl, platform distribution lock-out, and AI-native competitors rewriting the email marketing stack from scratch. The structural warning for indie and small-studio developers is that single-function tools acquired into large suites lose their distribution moat faster than their revenue, because the acquirer&#x27;s incentives diverge from the product&#x27;s original user base. The AI angle is specific: new app platforms are not listing Mailchimp integrations, which is a leading indicator of developer ecosystem abandonment before revenue decline becomes visible.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-general_tech">
+      <h2>Worth Reading</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://arstechnica.com/information-technology/2026/08/def-con-crowd-suspected-in-fake-hotspot-attack-on-delta-flight" target="_blank" rel="noopener">DEF CON crowd suspected in fake-hotspot attack on Delta flight</a>
+          <span class="digest-item-source">Ars Technica</span>
+        </div>
+        <p class="digest-item-note">FBI Atlanta confirmed it is investigating a suspected evil-twin Wi-Fi attack on a Delta flight carrying DEF CON attendees, with a rogue hotspot harvesting credentials from passengers who connected. The incident is a clean empirical demonstration that conference-adjacent travel is a high-value targeting window: a plane full of security professionals still connected to an unverified hotspot. No arrests have been made, and the attacker&#x27;s identity remains unknown, which itself is notable given the victim pool.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://arstechnica.com/security/2026/08/new-surveillance-tech-links-your-phone-to-your-license-plate" target="_blank" rel="noopener">New surveillance tech links your phone to your license plate</a>
+          <span class="digest-item-source">Ars Technica</span>
+        </div>
+        <p class="digest-item-note">Roadside cameras are being augmented with Bluetooth and phone signal correlation to link device identifiers to license plates, creating persistent cross-modal tracking without requiring any app or consent. The technical mechanism is passive RF fingerprinting at fixed infrastructure points, which means existing ALPR deployments can be upgraded without new camera hardware. Researchers studying dark web operational security or threat actor attribution should note this as an emerging physical-layer deanonymization vector that bypasses VPN and Tor protections entirely.</p>
+      </div>
+    </section>
+
+    </article>
+
+    <div class="post-footer digest-footer">
+      <p>Get this in your inbox. <a href="/blog/digest/">Subscribe to Purplelink Daily Digest</a>.</p>
+      <a class="back-link" href="/blog/digest/">← All issues</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
