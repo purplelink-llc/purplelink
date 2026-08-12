@@ -2,8 +2,9 @@
 # Production deploy wrapper for purplelink.llc.
 #
 # Default behavior:
-#   1. Deploys site/ to Netlify --prod with the latest commit subject as the message.
-#   2. Pings IndexNow about any URLs whose sitemap lastmod is today.
+#   1. Regenerates site/sitemap.xml from the pages actually on disk.
+#   2. Deploys site/ to Netlify --prod with the latest commit subject as the message.
+#   3. Pings IndexNow about any URLs whose sitemap lastmod is today.
 #
 # Usage:
 #   bash scripts/deploy.sh                  # frontend + IndexNow
@@ -42,6 +43,27 @@ done
 # Run from repo root regardless of invocation path
 cd "$(dirname "$0")/.."
 
+# --- Sync guard: never publish a working copy that is BEHIND origin ----------
+# The content cron (Modal) commits digests to GitHub; this script publishes the
+# LOCAL site/ tree. If local is behind origin, deploying would revert the live
+# site to stale content (this exact bug shipped once). Fetch and refuse to
+# deploy when origin has commits we don't hold. Override with FORCE_DEPLOY=1
+# only when you deliberately mean to publish local-only state.
+BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo main)"
+if git fetch -q origin "$BRANCH" 2>/dev/null; then
+  BEHIND="$(git rev-list --count "HEAD..origin/$BRANCH" 2>/dev/null || echo 0)"
+  AHEAD="$(git rev-list --count "origin/$BRANCH..HEAD" 2>/dev/null || echo 0)"
+  if [[ "${BEHIND:-0}" -gt 0 && "${FORCE_DEPLOY:-0}" != "1" ]]; then
+    echo "REFUSING TO DEPLOY: local is $BEHIND commit(s) behind origin/$BRANCH." >&2
+    echo "Deploying now would publish stale content and revert the live site." >&2
+    echo "Fix: git pull --rebase origin $BRANCH   (then re-run), or FORCE_DEPLOY=1 to override." >&2
+    exit 2
+  fi
+  [[ "${AHEAD:-0}" -gt 0 ]] && echo "note: local is $AHEAD commit(s) ahead of origin/$BRANCH (unpushed)."
+else
+  echo "warning: could not fetch origin/$BRANCH — deploying without a sync check."
+fi
+
 # Default message: latest commit subject
 if [[ -z "$MESSAGE" ]]; then
   MESSAGE="$(git log -1 --pretty=%s)"
@@ -60,6 +82,8 @@ step() { printf "\n=== %s ===\n" "$*"; }
 if [[ $DRY_RUN -eq 1 ]]; then
   step "DRY RUN — planned actions"
   [[ $DO_BACKEND -eq 1 ]] && echo "  · modal deploy backend/app.py"
+  echo "  · python3 scripts/gen_sitemap.py"
+  python3 scripts/gen_sitemap.py --check 2>&1 | sed 's/^/      /' || true
   echo "  · netlify deploy --prod --dir site --message \"$MESSAGE\""
   if [[ $SKIP_PING -eq 0 ]]; then
     if [[ $PING_ALL -eq 1 ]]; then
@@ -77,11 +101,22 @@ if [[ $DO_BACKEND -eq 1 ]]; then
   (cd backend && modal deploy app.py)
 fi
 
-# 2. Frontend
+# 2. Sitemap
+# Regenerated from disk on every deploy. It used to be hand-maintained and had
+# drifted to 84 URLs against 105 indexable pages; Search Console showed the
+# effect for /guides/word-to-latex/ as "No referring sitemaps detected" and no
+# crawl ever. Generating it here means a new page cannot ship undiscoverable.
+# Existing <priority>/<changefreq> tuning is preserved, and lastmod comes from
+# each file's last commit, so the IndexNow step below still pings only what
+# genuinely changed.
+step "regenerate sitemap"
+python3 scripts/gen_sitemap.py
+
+# 3. Frontend
 step "netlify deploy --prod"
 netlify deploy --prod --dir site --message "$MESSAGE"
 
-# 3. IndexNow (best-effort)
+# 4. IndexNow (best-effort)
 if [[ $SKIP_PING -eq 0 ]]; then
   step "IndexNow ping"
   if [[ $PING_ALL -eq 1 ]]; then

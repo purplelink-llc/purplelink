@@ -97,10 +97,23 @@ def main():
         urls = urls_from_sitemap(only_today=False)
     elif args and args[0].startswith("http"):
         urls = args
+    elif args:
+        # Anything else used to fall through to a real ping. That made a typo,
+        # or a flag borrowed from deploy.sh such as --dry-run, silently submit
+        # URLs to the IndexNow network while appearing to be a no-op. This
+        # script performs an outward action, so an argument it does not
+        # understand is a stop, not a default.
+        print(f"unknown argument: {args[0]}\n"
+              f"usage: {sys.argv[0]} [--all | <url> ...]\n"
+              f"  no args   ping URLs whose sitemap lastmod is today\n"
+              f"  --all     ping every URL in the sitemap\n"
+              f"  <url>...  ping exactly these URLs", file=sys.stderr)
+        return 2
     else:
         urls = urls_from_sitemap(only_today=True)
     ping(urls)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
