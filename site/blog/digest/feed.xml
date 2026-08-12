@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #49 — August 12, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-12.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-12.html</guid>
+      <pubDate>Wed, 12 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Reasoning trace theft from LLM APIs, prompt injection as honeypot defense, DeadLock ransomware&#x27;s blockchain C2, and Sandworm&#x27;s trojanized WireGuard campaign dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #48 — August 11, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-11.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-11.html</guid>
