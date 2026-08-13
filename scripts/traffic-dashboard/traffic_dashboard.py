@@ -568,21 +568,18 @@ def observations(summaries: list[dict]) -> list[str]:
 # ---------------------------------------------------------------- rendering
 
 CSS = """
+/* Dark only, by request. The palette below is what used to sit inside a
+   prefers-color-scheme: dark block; it is now unconditional, so the dashboard
+   looks the same on a machine set to light. color-scheme tells the browser to
+   render scrollbars and any form controls dark to match, rather than leaving a
+   bright scrollbar down the side of a dark page. */
 :root{
-  --bg:oklch(98.5% 0.007 310); --panel:oklch(99% 0.003 310);
-  --ink:oklch(14% 0.07 310); --muted:oklch(46% 0.04 300);
-  --line:oklch(88% 0.05 310); --purple:oklch(50% 0.24 310);
-  --purple-soft:oklch(94% 0.04 310); --good:oklch(48% 0.15 150);
-  --bad:oklch(52% 0.19 25); --radius:14px;
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:oklch(16% 0.03 310); --panel:oklch(21% 0.035 310);
-    --ink:oklch(96% 0.01 310); --muted:oklch(72% 0.03 300);
-    --line:oklch(32% 0.05 310); --purple:oklch(78% 0.16 310);
-    --purple-soft:oklch(28% 0.06 310); --good:oklch(78% 0.16 150);
-    --bad:oklch(72% 0.16 25);
-  }
+  color-scheme:dark;
+  --bg:oklch(16% 0.03 310); --panel:oklch(21% 0.035 310);
+  --ink:oklch(96% 0.01 310); --muted:oklch(72% 0.03 300);
+  --line:oklch(32% 0.05 310); --purple:oklch(78% 0.16 310);
+  --purple-soft:oklch(28% 0.06 310); --good:oklch(78% 0.16 150);
+  --bad:oklch(72% 0.16 25); --radius:14px;
 }
 *{box-sizing:border-box}
 body{
