@@ -23,6 +23,20 @@ function json(status, body) {
   });
 }
 function bump(obj, key, n = 1) { if (key) obj[key] = (obj[key] || 0) + n; }
+
+/* Run fn over items with at most `limit` in flight, preserving input order.
+   Bounded rather than a bare Promise.all: a month of events is unbounded in
+   principle, and firing every read at once risks throttling or exhausting
+   sockets, which would trade a slow response for a flaky one. */
+async function mapLimit(items, limit, fn) {
+  const out = new Array(items.length);
+  let next = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    for (let i = next++; i < items.length; i = next++) out[i] = await fn(items[i]);
+  });
+  await Promise.all(workers);
+  return out;
+}
 function topN(obj, n = 25) {
   return Object.entries(obj).sort((a, b) => b[1] - a[1]).slice(0, n)
     .map(([k, v]) => ({ key: k, count: v }));
@@ -55,17 +69,37 @@ export default async function handler(request) {
   };
   const uniquesPerDay = {};
 
-  for (let i = 0; i < days; i++) {
-    const day = new Date(now - i * 86400000).toISOString().slice(0, 10);
-    let listing;
-    try { listing = await store.list({ prefix: `ev/${day}/` }); } catch (_) { continue; }
-    const blobs = (listing && listing.blobs) || [];
+  // Every blob read used to be awaited one at a time, so the wall clock was
+  // (number of events) x (one round trip). At ~670 events over 30 days that
+  // reached 21s and started returning 502 once it crossed the function
+  // timeout: the 2026-08-14 dashboard run fell back to archived figures for
+  // this reason. The work is entirely IO-bound, so issuing the reads
+  // concurrently removes the problem without changing what is counted. The
+  // scale note at the top of this file still stands: pre-aggregated counters
+  // are the real answer once daily volume gets large enough that even the
+  // parallel version is slow.
+  const dayKeys = Array.from({ length: days },
+    (_, i) => new Date(now - i * 86400000).toISOString().slice(0, 10));
+
+  const listings = await mapLimit(dayKeys, 10, async (day) => {
+    try {
+      const listing = await store.list({ prefix: `ev/${day}/` });
+      return { day, blobs: (listing && listing.blobs) || [] };
+    } catch (_) {
+      return { day, blobs: null };   // null means "could not read", not "no events"
+    }
+  });
+
+  for (const { day, blobs } of listings) {
+    if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
     if (!s.byDay[day]) s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0 };
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
 
-    for (const b of blobs) {
-      let rec;
-      try { rec = await store.get(b.key, { type: "json" }); } catch (_) { continue; }
+    const records = await mapLimit(blobs, 64, async (b) => {
+      try { return await store.get(b.key, { type: "json" }); } catch (_) { return null; }
+    });
+
+    for (const rec of records) {
       if (!rec) continue;
       s.totals.events++;
       if (rec.vid) uniquesPerDay[day].add(rec.vid);

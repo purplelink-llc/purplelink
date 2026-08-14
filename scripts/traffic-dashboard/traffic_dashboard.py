@@ -33,6 +33,7 @@ import random
 import ssl
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -45,6 +46,8 @@ DASHBOARD_PATH = OUT_DIR / "dashboard.html"
 
 FETCH_DAYS = 30          # comfortably covers any gap since the last run
 TIMEOUT = 60
+RETRIES = 3               # a daily job can afford to try again before giving up
+RETRY_BACKOFF = 3.0       # seconds; doubles each attempt
 
 # Metrics added after this archive already existed. The endpoints backfill a
 # new counter with zeros for earlier days, so the data cannot tell "started
@@ -122,10 +125,32 @@ def _ssl_context() -> ssl.SSLContext:
 
 
 def fetch_site(site: dict, token: str) -> dict:
+    """Fetch one site's stats, retrying transient failures.
+
+    A single 502 used to drop the whole site to archived figures for the day,
+    which is what happened on 2026-08-14: the stats function was timing out
+    because it read one blob per event serially. That cause is fixed, but a
+    cold start or a Netlify blip can still produce one bad response, and this
+    job runs once a day, so there is no reason to give up on the first try.
+    Only transient conditions are retried; a 401 means the token is wrong and
+    retrying it would just be slower.
+    """
     url = f"{site['url']}?token={urllib.parse.quote(token)}&days={FETCH_DAYS}"
     req = urllib.request.Request(url, headers={"User-Agent": "purplelink-traffic-dashboard"})
-    with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                raise
+            last = exc
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+            last = exc
+    raise last  # type: ignore[misc]
 
 
 def fetch_gsc(site: dict) -> dict | None:
