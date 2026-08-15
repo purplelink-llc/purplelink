@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #52 — August 15, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-15.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-15.html</guid>
+      <pubDate>Sat, 15 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Anthropic&#x27;s 14x revenue surge ahead of IPO, a macOS Screen Sharing RCE under active exploitation, GLM-5.3&#x27;s emergent cyber capabilities, and Clop claiming 89GB from Shell dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #51 — August 14, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-14.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-14.html</guid>
