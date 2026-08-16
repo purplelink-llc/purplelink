@@ -59,9 +59,11 @@ def post_url(slug: str) -> str:
 def render_post_html(d: WeeklyDigest) -> str:
     e = html.escape
     title = f"GLP-1 &amp; Muscle Research Roundup: {e(d.week_label)}"
-    desc = (f"New research on GLP-1 medications and muscle, lean mass, protein, and "
-            f"training, published the week of {e(d.week_label)}. {d.count} papers "
-            f"summarized with links to every source.")
+    # Kept under ~160 chars so Google does not truncate the snippet. The longest
+    # week_label seen is "July 29 - August 4, 2026" (24 chars), which lands at 146.
+    desc = (f"New GLP-1 research on muscle, lean mass, protein, and training from "
+            f"the week of {e(d.week_label)}. {d.count} papers summarized, every "
+            f"source linked.")
 
     # JSON-LD: the post as an Article, plus each source as a referenced ScholarlyArticle.
     parts = []
