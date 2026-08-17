@@ -34,6 +34,27 @@
       }
     },
     {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What LaTeX template does ISR use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "INFORMS journal LaTeX style files (includes a BibTeX .bst matching INFORMS reference format)"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What citation style does ISR use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Author-year (e.g. \u201c(Norman 1977)\u201d), references listed alphabetically \u2014 per the INFORMS house style guide."
+          }
+        }
+      ]
+    },
+    {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {
@@ -66,8 +87,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/tools/reference-converter/reference-converter.css">
     <script src="/site.js" defer></script>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
-</head>
+  </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
@@ -78,7 +98,6 @@
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
-        <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -155,6 +174,15 @@
         <p>ISR is one of the few venues here that officially supports both paths: INFORMS publishes a BibTeX style file for LaTeX authors and a separate EndNote style (“Inf Syst Res.ens”) for Word/reference-manager authors.</p>
       </section>
 
+
+      <section class="tool-faq">
+        <h2>Frequently asked</h2>
+        <div class="faq-list">
+          <details><summary>What LaTeX template does ISR use?</summary><p>INFORMS journal LaTeX style files (includes a BibTeX .bst matching INFORMS reference format)</p></details>
+          <details><summary>What citation style does ISR use?</summary><p>Author-year (e.g. “(Norman 1977)”), references listed alphabetically — per the INFORMS house style guide.</p></details>
+        </div>
+      </section>
+
       <section class="tool-faq">
         <h2>Where this comes from</h2>
         <p class="faq-body">Sourced from <a href="https://pubsonline.informs.org/authorportal/latex-style-files" rel="noopener">https://pubsonline.informs.org/authorportal/latex-style-files</a>. LaTeX/BibTeX style files confirmed directly from INFORMS&#x27;s author portal. EndNote style confirmed via endnote.com&#x27;s published style listing.</p>
@@ -205,11 +233,8 @@
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>
-        <a href="/kits/">Kits</a>
       </nav>
     </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js" defer></script>
-  <script src="/ethicalads.js" defer></script>
-</body>
+  </body>
 </html>

@@ -34,6 +34,27 @@
       }
     },
     {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What LaTeX template does IEEE S&P (\u201cOakland\u201d) use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "IEEEtran (\u201ccompsoc\u201d conference option) \u2014 \\documentclass[conference,compsoc]{IEEEtran}"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What citation style does IEEE S&P (\u201cOakland\u201d) use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Numbered, bracketed citations (e.g. [1], [2]) \u2014 IEEEtran's standard bibliography style."
+          }
+        }
+      ]
+    },
+    {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {
@@ -66,8 +87,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/tools/reference-converter/reference-converter.css">
     <script src="/site.js" defer></script>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
-</head>
+  </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
@@ -78,7 +98,6 @@
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
-        <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -155,6 +174,30 @@
         <p>The IEEEtran class is built to manage references through BibTeX; a call for papers that requires IEEEtran in practice means preparing your bibliography as a .bib file.</p>
       </section>
 
+
+      <section class="tool-howto">
+        <h2>Setting up the bibliography</h2>
+        <p>In your main .tex file, where the reference list should appear:</p>
+        <pre class="code-block"><code>\bibliographystyle{IEEEtran}
+\bibliography{refs}</code></pre>
+        <p>IEEEtran ships its own .bst of the same name, so the style line matches the class. Build with <code>pdflatex</code>, then <code>bibtex</code>, then <code>pdflatex</code> twice more, so both the in-text citations and the reference list resolve.</p>
+      </section>
+      <section class="tool-howto">
+        <h2>Things that catch people out</h2>
+        <ul>
+          <li>A numbered IEEEtran bibliography lists entries in citation order, not alphabetically, so renumbering happens automatically when you reorder the text.</li>
+          <li>Loading the cite package lets \cite{a,b,c} compress into [1]-[3]; without it you get [1], [2], [3].</li>
+        </ul>
+      </section>
+      <section class="tool-faq">
+        <h2>Frequently asked</h2>
+        <div class="faq-list">
+          <details><summary>What LaTeX template does IEEE S&amp;P (“Oakland”) use?</summary><p>IEEEtran (“compsoc” conference option) — \documentclass[conference,compsoc]{IEEEtran}</p></details>
+          <details><summary>What citation style does IEEE S&amp;P (“Oakland”) use?</summary><p>Numbered, bracketed citations (e.g. [1], [2]) — IEEEtran&#x27;s standard bibliography style.</p></details>
+          <details><summary>What bibliography style should I use for IEEE S&amp;P (“Oakland”)?</summary><p>IEEEtran. IEEEtran ships its own .bst of the same name, so the style line matches the class.</p></details>
+        </div>
+      </section>
+
       <section class="tool-faq">
         <h2>Where this comes from</h2>
         <p class="faq-body">Sourced from <a href="https://sp2026.ieee-security.org/cfpapers.html" rel="noopener">https://sp2026.ieee-security.org/cfpapers.html</a>. Template requirement confirmed directly from the venue&#x27;s call for papers. BibTeX is IEEEtran&#x27;s conventional workflow, not a line explicitly stated in the CFP.</p>
@@ -205,11 +248,8 @@
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>
-        <a href="/kits/">Kits</a>
       </nav>
     </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js" defer></script>
-  <script src="/ethicalads.js" defer></script>
-</body>
+  </body>
 </html>

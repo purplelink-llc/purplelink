@@ -34,6 +34,27 @@
       }
     },
     {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What LaTeX template does USENIX Security use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Official USENIX LaTeX and Word templates (final version must use the official style files)"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What citation style does USENIX Security use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Numbered citations, consistent with the official template's IEEE-adjacent formatting."
+          }
+        }
+      ]
+    },
+    {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {
@@ -66,8 +87,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/tools/reference-converter/reference-converter.css">
     <script src="/site.js" defer></script>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
-</head>
+  </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
@@ -78,7 +98,6 @@
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
-        <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -155,6 +174,15 @@
         <p>USENIX&#x27;s official LaTeX template ships with a .bib file and a pdflatex + bibtex build process, so BibTeX is the format its own template expects.</p>
       </section>
 
+
+      <section class="tool-faq">
+        <h2>Frequently asked</h2>
+        <div class="faq-list">
+          <details><summary>What LaTeX template does USENIX Security use?</summary><p>Official USENIX LaTeX and Word templates (final version must use the official style files)</p></details>
+          <details><summary>What citation style does USENIX Security use?</summary><p>Numbered citations, consistent with the official template&#x27;s IEEE-adjacent formatting.</p></details>
+        </div>
+      </section>
+
       <section class="tool-faq">
         <h2>Where this comes from</h2>
         <p class="faq-body">Sourced from <a href="https://www.usenix.org/conferences/author-resources/paper-templates" rel="noopener">https://www.usenix.org/conferences/author-resources/paper-templates</a>. The template repository itself confirms the BibTeX build; USENIX&#x27;s live guidelines page returned an access error when this page was generated, so this is based on the template files rather than the guidelines text.</p>
@@ -205,11 +233,8 @@
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>
-        <a href="/kits/">Kits</a>
       </nav>
     </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js" defer></script>
-  <script src="/ethicalads.js" defer></script>
-</body>
+  </body>
 </html>

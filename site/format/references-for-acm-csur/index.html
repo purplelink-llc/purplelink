@@ -34,6 +34,27 @@
       }
     },
     {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What LaTeX template does ACM CSUR use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "acmart, manuscript option \u2014 \\documentclass[manuscript]{acmart}"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What citation style does ACM CSUR use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Numbered citations by default (ACM-Reference-Format bibliography style) \u2014 the same ACM-wide convention CCS uses."
+          }
+        }
+      ]
+    },
+    {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {
@@ -66,8 +87,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/tools/reference-converter/reference-converter.css">
     <script src="/site.js" defer></script>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
-</head>
+  </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
@@ -78,7 +98,6 @@
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
-        <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -155,6 +174,30 @@
         <p>Like other acmart-based ACM venues, CSUR&#x27;s authoring guidelines call for BibTeX to prepare references.</p>
       </section>
 
+
+      <section class="tool-howto">
+        <h2>Setting up the bibliography</h2>
+        <p>In your main .tex file, where the reference list should appear:</p>
+        <pre class="code-block"><code>\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}</code></pre>
+        <p>ACM-Reference-Format.bst ships inside the acmart package itself. Build with <code>pdflatex</code>, then <code>bibtex</code>, then <code>pdflatex</code> twice more, so both the in-text citations and the reference list resolve.</p>
+      </section>
+      <section class="tool-howto">
+        <h2>Things that catch people out</h2>
+        <ul>
+          <li>ACM-Reference-Format renders a DOI whenever the .bib entry carries a doi field, so a missing doi silently drops from the output rather than erroring.</li>
+          <li>acmart defaults to numbered citations; \citestyle{acmauthoryear} switches the whole document to author-year.</li>
+        </ul>
+      </section>
+      <section class="tool-faq">
+        <h2>Frequently asked</h2>
+        <div class="faq-list">
+          <details><summary>What LaTeX template does ACM CSUR use?</summary><p>acmart, manuscript option — \documentclass[manuscript]{acmart}</p></details>
+          <details><summary>What citation style does ACM CSUR use?</summary><p>Numbered citations by default (ACM-Reference-Format bibliography style) — the same ACM-wide convention CCS uses.</p></details>
+          <details><summary>What bibliography style should I use for ACM CSUR?</summary><p>ACM-Reference-Format. ACM-Reference-Format.bst ships inside the acmart package itself.</p></details>
+        </div>
+      </section>
+
       <section class="tool-faq">
         <h2>Where this comes from</h2>
         <p class="faq-body">Sourced from <a href="https://dl.acm.org/journal/csur/author-guidelines" rel="noopener">https://dl.acm.org/journal/csur/author-guidelines</a>. Confirmed directly from ACM&#x27;s author-guidelines page for the journal plus ACM&#x27;s shared TAPS authoring documentation for the BibTeX/citation-style rule.</p>
@@ -205,11 +248,8 @@
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>
-        <a href="/kits/">Kits</a>
       </nav>
     </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js" defer></script>
-  <script src="/ethicalads.js" defer></script>
-</body>
+  </body>
 </html>

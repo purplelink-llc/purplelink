@@ -38,6 +38,15 @@ def venue_page(v):
                 "isPartOf": {"@type": "WebSite", "name": "Purplelink", "url": "https://purplelink.llc/"},
             },
             {
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {"@type": "Question", "name": f"What LaTeX template does {v['abbr']} use?",
+                     "acceptedAnswer": {"@type": "Answer", "text": v["template"]}},
+                    {"@type": "Question", "name": f"What citation style does {v['abbr']} use?",
+                     "acceptedAnswer": {"@type": "Answer", "text": v["citation_style"]}},
+                ],
+            },
+            {
                 "@type": "BreadcrumbList",
                 "itemListElement": [
                     {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/"},
@@ -47,6 +56,50 @@ def venue_page(v):
             },
         ],
     }, indent=2)
+
+    # Optional depth sections. Both are skipped when the venue data does not
+    # support them, so a venue whose bibliography style we cannot state stays
+    # short rather than getting padded with hedging.
+    bib = v.get("bib_setup")
+    bib_html = ""
+    if bib:
+        code = "\n".join(e(l) for l in bib["lines"])
+        bib_html = (
+            '\n      <section class="tool-howto">\n'
+            '        <h2>Setting up the bibliography</h2>\n'
+            '        <p>In your main .tex file, where the reference list should appear:</p>\n'
+            f'        <pre class="code-block"><code>{code}</code></pre>\n'
+            f'        <p>{e(bib["note"])} Build with <code>pdflatex</code>, then <code>bibtex</code>, '
+            'then <code>pdflatex</code> twice more, so both the in-text citations and the '
+            'reference list resolve.</p>\n'
+            '      </section>'
+        )
+
+    pit = v.get("pitfalls") or []
+    pit_html = ""
+    if pit:
+        items = "\n".join(f"          <li>{e(x)}</li>" for x in pit)
+        pit_html = (
+            '\n      <section class="tool-howto">\n'
+            '        <h2>Things that catch people out</h2>\n'
+            f'        <ul>\n{items}\n        </ul>\n'
+            '      </section>'
+        )
+
+    faq = [(f"What LaTeX template does {v['abbr']} use?", v["template"]),
+           (f"What citation style does {v['abbr']} use?", v["citation_style"])]
+    if bib:
+        faq.append((f"What bibliography style should I use for {v['abbr']}?",
+                    f"{bib['style']}. {bib['note']}"))
+    faq_items = "\n".join(
+        f"          <details><summary>{e(q)}</summary><p>{e(a)}</p></details>"
+        for q, a in faq)
+    faq_section = (
+        '\n      <section class="tool-faq">\n'
+        '        <h2>Frequently asked</h2>\n'
+        f'        <div class="faq-list">\n{faq_items}\n        </div>\n'
+        '      </section>'
+    )
 
     return f"""<!doctype html>
 <html lang="en">
@@ -160,6 +213,8 @@ def venue_page(v):
         </ul>
         <p>{e(v['format_note'])}</p>
       </section>
+
+{bib_html}{pit_html}{faq_section}
 
       <section class="tool-faq">
         <h2>Where this comes from</h2>

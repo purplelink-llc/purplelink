@@ -34,6 +34,27 @@
       }
     },
     {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What LaTeX template does NDSS use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "IEEEtran (NDSS-hosted template), two-column, 10pt Times"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What citation style does NDSS use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Numbered citations \u2014 conventional for the IEEEtran template NDSS uses."
+          }
+        }
+      ]
+    },
+    {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {
@@ -66,8 +87,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/tools/reference-converter/reference-converter.css">
     <script src="/site.js" defer></script>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
-</head>
+  </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
@@ -78,7 +98,6 @@
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
-        <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -155,6 +174,30 @@
         <p>As with other IEEEtran-based venues, BibTeX is the standard way to manage the bibliography for this template.</p>
       </section>
 
+
+      <section class="tool-howto">
+        <h2>Setting up the bibliography</h2>
+        <p>In your main .tex file, where the reference list should appear:</p>
+        <pre class="code-block"><code>\bibliographystyle{IEEEtran}
+\bibliography{refs}</code></pre>
+        <p>IEEEtran ships its own .bst of the same name, so the style line matches the class. Build with <code>pdflatex</code>, then <code>bibtex</code>, then <code>pdflatex</code> twice more, so both the in-text citations and the reference list resolve.</p>
+      </section>
+      <section class="tool-howto">
+        <h2>Things that catch people out</h2>
+        <ul>
+          <li>A numbered IEEEtran bibliography lists entries in citation order, not alphabetically, so renumbering happens automatically when you reorder the text.</li>
+          <li>NDSS uses the IEEEtran class but hosts its own template file; build against the one linked from the venue rather than a generic IEEEtran download.</li>
+        </ul>
+      </section>
+      <section class="tool-faq">
+        <h2>Frequently asked</h2>
+        <div class="faq-list">
+          <details><summary>What LaTeX template does NDSS use?</summary><p>IEEEtran (NDSS-hosted template), two-column, 10pt Times</p></details>
+          <details><summary>What citation style does NDSS use?</summary><p>Numbered citations — conventional for the IEEEtran template NDSS uses.</p></details>
+          <details><summary>What bibliography style should I use for NDSS?</summary><p>IEEEtran. IEEEtran ships its own .bst of the same name, so the style line matches the class.</p></details>
+        </div>
+      </section>
+
       <section class="tool-faq">
         <h2>Where this comes from</h2>
         <p class="faq-body">Sourced from <a href="https://www.ndss-symposium.org/ndss2026/submissions/templates/" rel="noopener">https://www.ndss-symposium.org/ndss2026/submissions/templates/</a>. Template requirement confirmed directly from the venue&#x27;s templates page. BibTeX and numbered-style are inferred from the IEEEtran template&#x27;s conventions, not stated explicitly on that page.</p>
@@ -205,11 +248,8 @@
         <a href="/blog/">Blog</a>
         <a href="/guides/">Guides</a>
         <a href="/changelog/">Changelog</a>
-        <a href="/kits/">Kits</a>
       </nav>
     </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js" defer></script>
-  <script src="/ethicalads.js" defer></script>
-</body>
+  </body>
 </html>
