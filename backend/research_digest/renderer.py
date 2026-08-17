@@ -203,6 +203,7 @@ def render_hub_html(posts: list[dict]) -> str:
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">{ld}</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
 <body>
 {_nav()}
