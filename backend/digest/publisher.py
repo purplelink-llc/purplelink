@@ -79,7 +79,15 @@ def render_html(digest: DigestData) -> str:
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="index, follow">
+    <!-- noindex: these pages are machine-compiled daily. Over 90 days the 54
+         of them earned 3 ranked pages, 13 impressions and 0 clicks, against
+         3,746 impressions and 54 clicks for the 73 hand-written pages. They
+         were 37% of the indexable site contributing 0.3% of its impressions,
+         which is the profile AdSense rejected as "low value content" on
+         2026-07-05. They stay published and stay in the RSS feed, which is
+         where their readers actually come from; they just stop being offered
+         to the index. follow is kept so outbound links still carry. -->
+    <meta name="robots" content="noindex, follow">
     <title>{title} | Purplelink LLC</title>
     <meta name="description" content="{desc}">
     <meta name="keywords" content="{html.escape(keywords)}">
@@ -283,7 +291,15 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="index, follow">
+    <!-- noindex: these pages are machine-compiled daily. Over 90 days the 54
+         of them earned 3 ranked pages, 13 impressions and 0 clicks, against
+         3,746 impressions and 54 clicks for the 73 hand-written pages. They
+         were 37% of the indexable site contributing 0.3% of its impressions,
+         which is the profile AdSense rejected as "low value content" on
+         2026-07-05. They stay published and stay in the RSS feed, which is
+         where their readers actually come from; they just stop being offered
+         to the index. follow is kept so outbound links still carry. -->
+    <meta name="robots" content="noindex, follow">
     <title>{html.escape(title)} | Purplelink LLC</title>
     <meta name="description" content="Every Purplelink Daily Digest issue that covered {html.escape(section_label)}, newest first.">
     <link rel="canonical" href="{canonical}">

@@ -3,7 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="index, follow">
+    <!-- noindex: this cluster is 16 pages of ~200 words that nothing on the site
+       links to. Only the sitemap referenced them, so they were orphaned as well
+       as thin, and over 90 days they returned 42 impressions and 0 clicks. They
+       stay published so a Paper Review report can link a reader straight to the
+       explainer for a finding; they just stop padding the index. -->
+    <meta name="robots" content="noindex, follow">
     <title>p-hacking — why it matters | Purplelink</title>
     <meta name="description" content="Selectively reporting whichever analysis returned p < 0.05. Canonical short explainer of p-hacking for academic authors.">
     <link rel="canonical" href="https://purplelink.llc/guides/why-it-matters/p-hacking/">
