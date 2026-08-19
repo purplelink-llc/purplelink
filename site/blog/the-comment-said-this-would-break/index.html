@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>The comment said this would break | Purplelink LLC</title>
+    <meta name="description" content="The Purplelink stats endpoint read event blobs one at a time, and the code even included a comment noting it would fail at higher volume. The failure arrived through latency rather than traffic spikes.">
+    <link rel="canonical" href="https://purplelink.llc/blog/the-comment-said-this-would-break/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta name="twitter:image:alt" content="The comment said this would break">
+    <meta property="og:title" content="The comment said this would break">
+    <meta property="og:description" content="The Purplelink stats endpoint read event blobs one at a time, and the code even included a comment noting it would fail at higher volume. The failure arrived through latency rather than traffic spikes.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/the-comment-said-this-would-break/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="The comment said this would break">
+    <meta name="twitter:description" content="The Purplelink stats endpoint read event blobs one at a time, and the code even included a comment noting it would fail at higher volume. The failure arrived through latency rather than traffic spikes.">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "The comment said this would break",
+      "description": "The Purplelink stats endpoint read event blobs one at a time, and the code even included a comment noting it would fail at higher volume. The failure arrived through latency rather than traffic spikes.",
+      "datePublished": "2026-08-19",
+      "dateModified": "2026-08-19",
+      "author": { "@id": "https://purplelink.llc/about/#person" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/"
+      },
+      "url": "https://purplelink.llc/blog/the-comment-said-this-would-break/"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://purplelink.llc/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "The comment said this would break", "item": "https://purplelink.llc/blog/the-comment-said-this-would-break/" }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/">← All posts</a>
+
+    <div class="post-hero">
+      <p class="post-date">August 19, 2026</p>
+      <h1 class="post-title">The comment said this would break</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-08-19">August 19, 2026</time></p>
+      <p class="post-lede">The Purplelink stats endpoint read event blobs one at a time, and the code even included a comment noting it would fail at higher volume. The failure arrived through latency rather than traffic spikes.</p>
+    </div>
+
+    <article id="main-content" class="post-body">
+      <p>The comment in the code said "fine at early-stage volume." I read it when I wrote it and thought: yes, that will need to be replaced eventually. Then I shipped it.</p>
+
+      <p>On August 14, the Purplelink dashboard started falling back to archived figures for purplelink.llc. The stats endpoint was returning 502. The function had timed out.</p>
+
+      <p>The stats endpoint powers the traffic dashboard: it reads event blobs from object storage, aggregates them across a 30-day window, and returns totals per page. Each blob is one JSON record, one page view. The original implementation awaited each read in sequence: fetch the day's event listing, then for each event on that day, await the individual blob read. Serial. One at a time.</p>
+
+      <p>Fine when there are 50 events. At 670 events over 30 days, total wall-clock time hit 21 seconds. The function timeout is 10 seconds. The comment was correct.</p>
+
+      <p>What I got wrong wasn't the prediction. I expected volume to be the trigger. At some point there would be enough page views that sequential reads couldn't keep up, and I'd be forced to fix it before the dashboard fell over. What actually happened was that the reads got slower individually, not just collectively. Network latency jitter, small variations in blob read time, nothing dramatic on any single request. Just 670 of them, each slightly slower than expected, stacking up to 21 seconds.</p>
+
+      <p>The fix is bounded concurrency: 10 day listings in flight at a time, 64 event reads. Not an unconstrained <code>Promise.all</code>, because the number of events in a month is unbounded in principle and dispatching them all at once trades a slow response for a flaky one. Bounded concurrency, preserved order, counting logic untouched.</p>
+
+      <p>The dashboard also stopped surrendering on the first bad response. A single 502 had been enough to drop a whole site's live stats for the day, falling back to figures from the previous run. It now retries three times with backoff for transient failures only. A 401 means the token is wrong; retrying it just confirms the same thing more slowly.</p>
+
+      <p>The actual long-term fix is pre-aggregated counters: compute the totals incrementally as events arrive, so the 30-day read never happens. The parallel version still hits the same ceiling if volume grows, but it buys time to build that deliberately rather than on a Friday morning with a broken dashboard.</p>
+
+      <p>The lesson I keep relearning: writing "this will break" is not the same as scheduling when to fix it. The comment was a note to myself that I treated as sufficient. It was not.</p>
+    </article>
+
+    <div class="post-footer">
+      <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
