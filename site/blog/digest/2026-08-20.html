@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Purplelink Daily Digest #57 — August 20, 2026 | Purplelink LLC</title>
+    <meta name="description" content="Cloudflare Workers Spectre attack leaks JWTs at 12 bits/sec, OpenAI pauses frontier RL training, AI-powered Siemens PLC attacks hit critical infrastructure">
+    <meta name="keywords" content="AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers">
+    <meta name="author" content="Benjamin Ampel">
+    <link rel="canonical" href="https://purplelink.llc/blog/digest/2026-08-20.html">
+    <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="https://purplelink.llc/blog/digest/feed.xml">
+    <meta property="og:title" content="Purplelink Daily Digest #57 — August 20, 2026">
+    <meta property="og:description" content="Cloudflare Workers Spectre attack leaks JWTs at 12 bits/sec, OpenAI pauses frontier RL training, AI-powered Siemens PLC attacks hit critical infrastructure">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/digest/2026-08-20.html">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="article:published_time" content="2026-08-20">
+    <meta property="article:author" content="Benjamin Ampel">
+    <meta property="article:section" content="Research Digest">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Purplelink Daily Digest #57 — August 20, 2026">
+    <meta name="twitter:description" content="Cloudflare Workers Spectre attack leaks JWTs at 12 bits/sec, OpenAI pauses frontier RL training, AI-powered Siemens PLC attacks hit critical infrastructure">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Purplelink Daily Digest #57 — August 20, 2026",
+      "description": "Cloudflare Workers Spectre attack leaks JWTs at 12 bits/sec, OpenAI pauses frontier RL training, AI-powered Siemens PLC attacks hit critical infrastructure",
+      "keywords": "AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers",
+      "datePublished": "2026-08-20",
+      "author": {
+        "@type": "Person",
+        "@id": "https://purplelink.llc/about/#person",
+        "name": "Benjamin Ampel",
+        "url": "https://purplelink.llc/about/"
+      },
+      "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+      "url": "https://purplelink.llc/blog/digest/2026-08-20.html",
+      "isPartOf": { "@type": "Blog", "url": "https://purplelink.llc/blog/digest/" }
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/digest/">← All issues</a>
+
+    <div class="post-hero">
+      <p class="post-date">August 20, 2026</p>
+      <h1 class="post-title">Purplelink Daily Digest #57 — August 20, 2026</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-08-20">August 20, 2026</time></p>
+      <p class="post-lede">927 sources reviewed. 11 selected.</p>
+    </div>
+
+    <article id="main-content" class="post-body digest-body">
+
+      <p class="digest-intro">Cloudflare Workers Spectre attack leaks JWTs at 12 bits/sec, OpenAI pauses frontier RL training, AI-powered Siemens PLC attacks hit critical infrastructure, and Rippling&#x27;s 2,100-run model benchmark finds cheapest ties most expensive.</p>
+
+    <section class="digest-section" id="section-ai_tech">
+      <h2>AI & Technology</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://openai.com/index/offering-zero-data-retention-for-frontier-models" target="_blank" rel="noopener">Offering Zero Data Retention for frontier models</a>
+          <span class="digest-item-source">OpenAI</span>
+        </div>
+        <p class="digest-item-note">OpenAI is extending Zero Data Retention to frontier models for eligible API customers and previewing Private Safety Processing, which performs safety checks without retaining or exposing the underlying prompt data. The tension being papered over here is real: safety monitoring traditionally requires logging, so a system that claims to do safety evaluation without data retention either uses on-device/TEE-based processing or makes architectural tradeoffs that reduce monitoring fidelity. Enterprise security teams evaluating AI vendor data handling should request technical specifics on how Private Safety Processing is implemented before treating ZDR as a compliance checkbox.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://huggingface.co/blog/LiquidAI/qad" target="_blank" rel="noopener">LFM2.5 Q4_0 Checkpoints from Quantization-Aware Distillation</a>
+          <span class="digest-item-source">HuggingFace Blog</span>
+        </div>
+        <p class="digest-item-note">Liquid AI&#x27;s LFM2.5 Q4_0 checkpoints are produced via quantization-aware distillation rather than post-training quantization, meaning the student model is trained to match the teacher&#x27;s outputs at 4-bit precision rather than having precision stripped after training. This approach typically recovers 1-3 perplexity points versus naive PTQ at the same bit-width, which matters significantly for on-device inference on Apple Silicon where 4-bit is the practical deployment target. Developers building macOS/iOS inference pipelines should benchmark these against GGUF Q4_K_M variants of comparable parameter-count models before assuming standard quantization is sufficient.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://jeremymorrell.dev/blog/extensible-software-in-the-age-of-llms" target="_blank" rel="noopener">Extensible Software in the age of LLMs</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">Jeremy Morrell argues that LLMs dramatically lower extension authoring costs while modern sandbox primitives (WASM, Deno, smolvm) lower deployment costs and provide security boundaries, creating conditions for a new wave of extensible software architectures. The non-obvious claim is that the bottleneck for plugin ecosystems was never user demand but authoring friction — and LLMs remove that friction faster than platform vendors can respond with official tooling. For indie macOS/iOS developers, this suggests that exposing a well-documented extension surface now, before competitors do, could become a durable moat as LLM-assisted extension authoring becomes mainstream.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-cybersecurity">
+      <h2>Cybersecurity</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/08/cloudflare-workers-spectre-attack-leaks.html" target="_blank" rel="noopener">Cloudflare Workers Spectre Attack Leaks JWT From Co-Located Worker at 12 Bits/Second</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">Researchers achieved a remote Spectre side-channel attack against Cloudflare Workers in production, exfiltrating a JWT from a co-located tenant at 12 bits/second — 360x faster than the 2021 baseline. The attack works across tenant isolation boundaries in a shared serverless environment without any local code execution, which directly challenges the security model that most edge-compute platforms sell to enterprise customers. The key question for defenders: whether Cloudflare&#x27;s response involves microarchitectural mitigations or simply scheduling changes, since the latter would be bypassable with improved timing primitives.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/us-warns-of-ai-powered-attacks-on-siemens-plcs-in-critical-infrastructure" target="_blank" rel="noopener">US warns of AI-powered attacks on Siemens PLCs in critical infrastructure</a>
+          <span class="digest-item-source">Bleeping Computer</span>
+        </div>
+        <p class="digest-item-note">U.S. agencies are warning that threat actors are deploying AI-generated exploit scripts specifically targeting Siemens S7 Series PLCs in operational technology environments. The non-obvious implication is that AI lowers the expertise barrier for ICS attacks — historically a domain requiring deep protocol knowledge of S7comm — meaning the attacker population for critical infrastructure is now broader than nation-state specialists. Researchers building OT threat detection pipelines should treat AI-generated script signatures as a new artifact class distinct from human-authored exploits.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/08/openai-pauses-frontier-rl-training-as.html" target="_blank" rel="noopener">OpenAI Pauses Frontier RL Training as It Tightens Defenses Against Unsafe AI Behavior</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">OpenAI halted frontier reinforcement learning training for two weeks to expand monitoring scope and add safety defenses, explicitly citing the risk of a Hugging Face-style incident where unsafe model artifacts propagate publicly. The admission that RL training at the frontier now requires active safety intervention mid-run — not just pre- and post-training evaluation — signals that alignment problems are emerging dynamically during training, not just at deployment. This is operationally relevant for any lab or researcher running RL fine-tuning on capable base models.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/rogue-ransomware-affiliate-ransom-busters-poses-as-recovery-firm" target="_blank" rel="noopener">Rogue ransomware affiliate poses as recovery firm to steal payments</a>
+          <span class="digest-item-source">Bleeping Computer</span>
+        </div>
+        <p class="digest-item-note">A ransomware affiliate operating as &quot;Ransom Busters&quot; contacts victims before attacks become public knowledge, claiming to offer decryption keys and data deletion for a fee — effectively double-dipping on the same victim. The timing precision required to contact victims pre-disclosure implies the affiliate has access to the primary ransomware group&#x27;s victim pipeline or internal communications, suggesting either insider access or a compromised affiliate portal. Incident responders should treat unsolicited recovery offers arriving in the early hours of an incident as a high-confidence indicator of affiliate-level threat actor knowledge.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-finance">
+      <h2>Finance & Business</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bloomberg.com/news/articles/2026-08-20/ai-startup-callosum-raises-100-million-to-make-ai-tasks-cheaper" target="_blank" rel="noopener">AI Startup Callosum Raises $100 Million to Make AI Tasks Cheaper</a>
+          <span class="digest-item-source">Bloomberg Technology</span>
+        </div>
+        <p class="digest-item-note">Callosum raised $100M to build software that routes specific AI tasks to the optimal model-chip combination for cost efficiency, with backing from the UK&#x27;s public AI fund. The infrastructure layer being funded here — intelligent task-to-model routing — is exactly what Rippling&#x27;s empirical benchmark above suggests is valuable: the cheapest model often matches the most expensive on constrained tasks. The strategic question is whether this becomes a commodity middleware layer or whether hyperscalers absorb it into their own inference APIs. Connects to: Rippling Ran 2,100 Scored Agent Runs Per Model on Real Payroll Data.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bloomberg.com/news/articles/2026-08-20/alibaba-s-revenue-climbs-9-in-testament-to-china-s-ai-boom" target="_blank" rel="noopener">Alibaba&#x27;s Revenue Climbs 9% in Testament to China&#x27;s AI Boom</a>
+          <span class="digest-item-source">Bloomberg Technology</span>
+        </div>
+        <p class="digest-item-note">Alibaba Cloud is the primary growth driver behind the 9% revenue increase, with Chinese AI development demand absorbing compute capacity at a rate that is outpacing Western analyst expectations for the segment. The non-obvious implication is that Chinese AI labs — despite export-controlled GPU access — are generating enough inference and training demand to move Alibaba&#x27;s cloud revenue at scale, suggesting domestic chip alternatives or H800-era stockpiles are more operationally sufficient than the export control thesis assumes. Researchers tracking AI chip export control efficacy should treat Alibaba Cloud&#x27;s growth trajectory as a leading indicator.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-entrepreneurship">
+      <h2>Entrepreneurship</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/rippling-ran-2100-scored-agent-runs-per-model-on-real-payroll-data-the-cheapest-model-tied-the-most-expensive-one/" target="_blank" rel="noopener">Rippling Ran 2,100 Scored Agent Runs Per Model on Real Payroll Data. The Cheapest Model Tied the Most Expensive One.</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Rippling ran 2,100 scored agentic task completions per model across 15 models on live payroll data and found that the cheapest model matched the most expensive on task accuracy. The finding challenges the default enterprise assumption that frontier model spend correlates with production task performance, particularly for structured, domain-constrained workflows like payroll. For indie developers and small SaaS operators building AI-assisted workflows, this is empirical cover for routing to cheaper inference without sacrificing output quality on well-defined tasks.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/5-interesting-learnings-from-atlassian-at-6-6-billion-in-arr-28-growth-44-rpo-growth-and-a-35-one-day-stock-pop" target="_blank" rel="noopener">5 Interesting Learnings from Atlassian at $6.6 Billion in ARR: 28% Growth, 44% RPO Growth, and a 35% One-Day Stock Pop</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">Atlassian hit $6.6B ARR with 28% growth and 44% RPO growth despite a bear thesis that AI agents would eliminate the need for project tracking tools entirely. The 35% single-day stock pop after earnings suggests the market had priced in AI displacement risk that did not materialize, which is a useful data point for founders building workflow tooling adjacent to AI coding assistants. The 44% RPO growth in particular implies enterprises are signing longer commitments, not hedging against AI substitution.</p>
+      </div>
+    </section>
+
+    </article>
+
+    <div class="post-footer digest-footer">
+      <p>Get this in your inbox. <a href="/blog/digest/">Subscribe to Purplelink Daily Digest</a>.</p>
+      <a class="back-link" href="/blog/digest/">← All issues</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
