@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #57 — August 20, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-20.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-20.html</guid>
+      <pubDate>Thu, 20 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Cloudflare Workers Spectre attack leaks JWTs at 12 bits/sec, OpenAI pauses frontier RL training, AI-powered Siemens PLC attacks hit critical infrastructure, and Rippling&#x27;s 2,100-run model benchmark finds cheapest ties most expensive.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #56 — August 19, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-19.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-19.html</guid>
