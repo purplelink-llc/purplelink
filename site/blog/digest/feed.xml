@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #59 — August 22, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-22.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-22.html</guid>
+      <pubDate>Sat, 22 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>RedC2 4.0 AI-assisted Linux backdoor via trojanized npm packages, Microsoft Defender driver weaponization, Anthropic&#x27;s custom chip push, and ServiceTitan&#x27;s agent-era partner cutoff dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #58 — August 21, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-21.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-21.html</guid>
