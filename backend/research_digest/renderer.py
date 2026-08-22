@@ -58,7 +58,7 @@ def post_url(slug: str) -> str:
 
 def render_post_html(d: WeeklyDigest) -> str:
     e = html.escape
-    title = f"GLP-1 &amp; Muscle Research Roundup: {e(d.week_label)}"
+    title = f"GLP-1 and Muscle Research: {e(d.week_label)}"
     # Kept under ~160 chars so Google does not truncate the snippet. The longest
     # week_label seen is "July 29 - August 4, 2026" (24 chars), which lands at 146.
     desc = (f"New GLP-1 research on muscle, lean mass, protein, and training from "
@@ -106,7 +106,7 @@ def render_post_html(d: WeeklyDigest) -> str:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} | MuscleOnGLP</title>
+<title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{post_url(d.slug)}">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -190,8 +190,8 @@ def render_hub_html(posts: list[dict]) -> str:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GLP-1 &amp; Muscle Research Roundup | Weekly, Cited | MuscleOnGLP</title>
-<meta name="description" content="A weekly, automatically compiled roundup of new research on GLP-1 medications and muscle, lean mass, protein, and training. Every paper linked to its source.">
+<title>GLP-1 and Muscle: Weekly Cited Research Roundup</title>
+<meta name="description" content="A weekly, automatically compiled roundup of new research on GLP-1 medications and muscle, lean mass, protein and training. Every paper linked to its source.">
 <link rel="canonical" href="https://getmuscleonglp.com/research/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
