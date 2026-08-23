@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #60 — August 23, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-23.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-23.html</guid>
+      <pubDate>Sun, 23 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>RedC2 4.0 AI-assisted Linux backdoor via trojanized npm, Microsoft Defender driver weaponization, Nvidia AI server price hikes above 15%, and DeepSeek API pricing shifts dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #59 — August 22, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-22.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-22.html</guid>
