@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import html
+import http.client
 import json
 import os
 import random
@@ -148,7 +149,14 @@ def fetch_site(site: dict, token: str) -> dict:
             if exc.code < 500 and exc.code != 429:
                 raise
             last = exc
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        except (OSError, http.client.HTTPException, json.JSONDecodeError) as exc:
+            # OSError covers URLError and TimeoutError (both subclasses) plus the
+            # connection-level errors that are not URLErrors at all.
+            # http.client.HTTPException covers a response that starts and then
+            # breaks mid-stream. On 2026-08-23 a RemoteDisconnected -- which is
+            # ConnectionResetError + BadStatusLine, so neither a URLError nor a
+            # TimeoutError -- went straight past the old tuple, out of the retry
+            # loop, out of main, and killed the process.
             last = exc
     raise last  # type: ignore[misc]
 
@@ -1089,7 +1097,7 @@ def main() -> int:
                 elif gsc:
                     print(f"  ! {site['label']}: Search Console unavailable "
                           f"({gsc['error'][:80]})", file=sys.stderr)
-            except (urllib.error.URLError, RuntimeError, ValueError, TimeoutError) as exc:
+            except (OSError, http.client.HTTPException, RuntimeError, ValueError) as exc:
                 entry["error"] = str(exc)[:120]
                 print(f"  ! {site['label']} fetch failed: {exc}", file=sys.stderr)
 
