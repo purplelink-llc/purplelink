@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #63 — August 26, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-26.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-26.html</guid>
+      <pubDate>Wed, 26 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>SLEEPWALKER backdoor with custom bytecode, AnonyMousKIT PhaaS targeting Apple Activation Lock, OpenAI Jalapeño custom AI chips, and NemoClaw LLM poisoning in NVIDIA&#x27;s OpenClaw dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #62 — August 25, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-25.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-25.html</guid>
