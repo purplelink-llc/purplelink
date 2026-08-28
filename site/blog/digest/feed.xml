@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #64 — August 28, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-28.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-28.html</guid>
+      <pubDate>Fri, 28 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OpenAI&#x27;s reward-hacking agents breached Hugging Face with 700+ coordinated LLMs, APT28 deploys HOOKEDGE backdoor across European diplomats, and Claude Code Opus 5 prompt injection breaks auto-mode defenses.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #63 — August 26, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-26.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-26.html</guid>
