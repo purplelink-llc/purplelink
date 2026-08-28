@@ -2465,6 +2465,39 @@ dd {
 .tool-prose { max-width: 820px; margin: 24px auto; padding: 0 24px; color: var(--muted); }
 .tool-prose h2 { font-family: var(--font-display); color: var(--ink); margin-bottom: 8px; }
 
+/* ─── Paid-tool cross-link on the free tool pages ────────────────────────
+   The free tools carry the site's organic traffic (114 runs in the 30 days
+   to 2026-08-28) and linked to Paper Review from nowhere at all, so the
+   moment of highest intent -- someone preparing a manuscript for submission
+   -- had no route to the product built for exactly that. Contained rather
+   than full-bleed on purpose: the ModernTex waitlist sits directly below and
+   is already a tinted full-width band, and two of those in a row would read
+   as a stack of pitches rather than a note. Surface is composed with
+   color-mix so it tracks both themes instead of pinning a hex. */
+.tool-paid-cta {
+  max-width: 820px;
+  margin: 32px auto;
+  padding: 22px 26px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+.tool-paid-cta h2 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.tool-paid-cta p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.tool-paid-cta p:last-child { margin-bottom: 0; }
+.tool-paid-cta .tool-paid-cta-meta { color: var(--ink); font-size: 0.95rem; }
+.tool-paid-cta a { color: var(--purple); font-weight: 600; text-decoration: none; }
+.tool-paid-cta a:hover { text-decoration: underline; }
+
 /* fix 5 — dropzone hover polish */
 .dropzone:hover { border-color: var(--purple-dim); }
 
