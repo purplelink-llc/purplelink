@@ -10,6 +10,7 @@
 
   var ENDPOINT = "/.netlify/functions/track";
   var TOOL_API_HOST = "purplelink-latextools-web.modal.run";
+  var CHECKOUT_FN = "/.netlify/functions/checkout";
 
   function refHost() {
     try {
@@ -52,6 +53,18 @@
             var path = "";
             try { path = new URL(url).pathname; } catch (e) { path = url.split("modal.run")[1] || ""; }
             window.plTrack("tool_use", (path || "").split("?")[0]);
+          } else if (url.indexOf(CHECKOUT_FN) !== -1) {
+            // Someone pressed a buy button. Fires on intent, before Stripe is
+            // reached, which is the number that was missing: 24 people landed
+            // on /kits/clip-pipeline/ in a month and Stripe recorded no session
+            // at all, and there was no way to tell whether they never clicked
+            // or clicked and something failed.
+            var product = "";
+            try {
+              var body = init && init.body;
+              if (typeof body === "string") { product = (JSON.parse(body) || {}).product || ""; }
+            } catch (e) { /* meta is optional; never break checkout for it */ }
+            window.plTrack("checkout_click", product);
           }
         } catch (e) { /* ignore */ }
         return _fetch.apply(this, arguments);

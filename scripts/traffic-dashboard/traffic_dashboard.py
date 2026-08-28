@@ -57,6 +57,7 @@ RETRY_BACKOFF = 3.0       # seconds; doubles each attempt
 # known, not inferable. Anything added later dates itself from first sight.
 METRIC_START_OVERRIDES = {
     ("muscleonglp", "calcRuns"): "2026-07-25",
+    ("purplelink", "checkoutClicks"): "2026-08-28",
 }
 
 SITES = [
@@ -67,7 +68,14 @@ SITES = [
         "url": "https://purplelink.llc/.netlify/functions/stats",
         "token_env": "PURPLELINK_STATS_TOKEN",
         # (json key in byDay, display label) — engagement metrics beyond a visit
-        "secondaries": [("toolRuns", "tool runs"), ("signups", "waitlist signups")],
+        "secondaries": [("toolRuns", "tool runs"), ("signups", "waitlist signups"),
+                        ("checkoutClicks", "checkout clicks")],
+        # Paths that actually show a buy button. The useful denominator for a
+        # checkout rate is "people who reached a page where buying was possible",
+        # not all pageviews: /kits/clip-pipeline/ drew 24 views in a month and
+        # produced no Stripe session at all, and against sitewide traffic that
+        # signal disappears into the noise.
+        "product_paths": ("/kits/", "/tools/paper-review/"),
         # Waitlists are Netlify Forms, so they never reach the analytics beacon.
         # Without this they read as zero while people are actually signing up.
         "netlify_site_id": "b264591f-fbbe-4048-9d9d-7051cf497823",
@@ -83,7 +91,9 @@ SITES = [
         "domain": "getmuscleonglp.com",
         "url": "https://getmuscleonglp.com/.netlify/functions/stats",
         "token_env": "MUSCLEONGLP_STATS_TOKEN",
-        "secondaries": [("subscribes", "subscribes"), ("calcRuns", "calculator runs")],
+        "secondaries": [("subscribes", "subscribes"), ("calcRuns", "calculator runs"),
+                        ("checkoutClicks", "checkout clicks")],
+        "product_paths": ("/guides/",),
         "gsc_property": "sc-domain:getmuscleonglp.com",
     },
 ]
@@ -472,6 +482,10 @@ def summarise(site: dict, site_hist: dict) -> dict:
         "form_breakdown": latest.get("formBreakdown", [])[:6],
         "gsc": site_hist.get("gsc"),
         "proj": project(by_day, today),
+        "checkout": checkout_rate(
+            latest.get("topPaths", []), site.get("product_paths"),
+            int(total(last30_days, "checkoutClicks") or 0),
+        ),
         "bounds": [b for b in (
             conversion_bound(by_day, k, lbl) for k, lbl in site["secondaries"]
         ) if b],
@@ -515,6 +529,25 @@ def channel_mix(referrers: list[dict], pageviews: int) -> list[dict]:
     if pageviews > referred:
         rows.append({"key": "Direct / untagged", "count": pageviews - referred})
     return rows
+
+
+def checkout_rate(top_paths: list, product_prefixes, clicks: int) -> dict | None:
+    """Buy-button presses against views of pages that offer a buy button.
+
+    topPaths is the live 30-day window, so `clicks` must be the 30-day count
+    too, not the 7-day headline, or the ratio compares different periods. When
+    no product page was viewed at all there is no rate to report -- that is a
+    discovery problem, and saying "0%" would misattribute it to the button.
+    """
+    if not product_prefixes:
+        return None
+    views = sum(
+        r.get("count", 0) for r in (top_paths or [])
+        if isinstance(r, dict) and str(r.get("key", "")).startswith(tuple(product_prefixes))
+    )
+    if not views:
+        return {"views": 0, "clicks": clicks, "pct": None}
+    return {"views": views, "clicks": clicks, "pct": clicks / views * 100}
 
 
 def observations(summaries: list[dict]) -> list[str]:
@@ -587,6 +620,34 @@ def observations(summaries: list[dict]) -> list[str]:
             else:
                 out.append(f"{s['label']}: zero {sec['label']} in the last 7 days. "
                            f"Traffic is arriving but not reaching that step.")
+
+        # Checkout funnel. Reported separately from the generic secondaries
+        # because the interesting number is the ratio, and because zero clicks
+        # on zero product-page views is a completely different problem from
+        # zero clicks on real product-page traffic.
+        ck = s.get("checkout")
+        # A rate is only honest once the counter has been running for the window
+        # it is quoted over. Without this the first 30 days after shipping the
+        # counter would read "people are not pressing buy" when the truth is
+        # that nothing was recording the presses yet.
+        ck_age = next((sec["days_tracked"] for sec in s["secondaries"]
+                       if sec["key"] == "checkoutClicks"), None)
+        if ck and ck_age is not None and ck_age < 30 and ck["clicks"] == 0:
+            out.append(f"{s['label']}: {ck['views']} view(s) of pages with a buy button in 30 days, "
+                       f"but checkout clicks have only been counted for {ck_age} day(s), so no rate "
+                       f"is available yet.")
+        elif ck:
+            if ck["views"] == 0:
+                out.append(f"{s['label']}: nobody reached a page with a buy button in the last 30 "
+                           f"days, so there is no checkout rate to report. The gap is discovery, "
+                           f"not the button.")
+            elif ck["clicks"] == 0:
+                out.append(f"{s['label']}: {ck['views']} view(s) of pages with a buy button and 0 "
+                           f"checkout clicks in 30 days. People are finding the products and not "
+                           f"pressing buy.")
+            else:
+                out.append(f"{s['label']}: {ck['clicks']} checkout click(s) from {ck['views']} "
+                           f"product-page view(s) in 30 days — a {ck['pct']:.1f}% checkout rate.")
 
     # Cross-site
     ok = [s for s in summaries if not s.get("error")]

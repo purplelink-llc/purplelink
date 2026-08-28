@@ -63,8 +63,9 @@ export default async function handler(request) {
   const store = getStore("analytics");
   const now = Date.now();
   const s = {
-    totals: { pageviews: 0, toolRuns: 0, events: 0 },
+    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
+    checkoutByProduct: {},
     byDay: {},
   };
   const uniquesPerDay = {};
@@ -92,7 +93,7 @@ export default async function handler(request) {
 
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
-    if (!s.byDay[day]) s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0 };
+    if (!s.byDay[day]) s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0 };
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
 
     const records = await mapLimit(blobs, 64, async (b) => {
@@ -113,6 +114,12 @@ export default async function handler(request) {
       } else if (rec.type === "tool_use") {
         s.totals.toolRuns++; s.byDay[day].toolRuns++;
         bump(s.toolRuns, toolName(rec));
+      } else if (rec.type === "checkout_click") {
+        // Buy-button presses, counted at intent rather than at payment, and
+        // split by product so a page with traffic but no clicks is
+        // distinguishable from one with clicks that never reach Stripe.
+        s.totals.checkoutClicks++; s.byDay[day].checkoutClicks++;
+        bump(s.checkoutByProduct, rec.meta || "unknown");
       }
     }
     s.byDay[day].uniques = uniquesPerDay[day].size;
@@ -122,6 +129,7 @@ export default async function handler(request) {
     generatedAt: new Date().toISOString(),
     totals: s.totals,
     toolRuns: topN(s.toolRuns),
+    checkoutByProduct: topN(s.checkoutByProduct),
     topPaths: topN(s.byPath),
     topReferrers: topN(s.byReferrer),
     topUtm: topN(s.byUtm),
