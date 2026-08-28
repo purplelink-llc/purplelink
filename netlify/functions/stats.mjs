@@ -114,7 +114,11 @@ export default async function handler(request) {
       } else if (rec.type === "tool_use") {
         s.totals.toolRuns++; s.byDay[day].toolRuns++;
         bump(s.toolRuns, toolName(rec));
-      } else if (rec.type === "checkout_click") {
+      } else if (rec.type === "checkout_click" && !String(rec.meta || "").startsWith("__")) {
+        // Product keys are dunder-prefixed only by the self-test that verifies
+        // the beacon actually fires end to end. Real keys never look like this,
+        // and two synthetic clicks would badly distort a counter whose honest
+        // value is currently zero.
         // Buy-button presses, counted at intent rather than at payment, and
         // split by product so a page with traffic but no clicks is
         // distinguishable from one with clicks that never reach Stripe.
