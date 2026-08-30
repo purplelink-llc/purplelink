@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #66 — August 30, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-08-30.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-30.html</guid>
+      <pubDate>Sun, 30 Aug 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>LLM agent attacks on Hugging Face infrastructure, TerminalFix ClickFix variant, PaperCut RCE chains, Tencent Hy4 770B MoE release, and SaaStr data on agent-generated work hitting 50% at Linear.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #65 — August 29, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-08-29.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-08-29.html</guid>
