@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/blog/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -55,6 +55,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/blog/the-comment-said-this-would-break/</loc>
+    <lastmod>2026-08-19</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/blog/the-latex-editor-academics-want/</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>never</changefreq>
@@ -85,6 +91,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/blog/what-your-literature-search-misses/</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/blog/where-bibtex-errors-actually-come-from/</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>never</changefreq>
@@ -110,55 +122,55 @@
   </url>
   <url>
     <loc>https://purplelink.llc/format/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/format/references-for-acm-ccs/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/format/references-for-acm-csur/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/format/references-for-ieee-sp/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/format/references-for-ieee-tdsc/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/format/references-for-isr/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/format/references-for-misq/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/format/references-for-ndss/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/format/references-for-usenix-security/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -176,7 +188,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-mac-latex-editors/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -191,6 +203,12 @@
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/build-bibtex-from-dois/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/camera-ready-checklist/</loc>
@@ -243,6 +261,12 @@
   <url>
     <loc>https://purplelink.llc/guides/fix-bibtex-errors/</loc>
     <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/format-citation-from-doi-arxiv-id/</loc>
+    <lastmod>2026-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -398,7 +422,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/bib-validator/</loc>
-    <lastmod>2026-08-05</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -433,7 +457,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/latex-diff/</loc>
-    <lastmod>2026-08-05</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -443,12 +467,12 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/latex-to-pdf/</loc>
-    <lastmod>2026-08-05</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/tools/latex-to-word/</loc>
-    <lastmod>2026-08-05</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -503,7 +527,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/word-to-latex/</loc>
-    <lastmod>2026-08-05</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
