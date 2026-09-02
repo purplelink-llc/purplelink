@@ -146,12 +146,24 @@ async def _run_pass(client, pass_name: str, draft: str,
     if citations is None:
         citations = citation_block()
     system = _PASS_SYSTEM_PROMPTS[pass_name].format(citations=citations)
-    raw = await _anthropic_message(
-        client,
-        system=system,
-        user_content=[{"type": "text", "text": draft}],
-        max_tokens=MAX_VERDICT_TOKENS,
-    )
+    # Same empty-completion hiccup _revise_draft already guards against, which
+    # hits the verdict call too. Without a retry an empty response parses as
+    # "not valid JSON", counts as a rejection, triggers a revision that is also
+    # empty, and burns the entire iteration budget on a transient blip -- the
+    # 2026-08 'voice' pass failed all 6 rounds this way without ever producing
+    # a real objection. Retry before treating silence as a verdict.
+    raw = ""
+    for attempt in range(3):
+        raw = await _anthropic_message(
+            client,
+            system=system,
+            user_content=[{"type": "text", "text": draft}],
+            max_tokens=MAX_VERDICT_TOKENS,
+        )
+        if (raw or "").strip():
+            break
+        logger.warning("redteam %s: empty verdict response (attempt %d/3)",
+                       pass_name, attempt + 1)
     verdict = _parse_verdict(raw, pass_name)
     if not verdict.approved and any(
         "not valid JSON" in e or "not a JSON object" in e for e in verdict.edits
