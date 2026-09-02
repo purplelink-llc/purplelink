@@ -11,6 +11,7 @@ approves, it is resolved the same bounded way as the main loop rather than
 shipping a regressed draft.
 """
 import json
+import logging
 import re
 from dataclasses import dataclass
 
@@ -18,9 +19,11 @@ from latextools.papercheck import _anthropic_message
 
 from muscleonglp.sources import citation_block
 
+logger = logging.getLogger(__name__)
+
 MAX_ITERATIONS_PER_PASS = 3
 MAX_REVISION_TOKENS = 6000
-MAX_VERDICT_TOKENS = 1500
+MAX_VERDICT_TOKENS = 4000  # a first-pass verdict can enumerate many edits; 1500 truncated the JSON
 
 PASS_ORDER = ["medical_safety", "legal_compliance", "voice", "originality"]
 
@@ -122,34 +125,57 @@ def _parse_verdict(raw: str, pass_name: str) -> PassVerdict:
     return PassVerdict(pass_name=pass_name, approved=approved, edits=edits)
 
 
-async def _run_pass(client, pass_name: str, draft: str) -> PassVerdict:
-    system = _PASS_SYSTEM_PROMPTS[pass_name].format(citations=citation_block())
+async def _run_pass(client, pass_name: str, draft: str,
+                    citations: str | None = None) -> PassVerdict:
+    if not (draft or "").strip():
+        raise RuntimeError(f"redteam {pass_name}: received an empty draft to review "
+                           "(synthesis returned nothing)")
+    if citations is None:
+        citations = citation_block()
+    system = _PASS_SYSTEM_PROMPTS[pass_name].format(citations=citations)
     raw = await _anthropic_message(
         client,
         system=system,
         user_content=[{"type": "text", "text": draft}],
         max_tokens=MAX_VERDICT_TOKENS,
     )
-    return _parse_verdict(raw, pass_name)
+    verdict = _parse_verdict(raw, pass_name)
+    if not verdict.approved and any(
+        "not valid JSON" in e or "not a JSON object" in e for e in verdict.edits
+    ):
+        logger.warning("redteam %s: unparseable verdict (%d chars): %r",
+                       pass_name, len(raw), raw[:500])
+    return verdict
 
 
 async def _revise_draft(client, draft: str, edits: list[str]) -> str:
     system = _REVISION_SYSTEM_PROMPT.format(edits="\n".join(f"- {e}" for e in edits))
-    return await _anthropic_message(
-        client,
-        system=system,
-        user_content=[{"type": "text", "text": draft}],
-        max_tokens=MAX_REVISION_TOKENS,
-    )
+    # Fable occasionally returns an empty completion. Retry once (a transient
+    # hiccup usually clears), then fall back to keeping the prior draft — never
+    # let an empty response blank it, which would send an empty content block on
+    # the next pass (Anthropic 400) and crash the unattended run.
+    for attempt in range(2):
+        revised = await _anthropic_message(
+            client,
+            system=system,
+            user_content=[{"type": "text", "text": draft}],
+            max_tokens=MAX_REVISION_TOKENS,
+        )
+        if (revised or "").strip():
+            return revised
+        logger.warning("redteam: empty revision (attempt %d/2, edits=%r)", attempt + 1, edits[:3])
+    logger.warning("redteam: empty revision persisted; keeping prior draft")
+    return draft
 
 
-async def _run_pass_until_approved(client, pass_name: str, draft: str) -> tuple[str, PassVerdict]:
+async def _run_pass_until_approved(client, pass_name: str, draft: str,
+                                   citations: str | None = None) -> tuple[str, PassVerdict]:
     """Run *pass_name* against *draft*, revising and re-running the same
     pass (never a different pass) until it approves or
     MAX_ITERATIONS_PER_PASS is exhausted. Returns (possibly-revised draft,
     final approving verdict)."""
     current = draft
-    verdict = await _run_pass(client, pass_name, current)
+    verdict = await _run_pass(client, pass_name, current, citations)
     attempts = 1
     while not verdict.approved:
         if attempts >= MAX_ITERATIONS_PER_PASS:
@@ -158,12 +184,13 @@ async def _run_pass_until_approved(client, pass_name: str, draft: str) -> tuple[
                 f"{MAX_ITERATIONS_PER_PASS} attempts. Last edits: {verdict.edits}"
             )
         current = await _revise_draft(client, current, verdict.edits)
-        verdict = await _run_pass(client, pass_name, current)
+        verdict = await _run_pass(client, pass_name, current, citations)
         attempts += 1
     return current, verdict
 
 
-async def run_redteam_passes(client, draft: str) -> tuple[str, list[PassVerdict]]:
+async def run_redteam_passes(client, draft: str,
+                             citations: str | None = None) -> tuple[str, list[PassVerdict]]:
     """Run all four red-team passes in PASS_ORDER against *draft*. Then
     re-verify medical_safety once more, since a later pass's revision could
     in principle regress something medical_safety already required (e.g. a
@@ -173,13 +200,19 @@ async def run_redteam_passes(client, draft: str) -> tuple[str, list[PassVerdict]
     Returns (final_text, verdicts) — verdicts holds each pass's final
     approving PassVerdict, in PASS_ORDER order (verdicts[0] is the
     post-recheck medical_safety verdict).
+
+    *citations* is the approved-source block the medical_safety pass checks
+    claims against. When None it falls back to the flagship guide's fixed
+    ``citation_block()`` (so the flagship pipeline is unchanged); the monthly
+    guide passes its own month-specific source block instead.
     """
     current = draft
     final_verdicts: list[PassVerdict] = []
     for pass_name in PASS_ORDER:
-        current, verdict = await _run_pass_until_approved(client, pass_name, current)
+        current, verdict = await _run_pass_until_approved(client, pass_name, current, citations)
         final_verdicts.append(verdict)
 
-    current, safety_recheck = await _run_pass_until_approved(client, "medical_safety", current)
+    current, safety_recheck = await _run_pass_until_approved(
+        client, "medical_safety", current, citations)
     final_verdicts[0] = safety_recheck
     return current, final_verdicts
