@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Detecting checkout without a click handler | Purplelink LLC</title>
+    <meta name="description" content="The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.">
+    <link rel="canonical" href="https://purplelink.llc/blog/detecting-checkout-without-a-click-handler/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta name="twitter:image:alt" content="Detecting checkout without a click handler">
+    <meta property="og:title" content="Detecting checkout without a click handler">
+    <meta property="og:description" content="The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/detecting-checkout-without-a-click-handler/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Detecting checkout without a click handler">
+    <meta name="twitter:description" content="The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Detecting checkout without a click handler",
+      "description": "The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.",
+      "datePublished": "2026-09-02",
+      "dateModified": "2026-09-02",
+      "author": { "@id": "https://purplelink.llc/about/#person" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/"
+      },
+      "url": "https://purplelink.llc/blog/detecting-checkout-without-a-click-handler/"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://purplelink.llc/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "Detecting checkout without a click handler", "item": "https://purplelink.llc/blog/detecting-checkout-without-a-click-handler/" }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/">← All posts</a>
+
+    <div class="post-hero">
+      <p class="post-date">September 2, 2026</p>
+      <h1 class="post-title">Detecting checkout without a click handler</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-02">September 2, 2026</time></p>
+      <p class="post-lede">The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.</p>
+    </div>
+
+    <article id="main-content" class="post-body">
+      <p>The kits page drew 24 visitors in August. Stripe showed no checkout sessions in the same window. I had no instrumentation between those two facts, so I couldn't tell whether people saw the price and left or something between the button and Stripe failed. Both look identical from outside.</p>
+
+      <p>The analytics beacon was already watching for fetch calls. When someone runs the anonymity checker or the BibTeX validator, the tool fires a POST to the tools backend; the beacon intercepts it and logs a run event. Checkout turned out to have the same structure. Every buy button on the site posts to the same endpoint: <code>/.netlify/functions/checkout</code>. Kits, Paper Review tiers, the packs page, all of them.</p>
+
+      <p>This was originally a decision about maintenance: one checkout function to update instead of product-specific handlers. The side effect is that a single fetch interceptor covers the whole site. When the beacon sees a POST to that URL, it logs a checkoutClick and reads the product key from the request body. New products added to the catalog later appear in tracking automatically. There are no onclick handlers, no per-button code, no per-page scripts.</p>
+
+      <p>What this produces is a checkout rate: product page views divided by checkout POSTs. Stripe separately records whether a session completed. Those are two different numbers and two different failure modes. No clicks despite page views means something about the product page isn't converting. Clicks without a Stripe session means the function itself broke. Collapsing them into one metric would make it harder to know which is happening.</p>
+
+      <p>Click tracking, between page load and button press, would answer a different question: scroll depth, whether the buy button is even visible without scrolling, where exactly people leave the page. I left it out. It would require page-specific scripts rather than a shared interceptor, and the problem I was diagnosing lived at the checkout boundary. That other question can wait.</p>
+
+      <p>The diagnostic value: if Stripe shows zero sessions but analytics shows clicks, the checkout function is broken. If both show nothing, the product page is the problem. If analytics shows nothing but Stripe shows sessions, the beacon itself broke. You can only separate these cases when something watches the boundary between them.</p>
+
+      <p>As of September, the clicks are landing and Stripe sessions are completing. The gap I feared, a broken button sitting silently on a page with real visitors, turned out not to exist. But without the measurement, I wouldn't have known that.</p>
+    </article>
+
+    <div class="post-footer">
+      <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
