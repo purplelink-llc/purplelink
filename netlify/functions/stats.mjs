@@ -65,7 +65,7 @@ export default async function handler(request) {
   const s = {
     totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
-    checkoutByProduct: {},
+    checkoutByProduct: {}, checkoutByPath: {},
     byDay: {},
   };
   const uniquesPerDay = {};
@@ -124,6 +124,10 @@ export default async function handler(request) {
         // distinguishable from one with clicks that never reach Stripe.
         s.totals.checkoutClicks++; s.byDay[day].checkoutClicks++;
         bump(s.checkoutByProduct, rec.meta || "unknown");
+        // Where the press happened. The dashboard's checkout rate divides by
+        // views of pages that carry a buy button, and that list is maintained
+        // by hand; recording the path makes it checkable instead of trusted.
+        bump(s.checkoutByPath, rec.path || "unknown");
       }
     }
     s.byDay[day].uniques = uniquesPerDay[day].size;
@@ -134,6 +138,7 @@ export default async function handler(request) {
     totals: s.totals,
     toolRuns: topN(s.toolRuns),
     checkoutByProduct: topN(s.checkoutByProduct),
+    checkoutByPath: topN(s.checkoutByPath),
     topPaths: topN(s.byPath),
     topReferrers: topN(s.byReferrer),
     topUtm: topN(s.byUtm),

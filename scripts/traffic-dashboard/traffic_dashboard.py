@@ -75,7 +75,24 @@ SITES = [
         # not all pageviews: /kits/clip-pipeline/ drew 24 views in a month and
         # produced no Stripe session at all, and against sitewide traffic that
         # signal disappears into the noise.
-        "product_paths": ("/kits/", "/tools/paper-review/"),
+        #
+        # Exact paths, not prefixes. The first version used ("/kits/",
+        # "/tools/paper-review/") and silently excluded the five adjacent paid
+        # tools, which have buy buttons of their own. Prefixes are also unsafe
+        # here in principle: muscleonglp sells from its homepage, and "/" as a
+        # prefix matches the whole site.
+        #
+        # Derived from the markup, not from memory:
+        #   grep -rl 'id="checkout-btn"\|pr-checkout-btn' site --include=index.html
+        # Re-run that when a paid page is added or removed.
+        "product_paths": (
+            "/kits/", "/kits/clip-pipeline/", "/kits/faceless-content-pipeline/",
+            "/kits/monetization-stack/",
+            "/tools/paper-review/", "/tools/paper-review/packs/",
+            "/tools/paper-review/revision/", "/tools/anonymity-check/",
+            "/tools/citation-gap/", "/tools/cover-letter/",
+            "/tools/response-review/", "/tools/resume-review/",
+        ),
         # Waitlists are Netlify Forms, so they never reach the analytics beacon.
         # Without this they read as zero while people are actually signing up.
         "netlify_site_id": "b264591f-fbbe-4048-9d9d-7051cf497823",
@@ -93,7 +110,17 @@ SITES = [
         "token_env": "MUSCLEONGLP_STATS_TOKEN",
         "secondaries": [("subscribes", "subscribes"), ("calcRuns", "calculator runs"),
                         ("checkoutClicks", "checkout clicks")],
-        "product_paths": ("/guides/",),
+        # Same derivation, via the [data-checkout] binding in checkout.js:
+        #   grep -rl 'checkout\.js' muscleonglp-site --include=index.html
+        # The homepage is on this list because it carries two buy buttons
+        # (complete-pack and muscleonglp-guide). Leaving it out is what made the
+        # first real sale, on 2026-09-01, divide by three unrelated views and
+        # report a meaningless 33.3%.
+        "product_paths": (
+            "/", "/guides/", "/guides/creatine-glp1/", "/guides/no-gym-plan/",
+            "/guides/off-ramp/", "/guides/protein-playbook/",
+            "/guides/tracker/", "/guides/workbook/",
+        ),
         "gsc_property": "sc-domain:getmuscleonglp.com",
     },
 ]
@@ -531,7 +558,7 @@ def channel_mix(referrers: list[dict], pageviews: int) -> list[dict]:
     return rows
 
 
-def checkout_rate(top_paths: list, product_prefixes, clicks: int) -> dict | None:
+def checkout_rate(top_paths: list, product_paths, clicks: int) -> dict | None:
     """Buy-button presses against views of pages that offer a buy button.
 
     topPaths is the live 30-day window, so `clicks` must be the 30-day count
@@ -539,11 +566,12 @@ def checkout_rate(top_paths: list, product_prefixes, clicks: int) -> dict | None
     no product page was viewed at all there is no rate to report -- that is a
     discovery problem, and saying "0%" would misattribute it to the button.
     """
-    if not product_prefixes:
+    if not product_paths:
         return None
+    wanted = set(product_paths)
     views = sum(
         r.get("count", 0) for r in (top_paths or [])
-        if isinstance(r, dict) and str(r.get("key", "")).startswith(tuple(product_prefixes))
+        if isinstance(r, dict) and str(r.get("key", "")) in wanted
     )
     if not views:
         return {"views": 0, "clicks": clicks, "pct": None}
