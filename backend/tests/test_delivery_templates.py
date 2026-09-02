@@ -3,7 +3,7 @@
 manuscript_title is derived from text extracted from a customer-uploaded
 PDF (see papercheck.extract_paper / app.py), so it is attacker-controlled.
 html_review_ready() must escape it before interpolating into the HTML email
-body sent from the trusted reviews@mail.purplelink.llc address.
+body sent from the trusted reviews@purplelink.llc address.
 """
 from latextools import delivery
 

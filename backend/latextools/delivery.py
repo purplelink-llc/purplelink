@@ -7,12 +7,16 @@ caller's flow still completes; only the email step is skipped.
 Required env var (set as Modal secret `resend-secret`):
   RESEND_API_KEY — `re_…` from the Resend dashboard.
 
-A verified sending domain (`mail.purplelink.llc` or similar) must also be
-configured in the Resend dashboard — this is a separate, manual step from
-setting the API key. This module does NOT check verification status ahead
-of time (Resend has no cheap "is this domain verified" endpoint); if the
-key is set but the domain is unverified, every send fails with a 403 from
-Resend. send_email() detects that specific case and returns
+The FROM_ADDRESS domain must be verified in the Resend dashboard — this is
+a separate, manual step from setting the API key. Resend verifies domains
+exactly: the apex `purplelink.llc` is verified, but a subdomain such as
+`mail.purplelink.llc` is treated as a distinct domain that must be added and
+verified on its own. Sending from an unverified domain fails with a 403, so
+FROM_ADDRESS must stay on `purplelink.llc` unless a subdomain is separately
+verified. This module does NOT check verification status ahead of time
+(Resend has no cheap "is this domain verified" endpoint); if the key is set
+but the domain is unverified, every send fails with a 403 from Resend.
+send_email() detects that specific case and returns
 {"status": "error", "reason": "domain_not_verified", ...} instead of a
 generic resend_http_403, so callers/logs can tell the two apart.
 """
@@ -29,7 +33,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 RESEND_API_URL = "https://api.resend.com/emails"
-FROM_ADDRESS = "Purplelink Paper Review <reviews@mail.purplelink.llc>"
+FROM_ADDRESS = "Purplelink Paper Review <reviews@purplelink.llc>"
 
 
 def _is_valid_email(addr: str) -> bool:
