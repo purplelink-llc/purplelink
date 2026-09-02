@@ -29,7 +29,13 @@ logger = logging.getLogger(__name__)
 # This raises the number of revision rounds only. The approval bar is unchanged
 # and an unfixable draft still fails rather than shipping.
 MAX_ITERATIONS_PER_PASS = 6
-MAX_REVISION_TOKENS = 6000
+# A revision rewrites the WHOLE document, so this ceiling has to be at least as
+# large as the synthesis ceiling or every revision silently truncates the draft
+# back down to it. That is exactly what happened on 2026-08: raising
+# MAX_SYNTH_TOKENS to 16000 fixed the first draft, and then the first revision
+# cut it to 6000 again, so medical_safety kept reporting a truncated conclusion
+# no matter how many rounds it was given.
+MAX_REVISION_TOKENS = 16000
 MAX_VERDICT_TOKENS = 4000  # a first-pass verdict can enumerate many edits; 1500 truncated the JSON
 
 PASS_ORDER = ["medical_safety", "legal_compliance", "voice", "originality"]
