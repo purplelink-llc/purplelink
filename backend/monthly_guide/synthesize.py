@@ -15,7 +15,12 @@ from __future__ import annotations
 
 from latextools.papercheck import _anthropic_message
 
-MAX_SYNTH_TOKENS = 6000
+# 6000 truncated the 2026-08 guide mid-sentence in its final section, which
+# also silently dropped the "## Not Medical Advice" closing block the prompt
+# below requires -- so the red team correctly refused a health guide with no
+# disclaimer. The cap is the whole guide, not a section, so it needs real
+# headroom.
+MAX_SYNTH_TOKENS = 16000
 
 _SYNTH_SYSTEM_PROMPT = """You are writing a short consumer health guide that \
 reviews a single month of newly published research on GLP-1 medications \
