@@ -125,17 +125,18 @@ async def test_run_redteam_passes_revises_then_approves():
 
 @pytest.mark.asyncio
 async def test_run_redteam_passes_raises_after_max_iterations():
-    sequence = [
-        _verdict_resp(False, ["edit 1"]),
-        _text_resp("draft v2"),
-        _verdict_resp(False, ["edit 2"]),
-        _text_resp("draft v3"),
-        _verdict_resp(False, ["edit 3"]),
-    ]
+    # Built from MAX_ITERATIONS_PER_PASS rather than hardcoding it, so raising
+    # the revision budget does not silently turn this into a different test.
+    # Each round after the first costs one revision call plus one verdict call.
+    n = redteam.MAX_ITERATIONS_PER_PASS
+    sequence = [_verdict_resp(False, ["edit 1"])]
+    for i in range(2, n + 1):
+        sequence.append(_text_resp(f"draft v{i}"))
+        sequence.append(_verdict_resp(False, [f"edit {i}"]))
     client = _FakeClient(sequence)
     with pytest.raises(redteam.RedTeamExhaustedError):
         await redteam.run_redteam_passes(client, "draft text")
-    assert client.calls == 5
+    assert client.calls == 2 * n - 1
 
 
 @pytest.mark.asyncio
