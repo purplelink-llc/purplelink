@@ -21,8 +21,21 @@ from muscleonglp.sources import citation_block
 
 logger = logging.getLogger(__name__)
 
-MAX_ITERATIONS_PER_PASS = 3
-MAX_REVISION_TOKENS = 6000
+# 3 was too few for the monthly guide, which is assembled from ~27 sources and
+# so gives medical_safety far more citation surface to check than the flagship
+# guide's fixed set. Two 2026-08 runs were refused with the objections getting
+# finer each round -- structural on the first, then two precise citation-support
+# points -- i.e. the reviser was converging and simply ran out of attempts.
+# This raises the number of revision rounds only. The approval bar is unchanged
+# and an unfixable draft still fails rather than shipping.
+MAX_ITERATIONS_PER_PASS = 6
+# A revision rewrites the WHOLE document, so this ceiling has to be at least as
+# large as the synthesis ceiling or every revision silently truncates the draft
+# back down to it. That is exactly what happened on 2026-08: raising
+# MAX_SYNTH_TOKENS to 16000 fixed the first draft, and then the first revision
+# cut it to 6000 again, so medical_safety kept reporting a truncated conclusion
+# no matter how many rounds it was given.
+MAX_REVISION_TOKENS = 16000
 MAX_VERDICT_TOKENS = 4000  # a first-pass verdict can enumerate many edits; 1500 truncated the JSON
 
 PASS_ORDER = ["medical_safety", "legal_compliance", "voice", "originality"]
@@ -50,7 +63,11 @@ the disclaimer's wording are distinct concerns), not duplicate work to be \
 removed.
 
 Respond with ONLY a JSON object: {{"approved": bool, "edits": [str, ...]}}.""",
-    "voice": """You are a voice/style reviewer. Confirm the text is written \
+    "voice": """You are reviewing an educational research summary about GLP-1 \
+medications and muscle mass, written for a general audience and sourced \
+entirely from peer-reviewed papers. Your review covers WRITING STYLE ONLY; \
+other reviewers handle clinical accuracy and compliance separately. \
+Confirm the text is written \
 in an academic, citation-forward, plain register: no marketing buzzwords \
 (streamline, supercharge, seamless, world-class), no em dashes, no \
 aphoristic "serious statement, then punchy negation" cadence, no emojis, no \
@@ -133,12 +150,38 @@ async def _run_pass(client, pass_name: str, draft: str,
     if citations is None:
         citations = citation_block()
     system = _PASS_SYSTEM_PROMPTS[pass_name].format(citations=citations)
-    raw = await _anthropic_message(
-        client,
-        system=system,
-        user_content=[{"type": "text", "text": draft}],
-        max_tokens=MAX_VERDICT_TOKENS,
-    )
+    # Same empty-completion hiccup _revise_draft already guards against, which
+    # hits the verdict call too. Without a retry an empty response parses as
+    # "not valid JSON", counts as a rejection, triggers a revision that is also
+    # empty, and burns the entire iteration budget on a transient blip -- the
+    # 2026-08 'voice' pass failed all 6 rounds this way without ever producing
+    # a real objection. Retry before treating silence as a verdict.
+    raw = ""
+    for attempt in range(3):
+        raw = await _anthropic_message(
+            client,
+            system=system,
+            user_content=[{"type": "text", "text": draft}],
+            max_tokens=MAX_VERDICT_TOKENS,
+        )
+        if (raw or "").strip():
+            break
+        logger.warning("redteam %s: empty verdict response (attempt %d/3)",
+                       pass_name, attempt + 1)
+    if not (raw or "").strip():
+        # An empty body here is not a verdict. In the 2026-08 run it was
+        # stop_reason='refusal' with zero content blocks -- the model declining
+        # the request outright. Parsing that as "not valid JSON" turned a
+        # refusal into a rejection, which triggered a revision, which was
+        # reviewed and refused again, consuming the whole iteration budget
+        # while never producing a single real objection. Fail loudly instead:
+        # a reviewer that will not answer is an operational fault, not a draft
+        # that needs another rewrite.
+        raise RuntimeError(
+            f"redteam {pass_name}: the reviewer returned no content after 3 attempts "
+            "(see the anthropic empty-text-response log for stop_reason; a refusal "
+            "will not resolve by revising the draft)"
+        )
     verdict = _parse_verdict(raw, pass_name)
     if not verdict.approved and any(
         "not valid JSON" in e or "not a JSON object" in e for e in verdict.edits

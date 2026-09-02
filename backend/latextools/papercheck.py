@@ -1188,7 +1188,28 @@ async def _anthropic_message_once(
             "input_tokens": int(usage.get("input_tokens", 0) or 0),
             "output_tokens": int(usage.get("output_tokens", 0) or 0),
         }
-        return "".join(parts).strip(), usage_dict
+        text = "".join(parts).strip()
+        if not text:
+            # Only text blocks are collected above, so a response carrying no
+            # text block returns "" and callers cannot tell an empty answer
+            # from a refusal, a max_tokens stop with nothing emitted, or a
+            # response made entirely of non-text blocks. Log what actually came
+            # back, but only in the empty case so this stays quiet in normal
+            # operation. Added while diagnosing the monthly guide's 'voice'
+            # pass returning 0 characters deterministically.
+            blocks = data.get("content", []) or []
+            logger.warning(
+                "anthropic empty text response: model=%s stop_reason=%r "
+                "stop_sequence=%r block_types=%s block_count=%d usage=%s first_block=%.300r",
+                model,
+                data.get("stop_reason"),
+                data.get("stop_sequence"),
+                [b.get("type") for b in blocks],
+                len(blocks),
+                usage_dict,
+                blocks[0] if blocks else None,
+            )
+        return text, usage_dict
 
     if last_exc is not None:
         raise last_exc

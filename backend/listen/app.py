@@ -35,9 +35,12 @@ RESEND_API = "https://api.resend.com/emails"
 FROM_EMAIL = "Purplelink Listen Agent <ben@purplelink.llc>"
 
 
+# Daily email disabled by owner request (2026-07-11): the schedule was removed so
+# the digest no longer runs or emails daily. This also frees a Modal scheduled-
+# function slot (account cap is 5). The function is kept intact and can be
+# re-enabled by restoring `schedule=modal.Cron("0 11 * * *")` below.
 @app.function(
     image=_image,
-    schedule=modal.Cron("0 11 * * *"),
     secrets=[
         modal.Secret.from_name("anthropic-secret"),
         modal.Secret.from_name("resend"),

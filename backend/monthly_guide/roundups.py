@@ -70,8 +70,26 @@ def assign_paper_keys(papers: list["RoundupPaper"]) -> list[tuple[str, "RoundupP
     """Assign each paper a STABLE citation key (``p1``, ``p2``, ...) in the
     order given. Roundups are gathered oldest-first and papers keep their
     in-document order, so the same month's papers always map to the same
-    keys — re-runs are deterministic."""
-    return [(f"p{i}", p) for i, p in enumerate(papers, start=1)]
+    keys — re-runs are deterministic.
+
+    Papers are de-duplicated first. A single paper is often covered by more
+    than one weekly roundup (in August 2026, "Protecting Musculoskeletal
+    Development ... in Adolescents on GLP-1" ran in both the 4th and the
+    10th), and without this it was handed to the model twice under two keys.
+    The synthesis then treated one paper as two independent sources and wrote
+    that it "appeared in two roundups this month" as if that were corroborating
+    evidence. De-duplicating by URL, falling back to title where a URL is
+    missing, keeping first occurrence so ordering stays stable."""
+    seen: set[str] = set()
+    unique: list["RoundupPaper"] = []
+    for p in papers:
+        ident = (getattr(p, "url", "") or "").strip().lower() or (p.title or "").strip().lower()
+        if ident and ident in seen:
+            continue
+        if ident:
+            seen.add(ident)
+        unique.append(p)
+    return [(f"p{i}", p) for i, p in enumerate(unique, start=1)]
 
 
 def monthly_citation_block(papers: list["RoundupPaper"]) -> str:
