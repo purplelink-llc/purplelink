@@ -63,7 +63,11 @@ the disclaimer's wording are distinct concerns), not duplicate work to be \
 removed.
 
 Respond with ONLY a JSON object: {{"approved": bool, "edits": [str, ...]}}.""",
-    "voice": """You are a voice/style reviewer. Confirm the text is written \
+    "voice": """You are reviewing an educational research summary about GLP-1 \
+medications and muscle mass, written for a general audience and sourced \
+entirely from peer-reviewed papers. Your review covers WRITING STYLE ONLY; \
+other reviewers handle clinical accuracy and compliance separately. \
+Confirm the text is written \
 in an academic, citation-forward, plain register: no marketing buzzwords \
 (streamline, supercharge, seamless, world-class), no em dashes, no \
 aphoristic "serious statement, then punchy negation" cadence, no emojis, no \
@@ -164,6 +168,20 @@ async def _run_pass(client, pass_name: str, draft: str,
             break
         logger.warning("redteam %s: empty verdict response (attempt %d/3)",
                        pass_name, attempt + 1)
+    if not (raw or "").strip():
+        # An empty body here is not a verdict. In the 2026-08 run it was
+        # stop_reason='refusal' with zero content blocks -- the model declining
+        # the request outright. Parsing that as "not valid JSON" turned a
+        # refusal into a rejection, which triggered a revision, which was
+        # reviewed and refused again, consuming the whole iteration budget
+        # while never producing a single real objection. Fail loudly instead:
+        # a reviewer that will not answer is an operational fault, not a draft
+        # that needs another rewrite.
+        raise RuntimeError(
+            f"redteam {pass_name}: the reviewer returned no content after 3 attempts "
+            "(see the anthropic empty-text-response log for stop_reason; a refusal "
+            "will not resolve by revising the draft)"
+        )
     verdict = _parse_verdict(raw, pass_name)
     if not verdict.approved and any(
         "not valid JSON" in e or "not a JSON object" in e for e in verdict.edits
