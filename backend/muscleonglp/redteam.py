@@ -21,7 +21,14 @@ from muscleonglp.sources import citation_block
 
 logger = logging.getLogger(__name__)
 
-MAX_ITERATIONS_PER_PASS = 3
+# 3 was too few for the monthly guide, which is assembled from ~27 sources and
+# so gives medical_safety far more citation surface to check than the flagship
+# guide's fixed set. Two 2026-08 runs were refused with the objections getting
+# finer each round -- structural on the first, then two precise citation-support
+# points -- i.e. the reviser was converging and simply ran out of attempts.
+# This raises the number of revision rounds only. The approval bar is unchanged
+# and an unfixable draft still fails rather than shipping.
+MAX_ITERATIONS_PER_PASS = 6
 MAX_REVISION_TOKENS = 6000
 MAX_VERDICT_TOKENS = 4000  # a first-pass verdict can enumerate many edits; 1500 truncated the JSON
 
