@@ -112,9 +112,20 @@ def blobs_set(token: str, site_id: str, store: str, key: str, file_path: str) ->
         "NETLIFY_AUTH_TOKEN": token,
         "NETLIFY_SITE_ID": site_id,
     }
-    subprocess.run(
-        ["netlify", "blobs:set", store, key, "--input", file_path, "--site", site_id],
+    # No --site flag: blobs:set does not accept one ("Error: unknown option
+    # '--site'"), which failed the 2026-08 run at the upload step. The site is
+    # already supplied through NETLIFY_SITE_ID in env above, which is how the
+    # command expects it. Output is captured so a future failure reports the
+    # CLI's own message instead of a bare non-zero exit status.
+    proc = subprocess.run(
+        ["netlify", "blobs:set", store, key, "--input", file_path],
         env=env,
-        check=True,
+        capture_output=True,
+        text=True,
     )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"netlify blobs:set failed (exit {proc.returncode}) for {store}/{key}: "
+            f"{(proc.stderr or proc.stdout or '').strip()[:500]}"
+        )
     logger.info("netlify: uploaded blob %s/%s from %s", store, key, file_path)
