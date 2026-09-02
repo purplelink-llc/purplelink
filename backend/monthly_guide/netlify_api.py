@@ -27,7 +27,14 @@ import httpx
 logger = logging.getLogger(__name__)
 
 NETLIFY_API = "https://api.netlify.com/api/v1"
-ENV_SCOPES = ["builds", "functions", "runtime"]
+
+# No "scopes" field is sent. Netlify rejects an explicit scopes list on the
+# free tier with 403 "Upgrade your Netlify account to set specific scopes",
+# which is what failed the 2026-09-01 run at the last step, after the Stripe
+# product and price had already been created. Omitting it makes Netlify apply
+# its defaults -- builds, functions, post_processing, runtime -- which is a
+# superset of the three that were being requested, so nothing is lost.
+# Verified against the live API on 2026-09-02: with scopes 403, without 201.
 
 
 def _account_slug(client: httpx.Client, token: str, site_id: str) -> str:
@@ -65,7 +72,6 @@ def set_env_var(token: str, site_id: str, key: str, value: str) -> None:
             headers=headers,
             json=[{
                 "key": key,
-                "scopes": ENV_SCOPES,
                 "values": [{"context": "all", "value": value}],
             }],
         )
@@ -80,7 +86,6 @@ def set_env_var(token: str, site_id: str, key: str, value: str) -> None:
             headers=headers,
             json={
                 "key": key,
-                "scopes": ENV_SCOPES,
                 "values": [{"context": "all", "value": value}],
             },
         )
