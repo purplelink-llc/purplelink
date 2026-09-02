@@ -412,7 +412,7 @@ def test_sweep_expired_paper_tokens_purges_untouched_entries(client):
     live_token = _register(backend_app, session_id="s-sweep-live")
     backend_app.paper_token_index_dict[live_token] = "s-sweep-live"
 
-    purged = backend_app.sweep_expired_paper_tokens.local()
+    purged = backend_app.sweep_expired_paper_tokens()
 
     assert purged == 1
     assert backend_app.paper_tokens_dict.get("s-sweep-expired") is None
@@ -458,7 +458,7 @@ def test_sweep_stale_paper_jobs_purges_error_and_unpolled_entries(client):
         "result_md": "# Review",
     }
 
-    purged = backend_app.sweep_stale_paper_jobs.local()
+    purged = backend_app.sweep_stale_paper_jobs()
 
     assert purged == 2
     assert backend_app.paper_jobs_dict.get("tok-stale-error") is None
@@ -490,7 +490,7 @@ def test_sweep_stale_paper_jobs_purges_delivered_entries_past_grace_window(clien
         "result_md": "# Review", "delivered_at": time.time(),
     }
 
-    purged = backend_app.sweep_stale_paper_jobs.local()
+    purged = backend_app.sweep_stale_paper_jobs()
 
     assert purged == 1
     assert backend_app.paper_jobs_dict.get("tok-delivered-stale") is None

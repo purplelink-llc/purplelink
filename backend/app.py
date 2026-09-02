@@ -2205,6 +2205,7 @@ def web():
       <nav aria-label="Primary navigation">
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
+        <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -3247,11 +3248,9 @@ def web():
 # whether it was ever revisited.
 # ---------------------------------------------------------------------------
 
-@app.function(
-    image=modal.Image.debian_slim(python_version="3.11").add_local_python_source("latextools"),
-    schedule=modal.Cron("0 6 * * *"),  # daily, well under the 7-day TTL
-    timeout=300,
-)
+# Plain function (not a Modal scheduled function): invoked by the merged
+# `lifecycle_email_sweep` cron so all three paper-review cleanup jobs share one
+# scheduled slot (Modal's 5-scheduled-function cap). Tests call it directly.
 def sweep_expired_paper_tokens() -> int:
     """Delete paper_tokens_dict (+ paper_token_index_dict) entries whose
     expires_at has passed. Returns the number of entries purged."""
@@ -3300,11 +3299,7 @@ def sweep_expired_paper_tokens() -> int:
 # cleanup than the token sweep above, but it should still happen.
 # ---------------------------------------------------------------------------
 
-@app.function(
-    image=modal.Image.debian_slim(python_version="3.11").add_local_python_source("latextools"),
-    schedule=modal.Cron("30 6 * * *"),  # daily, offset from the token sweep
-    timeout=300,
-)
+# Plain function (not a Modal scheduled function): invoked by lifecycle_email_sweep.
 def sweep_stale_paper_jobs() -> int:
     """Delete paper_jobs_dict entries past their retention window.
 
@@ -3382,6 +3377,17 @@ def lifecycle_email_sweep() -> dict:
     import httpx
 
     from latextools import delivery as _delivery
+
+    # Merged housekeeping: run the two paper-review TTL sweeps in this same daily
+    # slot so all three cleanup jobs share one Modal scheduled function (the
+    # account cap is 5). Cleanup timing is not sensitive, so 14:00 UTC is fine.
+    try:
+        purged_tokens = sweep_expired_paper_tokens()
+        purged_jobs = sweep_stale_paper_jobs()
+        logger.info("paper-review housekeeping: purged %s tokens, %s jobs",
+                    purged_tokens, purged_jobs)
+    except Exception as exc:
+        logger.warning("paper-review housekeeping sweeps failed: %s", exc)
 
     now = _time.time()
     sent = {"tips": 0, "review_request": 0, "winback": 0}
