@@ -45,6 +45,10 @@ Invoke design work with the impeccable skill (e.g. `/impeccable critique
 - Frontend: `bash scripts/deploy.sh` (Netlify `--prod` + IndexNow ping).
 - Backend (Modal): `bash scripts/deploy.sh --backend`.
 - The site is live at https://purplelink.llc.
+- ModernTex releases: `scripts/release.sh` in the ModernTex repo stages
+  `site/moderntex/download/ModernTex-<v>.dmg` (git-ignored, see `.gitignore`)
+  and `site/moderntex/appcast.xml` (committed); then deploy from this machine.
+  The Sparkle EdDSA private key lives in Ben's login keychain.
 
 ## Paid tools status
 

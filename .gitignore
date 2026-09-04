@@ -29,3 +29,10 @@ docs/muscleonglp-outreach-kit.md
 docs/purplelink-tool-distribution-kit.md
 docs/muscleonglp-outreach-prospects.md
 photo-licensing-workspace/
+
+# ModernTex release DMGs are staged here by the ModernTex repo's scripts/release.sh and
+# published by `netlify deploy` from the local site/ tree. 12 MB per release does not belong in
+# a public git repo; the appcast (small, signed) IS committed. Consequence: a deploy from a
+# clone without the DMGs would drop them from the live site — deploy releases from the machine
+# that built them.
+site/moderntex/download/*.dmg

@@ -62,6 +62,27 @@
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
 
+# ModernTex downloads and its Sparkle appcast. DMGs are versioned in the filename, so they
+# are immutable; the appcast and the "latest" link change on every release and must not be
+# cached for long, or users keep being offered the previous version.
+[[headers]]
+  for = "/moderntex/download/ModernTex-*.*.*.dmg"
+  [headers.values]
+    Content-Type = "application/x-apple-diskimage"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/moderntex/download/ModernTex-latest.dmg"
+  [headers.values]
+    Content-Type = "application/x-apple-diskimage"
+    Cache-Control = "public, max-age=300"
+
+[[headers]]
+  for = "/moderntex/appcast.xml"
+  [headers.values]
+    Content-Type = "application/rss+xml; charset=utf-8"
+    Cache-Control = "public, max-age=300"
+
 [[headers]]
   for = "/sitemap.xml"
   [headers.values]
