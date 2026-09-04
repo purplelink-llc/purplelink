@@ -137,12 +137,15 @@ PAPER_RESULT_GRACE_SECONDS = 30 * 60       # 30 minutes after first delivery
 #   modal secret create anthropic-secret      ANTHROPIC_API_KEY="sk-ant-..."
 #   modal secret create paper-review-shared   BACKEND_WEBHOOK_SECRET="<random>"
 #   modal secret create stripe-secret         STRIPE_SECRET_KEY="sk_live_..."
-#   modal secret create resend-secret         RESEND_API_KEY="re_..."
+#   modal secret create resend                RESEND_API_KEY="re_..."
+# NOTE: the `resend-secret` secret exists too and holds a placeholder, not a key.
+# Everything that sends mail reads `resend`. Verified 2026-09-04 by sending
+# through both: `resend-secret` returns 401 invalid_api_key, `resend` returns 200.
 anthropic_secret = modal.Secret.from_name("anthropic-secret")
 paper_review_shared_secret = modal.Secret.from_name("paper-review-shared")
 stripe_secret = modal.Secret.from_name("stripe-secret")
 subscribe_secret = modal.Secret.from_name("subscribe-secret")
-resend_secret = modal.Secret.from_name("resend-secret")
+resend_secret = modal.Secret.from_name("resend")
 
 # Product catalog — single source of truth shared between the webhook
 # (which maps Stripe price_id → product), the register-token endpoint
