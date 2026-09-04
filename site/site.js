@@ -41,6 +41,8 @@
 
 (() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // No IntersectionObserver means nothing would ever un-hide these elements.
+  if (!('IntersectionObserver' in window)) return;
 
   const SELECTORS = [
     '.service-item',
@@ -65,11 +67,14 @@
     '.post-hero',
   ];
 
+  const hidden = new Set();
+
   const io = new IntersectionObserver(
     entries => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('is-visible');
+        hidden.delete(entry.target);
         io.unobserve(entry.target);
       });
     },
@@ -96,8 +101,24 @@
       }
 
       io.observe(el);
+      hidden.add(el);
     });
   });
+
+  // The observer only fires for a page that is actually being drawn. A
+  // background tab, a headless renderer or a screenshot service runs this
+  // script, gets the elements hidden, and never gets them back — the section
+  // ships blank. Reveal anything still waiting after a beat, so the animation
+  // stays an enhancement rather than a precondition for seeing the content.
+  const revealRest = () => {
+    hidden.forEach(el => {
+      el.classList.add('is-visible');
+      io.unobserve(el);
+    });
+    hidden.clear();
+  };
+  setTimeout(revealRest, 2000);
+  if (document.visibilityState === 'hidden') revealRest();
 })();
 
 // Digest subscribe form — posts to /.netlify/functions/subscribe
