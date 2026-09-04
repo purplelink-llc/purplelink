@@ -32,9 +32,10 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
 const RESEND_API_URL = "https://api.resend.com/emails";
-// Resend verifies domains exactly. `purplelink.llc` is verified; the
-// `mail.purplelink.llc` subdomain is NOT, and sending from it returns HTTP 403
-// "domain is not verified" — so every operator alert was silently failing.
+// Resend verifies domains exactly: send from `purplelink.llc`, never a
+// subdomain. RESEND_API_KEY is the "purplelink-netlify" key (sending access,
+// purplelink.llc only); until 2026-09-04 the value in Netlify was a
+// placeholder, so every alert before then failed silently.
 const ALERT_FROM_ADDRESS = "Purplelink Alerts <alerts@purplelink.llc>";
 
 const MAX_SIG_AGE_SECONDS = 5 * 60;   // reject replays older than 5 min

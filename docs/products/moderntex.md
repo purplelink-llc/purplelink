@@ -33,9 +33,9 @@ Nothing under `site/moderntex/` is a binary. `/moderntex/download/*` and
 ## Buyer email
 
 `stripe-webhook.mjs` emails every ModernTex (and kit) buyer the success-page link from
-`orders@purplelink.llc` via Resend (`RESEND_API_KEY`), reply-to ben@purplelink.llc, because
+`orders@purplelink.llc` via Resend (`RESEND_API_KEY`, the sending-only "purplelink-netlify" key in the Resend dashboard), reply-to ben@purplelink.llc, because
 Stripe's receipt carries no download link. A send failure alerts the operator
-(`ALERT_EMAIL_TO`, which must be set for alerts to go anywhere) with the link to forward by
+(`ALERT_EMAIL_TO` = ben@purplelink.llc) with the link to forward by
 hand; it never changes the webhook's 200 to Stripe.
 
 ## Releasing a version
