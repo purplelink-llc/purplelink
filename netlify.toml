@@ -62,27 +62,6 @@
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
 
-# ModernTex downloads and its Sparkle appcast. DMGs are versioned in the filename, so they
-# are immutable; the appcast and the "latest" link change on every release and must not be
-# cached for long, or users keep being offered the previous version.
-[[headers]]
-  for = "/moderntex/download/ModernTex-*.*.*.dmg"
-  [headers.values]
-    Content-Type = "application/x-apple-diskimage"
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/moderntex/download/ModernTex-latest.dmg"
-  [headers.values]
-    Content-Type = "application/x-apple-diskimage"
-    Cache-Control = "public, max-age=300"
-
-[[headers]]
-  for = "/moderntex/appcast.xml"
-  [headers.values]
-    Content-Type = "application/rss+xml; charset=utf-8"
-    Cache-Control = "public, max-age=300"
-
 [[headers]]
   for = "/sitemap.xml"
   [headers.values]
@@ -109,6 +88,18 @@
   to = "/404.html"
   status = 404
   force = true
+
+# The DMG was public for a few hours on 2026-09-04 before the paywall; anyone holding that
+# link lands on the product page instead of a 404.
+[[redirects]]
+  from = "/moderntex/download/*"
+  to = "/moderntex/"
+  status = 301
+
+[[redirects]]
+  from = "/moderntex/appcast.xml"
+  to = "/moderntex/"
+  status = 301
 
 [[redirects]]
   from = "/*"

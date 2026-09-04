@@ -92,6 +92,9 @@ const PRODUCT_CATALOG = {
   "kit-monetization":        { envKey: "STRIPE_PRICE_KIT_MONETIZATION",        successPath: "/kits/success/" },
   "kit-bundle":              { envKey: "STRIPE_PRICE_KIT_BUNDLE",              successPath: "/kits/success/" },
   "kit-clip":                { envKey: "STRIPE_PRICE_KIT_CLIP",                successPath: "/kits/success/" },
+  // ModernTex for macOS: $10 one-time. Delivery is the session-gated DMG from the
+  // moderntex-files Blobs store; see moderntex-download.mjs.
+  "moderntex":               { envKey: "STRIPE_PRICE_MODERNTEX",               successPath: "/moderntex/success/" },
 };
 
 function jsonResponse(status, body) {

@@ -27,6 +27,7 @@
     <link rel="preload" href="/assets/moderntex-icon.png" as="image" fetchpriority="high">
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -40,7 +41,7 @@
           "url": "https://purplelink.llc/moderntex/",
           "image": "https://purplelink.llc/assets/og/moderntex.png",
           "description": "ModernTex is a native macOS LaTeX editor built for the academic manuscript workflow: multi-file projects, synchronized PDF preview, plain-language compile errors, BibTeX autocomplete, and submission-readiness checks.",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/PreOrder" },
+          "offers": { "@type": "Offer", "price": "10.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/moderntex/" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "creator":   { "@id": "https://purplelink.llc/about/#person" }
         },
@@ -60,7 +61,7 @@
             {
               "@type": "Question",
               "name": "What does it cost?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Nothing. ModernTex 1.0 is free and released under the MIT license." }
+              "acceptedAnswer": { "@type": "Answer", "text": "$10, once, including every 1.x update. No subscription and no account." }
             },
             {
               "@type": "Question",
@@ -114,15 +115,16 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status product-status-live">Free · v1.0.0 · Available now</span>
+          <span class="product-status product-status-live">$10 · v1.0.0 · Available now</span>
         </div>
         <h1 class="app-hero-name">ModernTex</h1>
         <p class="app-hero-tagline">A serious writing instrument for researchers - not a programmer's IDE with LaTeX bolted on. Multi-file editing, synchronized PDF preview, and the full academic manuscript workflow in one native macOS app.</p>
-        <div class="app-hero-actions">
-          <a class="btn btn-primary" href="/moderntex/download/ModernTex-1.0.0.dmg" download>Download for Mac</a>
+        <div class="app-hero-actions" id="buy">
+          <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="moderntex">Buy ModernTex &mdash; $10</button>
           <a class="btn btn-ghost" href="#requirements">Requirements</a>
         </div>
-        <p class="waitlist-fine-print">Version 1.0.0 · 12 MB disk image · macOS 14 or later · Apple silicon and Intel · MIT licensed. The app checks for updates itself once a day.</p>
+        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <p class="waitlist-fine-print">One-time purchase, updates included. Version 1.0.0 · 13 MB disk image · macOS 14 or later · Apple silicon and Intel. Secure checkout via Stripe; the download link arrives the moment payment clears.</p>
       </div>
     </div>
 
@@ -199,7 +201,7 @@
     <section class="waitlist-section" id="requirements">
       <p class="eyebrow">Before you install</p>
       <h2>What ModernTex needs.</h2>
-      <p>A Mac running macOS 14 or later and a TeX distribution. MacTeX or TinyTeX both work; ModernTex finds them on first launch and tells you if neither is installed. The download is a signed disk image: open it and drag ModernTex to Applications.</p>
+      <p>A Mac running macOS 14 or later and a TeX distribution. MacTeX or TinyTeX both work; ModernTex finds them on first launch and tells you if neither is installed. After checkout you get a signed disk image: open it and drag ModernTex to Applications. Bookmark the download page; it always hands you the newest version.</p>
       <p>Want one email when a notable version ships? Leave your address. No newsletters, no follow-ups.</p>
       <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="waitlist-moderntex">
@@ -216,7 +218,7 @@
       <div class="faq-list">
         <details class="faq-item">
           <summary>How do I get updates?</summary>
-          <div class="faq-body">ModernTex checks for a new version once a day and offers to install it in place. You can also choose Check for Updates from the ModernTex menu at any time. Each download is code-signed by Purplelink LLC.</div>
+          <div class="faq-body">ModernTex checks for a new version once a day and offers to install it in place. You can also choose Check for Updates from the ModernTex menu at any time. Updates are included in the purchase, and each download is code-signed by Purplelink LLC.</div>
         </details>
         <details class="faq-item">
           <summary>What macOS version is required?</summary>
@@ -224,7 +226,7 @@
         </details>
         <details class="faq-item">
           <summary>What does it cost?</summary>
-          <div class="faq-body">Nothing. ModernTex 1.0 is free and released under the MIT license. Optional AI features use your own Claude account.</div>
+          <div class="faq-body">$10, once. That covers every 1.x update. There is no subscription and no account; the optional AI features use your own Claude account. The source is published under the MIT license.</div>
         </details>
         <details class="faq-item">
           <summary>How is ModernTex different from TeXShop or Overleaf?</summary>
