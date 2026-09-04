@@ -91,6 +91,39 @@ async function streamBlob(store, key, type, disposition) {
   return new Response(stream, { status: 200, headers });
 }
 
+/**
+ * The appcast, with every enclosure URL rewritten to the canonical update door.
+ *
+ * Sparkle's `generate_appcast --download-url-prefix` resolves each filename as a
+ * relative URL against the prefix, so a prefix carrying a query string
+ * (`…/moderntex-download?update=`) collapses to `…/functions/ModernTex-1.0.0.dmg`,
+ * which 404s and breaks in-app updates. release.sh now post-processes its own
+ * output, but the feed is rewritten here too so a stale or hand-uploaded appcast
+ * in the store can never ship a dead download link to installed copies.
+ * The EdDSA signature covers the DMG, not the URL, so rewriting is safe.
+ */
+async function serveFeed(store) {
+  let xml;
+  try {
+    xml = await store.get("appcast.xml", { type: "text" });
+  } catch (err) {
+    xml = null;
+  }
+  if (!xml) return json(404, { error: "file_unavailable", detail: "No update feed is staged." });
+  const fixed = xml.replace(
+    /url="[^"]*\/(ModernTex-\d+\.\d+\.\d+\.dmg)"/g,
+    (_m, name) => `url="https://purplelink.llc/.netlify/functions/moderntex-download?update=${name}"`,
+  );
+  return new Response(fixed, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/rss+xml; charset=utf-8",
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
+
 export default async function handler(request) {
   if (request.method !== "GET" && request.method !== "HEAD") return json(405, { error: "method_not_allowed" });
   const url = new URL(request.url);
@@ -105,7 +138,7 @@ export default async function handler(request) {
     if (!expected || !timingSafeEqual(presented, expected)) {
       return json(403, { error: "forbidden", detail: "Updates are delivered inside ModernTex." });
     }
-    if (wantsFeed) return streamBlob(store, "appcast.xml", "application/rss+xml; charset=utf-8", null);
+    if (wantsFeed) return serveFeed(store);
     if (!DMG_NAME.test(updateFile)) return json(400, { error: "bad_file" });
     return streamBlob(store, updateFile, "application/x-apple-diskimage", `attachment; filename="${updateFile}"`);
   }

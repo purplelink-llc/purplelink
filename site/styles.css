@@ -1329,6 +1329,13 @@ dd {
   margin-bottom: 28px;
 }
 
+.waitlist-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  max-width: 500px;
+}
+
 .waitlist-form {
   display: flex;
   gap: 10px;

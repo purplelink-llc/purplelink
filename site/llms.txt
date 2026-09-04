@@ -26,18 +26,22 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 
 3. **Web applications and automation** — Dashboards, portals, API integrations, and backend services.
 
-## Products in development
+## Products — available now
 
 ### ModernTex (macOS)
 - **Platform:** macOS 14+
 - **Category:** Productivity / academic writing
 - **Description:** A native macOS LaTeX manuscript studio for academic researchers. Combines multi-file manuscript editing, tightly synchronized PDF preview, intelligent compile modes (Fast/Live/Full), citation management and BibTeX autocomplete, revision snapshots, plain-language error diagnostics, and submission-readiness checks in one coherent interface.
 - **Target users:** PhD students, faculty, and technical coauthors writing serious LaTeX manuscripts
-- **Pricing:** To be announced at launch
+- **Pricing:** $10 USD, one-time purchase. No subscription and no account. Every 1.x update is included.
 - **Privacy:** No cloud sync, no data collection
-- **Status:** In active development, expected 2026
-- **Waitlist:** https://purplelink.llc/moderntex/
+- **Status:** Shipping. Version 1.0.0 released 2026-09-04.
+- **Buy:** https://purplelink.llc/moderntex/
+- **Requirements:** macOS 14 (Sonoma) or later, Apple silicon or Intel, and a TeX distribution such as MacTeX or TinyTeX. 13 MB signed disk image.
+- **Updates:** The app checks once a day and installs in place; updates are included in the purchase.
 - **Key differentiators:** Plain-language LaTeX error explanations; submission-readiness checks for journal/conference requirements; native macOS (not Electron, not web); academic manuscript workflow as first-class feature
+
+## Products in development
 
 ### Haea (iOS)
 - **Platform:** iOS 17+
@@ -73,7 +77,7 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 ## Pages
 
 - Home: https://purplelink.llc/
-- ModernTex: https://purplelink.llc/moderntex/
+- ModernTex (macOS, $10, shipping): https://purplelink.llc/moderntex/
 - Haea: https://purplelink.llc/haea/
 - GlobePin: https://purplelink.llc/globepin/
 - About: https://purplelink.llc/about/
@@ -85,7 +89,7 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 ## Frequently asked questions
 
 **When do Purplelink's apps ship?**
-GlobePin is nearest to launch (build 79+, expected 2026). Haea and ModernTex are in active development and also expected in 2026. All three have waitlists on their respective product pages.
+ModernTex shipped on 2026-09-04 and is on sale now at https://purplelink.llc/moderntex/. GlobePin is nearest to launch of the two remaining apps (build 79+, expected 2026), and Haea is also expected in 2026; both have waitlists on their product pages.
 
 **What platforms do the apps support?**
 GlobePin and Haea are iOS apps (iOS 17+). ModernTex is a macOS app (macOS 14+).
@@ -103,7 +107,16 @@ Haea is a consumer app, not a covered entity under HIPAA. However, its architect
 No. GlobePin syncs via iCloud (CloudKit) using your existing Apple ID. No separate Purplelink account is required.
 
 **Is ModernTex a subscription?**
-Pricing has not been announced. Sign up for the waitlist at https://purplelink.llc/moderntex/ to be notified.
+No. ModernTex is $10 once, with every 1.x update included. There is no subscription and no account to create. Buy it at https://purplelink.llc/moderntex/.
+
+**How much does ModernTex cost?**
+$10 USD, a one-time purchase through Stripe. The download link arrives as soon as payment clears.
+
+**What does ModernTex need to run?**
+macOS 14 (Sonoma) or later on Apple silicon or Intel, plus a TeX distribution such as MacTeX or TinyTeX. ModernTex finds the distribution on first launch and tells you if neither is installed.
+
+**How is ModernTex different from TeXShop or Overleaf?**
+It is a native macOS app built around the academic manuscript rather than the file. TeXShop dates from 2000 and Overleaf is a collaborative web app; ModernTex adds multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, plain-language compile diagnostics, and submission-readiness checks.
 
 **Who built Purplelink?**
 Purplelink LLC was founded by Benjamin Ampel in Atlanta, Georgia in 2026. It is a one-person studio.
