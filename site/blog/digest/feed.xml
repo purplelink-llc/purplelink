@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #70 — September 4, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-04.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-04.html</guid>
+      <pubDate>Fri, 04 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>GPT-6 Astra scores 100% on ExploitBench, Anthropic files for $15B pre-IPO credit facility, DeepSeek orders 160K Huawei AI chips, and BraZetsu malware commercializes compromised Windows hosts.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #69 — September 2, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-02.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-02.html</guid>
