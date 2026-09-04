@@ -30,6 +30,14 @@ Nothing under `site/moderntex/` is a binary. `/moderntex/download/*` and
 `/moderntex/appcast.xml` 301 to the product page (they were public for a few hours on
 2026-09-04 before the paywall).
 
+## Buyer email
+
+`stripe-webhook.mjs` emails every ModernTex (and kit) buyer the success-page link from
+`orders@purplelink.llc` via Resend (`RESEND_API_KEY`), reply-to ben@purplelink.llc, because
+Stripe's receipt carries no download link. A send failure alerts the operator
+(`ALERT_EMAIL_TO`, which must be set for alerts to go anywhere) with the link to forward by
+hand; it never changes the webhook's 200 to Stripe.
+
 ## Releasing a version
 
 From the ModernTex repo, on a clean commit:

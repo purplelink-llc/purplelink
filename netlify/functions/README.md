@@ -41,6 +41,13 @@ Required env vars:
 Detailed end-to-end Stripe + Modal setup is in
 [`docs/paper-review-runbook.md`](../../docs/paper-review-runbook.md).
 
+## `moderntex-download`
+
+Session-gated delivery of the ModernTex DMG (buyers) and the token-gated Sparkle
+feed and update DMGs (the app). See `docs/products/moderntex.md`. The webhook
+above also emails Blobs-delivered buyers (kits, ModernTex) their success-page
+link via Resend; set `ALERT_EMAIL_TO` so a failed send reaches you.
+
 ## `indexnow-ping`
 
 Pings the IndexNow shared endpoint (Bing / Yandex / Seznam / Naver) with URLs from the live sitemap whose `<lastmod>` matches today. Triggered automatically after every production deploy via a Netlify outgoing webhook.

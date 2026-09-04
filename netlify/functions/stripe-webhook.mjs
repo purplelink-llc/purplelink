@@ -62,13 +62,16 @@ const PURPLELINK_PRODUCTS = new Set([
 // the session is paid (kit-download.mjs, moderntex-download.mjs). They are
 // listed so a ModernTex or kit sale reads as "delivered" in the function log
 // rather than as a foreign product.
-const BLOB_DELIVERED_PRODUCTS = new Set([
-  "kit-faceless",
-  "kit-monetization",
-  "kit-bundle",
-  "kit-clip",
-  "moderntex",
+const BLOB_DELIVERED_PRODUCTS = new Map([
+  ["kit-faceless",      { name: "The Faceless Content Pipeline kit", successPath: "/kits/success/" }],
+  ["kit-monetization",  { name: "The Monetization Stack kit",        successPath: "/kits/success/" }],
+  ["kit-bundle",        { name: "the kit bundle",                    successPath: "/kits/success/" }],
+  ["kit-clip",          { name: "The Clip Pipeline kit",             successPath: "/kits/success/" }],
+  ["moderntex",         { name: "ModernTex for macOS",               successPath: "/moderntex/success/" }],
 ]);
+const SITE_ORIGIN = "https://purplelink.llc";
+const ORDER_FROM_ADDRESS = "Purplelink LLC <orders@purplelink.llc>";
+const ORDER_REPLY_TO = "ben@purplelink.llc";
 
 function jsonResponse(status, body) {
   return new Response(JSON.stringify(body), {
@@ -133,13 +136,70 @@ async function alertOperator(subject, detail) {
       body: JSON.stringify({
         from: ALERT_FROM_ADDRESS,
         to: [to],
-        subject: `[Paper Review] ${subject}`,
+        subject: `[purplelink.llc] ${subject}`,
         text: detail,
       }),
     });
   } catch (_) {
     // Swallow — alerting is best-effort and must never break the webhook.
   }
+}
+
+/**
+ * Email the buyer the link that reopens their download page. Stripe's own
+ * receipt carries no such link, so a buyer who closed the success tab before
+ * it loaded would otherwise hold only a charge and no way back to the file.
+ * The session id in the URL is the same bearer token the success page uses;
+ * the download function re-checks payment on every request, so the link is
+ * safe to keep. Returns true on send. Never throws — a failure here must not
+ * change the response to Stripe — but it does alert the operator, because a
+ * paid buyer with neither the page nor the email is exactly what the alert
+ * exists for.
+ */
+async function emailDownloadLink(to, sessionId, productKey) {
+  const apiKey = Netlify.env.get("RESEND_API_KEY");
+  const entry = BLOB_DELIVERED_PRODUCTS.get(productKey);
+  if (!apiKey || !to || !entry) return false;
+  const link = `${SITE_ORIGIN}${entry.successPath}?session_id=${encodeURIComponent(sessionId)}`;
+  const text =
+    `Thanks for buying ${entry.name}.\n\n` +
+    `Your download page:\n${link}\n\n` +
+    `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
+    `Questions or trouble downloading: reply to this email.\n\n` +
+    `Purplelink LLC, Atlanta, Georgia`;
+  const html =
+    `<p>Thanks for buying ${entry.name}.</p>` +
+    `<p><a href="${link}">Open your download page</a></p>` +
+    `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
+    `<p>Questions or trouble downloading: reply to this email.</p>` +
+    `<p>Purplelink LLC, Atlanta, Georgia</p>`;
+  try {
+    const resp = await fetch(RESEND_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        from: ORDER_FROM_ADDRESS,
+        reply_to: ORDER_REPLY_TO,
+        to: [to],
+        subject: `Your ${entry.name} download`,
+        text,
+        html,
+      }),
+    });
+    if (resp.ok) return true;
+    await alertOperator(
+      "Download email failed for a paid order",
+      `session_id=${sessionId}\nproduct=${productKey}\nemail=${to}\nresend_status=${resp.status}\n` +
+        `Send the buyer this link by hand: ${link}`,
+    );
+  } catch (err) {
+    await alertOperator(
+      "Download email failed for a paid order",
+      `session_id=${sessionId}\nproduct=${productKey}\nemail=${to}\nerror=${String(err)}\n` +
+        `Send the buyer this link by hand: ${link}`,
+    );
+  }
+  return false;
 }
 
 export default async function handler(request) {
@@ -203,7 +263,8 @@ export default async function handler(request) {
   // fails, we return 502, and Stripe retries for ~3 days while alerting the
   // operator each time. Ignore anything that is not ours.
   if (BLOB_DELIVERED_PRODUCTS.has(rawProduct)) {
-    return jsonResponse(200, { status: "delivered_by_blobs", product: rawProduct });
+    const emailed = await emailDownloadLink(email, sessionId, rawProduct);
+    return jsonResponse(200, { status: "delivered_by_blobs", product: rawProduct, emailed });
   }
   if (rawProduct && !PURPLELINK_PRODUCTS.has(rawProduct)) {
     return jsonResponse(200, { status: "ignored_foreign_product", product: rawProduct });
