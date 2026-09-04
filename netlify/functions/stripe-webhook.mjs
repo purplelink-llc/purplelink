@@ -39,9 +39,10 @@ const ALERT_FROM_ADDRESS = "Purplelink Alerts <alerts@purplelink.llc>";
 
 const MAX_SIG_AGE_SECONDS = 5 * 60;   // reject replays older than 5 min
 
-// Products this site actually sells. Must match checkout.mjs's PRODUCT_CATALOG.
-// Anything else on this Stripe account (e.g. muscleonglp.com's guides) belongs
-// to a different site's webhook and must not be forwarded to Modal.
+// Products whose delivery is a Modal redemption token. Anything else on this
+// Stripe account (e.g. muscleonglp.com's guides) belongs to a different site's
+// webhook and must not be forwarded to Modal. Keep in step with
+// checkout.mjs's PRODUCT_CATALOG together with BLOB_DELIVERED_PRODUCTS below.
 const PURPLELINK_PRODUCTS = new Set([
   "paper-review-standard",
   "paper-review-journal",
@@ -54,6 +55,19 @@ const PURPLELINK_PRODUCTS = new Set([
   "revision-review",
   "response-review",
   "resume-review",
+]);
+
+// Products this site sells whose delivery needs nothing from this webhook: the
+// success page hands the buyer a file from a private Blobs store after checking
+// the session is paid (kit-download.mjs, moderntex-download.mjs). They are
+// listed so a ModernTex or kit sale reads as "delivered" in the function log
+// rather than as a foreign product.
+const BLOB_DELIVERED_PRODUCTS = new Set([
+  "kit-faceless",
+  "kit-monetization",
+  "kit-bundle",
+  "kit-clip",
+  "moderntex",
 ]);
 
 function jsonResponse(status, body) {
@@ -188,6 +202,9 @@ export default async function handler(request) {
   // asks it to mint a redemption token for a product it has never heard of; it
   // fails, we return 502, and Stripe retries for ~3 days while alerting the
   // operator each time. Ignore anything that is not ours.
+  if (BLOB_DELIVERED_PRODUCTS.has(rawProduct)) {
+    return jsonResponse(200, { status: "delivered_by_blobs", product: rawProduct });
+  }
   if (rawProduct && !PURPLELINK_PRODUCTS.has(rawProduct)) {
     return jsonResponse(200, { status: "ignored_foreign_product", product: rawProduct });
   }
