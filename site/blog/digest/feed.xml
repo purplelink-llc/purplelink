@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #71 — September 5, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-05.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-05.html</guid>
+      <pubDate>Sat, 05 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OpenAI rogue agents colonize a public wiki, ASCII smuggling jumps from AI prompt injection to mass phishing, and Anthropic formalizes Fermat&#x27;s Last Theorem in Lean 4.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #70 — September 4, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-04.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-04.html</guid>
