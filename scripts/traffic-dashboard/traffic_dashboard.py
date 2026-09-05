@@ -198,6 +198,42 @@ def fetch_site(site: dict, token: str) -> dict:
     raise last  # type: ignore[misc]
 
 
+SALES_URL = "https://purplelink.llc/.netlify/functions/sales"
+# Both sites sell through one Stripe account, so a single call covers them
+# both; the endpoint splits by product. It reuses purplelink's stats token.
+SALES_TOKEN_ENV = "PURPLELINK_STATS_TOKEN"
+
+
+def fetch_sales(token: str) -> dict | None:
+    """Revenue for both sites, or None when it cannot be read.
+
+    Sales are the point of the whole exercise, but they are still only one
+    panel: a Stripe outage must not cost us the traffic report, so every
+    failure here degrades to None and the dashboard renders without it.
+    """
+    url = f"{SALES_URL}?token={urllib.parse.quote(token)}&days={FETCH_DAYS}"
+    req = urllib.request.Request(url, headers={"User-Agent": "purplelink-traffic-dashboard"})
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+            if payload.get("error"):
+                raise RuntimeError(payload.get("detail") or payload["error"])
+            return payload
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                print(f"  ! sales: HTTP {exc.code}", file=sys.stderr)
+                return None
+            last = exc
+        except (OSError, http.client.HTTPException, json.JSONDecodeError, RuntimeError) as exc:
+            last = exc
+    print(f"  ! sales unavailable: {str(last)[:80]}", file=sys.stderr)
+    return None
+
+
 def fetch_gsc(site: dict) -> dict | None:
     """Search Console clicks/impressions/position, plus top queries and pages.
 
@@ -473,6 +509,13 @@ def summarise(site: dict, site_hist: dict) -> dict:
                 "key": k,
                 "label": lbl,
                 "value": total(last7_days, k),
+                # Today is deliberately outside the 7-day window, which is right
+                # for a week-over-week number and wrong for a claim about
+                # whether anything is happening. On 2026-09-05 the first seven
+                # checkout clicks the site ever recorded all landed today, and
+                # the dashboard reported "zero, traffic is not reaching that
+                # step" while four of them were paying.
+                "today": total([today.isoformat()], k),
                 # Prior week for the same counter, so the card can show whether
                 # a number is moving rather than just its level. Only comparable
                 # when the counter already existed across the whole prior week.
@@ -645,6 +688,10 @@ def observations(summaries: list[dict]) -> list[str]:
                 out.append(f"{s['label']}: {sec['label']} have only been recorded since "
                            f"{sec['since']} ({started}), so the 7-day window is not covered yet. "
                            f"Zero here measures the counter's age, not the audience.")
+            elif sec.get("today"):
+                out.append(f"{s['label']}: {sec['today']} {sec['label']} today, the first in "
+                           f"over a week. The 7-day window covers complete days only, "
+                           f"so today is not in it yet.")
             else:
                 out.append(f"{s['label']}: zero {sec['label']} in the last 7 days. "
                            f"Traffic is arriving but not reaching that step.")
@@ -715,6 +762,30 @@ h1{font-size:clamp(26px,3.6vw,38px);letter-spacing:-.02em;margin:0 0 6px;font-we
 .stamp{color:var(--muted);font-size:14px}
 h2{font-size:15px;letter-spacing:.02em;margin:34px 0 12px;font-weight:640;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+/* Sales sits above the traffic cards: it is the number the rest of the page
+   exists to move, so it gets the top of the screen and the largest type. */
+.sales{background:var(--panel);border:1px solid var(--purple-soft);border-radius:var(--radius);
+  padding:22px 24px;margin:0 0 22px}
+.sales h2{margin:0 0 4px;font-size:1rem;letter-spacing:.02em;color:var(--muted);font-weight:600}
+.sales-figures{display:flex;flex-wrap:wrap;gap:32px;align-items:baseline;margin:10px 0 4px}
+.sales-big{font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1;color:var(--purple)}
+.sales-sub{font-size:.9rem;color:var(--muted)}
+.sales-figure-label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px;
+  text-transform:none;letter-spacing:.01em}
+.sales-secondary{font-size:1.35rem;font-weight:650;line-height:1}
+.sales-split{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
+.sales-chip{border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:.85rem}
+.sales-chip b{color:var(--ink);font-weight:650}
+.sales-chip span{color:var(--muted)}
+.sales-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:18px}
+.sales table{width:100%;border-collapse:collapse;font-size:.87rem}
+.sales th{text-align:left;font-weight:600;color:var(--muted);padding:4px 8px 6px 0;
+  border-bottom:1px solid var(--line);font-size:.78rem}
+.sales td{padding:5px 8px 5px 0;border-bottom:1px solid var(--line);color:var(--ink)}
+.sales td.num{text-align:right;font-variant-numeric:tabular-nums}
+.sales .who{color:var(--muted);font-size:.82rem}
+.sales-none{color:var(--muted);margin:8px 0 0}
+.sales-foot{color:var(--muted);font-size:.78rem;margin:14px 0 0}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
 .site-name{font-size:15px;font-weight:640;margin:0}
 .site-dom{color:var(--muted);font-size:13px;margin:2px 0 16px}
@@ -1061,7 +1132,109 @@ def site_card(s: dict) -> str:
     </div>"""
 
 
-def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None) -> str:
+PRODUCT_LABELS = {
+    "moderntex": "ModernTex", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "citation-gap": "Citation gap", "revision-review": "Revision review",
+    "response-review": "Response review", "resume-review": "Resume review",
+    "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
+    "kit-faceless": "Faceless pipeline kit", "kit-monetization": "Monetization kit",
+    "paper-review-standard": "Paper review", "paper-review-journal": "Paper review (journal)",
+    "paper-review-deep": "Paper review (deep)", "paper-review-pack-5": "Paper review 5-pack",
+    "paper-review-pack-20": "Paper review 20-pack",
+    "protein-playbook": "Protein playbook", "creatine-glp1": "Creatine guide",
+    "muscleonglp-guide": "MuscleOnGLP guide", "complete-pack": "Complete pack",
+    "no-gym-plan": "No-gym plan", "off-ramp": "Off-ramp guide",
+    "tracker": "Tracker", "workbook": "Workbook",
+}
+
+
+def orders(n: int) -> str:
+    return f"{n} order" if n == 1 else f"{n} orders"
+
+
+def money(cents: int) -> str:
+    """Whole dollars stay whole: $40, not $40.00. Cents only when there are any."""
+    return f"${cents / 100:,.2f}".replace(".00", "") if cents % 100 else f"${cents // 100:,}"
+
+
+def sales_block(sales: dict | None) -> str:
+    """The revenue panel that sits above everything else."""
+    if not sales:
+        return ("<section class='sales'><h2>Sales</h2>"
+                "<p class='sales-none'>Stripe could not be reached on this run. "
+                "Traffic figures below are unaffected.</p></section>")
+
+    win, all_time = sales.get("window", {}), sales.get("allTime", {})
+    days = win.get("days", FETCH_DAYS)
+    bal = sales.get("balance") or {}
+
+    chips = "".join(
+        f"<span class='sales-chip'><b>{html.escape(s['label'])}</b> "
+        f"<span>{money(s['windowGross'])} in {days}d · {money(s['gross'])} all time</span></span>"
+        for s in sales.get("bySite", [])
+    ) or "<span class='sales-chip'><span>No site has sold yet.</span></span>"
+
+    prod_rows = "".join(
+        f"<tr><td>{html.escape(PRODUCT_LABELS.get(r['key'], r['key']))}</td>"
+        f"<td class='num'>{r['orders']}</td><td class='num'>{money(r['gross'])}</td>"
+        f"<td class='who'>{html.escape(r['lastOrder'])}</td></tr>"
+        for r in sales.get("byProduct", [])
+    ) or "<tr><td colspan='4' class='who'>Nothing sold yet.</td></tr>"
+
+    recent_rows = "".join(
+        f"<tr><td class='who'>{html.escape(r['date'])}</td>"
+        f"<td>{html.escape(PRODUCT_LABELS.get(r['product'], r['product']))}</td>"
+        f"<td class='num'>{money(r['amount'])}</td>"
+        f"<td class='who'>{html.escape(r['email'])}</td></tr>"
+        for r in sales.get("recent", [])[:8]
+    ) or "<tr><td colspan='4' class='who'>No orders yet.</td></tr>"
+
+    notes = []
+    if bal:
+        notes.append(f"Stripe balance: {money(bal.get('available', 0))} available, "
+                     f"{money(bal.get('pending', 0))} pending.")
+    st = sales.get("selfTests") or {}
+    if st.get("orders"):
+        n = st["orders"]
+        notes.append(f"{n} owner test purchase{'' if n == 1 else 's'} "
+                     f"({money(st.get('gross', 0))}) excluded from every figure here.")
+    notes.append("Paid Checkout Sessions, gross. Refunds and Stripe fees are not deducted.")
+    if sales.get("truncated"):
+        notes.append("Older orders beyond the pagination cap are not counted.")
+
+    return f"""<section class="sales">
+  <h2>Sales · both sites</h2>
+  <div class="sales-figures">
+    <div>
+      <span class="sales-figure-label">Last {days} days</span>
+      <span class="sales-big">{money(win.get('gross', 0))}</span>
+      <span class="sales-sub"> · {orders(win.get('orders', 0))}</span>
+    </div>
+    <div>
+      <span class="sales-figure-label">All time</span>
+      <span class="sales-secondary">{money(all_time.get('gross', 0))}</span>
+      <span class="sales-sub"> · {orders(all_time.get('orders', 0))}</span>
+    </div>
+  </div>
+  <div class="sales-split">{chips}</div>
+  <div class="sales-cols">
+    <div>
+      <table><thead><tr><th>Product</th><th class="num">Orders</th>
+      <th class="num">Gross</th><th>Last</th></tr></thead>
+      <tbody>{prod_rows}</tbody></table>
+    </div>
+    <div>
+      <table><thead><tr><th>Recent</th><th>Product</th>
+      <th class="num">Amount</th><th>Buyer</th></tr></thead>
+      <tbody>{recent_rows}</tbody></table>
+    </div>
+  </div>
+  <p class="sales-foot">{html.escape(" ".join(notes))}</p>
+</section>"""
+
+
+def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None,
+           sales: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -1108,6 +1281,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
   <h1>Traffic</h1>
   <p class="stamp">Updated {html.escape(generated)} · refreshes daily at 9:00am</p>
 </header>
+{sales_block(sales)}
 <div class="grid">{cards}</div>
 <h2>What this says</h2>
 <ul class="obs">{obs_html}</ul>
@@ -1190,6 +1364,20 @@ def main() -> int:
                 entry["error"] = str(exc)[:120]
                 print(f"  ! {site['label']} fetch failed: {exc}", file=sys.stderr)
 
+        # Sales come from Stripe, not from either site's beacon, so they are
+        # fetched once for both. Archived like the rest so a --no-fetch
+        # re-render still shows the last known revenue instead of a blank panel.
+        sales_token = cfg.get(SALES_TOKEN_ENV)
+        if sales_token:
+            sales = fetch_sales(sales_token)
+            if sales:
+                history["sales"] = sales
+                w, a = sales.get("window", {}), sales.get("allTime", {})
+                print(f"  ok Sales: {money(w.get('gross', 0))} in {w.get('days', FETCH_DAYS)}d "
+                      f"({orders(w.get('orders', 0))}), {money(a.get('gross', 0))} all time")
+        else:
+            print(f"  ! sales: {SALES_TOKEN_ENV} not set in {CONFIG_PATH}", file=sys.stderr)
+
         history["lastRun"] = dt.datetime.now(dt.timezone.utc).isoformat()
         HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
 
@@ -1198,9 +1386,20 @@ def main() -> int:
     firsts = [s["first_day"] for s in summaries if s["first_day"]]
     generated = dt.datetime.now().strftime("%a %d %b %Y, %-I:%M%p").replace("AM", "am").replace("PM", "pm")
 
-    DASHBOARD_PATH.write_text(render(summaries, obs, generated, min(firsts) if firsts else None))
+    sales = history.get("sales")
+    DASHBOARD_PATH.write_text(
+        render(summaries, obs, generated, min(firsts) if firsts else None, sales))
 
     # Terminal summary, so a manual run is useful without opening a browser.
+    if sales:
+        w, a = sales.get("window", {}), sales.get("allTime", {})
+        print(f"\n  Sales — {money(w.get('gross', 0))} in the last "
+              f"{w.get('days', FETCH_DAYS)} days ({orders(w.get('orders', 0))}); "
+              f"{money(a.get('gross', 0))} all time ({orders(a.get('orders', 0))})")
+        for site_row in sales.get("bySite", []):
+            print(f"   {site_row['label']:<22} {money(site_row['windowGross']):>8} "
+                  f"({site_row['windowOrders']})   all time {money(site_row['gross'])}")
+
     print(f"\n  Traffic — {generated}")
     for s in summaries:
         d = "" if s["delta_pct"] is None else f"  ({s['delta_pct']:+d}% WoW)"
