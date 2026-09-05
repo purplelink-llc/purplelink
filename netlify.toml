@@ -43,10 +43,22 @@
   [headers.values]
     Cache-Control = "public, max-age=2592000, stale-while-revalidate=604800"
 
-# Root CSS/JS are not fingerprinted, so they can't be immutable. A 1-day cache
-# with a 7-day stale-while-revalidate gives instant repeat loads (no
-# revalidation round-trip on the critical path) while letting a deploy
-# propagate within a day, and serving stale-then-refreshing meanwhile.
+# CSS and JS are fingerprinted: scripts/fingerprint_assets.py stamps every
+# reference in site/*.html as ?v=<hash of the file's bytes>, so changing an
+# asset changes its URL. That makes these safe to cache forever, and a fix
+# reaches people on their next page load rather than whenever the old copy
+# happened to expire. Before this, styles.css and site.js were cached for a
+# day, which twice on 2026-09-04 left a deployed fix invisible to anyone who
+# had already loaded the site.
+#
+# The stamp is what makes `immutable` correct here, so it must never be
+# skipped: deploy.sh runs the script on every deploy, and the fingerprints are
+# committed so a git-triggered build publishes the same HTML.
+# These four are the exception: site/blog/digest/ is generated and committed by
+# the Modal cron, which emits them unstamped, so their bare URLs must stay
+# refreshable or an archive reader would hold year-old CSS. Fingerprinted pages
+# still get a fix instantly, because ?v= makes the changed asset a new URL that
+# no cached copy can answer; the day here only bounds the digest pages.
 [[headers]]
   for = "/styles.css"
   [headers.values]
@@ -58,9 +70,27 @@
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
 
 [[headers]]
-  for = "/tools/tools.js"
+  for = "/analytics.js"
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/ethicalads.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+# Everything under /tools/ is referenced only from stamped pages, so it can be
+# cached hard. This also retires the revalidation round-trip those stylesheets
+# and scripts were paying on every single page load.
+[[headers]]
+  for = "/tools/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/tools/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/sitemap.xml"

@@ -112,6 +112,15 @@ fi
 step "regenerate sitemap"
 python3 scripts/gen_sitemap.py
 
+# 2b. Asset fingerprints
+# Every local CSS/JS reference carries ?v=<hash of the file>, so a changed asset
+# is a new URL and the assets themselves can be cached hard (see netlify.toml).
+# This MUST run before every deploy: the immutable headers mean an asset that
+# ships without a fresh stamp stays cached for a year. Runs first so the deploy
+# and a git-triggered Netlify build publish identical HTML.
+step "fingerprint assets"
+python3 scripts/fingerprint_assets.py
+
 # 3. Frontend
 step "netlify deploy --prod"
 netlify deploy --prod --dir site --message "$MESSAGE"
