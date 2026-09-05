@@ -1427,8 +1427,20 @@ dd {
   border: 1px solid var(--line);
 }
 
+/* The capture is 2940x1862, a 2x screenshot of a 1470pt window. Past 1470px it
+   is being upscaled, which is what made it look soft and oversized on a wide
+   display, so cap it at its own logical size and centre it. */
+.screenshot-wide {
+  max-width: 1470px;
+  margin-inline: auto;
+}
+
 .screenshot-wide img {
+  display: block;
   width: 100%;
+  /* Without this the width/height attributes' presentation hint keeps height at
+     1862px while width scales, and the screenshot renders vertically stretched. */
+  height: auto;
   border-radius: 12px;
   border: 1px solid var(--line);
   box-shadow: 0 4px 24px oklch(0% 0 0 / 0.08);
