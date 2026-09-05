@@ -1993,6 +1993,28 @@ dd {
   transform: none;
 }
 
+/* ─── Dated update note on an older post ──────────────────────────────── */
+
+.post-update {
+  margin: 0 0 28px;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+
+.post-update p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.post-update a {
+  color: var(--purple);
+  font-weight: 600;
+}
+
 /* ─── Changelog timeline ──────────────────────────────────────────────── */
 
 .changelog-content {
