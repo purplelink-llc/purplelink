@@ -84,6 +84,11 @@ def process(html_file: Path, write: bool) -> int:
 
 def main() -> int:
     check = "--check" in sys.argv
+    # One-time escape hatch for the backfill that first stamped the pages the
+    # cron had already written. backend/digest/publisher.py stamps everything it
+    # writes from now on, so routine deploys should never need this.
+    if "--include-digest" in sys.argv:
+        SKIP_DIRS.clear()
     files = [f for f in sorted(SITE.rglob("*.html"))
              if not any(d in f.parents for d in SKIP_DIRS)]
     changed = sum(process(f, write=not check) for f in files)

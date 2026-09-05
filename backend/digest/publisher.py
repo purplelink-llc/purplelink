@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import datetime
 import email.utils
+import hashlib
 import html
 import logging
 from typing import Optional
@@ -26,6 +27,35 @@ _MONTHS = [
     "", "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December",
 ]
+
+
+# Assets these pages link, stamped with a hash of their contents so a changed
+# stylesheet is a new URL rather than something a reader's cache can answer with
+# a stale copy. scripts/fingerprint_assets.py does the same for the hand-written
+# pages; it skips site/blog/digest/ because this module owns those files.
+# Same sha256-of-bytes, first 10 hex, so both produce the same stamp.
+_STAMPED_ASSETS = ("/styles.css", "/site.js")
+_asset_stamps: dict[str, str] = {}
+
+
+async def load_asset_stamps(client, token: str) -> None:
+    """Read the linked assets from the repo and remember their content hashes.
+
+    Best effort. A miss just means this issue links the bare path, which is
+    still correct and still cached for a day; publishing must not fail over a
+    caching optimisation.
+    """
+    for path in _STAMPED_ASSETS:
+        content, _ = await _github_get_file(client, f"site{path}", token)
+        if content is None:
+            logger.warning("load_asset_stamps: could not read site%s; linking it unstamped", path)
+            continue
+        _asset_stamps[path] = hashlib.sha256(content.encode("utf-8")).hexdigest()[:10]
+
+
+def asset_url(path: str) -> str:
+    stamp = _asset_stamps.get(path)
+    return f"{path}?v={stamp}" if stamp else path
 
 
 def _fmt_date(d: datetime.date) -> str:
@@ -70,6 +100,8 @@ def render_html(digest: DigestData) -> str:
     iso_date = digest.date.isoformat()
     title = f"Purplelink Daily Digest #{digest.number} — {date_str}"
     sections_html = _render_sections_html(digest)
+    css_url = asset_url("/styles.css")
+    site_js_url = asset_url("/site.js")
     desc = _meta_desc(digest)
     topic_labels = list(digest.sections.keys())
     keywords = ", ".join(topic_labels + ["Purplelink Daily Digest", "Benjamin Ampel", "cybersecurity research", "AI papers"])
@@ -113,8 +145,8 @@ def render_html(digest: DigestData) -> str:
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/purplelink-logo.png" as="image">
-    <link rel="stylesheet" href="/styles.css">
-    <script src="/site.js" defer></script>
+    <link rel="stylesheet" href="{css_url}">
+    <script src="{site_js_url}" defer></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
     <script type="application/ld+json">
     {{
@@ -284,6 +316,8 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
     below). Cross-links every past digest that had an item in this topic,
     so the archive compounds into a real crawlable page per topic instead
     of only existing as a flat reverse-chronological list."""
+    css_url = asset_url("/styles.css")
+    site_js_url = asset_url("/site.js")
     canonical = f"{SITE_URL}/blog/digest/topics/{slug}/"
     title = f"{section_label} — Purplelink Daily Digest"
     return f"""<!doctype html>
@@ -309,8 +343,8 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="/blog/digest/feed.xml">
-    <link rel="stylesheet" href="/styles.css">
-    <script src="/site.js" defer></script>
+    <link rel="stylesheet" href="{css_url}">
+    <script src="{site_js_url}" defer></script>
     <script type="application/ld+json">
     {{
       "@context": "https://schema.org",
@@ -665,6 +699,8 @@ async def publish(
     async with httpx.AsyncClient(timeout=30.0) as client:
         count = await github_count_digests(client, github_token)
         digest.number = count + 1
+
+        await load_asset_stamps(client, github_token)
 
         html_content = render_html(digest)
         entry = render_index_entry(digest)

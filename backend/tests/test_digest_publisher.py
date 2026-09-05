@@ -278,3 +278,79 @@ def test_github_update_topic_hub_skips_unknown_section():
         assert not client.get.called
         assert not client.put.called
     asyncio.run(run())
+
+
+# ── Asset fingerprints ───────────────────────────────────────────────────────
+# The digest pages are written by this module, not by
+# scripts/fingerprint_assets.py, so the ?v= stamp has to be applied here or a
+# reader's cache can answer with a stale stylesheet after a fix ships.
+
+import hashlib as _hashlib
+import digest.publisher as _pub
+
+
+def _clear_stamps():
+    _pub._asset_stamps.clear()
+
+
+def test_asset_url_is_bare_until_stamps_are_loaded():
+    _clear_stamps()
+    assert _pub.asset_url("/styles.css") == "/styles.css"
+
+
+def test_asset_url_carries_the_stamp_once_loaded():
+    _clear_stamps()
+    _pub._asset_stamps["/styles.css"] = "abc1234567"
+    assert _pub.asset_url("/styles.css") == "/styles.css?v=abc1234567"
+    _clear_stamps()
+
+
+def test_rendered_pages_link_stamped_assets():
+    _clear_stamps()
+    _pub._asset_stamps.update({"/styles.css": "aaaaaaaaaa", "/site.js": "bbbbbbbbbb"})
+    try:
+        page = render_html(_make_digest())
+        hub = _pub._topic_hub_skeleton("Cybersecurity", "cybersecurity")
+        for html_out in (page, hub):
+            assert 'href="/styles.css?v=aaaaaaaaaa"' in html_out
+            assert 'src="/site.js?v=bbbbbbbbbb"' in html_out
+            assert 'href="/styles.css"' not in html_out
+            assert 'src="/site.js"' not in html_out
+    finally:
+        _clear_stamps()
+
+
+def test_rendering_still_works_when_stamps_are_unavailable():
+    """A GitHub read failure must not stop the digest from publishing."""
+    _clear_stamps()
+    page = render_html(_make_digest())
+    assert 'href="/styles.css"' in page
+    assert 'src="/site.js"' in page
+
+
+def test_load_asset_stamps_hashes_file_bytes():
+    """The stamp must match what fingerprint_assets.py computes for the same
+    file, so both generators agree on one URL per version of an asset."""
+    import asyncio
+    from unittest.mock import AsyncMock
+
+    body = "body { color: rebeccapurple; }\n"
+    expected = _hashlib.sha256(body.encode("utf-8")).hexdigest()[:10]
+
+    _clear_stamps()
+    client = AsyncMock()
+
+    async def fake_get(_client, path, _token):
+        return (body, "sha") if path == "site/styles.css" else (None, None)
+
+    original = _pub._github_get_file
+    _pub._github_get_file = fake_get
+    try:
+        asyncio.run(_pub.load_asset_stamps(client, "tok"))
+        assert _pub._asset_stamps["/styles.css"] == expected
+        # the unreadable one is simply left unstamped, not faked
+        assert "/site.js" not in _pub._asset_stamps
+        assert _pub.asset_url("/site.js") == "/site.js"
+    finally:
+        _pub._github_get_file = original
+        _clear_stamps()
