@@ -159,6 +159,102 @@ Re-deploy so the function picks up the new env var:
 
     netlify deploy --prod --dir site
 
+### When the webhook stops delivering (it fails silently)
+
+This happened on 2026-09-05 and cost four ModernTex buyers their download
+email. Read this before assuming delivery works.
+
+**The signing secret is per endpoint.** Both sites' endpoints live on the same
+Stripe account and both receive every `checkout.session.completed`, but each
+one signs with its own `whsec_`. Putting the wrong site's secret (or a stale
+one from a re-created endpoint) into a site's `STRIPE_WEBHOOK_SECRET` makes
+every delivery to that endpoint fail signature verification and return 400.
+
+**Nothing looks broken from the outside**, which is the dangerous part:
+
+- **The Blobs-delivered products still work, which hides the outage.**
+  ModernTex, the kits and the muscleonglp guides are handed over by
+  `success_url`, a session-gated download page that never consults the
+  webhook. Sales complete, files download, and the funnel looks healthy. All
+  that is lost is the email carrying the durable link, so buyers have no way
+  back for a reinstall or an update.
+- **Paper Review and the adjacent paid tools do NOT survive it.** Their
+  entitlement is written by this webhook (`/paper-review/register-token` into
+  `paper_tokens_dict`), and `redeem-session` only reads that dict. A buyer who
+  pays while the webhook is failing lands on the upload page and gets
+  `{"error":"pending"}` forever, with no refund path. Nobody bought one during
+  the 2026-09-05 window; that was luck, not design. Treat a failing webhook as
+  a live incident on those products, not a cosmetic one.
+- No operator alert fires. `alertOperator` lives *inside* the handler, past
+  the signature check, so a rejected delivery cannot alert anyone. The alert
+  covers a failed Resend call, not a webhook that never runs.
+- `netlify logs --function stripe-webhook` showed no invocations at all for
+  the affected sales, which is wrong and sent the first investigation down a
+  blind alley. Do not treat missing function logs as proof the request never
+  arrived.
+
+**The Stripe dashboard is the only source of truth.** Developers → Webhooks →
+the endpoint → **Event deliveries**. Each attempt shows its HTTP status and
+response body. On 2026-09-05 the purplelink endpoint read `Total 20, Failed
+20`, every one `400` with `{"error": "invalid_signature"}`, while
+`muscleonglp-fulfillment` read `Total 5, Failed 0`. Check both endpoints:
+one being healthy says nothing about the other.
+
+The API can tell you an event failed but not why, which is enough for a
+daily check:
+
+    # any event that did not reach every endpoint
+    curl -s https://api.stripe.com/v1/events \
+      -u "$STRIPE_SECRET_KEY:" \
+      -d limit=20 -d type=checkout.session.completed \
+      -d delivery_success=false -G | jq '.data[].id'
+
+**Fix:** reveal the signing secret on that endpoint's page, then
+
+    netlify env:set STRIPE_WEBHOOK_SECRET "whsec_…" --context production --force
+    bash scripts/deploy.sh
+
+**Verify without emailing a customer.** Resending a real delivery works but
+mails that buyer again. Sign a synthetic event yourself and use a product key
+belonging to the *other* site, which returns before the email path:
+
+    python3 - <<'EOF' > /tmp/sig.sh
+    import hashlib, hmac, json, re, subprocess, time
+    out = subprocess.run(["netlify","env:get","STRIPE_WEBHOOK_SECRET",
+                          "--context","production"], capture_output=True, text=True).stdout
+    secret = re.search(r"whsec_[A-Za-z0-9_\-]{16,}", out).group(0)
+    payload = json.dumps({"id":"evt_probe","object":"event",
+        "type":"checkout.session.completed",
+        "data":{"object":{"id":"cs_live_probe","payment_status":"paid",
+            "metadata":{"product":"protein-playbook"},
+            "customer_details":{"email":"probe@example.invalid"},
+            "amount_total":100,"currency":"usd"}}}, separators=(",",":"))
+    ts = str(int(time.time()))
+    sig = hmac.new(secret.encode(), f"{ts}.{payload}".encode(), hashlib.sha256).hexdigest()
+    open("/tmp/payload.json","w").write(payload)
+    print(f'SIG="t={ts},v1={sig}"')
+    EOF
+    source /tmp/sig.sh
+    curl -s -X POST https://purplelink.llc/.netlify/functions/stripe-webhook \
+      -H "Content-Type: application/json" -H "Stripe-Signature: $SIG" \
+      --data-binary @/tmp/payload.json -w "\nHTTP %{http_code}\n"
+    rm -f /tmp/sig.sh /tmp/payload.json
+
+A working endpoint answers `200 {"status":"ignored_foreign_product",…}`. A
+broken one answers `400 {"error":"invalid_signature"}`.
+
+**After the fix, expect duplicate emails.** Stripe keeps retrying failed
+deliveries for about three days. Once the secret is right those retries
+succeed, so any buyer you already emailed by hand receives the automatic one
+as well. Say so if they ask; do not disable the endpoint to prevent it.
+
+**Recovering the affected buyers.** Their download links never expire:
+`https://purplelink.llc/moderntex/success/?session_id=<cs_live_…>` for
+ModernTex, and the equivalent `/.netlify/functions/download?session_id=…`
+for muscleonglp. Pull the paid sessions from Stripe, confirm each link
+returns a file *before* mailing it, and send one message per buyer rather
+than one with everyone in the To: line.
+
 ---
 
 ## 6. End-to-end test (test-mode, with webhook)
@@ -179,7 +275,9 @@ If anything stalls or errors:
   `paper_review_pipeline` invocations).
 - Netlify function logs: <https://app.netlify.com/projects/purplelink/logs/functions>
 - Stripe webhook delivery log: dashboard → Developers → Webhooks → the
-  endpoint → recent deliveries.
+  endpoint → recent deliveries. If deliveries are failing, see
+  [When the webhook stops delivering](#when-the-webhook-stops-delivering-it-fails-silently)
+  above — it fails without alerting anyone.
 
 ---
 
