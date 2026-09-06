@@ -60,6 +60,47 @@ METRIC_START_OVERRIDES = {
     ("purplelink", "checkoutClicks"): "2026-08-28",
 }
 
+# Events we generated ourselves. The beacon cannot tell a verification click
+# from a customer's, so they are subtracted here rather than left to be read as
+# audience behaviour. history.json keeps the raw counts; only the analysis is
+# adjusted, and the entry stops mattering once the day rolls out of the window.
+#
+# Add one when you exercise a paid path in production, and say why.
+SYNTHETIC_EVENTS = {
+    ("purplelink", "checkoutClicks", "2026-09-05"): {
+        "count": 8,
+        "why": "buy-button verification after the 2026-09-04 fix: one click on "
+               "/moderntex/ plus the four kits, both paper-review pages and "
+               "/tools/cover-letter/",
+    },
+}
+
+
+def without_synthetic(site_key: str, by_day: dict) -> tuple[dict, list[dict]]:
+    """by_day with our own test events removed, plus what was removed.
+
+    Applied once, here, so every downstream number — the 7-day counters, the
+    checkout rate, the lifetime bound, the sparkline — is computed from the
+    same corrected series. Patching each call site instead would eventually
+    miss one and report two different figures for the same metric.
+    """
+    entries = [(k, v) for k, v in SYNTHETIC_EVENTS.items() if k[0] == site_key]
+    if not entries:
+        return by_day, []
+    adjusted = {day: dict(metrics) for day, metrics in by_day.items()}
+    applied = []
+    for (_site, metric, day), entry in entries:
+        if day not in adjusted:
+            continue
+        raw = int(adjusted[day].get(metric, 0) or 0)
+        removed = min(raw, entry["count"])       # never subtract past zero
+        if not removed:
+            continue
+        adjusted[day][metric] = raw - removed
+        applied.append({"metric": metric, "day": day, "removed": removed,
+                        "raw": raw, "why": entry["why"]})
+    return adjusted, applied
+
 SITES = [
     {
         "key": "purplelink",
@@ -466,7 +507,7 @@ def _days_since(iso_date: str | None, until: dt.date) -> int | None:
 
 def summarise(site: dict, site_hist: dict) -> dict:
     """Compute the numbers the dashboard actually shows."""
-    by_day = site_hist.get("byDay", {})
+    by_day, synthetic = without_synthetic(site["key"], site_hist.get("byDay", {}))
     today = dt.datetime.now(dt.timezone.utc).date()
     yesterday = today - dt.timedelta(days=1)
 
@@ -498,6 +539,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
     return {
         "label": site["label"],
         "domain": site["domain"],
+        "synthetic": synthetic,
         "today": total([today.isoformat()], "pageviews"),
         "last7": last7,
         "prior7": prior7,
@@ -723,6 +765,17 @@ def observations(summaries: list[dict]) -> list[str]:
             else:
                 out.append(f"{s['label']}: {ck['clicks']} checkout click(s) from {ck['views']} "
                            f"product-page view(s) in 30 days — a {ck['pct']:.1f}% checkout rate.")
+
+        # Say what was taken out, so the figures above can be reconciled against
+        # the raw archive rather than looking like a discrepancy.
+        for adj in s.get("synthetic", []):
+            label = next((lbl for k, lbl in
+                          (("checkoutClicks", "checkout clicks"), ("toolRuns", "tool runs"),
+                           ("signups", "waitlist signups"), ("subscribes", "subscribes"),
+                           ("calcRuns", "calculator runs")) if k == adj["metric"]), adj["metric"])
+            out.append(f"{s['label']}: {adj['removed']} of the {adj['raw']} {label} on "
+                       f"{adj['day']} were ours and are excluded above ({adj['why']}). "
+                       f"The archive still holds the raw count.")
 
     # Cross-site
     ok = [s for s in summaries if not s.get("error")]
