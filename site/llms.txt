@@ -41,6 +41,20 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 - **Updates:** The app checks once a day and installs in place; updates are included in the purchase.
 - **Key differentiators:** Plain-language LaTeX error explanations; submission-readiness checks for journal/conference requirements; native macOS (not Electron, not web); academic manuscript workflow as first-class feature
 
+### GlobePin (iOS)
+- **Platform:** iOS 17+
+- **Bundle ID:** com.globepin.app
+- **Category:** Travel
+- **Description:** A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Features interactive map visualization with 3D globe view, flight statistics dashboards, travel goal tracking, anniversary reminders for visits, and shareable travel postcards.
+- **Target users:** Frequent travelers who want a complete personal travel record
+- **Pricing:** Free. No subscription and no in-app purchase.
+- **Sync:** iCloud sync via CloudKit (no Purplelink account required)
+- **Status:** Shipping. Version 1.0 released on the App Store 2026-09-03.
+- **Download:** https://apps.apple.com/us/app/globepin/id6762313540
+- **Product page:** https://purplelink.llc/globepin/
+- **Requirements:** iPhone or iPad running iOS 17.0 or later
+- **Key differentiators:** 3D globe view for route visualization; complete flight log with stats; travel goals tied to actual history; anniversary reminders; iCloud sync without a separate account; no social network features
+
 ## Products in development
 
 ### Haea (iOS)
@@ -55,18 +69,6 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 - **Waitlist:** https://purplelink.llc/haea/
 - **Key differentiators:** Full on-device ML (Kalman filtering, Granger causality, biological age estimation); no cloud transmission of health data; privacy-first architecture as a core design constraint, not an add-on
 
-### GlobePin (iOS)
-- **Platform:** iOS 17+
-- **Bundle ID:** com.globepin.app
-- **Category:** Travel
-- **Description:** A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Features interactive map visualization with 3D globe view, flight statistics dashboards, travel goal tracking, anniversary reminders for visits, and shareable travel postcards.
-- **Target users:** Frequent travelers who want a complete personal travel record
-- **Pricing:** To be announced at launch
-- **Sync:** iCloud sync via CloudKit (no Purplelink account required)
-- **Status:** Multiple builds completed (build 79+), approaching release in 2026
-- **Waitlist:** https://purplelink.llc/globepin/
-- **Key differentiators:** 3D globe view for route visualization; complete flight log with stats; travel goals tied to actual history; anniversary reminders; iCloud sync without a separate account; no social network features
-
 ## Open source
 
 ### Scholar Utility Belt
@@ -78,6 +80,7 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 
 - Home: https://purplelink.llc/
 - ModernTex (macOS, $10, shipping): https://purplelink.llc/moderntex/
+- GlobePin (iOS, free, shipping): https://apps.apple.com/us/app/globepin/id6762313540
 - Haea: https://purplelink.llc/haea/
 - GlobePin: https://purplelink.llc/globepin/
 - About: https://purplelink.llc/about/
@@ -89,7 +92,7 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 ## Frequently asked questions
 
 **When do Purplelink's apps ship?**
-ModernTex shipped on 2026-09-04 and is on sale now at https://purplelink.llc/moderntex/. GlobePin is nearest to launch of the two remaining apps (build 79+, expected 2026), and Haea is also expected in 2026; both have waitlists on their product pages.
+Two of the three have shipped. ModernTex came out on 2026-09-04 and sells for $10 at https://purplelink.llc/moderntex/. GlobePin came out on 2026-09-03 and is free at https://apps.apple.com/us/app/globepin/id6762313540. Haea is still in development, expected in 2026, with a waitlist on its product page.
 
 **What platforms do the apps support?**
 GlobePin and Haea are iOS apps (iOS 17+). ModernTex is a macOS app (macOS 14+).
