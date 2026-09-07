@@ -147,7 +147,10 @@ def render_html(digest: DigestData) -> str:
     <link rel="preload" href="/assets/purplelink-logo.png" as="image">
     <link rel="stylesheet" href="{css_url}">
     <script src="{site_js_url}" defer></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <!-- No AdSense loader: this page is noindex (see above). AdSense policy
+         prohibits ad code on pages excluded from the search index, and having
+         it here on all 72 issues was a live violation sitting on top of the
+         low-value-content problem the noindex was meant to fix. -->
     <script type="application/ld+json">
     {{
       "@context": "https://schema.org",
