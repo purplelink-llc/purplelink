@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #73 — September 7, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-07.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-07.html</guid>
+      <pubDate>Mon, 07 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OpenAI&#x27;s RSI/AGI framing, MikroTik SSH zero-day exploitation, ClickFix payloads on blockchain, and California&#x27;s SB 122 SaaS tax dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #72 — September 6, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-06.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-06.html</guid>
