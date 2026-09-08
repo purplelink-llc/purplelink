@@ -4,7 +4,8 @@
 # Default behavior:
 #   1. Regenerates site/sitemap.xml from the pages actually on disk.
 #   2. Deploys site/ to Netlify --prod with the latest commit subject as the message.
-#   3. Pings IndexNow about any URLs whose sitemap lastmod is today.
+#   3. Pushes any local-only commits to origin, so this deploy survives.
+#   4. Pings IndexNow about any URLs whose sitemap lastmod is today.
 #
 # Usage:
 #   bash scripts/deploy.sh                  # frontend + IndexNow
@@ -85,6 +86,9 @@ if [[ $DRY_RUN -eq 1 ]]; then
   echo "  · python3 scripts/gen_sitemap.py"
   python3 scripts/gen_sitemap.py --check 2>&1 | sed 's/^/      /' || true
   echo "  · netlify deploy --prod --dir site --message \"$MESSAGE\""
+  if [[ "${AHEAD:-0}" -gt 0 ]]; then
+    echo "  · git push origin $BRANCH   ($AHEAD commit(s) unpushed)"
+  fi
   if [[ $SKIP_PING -eq 0 ]]; then
     if [[ $PING_ALL -eq 1 ]]; then
       echo "  · python3 scripts/indexnow_ping.py --all"
@@ -124,6 +128,26 @@ python3 scripts/fingerprint_assets.py
 # 3. Frontend
 step "netlify deploy --prod"
 netlify deploy --prod --dir site --message "$MESSAGE"
+
+# 3b. Push guard — a CLI deploy is not durable on its own. This site is also
+# connected to GitHub, and Netlify auto-deploys on every push to $BRANCH
+# (Modal's digest cron pushes there daily). If local commits stay unpushed,
+# the next cron push rebuilds from origin's stale tree and silently reverts
+# whatever this deploy just shipped — that's exactly how the AdSense-on-
+# noindex-pages fix (2026-09-06) got undone by the next day's digest run.
+# Push here so origin matches what just went live.
+step "sync to origin"
+if [[ "${AHEAD:-0}" -gt 0 ]]; then
+  if git push -q origin "$BRANCH"; then
+    echo "pushed $AHEAD commit(s) to origin/$BRANCH — this deploy is now durable"
+  else
+    echo "WARNING: push to origin/$BRANCH failed. This deploy WILL be reverted" >&2
+    echo "by the next git-triggered Netlify build (e.g. tomorrow's digest cron)." >&2
+    echo "Resolve manually: git pull --rebase origin $BRANCH && git push origin $BRANCH" >&2
+  fi
+else
+  echo "already in sync with origin/$BRANCH"
+fi
 
 # 4. IndexNow (best-effort)
 if [[ $SKIP_PING -eq 0 ]]; then
