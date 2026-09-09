@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #75 — September 9, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-09.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-09.html</guid>
+      <pubDate>Wed, 09 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OpenAI&#x27;s Navier-Stokes Millennium Prize claim sparks controversy, Microsoft patches a record 974 CVEs including two exploited zero-days, and a $3.1B GPU loan signals Asia&#x27;s AI infrastructure buildout.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #74 — September 8, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-08.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-08.html</guid>
