@@ -73,6 +73,11 @@ SYNTHETIC_EVENTS = {
                "/moderntex/ plus the four kits, both paper-review pages and "
                "/tools/cover-letter/",
     },
+    ("muscleonglp", "checkoutClicks", "2026-09-09"): {
+        "count": 1,
+        "why": "verifying the checkout+track pipeline still worked while "
+               "investigating why weekly checkout clicks read zero",
+    },
 }
 
 
