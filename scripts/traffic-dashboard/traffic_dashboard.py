@@ -591,6 +591,16 @@ def summarise(site: dict, site_hist: dict) -> dict:
             {"day": d, "pv": int(by_day.get(d, {}).get("pageviews", 0) or 0)}
             for d in last14_days
         ],
+        # Checkout clicks day-by-day, not smoothed into a rate. The
+        # moderntex buy button sat at a flat zero for 8 straight days
+        # (2026-08-28 to 09-04) with normal traffic the whole time, and it
+        # took a manual dig to notice -- this chart exists so a trailing
+        # zero streak is visible on the next daily run instead.
+        "checkout_spark": [
+            {"day": d, "pv": int(by_day.get(d, {}).get("checkoutClicks", 0) or 0)}
+            for d in last14_days
+        ] if any(k == "checkoutClicks" for k, _ in site["secondaries"]) else None,
+        "ai_trend": ai_referrer_trend(site_hist),
         "top_paths": latest.get("topPaths", [])[:6],
         "top_referrers": latest.get("topReferrers", [])[:6],
         "top_utm": latest.get("topUtm", [])[:5],
@@ -646,6 +656,31 @@ def channel_mix(referrers: list[dict], pageviews: int) -> list[dict]:
     if pageviews > referred:
         rows.append({"key": "Direct / untagged", "count": pageviews - referred})
     return rows
+
+
+def ai_referrer_trend(site_hist: dict, min_points: int = 4) -> list[dict]:
+    """AI-assistant share of referred traffic, one point per archived daily
+    snapshot. Each snapshot's topReferrers is already a trailing FETCH_DAYS
+    window, so this reads as a slow-moving trend line, not daily noise --
+    which is the right resolution for a channel that moves by single-digit
+    referrals a week. Found by comparing archived snapshots 2026-07-25
+    through 2026-09-09: purplelink's share climbed from ~12% to a stable
+    ~18-20%, while muscleonglp sat at a flat 0% the entire time.
+
+    Skips snapshot days with no referred traffic at all (an undefined share,
+    not a real 0%) rather than plotting a misleading floor.
+    """
+    snaps = site_hist.get("snapshots", {})
+    points = []
+    for day in sorted(snaps.keys()):
+        refs = snaps[day].get("topReferrers", [])
+        total = sum(int(r.get("count", 0) or 0) for r in refs)
+        if not total:
+            continue
+        ai = sum(int(r.get("count", 0) or 0) for r in refs
+                 if any(t in str(r.get("key", "")).lower() for t in AI_REFERRERS))
+        points.append({"day": day, "pct": ai / total * 100, "ai": ai, "total": total})
+    return points if len(points) >= min_points else []
 
 
 def checkout_rate(top_paths: list, product_paths, clicks: int) -> dict | None:
@@ -860,6 +895,12 @@ h2{font-size:15px;letter-spacing:.02em;margin:34px 0 12px;font-weight:640;color:
 .spark rect{fill:var(--purple)}
 .spark rect.today{fill:var(--purple);opacity:.45}
 .spark-x{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:5px}
+.checkout-spark{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.trend{margin-top:10px}
+.trend svg{width:100%;height:40px;display:block;overflow:visible}
+.trend .tline{fill:none;stroke:var(--purple);stroke-width:2;vector-effect:non-scaling-stroke}
+.trend-x{display:flex;justify-content:space-between;align-items:baseline;color:var(--muted);font-size:11px;margin-top:6px}
+.trend-x .delta{font-weight:650;font-size:12px}
 ul.obs{list-style:none;padding:0;margin:0}
 ul.obs li{background:var(--panel);border:1px solid var(--line);border-left:1px solid var(--line);
   border-radius:var(--radius);padding:13px 16px;margin-bottom:9px;font-size:15px}
@@ -1045,7 +1086,7 @@ def fan_chart(spark: list[dict], proj: dict | None) -> str:
     </div>"""
 
 
-def sparkline(spark: list[dict]) -> str:
+def sparkline(spark: list[dict], unit: str = "pageviews") -> str:
     peak = max((d["pv"] for d in spark), default=0) or 1
     n = len(spark)
     gap, w = 3, 100 / n
@@ -1057,7 +1098,7 @@ def sparkline(spark: list[dict]) -> str:
         bars.append(
             f"<rect{cls} x='{i * w + gap / 2:.2f}' y='{100 - h:.2f}' "
             f"width='{w - gap:.2f}' height='{h:.2f}' rx='1.2'>"
-            f"<title>{d['day']}: {d['pv']} pageviews</title></rect>"
+            f"<title>{d['day']}: {d['pv']} {unit}</title></rect>"
         )
     return (
         "<div class='spark'><svg viewBox='0 0 100 100' preserveAspectRatio='none'>"
@@ -1065,6 +1106,52 @@ def sparkline(spark: list[dict]) -> str:
         + f"</svg><div class='spark-x'><span>{spark[0]['day'][5:]}</span>"
         f"<span>{spark[-1]['day'][5:]} (today)</span></div></div>"
     )
+
+
+def trend_line(points: list[dict], key: str, fmt=lambda v: f"{v:.0f}%") -> str:
+    """A single line for `key` across `points`, scaled to its own range.
+
+    Deliberately not a bar chart: this is meant to read as a slow drift
+    (percentage-point share moving over weeks), and bars at this point
+    density (one per archived snapshot, which can be irregular) read as
+    noise where a line reads as a trend.
+    """
+    if len(points) < 2:
+        return ""
+    vals = [p[key] for p in points]
+    peak, floor = max(vals + [0.0001]), min(vals + [0])
+    n = len(points)
+    x = lambda i: i / (n - 1) * 100
+    y = lambda v: 100 - ((v - floor) / ((peak - floor) or 1)) * 100
+    line = " ".join(f"{x(i):.2f},{y(v):.2f}" for i, v in enumerate(vals))
+    first, last = points[0], points[-1]
+    delta = last[key] - first[key]
+    cls = "up" if delta > 0.5 else ("down" if delta < -0.5 else "flat")
+    arrow = "&#9650;" if cls == "up" else ("&#9660;" if cls == "down" else "=")
+    return f"""
+    <div class="trend">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img"
+           aria-label="Trend from {fmt(first[key])} on {first['day']} to {fmt(last[key])} on {last['day']}">
+        <polyline class="tline" points="{line}"/>
+      </svg>
+      <div class="trend-x">
+        <span>{first['day'][5:]}: {fmt(first[key])}</span>
+        <span class="delta {cls}">{arrow} {fmt(abs(delta))}</span>
+        <span>{last['day'][5:]}: {fmt(last[key])}</span>
+      </div>
+    </div>"""
+
+
+def ai_trend_card(trend: list[dict]) -> str:
+    if not trend:
+        return ""
+    first, last = trend[0], trend[-1]
+    return (f"<div class='card'><h2 style='margin-top:0'>AI-assistant referral share</h2>"
+            f"{trend_line(trend, 'pct')}"
+            f"<p class='fnote'>Share of referred pageviews from ChatGPT, Perplexity, "
+            f"Gemini and similar, read from each archived day's trailing "
+            f"{FETCH_DAYS}-day referrer window ({first['day']} to {last['day']}, "
+            f"{len(trend)} snapshot(s)). A slow structural drift, not a daily figure.</p></div>")
 
 
 def funnel(s: dict) -> str:
@@ -1094,10 +1181,29 @@ def funnel(s: dict) -> str:
             trend = "<span class='delta flat'>=</span>"
         cells += (f"<div class='fstep'><span class='fn'>{st['value']}{trend}</span>"
                   f"<span class='fl'>{html.escape(st['label'])}</span>{rate}</div>")
+
+    # Checkout clicks, day by day rather than smoothed into a rate. A rate
+    # can sit flat because a button is broken or because nobody's shopping;
+    # a chart with a visible trailing zero streak tells the two apart at a
+    # glance, which a single percentage can't.
+    ck_spark = ""
+    if s.get("checkout_spark"):
+        pts = s["checkout_spark"]
+        trailing_zero = 0
+        for d in reversed(pts):
+            if d["pv"]:
+                break
+            trailing_zero += 1
+        flag = (f" <strong>Flat zero for the last {trailing_zero} days.</strong>"
+                if trailing_zero >= 3 else "")
+        ck_spark = (f"<div class='checkout-spark'>{sparkline(pts, 'checkout clicks')}"
+                    f"<p class='fnote'>Checkout clicks, last 14 days.{flag}</p></div>")
+
     return (f"<div class='card'><h2 style='margin-top:0'>Conversion</h2>"
             f"<div class='funnel'>{cells}</div>"
             f"<p class='fnote'>Arrows compare with the previous 7 days. "
-            f"Rates are share of pageviews, not unique visitors.</p></div>")
+            f"Rates are share of pageviews, not unique visitors.</p>"
+            f"{ck_spark}</div>")
 
 
 def gsc_card(g: dict) -> str:
@@ -1210,6 +1316,85 @@ def orders(n: int) -> str:
     return f"{n} order" if n == 1 else f"{n} orders"
 
 
+CLUSTER_GAP_HOURS = 48   # orders closer together than this count as one burst
+
+
+def _parse_sale_dt(s: str) -> dt.datetime | None:
+    try:
+        return dt.datetime.strptime(s, "%Y-%m-%d %H:%M")
+    except (ValueError, TypeError):
+        return None
+
+
+def sales_clusters(recent: list[dict]) -> list[dict]:
+    """Group orders that landed within CLUSTER_GAP_HOURS of each other.
+
+    7 all-time orders is too few for a smoothed weekly rate to mean
+    anything -- 5 of the first 6 ModernTex sales landed within a single
+    20-hour window on 2026-09-05, which a "$X/week" figure would present as
+    a steady rate rather than the one-day launch spike it actually was.
+    Whether recent orders are one burst or spread out is the more honest
+    question, and it's a cheap thing to compute from timestamps already on
+    hand.
+    """
+    parsed = sorted(
+        ((ts, r) for ts, r in ((_parse_sale_dt(r.get("date", "")), r) for r in recent) if ts),
+        key=lambda t: t[0],
+    )
+    clusters: list[list[tuple]] = []
+    for ts, r in parsed:
+        if clusters and (ts - clusters[-1][-1][0]).total_seconds() <= CLUSTER_GAP_HOURS * 3600:
+            clusters[-1].append((ts, r))
+        else:
+            clusters.append([(ts, r)])
+    return [
+        {"count": len(c), "span_hours": round((c[-1][0] - c[0][0]).total_seconds() / 3600, 1),
+         "start": c[0][0], "end": c[-1][0]}
+        for c in clusters
+    ]
+
+
+def sales_pattern_note(recent: list[dict]) -> str:
+    """Plain-language read of whether sales are bursty or spread out."""
+    clusters = sales_clusters(recent)
+    total = sum(c["count"] for c in clusters)
+    if total < 2:
+        return ""
+    biggest = max(clusters, key=lambda c: c["count"])
+    if biggest["count"] < 2:
+        return ""  # every order isolated -- a trickle, not a caveat worth raising
+    when = biggest["start"].strftime("%b %-d")
+    span = biggest["span_hours"]
+    span_txt = f"{span:.0f}-hour" if span < 48 else f"{span / 24:.1f}-day"
+    if len(clusters) == 1:
+        return (f"All {total} order(s) landed within one {span_txt} window on {when} "
+                f"— a launch burst so far, not yet a repeating rate.")
+    share = round(biggest["count"] / total * 100)
+    return (f"{biggest['count']} of {total} orders ({share}%) landed within a single "
+            f"{span_txt} window on {when}; the rest were spread out.")
+
+
+def days_since_last_order(recent: list[dict], generated_at: str | None) -> str:
+    """'N days ago' rather than folding recency into a smoothed rate.
+
+    A $X/30d figure reads the same whether the last sale was yesterday or
+    three weeks ago. At 7 all-time orders that distinction is the more
+    useful number.
+    """
+    dts = [t for t in (_parse_sale_dt(r.get("date", "")) for r in recent) if t]
+    if not dts:
+        return ""
+    now = None
+    if generated_at:
+        try:
+            now = dt.datetime.fromisoformat(generated_at.replace("Z", "+00:00")).replace(tzinfo=None)
+        except ValueError:
+            now = None
+    now = now or dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)
+    days = max(0, int((now - max(dts)).total_seconds() // 86400))
+    return "today" if days == 0 else ("1 day ago" if days == 1 else f"{days} days ago")
+
+
 def money(cents: int) -> str:
     """Whole dollars stay whole: $40, not $40.00. Cents only when there are any."""
     return f"${cents / 100:,.2f}".replace(".00", "") if cents % 100 else f"${cents // 100:,}"
@@ -1247,7 +1432,19 @@ def sales_block(sales: dict | None) -> str:
         for r in sales.get("recent", [])[:8]
     ) or "<tr><td colspan='4' class='who'>No orders yet.</td></tr>"
 
+    recent = sales.get("recent", [])
+    last_order = days_since_last_order(recent, sales.get("generatedAt"))
+    recency_html = (
+        f"""<div>
+      <span class="sales-figure-label">Last order</span>
+      <span class="sales-secondary">{html.escape(last_order)}</span>
+    </div>""" if last_order else ""
+    )
+
     notes = []
+    pattern = sales_pattern_note(recent)
+    if pattern:
+        notes.append(pattern)
     if bal:
         notes.append(f"Stripe balance: {money(bal.get('available', 0))} available, "
                      f"{money(bal.get('pending', 0))} pending.")
@@ -1273,6 +1470,7 @@ def sales_block(sales: dict | None) -> str:
       <span class="sales-secondary">{money(all_time.get('gross', 0))}</span>
       <span class="sales-sub"> · {orders(all_time.get('orders', 0))}</span>
     </div>
+    {recency_html}
   </div>
   <div class="sales-split">{chips}</div>
   <div class="sales-cols">
@@ -1305,6 +1503,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
                    f"<span class='win'>· last {FETCH_DAYS} days</span></h2><div class='tables'>")
         tables += funnel(s)
         tables += table("Channels", s["channels"], "No traffic recorded in this window.")
+        tables += ai_trend_card(s.get("ai_trend") or [])
         if s.get("gsc"):
             tables += gsc_card(s["gsc"])
             tables += gsc_table("Search queries", s["gsc"]["queries"],
