@@ -4,19 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Best LaTeX editor for Mac in 2026 (compared) | Purplelink</title>
-    <meta name="description" content="An honest comparison of the LaTeX editors that work on Mac in 2026: TeXShop, Texifier, Octree, VS Code with LaTeX Workshop, Overleaf, and ModernTex.">
+    <title>Best LaTeX editor for Mac in 2026: 14 editors compared | Purplelink</title>
+    <meta name="description" content="Every LaTeX editor that runs on a Mac in 2026, compared: TeXShop, Texifier, TeXstudio, VS Code, Overleaf, ModernTex and eight more, free and paid, plus MacTeX vs BasicTeX vs Overleaf and which compiler to use.">
     <link rel="canonical" href="https://purplelink.llc/guides/best-mac-latex-editors/">
-    <meta property="og:title" content="Best LaTeX editor for Mac in 2026 (compared)">
-    <meta property="og:description" content="TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex — what each one is good at and how to choose.">
+    <meta property="og:title" content="Best LaTeX editor for Mac in 2026: 14 editors compared">
+    <meta property="og:description" content="Fourteen LaTeX editors that run on a Mac, free and paid, what each is good at, and how to choose. Plus MacTeX vs Overleaf.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/best-mac-latex-editors/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/moderntex.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Best LaTeX editor for Mac in 2026 (compared)">
-    <meta name="twitter:description" content="TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex — what each one is good at and how to choose.">
+    <meta name="twitter:title" content="Best LaTeX editor for Mac in 2026: 14 editors compared">
+    <meta name="twitter:description" content="Fourteen LaTeX editors that run on a Mac, free and paid, what each is good at, and how to choose. Plus MacTeX vs Overleaf.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/moderntex.png">
     <meta name="twitter:image:alt" content="Best LaTeX editor for Mac — comparison guide">
     <script type="application/ld+json">
@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-05-31",
-          "dateModified": "2026-09-04",
+          "dateModified": "2026-09-11",
           "image": "https://purplelink.llc/assets/og/moderntex.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/best-mac-latex-editors/"
         },
@@ -85,6 +85,30 @@
         "@type": "Answer",
         "text": "For most researchers today, Texifier if you will pay for polish, TeXShop if you want the default that every tutorial assumes. Choose Overleaf instead when co-authors need to edit the same file at the same time."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Is TeXstudio available for Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. TeXstudio runs on macOS, Windows and Linux and is free. It is the best choice if you also work on another platform. On a Mac alone, TeXShop does the same job and feels like a Mac app, which TeXstudio does not."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "MacTeX or Overleaf?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "MacTeX if you want LaTeX on your own machine: it works offline, compiles faster on any recent Mac, and every native editor needs it. Overleaf if co-authors need to edit the same document live, or you are on a machine you cannot install 5 GB on. Many people use both."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which LaTeX compiler should I use on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "pdfLaTeX, unless something forces a change. It is the default in every editor and what journal templates assume. Use XeLaTeX or LuaLaTeX when you need system fonts or full Unicode. All three ship with MacTeX."
+      }
     }
   ]
 }
@@ -116,8 +140,8 @@
       <a class="back-link" href="/guides/">← All guides</a>
       <div class="post-hero">
         <p class="post-date">Comparison</p>
-        <h1 class="post-title">Best LaTeX editor for Mac in 2026</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time>, updated <time datetime="2026-08-12">August 12, 2026</time></p>
+        <h1 class="post-title">Best LaTeX editor for Mac in 2026: 14 editors compared</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time>, updated <time datetime="2026-09-11">September 11, 2026</time></p>
         <p class="post-lede">A direct comparison of the LaTeX editors that actually work on Mac in 2026, covering what each one is good at, what it costs, and which workflow it suits. No affiliate links, no rankings padding.</p>
       </div>
 
@@ -156,6 +180,7 @@
           <li><strong>Overleaf</strong>: web-based, collaborative, runs in any browser.</li>
           <li><strong>ModernTex</strong>: $10, native macOS, focused on the academic manuscript workflow.</li>
         </ol>
+        <p>Those six are the ones worth a real look. <a href="#more-editors">Eight more that run on a Mac</a> are covered further down, including TeXstudio and Texmaker, with a straight answer on why each is not on the shortlist.</p>
 
         <h2>TeXShop</h2>
         <p><strong>Cost:</strong> Free. <strong>Platform:</strong> macOS-only. <strong>Installed by:</strong> almost every academic with a Mac and MacTeX.</p>
@@ -199,6 +224,51 @@
         <p><strong>What it lacks:</strong> a track record. Version 1.0 shipped in September 2026, so it has none of the twenty years of edge-case coverage TeXShop has, and no iPad app. It also needs a TeX distribution installed; it does not bundle one the way Texifier does.</p>
         <p><strong>Pick ModernTex if</strong> you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. <a href="/moderntex/">ModernTex is $10, once</a>.</p>
 
+        <h2 id="more-editors">Eight more LaTeX editors that run on a Mac</h2>
+        <p>Every one of these works on macOS today. They are not on the shortlist because, for someone choosing an editor on a Mac in 2026, each is beaten by one of the six above at the thing it is best at. The exception is TeXstudio, which is the right answer for a specific person: anyone who also works on Windows or Linux.</p>
+
+        <h3>TeXstudio</h3>
+        <p><strong>Cost:</strong> Free, open source. <strong>Platform:</strong> macOS, Windows, Linux.</p>
+        <p>The most widely installed LaTeX editor that is not tied to one platform. It began as a fork of Texmaker and has grown well past it: an integrated PDF viewer with SyncTeX, a structure panel for long documents, autocomplete for commands and references, wizards for tables and figures, spell-checking as you type. It is a Qt application, so it does not look or behave like a Mac app. Menus, shortcuts and dialogs feel like they were designed elsewhere, because they were.</p>
+        <p><strong>Pick TeXstudio if</strong> you move between a Mac and a Windows or Linux machine and want the identical editor on both. If you only write on a Mac, TeXShop does the same job and feels native.</p>
+
+        <h3>Texmaker</h3>
+        <p><strong>Cost:</strong> Free. <strong>Platform:</strong> macOS, Windows, Linux.</p>
+        <p>The editor TeXstudio was forked from, still maintained by its original author, and simpler for it: built-in PDF viewer, SyncTeX, Unicode, spell-check, code folding, and less of everything else. If you opened TeXstudio and found it busy, this is the same idea with fewer panels.</p>
+        <p><strong>Pick Texmaker if</strong> you want a cross-platform editor and TeXstudio felt like too much. Otherwise the same advice applies: on a Mac alone, TeXShop.</p>
+
+        <h3>TeXworks</h3>
+        <p><strong>Cost:</strong> Free. <strong>Platform:</strong> macOS, Windows, Linux. <strong>Installed by:</strong> you, already, if you installed MacTeX.</p>
+        <p>TeXworks ships inside MacTeX and TeX Live, and was deliberately modelled on TeXShop's simplicity so that other platforms would have something like it. Source window, PDF window, SyncTeX, a typeset button. That is the whole editor. It is fine for a first document and you will outgrow it by the second chapter.</p>
+        <p><strong>Pick TeXworks if</strong> it is already on your machine and you need to compile something today. Then pick something else.</p>
+
+        <h3>LyX</h3>
+        <p><strong>Cost:</strong> Free, open source. <strong>Platform:</strong> macOS, Windows, Linux.</p>
+        <p>LyX is not a LaTeX editor in the sense of the rest of this page. It is a document processor that generates LaTeX for you: you work in a structured, roughly formatted view and rarely see a backslash. For a thesis written alone, where you never need to hand a <code>.tex</code> file to anyone, that can be pleasant. The moment a journal template, a co-author, or a fussy figure needs raw LaTeX, you are fighting the tool. It still needs a TeX distribution installed.</p>
+        <p><strong>Pick LyX if</strong> you want LaTeX output without writing LaTeX and will never share source. Most academics eventually need to share source.</p>
+
+        <h3>Archimedes</h3>
+        <p><strong>Cost:</strong> Paid, one-time. <strong>Platform:</strong> macOS, with an iOS version.</p>
+        <p>A native Mac editor for Markdown with LaTeX math, with live preview and a math-focused toolbar. It is built for writing notes, problem sets and math-heavy documents, not for compiling a full journal manuscript with a bibliography and a class file. Good at what it is for, which is not what most of this page's readers are doing.</p>
+        <p><strong>Pick Archimedes if</strong> your LaTeX is mostly equations inside otherwise plain documents. For a paper, use one of the six above.</p>
+
+        <h3>TeX64</h3>
+        <p><strong>Cost:</strong> Paid. <strong>Platform:</strong> macOS.</p>
+        <p>A newer native macOS editor that compiles locally through the MacTeX or TeX Live installation you already have, rather than bundling its own distribution the way Texifier does. It is recent enough that I would not yet rely on it for a deadline, for the same reason I say that about ModernTex: no track record. Worth watching if native-Mac matters to you and you already have MacTeX installed.</p>
+        <p><strong>Pick TeX64 if</strong> you want a native app, do not want a second TeX distribution on disk, and are comfortable being an early adopter.</p>
+
+        <h3>Emacs with AUCTeX</h3>
+        <p><strong>Cost:</strong> Free. <strong>Platform:</strong> anything.</p>
+        <p>AUCTeX plus RefTeX is, feature for feature, one of the most capable LaTeX environments that exists: inline previews of equations, cross-reference and citation lookup that understands your whole project, folding, and a compile loop you can bend to any shape. The learning curve is the entire Emacs learning curve. If you already live in Emacs you know this and did not need this page. If you do not, this is not the week to start.</p>
+        <p><strong>Pick AUCTeX if</strong> you are already an Emacs user. Nobody else.</p>
+
+        <h3>Neovim or Vim with VimTeX</h3>
+        <p><strong>Cost:</strong> Free. <strong>Platform:</strong> anything.</p>
+        <p>VimTeX is excellent: compilation, syntax, text objects for environments and commands, folding, and forward and inverse search when paired with a PDF viewer such as Skim on the Mac. The same caveat as Emacs applies. It rewards people who already think in Vim and punishes everyone else.</p>
+        <p><strong>Pick VimTeX if</strong> Vim is already how you write everything. Otherwise VS Code with LaTeX Workshop gives you most of the benefit with none of the modal editing.</p>
+
+        <p>Sublime Text with the LaTeXTools package and BBEdit with its TeX syntax highlighting also exist. Neither adds anything the eight above do not, so they are not covered separately.</p>
+
         <h2>Decision matrix</h2>
         <ul>
           <li><strong>Want the default?</strong> TeXShop.</li>
@@ -207,11 +277,15 @@
           <li><strong>Already in VS Code?</strong> VS Code + LaTeX Workshop.</li>
           <li><strong>Need real-time collaboration?</strong> Overleaf.</li>
           <li><strong>Academic manuscripts on macOS as your dominant use case?</strong> <a href="/moderntex/">ModernTex</a>, $10.</li>
+          <li><strong>Also work on Windows or Linux?</strong> TeXstudio.</li>
+          <li><strong>Already live in Emacs or Vim?</strong> AUCTeX or VimTeX. You knew that.</li>
         </ul>
 
-        <h2>Installing LaTeX on a Mac</h2>
+        <h2 id="mactex-vs-overleaf">Installing LaTeX on a Mac: MacTeX, BasicTeX, or Overleaf</h2>
         <p>Whichever editor you land on, the install order is the same: distribution
-        first, editor second.</p>
+        first, editor second. And "MacTeX vs Overleaf" is not really an either-or.
+        One is a distribution you install, the other is a website that installs
+        nothing. The question is whether you want LaTeX on your own machine.</p>
         <p><strong>MacTeX</strong> is the standard choice. Download the package from
         the TeX Users Group, run the installer, and you have TeX Live plus TeXShop,
         BibDesk and LaTeXiT. It is about 5&nbsp;GB installed. Nearly every tutorial
@@ -234,6 +308,17 @@
         arm64 binaries for years, and every editor on this page runs natively on M
         series hardware.</p>
 
+        <h3 id="compiler">Which LaTeX compiler to use on a Mac</h3>
+        <p>People search for the best LaTeX compiler for Mac, and the honest answer is
+        that it is not a Mac question. MacTeX ships all three engines you would ever
+        choose between, and every editor above lets you pick. <strong>pdfLaTeX</strong>
+        is the default, the fastest, and what nearly every journal template assumes;
+        start there. <strong>XeLaTeX</strong> adds system fonts and proper Unicode,
+        which matters for non-Latin scripts or a document that must use a specific
+        typeface. <strong>LuaLaTeX</strong> does what XeLaTeX does and is where newer
+        packages are heading. Switch engines only when a package or a font forces
+        you to, not because one is "best".</p>
+
         <h2>Frequently asked</h2>
         <h3>Is there a free LaTeX editor for Mac?</h3>
         <p>Yes, several. TeXShop is free and arrives with MacTeX, so most people
@@ -251,6 +336,19 @@
         <p>For most researchers today, Texifier if you will pay for polish, TeXShop if
         you want the default that every tutorial assumes. Choose Overleaf instead when
         co-authors need to edit the same file at the same time.</p>
+        <h3>Is TeXstudio available for Mac?</h3>
+        <p>Yes. TeXstudio runs on macOS, Windows and Linux and is free. It is the best
+        choice if you also work on another platform. On a Mac alone, TeXShop does the
+        same job and feels like a Mac app, which TeXstudio does not.</p>
+        <h3>MacTeX or Overleaf?</h3>
+        <p>MacTeX if you want LaTeX on your own machine: it works offline, compiles
+        faster on any recent Mac, and every native editor on this page needs it.
+        Overleaf if co-authors need to edit the same document live, or you are on a
+        machine you cannot install 5&nbsp;GB on. Many people use both.</p>
+        <h3>Which LaTeX compiler should I use on a Mac?</h3>
+        <p>pdfLaTeX, unless something forces a change. It is the default in every
+        editor here and what journal templates assume. Use XeLaTeX or LuaLaTeX when
+        you need system fonts or full Unicode. All three ship with MacTeX.</p>
 
         <h2>Tools that work alongside any of these</h2>
         <p>Whichever editor you pick, these free in-browser utilities pair well:</p>
