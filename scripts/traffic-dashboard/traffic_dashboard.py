@@ -280,6 +280,239 @@ def fetch_sales(token: str) -> dict | None:
     return None
 
 
+
+# --- App Store Connect (GlobePin) ------------------------------------------
+#
+# Two Apple sources, archived under history["appstore"]:
+#
+#   Sales & Trends (daily SALES/SUMMARY report): downloads, redownloads,
+#   updates, and Pro proceeds. Apple answers 404 for a day with no
+#   transactions at all, so 404 is recorded as a zero day, not an error.
+#   Reports for a day appear the next morning and can be revised for a few
+#   days, so the last few days are always re-fetched.
+#
+#   Analytics Reports (the ONGOING request in ASC_ANALYTICS_REQUEST_ID):
+#   impressions, product page views, sessions — what the App Store Connect
+#   "Overview" page shows — and therefore conversion. Apple generates these
+#   ~2-3 days behind and only from the day the request was created; there is
+#   no backfill. Column names are recorded on first sight (see
+#   history["appstore"]["analytics"]["headers"]) because Apple's schema is
+#   only documented loosely; the panel reads whatever it recognises.
+#
+# Everything here degrades to "unavailable" rather than failing the run: an
+# Apple outage must not cost us the traffic report.
+ASC_API = "https://api.appstoreconnect.apple.com"
+ASC_RELOOK_DAYS = 3        # re-fetch this many trailing days in case Apple revised them
+ASC_ANALYTICS_REPORTS = (  # by name, not id: ids are per-request
+    "App Downloads Standard",
+    "App Store Discovery and Engagement Standard",
+    "App Store Purchases Standard",
+    "App Sessions Standard",
+)
+
+
+def _asc_token(cfg: dict[str, str]) -> str | None:
+    try:
+        import jwt  # PyJWT + cryptography; present on the launchd interpreter
+    except ImportError:
+        print("  ! appstore: PyJWT not installed for this interpreter", file=sys.stderr)
+        return None
+    key_path = Path(os.path.expanduser(cfg.get("ASC_KEY_PATH", "")))
+    if not key_path.exists():
+        print(f"  ! appstore: key not found at {key_path}", file=sys.stderr)
+        return None
+    now = int(time.time())
+    return jwt.encode(
+        {"iss": cfg["ASC_ISSUER_ID"], "iat": now, "exp": now + 1200, "aud": "appstoreconnect-v1"},
+        key_path.read_text(), algorithm="ES256", headers={"kid": cfg["ASC_KEY_ID"]},
+    )
+
+
+def _asc_get(token: str, path: str, accept: str = "application/json") -> tuple[int, bytes]:
+    url = path if path.startswith("http") else ASC_API + path
+    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}", "Accept": accept,
+                                               "User-Agent": "purplelink-traffic-dashboard"})
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as r:
+                return r.status, r.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                return exc.code, exc.read()
+            last = exc
+        except (OSError, http.client.HTTPException) as exc:
+            last = exc
+    raise RuntimeError(f"appstore: {path[:60]} failed: {str(last)[:80]}")
+
+
+def _asc_sales_day(token: str, cfg: dict[str, str], day: str) -> dict | None:
+    """One day's SALES/SUMMARY report reduced to the app's numbers, or None if
+    Apple could not be read (as opposed to a 404, which means a quiet day)."""
+    import csv
+    import gzip
+    import io
+    q = urllib.parse.urlencode({
+        "filter[reportType]": "SALES", "filter[reportSubType]": "SUMMARY",
+        "filter[frequency]": "DAILY", "filter[vendorNumber]": cfg["ASC_VENDOR_NUMBER"],
+        "filter[reportDate]": day,
+    })
+    status, body = _asc_get(token, f"/v1/salesReports?{q}", accept="application/a-gzip")
+    out = {"downloads": 0, "redownloads": 0, "updates": 0, "proUnits": 0, "proPromo": 0,
+           "proceeds": {}, "countries": {}, "empty": False}
+    if status == 404:
+        out["empty"] = True
+        return out
+    if status != 200:
+        print(f"  ! appstore: sales {day} HTTP {status}", file=sys.stderr)
+        return None
+    app_id, sku = cfg["ASC_APP_ID"], cfg.get("ASC_APP_SKU", "com.globepin.app")
+    for row in csv.DictReader(io.StringIO(gzip.decompress(body).decode("utf-8")), delimiter="\t"):
+        # App rows carry the app's own identifier; a Pro purchase row carries
+        # the app's SKU as Parent Identifier instead. Keep both, drop the rest.
+        if row.get("Apple Identifier", "") != app_id and row.get("Parent Identifier", "") != sku:
+            continue
+        ptype = row.get("Product Type Identifier", "")
+        units = int(float(row.get("Units") or 0))
+        country = (row.get("Country Code") or "").strip()
+        if ptype.startswith("1"):
+            out["downloads"] += units
+            if country:
+                out["countries"][country] = out["countries"].get(country, 0) + units
+        elif ptype.startswith("7"):
+            out["redownloads"] += units
+        elif ptype.startswith("3"):
+            out["updates"] += units
+        elif ptype.startswith("IA") or ptype.startswith("FI"):
+            # A promo-code redemption is a Pro unit with a code and no money;
+            # counting it as a sale would overstate revenue exactly the way our
+            # own test clicks once overstated checkout figures.
+            if (row.get("Promo Code") or "").strip():
+                out["proPromo"] += units
+                continue
+            out["proUnits"] += units
+            cur = (row.get("Currency of Proceeds") or "").strip() or "?"
+            out["proceeds"][cur] = round(out["proceeds"].get(cur, 0.0)
+                                         + float(row.get("Developer Proceeds") or 0) * units, 2)
+    return out
+
+
+def _asc_analytics(token: str, cfg: dict[str, str], prior: dict) -> dict:
+    """Latest daily instances of the reports we care about, reduced to
+    per-date, per-dimension sums. Tolerant of not-yet-generated reports."""
+    import csv
+    import gzip
+    import io
+    rid = cfg.get("ASC_ANALYTICS_REQUEST_ID")
+    result = {"reports": {}, "headers": dict(prior.get("headers", {})), "note": ""}
+    if not rid:
+        result["note"] = "no analytics request configured"
+        return result
+    status, body = _asc_get(token, f"/v1/analyticsReportRequests/{rid}/reports?limit=200")
+    if status != 200:
+        result["note"] = f"report list HTTP {status}"
+        return result
+    wanted = {r["attributes"]["name"]: r["id"]
+              for r in json.loads(body).get("data", []) if r["attributes"]["name"] in ASC_ANALYTICS_REPORTS}
+    got_any = False
+    for name, report_id in wanted.items():
+        status, body = _asc_get(token, f"/v1/analyticsReports/{report_id}/instances?filter[granularity]=DAILY&limit=50")
+        if status != 200:
+            continue
+        instances = json.loads(body).get("data", [])
+        if not instances:
+            continue
+        got_any = True
+        by_date: dict[str, dict[str, int]] = dict(prior.get("reports", {}).get(name, {}).get("byDate", {}))
+        # newest few instances are enough; each covers one processing day
+        for inst in sorted(instances, key=lambda i: i["attributes"].get("processingDate", ""))[-ASC_RELOOK_DAYS - 1:]:
+            st, sb = _asc_get(token, f"/v1/analyticsReportInstances/{inst['id']}/segments")
+            if st != 200:
+                continue
+            for seg in json.loads(sb).get("data", []):
+                url = seg["attributes"].get("url")
+                if not url:
+                    continue
+                s2, raw = _asc_get(token, url, accept="*/*")
+                if s2 != 200:
+                    continue
+                try:
+                    text = gzip.decompress(raw).decode("utf-8")
+                except OSError:
+                    text = raw.decode("utf-8", "replace")
+                reader = csv.DictReader(io.StringIO(text))
+                if reader.fieldnames and name not in result["headers"]:
+                    result["headers"][name] = list(reader.fieldnames)
+                    print(f"  appstore: first '{name}' report; columns = {reader.fieldnames}", file=sys.stderr)
+                for row in reader:
+                    date = row.get("Date") or row.get("date") or ""
+                    if not date:
+                        continue
+                    # the dimension that names what was counted, if the report has one
+                    dim = row.get("Event") or row.get("Download Type") or row.get("Purchase Type") \
+                        or row.get("Event Type") or "total"
+                    count_key = next((k for k in ("Counts", "Count", "Total Downloads", "Downloads",
+                                                  "Sessions", "Units") if k in row), None)
+                    if not count_key:
+                        continue
+                    try:
+                        n = int(float(row[count_key] or 0))
+                    except ValueError:
+                        continue
+                    by_date.setdefault(date, {})
+                    by_date[date][dim] = by_date[date].get(dim, 0) + n
+        result["reports"][name] = {"byDate": by_date}
+    if not got_any:
+        result["note"] = "Apple has not generated the first report yet"
+    return result
+
+
+def fetch_appstore(cfg: dict[str, str], prior: dict | None) -> dict | None:
+    """GlobePin's App Store figures, merged into whatever was archived before."""
+    required = ("ASC_KEY_ID", "ASC_ISSUER_ID", "ASC_KEY_PATH", "ASC_VENDOR_NUMBER", "ASC_APP_ID")
+    if any(not cfg.get(k) for k in required):
+        return None
+    token = _asc_token(cfg)
+    if not token:
+        return None
+    prior = prior or {}
+    days: dict[str, dict] = dict(prior.get("days", {}))
+    today = dt.date.today()
+    launch = dt.date.fromisoformat(cfg.get("ASC_APP_LAUNCH", "2026-09-03"))
+    start = max(launch, today - dt.timedelta(days=FETCH_DAYS))
+    relook = today - dt.timedelta(days=ASC_RELOOK_DAYS)
+    fetched = 0
+    d = start
+    while d < today:                       # today's report does not exist until tomorrow
+        key = d.isoformat()
+        if key not in days or d >= relook:
+            try:
+                rec = _asc_sales_day(token, cfg, key)
+            except RuntimeError as exc:
+                print(f"  ! {exc}", file=sys.stderr)
+                rec = None
+            if rec is not None:
+                days[key] = rec
+                fetched += 1
+        d += dt.timedelta(days=1)
+    try:
+        analytics = _asc_analytics(token, cfg, prior.get("analytics", {}))
+    except RuntimeError as exc:
+        print(f"  ! {exc}", file=sys.stderr)
+        analytics = prior.get("analytics", {"reports": {}, "headers": {}, "note": "unavailable this run"})
+    return {
+        "label": cfg.get("ASC_APP_LABEL", "App"),
+        "appId": cfg["ASC_APP_ID"],
+        "launch": launch.isoformat(),
+        "days": days,
+        "analytics": analytics,
+        "fetchedAt": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "fetchedDays": fetched,
+    }
+
+
 def fetch_gsc(site: dict) -> dict | None:
     """Search Console clicks/impressions/position, plus top queries and pages.
 
@@ -1489,8 +1722,112 @@ def sales_block(sales: dict | None) -> str:
 </section>"""
 
 
+
+def appstore_summary(app: dict | None) -> dict | None:
+    """The numbers the panel, the observations and the terminal line all share."""
+    if not app:
+        return None
+    days = app.get("days", {})
+    today = dt.date.today()
+    def window(n: int) -> dict[str, int]:
+        lo = (today - dt.timedelta(days=n)).isoformat()
+        tot = {"downloads": 0, "redownloads": 0, "updates": 0, "proUnits": 0, "proPromo": 0}
+        for k, v in days.items():
+            if k >= lo:
+                for m in tot:
+                    tot[m] += v.get(m, 0)
+        return tot
+    countries: dict[str, int] = {}
+    for k, v in days.items():
+        if k >= (today - dt.timedelta(days=30)).isoformat():
+            for c, n in v.get("countries", {}).items():
+                countries[c] = countries.get(c, 0) + n
+    proceeds: dict[str, float] = {}
+    for v in days.values():
+        for cur, amt in v.get("proceeds", {}).items():
+            proceeds[cur] = round(proceeds.get(cur, 0.0) + amt, 2)
+    spark = []
+    for i in range(13, -1, -1):
+        day = (today - dt.timedelta(days=i)).isoformat()
+        spark.append({"day": day, "pv": days.get(day, {}).get("downloads", 0)})
+    all_time = {"downloads": sum(v.get("downloads", 0) for v in days.values()),
+                "proUnits": sum(v.get("proUnits", 0) for v in days.values()),
+                "proPromo": sum(v.get("proPromo", 0) for v in days.values())}
+    # analytics funnel, if Apple has delivered anything yet
+    an = app.get("analytics", {}) or {}
+    funnel = None
+    eng = an.get("reports", {}).get("App Store Discovery and Engagement Standard", {}).get("byDate", {})
+    if eng:
+        recent = sorted(eng)[-7:]
+        agg: dict[str, int] = {}
+        for d_ in recent:
+            for dim, n in eng[d_].items():
+                agg[dim] = agg.get(dim, 0) + n
+        def pick(*needles):
+            return sum(v for k, v in agg.items() if any(nd in k.lower() for nd in needles))
+        imps, views = pick("impression"), pick("page view", "product page")
+        dl7 = window(7)["downloads"]
+        funnel = {"days": len(recent), "impressions": imps, "pageViews": views, "downloads": dl7,
+                  "conversion": (dl7 / views * 100) if views else None, "dims": agg}
+    return {"label": app.get("label", "App"), "w7": window(7), "w30": window(30), "allTime": all_time,
+            "proceeds": proceeds, "spark": spark, "funnel": funnel, "analyticsNote": an.get("note", ""),
+            "countries": dict(sorted(countries.items(), key=lambda kv: -kv[1])[:5]),
+            "latestDay": max(days) if days else None, "launch": app.get("launch")}
+
+
+def appstore_block(app: dict | None) -> str:
+    """App Store panel for GlobePin, styled like the Sales panel it sits under."""
+    if app is None:
+        return ""
+    sm = appstore_summary(app)
+    if not sm:
+        return ("<section class='sales appstore'><h2>App Store · GlobePin</h2>"
+                "<p class='sales-none'>App Store Connect could not be reached on this run.</p></section>")
+    w7, w30, at = sm["w7"], sm["w30"], sm["allTime"]
+    usd = sm["proceeds"].get("USD", 0.0)
+    other = {k: v for k, v in sm["proceeds"].items() if k != "USD" and v}
+    proceeds_txt = f"${usd:,.2f}" + (f" + {', '.join(f'{v:,.2f} {k}' for k, v in other.items())}" if other else "")
+    if sm["funnel"]:
+        f = sm["funnel"]
+        conv = f"{f['conversion']:.1f}%" if f["conversion"] is not None else "–"
+        funnel_html = (f"<div class='sales-split'>"
+                       f"<span class='sales-chip'><b>{f['impressions']:,}</b> <span>impressions</span></span>"
+                       f"<span class='sales-chip'><b>{f['pageViews']:,}</b> <span>product page views</span></span>"
+                       f"<span class='sales-chip'><b>{f['downloads']:,}</b> <span>downloads</span></span>"
+                       f"<span class='sales-chip'><b>{conv}</b> <span>page view → download, last {f['days']}d</span></span>"
+                       f"</div>")
+    else:
+        note = html.escape(sm["analyticsNote"] or "Apple has not generated the first report yet")
+        funnel_html = (f"<p class='sales-none'>Impressions, page views and conversion: {note}. "
+                       f"Analytics reports arrive 2–3 days behind and only from the day the request was created (2026-09-10).</p>")
+    return f"""
+<section class="sales appstore">
+  <h2>App Store · {html.escape(sm['label'])}</h2>
+  <div class="sales-figures">
+    <div>
+      <span class="sales-figure-label">Downloads, last 7 days</span>
+      <span class="sales-big">{w7['downloads']:,}</span>
+      <span class="sales-sub"> · {w30['downloads']:,} in 30d · {at['downloads']:,} since launch</span>
+    </div>
+    <div>
+      <span class="sales-figure-label">Pro proceeds, since launch</span>
+      <span class="sales-secondary">{html.escape(proceeds_txt)}</span>
+      <span class="sales-sub"> · {at['proUnits']} paid Pro purchase{'' if at['proUnits'] == 1 else 's'}{f" · {at['proPromo']} promo-code redemption{'' if at['proPromo'] == 1 else 's'}" if at['proPromo'] else ''}</span>
+    </div>
+    <div>
+      <span class="sales-figure-label">Updates · redownloads (30d)</span>
+      <span class="sales-secondary">{w30['updates']:,} · {w30['redownloads']:,}</span>
+    </div>
+  </div>
+  {sparkline(sm['spark'], 'downloads')}
+  {("<div class='sales-split'>" + "".join(f"<span class='sales-chip'><b>{html.escape(c)}</b> <span>{n} download{'' if n == 1 else 's'}</span></span>" for c, n in sm['countries'].items()) + "</div>") if sm['countries'] else ''}
+  {funnel_html}
+  <p class="sales-foot">Sales &amp; Trends figures lag one day (latest: {html.escape(sm['latestDay'] or '—')}); a day Apple reports nothing for is a quiet day, shown as 0. Proceeds are Apple's developer proceeds after its commission.</p>
+</section>"""
+
+
 def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None,
-           sales: dict | None = None) -> str:
+           sales: dict | None = None, appstore: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -1539,6 +1876,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
   <p class="stamp">Updated {html.escape(generated)} · refreshes daily at 9:00am</p>
 </header>
 {sales_block(sales)}
+{appstore_block(appstore)}
 <div class="grid">{cards}</div>
 <h2>What this says</h2>
 <ul class="obs">{obs_html}</ul>
@@ -1635,6 +1973,20 @@ def main() -> int:
         else:
             print(f"  ! sales: {SALES_TOKEN_ENV} not set in {CONFIG_PATH}", file=sys.stderr)
 
+        # App Store Connect (GlobePin): archived per day like everything else.
+        if cfg.get("ASC_VENDOR_NUMBER"):
+            try:
+                app = fetch_appstore(cfg, history.get("appstore"))
+            except Exception as exc:  # noqa: BLE001 — never let Apple sink the run
+                print(f"  ! appstore unavailable: {str(exc)[:100]}", file=sys.stderr)
+                app = None
+            if app:
+                history["appstore"] = app
+                sm = appstore_summary(app)
+                print(f"  ok App Store ({app['label']}): {sm['w7']['downloads']} downloads in 7d, "
+                      f"{sm['allTime']['downloads']} since launch, {sm['allTime']['proUnits']} paid Pro"
+                      f"{' (' + str(app['fetchedDays']) + ' day(s) fetched)' if app.get('fetchedDays') else ''}")
+
         history["lastRun"] = dt.datetime.now(dt.timezone.utc).isoformat()
         HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
 
@@ -1644,8 +1996,9 @@ def main() -> int:
     generated = dt.datetime.now().strftime("%a %d %b %Y, %-I:%M%p").replace("AM", "am").replace("PM", "pm")
 
     sales = history.get("sales")
+    appstore = history.get("appstore")
     DASHBOARD_PATH.write_text(
-        render(summaries, obs, generated, min(firsts) if firsts else None, sales))
+        render(summaries, obs, generated, min(firsts) if firsts else None, sales, appstore))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     if sales:
@@ -1656,6 +2009,13 @@ def main() -> int:
         for site_row in sales.get("bySite", []):
             print(f"   {site_row['label']:<22} {money(site_row['windowGross']):>8} "
                   f"({site_row['windowOrders']})   all time {money(site_row['gross'])}")
+
+    if appstore:
+        sm = appstore_summary(appstore)
+        usd = sm["proceeds"].get("USD", 0.0)
+        print(f"\n  App Store — {sm['label']}: {sm['w7']['downloads']} downloads/7d, "
+              f"{sm['w30']['downloads']}/30d, {sm['allTime']['downloads']} since launch; "
+              f"{sm['allTime']['proUnits']} paid Pro, {sm['allTime']['proPromo']} promo, ${usd:,.2f} proceeds")
 
     print(f"\n  Traffic — {generated}")
     for s in summaries:
