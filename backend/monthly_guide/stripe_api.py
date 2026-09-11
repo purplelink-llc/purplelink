@@ -1,4 +1,4 @@
-"""Create the Stripe Product + one-time $1 Price for a monthly guide.
+"""Create the Stripe Product + one-time $5 Price for a monthly guide.
 
 Uses the Stripe REST API directly (form-encoded, HTTP Basic auth with the
 secret key as the username) so no ``stripe`` SDK dependency is added to the
@@ -18,7 +18,7 @@ import httpx
 logger = logging.getLogger(__name__)
 
 STRIPE_API = "https://api.stripe.com/v1"
-UNIT_AMOUNT_CENTS = "100"  # $1.00
+UNIT_AMOUNT_CENTS = "500"  # $5.00 — repriced 2026-09-10; $1 netted 67¢ after Stripe's $0.30 floor
 CURRENCY = "usd"
 SLUG_METADATA_KEY = "monthly_guide_slug"
 
@@ -79,7 +79,7 @@ def _create_price(client: httpx.Client, secret_key: str, product_id: str, slug: 
 
 
 def create_monthly_product(secret_key: str, title: str, slug: str) -> str:
-    """Create (or reuse) a Product + one-time $1 Price for the monthly guide.
+    """Create (or reuse) a Product + one-time $5 Price for the monthly guide.
 
     *slug* is the stable product key (e.g. "research-review-2026-07"); it is
     stored in ``metadata[monthly_guide_slug]`` on the Product so the operation
@@ -100,7 +100,7 @@ def create_monthly_product(secret_key: str, title: str, slug: str) -> str:
                 "name": title,
                 "description": (
                     "Monthly research review mini-guide synthesizing that month's "
-                    "GLP-1 and muscle research roundups. One-time $1 PDF."
+                    "GLP-1 and muscle research roundups. One-time $5 PDF."
                 ),
                 f"metadata[{SLUG_METADATA_KEY}]": slug,
             },

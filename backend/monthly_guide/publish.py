@@ -254,8 +254,8 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>__TITLE__ | MuscleOnGLP ($1 PDF)</title>
-<meta name="description" content="A $1 PDF that synthesizes every GLP-1 and muscle research roundup MuscleOnGLP published in __LABEL__ into one cited monthly review. Fully sourced, not medical advice.">
+<title>__TITLE__ | MuscleOnGLP ($5 PDF)</title>
+<meta name="description" content="A $5 PDF that synthesizes every GLP-1 and muscle research roundup MuscleOnGLP published in __LABEL__ into one cited monthly review. Fully sourced, not medical advice.">
 <link rel="canonical" href="__ORIGIN__/guides/__SLUG__/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="MuscleOnGLP">
@@ -263,13 +263,13 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MuscleOnGLP">
 <meta property="og:title" content="__TITLE__">
-<meta property="og:description" content="A cited monthly synthesis of __LABEL__ GLP-1 and muscle research. $1 PDF.">
+<meta property="og:description" content="A cited monthly synthesis of __LABEL__ GLP-1 and muscle research. $5 PDF.">
 <meta property="og:url" content="__ORIGIN__/guides/__SLUG__/">
 <meta property="og:image" content="__ORIGIN__/assets/og-card.png">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="__TITLE__">
-<meta name="twitter:description" content="A cited monthly synthesis of __LABEL__ GLP-1 and muscle research. $1 PDF.">
+<meta name="twitter:description" content="A cited monthly synthesis of __LABEL__ GLP-1 and muscle research. $5 PDF.">
 <meta name="twitter:image" content="__ORIGIN__/assets/og-card.png">
 
 <link rel="icon" type="image/png" href="/assets/favicon.png">
@@ -280,13 +280,13 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "__TITLE__",
-  "description": "A $1 PDF that synthesizes every GLP-1 and muscle research roundup MuscleOnGLP published in __LABEL__ into one cited monthly review.",
+  "description": "A $5 PDF that synthesizes every GLP-1 and muscle research roundup MuscleOnGLP published in __LABEL__ into one cited monthly review.",
   "brand": { "@type": "Brand", "name": "MuscleOnGLP" },
   "category": "Health & Fitness Guide",
   "image": "__ORIGIN__/assets/og-card.png",
   "offers": {
     "@type": "Offer",
-    "price": "1.00",
+    "price": "5.00",
     "priceCurrency": "USD",
     "availability": "https://schema.org/InStock",
     "url": "__ORIGIN__/guides/__SLUG__/"
@@ -328,7 +328,7 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
     <h1>Every GLP-1 and muscle study from __LABEL__, synthesized into one cited review</h1>
     <p class="guide-sub">This mini-guide pulls together every paper covered in the weekly research roundups during __LABEL__ and turns them into a single, plain-language synthesis. Every claim traces back to a study named in the guide, and preprints are flagged as such.</p>
     <div class="guide-buybox" id="buy">
-      <div class="p"><span class="now">$1</span><span class="unit">one-time &middot; instant PDF download</span></div>
+      <div class="p"><span class="now">$5</span><span class="unit">one-time &middot; instant PDF download</span></div>
       <label class="tos-check">
         <input type="checkbox" data-terms>
         <span>I have read and agree to the <a href="/terms/">Terms of Service</a>, including the medical disclaimer and the assumption of risk. I understand this is educational content, not medical advice.</span>
@@ -360,7 +360,7 @@ __INSIDE_ITEMS__    </ul>
     <h2>__TITLE__</h2>
     <p class="lead">One dollar. Instant download. Every source named.</p>
     <div style="margin-top:28px">
-      <a class="btn btn-primary btn-lg" href="#buy">Get it for $1 &rarr;</a>
+      <a class="btn btn-primary btn-lg" href="#buy">Get it for $5 &rarr;</a>
     </div>
     <p class="guarantee" style="margin-top:22px">Purchases are subject to our <a href="/terms/">Terms of Service</a> and medical disclaimer.</p>
     <p class="guarantee">Want everything? The <a href="/#pricing">full 30-page handbook</a> covers the fundamentals for $5.</p>
@@ -446,7 +446,7 @@ _HUB_CARD_TEMPLATE = """      <article class="guide-card">
           <h3><a href="/guides/__SLUG__/">__TITLE__</a></h3>
           <p class="gc-desc">Every GLP-1 and muscle study from __LABEL__, synthesized into one cited review. Preprints flagged, sources named.</p>
           <div class="gc-meta">
-            <span class="gc-price">$1</span>
+            <span class="gc-price">$5</span>
             <span class="gc-pages">Monthly &middot; fully cited</span>
           </div>
           <label class="tos-check">

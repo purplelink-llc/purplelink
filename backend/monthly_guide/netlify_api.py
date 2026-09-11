@@ -9,9 +9,17 @@ Two side effects the deploy needs beyond the file edits:
    ``netlify deploy`` (see app.py ordering).
 
 2. ``blobs_set`` uploads the generated PDF into the ``guide-files`` Netlify
-   Blobs store via the bundled ``netlify`` CLI (the same store checkout's
-   download.mjs streams from). Shelling to the CLI avoids reimplementing the
-   Blobs signed-upload handshake.
+   Blobs store (the same store checkout's download.mjs streams from) using the
+   Blobs signed-URL handshake directly, then downloads it back and refuses to
+   return until the bytes match.
+
+   It used to shell out to ``netlify blobs:set --input``. The image pins
+   netlify-cli@17, and that version reads ``--input`` as TEXT: every byte above
+   0x7F in the PDF's deflate streams was re-encoded, the file grew ~1.75x, the
+   xref offsets no longer pointed anywhere, and Preview/Safari/iOS refused to
+   open it. The 2026-08 review shipped that way and was on sale — and being
+   given away as a bonus — as a file nobody could read. Nothing in the pipeline
+   noticed, because the CLI exited 0. Hence the round-trip check.
 
 Both operations are idempotent: setting an env var that already exists updates
 it in place, and re-uploading a blob overwrites it.
@@ -19,12 +27,13 @@ it in place, and re-uploading a blob overwrites it.
 from __future__ import annotations
 
 import logging
-import os
-import subprocess
 
 import httpx
 
 logger = logging.getLogger(__name__)
+# httpx logs every request URL at INFO, and the Blobs handshake hands back
+# presigned S3 URLs carrying short-lived credentials. Keep those out of the run log.
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 NETLIFY_API = "https://api.netlify.com/api/v1"
 
@@ -98,34 +107,65 @@ def set_env_var(token: str, site_id: str, key: str, value: str) -> None:
         logger.info("netlify: updated existing env var %s", key)
 
 
-def blobs_set(token: str, site_id: str, store: str, key: str, file_path: str) -> None:
-    """Upload *file_path* into the Netlify Blobs *store* under *key* via the CLI.
+_SIGNED_URL_ACCEPT = "application/json;type=signed-url"
 
-    Runs ``netlify blobs:set <store> <key> --input <file>`` with the auth token
-    and site id supplied through the environment (non-interactive). Overwrites
-    any existing blob at *key*, so re-runs are idempotent.
+
+def _blob_signed_url(client: httpx.Client, token: str, site_id: str,
+                     store: str, key: str, method: str) -> str:
+    """One leg of the Blobs handshake: ask the Netlify API for a short-lived
+    signed URL for *method* on this blob. Mirrors @netlify/blobs' getFinalRequest
+    (the request method to the API is the method you intend to use on the URL)."""
+    res = client.request(
+        method,
+        f"{NETLIFY_API}/blobs/{site_id}/{store}/{key}",
+        headers={"Authorization": f"Bearer {token}", "Accept": _SIGNED_URL_ACCEPT},
+    )
+    if res.status_code != 200:
+        raise RuntimeError(
+            f"blobs: signed-url request ({method}) for {store}/{key} failed: "
+            f"HTTP {res.status_code} {res.text[:300]}"
+        )
+    return res.json()["url"]
+
+
+def blobs_get(token: str, site_id: str, store: str, key: str) -> bytes:
+    """Download a blob's raw bytes (used to verify an upload)."""
+    with httpx.Client(timeout=60) as client:
+        url = _blob_signed_url(client, token, site_id, store, key, "GET")
+        res = client.get(url)
+        if res.status_code != 200:
+            raise RuntimeError(f"blobs: download of {store}/{key} failed: HTTP {res.status_code}")
+        return res.content
+
+
+def blobs_set(token: str, site_id: str, store: str, key: str, file_path: str) -> None:
+    """Upload *file_path* into the Netlify Blobs *store* under *key*, as bytes,
+    then read it back and require a byte-identical round trip.
+
+    Overwrites any existing blob at *key*, so re-runs are idempotent. Raises
+    rather than returning if the stored bytes differ from the file: a PDF that
+    is "uploaded" but unreadable is worse than a run that fails loudly.
     """
     if not token:
         raise RuntimeError("blobs_set: empty Netlify token")
-    env = {
-        **os.environ,
-        "NETLIFY_AUTH_TOKEN": token,
-        "NETLIFY_SITE_ID": site_id,
-    }
-    # No --site flag: blobs:set does not accept one ("Error: unknown option
-    # '--site'"), which failed the 2026-08 run at the upload step. The site is
-    # already supplied through NETLIFY_SITE_ID in env above, which is how the
-    # command expects it. Output is captured so a future failure reports the
-    # CLI's own message instead of a bare non-zero exit status.
-    proc = subprocess.run(
-        ["netlify", "blobs:set", store, key, "--input", file_path],
-        env=env,
-        capture_output=True,
-        text=True,
-    )
-    if proc.returncode != 0:
-        raise RuntimeError(
-            f"netlify blobs:set failed (exit {proc.returncode}) for {store}/{key}: "
-            f"{(proc.stderr or proc.stdout or '').strip()[:500]}"
+    data = open(file_path, "rb").read()
+    if not data.startswith(b"%PDF-"):
+        raise RuntimeError(f"blobs_set: {file_path} is not a PDF (no %PDF- header)")
+
+    with httpx.Client(timeout=120) as client:
+        url = _blob_signed_url(client, token, site_id, store, key, "PUT")
+        res = client.put(
+            url,
+            content=data,  # bytes, never str: the whole point
+            headers={"cache-control": "max-age=0, stale-while-revalidate=60"},
         )
-    logger.info("netlify: uploaded blob %s/%s from %s", store, key, file_path)
+        if res.status_code not in (200, 201, 204):
+            raise RuntimeError(f"blobs: upload of {store}/{key} failed: HTTP {res.status_code} {res.text[:300]}")
+
+    stored = blobs_get(token, site_id, store, key)
+    if stored != data:
+        raise RuntimeError(
+            f"blobs: round-trip mismatch for {store}/{key}: sent {len(data)} bytes, "
+            f"store holds {len(stored)}. Refusing to continue — the file for sale would be corrupt."
+        )
+    logger.info("netlify: uploaded + verified blob %s/%s (%d bytes)", store, key, len(data))

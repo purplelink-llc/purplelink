@@ -2,12 +2,12 @@
 
 Runs on the 1st of each month at 13:00 UTC. Synthesizes the just-ended
 month's weekly research roundups (published by the research_digest pipeline)
-into a NEW paid $1 PDF mini-guide, then auto-lists it for sale on
+into a NEW paid $5 PDF mini-guide, then auto-lists it for sale on
 getmuscleonglp.com:
 
   clone private repo -> gather the month's roundups -> synthesize a cohesive
   guide -> red-team (medical safety, legal, voice, originality) -> typeset to
-  PDF -> create a Stripe product + $1 price -> set the site's STRIPE_PRICE_*
+  PDF -> create a Stripe product + $5 price -> set the site's STRIPE_PRICE_*
   env var -> upload the PDF to the guide-files Netlify Blobs store -> edit the
   product registry + write the landing/success pages + hub card + sitemap ->
   commit + push -> npm install -> netlify deploy --prod -> email Ben a review
@@ -190,7 +190,7 @@ async def run_monthly_guide(dry_run: bool = False, month: str = ""):
         from monthly_guide.netlify_api import set_env_var, blobs_set
         from monthly_guide.mailer import notify_new_guide
 
-        # 1. Stripe product + $1 price (idempotent by slug metadata).
+        # 1. Stripe product + $5 price (idempotent by slug metadata).
         price_id = create_monthly_product(stripe_key, title, slug)
         logger.info("monthly: stripe price=%s", price_id)
 
