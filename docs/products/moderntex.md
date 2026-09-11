@@ -26,7 +26,7 @@ Netlify Blobs store. Two doors:
   first launch (Keychain + Application Support, earliest wins), then `TrialExpiredView`
   replaces the window. It ships with NO Sparkle feed, so it cannot update into the
   paid app, and its filename matches neither the buyer list nor the appcast.
-  Cut it with `MODERNTEX_VERSION=x.y.z MODERNTEX_EDITION=trial scripts/release.sh`
+  Cut it with `MODERNTEX_VERSION=x.y.z MODERNTEX_EDITION=trial scripts/build-release.sh`
   after the paid release of the same version. The site fires `trial_download`
   on the link click; `stats.mjs` counts it.
 - **In-app updates (Sparkle):** `?feed=1` and `?update=ModernTex-x.y.z.dmg`, requiring
@@ -52,8 +52,9 @@ hand; it never changes the webhook's 200 to Stripe.
 From the ModernTex repo, on a clean commit:
 
 ```
-MODERNTEX_VERSION=1.0.2 scripts/release.sh
-MODERNTEX_VERSION=1.0.2 MODERNTEX_EDITION=trial scripts/release.sh   # then the trial
+MODERNTEX_VERSION=1.0.2 scripts/build-release.sh          # stages, does not publish
+MODERNTEX_VERSION=1.0.2 MODERNTEX_EDITION=trial scripts/build-release.sh   # then the trial
+scripts/publish-release.sh 1.0.2                            # then, after testing the staged DMG
 ```
 
 It builds universal, signs (notarizes when the `moderntex` notarytool profile exists),

@@ -21,7 +21,7 @@
  *     determined reverse-engineer; the purchase door is what the paywall rests on.
  *
  * The DMGs and appcast are NOT part of the published site. They live only in the
- * private `moderntex-files` Blobs store (scripts/release.sh in the ModernTex repo
+ * private `moderntex-files` Blobs store (scripts/publish-release.sh in the ModernTex repo
  * uploads them). Responses stream straight from Blobs, which keeps a 13 MB disk
  * image clear of the 6 MB buffered-response limit.
  */
@@ -106,7 +106,7 @@ async function streamBlob(store, key, type, disposition) {
  * Sparkle's `generate_appcast --download-url-prefix` resolves each filename as a
  * relative URL against the prefix, so a prefix carrying a query string
  * (`…/moderntex-download?update=`) collapses to `…/functions/ModernTex-1.0.0.dmg`,
- * which 404s and breaks in-app updates. release.sh now post-processes its own
+ * which 404s and breaks in-app updates. publish-release.sh now post-processes its own
  * output, but the feed is rewritten here too so a stale or hand-uploaded appcast
  * in the store can never ship a dead download link to installed copies.
  * The EdDSA signature covers the DMG, not the URL, so rewriting is safe.
