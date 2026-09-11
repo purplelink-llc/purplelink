@@ -5,6 +5,12 @@
  *     GET /.netlify/functions/moderntex-download?session_id=cs_…            -> JSON {files:[…]}
  *     GET /.netlify/functions/moderntex-download?session_id=cs_…&file=<dmg> -> the DMG
  *
+ *   Free trial (public, no session — the 7-day trial edition):
+ *     GET /.netlify/functions/moderntex-download?trial=1                      -> newest trial DMG
+ *     The trial build carries no Sparkle feed and cannot update into the paid
+ *     app; its filename (ModernTex-Trial-x.y.z.dmg) matches neither DMG_NAME nor
+ *     the appcast, so it never appears in the buyer list or the update channel.
+ *
  *   Updates (Sparkle inside the app, never a browser):
  *     GET /.netlify/functions/moderntex-download?feed=1                       -> appcast.xml
  *     GET /.netlify/functions/moderntex-download?update=<dmg>                 -> the DMG
@@ -19,12 +25,15 @@
  * uploads them). Responses stream straight from Blobs, which keeps a 13 MB disk
  * image clear of the 6 MB buffered-response limit.
  */
+import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "moderntex-files";
 const PRODUCT_KEY = "moderntex";
 const DMG_NAME = /^ModernTex-\d+\.\d+\.\d+\.dmg$/;
+const TRIAL_DMG_NAME = /^ModernTex-Trial-\d+\.\d+\.\d+\.dmg$/;
+const TRIAL_DAILY_LIMIT = 20;
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -61,9 +70,9 @@ async function loadSession(sessionId) {
 }
 
 /** The newest DMG in the store, by semantic version in the filename. */
-async function latestDmgName(store) {
+async function latestDmgName(store, pattern = DMG_NAME) {
   const { blobs } = await store.list();
-  const names = blobs.map((b) => b.key).filter((k) => DMG_NAME.test(k));
+  const names = blobs.map((b) => b.key).filter((k) => pattern.test(k));
   names.sort((a, b) => {
     const va = a.match(/\d+/g).map(Number), vb = b.match(/\d+/g).map(Number);
     for (let i = 0; i < 3; i++) if (va[i] !== vb[i]) return vb[i] - va[i];
@@ -128,6 +137,22 @@ export default async function handler(request) {
   if (request.method !== "GET" && request.method !== "HEAD") return json(405, { error: "method_not_allowed" });
   const url = new URL(request.url);
   const store = getStore(FILE_STORE);
+
+  // --- Free trial (public) --------------------------------------------------------
+  // No session, no token: anyone may take the trial. The only thing worth guarding
+  // is bandwidth, so one address gets a generous daily cap rather than none.
+  if (url.searchParams.get("trial") === "1") {
+    const ip = request.headers.get("x-nf-client-connection-ip") || request.headers.get("x-forwarded-for") || "unknown";
+    const day = new Date().toISOString().slice(0, 10);
+    const rl = getStore("rate-limits");
+    const key = `rl:trial:${day}:${createHash("sha256").update(ip).digest("hex").slice(0, 16)}`;
+    const n = parseInt((await rl.get(key)) || "0", 10) || 0;
+    if (n >= TRIAL_DAILY_LIMIT) return json(429, { error: "rate_limited", detail: "Too many downloads from this address today." });
+    await rl.set(key, String(n + 1));
+    const name = await latestDmgName(store, TRIAL_DMG_NAME);
+    if (!name) return json(404, { error: "no_trial", detail: "No trial build is available right now." });
+    return streamBlob(store, name, "application/x-apple-diskimage", `attachment; filename="${name}"`);
+  }
 
   // --- Update channel (Sparkle) -------------------------------------------------
   const wantsFeed = url.searchParams.get("feed") === "1";

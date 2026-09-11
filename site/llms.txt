@@ -33,10 +33,10 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 - **Category:** Productivity / academic writing
 - **Description:** A native macOS LaTeX manuscript studio for academic researchers. Combines multi-file manuscript editing, tightly synchronized PDF preview, intelligent compile modes (Fast/Live/Full), citation management and BibTeX autocomplete, revision snapshots, plain-language error diagnostics, and submission-readiness checks in one coherent interface.
 - **Target users:** PhD students, faculty, and technical coauthors writing serious LaTeX manuscripts
-- **Pricing:** $10 USD, one-time purchase. No subscription and no account. Every 1.x update is included.
+- **Pricing:** Free 7-day trial (the complete app, no account), then $10 USD one-time to keep. No subscription. Every 1.x update is included.
 - **Privacy:** No cloud sync, no data collection
-- **Status:** Shipping. Version 1.0.0 released 2026-09-04.
-- **Buy:** https://purplelink.llc/moderntex/
+- **Status:** Shipping. Version 1.0.0 released 2026-09-04; 1.0.2 (2026-09-11) added the free trial.
+- **Trial and purchase:** https://purplelink.llc/moderntex/
 - **Requirements:** macOS 14 (Sonoma) or later, Apple silicon or Intel, and a TeX distribution such as MacTeX or TinyTeX. 13 MB signed disk image.
 - **Updates:** The app checks once a day and installs in place; updates are included in the purchase.
 - **Key differentiators:** Plain-language LaTeX error explanations; submission-readiness checks for journal/conference requirements; native macOS (not Electron, not web); academic manuscript workflow as first-class feature
@@ -79,7 +79,7 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 ## Pages
 
 - Home: https://purplelink.llc/
-- ModernTex (macOS, $10, shipping): https://purplelink.llc/moderntex/
+- ModernTex (macOS, free 7-day trial then $10, shipping): https://purplelink.llc/moderntex/
 - GlobePin (iOS, free, shipping): https://apps.apple.com/us/app/globepin/id6762313540
 - Haea: https://purplelink.llc/haea/
 - GlobePin: https://purplelink.llc/globepin/
@@ -92,7 +92,7 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 ## Frequently asked questions
 
 **When do Purplelink's apps ship?**
-Two of the three have shipped. ModernTex came out on 2026-09-04 and sells for $10 at https://purplelink.llc/moderntex/. GlobePin came out on 2026-09-03 and is free at https://apps.apple.com/us/app/globepin/id6762313540. Haea is still in development, expected in 2026, with a waitlist on its product page.
+Two of the three have shipped. ModernTex came out on 2026-09-04, has a free 7-day trial, and sells for $10 at https://purplelink.llc/moderntex/. GlobePin came out on 2026-09-03 and is free at https://apps.apple.com/us/app/globepin/id6762313540. Haea is still in development, expected in 2026, with a waitlist on its product page.
 
 **What platforms do the apps support?**
 GlobePin and Haea are iOS apps (iOS 17+). ModernTex is a macOS app (macOS 14+).

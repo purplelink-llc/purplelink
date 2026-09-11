@@ -20,6 +20,15 @@ Netlify Blobs store. Two doors:
 - **Buyers:** `?session_id=cs_…` (list) and `&file=ModernTex-x.y.z.dmg`. The function
   checks the session on our Stripe account is paid and carries `metadata.product=moderntex`.
   The list always offers the newest DMG in the store.
+- **Free trial (public, since 1.0.2):** `?trial=1` streams the newest
+  `ModernTex-Trial-x.y.z.dmg`, no session, 20 downloads per IP per day. The trial
+  edition is the same source built with `MODERNTEX_EDITION=trial`: seven days from
+  first launch (Keychain + Application Support, earliest wins), then `TrialExpiredView`
+  replaces the window. It ships with NO Sparkle feed, so it cannot update into the
+  paid app, and its filename matches neither the buyer list nor the appcast.
+  Cut it with `MODERNTEX_VERSION=x.y.z MODERNTEX_EDITION=trial scripts/release.sh`
+  after the paid release of the same version. The site fires `trial_download`
+  on the link click; `stats.mjs` counts it.
 - **In-app updates (Sparkle):** `?feed=1` and `?update=ModernTex-x.y.z.dmg`, requiring
   the header `X-ModernTex-Channel: <MODERNTEX_UPDATE_TOKEN>` (Netlify env, production).
   ModernTex's `build.sh` compiles that token into the app (`MTUpdateChannelToken` in
@@ -43,7 +52,8 @@ hand; it never changes the webhook's 200 to Stripe.
 From the ModernTex repo, on a clean commit:
 
 ```
-MODERNTEX_VERSION=1.0.1 scripts/release.sh
+MODERNTEX_VERSION=1.0.2 scripts/release.sh
+MODERNTEX_VERSION=1.0.2 MODERNTEX_EDITION=trial scripts/release.sh   # then the trial
 ```
 
 It builds universal, signs (notarizes when the `moderntex` notarytool profile exists),

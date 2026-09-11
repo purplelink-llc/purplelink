@@ -1,7 +1,7 @@
 # ModernTex launch outreach pack
 
-Prepared 2026-09-11. Extends `purplelink-tool-distribution-kit.md`, which covers the
-free tools; this one is specifically for ModernTex ($10, macOS 14+, v1.0.1).
+Prepared 2026-09-11, updated the same day once the trial shipped. Extends `purplelink-tool-distribution-kit.md`, which covers the
+free tools; this one is specifically for ModernTex ($10, macOS 14+, v1.0.2, free 7-day trial).
 
 The point of all of this is links and real humans. purplelink.llc has close to zero
 external links, which is the standing ceiling on every ranking the site has. Six
@@ -31,30 +31,24 @@ outreach is how that channel gets bigger.
   and applies everywhere.
 
 Facts to keep consistent across every post: native Mac LaTeX editor for researchers ·
-$10 once, updates included · macOS 14 or later, Apple silicon · needs a TeX
-distribution such as MacTeX or TinyTeX · no account · version 1.0.1 · built by an
-academic who writes papers in LaTeX. Features: multi-file manuscript navigation,
+free 7-day trial, the complete app, no account · $10 once to keep, updates included ·
+macOS 14 or later, Apple silicon and Intel · needs a TeX distribution such as MacTeX or
+TinyTeX · version 1.0.2 · built by an academic who writes papers in LaTeX. Trial link:
+https://purplelink.llc/moderntex/ (the download button is the first thing on the page). Features: multi-file manuscript navigation,
 synchronized PDF preview, BibTeX completion that searches your whole .bib by author or
 title, plain-language compile diagnostics, submission-readiness checks, anonymized
 submission export, version snapshots, three compile modes.
 
-## Two prerequisites, both yours to decide
+## Prerequisites
 
-### 1. A trial build, or no Show HN
+### 1. The trial: done (2026-09-11)
 
-Hacker News' Show HN rules are explicit: the work must be something people can try,
-and "landing pages" and "signups or emails" as a barrier are off-topic
-(https://news.ycombinator.com/showhn.html). ModernTex today is buy-first with no
-trial, so a Show HN post would be removed or flagged, and several of the reviewers
-below will ask for a trial before writing a line.
-
-Options, cheapest first:
-- A 14-day trial through the existing Sparkle build (time-limited unlock key).
-- A free mode that opens and compiles but disables export and snapshots.
-- No trial: skip Show HN entirely and lean on the directories and communities.
-
-This is a product decision. Everything else in this pack works without it; Show HN
-does not.
+ModernTex 1.0.2 ships as two editions from one codebase. The trial is the complete app
+for seven days from first launch, no account, and it cannot update itself into the paid
+app. It is the first button on https://purplelink.llc/moderntex/ and is served from
+`/.netlify/functions/moderntex-download?trial=1`. This unlocks Show HN (below) and
+gives every post a "try it" link, which is what turns "tell me what's missing" from a
+request into something people can actually do.
 
 ### 2. Reviews from the six buyers
 
@@ -95,13 +89,14 @@ position ModernTex against TeXShop, Texifier, TeXstudio and Overleaf.
 
 **Reusable listing copy** (adjust length to the field):
 
-> Tagline: Native Mac LaTeX editor for academic manuscripts. $10 once.
+> Tagline: Native Mac LaTeX editor for academic manuscripts. Free 7-day trial, $10 once.
 >
 > Short: ModernTex is a native macOS LaTeX editor built for writing journal articles
 > and dissertation chapters. Multi-file manuscript navigation, synchronized PDF
 > preview, BibTeX completion that searches your whole bibliography by author or title,
 > compile errors explained in plain language, submission-readiness checks and an
-> anonymized export for review. $10, one-time, updates included. Requires macOS 14
+> anonymized export for review. Free 7-day trial with no account, then $10 one-time
+> with updates included. Requires macOS 14
 > and a TeX distribution such as MacTeX.
 >
 > Long (add to short): It is not a general text editor with a LaTeX mode and not a
@@ -128,11 +123,40 @@ position ModernTex against TeXShop, Texifier, TeXstudio and Overleaf.
 > drove it: compile errors that tell you what to fix instead of quoting a log,
 > BibTeX completion that finds a reference by author or title across the whole
 > .bib, and a set of checks that catch what a journal will bounce before you upload.
-> It's $10 once, macOS only, and it needs MacTeX installed. It is one week old, so
+> There's a free 7-day trial with no account, then it's $10 once. macOS only, and it
+> needs MacTeX installed. It is one week old, so
 > the state of it is: it works, it has no track record yet, and I'd rather hear
 > what's missing than what's nice.
 
 ## Tier 2: communities, one per week, in this order
+
+### Show HN (once, a weekday between 8 and 10am Eastern, after the directories are up)
+
+HN's rules require something people can try; the trial satisfies that. One shot. Be
+in the comments for the whole day, answer everything, concede real points. The title
+is the whole pitch on HN: no adjectives, say what it is.
+
+> **Title:** Show HN: ModernTex – a native macOS LaTeX editor for writing papers
+>
+> **URL:** https://purplelink.llc/moderntex/
+>
+> **First comment (post it yourself, immediately):**
+> I write papers in LaTeX and built the editor I kept wishing I had. It is macOS-only,
+> native (SwiftUI, not Electron), and narrower than TeXShop or Texifier on purpose:
+> the workflow of getting a journal article or dissertation chapter from outline to
+> submission.
+>
+> The parts that made me build it rather than keep using TeXShop: compile errors
+> rewritten into plain language with the line that caused them (BibTeX's are the
+> worst offenders); BibTeX completion that searches the whole .bib by author or
+> title; multi-file navigation across a manuscript; checks for what journals bounce
+> on; and an anonymized export for double-blind review.
+>
+> It needs MacTeX or TinyTeX installed; it does not bundle a distribution. Free
+> 7-day trial with no account, then $10 once. It is a week old, so it has no track
+> record, and I would rather hear what is missing than what is nice. The obvious
+> comparison is Texifier, which bundles its own TeX and has years on this; if you
+> already own it you probably do not need ModernTex.
 
 ### Week 1: the MacOSX-TeX mailing list
 
@@ -153,8 +177,10 @@ twenty years. Plain-text email, no HTML. Join first, read a week of threads, the
 > the things journals reject on, and an anonymized export for review. It uses the
 > MacTeX (or TinyTeX) you already have; it doesn't bundle a distribution.
 >
-> macOS 14 or later, Apple silicon, $10 one-time. It is version 1.0.1 and a week old,
-> so I'd value bug reports more than anything. https://purplelink.llc/moderntex/
+> macOS 14 or later, Apple silicon and Intel. There is a free 7-day trial with no
+> account, then $10 one-time. It is version 1.0.2 and a week old, so I'd value bug
+> reports and missing-feature notes more than anything.
+> https://purplelink.llc/moderntex/
 >
 > Ben Ampel
 
@@ -174,10 +200,11 @@ it as a tool or project if the sub has such a flair, disclose in line one.
 > and checks for the things journals bounce on, plus an anonymized export for review.
 >
 > What it doesn't do: bundle a TeX distribution (you need MacTeX or TinyTeX), run on
-> Windows or Linux, or have a track record. It's 1.0.1 and a week old.
+> Windows or Linux, or have a track record. It's 1.0.2 and a week old.
 >
-> $10 once, updates included. If the rules allow a link I'll put it in a comment.
-> Mostly I'd like to know what a room full of LaTeX users thinks is missing.
+> Free 7-day trial, no account, then $10 once with updates included. If the rules
+> allow a link I'll put it in a comment. Mostly I'd like to know what a room full of
+> LaTeX users thinks is missing, and what you'd want in the next update.
 
 ### Week 3: r/macapps
 
@@ -195,9 +222,9 @@ allowed; a handful of free licenses for commenters tends to be welcomed there.
 > and journal submission checks. Compared with Texifier it is narrower on purpose and
 > a third of the price. It needs MacTeX or TinyTeX installed; it doesn't bundle one.
 >
-> macOS 14+, Apple silicon, $10 once with updates included, no account. v1.0.1.
-> [If allowed: I have a few licenses for anyone here who writes in LaTeX and will tell
-> me what's wrong with it.]
+> macOS 14+, Apple silicon and Intel. Free 7-day trial, no account, then $10 once
+> with updates included. v1.0.2. Try it and tell me what's wrong with it; feature
+> requests from people who actually write in LaTeX decide what 1.1 gets.
 
 ### Week 4: Mac Power Users forum (talk.macpowerusers.com)
 
@@ -232,7 +259,8 @@ than press and the lists rank. Offer a license, expect nothing.
 > because the existing editors treat a manuscript as a text file. It navigates a
 > multi-file paper, completes BibTeX by author or title across the whole
 > bibliography, explains compile errors in plain language, and checks the things
-> journals reject on before you upload. $10 once, macOS 14+, needs MacTeX.
+> journals reject on before you upload. Free 7-day trial, then $10 once. macOS 14+,
+> needs MacTeX.
 >
 > I'm an academic; it started as the editor I wanted for my own papers. If it fits
 > your list I'd be glad to send a license so you can form your own view. If it
@@ -273,16 +301,17 @@ how much of the code was written with AI. Expect a no.
 
 | Day | Do |
 |---|---|
-| Day 1 | Send the six buyer emails. LinkedIn post. Decide on the trial. |
+| Day 1 | LinkedIn post, Bluesky, Mastodon: the trial is the news. |
 | Day 2 | AlternativeTo, awesome-LaTeX PR. |
 | Day 3 | MacUpdate, SaaSHub. |
 | Day 4 | Join MacOSX-TeX list and Mac Power Users; read, don't post. |
 | Day 5 | Launching Next, Fazier, Uneed. Bluesky, Mastodon. |
-| Day 8 | MacOSX-TeX announcement. First two blogger pitches. |
+| Day 8 | Show HN (weekday, 8–10am ET). |
+| Day 9 | MacOSX-TeX announcement. First two blogger pitches. |
 | Day 10 | Product Hunt (Tue–Thu). |
 | Day 15 | r/LaTeX. Two more blogger pitches. |
 | Day 22 | r/macapps. LibGuides emails. |
-| Day 29 | Mac Power Users. Show HN, only if a trial shipped. |
+| Day 29 | Mac Power Users. |
 
 ## Measurement
 

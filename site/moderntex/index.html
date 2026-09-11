@@ -86,7 +86,15 @@
             {
               "@type": "Question",
               "name": "What does it cost?",
-              "acceptedAnswer": { "@type": "Answer", "text": "$10, once, including every 1.x update. No subscription and no account." }
+              "acceptedAnswer": { "@type": "Answer", "text": "$10, once, after a free 7-day trial, including every 1.x update. No subscription and no account." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is there a free trial?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The trial is the complete app for seven days from first launch, with no account and nothing to enter. When it ends the window shows a notice and a Buy button; your .tex files are ordinary files on disk and are not touched. Buying is $10 once and delivers a separate download."
+              }
             },
             {
               "@type": "Question",
@@ -140,16 +148,16 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status product-status-live">$10 · v1.0.1 · Available now</span>
+          <span class="product-status product-status-live">Free 7-day trial · $10 to keep · v1.0.2</span>
         </div>
         <h1 class="app-hero-name">ModernTex</h1>
         <p class="app-hero-tagline">A native macOS LaTeX editor for researchers, not a programmer's IDE with LaTeX bolted on. Multi-file editing, synchronized PDF preview, and the full academic manuscript workflow in one app.</p>
         <div class="app-hero-actions" id="buy">
-          <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="moderntex">Buy ModernTex &mdash; $10</button>
-          <a class="btn btn-ghost" href="#requirements">Requirements</a>
+          <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/moderntex-download?trial=1">Download the free 7-day trial</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="moderntex">Buy ModernTex &mdash; $10</button>
         </div>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
-        <p class="waitlist-fine-print">One-time purchase, updates included. Version 1.0.1 · 13 MB disk image · macOS 14 or later · Apple silicon and Intel. Secure checkout via Stripe; the download link arrives the moment payment clears.</p>
+        <p class="waitlist-fine-print">The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, updates included; the paid download arrives the moment payment clears. Version 1.0.2 · 13 MB disk image · macOS 14 or later · Apple silicon and Intel. <a href="#requirements">Requirements</a>.</p>
       </div>
     </div>
 
@@ -250,8 +258,12 @@
           <div class="faq-body">ModernTex requires macOS 14 (Sonoma) or later.</div>
         </details>
         <details class="faq-item">
+          <summary>Is there a free trial?</summary>
+          <div class="faq-body">Yes. The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. When it ends, the window shows a notice and a Buy button; your .tex files are ordinary files on disk and are not touched. The trial cannot update itself into the paid app: buying delivers a separate download.</div>
+        </details>
+        <details class="faq-item">
           <summary>What does it cost?</summary>
-          <div class="faq-body">$10, once. That covers every 1.x update. There is no subscription and no account; the optional AI features use your own Claude account.</div>
+          <div class="faq-body">$10, once, after a free 7-day trial. That covers every 1.x update. There is no subscription and no account; the optional AI features use your own Claude account.</div>
         </details>
         <details class="faq-item">
           <summary>How is ModernTex different from TeXShop or Overleaf?</summary>

@@ -71,4 +71,16 @@
       };
     }
   } catch (e) { /* leave fetch untouched on any error */ }
+
+  // The ModernTex trial is a plain download link, not a fetch, so the wrapper
+  // above never sees it. Count the click: trial downloads against later
+  // checkout_click/sales is the whole funnel the trial exists to measure.
+  document.addEventListener("click", function (ev) {
+    try {
+      var a = ev.target && ev.target.closest && ev.target.closest("a[href]");
+      if (a && a.getAttribute("href").indexOf("moderntex-download?trial=1") !== -1) {
+        window.plTrack("trial_download", "moderntex");
+      }
+    } catch (e) { /* never interfere with the download */ }
+  }, true);
 })();
