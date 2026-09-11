@@ -58,6 +58,9 @@ RETRY_BACKOFF = 3.0       # seconds; doubles each attempt
 METRIC_START_OVERRIDES = {
     ("muscleonglp", "calcRuns"): "2026-07-25",
     ("purplelink", "checkoutClicks"): "2026-08-28",
+    # The ModernTex 7-day trial shipped with 1.0.2; stats.mjs backfills the
+    # counter with zeros for every earlier day.
+    ("purplelink", "trialDownloads"): "2026-09-11",
 }
 
 # Events we generated ourselves. The beacon cannot tell a verification click
@@ -115,6 +118,7 @@ SITES = [
         "token_env": "PURPLELINK_STATS_TOKEN",
         # (json key in byDay, display label) — engagement metrics beyond a visit
         "secondaries": [("toolRuns", "tool runs"), ("signups", "waitlist signups"),
+                        ("trialDownloads", "trial downloads"),
                         ("checkoutClicks", "checkout clicks")],
         # Paths that actually show a buy button. The useful denominator for a
         # checkout rate is "people who reached a page where buying was possible",
@@ -672,6 +676,7 @@ def merge_history(history: dict, key: str, payload: dict) -> None:
         "formBreakdown": payload.get("formBreakdown", []),
         "generatedAt": payload.get("generatedAt"),
         "topPaths": payload.get("topPaths", []),
+        "checkoutByProduct": payload.get("checkoutByProduct", []),
         "topReferrers": payload.get("topReferrers", []),
         "topUtm": payload.get("topUtm", []),
         "toolRuns": payload.get("toolRuns", []),
@@ -775,6 +780,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
     latest = site_hist.get("latest", {})
 
     return {
+        "key": site["key"],
         "label": site["label"],
         "domain": site["domain"],
         "synthetic": synthetic,
@@ -846,6 +852,13 @@ def summarise(site: dict, site_hist: dict) -> dict:
             latest.get("topPaths", []), site.get("product_paths"),
             int(total(last30_days, "checkoutClicks") or 0),
         ),
+        # ModernTex trial funnel inputs: 30-day trial downloads (only counted from
+        # the day the trial shipped, see METRIC_START_OVERRIDES) and the 30-day
+        # buy-button presses tagged with that product.
+        "trial30": int(total(last30_days, "trialDownloads") or 0),
+        "moderntex_clicks30": next((int(r.get("count") or 0)
+                                    for r in latest.get("checkoutByProduct", [])
+                                    if r.get("key") == "moderntex"), 0),
         "bounds": [b for b in (
             conversion_bound(by_day, k, lbl) for k, lbl in site["secondaries"]
         ) if b],
@@ -936,7 +949,7 @@ def checkout_rate(top_paths: list, product_paths, clicks: int) -> dict | None:
     return {"views": views, "clicks": clicks, "pct": clicks / views * 100}
 
 
-def observations(summaries: list[dict]) -> list[str]:
+def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
     """Plain-language read of what the numbers mean. No spin."""
     out: list[str] = []
     for s in summaries:
@@ -1039,13 +1052,34 @@ def observations(summaries: list[dict]) -> list[str]:
                 out.append(f"{s['label']}: {ck['clicks']} checkout click(s) from {ck['views']} "
                            f"product-page view(s) in 30 days — a {ck['pct']:.1f}% checkout rate.")
 
+        # The ModernTex trial funnel: download -> buy click -> paid order. This is
+        # the one number the trial was built to produce, so it gets its own line
+        # rather than being read off three separate counters. Orders come from
+        # Stripe (sales.byProduct), the other two from the beacon.
+        tr = next((sec for sec in s["secondaries"] if sec["key"] == "trialDownloads"), None)
+        if tr and tr["days_tracked"] is not None and s["key"] == "purplelink":
+            orders30 = next((int(r.get("orders") or 0) for r in (sales or {}).get("byProduct", [])
+                             if r.get("key") == "moderntex"), 0)
+            dl, clk = s.get("trial30", 0), s.get("moderntex_clicks30", 0)
+            window = (f"since {tr['since']}" if tr["days_tracked"] < 30 else "last 30 days")
+            if dl == 0 and tr["days_tracked"] < 2:
+                pass  # the generic "recorded since" line already covers a day-old counter
+            elif dl == 0:
+                out.append(f"{s['label']}: ModernTex trial funnel ({window}): no trial downloads yet, "
+                           f"{clk} buy click(s), {orders30} order(s).")
+            else:
+                conv = f", {clk / dl * 100:.0f}% of downloads pressed buy" if clk else ""
+                out.append(f"{s['label']}: ModernTex trial funnel ({window}): {dl} trial download(s) "
+                           f"→ {clk} buy click(s) → {orders30} paid order(s){conv}.")
+
         # Say what was taken out, so the figures above can be reconciled against
         # the raw archive rather than looking like a discrepancy.
         for adj in s.get("synthetic", []):
             label = next((lbl for k, lbl in
                           (("checkoutClicks", "checkout clicks"), ("toolRuns", "tool runs"),
                            ("signups", "waitlist signups"), ("subscribes", "subscribes"),
-                           ("calcRuns", "calculator runs")) if k == adj["metric"]), adj["metric"])
+                           ("calcRuns", "calculator runs"),
+                           ("trialDownloads", "trial downloads")) if k == adj["metric"]), adj["metric"])
             out.append(f"{s['label']}: {adj['removed']} of the {adj['raw']} {label} on "
                        f"{adj['day']} were ours and are excluded above ({adj['why']}). "
                        f"The archive still holds the raw count.")
@@ -1991,7 +2025,7 @@ def main() -> int:
         HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
 
     summaries = [summarise(s, history["sites"].get(s["key"], {})) for s in SITES]
-    obs = observations(summaries)
+    obs = observations(summaries, history.get("sales"))
     firsts = [s["first_day"] for s in summaries if s["first_day"]]
     generated = dt.datetime.now().strftime("%a %d %b %Y, %-I:%M%p").replace("AM", "am").replace("PM", "pm")
 
