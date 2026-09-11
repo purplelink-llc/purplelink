@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #77 — September 11, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-11.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-11.html</guid>
+      <pubDate>Fri, 11 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>JFrog Artifactory exploit chains, UNC3569&#x27;s Sogou Input Method backdoor, Cisco FMC ransomware attacks, and Cognition&#x27;s SWE-2 model benchmark results dominate today&#x27;s digest.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #76 — September 10, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-10.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-10.html</guid>
