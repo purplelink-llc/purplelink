@@ -14,26 +14,42 @@
  *   Updates (Sparkle inside the app, never a browser):
  *     GET /.netlify/functions/moderntex-download?feed=1                       -> appcast.xml
  *     GET /.netlify/functions/moderntex-download?update=<dmg>                 -> the DMG
- *     Both require the header  X-ModernTex-Channel: <MODERNTEX_UPDATE_TOKEN>,
+ *     GET /.netlify/functions/moderntex-download?stats=1                      -> download counts (JSON)
+ *     All three require the header  X-ModernTex-Channel: <MODERNTEX_UPDATE_TOKEN>,
  *     which build.sh compiles into the app and UpdaterService sends on every
  *     Sparkle request. The token is a shared secret in a shipped binary, so it
  *     keeps the update channel off the open web rather than defeating a
  *     determined reverse-engineer; the purchase door is what the paywall rests on.
+ *     `stats` piggybacks on the same guard purely because it's convenient, not
+ *     because the counts are sensitive — it's for `curl -H` from a terminal, not
+ *     anything the app itself calls.
  *
  * The DMGs and appcast are NOT part of the published site. They live only in the
  * private `moderntex-files` Blobs store (scripts/publish-release.sh in the ModernTex repo
  * uploads them). Responses stream straight from Blobs, which keeps a 13 MB disk
- * image clear of the 6 MB buffered-response limit.
+ * image clear of the 6 MB buffered-response limit. Each served `update=<dmg>` also
+ * increments a plain counter in the `moderntex-stats` store (see `stats=1` above) —
+ * counts requests, not confirmed completions or unique machines.
  */
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "moderntex-files";
+const STATS_STORE = "moderntex-stats";
 const PRODUCT_KEY = "moderntex";
 const DMG_NAME = /^ModernTex-\d+\.\d+\.\d+\.dmg$/;
 const TRIAL_DMG_NAME = /^ModernTex-Trial-\d+\.\d+\.\d+\.dmg$/;
 const TRIAL_DAILY_LIMIT = 20;
+
+/** Durable per-file download count, in the same Blobs-as-counter style already used
+ *  for the trial rate limit below — a plain string integer, read-increment-write. */
+async function incrementDownloadCount(fileName) {
+  const stats = getStore(STATS_STORE);
+  const key = `downloads:${fileName}`;
+  const n = parseInt((await stats.get(key)) || "0", 10) || 0;
+  await stats.set(key, String(n + 1));
+}
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -157,14 +173,29 @@ export default async function handler(request) {
   // --- Update channel (Sparkle) -------------------------------------------------
   const wantsFeed = url.searchParams.get("feed") === "1";
   const updateFile = url.searchParams.get("update") || "";
-  if (wantsFeed || updateFile) {
+  const wantsStats = url.searchParams.get("stats") === "1";
+  if (wantsFeed || updateFile || wantsStats) {
     const expected = Netlify.env.get("MODERNTEX_UPDATE_TOKEN") || "";
     const presented = request.headers.get("x-moderntex-channel") || "";
     if (!expected || !timingSafeEqual(presented, expected)) {
       return json(403, { error: "forbidden", detail: "Updates are delivered inside ModernTex." });
     }
     if (wantsFeed) return serveFeed(store);
+    if (wantsStats) {
+      // Same shared secret as the update channel gates this too — it's read-only
+      // and non-sensitive (just counts), but there's no reason to expose it wider
+      // than the channel that already requires the token, e.g. to curl -H.
+      const stats = getStore(STATS_STORE);
+      const { blobs } = await stats.list({ prefix: "downloads:" });
+      const counts = {};
+      for (const b of blobs) counts[b.key.slice("downloads:".length)] = parseInt((await stats.get(b.key)) || "0", 10) || 0;
+      return json(200, { downloads: counts });
+    }
     if (!DMG_NAME.test(updateFile)) return json(400, { error: "bad_file" });
+    // Counted as a download the moment we decide to serve it — matching the trial
+    // counter above, this does not confirm the client received every byte, only
+    // that Sparkle asked for this exact file and was handed it.
+    await incrementDownloadCount(updateFile);
     return streamBlob(store, updateFile, "application/x-apple-diskimage", `attachment; filename="${updateFile}"`);
   }
 
