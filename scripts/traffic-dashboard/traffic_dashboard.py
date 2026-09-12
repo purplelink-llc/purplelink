@@ -1103,6 +1103,49 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
     return out
 
 
+def appstore_observations(appstore: dict | None) -> list[str]:
+    """Plain-language read of GlobePin's App Store Connect *Analytics Reports*
+    (impressions, product page views, sessions, ...) -- separate from the
+    Sales & Trends downloads/proceeds that appstore_summary() already covers.
+    Apple only starts generating these a few days after the ongoing request
+    was created and never backfills, so there is often nothing to say yet;
+    that is reported honestly rather than as a zero."""
+    if not appstore:
+        return []
+    label = appstore.get("label", "App")
+    an = appstore.get("analytics") or {}
+    reports = an.get("reports") or {}
+    if not reports:
+        note = an.get("note") or ""
+        if note:
+            return [f"{label}: App Store engagement analytics — {note}. "
+                    f"Apple does not backfill, so this starts empty and fills in from here."]
+        return []
+
+    out: list[str] = []
+    for name, rep in reports.items():
+        by_date = rep.get("byDate") or {}
+        if not by_date:
+            continue
+        totals: dict[str, int] = {}
+        for day_counts in by_date.values():
+            for dim, n in day_counts.items():
+                totals[dim] = totals.get(dim, 0) + n
+        if not totals:
+            continue
+        first_day = min(by_date.keys())
+        days_covered = len(by_date)
+
+        def _plural(word: str, n: int) -> str:
+            return word if n == 1 or word.endswith("s") else word + "s"
+
+        parts = ", ".join(f"{n} {_plural(dim.lower(), n)}"
+                          for dim, n in sorted(totals.items(), key=lambda kv: -kv[1]))
+        out.append(f"{label}: {parts} recorded by App Store Connect since {first_day} "
+                   f"({days_covered} day(s) of data so far, from {name}). Too new for a rate yet.")
+    return out
+
+
 # ---------------------------------------------------------------- rendering
 
 CSS = """
@@ -2034,7 +2077,7 @@ def main() -> int:
         HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
 
     summaries = [summarise(s, history["sites"].get(s["key"], {})) for s in SITES]
-    obs = observations(summaries, history.get("sales"))
+    obs = observations(summaries, history.get("sales")) + appstore_observations(history.get("appstore"))
     firsts = [s["first_day"] for s in summaries if s["first_day"]]
     generated = dt.datetime.now().strftime("%a %d %b %Y, %-I:%M%p").replace("AM", "am").replace("PM", "pm")
 
