@@ -27,7 +27,7 @@
  *   subscribed to event: checkout.session.completed
  */
 
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivateKey } from "node:crypto";
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -146,6 +146,53 @@ async function alertOperator(subject, detail) {
   }
 }
 
+// ModernTex license keys: `MTX1-` + Crockford-Base32(4-byte nonce ‖ 64-byte Ed25519
+// signature over "ModernTexLicenseV1" + nonce). Verified entirely offline in the app against
+// the matching public key baked into LicenseKey.swift — this MUST stay byte-for-byte
+// identical to that file's scheme, since it is the only issuer of a real key. The private key
+// lives only in MODERNTEX_LICENSE_PRIVATE_KEY (Netlify production env) and this Mac's login
+// Keychain; it is never logged, returned, or committed.
+const MTX_LICENSE_PUBLIC_KEY_B64 = "2bJapUgUz0FhlnCVgEnPUGOdr6TE8swfvdqHkB/6cBM=";
+const MTX_LICENSE_DOMAIN = Buffer.from("ModernTexLicenseV1", "utf8");
+const CROCKFORD_ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+function crockfordBase32Encode(buf) {
+  let bits = 0n, bitCount = 0, out = "";
+  for (const byte of buf) {
+    bits = (bits << 8n) | BigInt(byte);
+    bitCount += 8;
+    while (bitCount >= 5) {
+      bitCount -= 5;
+      out += CROCKFORD_ALPHABET[Number((bits >> BigInt(bitCount)) & 0x1fn)];
+    }
+  }
+  if (bitCount > 0) out += CROCKFORD_ALPHABET[Number((bits << BigInt(5 - bitCount)) & 0x1fn)];
+  return out;
+}
+
+/**
+ * Signs one new, unique license key, or null if the private key isn't configured (never
+ * throws — a signing failure must not break checkout delivery of the download itself).
+ */
+function issueModernTexLicense() {
+  const privB64 = Netlify.env.get("MODERNTEX_LICENSE_PRIVATE_KEY");
+  if (!privB64) return null;
+  try {
+    const privateKey = createPrivateKey({
+      key: { kty: "OKP", crv: "Ed25519", d: privB64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""),
+             x: MTX_LICENSE_PUBLIC_KEY_B64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "") },
+      format: "jwk",
+    });
+    const nonce = randomBytes(4);
+    const signature = edSign(null, Buffer.concat([MTX_LICENSE_DOMAIN, nonce]), privateKey);
+    const body = crockfordBase32Encode(Buffer.concat([nonce, signature]));
+    const groups = body.match(/.{1,5}/g) ?? [];
+    return "MTX1-" + groups.join("-");
+  } catch (err) {
+    return null;
+  }
+}
+
 /**
  * Email the buyer the link that reopens their download page. Stripe's own
  * receipt carries no such link, so a buyer who closed the success tab before
@@ -162,15 +209,30 @@ async function emailDownloadLink(to, sessionId, productKey) {
   const entry = BLOB_DELIVERED_PRODUCTS.get(productKey);
   if (!apiKey || !to || !entry) return false;
   const link = `${SITE_ORIGIN}${entry.successPath}?session_id=${encodeURIComponent(sessionId)}`;
+  // ModernTex only: a license key that unlocks the app permanently, offline, no account.
+  // A signing failure here (misconfigured key, transient error) must not block the download
+  // email — the buyer still gets their download link either way.
+  const license = productKey === "moderntex" ? issueModernTexLicense() : null;
+  const licenseTextBlock = license
+    ? `\nYour license key (paste into ModernTex's "Have a license key?"):\n${license}\n\n` +
+      `This unlocks the app permanently — no account, no further steps.\n`
+    : "";
+  const licenseHtmlBlock = license
+    ? `<p>Your license key (paste into ModernTex's "Have a license key?"):</p>` +
+      `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${license}</p>` +
+      `<p>This unlocks the app permanently — no account, no further steps.</p>`
+    : "";
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
+    licenseTextBlock +
     `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
     `Questions or trouble downloading: reply to this email.\n\n` +
     `Purplelink LLC, Atlanta, Georgia`;
   const html =
     `<p>Thanks for buying ${entry.name}.</p>` +
     `<p><a href="${link}">Open your download page</a></p>` +
+    licenseHtmlBlock +
     `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
     `<p>Questions or trouble downloading: reply to this email.</p>` +
     `<p>Purplelink LLC, Atlanta, Georgia</p>`;
