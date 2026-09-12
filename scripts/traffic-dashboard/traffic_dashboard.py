@@ -333,9 +333,17 @@ def _asc_token(cfg: dict[str, str]) -> str | None:
 
 
 def _asc_get(token: str, path: str, accept: str = "application/json") -> tuple[int, bytes]:
+    # Analytics report segments are not Apple API calls: they are pre-signed S3
+    # URLs (from a report instance's `segments` relationship) that already carry
+    # their own auth as query parameters. S3 rejects a request that also carries
+    # an Authorization header with 400 InvalidArgument ("Only one auth mechanism
+    # allowed"), so the bearer token must only go on requests to Apple's own API.
+    is_external = path.startswith("http") and not path.startswith(ASC_API)
     url = path if path.startswith("http") else ASC_API + path
-    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}", "Accept": accept,
-                                               "User-Agent": "purplelink-traffic-dashboard"})
+    headers = {"Accept": accept, "User-Agent": "purplelink-traffic-dashboard"}
+    if not is_external:
+        headers["Authorization"] = f"Bearer {token}"
+    req = urllib.request.Request(url, headers=headers)
     last: Exception | None = None
     for attempt in range(RETRIES):
         if attempt:
@@ -446,7 +454,8 @@ def _asc_analytics(token: str, cfg: dict[str, str], prior: dict) -> dict:
                     text = gzip.decompress(raw).decode("utf-8")
                 except OSError:
                     text = raw.decode("utf-8", "replace")
-                reader = csv.DictReader(io.StringIO(text))
+                # Same TSV format as the sales report above, not CSV.
+                reader = csv.DictReader(io.StringIO(text), delimiter="\t")
                 if reader.fieldnames and name not in result["headers"]:
                     result["headers"][name] = list(reader.fieldnames)
                     print(f"  appstore: first '{name}' report; columns = {reader.fieldnames}", file=sys.stderr)
