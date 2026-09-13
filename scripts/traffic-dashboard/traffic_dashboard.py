@@ -142,6 +142,12 @@ SITES = [
             "/tools/paper-review/revision/", "/tools/anonymity-check/",
             "/tools/citation-gap/", "/tools/cover-letter/",
             "/tools/response-review/", "/tools/resume-review/",
+            # ModernTex was missing here even though its page has always carried
+            # a checkout button (pr-checkout-btn, data-product="moderntex") —
+            # found 2026-09-13 while checking the checkout wiring. Its ~250+
+            # weekly pageviews were silently excluded from the denominator the
+            # whole time, so the site-wide checkout rate was overstated.
+            "/moderntex/",
         ),
         # Waitlists are Netlify Forms, so they never reach the analytics beacon.
         # Without this they read as zero while people are actually signing up.
