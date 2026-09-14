@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>TikZ diagrams and tables in ModernTex, without writing either by hand | Purplelink</title>
+    <meta name="description" content="ModernTex now has a visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel — both still write plain LaTeX underneath.">
+    <link rel="canonical" href="https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta name="twitter:image:alt" content="TikZ diagrams and tables in ModernTex, without writing either by hand">
+    <meta property="og:title" content="TikZ diagrams and tables in ModernTex, without writing either by hand">
+    <meta property="og:description" content="ModernTex now has a visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel — both still write plain LaTeX underneath.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="TikZ diagrams and tables in ModernTex, without writing either by hand">
+    <meta name="twitter:description" content="ModernTex now has a visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel — both still write plain LaTeX underneath.">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
+    <link rel="stylesheet" href="/styles.css?v=0d5d65dac5">
+    <script src="/site.js?v=30f859b9be" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BlogPosting",
+          "headline": "TikZ diagrams and tables in ModernTex, without writing either by hand",
+          "description": "ModernTex now has a visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel — both still write plain LaTeX underneath.",
+          "datePublished": "2026-09-13",
+          "dateModified": "2026-09-13",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Purplelink LLC",
+            "url": "https://purplelink.llc/"
+          },
+          "url": "https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://purplelink.llc/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "TikZ diagrams and tables in ModernTex, without writing either by hand", "item": "https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/" }
+          ]
+        }
+      ]
+    }
+    </script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/#software">Software</a>
+        <a href="/#projects">Products</a>
+        <a href="/kits/">Kits</a>
+        <a href="/tools/">Tools</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/about/">About</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/">← All posts</a>
+
+    <div class="post-hero">
+      <p class="post-date">September 13, 2026</p>
+      <h1 class="post-title">TikZ diagrams and tables in ModernTex, without writing either by hand</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-13">September 13, 2026</time></p>
+      <p class="post-lede">Two things every LaTeX document eventually needs, and two things almost nobody enjoys writing by hand: a TikZ diagram and a results table. ModernTex now builds both visually and drops in the real source.</p>
+    </div>
+
+    <article id="main-content" class="post-body">
+      <p>Ask a researcher what they'd rather not do in LaTeX and two answers come up constantly: draw a diagram in TikZ, and lay out a table by hand. Both are perfectly capable tools — TikZ can produce publication-quality figures that nothing else matches, and <code>tabular</code> gives you real typographic control — but neither one is a pleasant place to start from a blank line and a syntax reference. ModernTex's last two releases went after exactly that gap.</p>
+
+      <h2>A TikZ designer that draws instead of describes</h2>
+
+      <p>The first thing to fix was the feedback loop. A missing semicolon or an unbalanced brace in a <code>tikzpicture</code> used to mean a full compile just to find out something small was wrong. <strong>TikZ Preview</strong> (⌘⌥K) renders just the picture under your cursor on its own and flags a missing semicolon or an unclosed brace instantly, before you run a real build.</p>
+
+      <p>The second thing was the syntax itself. <strong>TikZ Designer</strong> (⌘⌥⇧K, or the toolbar's TikZ Figure Editor button) is a real canvas: drag boxes and arrows into place, pick colors from a swatch or a full picker, resize a box by its corner, double-click to rename it in place, connect two shapes by dragging from one to the other. Start from a preset — flowchart, pipeline, state machine, tree — or a blank canvas. And if a diagram is already in your document, the Figures menu finds it and loads it back in for editing, instead of forcing you to redraw it from scratch. Whatever you build turns into ordinary, readable TikZ the moment you insert it — nothing hidden, nothing you couldn't have typed yourself, just faster.</p>
+
+      <h2>A table editor that pastes like a spreadsheet</h2>
+
+      <p>Tables had a narrower problem but an equally annoying one: getting data from a spreadsheet into a <code>tabular</code> environment meant either retyping it or fighting a converter. The new <strong>Table Editor</strong> (⌘⇧T, or the toolbar's Table Editor button) copies the part of Excel and Google Sheets that actually matters — paste a range and it lands in the right cells, growing the table if the pasted data is bigger than what's there and leaving everything else untouched if it's smaller.</p>
+
+      <p>From there it behaves like the spreadsheet you just pasted from: Return confirms a cell and moves down a row, ⌥Return adds a line break inside a cell (which turns that column into a proper wrapping paragraph column, not a table that silently ignores your line break), and the arrow keys move between rows. Drag a column's edge to resize it. Set a table-wide font size and family when a results table needs to be smaller than the rest of the page. And like the TikZ designer, an existing table in your document can be reopened from the Tables menu and edited in place rather than rebuilt.</p>
+
+      <h2>Still just LaTeX</h2>
+
+      <p>Neither tool is a black box. The designer and the editor are both just producing the <code>tikzpicture</code> and <code>tabular</code> you'd have written by hand — booktabs rules, the <code>array</code> package's paragraph columns, ordinary <code>\definecolor</code>s — visible in a live preview pane before you insert it, and editable as plain text afterward like everything else in the document. The point was never to hide LaTeX. It was to stop making two of its most common tasks feel like a syntax exam.</p>
+
+      <p>Both are in ModernTex now, along with everything from the last few releases — license keys, Fix with AI, sync between Macs. If you haven't tried it yet, <a href="/moderntex/">ModernTex is $10, once, with updates included</a>.</p>
+    </article>
+
+    <div class="post-footer">
+      <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <span>Purplelink LLC</span>
+        </div>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/about/">About</a>
+        <a href="/press/">Press</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href="/blog/">Blog</a>
+        <a href="/guides/">Guides</a>
+        <a href="/changelog/">Changelog</a>
+        <a href="/kits/">Kits</a>
+      </nav>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=a3dd81b65e" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
