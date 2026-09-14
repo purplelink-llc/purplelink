@@ -1446,6 +1446,53 @@ dd {
   box-shadow: 0 4px 24px oklch(0% 0 0 / 0.08);
 }
 
+.screenshots-section .section-intro {
+  color: var(--muted);
+  max-width: 640px;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-top: -12px;
+  margin-bottom: clamp(28px, 4vw, 44px);
+}
+
+.screenshots-section .section-intro.section-outro {
+  margin-top: clamp(28px, 4vw, 44px);
+  margin-bottom: 0;
+}
+
+.screenshots-section .section-outro a {
+  color: var(--purple);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.screenshots-section .section-outro a:hover {
+  text-decoration: underline;
+}
+
+.screenshot-block + .screenshot-block {
+  margin-top: clamp(48px, 6vw, 72px);
+}
+
+.screenshot-callout {
+  max-width: 640px;
+  margin-bottom: 16px;
+}
+
+.screenshot-callout h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.screenshot-callout p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
 /* ─── Product card links (homepage) ────────────────────────────────────── */
 
 .product-item-link {

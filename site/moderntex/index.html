@@ -41,7 +41,7 @@
           "url": "https://purplelink.llc/moderntex/",
           "image": "https://purplelink.llc/assets/og/moderntex.png",
           "description": "ModernTex is a native macOS LaTeX editor built for the academic manuscript workflow: multi-file projects, synchronized PDF preview, plain-language compile errors, BibTeX autocomplete, and submission-readiness checks.",
-          "softwareVersion": "1.1.0",
+          "softwareVersion": "1.3.0",
           "datePublished": "2026-09-12",
           "fileSize": "14 MB",
           "downloadUrl": "https://purplelink.llc/moderntex/",
@@ -57,7 +57,8 @@
             "Plain-language compile error diagnostics",
             "Submission-readiness checks and anonymized export for blind review",
             "Version snapshots",
-            "Live TikZ figure editor with drag-and-place boxes and generated code"
+            "Live TikZ figure editor with drag-and-place boxes and generated code",
+            "Table editor with spreadsheet-style paste from Excel or Google Sheets"
           ],
           "offers": {
             "@type": "Offer",
@@ -154,7 +155,7 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status product-status-live">Free 7-day trial · $10 to keep · v1.1.0</span>
+          <span class="product-status product-status-live">Free 7-day trial · $10 to keep · v1.3.0</span>
         </div>
         <h1 class="app-hero-name">ModernTex</h1>
         <p class="app-hero-tagline">A native macOS LaTeX editor for researchers, not a programmer's IDE with LaTeX bolted on. Multi-file editing, synchronized PDF preview, and the full academic manuscript workflow in one app.</p>
@@ -173,9 +174,31 @@
       <div class="screenshot-wide">
         <img src="/assets/moderntex-screens/01-editor.webp" alt="ModernTex editor - document outline, LaTeX source with syntax highlighting, and live PDF preview side by side" width="2940" height="1862" decoding="async" loading="lazy">
       </div>
-      <div class="screenshot-wide">
-        <img src="/assets/moderntex-screens/07-tikz-editor.webp" alt="ModernTex's TikZ figure editor - a flowchart built from draggable boxes with the generated TikZ code shown below, ready to insert at the cursor" width="2840" height="1812" decoding="async" loading="lazy">
+    </section>
+
+    <section class="screenshots-section bg-purple-xlight">
+      <p class="eyebrow">New in 1.3</p>
+      <h2>Two things nobody enjoys writing by hand</h2>
+      <p class="section-intro">A TikZ diagram and a results table are both perfectly capable LaTeX, and neither is a pleasant place to start from a blank line and a syntax reference. ModernTex builds both visually and drops in the real source underneath &mdash; nothing hidden, nothing you couldn't have typed yourself.</p>
+      <div class="screenshot-block">
+        <div class="screenshot-callout">
+          <h3>TikZ Designer</h3>
+          <p>Drag boxes and arrows into place, pick colors from a swatch, resize by the corner, connect two shapes by dragging between them. Start from a flowchart, pipeline, state machine, or tree preset, or a blank canvas. Reopen an existing diagram from the Figures menu to keep editing it instead of redrawing it.</p>
+        </div>
+        <div class="screenshot-wide">
+          <img src="/assets/moderntex-screens/07-tikz-editor.webp" alt="ModernTex's TikZ Designer - a flowchart built from draggable, connected boxes with the generated TikZ code shown below, ready to insert at the cursor" width="2840" height="1812" decoding="async" loading="lazy">
+        </div>
       </div>
+      <div class="screenshot-block">
+        <div class="screenshot-callout">
+          <h3>Table Editor</h3>
+          <p>Paste a range straight from Excel or Google Sheets and it lands in the right cells, growing the table if the data is bigger and leaving the rest untouched if it's smaller. Return moves down a row, &#8997;Return breaks a line inside a cell, and dragging a column edge resizes it &mdash; a spreadsheet's muscle memory, producing booktabs-style <code>tabular</code> underneath.</p>
+        </div>
+        <div class="screenshot-wide">
+          <img src="/assets/moderntex-screens/08-table-editor.webp" alt="ModernTex's Table Editor - a three-column results table with a caption, and the generated booktabs LaTeX shown below" width="1488" height="974" decoding="async" loading="lazy">
+        </div>
+      </div>
+      <p class="section-intro section-outro"><a href="/blog/tikz-and-tables-without-the-syntax/">Read more about both on the blog →</a></p>
     </section>
 
     <section class="features-section">
@@ -215,6 +238,10 @@
         <div class="feature-item">
           <h3>Live TikZ figure editor</h3>
           <p>Build flowcharts and diagrams by dragging boxes and drawing connections on a canvas. ModernTex generates the TikZ code as you go; insert it at your cursor when it's ready.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Table editor</h3>
+          <p>Paste a range from Excel or Google Sheets straight into the right cells. Resize columns by dragging, set a table-wide font, and generate clean booktabs-style LaTeX underneath.</p>
         </div>
         <div class="feature-item">
           <h3>Native macOS experience</h3>
