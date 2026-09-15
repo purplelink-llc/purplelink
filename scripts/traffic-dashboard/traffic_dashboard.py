@@ -290,6 +290,90 @@ def fetch_sales(token: str) -> dict | None:
     return None
 
 
+# --- ModernTex in-app updates (Sparkle) -------------------------------------
+#
+# Distinct from the site's own trial/purchase download beacon: this counts
+# ModernTex's own auto-updater asking for a new version, i.e. existing users
+# updating, not new customers arriving. The endpoint
+# (netlify/functions/moderntex-download.mjs, ?stats=1) is a plain lifetime
+# counter per DMG filename with no per-day breakdown, so a daily figure has
+# to be derived here by diffing today's snapshot against the most recent one
+# already archived — see merge_sparkle_updates below.
+MODERNTEX_STATS_URL = "https://purplelink.llc/.netlify/functions/moderntex-download"
+MODERNTEX_UPDATE_TOKEN_ENV = "MODERNTEX_UPDATE_TOKEN"
+
+
+def fetch_sparkle_updates(token: str) -> dict | None:
+    """Cumulative Sparkle update-download counts by DMG filename, or None.
+
+    Same non-fatal-degrade contract as fetch_sales: an outage here must not
+    cost us the rest of the daily run.
+    """
+    req = urllib.request.Request(
+        MODERNTEX_STATS_URL + "?stats=1",
+        headers={"User-Agent": "purplelink-traffic-dashboard", "X-ModernTex-Channel": token},
+    )
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+            if payload.get("error"):
+                raise RuntimeError(payload.get("detail") or payload["error"])
+            return payload.get("downloads", {})
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                print(f"  ! sparkle updates: HTTP {exc.code}", file=sys.stderr)
+                return None
+            last = exc
+        except (OSError, http.client.HTTPException, json.JSONDecodeError, RuntimeError) as exc:
+            last = exc
+    print(f"  ! sparkle updates unavailable: {str(last)[:80]}", file=sys.stderr)
+    return None
+
+
+def merge_sparkle_updates(history: dict, by_file: dict) -> dict:
+    """Snapshot today's cumulative counts and derive a day-over-day delta.
+
+    The endpoint has no per-day breakdown, so "updates downloaded today"
+    comes from diffing this snapshot against the most recently archived one
+    — an odometer reading turned into a daily distance by subtracting
+    yesterday's total. A total that goes backward (an old version's counter
+    pruned from Blobs, or any other anomaly) is floored at 0 rather than
+    reported as a negative count.
+    """
+    entry = history.setdefault("moderntexUpdates", {"snapshots": {}})
+    snapshots = entry["snapshots"]
+    today = _utc_today()
+    total = sum(by_file.values())
+    snapshots[today] = {"byFile": by_file, "total": total}
+    entry["fetchedAt"] = dt.datetime.now(dt.timezone.utc).isoformat()
+
+    prior_days = sorted(d for d in snapshots if d < today)
+    delta = max(0, total - snapshots[prior_days[-1]].get("total", 0)) if prior_days else None
+    entry["today"] = {"total": total, "delta": delta}
+    return entry
+
+
+def sparkle_observations(hist: dict | None) -> list[str]:
+    """One bullet on ModernTex's in-app update volume — kept separate from
+    the trial/purchase-download observations since it measures a different
+    audience (existing owners, not prospects)."""
+    if not hist or not hist.get("snapshots"):
+        return []
+    days = sorted(hist["snapshots"])
+    latest = hist["snapshots"][days[-1]]
+    total, by_file = latest.get("total", 0), latest.get("byFile", {})
+    delta = hist.get("today", {}).get("delta")
+    top = sorted(by_file.items(), key=lambda kv: -kv[1])[:1]
+    top_note = f" (most on {top[0][0]}, {top[0][1]} lifetime)" if top and len(by_file) > 1 else ""
+    if delta is None:
+        return [f"ModernTex: {total} in-app update download(s) recorded so far{top_note}; "
+                f"first snapshot today ({days[-1]}), no day-over-day figure yet."]
+    return [f"ModernTex: {delta} in-app update download(s) in the last day, {total} lifetime{top_note}."]
+
 
 # --- App Store Connect (GlobePin) ------------------------------------------
 #
@@ -2065,6 +2149,20 @@ def main() -> int:
         else:
             print(f"  ! sales: {SALES_TOKEN_ENV} not set in {CONFIG_PATH}", file=sys.stderr)
 
+        # ModernTex in-app updates (Sparkle): existing owners updating, not new
+        # customers — kept separate from the sales/trial numbers above.
+        sparkle_token = cfg.get(MODERNTEX_UPDATE_TOKEN_ENV)
+        if sparkle_token:
+            by_file = fetch_sparkle_updates(sparkle_token)
+            if by_file is not None:
+                sparkle_hist = merge_sparkle_updates(history, by_file)
+                today = sparkle_hist["today"]
+                delta_note = f", {today['delta']} today" if today["delta"] is not None else " (first snapshot)"
+                print(f"  ok ModernTex in-app updates: {today['total']} lifetime{delta_note}")
+        else:
+            print(f"  ! ModernTex in-app updates: {MODERNTEX_UPDATE_TOKEN_ENV} not set in {CONFIG_PATH}",
+                  file=sys.stderr)
+
         # App Store Connect (GlobePin): archived per day like everything else.
         if cfg.get("ASC_VENDOR_NUMBER"):
             try:
@@ -2083,7 +2181,9 @@ def main() -> int:
         HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
 
     summaries = [summarise(s, history["sites"].get(s["key"], {})) for s in SITES]
-    obs = observations(summaries, history.get("sales")) + appstore_observations(history.get("appstore"))
+    obs = (observations(summaries, history.get("sales"))
+           + appstore_observations(history.get("appstore"))
+           + sparkle_observations(history.get("moderntexUpdates")))
     firsts = [s["first_day"] for s in summaries if s["first_day"]]
     generated = dt.datetime.now().strftime("%a %d %b %Y, %-I:%M%p").replace("AM", "am").replace("PM", "pm")
 
