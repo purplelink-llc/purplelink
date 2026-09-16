@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #82 — September 16, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-16.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-16.html</guid>
+      <pubDate>Wed, 16 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>LLM agent consistency failures, MQTT-based cross-platform malware, a GitHub PAT takeover at Baseten, and the open-model capability gap quantified at 4 months and 5x cost.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #81 — September 15, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-15.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-15.html</guid>
