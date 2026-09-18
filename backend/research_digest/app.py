@@ -12,6 +12,7 @@ Required Modal secrets:
   github           -> GITHUB_TOKEN         (read+write to purplelink-llc/muscleonglp)
   netlify          -> NETLIFY_AUTH_TOKEN    (deploy the muscleonglp site)
   resend           -> RESEND_API_KEY        (review email; optional)
+  buttondown       -> BUTTONDOWN_API_KEY    (subscriber broadcast; optional)
   (no reddit secret: self-serve Data API app creation was closed in 2026, so the
    weekly review email carries a paste-ready post instead. Add the secret and
    re-add it to the decorator if API access is ever granted.)
@@ -50,6 +51,7 @@ _image = (
         modal.Secret.from_name("github"),
         modal.Secret.from_name("netlify"),
         modal.Secret.from_name("resend"),
+        modal.Secret.from_name("buttondown"),
     ],
     timeout=900,
 )
@@ -64,6 +66,7 @@ async def run_weekly_roundup(dry_run: bool = False):
     gh_token = os.environ.get("GITHUB_TOKEN", "")
     netlify_token = os.environ.get("NETLIFY_AUTH_TOKEN", "")
     resend_key = os.environ.get("RESEND_API_KEY", "")
+    buttondown_key = os.environ.get("BUTTONDOWN_API_KEY", "")
 
     async with httpx.AsyncClient() as client:
         papers = await harvest_all(client, days=7)
@@ -111,9 +114,15 @@ async def run_weekly_roundup(dry_run: bool = False):
         )
         logger.info("roundup: deployed %s to %s", digest.slug, post_url(digest.slug))
 
-        from research_digest.mailer import notify_review
+        from research_digest.mailer import notify_review, notify_subscribers
         sent = await notify_review(client, digest, resend_key)
         logger.info("roundup: review email sent=%s", sent)
+
+        # Scheduled ~24h out (see mailer.notify_subscribers), so this call
+        # returning True means "scheduled", not "delivered" — the actual
+        # send happens on Buttondown's side the next day.
+        broadcast = await notify_subscribers(client, digest, buttondown_key)
+        logger.info("roundup: subscriber broadcast scheduled=%s", broadcast)
 
         # Cross-post to the community last, and never fatally: the site is
         # already published by this point, so a Reddit outage or a credential
