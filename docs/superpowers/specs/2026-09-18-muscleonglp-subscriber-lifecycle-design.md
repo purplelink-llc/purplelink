@@ -39,85 +39,130 @@ actually true, not against the first guess:
    [[muscleonglp-marketing]] memory). Nothing else is coded to happen after
    that.
 
-4. **Buttondown itself already has both features this spec needs**,
-   confirmed against Buttondown's own docs — so neither part below needs new
-   custom infrastructure, only configuration plus (for Part A) one small
-   code change:
-   - **RSS-to-email**: point it at a feed URL; it auto-sends a broadcast to
-     the whole list when new items appear, on an Immediate (30 min poll),
-     Weekly, or Monthly schedule, with an option to auto-send or hold as a
-     draft for manual review first.
-   - **Automations**: delay-based drip sequences ("after N days, send X"),
-     triggerable off subscriber state, configured in the dashboard.
-   - **Both are marked paid features** in Buttondown's docs. This site's
-     current Buttondown plan tier is not visible from the codebase —
-     confirm it covers both before building on top of them.
+4. **Revision 2026-09-18: Buttondown's own automatic triggers are paid
+   add-ons ($9/mo RSS-to-email, $29/mo Automations) — but sending itself is
+   free, so this spec now does its own triggering instead of paying for
+   theirs.** Checked the account directly: `POST /v1/emails` returns `201`
+   with `should_trigger_pay_per_email_billing: false` on the current (free)
+   plan, and per-subscriber tagging is already live in production
+   (`subscribe.mjs` has been tagging every signup since launch). What's
+   gated is specifically Buttondown deciding *when* to fire on its own; we
+   already have working cron infrastructure in both repos (the Modal
+   pipeline for §1, a new Netlify Scheduled Function for §2) that can decide
+   the timing instead and just call Buttondown's send API directly. Full
+   mechanics — confirmed against Buttondown's real OpenAPI schema
+   (`api.buttondown.email/v1/openapi.json`), not scraped docs — in §1 and §2
+   below. **Net cost: $0/month.**
+
+   Also checked the account's actual current audience while verifying this:
+   **3 subscribers total, 2 of them Ben's own test addresses.** One real
+   subscriber. Both parts of this spec are worth building because they're
+   now free and the content/copy work is done either way, but list *growth*
+   is the real bottleneck, not send capability — see the follow-up note at
+   the end of this spec.
 
 ---
 
 ## 1. Weekly roundup → subscriber broadcast
 
-### Approach: Buttondown RSS-to-email (not a custom API integration)
+### Approach: the Modal job sends it directly via the Buttondown API
 
-Considered and rejected: (a) a custom `notify_subscribers()` in `mailer.py`
-POSTing to Buttondown's `/v1/emails` API — would need a new Modal secret and
-reimplements unsubscribe/compliance handling Buttondown already provides for
-free; (b) fetching subscribers and sending via Resend directly, alongside
-the existing Ben-only review email — same problem, worse, since Resend has
-no list-management concept at all. RSS-to-email needs zero new secrets and
-zero new send-side code; the only gap is that no RSS feed exists yet for
-`/research/` to point it at.
+No RSS feed, no RSS-to-email add-on. `mailer.py` gains a second function,
+`notify_subscribers()`, called from `app.py` right after `notify_review()`
+on every successful publish. It creates one Buttondown email via
+`POST /v1/emails` with no `filters` (the default —
+`{"filters": [], "groups": [], "predicate": "and"}` — matches the entire
+list, exactly what a broadcast needs) and:
 
-### Code change: add an RSS feed to the existing publish step
+```json
+{
+  "subject": "<digest.week_label> — GLP-1 & Muscle Research Roundup",
+  "body": "<clean HTML built from WeeklyDigest, NOT the site page's HTML — no nav/chrome>",
+  "status": "scheduled",
+  "publish_date": "<now + 24h, ISO 8601>"
+}
+```
 
-`publisher.py`'s `write_into()` already writes three things into the cloned
-site checkout on every run: the post HTML, the rebuilt hub HTML, and a
-sitemap update (`_sitemap_add`). Add a fourth: `research/feed.xml`, a
-standard RSS 2.0 feed built from the same `manifest` list `render_hub_html`
-already consumes (`slug`, `week_label`, `date`, `blurb` — all present today).
-Reuse `renderer.py`'s existing `SITE` constant and `post_url()` helper for
-the feed's `<link>`/`<guid>` entries rather than rebuilding the URL logic a
-third time. Cap the feed at the most recent ~20 entries (RSS convention;
-the manifest itself is unbounded and already sorted newest-first).
+`status: "scheduled"` with a future `publish_date` is what makes Buttondown
+send it automatically at that time with no further action — confirmed
+against the real `EmailInput`/`EmailStatus` schema, not guessed. The 24h
+delay preserves the same review buffer §1 always intended: Ben's existing
+`notify_review()` email still arrives immediately, so anything worth
+pulling can be pulled before the public send goes out the next day.
 
-No Modal secret, no new dependency (writing an RSS XML string is the same
-kind of string templating `render_hub_html` already does — no need for an
-RSS-generation library).
+Body content: a short, email-native HTML rendering of the `WeeklyDigest` —
+intro, then each `DigestItem`'s title/venue/summary/link — in the same
+inline-styled, no-external-CSS style `notify_review()`'s `body` string
+already uses (email clients don't load stylesheets), not a reuse of
+`renderer.py`'s full page HTML (which includes nav, footer, and JSON-LD
+meant for a browser, not an inbox).
 
-### Dashboard configuration (manual, Ben — no code)
+### Requirements
 
-1. Buttondown → Settings → Basic → RSS-to-email.
-2. Feed URL: `https://getmuscleonglp.com/research/feed.xml`.
-3. Schedule: **Weekly**, set ~24h after the Monday 13:00 UTC publish (e.g.
-   Tuesday morning) — not Immediate. Reasoning: Immediate polls every 30
-   minutes, which could broadcast to the whole list before Ben's own review
-   email even lands, let alone before he's had a chance to read it and pull
-   anything wrong. A day's buffer keeps this fully automatic in the normal
-   case while preserving the review window the pipeline was already built
-   around.
-4. Send behavior: auto-send (not draft-for-review) — the review step is
-   already covered by step 3's buffer plus the existing `notify_review()`
-   email; adding a second manual approval click every week would undercut
-   the point of automating this.
+- New Modal secret: `buttondown` → `BUTTONDOWN_API_KEY`, added to
+  `app.py`'s `@app.function(secrets=[...])` list alongside the existing
+  four.
+- No RSS feed needed at all — the earlier plan to add `research/feed.xml`
+  to `publisher.py` is dropped; this is simpler and gets the real
+  structured digest content into the email instead of round-tripping
+  through a scraped feed.
 
-### Open item
+### Resolved item
 
-Confirm the Buttondown plan on this account actually includes RSS-to-email
-before relying on it (see §0.4) — flagged, not resolved, since it needs
-account/billing access this scan can't see.
+The §0.4 "confirm the plan covers this" open item is now moot for §1 —
+sending an email via the API doesn't require any paid add-on.
 
 ---
 
 ## 2. New-subscriber → Complete Pack sequence
 
-### Approach: Buttondown native Automations (not custom code)
+### Approach: a daily Netlify Scheduled Function + Buttondown's per-subscriber send endpoint
 
-Same reasoning as §1: Buttondown's delay-based automations do exactly what
-was about to get custom-built (a scheduled send N days after an event).
-Trigger: new subscriber (equivalent today to "tagged `protein-playbook`",
-since `subscribe.mjs` applies that tag to every signup — either trigger
-works; "new subscriber" is simpler and doesn't silently break if the tag
-ever changes). Zero code.
+Not the $29/mo Automations add-on. Not a tag-filter broadcast either — while
+digging into the real API schema for this, found something simpler than
+both: `POST /subscribers/{email}/emails/{email_id}` — "Send a specific
+email to a specific subscriber," no request body, no tag-ID resolution, no
+filter-group JSON to build. This is a much cleaner primitive than what was
+originally planned around Automations.
+
+**One-time setup** (done once, not part of the daily job): create three
+Buttondown emails via `POST /v1/emails` with `status: "draft"` (so they
+never broadcast on their own), one per stage, body = the final copy below.
+Record the three returned `id`s (`em_...`) as config in the new function.
+
+**New file**: `muscleonglp-site/netlify/functions/subscriber-sequence.mjs`,
+`export const config = { schedule: "@daily" }`. For each of the three
+stages (day 3 / day 7 / day 12), independently:
+
+1. `GET /subscribers?type=regular&date__end=<now - N days, ISO>&-tag=seqN-sent`
+   — `type=regular` excludes anyone unsubscribed/churned/blocked (this is
+   what keeps the send list honest without re-implementing suppression
+   logic); `date__end` catches everyone who *crossed* the threshold, not
+   just those exactly N days old today, so a missed run self-heals instead
+   of permanently skipping someone; `-tag=seqN-sent` excludes anyone this
+   stage has already reached. All three filters are real, documented query
+   parameters on `GET /subscribers` — confirmed against the schema, not
+   assumed.
+2. For each subscriber returned: `POST /subscribers/{email}/emails/{em_id}`
+   (send), then `PATCH /subscribers/{email}` with `tags` set to their
+   existing tags array plus `seqN-sent` (mark done). A `409` from the send
+   call means Buttondown itself already considers this email sent to this
+   person — treat that as success and still apply the tag, rather than
+   erroring the run.
+3. Nothing to do if step 1 returns no results — the common case at current
+   volume, and cheap to check.
+
+No tag-ID lookups, no `EmailFilterGroup` construction, no dependency on the
+$29/mo Automations product at all — three plain REST calls per eligible
+subscriber, using only what's confirmed free on this account today.
+
+### Requirements
+
+- `BUTTONDOWN_API_KEY` is already set on the muscleonglp Netlify site (used
+  today by `subscribe.mjs`) — no new secret needed.
+- The three draft email IDs from one-time setup need to live somewhere the
+  function reads them from — plain constants in the file are fine at this
+  scale; move to env vars only if that ever gets awkward to redeploy for.
 
 ### Sequence
 
@@ -225,36 +270,59 @@ named-expert byline").
 
 ### Open item
 
-Same as §1: confirm the Buttondown plan covers Automations before
-configuring this.
+None — resolved by the endpoint discovery above. No paid feature, no
+account/billing question left blocking this.
 
 ---
 
 ## What's code vs. what's configuration
 
-Being explicit about this since it's unusual for a spec to be this
-code-light:
+Revised now that both parts are code-driven instead of dashboard-driven:
 
-- **Code** (the only part `writing-plans` needs to turn into an
-  implementation plan): the RSS feed addition to `publisher.py`, §1.
-- **Dashboard configuration** (Ben, in Buttondown — no code, this spec's
-  steps above are the instructions): RSS-to-email settings (§1), the
-  Automation itself and its three email bodies (§2, copy above ready to
-  paste in).
-- **Blocked on account access this scan can't verify**: whether the current
-  Buttondown plan includes both paid features (§0.4).
+- **Code**: `notify_subscribers()` in `mailer.py` + the new Modal secret
+  wiring (§1); the new `subscriber-sequence.mjs` scheduled function (§2).
+- **One-time setup, via the API, not the dashboard** (can be done directly
+  with `curl` + the existing `BUTTONDOWN_API_KEY` — no Buttondown UI
+  needed): create the three draft emails for §2 and record their IDs.
+- **Nothing left gated on Buttondown account/billing access.** The
+  earlier open items in both sections were about confirming a paid plan
+  tier; that's moot now that neither part needs one.
 
 ## Tests
 
-- Unit: RSS feed generation produces valid, well-formed XML from a fixture
-  manifest (reuse whatever fixture pattern `test_muscleonglp_*` in
-  `backend/tests/` already uses for `research_digest`, if any exist there —
-  check before writing a new one).
-- Unit: feed entries use the same `post_url()` the hub page and sitemap
-  already use, so a URL format change anywhere doesn't silently diverge
-  between the three.
-- Live: once deployed, fetch `https://getmuscleonglp.com/research/feed.xml`
-  and validate it against Buttondown's actual RSS parser expectations
-  (their docs don't specify exact requirements beyond "standard RSS" — a
-  real fetch-and-eyeball check after the next Monday publish is the
-  practical verification here, not something to over-engineer a test for).
+- Unit (§1): `notify_subscribers()`'s HTML body renders every `DigestItem`
+  from a fixture `WeeklyDigest`, same fixture-style test as whatever
+  `test_muscleonglp_*` in `backend/tests/` already uses for
+  `research_digest`, if one exists — check before writing a new pattern.
+- Unit (§1): the request body sent to `POST /v1/emails` has no `filters`
+  key set to anything but the all-subscribers default, and `publish_date`
+  is ~24h after the call, not immediate — a regression here would mean the
+  review buffer silently stopped existing.
+- Unit (§2): the `GET /subscribers` query string for each of the three
+  stages has the right `date__end` math (N days back from "now", not from
+  the wrong epoch) and always includes `type=regular`.
+- Unit (§2): a subscriber who already has `seqN-sent` is excluded from that
+  stage's candidate list even when constructed from a fixture that would
+  otherwise match on date alone.
+- Unit (§2): a `409` from the send call still results in the tag being
+  applied (idempotent re-run behavior), not a thrown error.
+- Live (§2): after the one-time draft-email setup, manually trigger the
+  function once against a real test subscriber (an address like
+  `ben+seqtest@purplelink.llc`, matching the existing `ben+magnet-test@`
+  pattern already in the account) with a manually-backdated `creation_date`
+  or a temporarily-lowered day threshold, and confirm the send actually
+  arrives and the tag gets applied — before trusting it against real
+  subscribers.
+- Live (§1): after the next Monday publish, confirm the scheduled email
+  actually appears in the Buttondown dashboard with the right
+  `publish_date` and un-filtered audience, before the 24h window elapses
+  (so there's still time to cancel it by hand if something rendered wrong).
+
+## Next (explicitly out of scope here)
+
+Both parts of this spec are worth building regardless, since the copy is
+done and the send mechanics are now free — but with a real audience of one,
+the actual constraint on this whole effort mattering is list growth, not
+send capability. That's a separate investigation (why is signup conversion
+this low despite capture forms already being on every page and every
+article) and a separate spec once this one ships.
