@@ -181,17 +181,23 @@ export default async function handler(request) {
 
   // Attach the product key as Stripe metadata so the webhook can route
   // correctly without re-deriving from price_id.
+  const mode = entry.mode || "payment";
   const params = {
-    mode: entry.mode || "payment",
+    mode,
     "payment_method_types[0]": "card",
     "line_items[0][price]": priceId,
     "line_items[0][quantity]": "1",
     success_url: `${origin}${entry.successPath}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success)\/$/, "/")}`,
-    customer_creation: "if_required",
     "metadata[product]": product,
     "metadata[product_category]": product.startsWith("paper-review") ? "paper-review" : product,
   };
+  // customer_creation is only valid in "payment" mode -- Stripe always
+  // creates a Customer automatically for "subscription" mode sessions, and
+  // rejects the param outright if it's present there.
+  if (mode === "payment") {
+    params.customer_creation = "if_required";
+  }
   if (referralCode) {
     params["metadata[referral_code]"] = referralCode;
   }
