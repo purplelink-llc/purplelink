@@ -95,6 +95,16 @@ const PRODUCT_CATALOG = {
   // ModernTex for macOS: $10 one-time. Delivery is the session-gated DMG from the
   // moderntex-files Blobs store; see moderntex-download.mjs.
   "moderntex":               { envKey: "STRIPE_PRICE_MODERNTEX",               successPath: "/moderntex/success/" },
+  "digest-monthly": {
+    envKey: "STRIPE_PRICE_DIGEST_MONTHLY",
+    successPath: "/blog/digest/subscribed/",
+    mode: "subscription",
+  },
+  "digest-annual": {
+    envKey: "STRIPE_PRICE_DIGEST_ANNUAL",
+    successPath: "/blog/digest/subscribed/",
+    mode: "subscription",
+  },
 };
 
 function jsonResponse(status, body) {
@@ -172,7 +182,7 @@ export default async function handler(request) {
   // Attach the product key as Stripe metadata so the webhook can route
   // correctly without re-deriving from price_id.
   const params = {
-    mode: "payment",
+    mode: entry.mode || "payment",
     "payment_method_types[0]": "card",
     "line_items[0][price]": priceId,
     "line_items[0][quantity]": "1",
