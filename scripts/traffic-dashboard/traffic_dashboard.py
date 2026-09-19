@@ -1287,6 +1287,11 @@ h2{font-size:15px;letter-spacing:.02em;margin:34px 0 12px;font-weight:640;color:
 .sales td.num{text-align:right;font-variant-numeric:tabular-nums}
 .sales .who{color:var(--muted);font-size:.82rem}
 .sales-none{color:var(--muted);margin:8px 0 0}
+.rev-chart{width:100%;height:auto;margin-top:10px}
+.rev-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:6px}
+.rev-legend-item{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted)}
+.rev-legend-item i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.rev-legend-proj{background:none!important;border:1.5px dashed var(--muted)}
 .sales-foot{color:var(--muted);font-size:.78rem;margin:14px 0 0}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
 .site-name{font-size:15px;font-weight:640;margin:0}
@@ -2002,6 +2007,300 @@ def appstore_block(app: dict | None) -> str:
 </section>"""
 
 
+# ---------------------------------------------------------------- combined revenue
+#
+# Pulls together every revenue source into one monthly view: Sales (Stripe,
+# both sites), App Store (GlobePin Pro proceeds), and photo licensing
+# (scraped/parsed stock-platform balances). Ad revenue (AdSense) has no
+# reporting integration at all as of 2026-09 -- both sites are still in
+# AdSense's "Needs attention: Low value content" review state, so it is
+# rendered as an explicit, honestly-labeled $0/not-yet-earning column rather
+# than omitted, so the chart's shape doesn't quietly change once it exists.
+#
+# This is deliberately NOT called "MRR": almost none of this is recurring
+# subscription revenue (ModernTex and the guides are one-time purchases,
+# photo licensing is per-download). "Combined monthly revenue" is the
+# honest name for what this actually measures.
+
+PHOTO_DASHBOARD_PATH = Path(__file__).resolve().parent.parent / "photo-dashboard.py"
+
+
+def _load_photo_dashboard_module():
+    """Import scripts/photo-dashboard.py despite its hyphenated filename
+    (which `import photo-dashboard` cannot express) rather than duplicating
+    its carry-forward/alamy-dedup logic here -- see platform_money_asof()'s
+    own docstring for why that logic has to stay in one place."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("photo_dashboard", PHOTO_DASHBOARD_PATH)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def recent_months(n: int, today: dt.date | None = None) -> list[str]:
+    """The last n calendar months as YYYY-MM, oldest first, ending with the
+    current (in-progress) month."""
+    today = today or dt.date.today()
+    months = []
+    y, m = today.year, today.month
+    for _ in range(n):
+        months.append(f"{y:04d}-{m:02d}")
+        m -= 1
+        if m == 0:
+            m, y = 12, y - 1
+    return list(reversed(months))
+
+
+def _month_bounds(month: str) -> tuple[str, str]:
+    """(first day, last day) of a YYYY-MM month, both YYYY-MM-DD, inclusive."""
+    y, m = (int(x) for x in month.split("-"))
+    first = dt.date(y, m, 1)
+    last = (dt.date(y + 1, 1, 1) if m == 12 else dt.date(y, m + 1, 1)) - dt.timedelta(days=1)
+    return first.isoformat(), last.isoformat()
+
+
+def sales_revenue_by_month(sales: dict | None, months: list[str]) -> dict[str, float]:
+    by_day = (sales or {}).get("byDay") or {}
+    # sales["byDay"] (from sales.mjs) isn't the same shape as a site's
+    # traffic byDay -- confirm the actual keys it uses before trusting this
+    # blindly ever changes; today it's {date: {"gross": cents, "orders": n}}.
+    out = {}
+    for month in months:
+        lo, hi = _month_bounds(month)
+        out[month] = sum(v.get("gross", 0) for d, v in by_day.items() if lo <= d <= hi) / 100.0
+    return out
+
+
+def appstore_revenue_by_month(appstore: dict | None, months: list[str]) -> dict[str, float]:
+    days = (appstore or {}).get("days") or {}
+    out = {}
+    for month in months:
+        lo, hi = _month_bounds(month)
+        total = 0.0
+        for d, v in days.items():
+            if lo <= d <= hi:
+                total += (v.get("proceeds") or {}).get("USD", 0.0)
+        out[month] = total
+    return out
+
+
+def photo_revenue_by_month(months: list[str]) -> dict[str, float]:
+    """This month's real photo-licensing revenue, derived by diffing
+    per-platform balances at each month's start and end (via the shared
+    platform_money_asof helper) rather than reporting the running balance
+    itself, which is cumulative and would make every month after the first
+    look identical to "all time". Each platform's diff is floored at 0
+    before summing: a platform whose balance drops mid-period because a
+    payout cleared it is 0 new revenue that period, not negative revenue.
+    """
+    try:
+        pd = _load_photo_dashboard_module()
+    except Exception as exc:
+        print(f"  ! photo revenue unavailable: {str(exc)[:100]}", file=sys.stderr)
+        return {m: 0.0 for m in months}
+    try:
+        data = pd.load()
+    except SystemExit:
+        # pd.load() itself sys.exit()s if snapshots.csv doesn't exist yet --
+        # a real, expected state (photo tracking not set up at all), not an
+        # error worth a stack trace.
+        return {m: 0.0 for m in months}
+    dates = sorted(data)
+
+    def balances_asof(asof: str) -> dict[str, float]:
+        _total_money, _total_sales, rows = pd.platform_money_asof(data, dates, asof)
+        return {label: (bal or 0.0) for label, bal, *_rest in rows}
+
+    out = {}
+    for month in months:
+        lo, hi = _month_bounds(month)
+        day_before = (dt.date.fromisoformat(lo) - dt.timedelta(days=1)).isoformat()
+        start = balances_asof(day_before)
+        end = balances_asof(hi if hi <= dates[-1] else dates[-1])
+        platforms = set(start) | set(end)
+        out[month] = sum(max(0.0, end.get(p, 0.0) - start.get(p, 0.0)) for p in platforms)
+    return out
+
+
+REVENUE_SOURCES = [
+    ("sales", "Sales", "var(--purple)"),
+    ("appstore", "App Store", "var(--good)"),
+    ("photo", "Photo licensing", "oklch(75% 0.14 230)"),
+    ("ads", "Ads", "var(--line)"),
+]
+
+
+REVENUE_PROJ_HORIZON = 3     # months projected forward
+REVENUE_PROJ_PATHS = 4000    # bootstrap resamples
+MIN_REVENUE_MONTHS = 6       # real (non-empty) months required before projecting at all
+
+
+def project_revenue(monthly_totals: dict[str, float], months: list[str]) -> dict | None:
+    """Bootstrap a range for the next REVENUE_PROJ_HORIZON months of combined
+    revenue, in the same spirit as project() above for pageviews: resample
+    observed monthly totals rather than fit a trend, because a trend is a
+    claim the data has to earn, not a default.
+
+    Gated at MIN_REVENUE_MONTHS real (nonzero) months rather than the daily
+    project()'s MIN_DAYS-style threshold, because monthly totals are noisier
+    per-observation than daily pageviews (a single sales burst, a payout
+    clearing, or a platform outage can dominate an entire month) and there
+    are structurally far fewer of them to resample from. As of 2026-09,
+    real revenue exists for exactly 2 months (Aug, Sep) -- nowhere near
+    enough to resample a defensible range from, so this returns None and
+    the caller renders that honestly instead of drawing a line through two
+    points and calling it a forecast.
+    """
+    observed = [monthly_totals[m] for m in months if monthly_totals.get(m, 0.0) > 0]
+    if len(observed) < MIN_REVENUE_MONTHS:
+        return {"insufficient": True, "have": len(observed), "need": MIN_REVENUE_MONTHS}
+
+    rnd = random.Random(20260919)  # fixed seed: same data -> same picture
+    pct = (10, 50, 90)
+    bands = []
+    last_month = months[-1]
+    y, m = (int(x) for x in last_month.split("-"))
+    for h in range(1, REVENUE_PROJ_HORIZON + 1):
+        m += 1
+        if m == 13:
+            m, y = 1, y + 1
+        draws = sorted(rnd.choice(observed) for _ in range(REVENUE_PROJ_PATHS))
+        q = {p: draws[int(p / 100 * (len(draws) - 1))] for p in pct}
+        bands.append({"month": f"{y:04d}-{m:02d}", **{f"p{p}": q[p] for p in pct}})
+    return {"insufficient": False, "bands": bands, "have": len(observed)}
+
+
+def revenue_chart(months: list[str], series: dict[str, dict[str, float]],
+                   proj: dict | None = None) -> str:
+    """Stacked monthly bars, one per revenue source, hand-rolled SVG in the
+    same style as fan_chart/sparkline elsewhere in this file -- no charting
+    library, consistent with everything else this script renders.
+
+    When proj carries real bands (see project_revenue), projected months are
+    appended as a lighter, dashed-outline bar at the p50 estimate with a
+    thin p10-p90 range line through it -- visually distinct from the solid,
+    known-value bars so a reader can't mistake a projection for an actual
+    figure at a glance. When proj is absent or insufficient, only the real
+    months are drawn; project_revenue's own "insufficient" note (rendered by
+    the caller) explains why there is no projection yet rather than the
+    chart silently having fewer bars than expected.
+    """
+    proj_bands = proj["bands"] if (proj and not proj.get("insufficient")) else []
+    proj_months = [b["month"] for b in proj_bands]
+    all_months = months + proj_months
+    totals = [sum(series[k].get(m, 0.0) for k, _l, _c in REVENUE_SOURCES) for m in months]
+    proj_peaks = [b["p90"] for b in proj_bands]
+    peak = max(totals + proj_peaks + [1.0])
+    n = len(all_months)
+    # pad_top reserves room for the tallest bar's total-amount label so it
+    # doesn't clip against the SVG's own top edge.
+    w, h, pad_top, pad_bottom = 640, 180, 24, 22
+    bar_area = h - pad_top - pad_bottom
+    bar_w = (w / n) * 0.6
+    gap = (w / n) * 0.4
+
+    def month_label(m: str) -> str:
+        return dt.datetime.strptime(m, "%Y-%m").strftime("%b")
+
+    bars = []
+    for i, month in enumerate(months):
+        x = i * (bar_w + gap) + gap / 2
+        y_cursor = h - pad_bottom
+        for key, _label, color in REVENUE_SOURCES:
+            v = series[key].get(month, 0.0)
+            if v <= 0:
+                continue
+            seg_h = (v / peak) * bar_area
+            y_cursor -= seg_h
+            bars.append(f"<rect x='{x:.1f}' y='{y_cursor:.1f}' width='{bar_w:.1f}' "
+                        f"height='{seg_h:.1f}' fill='{color}' rx='2'/>")
+        bars.append(f"<text x='{x + bar_w / 2:.1f}' y='{h - 4}' font-size='11' "
+                    f"fill='var(--muted)' text-anchor='middle'>{month_label(month)}</text>")
+        if totals[i] > 0:
+            top_y = h - pad_bottom - (totals[i] / peak) * bar_area - 6
+            bars.append(f"<text x='{x + bar_w / 2:.1f}' y='{top_y:.1f}' "
+                        f"font-size='11' fill='var(--ink)' text-anchor='middle'>${totals[i]:,.0f}</text>")
+
+    for j, b in enumerate(proj_bands):
+        i = len(months) + j
+        x = i * (bar_w + gap) + gap / 2
+        cx = x + bar_w / 2
+        p50_h = (b["p50"] / peak) * bar_area
+        p10_y = h - pad_bottom - (b["p10"] / peak) * bar_area
+        p90_y = h - pad_bottom - (b["p90"] / peak) * bar_area
+        bars.append(f"<rect x='{x:.1f}' y='{h - pad_bottom - p50_h:.1f}' width='{bar_w:.1f}' "
+                    f"height='{p50_h:.1f}' fill='none' stroke='var(--muted)' "
+                    f"stroke-dasharray='3 3' rx='2'/>")
+        bars.append(f"<line x1='{cx:.1f}' y1='{p10_y:.1f}' x2='{cx:.1f}' y2='{p90_y:.1f}' "
+                    f"stroke='var(--muted)' stroke-width='1.5'/>")
+        bars.append(f"<text x='{cx:.1f}' y='{h - 4}' font-size='11' fill='var(--muted)' "
+                    f"text-anchor='middle'>{month_label(b['month'])}?</text>")
+        bars.append(f"<text x='{cx:.1f}' y='{p90_y - 6:.1f}' font-size='11' fill='var(--muted)' "
+                    f"text-anchor='middle'>${b['p50']:,.0f}?</text>")
+
+    legend = "".join(
+        f"<span class='rev-legend-item'><i style='background:{color}'></i>{html.escape(label)}</span>"
+        for _k, label, color in REVENUE_SOURCES
+    )
+    if proj_bands:
+        legend += ("<span class='rev-legend-item'><i class='rev-legend-proj'></i>"
+                   "Projected (p10–p90 range)</span>")
+    return (f"<svg viewBox='0 0 {w} {h}' class='rev-chart' role='img' "
+            f"aria-label='Monthly revenue by source, with projection'>{''.join(bars)}</svg>"
+            f"<div class='rev-legend'>{legend}</div>")
+
+
+def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6) -> str:
+    months = recent_months(n_months)
+    series = {
+        "sales": sales_revenue_by_month(sales, months),
+        "appstore": appstore_revenue_by_month(appstore, months),
+        "photo": photo_revenue_by_month(months),
+        "ads": {m: 0.0 for m in months},  # see the module docstring above
+    }
+    this_month = months[-1]
+    this_month_total = sum(series[k].get(this_month, 0.0) for k, _l, _c in REVENUE_SOURCES)
+    chips = "".join(
+        f"<span class='sales-chip'><b>${series[key].get(this_month, 0.0):,.2f}</b> <span>{html.escape(label)}</span></span>"
+        for key, label, _c in REVENUE_SOURCES
+    )
+    monthly_totals = {m: sum(series[k].get(m, 0.0) for k, _l, _c in REVENUE_SOURCES) for m in months}
+    proj = project_revenue(monthly_totals, months)
+    if proj.get("insufficient"):
+        proj_note = (f"Not projecting future months yet: {proj['have']} real month(s) of revenue "
+                     f"on record, need at least {proj['need']}. A forecast off fewer points than "
+                     f"that would be a line drawn through noise, not a trend -- same reasoning as "
+                     f"the pageview projection above, just at monthly instead of daily granularity.")
+    else:
+        b0 = proj["bands"][0]
+        proj_note = (f"Projected next month ({dt.datetime.strptime(b0['month'], '%Y-%m').strftime('%B')}): "
+                     f"${b0['p10']:,.0f}–${b0['p90']:,.0f} (median ${b0['p50']:,.0f}), resampled from "
+                     f"{proj['have']} real months -- not a trend line, a range of what recent months "
+                     f"actually looked like.")
+    return f"""
+<section class="sales revenue">
+  <h2>Revenue &middot; all sources</h2>
+  <div class="sales-figures">
+    <div>
+      <span class="sales-figure-label">This month so far</span>
+      <span class="sales-big">${this_month_total:,.2f}</span>
+    </div>
+  </div>
+  <div class="sales-split">{chips}</div>
+  {revenue_chart(months, series, proj)}
+  <p class="bound">{html.escape(proj_note)}</p>
+  <p class="sales-foot">"Revenue," not "MRR": almost none of this is recurring
+  subscription income (ModernTex and the guides are one-time purchases, photo
+  licensing is per-download) -- MRR would be the wrong word for what this
+  measures. Sales and App Store figures are real, automated pulls. Photo
+  licensing is scraped/parsed from each platform's own dashboard (see
+  scripts/photo-dashboard.py) and is fragile by nature -- a platform layout
+  change or anti-bot block shows as a flat month, not necessarily zero real
+  activity. Ads is not yet automated and both sites are currently unapproved
+  by AdSense ("Low value content"), so it reads $0 until that changes.</p>
+</section>"""
+
+
 def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None,
            sales: dict | None = None, appstore: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
@@ -2053,6 +2352,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
 </header>
 {sales_block(sales)}
 {appstore_block(appstore)}
+{revenue_block(sales, appstore)}
 <div class="grid">{cards}</div>
 <h2>What this says</h2>
 <ul class="obs">{obs_html}</ul>
