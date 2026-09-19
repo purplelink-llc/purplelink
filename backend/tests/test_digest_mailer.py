@@ -123,7 +123,7 @@ def test_mail_digest_same_day_sent_count_reflects_confirmed_sends_only(monkeypat
     monkeypatch.setattr(mailer, "_send_one", fake_send_one)
     monkeypatch.setattr(mailer, "_mark_sent", fake_mark_sent)
 
-    def render_email_html(digest, unsubscribe_url, tier):
+    def render_email_html(digest, unsubscribe_url, tier, manage_url=""):
         return "<html></html>"
 
     digest = _FakeDigest(number=1, date=datetime.date(2026, 9, 17))

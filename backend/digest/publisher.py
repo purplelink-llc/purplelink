@@ -270,7 +270,7 @@ def render_html(digest: DigestData) -> str:
 </html>"""
 
 
-def render_email_html(digest: DigestData, unsubscribe_url: str = "", tier: str = "free") -> str:
+def render_email_html(digest: DigestData, unsubscribe_url: str = "", tier: str = "free", manage_url: str = "") -> str:
     """Render email-safe HTML: no nav/footer, inline-friendly.
 
     tier controls the footer: "paid" and "legacy" subscribers already have
@@ -300,6 +300,12 @@ def render_email_html(digest: DigestData, unsubscribe_url: str = "", tier: str =
       <img src="https://purplelink.llc/assets/bmac-badge.svg" alt="Buy Me a Coffee" style="height:32px;">
     </a>
   </div>"""
+    elif tier == "paid":
+        manage_line = (
+            f' <a href="{html.escape(manage_url, quote=True)}" style="color:#888;">Manage subscription</a>'
+        ) if manage_url else ""
+        tier_footer = f"""
+  <p style="margin:24px 0;font-size:13px;color:#888;">Thanks for subscribing.{manage_line}</p>"""
     else:
         tier_footer = """
   <p style="margin:24px 0;font-size:13px;color:#888;">Thanks for subscribing.</p>"""

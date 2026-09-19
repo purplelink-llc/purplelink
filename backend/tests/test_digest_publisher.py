@@ -386,6 +386,19 @@ def test_render_email_html_free_tier_has_upgrade_cta_and_bmac():
     assert "buymeacoffee.com/bampel" in html
 
 
+def test_render_email_html_paid_tier_shows_manage_link_when_provided():
+    import datetime
+    from digest.curator import DigestData
+    from digest.publisher import render_email_html
+
+    digest = DigestData(date=datetime.date(2026, 9, 17), number=1, intro="",
+                         sections={}, sources_reviewed=0, items_selected=0)
+    html = render_email_html(digest, unsubscribe_url="https://x", tier="paid",
+                              manage_url="https://purplelink.llc/.netlify/functions/subscription-portal?email=a@b.com&token=t")
+    assert "Manage subscription" in html
+    assert "subscription-portal" in html
+
+
 def test_render_email_html_legacy_tier_has_no_upgrade_cta():
     import datetime
     from digest.curator import DigestData

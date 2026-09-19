@@ -33,6 +33,14 @@ def _unsubscribe_url(email: str, secret: str) -> str:
     )
 
 
+def _manage_subscription_url(email: str, secret: str) -> str:
+    token = hmac.new(secret.encode(), email.encode(), hashlib.sha256).hexdigest()
+    return (
+        f"{SITE_URL}/.netlify/functions/subscription-portal"
+        f"?email={quote(email)}&token={token}"
+    )
+
+
 async def _get_subscribers(client: httpx.AsyncClient, subscribe_secret: str) -> list[dict]:
     try:
         resp = await client.get(
@@ -146,7 +154,8 @@ async def mail_digest(
             email = sub["email"]
             tier = sub.get("tier") or "legacy"
             unsub_url = _unsubscribe_url(email, subscribe_secret)
-            html = render_email_html(digest, unsubscribe_url=unsub_url, tier=tier)
+            manage_url = _manage_subscription_url(email, subscribe_secret) if tier == "paid" else ""
+            html = render_email_html(digest, unsubscribe_url=unsub_url, tier=tier, manage_url=manage_url)
             ok = await _send_one(client, email, subject, html, resend_key)
             if ok:
                 sent += 1
