@@ -162,9 +162,14 @@ def render_post_html(d: WeeklyDigest) -> str:
 def render_hub_html(posts: list[dict]) -> str:
     """posts: list of {slug, week_label, date, count, blurb} newest-first.
 
-    No AdSense loader on the hub: it is a short navigational index (~250 words),
-    and Google Publisher Policies forbid ads on screens with little publisher
-    content. Individual digests (800-1300 words) keep the loader.
+    Carries the AdSense loader despite being a short navigational index
+    (~250 words) — an explicit, informed choice by the site owner (2026-09-19)
+    to keep ads live here rather than follow Google's Publisher Policy
+    guidance on thin-content pages. Both purplelink.llc and getmuscleonglp.com
+    were already flagged "low value content" by AdSense as of 2026-09-15, and
+    this page's profile is part of why; that rejection is not expected to
+    clear while this stands. Do not "fix" this by removing the loader again
+    without checking with the owner first — it was deliberately restored.
     """
     e = html.escape
     cards = []
