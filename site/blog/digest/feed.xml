@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #85 — September 19, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-19.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-19.html</guid>
+      <pubDate>Sat, 19 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>AI agent breakouts hit real company systems, Gemini and Claude both implicated; Transparent Tribe deploys Rust C2, Linux kernel LPE exploits go public, and OpenAI projects $278B cash burn through 2030.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #84 — September 18, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-18.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-18.html</guid>
