@@ -2022,7 +2022,24 @@ def appstore_block(app: dict | None) -> str:
 # photo licensing is per-download). "Combined monthly revenue" is the
 # honest name for what this actually measures.
 
-PHOTO_DASHBOARD_PATH = Path(__file__).resolve().parent.parent / "photo-dashboard.py"
+# The daily launchd job (run.sh) copies this script to a local cache
+# (~/.purplelink/traffic/traffic_dashboard.py) and always executes THAT copy
+# -- even when the repo's external SSD is mounted -- so Path(__file__) never
+# actually points into the repo in production, only when this file is run
+# directly from its real location (manual testing, etc.). Found 2026-09-19
+# when the first scheduled run after this feature shipped logged "No such
+# file or directory: /Users/benampel/.purplelink/photo-dashboard.py" --
+# .parent.parent of the LOCAL COPY's path, not the repo's scripts/ dir.
+# Try the sibling-relative path first (correct when run from the repo), then
+# fall back to the canonical absolute repo path (correct when run from the
+# local cache with the SSD mounted). If neither exists -- SSD truly
+# unmounted -- _load_photo_dashboard_module's caller already degrades to
+# $0 for photo revenue that day, the same honest fallback every other
+# source here already has for its own outages.
+_PHOTO_DASHBOARD_CANDIDATES = [
+    Path(__file__).resolve().parent.parent / "photo-dashboard.py",
+    Path("/Volumes/Extreme SSD/Purplelink LLC/scripts/photo-dashboard.py"),
+]
 
 
 def _load_photo_dashboard_module():
@@ -2031,7 +2048,11 @@ def _load_photo_dashboard_module():
     its carry-forward/alamy-dedup logic here -- see platform_money_asof()'s
     own docstring for why that logic has to stay in one place."""
     import importlib.util
-    spec = importlib.util.spec_from_file_location("photo_dashboard", PHOTO_DASHBOARD_PATH)
+    path = next((p for p in _PHOTO_DASHBOARD_CANDIDATES if p.exists()), None)
+    if path is None:
+        raise FileNotFoundError(
+            f"photo-dashboard.py not found at any of: {[str(p) for p in _PHOTO_DASHBOARD_CANDIDATES]}")
+    spec = importlib.util.spec_from_file_location("photo_dashboard", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
