@@ -62,6 +62,7 @@ export default async function handler(request) {
     await store.set(email, JSON.stringify({
       email,
       token,
+      tier: "free",
       referralCode: myRefCode,
       referralCount: 0,
       referredBy: refCode || null,
@@ -98,6 +99,10 @@ export default async function handler(request) {
         record.referralCode = myRefCode
         await store.set(email, JSON.stringify(record))
         await refIndex.set(myRefCode, email)
+      }
+      if (!record.tier) {
+        record.tier = "legacy"
+        await store.set(email, JSON.stringify(record))
       }
     } catch (err) {
       console.error("subscribe: referral backfill failed", err)

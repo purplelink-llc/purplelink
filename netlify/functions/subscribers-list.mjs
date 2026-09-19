@@ -1,7 +1,7 @@
 /**
  * GET /.netlify/functions/subscribers-list
  *
- * Internal endpoint — returns all subscriber emails as JSON.
+ * Internal endpoint — returns all subscriber records as JSON.
  * Called by the Modal cron to get the mailing list before sending.
  *
  * Authorization: Bearer <SUBSCRIBE_SECRET> required.
@@ -21,9 +21,19 @@ export default async function handler(request) {
   try {
     const store = getStore("subscribers")
     const { blobs } = await store.list()
-    const emails = blobs.map(b => b.key)
+    const subscribers = await Promise.all(
+      blobs.map(async (b) => {
+        const raw = await store.get(b.key)
+        try {
+          return JSON.parse(raw)
+        } catch {
+          return null
+        }
+      })
+    )
+    const valid = subscribers.filter(Boolean)
 
-    return new Response(JSON.stringify({ emails, count: emails.length }), {
+    return new Response(JSON.stringify({ subscribers: valid, count: valid.length }), {
       headers: { "Content-Type": "application/json" },
     })
   } catch (err) {
