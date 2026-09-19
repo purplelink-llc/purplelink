@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import dataclasses
 import datetime
 import email.utils
 import hashlib
@@ -15,6 +16,33 @@ import httpx
 from digest.curator import DigestData, DigestItem, _SECTION_LABELS
 
 logger = logging.getLogger(__name__)
+
+
+def digest_to_dict(digest: DigestData) -> dict:
+    """Plain-dict form of a DigestData, safe for json.dumps. The inverse of
+    digest_from_dict. Exists so a day's digest can be persisted alongside
+    its rendered HTML and reloaded later -- publish() only ever wrote HTML
+    before this, which meant nothing could reconstruct a past day's digest
+    to re-render its email (needed for the delayed free-tier send)."""
+    d = dataclasses.asdict(digest)
+    d["date"] = digest.date.isoformat()
+    return d
+
+
+def digest_from_dict(d: dict) -> DigestData:
+    """Inverse of digest_to_dict."""
+    sections = {
+        section: [DigestItem(**item) for item in items]
+        for section, items in d["sections"].items()
+    }
+    return DigestData(
+        date=datetime.date.fromisoformat(d["date"]),
+        number=d["number"],
+        intro=d["intro"],
+        sections=sections,
+        sources_reviewed=d["sources_reviewed"],
+        items_selected=d["items_selected"],
+    )
 
 GITHUB_REPO = "purplelink-llc/purplelink"
 GITHUB_API = "https://api.github.com"
@@ -539,6 +567,32 @@ async def github_write_digest(
     logger.info("github_write_digest: wrote %s", path)
 
 
+def _digest_json_path(iso: str) -> str:
+    return f"{DIGEST_DIR}/data/{iso}.json"
+
+
+async def github_write_digest_json(client, digest: DigestData, token: str) -> None:
+    """Write a raw JSON snapshot alongside the rendered HTML -- see
+    digest_to_dict for why this exists."""
+    import json
+    iso = digest.date.isoformat()
+    path = _digest_json_path(iso)
+    _, existing_sha = await _github_get_file(client, path, token)
+    content = json.dumps(digest_to_dict(digest), indent=2)
+    await _github_put_file(client, path, content, f"digest: JSON snapshot {iso}", token, sha=existing_sha)
+
+
+async def github_read_digest_json(client, iso: str, token: str) -> Optional[DigestData]:
+    """Reload a past day's digest from its JSON snapshot, or None if that
+    day has no snapshot (e.g. predates this feature, or genuinely never
+    published)."""
+    import json
+    content, _sha = await _github_get_file(client, _digest_json_path(iso), token)
+    if content is None:
+        return None
+    return digest_from_dict(json.loads(content))
+
+
 _INDEX_LIST_MARKER = "<!-- DIGEST_LIST_START -->"
 
 
@@ -710,6 +764,7 @@ async def publish(
         rss_item = render_rss_item(digest)
 
         await github_write_digest(client, html_content, digest, github_token)
+        await github_write_digest_json(client, digest, github_token)
         await github_update_digest_index(client, entry, github_token)
         await github_update_rss_feed(client, rss_item, github_token)
 

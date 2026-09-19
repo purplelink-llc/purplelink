@@ -174,6 +174,7 @@ def test_github_update_digest_index_prepends_entry():
 def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
     count_called = []
     write_called = []
+    write_json_called = []
     index_called = []
     rss_called = []
     topic_hub_called = []
@@ -184,6 +185,7 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
         count_called.append(1)
         return 6
     async def _fake_write(client, html, digest, token): write_called.append(1)
+    async def _fake_write_json(client, digest, token): write_json_called.append(1)
     async def _fake_index(client, entry, token): index_called.append(1)
     async def _fake_rss(client, rss_item, token): rss_called.append(1)
     async def _fake_topic_hub(client, section_label, entry, token): topic_hub_called.append(section_label)
@@ -192,6 +194,7 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
 
     monkeypatch.setattr("digest.publisher.github_count_digests", _fake_count)
     monkeypatch.setattr("digest.publisher.github_write_digest", _fake_write)
+    monkeypatch.setattr("digest.publisher.github_write_digest_json", _fake_write_json)
     monkeypatch.setattr("digest.publisher.github_update_digest_index", _fake_index)
     monkeypatch.setattr("digest.publisher.github_update_rss_feed", _fake_rss)
     monkeypatch.setattr("digest.publisher.github_update_topic_hub", _fake_topic_hub)
@@ -203,6 +206,7 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
 
     assert count_called, "github_count_digests was not called"
     assert write_called, "github_write_digest was not called"
+    assert write_json_called, "github_write_digest_json was not called"
     assert index_called, "github_update_digest_index was not called"
     assert rss_called, "github_update_rss_feed was not called"
     assert sorted(topic_hub_called) == sorted(digest.sections.keys()), "github_update_topic_hub should be called once per section"
@@ -221,6 +225,7 @@ def test_publish_posts_linkedin_when_credentials_given(monkeypatch):
 
     monkeypatch.setattr("digest.publisher.github_count_digests", _fake_count)
     monkeypatch.setattr("digest.publisher.github_write_digest", _noop)
+    monkeypatch.setattr("digest.publisher.github_write_digest_json", _noop)
     monkeypatch.setattr("digest.publisher.github_update_digest_index", _noop)
     monkeypatch.setattr("digest.publisher.github_update_rss_feed", _noop)
     monkeypatch.setattr("digest.publisher.github_update_topic_hub", _noop)
@@ -326,6 +331,34 @@ def test_rendering_still_works_when_stamps_are_unavailable():
     page = render_html(_make_digest())
     assert 'href="/styles.css"' in page
     assert 'src="/site.js"' in page
+
+
+def test_digest_to_dict_round_trips_through_json():
+    import json
+    import datetime
+    from digest.curator import DigestData, DigestItem
+    from digest.publisher import digest_to_dict, digest_from_dict
+
+    original = DigestData(
+        date=datetime.date(2026, 9, 17),
+        number=42,
+        intro="Test intro.",
+        sections={"ai_tech": [
+            DigestItem(title="A paper", url="https://example.com/a",
+                       source_name="Example", category="ai_tech",
+                       editorial_note="A note."),
+        ]},
+        sources_reviewed=100,
+        items_selected=1,
+    )
+    round_tripped = digest_from_dict(json.loads(json.dumps(digest_to_dict(original))))
+    assert round_tripped.date == original.date
+    assert round_tripped.number == original.number
+    assert round_tripped.intro == original.intro
+    assert round_tripped.sources_reviewed == original.sources_reviewed
+    assert round_tripped.items_selected == original.items_selected
+    assert round_tripped.sections["ai_tech"][0].title == "A paper"
+    assert round_tripped.sections["ai_tech"][0].url == "https://example.com/a"
 
 
 def test_load_asset_stamps_hashes_file_bytes():
