@@ -5,10 +5,49 @@
  * Removes the subscriber from the Netlify Blobs store and returns
  * a confirmation page using the site's existing CSS.
  *
- * Required env var: SUBSCRIBE_SECRET
+ * This is the ONLY unsubscribe link every digest email carries, regardless
+ * of tier — free, legacy, and paid subscribers all get the same link. A
+ * paid subscriber (tier: "paid", stripe_subscription_id set by
+ * stripe-webhook.mjs on checkout.session.completed) has a real, billing
+ * Stripe subscription behind their record. If we just deleted the record,
+ * they'd stop receiving email but Stripe would keep charging them with no
+ * remaining link between the orphaned subscription and a person — so this
+ * handler cancels the Stripe subscription first for paid-tier subscribers.
+ * There is no Customer Portal yet, so this link is currently their only
+ * self-serve cancellation path.
+ *
+ * Required env vars: SUBSCRIBE_SECRET, STRIPE_SECRET_KEY
  */
 import { getStore } from "@netlify/blobs"
 import { createHmac, timingSafeEqual } from "node:crypto"
+
+const STRIPE_API = "https://api.stripe.com/v1"
+
+// Best-effort: cancel the Stripe subscription behind a paid-tier record.
+// Failure here (network blip, already-cancelled subscription, bad key)
+// must NOT block the unsubscribe — leaving the person still subscribed
+// to email AND still being billed is strictly worse than degrading to
+// "no longer emailed, but the still-active charge is now their or
+// support's problem to notice." Log and move on either way.
+async function cancelStripeSubscription(subscriptionId) {
+  const secretKey = process.env.STRIPE_SECRET_KEY
+  if (!secretKey) {
+    console.error(`unsubscribe: STRIPE_SECRET_KEY not set, cannot cancel subscription ${subscriptionId}`)
+    return
+  }
+  try {
+    const resp = await fetch(`${STRIPE_API}/subscriptions/${subscriptionId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${secretKey}` },
+    })
+    if (!resp.ok) {
+      const detail = await resp.text().catch(() => "")
+      console.error(`unsubscribe: Stripe cancellation failed for ${subscriptionId}: ${resp.status} ${detail}`)
+    }
+  } catch (err) {
+    console.error(`unsubscribe: Stripe cancellation errored for ${subscriptionId}:`, err)
+  }
+}
 
 function page(title, heading, bodyHtml, status = 200) {
   return new Response(`<!doctype html>
@@ -104,6 +143,19 @@ export default async function handler(request) {
   }
 
   const store = getStore("subscribers")
+
+  let record = null
+  try {
+    const raw = await store.get(email)
+    record = raw ? JSON.parse(raw) : null
+  } catch (err) {
+    console.error(`unsubscribe: failed to read/parse record for ${email}:`, err)
+  }
+
+  if (record && record.tier === "paid" && record.stripe_subscription_id) {
+    await cancelStripeSubscription(record.stripe_subscription_id)
+  }
+
   await store.delete(email)
 
   return page(
