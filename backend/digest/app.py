@@ -94,8 +94,22 @@ async def run_daily_digest():
 
     if subscribe_secret and resend_key:
         from digest.mailer import mail_digest
-        from digest.publisher import render_email_html
-        sent = await mail_digest(digest, render_email_html, subscribe_secret, resend_key)
+        from digest.publisher import render_email_html, github_read_digest_json
+        import datetime as _dt
+
+        delayed_date = digest.date - _dt.timedelta(days=2)
+        delayed_slug = delayed_date.isoformat()
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as _dj_client:
+                delayed_digest = await github_read_digest_json(_dj_client, delayed_slug, github_token)
+        except Exception as exc:
+            logger.warning("digest: could not load delayed snapshot for %s: %s", delayed_slug, exc)
+            delayed_digest = None
+
+        sent = await mail_digest(
+            digest, render_email_html, subscribe_secret, resend_key,
+            delayed_digest=delayed_digest, delayed_slug=delayed_slug,
+        )
         logger.info("digest: emailed %d subscribers", sent)
     else:
         logger.info("digest: email skipped (SUBSCRIBE_SECRET or RESEND_API_KEY not set)")
