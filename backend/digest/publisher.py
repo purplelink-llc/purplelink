@@ -238,7 +238,11 @@ def render_html(digest: DigestData) -> str:
     </article>
 
     <div class="post-footer digest-footer">
-      <p>Get this in your inbox. <a href="/blog/digest/">Subscribe to Purplelink Daily Digest</a>.</p>
+      <p>Get this in your inbox, same-day, for $5/mo or $40/yr. <a href="/blog/digest/#subscribe">Subscribe</a>,
+      or get it free with a 2-day delay via the <a href="/blog/digest/#subscribe">free tier</a>.</p>
+      <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">
+        <img src="/assets/bmac-badge.svg" alt="Buy Me a Coffee" width="150" height="32" loading="lazy">
+      </a>
       <a class="back-link" href="/blog/digest/">← All issues</a>
     </div>
 
@@ -266,8 +270,15 @@ def render_html(digest: DigestData) -> str:
 </html>"""
 
 
-def render_email_html(digest: DigestData, unsubscribe_url: str = "") -> str:
-    """Render email-safe HTML: no nav/footer, inline-friendly."""
+def render_email_html(digest: DigestData, unsubscribe_url: str = "", tier: str = "free") -> str:
+    """Render email-safe HTML: no nav/footer, inline-friendly.
+
+    tier controls the footer: "paid" and "legacy" subscribers already have
+    what the upgrade offer is selling (same-day delivery), so showing them
+    a $5/mo pitch for something they already have reads as not knowing who
+    they are. Only "free" (the new, 2-day-delayed tier) sees the upgrade
+    CTA and the Buy Me a Coffee badge.
+    """
     date_str = _fmt_date(digest.date)
     title = f"Purplelink Daily Digest #{digest.number} — {date_str}"
     sections_html = _render_sections_html(digest)
@@ -277,6 +288,21 @@ def render_email_html(digest: DigestData, unsubscribe_url: str = "") -> str:
         f'<a href="{html.escape(unsubscribe_url, quote=True)}" style="color:#888;">Unsubscribe</a>'
         f'</p>'
     ) if unsubscribe_url else ""
+
+    if tier == "free":
+        tier_footer = f"""
+  <div style="margin:24px 0;padding:16px;background:#f7f7f7;border-radius:8px;">
+    <p style="margin:0 0 8px;font-size:14px;">
+      Get this same-day, every morning, for $5/mo or $40/yr &mdash;
+      <a href="https://purplelink.llc/blog/digest/#subscribe">upgrade</a>.
+    </p>
+    <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">
+      <img src="https://purplelink.llc/assets/bmac-badge.svg" alt="Buy Me a Coffee" style="height:32px;">
+    </a>
+  </div>"""
+    else:
+        tier_footer = """
+  <p style="margin:24px 0;font-size:13px;color:#888;">Thanks for subscribing.</p>"""
 
     return f"""<!doctype html>
 <html lang="en">
@@ -295,6 +321,7 @@ def render_email_html(digest: DigestData, unsubscribe_url: str = "") -> str:
     &middot;
     <a href="https://purplelink.llc/blog/digest/">All issues</a>
   </p>
+  {tier_footer}
   {unsub_line}
 </body>
 </html>"""

@@ -361,6 +361,42 @@ def test_digest_to_dict_round_trips_through_json():
     assert round_tripped.sections["ai_tech"][0].url == "https://example.com/a"
 
 
+def test_render_email_html_paid_tier_has_no_upgrade_cta():
+    import datetime
+    from digest.curator import DigestData
+    from digest.publisher import render_email_html
+
+    digest = DigestData(date=datetime.date(2026, 9, 17), number=1, intro="",
+                         sections={}, sources_reviewed=0, items_selected=0)
+    html = render_email_html(digest, unsubscribe_url="https://x", tier="paid")
+    assert "5/mo" not in html
+    assert "buymeacoffee" not in html
+    assert "thanks for subscribing" in html.lower()
+
+
+def test_render_email_html_free_tier_has_upgrade_cta_and_bmac():
+    import datetime
+    from digest.curator import DigestData
+    from digest.publisher import render_email_html
+
+    digest = DigestData(date=datetime.date(2026, 9, 17), number=1, intro="",
+                         sections={}, sources_reviewed=0, items_selected=0)
+    html = render_email_html(digest, unsubscribe_url="https://x", tier="free")
+    assert "5/mo" in html or "$5" in html
+    assert "buymeacoffee.com/bampel" in html
+
+
+def test_render_email_html_legacy_tier_has_no_upgrade_cta():
+    import datetime
+    from digest.curator import DigestData
+    from digest.publisher import render_email_html
+
+    digest = DigestData(date=datetime.date(2026, 9, 17), number=1, intro="",
+                         sections={}, sources_reviewed=0, items_selected=0)
+    html = render_email_html(digest, unsubscribe_url="https://x", tier="legacy")
+    assert "5/mo" not in html
+
+
 def test_load_asset_stamps_hashes_file_bytes():
     """The stamp must match what fingerprint_assets.py computes for the same
     file, so both generators agree on one URL per version of an asset."""
