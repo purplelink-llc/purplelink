@@ -93,7 +93,7 @@ async def _send_one(
     subject: str,
     html: str,
     resend_key: str,
-) -> None:
+) -> bool:
     try:
         resp = await client.post(
             RESEND_API,
@@ -106,8 +106,10 @@ async def _send_one(
         )
         resp.raise_for_status()
         logger.info("mailer: sent to %s (id=%s)", email, resp.json().get("id", "?"))
+        return True
     except Exception as exc:
         logger.warning("mailer: send to %s failed: %s", email, exc)
+        return False
 
 
 async def mail_digest(
@@ -145,8 +147,9 @@ async def mail_digest(
             tier = sub.get("tier") or "legacy"
             unsub_url = _unsubscribe_url(email, subscribe_secret)
             html = render_email_html(digest, unsubscribe_url=unsub_url, tier=tier)
-            await _send_one(client, email, subject, html, resend_key)
-            sent += 1
+            ok = await _send_one(client, email, subject, html, resend_key)
+            if ok:
+                sent += 1
 
         if delayed_digest is not None and delayed:
             delayed_subject = f"Purplelink Daily Digest #{delayed_digest.number} — {_fmt_date(delayed_digest.date)}"
@@ -154,9 +157,10 @@ async def mail_digest(
                 email = sub["email"]
                 unsub_url = _unsubscribe_url(email, subscribe_secret)
                 html = render_email_html(delayed_digest, unsubscribe_url=unsub_url, tier="free")
-                await _send_one(client, email, delayed_subject, html, resend_key)
-                await _mark_sent(client, email, delayed_slug, subscribe_secret)
-                sent += 1
+                ok = await _send_one(client, email, delayed_subject, html, resend_key)
+                if ok:
+                    await _mark_sent(client, email, delayed_slug, subscribe_secret)
+                    sent += 1
         elif delayed:
             logger.info("mailer: %d free-tier subscriber(s) behind, but no snapshot for %s yet", len(delayed), delayed_slug)
 
