@@ -28,6 +28,7 @@
  */
 
 import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivateKey } from "node:crypto";
+import { getStore } from "@netlify/blobs";
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -56,6 +57,8 @@ const PURPLELINK_PRODUCTS = new Set([
   "revision-review",
   "response-review",
   "resume-review",
+  "digest-monthly",
+  "digest-annual",
 ]);
 
 // Products this site sells whose delivery needs nothing from this webhook: the
@@ -293,7 +296,24 @@ export default async function handler(request) {
     return jsonResponse(400, { error: "invalid_json" });
   }
 
-  // We only care about a completed Checkout session for v1.
+  if (event.type === "customer.subscription.deleted") {
+    const store = getStore("subscribers");
+    const subscriptionId = event.data && event.data.object && event.data.object.id;
+    const { blobs } = await store.list();
+    for (const b of blobs) {
+      const raw = await store.get(b.key);
+      if (!raw) continue;
+      const record = JSON.parse(raw);
+      if (record.stripe_subscription_id === subscriptionId) {
+        record.tier = "free";
+        await store.set(b.key, JSON.stringify(record));
+        break;
+      }
+    }
+    return jsonResponse(200, { status: "processed", type: event.type });
+  }
+
+  // We only care about a completed Checkout session beyond this point.
   if (event.type !== "checkout.session.completed") {
     // 200-OK every other event type so Stripe doesn't retry indefinitely.
     return jsonResponse(200, { status: "ignored", type: event.type });
@@ -331,6 +351,23 @@ export default async function handler(request) {
   }
   if (rawProduct && !PURPLELINK_PRODUCTS.has(rawProduct)) {
     return jsonResponse(200, { status: "ignored_foreign_product", product: rawProduct });
+  }
+
+  if (rawProduct === "digest-monthly" || rawProduct === "digest-annual") {
+    const store = getStore("subscribers");
+    const digestEmail = email.toLowerCase().trim();
+    if (digestEmail) {
+      const existing = await store.get(digestEmail);
+      const record = existing ? JSON.parse(existing) : {
+        email: digestEmail,
+        subscribedAt: new Date().toISOString(),
+      };
+      record.tier = "paid";
+      record.stripe_customer_id = session.customer;
+      record.stripe_subscription_id = session.subscription;
+      await store.set(digestEmail, JSON.stringify(record));
+    }
+    return jsonResponse(200, { status: "digest_subscribed", product: rawProduct, email: digestEmail });
   }
 
   // Sessions predating the metadata stamp are Paper Review's by definition:
