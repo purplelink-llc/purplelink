@@ -55,7 +55,7 @@ zero Paper Review orders in the trailing 30 days.
 | Tier | Who | Delivery | Price |
 |---|---|---|---|
 | Web (unchanged) | Anyone | Same-day, public, indexed | Free |
-| New free email | Anyone who signs up after launch | **3 days delayed** | Free, forever |
+| New free email | Anyone who signs up after launch | **2 days delayed** | Free, forever |
 | Paid email | Stripe subscribers | Same-day (today's behavior) | $5/mo or $40/yr |
 | Legacy free email | Everyone subscribed *before* launch | Same-day (unchanged from today) | Free, forever |
 
@@ -68,7 +68,7 @@ sales effort worth pursuing later once subscriber volume justifies selling
 a slot, not something to build now. The web archive already can and does
 carry AdSense like the rest of the site.
 
-**Why legacy subscribers get same-day, not the new tier's 3-day delay**:
+**Why legacy subscribers get same-day, not the new tier's 2-day delay**:
 they already have same-day delivery today. Downgrading people who already
 have something free to get something worse-than-what-they-have is the
 "you're taking away something free" complaint risk flagged earlier in this
@@ -77,8 +77,8 @@ mailing-list entry either way) and avoids that risk entirely. This is a
 judgment call, not something asked directly — flag if a different
 grandfathering behavior was intended.
 
-**3-day delay number**: a starting proposal, not derived from data (there
-isn't any yet). Easy to change later — it's a single constant, not woven
+**2-day delay number**: confirmed with the owner during spec review (originally
+proposed as 3 days). Easy to change later — it's a single constant, not woven
 through the architecture. Revisit once there's real free-vs-paid conversion
 data to look at.
 
@@ -147,7 +147,7 @@ what the code actually handles.
 
 1. **Same-day send** (today's behavior, unchanged): today's issue, to every
    subscriber with `tier` in `{"paid", "legacy"}`.
-2. **Delayed send** (new): the issue from 3 days ago, to every subscriber
+2. **Delayed send** (new): the issue from 2 days ago, to every subscriber
    with `tier == "free"` **and** `last_sent_slug != that issue's slug`.
    After sending, set `last_sent_slug` to that slug.
 
@@ -226,7 +226,7 @@ folded into this spec rather than deferred.
   not deleted from Blobs entirely.
 - Unit: the delayed-send idempotency guard — a fixture subscriber whose
   `last_sent_slug` is 2 issues behind catches up to exactly the correct
-  (3-days-ago) issue on the next run, not the oldest unsent one and not
+  (2-days-ago) issue on the next run, not the oldest unsent one and not
   today's.
 - Live: after the Stripe Dashboard webhook-events change, a real (or
   Stripe-test-mode) subscription checkout end-to-end, confirming the
