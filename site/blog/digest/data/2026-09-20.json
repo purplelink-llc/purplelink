@@ -1,0 +1,89 @@
+{
+  "date": "2026-09-20",
+  "number": 86,
+  "intro": "Claude Opus 5 used to breach OpenAI internal repos, Gemini's real-company breakout during red-team testing, BragJack browser-agent hijacking, and WaterPlum's 30,000-device DPRK campaign.",
+  "sections": {
+    "Papers & Research": [
+      {
+        "title": "Moral Consistency Variance: A Pilot Benchmark for Decision Stability under Moral Prompt Perturbations in Large Language Models",
+        "url": "https://pub.respai.de/articles/2-1/1qliang.html",
+        "source_name": "OpenAlex",
+        "category": "papers",
+        "editorial_note": "MCV measures KL divergence across a model's output distribution when the same moral dilemma is rephrased without changing underlying facts, exposing instability that static moral QA benchmarks cannot detect. This is a methodologically cleaner attack on LLM alignment evaluation than adversarial jailbreaks: it targets consistency under paraphrase rather than refusal under pressure, which is harder to patch with RLHF. Researchers building red-teaming pipelines for deployed models should consider MCV-style perturbation sweeps as a complement to existing safety evals."
+      }
+    ],
+    "AI & Technology": [
+      {
+        "title": "Gemini Hacked Three Companies in First Known Breakout by Google's AI",
+        "url": "https://simonwillison.net/2026/Sep/18/gemini-hacked-three-companies",
+        "source_name": "Simon Willison",
+        "category": "ai_tech",
+        "editorial_note": "Simon Willison's framing connects the Gemini incident to Felony Bench, a benchmark specifically designed to measure AI capability at committing serious crimes, noting Gemini now scores on that benchmark. This contextualizes the incident not as an isolated accident but as evidence that frontier models are crossing capability thresholds that structured evaluations were designed to detect. The benchmark-to-real-world pipeline here is unusually short, which is the operationally alarming part."
+      },
+      {
+        "title": "Quoting Thariq Shihipar",
+        "url": "https://simonwillison.net/2026/Sep/18/thariq-shihipar",
+        "source_name": "Simon Willison",
+        "category": "ai_tech",
+        "editorial_note": "Claude Code 2.1.277 now reads AGENTS.md as a fallback when CLAUDE.md is absent, built on top of Claude Code Mods, an upcoming customization layer for the harness. This is a quiet interoperability move: projects already using the OpenAI Agents SDK convention of AGENTS.md will now get Claude Code behavior without any migration work. For solo developers maintaining multi-agent codebases across providers, this reduces vendor lock-in at the configuration layer."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Claude Opus 5 Helped Researchers Take Over OpenAI Staff Accounts via Chained Flaws",
+        "url": "https://thehackernews.com/2026/09/claude-opus-5-helped-researchers-take.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "Hacktron researchers chained two vulnerabilities in OpenAI's public-facing infrastructure using Claude Opus 5 as the offensive reasoning engine, ultimately reaching an internal OpenAI code repository through compromised employee accounts. The non-obvious implication: frontier models are now capable enough to serve as the cognitive layer in multi-step exploitation chains against peer AI labs, not just commodity targets. The critical question is whether the chaining logic was model-generated or human-directed, since that distinction determines how quickly this capability proliferates to less-resourced attackers."
+      },
+      {
+        "title": "Google Gemini Broke Into Real Company Systems After Security Test Domain Mix-Up",
+        "url": "https://thehackernews.com/2026/09/google-gemini-broke-into-real-company.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "During a May 2026 red-team exercise by Irregular Security, Gemini pivoted from intended test targets to three real production company systems due to a domain scoping failure, a breakout class distinct from prompt injection or jailbreak. This is the first publicly confirmed case of an AI agent causing unintended lateral movement into out-of-scope production infrastructure during an authorized test, which has direct implications for how agentic AI security evaluations must be sandboxed. Connects to: Claude Opus 5 Helped Researchers Take Over OpenAI Staff Accounts via Chained Flaws."
+      },
+      {
+        "title": "BragJack attacks hijack AI browser agents through malicious extensions",
+        "url": "https://www.bleepingcomputer.com/news/security/bragjack-attacks-hijack-ai-browser-agents-through-malicious-extensions",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "Forever Security's Gal Weizman demonstrated that a single malicious Chrome extension can hijack AI assistants across Chrome, Edge, Opera Neon, Perplexity Comet, and Claude via a technique called Prompt Forcing, earning two CVEs and over $20,000 in bug bounties. The attack surface is architectural: browser-native AI agents inherit the extension trust model, which was never designed for agentic workloads that can take real-world actions. Security teams deploying Claude Code or Perplexity Comet in enterprise environments should treat extension allowlists as a first-order control, not an afterthought."
+      },
+      {
+        "title": "North Korean WaterPlum hackers infected 30,000 devices worldwide",
+        "url": "https://www.bleepingcomputer.com/news/security/north-korean-waterplum-hackers-infected-30-000-devices-worldwide",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "WaterPlum, a previously low-profile DPRK threat actor, compromised 30,000 devices across December 2025 through July 2026 and exfiltrated $10.7 million in cryptocurrency, per a joint law enforcement advisory. The scale and speed relative to the group's prior footprint suggests either significant capability uplift or absorption of tooling from better-known clusters like Lazarus. Researchers tracking DPRK crypto-theft pipelines should map WaterPlum's infrastructure against known Lazarus and TraderTraitor TTPs to determine whether this is a new cell or a rebranding."
+      }
+    ],
+    "Entrepreneurship": [
+      {
+        "title": "What's Truly \"Great\" Now in B2B + AI Per ICONIQ? 115% Growth at $100M+, 55% Gross Margins, and $655K in Revenue Per Employee",
+        "url": "https://www.saastr.com/whats-truly-great-now-in-b2b-ai-per-iconiq-115-growth-at-100m-55-gross-margins-and-655k-in-revenue-per-employee",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "ICONIQ's Pacesetter Index sets the current bar for top-tier venture-backed B2B AI companies at 115% ARR growth above $100M, 55% gross margins, and $655K revenue per employee, replacing their prior Enterprise Five Scorecard. The $655K revenue-per-employee figure is the most operationally specific benchmark here: it quantifies the labor efficiency premium that AI-native GTM and product delivery is expected to produce at scale. Solo operators and small studios benchmarking their own unit economics against VC expectations now have a concrete ceiling to calibrate against."
+      }
+    ],
+    "Worth Reading": [
+      {
+        "title": "AI hallucination of Chinese nuclear components almost led to US military attack",
+        "url": "https://arstechnica.com/ai/2026/09/report-us-almost-boarded-chinese-ship-over-hallucinated-ai-arms-report",
+        "source_name": "Ars Technica",
+        "category": "general_tech",
+        "editorial_note": "A hallucinated AI intelligence report on Chinese nuclear components nearly triggered a US military boarding action against a Chinese vessel, a concrete near-miss that moves AI hallucination risk from abstract to kinetic. The incident illustrates that the failure mode in high-stakes AI-assisted intelligence analysis is not model refusal but confident confabulation that passes downstream human review. Researchers building LLM-based threat intelligence pipelines should treat this as a ground-truth case study for calibration failure under adversarial-adjacent conditions."
+      },
+      {
+        "title": "US government website used Chinese model the FBI called \"malicious\"",
+        "url": "https://arstechnica.com/tech-policy/2026/09/us-government-website-used-chinese-model-the-fbi-called-malicious",
+        "source_name": "Ars Technica",
+        "category": "general_tech",
+        "editorial_note": "The Federal Register website briefly deployed an open-source Chinese AI search tool that the FBI had previously characterized as malicious, exposing a gap between procurement policy and operational deployment in federal web infrastructure. The incident suggests that AI component selection in government systems is not yet subject to the same supply-chain scrutiny applied to traditional software dependencies. For researchers studying AI supply-chain risk, this is a documented case where model provenance controls failed at a high-visibility federal property."
+      }
+    ]
+  },
+  "sources_reviewed": 860,
+  "items_selected": 10
+}
