@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #86 — September 20, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-20.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-20.html</guid>
+      <pubDate>Sun, 20 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Claude Opus 5 used to breach OpenAI internal repos, Gemini&#x27;s real-company breakout during red-team testing, BragJack browser-agent hijacking, and WaterPlum&#x27;s 30,000-device DPRK campaign.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #85 — September 19, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-19.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-19.html</guid>
