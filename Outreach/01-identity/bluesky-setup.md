@@ -43,9 +43,9 @@ The custom-domain handle is verifiable: anyone who sees `@purplelink.llc` on a p
 > Hopefully I can be useful here.
 
 ### Post 2 — Anti-hallucinated-citations tool
-> If you ever cite a paper that ChatGPT made up, your reader's reference manager will quietly fail to resolve it.
+> Cite a paper ChatGPT made up and your reader's reference manager quietly fails to resolve it.
 >
-> Built a BibTeX validator that checks every entry against CrossRef + Semantic Scholar and flags low-title-match scores as likely hallucinations. Runs in your browser.
+> Built a BibTeX validator that checks every entry against CrossRef and Semantic Scholar and flags low title-match scores as likely hallucinations. Runs in your browser.
 >
 > purplelink.llc/tools/bib-validator
 
@@ -59,7 +59,7 @@ The custom-domain handle is verifiable: anyone who sees `@purplelink.llc` on a p
 ### Post 4 — On Mac LaTeX editors
 > Published a comparison of the LaTeX editors that actually work on Mac in 2026 (TeXShop / Texifier / Octree / VS Code / Overleaf, plus what I'm building).
 >
-> Honest take: most academics should pick TeXShop. Polished and modern? Texifier. The waitlist version of my own answer is at purplelink.llc/moderntex.
+> Honest take: most academics should pick TeXShop. Polished and modern? Texifier. My own answer, ModernTex, is $10 once at purplelink.llc/moderntex.
 >
 > Full comparison: purplelink.llc/guides/best-mac-latex-editors
 

@@ -20,7 +20,7 @@ Eight verified target LibGuides. Five have named-librarian contacts; three need 
 
 > Hi Ricky,
 >
-> I came across your Overleaf and Scholarly Writing guide at guides.lib.virginia.edu/overleaf-writing — really useful for the Brown Sci & Eng patrons. One thing I noticed it doesn't cover (and gets asked about a lot in our Atlanta-based studio's tool feedback): the LaTeX-to-Word handoff for journals that require .docx submission, and the latexdiff tracked-changes workflow for revision rounds.
+> I came across your Overleaf and Scholarly Writing guide at guides.lib.virginia.edu/overleaf-writing — really useful for the Brown Sci & Eng patrons. One thing I noticed it doesn't cover: the LaTeX-to-Word handoff for journals that require .docx submission, and the latexdiff tracked-changes workflow for revision rounds.
 >
 > I built two free in-browser tools for that exact gap — they wrap Pandoc and latexdiff respectively, no install needed, files processed in memory and never stored:
 >

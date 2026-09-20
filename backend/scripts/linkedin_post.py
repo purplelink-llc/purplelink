@@ -5,6 +5,7 @@ Usage:
   python3 backend/scripts/linkedin_post.py              # post today's digest
   python3 backend/scripts/linkedin_post.py 2026-06-23   # post a specific date
   python3 backend/scripts/linkedin_post.py --dry-run    # fill post box but don't click Post
+  python3 backend/scripts/linkedin_post.py --text-file post.txt   # post arbitrary text (outreach.py uses this)
 
 One-time setup: python3 backend/scripts/linkedin_login.py
 
@@ -199,7 +200,17 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("date", nargs="?", help="Digest date (YYYY-MM-DD). Defaults to latest.")
     ap.add_argument("--dry-run", action="store_true", help="Fill post but don't click Post.")
+    ap.add_argument("--text-file", help="Post this file's contents instead of a digest.")
     args = ap.parse_args()
+
+    if args.text_file:
+        post = Path(args.text_file).read_text(encoding="utf-8").strip()
+        if not post:
+            print("ERROR: --text-file is empty")
+            sys.exit(1)
+        print(f"Text:   {args.text_file} ({len(post)} chars)")
+        print()
+        sys.exit(post_to_linkedin(post, dry_run=args.dry_run))
 
     try:
         digest_file = find_digest(args.date)

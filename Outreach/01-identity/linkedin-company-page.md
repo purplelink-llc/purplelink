@@ -47,7 +47,7 @@ Post Mondays 10am ET. Each is ~700 chars and links to a page on the site.
 >
 > I built a free BibTeX Validator that catches the eight most common failure modes — including AI-hallucinated citations against CrossRef and Semantic Scholar. Runs in your browser. Files never leave your machine.
 >
-> 👉 purplelink.llc/tools/bib-validator
+> Tool: purplelink.llc/tools/bib-validator
 >
 > Pairs with a longer guide on the recurring BibTeX errors that derail builds: purplelink.llc/guides/fix-bibtex-errors
 >
@@ -60,16 +60,16 @@ Post Mondays 10am ET. Each is ~700 chars and links to a page on the site.
 >
 > That's an architectural decision, not a toggle you have to find. The app literally cannot leak data because the code that would leak it doesn't exist.
 >
-> 👉 purplelink.llc/haea
+> purplelink.llc/haea
 >
 > #PrivacyByDesign #iOS #HealthTech
 
 ### Week 4 — Comparison guide
-> Just published an honest comparison of LaTeX editors that work on Mac in 2026: TeXShop, Texifier, Octree, VS Code, Overleaf, and our upcoming ModernTex.
+> Just published an honest comparison of LaTeX editors that work on Mac in 2026: TeXShop, Texifier, Octree, VS Code, Overleaf, and our own ModernTex.
 >
-> No affiliate links, no rankings padding. Most academics should pick TeXShop. People who want polished and modern should pick Texifier. ModernTex is the right answer when academic manuscript workflow is your dominant use case (and it's not shipping until 2026).
+> No affiliate links, no rankings padding. Most academics should pick TeXShop. People who want polished and modern should pick Texifier. ModernTex is the right answer when academic manuscript workflow is your dominant use case. It is $10, once, no subscription.
 >
-> 👉 purplelink.llc/guides/best-mac-latex-editors
+> Full comparison: purplelink.llc/guides/best-mac-latex-editors
 >
 > #LaTeX #AcademicWriting #macOS
 
