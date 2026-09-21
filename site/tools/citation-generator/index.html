@@ -56,7 +56,7 @@
             {
               "@type": "Question",
               "name": "Is anything stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Lookups go directly from your browser to Crossref or Open Library, and formatting happens entirely in your browser. We never see or store anything you enter." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. DOI and ISBN lookups go directly from your browser to Crossref or Open Library. arXiv lookups pass through our server only to relay the request, since arXiv does not allow direct browser access; formatting happens entirely in your browser either way. We never log or store anything you enter." }
             }
           ]
         },
@@ -173,7 +173,7 @@
 
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
-        <p class="tool-privacy">Lookups go directly from your browser to Crossref / Open Library - we never see or store anything you enter.</p>
+        <p class="tool-privacy">DOI and ISBN lookups go directly from your browser to Crossref / Open Library. arXiv lookups relay through our server, since arXiv does not allow direct browser access - we never log or store anything you enter.</p>
       </div>
 
       <section class="tool-howto">
@@ -191,8 +191,8 @@
         <p>This is a dependency-free citation generator. It resolves <strong>DOIs</strong> through <a href="https://www.crossref.org/" target="_blank" rel="noopener">Crossref</a>, <strong>ISBNs</strong> through <a href="https://openlibrary.org/" target="_blank" rel="noopener">Open Library</a>, and <strong>arXiv IDs</strong> through the arXiv API, then formats the metadata into APA 7th, MLA 9th, Chicago author-date, and IEEE styles entirely in your browser.</p>
         <details><summary>Which identifiers are supported?</summary><div class="faq-body">DOIs (e.g. <code>10.1038/nphys1170</code> or a doi.org URL), arXiv IDs (e.g. <code>1706.03762</code> or an arxiv.org URL), and ISBN-10/13 (hyphens optional). You can also fill in the manual entry form for anything without an identifier, such as a website.</div></details>
         <details><summary>How accurate are the citations?</summary><div class="faq-body">They are built from the metadata that Crossref or Open Library returns, which is usually accurate but occasionally incomplete or inconsistently capitalised. Treat the output as a strong draft and always check author order, title case, page ranges, and punctuation against your required style.</div></details>
-        <details><summary>Why might an arXiv lookup fail?</summary><div class="faq-body">The arXiv API does not always send the CORS headers a browser needs for a cross-site fetch. If a lookup fails, the tool will tell you - try the article's DOI instead (most arXiv papers have one once published), or use manual entry.</div></details>
-        <details><summary>Is anything stored?</summary><div class="faq-body">No. Lookups go directly from your browser to the public APIs and all formatting is local. We never see or store anything you enter.</div></details>
+        <details><summary>Why might an arXiv lookup fail?</summary><div class="faq-body">Usually because the identifier doesn't match a paper on arXiv, or arXiv is briefly unreachable. If a lookup fails, the tool will tell you - try the article's DOI instead (most arXiv papers have one once published), or use manual entry.</div></details>
+        <details><summary>Is anything stored?</summary><div class="faq-body">No. DOI and ISBN lookups go directly from your browser to the public APIs. arXiv lookups relay through our server, since arXiv doesn't allow direct browser access. All formatting happens locally either way, and we never log or store anything you enter.</div></details>
       </section>
 
       <!-- moderntex-cta -->
@@ -649,22 +649,13 @@
             var p;
             if (det.type === "doi") p = fetchDOI(det.value);
             else if (det.type === "isbn") p = fetchISBN(det.value);
-            else if (det.type === "arxiv") {
-              p = fetchArxiv(det.value).catch(function (err) {
-                // arXiv often lacks CORS headers - degrade gracefully.
-                throw { kind: "arxiv-cors" };
-              });
-            }
+            else if (det.type === "arxiv") p = fetchArxiv(det.value);
 
             p.then(function (data) {
               setStatus("");
               renderCitations(data);
             }).catch(function (err) {
-              if (err && err.kind === "arxiv-cors") {
-                setStatus("Couldn't reach the arXiv API from your browser (it doesn't always allow cross-site requests). Try the paper's DOI instead, or use manual entry.");
-              } else {
-                handleError(err);
-              }
+              handleError(err);
             }).then(function () {
               genBtn.disabled = false;
             });
