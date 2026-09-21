@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #87 — September 21, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-21.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-21.html</guid>
+      <pubDate>Mon, 21 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Claude Opus 5 used in OpenAI account takeover chain, BragJack hijacks AI browser agents, Jade Sleet FLATROOF/ROOFDECK backdoors, and ChainScript RAT rotating C2 via Polygon blockchain.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #86 — September 20, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-20.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-20.html</guid>
