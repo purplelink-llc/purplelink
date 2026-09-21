@@ -117,7 +117,9 @@ SITES = [
         "url": "https://purplelink.llc/.netlify/functions/stats",
         "token_env": "PURPLELINK_STATS_TOKEN",
         # (json key in byDay, display label) — engagement metrics beyond a visit
-        "secondaries": [("toolRuns", "tool runs"), ("signups", "waitlist signups"),
+        "secondaries": [("toolRuns", "tool runs"),
+                        ("haeaSignups", "Haea waitlist signups"),
+                        ("moderntexReleaseSignups", "ModernTex release-notes signups"),
                         ("trialDownloads", "trial downloads"),
                         ("checkoutClicks", "checkout clicks")],
         # Paths that actually show a buy button. The useful denominator for a
@@ -152,6 +154,20 @@ SITES = [
         # Waitlists are Netlify Forms, so they never reach the analytics beacon.
         # Without this they read as zero while people are actually signing up.
         "netlify_site_id": "b264591f-fbbe-4048-9d9d-7051cf497823",
+        # Netlify form name -> byDay metric key, one entry per form that is
+        # still a live funnel worth its own weekly line (see "secondaries"
+        # above). A form Netlify keeps listing after its page drops the
+        # <form> — e.g. waitlist-globepin, retired when the app shipped to
+        # the App Store on 2026-09-03, or the original waitlist-moderntex,
+        # retired when the real trial/buy flow replaced it around 2026-09-11
+        # — is deliberately left out here: it would otherwise report a
+        # permanent "zero signups" for a step that no longer exists instead
+        # of just not being asked about. It still shows up, at its true
+        # all-time count, in the "Signup forms" detail table.
+        "signup_forms": {
+            "waitlist-haea": "haeaSignups",
+            "moderntex-releases": "moderntexReleaseSignups",
+        },
         # Search Console property id. Purplelink is a URL-prefix property, so
         # the trailing slash is part of the id; getmuscleonglp is a domain
         # property and takes the sc-domain: form. Using the wrong form returns
@@ -697,12 +713,19 @@ def _netlify_token() -> str | None:
     return None
 
 
-def fetch_form_signups(site_id: str, token: str) -> tuple[dict, list]:
-    """Waitlist signups per day, plus a per-form breakdown.
+def fetch_form_signups(site_id: str, token: str) -> tuple[dict[str, dict[str, int]], list]:
+    """Daily submission counts per Netlify form (keyed by form name), plus an
+    all-time per-form breakdown for the summary table.
 
-    Only dates and counts are read. Submissions carry email addresses; those
-    are never extracted, stored, or displayed — the archive stays free of
-    personal data.
+    Kept per-form rather than blended into one total: a site can carry
+    several signup forms for entirely different products (a pre-launch
+    waitlist, a release-notes opt-in, ...), and summing them hid which one
+    actually moved — a live form reading zero looked the same as a retired
+    one that no longer even renders on the page.
+
+    Only dates, counts and form names are read. Submissions carry email
+    addresses; those are never extracted, stored, or displayed — the archive
+    stays free of personal data.
     """
     def api(path):
         req = urllib.request.Request(
@@ -712,18 +735,19 @@ def fetch_form_signups(site_id: str, token: str) -> tuple[dict, list]:
         with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as r:
             return json.loads(r.read().decode("utf-8"))
 
-    by_day: dict[str, int] = {}
+    by_form_day: dict[str, dict[str, int]] = {}
     per_form = []
     for form in api(f"sites/{site_id}/forms"):
         name = form.get("name", "form")
         subs = api(f"forms/{form['id']}/submissions")
         per_form.append({"key": name, "count": len(subs)})
+        day_counts = by_form_day.setdefault(name, {})
         for s in subs:
             day = str(s.get("created_at", ""))[:10]
             if day:
-                by_day[day] = by_day.get(day, 0) + 1
+                day_counts[day] = day_counts.get(day, 0) + 1
     per_form.sort(key=lambda f: -f["count"])
-    return by_day, per_form
+    return by_form_day, per_form
 
 
 def load_history() -> dict:
@@ -761,15 +785,19 @@ def merge_history(history: dict, key: str, payload: dict) -> None:
         "toolRuns": payload.get("toolRuns", [])[:8],
     }
     _record_metric_starts(site_hist, key, payload)
-    # Signups arrive with real history from Netlify, so date the metric from the
-    # first actual signup rather than from the day we started reading the API.
-    # Otherwise a counter with weeks of data reads as "recorded since today".
-    signup_days = sorted(d for d, m in (payload.get("byDay") or {}).items()
-                         if isinstance(m, dict) and m.get("signups"))
-    if signup_days:
-        seen = site_hist.setdefault("metricsFirstSeen", {})
-        if "signups" not in seen or signup_days[0] < seen["signups"]:
-            seen["signups"] = signup_days[0]
+    # Signup metrics arrive with real history from Netlify Forms, so date each
+    # one from its first actual submission rather than from the day we started
+    # reading the API — otherwise weeks of real data reads as "recorded since
+    # today". signupMetricKeys lists which byDay keys came from forms this run
+    # (one per SITES[*]["signup_forms"] entry); beacon-sourced metrics don't
+    # need this, they're genuinely new the day polling for them starts.
+    for metric_key in payload.get("signupMetricKeys", []):
+        metric_days = sorted(d for d, m in (payload.get("byDay") or {}).items()
+                             if isinstance(m, dict) and m.get(metric_key))
+        if metric_days:
+            seen = site_hist.setdefault("metricsFirstSeen", {})
+            if metric_key not in seen or metric_days[0] < seen[metric_key]:
+                seen[metric_key] = metric_days[0]
 
     site_hist["latest"] = {
         "formBreakdown": payload.get("formBreakdown", []),
@@ -1176,7 +1204,9 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
         for adj in s.get("synthetic", []):
             label = next((lbl for k, lbl in
                           (("checkoutClicks", "checkout clicks"), ("toolRuns", "tool runs"),
-                           ("signups", "waitlist signups"), ("subscribes", "subscribes"),
+                           ("haeaSignups", "Haea waitlist signups"),
+                           ("moderntexReleaseSignups", "ModernTex release-notes signups"),
+                           ("subscribes", "subscribes"),
                            ("calcRuns", "calculator runs"),
                            ("trialDownloads", "trial downloads")) if k == adj["metric"]), adj["metric"])
             out.append(f"{s['label']}: {adj['removed']} of the {adj['raw']} {label} on "
@@ -2354,8 +2384,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
         if "calcRuns" in sec_keys:
             tables += table("Calculator runs, by tool", s["calc_runs"],
                             "No calculator was run this week.")
-        if "signups" in sec_keys or s["form_breakdown"]:
-            tables += table("Waitlist signups", s["form_breakdown"], "None this week.")
+        if any(k.endswith("Signups") for k in sec_keys) or s["form_breakdown"]:
+            tables += table("Signup forms (all-time)", s["form_breakdown"], "None yet.")
         if s["top_utm"] and not (s["tool_runs"] or s["calc_runs"]):
             tables += table("Campaign sources", s["top_utm"], "None recorded.")
         tables += "</div>"
@@ -2414,21 +2444,31 @@ def main() -> int:
                 if payload.get("error"):
                     raise RuntimeError(payload.get("detail") or payload["error"])
 
-                # Fold Netlify Forms signups into the same per-day shape the
-                # stats endpoint returns, so every downstream metric, table and
-                # observation treats them like any other counter.
+                # Fold each live Netlify Forms signup funnel into the same
+                # per-day shape the stats endpoint returns, one metric per
+                # product (SITES[*]["signup_forms"]) rather than one blended
+                # total — so a product's own secondary line picks it up like
+                # any beacon-sourced counter, and a retired form reading zero
+                # doesn't hide a live one that's actually converting.
                 forms_note = ""
+                signup_forms = site.get("signup_forms", {})
                 if site.get("netlify_site_id"):
                     nt = _netlify_token()
                     if nt:
                         try:
-                            by_day, per_form = fetch_form_signups(site["netlify_site_id"], nt)
+                            by_form_day, per_form = fetch_form_signups(site["netlify_site_id"], nt)
                             payload.setdefault("byDay", {})
-                            for day, n in by_day.items():
-                                payload["byDay"].setdefault(day, {})["signups"] = n
+                            noted = []
+                            for form_name, metric_key in signup_forms.items():
+                                form_days = by_form_day.get(form_name, {})
+                                for day, n in form_days.items():
+                                    payload["byDay"].setdefault(day, {})[metric_key] = n
+                                if form_days:
+                                    noted.append(f"{sum(form_days.values())} {form_name}")
                             payload["formBreakdown"] = per_form
-                            total = sum(by_day.values())
-                            forms_note = f", {total} waitlist signup(s)"
+                            payload["signupMetricKeys"] = list(signup_forms.values())
+                            if noted:
+                                forms_note = ", " + ", ".join(noted) + " signup(s)"
                         except Exception as exc:
                             print(f"  ! {site['label']}: form fetch failed ({str(exc)[:60]})",
                                   file=sys.stderr)
