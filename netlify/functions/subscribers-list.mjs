@@ -20,9 +20,19 @@ export default async function handler(request) {
 
   try {
     const store = getStore("subscribers")
-    const { blobs } = await store.list()
+    // store.list() pages results; following the cursor matters once the
+    // subscriber count crosses one page, or the digest send this endpoint
+    // feeds would silently drop everyone past page 1 (found 2026-09-21
+    // backend audit).
+    let cursor
+    const allBlobs = []
+    do {
+      const { blobs, cursor: nextCursor } = await store.list({ cursor })
+      allBlobs.push(...blobs)
+      cursor = nextCursor
+    } while (cursor)
     const subscribers = await Promise.all(
-      blobs.map(async (b) => {
+      allBlobs.map(async (b) => {
         const raw = await store.get(b.key)
         try {
           return JSON.parse(raw)

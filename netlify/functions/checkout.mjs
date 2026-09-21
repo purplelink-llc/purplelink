@@ -188,9 +188,14 @@ export default async function handler(request) {
     "line_items[0][price]": priceId,
     "line_items[0][quantity]": "1",
     success_url: `${origin}${entry.successPath}?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success)\/$/, "/")}`,
+    // Strips the terminal path segment to send a canceled checkout back to
+    // the product's own landing page instead of the paid confirmation page.
+    // "subscribed" (digest-monthly/digest-annual's successPath is
+    // /blog/digest/subscribed/) was missing until 2026-09-21: nothing matched,
+    // so a canceled — unpaid — digest checkout landed on the "You're
+    // subscribed" page.
+    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success|subscribed)\/$/, "/")}`,
     "metadata[product]": product,
-    "metadata[product_category]": product.startsWith("paper-review") ? "paper-review" : product,
   };
   // customer_creation is only valid in "payment" mode -- Stripe always
   // creates a Customer automatically for "subscription" mode sessions, and

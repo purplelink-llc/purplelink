@@ -299,18 +299,27 @@ export default async function handler(request) {
   if (event.type === "customer.subscription.deleted") {
     const store = getStore("subscribers");
     const subscriptionId = event.data && event.data.object && event.data.object.id;
-    const { blobs } = await store.list();
-    for (const b of blobs) {
-      const raw = await store.get(b.key);
-      if (!raw) continue;
-      const record = JSON.parse(raw);
-      if (record.stripe_subscription_id === subscriptionId) {
-        record.tier = "free";
-        await store.set(b.key, JSON.stringify(record));
-        break;
+    // store.list() pages results; following the cursor matters once the
+    // subscriber count crosses one page, or a downgrade-on-cancel for anyone
+    // past page 1 would silently never fire (found 2026-09-21 CSP/backend audit).
+    let cursor;
+    let downgraded = false;
+    do {
+      const { blobs, cursor: nextCursor } = await store.list({ cursor });
+      for (const b of blobs) {
+        const raw = await store.get(b.key);
+        if (!raw) continue;
+        const record = JSON.parse(raw);
+        if (record.stripe_subscription_id === subscriptionId) {
+          record.tier = "free";
+          await store.set(b.key, JSON.stringify(record));
+          downgraded = true;
+          break;
+        }
       }
-    }
-    return jsonResponse(200, { status: "processed", type: event.type });
+      cursor = nextCursor;
+    } while (cursor && !downgraded);
+    return jsonResponse(200, { status: downgraded ? "processed" : "subscriber_not_found", type: event.type });
   }
 
   // We only care about a completed Checkout session beyond this point.
@@ -346,33 +355,73 @@ export default async function handler(request) {
   // fails, we return 502, and Stripe retries for ~3 days while alerting the
   // operator each time. Ignore anything that is not ours.
   if (BLOB_DELIVERED_PRODUCTS.has(rawProduct)) {
+    // Stripe explicitly warns a webhook event can be delivered more than
+    // once. Without a dedupe, a duplicate delivery here would call
+    // emailDownloadLink() again, which for ModernTex mints and emails a
+    // brand-new, permanently-valid license key with no link back to the
+    // first — a confusing, untracked second key for one purchase (found
+    // 2026-09-21 backend audit).
+    const dedupeStore = getStore("webhook-events");
+    const dedupeKey = `blob-delivery:${event.id || sessionId}`;
+    if (await dedupeStore.get(dedupeKey)) {
+      return jsonResponse(200, { status: "duplicate_event_ignored", product: rawProduct, event_id: event.id || null });
+    }
+    await dedupeStore.set(dedupeKey, new Date().toISOString());
     const emailed = await emailDownloadLink(email, sessionId, rawProduct);
     return jsonResponse(200, { status: "delivered_by_blobs", product: rawProduct, emailed });
   }
-  if (rawProduct && !PURPLELINK_PRODUCTS.has(rawProduct)) {
-    return jsonResponse(200, { status: "ignored_foreign_product", product: rawProduct });
+  if (!PURPLELINK_PRODUCTS.has(rawProduct)) {
+    // Covers both "unrecognized product key" and "no metadata.product at
+    // all". The latter used to fall through and default to Paper Review, on
+    // the assumption that a blank rawProduct meant an old, pre-metadata
+    // Purplelink session — true only back when this Stripe account sold one
+    // thing. It now also serves muscleonglp.com,
+    // which shares this account's event stream but stamps no matching
+    // metadata, so a blank rawProduct is the ordinary case for a foreign-site
+    // sale landing on this webhook, not evidence of an old Purplelink order:
+    // every real purchase through this site's own checkout.mjs has always
+    // stamped metadata.product. Treating it as "not ours" instead of
+    // guessing closes a silent misattribution (found 2026-09-21 backend
+    // audit: a blank-metadata session was being forwarded to Modal and
+    // credited as a Paper Review purchase nobody made).
+    return jsonResponse(200, { status: "ignored_foreign_product", product: rawProduct || null });
   }
 
   if (rawProduct === "digest-monthly" || rawProduct === "digest-annual") {
     const store = getStore("subscribers");
     const digestEmail = email.toLowerCase().trim();
-    if (digestEmail) {
-      const existing = await store.get(digestEmail);
-      const record = existing ? JSON.parse(existing) : {
-        email: digestEmail,
-        subscribedAt: new Date().toISOString(),
-      };
-      record.tier = "paid";
-      record.stripe_customer_id = session.customer;
-      record.stripe_subscription_id = session.subscription;
-      await store.set(digestEmail, JSON.stringify(record));
+    if (!digestEmail) {
+      // Stripe Checkout normally always populates customer_details.email for
+      // a completed session, so this should be unreachable — but if it ever
+      // happens, the buyer has paid and there is no subscriber record to
+      // create from this event alone. Retrying won't help (Stripe resends
+      // the same session with the same missing email), so alert instead of
+      // returning a 200 that looks like success (found 2026-09-21 backend
+      // audit).
+      await alertOperator(
+        "Paid digest subscription has no email to add",
+        `session_id=${sessionId}\nproduct=${rawProduct}\ncustomer=${session.customer}\nsubscription=${session.subscription}\n\n` +
+          `Stripe paid this session but customer_details.email was blank, so no subscriber record was created. ` +
+          `Find the buyer's email from the Stripe dashboard for this session and add them manually.`,
+      );
+      return jsonResponse(200, { status: "digest_subscribe_failed_no_email", product: rawProduct });
     }
+    const existing = await store.get(digestEmail);
+    const record = existing ? JSON.parse(existing) : {
+      email: digestEmail,
+      subscribedAt: new Date().toISOString(),
+    };
+    record.tier = "paid";
+    record.stripe_customer_id = session.customer;
+    record.stripe_subscription_id = session.subscription;
+    await store.set(digestEmail, JSON.stringify(record));
     return jsonResponse(200, { status: "digest_subscribed", product: rawProduct, email: digestEmail });
   }
 
-  // Sessions predating the metadata stamp are Paper Review's by definition:
-  // nothing else was selling on this account then.
-  const product = rawProduct || "paper-review-standard";
+  // Every remaining rawProduct is a confirmed PURPLELINK_PRODUCTS member at
+  // this point (checked above) — digest and Blobs-delivered products already
+  // returned earlier, so what's left is a genuine Paper Review price key.
+  const product = rawProduct;
   // See checkout.mjs — passed through unchanged so the backend can credit
   // the referral loop (task: "co-author exposure referral loop"). Validated
   // server-side against referral_dict there, not trusted here.
