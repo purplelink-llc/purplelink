@@ -2037,6 +2037,52 @@ def appstore_block(app: dict | None) -> str:
 </section>"""
 
 
+# ---------------------------------------------------------------- manual ad platforms
+#
+# Some ad platforms have no API path we're willing to automate — Apple Search
+# Ads reporting sits behind an Apple ID sign-in (2FA, no service-account
+# option), so there's no unattended way to pull it. Rather than leave those
+# numbers out of the dashboard entirely, they're read by hand from the
+# platform's own UI during a session and recorded to MANUAL_ADS_PATH; this
+# section renders whatever was last recorded, same as any other card, so a
+# manual pull from last week still shows (dated) instead of vanishing.
+
+MANUAL_ADS_PATH = OUT_DIR / "manual-ads.json"
+
+
+def load_manual_ads() -> dict:
+    if not MANUAL_ADS_PATH.exists():
+        return {}
+    try:
+        return json.loads(MANUAL_ADS_PATH.read_text())
+    except Exception:
+        return {}
+
+
+def manual_ads_block(data: dict) -> str:
+    asa = data.get("appleSearchAds")
+    if not asa:
+        return ""
+    chips = "".join(
+        f"<span class='sales-chip'><b>${c.get('spend', 0):,.2f}</b> <span>spend</span></span>"
+        f"<span class='sales-chip'><b>{c.get('impressions', 0):,}</b> <span>impressions</span></span>"
+        f"<span class='sales-chip'><b>{c.get('taps', 0):,}</b> <span>taps</span></span>"
+        f"<span class='sales-chip'><b>{c.get('installs', 0):,}</b> <span>installs</span></span>"
+        for c in asa.get("campaigns", [])
+    )
+    campaign_names = ", ".join(c.get("key", "campaign") for c in asa.get("campaigns", []))
+    note = (f"<p class='sales-foot'>{html.escape(asa['note'])}</p>" if asa.get("note") else "")
+    return f"""
+<section class="sales appstore">
+  <h2>Apple Search Ads · GlobePin</h2>
+  <p class="sales-foot">{html.escape(campaign_names)} — read by hand from app-ads.apple.com
+    ({html.escape(asa.get('window', ''))}, as of {html.escape(asa.get('asOf', '?'))}). No API pull;
+    Apple ID sign-in has no unattended path, so this updates only when read again in a session.</p>
+  <div class="sales-split">{chips}</div>
+  {note}
+</section>"""
+
+
 # ---------------------------------------------------------------- combined revenue
 #
 # Pulls together every revenue source into one monthly view: Sales (Stripe,
@@ -2353,7 +2399,8 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6) 
 
 
 def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None,
-           sales: dict | None = None, appstore: dict | None = None) -> str:
+           sales: dict | None = None, appstore: dict | None = None,
+           manual_ads: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -2403,6 +2450,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
 </header>
 {sales_block(sales)}
 {appstore_block(appstore)}
+{manual_ads_block(manual_ads or {})}
 {revenue_block(sales, appstore)}
 <div class="grid">{cards}</div>
 <h2>What this says</h2>
@@ -2550,8 +2598,10 @@ def main() -> int:
 
     sales = history.get("sales")
     appstore = history.get("appstore")
+    manual_ads = load_manual_ads()
     DASHBOARD_PATH.write_text(
-        render(summaries, obs, generated, min(firsts) if firsts else None, sales, appstore))
+        render(summaries, obs, generated, min(firsts) if firsts else None,
+               sales, appstore, manual_ads))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     if sales:
