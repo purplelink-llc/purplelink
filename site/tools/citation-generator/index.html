@@ -496,10 +496,12 @@
             var doiUrl = s.match(/(?:doi\.org\/|dx\.doi\.org\/)(10\.\d{4,9}\/\S+)/i);
             if (doiUrl) return { type: "doi", value: doiUrl[1] };
             if (/^10\.\d{4,9}\/\S+$/.test(s)) return { type: "doi", value: s };
-            // arXiv URL
-            var axUrl = s.match(/arxiv\.org\/(?:abs|pdf)\/(\d{4}\.\d{4,5}(?:v\d+)?)/i);
+            // arXiv URL (new-style 1706.03762, or old-style hep-th/9901001 for
+            // papers from before 2007)
+            var axUrl = s.match(/arxiv\.org\/(?:abs|pdf)\/([a-z-]+(?:\.[A-Z]{2})?\/\d{7}(?:v\d+)?|\d{4}\.\d{4,5}(?:v\d+)?)/i);
             if (axUrl) return { type: "arxiv", value: axUrl[1] };
             if (/^\d{4}\.\d{4,5}(v\d+)?$/.test(s)) return { type: "arxiv", value: s };
+            if (/^[a-z-]+(\.[A-Z]{2})?\/\d{7}(v\d+)?$/i.test(s)) return { type: "arxiv", value: s };
             // ISBN: strip hyphens/spaces, then 10 or 13 digits (last may be X)
             var compact = s.replace(/[\s-]/g, "").replace(/^isbn:?/i, "");
             if (/^\d{9}[\dXx]$/.test(compact) || /^\d{13}$/.test(compact)) {

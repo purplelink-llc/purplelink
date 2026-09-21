@@ -8,9 +8,16 @@
  * Referral: every subscriber gets a stable referral code (HMAC of their
  * email, namespaced separately from the unsubscribe token so sharing one
  * can never be used to derive the other). If `ref` matches a known code,
- * the referring subscriber's referralCount is incremented. This is a
- * plain recommendation mechanic — no credits or rewards are promised or
- * tracked; referralCount is just a courtesy shown back to the referrer.
+ * a credit is recorded in the "referral-credits" store, keyed
+ * `${refCode}:${referredEmail}` — one event per referred email, not a
+ * mutated counter on the referrer's record, so two people signing up
+ * through the same link at the same moment can't race and clobber each
+ * other's increment (found 2026-09-21 backend audit: @netlify/blobs has no
+ * conditional/compare-and-swap write, so a shared counter was genuinely
+ * unsafe). This is a plain recommendation mechanic — no credits or rewards
+ * are promised or tracked. Nothing reads a referrer's count yet; when
+ * something does, it's `getStore("referral-credits").list({ prefix:
+ * refCode + ":" }).blobs.length`.
  *
  * Required env var: SUBSCRIBE_SECRET
  */
@@ -64,7 +71,6 @@ export default async function handler(request) {
       token,
       tier: "free",
       referralCode: myRefCode,
-      referralCount: 0,
       referredBy: refCode || null,
       subscribedAt: new Date().toISOString(),
     }))
@@ -72,17 +78,14 @@ export default async function handler(request) {
 
     // Credit the referrer, if the code matches a real subscriber. Best
     // effort — a stale or mistyped ref code just means no credit, not
-    // a failed subscribe.
+    // a failed subscribe. See the file header for why this is a
+    // uniquely-keyed event rather than an incremented counter.
     if (refCode) {
       try {
         const referrerEmail = await refIndex.get(refCode)
         if (referrerEmail && referrerEmail !== email) {
-          const referrerRaw = await store.get(referrerEmail)
-          if (referrerRaw) {
-            const referrer = JSON.parse(referrerRaw)
-            referrer.referralCount = (referrer.referralCount || 0) + 1
-            await store.set(referrerEmail, JSON.stringify(referrer))
-          }
+          const credits = getStore("referral-credits")
+          await credits.set(`${refCode}:${email}`, new Date().toISOString())
         }
       } catch (err) {
         console.error("subscribe: referral credit failed", err)
