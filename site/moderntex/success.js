@@ -30,6 +30,16 @@
         html += '<a class="btn btn-primary kit-dl-btn" href="' + esc(f.url) + '" download>Download: ' + esc(f.label) + "</a>";
       });
       box.innerHTML = html;
+
+      // Fires once per verified Stripe session, not on every page load/refresh.
+      try {
+        if (typeof window.gtag === "function") {
+          window.gtag('event', 'conversion', {
+            'send_to': 'AW-18464618488/A2fECNzcq_8cEPjvzuRE',
+            'transaction_id': sessionId
+          });
+        }
+      } catch (e) { /* ads measurement must never break the download */ }
     })
     .catch(function () {
       message("Something went wrong preparing your download. Email the address on your receipt and we will send the files directly.");
