@@ -804,3 +804,18 @@ population — and it should be mandatory before a metric becomes advice.
 **Suggested improvement:** Put `**Status:** OPEN` in the observation template itself, and make every reviewer treat an absent status as OPEN rather than as resolved.
 
 **Principle:** A selection rule that keys on a field the writing template does not produce silently excludes everything written from the template. When a review "finds nothing", check that its selector matches the format the log actually uses before trusting the zero.
+
+### Observation 45: Browser posting to Stack Exchange hits CAPTCHA, tab-group drops, and account-health banners
+
+**Status:** OPEN
+**Date:** 2026-09-20
+**Session context:** Posting the first TeX SE answer (Q 766504) through Claude in Chrome on Ben's account after the weekly outreach nudge
+**Skill:** New skill candidate: community-post-via-chrome (or fold into the Outreach/ automation docs)
+**Type:** internal
+**Phase/Area:** Submit step
+
+**Issue:** Three things broke the naive "form_input then click submit" flow. (1) The MCP tab group was dropped between turns twice, so every turn needs a fresh tabs_context_mcp and re-navigation; the draft in the textarea survives because SE autosaves. (2) SE threw a reCAPTCHA on submit, which Claude cannot solve; Ben had to. (3) The answer box carried a "past answers not well-received, danger of answer ban" banner that a screenshot-free flow would have missed; it changed the risk of posting and needed a decision from Ben. Verification that the post landed was done via the public SE API (answers endpoint) rather than the browser, which was more reliable than re-finding the tab.
+
+**Suggested improvement:** Write the posting procedure as: re-acquire tab, navigate, read any status/banner region near the answer box and surface it before submit, form_input, screenshot preview, click submit, then verify via API and only then log to OUTREACH-LOG.md. Also have scripts/outreach.py texse note the account-health banner in texse-candidates.md if it can be fetched.
+
+**Principle:** For posting through a real browser session, treat submit as unreliable (CAPTCHA, session drops) and verify the side effect through an independent read path before recording it as done.

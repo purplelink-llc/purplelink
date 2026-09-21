@@ -23,7 +23,7 @@ After 4 weeks with no response, mark `no-response` and move on.
 
 | Date | Question URL | Template used | Score after 7d | Notes |
 |---|---|---|---|---|
-| | | | | |
+| 2026-09-20 | https://tex.stackexchange.com/a/766562 (Q 766504, changes pkg: delete whole section) | T4 latexdiff (adapted; answer is changes-native, latexdiff + tool link in last line only) | TBD | Tested MWE on changes 4.2.1. Account showed "past answers not well-received / danger of answer ban" warning at post time. Check score 2026-09-27. |
 
 ## Reddit posts
 
