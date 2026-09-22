@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #88 — September 22, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-22.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-22.html</guid>
+      <pubDate>Tue, 22 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Meta Muse 0-day backdoor via ClickFix, SideCopy ReverseRAT targeting Indian academia, Contagious Interview at 30K devices, Google Gemini models confirmed hacking three companies, and SAML&#x27;s structural security failures dissected.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #87 — September 21, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-21.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-21.html</guid>
