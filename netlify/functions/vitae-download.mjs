@@ -9,9 +9,20 @@
  *   GET /.netlify/functions/vitae-download?stats=1             -> counts (JSON)
  *       requires header  X-Vitae-Stats: <VITAE_STATS_TOKEN>
  *
+ *   Updates (Sparkle inside Vitae 0.2 and later, never a browser):
+ *   GET /.netlify/functions/vitae-download?feed=1              -> appcast.xml
+ *   GET /.netlify/functions/vitae-download?update=Vitae-0.2.dmg -> that DMG
+ *       Open, unlike ModernTex's update channel: Vitae is free, so there is nothing
+ *       to gate. Update downloads are counted under separate `updates:` and
+ *       `updates-day:` keys, so an existing user updating never inflates the
+ *       new-user `downloads:` / `day:` numbers the traffic dashboard reports.
+ *
  * netlify.toml rewrites /vitae/download and every /vitae/Vitae-*.dmg URL here, so the
  * site button, old links, and the downloadURL that installed copies read from
  * /vitae/version.json all land on the counter without changing.
+ *
+ * Installs of 0.1 predate Sparkle and read /vitae/version.json instead; once that
+ * points at a Sparkle build, they make one manual hop and Sparkle takes over.
  *
  * Counts are requests we decided to serve (GET, non-crawler User-Agent), not
  * confirmed completions or unique machines. Crawlers are served but not counted:
@@ -75,14 +86,45 @@ async function streamBlob(store, key) {
   return new Response(r.data, { status: 200, headers });
 }
 
+/**
+ * The appcast, with every enclosure URL rewritten to the canonical update door.
+ * generate_appcast resolves filenames relative to a prefix that ends in a query
+ * string, which collapses to .../functions/Vitae-x.y.dmg (a 404). publish-release.sh
+ * in the Vitae repo fixes its own output; this keeps a stale or hand-uploaded feed
+ * from shipping a dead link. The EdDSA signature covers the DMG, not the URL.
+ */
+async function serveFeed(store) {
+  let xml = null;
+  try {
+    xml = await store.get("appcast.xml", { type: "text" });
+  } catch (err) {
+    xml = null;
+  }
+  if (!xml) return json(404, { error: "file_unavailable", detail: "No update feed is staged." });
+  const fixed = xml.replace(
+    /url="[^"]*\/(Vitae-\d+\.\d+(?:\.\d+)?\.dmg)"/g,
+    (_m, name) => `url="https://purplelink.llc/.netlify/functions/vitae-download?update=${name}"`,
+  );
+  return new Response(fixed, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/rss+xml; charset=utf-8",
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
+
 async function serveStats() {
   const stats = getStore(STATS_STORE);
-  const downloads = {}, byDay = {};
-  for (const [prefix, out] of [["downloads:", downloads], ["day:", byDay]]) {
+  const downloads = {}, byDay = {}, updates = {}, updatesByDay = {};
+  for (const [prefix, out] of [
+    ["downloads:", downloads], ["day:", byDay], ["updates:", updates], ["updates-day:", updatesByDay],
+  ]) {
     const { blobs } = await stats.list({ prefix });
     for (const b of blobs) out[b.key.slice(prefix.length)] = parseInt((await stats.get(b.key)) || "0", 10) || 0;
   }
-  return json(200, { downloads, byDay });
+  return json(200, { downloads, byDay, updates, updatesByDay });
 }
 
 export default async function handler(request) {
@@ -97,6 +139,26 @@ export default async function handler(request) {
   }
 
   const store = getStore(FILE_STORE);
+
+  // --- Update channel (Sparkle) ---------------------------------------------------
+  if (url.searchParams.get("feed") === "1") return serveFeed(store);
+  const updateFile = url.searchParams.get("update");
+  if (updateFile !== null) {
+    if (!DMG_NAME.test(updateFile)) return json(400, { error: "bad_file" });
+    if (request.method === "HEAD") {
+      return new Response(null, { status: 200, headers: { "Content-Type": "application/x-apple-diskimage" } });
+    }
+    // Counted when we decide to serve it, like the new-user door: a request, not a
+    // confirmed install. Separate keys keep updates out of the "downloads" numbers.
+    const ua = request.headers.get("user-agent") || "";
+    if (ua && !BOT_UA.test(ua)) {
+      const stats = getStore(STATS_STORE);
+      await bump(stats, `updates:${updateFile}`);
+      await bump(stats, `updates-day:${new Date().toISOString().slice(0, 10)}`);
+    }
+    return streamBlob(store, updateFile);
+  }
+
   const wanted = url.searchParams.get("file") || "";
   let name = null;
   if (DMG_NAME.test(wanted) && (await store.getMetadata(wanted))) name = wanted;
