@@ -38,6 +38,14 @@ After 4 weeks with no response, mark `no-response` and move on.
 | 2026-05-31 | Bluesky | Post 1 (studio intro) | TBD | pinned to profile |
 | 2026-06-01 | LinkedIn | Post 1 (studio intro) | TBD | posted to company page (purplelink-llc) |
 
+## Syndication (canonical back to purplelink.llc)
+
+Exposure only: Medium outbound links are nofollow, so these do not build link equity. Each copy must keep the original's disclosure as its first paragraph and a rel=canonical to the original.
+
+| Date | Platform | Original | Copy | Views 7d | Notes |
+|---|---|---|---|---|---|
+| 2026-09-22 | Medium | https://purplelink.llc/guides/best-mac-latex-editors/ | https://medium.com/@ben.ampel/best-latex-editor-for-mac-in-2026-14-editors-compared-5fa58739aebe | TBD | Imported via medium.com/p/import (canonical set automatically, verified on the live page). Topics: Latex, Mac, Academia, Academic Writing, Productivity. Not in Partner Program (no paywall). Not submitted to Mac O'Clock (it takes unpublished drafts only, ~500-follower bar). Known import typo: "your.tex" missing a space in the MacTeX paragraph. |
+
 ## Newsletter pitches
 
 | Date | Target | Editor | Status | Notes |
@@ -56,6 +64,7 @@ After 4 weeks with no response, mark `no-response` and move on.
 | 2026-05-31 | LinkedIn | https://www.linkedin.com/company/purplelink-llc/ | live |
 | 2026-05-31 | GitHub | https://github.com/purplelink-llc | live (logo uploaded) |
 | 2026-05-31 | Bluesky | https://bsky.app/profile/purplelink.llc | live + populated (custom-domain `@purplelink.llc` verified via _atproto TXT; banner, bio, first post pinned) |
+| 2026-09-22 | Medium | https://medium.com/@ben.ampel | live (personal account; first story = LaTeX editors guide) |
 
 ---
 
