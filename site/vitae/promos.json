@@ -1,0 +1,32 @@
+{
+  "promos": [
+    {
+      "id": "moderntex",
+      "title": "ModernTex",
+      "body": "A native LaTeX editor for Mac, with live PDF preview and citation checks.",
+      "url": "https://purplelink.llc/moderntex/?ref=vitae",
+      "symbol": "doc.text"
+    },
+    {
+      "id": "paper-review",
+      "title": "Paper Review",
+      "body": "A reviewer-style critique of your manuscript before you submit it.",
+      "url": "https://purplelink.llc/tools/paper-review/?ref=vitae",
+      "symbol": "text.magnifyingglass"
+    },
+    {
+      "id": "response-review",
+      "title": "Response Review",
+      "body": "Checks that your response letter answers every reviewer comment.",
+      "url": "https://purplelink.llc/tools/response-review/?ref=vitae",
+      "symbol": "arrowshape.turn.up.left.2"
+    },
+    {
+      "id": "bib-validator",
+      "title": "BibTeX Validator",
+      "body": "Free: finds broken DOIs and wrong authors or years in a .bib file.",
+      "url": "https://purplelink.llc/tools/bib-validator/?ref=vitae",
+      "symbol": "checkmark.seal"
+    }
+  ]
+}
