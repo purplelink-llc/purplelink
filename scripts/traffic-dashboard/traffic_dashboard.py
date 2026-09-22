@@ -79,6 +79,10 @@ SYNTHETIC_EVENTS = {
                "/moderntex/ plus the four kits, both paper-review pages and "
                "/tools/cover-letter/",
     },
+    ("purplelink", "vitaeDownloads", "2026-09-22"): {
+        "count": 1,
+        "why": "verifying the counter right after Vitae moved behind vitae-download",
+    },
     ("muscleonglp", "checkoutClicks", "2026-09-09"): {
         "count": 1,
         "why": "verifying the checkout+track pipeline still worked while "
@@ -2573,7 +2577,10 @@ def main() -> int:
                         payload.setdefault("byDay", {})
                         for day, n in vd["byDay"].items():
                             payload["byDay"].setdefault(day, {})["vitaeDownloads"] = n
-                        forms_note += f", {sum(vd['downloads'].values())} Vitae download(s) lifetime"
+                        ours = sum(e["count"] for (sk, m, _d), e in SYNTHETIC_EVENTS.items()
+                                   if sk == "purplelink" and m == "vitaeDownloads")
+                        lifetime = max(0, sum(vd["downloads"].values()) - ours)
+                        forms_note += f", {lifetime} Vitae download(s) lifetime"
                     elif not vt:
                         print(f"  ! Vitae downloads: {VITAE_STATS_TOKEN_ENV} not set in {CONFIG_PATH}",
                               file=sys.stderr)
