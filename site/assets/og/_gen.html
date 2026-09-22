@@ -72,6 +72,7 @@
       "latex-table-generator":{ emoji: "📊", title: "LaTeX Table Generator", tagline: "Paste CSV or TSV data, get a clean booktabs LaTeX table." },
       "word-counter":      { emoji: "🔢", title: "Word Counter",      tagline: "Live word, character, sentence & reading-time stats." },
       "file-to-markdown":  { emoji: "📝", title: "File to Markdown",  tagline: "Convert PDF, Word, PowerPoint, Excel, HTML & CSV to clean Markdown." },
+      "vitae":             { emoji: "§",  title: "Vitae", tagline: "Your CV, submissions, grants and tenure case, tracked on your Mac.", kicker: "Free Mac app", foot: "Free · Local-first · Your data stays on your Mac" },
       "brand":             { emoji: "✦",  title: "Purplelink",       tagline: "macOS & iOS apps, applied AI, and free tools for academics.", kicker: "Purplelink LLC" }
     };
     window.renderTool = function (key) {
@@ -80,11 +81,12 @@
       document.getElementById("kicker").textContent = t.kicker || "Free LaTeX tool";
       document.getElementById("title").textContent = t.title;
       document.getElementById("tagline").textContent = t.tagline;
+      if (t.foot) document.querySelector(".free").textContent = t.foot;
       document.title = key;
       return t.title;
     };
     window.renderTool(new URLSearchParams(location.search).get("t") || "equation-renderer");
   </script>
-    <script src="/analytics.js?v=dc080b46b2" defer></script>
+    <script src="/analytics.js?v=a3dd81b65e" defer></script>
   </body>
 </html>
