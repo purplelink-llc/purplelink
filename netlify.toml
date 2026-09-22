@@ -143,6 +143,21 @@
   to = "/moderntex/"
   status = 301
 
+# Vitae downloads go through a counted function (DMGs live in the vitae-files Blobs
+# store, not site/). Rewrites, not redirects, so the URL the browser and installed
+# copies' /vitae/version.json downloadURL see never changes.
+[[redirects]]
+  from = "/vitae/download"
+  to = "/.netlify/functions/vitae-download"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/vitae/Vitae-*"
+  to = "/.netlify/functions/vitae-download?file=Vitae-:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/404.html"

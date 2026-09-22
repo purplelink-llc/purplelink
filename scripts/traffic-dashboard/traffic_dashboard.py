@@ -61,6 +61,9 @@ METRIC_START_OVERRIDES = {
     # The ModernTex 7-day trial shipped with 1.0.2; stats.mjs backfills the
     # counter with zeros for every earlier day.
     ("purplelink", "trialDownloads"): "2026-09-11",
+    # Vitae moved behind the counted vitae-download function on this day; before
+    # it the DMG was a static file and no download was ever recorded.
+    ("purplelink", "vitaeDownloads"): "2026-09-22",
 }
 
 # Events we generated ourselves. The beacon cannot tell a verification click
@@ -121,6 +124,7 @@ SITES = [
                         ("haeaSignups", "Haea waitlist signups"),
                         ("moderntexReleaseSignups", "ModernTex release-notes signups"),
                         ("trialDownloads", "trial downloads"),
+                        ("vitaeDownloads", "Vitae downloads"),
                         ("checkoutClicks", "checkout clicks")],
         # Paths that actually show a buy button. The useful denominator for a
         # checkout rate is "people who reached a page where buying was possible",
@@ -347,6 +351,43 @@ def fetch_sparkle_updates(token: str) -> dict | None:
         except (OSError, http.client.HTTPException, json.JSONDecodeError, RuntimeError) as exc:
             last = exc
     print(f"  ! sparkle updates unavailable: {str(last)[:80]}", file=sys.stderr)
+    return None
+
+
+# --- Vitae downloads -----------------------------------------------------------
+#
+# Vitae is free and served through netlify/functions/vitae-download.mjs, which
+# counts every non-crawler GET both per file and per UTC day. Unlike the Sparkle
+# counter above it has a real per-day series, so it is folded straight into the
+# purplelink byDay archive as the "vitaeDownloads" metric.
+VITAE_STATS_URL = "https://purplelink.llc/.netlify/functions/vitae-download"
+VITAE_STATS_TOKEN_ENV = "VITAE_STATS_TOKEN"
+
+
+def fetch_vitae_downloads(token: str) -> dict | None:
+    """{"downloads": {file: lifetime}, "byDay": {date: n}} or None on failure."""
+    req = urllib.request.Request(
+        VITAE_STATS_URL + "?stats=1",
+        headers={"User-Agent": "purplelink-traffic-dashboard", "X-Vitae-Stats": token},
+    )
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+            if payload.get("error"):
+                raise RuntimeError(payload.get("detail") or payload["error"])
+            return {"downloads": payload.get("downloads", {}), "byDay": payload.get("byDay", {})}
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                print(f"  ! Vitae downloads: HTTP {exc.code}", file=sys.stderr)
+                return None
+            last = exc
+        except (OSError, http.client.HTTPException, json.JSONDecodeError, RuntimeError) as exc:
+            last = exc
+    print(f"  ! Vitae downloads unavailable: {str(last)[:80]}", file=sys.stderr)
     return None
 
 
@@ -1208,6 +1249,7 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
                            ("moderntexReleaseSignups", "ModernTex release-notes signups"),
                            ("subscribes", "subscribes"),
                            ("calcRuns", "calculator runs"),
+                           ("vitaeDownloads", "Vitae downloads"),
                            ("trialDownloads", "trial downloads")) if k == adj["metric"]), adj["metric"])
             out.append(f"{s['label']}: {adj['removed']} of the {adj['raw']} {label} on "
                        f"{adj['day']} were ours and are excluded above ({adj['why']}). "
@@ -2522,6 +2564,18 @@ def main() -> int:
                                   file=sys.stderr)
                     else:
                         print(f"  ! {site['label']}: no Netlify token; skipping waitlists",
+                              file=sys.stderr)
+
+                if site["key"] == "purplelink":
+                    vt = cfg.get(VITAE_STATS_TOKEN_ENV)
+                    vd = fetch_vitae_downloads(vt) if vt else None
+                    if vd is not None:
+                        payload.setdefault("byDay", {})
+                        for day, n in vd["byDay"].items():
+                            payload["byDay"].setdefault(day, {})["vitaeDownloads"] = n
+                        forms_note += f", {sum(vd['downloads'].values())} Vitae download(s) lifetime"
+                    elif not vt:
+                        print(f"  ! Vitae downloads: {VITAE_STATS_TOKEN_ENV} not set in {CONFIG_PATH}",
                               file=sys.stderr)
 
                 merge_history(history, site["key"], payload)
