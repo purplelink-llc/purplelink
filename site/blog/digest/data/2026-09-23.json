@@ -1,0 +1,89 @@
+{
+  "date": "2026-09-23",
+  "number": 89,
+  "intro": "ShinyHunters claims FBI breach, UTA0565 exploits Chrome-Windows zero-day chain, EvilTokens AI-assisted phishing takedown, Claude Opus 5.5 and GPT-6 pricing war, and 80,000 AI relay servers masking Chinese LLM access.",
+  "sections": {
+    "AI & Technology": [
+      {
+        "title": "Claude Opus 5.5, GPT-6 Sol, GPT-6 Luna, and a new price war",
+        "url": "https://simonwillison.net/2026/Sep/22/opus-and-sol-and-luna",
+        "source_name": "Simon Willison",
+        "category": "ai_tech",
+        "editorial_note": "Anthropic released Claude Opus 5.5 and OpenAI responded within an hour with GPT-6 Sol and GPT-6 Luna, a coordinated-looking competitive response that signals both labs are watching each other's release cadence in real time. The simultaneous positioning around price-to-capability ratios rather than raw benchmark leadership marks a structural shift in how frontier labs compete. Developers building inference pipelines should expect continued price compression and should architect for provider portability rather than single-vendor lock-in."
+      },
+      {
+        "title": "Better prompt caching for GPT-6",
+        "url": "https://openai.com/index/better-prompt-caching-for-gpt-6",
+        "source_name": "OpenAI",
+        "category": "ai_tech",
+        "editorial_note": "GPT-6 introduces explicit cache breakpoints, higher cache hit rates, and new diagnostics for prompt caching, giving developers programmatic control over what gets cached rather than relying on OpenAI's automatic prefix detection. For applications with long system prompts or repeated context (RAG pipelines, agentic loops), explicit breakpoints can meaningfully reduce both latency and per-token costs in ways that were previously opaque. The addition of diagnostics is the underrated part: developers can now measure cache effectiveness rather than inferring it from billing."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Chinese Hackers Exploit Chrome-Windows Zero-Day Chain to Deploy CLEANGULP Malware",
+        "url": "https://thehackernews.com/2026/09/chinese-hackers-exploit-chrome-windows.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "UTA0565 chained CVE-2026-85046 (Chrome) with a Windows kernel flaw as zero-days, delivering CLEANGULP malware via fake websites in attacks detected September 3-4, 2026. The zero-day chain approach signals a well-resourced actor willing to burn two unpatched vulnerabilities simultaneously, which is operationally expensive and suggests high-value targeting rather than opportunistic campaigns. Threat hunters should prioritize Chrome renderer sandbox escape telemetry alongside kernel privilege escalation events as a correlated detection pair."
+      },
+      {
+        "title": "ShinyHunters Claims FBI Breach, Says It Stole Data on Agents and Job Applicants",
+        "url": "https://thehackernews.com/2026/09/shinyhunters-claims-fbi-breach-says-it.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "ShinyHunters claims possession of data on nearly all FBI agents and job applicants, a claim that, if verified, would represent the most sensitive law enforcement personnel breach in recent memory. ShinyHunters has a credible track record of large-scale breaches (AT&T, Ticketmaster), so dismissing this as bluster carries real risk. The operational exposure for undercover agents and pending applicants would be qualitatively different from typical PII leaks. Connects to: 'We hacked the FBI:' Hackers say they have data on all FBI employees."
+      },
+      {
+        "title": "Microsoft Takes Down EvilTokens Device-Code Phishing Service Tied to 12,000 Inbox Compromises",
+        "url": "https://thehackernews.com/2026/09/microsoft-takes-down-eviltokens-device.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "EvilTokens used AI at every stage of the attack chain, from lure generation to token replay, and compromised 12,000 Microsoft 365 inboxes before Microsoft seized 50 websites and disabled 150+ domains via a Virginia federal court order. Device code phishing is particularly dangerous because it bypasses MFA entirely by abusing the OAuth device authorization flow, and AI-assisted scaling of this vector is a meaningful escalation. Security teams running M365 should audit conditional access policies for device code flow restrictions, which many organizations leave at default permissive settings."
+      },
+      {
+        "title": "Relays Are Masking Chinese Access to Frontier AI Models in the US",
+        "url": "https://www.darkreading.com/cyber-risk/relays-masking-chinese-access-frontier-ai-models",
+        "source_name": "Dark Reading",
+        "category": "cybersecurity",
+        "editorial_note": "Over 80,000 AI relay servers are routing Chinese users through identity-masking infrastructure to access US frontier LLMs, with model cloning via distillation cited as the probable end goal. Export controls on AI model weights get significant policy attention, but API-level access for distillation is a largely unaddressed vector that can produce capable derivative models at low cost. The scale of 80,000 relay servers suggests this is organized infrastructure, not individual circumvention."
+      }
+    ],
+    "Finance & Business": [
+      {
+        "title": "Softbank's mega junk-bond deal shows capital for the AI race is getting more expensive",
+        "url": "https://www.marketwatch.com/story/softbanks-mega-junk-bond-deal-shows-capital-for-the-ai-race-is-getting-more-expensive-9eb3fa28?mod=mw_rss_topstories",
+        "source_name": "MarketWatch",
+        "category": "finance",
+        "editorial_note": "SoftBank's AI infrastructure financing has crossed into high-yield debt markets, where investors are demanding higher spreads to compensate for the risk profile of long-duration AI capex bets. This is a structural signal: when frontier AI infrastructure funding shifts from equity and investment-grade debt to junk bonds, the cost of capital for the AI buildout rises and the pressure on unit economics intensifies. Researchers and founders building on top of this infrastructure should expect that margin pressure on cloud AI providers will eventually translate into pricing changes at the API layer."
+      },
+      {
+        "title": "Airbus Wins 25-Year Cybersecurity Contract for French Military",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-23/airbus-wins-25-year-cybersecurity-contract-for-french-military",
+        "source_name": "Bloomberg Technology",
+        "category": "finance",
+        "editorial_note": "Airbus secured a 25-year cybersecurity contract from the French Ministry of Armed Forces, a contract duration that is unusual in the sector and reflects European defense's push for sovereign, long-term security infrastructure rather than vendor rotation. For the cybersecurity market, this signals that European defense ministries are willing to make decade-scale commitments to avoid dependency on US vendors, a dynamic that creates both moat opportunities and barriers for non-European entrants. The contract length also implies significant managed-service and SOC components rather than pure product delivery."
+      }
+    ],
+    "Entrepreneurship": [
+      {
+        "title": "Being a System of Record Helps With Retention. But Alone, It Won't Equal Growth",
+        "url": "https://www.saastr.com/being-a-system-of-record-helps-with-retention-but-alone-it-wont-equal-growth",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "ServiceTitan's decision to delist Podium after a nine-year partnership, cutting off roughly 1,000 shared customers, illustrates that being a system of record creates defensive moats but does not generate expansion revenue on its own. The non-obvious implication is that vertical SaaS platforms are increasingly willing to sacrifice ecosystem goodwill to capture adjacent revenue streams, which raises the risk profile for any ISV building on top of a dominant vertical platform. Indie developers and small studios building integrations should treat platform dependency as a strategic liability, not a distribution advantage."
+      }
+    ],
+    "Worth Reading": [
+      {
+        "title": "Smart glasses are already causing havoc in India",
+        "url": "https://www.technologyreview.com/2026/09/23/1144953/smart-glasses-havoc-india",
+        "source_name": "MIT Technology Review",
+        "category": "general_tech",
+        "editorial_note": "Smart glasses with real-time video capture are enabling covert recording at protests in India, with footage surfacing on social media within hours and creating identification risks for participants before any legal framework exists to govern the technology. The gap between hardware deployment speed and regulatory response is widest in countries with active civil liberties conflicts, making India a leading indicator for how this plays out globally. For researchers studying surveillance technology and adversarial use of consumer hardware, this is an early empirical case study rather than a hypothetical."
+      }
+    ]
+  },
+  "sources_reviewed": 857,
+  "items_selected": 10
+}
