@@ -21,7 +21,11 @@
     } catch (e) { return ""; }
   }
   function utmSource() {
-    try { return new URLSearchParams(location.search).get("utm_source") || ""; }
+    try {
+      var q = new URLSearchParams(location.search);
+      // ?from= tags internal referrals such as the ModernTex trial's Buy button.
+      return q.get("utm_source") || (q.get("from") ? "from:" + q.get("from") : "");
+    }
     catch (e) { return ""; }
   }
   function send(payload) {

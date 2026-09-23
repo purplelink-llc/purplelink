@@ -206,3 +206,15 @@
     status.insertAdjacentElement("afterend", box);
   }
 })();
+
+// ModernTex: someone who pressed "Buy" inside the trial app (?from=trial) already
+// has the trial, so lead with the buy button instead of offering the trial again.
+(() => {
+  if (new URLSearchParams(location.search).get("from") !== "trial") return;
+  const buy = document.getElementById("checkout-btn");
+  const trial = document.getElementById("trial-download");
+  if (!buy || !trial) return;
+  buy.classList.replace("btn-ghost", "btn-primary");
+  trial.classList.replace("btn-primary", "btn-ghost");
+  trial.parentNode.insertBefore(buy, trial);
+})();
