@@ -70,15 +70,16 @@ subscription sold through `checkout.mjs` as `vitae-plus-monthly`
   `trialing` get exp = current period end + 7 days; `past_due` gets exp = now +
   7 days; any other status returns 410 `{ "status": "<status>" }`. Unknown id:
   404. Never returns an email.
-- **Manage** `?manage=<id>`, opened in the browser by the app's "Manage
-  subscription" button (`https://purplelink.llc/.netlify/functions/vitae-license?manage=<id>`).
+- **Manage** `POST {"manage": "<id>"}`, sent by the app's "Manage
+  Subscription" button. A POST keeps the id out of browser URLs and history.
   Looks up the subscription's customer, creates a Stripe billing portal
-  session (return URL `/vitae/plus/`), and 302-redirects to it. Any failure
-  redirects to `/vitae/plus/manage/`, which explains how to cancel by email.
+  session (return URL `/vitae/plus/`), and returns `{ "url": "<portal url>" }`,
+  which the app opens in the browser. On any failure the app opens
+  `/vitae/plus/manage/`, which explains how to cancel by email. The old
+  `GET ?manage=` form now redirects to that page.
 
 All responses are `no-store`, and each IP gets 60 requests per UTC day across
-all modes (`rate-limits` Blobs store). Malformed ids get 400 (refresh) or the
-manage page (manage).
+all modes (`rate-limits` Blobs store). Malformed ids get 400.
 
 Required env vars:
 - `STRIPE_SECRET_KEY`: shared with `checkout`.

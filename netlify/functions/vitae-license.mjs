@@ -4,7 +4,7 @@
  * Vitae Plus is a subscription (vitae-plus-monthly, vitae-plus-annual in
  * checkout.mjs). The app holds a short-lived signed key, verifies it offline
  * against the matching Ed25519 public key, and refreshes it about once a month.
- * Three modes, all GET:
+ * Three modes: issue and refresh are GET, manage is POST:
  *
  *   ?session_id=cs_…   Issue. Called by /vitae/plus/success/ after Checkout.
  *     -> 200 { key: "VP2-…", email: "<Stripe receipt address>" | null }
@@ -22,10 +22,12 @@
  *     past_due          -> exp = now + 7 days (grace while the card is retried)
  *     anything else     -> 410 { status }
  *
- *   ?manage=<id>        Manage. Opened in the browser by the app's "Manage
- *     subscription" button. Creates a Stripe billing portal session for the
- *     subscription's customer and 302-redirects to it. Any failure redirects to
- *     /vitae/plus/manage/, which explains how to cancel by email instead.
+ *   POST { "manage": "<id>" }   Manage. Sent by the app's "Manage Subscription"
+ *     button (a POST, so the id never lands in a browser URL, history or logs).
+ *     Creates a Stripe billing portal session for the subscription's customer.
+ *     -> 200 { url: "<portal url>" } · 400 bad_id · 404 not_found · 429 · 500/502
+ *     On any failure the app opens /vitae/plus/manage/, which explains how to
+ *     cancel by email instead.
  *
  * Key format v2 (must match the app's verifier byte for byte):
  *   payload = UTF-8 JSON.stringify({ exp, iat, id, p: "vitae-plus", plan, v: 2 })
@@ -225,11 +227,12 @@ async function refresh(id, secretKey, pem) {
 
 async function manage(id, secretKey) {
   const mapping = await readMapping(id);
-  if (!mapping) return redirect(MANAGE_FALLBACK);
+  if (!mapping) return json(404, { error: "not_found" });
   const got = await stripeGet(`/subscriptions/${encodeURIComponent(mapping.subscription)}`, secretKey);
-  if (got.error || got.notFound) return redirect(MANAGE_FALLBACK);
+  if (got.error) return got.error;
+  if (got.notFound) return json(404, { error: "not_found" });
   const customer = typeof got.data?.customer === "string" ? got.data.customer : got.data?.customer?.id;
-  if (!customer) return redirect(MANAGE_FALLBACK);
+  if (!customer) return json(502, { error: "stripe_bad_response" });
 
   let resp;
   try {
@@ -242,47 +245,64 @@ async function manage(id, secretKey) {
       body: new URLSearchParams({ customer, return_url: `${SITE_ORIGIN}/vitae/plus/` }),
     });
   } catch (_) {
-    return redirect(MANAGE_FALLBACK);
+    return json(502, { error: "stripe_unreachable" });
   }
   if (!resp.ok) {
     console.error("vitae-license: billing portal error", resp.status);
-    return redirect(MANAGE_FALLBACK);
+    return json(502, { error: "stripe_error" });
   }
   const portal = await resp.json().catch(() => null);
-  if (!portal?.url) return redirect(MANAGE_FALLBACK);
-  return redirect(portal.url);
+  if (typeof portal?.url !== "string" || !portal.url.startsWith("https://billing.stripe.com/")) {
+    return json(502, { error: "stripe_bad_response" });
+  }
+  return json(200, { url: portal.url });
+}
+
+function clientIpOf(request) {
+  return (
+    request.headers.get("x-nf-client-connection-ip") ||
+    request.headers.get("x-forwarded-for") ||
+    "unknown"
+  );
+}
+
+async function handleManage(request) {
+  const body = await request.json().catch(() => null);
+  const id = typeof body?.manage === "string" ? body.manage : "";
+  if (!LICENSE_ID.test(id)) {
+    return json(400, { error: "bad_id", detail: "The key id must be 16 lowercase hex characters." });
+  }
+  if (await rateLimited(clientIpOf(request))) {
+    return json(429, { error: "rate_limited", detail: "Too many requests from this address today." });
+  }
+  const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
+  if (!secretKey) return json(500, { error: "misconfigured", detail: "The license service is not set up yet." });
+  return manage(id, secretKey);
 }
 
 export default async function handler(request) {
+  if (request.method === "POST") return handleManage(request);
   if (request.method !== "GET") return json(405, { error: "method_not_allowed" });
 
   const params = new URL(request.url).searchParams;
   const sessionId = params.get("session_id");
   const refreshId = params.get("refresh");
-  const manageId = params.get("manage");
 
-  if (manageId !== null && !LICENSE_ID.test(manageId)) return redirect(MANAGE_FALLBACK);
+  // The old GET ?manage=<id> link put the id in browser history; send it to the help page.
+  if (params.get("manage") !== null) return redirect(MANAGE_FALLBACK);
   if (refreshId !== null && !LICENSE_ID.test(refreshId)) {
     return json(400, { error: "bad_id", detail: "The key id must be 16 lowercase hex characters." });
   }
-  if (manageId === null && refreshId === null && !SESSION_ID.test(sessionId || "")) {
+  if (refreshId === null && !SESSION_ID.test(sessionId || "")) {
     return json(400, { error: "bad_session_id", detail: "That link is missing its order reference." });
   }
 
-  const clientIp =
-    request.headers.get("x-nf-client-connection-ip") ||
-    request.headers.get("x-forwarded-for") ||
-    "unknown";
-  if (await rateLimited(clientIp)) {
-    if (manageId !== null) return redirect(MANAGE_FALLBACK);
+  if (await rateLimited(clientIpOf(request))) {
     return json(429, { error: "rate_limited", detail: "Too many requests from this address today." });
   }
 
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   const pem = Netlify.env.get("VITAE_LICENSE_PRIVATE_KEY");
-  if (manageId !== null) {
-    return secretKey ? manage(manageId, secretKey) : redirect(MANAGE_FALLBACK);
-  }
   if (!secretKey || !pem) {
     return json(500, { error: "misconfigured", detail: "The license service is not set up yet." });
   }
