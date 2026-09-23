@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #89 — September 23, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-23.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-23.html</guid>
+      <pubDate>Wed, 23 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>ShinyHunters claims FBI breach, UTA0565 exploits Chrome-Windows zero-day chain, EvilTokens AI-assisted phishing takedown, Claude Opus 5.5 and GPT-6 pricing war, and 80,000 AI relay servers masking Chinese LLM access.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #88 — September 22, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-22.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-22.html</guid>
