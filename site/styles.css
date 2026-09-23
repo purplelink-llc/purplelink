@@ -2838,3 +2838,13 @@ button.btn-coming-soon:focus-visible {
 /* Four extras read as a 2 x 2 grid instead of 3 + 1 with an empty cell. */
 .plus-grid-2 { grid-template-columns: repeat(2, 1fr); }
 @media (max-width: 700px) { .plus-grid-2 { grid-template-columns: 1fr; } }
+/* Plan cards on /vitae/plus/: two side by side, stacked on narrow screens. */
+.plus-plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; max-width: 720px; }
+.plus-plan { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+.plus-plan h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--ink); }
+.plus-plan-price { font-family: var(--font-display); font-size: 2rem; font-weight: 700; line-height: 1.1; margin: 0; color: var(--ink); }
+.plus-plan-price span { font-family: var(--font-body); font-size: 1rem; font-weight: 400; color: var(--muted); }
+.plus-plan-note { color: var(--muted); font-size: 0.92rem; line-height: 1.6; margin: 0 0 8px; flex-grow: 1; }
+.plus-plan .btn { align-self: flex-start; }
+.plus-plans-status { max-width: 720px; }
+.plus-plans-fine { color: var(--muted); font-size: 0.88rem; line-height: 1.65; max-width: 62ch; margin: 4px 0 0; }

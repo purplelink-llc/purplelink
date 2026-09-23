@@ -1,5 +1,5 @@
-// /vitae/plus/success/ — turn a paid Stripe session into a Vitae Plus license key.
-// Calls vitae-license, then shows the key with a Copy button. Everything is built
+// /vitae/plus/success/ — turn a completed Stripe Checkout into a Vitae Plus key.
+// Calls vitae-license, then shows the VP2 key with a Copy button. Everything is built
 // with textContent; nothing from the response is parsed as HTML.
 (function () {
   var box = document.getElementById("license");
@@ -49,7 +49,7 @@
     code.className = "license-key";
     code.id = "license-key";
     code.tabIndex = 0;
-    code.setAttribute("aria-label", "Your Vitae Plus license key");
+    code.setAttribute("aria-label", "Your Vitae Plus key");
     code.textContent = key;
     box.appendChild(code);
 
@@ -78,7 +78,7 @@
     if (email) {
       var note = document.createElement("p");
       note.className = "license-note";
-      note.textContent = "Stripe sends your receipt, with the order number, to " + email + ".";
+      note.textContent = "Your subscription is under " + email + ". Stripe sends receipts and billing notices there.";
       box.appendChild(note);
     }
   }
@@ -102,7 +102,7 @@
 
   var sessionId = new URLSearchParams(window.location.search).get("session_id") || "";
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
-    status("This link is missing its order reference. If you just paid, email ben@purplelink.llc with the order number from your Stripe receipt and you will get your key.");
+    status("This link is missing its order reference. If you just subscribed, email ben@purplelink.llc from the address you used at checkout and you will get your key.");
     return;
   }
 
@@ -116,30 +116,34 @@
         );
       })
       .then(function (r) {
-        if (r.code === 200 && typeof r.body.key === "string" && r.body.key.indexOf("VP1-") === 0) {
+        if (r.code === 200 && typeof r.body.key === "string" && r.body.key.indexOf("VP2-") === 0) {
           showKey(r.body.key, typeof r.body.email === "string" ? r.body.email : "");
           return;
         }
         if (r.code === 402) {
           if (pendingTries < MAX_PENDING_RETRIES) {
             pendingTries += 1;
-            status("Your payment is still processing. This page will try again in a moment.", true);
+            status("Your subscription is still being set up. This page will try again in a moment.", true);
             setTimeout(load, RETRY_MS);
           } else {
-            status("Your payment is still processing. Try again in a minute; if it does not clear, email ben@purplelink.llc with the order number from your Stripe receipt.");
+            status("Your subscription is still being set up. Try again in a minute; if it does not finish, email ben@purplelink.llc from the address you used at checkout.");
             retryButton();
           }
           return;
         }
+        if (r.code === 410) {
+          status("This subscription is no longer active, so there is no key to show. To subscribe again, go back to the Vitae Plus page.");
+          return;
+        }
         if (r.code === 404 || r.code === 400) {
-          status("We could not find a Vitae Plus order for this link. If you were charged, email ben@purplelink.llc with the order number from your Stripe receipt.");
+          status("We could not find a Vitae Plus subscription for this link. If you were charged, email ben@purplelink.llc from the address you used at checkout.");
           return;
         }
         if (r.code === 429) {
-          status("Too many requests from this address today. Try again tomorrow, or email ben@purplelink.llc with the order number from your Stripe receipt.");
+          status("Too many requests from this address today. Try again tomorrow, or email ben@purplelink.llc from the address you used at checkout.");
           return;
         }
-        status("Something went wrong preparing your key. Try again in a moment, or email ben@purplelink.llc with the order number from your Stripe receipt.");
+        status("Something went wrong preparing your key. Try again in a moment, or email ben@purplelink.llc from the address you used at checkout.");
         retryButton();
       })
       .catch(function () {

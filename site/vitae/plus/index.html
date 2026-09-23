@@ -4,19 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Vitae Plus - Optional Extras for Vitae, $5 Once | Purplelink LLC</title>
-    <meta name="description" content="Vitae Plus is an optional $5 one-time upgrade for the free Vitae Mac app. It adds color themes, alternate Dock icons, celebrations and a milestones case. Every record-keeping feature stays free.">
+    <title>Vitae Plus - Optional Subscription for Vitae, from $3 a Month | Purplelink LLC</title>
+    <meta name="description" content="Vitae Plus is an optional subscription for the free Vitae Mac app, $3 a month or $24 a year with a 7-day free trial. It adds reports, Word templates, the revision workspace, Shareables and more. Core record-keeping stays free.">
     <link rel="canonical" href="https://purplelink.llc/vitae/plus/">
-    <meta property="og:title" content="Vitae Plus - Optional Extras for Vitae">
-    <meta property="og:description" content="An optional $5 one-time upgrade for Vitae: color themes, alternate Dock icons, celebrations and a milestones case. Everything that keeps your record stays free.">
+    <meta property="og:title" content="Vitae Plus - Optional Subscription for Vitae">
+    <meta property="og:description" content="An optional subscription for Vitae, $3 a month or $24 a year: reports, Word templates, the revision workspace, Shareables and more. Core record-keeping stays free.">
     <meta property="og:image" content="https://purplelink.llc/assets/og/vitae.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/vitae/plus/">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Vitae Plus - Optional Extras for Vitae">
-    <meta name="twitter:description" content="An optional $5 one-time upgrade for Vitae: color themes, alternate Dock icons, celebrations and a milestones case. Everything that keeps your record stays free.">
+    <meta name="twitter:title" content="Vitae Plus - Optional Subscription for Vitae">
+    <meta name="twitter:description" content="An optional subscription for Vitae, $3 a month or $24 a year: reports, Word templates, the revision workspace, Shareables and more. Core record-keeping stays free.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/vitae.png">
     <meta name="twitter:image:alt" content="Vitae, academic research management for macOS">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
@@ -24,9 +24,9 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=36e3056759">
+    <link rel="stylesheet" href="/styles.css?v=6e3a634dda">
     <script src="/site.js?v=30f859b9be" defer></script>
-    <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+    <script src="/vitae/plus/plans.js?v=fc6a65c5a6" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -36,7 +36,7 @@
           "name": "Vitae Plus",
           "url": "https://purplelink.llc/vitae/plus/",
           "image": "https://purplelink.llc/assets/og/vitae.png",
-          "description": "An optional one-time upgrade for the free Vitae macOS app. It adds app color themes, alternate Dock icons, celebrations when a paper is accepted or a grant is awarded, and a milestones case. Every record-keeping feature of Vitae stays free.",
+          "description": "An optional subscription for the free Vitae macOS app. It adds reports (NIH biosketch and Current and Pending drafts, an AACSB summary, a progress report, a personal website), Word export with custom templates and CV variants, the revision workspace, Shareables, the collaboration map and research profile, batch DOI lookup and daily ORCID sync, Reminders and calendar sync, and themes, Dock icons, celebrations and milestones. Everything in Vitae 0.2 and all core record-keeping stay free.",
           "brand": { "@id": "https://purplelink.llc/#organization" },
           "isAccessoryOrSparePartFor": {
             "@type": "SoftwareApplication",
@@ -45,15 +45,30 @@
             "applicationCategory": "ProductivityApplication",
             "url": "https://purplelink.llc/vitae/"
           },
-          "offers": {
-            "@type": "Offer",
-            "price": "5.00",
-            "priceCurrency": "USD",
-            "availability": "https://schema.org/InStock",
-            "url": "https://purplelink.llc/vitae/plus/",
-            "category": "One-time purchase",
-            "seller": { "@id": "https://purplelink.llc/#organization" }
-          }
+          "offers": [
+            {
+              "@type": "Offer",
+              "name": "Vitae Plus, monthly",
+              "price": "3.00",
+              "priceCurrency": "USD",
+              "priceSpecification": { "@type": "UnitPriceSpecification", "price": "3.00", "priceCurrency": "USD", "billingDuration": "P1M", "unitCode": "MON" },
+              "availability": "https://schema.org/InStock",
+              "url": "https://purplelink.llc/vitae/plus/",
+              "category": "Subscription",
+              "seller": { "@id": "https://purplelink.llc/#organization" }
+            },
+            {
+              "@type": "Offer",
+              "name": "Vitae Plus, annual",
+              "price": "24.00",
+              "priceCurrency": "USD",
+              "priceSpecification": { "@type": "UnitPriceSpecification", "price": "24.00", "priceCurrency": "USD", "billingDuration": "P1Y", "unitCode": "ANN" },
+              "availability": "https://schema.org/InStock",
+              "url": "https://purplelink.llc/vitae/plus/",
+              "category": "Subscription",
+              "seller": { "@id": "https://purplelink.llc/#organization" }
+            }
+          ]
         },
         {
           "@type": "FAQPage",
@@ -61,22 +76,22 @@
             {
               "@type": "Question",
               "name": "Do I need Vitae Plus to use Vitae?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Vitae is free, with every record-keeping feature and no limits. Plus adds cosmetic and fun extras only." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Vitae is free, with all core record-keeping and no limits. Everything in Vitae 0.2 stays free. Plus adds newer tools built on top of your record." }
             },
             {
               "@type": "Question",
-              "name": "Is Vitae Plus a subscription?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. It is $5, paid once." }
+              "name": "What happens if I cancel?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Plus keeps working through the period you have paid for, then the Plus tools stop. Your records and every free feature are untouched." }
             },
             {
               "@type": "Question",
-              "name": "Does Vitae contact a server to check the license?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Vitae checks the key's signature on your Mac. There is no account and no sign-in." }
+              "name": "Does Vitae contact a server to check the subscription?",
+              "acceptedAnswer": { "@type": "Answer", "text": "About once a month. Your subscription is checked by a short key the app refreshes about once a month; the refresh sends only an anonymous key ID. Between refreshes the key is verified on your Mac." }
             },
             {
               "@type": "Question",
-              "name": "What if I lose my key?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Your Stripe receipt has the order number. Email ben@purplelink.llc with it and you will get the key again." }
+              "name": "How do I cancel?",
+              "acceptedAnswer": { "@type": "Answer", "text": "In Vitae, open Settings, then Vitae Plus, then Manage Subscription, which opens Stripe's billing page. Or email ben@purplelink.llc." }
             }
           ]
         },
@@ -120,69 +135,107 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status product-status-live">Optional · $5 once</span>
+          <span class="product-status product-status-live">Optional · from $3 a month</span>
         </div>
         <h1 class="app-hero-name">Vitae Plus</h1>
-        <p class="app-hero-tagline">Vitae is free. Plus is an optional $5 upgrade that adds a few extras for fun: color themes, alternate Dock icons, a small celebration when good news arrives, and a case for your milestones. Buying it supports Vitae's development.</p>
-        <div class="app-hero-actions" id="buy">
-          <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="vitae-plus">Buy Vitae Plus, $5</button>
+        <p class="app-hero-tagline">Vitae is free, and keeping your record in it stays free with no limits. Plus is an optional subscription for the newer tools built on top of that record: reports, Word export with your own templates, the revision workspace, Shareables and more. It pays for Vitae's continued development.</p>
+        <div class="app-hero-actions">
+          <a class="btn btn-primary" href="#plans">See the plans</a>
           <a class="btn btn-ghost" href="/vitae/download">Download Vitae, free</a>
         </div>
-        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
-        <p class="waitlist-fine-print">One payment, no subscription. Stripe handles the card; Purplelink never sees it. After checkout you get a license key to paste into Vitae. No account, no sign-in.</p>
       </div>
     </div>
 
-    <section class="features-section" aria-labelledby="adds-h">
+    <section class="features-section" id="plans" aria-labelledby="plans-h">
+      <div class="features-header">
+        <p class="eyebrow">Plans</p>
+        <h2 id="plans-h">Two plans, both with 7 days free</h2>
+      </div>
+      <div class="plus-plans">
+        <div class="plus-plan">
+          <h3>Monthly</h3>
+          <p class="plus-plan-price">$3 <span>a month</span></p>
+          <p class="plus-plan-note">7 days free, then $3 each month.</p>
+          <button type="button" class="btn btn-primary plus-plan-btn" data-product="vitae-plus-monthly">Start monthly</button>
+        </div>
+        <div class="plus-plan">
+          <h3>Annual</h3>
+          <p class="plus-plan-price">$24 <span>a year</span></p>
+          <p class="plus-plan-note">7 days free, then $24 each year. Saves a third compared with paying monthly.</p>
+          <button type="button" class="btn btn-primary plus-plan-btn" data-product="vitae-plus-annual">Start annual</button>
+        </div>
+      </div>
+      <p class="tool-status plus-plans-status" id="checkout-status" aria-live="polite"></p>
+      <p class="plus-plans-fine">Stripe handles the card; Purplelink never sees it. Stripe asks for a card to start the trial and charges nothing until the 7 days are up. Cancel before then and you pay nothing. Cancel anytime after that and Plus keeps working through the period you have paid for.</p>
+    </section>
+
+    <section class="features-section bg-purple-xlight" aria-labelledby="adds-h">
       <div class="features-header">
         <p class="eyebrow">What Plus adds</p>
-        <h2 id="adds-h">Four extras, none of them essential</h2>
+        <h2 id="adds-h">Newer tools that work from your record</h2>
       </div>
       <div class="features-grid plus-grid-2">
         <div class="feature-item">
-          <h3>Color themes</h3>
-          <p>Alternate color themes for the app, for when the default look has worn thin.</p>
+          <h3>Reports</h3>
+          <p>Drafts of an NIH biosketch and a Current and Pending report, an AACSB summary, a progress report, and a personal website, all built from what you have already entered.</p>
         </div>
         <div class="feature-item">
-          <h3>Alternate Dock icons</h3>
-          <p>A choice of other icons for Vitae in the Dock.</p>
+          <h3>Word export</h3>
+          <p>Word (.docx) export with your own Word templates, short and one-page CV variants, citation styles and heading languages, and "Describe the CV you need".</p>
         </div>
         <div class="feature-item">
-          <h3>Celebrations</h3>
-          <p>A burst of confetti when you mark a paper accepted or a grant awarded.</p>
+          <h3>Revision workspace</h3>
+          <p>Splits a decision letter into reviewer points, tracks who answers each one, and exports the response letter.</p>
         </div>
         <div class="feature-item">
-          <h3>Milestones case</h3>
-          <p>A trophy case that collects milestones from your own record.</p>
+          <h3>Shareables</h3>
+          <p>Images for social posts about an acceptance, an award or a new paper.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Collaboration map and research profile</h3>
+          <p>A map of who you work with and a profile of your research, drawn from your projects and papers.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Batch DOI lookup and ORCID sync</h3>
+          <p>Look up DOIs for many papers at once, and sync from ORCID once a day.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Reminders and calendar</h3>
+          <p>Deadlines synced to Reminders, and a calendar file that stays up to date.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Themes and small pleasures</h3>
+          <p>Color themes, alternate Dock icons, a celebration when a paper is accepted or a grant is awarded, and a milestones case.</p>
         </div>
       </div>
     </section>
 
-    <section class="features-section bg-purple-xlight" aria-labelledby="free-h">
+    <section class="features-section" aria-labelledby="free-h">
       <div class="features-header">
         <p class="eyebrow">What stays free</p>
-        <h2 id="free-h">Everything that keeps your record</h2>
-        <p class="plus-lede">Submissions and review rounds, grants, projects, collaborators, teaching, service and mentoring, the tenure view, inbox triage, CV and package exports, and updates are all free, with no limits on how much you keep. Plus does not unlock any of them, and not buying it takes nothing away.</p>
+        <h2 id="free-h">Your record, with no limits</h2>
+        <p class="plus-lede">Submissions and review rounds, grants, projects, collaborators, teaching, service and mentoring, the tenure view, inbox triage, citation counts, CV and package exports to PDF, rich text and Markdown, backups, and updates are all free, with no limits on how much you keep.</p>
+        <p class="plus-lede">Everything in Vitae 0.2, and all core record-keeping, stays free forever. Plus does not unlock any of it, and not subscribing takes nothing away.</p>
       </div>
     </section>
 
-    <section class="features-section" aria-labelledby="license-h">
+    <section class="features-section bg-purple-xlight" aria-labelledby="license-h">
       <div class="features-header">
-        <p class="eyebrow">The license</p>
-        <h2 id="license-h">Checked on your Mac</h2>
+        <p class="eyebrow">How it works</p>
+        <h2 id="license-h">A key, a monthly check, and cancel anytime</h2>
       </div>
       <div class="features-grid">
         <div class="feature-item">
-          <h3>Buy once</h3>
-          <p>Checkout runs on Stripe. When it finishes, this site shows your license key.</p>
+          <h3>Paste the key once</h3>
+          <p>When checkout finishes, this site shows a key. In Vitae, open Settings, then Vitae Plus, paste it and press Activate. There is no account and no sign-in.</p>
         </div>
         <div class="feature-item">
-          <h3>Paste the key</h3>
-          <p>In Vitae, open Settings, then Vitae Plus. Paste the key and press Activate.</p>
+          <h3>Checked by a short key</h3>
+          <p>Your subscription is checked by a short key the app refreshes about once a month; the refresh sends only an anonymous key ID. Between refreshes, Vitae verifies the key on your Mac.</p>
         </div>
         <div class="feature-item">
-          <h3>No account, no server check</h3>
-          <p>Vitae verifies the key's signature on your Mac and never contacts a server to check it. The key holds a date and a short order reference, not your name or email.</p>
+          <h3>Cancel anytime</h3>
+          <p>In Vitae, open Settings, then Vitae Plus, then Manage Subscription. Plus keeps working through the period you have paid for, then the Plus tools stop. <a href="/vitae/plus/manage/">More on cancelling</a>.</p>
         </div>
       </div>
     </section>
@@ -192,19 +245,23 @@
       <div class="faq-list">
         <details class="faq-item">
           <summary>Do I need Vitae Plus to use Vitae?</summary>
-          <div class="faq-body">No. Vitae is free, with every record-keeping feature and no limits. Plus adds cosmetic and fun extras only.</div>
+          <div class="faq-body">No. Vitae is free, with all core record-keeping and no limits. Everything in Vitae 0.2 stays free. Plus adds newer tools built on top of your record.</div>
         </details>
         <details class="faq-item">
-          <summary>Is it a subscription?</summary>
-          <div class="faq-body">No. It is $5, paid once.</div>
+          <summary>What happens if I cancel?</summary>
+          <div class="faq-body">Plus keeps working through the period you have paid for, then the Plus tools stop. Your records and every free feature are untouched, and files you already exported are yours.</div>
         </details>
         <details class="faq-item">
-          <summary>Does Vitae contact a server to check the license?</summary>
-          <div class="faq-body">No. Vitae checks the key's signature on your Mac. There is no account and no sign-in. See the <a href="/privacy/">privacy policy</a> for what the purchase itself involves.</div>
+          <summary>Does Vitae contact a server to check the subscription?</summary>
+          <div class="faq-body">About once a month, while Plus is active. The app sends only the key's anonymous ID; our server looks up the subscription's status in Stripe and returns a fresh key. Nothing about your records is sent. See the <a href="/privacy/">privacy policy</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I cancel?</summary>
+          <div class="faq-body">In Vitae, open Settings, then Vitae Plus, then Manage Subscription. That opens Stripe's billing page, where you can cancel or update your card. You can also email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. See <a href="/vitae/plus/manage/">managing your subscription</a>.</div>
         </details>
         <details class="faq-item">
           <summary>What if I lose my key?</summary>
-          <div class="faq-body">Your Stripe receipt has the order number. Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> with it and you will get the key again.</div>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> with the order number from your Stripe receipt and you will get a key again.</div>
         </details>
       </div>
     </section>
