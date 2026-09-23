@@ -2818,3 +2818,23 @@ button.btn-coming-soon:focus-visible {
 .kit-note strong { color: var(--purple); }
 .kit-center { text-align: center; }
 .kit-dl-btn { display: block; margin: 10px auto; max-width: 440px; }
+
+/* ============================================================
+   Vitae Plus (/vitae/plus/ and its success page)
+   The license key box: monospaced, wraps anywhere, and one click
+   selects the whole key so it can be copied by hand if needed.
+   ============================================================ */
+.license-key {
+  display: block; margin: 0; padding: 14px 16px; text-align: left;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85rem; line-height: 1.55;
+  color: var(--ink); background: var(--purple-xlight);
+  border: 1px solid var(--line); border-radius: 7px;
+  overflow-wrap: anywhere; word-break: break-all; user-select: all;
+}
+.license-actions { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+.kit-product-buy .license-actions .btn { width: auto; }
+.license-note { color: var(--muted); font-size: 0.9rem; margin: 12px 0 0; }
+.plus-lede { color: var(--muted); max-width: 62ch; margin-top: 14px; line-height: 1.7; }
+/* Four extras read as a 2 x 2 grid instead of 3 + 1 with an empty cell. */
+.plus-grid-2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 700px) { .plus-grid-2 { grid-template-columns: 1fr; } }

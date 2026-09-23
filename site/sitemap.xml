@@ -556,8 +556,14 @@
   </url>
   <url>
     <loc>https://purplelink.llc/vitae/</loc>
-    <lastmod>2026-09-04</lastmod>
+    <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/vitae/plus/</loc>
+    <lastmod>2026-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>
