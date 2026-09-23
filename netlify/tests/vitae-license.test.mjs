@@ -183,3 +183,12 @@ test("the portal refuses rather than opening an unrestricted session", async () 
   assert.equal(res.headers.get("location"), "https://purplelink.llc/vitae/plus/manage/");
   assert.equal(calls.filter((c) => c.url.endsWith("/billing_portal/sessions")).length, 0);
 });
+
+test("manage emails each subscriber at most 3 times a day", async () => {
+  blobs.set("vitae-plus/0123456789abcdef", JSON.stringify({ subscription: "sub_live", plan: "monthly" }));
+  stripe["/subscriptions/sub_live"] = plusSub("sub_live", "active");
+  stripe["/customers/cus_1"] = { id: "cus_1", email: "owner@example.com" };
+  for (let i = 0; i < 3; i++) assert.equal((await post({ manage: "0123456789abcdef" }, `198.51.100.${60 + i}`)).status, 200);
+  assert.equal((await post({ manage: "0123456789abcdef" }, "198.51.100.70")).status, 429);
+  assert.equal(resendCalls().length, 3);
+});

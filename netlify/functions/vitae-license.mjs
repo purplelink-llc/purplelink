@@ -303,6 +303,10 @@ async function manage(id, secretKey, pem) {
   if (cust.error) return cust.error;
   const email = typeof cust.data?.email === "string" ? cust.data.email : "";
   if (!email) return json(502, { error: "no_email" });
+  // At most 3 billing emails per subscriber per day, whoever asks.
+  if (await emailRateLimited(customer, "manage")) {
+    return json(429, { error: "rate_limited", detail: "A link was already emailed several times today." });
+  }
   const exp = Math.floor(Date.now() / 1000) + PORTAL_LINK_SECONDS;
   const link = `${SITE_ORIGIN}/.netlify/functions/vitae-license?portal=${encodeURIComponent(portalToken(customer, exp, pem))}`;
   if (!(await sendManageEmail(email, link))) return json(502, { error: "email_failed" });
@@ -337,10 +341,10 @@ async function openPortal(token, secretKey, pem) {
 }
 
 /** Per-address, per-UTC-day counter so one inbox cannot be flooded with recovery emails. */
-async function emailRateLimited(email) {
+async function emailRateLimited(email, kind = "recover") {
   const day = new Date().toISOString().slice(0, 10);
   const digest = createHash("sha256").update(email).digest("hex").slice(0, 16);
-  const key = `rl:vitae-recover:${day}:${digest}`;
+  const key = `rl:vitae-${kind}:${day}:${digest}`;
   const store = getStore("rate-limits");
   const current = parseInt((await store.get(key)) || "0", 10) || 0;
   if (current >= RECOVER_PER_EMAIL_DAILY) return true;
