@@ -70,22 +70,25 @@ subscription sold through `checkout.mjs` as `vitae-plus-monthly`
   `trialing` get exp = current period end + 7 days; `past_due` gets exp = now +
   7 days; any other status returns 410 `{ "status": "<status>" }`. Unknown id:
   404. Never returns an email.
-- **Recover** `POST {"recover": "<email>"}`, from `/vitae/plus/recover/`. Finds
+- **Recover** `POST {"recover": "<email>"}`, from `/vitae/plus/recover/`. Answers
+  at once, then (in the background) finds
   Stripe customers with that email and their live Vitae Plus subscriptions
   (`metadata.product` starting `vitae-plus-`, status active, trialing or
   past_due), restores each id-to-subscription mapping, and emails a current key
-  to that address through Resend. Always answers `{ "status": "sent_if_found" }`
-  (so it cannot reveal who subscribes); 400 for a malformed address, 429 after
-  3 requests per address per day or the per-IP limit, 502 if the email failed.
+  to that address through Resend. Always answers `{ "status": "sent_if_found" }`,
+  with the same timing, so it cannot reveal who subscribes; 400 for a malformed
+  address, 429 after 3 requests per address per day or the per-IP limit.
 - **Manage** `POST {"manage": "<id>"}`, sent by the app's "Manage
-  Subscription" button. A POST keeps the id out of browser URLs and history.
-  Looks up the subscription's customer, creates a Stripe billing portal
-  session (return URL `/vitae/plus/`) with a limited portal configuration
-  (invoices, card update, cancel at period end; no email, address or plan
-  changes), and returns `{ "url": "<portal url>" }`,
-  which the app opens in the browser. On any failure the app opens
-  `/vitae/plus/manage/`, which explains how to cancel by email. The old
-  `GET ?manage=` form now redirects to that page.
+  Subscription" button. Looks up the subscription's Stripe customer and emails
+  that customer's own address a portal link, then answers `{ "status": "emailed" }`.
+  Holding a key is therefore not enough to see invoices or the card. The old
+  `GET ?manage=` form redirects to `/vitae/plus/manage/`.
+- **Portal link** `GET ?portal=<customer>.<exp>.<sig>`, the emailed link. The
+  signature is an HMAC keyed from `VITAE_LICENSE_PRIVATE_KEY`; links last 24
+  hours. Opens a billing portal session (return URL `/vitae/plus/`) with a
+  limited configuration (invoices, card update, cancel at period end; no email,
+  address or plan changes) and 302-redirects to it. Any failure redirects to
+  `/vitae/plus/manage/`.
 
 All responses are `no-store`, and each IP gets 60 requests per UTC day across
 all modes (`rate-limits` Blobs store). Malformed ids get 400.

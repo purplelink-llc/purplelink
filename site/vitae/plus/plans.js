@@ -29,6 +29,18 @@
     for (var i = 0; i < buttons.length; i++) buttons[i].disabled = disabled;
   }
 
+  // One nonce per page load: a retried click reuses its checkout session, another buyer on
+  // the same network does not.
+  var attempt = (function () {
+    try {
+      var a = new Uint8Array(12);
+      window.crypto.getRandomValues(a);
+      return Array.prototype.map.call(a, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+    } catch (e) {
+      return String(Date.now()) + String(Math.random()).slice(2, 10);
+    }
+  })();
+
   function start(product) {
     setDisabled(true);
     try {
@@ -39,7 +51,7 @@
     fetch("/.netlify/functions/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ product: product, ref: referralCode }),
+      body: JSON.stringify({ product: product, ref: referralCode, attempt: attempt }),
     })
       .then(function (resp) {
         if (!resp.ok) return resp.json().then(function (p) { throw p; });

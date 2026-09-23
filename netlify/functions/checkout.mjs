@@ -193,9 +193,12 @@ export default async function handler(request) {
   // Session instead of creating a second, independently payable one. A
   // genuinely new purchase attempt after the window (or by a different
   // client) still gets a fresh session.
+  // Pages that send a per-page-load `attempt` nonce (Vitae Plus) keep two buyers behind one
+  // campus NAT apart; the referral code is included so differing tags never collide.
+  const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`${clientIp}:${product}:${timeBucket}`)
+    .update(`${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
