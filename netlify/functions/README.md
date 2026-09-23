@@ -48,6 +48,40 @@ feed and update DMGs (the app). See `docs/products/moderntex.md`. The webhook
 above also emails Blobs-delivered buyers (kits, ModernTex) their success-page
 link via Resend; set `ALERT_EMAIL_TO` so a failed send reaches you.
 
+## `vitae-license`
+
+Issues Vitae Plus license keys. The success page `/vitae/plus/success/` calls
+`GET /.netlify/functions/vitae-license?session_id=cs_…` after Stripe Checkout
+(product key `vitae-plus` in `checkout.mjs`, price `STRIPE_PRICE_VITAE_PLUS`).
+The function retrieves the Checkout Session from Stripe, requires
+`payment_status === "paid"` and `metadata.product === "vitae-plus"`, and returns
+`{ "key": "VP1-…", "email": "<Stripe receipt address>" | null }`. The email is
+only displayed on the page and is never logged. Responses are `no-store`, and
+each IP gets 60 requests per UTC day (`rate-limits` Blobs store). Errors: 400
+for a malformed session id, 404 when no Vitae Plus order matches, 402 while the
+payment has not cleared.
+
+Required env vars:
+- `STRIPE_SECRET_KEY`: shared with `checkout`.
+- `VITAE_LICENSE_PRIVATE_KEY`: the Ed25519 private key as a PKCS#8 PEM string.
+  Newlines may be pasted escaped as `\n`. The matching public key is compiled
+  into Vitae, which verifies keys offline and never calls this function.
+
+Key format, which must match the app's verifier exactly:
+
+```
+payload = UTF-8 JSON.stringify({ iat, id, p: "vitae-plus", v: 1 })   // key order iat, id, p, v
+          iat = the session's Stripe `created` time, unix seconds
+          id  = first 16 hex characters of sha256(session.id)
+sig     = Ed25519 signature over payload (crypto.sign(null, payload, key))
+key     = "VP1-" + base64url(payload) + "." + base64url(sig)         // no padding
+```
+
+Both payload fields come from the session, so reloading the success page returns
+the same key. The key carries no name or email. `buildLicenseKey()` is exported
+so the format can be tested without Stripe. The webhook does not handle
+`vitae-plus`; there is nothing for it to deliver.
+
 ## `indexnow-ping`
 
 Pings the IndexNow shared endpoint (Bing / Yandex / Seznam / Naver) with URLs from the live sitemap whose `<lastmod>` matches today. Triggered automatically after every production deploy via a Netlify outgoing webhook.

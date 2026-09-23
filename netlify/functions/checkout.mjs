@@ -27,6 +27,7 @@
  *   STRIPE_PRICE_REVISION_REVIEW           (revision-review, $2)
  *   STRIPE_PRICE_RESPONSE_REVIEW           (response-review, $6)
  *   STRIPE_PRICE_RESUME_REVIEW             (resume-review, $5) — first non-academic product
+ *   STRIPE_PRICE_VITAE_PLUS                (vitae-plus, $5)
  *   STRIPE_SECRET_KEY (shared, sk_test_… or sk_live_…)
  */
 
@@ -95,6 +96,10 @@ const PRODUCT_CATALOG = {
   // ModernTex for macOS: $10 one-time. Delivery is the session-gated DMG from the
   // moderntex-files Blobs store; see moderntex-download.mjs.
   "moderntex":               { envKey: "STRIPE_PRICE_MODERNTEX",               successPath: "/moderntex/success/" },
+  // Vitae Plus: $5 one-time, optional cosmetic extras for the free Vitae app. The
+  // success page asks vitae-license.mjs for an offline-verified license key.
+  // cancel_url below maps /vitae/plus/success/ back to /vitae/plus/.
+  "vitae-plus":              { envKey: "STRIPE_PRICE_VITAE_PLUS",              successPath: "/vitae/plus/success/" },
   "digest-monthly": {
     envKey: "STRIPE_PRICE_DIGEST_MONTHLY",
     successPath: "/blog/digest/subscribed/",
