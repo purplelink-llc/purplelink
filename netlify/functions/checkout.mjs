@@ -5,7 +5,8 @@
  *   body: { product: "paper-review-standard" | "paper-review-deep" | ... }
  *
  * Maps the product key to a Stripe price_id via per-product env vars, then
- * creates a one-time-payment Checkout Session. Returns the hosted URL.
+ * creates a Checkout Session (one-time payment, or a subscription for the
+ * entries marked mode: "subscription"). Returns the hosted URL.
  *
  * The Stripe success URL routes the user to the right post-payment page
  * based on the product category (paper-review goes to /upload/, cover-letter
@@ -27,7 +28,8 @@
  *   STRIPE_PRICE_REVISION_REVIEW           (revision-review, $2)
  *   STRIPE_PRICE_RESPONSE_REVIEW           (response-review, $6)
  *   STRIPE_PRICE_RESUME_REVIEW             (resume-review, $5) — first non-academic product
- *   STRIPE_PRICE_VITAE_PLUS                (vitae-plus, $5)
+ *   STRIPE_PRICE_VITAE_PLUS_MONTHLY        (vitae-plus-monthly, $3/month subscription, 7-day trial)
+ *   STRIPE_PRICE_VITAE_PLUS_ANNUAL         (vitae-plus-annual, $24/year subscription, 7-day trial)
  *   STRIPE_SECRET_KEY (shared, sk_test_… or sk_live_…)
  */
 
@@ -96,10 +98,22 @@ const PRODUCT_CATALOG = {
   // ModernTex for macOS: $10 one-time. Delivery is the session-gated DMG from the
   // moderntex-files Blobs store; see moderntex-download.mjs.
   "moderntex":               { envKey: "STRIPE_PRICE_MODERNTEX",               successPath: "/moderntex/success/" },
-  // Vitae Plus: $5 one-time, optional cosmetic extras for the free Vitae app. The
-  // success page asks vitae-license.mjs for an offline-verified license key.
+  // Vitae Plus: optional subscription for the free Vitae app ($3/month or
+  // $24/year, 7-day trial). The success page asks vitae-license.mjs for a
+  // signed key; the app refreshes it from the same function about monthly.
   // cancel_url below maps /vitae/plus/success/ back to /vitae/plus/.
-  "vitae-plus":              { envKey: "STRIPE_PRICE_VITAE_PLUS",              successPath: "/vitae/plus/success/" },
+  "vitae-plus-monthly": {
+    envKey: "STRIPE_PRICE_VITAE_PLUS_MONTHLY",
+    successPath: "/vitae/plus/success/",
+    mode: "subscription",
+    trialDays: 7,
+  },
+  "vitae-plus-annual": {
+    envKey: "STRIPE_PRICE_VITAE_PLUS_ANNUAL",
+    successPath: "/vitae/plus/success/",
+    mode: "subscription",
+    trialDays: 7,
+  },
   "digest-monthly": {
     envKey: "STRIPE_PRICE_DIGEST_MONTHLY",
     successPath: "/blog/digest/subscribed/",
@@ -210,6 +224,14 @@ export default async function handler(request) {
   }
   if (referralCode) {
     params["metadata[referral_code]"] = referralCode;
+  }
+  if (mode === "subscription") {
+    // Copy the product key onto the Subscription too, so customer.subscription.*
+    // events and the dashboard can tell a Vitae Plus subscription from a digest one.
+    params["subscription_data[metadata][product]"] = product;
+    if (entry.trialDays) {
+      params["subscription_data[trial_period_days]"] = String(entry.trialDays);
+    }
   }
 
   let resp;

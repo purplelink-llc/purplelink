@@ -73,6 +73,13 @@ const BLOB_DELIVERED_PRODUCTS = new Map([
   ["kit-clip",          { name: "The Clip Pipeline kit",             successPath: "/kits/success/" }],
   ["moderntex",         { name: "ModernTex for macOS",               successPath: "/moderntex/success/" }],
 ]);
+
+// Vitae Plus subscriptions (checkout.mjs: vitae-plus-monthly, vitae-plus-annual).
+// Nothing to deliver here: the success page gets the key from vitae-license.mjs,
+// and the app's monthly refresh reads the subscription's live status from
+// Stripe, so a renewal, failed payment or cancellation needs no webhook action.
+// They are recognized only so they are logged as ours, not as foreign products.
+const VITAE_PLUS_PREFIX = "vitae-plus-";
 const SITE_ORIGIN = "https://purplelink.llc";
 const ORDER_FROM_ADDRESS = "Purplelink LLC <orders@purplelink.llc>";
 const ORDER_REPLY_TO = "ben@purplelink.llc";
@@ -297,6 +304,11 @@ export default async function handler(request) {
   }
 
   if (event.type === "customer.subscription.deleted") {
+    const deletedProduct = event.data?.object?.metadata?.product || "";
+    if (deletedProduct.startsWith(VITAE_PLUS_PREFIX)) {
+      console.log("stripe-webhook: vitae plus subscription ended", deletedProduct);
+      return jsonResponse(200, { status: "vitae_plus_acknowledged", product: deletedProduct, type: event.type });
+    }
     const store = getStore("subscribers");
     const subscriptionId = event.data && event.data.object && event.data.object.id;
     // store.list() pages results; following the cursor matters once the
@@ -331,6 +343,13 @@ export default async function handler(request) {
   const session = event.data && event.data.object;
   if (!session || !session.id) {
     return jsonResponse(400, { error: "missing_session" });
+  }
+  // Checked before payment_status: a checkout that starts a free trial completes
+  // with payment_status "no_payment_required", and it is still ours.
+  const sessionProduct = (session.metadata && session.metadata.product) || "";
+  if (sessionProduct.startsWith(VITAE_PLUS_PREFIX)) {
+    console.log("stripe-webhook: vitae plus checkout completed", sessionProduct, session.payment_status);
+    return jsonResponse(200, { status: "vitae_plus_acknowledged", product: sessionProduct });
   }
   if (session.payment_status !== "paid") {
     return jsonResponse(200, { status: "not_paid", payment_status: session.payment_status });

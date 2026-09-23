@@ -50,37 +50,67 @@ link via Resend; set `ALERT_EMAIL_TO` so a failed send reaches you.
 
 ## `vitae-license`
 
-Issues Vitae Plus license keys. The success page `/vitae/plus/success/` calls
-`GET /.netlify/functions/vitae-license?session_id=cs_…` after Stripe Checkout
-(product key `vitae-plus` in `checkout.mjs`, price `STRIPE_PRICE_VITAE_PLUS`).
-The function retrieves the Checkout Session from Stripe, requires
-`payment_status === "paid"` and `metadata.product === "vitae-plus"`, and returns
-`{ "key": "VP1-…", "email": "<Stripe receipt address>" | null }`. The email is
-only displayed on the page and is never logged. Responses are `no-store`, and
-each IP gets 60 requests per UTC day (`rate-limits` Blobs store). Errors: 400
-for a malformed session id, 404 when no Vitae Plus order matches, 402 while the
-payment has not cleared.
+Issues, refreshes and manages Vitae Plus subscription keys. Vitae Plus is a
+subscription sold through `checkout.mjs` as `vitae-plus-monthly`
+(`STRIPE_PRICE_VITAE_PLUS_MONTHLY`, $3/month) and `vitae-plus-annual`
+(`STRIPE_PRICE_VITAE_PLUS_ANNUAL`, $24/year), both with a 7-day trial
+(`subscription_data[trial_period_days]=7`). Three GET modes:
+
+- **Issue** `?session_id=cs_…`, called by `/vitae/plus/success/`. Retrieves the
+  Checkout Session with `expand[]=subscription`, requires `metadata.product` to
+  start with `vitae-plus-` and a subscription to exist, stores
+  `{ subscription, plan }` in the `vitae-plus` Blobs store under the key's id,
+  and returns `{ "key": "VP2-…", "email": "<Stripe receipt address>" | null }`.
+  The email is only displayed on the page and is never logged or stored.
+  402 while the session or subscription is not complete (the page retries).
+- **Refresh** `?refresh=<id>`, called by the app about once a month with the
+  16-lowercase-hex id from its current key and nothing else. Looks up the
+  mapping, retrieves the subscription from Stripe, and returns
+  `{ "key": "VP2-…", "status": "<subscription status>" }`. `active` and
+  `trialing` get exp = current period end + 7 days; `past_due` gets exp = now +
+  7 days; any other status returns 410 `{ "status": "<status>" }`. Unknown id:
+  404. Never returns an email.
+- **Manage** `?manage=<id>`, opened in the browser by the app's "Manage
+  subscription" button (`https://purplelink.llc/.netlify/functions/vitae-license?manage=<id>`).
+  Looks up the subscription's customer, creates a Stripe billing portal
+  session (return URL `/vitae/plus/`), and 302-redirects to it. Any failure
+  redirects to `/vitae/plus/manage/`, which explains how to cancel by email.
+
+All responses are `no-store`, and each IP gets 60 requests per UTC day across
+all modes (`rate-limits` Blobs store). Malformed ids get 400 (refresh) or the
+manage page (manage).
 
 Required env vars:
 - `STRIPE_SECRET_KEY`: shared with `checkout`.
 - `VITAE_LICENSE_PRIVATE_KEY`: the Ed25519 private key as a PKCS#8 PEM string.
   Newlines may be pasted escaped as `\n`. The matching public key is compiled
-  into Vitae, which verifies keys offline and never calls this function.
+  into Vitae, which verifies keys offline.
 
-Key format, which must match the app's verifier exactly:
+The billing portal uses the Stripe account's default Customer Portal
+configuration (the same one `subscription-portal` uses for the digest). It must
+be saved once in the Stripe dashboard (Settings > Billing > Customer portal) with
+cancellation allowed.
+
+Key format v2, which must match the app's verifier exactly:
 
 ```
-payload = UTF-8 JSON.stringify({ iat, id, p: "vitae-plus", v: 1 })   // key order iat, id, p, v
-          iat = the session's Stripe `created` time, unix seconds
-          id  = first 16 hex characters of sha256(session.id)
+payload = UTF-8 JSON.stringify({ exp, iat, id, p: "vitae-plus", plan, v: 2 })
+          // key order exactly: exp, iat, id, p, plan, v
+          exp  = unix seconds (see the refresh rules above)
+          iat  = now, unix seconds
+          id   = first 16 hex characters of sha256(subscription.id)
+          plan = "monthly" | "annual"
 sig     = Ed25519 signature over payload (crypto.sign(null, payload, key))
-key     = "VP1-" + base64url(payload) + "." + base64url(sig)         // no padding
+key     = "VP2-" + base64url(payload) + "." + base64url(sig)         // no padding
 ```
 
-Both payload fields come from the session, so reloading the success page returns
-the same key. The key carries no name or email. `buildLicenseKey()` is exported
-so the format can be tested without Stripe. The webhook does not handle
-`vitae-plus`; there is nothing for it to deliver.
+`current_period_end` is read from the subscription, or from its first item on
+Stripe API versions that moved it there. `plan` follows the price's billing
+interval, so a plan switch in the portal shows up at the next refresh. The key
+carries no name or email. `buildLicenseKey()`, `expiryFor()`, `periodEnd()` and
+`planOf()` are exported so the format can be tested without Stripe.
+`stripe-webhook` recognizes `vitae-plus-*` checkouts and cancellations and only
+logs them: refresh reads live status from Stripe, so the webhook has nothing to do.
 
 ## `indexnow-ping`
 
