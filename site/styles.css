@@ -1691,6 +1691,24 @@ dd {
   text-underline-offset: 3px;
 }
 
+.post-figure { margin: 36px auto; }
+
+.post-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.post-figure-portrait img { max-width: 440px; margin: 0 auto; }
+
+.post-figure figcaption {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: center;
+}
+
 .post-footer {
   padding: 32px clamp(24px, 6vw, 80px);
   border-top: 1px solid var(--line);
