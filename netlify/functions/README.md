@@ -82,8 +82,9 @@ subscription sold through `checkout.mjs` as `vitae-plus-monthly`
   Subscription" button. Looks up the subscription's Stripe customer and emails
   that customer's own address a portal link, then answers `{ "status": "emailed" }`.
   Holding a key is therefore not enough to see invoices or the card. The old
-  `GET ?manage=` form redirects to `/vitae/plus/manage/`.
-- **Portal link** `GET ?portal=<customer>.<exp>.<sig>`, the emailed link. The
+  `GET ?manage=` form answers 410.
+- **Portal link** `GET /.netlify/functions/vitae-license/portal/<customer>.<exp>.<sig>`,
+  the emailed link (in the path: Netlify copies a query string onto redirects). The
   signature is an HMAC keyed from `VITAE_LICENSE_PRIVATE_KEY`; links last 24
   hours. Opens a billing portal session (return URL `/vitae/plus/`) with a
   limited configuration (invoices, card update, cancel at period end; no email,

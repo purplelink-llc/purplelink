@@ -70,8 +70,8 @@ async function post(body, ip = "198.51.100.7") {
   return res;
 }
 
-function get(query, ip = "198.51.100.9") {
-  return handler(new Request(`https://purplelink.llc/.netlify/functions/vitae-license?${query}`, {
+function get(pathAndQuery, ip = "198.51.100.9") {
+  return handler(new Request(`https://purplelink.llc/.netlify/functions/vitae-license${pathAndQuery}`, {
     headers: { "x-nf-client-connection-ip": ip },
   }), {});
 }
@@ -137,11 +137,12 @@ test("manage emails a portal link to the Stripe customer's own address, not the 
   assert.deepEqual(await res.json(), { status: "emailed" });
   const mail = JSON.parse(resendCalls()[0].opts.body);
   assert.deepEqual(mail.to, ["owner@example.com"]);
-  const link = mail.text.match(/https:\/\/purplelink\.llc\/\.netlify\/functions\/vitae-license\?portal=\S+/)[0];
+  const link = mail.text.match(/https:\/\/purplelink\.llc\/\.netlify\/functions\/vitae-license\/portal\/\S+/)[0];
+  assert.equal(new URL(link).search, "", "the token is in the path, never the query");
   assert.equal(calls.filter((c) => c.url.endsWith("/billing_portal/sessions")).length, 0, "no portal until the link is used");
 
   // Opening the link creates a limited portal session and redirects to it.
-  const opened = await get(new URL(link).search.slice(1));
+  const opened = await get(new URL(link).pathname.replace("/.netlify/functions/vitae-license", ""));
   assert.equal(opened.status, 302);
   assert.equal(opened.headers.get("location"), "https://billing.stripe.com/p/session/test");
   const config = calls.find((c) => c.url.endsWith("/billing_portal/configurations"));
@@ -168,7 +169,7 @@ test("portal tokens are bound to the customer, signed and expire", () => {
 });
 
 test("a bad or expired portal link goes to the help page and opens nothing", async () => {
-  const res = await get("portal=cus_ABC123.1000000000.bad");
+  const res = await get("/portal/cus_ABC123.1000000000.bad");
   assert.equal(res.status, 302);
   assert.equal(res.headers.get("location"), "https://purplelink.llc/vitae/plus/manage/");
   assert.equal(calls.filter((c) => c.url.includes("billing_portal")).length, 0);
@@ -179,7 +180,7 @@ test("the portal refuses rather than opening an unrestricted session", async () 
   globalThis.fetch = async (url, opts) =>
     String(url).endsWith("/billing_portal/configurations") ? new Response("{}", { status: 400 }) : base(url, opts);
   const token = portalToken("cus_ABC123", Math.floor(Date.now() / 1000) + 600, PEM);
-  const res = await get(`portal=${encodeURIComponent(token)}`);
+  const res = await get(`/portal/${encodeURIComponent(token)}`);
   assert.equal(res.headers.get("location"), "https://purplelink.llc/vitae/plus/manage/");
   assert.equal(calls.filter((c) => c.url.endsWith("/billing_portal/sessions")).length, 0);
 });

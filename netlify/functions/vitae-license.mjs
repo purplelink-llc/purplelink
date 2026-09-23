@@ -36,7 +36,8 @@
  *     a link to the billing portal, so holding a key is not enough to see billing details.
  *     -> 200 { status: "emailed" } · 400 bad_id · 404 not_found · 429 · 500/502
  *
- *   GET ?portal=<token>   The emailed link. The token is <customer>.<exp>.<HMAC>, valid
+ *   GET /portal/<token>   The emailed link (a path, not a query: Netlify copies a request's
+ *     query string onto a redirect that has none, which would pass the token along). The token is <customer>.<exp>.<HMAC>, valid
  *     for 24 hours. Opens a Stripe billing portal session with a configuration limited to
  *     invoices, the card, and cancelling at the end of the paid period (no email, address
  *     or plan changes), created once and kept in Blobs (or STRIPE_PORTAL_CONFIG_VITAE_PLUS).
@@ -308,7 +309,7 @@ async function manage(id, secretKey, pem) {
     return json(429, { error: "rate_limited", detail: "A link was already emailed several times today." });
   }
   const exp = Math.floor(Date.now() / 1000) + PORTAL_LINK_SECONDS;
-  const link = `${SITE_ORIGIN}/.netlify/functions/vitae-license?portal=${encodeURIComponent(portalToken(customer, exp, pem))}`;
+  const link = `${SITE_ORIGIN}/.netlify/functions/vitae-license/portal/${encodeURIComponent(portalToken(customer, exp, pem))}`;
   if (!(await sendManageEmail(email, link))) return json(502, { error: "email_failed" });
   return json(200, { status: "emailed" });
 }
@@ -527,19 +528,20 @@ export default async function handler(request, context) {
   if (request.method === "POST") return handlePost(request, context);
   if (request.method !== "GET") return json(405, { error: "method_not_allowed" });
 
-  const params = new URL(request.url).searchParams;
-  const sessionId = params.get("session_id");
-  const refreshId = params.get("refresh");
-
-  // The old GET ?manage=<id> link put the id in browser history; send it to the help page.
-  if (params.get("manage") !== null) return redirect(MANAGE_FALLBACK);
-  const portal = params.get("portal");
-  if (portal !== null) {
+  const url = new URL(request.url);
+  const params = url.searchParams;
+  const portalPath = url.pathname.match(/\/portal\/([^/]+)$/);
+  if (portalPath) {
     if (await rateLimited(clientIpOf(request))) return redirect(MANAGE_FALLBACK);
     const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
     const pem = Netlify.env.get("VITAE_LICENSE_PRIVATE_KEY");
-    return secretKey && pem ? openPortal(portal, secretKey, pem) : redirect(MANAGE_FALLBACK);
+    return secretKey && pem ? openPortal(decodeURIComponent(portalPath[1]), secretKey, pem) : redirect(MANAGE_FALLBACK);
   }
+  const sessionId = params.get("session_id");
+  const refreshId = params.get("refresh");
+
+  // The old GET ?manage=<id> form is retired (a redirect would carry the id along).
+  if (params.get("manage") !== null) return json(410, { error: "gone", detail: "Use Manage Subscription in Vitae." });
   if (refreshId !== null && !LICENSE_ID.test(refreshId)) {
     return json(400, { error: "bad_id", detail: "The key id must be 16 lowercase hex characters." });
   }
