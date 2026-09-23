@@ -17,7 +17,7 @@ a copy built into the app when offline. The file has two parts:
   "id": "vitae-plus",
   "sponsor": "Purplelink",
   "title": "Vitae Plus",
-  "body": "Themes, alternate icons and a milestones case for $5, once. Everything else stays free.",
+  "body": "Reports, Word export and more, from $3 a month. The core stays free.",
   "url": "https://purplelink.llc/vitae/plus/?ref=vitae-card",
   "symbol": "sparkles",
   "starts": "2026-09-23",

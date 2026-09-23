@@ -8,7 +8,7 @@
     <meta name="description" content="Vitae is a free native macOS app for academics — track submissions, grants, projects, and your CV in one local-first app. Download the notarized DMG, no App Store required.">
     <link rel="canonical" href="https://purplelink.llc/vitae/">
     <meta property="og:title" content="Vitae — Academic CV &amp; Research Management for macOS">
-    <meta property="og:description" content="A free native macOS app for academics: track submissions, grants, projects, and your CV. Local-first, no subscription.">
+    <meta property="og:description" content="A free native macOS app for academics: track submissions, grants, projects, and your CV. Local-first, with an optional Plus subscription.">
     <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -40,7 +40,8 @@
           "description": "Vitae is a free native macOS app for academics. Track journal submissions, grants, projects, collaborators, and your CV — all stored locally on your Mac.",
           "offers": [
             { "@type": "Offer", "name": "Vitae", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "Vitae Plus (optional extras)", "price": "5.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/vitae/plus/", "category": "One-time purchase" }
+            { "@type": "Offer", "name": "Vitae Plus, monthly (optional)", "price": "3.00", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "3.00", "priceCurrency": "USD", "billingDuration": "P1M", "unitCode": "MON" }, "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/vitae/plus/", "category": "Subscription" },
+            { "@type": "Offer", "name": "Vitae Plus, annual (optional)", "price": "24.00", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "24.00", "priceCurrency": "USD", "billingDuration": "P1Y", "unitCode": "ANN" }, "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/vitae/plus/", "category": "Subscription" }
           ],
           "downloadUrl": "https://purplelink.llc/vitae/download",
           "softwareVersion": "0.1",
@@ -116,7 +117,7 @@
         </div>
         <div class="feature-item">
           <h3>CV &amp; packages</h3>
-          <p>Your CV populates automatically from your project and submission data. Export to PDF, LaTeX, or Word when you need it.</p>
+          <p>Your CV populates automatically from your project and submission data. Export to PDF, LaTeX, or rich text that opens in Word when you need it. Word (.docx) templates are part of <a href="/vitae/plus/">Vitae Plus</a>.</p>
         </div>
         <div class="feature-item">
           <h3>Inbox triage</h3>
@@ -128,7 +129,7 @@
         </div>
         <div class="feature-item">
           <h3>Local-first &amp; private</h3>
-          <p>Everything is stored on your Mac with SwiftData. No account, no cloud sync required, no subscription. Your research history belongs to you.</p>
+          <p>Everything is stored on your Mac with SwiftData. No account and no cloud sync required, and keeping your record needs no subscription. Your research history belongs to you.</p>
         </div>
       </div>
     </section>
@@ -137,10 +138,10 @@
       <div class="features-header">
         <p class="eyebrow">Free &amp; open to support</p>
         <h2>Vitae is free. If it saves you time, consider supporting it.</h2>
-        <p style="max-width:560px;margin:12px auto 0;color:var(--muted);font-size:0.95rem;">Every record-keeping feature is free, with no limits and no subscription. No third-party ads, no data harvesting. If Vitae makes your academic life easier, <a href="/vitae/plus/">Vitae Plus</a> (optional cosmetic extras, $5 once), a coffee, or a monthly membership helps keep it maintained and updated.</p>
+        <p style="max-width:560px;margin:12px auto 0;color:var(--muted);font-size:0.95rem;">All core record-keeping is free, with no limits, and everything in Vitae 0.2 stays free. No third-party ads, no data harvesting. <a href="/vitae/plus/">Vitae Plus</a> is an optional subscription, $3 a month or $24 a year, for newer tools such as reports, Word templates, the revision workspace and Shareables. It, a coffee, or a monthly membership helps keep Vitae maintained and updated.</p>
       </div>
       <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:32px;">
-        <a class="btn btn-primary" href="/vitae/plus/">Vitae Plus, $5</a>
+        <a class="btn btn-primary" href="/vitae/plus/">Vitae Plus, from $3 a month</a>
         <a class="btn btn-ghost" href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">☕ One-time tip</a>
         <a class="btn btn-ghost" href="https://buymeacoffee.com/bampel/membership" target="_blank" rel="noopener">⭐ Monthly membership</a>
       </div>
@@ -151,7 +152,7 @@
       <div class="faq-list">
         <details class="faq-item">
           <summary>Is Vitae really free?</summary>
-          <div class="faq-body">Yes. Vitae is free to download and use, with every record-keeping feature, no trial period, no subscription, and no limits. An optional $5 upgrade, <a href="/vitae/plus/">Vitae Plus</a>, adds cosmetic and fun extras: color themes, alternate Dock icons, celebrations, and a milestones case. It unlocks nothing you need to keep your record. A tip via Buy Me a Coffee is also appreciated but never required.</div>
+          <div class="faq-body">Yes. Vitae is free to download and use, with all core record-keeping and no limits, and everything in Vitae 0.2 stays free. An optional subscription, <a href="/vitae/plus/">Vitae Plus</a> ($3 a month or $24 a year, with a 7-day free trial), adds newer tools: reports such as an NIH biosketch draft, Word export with your own templates, the revision workspace, Shareables, the collaboration map, batch DOI lookup and ORCID sync, Reminders and calendar sync, and themes. You do not need it to keep your record. A tip via Buy Me a Coffee is also appreciated but never required.</div>
         </details>
         <details class="faq-item">
           <summary>Does Vitae show ads?</summary>
