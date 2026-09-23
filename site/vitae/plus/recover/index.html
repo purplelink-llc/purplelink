@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, follow">
-    <title>Manage your Vitae Plus subscription - Purplelink LLC</title>
-    <meta name="description" content="How to cancel or manage a Vitae Plus subscription: from Settings in the Vitae app, or by email.">
-    <link rel="canonical" href="https://purplelink.llc/vitae/plus/manage/">
+    <title>Recover your Vitae Plus key - Purplelink LLC</title>
+    <meta name="description" content="Lost your Vitae Plus key or moving to a new Mac? Get a current key by email.">
+    <link rel="canonical" href="https://purplelink.llc/vitae/plus/recover/">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -28,20 +28,20 @@
 
     <main id="main-content" class="static-page">
       <a class="back-link" href="/vitae/plus/">← Vitae Plus</a>
-      <h1>Managing your Vitae Plus subscription</h1>
-      <p>You can cancel Vitae Plus at any time. Plus keeps working through the period you have already paid for, then the Plus tools stop. Your records and every free feature of Vitae are untouched.</p>
+      <h1>Recover your Vitae Plus key</h1>
+      <p>Lost your key, or setting up Vitae on another Mac? Enter the email address you used at checkout. If it has an active Vitae Plus subscription, or one in its free trial, we email a current key to that address.</p>
 
-      <h2>From the app</h2>
-      <p>In Vitae, open Settings, then Vitae Plus, then press Manage Subscription. Your browser opens Stripe's billing page for your subscription, where you can see your invoices, update your card, or cancel at the end of the paid period. Stripe handles that page; Purplelink never sees your card.</p>
-      <p>No key in Vitae on this Mac? <a href="/vitae/plus/recover/">Get a current key by email</a> first.</p>
+      <form class="subscribe-form" id="recover-form" novalidate>
+        <input type="email" name="email" class="subscribe-input" placeholder="you@example.com" required autocomplete="email" aria-label="Email address used at checkout">
+        <button type="submit" class="btn btn-primary subscribe-btn">Email My Key</button>
+      </form>
+      <p class="subscribe-status" id="recover-status" role="status" aria-live="polite"></p>
 
-      <h2>By email</h2>
-      <p>If the app is not at hand, or the billing page did not open, email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> from the address you used at checkout and ask to cancel.</p>
+      <h2>Then</h2>
+      <p>In Vitae, open Settings, then Vitae Plus, paste the key and click Activate. Vitae renews the key by itself while the subscription is active.</p>
 
-      <h2>If you are in the free trial</h2>
-      <p>Cancel before the 7 days are up and you are not charged.</p>
-
-      <p>See the <a href="/privacy/">privacy policy</a> for what the app sends when it checks your subscription.</p>
+      <h2>No email arrived?</h2>
+      <p>Check your spam folder, and that you used the address from your Stripe receipt. The key is sent only to that address, and a few requests per address are allowed each day. If it still does not arrive, email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> from that address.</p>
     </main>
 
     <footer class="footer">
@@ -58,6 +58,7 @@
         <a href="/terms/">Terms</a>
       </nav>
     </footer>
+    <script src="/vitae/plus/recover.js" defer></script>
     <script src="/analytics.js?v=a3dd81b65e" defer></script>
   </body>
 </html>

@@ -75,10 +75,10 @@ const BLOB_DELIVERED_PRODUCTS = new Map([
 ]);
 
 // Vitae Plus subscriptions (checkout.mjs: vitae-plus-monthly, vitae-plus-annual).
-// Nothing to deliver here: the success page gets the key from vitae-license.mjs,
-// and the app's monthly refresh reads the subscription's live status from
-// Stripe, so a renewal, failed payment or cancellation needs no webhook action.
-// They are recognized only so they are logged as ours, not as foreign products.
+// The success page gets the key from vitae-license.mjs, and the app's refresh reads the
+// subscription's live status from Stripe, so a renewal, failed payment or cancellation needs
+// no webhook action. On checkout the buyer is emailed the success link (which issues a
+// current key whenever it is opened) and the recovery page, so closing the tab loses nothing.
 const VITAE_PLUS_PREFIX = "vitae-plus-";
 const SITE_ORIGIN = "https://purplelink.llc";
 const ORDER_FROM_ADDRESS = "Purplelink LLC <orders@purplelink.llc>";
@@ -275,6 +275,51 @@ async function emailDownloadLink(to, sessionId, productKey) {
   return false;
 }
 
+/**
+ * Email a Vitae Plus buyer the success link and the recovery page. The session id in the
+ * link is the same bearer token the success page uses; vitae-license.mjs re-checks the
+ * subscription every time it issues a key, so the link is safe to keep. Never throws.
+ */
+async function emailVitaePlusLink(to, sessionId) {
+  const apiKey = Netlify.env.get("RESEND_API_KEY");
+  if (!apiKey || !to || !sessionId) return false;
+  const link = `${SITE_ORIGIN}/vitae/plus/success/?session_id=${encodeURIComponent(sessionId)}`;
+  const recover = `${SITE_ORIGIN}/vitae/plus/recover/`;
+  const text =
+    `Thanks for subscribing to Vitae Plus.\n\n` +
+    `Your key is on this page, and the page gives you a current key whenever you open it:\n${link}\n\n` +
+    `In Vitae, open Settings, then Vitae Plus, paste the key and click Activate. Vitae renews the key by itself while the subscription is active.\n\n` +
+    `Lost the key later, or moving to a new Mac? Ask for it again at ${recover}\n\n` +
+    `To cancel, use Manage Subscription in Settings > Vitae Plus, or reply to this email.\n\n` +
+    `Purplelink LLC, Atlanta, Georgia`;
+  const html =
+    `<p>Thanks for subscribing to Vitae Plus.</p>` +
+    `<p><a href="${link}">Open the page with your key</a>. It gives you a current key whenever you open it.</p>` +
+    `<p>In Vitae, open Settings, then Vitae Plus, paste the key and click Activate. Vitae renews the key by itself while the subscription is active.</p>` +
+    `<p>Lost the key later, or moving to a new Mac? <a href="${recover}">Ask for it again</a>.</p>` +
+    `<p>To cancel, use Manage Subscription in Settings &gt; Vitae Plus, or reply to this email.</p>` +
+    `<p>Purplelink LLC, Atlanta, Georgia</p>`;
+  try {
+    const resp = await fetch(RESEND_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        from: ORDER_FROM_ADDRESS,
+        reply_to: ORDER_REPLY_TO,
+        to: [to],
+        subject: "Your Vitae Plus key",
+        text,
+        html,
+      }),
+    });
+    if (resp.ok) return true;
+    await alertOperator("Vitae Plus email failed", `session_id=${sessionId}\nemail=${to}\nresend_status=${resp.status}\nSend the buyer: ${link}`);
+  } catch (err) {
+    await alertOperator("Vitae Plus email failed", `session_id=${sessionId}\nemail=${to}\nerror=${String(err)}\nSend the buyer: ${link}`);
+  }
+  return false;
+}
+
 export default async function handler(request) {
   if (request.method !== "POST") {
     return jsonResponse(405, { error: "method_not_allowed" });
@@ -349,7 +394,9 @@ export default async function handler(request) {
   const sessionProduct = (session.metadata && session.metadata.product) || "";
   if (sessionProduct.startsWith(VITAE_PLUS_PREFIX)) {
     console.log("stripe-webhook: vitae plus checkout completed", sessionProduct, session.payment_status);
-    return jsonResponse(200, { status: "vitae_plus_acknowledged", product: sessionProduct });
+    const to = (session.customer_details && session.customer_details.email) || session.customer_email || "";
+    const emailed = session.status === "complete" && to ? await emailVitaePlusLink(to, session.id) : false;
+    return jsonResponse(200, { status: "vitae_plus_acknowledged", product: sessionProduct, emailed });
   }
   if (session.payment_status !== "paid") {
     return jsonResponse(200, { status: "not_paid", payment_status: session.payment_status });

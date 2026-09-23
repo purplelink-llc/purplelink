@@ -4,7 +4,7 @@
  * Vitae Plus is a subscription (vitae-plus-monthly, vitae-plus-annual in
  * checkout.mjs). The app holds a short-lived signed key, verifies it offline
  * against the matching Ed25519 public key, and refreshes it about once a month.
- * Three modes: issue and refresh are GET, manage is POST:
+ * Four modes: issue and refresh are GET, recover and manage are POST:
  *
  *   ?session_id=cs_…   Issue. Called by /vitae/plus/success/ after Checkout.
  *     -> 200 { key: "VP2-…", email: "<Stripe receipt address>" | null }
@@ -22,9 +22,19 @@
  *     past_due          -> exp = now + 7 days (grace while the card is retried)
  *     anything else     -> 410 { status }
  *
+ *   POST { "recover": "<email>" }   Recover. From /vitae/plus/recover/. Finds the Stripe
+ *     customers with that email and their live Vitae Plus subscriptions, and emails a
+ *     current key for each to that address (never to anyone else). The answer is the
+ *     same whether or not anything matched, so it cannot be used to learn who subscribes.
+ *     -> 200 { status: "sent_if_found" } · 400 bad_email · 429 · 500/502
+ *     At most 3 requests per address per day, on top of the per-IP limit.
+ *
  *   POST { "manage": "<id>" }   Manage. Sent by the app's "Manage Subscription"
  *     button (a POST, so the id never lands in a browser URL, history or logs).
- *     Creates a Stripe billing portal session for the subscription's customer.
+ *     Creates a Stripe billing portal session for the subscription's customer, using a
+ *     portal configuration limited to invoices, the card, and cancelling at the end of
+ *     the paid period (no email, address or plan changes). The configuration is created
+ *     once and its id kept in Blobs, or set with STRIPE_PORTAL_CONFIG_VITAE_PLUS.
  *     -> 200 { url: "<portal url>" } · 400 bad_id · 404 not_found · 429 · 500/502
  *     On any failure the app opens /vitae/plus/manage/, which explains how to
  *     cancel by email instead.
@@ -44,6 +54,8 @@
  * Env vars:
  *   STRIPE_SECRET_KEY          shared with checkout.mjs
  *   VITAE_LICENSE_PRIVATE_KEY  Ed25519 PKCS#8 PEM; literal "\n" sequences are accepted
+ *   RESEND_API_KEY             shared with stripe-webhook.mjs; sends recovery emails
+ *   STRIPE_PORTAL_CONFIG_VITAE_PLUS  optional: an existing bpc_… portal configuration id
  */
 import { createHash, createPrivateKey, sign } from "node:crypto";
 import { getStore } from "@netlify/blobs";
@@ -58,6 +70,12 @@ const SESSION_ID = /^cs_[A-Za-z0-9_]{10,200}$/;
 const LICENSE_ID = /^[0-9a-f]{16}$/;
 const SITE_ORIGIN = "https://purplelink.llc";
 const MANAGE_FALLBACK = `${SITE_ORIGIN}/vitae/plus/manage/`;
+const RESEND_API_URL = "https://api.resend.com/emails";
+const ORDER_FROM_ADDRESS = "Purplelink LLC <orders@purplelink.llc>";
+const ORDER_REPLY_TO = "ben@purplelink.llc";
+const RECOVER_PER_EMAIL_DAILY = 3;
+const EMAIL_PATTERN = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+const PORTAL_CONFIG_BLOB = "_portal_config";
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -225,6 +243,51 @@ async function refresh(id, secretKey, pem) {
   return keyResponse(sub, planOf(sub, mapping.plan), pem, { status: sub.status });
 }
 
+/**
+ * The id of a portal configuration that only allows invoices, the card, and cancelling at the
+ * end of the paid period. Created on first use; null if it cannot be made (the caller then
+ * refuses rather than opening an unrestricted portal).
+ */
+export async function portalConfiguration(secretKey) {
+  const fromEnv = Netlify.env.get("STRIPE_PORTAL_CONFIG_VITAE_PLUS");
+  if (fromEnv) return fromEnv;
+  const store = getStore(MAPPING_STORE);
+  const cached = await store.get(PORTAL_CONFIG_BLOB);
+  if (cached) return cached;
+  const params = new URLSearchParams({
+    "business_profile[headline]": "Vitae Plus from Purplelink LLC",
+    "business_profile[privacy_policy_url]": `${SITE_ORIGIN}/privacy/`,
+    "business_profile[terms_of_service_url]": `${SITE_ORIGIN}/terms/`,
+    default_return_url: `${SITE_ORIGIN}/vitae/plus/`,
+    "features[invoice_history][enabled]": "true",
+    "features[payment_method_update][enabled]": "true",
+    "features[subscription_cancel][enabled]": "true",
+    "features[subscription_cancel][mode]": "at_period_end",
+    "features[subscription_cancel][proration_behavior]": "none",
+    "features[customer_update][enabled]": "false",
+    "features[subscription_update][enabled]": "false",
+    "metadata[product]": "vitae-plus",
+  });
+  let resp;
+  try {
+    resp = await fetch(`${STRIPE_API}/billing_portal/configurations`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${secretKey}`, "Content-Type": "application/x-www-form-urlencoded" },
+      body: params,
+    });
+  } catch (_) {
+    return null;
+  }
+  if (!resp.ok) {
+    console.error("vitae-license: portal configuration error", resp.status);
+    return null;
+  }
+  const config = await resp.json().catch(() => null);
+  if (typeof config?.id !== "string") return null;
+  await store.set(PORTAL_CONFIG_BLOB, config.id);
+  return config.id;
+}
+
 async function manage(id, secretKey) {
   const mapping = await readMapping(id);
   if (!mapping) return json(404, { error: "not_found" });
@@ -233,6 +296,8 @@ async function manage(id, secretKey) {
   if (got.notFound) return json(404, { error: "not_found" });
   const customer = typeof got.data?.customer === "string" ? got.data.customer : got.data?.customer?.id;
   if (!customer) return json(502, { error: "stripe_bad_response" });
+  const configuration = await portalConfiguration(secretKey);
+  if (!configuration) return json(502, { error: "portal_unavailable" });
 
   let resp;
   try {
@@ -242,7 +307,7 @@ async function manage(id, secretKey) {
         Authorization: `Bearer ${secretKey}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: new URLSearchParams({ customer, return_url: `${SITE_ORIGIN}/vitae/plus/` }),
+      body: new URLSearchParams({ customer, configuration, return_url: `${SITE_ORIGIN}/vitae/plus/` }),
     });
   } catch (_) {
     return json(502, { error: "stripe_unreachable" });
@@ -258,6 +323,98 @@ async function manage(id, secretKey) {
   return json(200, { url: portal.url });
 }
 
+/** Per-address, per-UTC-day counter so one inbox cannot be flooded with recovery emails. */
+async function emailRateLimited(email) {
+  const day = new Date().toISOString().slice(0, 10);
+  const digest = createHash("sha256").update(email).digest("hex").slice(0, 16);
+  const key = `rl:vitae-recover:${day}:${digest}`;
+  const store = getStore("rate-limits");
+  const current = parseInt((await store.get(key)) || "0", 10) || 0;
+  if (current >= RECOVER_PER_EMAIL_DAILY) return true;
+  await store.set(key, String(current + 1));
+  return false;
+}
+
+/**
+ * Current keys for every live Vitae Plus subscription of the Stripe customers with this
+ * email. Also restores the id-to-subscription mapping, so the recovered keys refresh.
+ */
+export async function keysForEmail(email, secretKey, pem, now = Math.floor(Date.now() / 1000)) {
+  const privateKey = loadPrivateKey(pem);
+  const seen = new Set();
+  const keys = [];
+  // Stripe matches the email exactly as stored; try it as typed and in lower case.
+  for (const address of [...new Set([email, email.toLowerCase()])]) {
+    const customers = await stripeGet(`/customers?email=${encodeURIComponent(address)}&limit=10`, secretKey);
+    if (customers.error) return { error: customers.error };
+    for (const customer of customers.data?.data ?? []) {
+      if (typeof customer?.id !== "string" || seen.has(customer.id)) continue;
+      seen.add(customer.id);
+      const subs = await stripeGet(
+        `/subscriptions?customer=${encodeURIComponent(customer.id)}&status=all&limit=20`, secretKey);
+      if (subs.error) return { error: subs.error };
+      for (const sub of subs.data?.data ?? []) {
+        const product = sub?.metadata?.product || "";
+        if (!product.startsWith(PRODUCT_PREFIX) || typeof sub.id !== "string") continue;
+        const exp = expiryFor(sub, now);
+        const plan = planOf(sub, product.slice(PRODUCT_PREFIX.length));
+        if (exp === null || !plan) continue;
+        await getStore(MAPPING_STORE).set(licenseId(sub.id), JSON.stringify({ subscription: sub.id, plan }));
+        keys.push({ key: buildLicenseKey({ subscriptionId: sub.id, plan, exp, iat: now, privateKey }), plan });
+      }
+    }
+  }
+  return { keys };
+}
+
+async function sendRecoveryEmail(to, keys) {
+  const apiKey = Netlify.env.get("RESEND_API_KEY");
+  if (!apiKey) return false;
+  const plural = keys.length > 1;
+  const list = keys.map((k) => `${k.plan === "annual" ? "Annual" : "Monthly"} plan:\n${k.key}`).join("\n\n");
+  const htmlList = keys
+    .map((k) => `<p>${k.plan === "annual" ? "Annual" : "Monthly"} plan:<br><code>${k.key}</code></p>`)
+    .join("");
+  const steps = "In Vitae, open Settings, then Vitae Plus, paste the key and click Activate.";
+  const text =
+    `Here ${plural ? "are your current Vitae Plus keys" : "is your current Vitae Plus key"}, as requested.\n\n${list}\n\n` +
+    `${steps} Vitae renews the key by itself while the subscription is active.\n\n` +
+    `If you did not ask for this, you can ignore it; nothing has changed.\n\n` +
+    `Purplelink LLC, Atlanta, Georgia`;
+  const html =
+    `<p>Here ${plural ? "are your current Vitae Plus keys" : "is your current Vitae Plus key"}, as requested.</p>${htmlList}` +
+    `<p>${steps} Vitae renews the key by itself while the subscription is active.</p>` +
+    `<p>If you did not ask for this, you can ignore it; nothing has changed.</p>` +
+    `<p>Purplelink LLC, Atlanta, Georgia</p>`;
+  try {
+    const resp = await fetch(RESEND_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        from: ORDER_FROM_ADDRESS,
+        reply_to: ORDER_REPLY_TO,
+        to: [to],
+        subject: plural ? "Your Vitae Plus keys" : "Your Vitae Plus key",
+        text,
+        html,
+      }),
+    });
+    return resp.ok;
+  } catch (_) {
+    return false;
+  }
+}
+
+async function recover(email, secretKey, pem) {
+  const found = await keysForEmail(email, secretKey, pem);
+  if (found.error) return found.error;
+  if (found.keys.length > 0 && !(await sendRecoveryEmail(email, found.keys))) {
+    return json(502, { error: "email_failed", detail: "The email could not be sent. Please try again later." });
+  }
+  // Same answer whether or not anything matched.
+  return json(200, { status: "sent_if_found" });
+}
+
 function clientIpOf(request) {
   return (
     request.headers.get("x-nf-client-connection-ip") ||
@@ -266,8 +423,21 @@ function clientIpOf(request) {
   );
 }
 
-async function handleManage(request) {
+async function handlePost(request) {
   const body = await request.json().catch(() => null);
+  if (typeof body?.recover === "string") {
+    const email = body.recover.trim();
+    if (!EMAIL_PATTERN.test(email)) {
+      return json(400, { error: "bad_email", detail: "Enter the email address you used at checkout." });
+    }
+    if ((await rateLimited(clientIpOf(request))) || (await emailRateLimited(email.toLowerCase()))) {
+      return json(429, { error: "rate_limited", detail: "Too many requests today. Please try again tomorrow." });
+    }
+    const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
+    const pem = Netlify.env.get("VITAE_LICENSE_PRIVATE_KEY");
+    if (!secretKey || !pem) return json(500, { error: "misconfigured", detail: "The license service is not set up yet." });
+    return recover(email, secretKey, pem);
+  }
   const id = typeof body?.manage === "string" ? body.manage : "";
   if (!LICENSE_ID.test(id)) {
     return json(400, { error: "bad_id", detail: "The key id must be 16 lowercase hex characters." });
@@ -281,7 +451,7 @@ async function handleManage(request) {
 }
 
 export default async function handler(request) {
-  if (request.method === "POST") return handleManage(request);
+  if (request.method === "POST") return handlePost(request);
   if (request.method !== "GET") return json(405, { error: "method_not_allowed" });
 
   const params = new URL(request.url).searchParams;

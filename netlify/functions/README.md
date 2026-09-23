@@ -70,10 +70,19 @@ subscription sold through `checkout.mjs` as `vitae-plus-monthly`
   `trialing` get exp = current period end + 7 days; `past_due` gets exp = now +
   7 days; any other status returns 410 `{ "status": "<status>" }`. Unknown id:
   404. Never returns an email.
+- **Recover** `POST {"recover": "<email>"}`, from `/vitae/plus/recover/`. Finds
+  Stripe customers with that email and their live Vitae Plus subscriptions
+  (`metadata.product` starting `vitae-plus-`, status active, trialing or
+  past_due), restores each id-to-subscription mapping, and emails a current key
+  to that address through Resend. Always answers `{ "status": "sent_if_found" }`
+  (so it cannot reveal who subscribes); 400 for a malformed address, 429 after
+  3 requests per address per day or the per-IP limit, 502 if the email failed.
 - **Manage** `POST {"manage": "<id>"}`, sent by the app's "Manage
   Subscription" button. A POST keeps the id out of browser URLs and history.
   Looks up the subscription's customer, creates a Stripe billing portal
-  session (return URL `/vitae/plus/`), and returns `{ "url": "<portal url>" }`,
+  session (return URL `/vitae/plus/`) with a limited portal configuration
+  (invoices, card update, cancel at period end; no email, address or plan
+  changes), and returns `{ "url": "<portal url>" }`,
   which the app opens in the browser. On any failure the app opens
   `/vitae/plus/manage/`, which explains how to cancel by email. The old
   `GET ?manage=` form now redirects to that page.
@@ -86,11 +95,18 @@ Required env vars:
 - `VITAE_LICENSE_PRIVATE_KEY`: the Ed25519 private key as a PKCS#8 PEM string.
   Newlines may be pasted escaped as `\n`. The matching public key is compiled
   into Vitae, which verifies keys offline.
+- `RESEND_API_KEY`: shared with `stripe-webhook`; sends recovery emails.
+- `STRIPE_PORTAL_CONFIG_VITAE_PLUS` (optional): a `bpc_…` portal configuration
+  id to use instead of the one the function creates.
 
-The billing portal uses the Stripe account's default Customer Portal
-configuration (the same one `subscription-portal` uses for the digest). It must
-be saved once in the Stripe dashboard (Settings > Billing > Customer portal) with
-cancellation allowed.
+The billing portal does not use the account's default Customer Portal
+configuration. On first use the function creates a Vitae Plus configuration
+(invoice history, payment method update, cancel at period end; customer and
+subscription updates off) and keeps its id in the `vitae-plus` Blobs store under
+`_portal_config`. If it cannot be created, manage answers 502 and the app opens
+the manage help page; it never falls back to an unrestricted portal. Stripe
+still requires the Customer Portal to have been activated once in the dashboard
+(Settings > Billing > Customer portal).
 
 Key format v2, which must match the app's verifier exactly:
 
