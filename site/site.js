@@ -379,3 +379,49 @@
     input.focus();
   });
 })();
+
+// ModernTex trial: after someone clicks a trial download, offer (never
+// require) a setup email and a reminder before the trial ends. The form
+// nearest the clicked link is revealed; the backend sends at most three
+// emails and answers the same way for any address.
+(() => {
+  const forms = [...document.querySelectorAll("[data-trial-signup]")];
+  if (!forms.length) return;
+  const API = "https://ben-ampel--purplelink-latextools-web.modal.run/lifecycle/trial";
+  document.querySelectorAll('a[href*="moderntex-download?trial=1"]').forEach((a) => {
+    a.addEventListener("click", () => {
+      const scope = a.closest("section, .app-hero-copy") || document;
+      const form = scope.querySelector("[data-trial-signup]") || forms[0];
+      form.hidden = false;
+    });
+  });
+  forms.forEach((form) => {
+    const status = form.querySelector("[data-trial-status]");
+    const btn = form.querySelector("button[type=submit]");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = form.email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.textContent = "That address doesn't look complete.";
+        form.email.focus();
+        return;
+      }
+      btn.disabled = true;
+      status.textContent = "Sending...";
+      try {
+        const r = await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, website: form.website.value }),
+        });
+        if (r.status === 429) throw new Error("rate");
+        if (!r.ok) throw new Error("http");
+        status.textContent = "Done. The setup email is on its way to " + email + ".";
+        form.email.disabled = true;
+      } catch (err) {
+        btn.disabled = false;
+        status.textContent = "That didn't go through. Try again in a minute, or email ben@purplelink.llc.";
+      }
+    });
+  });
+})();

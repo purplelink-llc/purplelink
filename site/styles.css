@@ -4236,3 +4236,13 @@ html { scroll-padding-top: 96px; }
   .compare-stack td { padding: 6px 0; border: 0; border-top: 1px solid var(--line); }
   .compare-stack td::before { content: attr(data-label); display: block; margin-bottom: 2px; color: var(--muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 }
+
+/* ModernTex: optional trial emails, shown after a trial download click */
+.trial-remind { margin: 18px 0 4px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); max-width: 560px; }
+.trial-remind[hidden] { display: none; }
+.trial-remind-head { margin: 0 0 10px; font-weight: 600; color: var(--ink); font-size: 0.95rem; }
+.trial-remind-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.trial-remind-row input[type="email"] { flex: 1 1 220px; min-height: 44px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 100px; background: var(--bg); color: var(--ink); font: inherit; }
+.trial-remind-row input[type="email"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
+.trial-remind-note { margin: 8px 0 0; color: var(--muted); font-size: 0.85rem; }
+.closing-cta .trial-remind { margin: 18px auto 4px; text-align: left; }

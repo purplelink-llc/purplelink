@@ -279,12 +279,12 @@ def html_invoice_ready(*, invoice_url: str, amount_cents: int) -> str:
 """
 
 
-def _lifecycle_footer(unsubscribe_url: str, product_name: str = "a Paper Review") -> str:
+def _lifecycle_footer(unsubscribe_url: str, product_name: str = "a Paper Review", reason: str = "") -> str:
+    why = reason or f"because you bought {product_name}. Occasional purchase-related email only — no lists, no spam."
     return f"""
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">
-    Sent by Purplelink LLC because you bought {product_name}. Occasional
-    purchase-related email only — no lists, no spam.
+    Sent by Purplelink LLC {why}
     <a href="{unsubscribe_url}" style="color: #888;">Unsubscribe</a>.
   </p>
 """
@@ -438,6 +438,100 @@ def html_lifecycle_mtx_before_submit(*, unsubscribe_url: str, **_ignored) -> str
   <p style="color: #555; font-size: 0.9em;">This is the last of these
   emails. Product updates arrive inside the app.</p>
   {_lifecycle_footer(unsubscribe_url, "ModernTex")}
+</div>
+"""
+
+
+_TRIAL_REASON = "because you asked for ModernTex trial emails on purplelink.llc. Three emails in all, then nothing."
+
+
+def html_lifecycle_trial_setup(*, unsubscribe_url: str, **_ignored) -> str:
+    """Sent right after someone asks for trial emails next to the download."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Setting up the ModernTex trial</h2>
+  <p>Here is what to expect in the first ten minutes.</p>
+  <ol style="padding-left: 20px;">
+    <li><strong>Install.</strong> Open the disk image and drag ModernTex to
+    Applications. It is signed and notarized, so it opens like any other
+    Mac app.</li>
+    <li><strong>TeX.</strong> ModernTex compiles with a TeX distribution such
+    as MacTeX or TinyTeX. If it finds neither on first launch, it offers a
+    one-click TinyTeX install.</li>
+    <li><strong>Your paper.</strong> Open the folder of an existing project,
+    or start from a
+    <a href="https://purplelink.llc/templates/?utm_source=email&amp;utm_campaign=mtx-trial-1" style="color: #6d28d9;">venue template</a>
+    (IEEE, ACM, NeurIPS, Elsevier, APA 7).</li>
+  </ol>
+  <p>The trial is the complete app for seven days from the first time you
+  open it. If you keep it, it is $10 once, and the license key from your
+  receipt unlocks the copy you already have.</p>
+  <p>Stuck on anything? Reply to this email.</p>
+  <p>
+    <a href="https://purplelink.llc/.netlify/functions/moderntex-download?trial=1"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Download the trial again
+    </a>
+  </p>
+  {_lifecycle_footer(unsubscribe_url, reason=_TRIAL_REASON)}
+</div>
+"""
+
+
+def html_lifecycle_trial_features(*, unsubscribe_url: str, **_ignored) -> str:
+    """Day 4 of a trial sign-up: the features that are easy to miss."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Four things to try before the trial ends</h2>
+  <ul style="padding-left: 20px;">
+    <li><strong>Live compile.</strong> Switch to Live mode and the PDF keeps
+    up as you type. Fast is for drafting; Full is the complete pass before
+    you submit.</li>
+    <li><strong>Cite by name.</strong> Start a citation and search your .bib
+    by author or title instead of remembering keys.</li>
+    <li><strong>Click to locate.</strong> Click anywhere in the PDF to jump
+    to the source that produced it.</li>
+    <li><strong>A table from a spreadsheet.</strong> Paste cells from Excel
+    or Google Sheets into the Table Editor and get booktabs LaTeX back.</li>
+  </ul>
+  <p>
+    <a href="https://purplelink.llc/moderntex/?utm_source=email&amp;utm_campaign=mtx-trial-4#buy"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Keep ModernTex for $10
+    </a>
+  </p>
+  {_lifecycle_footer(unsubscribe_url, reason=_TRIAL_REASON)}
+</div>
+"""
+
+
+def html_lifecycle_trial_ending(*, unsubscribe_url: str, **_ignored) -> str:
+    """Day 6 of a trial sign-up: the trial is about to end."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Your ModernTex trial ends soon</h2>
+  <p>If you started the trial when you downloaded it, it ends in about a
+  day. When it does, the window shows a notice and a Buy button. Your .tex
+  files are ordinary files on disk and are not touched either way.</p>
+  <p>Keeping it is $10 once, with every 1.x update included. The receipt
+  email carries a license key: paste it into the trial's "Have a license
+  key?" and the same copy unlocks, with no reinstall.</p>
+  <p>
+    <a href="https://purplelink.llc/moderntex/?utm_source=email&amp;utm_campaign=mtx-trial-6#buy"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Buy ModernTex, $10
+    </a>
+  </p>
+  <p style="color: #555; font-size: 0.9em;">If it was not for you, a reply
+  saying what was missing helps more than you would think. This is the last
+  trial email.</p>
+  {_lifecycle_footer(unsubscribe_url, reason=_TRIAL_REASON)}
 </div>
 """
 

@@ -2334,9 +2334,17 @@ def web():
         product = str((payload or {}).get("product", "")).strip()
         if not session_id or not email or "@" not in email:
             return JSONResponse({"error": "missing_fields"}, status_code=400)
-        if product not in LIFECYCLE_STAGES_BY_PRODUCT or product == "paper-review":
+        if product not in LIFECYCLE_STAGES_BY_PRODUCT or product in ("paper-review", "moderntex-trial"):
             # Paper Review entries are seeded by register-token itself.
             return JSONResponse({"error": "unknown_product", "product": product}, status_code=400)
+        if product == "moderntex":
+            # A buyer who signed up for trial emails gets no more of them.
+            trial_key = _trial_lifecycle_key(email)
+            trial = customer_lifecycle_dict.get(trial_key)
+            if isinstance(trial, dict) and trial.get("last_stage_sent") != TRIAL_LIFECYCLE_STAGES[-1][0]:
+                trial["last_stage_sent"] = TRIAL_LIFECYCLE_STAGES[-1][0]
+                trial["converted_at"] = _time_module.time()
+                customer_lifecycle_dict[trial_key] = trial
         if lifecycle_optout_dict.get(email):
             return {"status": "opted_out"}
         if customer_lifecycle_dict.get(session_id):
@@ -2350,6 +2358,76 @@ def web():
             "last_sent_at": None,
         }
         return {"status": "registered"}
+
+    @api.post("/lifecycle/trial")
+    async def lifecycle_trial_signup(request: Request):
+        """Public: someone downloading the ModernTex trial asks for a setup
+        email and a reminder before the trial ends.
+
+        Payload: { email, website }. `website` is a honeypot that people never
+        fill. The response is the same whether or not the address was new,
+        opted out, or already a buyer, so it reveals nothing about an address.
+        The setup email is sent now; the sweep sends the other two.
+        """
+        if not _enforce_rate_limit(request, "trial-signup"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        try:
+            payload = await request.json()
+        except Exception:
+            return JSONResponse({"error": "invalid_json"}, status_code=400)
+        email = str((payload or {}).get("email", "")).strip()[:254]
+        if (payload or {}).get("website"):
+            return {"status": "ok"}
+        from latextools import delivery as _delivery
+        if not _delivery._is_valid_email(email):
+            return JSONResponse({"error": "invalid_email"}, status_code=400)
+
+        key = _trial_lifecycle_key(email)
+        if lifecycle_optout_dict.get(email) or customer_lifecycle_dict.get(key):
+            return {"status": "ok"}
+        lowered = email.lower()
+        for _sid, other in list(customer_lifecycle_dict.items()):
+            if (isinstance(other, dict) and other.get("product") == "moderntex"
+                    and (other.get("email") or "").strip().lower() == lowered):
+                return {"status": "ok"}  # already owns ModernTex
+
+        now = _time_module.time()
+        entry = {
+            "email": email,
+            "product": "moderntex-trial",
+            "manuscript_title": "",
+            "purchased_at": now,  # sign-up time; drives the stage schedule
+            "last_stage_sent": None,
+            "last_sent_at": None,
+        }
+        customer_lifecycle_dict[key] = entry
+
+        import hashlib as _hashlib
+        import hmac as _hmac_local
+        from urllib.parse import quote as _quote
+        import httpx
+        token = _hmac_local.new(
+            os.environ.get("SUBSCRIBE_SECRET", "").encode(),
+            f"lifecycle:{email}".encode(), _hashlib.sha256,
+        ).hexdigest()
+        unsubscribe_url = (
+            "https://purplelink.llc/paper-review/lifecycle/unsubscribe"
+            f"?email={_quote(email)}&token={token}"
+        )
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            result = await _delivery.send_email(
+                client,
+                to=email,
+                subject=LIFECYCLE_SUBJECTS["trial_setup"],
+                html=_delivery.html_lifecycle_trial_setup(unsubscribe_url=unsubscribe_url),
+                tags=[{"name": "lifecycle_stage", "value": "trial_setup"}],
+            )
+        if result.get("status") == "ok":
+            entry["last_stage_sent"] = "trial_setup"
+            entry["last_sent_at"] = now
+            customer_lifecycle_dict[key] = entry
+        # Otherwise the daily sweep sends the setup email on its next run.
+        return {"status": "ok"}
 
     @api.get("/paper-review/lifecycle/unsubscribe")
     async def paper_review_lifecycle_unsubscribe(request: Request):
@@ -3512,16 +3590,33 @@ MTX_LIFECYCLE_STAGES = [
 ]
 # Entries written before this map existed carry no "product" and are Paper
 # Review purchases.
+# Someone who asked for trial emails next to the ModernTex download (not a
+# purchase). The setup email goes out at sign-up; buying closes the sequence.
+TRIAL_LIFECYCLE_STAGES = [
+    ("trial_setup", 0, "html_lifecycle_trial_setup"),
+    ("trial_features", 4, "html_lifecycle_trial_features"),
+    ("trial_ending", 6, "html_lifecycle_trial_ending"),
+]
 LIFECYCLE_STAGES_BY_PRODUCT = {
     "paper-review": LIFECYCLE_STAGES,
     "moderntex": MTX_LIFECYCLE_STAGES,
+    "moderntex-trial": TRIAL_LIFECYCLE_STAGES,
 }
+# Lifecycle entries that record interest, not a purchase.
+NON_PURCHASE_LIFECYCLE_PRODUCTS = {"moderntex-trial"}
+
+
+def _trial_lifecycle_key(email: str) -> str:
+    return "trial:" + email.strip().lower()
 LIFECYCLE_SUBJECTS = {
     "tips": "Getting the most out of your review",
     "review_request": "How did the review hold up?",
     "winback": "Still writing?",
     "mtx_tips": "A few things in ModernTex worth knowing",
     "mtx_before_submit": "Before you submit",
+    "trial_setup": "Setting up the ModernTex trial",
+    "trial_features": "Four things to try in ModernTex",
+    "trial_ending": "Your ModernTex trial ends soon",
 }
 
 
@@ -3563,6 +3658,8 @@ def _sessions_with_later_purchase(entries) -> set:
     rows = []
     for session_id, entry in entries:
         if not isinstance(entry, dict):
+            continue
+        if entry.get("product") in NON_PURCHASE_LIFECYCLE_PRODUCTS:
             continue
         email = (entry.get("email") or "").strip().lower()
         if not email:

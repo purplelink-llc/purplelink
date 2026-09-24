@@ -1894,3 +1894,73 @@ def test_moderntex_lifecycle_templates_name_the_product():
         assert "https://example.test/u" in html
         assert "Paper Review." not in html.split("<hr")[-1]
     assert "because you bought a Paper Review" in delivery.html_lifecycle_winback(unsubscribe_url="u")
+
+
+# ---------------------------------------------------------------------------
+# ModernTex trial emails: /lifecycle/trial
+# ---------------------------------------------------------------------------
+
+def _no_send(monkeypatch):
+    from latextools import delivery
+    sent = []
+
+    async def fake_send(client, **kw):
+        sent.append(kw)
+        return {"status": "ok"}
+    monkeypatch.setattr(delivery, "send_email", fake_send)
+    return sent
+
+
+def test_trial_signup_sends_setup_and_seeds_sequence(client, monkeypatch):
+    http, backend_app = client
+    sent = _no_send(monkeypatch)
+    r = http.post("/lifecycle/trial", json={"email": "Trial@Example.com"})
+    assert r.status_code == 200 and r.json() == {"status": "ok"}
+    entry = backend_app.customer_lifecycle_dict.get("trial:trial@example.com")
+    assert entry["product"] == "moderntex-trial"
+    assert entry["last_stage_sent"] == "trial_setup"
+    assert len(sent) == 1 and sent[0]["to"] == "Trial@Example.com"
+    # A second request neither re-sends nor resets the sequence.
+    http.post("/lifecycle/trial", json={"email": "trial@example.com"})
+    assert len(sent) == 1
+    nxt = backend_app._lifecycle_next_stage
+    assert nxt(entry, entry["purchased_at"] + 4 * 86400)[0] == "trial_features"
+
+
+def test_trial_signup_is_silent_for_honeypot_optout_and_buyers(client, monkeypatch):
+    http, backend_app = client
+    sent = _no_send(monkeypatch)
+    assert http.post("/lifecycle/trial", json={"email": "bot@example.com", "website": "x"}).json() == {"status": "ok"}
+    backend_app.lifecycle_optout_dict["out@example.com"] = True
+    assert http.post("/lifecycle/trial", json={"email": "out@example.com"}).json() == {"status": "ok"}
+    backend_app.customer_lifecycle_dict["cs_1"] = {"email": "owner@example.com", "product": "moderntex", "purchased_at": 1}
+    assert http.post("/lifecycle/trial", json={"email": "OWNER@example.com"}).json() == {"status": "ok"}
+    assert sent == []
+    assert backend_app.customer_lifecycle_dict.get("trial:bot@example.com") is None
+    assert http.post("/lifecycle/trial", json={"email": "not-an-email"}).status_code == 400
+
+
+def test_buying_moderntex_closes_the_trial_sequence(client, monkeypatch):
+    http, backend_app = client
+    _no_send(monkeypatch)
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "s")
+    http.post("/lifecycle/trial", json={"email": "t@example.com"})
+    r = http.post("/lifecycle/register", json={"session_id": "cs_9", "email": "t@example.com", "product": "moderntex"},
+                  headers={"x-webhook-secret": "s"})
+    assert r.json()["status"] == "registered"
+    trial = backend_app.customer_lifecycle_dict.get("trial:t@example.com")
+    assert trial["last_stage_sent"] == "trial_ending" and trial.get("converted_at")
+    assert backend_app._lifecycle_next_stage(trial, trial["purchased_at"] + 30 * 86400) is None
+    # The trial webhook path cannot be used to register a trial.
+    r = http.post("/lifecycle/register", json={"session_id": "x", "email": "t@example.com", "product": "moderntex-trial"},
+                  headers={"x-webhook-secret": "s"})
+    assert r.status_code == 400
+
+
+def test_trial_signups_do_not_count_as_purchases_for_winback(client):
+    _http, backend_app = client
+    entries = [
+        ("s-review", {"email": "a@example.com", "purchased_at": 1000}),
+        ("trial:a@example.com", {"email": "a@example.com", "product": "moderntex-trial", "purchased_at": 5000}),
+    ]
+    assert backend_app._sessions_with_later_purchase(entries) == set()

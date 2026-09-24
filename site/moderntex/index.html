@@ -25,8 +25,8 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/moderntex-icon.png" as="image" fetchpriority="high">
-    <link rel="stylesheet" href="/styles.css?v=87a16b28ac">
-    <script src="/site.js?v=46ec2b3221" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=6feaa44358">
+    <script src="/site.js?v=2fbf613174" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
     {
@@ -168,6 +168,16 @@
           <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="moderntex">Buy ModernTex &mdash; $10</button>
         </div>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <form class="trial-remind" data-trial-signup hidden novalidate>
+          <p class="trial-remind-head" id="trial-remind-h1">Your download has started. Want a setup guide, and a reminder before the trial ends?</p>
+          <div class="trial-remind-row">
+            <label class="visually-hidden" for="trial-email-1">Email address</label>
+            <input type="email" id="trial-email-1" name="email" autocomplete="email" placeholder="you@university.edu" aria-describedby="trial-remind-h1" required>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-secondary">Email me</button>
+          </div>
+          <p class="trial-remind-note" data-trial-status aria-live="polite">Optional. Three emails over a week, then nothing, each with an unsubscribe link.</p>
+        </form>
         <p class="waitlist-fine-print">The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, with every 1.x update included; the receipt email includes a permanent license key. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks, with no reinstall. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. <a href="#requirements">Requirements</a>.</p>
       </div>
     </div>
@@ -352,6 +362,16 @@
         <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?trial=1">Download the free trial</a>
         <a class="btn btn-ghost" href="#buy">Buy ModernTex &mdash; $10</a>
       </div>
+      <form class="trial-remind" data-trial-signup hidden novalidate>
+        <p class="trial-remind-head" id="trial-remind-h2">Your download has started. Want a setup guide, and a reminder before the trial ends?</p>
+        <div class="trial-remind-row">
+          <label class="visually-hidden" for="trial-email-2">Email address</label>
+          <input type="email" id="trial-email-2" name="email" autocomplete="email" placeholder="you@university.edu" aria-describedby="trial-remind-h2" required>
+          <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit" class="btn btn-secondary">Email me</button>
+        </div>
+        <p class="trial-remind-note" data-trial-status aria-live="polite">Optional. Three emails over a week, then nothing, each with an unsubscribe link.</p>
+      </form>
       <p class="closing-cta-fine">macOS 14 or later · Apple silicon and Intel · Signed and notarized</p>
     </section>
     </main>
