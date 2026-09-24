@@ -465,6 +465,56 @@
   });
 })();
 
+// Submission checklist: an optional single email a week before a deadline.
+// The date must be 2 to 366 days out (the backend checks the same range).
+(() => {
+  const form = document.querySelector("[data-deadline-signup]");
+  if (!form) return;
+  const API = "https://ben-ampel--purplelink-latextools-web.modal.run/lifecycle/deadline";
+  const status = form.querySelector("[data-deadline-status]");
+  const btn = form.querySelector("button[type=submit]");
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const day = 86400000;
+  form.deadline.min = iso(new Date(Date.now() + 2 * day));
+  form.deadline.max = iso(new Date(Date.now() + 366 * day));
+  const say = (text, field) => {
+    status.textContent = text;
+    if (field) field.focus();
+  };
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const deadline = form.deadline.value;
+    const email = form.email.value.trim();
+    if (!deadline || deadline < form.deadline.min || deadline > form.deadline.max) {
+      say("Pick a deadline between two days and a year from now.", form.deadline);
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      say("That address doesn't look complete.", form.email);
+      return;
+    }
+    btn.disabled = true;
+    say("Saving...");
+    try {
+      const r = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, deadline, venue: form.venue.value.trim(), website: form.website.value }),
+      });
+      if (r.status === 429) throw new Error("rate");
+      if (!r.ok) throw new Error("http");
+      const when = new Date(Date.parse(deadline + "T00:00:00Z") - 7 * day);
+      const sendOn = when.getTime() < Date.now() ? "within a day" : "on " + when.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+      say("Done. The reminder goes to " + email + " " + sendOn + ", with an unsubscribe link.");
+      form.querySelectorAll("input").forEach((i) => { i.disabled = true; });
+      if (window.plTrack) window.plTrack("deadline_signup", "");
+    } catch (err) {
+      btn.disabled = false;
+      say("That didn't go through. Try again in a minute, or email ben@purplelink.llc.");
+    }
+  });
+})();
+
 // Phones only (CSS hides it elsewhere): a slim bar with the page's main
 // action, shown once the hero's buttons have scrolled away and hidden again
 // while any of its data-hide-when targets is on screen.

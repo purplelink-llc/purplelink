@@ -11,7 +11,7 @@ Products
 
 # Tools for the paper, from first draft to accepted.
 
-Two Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, in full. None of it needs an account.
+Two Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
 
 macOS
 7-day free trial, then $10 once
@@ -1490,7 +1490,7 @@ Filter tools
 
 ## AI manuscript review · paid
 
-Pay-per-use AI checks for a manuscript before it goes out: $2 to $15 each, no account, deleted soon after delivery. Volume packs for labs.
+Pay-per-use AI checks for a manuscript before it goes out: $2 to $15 each, no account, deleted soon after delivery. Volume packs for labs; every price on one page.
 
 From $9
 

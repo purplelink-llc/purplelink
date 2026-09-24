@@ -57,8 +57,8 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=1ad1f4de0f">
-    <script src="/site.js?v=c59796b38c" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=79f2cf742f">
+    <script src="/site.js?v=4922eeb3a5" defer></script>
     <script src="/tools/submission-checklist/checklist.js?v=db5b0d0559" defer></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
   </head>
@@ -160,6 +160,30 @@
           <button type="button" class="btn btn-ghost" data-checklist-reset>Start a new paper</button>
           <p>Stored only in this browser. Nothing is sent anywhere.</p>
         </div>
+      </section>
+
+      <section class="deadline-remind" aria-labelledby="deadline-h">
+        <form class="deadline-form" data-deadline-signup novalidate>
+          <h2 id="deadline-h">A reminder a week before the deadline</h2>
+          <p class="deadline-lede">One email, seven days ahead, with this checklist and the checks that fit in a week. Then nothing more.</p>
+          <div class="deadline-fields">
+            <div class="deadline-field">
+              <label for="dl-date">Deadline</label>
+              <input type="date" id="dl-date" name="deadline" required>
+            </div>
+            <div class="deadline-field">
+              <label for="dl-venue">Venue <span class="deadline-opt">(optional)</span></label>
+              <input type="text" id="dl-venue" name="venue" maxlength="80" autocomplete="off" placeholder="e.g. NeurIPS">
+            </div>
+            <div class="deadline-field deadline-field-email">
+              <label for="dl-email">Email</label>
+              <input type="email" id="dl-email" name="email" autocomplete="email" placeholder="you@university.edu" required>
+            </div>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-primary">Remind me</button>
+          </div>
+          <p class="deadline-status" data-deadline-status aria-live="polite">The address is kept until that email goes out, then deleted 30 days later. <a href="/privacy/">Privacy</a>.</p>
+        </form>
       </section>
 
       <section class="tool-prose">

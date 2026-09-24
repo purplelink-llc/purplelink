@@ -2011,7 +2011,7 @@ def test_schedule_decision_reminder_caps_and_skips_missing_entries(client):
 def test_decision_reminder_template():
     from latextools import delivery
     html = delivery.html_lifecycle_decision_reminder(manuscript_title="<b>My paper</b>", unsubscribe_url="https://x/u")
-    assert "&lt;b&gt;My paper&lt;/b&gt;" in html and "Response Review ($6)" in html and "https://x/u" in html
+    assert "&lt;b&gt;My paper&lt;/b&gt;" in html and "Response to Reviewers ($6)" in html and "https://x/u" in html
 
 
 def test_sweep_sends_due_decision_reminder_once(client, monkeypatch):
@@ -2152,3 +2152,75 @@ def test_single_purchase_emails_a_link_to_start(client, monkeypatch):
     assert len(links) == 2
     assert f"/tools/paper-review/upload/?direct_token={tok}" in links[0]["html"]
     assert "/tools/cover-letter/compose/?session_id=cs_cl" in links[1]["html"]
+
+
+# ---------------------------------------------------------------------------
+# Submission-deadline reminder (free checklist, optional)
+# ---------------------------------------------------------------------------
+
+def _iso_days_ahead(days):
+    import datetime as _dt
+    return (_dt.datetime.now(_dt.timezone.utc).date() + _dt.timedelta(days=days)).isoformat()
+
+
+def test_deadline_signup_schedules_one_email_a_week_ahead(client, monkeypatch):
+    http, backend_app = client
+    sent = _no_send(monkeypatch)
+    r = http.post("/lifecycle/deadline", json={"email": "Author@Example.com", "deadline": _iso_days_ahead(30), "venue": "  NeurIPS\n2026 "})
+    assert r.status_code == 200 and r.json() == {"status": "ok"}
+    assert sent == []  # nothing goes out at sign-up
+    entry = backend_app.customer_lifecycle_dict.get("deadline:author@example.com")
+    assert entry["product"] == "deadline-reminder" and entry["venue"] == "NeurIPS 2026"
+    assert entry["deadline"] == _iso_days_ahead(30)
+    nxt = backend_app._lifecycle_next_stage
+    assert nxt(entry, time.time()) is None
+    assert nxt(entry, entry["purchased_at"] + 1)[0] == "deadline_week"
+    # A second sign-up replaces the first rather than adding another.
+    http.post("/lifecycle/deadline", json={"email": "author@example.com", "deadline": _iso_days_ahead(60)})
+    entry2 = backend_app.customer_lifecycle_dict.get("deadline:author@example.com")
+    assert entry2["deadline"] == _iso_days_ahead(60) and entry2["venue"] == ""
+
+
+def test_deadline_signup_validates_and_is_silent_for_honeypot_and_optout(client, monkeypatch):
+    http, backend_app = client
+    _no_send(monkeypatch)
+    assert http.post("/lifecycle/deadline", json={"email": "a@example.com", "deadline": "not-a-date"}).status_code == 400
+    assert http.post("/lifecycle/deadline", json={"email": "a@example.com", "deadline": _iso_days_ahead(1)}).status_code == 400
+    assert http.post("/lifecycle/deadline", json={"email": "a@example.com", "deadline": _iso_days_ahead(400)}).status_code == 400
+    assert http.post("/lifecycle/deadline", json={"email": "nope", "deadline": _iso_days_ahead(20)}).status_code == 400
+    assert http.post("/lifecycle/deadline", json={"email": "bot@example.com", "deadline": _iso_days_ahead(20), "website": "x"}).json() == {"status": "ok"}
+    backend_app.lifecycle_optout_dict["out@example.com"] = True
+    assert http.post("/lifecycle/deadline", json={"email": "Out@example.com", "deadline": _iso_days_ahead(20)}).json() == {"status": "ok"}
+    assert backend_app.customer_lifecycle_dict.get("deadline:bot@example.com") is None
+    assert backend_app.customer_lifecycle_dict.get("deadline:out@example.com") is None
+
+
+def test_close_deadline_sends_on_next_sweep_then_never_again(client, monkeypatch):
+    http, backend_app = client
+    sent = _no_send(monkeypatch)
+    http.post("/lifecycle/deadline", json={"email": "soon@example.com", "deadline": _iso_days_ahead(4), "venue": "ICLR"})
+    out = backend_app.lifecycle_email_sweep.local()
+    assert out.get("deadline_week") == 1
+    assert [m["subject"] for m in sent] == ["A week before your submission deadline"]
+    assert "ICLR" in sent[0]["html"] and "Review my paper" in sent[0]["html"]
+    backend_app.lifecycle_email_sweep.local()
+    assert len(sent) == 1
+
+
+def test_deadline_entries_are_not_purchases(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "s")
+    r = http.post("/lifecycle/register", json={"session_id": "x", "email": "a@example.com", "product": "deadline-reminder"},
+                  headers={"x-webhook-secret": "s"})
+    assert r.status_code == 400
+    entries = [
+        ("s-review", {"email": "a@example.com", "purchased_at": 1000}),
+        ("deadline:a@example.com", {"email": "a@example.com", "product": "deadline-reminder", "purchased_at": 5000}),
+    ]
+    assert backend_app._sessions_with_later_purchase(entries) == set()
+
+
+def test_deadline_template_escapes_venue():
+    from latextools import delivery
+    html = delivery.html_lifecycle_deadline_week(venue="<i>X</i>", deadline="Friday 9 October", unsubscribe_url="https://x/u")
+    assert "&lt;i&gt;X&lt;/i&gt;" in html and "Friday 9 October" in html and "https://x/u" in html

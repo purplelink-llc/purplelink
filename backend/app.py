@@ -2390,7 +2390,7 @@ def web():
         product = str((payload or {}).get("product", "")).strip()
         if not session_id or not email or "@" not in email:
             return JSONResponse({"error": "missing_fields"}, status_code=400)
-        if product not in LIFECYCLE_STAGES_BY_PRODUCT or product in ("paper-review", "moderntex-trial"):
+        if product not in LIFECYCLE_STAGES_BY_PRODUCT or product == "paper-review" or product in NON_PURCHASE_LIFECYCLE_PRODUCTS:
             # Paper Review entries are seeded by register-token itself.
             return JSONResponse({"error": "unknown_product", "product": product}, status_code=400)
         if product == "moderntex":
@@ -2497,6 +2497,39 @@ def web():
             entry["last_sent_at"] = now
             customer_lifecycle_dict[key] = entry
         # Otherwise the daily sweep sends the setup email on its next run.
+        return {"status": "ok"}
+
+    @api.post("/lifecycle/deadline")
+    async def lifecycle_deadline_signup(request: Request):
+        """Public: someone on the submission checklist asks for one email a
+        week before their deadline.
+
+        Payload: { email, deadline: "YYYY-MM-DD", venue, website }. `website`
+        is a honeypot. Nothing is sent now; the daily sweep sends the one
+        email when it is due. A second sign-up from the same address replaces
+        the first, so an address has at most one reminder waiting. Answers
+        the same way for opted-out and new addresses.
+        """
+        if not _enforce_rate_limit(request, "deadline-signup"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        try:
+            payload = await request.json()
+        except Exception:
+            return JSONResponse({"error": "invalid_json"}, status_code=400)
+        payload = payload if isinstance(payload, dict) else {}
+        email = str(payload.get("email", "")).strip()[:254]
+        if payload.get("website"):
+            return {"status": "ok"}
+        from latextools import delivery as _delivery
+        if not _delivery._is_valid_email(email):
+            return JSONResponse({"error": "invalid_email"}, status_code=400)
+        entry, error = _deadline_entry(email, payload.get("deadline", ""),
+                                       payload.get("venue", ""), _time_module.time())
+        if error:
+            return JSONResponse({"error": error}, status_code=400)
+        if lifecycle_optout_dict.get(_email_key(email)):
+            return {"status": "ok"}
+        customer_lifecycle_dict[_deadline_lifecycle_key(email)] = entry
         return {"status": "ok"}
 
     @api.get("/paper-review/lifecycle/unsubscribe")
@@ -3685,17 +3718,63 @@ TRIAL_LIFECYCLE_STAGES = [
     ("trial_features", 4, "html_lifecycle_trial_features"),
     ("trial_ending", 6, "html_lifecycle_trial_ending"),
 ]
+# Someone who entered a submission deadline on the free checklist: one email
+# a week before it. The entry's purchased_at is set to that send time.
+DEADLINE_LIFECYCLE_STAGES = [
+    ("deadline_week", 0, "html_lifecycle_deadline_week"),
+]
 LIFECYCLE_STAGES_BY_PRODUCT = {
     "paper-review": LIFECYCLE_STAGES,
     "moderntex": MTX_LIFECYCLE_STAGES,
     "moderntex-trial": TRIAL_LIFECYCLE_STAGES,
+    "deadline-reminder": DEADLINE_LIFECYCLE_STAGES,
 }
 # Lifecycle entries that record interest, not a purchase.
-NON_PURCHASE_LIFECYCLE_PRODUCTS = {"moderntex-trial"}
+NON_PURCHASE_LIFECYCLE_PRODUCTS = {"moderntex-trial", "deadline-reminder"}
 
 
 def _trial_lifecycle_key(email: str) -> str:
     return "trial:" + email.strip().lower()
+
+
+def _deadline_lifecycle_key(email: str) -> str:
+    return "deadline:" + _email_key(email)
+
+
+DEADLINE_MIN_DAYS_AHEAD = 2
+DEADLINE_MAX_DAYS_AHEAD = 366
+DEADLINE_LEAD_DAYS = 7
+
+
+def _deadline_entry(email: str, deadline_iso: str, venue: str, now: float):
+    """Build a deadline-reminder lifecycle entry, or return an error code.
+
+    The reminder goes out DEADLINE_LEAD_DAYS before the deadline, or on the
+    next sweep when the deadline is closer than that.
+    """
+    import datetime as _dt
+    try:
+        day = _dt.date.fromisoformat(str(deadline_iso or "")[:10])
+    except ValueError:
+        return None, "invalid_date"
+    today = _dt.datetime.fromtimestamp(now, _dt.timezone.utc).date()
+    ahead = (day - today).days
+    if ahead < DEADLINE_MIN_DAYS_AHEAD or ahead > DEADLINE_MAX_DAYS_AHEAD:
+        return None, "date_out_of_range"
+    deadline_ts = _dt.datetime(day.year, day.month, day.day, tzinfo=_dt.timezone.utc).timestamp()
+    send_at = max(now, deadline_ts - DEADLINE_LEAD_DAYS * 86400)
+    clean_venue = " ".join(str(venue or "").split())[:80]
+    return {
+        "email": email,
+        "product": "deadline-reminder",
+        "manuscript_title": "",
+        "venue": clean_venue,
+        "deadline": day.isoformat(),
+        "deadline_label": "%s %d %s" % (day.strftime("%A"), day.day, day.strftime("%B")),
+        "purchased_at": send_at,
+        "last_stage_sent": None,
+        "last_sent_at": None,
+    }, None
 LIFECYCLE_SUBJECTS = {
     "tips": "Getting the most out of your review",
     "review_request": "How did the review hold up?",
@@ -3706,6 +3785,7 @@ LIFECYCLE_SUBJECTS = {
     "trial_features": "Four things to try in ModernTex",
     "trial_ending": "Your ModernTex trial ends soon",
     "decision_reminder": "When the reviews come back",
+    "deadline_week": "A week before your submission deadline",
 }
 
 
@@ -3930,6 +4010,12 @@ def lifecycle_email_sweep() -> dict:
                         manuscript_title=entry.get("manuscript_title", ""),
                         unsubscribe_url=unsubscribe_url,
                     )
+                elif stage_name == "deadline_week":
+                    html = template_fn(
+                        venue=entry.get("venue", ""),
+                        deadline=entry.get("deadline_label", ""),
+                        unsubscribe_url=unsubscribe_url,
+                    )
                 else:
                     html = template_fn(unsubscribe_url=unsubscribe_url)
 
@@ -3941,7 +4027,7 @@ def lifecycle_email_sweep() -> dict:
                     subject=subject,
                     html=html,
                     tags=[{"name": "lifecycle_stage", "value": stage_name}],
-                    from_name="Purplelink" if stage_name.startswith(("mtx_", "trial_")) else None,
+                    from_name="Purplelink" if stage_name.startswith(("mtx_", "trial_", "deadline_")) else None,
                 )
                 if result.get("status") == "ok":
                     entry["last_stage_sent"] = stage_name
