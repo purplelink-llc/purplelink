@@ -293,7 +293,7 @@ def html_volume_pack_tokens(*, tokens: list[str], pack_size: int) -> str:
   <h2 style="color: #6d28d9;">Your {pack_size}-pack of Paper Reviews</h2>
   <p>Thanks for the volume purchase. Below are your {pack_size} review
   tokens. Each token is good for one manuscript review. Use them whenever
-  you want — tokens don't expire.</p>
+  you want; tokens don't expire.</p>
   <table style="border-collapse: collapse; margin: 12px 0; font-size: 0.9em;">
     {rows}
   </table>
@@ -306,7 +306,7 @@ def html_volume_pack_tokens(*, tokens: list[str], pack_size: int) -> str:
     </a>
   </p>
   <p style="color: #555; font-size: 0.9em;">
-    Store this email somewhere safe — the tokens above are your only copy.
+    Store this email somewhere safe. The tokens above are your only copy.
     If you misplace them, reply to this email with your Stripe receipt.
   </p>
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
@@ -360,13 +360,14 @@ def html_lifecycle_tips(*, manuscript_title: str = "", unsubscribe_url: str) -> 
   that help authors get more out of it:</p>
   <ul style="padding-left: 20px;">
     <li>Work top-down through the flagged issues by severity, not by
-    section order — the highest-severity ones are what a real reviewer
+    section order. The highest-severity ones are what a real reviewer
     would raise first.</li>
     <li>Where the review disagrees with a choice you made deliberately,
     that disagreement is still useful: it tells you the reasoning isn't
     landing on the page and needs to be made explicit.</li>
-    <li>If you revise and resubmit, a fresh review will catch anything
-    the edits introduced — reviewers do this in practice too.</li>
+    <li>After you revise, <a href="https://purplelink.llc/tools/paper-review/revision/?utm_source=email&amp;utm_campaign=tips" style="color: #6d28d9;">Revision Review</a>
+    ($2) checks the new version against this review's findings and flags
+    anything the edits introduced. Keep the Markdown file; it reads it.</li>
   </ul>
   <p>
     <a href="https://purplelink.llc/tools/paper-review/"
@@ -387,8 +388,8 @@ def html_lifecycle_review_request(*, manuscript_title: str = "", unsubscribe_url
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">How did the review hold up?</h2>
   <p>You ran a Paper Review on {title} a little while ago. If it caught
-  something a real reviewer later raised too — or missed something they
-  did catch — I'd genuinely like to know. Just reply to this email.</p>
+  something a real reviewer later raised too, or missed something they
+  did catch, I'd like to know. Just reply to this email.</p>
   <p>That feedback goes directly into what gets fixed next; this is a
   small, actively-maintained tool, not a product team.</p>
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
@@ -650,7 +651,7 @@ def html_referral_credit(*, promo_code: str, reason: str) -> str:
      display: inline-block;">
     {promo_code}
   </p>
-  <p>$2 off your next Paper Review purchase — enter this code at checkout.
+  <p>$2 off your next Paper Review purchase. Enter this code at checkout.
   One-time use.</p>
   <p>
     <a href="https://purplelink.llc/tools/paper-review/"
