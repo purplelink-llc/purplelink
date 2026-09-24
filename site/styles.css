@@ -4480,3 +4480,5 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .home-recent { margin: 0; padding: 14px clamp(24px, 6vw, 80px) 18px; border-top: 1px solid var(--line); }
 .field-example { max-width: 820px; }
 .mac-only-note { margin: 12px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; max-width: 560px; }
+.post-figure-shot { margin: 16px 0 8px; }
+.post-figure-shot img { border: 1px solid var(--line); border-radius: 10px; }
