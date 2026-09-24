@@ -140,6 +140,20 @@ retention work is `docs/growth-proposals-2026-09.md`.
 - The traffic dashboard's sales panel shows follow-up email counts, and
   Vitae Plus and digest sales are no longer "unattributed".
 - No inline `style` attributes remain outside the cron-owned digest.
+- A free response-to-reviewers template tool at
+  `/tools/response-letter-template/`, which leads to Response Review.
+- On phones, ModernTex and Paper Review show a slim sticky call to action
+  once the hero buttons scroll away.
+- New first-party events:
+  - `template_download`
+  - `sticky_cta`
+  - `recover_request`
+  - `response_template_download`
+- Two full axe sweeps (WCAG 2 A/AA, light and dark) now come back clean on
+  every page.
+- A review of the customer-facing copy against the code found real bugs,
+  now fixed (unsubscribe, pack anonymity, sender and reply-to, deletion
+  timing, small-tool buyers getting Paper Review follow-ups).
 
 ### Search and AI visibility
 - Missing share images were generated, and deploy fails if one is missing
