@@ -40,6 +40,21 @@
     return new URLSearchParams(window.location.search).get("direct_token");
   }
 
+  // Shares the pl_prefs store that site.js uses for data-remember controls.
+  function readPref(k) {
+    try { return (JSON.parse(localStorage.getItem("pl_prefs") || "{}") || {})[k] || ""; } catch (e) { return ""; }
+  }
+  function writePref(k, v) {
+    try {
+      var p = JSON.parse(localStorage.getItem("pl_prefs") || "{}") || {};
+      p[k] = v;
+      localStorage.setItem("pl_prefs", JSON.stringify(p));
+    } catch (e) { /* storage blocked: nothing to remember */ }
+  }
+  if (journalSelect) {
+    journalSelect.addEventListener("change", function () { if (journalSelect.value) writePref("pr-journal", journalSelect.value); });
+  }
+
   function loadJournalList(domain) {
     if (!journalSelect) return;
     journalListFailed = false;
@@ -60,6 +75,9 @@
           o.textContent = j.name + (j.domain && j.domain !== "general" ? " · " + j.domain.replace("_", " ") : "");
           journalSelect.appendChild(o);
         });
+        // Preselect the journal from ?journal= or the one chosen last time.
+        var wanted = new URLSearchParams(window.location.search).get("journal") || readPref("pr-journal");
+        if (wanted && opts.some(function (j) { return j.key === wanted; })) journalSelect.value = wanted;
         journalSelect.disabled = false;
         journalListFailed = false;
         setJournalError("");
