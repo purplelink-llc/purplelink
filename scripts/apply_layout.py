@@ -76,6 +76,7 @@ FOOTER_COLUMNS = [
         ("Daily Digest", "/blog/digest/"),
         ("Research desk", "/desk/"),
         ("Changelog", "/changelog/"),
+        ("Search", "/search/"),
     ]),
     ("Company", [
         ("About", "/about/"),
