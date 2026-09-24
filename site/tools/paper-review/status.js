@@ -137,6 +137,11 @@
 
   var ACTIVE_PRODUCT = getProduct();
   var ACTIVE_CONFIG = PRODUCT_STAGES[ACTIVE_PRODUCT];
+  // The "While it runs" links are about Paper Review; other tools share this page.
+  if (ACTIVE_PRODUCT !== "paper-review") {
+    var waitPanel = document.querySelector(".pr-wait");
+    if (waitPanel) waitPanel.hidden = true;
+  }
   var STAGE_LABEL = ACTIVE_CONFIG.labels;
 
   // Render this product's stepper boxes (label + tag) into the existing
