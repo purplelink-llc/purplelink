@@ -27,6 +27,13 @@
       "body": "Free: finds broken DOIs and wrong authors or years in a .bib file.",
       "url": "https://purplelink.llc/tools/bib-validator/?ref=vitae",
       "symbol": "checkmark.seal"
+    },
+    {
+      "id": "response-letter-template",
+      "title": "Response letter template",
+      "body": "Free: paste the reviewer comments and get every one numbered and quoted, ready for your replies.",
+      "url": "https://purplelink.llc/tools/response-letter-template/?ref=vitae",
+      "symbol": "list.number"
     }
   ],
   "sponsor": {

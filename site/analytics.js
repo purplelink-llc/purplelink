@@ -24,7 +24,12 @@
     try {
       var q = new URLSearchParams(location.search);
       // ?from= tags internal referrals such as the ModernTex trial's Buy button.
-      return q.get("utm_source") || (q.get("from") ? "from:" + q.get("from") : "");
+      // ?ref=vitae / vitae-card tag visits from the Vitae app's sidebar card
+      // (the privacy page says these are counted). Other ?ref= values are
+      // personal referral codes and are deliberately not recorded.
+      var ref = q.get("ref");
+      var appRef = (ref === "vitae" || ref === "vitae-card") ? "ref:" + ref : "";
+      return q.get("utm_source") || (q.get("from") ? "from:" + q.get("from") : "") || appRef;
     }
     catch (e) { return ""; }
   }
