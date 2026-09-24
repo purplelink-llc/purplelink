@@ -4052,3 +4052,33 @@ main input:focus-visible {
 
 .section-reading .catalog-grid { margin-top: clamp(28px, 4vw, 44px); }
 .section-reading-more { margin-top: 28px; }
+
+/* ─── ModernTex specs table ───────────────────────────────────────────── */
+
+.specs-section {
+  padding: clamp(56px, 7vw, 96px) clamp(24px, 6vw, 80px);
+  border-top: 1px solid var(--line);
+}
+
+.specs-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 10px 0 20px;
+}
+
+.specs-table { max-width: 900px; font-size: 0.95rem; }
+.specs-table th { width: 32%; white-space: nowrap; }
+.specs-table a { color: var(--purple); }
+.specs-more { margin-top: 18px; color: var(--muted); }
+.specs-more a { color: var(--purple); font-weight: 600; }
+
+@media (max-width: 640px) {
+  .specs-table th { white-space: normal; width: 40%; }
+}
+
+/* In-page links (#buy, #requirements, table-of-contents anchors) and focused
+   elements land clear of the sticky header instead of underneath it. */
+html { scroll-padding-top: 96px; }
+@media (max-width: 720px) { html { scroll-padding-top: 130px; } }
