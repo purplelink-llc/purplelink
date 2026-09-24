@@ -105,7 +105,7 @@
   ]
 }
 </script>
-<link rel="stylesheet" href="/styles.css?v=5aef670c7d">
+<link rel="stylesheet" href="/styles.css?v=87a16b28ac">
     <script src="/site.js?v=46ec2b3221" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -166,7 +166,7 @@
         <h2>The options, compared</h2>
         <p>Every local option needs a TeX distribution installed separately, except where the table says otherwise. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back, which in most editors is done through SyncTeX. "BibTeX completion" means the editor suggests citation keys from your <code>.bib</code> file as you type <code>\cite{</code>.</p>
 
-        <table class="compare-table">
+        <table class="compare-table compare-stack">
           <caption>Overleaf and six Mac alternatives, as of September 2026</caption>
           <thead>
             <tr>
@@ -183,73 +183,73 @@
           <tbody>
             <tr>
               <th scope="row">Overleaf</th>
-              <td>Browser, any OS</td>
-              <td>Free tier plus paid plans; many institutional licences</td>
-              <td>No</td>
-              <td>Yes</td>
-              <td>Yes</td>
-              <td>Yes, from the project's <code>.bib</code></td>
-              <td>Nothing to install. Git and GitHub sync are premium features.</td>
+              <td data-label="Runs">Browser, any OS</td>
+              <td data-label="Price">Free tier plus paid plans; many institutional licences</td>
+              <td data-label="Offline">No</td>
+              <td data-label="Real-time collaboration">Yes</td>
+              <td data-label="Synced PDF preview">Yes</td>
+              <td data-label="BibTeX completion">Yes, from the project's <code>.bib</code></td>
+              <td data-label="Notes">Nothing to install. Git and GitHub sync are premium features.</td>
             </tr>
             <tr>
               <th scope="row">TeXShop</th>
-              <td>macOS</td>
-              <td>Free, included with MacTeX</td>
-              <td>Yes</td>
-              <td>No</td>
-              <td>Yes</td>
-              <td>Not built in; BibDesk (also in MacTeX) helps</td>
-              <td>The long-standing Mac default. Plain and reliable, dated interface.</td>
+              <td data-label="Runs">macOS</td>
+              <td data-label="Price">Free, included with MacTeX</td>
+              <td data-label="Offline">Yes</td>
+              <td data-label="Real-time collaboration">No</td>
+              <td data-label="Synced PDF preview">Yes</td>
+              <td data-label="BibTeX completion">Not built in; BibDesk (also in MacTeX) helps</td>
+              <td data-label="Notes">The long-standing Mac default. Plain and reliable, dated interface.</td>
             </tr>
             <tr>
               <th scope="row">TeXstudio</th>
-              <td>macOS, Windows, Linux</td>
-              <td>Free, open source</td>
-              <td>Yes</td>
-              <td>No</td>
-              <td>Yes</td>
-              <td>Yes, by key</td>
-              <td>Feature-rich. Cross-platform app that does not feel like a Mac app.</td>
+              <td data-label="Runs">macOS, Windows, Linux</td>
+              <td data-label="Price">Free, open source</td>
+              <td data-label="Offline">Yes</td>
+              <td data-label="Real-time collaboration">No</td>
+              <td data-label="Synced PDF preview">Yes</td>
+              <td data-label="BibTeX completion">Yes, by key</td>
+              <td data-label="Notes">Feature-rich. Cross-platform app that does not feel like a Mac app.</td>
             </tr>
             <tr>
               <th scope="row">Texifier (formerly Texpad)</th>
-              <td>macOS, iOS</td>
-              <td>Paid, one-time purchase</td>
-              <td>Yes</td>
-              <td>No</td>
-              <td>Yes</td>
-              <td>Yes</td>
-              <td>Polished native app. Can typeset without a separate MacTeX install.</td>
+              <td data-label="Runs">macOS, iOS</td>
+              <td data-label="Price">Paid, one-time purchase</td>
+              <td data-label="Offline">Yes</td>
+              <td data-label="Real-time collaboration">No</td>
+              <td data-label="Synced PDF preview">Yes</td>
+              <td data-label="BibTeX completion">Yes</td>
+              <td data-label="Notes">Polished native app. Can typeset without a separate MacTeX install.</td>
             </tr>
             <tr>
               <th scope="row">VS Code + LaTeX Workshop</th>
-              <td>macOS, Windows, Linux</td>
-              <td>Free</td>
-              <td>Yes</td>
-              <td>Session-based, via the Live Share extension</td>
-              <td>Yes</td>
-              <td>Yes, by key</td>
-              <td>Best if you already write code in VS Code. Built-in Git.</td>
+              <td data-label="Runs">macOS, Windows, Linux</td>
+              <td data-label="Price">Free</td>
+              <td data-label="Offline">Yes</td>
+              <td data-label="Real-time collaboration">Session-based, via the Live Share extension</td>
+              <td data-label="Synced PDF preview">Yes</td>
+              <td data-label="BibTeX completion">Yes, by key</td>
+              <td data-label="Notes">Best if you already write code in VS Code. Built-in Git.</td>
             </tr>
             <tr>
               <th scope="row">Emacs + AUCTeX, or Vim + VimTeX</th>
-              <td>Any OS</td>
-              <td>Free</td>
-              <td>Yes</td>
-              <td>No</td>
-              <td>Yes, with a viewer such as Skim</td>
-              <td>Yes (RefTeX in Emacs)</td>
-              <td>Very capable, for people who already use these editors.</td>
+              <td data-label="Runs">Any OS</td>
+              <td data-label="Price">Free</td>
+              <td data-label="Offline">Yes</td>
+              <td data-label="Real-time collaboration">No</td>
+              <td data-label="Synced PDF preview">Yes, with a viewer such as Skim</td>
+              <td data-label="BibTeX completion">Yes (RefTeX in Emacs)</td>
+              <td data-label="Notes">Very capable, for people who already use these editors.</td>
             </tr>
             <tr>
               <th scope="row">ModernTex</th>
-              <td>macOS 14 or later</td>
-              <td>$10 once, after a free 7-day trial</td>
-              <td>Yes</td>
-              <td>No</td>
-              <td>Yes, forward and inverse</td>
-              <td>Yes, searches by author, title or key</td>
-              <td>Made by Purplelink. Needs MacTeX or TinyTeX, and offers a one-click TinyTeX install.</td>
+              <td data-label="Runs">macOS 14 or later</td>
+              <td data-label="Price">$10 once, after a free 7-day trial</td>
+              <td data-label="Offline">Yes</td>
+              <td data-label="Real-time collaboration">No</td>
+              <td data-label="Synced PDF preview">Yes, forward and inverse</td>
+              <td data-label="BibTeX completion">Yes, searches by author, title or key</td>
+              <td data-label="Notes">Made by Purplelink. Needs MacTeX or TinyTeX, and offers a one-click TinyTeX install.</td>
             </tr>
           </tbody>
         </table>

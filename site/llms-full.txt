@@ -1350,6 +1350,8 @@ Tools for academics
 
 Free in-browser tools for LaTeX, citations and document conversion, plus pay-per-use AI checks for a manuscript before it goes out. The free tools process files in memory and never store them. Each paid tool explains its data handling on its own page.
 
+Filter tools
+
 ## AI manuscript review · paid
 
 Pay-per-use AI checks for a manuscript before it goes out: $2 to $15 each, no account, nothing kept after delivery. Volume packs for labs.
@@ -2504,11 +2506,179 @@ Sometimes. A preprint on arXiv, SSRN or OSF can attract comments, but many prepr
 
 - Citation Gap Analysis: prior work you should cite but don't, $3
 
+- Can you use AI to check your own manuscript? What publisher policies say
+
 - How to use Paper Review before submitting a manuscript
 
 - How to respond to Reviewer 2
 
 - Why it matters: the methodology problems reviewers flag
+
+
+---
+
+Source: https://purplelink.llc/guides/ai-policy-checking-your-own-manuscript/
+Title: Can You Use AI to Check Your Own Manuscript? What Publisher Policies Say | Purplelink
+
+← All guides
+
+September 24, 2026
+
+# Can You Use AI to Check Your Own Manuscript? What Publisher Policies Say
+
+By Benjamin Ampel · September 24, 2026
+
+What ten publisher and venue policies say about authors using AI tools on their own manuscript before submission, what has to be disclosed and where, and why the upload ban you have heard about applies to reviewers.
+
+The short answer: yes. Every major publisher and venue policy we checked allows authors to use AI tools while preparing a manuscript. What they add is three conditions: an AI tool cannot be listed as an author, you stay responsible for everything in the paper, and some uses have to be disclosed. The rule that bans uploading manuscripts to AI is aimed at reviewers, who hold someone else's unpublished work in confidence. It is not about authors checking their own.
+
+Policies change, and each journal can add its own rules on top of its publisher's. Treat this page as a map, then read the policy for your target venue. Every row in the table below links to it. Checked September 2026.
+
+I build Paper Review, an AI pre-submission review, so I have a stake in the answer. I have tried to report what the policies say, including the parts that ask something of you.
+
+## Where the confusion comes from
+
+Most researchers first meet an AI rule as a reviewer: "do not upload the manuscript you are reviewing to ChatGPT." That rule is about confidentiality. A reviewer has been trusted with someone else's unpublished work and has no right to pass it to a third party. Elsevier, Springer Nature, Wiley, Taylor & Francis, IEEE, ACM and ICMJE all have a version of it.
+
+The author's situation is different. The work is yours, and whether to share it is your decision. The author-side policies therefore ask different questions: did AI write part of the paper, is it disclosed, and does the tool you used keep your unpublished work confidential?
+
+## What the policies say, by publisher and venue
+
+Summaries in my words. Where a column says "check the page", the policy was not clear enough for me to summarize it confidently.
+
+Author-side generative AI rules, September 2026
+
+Publisher or venue
+May authors use AI?
+Where to disclose
+Grammar and editing only
+Reviewers
+
+Elsevier
+Yes, with human oversight
+A dedicated declaration section at the end of the manuscript, before the references
+Basic spelling, grammar and punctuation tools are exempt
+Must not upload a submitted manuscript to an AI tool
+
+Springer Nature
+Yes
+Methods section, or a suitable alternative if there is none
+AI-assisted copy editing need not be declared
+Asked not to upload manuscripts to generative AI tools
+
+Wiley
+Yes, as an aid to your own judgment
+Acknowledgments for writing help; Methods for use in the research itself
+Spelling, grammar and general editing are exempt
+May not upload any part of a submitted manuscript
+
+Taylor & Francis
+Yes
+Methods or Acknowledgments, naming the tool, version and purpose
+Check the page
+Must not upload unpublished manuscripts to generative AI
+
+IEEE
+Yes
+Acknowledgments, naming the system and the sections it affected
+Generally outside the policy; disclosure still recommended
+No processing of a manuscript through public AI platforms
+
+ACM
+Yes, fully disclosed
+Acknowledgments suggested
+Spelling, grammar and translation tools need not be disclosed
+No upload to systems that do not promise confidentiality
+
+ICMJE (medical journals)
+Yes
+Cover letter and the manuscript: acknowledgments for writing help, methods for analysis
+Check the page
+No upload where confidentiality cannot be assured
+
+COPE
+Yes, transparently
+Materials and Methods or a similar section
+Not addressed
+Not addressed in this statement
+
+NeurIPS
+Yes, any suitable tool
+Only when an LLM is an important or non-standard part of the method
+Editing aids need not be documented
+Only sanctioned tools, under the conference's own rules
+
+ICML
+Yes, with full responsibility for the content
+See the call for papers for the current year
+Check the page
+Reviewer chooses a no-LLM or privacy-compliant-LLM policy
+
+## What they agree on
+
+- AI is never an author. Every policy that addresses authorship says so, for the same reason: authorship means accountability, and a tool cannot be accountable.
+
+- You own every claim. Text, numbers, citations and figures are the authors' responsibility whether or not a tool helped produce them. A citation an AI invented is your fabricated citation.
+
+- Disclosure follows content, not contact. The trigger is AI that generated or substantively changed what is in the paper, or AI used in the research itself. Most policies exempt grammar and copy editing. Where the disclosure goes differs, so follow your venue's instructions.
+
+- Check the tool's terms. Elsevier, Wiley and Taylor & Francis ask authors to make sure a tool keeps unpublished work confidential and does not gain the right to train on it. ACM, ICMJE and ICML frame their rules around whether confidentiality is assured, too.
+
+## Does a critique of your draft need disclosing?
+
+None of the policies above addresses this case directly. A tool that reads your manuscript and reports problems, without writing any text that ends up in the paper, is closer to a colleague's read than to a writing assistant. By the disclosure triggers above (generated or substantively changed content), feedback alone does not obviously require a statement.
+
+That is my reading, not policy text. If your venue's rules are strict or unclear, a one-line note costs nothing: "The authors used an AI review tool to check the manuscript for errors before submission; all changes were made by the authors." If you then rewrite a section using text the tool suggested, that part falls under the ordinary disclosure rules.
+
+Venues are moving in this direction themselves. For ICML 2026, the conference offered authors an optional program of automated pre-submission feedback on their manuscripts, kept private from reviewers, and ICLR has announced the same for its submitters.
+
+## A checklist before you upload your own manuscript
+
+- Read the tool's data terms. Where does the file go, who processes it, how long is it kept, and can it be used for training? Consumer chat apps differ by plan and setting; API and enterprise terms are usually stricter.
+
+- Check co-authors agree. The manuscript belongs to all of them.
+
+- Remove what should not leave your hands. Identifiable patient or participant data, embargoed results, and anything a data use agreement restricts.
+
+- Verify what comes back. Treat every finding as a claim to check, especially suggested references.
+
+- Disclose if you used generated text. Follow the target venue's instructions for where and how.
+
+## How Paper Review handles your manuscript
+
+For comparison against the checklist: Paper Review sends the manuscript to Anthropic's Claude API for analysis. Under Anthropic's commercial terms, inputs are retained for up to 30 days for abuse monitoring and are not used for model training. Reference titles and DOIs are sent to CrossRef to check that they exist. Purplelink deletes the manuscript and the review from its servers when you retrieve the result. The review writes nothing into your paper: it quotes your passages and lists what to check, and every change is yours. There is no account, and the privacy policy has the full detail.
+
+## Q&A
+
+### Can I use ChatGPT or Claude to check my paper before submitting to an Elsevier or Springer Nature journal?
+
+Both publishers allow authors to use AI tools while preparing a manuscript, provided the authors stay responsible for the content and disclose AI-generated or substantively edited text as each policy describes. The restriction on uploading manuscripts to AI applies to reviewers. Check the tool's data terms before uploading unpublished work.
+
+### Why can't reviewers use AI on the manuscript when authors can?
+
+Because the reviewer is holding someone else's confidential, unpublished work. Sharing it with a third-party tool is the reviewer's decision to make about another person's paper. An author sharing their own manuscript is making that decision about their own work.
+
+### Do I need to disclose that I used an AI tool to proofread my paper?
+
+Usually not. Elsevier, Springer Nature, Wiley, ACM and NeurIPS exempt spelling, grammar or copy editing, and IEEE treats it as generally outside its policy while recommending disclosure. Some bodies state no exemption, so check your venue's page.
+
+### Can an AI tool be listed as a co-author?
+
+No. Every publisher and venue policy that addresses authorship rules it out, because an AI tool cannot take responsibility for the work.
+
+## Related
+
+- How to get feedback on a paper before submitting: options compared
+
+- Catch AI-hallucinated citations
+
+- How to use Paper Review before submitting a manuscript
+
+- Paper Review: four-persona pre-submission review, from $9
+
+- BibTeX Validator: free check that your references exist
+
+- Submission checklist: twelve checks before you submit
 
 
 ---

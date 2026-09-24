@@ -90,6 +90,7 @@
 - All products with prices: https://purplelink.llc/products/
 - Scholar Utility Belt (free Chrome extension): https://purplelink.llc/scholar-utility-belt/
 - Research desk (recommended books for academic writers): https://purplelink.llc/desk/
+- Guide, using AI to check your own manuscript (publisher and venue policies compared): https://purplelink.llc/guides/ai-policy-checking-your-own-manuscript/
 - ModernTex (macOS, free 7-day trial then $10, shipping): https://purplelink.llc/moderntex/
 - Vitae (macOS, free, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/

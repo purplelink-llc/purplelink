@@ -44,6 +44,7 @@ PAGES = [
     "about/",
     "guides/methodology-problems-peer-reviewers-flag/",
     "guides/get-feedback-on-a-paper-before-submitting/",
+    "guides/ai-policy-checking-your-own-manuscript/",
     "guides/overleaf-alternative-mac/",
     "guides/best-mac-latex-editors/",
 ]

@@ -93,7 +93,7 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=5aef670c7d">
+    <link rel="stylesheet" href="/styles.css?v=87a16b28ac">
     <script src="/site.js?v=46ec2b3221" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -146,7 +146,7 @@
 
         <p>Costs and turnaround below are typical ranges, not quotes. Institutions and services vary, so treat them as a starting point.</p>
 
-        <table class="compare-table">
+        <table class="compare-table compare-stack">
           <caption>Ways to get a critical read on a manuscript before submission</caption>
           <thead>
             <tr>
@@ -161,67 +161,67 @@
           <tbody>
             <tr>
               <th scope="row">Trusted colleague or advisor</th>
-              <td>Free in money; paid back in time and favors</td>
-              <td>Days to several weeks, depending on their load</td>
-              <td>Whether the contribution matters, framing, fit with the target venue, missing literature in your subfield</td>
-              <td>Often too busy for a line-by-line read; may be too close to the work or too polite; rarely checks every reference</td>
-              <td>High trust, informal. Fine for most work; get agreement first if co-authors or collaborators have constraints.</td>
+              <td data-label="Cost">Free in money; paid back in time and favors</td>
+              <td data-label="Turnaround">Days to several weeks, depending on their load</td>
+              <td data-label="What it catches well">Whether the contribution matters, framing, fit with the target venue, missing literature in your subfield</td>
+              <td data-label="What it misses">Often too busy for a line-by-line read; may be too close to the work or too polite; rarely checks every reference</td>
+              <td data-label="Confidentiality notes">High trust, informal. Fine for most work; get agreement first if co-authors or collaborators have constraints.</td>
             </tr>
             <tr>
               <th scope="row">Internal lab or reading group</th>
-              <td>Free</td>
-              <td>Next scheduled meeting, usually one to two weeks</td>
-              <td>Unclear writing, confusing figures, gaps a smart outsider to the project notices, presentation of the argument</td>
-              <td>Depth on statistics unless a member specializes; systematic reference and formatting checks; group members share your blind spots</td>
-              <td>Stays inside the group. Circulate a fixed version so drafts do not spread.</td>
+              <td data-label="Cost">Free</td>
+              <td data-label="Turnaround">Next scheduled meeting, usually one to two weeks</td>
+              <td data-label="What it catches well">Unclear writing, confusing figures, gaps a smart outsider to the project notices, presentation of the argument</td>
+              <td data-label="What it misses">Depth on statistics unless a member specializes; systematic reference and formatting checks; group members share your blind spots</td>
+              <td data-label="Confidentiality notes">Stays inside the group. Circulate a fixed version so drafts do not spread.</td>
             </tr>
             <tr>
               <th scope="row">University writing center</th>
-              <td>Usually free to enrolled students; availability for faculty and postdocs varies</td>
-              <td>Appointment-based, often within a week or two</td>
-              <td>Structure, clarity, paragraph flow, grammar, help for writers working in a second language</td>
-              <td>Consultants are often not specialists in your field, so methods and statistics are generally out of scope</td>
-              <td>Covered by the institution's policies. Ask how long drafts are kept if you upload files.</td>
+              <td data-label="Cost">Usually free to enrolled students; availability for faculty and postdocs varies</td>
+              <td data-label="Turnaround">Appointment-based, often within a week or two</td>
+              <td data-label="What it catches well">Structure, clarity, paragraph flow, grammar, help for writers working in a second language</td>
+              <td data-label="What it misses">Consultants are often not specialists in your field, so methods and statistics are generally out of scope</td>
+              <td data-label="Confidentiality notes">Covered by the institution's policies. Ask how long drafts are kept if you upload files.</td>
             </tr>
             <tr>
               <th scope="row">Professional language editing</th>
-              <td>Typically tens to a few hundred dollars, priced by word count</td>
-              <td>A few days to about a week; rush options cost more</td>
-              <td>Grammar, word choice, consistency, readability for an international audience</td>
-              <td>Not designed to judge methods, statistics or whether claims are supported</td>
-              <td>Reputable services have confidentiality terms. Read them, and check whether an editor or an AI system handles your file.</td>
+              <td data-label="Cost">Typically tens to a few hundred dollars, priced by word count</td>
+              <td data-label="Turnaround">A few days to about a week; rush options cost more</td>
+              <td data-label="What it catches well">Grammar, word choice, consistency, readability for an international audience</td>
+              <td data-label="What it misses">Not designed to judge methods, statistics or whether claims are supported</td>
+              <td data-label="Confidentiality notes">Reputable services have confidentiality terms. Read them, and check whether an editor or an AI system handles your file.</td>
             </tr>
             <tr>
               <th scope="row">Paid "pre-submission peer review" service</th>
-              <td>Usually in the hundreds of dollars</td>
-              <td>Typically one to a few weeks</td>
-              <td>An outside expert-style report on methods, framing and journal fit, when the assigned reviewer knows your area</td>
-              <td>Quality depends heavily on who is assigned; may not verify every reference; slow if your deadline is close</td>
-              <td>Governed by the service's terms. Ask who reads the manuscript and whether they sign a confidentiality agreement.</td>
+              <td data-label="Cost">Usually in the hundreds of dollars</td>
+              <td data-label="Turnaround">Typically one to a few weeks</td>
+              <td data-label="What it catches well">An outside expert-style report on methods, framing and journal fit, when the assigned reviewer knows your area</td>
+              <td data-label="What it misses">Quality depends heavily on who is assigned; may not verify every reference; slow if your deadline is close</td>
+              <td data-label="Confidentiality notes">Governed by the service's terms. Ask who reads the manuscript and whether they sign a confidentiality agreement.</td>
             </tr>
             <tr>
               <th scope="row">General AI chat assistant (ChatGPT, Claude, Gemini) with a pasted manuscript</th>
-              <td>Free tier or an existing subscription</td>
-              <td>Minutes</td>
-              <td>Clarity edits, summarizing what the paper argues, spotting unclear passages, drafting alternatives for awkward sections</td>
-              <td>Long papers can hit context limits or be read unevenly; figures may be lost when text is pasted; no systematic reference verification; output depends heavily on the prompt; can state errors confidently</td>
-              <td>Whether your text may be used for training depends on the product, plan and settings. Check before pasting unpublished work.</td>
+              <td data-label="Cost">Free tier or an existing subscription</td>
+              <td data-label="Turnaround">Minutes</td>
+              <td data-label="What it catches well">Clarity edits, summarizing what the paper argues, spotting unclear passages, drafting alternatives for awkward sections</td>
+              <td data-label="What it misses">Long papers can hit context limits or be read unevenly; figures may be lost when text is pasted; no systematic reference verification; output depends heavily on the prompt; can state errors confidently</td>
+              <td data-label="Confidentiality notes">Whether your text may be used for training depends on the product, plan and settings. Check before pasting unpublished work.</td>
             </tr>
             <tr>
               <th scope="row">Preprint with community feedback (arXiv, SSRN, OSF, open review platforms)</th>
-              <td>Free</td>
-              <td>Unpredictable: days to never</td>
-              <td>Comments from interested readers outside your circle; early visibility and a public timestamp</td>
-              <td>Many preprints get little or no feedback; comments are unstructured; nothing systematic</td>
-              <td>Public by design. Check the journal's preprint policy and, for double-blind venues, whether a public version is allowed.</td>
+              <td data-label="Cost">Free</td>
+              <td data-label="Turnaround">Unpredictable: days to never</td>
+              <td data-label="What it catches well">Comments from interested readers outside your circle; early visibility and a public timestamp</td>
+              <td data-label="What it misses">Many preprints get little or no feedback; comments are unstructured; nothing systematic</td>
+              <td data-label="Confidentiality notes">Public by design. Check the journal's preprint policy and, for double-blind venues, whether a public version is allowed.</td>
             </tr>
             <tr>
               <th scope="row">Purplelink Paper Review</th>
-              <td>$9 Standard, $11 with Journal Pack, $15 Deep Review</td>
-              <td>Usually 4 to 8 minutes (Standard); 10 to 15 minutes (Deep)</td>
-              <td>Methods and statistics red flags, claims the data do not support, references that do not resolve in CrossRef, citation support at the abstract level, figure presentation issues, compliance with 25+ supported journals (Journal Pack), a bundled anonymity scan</td>
-              <td>Not a domain expert; can be wrong; reads the manuscript as written and cannot inspect your data or code; citation support is judged from abstracts, not full texts</td>
-              <td>Sent to Anthropic's Claude API, which retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and review when you retrieve the result.</td>
+              <td data-label="Cost">$9 Standard, $11 with Journal Pack, $15 Deep Review</td>
+              <td data-label="Turnaround">Usually 4 to 8 minutes (Standard); 10 to 15 minutes (Deep)</td>
+              <td data-label="What it catches well">Methods and statistics red flags, claims the data do not support, references that do not resolve in CrossRef, citation support at the abstract level, figure presentation issues, compliance with 25+ supported journals (Journal Pack), a bundled anonymity scan</td>
+              <td data-label="What it misses">Not a domain expert; can be wrong; reads the manuscript as written and cannot inspect your data or code; citation support is judged from abstracts, not full texts</td>
+              <td data-label="Confidentiality notes">Sent to Anthropic's Claude API, which retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and review when you retrieve the result.</td>
             </tr>
           </tbody>
         </table>
@@ -268,6 +268,7 @@
           <li><a href="/tools/paper-review/">Paper Review</a>: four-persona pre-submission review, from $9</li>
           <li><a href="/tools/anonymity-check/">Anonymity Check</a>: leak scan for double-blind submission, $2</li>
           <li><a href="/tools/citation-gap/">Citation Gap Analysis</a>: prior work you should cite but don't, $3</li>
+          <li><a href="/guides/ai-policy-checking-your-own-manuscript/">Can you use AI to check your own manuscript? What publisher policies say</a></li>
           <li><a href="/guides/use-paper-review-before-submitting/">How to use Paper Review before submitting a manuscript</a></li>
           <li><a href="/guides/how-to-respond-to-reviewer-2/">How to respond to Reviewer 2</a></li>
           <li><a href="/guides/why-it-matters/">Why it matters: the methodology problems reviewers flag</a></li>

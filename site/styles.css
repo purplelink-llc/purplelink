@@ -4223,3 +4223,16 @@ html { scroll-padding-top: 96px; }
 .list-filter-status { min-height: 1.4em; margin: 8px 0 0; color: var(--muted); font-size: 0.88rem; }
 .tool-card[hidden], .tool-card-lg[hidden], .catalog-card[hidden], .guide-grid li[hidden],
 .tools-section[hidden], .guides-group[hidden], .guides-start[hidden] { display: none; }
+
+/* A compare table whose cells carry data-label stacks into one card per row
+   on phones instead of scrolling sideways. */
+@media (max-width: 640px) {
+  .compare-stack, .compare-stack tbody, .compare-stack tr, .compare-stack th, .compare-stack td { display: block; width: 100%; }
+  .compare-stack { overflow: visible; }
+  .compare-stack thead { display: none; }
+  .compare-stack caption { display: block; width: 100%; margin-bottom: 10px; text-align: left; }
+  .compare-stack tr { margin: 0 0 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+  .compare-stack th[scope="row"] { padding: 0 0 6px; border: 0; font-size: 1.02rem; }
+  .compare-stack td { padding: 6px 0; border: 0; border-top: 1px solid var(--line); }
+  .compare-stack td::before { content: attr(data-label); display: block; margin-bottom: 2px; color: var(--muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+}
