@@ -325,3 +325,9 @@
 .pr-token-form[hidden] { display: none; }
 .pr-token-row { display: flex; gap: 8px; flex-wrap: wrap; }
 .pr-token-row .pr-input { flex: 1 1 260px; }
+
+/* Paper Review: pay, upload, report */
+.pr-steps { list-style: none; counter-reset: prs; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin: 14px auto 6px; padding: 0; max-width: 760px; font-size: 0.88rem; color: var(--muted); }
+.pr-steps li { counter-increment: prs; display: flex; align-items: baseline; gap: 6px; }
+.pr-steps li::before { content: counter(prs); display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 100px; background: var(--purple-xlight); color: var(--purple); font-weight: 700; font-size: 0.75rem; flex: none; }
+.pr-steps strong { color: var(--ink); }
