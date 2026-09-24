@@ -237,9 +237,9 @@ def venue_page(v):
       <nav class="tool-related" aria-label="Related tools">
         <h2>More reference tools</h2>
         <ul>
-          <li><a href="/tools/reference-converter/">Full reference converter →</a></li>
-          <li><a href="/tools/bib-builder/">Build a BibTeX entry →</a></li>
-          <li><a href="/format/">All venues →</a></li>
+          <li><a href="/tools/reference-converter/">Full reference converter</a></li>
+          <li><a href="/tools/bib-builder/">Build a BibTeX entry</a></li>
+          <li><a href="/format/">All venues</a></li>
         </ul>
       </nav>
 
