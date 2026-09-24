@@ -140,6 +140,11 @@ python3 scripts/fingerprint_assets.py
 step "regenerate llms-full.txt"
 python3 scripts/gen_llms_full.py
 
+# 2b3. Blog feed
+# Atom feed of the blog posts, rebuilt from each post's JSON-LD.
+step "regenerate blog feed"
+python3 scripts/gen_blog_feed.py
+
 # 2c. Share images
 # A page whose og:image file doesn't exist shares with no picture; stop here
 # rather than ship it.

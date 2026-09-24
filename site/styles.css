@@ -4249,3 +4249,6 @@ html { scroll-padding-top: 96px; }
 
 /* Inside a padded static page, the back link lines up with the content. */
 .static-page > .back-link { padding-left: 0; padding-right: 0; }
+
+.blog-hero p.blog-follow { margin-top: 10px; font-size: 0.9rem; }
+.blog-follow a { color: var(--purple); font-weight: 600; }
