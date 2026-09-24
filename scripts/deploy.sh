@@ -118,6 +118,13 @@ fi
 step "regenerate sitemap"
 python3 scripts/gen_sitemap.py
 
+# 2a. Shared layout
+# The header nav and footer are defined once in scripts/apply_layout.py and
+# stamped onto every page (except the cron-owned digest). Runs before the
+# fingerprint step so both see the final HTML.
+step "apply shared layout"
+python3 scripts/apply_layout.py
+
 # 2b. Asset fingerprints
 # Every local CSS/JS reference carries ?v=<hash of the file>, so a changed asset
 # is a new URL and the assets themselves can be cached hard (see netlify.toml).
