@@ -51,7 +51,7 @@
             {
               "@type": "Question",
               "name": "How accurate is the conversion?",
-              "acceptedAnswer": { "@type": "Answer", "text": "It is best-effort. Common entry types and core fields - title, authors, year, journal or book title, volume, issue, pages, publisher, DOI, URL, abstract and keywords - map cleanly. Less common fields or unusual formatting may need a quick manual review." }
+              "acceptedAnswer": { "@type": "Answer", "text": "It is best-effort. Common entry types and core fields (title, authors, year, journal or book title, volume, issue, pages, publisher, DOI, URL, abstract and keywords) map cleanly. Less common fields or unusual formatting may need a quick manual review." }
             },
             {
               "@type": "Question",
@@ -101,7 +101,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>Reference Converter</h1>
-        <p>Paste one or more references, pick a target format, and copy the result. Convert between <strong>BibTeX</strong>, <strong>RIS</strong>, and <strong>EndNote</strong> - everything runs in your browser. </p>
+        <p>Paste one or more references, pick a target format, and copy the result. Convert between <strong>BibTeX</strong>, <strong>RIS</strong>, and <strong>EndNote</strong>. Everything runs in your browser. </p>
       </div>
 
       <div class="tool-app">
@@ -151,7 +151,7 @@
           <pre class="rc-out"><code id="rc-out"></code></pre>
           <p class="rc-detected" id="rc-detected"></p>
         </div>
-        <p class="tool-privacy">Your references never leave your browser - there's no upload and nothing is stored.</p>
+        <p class="tool-privacy">Your references never leave your browser. There's no upload and nothing is stored.</p>
       </div>
 
       <section class="tool-howto">
@@ -166,9 +166,9 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This converter parses each reference into a neutral model - entry type, title, authors, year, container (journal or book title), volume, issue, pages, publisher, DOI, URL, abstract, and keywords - then re-serializes it in your chosen format. It runs entirely in your browser with no network calls at all.</p>
+        <p>This converter parses each reference into a neutral model (entry type, title, authors, year, container (journal or book title), volume, issue, pages, publisher, DOI, URL, abstract, and keywords), then re-serializes it in your chosen format. It runs entirely in your browser with no network calls at all.</p>
         <details><summary>Which formats are supported?</summary><div class="faq-body">BibTeX, RIS, and EndNote (the tagged <code>.enw</code> / refer style that uses <code>%0</code>, <code>%A</code>, <code>%T</code>…). You can convert from any of these to any other.</div></details>
-        <details><summary>How accurate is the conversion?</summary><div class="faq-body">It's best-effort. Common entry types (journal article, book, conference paper, chapter, report, thesis, web page) and core fields map cleanly. Unusual fields, non-standard tags, or heavily customized BibTeX may not round-trip perfectly - at minimum, title, authors, year, and container are preserved. Give the output a quick scan before using it.</div></details>
+        <details><summary>How accurate is the conversion?</summary><div class="faq-body">It's best-effort. Common entry types (journal article, book, conference paper, chapter, report, thesis, web page) and core fields map cleanly. Unusual fields, non-standard tags, or heavily customized BibTeX may not round-trip perfectly. At minimum, title, authors, year, and container are preserved. Give the output a quick scan before using it.</div></details>
         <details><summary>How are authors handled?</summary><div class="faq-body">Authors are normalized to <code>Last, First</code>. BibTeX joins them with <code>and</code>; RIS uses one <code>AU  -</code> line each; EndNote uses one <code>%A</code> line each.</div></details>
         <details><summary>Is my data stored?</summary><div class="faq-body">No. The whole conversion happens client-side in JavaScript. There is no upload, no server, and nothing is logged or stored.</div></details>
       </section>
@@ -195,7 +195,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
 
       <script src="/tools/reference-converter/reference-converter.js?v=140f6420a0" defer></script>
     </main>

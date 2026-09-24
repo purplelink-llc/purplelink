@@ -64,7 +64,7 @@
             {
               "@type": "Question",
               "name": "Are my files stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to CrossRef and/or Semantic Scholar - that is disclosed clearly before you run the check." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to CrossRef and/or Semantic Scholar. That is disclosed clearly before you run the check." }
             },
             {
               "@type": "Question",
@@ -119,7 +119,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>BibTeX Validator</h1>
-        <p>Upload or paste a <code>.bib</code> file to check syntax, missing fields, dead DOIs, and verify your citations actually exist — including author and year correctness. Download a corrected <code>.bib</code> where CrossRef returns a confident match. Useful for catching AI-hallucinated references. <strong>Files are never stored.</strong></p>
+        <p>Upload or paste a <code>.bib</code> file to check syntax, missing fields, dead DOIs, and verify your citations actually exist, including author and year correctness. Download a corrected <code>.bib</code> where CrossRef returns a confident match. Useful for catching AI-hallucinated references. <strong>Files are never stored.</strong></p>
       </div>
 
       <div class="tool-app">
@@ -157,15 +157,15 @@
             </label>
             <label>
               <input type="checkbox" id="check-doi">
-              <span>DOI resolution - verify each DOI is a live link</span>
+              <span>DOI resolution: verify each DOI is a live link</span>
             </label>
             <label>
               <input type="checkbox" id="check-crossref">
-              <span>CrossRef - check titles exist in CrossRef (catches hallucinations)</span>
+              <span>CrossRef: check titles exist in CrossRef (catches hallucinations)</span>
             </label>
             <label>
               <input type="checkbox" id="check-s2">
-              <span>Semantic Scholar - check titles in Semantic Scholar</span>
+              <span>Semantic Scholar: check titles in Semantic Scholar</span>
             </label>
           </div>
           <p id="privacy-notice" class="bib-privacy-notice" role="note">
@@ -195,7 +195,7 @@
         <h2>About this tool</h2>
         <p>This tool validates BibTeX files in layers: syntax + completeness (always), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. It's particularly useful for catching AI-hallucinated citations that have plausible-looking metadata but don't correspond to real papers.</p>
         <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title and author list match a real paper, and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on <a href="/guides/catch-ai-hallucinated-citations/">catching AI-hallucinated citations</a>.</div></details>
-        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services - this is disclosed before you run the check.</div></details>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services. This is disclosed before you run the check.</div></details>
         <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry showing its validation status: missing required fields, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.</div></details>
         <details><summary>What is the corrected .bib?</summary><div class="faq-body">For each entry where CrossRef returned a high-confidence match (title similarity at least 85%), the corrected .bib replaces the entry's fields with authoritative metadata: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a confident match are passed through unchanged. Each rewritten entry is marked with a "CORRECTED from CrossRef" comment so you can audit the changes.</div></details>
         <details><summary>How does the author check work?</summary><div class="faq-body">Names are normalized to canonical last-name tokens (folding "John Smith", "Smith, John", "J. Smith", and "Müller" → "muller" all to the same key) and compared as a set against the authoritative author list. The score is the Jaccard overlap, so partial matches still get partial credit.</div></details>
@@ -233,7 +233,7 @@
           <li><a href="/guides/best-mac-latex-editors/"><span class="rel-kind">Guide</span>Best LaTeX editors for Mac</a></li></ul>
       </nav>
 
-      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
 
       <script src="/tools/tools.js?v=c36d36e6c1"></script>
       <script>

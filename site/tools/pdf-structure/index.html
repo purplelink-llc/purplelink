@@ -54,7 +54,7 @@
             {
               "@type": "Question",
               "name": "Is my PDF stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. The PDF is processed in memory in an ephemeral container and discarded immediately. Extraction runs on Purplelink's own infrastructure - your document is never sent to any third-party service, and nothing is written to durable storage or logs." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The PDF is processed in memory in an ephemeral container and discarded immediately. Extraction runs on Purplelink's own infrastructure. Your document is never sent to any third-party service, and nothing is written to durable storage or logs." }
             },
             {
               "@type": "Question",
@@ -104,7 +104,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>PDF to Structured Data</h1>
-        <p>Turn a PDF into reading-order <strong>Markdown</strong> and RAG-ready <strong>JSON</strong> — tables, math as LaTeX, and figure captions preserved. Useful for feeding papers into AI and retrieval pipelines. Your file is processed in memory and never stored.</p>
+        <p>Turn a PDF into reading-order <strong>Markdown</strong> and RAG-ready <strong>JSON</strong>, with tables, math as LaTeX, and figure captions preserved. Useful for feeding papers into AI and retrieval pipelines. Your file is processed in memory and never stored.</p>
       </div>
 
       <div class="tool-app">
@@ -140,7 +140,7 @@
           </div>
         </div>
 
-        <p class="tool-privacy">Your PDF is processed in memory and discarded immediately — nothing is stored. Extraction runs on our own infrastructure using <a href="/tools/pdf-structure/ATTRIBUTION.md">OpenDataLoader (Apache-2.0)</a>; your document never leaves it.</p>
+        <p class="tool-privacy">Your PDF is processed in memory and discarded immediately. Nothing is stored. Extraction runs on our own infrastructure using <a href="/tools/pdf-structure/ATTRIBUTION.md">OpenDataLoader (Apache-2.0)</a>; your document never leaves it.</p>
       </div>
 
       <section class="tool-howto">
@@ -157,7 +157,7 @@
         <h2>About this tool</h2>
         <p>This tool extracts a PDF's content as structured data: reading-order Markdown for humans, and a JSON tree (blocks, tables, math, figure captions, bounding boxes) for AI and retrieval pipelines. Extraction is deterministic and runs locally on our infrastructure.</p>
         <details><summary>What file formats does it accept?</summary><div class="faq-body">PDF files up to 20 MB. For Word, PowerPoint, Excel, HTML, or EPUB, use the <a href="/tools/file-to-markdown/">File to Markdown</a> tool instead.</div></details>
-        <details><summary>Is my PDF stored?</summary><div class="faq-body">No. The PDF is processed in memory in an ephemeral container and discarded immediately. Extraction runs on Purplelink's own infrastructure — your document is never sent to any third-party service, and nothing is written to durable storage or logs.</div></details>
+        <details><summary>Is my PDF stored?</summary><div class="faq-body">No. The PDF is processed in memory in an ephemeral container and discarded immediately. Extraction runs on Purplelink's own infrastructure. Your document is never sent to any third-party service, and nothing is written to durable storage or logs.</div></details>
         <details><summary>How is this different from the File to Markdown tool?</summary><div class="faq-body">File to Markdown is multi-format but simpler. This tool is PDF-only and extraction-grade: it preserves reading order, detects tables, renders math as LaTeX, and returns structured JSON suited to RAG and AI pipelines.</div></details>
         <details><summary>Does it handle scanned PDFs?</summary><div class="faq-body">Not yet. This version reads PDFs that already contain a text layer. Scanned, image-only PDFs need OCR, which isn't in this free tool.</div></details>
       </section>
@@ -185,7 +185,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
 
       <script src="/tools/tools.js?v=c36d36e6c1"></script>
       <script src="/tools/pdf-structure/pdf-structure.js?v=1079eb7b54" defer></script>
