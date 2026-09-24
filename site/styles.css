@@ -2486,8 +2486,7 @@ dd {
 
 .static-page .page-meta {
   font-size: 0.82rem;
-  color: var(--ink-dim);
-  opacity: 0.6;
+  color: var(--muted);
   margin-bottom: 2.5rem;
 }
 
@@ -4322,3 +4321,10 @@ html { scroll-padding-top: 96px; }
 @media (max-width: 700px) { .screenshot-grid-4 { grid-template-columns: repeat(2, 1fr); } }
 .app-hero-actions .store-badge { align-self: center; }
 .waitlist-section .waitlist-fine-print { text-align: left; }
+
+/* Dark mode: --purple-light turns dark, so the Update tag's fixed dark text
+   lost contrast. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tag-update { color: var(--ink); }
+}
+:root[data-theme="dark"] .tag-update { color: var(--ink); }
