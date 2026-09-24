@@ -891,7 +891,7 @@ dd {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: oklch(99% 0.003 310 / 0.5);
+  color: oklch(99% 0.003 310 / 0.66);
 }
 
 .footer-col ul { list-style: none; display: grid; gap: 8px; }
@@ -913,7 +913,7 @@ dd {
   padding-top: 20px;
   border-top: 1px solid oklch(99% 0.003 310 / 0.1);
   font-size: 0.78rem;
-  color: oklch(99% 0.003 310 / 0.55);
+  color: oklch(99% 0.003 310 / 0.66);
 }
 
 @media (max-width: 960px) {
