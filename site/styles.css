@@ -3957,3 +3957,88 @@ main input:focus-visible {
 }
 
 .app-hero-copy .waitlist-fine-print { text-align: left; max-width: 64ch; }
+
+/* ─── /tools/submission-checklist/ ────────────────────────────────────── */
+
+.checklist {
+  max-width: 820px;
+  margin: 28px auto 0;
+  padding: 26px clamp(20px, 3vw, 32px) 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+}
+
+.checklist-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+.checklist-head h2 { font-size: 1.6rem; }
+.checklist-progress { font-weight: 700; color: var(--purple); }
+
+.checklist-bar {
+  height: 6px;
+  margin: 12px 0 18px;
+  border-radius: 100px;
+  background: var(--purple-light);
+  overflow: hidden;
+}
+
+.checklist-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--purple);
+  transition: width 0.3s ease;
+}
+
+.checklist-list { list-style: none; counter-reset: step; display: grid; gap: 0; }
+
+.checklist-list li {
+  counter-increment: step;
+  padding: 16px 0 16px 44px;
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+
+.checklist-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 16px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--purple-xlight);
+  color: var(--purple);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.checklist-list li.is-done::before { content: "✓"; background: var(--purple); color: oklch(99% 0.003 310); }
+
+.checklist-list label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 1.05rem; }
+.checklist-list input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; }
+.checklist-list li.is-done strong { text-decoration: line-through; text-decoration-color: var(--purple); color: var(--muted); }
+.checklist-list p { margin: 4px 0 0 30px; color: var(--muted); font-size: 0.92rem; }
+.checklist-tools { font-size: 0.85rem !important; }
+.checklist-tools a { color: var(--purple); font-weight: 600; }
+
+.checklist-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .checklist-list li.is-done::before { color: oklch(18% 0.06 310); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checklist-bar span { transition: none; }
+}

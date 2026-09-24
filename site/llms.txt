@@ -205,6 +205,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - PDF Tools: https://purplelink.llc/tools/pdf-tools/ — merge, split, and compress PDF files, files never stored.
 - File to Markdown: https://purplelink.llc/tools/file-to-markdown/ - convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to Markdown, files never stored.
 - PDF to Structured Data: https://purplelink.llc/tools/pdf-structure/ - convert a PDF to reading-order Markdown and RAG-ready JSON (tables, math as LaTeX, figure captions), powered by OpenDataLoader (Apache-2.0), files never stored.
+- Submission Checklist: https://purplelink.llc/tools/submission-checklist/ - twelve pre-submission checks for a manuscript, each linked to the tool that does it; progress saved in the browser.
 - Tools hub: https://purplelink.llc/tools/
 
 ## Guides (free how-to articles)
