@@ -442,6 +442,44 @@ def html_lifecycle_mtx_before_submit(*, unsubscribe_url: str, **_ignored) -> str
 """
 
 
+def html_lifecycle_decision_reminder(*, manuscript_title: str = "", unsubscribe_url: str) -> str:
+    """Sent around the decision date a Paper Review buyer chose on upload."""
+    title = _html.escape((manuscript_title or "your manuscript")[:200])
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">When the reviews come back</h2>
+  <p>When you uploaded {title} for a Paper Review, you asked for a note
+  around the time you expected a decision. Here it is, once.</p>
+  <p>If the decision is a revise and resubmit, two checks help:</p>
+  <ul style="padding-left: 20px;">
+    <li><strong>Response Review ($6)</strong> reads your response letter
+    against every reviewer comment and flags replies that are missing,
+    vague, or likely to read as defensive.</li>
+    <li><strong>Revision Review ($2)</strong> checks the revised manuscript
+    against the findings in your original Paper Review. It needs that
+    review's Markdown file, so keep it handy.</li>
+  </ul>
+  <p>The free guide to
+  <a href="https://purplelink.llc/guides/how-to-respond-to-reviewer-2/?utm_source=email&amp;utm_campaign=decision" style="color: #6d28d9;">responding to Reviewer 2</a>
+  covers sorting the comments before you write a word, and
+  <a href="https://purplelink.llc/tools/latex-diff/?utm_source=email&amp;utm_campaign=decision" style="color: #6d28d9;">LaTeX Diff</a>
+  makes the marked-up PDF many journals ask for.</p>
+  <p>
+    <a href="https://purplelink.llc/tools/response-review/?utm_source=email&amp;utm_campaign=decision"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Check my response letter
+    </a>
+  </p>
+  <p style="color: #555; font-size: 0.9em;">If it was accepted, congratulations.
+  The <a href="https://purplelink.llc/guides/camera-ready-checklist/?utm_source=email&amp;utm_campaign=decision" style="color: #555;">camera-ready checklist</a>
+  covers the last step.</p>
+  {_lifecycle_footer(unsubscribe_url)}
+</div>
+"""
+
+
 _TRIAL_REASON = "because you asked for ModernTex trial emails on purplelink.llc. Three emails in all, then nothing."
 
 

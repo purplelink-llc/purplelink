@@ -209,6 +209,10 @@
     if (emailField && emailField.value) {
       fd.append("email", emailField.value.trim());
     }
+    var remind = document.querySelector('input[name="remind_weeks"]:checked');
+    if (remind && remind.value) {
+      fd.append("remind_weeks", remind.value);
+    }
 
     submitBtn.disabled = true;
     statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>Uploading and starting your review…';

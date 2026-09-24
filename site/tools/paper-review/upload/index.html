@@ -13,7 +13,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=6feaa44358">
     <script src="/site.js?v=2fbf613174" defer></script>
-    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=13d2ea6ef9">
+    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=5fc02cf49f">
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -80,6 +80,17 @@
             <p class="pr-field-help">If you provide an email, we'll send you a link when the review finishes so you don't have to keep the tab open. We use the email only for this notification.</p>
           </div>
 
+          <fieldset class="pr-remind-pick">
+            <legend>When do you expect a decision? <span class="pr-field-hint">(optional)</span></legend>
+            <p class="pr-field-help">We'll send one email to the address on your receipt around then, about the tools for answering reviewers. Nothing else.</p>
+            <div class="pr-remind-options">
+              <label><input type="radio" name="remind_weeks" value="" checked> <span>No reminder</span></label>
+              <label><input type="radio" name="remind_weeks" value="4"> <span>About 4 weeks</span></label>
+              <label><input type="radio" name="remind_weeks" value="8"> <span>About 8 weeks</span></label>
+              <label><input type="radio" name="remind_weeks" value="12"> <span>About 12 weeks</span></label>
+            </div>
+          </fieldset>
+
           <p class="tool-privacy">
             <strong>Privacy note:</strong> Your manuscript will be sent to Anthropic's Claude API (which retains inputs for 30 days for abuse monitoring; does not use them for training). Purplelink does not store the manuscript or the result after delivery. <a href="/privacy/">Read the privacy policy →</a>
           </p>
@@ -93,7 +104,7 @@
       </div>
 
       <script src="/tools/tools.js?v=c36d36e6c1"></script>
-      <script src="/tools/paper-review/upload.js?v=e5ffebf14d" defer></script>
+      <script src="/tools/paper-review/upload.js?v=25a5004d33" defer></script>
     </main>
 
     <footer class="footer">
