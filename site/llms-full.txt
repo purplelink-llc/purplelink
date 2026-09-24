@@ -320,7 +320,7 @@ UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
 Current version1.3.0: a visual Table Editor, after 1.2.0's TikZ Designer. Changelog
 
-### Six releases since launch on September 4
+### Five updates since launch on September 4
 
 - Sep 131.3.0Table Editor: paste from a spreadsheet, get booktabs LaTeX.
 
@@ -329,6 +329,8 @@ Current version1.3.0: a visual Table Editor, after 1.2.0's TikZ Designer. Change
 - Sep 121.1.0Sync with co-authors, compile one chapter, formatting shortcuts.
 
 - Sep 111.0.2A free seven-day trial.
+
+- Sep 51.0.1Clearer bibliography build errors, pointing at the .bib line.
 
 Every 1.x update is included in the $10, and the app installs it in place. Full changelog
 
@@ -356,11 +358,11 @@ ModernTex requires macOS 14 (Sonoma) or later.
 
 I lost my license key. How do I get it back?
 
-Enter the email address you used at checkout on the Find a purchase page. If it bought ModernTex, a new license key and your download page are emailed to that address. Any key you had before keeps working.
+Enter the email address you used at checkout on the Find a purchase page. If that address bought ModernTex, a new license key and your download page are emailed to that address. Any key you had before keeps working.
 
 Is there a free trial?
 
-Yes. The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. When it ends, the window shows a notice and a Buy button; your .tex files are ordinary files on disk and are not touched. When you buy, the receipt email includes a license key: paste it into the trial's "Have a license key?" and that same copy unlocks, with no reinstall. The paid download is on the receipt page too, if you prefer a fresh copy.
+Yes. The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. When it ends, the window shows a notice and a Buy button; your .tex files are ordinary files on disk and are not touched. When you buy, the receipt email includes a license key: paste it into the trial's "Have a license key?" and that same copy unlocks, with no reinstall. The trial copy does not update itself, so install the paid download from your receipt page once to get updates in place.
 
 What does it cost?
 
@@ -627,7 +629,7 @@ Two-pass adversarial debate: each persona sees the others' first-round findings 
 
 Reviewing more than one manuscript? Volume packs save 16-17% per review.
 
-Secure checkout via Stripe. One-time payment, no subscription.
+Secure checkout via Stripe. One-time payment, no subscription. See a full example report first.
 
 Nothing is kept after delivery. The review is deleted from our servers the moment you retrieve it, and if a result reads as low-quality we'll refund the price. Advisory only, you decide what to change.
 
@@ -667,8 +669,8 @@ Section 3.2). Match search budget across all baselines.
 - [A] Replace "wide margin" framing in abstract and Section 5
 with what the data actually shows.
 - [B] Add per-seed variance to all results tables.
-- [B] Reference [17] does not resolve to a CrossRef entry,
-re-verify the citation.
+- [B] Reference [17] only weakly matches its CrossRef entry;
+check the title and DOI.
 - [C] Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on
 a continuous scale.
 
@@ -794,7 +796,7 @@ Example report
 
 # What a Paper Review report looks like
 
-This is a complete example report for a fictional machine-learning manuscript, shown the way you would read it, with a note after each section on what it is for and how to act on it. A real report quotes your own text, and also comes as a Markdown file and an annotated PDF with each comment on the page it refers to.
+This is an example report for a fictional machine-learning manuscript, shown the way you would read it, with a note after each section on what it is for and how to act on it. A real report quotes your own text, and also comes as a Markdown file and an annotated PDF with each comment on the page it refers to.
 
 ## Critical Blind Spots
 
@@ -837,8 +839,8 @@ with what the data actually shows.
 
 - B Add per-seed variance to all results tables.
 
-- B Reference [17] does not resolve to a CrossRef entry,
-re-verify the citation.
+- B Reference [17] only weakly matches its CrossRef entry;
+check the title and DOI.
 
 - C Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on
 a continuous scale.
@@ -889,7 +891,7 @@ What this section is for. For the claims that lean hardest on a citation, the ci
 
 ## Run one on your manuscript
 
-Standard review $9, with the Journal Pack $11, Deep Review $15. Usually ready in 4 to 8 minutes, no account, and the file is deleted when you retrieve the report. If a report reads as low quality, email within 14 days for a refund.
+Standard review $9, with the Journal Pack $11, Deep Review $15. A Standard review is usually ready in 4 to 8 minutes. No account, and the file is deleted when you retrieve the report. If a report reads as low quality, email within 14 days for a refund.
 
 Start a review
 How to use the report
@@ -1909,11 +1911,10 @@ Free · v1.0 · On the App Store
 
 Pin the places you've been. Track the flights you've taken. Set goals for where you're going next. GlobePin puts your entire travel history on a beautiful, interactive map.
 
-Download on the App Store
-What it does
-
 Download on the
 App Store
+
+What it does
 
 In the app
 
@@ -2666,7 +2667,7 @@ By Benjamin Ampel · September 24, 2026
 
 What ten publisher and venue policies say about authors using AI tools on their own manuscript before submission, what has to be disclosed and where, and why the upload ban you have heard about applies to reviewers.
 
-The short answer: yes. Every major publisher and venue policy we checked allows authors to use AI tools while preparing a manuscript. What they add is three conditions: an AI tool cannot be listed as an author, you stay responsible for everything in the paper, and some uses have to be disclosed. The rule that bans uploading manuscripts to AI is aimed at reviewers, who hold someone else's unpublished work in confidence. It is not about authors checking their own.
+The short answer: yes. Every major publisher and venue policy we checked allows authors to use AI tools while preparing a manuscript. They add three conditions: an AI tool cannot be listed as an author, you stay responsible for everything in the paper, and some uses have to be disclosed. The rule that bans uploading manuscripts to AI is aimed at reviewers, who hold someone else's unpublished work in confidence. It is not about authors checking their own.
 
 Policies change, and each journal can add its own rules on top of its publisher's. Treat this page as a map, then read the policy for your target venue. Every row in the table below links to it. Checked September 2026.
 
@@ -2746,7 +2747,7 @@ Only sanctioned tools, under the conference's own rules
 
 ICML
 Yes, with full responsibility for the content
-See the call for papers for the current year
+Check the page
 Check the page
 Reviewer chooses a no-LLM or privacy-compliant-LLM policy
 

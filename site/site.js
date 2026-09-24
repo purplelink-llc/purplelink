@@ -416,7 +416,7 @@
         });
         if (r.status === 429) throw new Error("rate");
         if (!r.ok) throw new Error("http");
-        status.textContent = "Done. The setup email is on its way to " + email + ".";
+        status.textContent = "Thanks. If " + email + " is new to the list, the setup email is on its way.";
         form.email.disabled = true;
       } catch (err) {
         btn.disabled = false;
