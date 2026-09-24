@@ -4082,3 +4082,55 @@ main input:focus-visible {
    elements land clear of the sticky header instead of underneath it. */
 html { scroll-padding-top: 96px; }
 @media (max-width: 720px) { html { scroll-padding-top: 130px; } }
+
+/* ─── Changelog: a sticky apps panel in the empty right column ────────── */
+
+.changelog-date { white-space: nowrap; }
+.changelog-entry { grid-template-columns: 150px 1fr; }
+.changelog-aside { display: none; }
+
+@media (min-width: 1200px) {
+  .changelog-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 900px) 320px;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .changelog-list { max-width: none; }
+
+  .changelog-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: sticky;
+    top: 110px;
+    margin-top: clamp(40px, 5vw, 72px);
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+  }
+}
+
+.changelog-app {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.changelog-app:hover { background: var(--purple-xlight); }
+.changelog-app img { width: 48px; height: 48px; border-radius: 11px; flex-shrink: 0; }
+.changelog-app > span { display: flex; flex-direction: column; }
+.changelog-app strong { color: var(--ink); font-size: 0.95rem; }
+.changelog-aside-note { font-size: 0.8rem; color: var(--muted); }
+.changelog-aside-note a { color: var(--purple); font-weight: 600; }
+
+@media (max-width: 640px) {
+  .changelog-entry { grid-template-columns: 1fr; }
+}
