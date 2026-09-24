@@ -296,6 +296,8 @@ Managing journal submissions, coauthor workflows, multiple concurrent manuscript
 
 Jumping into someone else's LaTeX project and needing to understand the structure, fix compilation issues, and contribute without breaking things.
 
+Not the right fit if several co-authors need to type in the same document at the same moment (keep Overleaf for that draft), you work on Windows, Linux or an iPad, or you would rather not have a TeX distribution on your Mac. ModernTex is also new, first released in September 2026, so it has less of a track record than TeXShop or Texifier. The comparison of Mac LaTeX editors covers the alternatives.
+
 At a glance
 
 ## ModernTex, in facts

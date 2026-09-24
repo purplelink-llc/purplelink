@@ -4465,3 +4465,6 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   .search-hit { margin: 0 -8px; padding: 12px 8px; }
 }
 .not-found-search { max-width: 520px; margin: 18px 0 22px; }
+.mt-not-for { max-width: 760px; margin: 28px auto 0; padding: 16px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); color: var(--muted); font-size: 0.95rem; }
+.mt-not-for strong { color: var(--ink); }
+@media (max-width: 600px) { .mt-not-for { margin-left: 16px; margin-right: 16px; } }
