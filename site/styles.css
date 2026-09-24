@@ -947,7 +947,6 @@ dd {
 
 .footer-loc {
   font-size: 0.78rem;
-  opacity: 0.6;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -1171,7 +1170,7 @@ dd {
 
 .scholar-source {
   font-size: 0.74rem;
-  opacity: 0.6;
+  opacity: 0.85;
   line-height: 1.5;
 }
 
