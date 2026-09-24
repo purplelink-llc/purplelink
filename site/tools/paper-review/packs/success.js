@@ -56,7 +56,7 @@
         if (!data) return;
         var tokens = data.tokens || [];
         if (tokens.length === 0) {
-          setStatus("No tokens were minted — please contact support.", true); return;
+          setStatus("No tokens were issued for this payment. Email ben@purplelink.llc with your Stripe receipt and they will be sent.", true); return;
         }
         showTokens(tokens, data.unused_tokens);
       })
@@ -66,7 +66,7 @@
   }
 
   if (!sessionId) {
-    setStatus("Missing session ID. Restart from the volume-pack page.", true); return;
+    setStatus("We couldn't find a payment in this link. Your tokens were also emailed to the address you paid with; if that email has not arrived, email ben@purplelink.llc with your Stripe receipt, with no need to pay again.", true); return;
   }
   redeem();
 })();
