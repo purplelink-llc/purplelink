@@ -49,7 +49,7 @@
           "name": "What is test-train contamination?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "If even a small fraction of your test set ends up in training \u2014 directly or through near-duplicates, or via a pretraining corpus that included the benchmark \u2014 your evaluation no longer measures generalisation. For language-model evaluations, contamination is especially insidious because the training corpus is enormous and the test set is public."
+            "text": "If even a small fraction of your test set ends up in training (directly or through near-duplicates, or via a pretraining corpus that included the benchmark), your evaluation no longer measures generalisation. For language-model evaluations, contamination is especially insidious because the training corpus is enormous and the test set is public."
           }
         },
         {
@@ -91,7 +91,7 @@
       <p><strong>When the evaluation set leaked into training.</strong></p>
 
       <h2>What it is</h2>
-      <p>If even a small fraction of your test set ends up in training — directly or through near-duplicates, or via a pretraining corpus that included the benchmark — your evaluation no longer measures generalisation. For language-model evaluations, contamination is especially insidious because the training corpus is enormous and the test set is public.</p>
+      <p>If even a small fraction of your test set ends up in training (directly or through near-duplicates, or via a pretraining corpus that included the benchmark), your evaluation no longer measures generalisation. For language-model evaluations, contamination is especially insidious because the training corpus is enormous and the test set is public.</p>
 
       <h2>Why a reviewer cares</h2>
       <p>Reviewers check: was the train/test split clean? For pretrained models, does the pretraining cutoff predate the test set's release? Did you de-duplicate against the eval set? Are there near-duplicates (paraphrases, translations, format variants)?</p>
@@ -100,7 +100,7 @@
       <p>Build a contamination test into your evaluation: search the training corpus for substrings from the test set. For LLM evals, prefer benchmarks released AFTER your model's pretraining cutoff. Where contamination is possible, report a contamination-robustness check that masks or removes contaminated items.</p>
 
       <hr class="divider">
-      <p>This is one of <a href="/guides/why-it-matters/">~15 canonical methodology explainers</a> Paper Review's red-team report links to. To get a full review of your manuscript, <a href="/tools/paper-review/" class="link-strong">start a Paper Review — $9</a>.</p>
+      <p>This is one of <a href="/guides/why-it-matters/">~15 canonical methodology explainers</a> Paper Review's red-team report links to. To get a full review of your manuscript, <a href="/tools/paper-review/" class="link-strong">start a Paper Review ($9)</a>.</p>
     </main>
     <footer class="footer">
       <div class="footer-grid">

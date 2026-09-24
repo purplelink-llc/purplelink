@@ -87,7 +87,7 @@
         { "@type": "Question", "name": "Why does one BibTeX error break everything?", "acceptedAnswer": { "@type": "Answer", "text": "An unbalanced brace or missing comma can cause the parser to misread every entry that follows. Fix the entry just before the first reported error and re-check." } },
         { "@type": "Question", "name": "What fields does each entry type require?", "acceptedAnswer": { "@type": "Answer", "text": "An @article needs author, title, journal, and year; @inproceedings needs booktitle; @book needs publisher. The validator flags missing required fields per entry type." } },
         { "@type": "Question", "name": "How do I escape special characters in BibTeX?", "acceptedAnswer": { "@type": "Answer", "text": "Escape LaTeX-special characters with a backslash: ampersand, percent, and hash all need a leading backslash. Underscores in titles should be escaped or wrapped in math mode." } },
-        { "@type": "Question", "name": "Is the BibTeX validator free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The validator runs entirely in your browser - your .bib file is never uploaded or stored." } }
+        { "@type": "Question", "name": "Is the BibTeX validator free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The validator runs entirely in your browser. Your .bib file is never uploaded or stored." } }
           ]
         },
         {
@@ -135,7 +135,7 @@
       </div>
 
       <article class="post-body">
-        <p>BibTeX's error messages are cryptic by design — the engine assumes you'll know what "I was expecting a comma" or "non-existent cross-reference" means in context. After helping researchers debug bibliographies for years, I've found the same six root causes account for nearly every breakage. This guide walks each one with before-and-after examples, and an editor-agnostic debugging strategy when nothing seems to fix it. You can spot-check any of these in seconds with the free <a href="/tools/bib-validator/">BibTeX validator</a> — paste your <code>.bib</code> in, and it surfaces missing fields, duplicate keys, dead DOIs, and AI-hallucinated entries against CrossRef and Semantic Scholar.</p>
+        <p>BibTeX's error messages are cryptic by design: the engine assumes you'll know what "I was expecting a comma" or "non-existent cross-reference" means in context. After helping researchers debug bibliographies for years, I've found the same six root causes account for nearly every breakage. This guide walks each one with before-and-after examples, and an editor-agnostic debugging strategy when nothing seems to fix it. You can spot-check any of these in seconds with the free <a href="/tools/bib-validator/">BibTeX validator</a>. Paste your <code>.bib</code> in, and it surfaces missing fields, duplicate keys, dead DOIs, and AI-hallucinated entries against CrossRef and Semantic Scholar.</p>
 
         <h2>1. Missing required fields</h2>
         <p>Every entry type has a required-field whitelist. Miss one and you'll get either a silent omission in the rendered reference or, with stricter styles, an explicit "missing field" warning at compile time. The required sets are remarkably consistent across BibTeX styles but vary by entry type:</p>
@@ -148,10 +148,10 @@
           <li><code>@techreport</code> → <code>author</code>, <code>title</code>, <code>institution</code>, <code>year</code></li>
           <li><code>@misc</code> → nothing strictly required, but at minimum <code>title</code> and either <code>author</code> or <code>note</code></li>
         </ul>
-        <p>The classic mistake: cite a workshop paper as <code>@article</code> when it's actually <code>@inproceedings</code>. The "journal" field then produces a malformed reference because the renderer expects "booktitle." Fix it by switching the entry type — not by adding a fake journal name.</p>
+        <p>The classic mistake: cite a workshop paper as <code>@article</code> when it's actually <code>@inproceedings</code>. The "journal" field then produces a malformed reference because the renderer expects "booktitle." Fix it by switching the entry type, not by adding a fake journal name.</p>
 
         <h2>2. Unbalanced braces</h2>
-        <p>BibTeX uses braces as its primary delimiter. Every <code>{</code> must have a matching <code>}</code>. When you're off by one, the parser doesn't see "missing brace on entry X" — it sees "entry X bleeds into entry X+1," and you get a cascade of mystifying errors on every subsequent entry. The error message itself usually points to a line far past the actual mistake.</p>
+        <p>BibTeX uses braces as its primary delimiter. Every <code>{</code> must have a matching <code>}</code>. When you're off by one, the parser doesn't see "missing brace on entry X". It sees "entry X bleeds into entry X+1," and you get a cascade of mystifying errors on every subsequent entry. The error message itself usually points to a line far past the actual mistake.</p>
         <p>Strategy: find the <strong>first</strong> reported error, then look at the entry just <em>before</em> that line. Most likely the closing brace of an inner field (like a title with embedded math) is missing. A common culprit:</p>
         <pre><code>@article{smith2023,
   title = {A study of {nested math \\(x^2 = y\\) groups},   <!-- missing } -->
@@ -162,14 +162,14 @@
         <p>That single missing brace will cause every entry after <code>smith2023</code> to be silently reinterpreted. Counting braces line-by-line is tedious; the <a href="/tools/bib-validator/">validator</a> shows the exact entry where the count goes off.</p>
 
         <h2>3. Duplicate citation keys</h2>
-        <p>Each entry needs a unique key — the identifier you cite with <code>\cite{key}</code>. Duplicate keys cause BibTeX to use the first occurrence and warn about the second:</p>
+        <p>Each entry needs a unique key, the identifier you cite with <code>\cite{key}</code>. Duplicate keys cause BibTeX to use the first occurrence and warn about the second:</p>
         <pre><code>@article{smith2023, title={Paper A}, ...}
 @article{smith2023, title={Paper B}, ...}   <!-- silently ignored -->
 </code></pre>
         <p>Common when you merge two <code>.bib</code> files from different projects, or when you import entries from a citation manager that auto-generates keys. Use the validator (which flags duplicates) or run <code>biber --validate-datamodel</code>. A naming convention helps: <code>lastname-yearLetter</code> (e.g., <code>smith2023a</code>, <code>smith2023b</code>) for same-author-same-year clashes.</p>
 
         <h2>4. Unescaped special characters</h2>
-        <p>LaTeX reserves several characters for its own syntax. Inside a BibTeX field value, the same rules apply — you must escape them or wrap them in braces. The full list of LaTeX special characters: <code>#</code>, <code>$</code>, <code>%</code>, <code>&amp;</code>, <code>_</code>, <code>{</code>, <code>}</code>, <code>~</code>, <code>^</code>, <code>\</code>.</p>
+        <p>LaTeX reserves several characters for its own syntax. Inside a BibTeX field value, the same rules apply: you must escape them or wrap them in braces. The full list of LaTeX special characters: <code>#</code>, <code>$</code>, <code>%</code>, <code>&amp;</code>, <code>_</code>, <code>{</code>, <code>}</code>, <code>~</code>, <code>^</code>, <code>\</code>.</p>
         <p>In titles, the two most common offenders are <code>&amp;</code> (in conference names) and <code>%</code> (in chemistry / statistics titles):</p>
         <pre><code><!-- Wrong: breaks the compile -->
 @inproceedings{lee2024,
@@ -195,7 +195,7 @@
   journal = {Nature},
   year = {2024},
 }</code></pre>
-        <p>BibTeX won't always crash on this — sometimes it just renders nonsense. Worse, the error often points at a downstream entry that has nothing wrong with it. Best preventive practice: always end every field with a comma. It's defensive and harmless.</p>
+        <p>BibTeX won't always crash on this. Sometimes it just renders nonsense. Worse, the error often points at a downstream entry that has nothing wrong with it. Best preventive practice: always end every field with a comma. It's defensive and harmless.</p>
 
         <h2>6. Smart quotes and stray Unicode</h2>
         <p>Pasting bibliographic data from a publisher's website, a PDF, or a citation generator frequently introduces typographic substitutions: curly quotes <code>“ ”</code> instead of straight <code>"</code>, em-dashes <code>—</code> instead of <code>--</code>, non-breaking spaces, and the like. Classic BibTeX (8-bit) chokes on most of these. Symptoms include "I was expecting a `,'" or simply unreadable rendered references.</p>
@@ -206,15 +206,15 @@
         </ol>
 
         <h2>7. The DOI didn't resolve</h2>
-        <p>Less common but increasingly important now that AI-assisted writing tools hallucinate plausible-looking but invalid DOIs. If your reference list has a DOI field with a 404, your reader's reference-management software won't find the paper — and journals are starting to validate DOIs at submission. The <a href="/tools/bib-validator/">validator</a>'s "Check DOIs" option resolves each one against doi.org and flags dead ones. Replace the DOI with the correct one (the BibTeX Builder can fetch a fresh entry from CrossRef given a corrected DOI), or remove the field if no DOI exists.</p>
+        <p>Less common but increasingly important now that AI-assisted writing tools hallucinate plausible-looking but invalid DOIs. If your reference list has a DOI field with a 404, your reader's reference-management software won't find the paper, and journals are starting to validate DOIs at submission. The <a href="/tools/bib-validator/">validator</a>'s "Check DOIs" option resolves each one against doi.org and flags dead ones. Replace the DOI with the correct one (the BibTeX Builder can fetch a fresh entry from CrossRef given a corrected DOI), or remove the field if no DOI exists.</p>
 
         <h2>8. The title doesn't match a real paper</h2>
-        <p>This one is new in the LLM era. A typical hallucinated citation has plausible authors, a plausible journal name, and a plausible year — but the title doesn't correspond to any paper in CrossRef or Semantic Scholar. The validator's CrossRef and Semantic Scholar checks compare your title against the matched paper's title and report a similarity score. Below 50% almost always means the citation doesn't exist. If you suspect a hallucination, paste the title into Google Scholar — if no match comes back, the citation is fake and needs to be replaced before submission.</p>
+        <p>This one is new in the LLM era. A typical hallucinated citation has plausible authors, a plausible journal name, and a plausible year, but the title doesn't correspond to any paper in CrossRef or Semantic Scholar. The validator's CrossRef and Semantic Scholar checks compare your title against the matched paper's title and report a similarity score. Below 50% almost always means the citation doesn't exist. If you suspect a hallucination, paste the title into Google Scholar. If no match comes back, the citation is fake and needs to be replaced before submission.</p>
 
         <h2>When nothing else works</h2>
         <p>If you've been through this list and the build still won't finish, the debugging strategy is:</p>
         <ol>
-          <li><strong>Comment everything out.</strong> Open the <code>.bib</code> and prefix every <code>@</code> with a comment marker (most editors will let you block-comment). Build with an empty bibliography — it should compile.</li>
+          <li><strong>Comment everything out.</strong> Open the <code>.bib</code> and prefix every <code>@</code> with a comment marker (most editors will let you block-comment). Build with an empty bibliography. It should compile.</li>
           <li><strong>Bisect.</strong> Uncomment half the entries. Build. Did it break? The bad entry is in that half. Halve again, and so on. Five or six iterations is enough to locate the bad entry in a 500-line file.</li>
           <li><strong>Inspect the entry.</strong> Once isolated, the issue is almost always one of the six categories above. Most often missing braces.</li>
         </ol>
@@ -226,7 +226,7 @@
         <details><summary>Why does one BibTeX error break everything?</summary><div class="faq-body">An unbalanced brace or missing comma can cause the parser to misread every entry that follows. Fix the entry just before the first reported error and re-check.</div></details>
         <details><summary>What fields does each entry type require?</summary><div class="faq-body">An @article needs author, title, journal, and year; @inproceedings needs booktitle; @book needs publisher. The <a href="/tools/bib-validator/">validator</a> flags missing required fields per entry type.</div></details>
         <details><summary>How do I escape special characters in BibTeX?</summary><div class="faq-body">Escape LaTeX-special characters with a backslash: \&amp; for ampersand, \% for percent, \# for hash. Underscores in titles should be escaped or wrapped in math mode.</div></details>
-        <details><summary>Is the BibTeX validator free and private?</summary><div class="faq-body">Yes. The validator runs entirely in your browser - your .bib file is never uploaded or stored.</div></details>
+        <details><summary>Is the BibTeX validator free and private?</summary><div class="faq-body">Yes. The validator runs entirely in your browser. Your .bib file is never uploaded or stored.</div></details>
       </section>
 
       <!-- moderntex-cta -->
@@ -235,7 +235,7 @@
         <h2>Writing LaTeX on a Mac?</h2>
         <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.</p>
         <div class="waitlist-actions">
-          <a class="btn btn-primary" href="/moderntex/">Get ModernTex &mdash; $10</a>
+          <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($10)</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
         </div>
         <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account.</p>

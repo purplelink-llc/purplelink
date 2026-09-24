@@ -91,7 +91,7 @@
             <p>Set the column alignment. Left (<code>l</code>) suits text columns. Right (<code>r</code>) suits numerical columns. If your table mixes both, generate with all-left first, then edit the column spec string in the output directly.</p>
           </li>
           <li>
-            <p>Leave <strong>booktabs</strong> checked. It generates <code>\toprule</code>, <code>\midrule</code>, and <code>\bottomrule</code> — the standard for journal-quality tables. Uncheck it only if a journal template requires <code>\hline</code>.</p>
+            <p>Leave <strong>booktabs</strong> checked. It generates <code>\toprule</code>, <code>\midrule</code>, and <code>\bottomrule</code>, the standard for journal-quality tables. Uncheck it only if a journal template requires <code>\hline</code>.</p>
             <p>[SCREENSHOT: options panel with booktabs checked]</p>
           </li>
           <li>
@@ -108,18 +108,18 @@
 
         <h2>What's happening under the hood</h2>
 
-        <p>The tool parses your input in your browser using a CSV/TSV parser that handles quoted fields and embedded delimiters. It detects the separator automatically by scanning the first few lines. The column spec is built from the alignment choice and the column count in the first row. Cells that contain special LaTeX characters — <code>&amp;</code>, <code>%</code>, <code>_</code>, <code>#</code>, <code>$</code>, <code>^</code>, <code>~</code>, <code>{</code>, <code>}</code>, <code>\</code> — are escaped before output. No data leaves your browser at any point.</p>
+        <p>The tool parses your input in your browser using a CSV/TSV parser that handles quoted fields and embedded delimiters. It detects the separator automatically by scanning the first few lines. The column spec is built from the alignment choice and the column count in the first row. Cells that contain special LaTeX characters (<code>&amp;</code>, <code>%</code>, <code>_</code>, <code>#</code>, <code>$</code>, <code>^</code>, <code>~</code>, <code>{</code>, <code>}</code>, <code>\</code>) are escaped before output. No data leaves your browser at any point.</p>
 
         <h2>Q&amp;A</h2>
 
         <h3>My data has commas inside cells. Will the parser break?</h3>
-        <p>No. Wrap the field in double quotes — for example, <code>"Smith, J."</code>. The parser handles quoted fields with embedded commas.</p>
+        <p>No. Wrap the field in double quotes: for example, <code>"Smith, J."</code>. The parser handles quoted fields with embedded commas.</p>
 
         <h3>Do I need to install the booktabs package separately?</h3>
         <p>No. <code>booktabs</code> ships with all standard TeX distributions (TeX Live, MiKTeX). Add <code>\usepackage{booktabs}</code> to your preamble and it compiles.</p>
 
         <h3>Can I control alignment per column instead of all at once?</h3>
-        <p>The tool sets one alignment for all columns. After pasting the output, edit the column spec string directly — change <code>llll</code> to <code>lrrl</code> for a mix of left and right.</p>
+        <p>The tool sets one alignment for all columns. After pasting the output, edit the column spec string directly. Change <code>llll</code> to <code>lrrl</code> for a mix of left and right.</p>
 
         <p>Generate a table at <a href="https://purplelink.llc/tools/latex-table-generator/">purplelink.llc/tools/latex-table-generator/</a>.</p>
       </div>

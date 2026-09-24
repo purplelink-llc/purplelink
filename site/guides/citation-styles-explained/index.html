@@ -129,9 +129,9 @@
       </div>
 
       <article class="post-body">
-        <p>Different disciplines have settled on different citation conventions, and submitting work formatted in the wrong style is a common reason for a desk rejection. This guide explains the four styles you're most likely to encounter — IEEE, APA, MLA, and Chicago — what they look like, when each is used, and how to switch between them. You can format any reference in any of these styles automatically with the free <a href="/tools/citation-generator/">Citation Generator</a> by pasting a DOI, ISBN, or arXiv ID.</p>
+        <p>Different disciplines have settled on different citation conventions, and submitting work formatted in the wrong style is a common reason for a desk rejection. This guide explains the four styles you're most likely to encounter (IEEE, APA, MLA, and Chicago), what they look like, when each is used, and how to switch between them. You can format any reference in any of these styles automatically with the free <a href="/tools/citation-generator/">Citation Generator</a> by pasting a DOI, ISBN, or arXiv ID.</p>
 
-        <h2>IEEE — engineering, computer science, physics</h2>
+        <h2>IEEE: engineering, computer science, physics</h2>
         <p>IEEE (Institute of Electrical and Electronics Engineers) is the de facto style for most engineering, computer science, and applied-physics venues. It's a <strong>numeric</strong> citation system: in-text citations are bracketed numbers in the order sources first appear in the manuscript, and the reference list is numbered to match.</p>
         <p><strong>In-text:</strong></p>
         <pre><code>The approach in [3] outperforms prior work [1], [2].
@@ -142,7 +142,7 @@ Recent surveys [4]–[7] confirm this trend.</code></pre>
     vol. 30, 2017, pp. 5998–6008.</code></pre>
         <p>Author names use first-initial + middle-initial + surname (<code>A. B. Smith</code>). Journal and conference names are typically abbreviated (e.g., "Trans. Pattern Anal. Mach. Intell." instead of the full name). The IEEE Reference Guide is the canonical source; most CS conferences and journals follow it strictly. Where to expect IEEE: ICCV, NeurIPS, ICML, CVPR, IROS, ICRA, the entire IEEE journal portfolio.</p>
 
-        <h2>APA — psychology, education, social sciences, nursing</h2>
+        <h2>APA: psychology, education, social sciences, nursing</h2>
         <p>APA (American Psychological Association) is the dominant style across psychology, education, sociology, communication, business, and nursing. The 7th edition (2020) is current. APA is an <strong>author–date</strong> system: in-text citations name the author and year, and the reference list is alphabetical by surname.</p>
         <p><strong>In-text:</strong></p>
         <pre><code>The original study (Smith, 2020) showed a 23% effect.
@@ -154,8 +154,8 @@ Smith (2020) found a 23% effect.</code></pre>
   555–570. https://doi.org/10.1037/edu0000388</code></pre>
         <p>Notice the journal name is italicized and the volume number is in italics; the issue number is in parentheses and not italicized. DOIs are written as full URLs in APA 7. "et al." is used for in-text citations of works with three or more authors from the first citation on. APA emphasizes the date because recency matters in fast-moving social-science literatures.</p>
 
-        <h2>MLA — literature, languages, cultural studies</h2>
-        <p>MLA (Modern Language Association) is the standard across the humanities — literary criticism, linguistics, cultural studies, comparative literature. The 9th edition (2021) is current. MLA is an <strong>author–page</strong> system: in-text citations name the author and a page number, with no year and no comma between them.</p>
+        <h2>MLA: literature, languages, cultural studies</h2>
+        <p>MLA (Modern Language Association) is the standard across the humanities: literary criticism, linguistics, cultural studies, comparative literature. The 9th edition (2021) is current. MLA is an <strong>author–page</strong> system: in-text citations name the author and a page number, with no year and no comma between them.</p>
         <p><strong>In-text:</strong></p>
         <pre><code>The narrator's unreliability is established early (Smith 42).
 As Smith argues, "the genre demands ambiguity" (Smith 42).</code></pre>
@@ -165,7 +165,7 @@ As Smith argues, "the genre demands ambiguity" (Smith 42).</code></pre>
   JSTOR, https://www.jstor.org/stable/12345678.</code></pre>
         <p>MLA renames the reference list "Works Cited" and uses italics for journal and book titles, quotation marks for article titles. The "container" model (introduced in MLA 8 and continued in MLA 9) is distinctive: every source has one or more nested containers (a journal published in a database, for example). MLA also expects access dates for online sources where no publication date is available.</p>
 
-        <h2>Chicago — history, classics, some humanities, plus a sciences variant</h2>
+        <h2>Chicago: history, classics, some humanities, plus a sciences variant</h2>
         <p>Chicago Manual of Style is unusual in that it offers <strong>two distinct systems</strong>, both currently in their 17th edition:</p>
         <h3>Notes–Bibliography (NB)</h3>
         <p>The system most often associated with Chicago. Used widely in history, classics, art history, religion, and parts of philosophy. Citations live in <strong>footnotes or endnotes</strong>, with a separate alphabetized bibliography at the end.</p>
@@ -206,12 +206,12 @@ Smith, Jane. 2020. <em>A History of Ambiguity</em>. Chicago:
         <h2>How to switch styles</h2>
         <p>If you're moving a manuscript from one venue to another with a different citation style, three options:</p>
         <ol>
-          <li><strong>Reformatter tool.</strong> The <a href="/tools/citation-generator/">Citation Generator</a> takes a DOI or ISBN and outputs APA, MLA, Chicago, or IEEE — rebuild any single reference in any style.</li>
+          <li><strong>Reformatter tool.</strong> The <a href="/tools/citation-generator/">Citation Generator</a> takes a DOI or ISBN and outputs APA, MLA, Chicago, or IEEE. Rebuild any single reference in any style.</li>
           <li><strong>BibLaTeX style swap.</strong> If your manuscript is in LaTeX, the cleanest path is to change your <code>\usepackage[style=ieee]{biblatex}</code> declaration to the target style and recompile. No manual reference-list rewriting needed. The <a href="/tools/bib-validator/">BibTeX Validator</a> can verify your <code>.bib</code> entries have the fields the new style requires.</li>
           <li><strong>Reference manager.</strong> Zotero, Mendeley, EndNote, and Paperpile all support multi-style output. Switch the active style and re-insert all citations.</li>
         </ol>
 
-        <p>The Citation Generator and BibTeX Builder both run against authoritative APIs (CrossRef for DOIs, arXiv for preprints) — your reference data is never stored or shared. If you're preparing references at submission time, run the whole <code>.bib</code> through the <a href="/tools/bib-validator/">BibTeX Validator</a> to catch missing required fields or hallucinated DOIs before the manuscript leaves your machine.</p>
+        <p>The Citation Generator and BibTeX Builder both run against authoritative APIs (CrossRef for DOIs, arXiv for preprints). Your reference data is never stored or shared. If you're preparing references at submission time, run the whole <code>.bib</code> through the <a href="/tools/bib-validator/">BibTeX Validator</a> to catch missing required fields or hallucinated DOIs before the manuscript leaves your machine.</p>
       </article>
 
       <section class="tool-faq">
@@ -228,7 +228,7 @@ Smith, Jane. 2020. <em>A History of Ambiguity</em>. Chicago:
         <h2>Writing LaTeX on a Mac?</h2>
         <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.</p>
         <div class="waitlist-actions">
-          <a class="btn btn-primary" href="/moderntex/">Get ModernTex &mdash; $10</a>
+          <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($10)</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
         </div>
         <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account.</p>
