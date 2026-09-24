@@ -123,6 +123,41 @@ PURCHASE_UPLOAD_PATHS = {
 }
 
 
+def _purchase_start_link(session_id: str, entry: dict) -> str:
+    """The link that starts a single purchase from any device."""
+    from urllib.parse import quote as _q
+    category = (entry.get("product_cfg") or {}).get("category", "")
+    tokens = entry.get("tokens") or []
+    if category == "paper-review" and tokens:
+        return f"https://purplelink.llc/tools/paper-review/upload/?direct_token={_q(tokens[0])}"
+    return f"https://purplelink.llc{PURCHASE_UPLOAD_PATHS.get(category, '/tools/')}?session_id={_q(session_id)}"
+
+
+# A single purchase still unused this long after paying gets one reminder,
+# provided at least a day of its 7-day window is left.
+PURCHASE_WAITING_AFTER_DAYS = 2
+
+
+def _purchases_waiting(entries, now: float) -> list:
+    """(session_id, entry) pairs for single purchases due a 'still waiting'
+    email: paid at least PURCHASE_WAITING_AFTER_DAYS ago, never used, not
+    reminded before, and more than a day from expiring. Packs never expire
+    and are not included."""
+    due = []
+    for session_id, entry in entries:
+        if not isinstance(entry, dict) or not entry.get("email"):
+            continue
+        expires_at = entry.get("expires_at", 0) or 0
+        if not expires_at or expires_at - now < 86400:
+            continue
+        if entry.get("consumed_tokens") or entry.get("waiting_reminded_at"):
+            continue
+        if now - (entry.get("created_at") or now) < PURCHASE_WAITING_AFTER_DAYS * 86400:
+            continue
+        due.append((session_id, entry))
+    return due
+
+
 def _email_key(email: str) -> str:
     """The form an address is compared in: opt-outs are stored under it and
     unsubscribe tokens are signed over it, so "Jane@Uni.edu" and
@@ -2193,12 +2228,8 @@ def web():
             try:
                 from latextools import delivery as _delivery
                 import httpx as _httpx
-                from urllib.parse import quote as _q
                 category = product_cfg.get("category", "")
-                if category == "paper-review":
-                    link = f"https://purplelink.llc/tools/paper-review/upload/?direct_token={_q(tokens[0])}"
-                else:
-                    link = f"https://purplelink.llc{PURCHASE_UPLOAD_PATHS.get(category, '/tools/')}?session_id={_q(session_id)}"
+                link = _purchase_start_link(session_id, entry)
                 async with _httpx.AsyncClient(timeout=10.0) as _ec:
                     _email_result = await _delivery.send_email(
                         _ec,
@@ -4039,6 +4070,35 @@ def lifecycle_email_sweep() -> dict:
                         "lifecycle email stage=%s session_id=%s not sent: %s",
                         stage_name, session_id, result,
                     )
+
+            # Paid, never used, and the 7-day window is running: one nudge.
+            import datetime as _dt
+            for session_id, entry in _purchases_waiting(list(paper_tokens_dict.items()), now):
+                email = entry.get("email", "")
+                if lifecycle_optout_dict.get(_email_key(email)):
+                    continue
+                category = (entry.get("product_cfg") or {}).get("category", "")
+                product_name = _delivery._READY_NAMES.get(category, "purchase")
+                ends = _dt.datetime.fromtimestamp(entry["expires_at"], _dt.timezone.utc)
+                result = await _delivery.send_email(
+                    client,
+                    to=email,
+                    subject=f"Your {product_name} is still waiting",
+                    html=_delivery.html_purchase_waiting(
+                        product_name=product_name,
+                        link=_purchase_start_link(session_id, entry),
+                        ends="%s %d %s" % (ends.strftime("%A"), ends.day, ends.strftime("%B")),
+                    ),
+                    tags=[{"name": "lifecycle_stage", "value": "purchase_waiting"}],
+                )
+                if result.get("status") == "ok":
+                    latest = paper_tokens_dict.get(session_id)
+                    if isinstance(latest, dict):
+                        latest["waiting_reminded_at"] = now
+                        paper_tokens_dict[session_id] = latest
+                    sent["purchase_waiting"] = sent.get("purchase_waiting", 0) + 1
+                else:
+                    logger.warning("purchase waiting email session_id=%s not sent: %s", session_id, result)
 
     def _lifecycle_unsubscribe_url_standalone(email: str) -> str:
         import hashlib as _hashlib
