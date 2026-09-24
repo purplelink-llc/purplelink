@@ -187,32 +187,82 @@ _EMAIL_BASE_CSS = (
 )
 
 
+# What the ready email calls each product, and the one next step it offers.
+# Keys are PAID_PRODUCTS keys (adjacent tools) or "paper-review".
+_READY_NAMES = {
+    "paper-review": "Paper Review",
+    "citation-gap": "Citation Gap report",
+    "anonymity-check": "Anonymity Check",
+    "cover-letter": "cover letter draft",
+    "revision-review": "Revision Review",
+    "response-review": "Response Review",
+    "resume-review": "Resume Review",
+}
+_LINK = 'style="color: #6d28d9;"'
+_READY_NEXT = {
+    "paper-review": (
+        f'Next, if you need it: <a href="https://purplelink.llc/tools/citation-gap/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Citation Gap</a> '
+        f'($3) lists prior work a reviewer may expect you to cite, and <a href="https://purplelink.llc/tools/cover-letter/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Cover Letter</a> '
+        '($2) drafts the letter from your abstract.'
+    ),
+    "citation-gap": (
+        f'For the full read, <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Paper Review</a> '
+        '($9) puts the manuscript in front of four AI reviewers and checks every reference against CrossRef.'
+    ),
+    "anonymity-check": (
+        f'For the full read, <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Paper Review</a> '
+        '($9) covers methods, statistics and references, with an anonymity scan included.'
+    ),
+    "cover-letter": (
+        f'Before you send it, <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Paper Review</a> '
+        '($9) reads the manuscript the way a reviewer panel would.'
+    ),
+    "response-review": (
+        f'For the manuscript itself, <a href="https://purplelink.llc/tools/paper-review/revision/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Revision Review</a> '
+        '($2) checks the revision against the findings in your original Paper Review.'
+    ),
+    "revision-review": (
+        f'For the letter that goes with it, <a href="https://purplelink.llc/tools/response-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Response Review</a> '
+        '($6) checks every reply against the reviewer comments.'
+    ),
+}
+
+
 def html_review_ready(
-    *, status_url: str, manuscript_title: str = "", amount_cents: int = 900
+    *, status_url: str, manuscript_title: str = "", amount_cents: int = 900,
+    product: str = "paper-review",
 ) -> str:
-    title = manuscript_title or "(your manuscript)"
-    title = _html.escape(title[:200])
+    name = _READY_NAMES.get(product, "result")
     refund_amount = f"${amount_cents / 100:.2f}".rstrip("0").rstrip(".")
+    if product == "paper-review":
+        title = _html.escape((manuscript_title or "(your manuscript)")[:200])
+        lead = f"The red-team review of <strong>{title}</strong> has finished."
+        cta = "Open my review"
+    else:
+        lead = "It has finished and is waiting for you."
+        cta = "Open it"
+    next_step = _READY_NEXT.get(product, "")
+    next_html = f'\n  <p style="color: #555; font-size: 0.9em;">{next_step}</p>' if next_step else ""
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
-  <h2 style="color: #6d28d9;">Your Paper Review is ready</h2>
-  <p>The red-team review of <strong>{title}</strong> has finished.</p>
+  <h2 style="color: #6d28d9;">Your {name} is ready</h2>
+  <p>{lead}</p>
   <p>
     <a href="{status_url}"
        style="display: inline-block; background: #7c3aed; color: #fff;
               padding: 12px 22px; border-radius: 6px; text-decoration: none;
               font-weight: 600;">
-      Open my review
+      {cta}
     </a>
   </p>
   <p style="color: #555; font-size: 0.9em;">
-    The review is held on our server only until you retrieve it. Open the
-    link soon and save a copy locally — once you download the Markdown, the
-    review is deleted from our infrastructure.
-  </p>
+    The result is held on our server only until you retrieve it. Open the
+    link soon and save a copy locally; once you download it, it is deleted
+    from our infrastructure.
+  </p>{next_html}
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">
-    Sent by Purplelink LLC. If a review is low-quality, reply to this email
+    Sent by Purplelink LLC. If a result is low-quality, reply to this email
     and we'll refund the {refund_amount}.
   </p>
 </div>

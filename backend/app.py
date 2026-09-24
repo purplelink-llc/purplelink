@@ -699,10 +699,11 @@ def adjacent_tool_pipeline(
                     async with httpx.AsyncClient(timeout=10.0) as ec:
                         _email_result = await delivery.send_email(
                             ec, to=deliver_email,
-                            subject=f"Your {product.replace('-', ' ').title()} is ready",
+                            subject=f"Your {delivery._READY_NAMES.get(product, 'result')} is ready",
                             html=delivery.html_review_ready(
                                 status_url=f"https://purplelink.llc/tools/paper-review/status/?token={token}&product={product}",
                                 amount_cents=PAID_PRODUCTS.get(product, {}).get("amount", 900),
+                                product=product,
                             ),
                             tags=[{"name": "product", "value": product}],
                         )
