@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a software studio based in Atlanta, Georgia building native macOS and iOS apps — ModernTex, Haea, and GlobePin — with an emphasis on craft, longevity, and user privacy. Founded in 2026 as a Georgia LLC.
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes tools for academic researchers: ModernTex (a $10 native macOS LaTeX editor), Paper Review (AI pre-submission manuscript review, $9-$15), Vitae (a free macOS app for tracking submissions, grants and your CV, with an optional Vitae Plus subscription), Scholar Utility Belt (a free Chrome extension for Google Scholar), and free in-browser LaTeX and BibTeX tools. It also makes GlobePin, a free iOS travel-mapping app, and Haea, an on-device iOS health app in development.
 
 ## Company
 
@@ -18,13 +18,10 @@
 
 ## What Purplelink builds
 
-Purplelink creates software with an emphasis on craft, longevity, and practical utility across three areas:
-
-1. **Native macOS and iOS apps** — Purpose-built Apple platform applications. Performance, aesthetics, and functionality built together, not bolted on.
-
-2. **Applied AI tools** — Internal and client-facing tools that use AI to automate analysis, writing, research, and software workflows.
-
-3. **Web applications and automation** — Dashboards, portals, API integrations, and backend services.
+1. **Mac apps for academic writing** — ModernTex (LaTeX manuscript editor) and Vitae (academic record keeping).
+2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
+3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
+4. **iOS apps** — GlobePin (travel mapping, shipping) and Haea (on-device health analytics, in development).
 
 ## Products — available now
 
@@ -35,11 +32,20 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 - **Target users:** PhD students, faculty, and technical coauthors writing serious LaTeX manuscripts
 - **Pricing:** Free 7-day trial (the complete app, no account), then $10 USD one-time to keep. No subscription. Every 1.x update is included.
 - **Privacy:** No cloud sync, no data collection
-- **Status:** Shipping. Version 1.0.0 released 2026-09-04; 1.0.2 (2026-09-11) added the free trial.
+- **Status:** Shipping. Current version 1.3.0, which added a visual Table Editor; 1.2.0 added the TikZ Designer. Version 1.0.0 released 2026-09-04; the free trial arrived in 1.0.2.
 - **Trial and purchase:** https://purplelink.llc/moderntex/
-- **Requirements:** macOS 14 (Sonoma) or later, Apple silicon or Intel, and a TeX distribution such as MacTeX or TinyTeX. 13 MB signed disk image.
+- **Requirements:** macOS 14 (Sonoma) or later, Apple silicon or Intel, and a TeX distribution such as MacTeX or TinyTeX (ModernTex offers a one-click TinyTeX install if none is found). Signed, notarized disk image.
 - **Updates:** The app checks once a day and installs in place; updates are included in the purchase.
 - **Key differentiators:** Plain-language LaTeX error explanations; submission-readiness checks for journal/conference requirements; native macOS (not Electron, not web); academic manuscript workflow as first-class feature
+
+### Vitae (macOS)
+- **Platform:** macOS 15 (Sequoia) or later
+- **Category:** Academic research management
+- **Description:** A local-first Mac app for academics: track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record.
+- **Pricing:** Free. Optional Vitae Plus subscription, $3/month or $24/year with a 7-day free trial, adds reports, Word templates, a revision workspace and Shareables. Core record-keeping stays free.
+- **Status:** Shipping, version 0.4 (beta). Apple-notarized download, no App Store required.
+- **Product page:** https://purplelink.llc/vitae/
+- **Vitae Plus:** https://purplelink.llc/vitae/plus/
 
 ### GlobePin (iOS)
 - **Platform:** iOS 17+
@@ -73,16 +79,23 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 
 ### Scholar Utility Belt
 - **Type:** Browser extension (Google Chrome)
-- **Purpose:** Utility for academic research workflows
+- **Purpose:** Adds journal quality badges (ABDC, FT50, UTD24, SJR), citation velocity, author metrics (h-index, g-index), academic lineage trees and retraction alerts to Google Scholar. Rankings are bundled locally; no tracking, no account.
+- **Pricing:** Free, MIT-licensed
+- **Adoption:** About 1,000 users, rated 4.5/5 from 16 ratings on the Chrome Web Store
 - **Chrome Web Store:** https://chromewebstore.google.com/detail/scholar-utility-belt/omcogfcgldfmihfogbffflbocdbjockn
 
 ## Pages
 
 - Home: https://purplelink.llc/
 - ModernTex (macOS, free 7-day trial then $10, shipping): https://purplelink.llc/moderntex/
-- GlobePin (iOS, free, shipping): https://apps.apple.com/us/app/globepin/id6762313540
-- Haea: https://purplelink.llc/haea/
-- GlobePin: https://purplelink.llc/globepin/
+- Vitae (macOS, free, shipping): https://purplelink.llc/vitae/
+- Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
+- Free tools: https://purplelink.llc/tools/
+- Guides: https://purplelink.llc/guides/
+- GlobePin (iOS, free, shipping): https://purplelink.llc/globepin/
+- Haea (iOS, in development): https://purplelink.llc/haea/
+- Kits (downloadable automation systems): https://purplelink.llc/kits/
+- Daily Digest (curated reading on cybersecurity, AI, research and entrepreneurship): https://purplelink.llc/blog/digest/
 - About: https://purplelink.llc/about/
 - Blog: https://purplelink.llc/blog/
 - Press: https://purplelink.llc/press/
@@ -92,10 +105,10 @@ Purplelink creates software with an emphasis on craft, longevity, and practical 
 ## Frequently asked questions
 
 **When do Purplelink's apps ship?**
-Two of the three have shipped. ModernTex came out on 2026-09-04, has a free 7-day trial, and sells for $10 at https://purplelink.llc/moderntex/. GlobePin came out on 2026-09-03 and is free at https://apps.apple.com/us/app/globepin/id6762313540. Haea is still in development, expected in 2026, with a waitlist on its product page.
+ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $10 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/. GlobePin (iOS) came out on 2026-09-03 and is free at https://apps.apple.com/us/app/globepin/id6762313540. Haea is still in development, with a waitlist on its product page.
 
 **What platforms do the apps support?**
-GlobePin and Haea are iOS apps (iOS 17+). ModernTex is a macOS app (macOS 14+).
+ModernTex is a macOS app (macOS 14+). Vitae is a macOS app (macOS 15+). GlobePin and Haea are iOS apps (iOS 17+).
 
 **Does Haea send my health data to a server?**
 No. All of Haea's data stays on-device. There is no cloud sync to Purplelink's infrastructure, no third-party SDKs, and no analytics. Your health data never leaves your iPhone.
@@ -137,34 +150,38 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 ### Paper Review (multiple tiers)
 - **URL:** https://purplelink.llc/tools/paper-review/
-- **Standard:** $3 — single-pass 4-persona red team + figure scan + live citation check + annotated PDF download. **Anonymity Check bundled free.**
-- **Standard + Journal Pack:** $5 — adds a compliance check against the target journal's submission rules (25+ journals supported including Nature, Cell, NeurIPS, ICML, JACS, Lancet, etc.). Anonymity Check still bundled.
-- **Deep Review:** $8 — two-pass adversarial debate where each persona sees the others' first-pass findings, plus bundled Anonymity Check and Journal Pack.
-- **Volume packs:** 5 reviews for $12 (20% off vs 5×$3) at https://purplelink.llc/tools/paper-review/packs/ or 20 for $40 (33% off vs 20×$3). Tokens emailed at purchase, never expire.
+- **Standard:** $9 — single-pass 4-persona red team + figure scan + live citation check + annotated PDF download. **Anonymity Check bundled free.**
+- **Standard + Journal Pack:** $11 — adds a compliance check against the target journal's submission rules (25+ journals supported including Nature, Cell, NeurIPS, ICML, JACS, Lancet, etc.). Anonymity Check still bundled.
+- **Deep Review:** $15 — two-pass adversarial debate where each persona sees the others' first-pass findings, plus bundled Anonymity Check and Journal Pack.
+- **Volume packs:** 5 Standard review tokens for $38 or 20 for $150 at https://purplelink.llc/tools/paper-review/packs/. Tokens emailed at purchase, never expire.
 - **Delivery:** Async polling page; typically 4-8 minutes per manuscript (standard) or 10-15 minutes (deep).
 - **Output:** Markdown report with What's Working / Critical Blind Spots (with per-finding confidence tags) / Data-to-Claim Contradictions / Rectification Checklist (A/B/C priority) / True Novelty Estimate / Reference Verification Summary / Panel Transcript. Plus an annotated PDF with sticky-note comments at the right pages.
 - **Privacy disclosure:** Manuscript sent to Anthropic Claude API (30-day input retention for abuse monitoring; never used for training). Purplelink retains nothing after delivery — the review is deleted on first retrieval.
 - **Refunds:** Full refund within 14 days; email ben@purplelink.llc.
 
-### Cover Letter Generator — $1
+### Cover Letter Generator — $2
 - **URL:** https://purplelink.llc/tools/cover-letter/
 - Draft journal cover letter from abstract + target journal name. Privacy-preserving: never receives full manuscript.
 
-### Anonymity Check — $1
+### Anonymity Check — $2
 - **URL:** https://purplelink.llc/tools/anonymity-check/
 - Scans manuscript for identifying info before double-blind submission (author names, institutions, funder acknowledgements, self-citation patterns, IRB numbers, author-owned URLs).
 
-### Citation Gap Analysis — $2
+### Citation Gap Analysis — $3
 - **URL:** https://purplelink.llc/tools/citation-gap/
 - Reverse citation check: finds prior art the manuscript should cite but doesn't.
 
-### Revision Review — $1
+### Revision Review — $2
 - **URL:** https://purplelink.llc/tools/paper-review/revision/
 - Second-pass review after revisions. Requires the original review's Markdown file. Tracks which checklist items were addressed and flags new issues introduced by the revision.
 
-### Response to Reviewers — $4
+### Response to Reviewers — $6
 - **URL:** https://purplelink.llc/tools/response-review/
 - Three-persona AI panel that red-teams the author's response letter: per-comment verdicts, tone concerns, missing replies, accept/revise prediction.
+
+### Resume Review — $5
+- **URL:** https://purplelink.llc/tools/resume-review/
+- Three-persona AI critique of a resume: ATS Screener, Hiring Manager Skeptic, Recruiter Red Flags. Results in minutes.
 
 ### Receipts and invoices
 - Available on the Paper Review status page after delivery via "Get invoice for reimbursement" button. PDF invoice generated through Stripe, emailed via Resend. Custom tax-ID line supported for institutional reimbursement.

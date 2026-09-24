@@ -169,7 +169,7 @@
 }
 
 /* Pricing block */
-.pr-pricing { margin: 1.5rem 0; }
+.pr-pricing { margin-block: 1.5rem; }
 .pr-pricing ul { padding-left: 1.25rem; }
 .pr-pricing li { margin: 0.35rem 0; }
 

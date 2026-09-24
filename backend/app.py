@@ -2206,8 +2206,7 @@ def web():
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#moderntex">Apps</a>
         <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>

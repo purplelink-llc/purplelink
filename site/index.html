@@ -132,13 +132,7 @@
           "author": { "@id": "https://purplelink.llc/#organization" },
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "isAccessibleForFree": true,
-          "license": "https://opensource.org/licenses/MIT",
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.5",
-            "ratingCount": "16",
-            "bestRating": "5"
-          }
+          "license": "https://opensource.org/licenses/MIT"
         },
         {
           "@type": "SoftwareApplication",
@@ -157,12 +151,12 @@
           "alternateName": "Health Analytics Everything Application",
           "applicationCategory": "HealthApplication",
           "operatingSystem": "iOS 17+",
-          "description": "A on-device iOS health app for iOS. Integrates sleep, nutrition, weight, exercise, and biometric data to surface patterns and trends through advanced ML models. All data stays on-device.",
+          "description": "An on-device health app for iOS. Integrates sleep, nutrition, weight, exercise, and biometric data to surface patterns and trends through advanced ML models. All data stays on-device.",
           "author": { "@id": "https://purplelink.llc/#organization" },
           "offers": [
-            { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free tier" },
-            { "@type": "Offer", "price": "1.99", "priceCurrency": "USD", "name": "Premium monthly" },
-            { "@type": "Offer", "price": "14.99", "priceCurrency": "USD", "name": "Premium annual" }
+            { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free tier", "availability": "https://schema.org/PreOrder" },
+            { "@type": "Offer", "price": "1.99", "priceCurrency": "USD", "name": "Premium monthly", "availability": "https://schema.org/PreOrder" },
+            { "@type": "Offer", "price": "14.99", "priceCurrency": "USD", "name": "Premium annual", "availability": "https://schema.org/PreOrder" }
           ],
           "releaseNotes": "In development - expected 2026"
         },
@@ -188,7 +182,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="assets/purplelink-logo.png" as="image">
-    <link rel="stylesheet" href="styles.css?v=a56e37b37f">
+    <link rel="stylesheet" href="styles.css?v=6b35d5cd4b">
     <script src="/site.js?v=85669fe178" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
