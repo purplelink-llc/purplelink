@@ -59,6 +59,15 @@ lifecycle unsubscribe applies, and the privacy page describes the sequence.
 A failed register is logged in the function log, not alerted: the buyer
 already has the key. Needs both deploys (`deploy.sh` and `deploy.sh --backend`).
 
+Trial sign-ups: after a trial-download click, `/moderntex/` reveals an optional
+email form (`[data-trial-signup]` in `site.js`) that posts to the public
+`/lifecycle/trial` (rate-limited per IP, honeypot `website`). It stores
+`customer_lifecycle_dict["trial:<email>"]` with `product: "moderntex-trial"`,
+sends `html_lifecycle_trial_setup` at once, and the sweep sends
+`trial_features` (day 4) and `trial_ending` (day 6). A ModernTex purchase from
+the same address marks the trial entry finished (`converted_at`), which also
+gives a trial-to-paid count. Campaign tags: `mtx-trial-1`, `-4`, `-6`.
+
 ## Releasing a version
 
 From the ModernTex repo, on a clean commit:
