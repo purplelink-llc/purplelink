@@ -1855,7 +1855,7 @@ dd {
 .post-body ul { padding-left: 1.4em; }
 .post-body li { margin-bottom: 0.4em; }
 
-.post-body a {
+.post-body a:not(.btn) {
   color: var(--purple);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -2514,7 +2514,7 @@ dd {
 .static-page ul { padding-left: 1.4em; }
 .static-page li { margin-bottom: 0.4em; }
 
-.static-page a {
+.static-page a:not(.btn) {
   color: var(--purple);
   text-decoration: underline;
 }
@@ -4285,3 +4285,33 @@ html { scroll-padding-top: 96px; }
 @media (min-width: 900px) {
   .features-grid:has(> :nth-child(3n):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+/* Template pages: starter download */
+.starter-dl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 14px 0; }
+.starter-dl span { color: var(--muted); font-size: 0.9rem; flex: 1 1 260px; }
+.starter-dl span a { color: var(--purple); font-weight: 600; }
+.wim-cta { margin-top: 2rem; }
+
+/* Former inline styles, as classes (the site keeps styling in this file). */
+.back-link.back-link-flush { padding: 0; border: 0; }
+.u-cell { padding: 4px 12px; }
+.u-mt-075 { margin-top: 0.75rem; }
+.u-th { text-align: left; padding: 6px 12px; border-bottom: 1px solid currentColor; }
+.u-table { border-collapse: collapse; margin: 1.2rem 0; font-size: 0.92rem; }
+.u-minh-12 { min-height: 12rem; }
+.u-mt-1 { margin-top: 1rem; }
+.u-label-block { font-weight: 600; display: block; margin-bottom: 0.5rem; }
+.u-w-12 { width: 1.2rem; }
+.u-scroll-x { overflow-x: auto; margin: 1.2rem 0; }
+.u-minh-14 { min-height: 14rem; }
+.u-mt-05 { margin-top: 0.5rem; }
+.u-mt-035 { margin-top: 0.35rem; }
+.u-mt-0 { margin-top: 0; }
+.u-faint { font-weight: 400; opacity: 0.7; }
+.u-table-wide { border-collapse: collapse; font-size: 0.92rem; min-width: 660px; }
+.u-w-5 { width: 5%; }
+.post-lead-img { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); margin: 0 0 2rem; display: block; }
+.u-mt-06 { margin-top: 0.6rem; }
+.compile-log { margin-top: 0.75rem; }
+.compile-log summary { cursor: pointer; font-size: 0.85rem; color: var(--muted); }
+.compile-log pre { font-size: 0.72rem; white-space: pre-wrap; overflow-x: auto; max-height: 22rem; overflow-y: auto; background: oklch(14% 0.02 310); color: oklch(88% 0.01 310); padding: 0.75rem; border-radius: 6px; margin-top: 0.4rem; }

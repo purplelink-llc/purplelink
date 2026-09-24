@@ -76,7 +76,7 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=e291df36f9">
+    <link rel="stylesheet" href="/styles.css?v=bec3e56e43">
     <script src="/site.js?v=2fbf613174" defer></script>
     <link rel="stylesheet" href="/tools/equation-renderer/equation-renderer.css?v=049538bf75">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
@@ -106,7 +106,7 @@
       </div>
 
       <div class="tool-app">
-        <label for="equation" style="font-weight:600;display:block;margin-bottom:0.5rem">LaTeX math expression</label>
+        <label class="u-label-block" for="equation">LaTeX math expression</label>
         <textarea id="equation" class="eq-textarea" placeholder="\int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}"></textarea>
         <div class="eq-examples" role="group" aria-label="Example expressions">
           <button class="eq-example" type="button" aria-label="Insert Gaussian integral example">\int_0^\infty e^{-x^2}\,dx</button>
@@ -114,7 +114,7 @@
           <button class="eq-example" type="button" aria-label="Insert quadratic formula example">x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}</button>
           <button class="eq-example" type="button" aria-label="Insert matrix example">\begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix}</button>
         </div>
-        <div class="tool-options" style="margin-top:0.75rem">
+        <div class="tool-options u-mt-075">
           <label>Mode:
             <select id="mode" data-remember="eq-mode">
               <option value="display">Display (centered, larger symbols)</option>
@@ -132,7 +132,7 @@
         </div>
         <p class="tool-status" id="status" role="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
-        <p class="tool-privacy" style="margin-top:0.5rem">Equations are compiled in an ephemeral container and never logged or stored.</p>
+        <p class="tool-privacy u-mt-05">Equations are compiled in an ephemeral container and never logged or stored.</p>
       </div>
 
       <section class="tool-howto">
@@ -177,7 +177,7 @@
 
       <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
 
-      <script src="/tools/tools.js?v=c36d36e6c1"></script>
+      <script src="/tools/tools.js?v=4b7f656edf"></script>
       <script>
       (function () {
         const statusEl  = document.getElementById("status");
@@ -224,7 +224,7 @@
                   blobUrl = URL.createObjectURL(blob);
                   resultEl.innerHTML =
                     '<div class="eq-preview"><img src="' + blobUrl + '" alt="Rendered equation: ' + escapeHtml(eq.substring(0, 200)) + '"></div>' +
-                    '<div style="margin-top:0.75rem">' +
+                    '<div class="u-mt-075">' +
                     '<a class="btn btn-primary" href="' + blobUrl + '" download="equation.png">Download equation.png</a>' +
                     '</div>';
                 });

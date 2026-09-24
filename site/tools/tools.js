@@ -68,7 +68,7 @@ function renderError(resultEl, status, payload) {
     const lines = payload.errors.map((e) => `Line ${e.line}: ${escapeHtml(e.message)}`).join("\n");
     let html = `<div class="tool-error" role="alert">Compilation failed:\n${lines}</div>`;
     if (payload.log) {
-      html += `<details style="margin-top:0.75rem"><summary style="cursor:pointer;font-size:0.85rem;color:#9ca3af">Full compile log</summary><pre style="font-size:0.72rem;white-space:pre-wrap;overflow-x:auto;max-height:22rem;overflow-y:auto;background:#0a0a0a;padding:0.75rem;border-radius:4px;color:#d4d4d4;margin-top:0.4rem">${escapeHtml(payload.log)}</pre></details>`;
+      html += `<details class="compile-log"><summary>Full compile log</summary><pre tabindex="0">${escapeHtml(payload.log)}</pre></details>`;
     }
     resultEl.innerHTML = html;
     return;

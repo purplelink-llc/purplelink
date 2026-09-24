@@ -93,7 +93,7 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=e291df36f9">
+    <link rel="stylesheet" href="/styles.css?v=bec3e56e43">
     <script src="/site.js?v=2fbf613174" defer></script>
     <link rel="stylesheet" href="/tools/bib-validator/bib-validator.css?v=3ebb9dba3f">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
@@ -153,7 +153,7 @@
           <div class="bib-checks">
             <label>
               <input type="checkbox" checked disabled>
-              <span>Syntax &amp; required fields <em style="font-weight:400;opacity:0.7">(always on)</em></span>
+              <span>Syntax &amp; required fields <em class="u-faint">(always on)</em></span>
             </label>
             <label>
               <input type="checkbox" id="check-doi">
@@ -172,7 +172,7 @@
             Enabling DOI or database checks will send entry titles and authors to external services (doi.org, CrossRef, Semantic Scholar).
           </p>
         </fieldset>
-        <div class="tool-options" style="margin-top:0.75rem">
+        <div class="tool-options u-mt-075">
           <button type="button" class="btn btn-primary" id="run" disabled>Validate .bib</button>
         </div>
 
@@ -235,7 +235,7 @@
 
       <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
 
-      <script src="/tools/tools.js?v=c36d36e6c1"></script>
+      <script src="/tools/tools.js?v=4b7f656edf"></script>
       <script>
       (function () {
         var MAX_BIB_BYTES = 2 * 1024 * 1024;  // mirror backend MAX_BIB_UPLOAD_BYTES
@@ -378,7 +378,7 @@
           var yrCol  = data.entries.some(function (e) { return e.year_mismatch === true; });
 
           html += '<div class="bib-table-wrap"><table class="bib-table">';
-          html += '<thead><tr><th scope="col" style="width:1.2rem"></th><th scope="col">Entry key</th><th scope="col">Type</th><th scope="col">Fields</th>';
+          html += '<thead><tr><th class="u-w-12" scope="col"></th><th scope="col">Entry key</th><th scope="col">Type</th><th scope="col">Fields</th>';
           if (doiCol) html += '<th scope="col">DOI</th>';
           if (crCol)  html += '<th scope="col">CrossRef</th>';
           if (s2Col)  html += '<th scope="col">Semantic Scholar</th>';
