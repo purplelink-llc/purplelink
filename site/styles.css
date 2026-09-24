@@ -1329,7 +1329,8 @@ dd {
   font-weight: 600;
   color: var(--muted);
   text-decoration: none;
-  border-bottom: 1px solid var(--line);
+  /* No border: as an inline-flex box its rule stopped wherever the text
+     did, which read as a stray line under "All tools". */
   transition: color 0.15s;
 }
 
@@ -1416,6 +1417,12 @@ dd {
   border-radius: 10px;
   overflow: hidden;
 }
+
+/* The 1px gaps are the grid's own background showing through, so an
+   unfilled last row rendered as a solid lavender block (ModernTex's 10
+   features in 4 columns, its 3 audiences in 4). Stretch the last card to the
+   end of its row instead. */
+.features-grid > :last-child { grid-column-end: -1; }
 
 .feature-item {
   background: var(--bg);
@@ -3464,4 +3471,134 @@ button.btn-coming-soon:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .submit-grid a { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TOOL PAGES — same display type as the rest of the site
+   The tool and paid-tool heroes rendered a browser-default 32px sans H1
+   and sans "How to" headings next to Fraunces "About this tool" headings.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.tools-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 5.2vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin: 10px 0 16px;
+}
+
+.tools-hero > p:not(.eyebrow) {
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  color: var(--muted);
+}
+
+.tool-howto h2,
+.tool-prose h2,
+.tool-faq h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.tool-related h2 { font-size: 1.15rem; margin-bottom: 12px; }
+.tool-related ul { flex-direction: column; gap: 8px; }
+
+/* ─── Comparison tables in guides ─────────────────────────────────────── */
+
+.compare-table {
+  width: 100%;
+  margin: 1.4rem 0 1.8rem;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.compare-table caption {
+  caption-side: bottom;
+  padding-top: 10px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: left;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.compare-table thead th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 2px solid var(--line);
+  white-space: nowrap;
+}
+
+.compare-table tbody th { font-weight: 700; color: var(--ink); }
+.compare-table tbody tr:hover { background: var(--purple-xlight); }
+
+/* ─── Closing call to action on product pages ─────────────────────────── */
+
+.closing-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(64px, 9vw, 120px) 24px;
+  border-top: 1px solid var(--line);
+  background: var(--purple-xlight);
+  text-align: center;
+}
+
+.closing-cta img {
+  width: 88px;
+  height: 88px;
+  border-radius: 20px;
+  box-shadow: 0 14px 36px oklch(20% 0.08 310 / 0.2);
+}
+
+.closing-cta h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.4vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  max-width: 18ch;
+}
+
+.closing-cta p { max-width: 52ch; color: var(--muted); }
+
+.closing-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.closing-cta-fine { font-size: 0.82rem; }
+
+.pr-field-help-spaced { margin-top: 1rem; }
+.success-next { margin-top: 32px; }
+
+/* Baseline: section headings inside main use the display face unless a
+   component sets its own. Several paid-tool sections ("What you get") had no
+   heading rule and fell back to the body sans. */
+main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
+
+/* Wide comparison tables may use the empty space right of the reading column. */
+@media (min-width: 1200px) {
+  .post-body .compare-table {
+    display: table;
+    width: min(1240px, calc(100vw - 160px));
+    max-width: none;
+  }
 }

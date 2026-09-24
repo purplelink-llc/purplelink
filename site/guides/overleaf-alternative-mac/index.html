@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Overleaf alternative for Mac: offline LaTeX editors compared | Purplelink</title>
+    <meta name="description" content="The offline alternatives to Overleaf on a Mac, compared honestly: TeXShop, TeXstudio, Texifier, VS Code, Emacs or Vim, and ModernTex. When to keep Overleaf, how to move a project, and how to use both.">
+    <link rel="canonical" href="https://purplelink.llc/guides/overleaf-alternative-mac/">
+    <meta property="og:title" content="Overleaf alternative for Mac: offline LaTeX editors compared">
+    <meta property="og:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, seven options compared, and how to move a project over.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/overleaf-alternative-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/overleaf-alternative-mac.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Overleaf alternative for Mac: offline LaTeX editors compared">
+    <meta name="twitter:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, seven options compared, and how to move a project over.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/overleaf-alternative-mac.png">
+    <meta name="twitter:image:alt" content="Overleaf alternatives for Mac, comparison guide">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Overleaf alternative for Mac: offline LaTeX editors compared",
+          "description": "An honest comparison of offline LaTeX editors for Mac as alternatives to Overleaf: TeXShop, TeXstudio, Texifier, VS Code with LaTeX Workshop, Emacs or Vim, and ModernTex, with steps for moving a project off Overleaf and a hybrid workflow for co-authored papers.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-09-24",
+          "dateModified": "2026-09-24",
+          "image": "https://purplelink.llc/assets/og/overleaf-alternative-mac.png",
+          "mainEntityOfPage": "https://purplelink.llc/guides/overleaf-alternative-mac/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "Overleaf alternative for Mac", "item": "https://purplelink.llc/guides/overleaf-alternative-mac/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is there an offline version of Overleaf for Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source Community Edition that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the best free Overleaf alternative for Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "TeXShop, for most people. It is free, it installs with MacTeX, and it has a synced PDF preview. TeXstudio is the free choice if you also work on Windows or Linux, and VS Code with the LaTeX Workshop extension is the free choice if you already write code in VS Code."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I keep using Overleaf with co-authors and edit on my Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The project is the same set of .tex, .bib and image files either way. Overleaf's Git integration and GitHub sync let you pull the project to your Mac, edit locally and push back, but both are premium features, available on paid plans and through many institutional licences. On a free account you can download the source as a zip and upload changed files by hand."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will my Overleaf project compile the same way on my Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually, once you match three settings. Use the same compiler Overleaf used (pdfLaTeX, XeLaTeX or LuaLaTeX), run Biber if the project uses biblatex, and enable shell escape if it uses packages such as minted. Fonts called by name under XeLaTeX or LuaLaTeX must also be installed on the Mac."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does ModernTex have real-time collaboration like Overleaf?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. ModernTex is a single-user Mac app. Your files are ordinary files on disk, so you can share them through whatever you already use, but two people cannot type in the same document at the same time. If you need that, keep Overleaf for the shared draft."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need the full 5 GB MacTeX install?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. BasicTeX and TinyTeX are much smaller and install missing packages on demand with tlmgr. Full MacTeX is the easiest option if you have the disk space, because every package a template might load is already there."
+      }
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="/styles.css?v=9a2e125e38">
+    <script src="/site.js?v=85669fe178" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Comparison</p>
+        <h1 class="post-title">Overleaf alternative for Mac: offline LaTeX editors compared</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time></p>
+        <p class="post-lede">The best Overleaf alternative on a Mac is a local TeX distribution (MacTeX or TinyTeX) plus a native editor: TeXShop if you want free and standard, Texifier or ModernTex if you want a modern paid Mac app, and Overleaf itself for any draft that co-authors edit at the same time.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink makes ModernTex, one of the editors compared here. I have tried to write this the way I would want to read it: Overleaf is the right tool for a lot of work, and the free options below are good enough for most people. ModernTex's entry sticks to what the app does today, including what it does not do.</p>
+
+        <h2>When Overleaf is the right choice</h2>
+        <p>People go looking for an Overleaf alternative after a slow compile, a timeout on the free tier, or a flight with no Wi-Fi. Before you switch, it is worth being clear about what Overleaf does better than anything you can install.</p>
+        <ul>
+          <li><strong>Real-time collaboration.</strong> Several people can type in the same document at once and see each other's cursors, with comments and tracked changes alongside. No desktop LaTeX editor does this as well. If your paper has four co-authors editing the methods section in the week before a deadline, that is Overleaf's job.</li>
+          <li><strong>Zero install.</strong> Overleaf runs the TeX distribution on its own servers. Nothing to download, no 5&nbsp;GB MacTeX package, nothing to update. It also means a co-author on Windows, a student on a Chromebook and you on a Mac all compile with the same setup.</li>
+          <li><strong>Institutional licences.</strong> Many universities pay for Overleaf through a site licence, which gives everyone on campus the premium features. If yours does, the usual free-tier complaints (compile time limits, collaborator caps, no Git) may not apply to you at all.</li>
+          <li><strong>Journal templates.</strong> The template gallery is large, and some publishers link to their Overleaf template directly from their author instructions.</li>
+        </ul>
+        <p>If you mostly co-author, and you are always online, you may not need an alternative. What follows is for everyone else.</p>
+
+        <h2>What you gain and give up by going local</h2>
+        <p>Writing LaTeX on your own Mac changes a few concrete things.</p>
+        <p><strong>You gain:</strong></p>
+        <ul>
+          <li><strong>Offline work.</strong> The distribution and the editor are on your disk. Trains, planes and bad conference Wi-Fi stop mattering.</li>
+          <li><strong>No compile limits.</strong> A long thesis with many figures compiles for as long as it needs to. On a recent Mac, local compiles are usually quick.</li>
+          <li><strong>Your files, on your disk.</strong> The project is a folder of ordinary files. You can back it up, version it with Git, or keep sensitive material (unpublished data, reviewer identities, embargoed results) off a third-party server.</li>
+          <li><strong>A native app.</strong> Mac keyboard shortcuts, system spell-check, dark mode, and a window that behaves like every other window on your machine.</li>
+        </ul>
+        <p><strong>You give up:</strong></p>
+        <ul>
+          <li><strong>Live co-editing.</strong> Nothing on this list matches Overleaf for several people in one document at once.</li>
+          <li><strong>The zero-setup start.</strong> You install a TeX distribution and keep it updated, roughly once a year when a new TeX Live ships.</li>
+          <li><strong>Identical builds for everyone.</strong> Your TeX Live year, fonts and settings are yours, so a co-author's machine can behave slightly differently.</li>
+        </ul>
+
+        <h2>The options, compared</h2>
+        <p>Every local option needs a TeX distribution installed separately, except where the table says otherwise. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back, which in most editors is done through SyncTeX. "BibTeX completion" means the editor suggests citation keys from your <code>.bib</code> file as you type <code>\cite{</code>.</p>
+
+        <table class="compare-table">
+          <caption>Overleaf and six Mac alternatives, as of September 2026</caption>
+          <thead>
+            <tr>
+              <th scope="col">Editor</th>
+              <th scope="col">Runs</th>
+              <th scope="col">Price</th>
+              <th scope="col">Offline</th>
+              <th scope="col">Real-time collaboration</th>
+              <th scope="col">Synced PDF preview</th>
+              <th scope="col">BibTeX completion</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Overleaf</th>
+              <td>Browser, any OS</td>
+              <td>Free tier plus paid plans; many institutional licences</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Yes, from the project's <code>.bib</code></td>
+              <td>Nothing to install. Git and GitHub sync are premium features.</td>
+            </tr>
+            <tr>
+              <th scope="row">TeXShop</th>
+              <td>macOS</td>
+              <td>Free, included with MacTeX</td>
+              <td>Yes</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Not built in; BibDesk (also in MacTeX) helps</td>
+              <td>The long-standing Mac default. Plain and reliable, dated interface.</td>
+            </tr>
+            <tr>
+              <th scope="row">TeXstudio</th>
+              <td>macOS, Windows, Linux</td>
+              <td>Free, open source</td>
+              <td>Yes</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Yes, by key</td>
+              <td>Feature-rich. Cross-platform app that does not feel like a Mac app.</td>
+            </tr>
+            <tr>
+              <th scope="row">Texifier (formerly Texpad)</th>
+              <td>macOS, iOS</td>
+              <td>Paid, one-time purchase</td>
+              <td>Yes</td>
+              <td>No</td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Polished native app. Can typeset without a separate MacTeX install.</td>
+            </tr>
+            <tr>
+              <th scope="row">VS Code + LaTeX Workshop</th>
+              <td>macOS, Windows, Linux</td>
+              <td>Free</td>
+              <td>Yes</td>
+              <td>Session-based, via the Live Share extension</td>
+              <td>Yes</td>
+              <td>Yes, by key</td>
+              <td>Best if you already write code in VS Code. Built-in Git.</td>
+            </tr>
+            <tr>
+              <th scope="row">Emacs + AUCTeX, or Vim + VimTeX</th>
+              <td>Any OS</td>
+              <td>Free</td>
+              <td>Yes</td>
+              <td>No</td>
+              <td>Yes, with a viewer such as Skim</td>
+              <td>Yes (RefTeX in Emacs)</td>
+              <td>Very capable, for people who already use these editors.</td>
+            </tr>
+            <tr>
+              <th scope="row">ModernTex</th>
+              <td>macOS 14 or later</td>
+              <td>$10 once, after a free 7-day trial</td>
+              <td>Yes</td>
+              <td>No</td>
+              <td>Yes, forward and inverse</td>
+              <td>Yes, searches by author, title or key</td>
+              <td>Made by Purplelink. Needs MacTeX or TinyTeX, and offers a one-click TinyTeX install.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>TeXShop</h3>
+        <p>TeXShop ships inside MacTeX, so if you have installed MacTeX you already have it. Source on one side, PDF on the other, a Typeset button, and SyncTeX in both directions. It has been maintained for over twenty years and nearly every Mac LaTeX tutorial assumes it. What it lacks is polish: the interface is dated, and there is no built-in citation search. <strong>Choose it if</strong> you want a free, dependable default and do not mind plain.</p>
+
+        <h3>TeXstudio</h3>
+        <p>TeXstudio is free, open source and runs on macOS, Windows and Linux. It has more built in than TeXShop: a structure panel, completion for commands, labels and citation keys, table and figure wizards, and an error list you can click through. It is a cross-platform Qt app, so menus and shortcuts do not follow Mac conventions. <strong>Choose it if</strong> you also work on a Windows or Linux machine and want the same editor on each.</p>
+
+        <h3>Texifier (formerly Texpad)</h3>
+        <p>Texifier is the established paid native Mac editor, with an iOS app for writing on an iPad. It can typeset as you type and does not require a separate MacTeX install, which makes it the smoothest move for someone leaving Overleaf who does not want to manage a distribution. It is a one-time purchase rather than a subscription; check the developer's site for the current price. <strong>Choose it if</strong> you want a polished Mac app and an iPad companion.</p>
+
+        <h3>VS Code with LaTeX Workshop</h3>
+        <p>If you already write code in VS Code, the LaTeX Workshop extension turns it into a capable LaTeX setup: build recipes, an embedded PDF viewer with SyncTeX, citation completion and Git in the sidebar. Microsoft's Live Share extension lets a co-author join a live editing session, which is the closest a desktop editor gets to Overleaf, though it is a session you host rather than a shared document that is always there. <strong>Choose it if</strong> VS Code is already open all day.</p>
+
+        <h3>Emacs with AUCTeX, or Vim with VimTeX</h3>
+        <p>Both are free, run anywhere, and are among the most capable LaTeX environments available, with project-aware citation lookup and inverse search through a Mac PDF viewer such as Skim. The price is the learning curve of the editor itself. <strong>Choose one if</strong> you already use it for everything else.</p>
+
+        <h3>ModernTex</h3>
+        <p>ModernTex is the native macOS LaTeX editor we make, built for journal articles, conference papers and dissertation chapters rather than general-purpose editing. It handles multi-file manuscripts with root file detection, keeps the PDF in sync in both directions, completes citations by searching your <code>.bib</code> by author or title, and explains compile errors in plain language. It also has submission-readiness checks (anonymization, page limits, required sections), an anonymized export for double-blind review, version snapshots, and visual editors for TikZ figures and tables that write the LaTeX for you.</p>
+        <p>What it does not do: real-time collaboration. It is a single-user app, and two people cannot type in the same file at once. It runs only on macOS 14 or later, has no iPad app, and it is new, first released in 2026, so it has far less of a track record than TeXShop or Texifier. It needs a TeX distribution; if none is found when you compile, it offers to install TinyTeX for you. <strong>Choose it if</strong> you write manuscripts alone on a Mac and the submission-focused features are the ones you keep wishing for. The <a href="/moderntex/">trial is the full app for seven days</a>, and keeping it is $10 once.</p>
+
+        <h2 id="move-from-overleaf">How to move a project from Overleaf to a Mac editor</h2>
+        <p>A LaTeX project is portable by design, so the move takes minutes. Most of the work is matching the settings Overleaf chose for you.</p>
+        <ol>
+          <li><strong>Download the source.</strong> In the Overleaf editor, open the Menu and choose Download &gt; Source. You get a zip of every file in the project. Unzip it into a folder you will keep, not your Downloads folder.</li>
+          <li><strong>Install a TeX distribution.</strong> MacTeX is the full TeX Live for macOS, about 5&nbsp;GB, and includes every package a template is likely to load. TinyTeX and BasicTeX are far smaller and add packages as you need them with <code>tlmgr install</code>. If disk space is not a problem, MacTeX saves you a round of "file not found" errors.</li>
+          <li><strong>Note Overleaf's settings before you leave.</strong> In the Overleaf Menu, check the Compiler (pdfLaTeX, XeLaTeX or LuaLaTeX) and the Main document. Set the same compiler in your editor, and open the same main <code>.tex</code> file, or mark it as the root file.</li>
+          <li><strong>Check the bibliography tool.</strong> Overleaf runs latexmk, which picks BibTeX or Biber automatically. If your preamble loads <code>biblatex</code>, your editor needs to run Biber; if it uses <code>\bibliography{}</code> with a <code>.bst</code> style, BibTeX. Most editors can run latexmk too, which removes the guesswork.</li>
+          <li><strong>Enable shell escape if you need it.</strong> Overleaf compiles with shell escape on, so packages such as <code>minted</code> or some <code>svg</code> workflows just work there. Locally they fail until you add <code>-shell-escape</code> to the compile command. Turn it on only for projects that need it.</li>
+          <li><strong>Check fonts under XeLaTeX or LuaLaTeX.</strong> A <code>fontspec</code> line that names a font works only if that font is installed on your Mac. Overleaf's servers have a different font set from macOS, so install the font or switch to one you have.</li>
+          <li><strong>Compile and compare.</strong> Build once and compare the PDF against the last Overleaf PDF. Page count and reference list are the quickest checks.</li>
+        </ol>
+        <p>If you are on a machine without a TeX install and need one PDF today, our <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a> compiles a project in the browser; <a href="/guides/compile-latex-project-to-pdf-online/">this guide</a> covers multi-file projects.</p>
+
+        <h2 id="hybrid">Keep Overleaf for collaboration, edit locally</h2>
+        <p>Many research groups do not choose one or the other. They keep the shared draft on Overleaf, where co-authors comment and edit, and each person who prefers a local editor works on a copy on their own machine.</p>
+        <p>The clean way to do this is Git. Overleaf offers Git integration (clone the project with <code>git</code>, edit locally, push back) and GitHub sync (link the project to a GitHub repository). <strong>Both are premium features</strong>: they are available on Overleaf's paid plans and through many institutional licences, not on the free tier. Check your account before you plan around them.</p>
+        <p>A few habits keep this working:</p>
+        <ul>
+          <li><strong>Pull before you start, push when you stop.</strong> If a co-author edits the same lines on Overleaf while you edit locally, Git will ask you to resolve a conflict. Short sessions and frequent pushes keep conflicts rare.</li>
+          <li><strong>Agree on one main file and one compiler.</strong> Everyone should build the same way, or someone's PDF will differ.</li>
+          <li><strong>Leave generated files out.</strong> Commit <code>.tex</code>, <code>.bib</code>, images and class files. Keep <code>.aux</code>, <code>.log</code>, <code>.bbl</code> and the PDF out of the repository with a <code>.gitignore</code>.</li>
+          <li><strong>Sections you own are easiest.</strong> If each author writes in their own <code>\input</code> file, local editing and live editing rarely collide.</li>
+        </ul>
+        <p>On a free Overleaf account, the fallback is manual: download the source, edit locally, then upload the changed files back, replacing the old versions. It works for occasional use, but it is easy to overwrite a co-author's edit, so tell them first. Any local editor on this page, including ModernTex, fits this workflow, since each one edits ordinary files in a folder.</p>
+
+        <h2>Which to choose</h2>
+        <ul>
+          <li><strong>Co-authors edit at the same time?</strong> Keep Overleaf, at least for the shared draft.</li>
+          <li><strong>Want free and standard on a Mac?</strong> TeXShop.</li>
+          <li><strong>Also use Windows or Linux?</strong> TeXstudio.</li>
+          <li><strong>Want a polished Mac app with an iPad version?</strong> Texifier.</li>
+          <li><strong>Already live in VS Code, Emacs or Vim?</strong> Stay there and add the LaTeX extension.</li>
+          <li><strong>Writing papers alone on a Mac and want help getting them submission-ready?</strong> <a href="/moderntex/">ModernTex</a>, $10 once.</li>
+        </ul>
+        <p>For a longer look at fourteen Mac editors, including Octree, Texmaker, LyX and others not covered here, see <a href="/guides/best-mac-latex-editors/">the best LaTeX editors for Mac</a>.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Is there an offline version of Overleaf for Mac?</summary><div class="faq-body">No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source Community Edition that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor.</div></details>
+        <details><summary>What is the best free Overleaf alternative for Mac?</summary><div class="faq-body">TeXShop, for most people. It is free, it installs with MacTeX, and it has a synced PDF preview. TeXstudio is the free choice if you also work on Windows or Linux, and VS Code with the LaTeX Workshop extension is the free choice if you already write code in VS Code.</div></details>
+        <details><summary>Can I keep using Overleaf with co-authors and edit on my Mac?</summary><div class="faq-body">Yes. The project is the same set of .tex, .bib and image files either way. Overleaf's Git integration and GitHub sync let you pull the project to your Mac, edit locally and push back, but both are premium features, available on paid plans and through many institutional licences. On a free account you can download the source as a zip and upload changed files by hand.</div></details>
+        <details><summary>Will my Overleaf project compile the same way on my Mac?</summary><div class="faq-body">Usually, once you match three settings. Use the same compiler Overleaf used (pdfLaTeX, XeLaTeX or LuaLaTeX), run Biber if the project uses biblatex, and enable shell escape if it uses packages such as minted. Fonts called by name under XeLaTeX or LuaLaTeX must also be installed on the Mac.</div></details>
+        <details><summary>Does ModernTex have real-time collaboration like Overleaf?</summary><div class="faq-body">No. ModernTex is a single-user Mac app. Your files are ordinary files on disk, so you can share them through whatever you already use, but two people cannot type in the same document at the same time. If you need that, keep Overleaf for the shared draft.</div></details>
+        <details><summary>Do I need the full 5 GB MacTeX install?</summary><div class="faq-body">No. BasicTeX and TinyTeX are much smaller and install missing packages on demand with tlmgr. Full MacTeX is the easiest option if you have the disk space, because every package a template might load is already there.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section">
+        <p class="eyebrow">From the team behind these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/moderntex/">Get ModernTex &mdash; $10</a>
+          <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later and a TeX distribution such as MacTeX. <a href="/privacy/">Privacy Policy</a></p>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/moderntex/">ModernTex, the native Mac LaTeX editor →</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac →</a></li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF →</a></li>
+          <li><a href="/guides/compile-latex-project-to-pdf-online/">Compile a LaTeX project online →</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub →</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/why-it-matters/">Why it matters</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/desk/">Research desk</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=e10d5c8c43" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
