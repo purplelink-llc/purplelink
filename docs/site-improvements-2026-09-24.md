@@ -23,18 +23,34 @@ retention work is `docs/growth-proposals-2026-09.md`.
 4. **ModernTex screenshot.** `01-editor-clean*.webp` still shows the
    "1 error" label and a Kalshi.tex tab. Re-shoot at 2880 px wide and replace
    both files.
-5. **ModernTex size.** Pages say 15 MB; an older note said 14 MB. Check the
+5. **Vitae screenshots.** `/vitae/` has no picture of the app at all (the
+   only one, `dashboard.png`, was a screenshot of a Claude session and was
+   removed). Two or three real screenshots (submissions list, CV export,
+   grant tracker) at 2880 px wide would do more for that page than any copy
+   change. The launch cards in `Outreach/03-launches/assets/` are text, not
+   screenshots.
+6. **ModernTex size.** Pages say 15 MB; an older note said 14 MB. Check the
    current DMG and fix whichever is wrong.
-6. **Verify three facts before they matter:**
+7. **Verify three facts before they matter:**
    - the DOIs in the Citation Gap sample report
    - the template details in `site/templates/*` (class options, page limits)
    - the policy summaries in `site/guides/ai-policy-checking-your-own-manuscript/`.
      They were researched from search results because the publishers' sites
      were blocked from the build environment. Cells marked "check the page"
      were not pinned down.
-7. **Old digest pages** keep the old nav until the Modal cron regenerates them.
+8. **Read what carries your name.** The new guides are bylined "Benjamin
+   Ampel" like the existing ones:
+   - overleaf-alternative-mac
+   - get-feedback-on-a-paper-before-submitting
+   - methodology-problems-peer-reviewers-flag
+   - ai-policy-checking-your-own-manuscript
+
+   The same goes for the templates pages and the new customer emails in
+   `backend/latextools/delivery.py` (ModernTex tips, trial, decision
+   reminder). Read them in your voice before deploying.
+9. **Old digest pages** keep the old nav until the Modal cron regenerates them.
    The generator (`backend/digest/publisher.py`) already has the new nav.
-8. **Bundles need Stripe prices.** A submission bundle (Paper Review +
+10. **Bundles need Stripe prices.** A submission bundle (Paper Review +
    Citation Gap + Cover Letter) was proposed but not built: it needs new price
    IDs in Stripe and in Netlify env first.
 
