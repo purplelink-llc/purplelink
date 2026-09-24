@@ -2041,3 +2041,20 @@ def test_ready_email_names_the_product_and_offers_one_next_step():
     assert "Your Resume Review is ready" in rr and "utm_campaign=ready" not in rr
     for key in ("cover-letter", "anonymity-check", "citation-gap", "revision-review", "response-review", "resume-review"):
         assert key in delivery._READY_NAMES
+
+
+def test_lifecycle_stats_counts_without_addresses(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "s")
+    d = backend_app.customer_lifecycle_dict
+    d["a"] = {"email": "x@e.com", "last_stage_sent": "tips", "decision_reminders": [1, 2]}
+    d["trial:y@e.com"] = {"email": "y@e.com", "product": "moderntex-trial", "last_stage_sent": "trial_ending", "converted_at": 5}
+    d["trial:z@e.com"] = {"email": "z@e.com", "product": "moderntex-trial", "last_stage_sent": "trial_setup"}
+    d["m"] = {"email": "m@e.com", "product": "moderntex", "last_stage_sent": None}
+    backend_app.lifecycle_optout_dict["gone@e.com"] = True
+    assert http.get("/lifecycle/stats", headers={"x-webhook-secret": "no"}).status_code == 401
+    body = http.get("/lifecycle/stats", headers={"x-webhook-secret": "s"}).json()
+    assert body["moderntex_trial"] == {"signups": 2, "bought": 1}
+    assert body["entries_by_product"] == {"paper-review": 1, "moderntex-trial": 2, "moderntex": 1}
+    assert body["decision_reminders_waiting"] == 2 and body["unsubscribed"] == 1
+    assert "@" not in str(body)

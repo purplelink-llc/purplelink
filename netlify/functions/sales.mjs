@@ -17,6 +17,7 @@
  */
 
 const STRIPE_API = "https://api.stripe.com/v1";
+const LIFECYCLE_STATS_URL = "https://ben-ampel--purplelink-latextools-web.modal.run/lifecycle/stats";
 const PAGE_SIZE = 100;
 const MAX_PAGES = 10; // 1000 sessions; `truncated` says when that was not enough
 
@@ -32,6 +33,8 @@ const SITE_OF_PRODUCT = new Map(Object.entries({
   "resume-review": "purplelink", "kit-faceless": "purplelink",
   "kit-monetization": "purplelink", "kit-bundle": "purplelink",
   "kit-clip": "purplelink", "moderntex": "purplelink",
+  "vitae-plus-monthly": "purplelink", "vitae-plus-annual": "purplelink",
+  "digest-monthly": "purplelink", "digest-annual": "purplelink",
 
   "muscleonglp-guide": "muscleonglp", "protein-playbook": "muscleonglp",
   "complete-pack": "muscleonglp", "creatine-glp1": "muscleonglp",
@@ -160,8 +163,25 @@ export default async function handler(request) {
     /* balance is a nicety; sales still render without it */
   }
 
+  // Follow-up email counts from the backend (trial sign-ups and how many
+  // bought, reminders waiting, unsubscribes). Optional, like the balance.
+  let lifecycle = null;
+  const backendSecret = Netlify.env.get("BACKEND_WEBHOOK_SECRET");
+  if (backendSecret) {
+    try {
+      const r = await fetch(LIFECYCLE_STATS_URL, {
+        headers: { "x-webhook-secret": backendSecret },
+        signal: AbortSignal.timeout(5000),
+      });
+      if (r.ok) lifecycle = await r.json();
+    } catch {
+      /* the sales figures stand on their own */
+    }
+  }
+
   return json(200, {
     generatedAt: new Date().toISOString(),
+    lifecycle,
     currency: "usd",
     allTime,
     window: windowTotals,
