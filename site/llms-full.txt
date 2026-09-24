@@ -650,71 +650,36 @@ Deleted soon after delivery. Purplelink deletes the manuscript and the review 30
 
 What does the report look like? Show or hide
 
-# Manuscript Review
+An excerpt from an example report on a machine-learning paper. Every finding quotes the passage it is about.
 
-## Critical Blind Spots
+### Critical blind spots
 
-- **Hyperparameter search asymmetry favors the proposed method.**
-Quoted: "We tuned learning rate and batch size on the validation
-set; baselines used reported defaults."
+- 
+Hyperparameter search asymmetry favors the proposed method.
+Quoted: "We tuned learning rate and batch size on the validation set; baselines used reported defaults."
 Surfaced by: Methodology Critic, Statistical Skeptic (consensus).
-Fix: Match search budget for each baseline; report the protocol
-in the methods section.
+Fix: Match the search budget for each baseline and report the protocol in the methods section.
 
-- **Sample-size justification missing for the human evaluation
-(Experiment 2).**
-Quoted: "We recruited 24 annotators ... yielding sufficient
-statistical power."
-Surfaced by: Statistical Skeptic.
-Fix: Replace the claim with a sensitivity analysis: the smallest
-effect 24 annotators can detect at 80% power. Report confidence
-intervals for the preference rates, not p-values alone.
-
-## Data-to-Claim Contradictions
+### Data-to-claim contradictions
 
 - Claim: "Our method beats all baselines by a wide margin."
-Evidence: Table 2 shows the proposed method tied with Baseline C
-within reported standard errors on 4 of 7 datasets.
+Evidence: Table 2 shows the proposed method tied with Baseline C within reported standard errors on 4 of 7 datasets.
 
-## Rectification Checklist
+### Rectification checklist
 
-- [A] Add hyperparameter search protocol to methods (page 5,
-Section 3.2). Match search budget across all baselines.
-- [A] Replace "wide margin" framing in abstract and Section 5
-with what the data actually shows.
-- [B] Add per-seed variance to all results tables.
-- [B] Reference [17] only weakly matches its CrossRef entry;
-check the title and DOI.
-- [C] Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on
-a continuous scale.
+- A Add the hyperparameter search protocol to the methods (page 5, Section 3.2).
 
-## True Novelty Estimate
+- B Reference [17] only weakly matches its CrossRef entry; check the title and DOI.
 
-The core architectural contribution is genuinely novel and not
-covered by [11] or [23]. The empirical comparison, as currently
-framed, oversells the gap. Marginal advance: the proposed mechanism
-is interesting but the published evidence does not yet warrant the
-strength of the abstract's claim.
+- C Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on a continuous scale.
 
-## Reference Verification Summary
+### References and citation support
 
-47 of 52 references verified against CrossRef. 3 had weak title
-matches (re-check [12], [17], [31]). 2 had no DOI and could not be
-located by title, verify these are correctly cited.
+47 of 52 references verified against CrossRef; 3 weak title matches to re-check.
 
-## Citation Support Audit
+Claim "Method X reduces error by 40%" cites [14], whose abstract reports a 4% reduction. Verdict: contradicted.
 
-Verdicts: 18 supported, 4 partially supported, 2 not supported by
-abstract, 1 contradicted, 3 source unavailable.
-
-| Claim | Cited ref | Verdict | What the source's abstract says |
-|---|---|---|---|
-| "Method X reduces error by 40%." | [14] | Contradicted | Abstract reports a 4% reduction, not 40%. Verify the figure. |
-| "Prior work proved this is optimal." | [9] | Not supported by abstract | Abstract describes a heuristic; optimality may be in the full text. |
-
-_5 citations with weaker claims were not audited (per-run cap)._
-
-Read the full example report, section by section →
+Read the full example report, with a note on each section →
 
 ## How the review works
 

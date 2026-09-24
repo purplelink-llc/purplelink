@@ -109,7 +109,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=74070916a4">
     <script src="/site.js?v=c59796b38c" defer></script>
-    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=5ef94c6407">
+    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=766cb70a03">
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -179,72 +179,27 @@
         <details open>
           <summary>What does the report look like? <span class="pr-sample-toggle">Show or hide</span></summary>
           <div class="pr-sample-body">
-            <pre tabindex="0" aria-label="Sample report">
-# Manuscript Review
-
-## Critical Blind Spots
-
-- **Hyperparameter search asymmetry favors the proposed method.**
-  Quoted: "We tuned learning rate and batch size on the validation
-  set; baselines used reported defaults."
-  Surfaced by: Methodology Critic, Statistical Skeptic (consensus).
-  Fix: Match search budget for each baseline; report the protocol
-  in the methods section.
-
-- **Sample-size justification missing for the human evaluation
-  (Experiment 2).**
-  Quoted: "We recruited 24 annotators ... yielding sufficient
-  statistical power."
-  Surfaced by: Statistical Skeptic.
-  Fix: Replace the claim with a sensitivity analysis: the smallest
-  effect 24 annotators can detect at 80% power. Report confidence
-  intervals for the preference rates, not p-values alone.
-
-## Data-to-Claim Contradictions
-
-- Claim: "Our method beats all baselines by a wide margin."
-  Evidence: Table 2 shows the proposed method tied with Baseline C
-  within reported standard errors on 4 of 7 datasets.
-
-## Rectification Checklist
-
-- [A] Add hyperparameter search protocol to methods (page 5,
-  Section 3.2). Match search budget across all baselines.
-- [A] Replace "wide margin" framing in abstract and Section 5
-  with what the data actually shows.
-- [B] Add per-seed variance to all results tables.
-- [B] Reference [17] only weakly matches its CrossRef entry;
-  check the title and DOI.
-- [C] Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on
-  a continuous scale.
-
-## True Novelty Estimate
-
-The core architectural contribution is genuinely novel and not
-covered by [11] or [23]. The empirical comparison, as currently
-framed, oversells the gap. Marginal advance: the proposed mechanism
-is interesting but the published evidence does not yet warrant the
-strength of the abstract's claim.
-
-## Reference Verification Summary
-
-47 of 52 references verified against CrossRef. 3 had weak title
-matches (re-check [12], [17], [31]). 2 had no DOI and could not be
-located by title, verify these are correctly cited.
-
-## Citation Support Audit
-
-Verdicts: 18 supported, 4 partially supported, 2 not supported by
-abstract, 1 contradicted, 3 source unavailable.
-
-| Claim | Cited ref | Verdict | What the source's abstract says |
-|---|---|---|---|
-| "Method X reduces error by 40%." | [14] | Contradicted | Abstract reports a 4% reduction, not 40%. Verify the figure. |
-| "Prior work proved this is optimal." | [9] | Not supported by abstract | Abstract describes a heuristic; optimality may be in the full text. |
-
-_5 citations with weaker claims were not audited (per-run cap)._
-            </pre>
-            <p class="sample-more"><a href="/tools/paper-review/sample/">Read the full example report, section by section →</a></p>
+            <p class="pr-sample-intro">An excerpt from an example report on a machine-learning paper. Every finding quotes the passage it is about.</p>
+            <h3 class="pr-sample-h">Critical blind spots</h3>
+            <div class="sample-report"><ul>
+              <li><p><strong>Hyperparameter search asymmetry favors the proposed method.</strong><br><span class="sample-lbl">Quoted:</span> "We tuned learning rate and batch size on the validation set; baselines used reported defaults."<br><span class="sample-lbl">Surfaced by:</span> Methodology Critic, Statistical Skeptic (consensus).<br><span class="sample-lbl">Fix:</span> Match the search budget for each baseline and report the protocol in the methods section.</p></li>
+            </ul></div>
+            <h3 class="pr-sample-h">Data-to-claim contradictions</h3>
+            <div class="sample-report"><ul>
+              <li>Claim: "Our method beats all baselines by a wide margin."<br><span class="sample-lbl">Evidence:</span> Table 2 shows the proposed method tied with Baseline C within reported standard errors on 4 of 7 datasets.</li>
+            </ul></div>
+            <h3 class="pr-sample-h">Rectification checklist</h3>
+            <div class="sample-report"><ul class="pr-sample-checklist">
+              <li><span class="sample-prio sample-prio-a">A</span> Add the hyperparameter search protocol to the methods (page 5, Section 3.2).</li>
+              <li><span class="sample-prio sample-prio-b">B</span> Reference [17] only weakly matches its CrossRef entry; check the title and DOI.</li>
+              <li><span class="sample-prio sample-prio-c">C</span> Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on a continuous scale.</li>
+            </ul></div>
+            <h3 class="pr-sample-h">References and citation support</h3>
+            <div class="sample-report">
+              <p>47 of 52 references verified against CrossRef; 3 weak title matches to re-check.</p>
+              <p>Claim "Method X reduces error by 40%" cites [14], whose abstract reports a 4% reduction. <span class="sample-lbl">Verdict:</span> contradicted.</p>
+            </div>
+            <p class="sample-more"><a href="/tools/paper-review/sample/">Read the full example report, with a note on each section →</a></p>
           </div>
         </details>
       </section>
