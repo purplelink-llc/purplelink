@@ -4482,3 +4482,23 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .mac-only-note { margin: 12px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; max-width: 560px; }
 .post-figure-shot { margin: 16px 0 8px; }
 .post-figure-shot img { border: 1px solid var(--line); border-radius: 10px; }
+
+/* ─── Owner dashboard (/stats/) ───────────────────────────────────────── */
+
+.stats-wrap { max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
+.stats-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin: 16px 0; }
+.stats-form input, .stats-form select { min-height: 42px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
+.stats-msg { width: 100%; margin: 4px 0 0; color: var(--muted); }
+.stats-msg .err { color: oklch(52% 0.19 25); }
+.stats-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 18px 0; }
+.stats-card { display: flex; flex-direction: column; gap: 4px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.stats-card .n { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--ink); }
+.stats-card .l { font-size: 0.85rem; color: var(--muted); }
+.stats-h2 { margin: 40px 0 6px; font-family: var(--font-display); font-size: 1.5rem; }
+.stats-wrap h3 { margin: 24px 0 8px; font-size: 1rem; }
+.stats-scroll { overflow-x: auto; }
+.stats-t { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.stats-t th, .stats-t td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.stats-t th { color: var(--muted); font-weight: 600; }
+.stats-t .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.stats-note { color: var(--muted); font-size: 0.88rem; }
