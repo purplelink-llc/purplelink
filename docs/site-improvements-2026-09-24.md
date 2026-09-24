@@ -112,6 +112,8 @@ retention work is `docs/growth-proposals-2026-09.md`.
    `/feedback/` show in the sales dashboard's lifecycle block, and in full
    with:
    `curl -H "x-webhook-secret: $BACKEND_WEBHOOK_SECRET" https://ben-ampel--purplelink-latextools-web.modal.run/feedback/list`.
+   The `/stats/` page now also shows sales, follow-up email counts, feedback
+   and every first-party event, with the usual token.
    Entries with `quote_ok: true` may be quoted with the name and field
    given. A few real quotes on /tools/paper-review/ and the homepage would
    be the site's first testimonials; none were written for you.
@@ -198,6 +200,12 @@ retention work is `docs/growth-proposals-2026-09.md`.
 - The privacy page describes each of these.
 
 ### Later additions
+- Guides: 69 visible "[SCREENSHOT: ...]" placeholders removed, nine real
+  screenshots added, two guides' step order corrected (pay first), and
+  eleven "deleted the moment you open it" claims corrected.
+- The Anonymity Check, Citation Gap, Cover Letter, Resume and Response
+  pages show formatted samples instead of Markdown source.
+- `/stats/` shows sales, follow-ups, feedback and all event types.
 - `/tools/abstract-checker/`: a free abstract word-limit check for the 25
   Journal Pack venues, from the same rule library.
 - One example finding per field page; the Paper Review hero links the
