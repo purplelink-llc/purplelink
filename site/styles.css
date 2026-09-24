@@ -2974,7 +2974,7 @@ button.btn-coming-soon:focus-visible {
 .kit-bundle-inner > div > p { color: var(--bg); opacity: 0.9; margin: 0; max-width: 42ch; }
 .kit-bundle-inner > div:first-child { flex: 1 1 360px; }
 .kit-bundle-buy { text-align: right; flex: 0 1 340px; }
-.kit-price-strike { color: var(--bg); opacity: 0.65; text-decoration: line-through; margin-right: 8px; }
+.kit-price-strike { color: var(--bg); opacity: 0.85; text-decoration: line-through; margin-right: 8px; }
 .kit-price-lg { color: var(--bg); font-size: 2rem; }
 .kit-bundle-buy .btn-primary { background: var(--bg); color: var(--purple); margin: 10px 0 0 12px; }
 .kit-bundle-buy .btn-primary:hover { background: var(--panel); }
