@@ -253,6 +253,15 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", restore);
   else restore();
+
+  // A link marked data-set-pref="key=value" records that choice when clicked,
+  // so the field pages preselect their profile on the Paper Review upload page.
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest("[data-set-pref]");
+    if (!a) return;
+    const [k, v] = a.dataset.setPref.split("=");
+    if (k && v) { prefs[k] = v; save(); }
+  });
 })();
 
 // Recently used tools. Each visit to a tool page is remembered (last six, in
