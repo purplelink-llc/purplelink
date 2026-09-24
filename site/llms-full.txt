@@ -1016,7 +1016,7 @@ Deleted soon after delivery. The result is deleted from our servers 30 minutes a
 
 What if I lost the original Markdown report?
 
-Run a fresh Paper Review on the revised manuscript (from $9) instead. We can't recover prior reviews. They're deleted from our servers on retrieval.
+Run a fresh Paper Review on the revised manuscript (from $9) instead. We can't recover prior reviews. They're deleted from our servers 30 minutes after you first open it (or after 24 hours if you never do).
 
 Why is this cheaper than a full review?
 

@@ -48,7 +48,7 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=7fa5a022da">
+    <link rel="stylesheet" href="/styles.css?v=fde7d8d95c">
     <script src="/site.js?v=55d6f84c39" defer></script>
   </head>
   <body>
@@ -94,6 +94,9 @@
           </li>
           <li>
             <p>Read the findings. Each entry shows the exact text that identified you, the category (author name, institution, grant number, IRB protocol, self-citation, or named software artifact), and its location in the manuscript.</p>
+            <figure class="post-figure post-figure-shot">
+              <img src="/assets/guide-shots/anonymity-sample.webp" width="1400" height="1082" loading="lazy" alt="The start of the illustrative sample from the Anonymity Check page: findings grouped by category, each with the quoted text and a fix">
+            </figure>
           </li>
           <li>
             <p>Open your source document and fix each finding.</p>
@@ -112,7 +115,7 @@
 
         <h2>What's happening under the hood</h2>
 
-        <p>The scan sends your manuscript to Anthropic's Claude API, which reads the full text and flags each category of identifying information. Purplelink deletes the result from its servers the moment you retrieve it. Anthropic retains the manuscript for up to 30 days for abuse monitoring, not for training. The tool covers the body and abstract; supplementary materials, figures, and PDF metadata require a separate manual pass.</p>
+        <p>The scan sends your manuscript to Anthropic's Claude API, which reads the full text and flags each category of identifying information. Purplelink deletes the result from its servers 30 minutes after you first open it, or after 24 hours if you never do. Anthropic retains the manuscript for up to 30 days for abuse monitoring, not for training. The tool covers the body and abstract; supplementary materials, figures, and PDF metadata require a separate manual pass.</p>
 
         <h2>Q&amp;A</h2>
 
