@@ -209,8 +209,7 @@ def render_html(digest: DigestData) -> str:
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#moderntex">Apps</a>
         <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/" aria-current="page">Blog</a>
@@ -238,8 +237,8 @@ def render_html(digest: DigestData) -> str:
     </article>
 
     <div class="post-footer digest-footer">
-      <p>Get this in your inbox, same-day, for $5/mo or $40/yr. <a href="/blog/digest/#subscribe">Subscribe</a>,
-      or get it free with a 2-day delay via the <a href="/blog/digest/#subscribe">free tier</a>.</p>
+      <p>Get this in your inbox, same-day, for $5/mo or $40/yr. <a href="/blog/digest/#subscribe-form">Subscribe</a>,
+      or get it free with a 2-day delay via the <a href="/blog/digest/#subscribe-form">free tier</a>.</p>
       <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">
         <img src="/assets/bmac-badge.svg" alt="Buy Me a Coffee" width="150" height="32" loading="lazy">
       </a>
@@ -294,7 +293,7 @@ def render_email_html(digest: DigestData, unsubscribe_url: str = "", tier: str =
   <div style="margin:24px 0;padding:16px;background:#f7f7f7;border-radius:8px;">
     <p style="margin:0 0 8px;font-size:14px;">
       Get this same-day, every morning, for $5/mo or $40/yr &mdash;
-      <a href="https://purplelink.llc/blog/digest/#subscribe">upgrade</a>.
+      <a href="https://purplelink.llc/blog/digest/#subscribe-form">upgrade</a>.
     </p>
     <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">
       <img src="https://purplelink.llc/assets/bmac-badge.svg" alt="Buy Me a Coffee" style="height:32px;">
@@ -429,8 +428,7 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#moderntex">Apps</a>
         <a href="/kits/">Kits</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/" aria-current="page">Blog</a>

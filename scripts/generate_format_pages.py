@@ -136,8 +136,7 @@ def venue_page(v):
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#moderntex">Apps</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
@@ -315,8 +314,7 @@ def hub_page():
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
+        <a href="/#moderntex">Apps</a>
         <a href="/tools/">Tools</a>
         <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>

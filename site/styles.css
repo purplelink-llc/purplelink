@@ -40,6 +40,10 @@
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Native controls (selects, checkboxes, scrollbars) follow the theme. */
+  color-scheme: light dark;
+  accent-color: var(--purple);
 }
 
 /* ─── Reset ───────────────────────────────────────────────────────────── */
@@ -61,10 +65,34 @@ body {
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.6;
+  /* Plus Jakarta Sans ships a 0.17em space, narrow enough that short UI labels
+     read as one word ("Paperreview", "Browsealltools"). A little extra keeps
+     the words apart without loosening the letterforms. */
+  word-spacing: 0.06em;
   -webkit-font-smoothing: antialiased;
 }
 
 a { color: inherit; }
+
+/* Long code, tables and select options must never widen the page on a phone. */
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+pre code { overflow-wrap: normal; }
+code { overflow-wrap: anywhere; }
+
+.post-body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.post-body a,
+.faq-body a { overflow-wrap: anywhere; }
+
+select { max-width: 100%; }
 
 /* ─── Skip link ───────────────────────────────────────────────────────── */
 
@@ -171,6 +199,23 @@ nav a:hover { color: var(--ink); }
   cursor: pointer;
 }
 
+/* <button class="btn"> otherwise keeps the browser's 2px outset border and
+   grey fill, which <a class="btn"> never has. :where() keeps this at zero
+   specificity so .btn-primary, .btn-ghost and the rest still win. A bare
+   .btn button takes the ghost look. */
+:where(button.btn) {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-body);
+  line-height: inherit;
+}
+
+:where(button.btn:not([class*="btn-"])) {
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+}
+
 .btn:hover { transform: translateY(-1px); }
 
 .btn-primary {
@@ -194,9 +239,24 @@ nav a:hover { color: var(--ink); }
   color: var(--purple);
 }
 
+/* Used by several tool pages but never defined, so it fell back to the
+   browser's grey button. Same look as .btn-ghost. */
+.btn-secondary {
+  background: transparent;
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+}
+
+.btn-secondary:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
 .btn-light {
   background: oklch(99% 0.003 310);
-  color: var(--purple);
+  /* Fixed, not var(--purple): the variable turns light in dark mode, and this
+     button stays white, so the label would drop to about 2.8:1. */
+  color: oklch(50% 0.24 310);
   box-shadow: 0 2px 8px oklch(14% 0.07 310 / 0.1);
 }
 
@@ -1436,6 +1496,9 @@ dd {
 
 .screenshot-grid img {
   width: 100%;
+  /* Same reason as .screenshot-wide img below: without it the height="2622"
+     attribute wins over aspect-ratio and each phone renders 2622px tall. */
+  height: auto;
   aspect-ratio: 420 / 900;
   object-fit: cover;
   border-radius: 14px;
@@ -1554,7 +1617,10 @@ dd {
 
 .blog-hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 7vw, 7rem);
+  /* 2.5rem floor: at 3rem a single long word ("Entrepreneurship") ran past a
+     390px screen. break-word is the backstop for anything longer. */
+  font-size: clamp(2.5rem, 7vw, 7rem);
+  overflow-wrap: break-word;
   font-weight: 800;
   line-height: 0.93;
   letter-spacing: -0.03em;
