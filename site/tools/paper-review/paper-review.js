@@ -33,7 +33,22 @@
     }
   }
 
-  var referralCode = new URLSearchParams(window.location.search).get("ref") || "";
+  // A referral link (?ref=CODE, from the footer of a shared report) is kept
+  // for 30 days so it still counts after the visitor reads the sample or
+  // comes back later. The backend decides whether it earns a credit.
+  var REF_KEY = "pl_paper_ref";
+  var REF_DAYS = 30;
+  var referralCode = (new URLSearchParams(window.location.search).get("ref") || "").slice(0, 64);
+  try {
+    if (referralCode) {
+      localStorage.setItem(REF_KEY, JSON.stringify({ code: referralCode, at: Date.now() }));
+    } else {
+      var saved = JSON.parse(localStorage.getItem(REF_KEY) || "null");
+      if (saved && saved.code && Date.now() - saved.at < REF_DAYS * 86400000) referralCode = String(saved.code);
+    }
+  } catch (e) { /* storage blocked: the URL code still works */ }
+  var refNote = document.getElementById("ref-note");
+  if (referralCode && refNote) refNote.hidden = false;
 
   btn.addEventListener("click", function () {
     var product = (document.querySelector('input[name="tier"]:checked') || {}).value || "paper-review-standard";
