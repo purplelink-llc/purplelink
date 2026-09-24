@@ -84,6 +84,8 @@ if [[ $DRY_RUN -eq 1 ]]; then
   step "DRY RUN — planned actions"
   [[ $DO_BACKEND -eq 1 ]] && echo "  · modal deploy backend/app.py"
   echo "  · python3 scripts/gen_sitemap.py"
+  echo "  · python3 scripts/check_og_images.py"
+  python3 scripts/check_og_images.py 2>&1 | sed 's/^/      /' || true
   python3 scripts/gen_sitemap.py --check 2>&1 | sed 's/^/      /' || true
   echo "  · netlify deploy --prod --dir site --message \"$MESSAGE\""
   if [[ "${AHEAD:-0}" -gt 0 ]]; then
@@ -124,6 +126,12 @@ python3 scripts/gen_sitemap.py
 # and a git-triggered Netlify build publish identical HTML.
 step "fingerprint assets"
 python3 scripts/fingerprint_assets.py
+
+# 2c. Share images
+# A page whose og:image file doesn't exist shares with no picture; stop here
+# rather than ship it.
+step "check share images"
+python3 scripts/check_og_images.py
 
 # 3. Frontend
 step "netlify deploy --prod"
