@@ -2799,7 +2799,6 @@ dd {
 
 /* fix 4 — mobile touch targets ≥44px */
 @media (max-width: 640px) {
-  .tool-related a,
   .tool-support a,
   .back-link { display: inline-block; padding: 10px 0; }
   /* Directly under an unpadded <main> the link needs its own gutter. */
@@ -3519,7 +3518,27 @@ button.btn-coming-soon:focus-visible {
 }
 
 .tool-related h2 { font-size: 1.15rem; margin-bottom: 12px; }
-.tool-related ul { flex-direction: column; gap: 8px; }
+/* Related links as a grid of rows: guides carry a small "Guide" label, the
+   arrow is drawn here rather than typed into each link. */
+.tool-related ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; margin: 0; padding: 0; }
+.tool-related li { display: flex; }
+.tool-related li > a {
+  flex: 1;
+  display: flex; align-items: center; gap: 10px;
+  min-height: 48px; padding: 10px 14px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+  color: var(--ink); font-weight: 600; font-size: 0.92rem; line-height: 1.35;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+.tool-related li > a::after { content: "\2192"; margin-left: auto; padding-left: 8px; color: var(--purple); }
+.tool-related li > a:hover { border-color: var(--purple); color: var(--purple); text-decoration: none; }
+.tool-related .rel-kind {
+  flex: none; padding: 2px 8px; border-radius: 100px;
+  background: var(--purple-xlight); color: var(--purple);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+}
+@media (prefers-reduced-motion: reduce) { .tool-related li > a { transition: none; } }
 
 /* ─── Comparison tables in guides ─────────────────────────────────────── */
 
