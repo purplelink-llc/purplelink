@@ -2251,3 +2251,61 @@ def test_deadline_template_escapes_venue():
     from latextools import delivery
     html = delivery.html_lifecycle_deadline_week(venue="<i>X</i>", deadline="Friday 9 October", unsubscribe_url="https://x/u")
     assert "&lt;i&gt;X&lt;/i&gt;" in html and "Friday 9 October" in html and "https://x/u" in html
+
+
+# ---------------------------------------------------------------------------
+# One reminder for a single purchase that has not been used
+# ---------------------------------------------------------------------------
+
+def _single_purchase(backend_app, session_id, *, age_days, category="paper-review", **extra):
+    now = time.time()
+    entry = {
+        "tokens": ["tok-" + session_id], "product_key": "x",
+        "product_cfg": {"category": category, "qty": 1},
+        "email": "buyer@example.com", "consumed_tokens": [],
+        "created_at": now - age_days * 86400,
+        "expires_at": now - age_days * 86400 + 7 * 86400,
+    }
+    entry.update(extra)
+    backend_app.paper_tokens_dict[session_id] = entry
+    return entry
+
+
+def test_purchases_waiting_selects_only_unused_single_purchases_in_window(client):
+    _http, backend_app = client
+    now = time.time()
+    rows = [
+        ("due", {"email": "a@x.com", "consumed_tokens": [], "created_at": now - 3 * 86400, "expires_at": now + 4 * 86400}),
+        ("too-new", {"email": "a@x.com", "consumed_tokens": [], "created_at": now - 86400, "expires_at": now + 6 * 86400}),
+        ("used", {"email": "a@x.com", "consumed_tokens": ["t"], "created_at": now - 3 * 86400, "expires_at": now + 4 * 86400}),
+        ("pack", {"email": "a@x.com", "consumed_tokens": [], "created_at": now - 3 * 86400, "expires_at": 0}),
+        ("ending", {"email": "a@x.com", "consumed_tokens": [], "created_at": now - 6.6 * 86400, "expires_at": now + 0.4 * 86400}),
+        ("done", {"email": "a@x.com", "consumed_tokens": [], "created_at": now - 3 * 86400, "expires_at": now + 4 * 86400, "waiting_reminded_at": now - 10}),
+        ("no-email", {"email": "", "consumed_tokens": [], "created_at": now - 3 * 86400, "expires_at": now + 4 * 86400}),
+    ]
+    assert [sid for sid, _ in backend_app._purchases_waiting(rows, now)] == ["due"]
+
+
+def test_sweep_sends_one_waiting_reminder_with_the_start_link(client, monkeypatch):
+    _http, backend_app = client
+    sent = _no_send(monkeypatch)
+    _single_purchase(backend_app, "cs_wait", age_days=3)
+    _single_purchase(backend_app, "cs_cover", age_days=3, category="cover-letter", email="other@example.com")
+    out = backend_app.lifecycle_email_sweep.local()
+    assert out.get("purchase_waiting") == 2
+    subjects = sorted(m["subject"] for m in sent)
+    assert subjects == ["Your Paper Review is still waiting", "Your cover letter draft is still waiting"]
+    by_to = {m["to"]: m["html"] for m in sent}
+    assert "direct_token=tok-cs_wait" in by_to["buyer@example.com"]
+    assert "/tools/cover-letter/compose/?session_id=cs_cover" in by_to["other@example.com"]
+    backend_app.lifecycle_email_sweep.local()
+    assert len(sent) == 2  # never twice
+
+
+def test_waiting_reminder_respects_optout(client, monkeypatch):
+    _http, backend_app = client
+    sent = _no_send(monkeypatch)
+    _single_purchase(backend_app, "cs_out", age_days=3, email="Out@Example.com")
+    backend_app.lifecycle_optout_dict["out@example.com"] = True
+    backend_app.lifecycle_email_sweep.local()
+    assert sent == []

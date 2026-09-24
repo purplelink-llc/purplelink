@@ -306,6 +306,30 @@ def html_purchase_link(*, product_name: str, link: str) -> str:
 """
 
 
+def html_purchase_waiting(*, product_name: str, link: str, ends: str) -> str:
+    """One reminder for a single purchase that has not been used two days in."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Your {_html.escape(product_name)} is still waiting</h2>
+  <p>You paid for this a couple of days ago and have not started it yet.
+  The link below works on any device until {_html.escape(ends)}.</p>
+  <p>
+    <a href="{_html.escape(link)}"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 12px 22px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Open my purchase
+    </a>
+  </p>
+  <p>If something went wrong, or the upload did not work, reply to this
+  email and we will sort it out.</p>
+  <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
+  <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC about a
+  purchase you made. This is the only reminder.</p>
+</div>
+"""
+
+
 def html_volume_pack_tokens(*, tokens: list[str], pack_size: int) -> str:
     rows = "".join(
         f'<tr><td style="padding:6px 10px;border:1px solid #eee;font-family:monospace;font-size:13px;">{t}</td>'
