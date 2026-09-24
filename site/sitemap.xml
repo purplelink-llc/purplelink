@@ -646,6 +646,11 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/paper-review/sample/</loc>
+    <lastmod>2026-09-24</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/tools/pdf-structure/</loc>
     <lastmod>2026-09-24</lastmod>
     <priority>0.7</priority>

@@ -27,6 +27,7 @@ PAGES = [
     "vitae/",
     "vitae/plus/",
     "tools/paper-review/",
+    "tools/paper-review/sample/",
     "tools/paper-review/packs/",
     "tools/paper-review/revision/",
     "tools/response-review/",
