@@ -74,6 +74,12 @@ retention work is `docs/growth-proposals-2026-09.md`.
   "Your Paper Review is ready". Each email offers one next step.
 - ModernTex: specs table, closing call to action, clean screenshot crop.
 
+### Find a purchase
+- `/recover/` (linked in every footer, the ModernTex FAQ and both success
+  pages) emails a fresh ModernTex license key and the download pages for any
+  ModernTex or kit purchase made with an address. Before this, a buyer who
+  lost the receipt email lost the key. Needs the frontend deploy only.
+
 ### Retention (all opt-out-able through the existing lifecycle unsubscribe)
 - **ModernTex buyers:** tips on day 3, a pre-submission note on day 21.
 - **ModernTex trial:** after a trial download, an optional form sends:

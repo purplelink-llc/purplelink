@@ -83,6 +83,7 @@ FOOTER_COLUMNS = [
         ("Contact", "mailto:ben@purplelink.llc"),
         ("Privacy", "/privacy/"),
         ("Terms", "/terms/"),
+        ("Find a purchase", "/recover/"),
     ]),
 ]
 

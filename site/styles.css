@@ -4246,3 +4246,6 @@ html { scroll-padding-top: 96px; }
 .trial-remind-row input[type="email"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .trial-remind-note { margin: 8px 0 0; color: var(--muted); font-size: 0.85rem; }
 .closing-cta .trial-remind { margin: 18px auto 4px; text-align: left; }
+
+/* Inside a padded static page, the back link lines up with the content. */
+.static-page > .back-link { padding-left: 0; padding-right: 0; }

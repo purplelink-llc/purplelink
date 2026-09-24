@@ -296,6 +296,7 @@ def render_html(digest: DigestData) -> str:
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
           </ul>
         </nav>
       </div>
@@ -537,6 +538,7 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
           </ul>
         </nav>
       </div>

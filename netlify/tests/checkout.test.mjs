@@ -17,14 +17,14 @@ import { test, mock } from "node:test";
 import assert from "node:assert/strict";
 
 // Stub @netlify/blobs so the rate-limit check doesn't need real credentials.
-mock.module("@netlify/blobs", {
-  exports: {
-    getStore: () => ({
-      get: async () => null,
-      set: async () => {},
-    }),
-  },
-});
+const blobsModule = {
+  getStore: () => ({
+    get: async () => null,
+    set: async () => {},
+  }),
+};
+// `exports` on newer Node, `namedExports` on Node 22.
+mock.module("@netlify/blobs", { exports: blobsModule, namedExports: blobsModule });
 
 globalThis.Netlify = {
   env: {
