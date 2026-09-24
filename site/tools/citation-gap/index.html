@@ -17,8 +17,8 @@
     </script>
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
-    <link rel="stylesheet" href="/styles.css?v=e280ae054d">
-    <script src="/site.js?v=4732357017" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=98dc91a341">
+    <script src="/site.js?v=49aea39300" defer></script>
     <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=a48e984d89">
       <script type="application/ld+json">
     {
@@ -75,6 +75,65 @@
         <p class="pr-trust-line"><strong>Nothing is kept after delivery.</strong> The result is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $3.</p>
       </div>
       <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+      <section class="pr-sample">
+        <h2 class="pr-sample-heading">Sample output</h2>
+        <details open>
+          <summary>Sample output <span class="pr-sample-toggle">Show or hide</span></summary>
+          <div class="pr-sample-body">
+            <pre>
+# Citation Gap Analysis
+**Result: 5 potential gaps flagged.**
+Each entry below is a citation a domain reviewer might expect to see. Verify each suggestion against your own knowledge before adding — AI recall can be wrong.
+
+### Meta-analytic evidence on sleep deprivation and cognition
+- **Type:** Missing Canonical Paper
+- **Suggested authors:** J. Lim, D. F. Dinges
+- **Title hint:** A meta-analysis of the impact of short-term sleep deprivation on cognitive variables
+- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1037/a0018883
+- **What should be cited:** The standard meta-analysis of how short-term sleep loss affects attention, working memory, and other cognitive domains.
+- **Why a reviewer would notice:** The introduction claims sleep loss "impairs complex reasoning" using only two small studies. A sleep researcher would expect the meta-analysis behind that claim.
+- **Section to add it:** Introduction
+
+### Dose-response effects of partial sleep restriction
+- **Type:** Missing Prior Finding
+- **Suggested authors:** H. P. A. Van Dongen, G. Maislin, J. M. Mullington, D. F. Dinges
+- **Title hint:** The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology from chronic sleep restriction and total sleep deprivation
+- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1093/sleep/26.2.117
+- **What should be cited:** The controlled study showing that deficits from repeated nights of restricted sleep accumulate over time.
+- **Why a reviewer would notice:** The limitations paragraph says chronic restriction "may differ" from one night but does not cite the work that measured exactly that difference.
+- **Section to add it:** Discussion, limitations
+
+### Psychomotor Vigilance Task as the manipulation check
+- **Type:** Missing Framework
+- **Suggested authors:** D. F. Dinges, J. W. Powell
+- **Title hint:** Microcomputer analyses of performance on a portable, simple visual RT task during sustained operations
+- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.3758/BF03200977
+- **What should be cited:** The original description of the reaction-time task the manuscript uses to confirm participants were sleep restricted.
+- **Why a reviewer would notice:** The PVT is used in Section 3.3 without a source for the task or its lapse threshold.
+- **Section to add it:** Methods, Section 3.3
+
+### Origins of defect detection in code inspection
+- **Type:** Missing Canonical Paper
+- **Suggested authors:** M. E. Fagan
+- **Title hint:** Design and code inspections to reduce errors in program development
+- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1147/sj.153.0182
+- **What should be cited:** The foundational paper on structured code inspection, which introduced defect detection rate as a measure of review effectiveness.
+- **Why a reviewer would notice:** The dependent variable is defect detection rate, and the related work section starts with modern pull-request review without acknowledging where the measure comes from.
+- **Section to add it:** Related work
+
+### Prior experiments on sleep loss and developer performance
+- **Type:** Qualitative Gap
+- **Suggested authors:** (unknown)
+- **Title hint:** unknown
+- **Verification:** No searchable title — AI recall only, unverified
+- **What should be cited:** Earlier controlled experiments that measured programming or software-engineering task performance after a night of sleep deprivation.
+- **Why a reviewer would notice:** The manuscript describes itself as the first study of sleep and developer performance. A reviewer familiar with this small literature may question that claim.
+- **Section to add it:** Related work; also soften "first" in the abstract
+</pre>
+            <p class="pr-checkout-meta">Illustrative example on a fictional manuscript; your result follows the same format.</p>
+          </div>
+        </details>
+      </section>
       <section class="pr-layers">
         <h2>What it flags</h2>
         <ul>
