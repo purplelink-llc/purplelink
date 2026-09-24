@@ -112,6 +112,15 @@ retention work is `docs/growth-proposals-2026-09.md`.
    given. A few real quotes on /tools/paper-review/ and the homepage would
    be the site's first testimonials; none were written for you.
 
+18. **Stripe abandoned-checkout recovery (optional).** Checkout Sessions
+   can carry `after_expiration[recovery][enabled]=true` with
+   `consent_collection[promotions]=auto`, and Stripe then emails a recovery
+   link to buyers who agreed to promotional email. Not turned on here: it
+   changes the live checkout and needs promotional consent settled in the
+   Stripe dashboard first. The site now shows a "nothing was charged" note
+   when someone returns from a closed checkout, and counts it
+   (`checkout_canceled`).
+
 ## What changed
 
 ### Look and navigation
@@ -178,6 +187,17 @@ retention work is `docs/growth-proposals-2026-09.md`.
 - The privacy page describes each of these.
 
 ### Later additions
+- Site search at `/search/` over an index built at deploy
+  (`scripts/gen_search_index.py`); the 404 page and footer link to it.
+- Paper Review field pages: `/tools/paper-review/machine-learning/`,
+  `/biomedicine/`, `/psychology/`, `/chemistry/`, each listing what that
+  domain profile checks. Their buttons preselect the profile at upload.
+- A tier comparison table on the Paper Review page, and all three tiers
+  as offers in its structured data.
+- Stripe's cancel URL carries `?checkout=canceled`; the page says nothing
+  was charged.
+- /products/ opens with "Start from where the paper is"; /moderntex/ says
+  who it is not for; /labs/ explains forwarding a single purchase.
 - `/feedback/`: one-click rating from the review-request email and the
   status page, then an optional comment with permission to quote.
 - Paid purchases still unused two days in get one reminder with the link.
