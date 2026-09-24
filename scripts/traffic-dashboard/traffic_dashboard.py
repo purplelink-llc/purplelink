@@ -933,6 +933,8 @@ def summarise(site: dict, site_hist: dict) -> dict:
     prior7_days = _daterange(yesterday - dt.timedelta(days=7), 7)
     last14_days = _daterange(today, 14)        # for the sparkline, includes today
     last30_days = _daterange(yesterday, 30)
+    trial_since = site_hist.get("metricsFirstSeen", {}).get("trialDownloads")
+    trial_days = [d for d in last30_days if trial_since and d >= trial_since]
 
     last7 = total(last7_days, "pageviews")
     prior7 = total(prior7_days, "pageviews")
@@ -1024,13 +1026,17 @@ def summarise(site: dict, site_hist: dict) -> dict:
             latest.get("topPaths", []), site.get("product_paths"),
             int(total(last30_days, "checkoutClicks") or 0),
         ),
-        # ModernTex trial funnel inputs: 30-day trial downloads (only counted from
-        # the day the trial shipped, see METRIC_START_OVERRIDES) and the 30-day
-        # buy-button presses tagged with that product.
-        "trial30": int(total(last30_days, "trialDownloads") or 0),
-        "moderntex_clicks30": next((int(r.get("count") or 0)
-                                    for r in latest.get("checkoutByProduct", [])
-                                    if r.get("key") == "moderntex"), 0),
+        # ModernTex trial funnel inputs, all over the same days: the last 30
+        # complete days that fall on or after the day the trial shipped (see
+        # METRIC_START_OVERRIDES). Clicks and orders from before the trial
+        # existed are not trial conversions; counting them made the funnel read
+        # "16 downloads -> 11 clicks -> 7 orders" when 6 of the 7 orders
+        # predated the first trial download. The beacon keeps per-product
+        # checkout clicks only as a 30-day total, so the per-day click count here
+        # is every product's buy button (at this volume nearly all ModernTex).
+        "trial_days": trial_days,
+        "trial30": int(total(trial_days, "trialDownloads") or 0),
+        "trial_clicks30": int(total(trial_days, "checkoutClicks") or 0),
         "bounds": [b for b in (
             conversion_bound(by_day, k, lbl) for k, lbl in site["secondaries"]
         ) if b],
@@ -1230,19 +1236,26 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
         # Stripe (sales.byProduct), the other two from the beacon.
         tr = next((sec for sec in s["secondaries"] if sec["key"] == "trialDownloads"), None)
         if tr and tr["days_tracked"] is not None and s["key"] == "purplelink":
-            orders30 = next((int(r.get("orders") or 0) for r in (sales or {}).get("byProduct", [])
-                             if r.get("key") == "moderntex"), 0)
-            dl, clk = s.get("trial30", 0), s.get("moderntex_clicks30", 0)
+            # Orders from Stripe's recent list, dated, so only the ones placed on
+            # the funnel's own days count. byProduct is all-time and would pull
+            # in the launch-week orders that came before the trial.
+            days = set(s.get("trial_days", []))
+            recent = (sales or {}).get("recent", [])
+            orders30 = sum(1 for r in recent
+                           if r.get("product") == "moderntex" and (r.get("date") or "")[:10] in days)
+            dl, clk = s.get("trial30", 0), s.get("trial_clicks30", 0)
             window = (f"since {tr['since']}" if tr["days_tracked"] < 30 else "last 30 days")
+            caveat = (" Stripe's recent-order list was truncated, so orders may be undercounted."
+                      if (sales or {}).get("truncated") else "")
             if dl == 0 and tr["days_tracked"] < 2:
                 pass  # the generic "recorded since" line already covers a day-old counter
             elif dl == 0:
                 out.append(f"{s['label']}: ModernTex trial funnel ({window}): no trial downloads yet, "
-                           f"{clk} buy click(s), {orders30} order(s).")
+                           f"{clk} buy click(s), {orders30} order(s).{caveat}")
             else:
-                conv = f", {clk / dl * 100:.0f}% of downloads pressed buy" if clk else ""
+                conv = f", {orders30 / dl * 100:.0f}% of downloads became orders" if orders30 else ""
                 out.append(f"{s['label']}: ModernTex trial funnel ({window}): {dl} trial download(s) "
-                           f"→ {clk} buy click(s) → {orders30} paid order(s){conv}.")
+                           f"→ {clk} buy click(s) → {orders30} paid order(s){conv}.{caveat}")
 
         # Say what was taken out, so the figures above can be reconciled against
         # the raw archive rather than looking like a discrepancy.
