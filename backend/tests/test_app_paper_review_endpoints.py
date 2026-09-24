@@ -2120,3 +2120,19 @@ def test_emails_reply_to_ben_and_can_change_sender_name(monkeypatch):
     assert seen[0]["from"] == "Purplelink <reviews@purplelink.llc>"
     assert seen[1]["from"] == delivery.FROM_ADDRESS
     assert all(b["reply_to"] == "ben@purplelink.llc" for b in seen)
+
+
+def test_sweep_deletes_finished_and_unsubscribed_entries(client, monkeypatch):
+    _http, backend_app = client
+    _no_send(monkeypatch)
+    now = time.time()
+    d = backend_app.customer_lifecycle_dict
+    d["done"] = {"email": "a@e.com", "purchased_at": now - 200 * 86400, "last_stage_sent": "winback", "last_sent_at": now - 40 * 86400}
+    d["recent"] = {"email": "b@e.com", "purchased_at": now - 95 * 86400, "last_stage_sent": "winback", "last_sent_at": now - 5 * 86400}
+    d["waiting"] = {"email": "c@e.com", "purchased_at": now - 200 * 86400, "last_stage_sent": "winback", "last_sent_at": now - 40 * 86400, "decision_reminders": [now + 86400]}
+    d["trial-converted"] = {"email": "d@e.com", "product": "moderntex-trial", "purchased_at": now - 60 * 86400, "last_stage_sent": "trial_ending", "converted_at": now - 50 * 86400}
+    d["gone"] = {"email": "Gone@E.com", "purchased_at": now, "last_stage_sent": None}
+    backend_app.lifecycle_optout_dict["gone@e.com"] = True
+    backend_app.lifecycle_email_sweep.local()
+    assert d.get("done") is None and d.get("trial-converted") is None and d.get("gone") is None
+    assert d.get("recent") is not None and d.get("waiting") is not None

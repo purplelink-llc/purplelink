@@ -341,7 +341,7 @@ def html_invoice_ready(*, invoice_url: str, amount_cents: int) -> str:
 
 
 def _lifecycle_footer(unsubscribe_url: str, product_name: str = "a Paper Review", reason: str = "") -> str:
-    why = reason or f"because you bought {product_name}. Occasional purchase-related email only — no lists, no spam."
+    why = reason or f"because you bought {product_name}. A few follow-up emails about that purchase, and no mailing list."
     return f"""
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">
@@ -435,7 +435,7 @@ def html_lifecycle_mtx_tips(*, unsubscribe_url: str, **_ignored) -> str:
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">A few things in ModernTex worth knowing</h2>
   <p>Thanks for buying ModernTex. Now that you have had it a few days, here
-  are the parts people most often find late:</p>
+  are four parts that are easy to miss:</p>
   <ul style="padding-left: 20px;">
     <li><strong>Three compile modes.</strong> Fast for drafting, Live to keep
     the PDF updating as you type, and Full for the complete pass before you
@@ -471,10 +471,9 @@ def html_lifecycle_mtx_before_submit(*, unsubscribe_url: str, **_ignored) -> str
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">Before you submit</h2>
   <p>If the paper you are writing in ModernTex is heading to a journal or
-  conference soon, three checks catch most of what gets a manuscript sent
-  back:</p>
+  conference soon, three checks are worth running first:</p>
   <ol style="padding-left: 20px;">
-    <li><strong>ModernTex's submission check.</strong> It looks at
+    <li><strong>ModernTex's submission readiness check.</strong> It looks at
     anonymization, page limits, required sections and packaging before you
     upload.</li>
     <li><strong>Your references.</strong> The free
@@ -509,16 +508,16 @@ def html_lifecycle_decision_reminder(*, manuscript_title: str = "", unsubscribe_
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">When the reviews come back</h2>
-  <p>When you uploaded {title} for a Paper Review, you asked for a note
-  around the time you expected a decision. Here it is, once.</p>
+  <p>When you uploaded {title} for a Paper Review, you asked for one
+  email around the time you expected a decision. This is that email.</p>
   <p>If the decision is a revise and resubmit, two checks help:</p>
   <ul style="padding-left: 20px;">
     <li><strong>Response Review ($6)</strong> reads your response letter
     against every reviewer comment and flags replies that are missing,
     vague, or likely to read as defensive.</li>
     <li><strong>Revision Review ($2)</strong> checks the revised manuscript
-    against the findings in your original Paper Review. It needs that
-    review's Markdown file, so keep it handy.</li>
+    against the findings in your original Paper Review. It needs the
+    Markdown file you saved from that review.</li>
   </ul>
   <p>The free guide to
   <a href="https://purplelink.llc/guides/how-to-respond-to-reviewer-2/?utm_source=email&amp;utm_campaign=decision" style="color: #6d28d9;">responding to Reviewer 2</a>
@@ -541,7 +540,7 @@ def html_lifecycle_decision_reminder(*, manuscript_title: str = "", unsubscribe_
 """
 
 
-_TRIAL_REASON = "because you asked for ModernTex trial emails on purplelink.llc. Three emails in all, then nothing."
+_TRIAL_REASON = "because you asked for ModernTex trial emails on purplelink.llc. Three trial emails in all."
 
 
 def html_lifecycle_trial_setup(*, unsubscribe_url: str, **_ignored) -> str:
@@ -555,8 +554,8 @@ def html_lifecycle_trial_setup(*, unsubscribe_url: str, **_ignored) -> str:
     Applications. It is signed and notarized, so it opens like any other
     Mac app.</li>
     <li><strong>TeX.</strong> ModernTex compiles with a TeX distribution such
-    as MacTeX or TinyTeX. If it finds neither on first launch, it offers a
-    one-click TinyTeX install.</li>
+    as MacTeX or TinyTeX. If it cannot find either, it offers a one-click
+    TinyTeX install.</li>
     <li><strong>Your paper.</strong> Open the folder of an existing project,
     or start from a
     <a href="https://purplelink.llc/templates/?utm_source=email&amp;utm_campaign=mtx-trial-1" style="color: #6d28d9;">venue template</a>
@@ -583,7 +582,7 @@ def html_lifecycle_trial_features(*, unsubscribe_url: str, **_ignored) -> str:
     """Day 4 of a trial sign-up: the features that are easy to miss."""
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
-  <h2 style="color: #6d28d9;">Four things to try before the trial ends</h2>
+  <h2 style="color: #6d28d9;">Four things to try in ModernTex</h2>
   <ul style="padding-left: 20px;">
     <li><strong>Live compile.</strong> Switch to Live mode and the PDF keeps
     up as you type. Fast is for drafting; Full is the complete pass before
@@ -618,7 +617,8 @@ def html_lifecycle_trial_ending(*, unsubscribe_url: str, **_ignored) -> str:
   files are ordinary files on disk and are not touched either way.</p>
   <p>Keeping it is $10 once, with every 1.x update included. The receipt
   email carries a license key: paste it into the trial's "Have a license
-  key?" and the same copy unlocks, with no reinstall.</p>
+  key?" and the same copy unlocks, with no reinstall. To get updates in
+  place, install the download from your receipt page once.</p>
   <p>
     <a href="https://purplelink.llc/moderntex/?utm_source=email&amp;utm_campaign=mtx-trial-6#buy"
        style="display: inline-block; background: #7c3aed; color: #fff;

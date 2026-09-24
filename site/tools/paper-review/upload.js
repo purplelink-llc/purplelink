@@ -248,6 +248,13 @@
 
   var sessionId = getSessionId();
   var directToken = getDirectToken();
+  // A token redeemed directly usually came from someone else's pack (a PI
+  // handing one to a student). The decision reminder goes to whoever paid,
+  // so don't offer it here.
+  if (directToken) {
+    var remindPick = document.querySelector(".pr-remind-pick");
+    if (remindPick) remindPick.hidden = true;
+  }
   if (directToken) {
     redeem({ token: directToken });
   } else if (sessionId) {

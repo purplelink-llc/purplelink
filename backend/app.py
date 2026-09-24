@@ -2496,8 +2496,8 @@ def web():
         import html as _html_module
         return _lifecycle_page(
             "Unsubscribed", "Unsubscribed",
-            "<p class=\"post-lede\">You've been removed from purchase-related "
-            f"emails. No more emails will be sent to {_html_module.escape(email)}.</p>",
+            "<p class=\"post-lede\">You've been unsubscribed from Purplelink's "
+            f"follow-up emails. No more will be sent to {_html_module.escape(email)}.</p>",
         )
 
     @api.post("/paper-review/redeem-session")
@@ -3717,6 +3717,22 @@ def lifecycle_summary(entries, optouts: int = 0) -> dict:
     }
 
 
+LIFECYCLE_KEEP_AFTER_LAST_EMAIL_DAYS = 30
+
+
+def _lifecycle_entry_finished(entry: dict, now: float) -> bool:
+    """True when an entry has nothing left to send and can be deleted: its
+    product's last stage went out more than 30 days ago and no decision
+    reminder is waiting. The privacy page promises this."""
+    stages = LIFECYCLE_STAGES_BY_PRODUCT.get(entry.get("product") or "paper-review")
+    if not stages or entry.get("last_stage_sent") != stages[-1][0]:
+        return False
+    if any(isinstance(t, (int, float)) for t in (entry.get("decision_reminders") or [])):
+        return False
+    last = entry.get("last_sent_at") or entry.get("converted_at") or 0
+    return now - last > LIFECYCLE_KEEP_AFTER_LAST_EMAIL_DAYS * 86400
+
+
 def _lifecycle_next_stage(entry: dict, now: float):
     """The stage due for a lifecycle entry, or None.
 
@@ -3820,7 +3836,19 @@ def lifecycle_email_sweep() -> dict:
                 if not email:
                     continue
                 if lifecycle_optout_dict.get(_email_key(email)):
+                    # The privacy page: kept "until you unsubscribe". The
+                    # opt-out itself stays, so we never write again.
                     skipped_optout += 1
+                    try:
+                        del customer_lifecycle_dict[session_id]
+                    except KeyError:
+                        pass
+                    continue
+                if _lifecycle_entry_finished(entry, now):
+                    try:
+                        del customer_lifecycle_dict[session_id]
+                    except KeyError:
+                        pass
                     continue
 
                 reminders = [t for t in (entry.get("decision_reminders") or []) if isinstance(t, (int, float))]

@@ -318,3 +318,4 @@
 .pr-wait li { margin: 0.25rem 0; font-size: 0.93rem; }
 .pr-wait a { color: var(--purple); font-weight: 600; }
 .pr-wait[hidden] { display: none; }
+.pr-remind-pick[hidden] { display: none; }
