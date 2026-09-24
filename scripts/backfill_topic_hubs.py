@@ -175,6 +175,7 @@ def topic_hub_skeleton(section_label, slug):
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
           </ul>
         </nav>
       </div>

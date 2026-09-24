@@ -91,3 +91,15 @@ netlify env:set MODERNTEX_UPDATE_TOKEN <new> --context production --force
 
 then redeploy the site AND cut a new app release (older installs keep the old token and
 stop seeing updates, so rotate only when you must).
+
+## Lost keys
+
+`/recover/` posts an email address to `netlify/functions/purchases-recover.mjs`,
+which lists paid Checkout Sessions for that address in Stripe
+(`customer_details[email]`, as typed and lower-cased), keeps ModernTex and kit
+purchases, and emails that address a newly minted key
+(`issueModernTexLicense`, exported from `stripe-webhook.mjs`) plus the latest
+ModernTex download page and each kit's download page. Same answer for every
+address; 3 requests per address and 20 per IP per UTC day (Blobs
+`rate-limits`). Tests: `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs`
+(run `npm install` first).

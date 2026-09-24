@@ -8,14 +8,14 @@ import assert from "node:assert/strict";
 import { generateKeyPairSync, verify } from "node:crypto";
 
 const blobs = new Map();
-mock.module("@netlify/blobs", {
-  exports: {
-    getStore: (name) => ({
-      get: async (k) => blobs.get(`${name}/${k}`) ?? null,
-      set: async (k, v) => { blobs.set(`${name}/${k}`, v); },
-    }),
-  },
-});
+const blobsModule = {
+  getStore: (name) => ({
+    get: async (k) => blobs.get(`${name}/${k}`) ?? null,
+    set: async (k, v) => { blobs.set(`${name}/${k}`, v); },
+  }),
+};
+// `exports` on newer Node, `namedExports` on Node 22.
+mock.module("@netlify/blobs", { exports: blobsModule, namedExports: blobsModule });
 
 const { privateKey, publicKey } = generateKeyPairSync("ed25519");
 const PEM = privateKey.export({ type: "pkcs8", format: "pem" });

@@ -71,7 +71,7 @@ const PURPLELINK_PRODUCTS = new Set([
 // the session is paid (kit-download.mjs, moderntex-download.mjs). They are
 // listed so a ModernTex or kit sale reads as "delivered" in the function log
 // rather than as a foreign product.
-const BLOB_DELIVERED_PRODUCTS = new Map([
+export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["kit-faceless",      { name: "The Faceless Content Pipeline kit", successPath: "/kits/success/" }],
   ["kit-monetization",  { name: "The Monetization Stack kit",        successPath: "/kits/success/" }],
   ["kit-bundle",        { name: "the kit bundle",                    successPath: "/kits/success/" }],
@@ -189,7 +189,7 @@ function crockfordBase32Encode(buf) {
  * Signs one new, unique license key, or null if the private key isn't configured (never
  * throws — a signing failure must not break checkout delivery of the download itself).
  */
-function issueModernTexLicense() {
+export function issueModernTexLicense() {
   const privB64 = Netlify.env.get("MODERNTEX_LICENSE_PRIVATE_KEY");
   if (!privB64) return null;
   try {
