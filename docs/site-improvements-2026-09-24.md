@@ -50,7 +50,13 @@ retention work is `docs/growth-proposals-2026-09.md`.
    reminder). Read them in your voice before deploying.
 9. **Old digest pages** keep the old nav until the Modal cron regenerates them.
    The generator (`backend/digest/publisher.py`) already has the new nav.
-10. **Bundles need Stripe prices.** A submission bundle (Paper Review +
+10. **Does an unlocked trial copy update itself?** `docs/products/moderntex.md`
+    says the trial build ships with no Sparkle feed. The site and the
+    trial-ending email now tell buyers to install the paid download once to
+    get updates. If a license key does switch the trial copy onto the update
+    feed, remove that sentence from `/moderntex/`, the success page and
+    `html_lifecycle_trial_ending`. If it doesn't, consider making it do so.
+11. **Bundles need Stripe prices.** A submission bundle (Paper Review +
    Citation Gap + Cover Letter) was proposed but not built: it needs new price
    IDs in Stripe and in Netlify env first.
 
