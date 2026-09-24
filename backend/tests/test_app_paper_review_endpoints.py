@@ -1819,3 +1819,78 @@ def test_anonymity_report_uses_readable_category_headings(client):
     assert "## Emails and URLs" in md
     assert "## Something new" in md
     assert "Irb Number" not in md and "Email Or Url" not in md
+
+
+# ---------------------------------------------------------------------------
+# ModernTex follow-up emails: /lifecycle/register and product-aware stages
+# ---------------------------------------------------------------------------
+
+def test_lifecycle_register_requires_webhook_secret(client, monkeypatch):
+    http, _backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    r = http.post(
+        "/lifecycle/register",
+        json={"session_id": "m1", "email": "a@b.com", "product": "moderntex"},
+        headers={"x-webhook-secret": "wrong"},
+    )
+    assert r.status_code == 401
+
+
+def test_lifecycle_register_seeds_moderntex_once(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    headers = {"x-webhook-secret": "correct-secret"}
+    payload = {"session_id": "m1", "email": "a@b.com", "product": "moderntex"}
+    r1 = http.post("/lifecycle/register", json=payload, headers=headers)
+    assert r1.status_code == 200 and r1.json()["status"] == "registered"
+    entry = backend_app.customer_lifecycle_dict.get("m1")
+    assert entry["product"] == "moderntex" and entry["last_stage_sent"] is None
+    r2 = http.post("/lifecycle/register", json=payload, headers=headers)
+    assert r2.json()["status"] == "exists"
+
+
+def test_lifecycle_register_respects_optout_and_rejects_other_products(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    headers = {"x-webhook-secret": "correct-secret"}
+    backend_app.lifecycle_optout_dict["gone@b.com"] = True
+    r = http.post("/lifecycle/register", json={"session_id": "m2", "email": "gone@b.com", "product": "moderntex"}, headers=headers)
+    assert r.json()["status"] == "opted_out"
+    assert backend_app.customer_lifecycle_dict.get("m2") is None
+    for product in ("paper-review", "kit-bundle", ""):
+        r = http.post("/lifecycle/register", json={"session_id": "m3", "email": "a@b.com", "product": product}, headers=headers)
+        assert r.status_code == 400
+    r = http.post("/lifecycle/register", json={"session_id": "m4", "email": "", "product": "moderntex"}, headers=headers)
+    assert r.status_code == 400
+
+
+def test_lifecycle_next_stage_by_product(client):
+    _http, backend_app = client
+    day = 86400
+    nxt = backend_app._lifecycle_next_stage
+    mtx = {"product": "moderntex", "purchased_at": 0, "last_stage_sent": None}
+    assert nxt(mtx, 2 * day) is None
+    assert nxt(mtx, 3 * day)[0] == "mtx_tips"
+    assert nxt({**mtx, "last_stage_sent": "mtx_tips"}, 20 * day) is None
+    assert nxt({**mtx, "last_stage_sent": "mtx_tips"}, 21 * day)[0] == "mtx_before_submit"
+    assert nxt({**mtx, "last_stage_sent": "mtx_before_submit"}, 400 * day) is None
+    # Entries from before the product field existed are Paper Review.
+    legacy = {"purchased_at": 0, "last_stage_sent": None}
+    assert nxt(legacy, 3 * day)[0] == "tips"
+    assert nxt({**legacy, "last_stage_sent": "review_request"}, 90 * day)[0] == "winback"
+    assert nxt({**legacy, "last_stage_sent": "winback"}, 400 * day) is None
+    # Unknown products and stages are skipped, not crashed on.
+    assert nxt({"product": "nope", "purchased_at": 0, "last_stage_sent": None}, 99 * day) is None
+    assert nxt({"purchased_at": 0, "last_stage_sent": "mtx_tips"}, 99 * day) is None
+    for stage, _days, fn in backend_app.MTX_LIFECYCLE_STAGES:
+        assert stage in backend_app.LIFECYCLE_SUBJECTS
+
+
+def test_moderntex_lifecycle_templates_name_the_product():
+    from latextools import delivery
+    for fn in (delivery.html_lifecycle_mtx_tips, delivery.html_lifecycle_mtx_before_submit):
+        html = fn(unsubscribe_url="https://example.test/u")
+        assert "because you bought ModernTex" in html
+        assert "https://example.test/u" in html
+        assert "Paper Review." not in html.split("<hr")[-1]
+    assert "because you bought a Paper Review" in delivery.html_lifecycle_winback(unsubscribe_url="u")

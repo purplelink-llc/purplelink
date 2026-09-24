@@ -2303,6 +2303,54 @@ def web():
 </html>"""
         return HTMLResponse(html, status_code=status)
 
+    @api.post("/lifecycle/register")
+    async def lifecycle_register(request: Request):
+        """Internal webhook target: seed the follow-up email sequence for a
+        purchase that is delivered outside this backend (today, ModernTex,
+        whose download and license key the Netlify webhook sends itself).
+
+        Payload: { session_id, email, product }. Header-authenticated with
+        the same secret as register-token. Idempotent: a second call for the
+        same session leaves the existing entry alone, and an address that
+        unsubscribed is not re-added.
+        """
+        provided = request.headers.get("x-webhook-secret", "")
+        expected = os.environ.get("BACKEND_WEBHOOK_SECRET", "")
+        if not expected:
+            return JSONResponse(
+                {"error": "misconfigured", "detail": "backend secret not set"},
+                status_code=500,
+            )
+        import hmac as _hmac
+        if not _hmac.compare_digest(provided, expected):
+            return JSONResponse({"error": "unauthorized"}, status_code=401)
+        try:
+            payload = await request.json()
+        except Exception:
+            return JSONResponse({"error": "invalid_json"}, status_code=400)
+
+        session_id = str((payload or {}).get("session_id", "")).strip()
+        email = str((payload or {}).get("email", "")).strip()
+        product = str((payload or {}).get("product", "")).strip()
+        if not session_id or not email or "@" not in email:
+            return JSONResponse({"error": "missing_fields"}, status_code=400)
+        if product not in LIFECYCLE_STAGES_BY_PRODUCT or product == "paper-review":
+            # Paper Review entries are seeded by register-token itself.
+            return JSONResponse({"error": "unknown_product", "product": product}, status_code=400)
+        if lifecycle_optout_dict.get(email):
+            return {"status": "opted_out"}
+        if customer_lifecycle_dict.get(session_id):
+            return {"status": "exists"}
+        customer_lifecycle_dict[session_id] = {
+            "email": email,
+            "product": product,
+            "manuscript_title": "",
+            "purchased_at": _time_module.time(),
+            "last_stage_sent": None,
+            "last_sent_at": None,
+        }
+        return {"status": "registered"}
+
     @api.get("/paper-review/lifecycle/unsubscribe")
     async def paper_review_lifecycle_unsubscribe(request: Request):
         """One-click unsubscribe for lifecycle purchase emails. Mirrors
@@ -3455,6 +3503,53 @@ LIFECYCLE_STAGES = [
 ]
 LIFECYCLE_STAGE_ORDER = [s[0] for s in LIFECYCLE_STAGES]
 
+# ModernTex buyers get two emails and no win-back: feature tips once they have
+# used the app for a few days, and one note on pre-submission checks at three
+# weeks. Registered by the Stripe webhook via /lifecycle/register.
+MTX_LIFECYCLE_STAGES = [
+    ("mtx_tips", 3, "html_lifecycle_mtx_tips"),
+    ("mtx_before_submit", 21, "html_lifecycle_mtx_before_submit"),
+]
+# Entries written before this map existed carry no "product" and are Paper
+# Review purchases.
+LIFECYCLE_STAGES_BY_PRODUCT = {
+    "paper-review": LIFECYCLE_STAGES,
+    "moderntex": MTX_LIFECYCLE_STAGES,
+}
+LIFECYCLE_SUBJECTS = {
+    "tips": "Getting the most out of your review",
+    "review_request": "How did the review hold up?",
+    "winback": "Still writing?",
+    "mtx_tips": "A few things in ModernTex worth knowing",
+    "mtx_before_submit": "Before you submit",
+}
+
+
+def _lifecycle_next_stage(entry: dict, now: float):
+    """The stage due for a lifecycle entry, or None.
+
+    Returns (stage_name, template_fn_name) when the next stage in the entry's
+    product sequence is due, None when nothing is due yet, the sequence is
+    finished, or the entry names an unknown product or stage.
+    """
+    stages = LIFECYCLE_STAGES_BY_PRODUCT.get(entry.get("product") or "paper-review")
+    if not stages:
+        return None
+    order = [st[0] for st in stages]
+    last_stage = entry.get("last_stage_sent")
+    if last_stage is None:
+        next_index = 0
+    elif last_stage in order:
+        next_index = order.index(last_stage) + 1
+    else:
+        return None
+    if next_index >= len(stages):
+        return None
+    stage_name, days_after, template_fn_name = stages[next_index]
+    if now < (entry.get("purchased_at", 0) or 0) + days_after * 86400:
+        return None
+    return stage_name, template_fn_name
+
 
 def _sessions_with_later_purchase(entries) -> set:
     """Session ids whose buyer has bought again since.
@@ -3488,10 +3583,12 @@ def _sessions_with_later_purchase(entries) -> set:
 def lifecycle_email_sweep() -> dict:
     """Advance every customer_lifecycle_dict entry to its next due stage.
 
-    Each entry starts at 'tips' 3 days after purchase, then 'review_request'
-    at 14 days, then 'winback' at 90 days (final stage — entry is left in
-    place afterward so a customer is never re-sent 'winback' on a later
-    run). Runs synchronously over the dict since volumes here are small
+    A Paper Review entry starts at 'tips' 3 days after purchase, then
+    'review_request' at 14 days, then 'winback' at 90 days (final stage —
+    entry is left in place afterward so a customer is never re-sent
+    'winback' on a later run). A ModernTex entry (product "moderntex") gets
+    'mtx_tips' at 3 days and 'mtx_before_submit' at 21; see
+    LIFECYCLE_STAGES_BY_PRODUCT. Runs synchronously over the dict since volumes here are small
     (paid manuscript reviews, not a mailing list); revisit with batching
     if that stops being true.
     """
@@ -3532,15 +3629,10 @@ def lifecycle_email_sweep() -> dict:
                     skipped_optout += 1
                     continue
 
-                last_stage = entry.get("last_stage_sent")
-                next_index = 0 if last_stage is None else LIFECYCLE_STAGE_ORDER.index(last_stage) + 1
-                if next_index >= len(LIFECYCLE_STAGES):
-                    continue  # already sent the final stage
-
-                stage_name, days_after, template_fn_name = LIFECYCLE_STAGES[next_index]
-                due_at = entry.get("purchased_at", 0) + days_after * 86400
-                if now < due_at:
-                    continue
+                due = _lifecycle_next_stage(entry, now)
+                if due is None:
+                    continue  # nothing due yet, or the sequence is finished
+                stage_name, template_fn_name = due
 
                 if stage_name == "winback" and session_id in bought_again:
                     # Bought again since: close the sequence without sending.
@@ -3551,19 +3643,15 @@ def lifecycle_email_sweep() -> dict:
 
                 unsubscribe_url = _lifecycle_unsubscribe_url_standalone(email)
                 template_fn = getattr(_delivery, template_fn_name)
-                if stage_name == "winback":
-                    html = template_fn(unsubscribe_url=unsubscribe_url)
-                else:
+                if stage_name in ("tips", "review_request"):
                     html = template_fn(
                         manuscript_title=entry.get("manuscript_title", ""),
                         unsubscribe_url=unsubscribe_url,
                     )
+                else:
+                    html = template_fn(unsubscribe_url=unsubscribe_url)
 
-                subject = {
-                    "tips": "Getting the most out of your review",
-                    "review_request": "How did the review hold up?",
-                    "winback": "Still writing?",
-                }[stage_name]
+                subject = LIFECYCLE_SUBJECTS[stage_name]
 
                 result = await _delivery.send_email(
                     client,
@@ -3576,7 +3664,7 @@ def lifecycle_email_sweep() -> dict:
                     entry["last_stage_sent"] = stage_name
                     entry["last_sent_at"] = now
                     customer_lifecycle_dict[session_id] = entry
-                    sent[stage_name] += 1
+                    sent[stage_name] = sent.get(stage_name, 0) + 1
                 else:
                     logger.warning(
                         "lifecycle email stage=%s session_id=%s not sent: %s",

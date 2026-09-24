@@ -279,11 +279,11 @@ def html_invoice_ready(*, invoice_url: str, amount_cents: int) -> str:
 """
 
 
-def _lifecycle_footer(unsubscribe_url: str) -> str:
+def _lifecycle_footer(unsubscribe_url: str, product_name: str = "a Paper Review") -> str:
     return f"""
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">
-    Sent by Purplelink LLC because you bought a Paper Review. Occasional
+    Sent by Purplelink LLC because you bought {product_name}. Occasional
     purchase-related email only — no lists, no spam.
     <a href="{unsubscribe_url}" style="color: #888;">Unsubscribe</a>.
   </p>
@@ -364,6 +364,80 @@ def html_lifecycle_winback(*, unsubscribe_url: str) -> str:
     </a>
   </p>
   {_lifecycle_footer(unsubscribe_url)}
+</div>
+"""
+
+
+def html_lifecycle_mtx_tips(*, unsubscribe_url: str, **_ignored) -> str:
+    """Day 3 after a ModernTex purchase: the features people most often miss."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">A few things in ModernTex worth knowing</h2>
+  <p>Thanks for buying ModernTex. Now that you have had it a few days, here
+  are the parts people most often find late:</p>
+  <ul style="padding-left: 20px;">
+    <li><strong>Three compile modes.</strong> Fast for drafting, Live to keep
+    the PDF updating as you type, and Full for the complete pass before you
+    submit.</li>
+    <li><strong>Citations by name, not key.</strong> BibTeX autocomplete
+    searches your .bib by author and title, so you do not need to remember
+    what you called an entry.</li>
+    <li><strong>Click to locate.</strong> Click in the PDF to jump to the
+    source line that produced it, and the other way round.</li>
+    <li><strong>Figures and tables without the syntax.</strong> The TikZ
+    Designer and the Table Editor build the LaTeX for you; paste cells
+    straight from a spreadsheet.</li>
+  </ul>
+  <p>If something does not work the way you expect, reply to this email.
+  I read every reply and fix what I can in the next update, which your
+  purchase includes.</p>
+  <p>
+    <a href="https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/?utm_source=email&amp;utm_campaign=mtx-d3"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      See the TikZ and table tools
+    </a>
+  </p>
+  {_lifecycle_footer(unsubscribe_url, "ModernTex")}
+</div>
+"""
+
+
+def html_lifecycle_mtx_before_submit(*, unsubscribe_url: str, **_ignored) -> str:
+    """Day 21 after a ModernTex purchase: the pre-submission checks, once."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Before you submit</h2>
+  <p>If the paper you are writing in ModernTex is heading to a journal or
+  conference soon, three checks catch most of what gets a manuscript sent
+  back:</p>
+  <ol style="padding-left: 20px;">
+    <li><strong>ModernTex's submission check.</strong> It looks at
+    anonymization, page limits, required sections and packaging before you
+    upload.</li>
+    <li><strong>Your references.</strong> The free
+    <a href="https://purplelink.llc/tools/bib-validator/?utm_source=email&amp;utm_campaign=mtx-d21" style="color: #6d28d9;">BibTeX Validator</a>
+    checks that every entry resolves, and the
+    <a href="https://purplelink.llc/tools/submission-checklist/?utm_source=email&amp;utm_campaign=mtx-d21" style="color: #6d28d9;">submission checklist</a>
+    covers the rest.</li>
+    <li><strong>A reviewer's read.</strong> Paper Review ($9) puts the PDF in
+    front of four AI reviewers (methods, statistics, data integrity and an
+    editor), checks every reference against CrossRef, and quotes the
+    passages it questions. Results in minutes, no account, and the file is
+    deleted when you retrieve the review.</li>
+  </ol>
+  <p>
+    <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=mtx-d21"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      See Paper Review
+    </a>
+  </p>
+  <p style="color: #555; font-size: 0.9em;">This is the last of these
+  emails. Product updates arrive inside the app.</p>
+  {_lifecycle_footer(unsubscribe_url, "ModernTex")}
 </div>
 """
 

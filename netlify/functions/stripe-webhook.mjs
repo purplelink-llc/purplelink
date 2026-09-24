@@ -32,6 +32,11 @@ import { getStore } from "@netlify/blobs";
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
+// Seeds the follow-up emails for a purchase this function delivers itself
+// (ModernTex). Best effort: a failure here never fails the webhook.
+const MODAL_LIFECYCLE_URL =
+  "https://ben-ampel--purplelink-latextools-web.modal.run/lifecycle/register";
+const LIFECYCLE_PRODUCTS = new Set(["moderntex"]);
 const RESEND_API_URL = "https://api.resend.com/emails";
 // Resend verifies domains exactly: send from `purplelink.llc`, never a
 // subdomain. RESEND_API_KEY is the "purplelink-netlify" key (sending access,
@@ -434,6 +439,21 @@ export default async function handler(request) {
     }
     await dedupeStore.set(dedupeKey, new Date().toISOString());
     const emailed = await emailDownloadLink(email, sessionId, rawProduct);
+    if (LIFECYCLE_PRODUCTS.has(rawProduct) && email) {
+      // Day-3 tips and a day-21 note, sent by the backend's daily sweep with
+      // an unsubscribe link. The buyer already has the key and download, so
+      // a failure is logged, not alerted, and Stripe is not asked to retry.
+      try {
+        const r = await fetch(MODAL_LIFECYCLE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-webhook-secret": backendSecret },
+          body: JSON.stringify({ session_id: sessionId, email, product: rawProduct }),
+        });
+        if (!r.ok) console.warn("stripe-webhook: lifecycle register failed", r.status);
+      } catch (err) {
+        console.warn("stripe-webhook: lifecycle register unreachable", String(err));
+      }
+    }
     return jsonResponse(200, { status: "delivered_by_blobs", product: rawProduct, emailed });
   }
   if (!PURPLELINK_PRODUCTS.has(rawProduct)) {
