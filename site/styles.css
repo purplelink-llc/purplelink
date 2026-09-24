@@ -1304,6 +1304,20 @@ dd {
   line-height: 1.65;
 }
 
+.features-note {
+  max-width: 62ch;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.features-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 /* ─── Waitlist section ─────────────────────────────────────────────────── */
 
 .waitlist-section {
