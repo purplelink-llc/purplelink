@@ -104,7 +104,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=84792a25a0">
-    <script src="/site.js?v=55d6f84c39" defer></script>
+    <script src="/site.js?v=0dbe9e7e3c" defer></script>
     <link rel="stylesheet" href="/tools/latex-table-generator/latex-table-generator.css?v=0f6e92de4b">
     <script src="/tools/response-letter-template/response-letter.js?v=ac59bee614" defer></script>
   </head>
@@ -177,6 +177,30 @@
 
         <p class="tool-privacy">Your text never leaves your browser. There is no upload and nothing is stored.</p>
       </div>
+
+      <section class="deadline-remind" aria-labelledby="deadline-h">
+        <form class="deadline-form" data-deadline-signup data-deadline-kind="resubmission" novalidate>
+          <h2 id="deadline-h">A reminder before the revision is due</h2>
+          <p class="deadline-lede">One email, a week before your resubmission deadline, with the checks worth running on the letter and the revised manuscript. Then nothing more.</p>
+          <div class="deadline-fields">
+            <div class="deadline-field">
+              <label for="dl-date">Revision due</label>
+              <input type="date" id="dl-date" name="deadline" required>
+            </div>
+            <div class="deadline-field">
+              <label for="dl-venue">Journal <span class="deadline-opt">(optional)</span></label>
+              <input type="text" id="dl-venue" name="venue" maxlength="80" autocomplete="off" placeholder="e.g. PLOS ONE">
+            </div>
+            <div class="deadline-field deadline-field-email">
+              <label for="dl-email">Email</label>
+              <input type="email" id="dl-email" name="email" autocomplete="email" placeholder="you@university.edu" required>
+            </div>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-primary">Remind me</button>
+          </div>
+          <p class="deadline-status" data-deadline-status aria-live="polite">The address is kept until that email goes out, then deleted 30 days later. <a href="/privacy/">Privacy</a>.</p>
+        </form>
+      </section>
 
       <section class="tool-howto">
         <h2>How to use it</h2>

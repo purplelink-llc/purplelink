@@ -55,6 +55,8 @@ EMAILS = [
      dict(unsubscribe_url=UNSUB)),
     ("A week before your submission deadline", "Deadline reminder, 7 days before the date entered", d.html_lifecycle_deadline_week,
      dict(venue="NeurIPS", deadline="Friday 16 October", unsubscribe_url=UNSUB)),
+    ("A week before your resubmission deadline", "Resubmission reminder, from the response letter template", d.html_lifecycle_deadline_week,
+     dict(venue="PLOS ONE", deadline="Monday 2 November", kind="resubmission", unsubscribe_url=UNSUB)),
     ("You've got a referral credit", "After a .edu purchase through a referral link", d.html_referral_credit,
      dict(promo_code="REF-SAMPLE", reason="A colleague you referred bought a Paper Review with a .edu email.")),
     ("Your invoice", "When a buyer asks for an invoice on the status page", d.html_invoice_ready,
