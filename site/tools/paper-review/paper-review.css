@@ -353,3 +353,17 @@
 .pr-ref-note[hidden] { display: none; }
 
 .pr-feedback { margin: 1.2rem 0 0; color: var(--muted); font-size: 0.93rem; }
+
+.pr-compare { max-width: 44rem; margin: 0 auto 1rem; }
+.pr-compare summary { cursor: pointer; font-weight: 600; color: var(--purple); text-align: center; padding: 0.4rem 0; }
+.pr-compare-table { width: 100%; min-width: 0; font-size: 0.9rem; }
+.pr-compare-table thead th { white-space: normal; text-align: center; }
+.pr-compare-price { display: block; }
+.pr-compare-table td { text-align: center; white-space: nowrap; }
+.pr-compare-table tbody th { font-weight: 500; }
+@media (max-width: 600px) {
+  .pr-compare { margin-left: 16px; margin-right: 16px; }
+  .pr-compare-table td { white-space: normal; }
+  .pr-compare-table th, .pr-compare-table td { padding-left: 6px; padding-right: 6px; }
+  .pr-compare-table { font-size: 0.84rem; }
+}
