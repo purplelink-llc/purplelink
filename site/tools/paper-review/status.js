@@ -327,7 +327,7 @@
       html += '<p>We will email you a Stripe-generated PDF invoice. Optionally add a line for your institution\'s tax ID.</p>';
       html += '<label for="invoice-tax" class="pr-field-label">Institution / tax ID line <span class="pr-field-hint">(optional)</span></label>';
       html += '<input type="text" id="invoice-tax" class="pr-input" placeholder="e.g. University of X, EIN 12-3456789">';
-      html += '<div style="margin-top:0.6rem"><button type="button" class="btn btn-primary" id="invoice-send">Send me the invoice</button></div>';
+      html += '<div class="u-mt-06"><button type="button" class="btn btn-primary" id="invoice-send">Send me the invoice</button></div>';
       html += '<p class="pr-field-help" id="invoice-status" aria-live="polite"></p>';
       html += '</div>';
     }
