@@ -539,7 +539,7 @@ def html_lifecycle_decision_reminder(*, manuscript_title: str = "", unsubscribe_
   email around the time you expected a decision. This is that email.</p>
   <p>If the decision is a revise and resubmit, two checks help:</p>
   <ul style="padding-left: 20px;">
-    <li><strong>Response Review ($6)</strong> reads your response letter
+    <li><strong>Response to Reviewers ($6)</strong> reads your response letter
     against every reviewer comment and flags replies that are missing,
     vague, or likely to read as defensive.</li>
     <li><strong>Revision Review ($2)</strong> checks the revised manuscript
@@ -563,6 +563,53 @@ def html_lifecycle_decision_reminder(*, manuscript_title: str = "", unsubscribe_
   The <a href="https://purplelink.llc/guides/camera-ready-checklist/?utm_source=email&amp;utm_campaign=decision" style="color: #555;">camera-ready checklist</a>
   covers the last step.</p>
   {_lifecycle_footer(unsubscribe_url)}
+</div>
+"""
+
+
+_DEADLINE_REASON = "because you asked for one reminder before a submission deadline on purplelink.llc. This is the only one."
+
+
+def html_lifecycle_deadline_week(*, venue: str = "", deadline: str = "", unsubscribe_url: str, **_ignored) -> str:
+    """Sent a week before a deadline someone entered on the submission checklist."""
+    where = _html.escape((venue or "").strip()[:80])
+    when = _html.escape((deadline or "").strip()[:40])
+    if where and when:
+        lead = "Your submission to %s is due on %s." % (where, when)
+    elif when:
+        lead = "Your submission is due on %s." % when
+    else:
+        lead = "Your submission deadline is about a week away."
+    utm = "utm_source=email&amp;utm_campaign=deadline"
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">A week to go</h2>
+  <p>{lead} You asked for one email a week ahead, while there is still time
+  to fix what a reviewer would catch.</p>
+  <ol style="padding-left: 20px;">
+    <li><strong>Go through the checklist.</strong> The
+    <a href="https://purplelink.llc/tools/submission-checklist/?{utm}" {_LINK}>submission checklist</a>
+    covers anonymization, word limits, figures and the files most venues ask for.</li>
+    <li><strong>Check the references.</strong> The free
+    <a href="https://purplelink.llc/tools/bib-validator/?{utm}" {_LINK}>BibTeX Validator</a>
+    finds malformed entries, missing fields and DOIs that do not resolve.</li>
+    <li><strong>Get a read before a reviewer does.</strong> Paper Review ($9)
+    has four AI reviewers read the manuscript for methods, statistics and
+    claims the data do not support, and checks every reference against
+    CrossRef. It takes a few minutes, which leaves the week for fixing.</li>
+  </ol>
+  <p>
+    <a href="https://purplelink.llc/tools/paper-review/?{utm}"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Review my paper
+    </a>
+  </p>
+  <p style="color: #555; font-size: 0.9em;">Double-blind venue? The
+  <a href="https://purplelink.llc/tools/anonymity-check/?{utm}" style="color: #555;">Anonymity Check</a>
+  ($2) finds names, institutions and self-citations that give you away.</p>
+  {_lifecycle_footer(unsubscribe_url, reason=_DEADLINE_REASON)}
 </div>
 """
 
