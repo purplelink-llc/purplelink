@@ -74,6 +74,10 @@ body {
 
 a { color: inherit; }
 
+/* Form controls reset word-spacing to normal in the UA sheet, which brings
+   back the run-together labels the body rule above fixes. */
+button, input, select, textarea { word-spacing: inherit; }
+
 /* Long code, tables and select options must never widen the page on a phone. */
 pre {
   max-width: 100%;
@@ -4181,3 +4185,7 @@ html { scroll-padding-top: 96px; }
 }
 
 .code-copy:hover { color: var(--purple); border-color: var(--purple); }
+
+/* Privacy page: clear stored choices */
+.clear-prefs { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.clear-prefs-status { color: var(--muted); font-size: 0.9rem; }
