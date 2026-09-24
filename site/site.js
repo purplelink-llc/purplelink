@@ -305,3 +305,23 @@
   buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.filter)));
   bar.hidden = false;
 })();
+
+// Copy button on code blocks in guides and templates (four or more lines).
+(() => {
+  if (!navigator.clipboard) return;
+  document.querySelectorAll(".post-body pre").forEach((pre) => {
+    if ((pre.textContent.match(/\n/g) || []).length < 3) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "code-copy";
+    btn.textContent = "Copy";
+    btn.addEventListener("click", () => {
+      navigator.clipboard.writeText(pre.innerText).then(() => {
+        btn.textContent = "Copied";
+        setTimeout(() => { btn.textContent = "Copy"; }, 1600);
+      }, () => { btn.textContent = "Select and copy"; });
+    });
+    pre.classList.add("has-copy");
+    pre.appendChild(btn);
+  });
+})();
