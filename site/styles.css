@@ -4252,3 +4252,14 @@ html { scroll-padding-top: 96px; }
 
 .blog-hero p.blog-follow { margin-top: 10px; font-size: 0.9rem; }
 .blog-follow a { color: var(--purple); font-weight: 600; }
+
+/* ModernTex: recent releases, a sign the app is looked after */
+.release-strip { max-width: 900px; margin: 28px 0 8px; }
+.release-strip-head { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 12px; color: var(--ink); }
+.release-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.release-list li { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.release-list time { color: var(--muted); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.release-list strong { color: var(--purple); font-family: var(--font-display); font-size: 1.1rem; }
+.release-list span { color: var(--ink); font-size: 0.88rem; line-height: 1.4; }
+.release-strip-foot { margin: 10px 0 0; color: var(--muted); font-size: 0.9rem; }
+.release-strip-foot a { color: var(--purple); font-weight: 600; }
