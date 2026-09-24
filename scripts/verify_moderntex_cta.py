@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Verify the ModernTex CTA block is present and correct on every funnel page."""
+"""Verify the ModernTex CTA block is present and correct on every funnel page.
+
+Obsolete since ModernTex shipped (2026-09-04): it checks for the pre-launch
+waitlist form, which the pages no longer carry, so it reports every page.
+Kept for history; not part of deploy.sh.
+"""
 import sys
 
 from cta_pages import MARKER, targets
@@ -13,9 +18,9 @@ def check(path, source):
     if html.count(MARKER) != 1:
         errors.append(f"{path}: expected 1 '{MARKER}', found {html.count(MARKER)}")
     # Exactly one CTA form posting to the shared waitlist.
-    if html.count('name="waitlist-moderntex"') != 1:
-        errors.append(f"{path}: expected 1 waitlist-moderntex form, found "
-                      f"{html.count('name=\"waitlist-moderntex\"')}")
+    n_forms = html.count('name="waitlist-moderntex"')
+    if n_forms != 1:
+        errors.append(f"{path}: expected 1 waitlist-moderntex form, found {n_forms}")
     # Correct, unique source value.
     needle = f'name="source" value="{source}"'
     if html.count(needle) != 1:
@@ -29,9 +34,9 @@ def check(path, source):
     # Structure intact: still exactly one <main> and one footer.
     if html.count("</main>") != 1:
         errors.append(f"{path}: expected 1 '</main>', found {html.count('</main>')}")
-    if html.count('<footer class="footer"') != 1:
-        errors.append(f"{path}: expected 1 footer, found "
-                      f"{html.count('<footer class=\"footer\"')}")
+    n_footers = html.count('<footer class="footer"')
+    if n_footers != 1:
+        errors.append(f"{path}: expected 1 footer, found {n_footers}")
     return errors
 
 
