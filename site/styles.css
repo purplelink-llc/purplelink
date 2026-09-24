@@ -2456,9 +2456,9 @@ dd {
 /* ─── Waitlist fine print ─────────────────────────────────────────────── */
 
 .waitlist-fine-print {
-  font-size: 0.75rem;
-  color: var(--ink-dim);
-  opacity: 0.6;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--muted);
   margin-top: 10px;
   text-align: center;
 }
@@ -4358,3 +4358,9 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .sample-report .compare-table { width: 100%; min-width: 0; table-layout: auto; }
 .sample-report .compare-table th, .sample-report .compare-table td { white-space: normal; overflow-wrap: anywhere; }
 #rl-result pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Phones: bordered panels keep the 16px page gutter instead of touching
+   the screen edges. */
+@media (max-width: 600px) {
+  .tool-paid-cta, .checklist { margin-left: 16px; margin-right: 16px; }
+}

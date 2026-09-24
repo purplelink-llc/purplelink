@@ -331,3 +331,9 @@
 .pr-steps li { counter-increment: prs; display: flex; align-items: baseline; gap: 6px; }
 .pr-steps li::before { content: counter(prs); display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 100px; background: var(--purple-xlight); color: var(--purple); font-weight: 700; font-size: 0.75rem; flex: none; }
 .pr-steps strong { color: var(--ink); }
+
+/* Phones: bordered panels keep the 16px page gutter instead of touching
+   the screen edges. */
+@media (max-width: 600px) {
+  .pr-sample, .pr-tier-pick, .pr-error-box { margin-left: 16px; margin-right: 16px; }
+}
