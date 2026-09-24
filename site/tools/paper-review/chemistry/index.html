@@ -179,6 +179,30 @@
         </ul>
       </section>
 
+      <section class="deadline-remind" aria-labelledby="deadline-h">
+        <form class="deadline-form" data-deadline-signup novalidate>
+          <h2 id="deadline-h">Not submitting yet?</h2>
+          <p class="deadline-lede">Get one email a week before your deadline, with the <a href="/tools/submission-checklist/">submission checklist</a> and the checks that fit in a week. Then nothing more.</p>
+          <div class="deadline-fields">
+            <div class="deadline-field">
+              <label for="dl-date">Deadline</label>
+              <input type="date" id="dl-date" name="deadline" required>
+            </div>
+            <div class="deadline-field">
+              <label for="dl-venue">Venue <span class="deadline-opt">(optional)</span></label>
+              <input type="text" id="dl-venue" name="venue" maxlength="80" autocomplete="off" placeholder="e.g. JACS">
+            </div>
+            <div class="deadline-field deadline-field-email">
+              <label for="dl-email">Email</label>
+              <input type="email" id="dl-email" name="email" autocomplete="email" placeholder="you@university.edu" required>
+            </div>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-primary">Remind me</button>
+          </div>
+          <p class="deadline-status" data-deadline-status aria-live="polite">The address is kept until that email goes out, then deleted 30 days later. <a href="/privacy/">Privacy</a>.</p>
+        </form>
+      </section>
+
       <section class="tool-faq" aria-labelledby="field-faq">
         <h2 id="field-faq">Questions</h2>
         <details><summary>Does it check my supporting information?</summary><div class="faq-body">It reviews the PDF you upload. If the characterization data you want checked is in the supporting information, include it in the same PDF.</div></details>
