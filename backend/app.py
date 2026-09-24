@@ -3441,6 +3441,29 @@ LIFECYCLE_STAGES = [
 LIFECYCLE_STAGE_ORDER = [s[0] for s in LIFECYCLE_STAGES]
 
 
+def _sessions_with_later_purchase(entries) -> set:
+    """Session ids whose buyer has bought again since.
+
+    The privacy policy promises the win-back email goes out "only if you
+    haven't purchased again", so a purchase that has a later purchase from
+    the same email must not get it. `entries` is an iterable of
+    (session_id, lifecycle_entry) pairs.
+    """
+    latest: dict = {}
+    rows = []
+    for session_id, entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        email = (entry.get("email") or "").strip().lower()
+        if not email:
+            continue
+        at = entry.get("purchased_at", 0) or 0
+        rows.append((session_id, email, at))
+        if at > latest.get(email, 0):
+            latest[email] = at
+    return {sid for sid, email, at in rows if at < latest.get(email, 0)}
+
+
 @app.function(
     image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools"),
     schedule=modal.Cron("0 14 * * *"),  # daily, 14:00 UTC — mid-morning US
@@ -3481,8 +3504,10 @@ def lifecycle_email_sweep() -> dict:
 
     async def _run():
         nonlocal skipped_optout
+        all_entries = list(customer_lifecycle_dict.items())
+        bought_again = _sessions_with_later_purchase(all_entries)
         async with httpx.AsyncClient(timeout=10.0) as client:
-            for session_id, entry in list(customer_lifecycle_dict.items()):
+            for session_id, entry in all_entries:
                 if not isinstance(entry, dict):
                     continue
                 email = entry.get("email", "")
@@ -3500,6 +3525,13 @@ def lifecycle_email_sweep() -> dict:
                 stage_name, days_after, template_fn_name = LIFECYCLE_STAGES[next_index]
                 due_at = entry.get("purchased_at", 0) + days_after * 86400
                 if now < due_at:
+                    continue
+
+                if stage_name == "winback" and session_id in bought_again:
+                    # Bought again since: close the sequence without sending.
+                    entry["last_stage_sent"] = stage_name
+                    entry["last_sent_at"] = now
+                    customer_lifecycle_dict[session_id] = entry
                     continue
 
                 unsubscribe_url = _lifecycle_unsubscribe_url_standalone(email)

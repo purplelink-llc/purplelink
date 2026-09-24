@@ -1792,3 +1792,17 @@ def test_sweep_keeps_recently_spent_pack(client):
     backend_app.sweep_expired_paper_tokens()
 
     assert backend_app.paper_tokens_dict.get("s-recent-spent") is not None
+
+
+def test_winback_skipped_when_buyer_purchased_again(client):
+    """Privacy policy: the win-back email goes out 'only if you haven't
+    purchased again'. The earlier purchase of a repeat buyer is superseded;
+    the latest purchase, and one-time buyers, are not."""
+    _http, backend_app = client
+    entries = [
+        ("s-first", {"email": "Repeat@Example.com", "purchased_at": 1000}),
+        ("s-second", {"email": "repeat@example.com", "purchased_at": 5000}),
+        ("s-once", {"email": "once@example.com", "purchased_at": 1000}),
+        ("s-noemail", {"email": "", "purchased_at": 1000}),
+    ]
+    assert backend_app._sessions_with_later_purchase(entries) == {"s-first"}
