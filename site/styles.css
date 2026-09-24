@@ -4479,3 +4479,4 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 @media (max-width: 860px) { .checkout-canceled { margin-left: 16px; margin-right: 16px; } }
 .home-recent { margin: 0; padding: 14px clamp(24px, 6vw, 80px) 18px; border-top: 1px solid var(--line); }
 .field-example { max-width: 820px; }
+.mac-only-note { margin: 12px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; max-width: 560px; }
