@@ -66,6 +66,7 @@ export default async function handler(request) {
     totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
     checkoutByProduct: {}, checkoutByPath: {},
+    otherEvents: {}, otherEventDetail: {},
     byDay: {},
   };
   const uniquesPerDay = {};
@@ -132,6 +133,13 @@ export default async function handler(request) {
         // views of pages that carry a buy button, and that list is maintained
         // by hand; recording the path makes it checkable instead of trusted.
         bump(s.checkoutByPath, rec.path || "unknown");
+      } else if (rec.type && !String(rec.meta || "").startsWith("__")) {
+        // Every other first-party event (deadline_signup, feedback_rating,
+        // checkout_canceled, search, tool_next, sticky_cta, ...) was stored
+        // but never counted. Count by type, and by type plus its meta, so a
+        // new event shows up here without another change to this file.
+        bump(s.otherEvents, rec.type);
+        if (rec.meta) bump(s.otherEventDetail, `${rec.type}: ${String(rec.meta).slice(0, 80)}`);
       }
     }
     s.byDay[day].uniques = uniquesPerDay[day].size;
@@ -152,6 +160,8 @@ export default async function handler(request) {
     topReferrers: topN(s.byReferrer),
     topUtm: topN(s.byUtm),
     byHost: topN(s.byHost),
+    otherEvents: topN(s.otherEvents, 50),
+    otherEventDetail: topN(s.otherEventDetail, 60),
     byDay: Object.fromEntries(Object.entries(s.byDay).sort()),
   });
 }
