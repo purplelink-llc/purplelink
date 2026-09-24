@@ -132,7 +132,7 @@ def venue_page(v):
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
       <a class="brand" href="/" aria-label="Purplelink home">
-        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <img src="/assets/purplelink-logo-64.png" alt="" width="30" height="30">
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
@@ -252,7 +252,7 @@ def venue_page(v):
       <div class="footer-grid">
         <div class="footer-about">
           <a class="footer-brand" href="/">
-            <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+            <img src="/assets/purplelink-logo-64.png" alt="" width="26" height="26">
             <span>Purplelink LLC</span>
           </a>
           <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
@@ -352,7 +352,7 @@ def hub_page():
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
       <a class="brand" href="/" aria-label="Purplelink home">
-        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <img src="/assets/purplelink-logo-64.png" alt="" width="30" height="30">
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
@@ -385,7 +385,7 @@ def hub_page():
       <div class="footer-grid">
         <div class="footer-about">
           <a class="footer-brand" href="/">
-            <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+            <img src="/assets/purplelink-logo-64.png" alt="" width="26" height="26">
             <span>Purplelink LLC</span>
           </a>
           <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
