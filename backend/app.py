@@ -2103,7 +2103,13 @@ def web():
             "redeemed": False,
             "consumed_tokens": [],   # tokens that have been used
             "created_at": _time_module.time(),
-            "expires_at": _time_module.time() + PAPER_TOKEN_TTL_SECONDS,
+            # Volume packs are sold as "tokens never expire" (packs page and
+            # FAQ, the packs success page and email, /products/). A pack is
+            # stored with no expiry (0): every expires_at check below treats
+            # a falsy value as "never", and sweep_expired_paper_tokens keeps
+            # the entry alive instead of purging it. Single purchases keep
+            # the 7-day window to redeem.
+            "expires_at": 0 if qty > 1 else _time_module.time() + PAPER_TOKEN_TTL_SECONDS,
         }
         paper_tokens_dict[session_id] = entry
         for _tok in tokens:
@@ -3296,6 +3302,38 @@ def web():
 # Plain function (not a Modal scheduled function): invoked by the merged
 # `lifecycle_email_sweep` cron so all three paper-review cleanup jobs share one
 # scheduled slot (Modal's 5-scheduled-function cap). Tests call it directly.
+# Unused volume-pack tokens never expire, but modal.Dict evicts an entry that
+# goes unread and unwritten for about 7 days (see _expire_token_entry). Writing
+# the entry back once a day from the sweep keeps an idle pack from vanishing.
+# A pack whose tokens are all used is deleted once it is PACK_SPENT_RETENTION_DAYS
+# old, so the buyer's email isn't kept forever.
+PACK_SPENT_RETENTION_DAYS = 30
+
+
+def _keep_pack_alive(session_id: str, entry: dict, now: float) -> None:
+    tokens = entry.get("tokens") or []
+    consumed = set(entry.get("consumed_tokens") or [])
+    created_at = entry.get("created_at", now) or now
+    if tokens and consumed.issuperset(tokens) and now - created_at > PACK_SPENT_RETENTION_DAYS * 86400:
+        for tok in tokens:
+            try:
+                del paper_token_index_dict[tok]
+            except Exception:
+                pass
+        try:
+            del paper_tokens_dict[session_id]
+        except Exception:
+            pass
+        return
+    try:
+        paper_tokens_dict[session_id] = entry
+        for tok in tokens:
+            if tok not in consumed:
+                paper_token_index_dict[tok] = session_id
+    except Exception:
+        logger.exception("keep-alive write failed for pack %s", session_id[:12])
+
+
 def sweep_expired_paper_tokens() -> int:
     """Delete paper_tokens_dict (+ paper_token_index_dict) entries whose
     expires_at has passed. Returns the number of entries purged."""
@@ -3307,7 +3345,10 @@ def sweep_expired_paper_tokens() -> int:
         if not isinstance(entry, dict):
             continue
         expires_at = entry.get("expires_at", 0)
-        if not expires_at or expires_at >= now:
+        if not expires_at:
+            _keep_pack_alive(session_id, entry, now)
+            continue
+        if expires_at >= now:
             continue
         for tok in (entry.get("tokens") or []):
             try:

@@ -1690,3 +1690,105 @@ def test_adjacent_tool_pipeline_logs_warning_when_email_not_sent(monkeypatch, ca
         "delivery email not sent" in r.message and "error" in r.message
         for r in caplog.records
     )
+
+
+# ---------------------------------------------------------------------------
+# Volume packs never expire
+#
+# The packs page, its FAQ, the packs success page and /products/ all promise
+# pack tokens never expire. register-token used to give packs the same 7-day
+# expires_at as single purchases, and the daily sweep then deleted the whole
+# entry, so a lab's unused 20-pack vanished a week after purchase.
+# ---------------------------------------------------------------------------
+
+def test_register_token_pack_has_no_expiry(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    payload = {
+        "session_id": "s-pack-noexpiry",
+        "product": "paper-review-pack-5",
+        "email": "lab@example.com",
+        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-pack-5"]["amount"],
+    }
+    r = http.post("/paper-review/register-token", json=payload,
+                  headers={"x-webhook-secret": "correct-secret"})
+    assert r.status_code == 200
+    assert len(r.json()["tokens"]) == 5
+    assert backend_app.paper_tokens_dict["s-pack-noexpiry"]["expires_at"] == 0
+
+
+def test_register_token_single_purchase_keeps_seven_day_window(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    payload = {
+        "session_id": "s-single-ttl",
+        "product": "paper-review-standard",
+        "email": "a@b.com",
+        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
+    }
+    before = time.time()
+    r = http.post("/paper-review/register-token", json=payload,
+                  headers={"x-webhook-secret": "correct-secret"})
+    assert r.status_code == 200
+    expires_at = backend_app.paper_tokens_dict["s-single-ttl"]["expires_at"]
+    assert before + 7 * 24 * 3600 - 5 <= expires_at <= time.time() + 7 * 24 * 3600 + 5
+
+
+def test_old_pack_token_still_redeems(client):
+    http, backend_app = client
+    _register_volume_pack(backend_app, session_id="s-old-pack")
+    entry = backend_app.paper_tokens_dict["s-old-pack"]
+    entry["expires_at"] = 0
+    entry["created_at"] = time.time() - 120 * 86400
+    backend_app.paper_tokens_dict["s-old-pack"] = entry
+
+    r = http.post("/paper-review/redeem-session", json={"session_id": "s-old-pack"})
+    assert r.status_code == 200
+
+
+def test_sweep_keeps_unused_pack_alive_and_indexed(client):
+    http, backend_app = client
+    tokens = _register_volume_pack(backend_app, session_id="s-idle-pack")
+    entry = backend_app.paper_tokens_dict["s-idle-pack"]
+    entry["expires_at"] = 0
+    entry["created_at"] = time.time() - 200 * 86400
+    entry["consumed_tokens"] = [tokens[0]]
+    backend_app.paper_tokens_dict["s-idle-pack"] = entry
+
+    purged = backend_app.sweep_expired_paper_tokens()
+
+    assert purged == 0
+    assert backend_app.paper_tokens_dict.get("s-idle-pack") is not None
+    for tok in tokens[1:]:
+        assert backend_app.paper_token_index_dict.get(tok) == "s-idle-pack"
+
+
+def test_sweep_deletes_fully_used_pack_after_retention(client):
+    http, backend_app = client
+    tokens = _register_volume_pack(backend_app, session_id="s-spent-pack")
+    entry = backend_app.paper_tokens_dict["s-spent-pack"]
+    entry["expires_at"] = 0
+    entry["created_at"] = time.time() - (backend_app.PACK_SPENT_RETENTION_DAYS + 1) * 86400
+    entry["consumed_tokens"] = list(tokens)
+    backend_app.paper_tokens_dict["s-spent-pack"] = entry
+    for tok in tokens:
+        backend_app.paper_token_index_dict[tok] = "s-spent-pack"
+
+    backend_app.sweep_expired_paper_tokens()
+
+    assert backend_app.paper_tokens_dict.get("s-spent-pack") is None
+    for tok in tokens:
+        assert backend_app.paper_token_index_dict.get(tok) is None
+
+
+def test_sweep_keeps_recently_spent_pack(client):
+    http, backend_app = client
+    tokens = _register_volume_pack(backend_app, session_id="s-recent-spent")
+    entry = backend_app.paper_tokens_dict["s-recent-spent"]
+    entry["expires_at"] = 0
+    entry["consumed_tokens"] = list(tokens)
+    backend_app.paper_tokens_dict["s-recent-spent"] = entry
+
+    backend_app.sweep_expired_paper_tokens()
+
+    assert backend_app.paper_tokens_dict.get("s-recent-spent") is not None
