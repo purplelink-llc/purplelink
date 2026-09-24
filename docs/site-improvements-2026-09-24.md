@@ -214,6 +214,11 @@ retention work is `docs/growth-proposals-2026-09.md`.
 - The privacy page describes each of these.
 
 ### Later additions
+- A fact check of every guide and post against the code fixed 25 wrong
+  claims (see item 20 for what it could not settle).
+- Purchase-flow error messages no longer tell a paying customer to
+  "restart from the product page"; they point to the emailed start link.
+- Share cards say "Deleted within a day" instead of "Nothing kept".
 - Guides: 69 visible "[SCREENSHOT: ...]" placeholders removed, nine real
   screenshots added, two guides' step order corrected (pay first), and
   eleven "deleted the moment you open it" claims corrected.
