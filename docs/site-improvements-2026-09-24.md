@@ -125,6 +125,13 @@ retention work is `docs/growth-proposals-2026-09.md`.
    when someone returns from a closed checkout, and counts it
    (`checkout_canceled`).
 
+19. **Check the Journal Pack's venue limits.** The free Abstract Checker
+   now shows the limits in `backend/latextools/journals.py` to everyone, so a
+   wrong number is visible, not just applied. They could not be checked
+   against the publishers' sites from the build environment. Worth a pass,
+   Nature (abstract recorded as 150 words) and Science (125) especially.
+   After editing, `python3 scripts/gen_venue_json.py` (deploy runs it too).
+
 ## What changed
 
 ### Look and navigation
@@ -191,6 +198,14 @@ retention work is `docs/growth-proposals-2026-09.md`.
 - The privacy page describes each of these.
 
 ### Later additions
+- `/tools/abstract-checker/`: a free abstract word-limit check for the 25
+  Journal Pack venues, from the same rule library.
+- One example finding per field page; the Paper Review hero links the
+  field pages; returning visitors see recent tools on the homepage; the
+  ModernTex page leads with Buy for someone who already downloaded the
+  trial in this browser.
+- A full accessibility sweep of all 162 pages, including the purchase
+  flow's noindex pages, in light and dark: no WCAG A/AA violations.
 - Site search at `/search/` over an index built at deploy
   (`scripts/gen_search_index.py`); the 404 page and footer link to it.
 - Paper Review field pages: `/tools/paper-review/machine-learning/`,
