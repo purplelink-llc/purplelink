@@ -119,6 +119,22 @@ retention work is `docs/growth-proposals-2026-09.md`.
   clears them.
 - The privacy page describes each of these.
 
+### Later additions
+- `/tools/paper-review/sample/`: the example report, section by section,
+  linked from the product page (under the buy button and after the sample),
+  the homepage report card, and llms.txt.
+- Template pages offer a starter zip (main.tex, references.bib, README).
+  Four compile with latexmk here; NeurIPS needs that year's style file.
+- The Paper Review status page shows "While it runs" links during the
+  wait, and a "What comes next" panel after any paid result.
+- ModernTex shows its release history (six releases since 4 September).
+- GlobePin: four distinct screenshots (two were duplicates) and one App
+  Store button.
+- Blog Atom feed at `/blog/feed.xml`, rebuilt at deploy.
+- The traffic dashboard's sales panel shows follow-up email counts, and
+  Vitae Plus and digest sales are no longer "unattributed".
+- No inline `style` attributes remain outside the cron-owned digest.
+
 ### Search and AI visibility
 - Missing share images were generated, and deploy fails if one is missing
   (`scripts/check_og_images.py`).
