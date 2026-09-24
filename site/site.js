@@ -290,3 +290,18 @@
     slot.hidden = false;
   });
 })();
+
+// Blog index topic filter. The chips stay hidden without JavaScript, so every
+// post is listed; with it, one click narrows the list to a topic.
+(() => {
+  const bar = document.querySelector("[data-blog-filter]");
+  if (!bar) return;
+  const items = [...document.querySelectorAll(".blog-post-item[data-topic]")];
+  const buttons = [...bar.querySelectorAll("button[data-filter]")];
+  const apply = (topic) => {
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === topic)));
+    items.forEach((it) => { it.hidden = topic !== "all" && it.dataset.topic !== topic; });
+  };
+  buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.filter)));
+  bar.hidden = false;
+})();

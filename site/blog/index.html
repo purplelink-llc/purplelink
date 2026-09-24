@@ -24,8 +24,8 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=e280ae054d">
-    <script src="/site.js?v=4732357017" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=98dc91a341">
+    <script src="/site.js?v=49aea39300" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -56,175 +56,183 @@
       </nav>
     </header>
 
-    <div id="main-content" class="blog-hero">
-      <p class="eyebrow">Devlog</p>
+    <main id="main-content">
+    <div class="blog-hero">
+      <p class="eyebrow">Blog</p>
       <h1>Writing from<br><em class="text-purple">Purplelink.</em></h1>
-      <p>Building notes, app updates, and the occasional essay from a one-person software studio in Atlanta.</p>
+      <p>Notes for researchers on writing, citing and submitting papers, how the tools are built, and news from a one-person software studio in Atlanta.</p>
+    </div>
+
+    <div class="blog-filter" role="group" aria-label="Filter posts by topic" data-blog-filter hidden>
+      <button type="button" class="tool-chip" data-filter="all" aria-pressed="true">All posts</button>
+      <button type="button" class="tool-chip" data-filter="research" aria-pressed="false">For researchers</button>
+      <button type="button" class="tool-chip" data-filter="engineering" aria-pressed="false">Build notes</button>
+      <button type="button" class="tool-chip" data-filter="studio" aria-pressed="false">Studio</button>
     </div>
 
     <div class="blog-list">
-      <a class="blog-post-item" href="/blog/travel-photographs-as-prints/">
+      <a class="blog-post-item" data-topic="studio" href="/blog/travel-photographs-as-prints/">
         <span class="blog-post-date">September 23, 2026</span>
         <div>
           <div class="blog-post-title">My travel photographs, now available as prints</div>
           <p class="blog-post-excerpt">About 500 photographs from the Alps, Japan, Iceland and more are for sale as prints. Where to find them, and the metadata field that cut 65 listing titles short.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/where-your-academic-record-actually-lives/">
+      <a class="blog-post-item" data-topic="research" href="/blog/where-your-academic-record-actually-lives/">
         <span class="blog-post-date">September 23, 2026</span>
         <div>
           <div class="blog-post-title">Where Your Academic Record Actually Lives</div>
           <p class="blog-post-excerpt">Academics maintain their professional history in a dozen scattered places. When tenure reviews, grant applications, and annual reviews arrive, reconstructing the record from scratch is the problem.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/both-bugs-had-the-same-symptom-zero/">
+      <a class="blog-post-item" data-topic="engineering" href="/blog/both-bugs-had-the-same-symptom-zero/">
         <span class="blog-post-date">September 20, 2026</span>
         <div>
           <div class="blog-post-title">Both bugs had the same symptom: zero</div>
           <p class="blog-post-excerpt">Building GlobePin's App Store analytics pipeline, I wrote code that treated absent data and broken requests identically. Two independent bugs, each enough to return nothing, sat undetected until Apple generated its first real reports.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/tikz-and-tables-without-the-syntax/">
+      <a class="blog-post-item" data-topic="research" href="/blog/tikz-and-tables-without-the-syntax/">
         <span class="blog-post-date">September 13, 2026</span>
         <div>
           <div class="blog-post-title">TikZ diagrams and tables in ModernTex, without writing either by hand</div>
           <p class="blog-post-excerpt">A visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel — both still write plain LaTeX underneath.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/checking-your-response-letter-before-resubmission/">
+      <a class="blog-post-item" data-topic="research" href="/blog/checking-your-response-letter-before-resubmission/">
         <span class="blog-post-date">September 9, 2026</span>
         <div>
           <div class="blog-post-title">Checking your response letter before resubmission</div>
           <p class="blog-post-excerpt">A response letter can address every reviewer comment without actually resolving the underlying concern. This is how a researcher uses Response Review to check that gap before resubmitting.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/detecting-checkout-without-a-click-handler/">
+      <a class="blog-post-item" data-topic="engineering" href="/blog/detecting-checkout-without-a-click-handler/">
         <span class="blog-post-date">September 2, 2026</span>
         <div>
           <div class="blog-post-title">Detecting checkout without a click handler</div>
           <p class="blog-post-excerpt">The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/what-your-literature-search-misses/">
+      <a class="blog-post-item" data-topic="research" href="/blog/what-your-literature-search-misses/">
         <span class="blog-post-date">August 26, 2026</span>
         <div>
           <div class="blog-post-title">What Your Literature Search Misses</div>
           <p class="blog-post-excerpt">Most missed citations aren't papers you forgot to read. They're papers in adjacent fields using different terminology for the same problem, invisible to a keyword search.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/the-comment-said-this-would-break/">
+      <a class="blog-post-item" data-topic="engineering" href="/blog/the-comment-said-this-would-break/">
         <span class="blog-post-date">August 19, 2026</span>
         <div>
           <div class="blog-post-title">The comment said this would break</div>
           <p class="blog-post-excerpt">The Purplelink stats endpoint read event blobs one at a time, and the code even included a comment noting it would fail at higher volume. The failure arrived through latency rather than traffic spikes.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/producing-a-diff-pdf-for-journal-resubmission/">
+      <a class="blog-post-item" data-topic="research" href="/blog/producing-a-diff-pdf-for-journal-resubmission/">
         <span class="blog-post-date">August 12, 2026</span>
         <div>
           <div class="blog-post-title">Producing a diff PDF for journal resubmission</div>
           <p class="blog-post-excerpt">Many journal submission portals require a diff PDF alongside a revised manuscript. Here is how a researcher uses Purplelink's LaTeX Diff tool to produce one without a local LaTeX installation.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/why-the-cover-letter-doesnt-see-your-manuscript/">
+      <a class="blog-post-item" data-topic="research" href="/blog/why-the-cover-letter-doesnt-see-your-manuscript/">
         <span class="blog-post-date">August 5, 2026</span>
         <div>
           <div class="blog-post-title">Why the cover letter generator doesn't see your manuscript</div>
           <p class="blog-post-excerpt">The Purplelink cover letter generator takes only your abstract, not the full manuscript. Here's the capability and privacy reasoning behind that design choice.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/what-counts-as-a-run/">
+      <a class="blog-post-item" data-topic="engineering" href="/blog/what-counts-as-a-run/">
         <span class="blog-post-date">July 29, 2026</span>
         <div>
           <div class="blog-post-title">What counts as a run when the tool never calls the server</div>
           <p class="blog-post-excerpt">Two Purplelink tools that compute entirely in the browser had no usage data, because instrumentation relied on intercepting backend calls. Fixing that required defining what a run actually means, and the answer differed by tool.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/what-stays-in-a-blinded-manuscript/">
+      <a class="blog-post-item" data-topic="research" href="/blog/what-stays-in-a-blinded-manuscript/">
         <span class="blog-post-date">July 22, 2026</span>
         <div>
           <div class="blog-post-title">What stays in a blinded manuscript</div>
           <p class="blog-post-excerpt">Double-blind peer review requires more than removing your name from the title page. Grant numbers, IRB protocols, citation prose, and named software all identify you to a reviewer who knows your field.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/what-openalex-returns-when-you-ask-for-an-abstract/">
+      <a class="blog-post-item" data-topic="engineering" href="/blog/what-openalex-returns-when-you-ask-for-an-abstract/">
         <span class="blog-post-date">July 15, 2026</span>
         <div>
           <div class="blog-post-title">What OpenAlex returns when you ask for an abstract</div>
           <p class="blog-post-excerpt">OpenAlex stores paper abstracts as inverted indexes rather than strings. Building the Daily Digest's paper fetcher surfaced this, and the reconstruction has limits.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/running-your-manuscript-through-paper-review/">
+      <a class="blog-post-item" data-topic="research" href="/blog/running-your-manuscript-through-paper-review/">
         <span class="blog-post-date">July 8, 2026</span>
         <div>
           <div class="blog-post-title">Running your manuscript through Paper Review</div>
           <p class="blog-post-excerpt">Paper Review scans your manuscript before submission with four adversarial passes: figure integrity, citation cross-check, a multi-persona reviewer debate, and a prioritized checklist. Here is what using it looks like from a researcher's side.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/one-curation-call-per-day/">
+      <a class="blog-post-item" data-topic="engineering" href="/blog/one-curation-call-per-day/">
         <span class="blog-post-date">July 1, 2026</span>
         <div>
           <div class="blog-post-title">One curation call per day</div>
           <p class="blog-post-excerpt">The Purplelink Daily Digest harvests 400-800 items daily and picks 20 to publish. Here's why the design uses a single AI curation call instead of scoring items one at a time.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/keeping-up-when-your-research-crosses-fields/">
+      <a class="blog-post-item" data-topic="research" href="/blog/keeping-up-when-your-research-crosses-fields/">
         <span class="blog-post-date">June 24, 2026</span>
         <div>
           <div class="blog-post-title">Keeping up when your research crosses fields</div>
           <p class="blog-post-excerpt">Academic researchers who work across multiple fast-moving fields have no good daily briefing built for them. Here's why the existing infrastructure falls short, and what I built to fix it.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/digest/">
+      <a class="blog-post-item" data-topic="research" href="/blog/digest/">
         <span class="blog-post-date">Daily</span>
         <div>
           <div class="blog-post-title">Daily Digest</div>
           <p class="blog-post-excerpt">What caught my eye today at the intersection of cybersecurity, AI, research, and entrepreneurship. Curated every morning.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/where-bibtex-errors-actually-come-from/">
+      <a class="blog-post-item" data-topic="research" href="/blog/where-bibtex-errors-actually-come-from/">
         <span class="blog-post-date">June 17, 2026</span>
         <div>
           <div class="blog-post-title">Where BibTeX errors actually come from</div>
           <p class="blog-post-excerpt">Most BibTeX errors don't come from researchers making mistakes. They come from the bibliography managers and export tools researchers trust to get it right.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/pdf-to-llm-without-losing-the-math/">
+      <a class="blog-post-item" data-topic="research" href="/blog/pdf-to-llm-without-losing-the-math/">
         <span class="blog-post-date">June 10, 2026</span>
         <div>
           <div class="blog-post-title">Getting a research paper into an LLM without losing the math</div>
           <p class="blog-post-excerpt">PDF text extraction breaks on tables and equations. Here's how a researcher uses Purplelink's PDF to Structured Data tool to get clean, LLM-ready text out of an academic paper.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/free-latex-tools/">
+      <a class="blog-post-item" data-topic="research" href="/blog/free-latex-tools/">
         <span class="blog-post-date">May 28, 2026</span>
         <div>
           <div class="blog-post-title">Seven free LaTeX tools, right in your browser</div>
           <p class="blog-post-excerpt">Compile to PDF, convert to and from Word, diff two versions, validate and build BibTeX, and render equations - no account, no install, nothing stored. They're live now.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/what-globepin-does-differently/">
+      <a class="blog-post-item" data-topic="studio" href="/blog/what-globepin-does-differently/">
         <span class="blog-post-date">May 27, 2026</span>
         <div>
           <div class="blog-post-title">What GlobePin does that no other travel app does</div>
           <p class="blog-post-excerpt">Every travel tracker on the App Store solves a piece of the problem. Most miss the same things. Here's what we built differently - and why.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/why-haea-is-on-device/">
+      <a class="blog-post-item" data-topic="studio" href="/blog/why-haea-is-on-device/">
         <span class="blog-post-date">May 27, 2026</span>
         <div>
           <div class="blog-post-title">Why we built Haea on-device</div>
           <p class="blog-post-excerpt">Your health data is the most personal data you have. Here's why we decided early on that none of it would leave your phone - and what that decision cost us.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/the-latex-editor-academics-want/">
+      <a class="blog-post-item" data-topic="research" href="/blog/the-latex-editor-academics-want/">
         <span class="blog-post-date">May 27, 2026</span>
         <div>
           <div class="blog-post-title">The LaTeX editor that academics actually want</div>
           <p class="blog-post-excerpt">TeXShop is from 2000. Overleaf is a web app. Neither was designed around the manuscript workflow researchers actually live in. ModernTex is.</p>
         </div>
       </a>
-      <a class="blog-post-item" href="/blog/starting-purplelink/">
+      <a class="blog-post-item" data-topic="studio" href="/blog/starting-purplelink/">
         <span class="blog-post-date">May 27, 2026</span>
         <div>
           <div class="blog-post-title">Starting Purplelink</div>
@@ -232,6 +240,7 @@
         </div>
       </a>
     </div>
+    </main>
 
     <footer class="footer">
       <div class="footer-grid">

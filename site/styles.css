@@ -3667,3 +3667,109 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
 .post-body .page-toc ol ol li { margin: 3px 0; }
 .post-body .page-toc a { color: var(--purple); text-decoration: none; }
 .post-body .page-toc a:hover { text-decoration: underline; }
+
+/* ─── 404: a way back into the site ───────────────────────────────────── */
+
+.not-found-links {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  width: min(720px, 100%);
+  margin: 22px auto 26px;
+  text-align: left;
+}
+
+.not-found-links a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.not-found-links a:hover { border-color: var(--purple); }
+.not-found-links strong { color: var(--ink); font-size: 0.95rem; }
+
+/* ─── Blog topic filter ───────────────────────────────────────────────── */
+
+.blog-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 28px clamp(24px, 6vw, 80px) 4px;
+}
+
+.blog-filter[hidden] { display: none; }
+
+.blog-filter button.tool-chip {
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: transparent;
+}
+
+.blog-filter button[aria-pressed="true"],
+.blog-filter button[aria-pressed="true"]:hover {
+  border-color: var(--purple);
+  background: var(--purple);
+  color: oklch(99% 0.003 310);
+}
+
+@media (prefers-color-scheme: dark) {
+  .blog-filter button[aria-pressed="true"],
+  .blog-filter button[aria-pressed="true"]:hover { color: oklch(18% 0.06 310); }
+}
+
+.blog-post-item[hidden] { display: none; }
+
+/* ─── About: founder note ─────────────────────────────────────────────── */
+
+.founder-note {
+  margin: 2rem 0 2.5rem;
+  padding: clamp(22px, 3vw, 32px);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 14px 14px 0;
+  background: var(--purple-xlight);
+}
+
+.founder-note h2 { margin-top: 0; }
+.founder-note p { font-size: 1.02rem; line-height: 1.7; }
+.founder-note p + p { margin-top: 0.8em; }
+
+.founder-sign {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.4rem !important;
+  color: var(--purple);
+}
+
+.about-value p { font-size: 0.95rem; }
+
+/* ─── App pages: a phone screenshot in the hero's empty right half ────── */
+
+.app-hero-phone { display: none; margin: 0; }
+
+@media (min-width: 1100px) {
+  .app-hero:has(.app-hero-phone) { grid-template-columns: auto minmax(0, 1fr) auto; }
+
+  .app-hero-phone {
+    display: block;
+    width: clamp(220px, 20vw, 280px);
+  }
+
+  .app-hero-phone img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 34px;
+    border: 6px solid oklch(18% 0.02 310);
+    box-shadow: 0 30px 70px oklch(20% 0.08 310 / 0.25);
+  }
+}
