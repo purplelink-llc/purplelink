@@ -4279,3 +4279,9 @@ html { scroll-padding-top: 96px; }
 .sample-cta { margin-top: 40px; }
 .sample-more { margin: 12px 0 0; }
 .sample-more a { color: var(--purple); font-weight: 600; }
+
+/* A feature grid whose item count divides by three (Vitae's six) takes three
+   columns on wide screens instead of four-and-two with two empty cells. */
+@media (min-width: 900px) {
+  .features-grid:has(> :nth-child(3n):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
