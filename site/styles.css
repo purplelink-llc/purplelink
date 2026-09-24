@@ -3784,3 +3784,26 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
   .tools-grid-apps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tools-grid-apps > :last-child { grid-column: auto; }
 }
+
+/* ─── ModernTex band on tool and guide pages ──────────────────────────── */
+
+.mt-cta { position: relative; overflow: hidden; }
+.mt-cta .waitlist-fine-print { text-align: left; }
+
+@media (min-width: 1000px) {
+  .mt-cta { padding-right: 50%; }
+
+  .mt-cta::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -60px;
+    width: 46%;
+    aspect-ratio: 1440 / 792;
+    translate: 0 -50%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: url("/assets/moderntex-screens/01-editor-clean-1440.webp") left top / cover no-repeat;
+    box-shadow: 0 24px 60px oklch(20% 0.08 310 / 0.18);
+  }
+}
