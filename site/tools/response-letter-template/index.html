@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Response to Reviewers Template Generator (Free) | Purplelink</title>
+    <meta name="description" content="Paste the reviewer comments from your decision letter and get a response-letter template: every comment numbered and quoted, with space for your reply. Free.">
+    <link rel="canonical" href="https://purplelink.llc/tools/response-letter-template/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Response to reviewers template">
+    <meta property="og:description" content="Paste the reviewer comments from your decision letter and get a response-letter template: every comment numbered and quoted, with space for your reply. Free.">
+    <meta property="og:url" content="https://purplelink.llc/tools/response-letter-template/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/response-review.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/response-review.png">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Response to Reviewers Template Generator",
+      "url": "https://purplelink.llc/tools/response-letter-template/",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any (web browser)",
+      "description": "Paste the reviewer comments from your decision letter and get a response-letter template: every comment numbered and quoted, with space for your reply. Free.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Response letter template",
+          "item": "https://purplelink.llc/tools/response-letter-template/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I format a response to reviewers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Quote each reviewer comment, give it a number (for example 2.3 for Reviewer 2, comment 3), answer it directly, and say exactly what changed in the manuscript and where: section, page and line numbers. Answer every comment, including the ones you disagree with."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my text uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The template is built in your browser with JavaScript. Nothing is sent to a server or stored."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if the comments are split wrongly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The tool looks for reviewer headings such as Reviewer 2 or Referee #1 and for numbered or bulleted comments, and falls back to paragraphs. Check the count it reports, and merge or split comments in the output where the letter was unusual."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can something check my finished response letter?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Response Review ($6) reads your finished letter against each reviewer comment and flags missing, vague or defensive replies before you resubmit."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v=66198011ec">
+    <script src="/site.js?v=be0234d0b8" defer></script>
+    <link rel="stylesheet" href="/tools/latex-table-generator/latex-table-generator.css?v=0f6e92de4b">
+    <script src="/tools/response-letter-template/response-letter.js?v=06fe26fd2d" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo-64.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Response to Reviewers Template</h1>
+        <p>Paste the reviewer comments from your decision letter. You get a response letter with every comment numbered and quoted, and a place for your reply and the change you made. Runs entirely in your browser.</p>
+      </div>
+
+      <div class="tool-app">
+        <div class="ttg-field">
+          <label for="rl-comments">Reviewer comments, as they appear in the decision letter</label>
+          <textarea class="ttg-input rl-comments" id="rl-comments" placeholder="Reviewer 1&#10;1. The sample size in Study 2 is not justified.&#10;2. Please report effect sizes alongside p-values.&#10;&#10;Reviewer 2&#10;- The related work misses recent transformer-based approaches.&#10;- Figure 3 is hard to read in grayscale."></textarea>
+        </div>
+
+        <div class="tool-options">
+          <div class="ttg-options-grid">
+            <div class="ttg-opt-inline">
+              <label for="rl-format">Format</label>
+              <select class="ttg-input" id="rl-format" data-remember="response-letter-format">
+                <option value="markdown" selected>Markdown</option>
+                <option value="latex">LaTeX</option>
+                <option value="text">Plain text (for Word)</option>
+              </select>
+            </div>
+            <div class="ttg-opt-inline">
+              <label for="rl-title">Manuscript title (optional)</label>
+              <input class="ttg-input" type="text" id="rl-title">
+            </div>
+            <div class="ttg-opt-inline">
+              <label for="rl-journal">Journal (optional)</label>
+              <input class="ttg-input" type="text" id="rl-journal">
+            </div>
+            <div class="ttg-opt">
+              <input type="checkbox" id="rl-changes" checked>
+              <label for="rl-changes">Add a "Changes" line under each reply</label>
+            </div>
+          </div>
+          <p class="u-mt-1"><button class="btn btn-primary" id="rl-run" type="button">Build the template</button></p>
+        </div>
+
+        <p class="tool-status" id="rl-status" aria-live="polite"></p>
+
+        <div class="tool-result" id="rl-result" hidden>
+          <div class="ttg-result-head">
+            <h2>Your response letter</h2>
+            <span class="rl-actions"><button class="btn" id="rl-copy" type="button">Copy</button> <button class="btn" id="rl-download" type="button">Download</button></span>
+          </div>
+          <pre tabindex="0"><code id="rl-output"></code></pre>
+          <p class="rl-next">Once your replies are written, <a href="/tools/response-review/">Response Review</a> ($6) reads the letter against each comment and flags missing, vague or defensive answers before the editor does.</p>
+        </div>
+
+        <p class="tool-privacy">Your text never leaves your browser. There is no upload and nothing is stored.</p>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to use it</h2>
+        <ol>
+          <li>Copy the reviewers' comments from the decision letter or the submission system and paste them in, headings included (Reviewer 1, Referee #2, Associate Editor).</li>
+          <li>Choose Markdown, LaTeX, or plain text for pasting into Word, and press <strong>Build the template</strong>. The count under the button tells you how many comments it found; check it against the letter.</li>
+          <li>Write each reply under its comment, and fill in where the change is in the revised manuscript. The <a href="/guides/how-to-respond-to-reviewer-2/">guide to responding to Reviewer 2</a> covers sorting the comments before you write, and <a href="/tools/latex-diff/">LaTeX Diff</a> makes the marked-up PDF many journals ask for.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>How do I format a response to reviewers?</summary><div class="faq-body">Quote each reviewer comment, give it a number (for example 2.3 for Reviewer 2, comment 3), answer it directly, and say exactly what changed in the manuscript and where: section, page and line numbers. Answer every comment, including the ones you disagree with.</div></details>
+        <details><summary>Is my text uploaded?</summary><div class="faq-body">No. The template is built in your browser with JavaScript. Nothing is sent to a server or stored.</div></details>
+        <details><summary>What if the comments are split wrongly?</summary><div class="faq-body">The tool looks for reviewer headings such as Reviewer 2 or Referee #1 and for numbered or bulleted comments, and falls back to paragraphs. Check the count it reports, and merge or split comments in the output where the letter was unusual.</div></details>
+        <details><summary>Can something check my finished response letter?</summary><div class="faq-body"><a href="/tools/response-review/">Response Review</a> ($6) reads your finished letter against each reviewer comment and flags missing, vague or defensive replies before you resubmit.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="/guides/how-to-respond-to-reviewer-2/"><span class="rel-kind">Guide</span>How to respond to Reviewer 2</a></li>
+          <li><a href="/guides/check-response-letter-before-resubmitting/"><span class="rel-kind">Guide</span>Check your response letter before resubmitting</a></li>
+          <li><a href="/tools/response-review/">Response Review: your letter against every comment, $6</a></li>
+          <li><a href="/tools/paper-review/revision/">Revision Review: the revised manuscript against your first review, $2</a></li>
+          <li><a href="/tools/latex-diff/">LaTeX Diff: a marked-up PDF of your changes</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo-64.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/desk/">Research desk</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=577bb3296e" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
