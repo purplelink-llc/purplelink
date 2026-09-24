@@ -60,6 +60,39 @@ retention work is `docs/growth-proposals-2026-09.md`.
    Citation Gap + Cover Letter) was proposed but not built: it needs new price
    IDs in Stripe and in Netlify env first.
 
+12. **ModernTex facts only you can supply.**
+   - What do Get Changes and Send Changes sync through (Git, iCloud, a shared
+     folder)? Can a co-author who stays on Overleaf use it? The page now says
+     how to bring an Overleaf project over, but not this.
+   - The AI row now says Fix with AI runs on Apple Intelligence or the user's
+     own Claude or OpenAI account, taken from the 1.1.0 changelog. Correct it
+     if there are other AI features or if they are off by default.
+13. **Decisions a lab buyer asked about (PI walkthrough).** None of these
+   were changed; each needs you:
+   - a data-processing agreement, BAA or one-page security sheet for
+     institutional buyers
+   - purchase-order terms and a W-9 on request (the /labs/ page offers to
+     email, but there is no written policy)
+   - Terms: indemnity and governing venue
+   - pack tiers for Deep Review and the Journal Pack (packs are Standard only)
+   - a refund window for unused pack tokens
+   - a computational-biology domain profile and journals for the Journal
+     Pack (the 25 venues have none in genomics or bioinformatics)
+   - whether pack-token emails can go to the PI instead of the payer
+   - credentials on /about/ (degree, institution, publications)
+   - /products/ mixes Kits, GlobePin and Haea with academic tools
+   - /privacy/ has no table of contents and still covers "Momentum", which
+     is not listed anywhere else
+   - a biomedical sample report next to the machine-learning one
+   - a screenshot of the annotated PDF on /tools/paper-review/
+14. **Homepage headline.** "Making software that lasts" does not say LaTeX
+   or research; the line above it does. A mobile walkthrough found phone
+   visitors could not tell what the site sells from the first screen. The
+   hero now fades in faster; the wording is yours to change.
+15. **BibTeX Validator's CrossRef check is off by default.** Turning it on
+   would find more fake citations but sends titles and DOIs to CrossRef and
+   is slower. Left as it is.
+
 ## What changed
 
 ### Look and navigation
@@ -126,6 +159,24 @@ retention work is `docs/growth-proposals-2026-09.md`.
 - The privacy page describes each of these.
 
 ### Later additions
+- Phone fixes from a mobile walkthrough:
+  - Off a Mac, the ModernTex trial button offers to email the download link
+    (with a "download anyway" link) instead of fetching a .dmg. The trial
+    setup email says to open it on the Mac. Event: `trial_email_offer`.
+  - Single purchases of any paid tool now email a link to start the
+    purchase, so paying on a phone and uploading on a laptop works.
+  - The Paper Review page shows Pay, Upload, Read the report under the
+    buy button, and a formatted report excerpt instead of raw Markdown.
+  - /tools/ filters on "free" and "paid", knows a few synonyms, and has
+    jump links to each group.
+  - Bordered panels keep a 16 px gutter; fine print is larger and at full
+    muted contrast.
+- The Journal Pack's 25 venues are listed in the Paper Review FAQ ("25+"
+  was wrong).
+- ModernTex: Overleaf facts in the FAQ, a "Submitting soon?" line, and a
+  portability note by the release list.
+- Tool names match their pages (Response to Reviewers, Citation Gap
+  Analysis); upload boxes say "choose" rather than "click".
 - `/tools/paper-review/sample/`: the example report, section by section,
   linked from the product page (under the buy button and after the sample),
   the homepage report card, and llms.txt.
