@@ -698,6 +698,8 @@ abstract, 1 contradicted, 3 source unavailable.
 
 _5 citations with weaker claims were not audited (per-run cap)._
 
+Read the full example report, section by section →
+
 ## How the review works
 
 - 
@@ -779,6 +781,118 @@ PDF up to 20 MB. If you're submitting LaTeX, compile to PDF first (our free LaTe
 What about clinical or patient data?
 
 Do not submit unredacted patient data. The manuscript will be sent to Anthropic's API with 30-day retention. For papers containing identifiable health information, redact before upload.
+
+
+---
+
+Source: https://purplelink.llc/tools/paper-review/sample/
+Title: Example Paper Review Report: What an AI Pre-Submission Review Finds | Purplelink
+
+← Paper Review
+
+Example report
+
+# What a Paper Review report looks like
+
+This is a complete example report for a fictional machine-learning manuscript, shown the way you would read it, with a note after each section on what it is for and how to act on it. A real report quotes your own text, and also comes as a Markdown file and an annotated PDF with each comment on the page it refers to.
+
+## Critical Blind Spots
+
+- 
+
+Hyperparameter search asymmetry favors the proposed method.
+Quoted: "We tuned learning rate and batch size on the validation
+set; baselines used reported defaults."
+Surfaced by: Methodology Critic, Statistical Skeptic (consensus).
+Fix: Match search budget for each baseline; report the protocol
+in the methods section.
+
+- 
+
+Sample-size justification missing for Experiment 2.
+Quoted: "We collected 24 participants ... yielding sufficient
+statistical power."
+Surfaced by: Statistical Skeptic.
+Fix: Provide an explicit power calculation with assumed effect
+size and the source of that assumption. With n=24 and the
+reported effect, post-hoc power is below 0.6.
+
+What this section is for. The problems a reviewer is most likely to raise. Each one quotes the passage it is about, names which of the four reviewers raised it, and says what would fix it. Findings raised by more than one reviewer are marked as consensus and listed first.
+
+## Data-to-Claim Contradictions
+
+- Claim: "Our method beats all baselines by a wide margin."
+Evidence: Table 2 shows the proposed method tied with Baseline C
+within reported standard errors on 4 of 7 datasets.
+
+What this section is for. Places where the text claims more than the tables and figures show. Reviewers catch these quickly, and they are usually a wording fix rather than new work.
+
+## Rectification Checklist
+
+- A Add hyperparameter search protocol to methods (page 5,
+Section 3.2). Match search budget across all baselines.
+
+- A Replace "wide margin" framing in abstract and Section 5
+with what the data actually shows.
+
+- B Add per-seed variance to all results tables.
+
+- B Reference [17] does not resolve to a CrossRef entry,
+re-verify the citation.
+
+- C Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on
+a continuous scale.
+
+What this section is for. The same findings as a to-do list. A items are the ones a reviewer would reject over; B items weaken the paper; C items are polish. Work through the A items first.
+
+## True Novelty Estimate
+
+The core architectural contribution is genuinely novel and not
+covered by [11] or [23]. The empirical comparison, as currently
+framed, oversells the gap. Marginal advance: the proposed mechanism
+is interesting but the published evidence does not yet warrant the
+strength of the abstract's claim.
+
+What this section is for. A plain read of what is new in the paper and whether the evidence supports how strongly it is claimed. Useful for the abstract and the cover letter.
+
+## Reference Verification Summary
+
+47 of 52 references verified against CrossRef. 3 had weak title
+matches (re-check [12], [17], [31]). 2 had no DOI and could not be
+located by title, verify these are correctly cited.
+
+What this section is for. Every reference is looked up in CrossRef. Weak matches and unresolvable entries are listed so you can check them, which catches typos and citations an AI tool invented.
+
+## Citation Support Audit
+
+Verdicts: 18 supported, 4 partially supported, 2 not supported by
+abstract, 1 contradicted, 3 source unavailable.
+
+Claim
+Cited ref
+Verdict
+What the source's abstract says
+
+"Method X reduces error by 40%."
+[14]
+Contradicted
+Abstract reports a 4% reduction, not 40%. Verify the figure.
+
+"Prior work proved this is optimal."
+[9]
+Not supported by abstract
+Abstract describes a heuristic; optimality may be in the full text.
+
+5 citations with weaker claims were not audited (per-run cap).
+
+What this section is for. For the claims that lean hardest on a citation, the cited paper's abstract is fetched and compared with what you wrote. "Not supported by abstract" means check the full text, not that the citation is wrong.
+
+## Run one on your manuscript
+
+Standard review $9, with the Journal Pack $11, Deep Review $15. Usually ready in 4 to 8 minutes, no account, and the file is deleted when you retrieve the report. If a report reads as low quality, email within 14 days for a refund.
+
+Start a review
+How to use the report
 
 
 ---

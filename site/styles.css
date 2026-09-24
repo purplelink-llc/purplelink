@@ -4262,3 +4262,20 @@ html { scroll-padding-top: 96px; }
 .release-list span { color: var(--ink); font-size: 0.88rem; line-height: 1.4; }
 .release-strip-foot { margin: 10px 0 0; color: var(--muted); font-size: 0.9rem; }
 .release-strip-foot a { color: var(--purple); font-weight: 600; }
+
+/* Paper Review example report page */
+.sample-sec { margin: 0 0 30px; }
+.sample-report { padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.sample-report ul { margin: 0; padding-left: 20px; }
+.sample-report li + li { margin-top: 10px; }
+.sample-report p { margin: 0; }
+.sample-report p + p { margin-top: 10px; }
+.sample-lbl { color: var(--muted); font-weight: 600; }
+.sample-prio { display: inline-grid; place-items: center; width: 22px; height: 22px; margin-right: 8px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; background: var(--purple-xlight); color: var(--purple); }
+.sample-prio-a { background: var(--purple); color: var(--bg); }
+.sample-note { margin: 10px 0 0; color: var(--muted); font-size: 0.93rem; }
+.sample-note strong { color: var(--ink); }
+.table-scroll { overflow-x: auto; }
+.sample-cta { margin-top: 40px; }
+.sample-more { margin: 12px 0 0; }
+.sample-more a { color: var(--purple); font-weight: 600; }

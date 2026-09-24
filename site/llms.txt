@@ -94,6 +94,7 @@
 - ModernTex (macOS, free 7-day trial then $10, shipping): https://purplelink.llc/moderntex/
 - Vitae (macOS, free, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
+- Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/
 - Free tools: https://purplelink.llc/tools/
 - Guides: https://purplelink.llc/guides/
 - GlobePin (iOS, free, shipping): https://purplelink.llc/globepin/
