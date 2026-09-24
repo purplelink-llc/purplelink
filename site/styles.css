@@ -1410,7 +1410,7 @@ dd {
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
@@ -1418,11 +1418,13 @@ dd {
   overflow: hidden;
 }
 
-/* The 1px gaps are the grid's own background showing through, so an
-   unfilled last row rendered as a solid lavender block (ModernTex's 10
-   features in 4 columns, its 3 audiences in 4). Stretch the last card to the
-   end of its row instead. */
-.features-grid > :last-child { grid-column-end: -1; }
+/* The 1px gaps were the grid's own lavender background showing through, so
+   an unfilled last row rendered as a solid lavender block (ModernTex's 10
+   features in 4 columns, its 3 audiences in 4). Each card now draws its own
+   hairline and the grid background matches the cards, so empty cells are
+   simply blank. */
+.features-grid { background: var(--bg); }
+.features-grid > * { box-shadow: 0 0 0 1px var(--line); }
 
 .feature-item {
   background: var(--bg);
@@ -3860,4 +3862,23 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
 
 @media (prefers-reduced-motion: reduce) {
   .guide-grid a { transition: none; }
+}
+
+.plus-plan-best { position: relative; border: 2px solid var(--purple); box-shadow: 0 14px 36px oklch(50% 0.24 310 / 0.14); }
+
+.plus-plan-badge {
+  position: absolute;
+  top: -12px;
+  right: 18px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background: var(--purple);
+  color: oklch(99% 0.003 310);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .plus-plan-badge { color: oklch(18% 0.06 310); }
 }
