@@ -602,11 +602,15 @@ def html_lifecycle_decision_reminder(*, manuscript_title: str = "", unsubscribe_
 """
 
 
-_DEADLINE_REASON = "because you asked for one reminder before a submission deadline on purplelink.llc. This is the only one."
+_DEADLINE_REASON = "because you asked for one reminder before a deadline on purplelink.llc. This is the only one."
 
 
-def html_lifecycle_deadline_week(*, venue: str = "", deadline: str = "", unsubscribe_url: str, **_ignored) -> str:
-    """Sent a week before a deadline someone entered on the submission checklist."""
+def html_lifecycle_deadline_week(*, venue: str = "", deadline: str = "", kind: str = "submission",
+                                 unsubscribe_url: str, **_ignored) -> str:
+    """Sent a week before a deadline someone entered on the submission checklist,
+    a template page, or (kind="resubmission") the response letter template."""
+    if kind == "resubmission":
+        return _html_resubmission_week(venue=venue, deadline=deadline, unsubscribe_url=unsubscribe_url)
     where = _html.escape((venue or "").strip()[:80])
     when = _html.escape((deadline or "").strip()[:40])
     if where and when:
@@ -644,6 +648,47 @@ def html_lifecycle_deadline_week(*, venue: str = "", deadline: str = "", unsubsc
   <p style="color: #555; font-size: 0.9em;">Double-blind venue? The
   <a href="https://purplelink.llc/tools/anonymity-check/?{utm}" style="color: #555;">Anonymity Check</a>
   ($2) finds names, institutions and self-citations that give you away.</p>
+  {_lifecycle_footer(unsubscribe_url, reason=_DEADLINE_REASON)}
+</div>
+"""
+
+
+def _html_resubmission_week(*, venue: str, deadline: str, unsubscribe_url: str) -> str:
+    where = _html.escape((venue or "").strip()[:80])
+    when = _html.escape((deadline or "").strip()[:40])
+    if where and when:
+        lead = "Your revision for %s is due on %s." % (where, when)
+    elif when:
+        lead = "Your revision is due on %s." % when
+    else:
+        lead = "Your resubmission deadline is about a week away."
+    utm = "utm_source=email&amp;utm_campaign=resubmit"
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">A week to go</h2>
+  <p>{lead} You asked for one email a week ahead, while there is still time
+  to make sure every comment has an answer.</p>
+  <ol style="padding-left: 20px;">
+    <li><strong>Every comment, answered.</strong> The free
+    <a href="https://purplelink.llc/tools/response-letter-template/?{utm}" {_LINK}>response letter template</a>
+    numbers and quotes each reviewer comment so none is skipped.</li>
+    <li><strong>The letter, read as a reviewer would.</strong> Response to
+    Reviewers ($6) reads your letter against each comment and flags replies
+    that are missing, vague, or likely to read as defensive.</li>
+    <li><strong>The revision, checked against the review.</strong> If you ran
+    a Paper Review on the first version, Revision Review ($2) checks the
+    revised manuscript against its findings. The free
+    <a href="https://purplelink.llc/tools/latex-diff/?{utm}" {_LINK}>LaTeX Diff</a>
+    makes the marked-up PDF many journals ask for.</li>
+  </ol>
+  <p>
+    <a href="https://purplelink.llc/tools/response-review/?{utm}"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 10px 18px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Check my response letter
+    </a>
+  </p>
   {_lifecycle_footer(unsubscribe_url, reason=_DEADLINE_REASON)}
 </div>
 """

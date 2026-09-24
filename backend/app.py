@@ -2660,7 +2660,8 @@ def web():
         if not _delivery._is_valid_email(email):
             return JSONResponse({"error": "invalid_email"}, status_code=400)
         entry, error = _deadline_entry(email, payload.get("deadline", ""),
-                                       payload.get("venue", ""), _time_module.time())
+                                       payload.get("venue", ""), _time_module.time(),
+                                       str(payload.get("kind", "submission")))
         if error:
             return JSONResponse({"error": error}, status_code=400)
         if lifecycle_optout_dict.get(_email_key(email)):
@@ -3882,7 +3883,10 @@ DEADLINE_MAX_DAYS_AHEAD = 366
 DEADLINE_LEAD_DAYS = 7
 
 
-def _deadline_entry(email: str, deadline_iso: str, venue: str, now: float):
+DEADLINE_KINDS = ("submission", "resubmission")
+
+
+def _deadline_entry(email: str, deadline_iso: str, venue: str, now: float, kind: str = "submission"):
     """Build a deadline-reminder lifecycle entry, or return an error code.
 
     The reminder goes out DEADLINE_LEAD_DAYS before the deadline, or on the
@@ -3907,6 +3911,7 @@ def _deadline_entry(email: str, deadline_iso: str, venue: str, now: float):
         "venue": clean_venue,
         "deadline": day.isoformat(),
         "deadline_label": "%s %d %s" % (day.strftime("%A"), day.day, day.strftime("%B")),
+        "kind": kind if kind in DEADLINE_KINDS else "submission",
         "purchased_at": send_at,
         "last_stage_sent": None,
         "last_sent_at": None,
@@ -3922,6 +3927,7 @@ LIFECYCLE_SUBJECTS = {
     "trial_ending": "Your ModernTex trial ends soon",
     "decision_reminder": "When the reviews come back",
     "deadline_week": "A week before your submission deadline",
+    "deadline_week_resubmission": "A week before your resubmission deadline",
 }
 
 
@@ -4160,12 +4166,15 @@ def lifecycle_email_sweep() -> dict:
                     html = template_fn(
                         venue=entry.get("venue", ""),
                         deadline=entry.get("deadline_label", ""),
+                        kind=entry.get("kind", "submission"),
                         unsubscribe_url=unsubscribe_url,
                     )
                 else:
                     html = template_fn(unsubscribe_url=unsubscribe_url)
 
                 subject = LIFECYCLE_SUBJECTS[stage_name]
+                if stage_name == "deadline_week" and entry.get("kind") == "resubmission":
+                    subject = LIFECYCLE_SUBJECTS["deadline_week_resubmission"]
 
                 result = await _delivery.send_email(
                     client,

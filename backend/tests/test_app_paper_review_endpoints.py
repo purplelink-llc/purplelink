@@ -2373,3 +2373,16 @@ def test_review_request_email_carries_signed_rating_links(client, monkeypatch):
     html = [m["html"] for m in sent if m["subject"] == "How did the review hold up?"][0]
     sig = backend_app._feedback_signature("cs_rr")
     assert "feedback/?p=paper-review&amp;s=cs_rr&amp;k=%s&amp;r=useful" % sig in html
+
+
+def test_resubmission_deadline_gets_its_own_email(client, monkeypatch):
+    http, backend_app = client
+    sent = _no_send(monkeypatch)
+    http.post("/lifecycle/deadline", json={"email": "rr@example.com", "deadline": _iso_days_ahead(5), "venue": "JAMA", "kind": "resubmission"})
+    assert backend_app.customer_lifecycle_dict.get("deadline:rr@example.com")["kind"] == "resubmission"
+    backend_app.lifecycle_email_sweep.local()
+    assert [m["subject"] for m in sent] == ["A week before your resubmission deadline"]
+    assert "revision for JAMA" in sent[0]["html"] and "Check my response letter" in sent[0]["html"]
+    # An unknown kind falls back to a first submission.
+    http.post("/lifecycle/deadline", json={"email": "x@example.com", "deadline": _iso_days_ahead(30), "kind": "grant"})
+    assert backend_app.customer_lifecycle_dict.get("deadline:x@example.com")["kind"] == "submission"

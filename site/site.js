@@ -519,7 +519,7 @@
       const r = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, deadline, venue: form.venue.value.trim(), website: form.website.value }),
+        body: JSON.stringify({ email, deadline, venue: form.venue.value.trim(), kind: form.dataset.deadlineKind || "submission", website: form.website.value }),
       });
       if (r.status === 429) throw new Error("rate");
       if (!r.ok) throw new Error("http");
