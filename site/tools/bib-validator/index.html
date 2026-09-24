@@ -95,7 +95,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=79f2cf742f">
     <script src="/site.js?v=4922eeb3a5" defer></script>
-    <link rel="stylesheet" href="/tools/bib-validator/bib-validator.css?v=3ebb9dba3f">
+    <link rel="stylesheet" href="/tools/bib-validator/bib-validator.css?v=2fe84d1aed">
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
   <body>
@@ -362,7 +362,7 @@
           html += badge("ok",   s.ok      + " OK");
           html += badge("warn", s.warning + " warning" + (s.warning !== 1 ? "s" : ""));
           html += badge("err",  s.error   + " error"   + (s.error   !== 1 ? "s" : ""));
-          html += " <span style='font-size:0.85rem;color:#9ca3af'>" + s.total + " entries total</span></div>";
+          html += ' <span class="bib-total">' + s.total + " entries total</span></div>";
 
           html += '<div class="bib-filter-row" role="group" aria-label="Filter results">';
           html += '<button type="button" class="bib-filter-chip" data-filter="all"  aria-pressed="true">All</button>';
@@ -413,6 +413,13 @@
             html += '<button type="button" class="btn btn-primary" id="dl-corrected">Download corrected .bib</button>';
           }
           html += "</div>";
+
+          // One next step, chosen from what this run could and could not check.
+          if (!crCol) {
+            html += '<p class="bib-next">This run checked the format of each entry, not whether the paper exists. Tick the <strong>CrossRef</strong> option above and run it again to look each one up.</p>';
+          } else {
+            html += '<p class="bib-next">A reference can exist and still not say what the sentence citing it claims. <a href="/tools/paper-review/" data-track="bib_next_paper_review">Paper Review</a> ($9) reads the manuscript with its references and checks the most important citations against the cited abstracts.</p>';
+          }
 
           resultEl.innerHTML = html;
 
