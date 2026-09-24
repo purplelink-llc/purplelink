@@ -4042,3 +4042,13 @@ main input:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .checklist-bar span { transition: none; }
 }
+
+/* ─── Home: guides row ────────────────────────────────────────────────── */
+
+.section-reading {
+  padding: clamp(64px, 8vw, 120px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+}
+
+.section-reading .catalog-grid { margin-top: clamp(28px, 4vw, 44px); }
+.section-reading-more { margin-top: 28px; }
