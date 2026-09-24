@@ -24,7 +24,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=d836301081">
+    <link rel="stylesheet" href="/styles.css?v=72444a04b8">
     <script src="/site.js?v=49aea39300" defer></script>
     <script type="application/ld+json">
     {
@@ -72,6 +72,7 @@
         <a href="/about/">About</a>
       </nav>
     </header>
+    <main id="main-content">
 
     <a class="back-link" href="/blog/">← All posts</a>
 
@@ -82,7 +83,7 @@
       <p class="post-lede">Building GlobePin's App Store analytics pipeline, I wrote code that treated absent data and broken requests identically. Two independent bugs, each enough to return nothing, sat undetected until Apple generated its first real reports.</p>
     </div>
 
-    <article id="main-content" class="post-body">
+    <article class="post-body">
       <p>The GlobePin traffic dashboard pulls data from several sources: my server logs, App Store Connect sales figures, and Apple's analytics reports for discovery and engagement. I built the analytics pull in late July. Apple takes a few weeks to generate reports for a new property, so when I checked and saw nothing, I assumed the data wasn't there yet.</p>
 
       <p>The data started arriving in early September. My dashboard still showed nothing.</p>
@@ -104,6 +105,7 @@
       <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
     </div>
 
+    </main>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

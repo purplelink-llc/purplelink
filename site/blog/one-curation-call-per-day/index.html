@@ -24,7 +24,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=d836301081">
+    <link rel="stylesheet" href="/styles.css?v=72444a04b8">
     <script src="/site.js?v=49aea39300" defer></script>
     <script type="application/ld+json">
     {
@@ -73,6 +73,7 @@
         <a href="/about/">About</a>
       </nav>
     </header>
+    <main id="main-content">
 
     <a class="back-link" href="/blog/">← All posts</a>
 
@@ -83,7 +84,7 @@
       <p class="post-lede">The Purplelink Daily Digest harvests 400-800 items daily and picks 20 to publish. Here's why the design uses a single AI curation call instead of scoring items one at a time.</p>
     </div>
 
-    <article id="main-content" class="post-body">
+    <article class="post-body">
       <p>The Daily Digest pulls from about 35 sources each morning and collects somewhere between 400 and 800 raw items. Every day I need to pick 20 of them to publish. The question I had to answer early was how to structure the AI call that does that selection.</p>
 
       <p>The obvious approach is per-item scoring: send each item to a model and ask whether it belongs in the digest, given a description of the reader. Aggregate the scores, pick the top 20. Simple to reason about, easy to test in isolation.</p>
@@ -107,6 +108,7 @@
       <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
     </div>
 
+    </main>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

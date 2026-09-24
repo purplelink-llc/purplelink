@@ -87,6 +87,9 @@
 ## Pages
 
 - Home: https://purplelink.llc/
+- All products with prices: https://purplelink.llc/products/
+- Scholar Utility Belt (free Chrome extension): https://purplelink.llc/scholar-utility-belt/
+- Research desk (recommended books for academic writers): https://purplelink.llc/desk/
 - ModernTex (macOS, free 7-day trial then $10, shipping): https://purplelink.llc/moderntex/
 - Vitae (macOS, free, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
@@ -208,6 +211,9 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Guides index: https://purplelink.llc/guides/
 - LaTeX hub: https://purplelink.llc/guides/latex/ — pillar page covering the full academic LaTeX workflow.
 - BibTeX hub: https://purplelink.llc/guides/bibtex/ — pillar page covering bibliography management.
+- Methodology problems peer reviewers flag, and how to fix them: https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/ — fifteen failure modes (p-hacking, HARKing, underpowered samples, test-train contamination, LLM self-judging, fabricated citations and more), each with a definition, an example, the fix and primary references.
+- How to get feedback on a paper before submitting: https://purplelink.llc/guides/get-feedback-on-a-paper-before-submitting/ — colleagues, editing services, general AI assistants, preprints and Paper Review compared.
+- Overleaf alternatives for Mac: https://purplelink.llc/guides/overleaf-alternative-mac/ — offline LaTeX editors compared, and how to move a project off Overleaf.
 - Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
 - GlobePin vs Polarsteps vs Visited: https://purplelink.llc/guides/globepin-vs-polarsteps/ — comparison of three iOS travel-mapping approaches.
 - Best on-device health apps for iPhone: https://purplelink.llc/guides/best-on-device-health-apps/ — comparison of Apple Health, Bearable, Welltory, and Haea.

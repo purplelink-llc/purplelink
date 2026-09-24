@@ -24,7 +24,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=d836301081">
+    <link rel="stylesheet" href="/styles.css?v=72444a04b8">
     <script src="/site.js?v=49aea39300" defer></script>
     <script type="application/ld+json">
     {
@@ -72,6 +72,7 @@
         <a href="/about/">About</a>
       </nav>
     </header>
+    <main id="main-content">
 
     <a class="back-link" href="/blog/">← All posts</a>
 
@@ -82,7 +83,7 @@
       <p class="post-lede">The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.</p>
     </div>
 
-    <article id="main-content" class="post-body">
+    <article class="post-body">
       <p>The kits page drew 24 visitors in August. Stripe showed no checkout sessions in the same window. I had no instrumentation between those two facts, so I couldn't tell whether people saw the price and left or something between the button and Stripe failed. Both look identical from outside.</p>
 
       <p>The analytics beacon was already watching for fetch calls. When someone runs the anonymity checker or the BibTeX validator, the tool fires a POST to the tools backend; the beacon intercepts it and logs a run event. Checkout turned out to have the same structure. Every buy button on the site posts to the same endpoint: <code>/.netlify/functions/checkout</code>. Kits, Paper Review tiers, the packs page, all of them.</p>
@@ -102,6 +103,7 @@
       <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
     </div>
 
+    </main>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

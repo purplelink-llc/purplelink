@@ -24,7 +24,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=d836301081">
+    <link rel="stylesheet" href="/styles.css?v=72444a04b8">
     <script src="/site.js?v=49aea39300" defer></script>
     <script type="application/ld+json">
     {
@@ -72,6 +72,7 @@
         <a href="/about/">About</a>
       </nav>
     </header>
+    <main id="main-content">
 
     <a class="back-link" href="/blog/">← All posts</a>
 
@@ -82,7 +83,7 @@
       <p class="post-lede">Two Purplelink tools that compute entirely in the browser had no usage data, because instrumentation relied on intercepting backend calls. Fixing that required defining what a run actually means, and the answer differed by tool.</p>
     </div>
 
-    <article id="main-content" class="post-body">
+    <article class="post-body">
       <p>The Purplelink stats dashboard tracks which tools get used by recording a run whenever a tool calls the backend. That covers 7 of the current tools. They all call the same backend service, and the instrumentation lives in a wrapper around that fetch call. One piece of code, all seven tools counted automatically.</p>
 
       <p>Two tools were invisible: the citation generator and the LaTeX table generator. Both compute entirely in the browser. No network call, nothing to intercept. From the stats page's perspective, a visit to either tool looked identical to loading any other page.</p>
@@ -106,6 +107,7 @@
       <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
     </div>
 
+    </main>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

@@ -1,0 +1,3069 @@
+# Purplelink LLC: full text of the main pages
+> The readable text of Purplelink's product, tool, app and guide pages, generated from the site. The short index is at https://purplelink.llc/llms.txt.
+
+
+---
+
+Source: https://purplelink.llc/products/
+Title: Products: Mac Apps and Manuscript Tools for Researchers | Purplelink
+
+Products
+
+# Tools for the paper, from first draft to accepted.
+
+Two Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, in full. None of it needs an account.
+
+macOS
+7-day free trial, then $10 once
+
+## ModernTex
+
+A native LaTeX editor for Mac, built around the manuscript rather than the file. Source and PDF stay in sync, citations autocomplete from your .bib, and a submission check runs before you upload. Version 1.3 adds a visual table editor and TikZ designer.
+
+See ModernTex
+Download the trial
+
+Mac
+
+## Keep your academic record in one place
+
+Free
+
+### Vitae
+
+Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later.
+
+Download Vitae →
+
+$3 a month or $24 a year
+
+### Vitae Plus
+
+Optional. Adds reports, Word templates, a revision workspace and Shareables on top of the free app. Seven days free before the first charge.
+
+See what Plus adds →
+
+Before you submit
+
+## Manuscript checks, paid per use
+
+Upload, pay once through Stripe, and get the result in minutes on a page that updates itself. The file and the result are deleted from our servers when you retrieve it. If a result reads as low quality, email within 14 days and the price is refunded.
+
+$9 · $11 · $15
+
+### Paper Review
+
+Four AI reviewers read the manuscript the way a panel would: methods, statistics, data integrity and the editor's view. Every reference is checked against CrossRef and the figures are scanned. Markdown report and annotated PDF.
+
+Start a review →
+
+$6
+
+### Response Review
+
+A reviewer panel reads your response letter against the original comments and flags missing or hand-waved replies.
+
+Check my response →
+
+$3
+
+### Citation Gap
+
+Finds prior work the manuscript should cite and doesn't, with a reason for each.
+
+Find the gaps →
+
+$2
+
+### Anonymity Check
+
+Flags names, institutions, funders, IRB numbers and self-citations that break double-blind review. Included free with Paper Review.
+
+Scan my manuscript →
+
+$2
+
+### Cover Letter
+
+A cover letter drafted from your abstract and the target journal. The manuscript itself is never uploaded.
+
+Draft my letter →
+
+$2
+
+### Revision Review
+
+Checks whether the revised manuscript actually addressed the findings in your original Paper Review.
+
+Check my revision →
+
+5 for $38 · 20 for $150
+
+### Volume packs
+
+Paper Review tokens for labs and repeat submissions, emailed at purchase. They never expire.
+
+See pack pricing →
+
+$5
+
+### Resume Review
+
+An ATS screener, a hiring manager and a recruiter read your resume before you apply for a research job.
+
+Review my resume →
+
+Free
+
+## No account, no charge
+
+SUB
+Free · Chrome extension
+
+### Scholar Utility Belt
+
+Journal quality badges, citation velocity, h-index and g-index, lineage trees and retraction alerts, added to Google Scholar. About 1,000 researchers use it; 4.5 out of 5 on the Chrome Web Store.
+
+See the extension →
+
+TeX
+Free · in your browser
+
+### LaTeX and citation tools
+
+Compile LaTeX to PDF, diff two versions, validate a .bib file, generate citations, convert to and from Word, and more. Files are processed in memory and never stored.
+
+Browse the tools →
+
+iPhone
+
+## Away from the desk
+
+Free on the App Store
+
+### GlobePin
+
+A map of every place you have been and every flight you have taken, with stats, travel goals and shareable cards. Syncs through iCloud, no account.
+
+See GlobePin →
+
+In development
+
+### Haea
+
+Health analytics that run entirely on your iPhone: sleep, nutrition, training and biometrics, with nothing sent to a server. Join the waitlist.
+
+Join the waitlist →
+
+For builders
+
+## Kits
+
+Production-tested automation systems, each with a setup guide: a content pipeline, a static-site monetization stack and a clip pipeline. One-time purchase, from $10.
+
+See the kits
+
+Which one do I need?
+
+## Start from where the paper is
+
+Writing it in LaTeX on a Mac
+
+ModernTex, with the free BibTeX Validator for the bibliography.
+
+About to submit
+
+Paper Review. It includes the Anonymity Check. Add a Cover Letter for $2.
+
+Submitting to a double-blind venue on a budget
+
+Anonymity Check and Citation Gap, $5 together.
+
+Revise and resubmit
+
+Revision Review for the manuscript and Response Review for the letter.
+
+Keeping track of where everything is
+
+Vitae, free.
+
+Reading the literature
+
+Scholar Utility Belt in Chrome, and the Daily Digest.
+
+Looking for books on writing, LaTeX or statistics? See the research desk.
+
+Not sure, or want something that isn't here? Email ben@purplelink.llc. I read and answer every message.
+
+
+---
+
+Source: https://purplelink.llc/moderntex/
+Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
+
+← All products
+
+macOS
+Free 7-day trial · $10 to keep · v1.3.0
+
+# ModernTex
+
+A native macOS LaTeX editor for researchers, not a programmer's IDE with LaTeX bolted on. Multi-file editing, synchronized PDF preview, and the full academic manuscript workflow in one app.
+
+Download the free 7-day trial
+
+The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, with every 1.x update included; the receipt email includes a permanent license key. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks, with no reinstall. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements.
+
+In the app
+
+## Source and PDF, always in sync
+
+New in 1.3
+
+## Two things nobody enjoys writing by hand
+
+A TikZ diagram and a results table are both perfectly capable LaTeX, and neither is a pleasant place to start from a blank line and a syntax reference. ModernTex builds both visually and drops in the real source underneath — nothing hidden, nothing you couldn't have typed yourself.
+
+### TikZ Designer
+
+Drag boxes and arrows into place, pick colors from a swatch, resize by the corner, connect two shapes by dragging between them. Start from a flowchart, pipeline, state machine, or tree preset, or a blank canvas. Reopen an existing diagram from the Figures menu to keep editing it instead of redrawing it.
+
+### Table Editor
+
+Paste a range straight from Excel or Google Sheets and it lands in the right cells, growing the table if the data is bigger and leaving the rest untouched if it's smaller. Return moves down a row, ⌥Return breaks a line inside a cell, and dragging a column edge resizes it — a spreadsheet's muscle memory, producing booktabs-style tabular underneath.
+
+Read more about both on the blog →
+
+Features
+
+## Everything the manuscript needs
+
+### Multi-file manuscript navigation
+
+Navigate complex projects with root file detection and a structured sidebar. Jump between chapters, sections, and bibliography files without losing context.
+
+### Three compile modes
+
+Fast, Live, and Full compile modes let you move at the speed you need. Live mode keeps the PDF in sync as you type. Full mode does the deep pass before submission.
+
+### Synchronized PDF preview
+
+Forward and inverse search - click the source to jump the PDF, click the PDF to jump the source. Side-by-side, always in sync.
+
+### Citation management
+
+BibTeX autocomplete that searches your bibliography by author, title, or key, not only the keys you have already cited. Cite-as-you-type with smart suggestions from your .bib files.
+
+### Plain-language error diagnostics
+
+LaTeX error messages are hostile by design. ModernTex translates them into clear explanations with suggested fixes, reducing the debugging spiral that breaks flow.
+
+### Submission readiness checks
+
+Automatically check anonymization, page limits, required sections, and submission packaging before you hit send, so formatting problems are caught before a journal returns the paper.
+
+### Version snapshots
+
+Take semantic snapshots at any point - before a major revision, after peer review, before resubmission. Diff between snapshots with meaningful context.
+
+### Live TikZ figure editor
+
+Build flowcharts and diagrams by dragging boxes and drawing connections on a canvas. ModernTex generates the TikZ code as you go; insert it at your cursor when it's ready.
+
+### Table editor
+
+Paste a range from Excel or Google Sheets straight into the right cells. Resize columns by dragging, set a table-wide font, and generate clean booktabs-style LaTeX underneath.
+
+### Native macOS experience
+
+Built in Swift for macOS 14+. Native dark and light mode, system fonts, proper keyboard shortcuts, and performance that doesn't make you wait.
+
+Who it's for
+
+## For academic authors
+
+### PhD students
+
+Writing dissertation chapters and conference papers across multiple files, with deadlines and a committee watching over your shoulder.
+
+### Faculty & researchers
+
+Managing journal submissions, coauthor workflows, multiple concurrent manuscripts, and the full resubmission lifecycle.
+
+### Technical coauthors
+
+Jumping into someone else's LaTeX project and needing to understand the structure, fix compilation issues, and contribute without breaking things.
+
+Before you install
+
+## What ModernTex needs.
+
+A Mac running macOS 14 or later and a TeX distribution. MacTeX or TinyTeX both work, and you do not have to set either up first: if ModernTex cannot find one when you compile, it offers a one-click TinyTeX install right in the editor. After checkout you get a signed disk image: open it and drag ModernTex to Applications. Bookmark the download page; it always hands you the newest version.
+
+Want one email when a notable version ships? Leave your address. No newsletters, no follow-ups.
+
+Your email is used for release notes and nothing else. Privacy Policy · Why ModernTex →
+
+## Frequently asked questions
+
+How do I get updates?
+
+ModernTex checks for a new version once a day and offers to install it in place. You can also choose Check for Updates from the ModernTex menu at any time. Updates are included in the purchase, and each download is code-signed by Purplelink LLC.
+
+What macOS version is required?
+
+ModernTex requires macOS 14 (Sonoma) or later.
+
+Is there a free trial?
+
+Yes. The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. When it ends, the window shows a notice and a Buy button; your .tex files are ordinary files on disk and are not touched. When you buy, the receipt email includes a license key: paste it into the trial's "Have a license key?" and that same copy unlocks, with no reinstall. The paid download is on the receipt page too, if you prefer a fresh copy.
+
+What does it cost?
+
+$10, once, after a free 7-day trial. That covers every 1.x update. There is no subscription and no account; the optional AI features use your own Claude account.
+
+How is ModernTex different from TeXShop or Overleaf?
+
+ModernTex is a native macOS app designed specifically for the academic manuscript workflow - not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers. See how the best LaTeX editors for Mac compare, or read what changes when you move from Overleaf to a Mac editor.
+
+Why not just use a free editor like TeXstudio?
+
+TeXstudio is free, cross-platform, and already parses compile errors into a readable list, so it's a legitimate choice, especially if you also work on Windows or Linux. ModernTex is narrower on purpose: Mac only, built around the manuscript workflow specifically. Three things TeXstudio doesn't do: BibTeX autocomplete that searches your whole .bib by author or title rather than just the keys already cited in the file, submission-readiness checks for what journals actually reject on, and an anonymized export for double-blind review. If none of those matter to you, TeXstudio is a perfectly good free option.
+
+Does ModernTex support multi-file projects?
+
+Yes. ModernTex has built-in multi-file manuscript navigation with root file detection and a structured sidebar for jumping between chapters, sections, and bibliography files without losing context.
+
+## Try it on your own manuscript.
+
+Seven days of the full app, no account and nothing to enter. If it earns a place in your workflow, it's $10 once, with every 1.x update included.
+
+Download the free trial
+Buy ModernTex — $10
+
+macOS 14 or later · Apple silicon and Intel · Signed and notarized
+
+
+---
+
+Source: https://purplelink.llc/vitae/
+Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
+
+← All products
+
+macOS
+Free · v0.4 Beta
+
+# Vitae
+
+Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. Free, notarized, no App Store.
+
+Download for Mac
+Vitae Plus, 7 days free
+
+Requires macOS 15 Sequoia or later · Apple-notarized · Your data stays on your Mac
+
+What's inside
+
+## Everything an academic needs, nothing they don't
+
+### Submission tracking
+
+Log every journal and conference submission with status, dates, each review round, and the decision. Pick target venues with published acceptance rates for about 13,700 journals and conferences, and get a forecast of publication timelines from your own submission history.
+
+### Grant management
+
+Track NSF, NIH, and other grants from planning to award: deadlines, requested and awarded amounts, reporting dates, and your share. Search Grants.gov for open funding opportunities from inside the app.
+
+### CV & packages
+
+Start from the CV you have. Vitae imports it from Word, PDF, RTF, ODT, or a web page, in APA, Chicago, MLA, IEEE, ACM, Harvard, or Vancouver style, reads your papers, grants, positions, talks, teaching and service, and shows you everything before saving. From then on your CV fills itself from your records. Choose from seven CV formats or build your own, and export several at once to PDF, LaTeX, or rich text that opens in Word. Word (.docx) templates are part of Vitae Plus.
+
+### Inbox triage
+
+Connect iCloud, Gmail, Outlook, Yahoo, Fastmail, or your university mail, read-only. Vitae recognizes messages from journal submission systems, reads them on your Mac, and proposes submission updates. You review each one before anything changes.
+
+### Collaborators & projects
+
+Track coauthors, collaborators, and projects. Link people to papers, grants, and roles so your network stays navigable. Send any publication to Zotero in one click.
+
+### Local-first & private
+
+Everything is stored on your Mac with SwiftData. No account and no cloud sync required, and keeping your record needs no subscription. Vitae takes a daily backup and lets you undo changes, so a bad import or merge is never permanent.
+
+Free & open to support
+
+## Vitae is free. If it saves you time, consider supporting it.
+
+All core record-keeping is free, with no limits, and nothing that was free before Plus becomes paid. No third-party ads, no data harvesting. Vitae Plus is an optional subscription, $3 a month or $24 a year, for newer tools such as reports, Word templates, the revision workspace and Shareables. It, a coffee, or a monthly membership helps keep Vitae maintained and updated.
+
+Vitae Plus, from $3 a month
+Leave a one-time tip
+
+## Frequently asked questions
+
+Is Vitae really free?
+
+Yes. Vitae is free to download and use, with all core record-keeping and no limits, and nothing that was free before Plus becomes paid. An optional subscription, Vitae Plus ($3 a month or $24 a year, with a 7-day free trial), adds newer tools: reports such as an NIH biosketch draft, Word export with your own templates, the revision workspace, Shareables, the collaboration map, batch DOI lookup and ORCID sync, Reminders and calendar sync, and themes. You do not need it to keep your record. A tip via Buy Me a Coffee is also appreciated but never required.
+
+Does Vitae show ads?
+
+Not from anyone else. The sidebar has one small card, labelled "From Purplelink", that suggests another Purplelink tool such as ModernTex, Paper Review or Vitae Plus. If a sponsor ever appears there, the card will say "Sponsor" and the sponsor's name, and this page will say so. There is no ad network, no tracking, and no click reporting, and Vitae sends nothing to sponsors. Vitae reads the card's text from a plain file on purplelink.llc at most once a day, and shows a copy built into the app when you are offline. You can hide the card in Settings, under Support; Vitae then stops fetching it.
+
+How does Vitae update?
+
+From version 0.3, Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1 cannot update itself; download the current version once from this page and it will keep itself up to date after that.
+
+Why isn't it on the Mac App Store?
+
+Distributing outside the App Store lets me ship faster and avoid App Store restrictions. The DMG is Apple-notarized, so macOS Gatekeeper verifies it is safe to run — just open the DMG, drag Vitae to Applications, and launch it.
+
+What macOS version is required?
+
+Vitae requires macOS 15 Sequoia or later.
+
+Where is my data stored?
+
+All your records are stored locally on your Mac using SwiftData, with no account and no sync. Vitae goes online for lookups you ask for, such as citation counts from Crossref or OpenAlex and Grants.gov funding searches, and reads your email only if you connect a mailbox, read-only. It also makes two small requests to purplelink.llc on its own: the daily update check, and the daily fetch of the sidebar card's text unless you hide the card. Neither sends anything about you or your records. iCloud sync is supported in the schema and can be enabled in future versions.
+
+How do I install it?
+
+Download the DMG, open it, drag Vitae into your Applications folder, and launch it. Because it is notarized by Apple, you will not see a Gatekeeper warning.
+
+How does Vitae compare to Interfolio, ORCID, or a spreadsheet?
+
+Vitae keeps your own record between deadlines; if your university requires Interfolio or Watermark for tenure review, you still submit there, using what Vitae exports. See how to track your academic CV and tenure case for a comparison of sixteen options.
+
+Vitae is free. If it saves you time, you can get the optional Vitae Plus, leave a tip or support it monthly — it helps keep it maintained.
+
+
+---
+
+Source: https://purplelink.llc/vitae/plus/
+Title: Vitae Plus - Optional Subscription for Vitae, from $3 a Month | Purplelink LLC
+
+← Vitae
+
+macOS
+Optional · from $3 a month
+
+# Vitae Plus
+
+Vitae is free, and keeping your record in it stays free with no limits. Plus is an optional subscription for the newer tools built on top of that record: reports, Word export with your own templates, the revision workspace, Shareables and more. It pays for Vitae's continued development.
+
+See the plans
+Download Vitae, free
+
+Plans
+
+## Two plans, both with 7 days free
+
+### Monthly
+
+$3 a month
+
+7 days free, then $3 each month.
+
+Best value
+
+### Annual
+
+$24 a year
+
+7 days free, then $24 each year. Saves a third compared with paying monthly.
+
+Stripe handles the card; Purplelink never sees it. Stripe asks for a card to start the trial and charges nothing until the 7 days are up. Cancel before then and you pay nothing. Cancel anytime after that and Plus keeps working through the period you have paid for.
+
+What Plus adds
+
+## Newer tools that work from your record
+
+### Reports
+
+Drafts of an NIH biosketch and a Current and Pending report, an AACSB summary, a progress report, and a personal website, all built from what you have already entered.
+
+### Word export
+
+Word (.docx) export with your own Word templates, short and one-page CV variants, citation styles and heading languages, and "Describe the CV you need".
+
+### Revision workspace
+
+Splits a decision letter into reviewer points, tracks who answers each one, and exports the response letter.
+
+### Shareables
+
+Images for social posts about an acceptance, an award or a new paper.
+
+### Collaboration map and research profile
+
+A map of who you work with and a profile of your research, drawn from your projects and papers.
+
+### Batch DOI lookup and ORCID sync
+
+Look up DOIs for many papers at once, and sync from ORCID once a day.
+
+### Reminders and calendar
+
+Deadlines synced to Reminders, and a calendar file that stays up to date.
+
+### Themes and small pleasures
+
+Color themes, alternate Dock icons, a celebration when a paper is accepted or a grant is awarded, and a milestones case.
+
+What stays free
+
+## Your record, with no limits
+
+Submissions and review rounds, grants, projects, collaborators, teaching, service and mentoring, the tenure view, inbox triage, citation counts, CV and package exports to PDF, rich text and Markdown, backups, and updates are all free, with no limits on how much you keep.
+
+Everything Vitae did before Plus, and all core record-keeping, stays free forever. Plus does not unlock any of it, and not subscribing takes nothing away.
+
+How it works
+
+## A key, a monthly check, and cancel anytime
+
+### Paste the key once
+
+When checkout finishes, this site shows a key. In Vitae, open Settings, then Vitae Plus, paste it and press Activate. There is no account and no sign-in.
+
+### Checked by a short key
+
+Your subscription is checked by a short key the app refreshes about once a month; the refresh sends only an anonymous key ID. Between refreshes, Vitae verifies the key on your Mac.
+
+### Cancel anytime
+
+In Vitae, open Settings, then Vitae Plus, then Manage Subscription. Plus keeps working through the period you have paid for, then the Plus tools stop. More on cancelling.
+
+## Frequently asked questions
+
+Do I need Vitae Plus to use Vitae?
+
+No. Vitae is free, with all core record-keeping and no limits. Nothing that was free before Plus becomes paid. Plus adds newer tools built on top of your record.
+
+What happens if I cancel?
+
+Plus keeps working through the period you have paid for, then the Plus tools stop. Your records and every free feature are untouched, and files you already exported are yours.
+
+Does Vitae contact a server to check the subscription?
+
+About once a month, while Plus is active. The app sends only the key's anonymous ID; our server looks up the subscription's status in Stripe and returns a fresh key. Nothing about your records is sent. See the privacy policy.
+
+How do I cancel?
+
+In Vitae, open Settings, then Vitae Plus, then Manage Subscription. We email a link to the address you used at checkout; it opens Stripe's billing page, where you can cancel or update your card. You can also email ben@purplelink.llc. See managing your subscription.
+
+What if I lose my key?
+
+Enter the email address you used at checkout on the key recovery page, and a current key is emailed to that address. The email you got when you subscribed also links to a page that shows a current key.
+
+
+---
+
+Source: https://purplelink.llc/tools/paper-review/
+Title: Paper Review - AI Red Team for Your Manuscript - $9 | Purplelink
+
+← All tools
+
+From $9 per review · Anonymity Check bundled free
+
+# Paper Review
+
+Four AI reviewers read your manuscript the way a journal panel would and quote the passages they question, so you can fix what a reviewer would flag before you submit. Four-persona adversarial debate, live citation cross-check, figure-integrity scan. Delivered in under 10 minutes.
+
+## Sample report
+
+What does the report look like? View sample
+
+# Manuscript Review
+
+## Critical Blind Spots
+
+- **Hyperparameter search asymmetry favors the proposed method.**
+Quoted: "We tuned learning rate and batch size on the validation
+set; baselines used reported defaults."
+Surfaced by: Methodology Critic, Statistical Skeptic (consensus).
+Fix: Match search budget for each baseline; report the protocol
+in the methods section.
+
+- **Sample-size justification missing for Experiment 2.**
+Quoted: "We collected 24 participants ... yielding sufficient
+statistical power."
+Surfaced by: Statistical Skeptic.
+Fix: Provide an explicit power calculation with assumed effect
+size and the source of that assumption. With n=24 and the
+reported effect, post-hoc power is below 0.6.
+
+## Data-to-Claim Contradictions
+
+- Claim: "Our method beats all baselines by a wide margin."
+Evidence: Table 2 shows the proposed method tied with Baseline C
+within reported standard errors on 4 of 7 datasets.
+
+## Rectification Checklist
+
+- [A] Add hyperparameter search protocol to methods (page 5,
+Section 3.2). Match search budget across all baselines.
+- [A] Replace "wide margin" framing in abstract and Section 5
+with what the data actually shows.
+- [B] Add per-seed variance to all results tables.
+- [B] Reference [17] does not resolve to a CrossRef entry,
+re-verify the citation.
+- [C] Figure 3's y-axis breaks 0-60 then jumps to 90; redraw on
+a continuous scale.
+
+## True Novelty Estimate
+
+The core architectural contribution is genuinely novel and not
+covered by [11] or [23]. The empirical comparison, as currently
+framed, oversells the gap. Marginal advance: the proposed mechanism
+is interesting but the published evidence does not yet warrant the
+strength of the abstract's claim.
+
+## Reference Verification Summary
+
+47 of 52 references verified against CrossRef. 3 had weak title
+matches (re-check [12], [17], [31]). 2 had no DOI and could not be
+located by title, verify these are correctly cited.
+
+## Citation Support Audit
+
+Verdicts: 18 supported, 4 partially supported, 2 not supported by
+abstract, 1 contradicted, 3 source unavailable.
+
+| Claim | Cited ref | Verdict | What the source's abstract says |
+|---|---|---|---|
+| "Method X reduces error by 40%." | [14] | Contradicted | Abstract reports a 4% reduction, not 40%. Verify the figure. |
+| "Prior work proved this is optimal." | [9] | Not supported by abstract | Abstract describes a heuristic; optimality may be in the full text. |
+
+_5 citations with weaker claims were not audited (per-run cap)._
+
+Choose a tier
+
+Standard · $9
+Single-pass four-persona review, figure scan, and live citation check. Markdown report and annotated PDF.
+
+Standard + Journal Pack · $11
+Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.).
+
+Deep Review · $15
+Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.
+
+Reviewing more than one manuscript? Volume packs save 16-17% per review.
+
+Secure checkout via Stripe. One-time payment, no subscription.
+
+Nothing is kept after delivery. The review is deleted from our servers the moment you retrieve it, and if a result reads as low-quality we'll refund the price. Advisory only, you decide what to change.
+
+## How the review works
+
+- 
+Layer 1 — Figure-integrity vision scan.
+Every page is rendered and reviewed for digital manipulation
+concerns, figure-vs-text contradictions, and presentation issues
+(broken y-axes, missing error bars, color-only encoding).
+Hedged language; flags concerns to investigate, never accusations.
+
+- 
+Layer 2 - Citation support audit.
+Every reference is verified against CrossRef, then we go deeper:
+for the most load-bearing claims, we fetch the cited source's
+abstract and check whether it actually supports the claim you
+attached it to. Each finding shows your claim next to the source's
+own words, with a verdict: supported, partially supported, not
+supported by the abstract, contradicted, or source unavailable.
+Hedged language; verify each against the full text.
+
+- 
+Layer 3 — Adversarial four-persona panel.
+Methodology Critic, Statistical Skeptic, Data Integrity Officer,
+and Editor-in-Chief each red-team the paper in parallel.
+Findings are merged with a cross-persona consensus filter so
+issues raised independently by multiple personas surface first.
+
+- 
+Layer 4 — Rectification synthesis.
+A final pass produces the structured report you'll act on:
+critical blind spots, data-to-claim contradictions, an A/B/C
+rectification checklist, and an honest novelty estimate.
+
+## What you get
+
+- One review of one manuscript (up to 20 MB PDF, ~100 pages).
+
+- A Markdown report and an annotated PDF with comments on the pages they refer to.
+
+- Standard reviews are usually ready in 4-8 minutes, Deep Review in 10-15, on a status page that updates itself.
+
+## Frequently asked questions
+
+What does the review include?
+
+Four layers in sequence: a Claude Vision pass over your figures and tables, a live CrossRef cross-check of every reference, an adversarial four-persona reviewer debate (Methodology Critic, Statistical Skeptic, Data Integrity Officer, Editor-in-Chief) with consensus filtering, and a synthesis pass producing critical blind spots, data-to-claim contradictions, a prioritised rectification checklist, and a true-novelty estimate.
+
+How long does it take?
+
+Typically 4-8 minutes for a 20-page manuscript. You don't need to keep the tab in the foreground — the status page polls until the review is ready and renders it inline.
+
+What about my privacy? Is the manuscript stored?
+
+Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. Purplelink itself does not store your manuscript or the resulting review after delivery: the review is deleted from our servers the moment you retrieve it on the status page. Save the result locally before closing the tab.
+
+What domains does it cover?
+
+You pick one of five domain profiles at upload: Machine Learning, Biomedicine, Psychology and Social Science, Chemistry and Materials, or General. Each profile loads domain-specific attack vectors so the reviewers focus on the failure modes that matter for your field.
+
+How deep is the citation check?
+
+Two levels. First, every reference is checked for existence against CrossRef (dead DOIs, hallucinated or weakly-matched titles). Second, for the most load-bearing claims we fetch the cited source's abstract from OpenAlex, Semantic Scholar, or CrossRef and assess whether it supports your claim. This is an abstract-level check: a claim supported only in the full text is marked "not supported by abstract," not wrong - verify it against the source. When no abstract can be retrieved, the citation is marked "source unavailable" rather than guessed. On citation-heavy papers we audit the most important claims first and tell you how many were not audited.
+
+Is this a replacement for peer review?
+
+No. Treat it as a first-pass red team before you submit — a way to catch the obvious problems a real reviewer will flag before they do. The review is advisory only; you remain responsible for every decision about your manuscript.
+
+What if the review misses something or makes a mistake?
+
+AI reviewers can be wrong. The output flags concerns with hedged language and quotes the manuscript when challenging a claim, so you can verify every finding against your text. If a specific result reads as low-quality, email ben@purplelink.llc — we'll refund the price.
+
+What file format?
+
+PDF up to 20 MB. If you're submitting LaTeX, compile to PDF first (our free LaTeX-to-PDF tool works).
+
+What about clinical or patient data?
+
+Do not submit unredacted patient data. The manuscript will be sent to Anthropic's API with 30-day retention. For papers containing identifiable health information, redact before upload.
+
+
+---
+
+Source: https://purplelink.llc/tools/paper-review/packs/
+Title: Paper Review Volume Packs — 5 for $38 or 20 for $150 | Purplelink
+
+← Paper Review
+
+Volume packs
+
+# Buy Paper Reviews in bulk
+
+Built for PIs reviewing student manuscripts and labs running multiple submissions through the pipeline. Each pack is a one-time payment that mints tokens redeemable any time — they don't expire. Tokens are emailed to you on purchase.
+
+Choose a pack
+
+5-pack · $38
+5 Standard Paper Review tokens (vs $45 if bought one-by-one — 16% off). Tokens never expire.
+
+20-pack · $150
+20 Standard Paper Review tokens (vs $180 if bought one-by-one — 17% off). Tokens never expire. Best for active labs.
+
+Secure checkout via Stripe. Tokens emailed to the address on the Stripe receipt.
+
+## How packs work
+
+- Pay once at checkout. Stripe captures your email.
+
+- Our backend mints 5 (or 20) review tokens and emails them all to you immediately.
+
+- Hand tokens out to students, co-authors, or use them yourself. Each token is good for one Standard Paper Review.
+
+- To use a token: open the token-use page or paste it directly into the upload form.
+
+## FAQ
+
+Do tokens expire?
+
+No. Pack tokens have no expiry date.
+
+Can I use pack tokens for Deep / Anonymity / Journal Pack tiers?
+
+Pack tokens are for the Standard tier (which already includes Anonymity Check free). To get the Journal Pack or Deep two-pass tier, buy those directly at $11 or $15.
+
+What if I lose the email with my tokens?
+
+Email ben@purplelink.llc with your Stripe receipt and we'll resend the token list.
+
+Can I get an invoice for institutional reimbursement?
+
+Yes — request an invoice when you complete the purchase, or email ben@purplelink.llc with your Stripe session ID afterward.
+
+
+---
+
+Source: https://purplelink.llc/tools/paper-review/revision/
+Title: Revision Review - Second Pass for Revised Manuscript - $2 | Purplelink
+
+← Paper Review
+
+Paid tool · $2 per pass
+
+# Revision Review
+
+Did your revisions actually address the original Paper Review's findings? Upload the revised manuscript + the Markdown report you downloaded last time. We'll tell you which checklist items you fixed, which you missed, and whether any new problems were introduced.
+
+Requires the Markdown report from your previous review. Save it before you close the page next time.
+
+Nothing is kept after delivery. The result is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $2.
+
+## What the report includes
+
+- Address Tracker. Every item from the original Rectification Checklist is marked: addressed / partially / not addressed / not evaluable, with a quote from your revision showing the fix where applicable.
+
+- New Issues. Sometimes fixing one thing breaks another (a new experiment whose stats weren't run; a trimmed paragraph that removed a key caveat). The Revision Review flags up to five new issues, with severity.
+
+- Action Checklist. What still needs to change before resubmission.
+
+## FAQ
+
+What if I lost the original Markdown report?
+
+Run a fresh Paper Review on the revised manuscript (from $9) instead. We can't recover prior reviews — they're deleted from our servers on retrieval.
+
+Why is this cheaper than a full review?
+
+A revision review reuses most of the analysis you already paid for, so it costs less to run. The output is also tighter — it's an evaluation against the original review, not a fresh red team.
+
+
+---
+
+Source: https://purplelink.llc/tools/response-review/
+Title: Response to Reviewers — AI Red Team for Your Reply Letter | Purplelink
+
+← All tools
+
+$6 one-time · results in minutes
+
+# Response to Reviewers
+
+The dreaded reply letter, red-teamed before you send it. A three-persona AI panel, Skeptical Reviewer, Tone Editor, Editor-in-Chief, reads your reviewer comments, your draft response, and the revised manuscript. The output: per-comment verdicts, tone concerns, missing responses, and a final accept-or-revise estimate.
+
+Secure checkout via Stripe.
+
+Nothing is kept after delivery. The report is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $6.
+
+## Sample report
+
+What does the report look like? View sample
+
+# Response to Reviewers Review
+
+## Per-Comment Tracker
+
+| # | Reviewer comment | Verdict |
+|---|---|---|
+| R1.2 | "Sample size seems small for the claimed effect." | Addressed. Power analysis added to Section 3.2. |
+| R1.4 | "Figure 3 axis labels are unreadable." | Partially addressed. Labels enlarged, but the legend still overlaps the plot. |
+| R2.1 | "The related-work section ignores prior work by Chen et al." | Hand-waved. Response says "we are aware of this work" without adding a citation or comparison. |
+| R2.3 | "Why not compare against baseline X?" | Rejected with argument. Response explains X is not applicable to this setting; reasoning is sound. |
+
+## Tone Concerns
+
+- Response to R2.1 reads as dismissive: "As any reader familiar with
+the field would understand, this comparison is unnecessary." Suggest:
+"We agree this comparison is worth addressing directly. [reasoning]"
+
+## Missing Responses
+
+- R1.5 ("Please clarify the exclusion criteria for Experiment 2")
+has no corresponding response letter entry.
+
+## Action Checklist
+
+- [A] Add a citation and one-sentence comparison to Chen et al. for R2.1.
+- [A] Write a response to the missing R1.5 comment.
+- [B] Fix the overlapping legend in Figure 3.
+
+## What the report includes
+
+- Per-comment tracker. Every reviewer comment, paired with your response, marked as addressed, partially addressed, hand-waved, rejected with argument, or not evaluable.
+
+- Tone concerns. Defensive, dismissive, or argumentative phrasing the reviewer will notice. Suggested rewrites that say the same thing less abrasively.
+
+- Missing responses. Reviewer comments you didn't address at all (it happens, easy to miss one).
+
+- Action checklist. A/B/C-prioritised list of what to fix in the response letter or manuscript before hitting submit.
+
+## FAQ
+
+What format should the reviewer comments be in?
+
+Paste them as plain text. Common patterns are auto-detected: "Reviewer 1:" headers, "(1)" or "1." numbered comments. If your editor sent them as a PDF, copy the text out.
+
+And the response letter?
+
+Same — paste the draft text. We don't accept a PDF for the response.
+
+Does the manuscript have to be the revised version?
+
+Yes. We check whether the response's claimed fixes are actually present in the revision.
+
+What does Purplelink retain?
+
+Nothing after delivery. The report is deleted from our servers the moment you retrieve it. Your reviewer comments, response letter, and manuscript are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+
+
+---
+
+Source: https://purplelink.llc/tools/citation-gap/
+Title: Citation Gap Analysis - Find Missing References - $3 | Purplelink
+
+← All tools
+
+Paid tool · $3 per scan
+
+# Citation Gap Analysis
+
+The reverse of a citation-verifier: find prior art the manuscript should cite but doesn't. Catches the "you ignored my paper" reviewer complaint before it happens.
+
+Secure checkout via Stripe.
+
+Nothing is kept after delivery. The result is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $3.
+
+## Sample output
+
+Sample output Show or hide
+
+# Citation Gap Analysis
+**Result: 5 potential gaps flagged.**
+Each entry below is a citation a domain reviewer might expect to see. Verify each suggestion against your own knowledge before adding — AI recall can be wrong.
+
+### Meta-analytic evidence on sleep deprivation and cognition
+- **Type:** Missing Canonical Paper
+- **Suggested authors:** J. Lim, D. F. Dinges
+- **Title hint:** A meta-analysis of the impact of short-term sleep deprivation on cognitive variables
+- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1037/a0018883
+- **What should be cited:** The standard meta-analysis of how short-term sleep loss affects attention, working memory, and other cognitive domains.
+- **Why a reviewer would notice:** The introduction claims sleep loss "impairs complex reasoning" using only two small studies. A sleep researcher would expect the meta-analysis behind that claim.
+- **Section to add it:** Introduction
+
+### Dose-response effects of partial sleep restriction
+- **Type:** Missing Prior Finding
+- **Suggested authors:** H. P. A. Van Dongen, G. Maislin, J. M. Mullington, D. F. Dinges
+- **Title hint:** The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology from chronic sleep restriction and total sleep deprivation
+- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1093/sleep/26.2.117
+- **What should be cited:** The controlled study showing that deficits from repeated nights of restricted sleep accumulate over time.
+- **Why a reviewer would notice:** The limitations paragraph says chronic restriction "may differ" from one night but does not cite the work that measured exactly that difference.
+- **Section to add it:** Discussion, limitations
+
+### Psychomotor Vigilance Task as the manipulation check
+- **Type:** Missing Framework
+- **Suggested authors:** D. F. Dinges, J. W. Powell
+- **Title hint:** Microcomputer analyses of performance on a portable, simple visual RT task during sustained operations
+- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.3758/BF03200977
+- **What should be cited:** The original description of the reaction-time task the manuscript uses to confirm participants were sleep restricted.
+- **Why a reviewer would notice:** The PVT is used in Section 3.3 without a source for the task or its lapse threshold.
+- **Section to add it:** Methods, Section 3.3
+
+### Origins of defect detection in code inspection
+- **Type:** Missing Canonical Paper
+- **Suggested authors:** M. E. Fagan
+- **Title hint:** Design and code inspections to reduce errors in program development
+- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1147/sj.153.0182
+- **What should be cited:** The foundational paper on structured code inspection, which introduced defect detection rate as a measure of review effectiveness.
+- **Why a reviewer would notice:** The dependent variable is defect detection rate, and the related work section starts with modern pull-request review without acknowledging where the measure comes from.
+- **Section to add it:** Related work
+
+### Prior experiments on sleep loss and developer performance
+- **Type:** Qualitative Gap
+- **Suggested authors:** (unknown)
+- **Title hint:** unknown
+- **Verification:** No searchable title — AI recall only, unverified
+- **What should be cited:** Earlier controlled experiments that measured programming or software-engineering task performance after a night of sleep deprivation.
+- **Why a reviewer would notice:** The manuscript describes itself as the first study of sleep and developer performance. A reviewer familiar with this small literature may question that claim.
+- **Section to add it:** Related work; also soften "first" in the abstract
+
+Illustrative example on a fictional manuscript; your result follows the same format.
+
+## What it flags
+
+- Canonical papers in the field that any expert reviewer would expect cited.
+
+- Method or framework foundational references the manuscript builds on without citation.
+
+- Near-identical prior findings the authors should differentiate against.
+
+- Dataset, technique, or theory references missing from the bibliography.
+
+Each suggestion is tagged with the section it belongs in, why a reviewer would notice the omission, and (when known) the candidate authors and title. Always verify suggestions against your own field knowledge — AI recall can be wrong.
+
+## FAQ
+
+How does this differ from the bibliography validator?
+
+The free BibTeX Validator checks the citations you DO have for accuracy and existence. This tool finds the citations you DON'T have but should. Different direction.
+
+What if it suggests papers that aren't actually relevant?
+
+AI recall is imperfect. We mark each suggestion as a candidate to verify, not a definitive call. If a specific scan is low-quality, email ben@purplelink.llc — we'll refund the $3.
+
+What does Purplelink retain?
+
+Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+
+
+---
+
+Source: https://purplelink.llc/tools/anonymity-check/
+Title: Anonymity Check for Blind Submission - $2 | Purplelink
+
+← All tools
+
+Paid tool · $2 per scan
+
+# Anonymity Check
+
+Before you hit submit on a double-blind manuscript, run a leak scan. Flags author names, institution mentions, grant numbers, IRB protocols, self-citation patterns, named software artifacts, and author-owned URLs — anywhere they slipped into the body.
+
+Secure checkout via Stripe. One-time payment.
+
+Nothing is kept after delivery. The result is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $2.
+
+## Sample output
+
+Sample output Show or hide
+
+# Anonymity Check
+**Result: 6 potential leaks detected.**
+Each item below should be removed or generalised before double-blind submission.
+
+## Self-citation patterns
+- **[CRITICAL]** Section 2, related work: "In our previous work [14], we found that review accuracy declines after the first hour of a session."
+- Fix: Rewrite in the third person ("Prior work [14] found ...") and keep [14] as an ordinary reference.
+
+## Institutions
+- **[MAJOR]** methods section: "Participants were recruited from the professional master's program at [University Name]."
+- Fix: Replace the name with "a large public university".
+
+## IRB and ethics protocol numbers
+- **[MAJOR]** methods section, ethics statement: "The study was approved by the [University Name] IRB under protocol 2024-0917."
+- Fix: Write "approved by the authors' institutional review board" and withhold the protocol number until acceptance.
+
+## Funding and grants
+- **[MAJOR]** page 14 acknowledgements: "This work was supported by NSF grant #[Grant Number]."
+- Fix: Remove the acknowledgements from the review copy and restore them in the camera-ready version.
+
+## Emails and URLs
+- **[CRITICAL]** page 6 footnote 3: "Materials and analysis scripts are available at github.com/[username]/sleep-review-study."
+- Fix: Link an anonymized copy of the repository for review, with commit history and author names removed.
+
+## Named software, datasets and systems
+- **[MINOR]** Section 3.2: "Defects were seeded with ReviewSeed, the tool we released last year."
+- Fix: Call it "a defect-seeding tool" and cite it as an anonymized reference.
+
+Illustrative example on a fictional manuscript; your result follows the same format.
+
+## What it catches
+
+- Author or co-author names in the body (e.g. "Smith et al." referring to the authors' own prior work).
+
+- Institution names — "at our institution X", lab names, hospital names.
+
+- Funder names and grant numbers ("NSF #1234567", "NIH R01…").
+
+- IRB / IACUC / ethics-board protocol numbers tied to a specific institution.
+
+- Author email addresses, author-owned GitHub repos, lab webpages.
+
+- Named software or datasets that trivially identify the authors.
+
+- "In our previous work [12]" self-citation patterns.
+
+## FAQ
+
+What about acknowledgements?
+
+We scan the body and abstract. Acknowledgement sections often live at the end of the manuscript and we'll catch leaks there too — but always review them manually before submission, especially if your editor strips them automatically.
+
+Is this a replacement for manual blinding?
+
+No. It's a safety net. Manual review of figures, supplementary materials, and metadata is still required.
+
+What does Purplelink retain?
+
+Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+
+
+---
+
+Source: https://purplelink.llc/tools/cover-letter/
+Title: Cover Letter Generator for Journal Submission - $2 | Purplelink
+
+← All tools
+
+Paid tool · $2 per letter
+
+# Cover Letter Generator
+
+A draft journal cover letter, calibrated to the journal you're submitting to. No hype, no superlatives. Built from your abstract and the journal name — we never receive your full manuscript.
+
+Secure checkout via Stripe. One-time payment.
+
+Nothing is kept after delivery. The letter is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $2.
+
+## Sample output
+
+Sample output Show or hide
+
+Dear Editor,
+
+Please consider our manuscript, "One Night Short: Sleep Restriction and Defect Detection in Code Review," for publication in Empirical Software Engineering.
+
+Our central finding is that a single night of restricted sleep was associated with a measurable drop in how many seeded defects experienced developers caught during code review.
+
+We believe the work fits the journal's focus on empirical studies of software engineering practice. Code review is a routine quality gate in most teams, yet the conditions under which reviewers work are rarely measured. The manuscript may interest readers working on reviewer performance, human factors, and the design of review workflows.
+
+In a within-subjects experiment, 42 professional developers reviewed matched pull requests once after a normal night of sleep and once after a night restricted to four hours, in counterbalanced order. Each change contained seeded defects of known type. Mean detection fell from 61% to 48% under restriction, with the largest drop for logic errors, while the number of false-positive comments did not change. The sample came from a single organization, and the effect may differ for chronic sleep loss; we discuss both limitations.
+
+This manuscript has not been published previously and is not under review elsewhere.
+
+Thank you for your time and consideration.
+
+Sincerely,
+
+[Corresponding Author Name]
+[Signature]
+
+Illustrative example on a fictional manuscript; your result follows the same format.
+
+## What you get
+
+- 200-350 word draft cover letter, calibrated to the journal's scope.
+
+- Methodology and key result summarised in plain prose.
+
+- Originality affirmation included.
+
+- Reviewer suggestions only when the abstract makes the expertise obvious — never invented.
+
+- Plain prose with paragraph breaks; placeholder for your contact name and signature.
+
+## FAQ
+
+Why no PDF upload?
+
+Cover letters are 95% built from the abstract and the target journal's scope. Skipping the full manuscript means we send much less of your unpublished IP to a third-party AI service. The trade-off: the letter cites the manuscript only at the level of detail your abstract supports.
+
+Can you target a specific reviewer or editor?
+
+You can paste an "author note" with that context when you compose. The model will weave it into the letter if it fits naturally.
+
+What model produces the letter?
+
+Anthropic's Claude Sonnet 4.5 with temperature 0.1. The same model + settings that power our main Paper Review tool.
+
+What does Purplelink retain?
+
+Nothing after delivery. The letter is deleted from our servers the moment you retrieve it. Your abstract and journal name are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+
+
+---
+
+Source: https://purplelink.llc/tools/resume-review/
+Title: Resume Review — AI Red Team for Your Resume | Purplelink
+
+← All tools
+
+$5 one-time · results in minutes
+
+# Resume Review
+
+Would this resume clear an ATS filter and make a hiring manager read past the first six seconds? A three-persona AI panel — ATS Screener, Hiring Manager Skeptic, Recruiter Red Flags — reads your resume the way the people actually screening it would.
+
+Secure checkout via Stripe.
+
+Nothing is kept after delivery. The report is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $5.
+
+## Sample report
+
+What does the report look like? View sample
+
+# Resume Review
+
+## ATS Compatibility
+
+- Section header "Experience" is fine, but "Where I've Worked" (used for
+the second job block) won't parse: most ATS filters look for a small
+set of standard headers. Rename to "Experience" or "Work History."
+- Dates in "Jan 2022 - Present" format parse correctly. The single entry
+written as "22-24" does not; spell out the years.
+
+## Content & Impact
+
+- "Responsible for managing social media accounts" is a duty, not a
+result. Rewrite using a number you already have on this resume:
+"Grew Instagram following from 4,200 to 11,800 followers in 9 months."
+- Three bullets in the 2021 role start with "Helped with...": pick the
+one concrete outcome each bullet is actually describing and lead with
+that instead.
+
+## What a Recruiter Would Flag
+
+- 7-month gap between the Acme and Globex roles isn't explained anywhere
+on the resume. Doesn't need a paragraph, just a single line ("Family
+leave, 2022") to keep a recruiter from guessing.
+- Job title says "Senior Analyst" here but "Analyst II" on LinkedIn per
+your notes; pick one and make them match.
+
+## Action Checklist
+
+- [A] Rename "Where I've Worked" to "Experience."
+- [A] Add the missing number to the social-media bullet.
+- [B] Add a one-line explanation for the 7-month gap.
+- [C] Reconcile the job title between this resume and LinkedIn.
+
+## What the report includes
+
+- ATS Compatibility. Formatting, section headers, and date-format issues that would break an Applicant Tracking System's parsing — before a human ever sees the resume.
+
+- Content & Impact. Every bullet that reads as generic duty-listing instead of a quantified result, with a suggested rewrite using only the facts you already gave it.
+
+- What a Recruiter Would Flag. Employment gaps, short stints, inconsistent dates, missing basics — framed as what would come up in a first-pass screen, not a judgment.
+
+- Action Checklist. A/B/C-prioritised list of what to fix before you send this resume out.
+
+## FAQ
+
+What file formats do you accept?
+
+PDF or DOCX, up to 20 MB.
+
+Will this rewrite my resume for me?
+
+No — it critiques what you have and suggests specific rewrites for weak bullets, but you decide what to change. It won't invent facts, dates, or metrics you didn't provide.
+
+Does it check for ATS compatibility?
+
+Yes — one of the three personas specifically simulates how an Applicant Tracking System would parse your resume's formatting, section headers, and keywords.
+
+What does Purplelink retain?
+
+Nothing after delivery. The report is deleted from our servers the moment you retrieve it. Your resume is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+
+
+---
+
+Source: https://purplelink.llc/scholar-utility-belt/
+Title: Scholar Utility Belt: Journal Rankings and h-index in Google Scholar | Purplelink
+
+← Products
+
+Free Chrome extension
+
+# Scholar Utility Belt
+
+Scholar Utility Belt is a free Chrome extension that adds journal quality badges, citation velocity, author metrics, lineage trees and retraction alerts to Google Scholar results. The ranking lists ship inside the extension, so nothing you search leaves your browser.
+
+Add to Chrome, free
+Source on GitHub
+
+About 1,000 researchers use it. Rated 4.5 out of 5 from 16 ratings on the Chrome Web Store.
+
+What it adds
+
+## Context next to every result
+
+### Journal quality badges
+
+ABDC, FT50, UTD24 and SJR rankings shown beside each result, so you can see where a paper appeared without looking the venue up.
+
+### Citation velocity
+
+How quickly each paper is being cited, shown next to its total citation count.
+
+### Author metrics
+
+h-index and g-index for authors, shown on their Google Scholar profiles.
+
+### Academic lineage
+
+Academic lineage trees that place an author among their advisors and students.
+
+### Retraction alerts
+
+A visible warning on results that have been retracted, before you cite them.
+
+### Private by design
+
+No account, no analytics, no remote lookups for rankings. MIT-licensed, so you can read exactly what it does.
+
+From the same studio
+
+## Found the papers. Now write yours.
+
+ModernTex is a native LaTeX editor for Mac with BibTeX completion that searches by author or title. Paper Review reads your manuscript before a journal does. Both are made by the same one-person studio as this extension.
+
+See ModernTex, $10
+Paper Review, from $9
+
+## Frequently asked questions
+
+Is Scholar Utility Belt free?
+
+Yes. It is free and MIT-licensed, with no paid tier.
+
+Does it track what I search?
+
+No. The journal ranking lists are bundled with the extension, so badges are looked up locally in your browser. There is no account and no analytics.
+
+Which journal lists does it show?
+
+ABDC, the Financial Times 50 (FT50), the UT Dallas 24 (UTD24) and SCImago Journal Rank (SJR).
+
+Which browsers does it support?
+
+Google Chrome, from the Chrome Web Store.
+
+
+---
+
+Source: https://purplelink.llc/tools/
+Title: LaTeX Tools and AI Paper Review for Academics | Purplelink
+
+← Home
+
+Tools for academics
+
+# LaTeX tools and AI manuscript review
+
+Free in-browser tools for LaTeX, citations and document conversion, plus pay-per-use AI checks for a manuscript before it goes out. The free tools process files in memory and never store them. Each paid tool explains its data handling on its own page.
+
+## AI manuscript review · paid
+
+Pay-per-use AI checks for a manuscript before it goes out: $2 to $15 each, no account, nothing kept after delivery. Volume packs for labs.
+
+From $9
+
+### Paper Review
+
+Four AI reviewers read your manuscript before a journal does: methods, statistics, data integrity and the editor's view, with every reference checked against CrossRef. Markdown report and annotated PDF.
+
+Start a review →
+
+$6
+
+### Response to Reviewers
+
+Red-team your reply letter before it goes back to the editor.
+
+Check my response →
+
+$3
+
+### Citation Gap Analysis
+
+Find the prior work your manuscript should cite but doesn't.
+
+Find the gaps →
+
+$2
+
+### Anonymity Check
+
+Catch double-blind leaks a desk reject would catch first.
+
+Scan my manuscript →
+
+$2
+
+### Cover Letter
+
+A calibrated draft built from your abstract and target journal.
+
+Draft my letter →
+
+$2
+
+### Revision Review
+
+Confirm your revisions actually addressed the original review.
+
+Check my revision →
+
+From $38
+
+### Volume Packs
+
+Discounted Paper Review tokens for labs and repeat use. Never expire.
+
+See pack pricing →
+
+$5
+
+### Resume Review
+
+Would your resume clear an ATS filter and a real screen?
+
+Start a review →
+
+## LaTeX manuscript tools
+
+Compile, compare, and produce publication-ready artifacts from .tex sources.
+
+### LaTeX to PDF
+
+Upload a .tex file and get a compiled PDF. pdfLaTeX or XeLaTeX.
+
+### LaTeX Diff
+
+Upload two versions and get a tracked-changes comparison PDF.
+
+### Equation Renderer
+
+Paste LaTeX math and download a high-resolution PNG image.
+
+### LaTeX Table Generator
+
+Paste CSV or TSV data and get a clean booktabs LaTeX table.
+
+## Convert between formats
+
+Move documents in and out of LaTeX, Markdown, and Word.
+
+### LaTeX to Word
+
+Convert a .tex paper into a standard double-spaced Word manuscript.
+
+### Word to LaTeX
+
+Upload a .docx and download a .tex starting point via Pandoc.
+
+### Markdown to PDF or Word
+
+Paste or upload Markdown and download a clean PDF or .docx.
+
+### File to Markdown
+
+Convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to clean Markdown.
+
+### PDF to Structured Data
+
+Extraction-grade PDF parsing: reading-order Markdown and RAG-ready JSON, with tables, math as LaTeX, and figure captions.
+
+## Citations and bibliographies
+
+Build, verify, and convert reference lists across the major formats.
+
+### BibTeX Validator
+
+Check citations for missing fields, dead DOIs, and AI hallucinations.
+
+### BibTeX Builder
+
+Paste DOIs or arXiv IDs and download a ready-to-use .bib file.
+
+### Citation Generator
+
+Look up a DOI, ISBN, or arXiv ID and get APA, MLA, Chicago, or IEEE.
+
+### Reference Converter
+
+Convert citations between BibTeX, RIS, and EndNote formats.
+
+### Reference Formats by Venue
+
+What IEEE S&P, USENIX Security, ACM CCS, MISQ, and other venues expect, preset to convert.
+
+## Utilities
+
+A few odds and ends that pair well with the tools above.
+
+### PDF Tools
+
+Merge, split, and compress PDFs. Merge and split run in your browser.
+
+### Word Counter
+
+Live word, character, sentence, and reading-time stats in your browser.
+
+## Desktop apps from the same studio
+
+For the work these tools sit next to: writing the manuscript, and keeping track of where it went.
+
+7-day trial, then $10 once
+
+### ModernTex for Mac
+
+A native LaTeX editor with synced PDF preview, BibTeX completion by author or title, and a submission check.
+
+See ModernTex →
+
+Free
+
+### Vitae for Mac
+
+Submissions, grants, projects and your CV in one local-first app, with an optional Plus subscription.
+
+See Vitae →
+
+## Privacy-respecting tools, free and paid
+
+The free tools are LaTeX, citation, and conversion utilities for academic authors — compile to PDF, convert to and from Word, diff versions, validate BibTeX, render equations, and more. They run in your browser against a hosted backend; your files are processed in memory and discarded the moment your download is ready, so unpublished manuscripts stay private.
+
+The paid Paper Review tool runs an AI red-team review of an uploaded manuscript. Because that review depends on a third-party language model (Anthropic's Claude API), its data-handling guarantees are necessarily different from the in-house free tools; the Paper Review page discloses retention details clearly before you upload.
+
+## Frequently asked questions
+
+Are these tools free?
+
+The LaTeX and citation utilities are free with no account, no install, and no rate-limit beyond a daily fair-use cap. The Paper Review tool is paid (from $9 per review).
+
+Do you store my files?
+
+For the free tools: no. Files are processed in memory in an ephemeral container and discarded immediately — nothing is written to durable storage or logs. For the paid Paper Review tool: your manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring (not for training). Purplelink itself does not retain the manuscript or the resulting review after delivery. See the Paper Review page for full details.
+
+Do I need to install anything?
+
+No. Every tool runs entirely in your browser against a hosted backend — no LaTeX installation, account, or sign-up needed.
+
+If these save you time, you can leave a tip — it helps keep them free and online.
+
+
+---
+
+Source: https://purplelink.llc/tools/latex-to-pdf/
+Title: Compile LaTeX to PDF Online - Free | Purplelink LLC
+
+← All tools
+
+Free web tool
+
+# Compile LaTeX to PDF
+
+Upload a .tex file or a project .zip (figures, .bib, .sty included) and download a compiled PDF. Your files are processed in memory and never stored.
+
+Drag a .tex file or project .zip here, or click to choose. Max 5 MB (.tex) / 10 MB (.zip).
+
+Engine:
+
+pdfLaTeX
+XeLaTeX
+
+Accepts a single .tex or a project .zip with main.tex at the root. Files are never written to disk.
+
+## How to compile LaTeX to PDF online
+
+- Single file: drag your .tex onto the upload area, or click to choose it (up to 5 MB).
+
+- Multi-file project: zip your project with main.tex at the root - the same layout Overleaf exports - and upload the .zip (up to 10 MB).
+
+- Pick your engine - pdfLaTeX (default) or XeLaTeX.
+
+- Click Compile to PDF. The PDF previews in your browser and downloads with one click.
+
+## About this tool
+
+This is a free online LaTeX compiler. It runs latexmk with your chosen engine, handling the multi-pass build (including BibTeX/Biber) automatically. Upload a single .tex or a full project .zip.
+
+Are my files stored?
+
+No. Your files are compiled in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs.
+
+Can I upload a project with figures and a .bib file?
+
+Yes. Zip your project with main.tex at the root (figures, .bib, .cls, .sty, etc. can be in subdirectories) and upload the .zip. The tool extracts everything and compiles with latexmk, including biber/bibtex passes.
+
+Which engines are supported?
+
+pdfLaTeX and XeLaTeX. LuaLaTeX is not supported for security reasons.
+
+From the team behind these tools
+
+## Writing LaTeX on a Mac?
+
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+
+Get ModernTex — $10
+See what it does
+
+Requires macOS 14 or later. Free 7-day trial, no account.
+
+If this saves you time, you can leave a tip — it helps keep these tools free and online.
+
+
+---
+
+Source: https://purplelink.llc/tools/bib-validator/
+Title: BibTeX Validator - Detect AI Hallucinations | Purplelink LLC
+
+← All tools
+
+Free web tool
+
+# BibTeX Validator
+
+Upload or paste a .bib file to check syntax, missing fields, dead DOIs, and verify your citations actually exist — including author and year correctness. Download a corrected .bib where CrossRef returns a confident match. Useful for catching AI-hallucinated references. Files are never stored.
+
+Drag a .bib file here, or click to choose. Max 2 MB.
+
+Paste up to 2 MB of BibTeX directly. Same checks, no file needed.
+
+Checks to run
+
+Syntax & required fields (always on)
+
+DOI resolution - verify each DOI is a live link
+
+CrossRef - check titles exist in CrossRef (catches hallucinations)
+
+Semantic Scholar - check titles in Semantic Scholar
+
+Enabling DOI or database checks will send entry titles and authors to external services (doi.org, CrossRef, Semantic Scholar).
+
+Files are never written to disk or logged.
+
+## How to validate a BibTeX file online
+
+- Upload your .bib file (drag-and-drop or click), or switch to Paste text and drop the BibTeX directly. Up to 2 MB.
+
+- Syntax and required-field checks run automatically. Enable DOI resolution and/or CrossRef / Semantic Scholar checks to verify your citations actually exist (and that authors and years match).
+
+- Click Validate .bib. A color-coded table shows each entry. Click any row to see the original BibTeX, plus the corrected version when CrossRef returned a confident match. Use the filter chips to focus on warnings or errors.
+
+- Download the annotated .bib (your file with status comments) or the corrected .bib (entries rewritten from CrossRef metadata where confidence is high).
+
+## About this tool
+
+This tool validates BibTeX files in layers: syntax + completeness (always), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected .bib for high-confidence matches. It's particularly useful for catching AI-hallucinated citations that have plausible-looking metadata but don't correspond to real papers.
+
+Can it detect AI-hallucinated citations?
+
+Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title and author list match a real paper, and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on catching AI-hallucinated citations.
+
+Are my files stored?
+
+No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services - this is disclosed before you run the check.
+
+What does the annotated .bib contain?
+
+Your original .bib file with a comment line above each entry showing its validation status: missing required fields, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.
+
+What is the corrected .bib?
+
+For each entry where CrossRef returned a high-confidence match (title similarity at least 85%), the corrected .bib replaces the entry's fields with authoritative metadata: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a confident match are passed through unchanged. Each rewritten entry is marked with a "CORRECTED from CrossRef" comment so you can audit the changes.
+
+How does the author check work?
+
+Names are normalized to canonical last-name tokens (folding "John Smith", "Smith, John", "J. Smith", and "Müller" → "muller" all to the same key) and compared as a set against the authoritative author list. The score is the Jaccard overlap, so partial matches still get partial credit.
+
+What BibTeX entry types are supported?
+
+article, book, inproceedings, proceedings, phdthesis, mastersthesis, techreport, misc, incollection, inbook, booklet, manual, conference, unpublished, and thesis.
+
+## The other kind of citation problem
+
+A clean .bib fixes citations that are malformed. It cannot tell you about a citation that is well-formed and does not support the sentence attached to it. Paper Review reads it the way a referee would: four reviewer personas argue over the manuscript, every citation is checked against the live record, and figures are scanned for integrity problems. The report comes back in about ten minutes.
+
+From $9 per review, Anonymity Check bundled free. See what the report covers →
+
+From the team behind these tools
+
+## Writing LaTeX on a Mac?
+
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+
+Get ModernTex — $10
+See what it does
+
+Requires macOS 14 or later. Free 7-day trial, no account.
+
+If this saves you time, you can leave a tip — it helps keep these tools free and online.
+
+
+---
+
+Source: https://purplelink.llc/tools/citation-generator/
+Title: Free Citation Generator — APA, MLA, IEEE | Purplelink
+
+← All tools
+
+Free web tool
+
+# Citation Generator
+
+Enter a DOI, arXiv ID, or ISBN and get a formatted citation in four styles - APA 7th, MLA 9th, Chicago (author-date), and IEEE. Copy any of them with one click, or type the details in by hand.
+
+DOI, arXiv ID, or ISBN
+
+DOI and ISBN lookups go directly from your browser to Crossref / Open Library. arXiv lookups relay through our server, since arXiv does not allow direct browser access - we never log or store anything you enter.
+
+## How to generate a citation
+
+- Paste a DOI, arXiv ID, or ISBN into the box (a doi.org or arxiv.org URL works too).
+
+- Click Generate. Your browser looks the reference up and formats it in four styles.
+
+- Click Copy on the style you need. Don't have an identifier? Use enter details manually instead.
+
+- Proofread the result against your style guide - automated metadata is good but not flawless.
+
+## About this tool
+
+This is a dependency-free citation generator. It resolves DOIs through Crossref, ISBNs through Open Library, and arXiv IDs through the arXiv API, then formats the metadata into APA 7th, MLA 9th, Chicago author-date, and IEEE styles entirely in your browser.
+
+Which identifiers are supported?
+
+DOIs (e.g. 10.1038/nphys1170 or a doi.org URL), arXiv IDs (e.g. 1706.03762 or an arxiv.org URL), and ISBN-10/13 (hyphens optional). You can also fill in the manual entry form for anything without an identifier, such as a website.
+
+How accurate are the citations?
+
+They are built from the metadata that Crossref or Open Library returns, which is usually accurate but occasionally incomplete or inconsistently capitalised. Treat the output as a strong draft and always check author order, title case, page ranges, and punctuation against your required style.
+
+Why might an arXiv lookup fail?
+
+Usually because the identifier doesn't match a paper on arXiv, or arXiv is briefly unreachable. If a lookup fails, the tool will tell you - try the article's DOI instead (most arXiv papers have one once published), or use manual entry.
+
+Is anything stored?
+
+No. DOI and ISBN lookups go directly from your browser to the public APIs. arXiv lookups relay through our server, since arXiv doesn't allow direct browser access. All formatting happens locally either way, and we never log or store anything you enter.
+
+From the team behind these tools
+
+## Writing LaTeX on a Mac?
+
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+
+Get ModernTex — $10
+See what it does
+
+Requires macOS 14 or later. Free 7-day trial, no account.
+
+If this saves you time, you can leave a tip — it helps keep these tools free and online.
+
+
+---
+
+Source: https://purplelink.llc/globepin/
+Title: GlobePin - Track Every Place You've Been | Purplelink LLC
+
+← All products
+
+iOS
+Free · v1.0 · On the App Store
+
+# GlobePin
+
+Pin the places you've been. Track the flights you've taken. Set goals for where you're going next. GlobePin puts your entire travel history on a beautiful, interactive map.
+
+Download on the App Store
+What it does
+
+Download on the
+App Store
+
+In the app
+
+## See where you've been
+
+Features
+
+## Your whole travel history in one place
+
+### Place tracking
+
+Log every city, landmark, and destination you've visited. Pin them to a map and build a visual record of everywhere you've been.
+
+### Flight tracking
+
+Scan your boarding pass to log a flight in seconds. GlobePin builds a route map of every flight you've ever taken, with stats on total distance and airports visited.
+
+### Globe visualization
+
+See your travel history rendered on a 3D interactive globe. Spin it, zoom in, and see your pins as a spatial record of your life's movement.
+
+### Stats dashboard
+
+Countries visited, cities logged, total distance traveled, continents covered. The numbers that tell the story of where you've been.
+
+### Travel goals
+
+Set goals for destinations you want to reach - countries, continents, bucket-list places. Track progress and watch the gap close.
+
+### Shareable postcards
+
+Generate shareable travel postcards from your visit history. Share them on Instagram or keep them as personal mementos.
+
+### iCloud sync
+
+Your travel data stays in sync across all your devices via CloudKit. Syncs automatically. Stays private.
+
+### Anniversary reminders
+
+Get notified when it's been a year since you visited a place. A quiet nudge to return - or a reminder of how far you've traveled.
+
+## GlobePin is out.
+
+Free on the App Store, for iPhone and iPad running iOS 17 or later. Your travel data syncs over your own iCloud account, so there is nothing to sign up for and nothing stored on our servers.
+
+Download on the App Store
+Why we built it
+
+Requires iOS 17 or later. Privacy Policy
+
+## Frequently asked questions
+
+Is GlobePin available yet?
+
+Yes. GlobePin 1.0 was released on the App Store on 3 September 2026. It is free and needs iOS 17 or later. Download it here.
+
+How do I log a flight?
+
+Tap the + button and enter your departure and arrival airports. GlobePin calculates the route, distance, and duration, then adds the flight to your map, stats, and timeline automatically.
+
+Does GlobePin sync across devices?
+
+Yes. GlobePin uses iCloud sync via CloudKit - Apple's own infrastructure - so your travel data is available across all your iOS devices without a separate account or subscription.
+
+What does GlobePin cost?
+
+Nothing. GlobePin is free on the App Store.
+
+What's the difference between GlobePin and other travel trackers?
+
+GlobePin tracks the complete travel record: every place visited, every flight taken, and every destination on the list. It combines a 3D globe view, detailed flight statistics, travel goals, anniversary reminders, and exportable travel postcards - all synced via iCloud, no social network required.
+
+## Also from Purplelink
+
+- 
+
+iOS
+In development
+
+Haea
+
+A health app for iPhone that brings sleep, nutrition, activity, and biometrics together to surface patterns you would otherwise miss. Like GlobePin, it keeps your data on your own devices: all analysis runs on the phone. Join the waitlist to hear when it launches.
+
+
+---
+
+Source: https://purplelink.llc/haea/
+Title: Haea - On-Device Health Analytics | Purplelink LLC
+
+← All products
+
+iOS
+In development · 2026
+
+# Haea
+
+Your complete health picture, on your phone. Haea integrates sleep, nutrition, activity, and biometrics to surface patterns you'd otherwise miss - through advanced ML, entirely on-device.
+
+Join the waitlist
+
+Coming to the
+App Store
+
+In the app
+
+## Your health, at a glance
+
+Free
+
+## Free features
+
+### Complete logging
+
+Log food, weight, water, exercise, and mood in one place. Fast entry, no friction. Connects to HealthKit to pull in data you've already logged.
+
+### Trend charts
+
+7-day and 30-day views of every metric. See where things are heading at a glance without digging through tables.
+
+### Activity timeline
+
+A unified feed of everything you've logged - workouts, meals, weight entries, sleep - in chronological context.
+
+### Daily briefing
+
+An optional 8am summary of your key metrics from the day before. One short morning summary.
+
+Premium - $1.99 / month or $14.99 / year
+
+## Premium analytics
+
+### Energy Balance & TDEE
+
+Calculate your true daily energy expenditure from actual weight and calorie data. Auto-detects eating patterns and surfaces your real caloric balance over rolling windows.
+
+### Circadian Rhythm Intelligence
+
+Tracks your biological circadian phase. Identifies your optimal windows for energy, focus, and sleep - then shows the transition between active and wind-down phases.
+
+### Running Analytics
+
+FIT file export, colored route maps with pace visualization, mean max power curves, and polarized training zone breakdown for serious runners.
+
+### Advanced ML models
+
+Dose-response curves, Granger causality analysis, adaptation tracking, and Kalman-filtered recovery state estimation. What actually causes what in your health data.
+
+### Biological metrics
+
+Biological age estimation, VO₂ max tracking, DFA-α1 heart rate variability analysis, and circadian age (CosinorAge). Metrics that move, not just snapshots.
+
+### Private by design
+
+No cloud sync. No third-party SDKs. No ads. All analytics run on-device using GRDB.sqlite local storage. Your health data never leaves your phone.
+
+Early access
+
+## Be first to know when Haea ships.
+
+Add your email and you'll get one message the day Haea hits the App Store. Nothing else.
+
+We'll only use your email to notify you at launch. Privacy Policy · Why on-device →
+
+## Frequently asked questions
+
+When does Haea ship?
+
+Haea is expected to launch in 2026. Join the waitlist above to be notified the moment it's available.
+
+Is there a free tier?
+
+Yes. Haea has a free tier for core health logging and charts. Premium features ($1.99/month or $14.99/year) premium adds: Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation.
+
+Does Haea sync to the cloud?
+
+No. All your health data stays on your device. Haea uses no cloud sync, no third-party analytics SDKs, and no advertising frameworks. Your data never leaves your iPhone.
+
+What health data sources does it support?
+
+Haea reads from Apple Health and integrates sleep, nutrition, weight, exercise, and biometric data including heart rate, HRV, and blood oxygen.
+
+Is Haea HIPAA-compliant?
+
+Haea is designed with privacy-first architecture: all data is stored on-device with no cloud transmission or third-party access. While Haea is a consumer app and not a covered entity under HIPAA, its design exceeds typical health app privacy standards - there is simply no data to breach on our end.
+
+
+---
+
+Source: https://purplelink.llc/about/
+Title: About | Purplelink LLC
+
+# About Purplelink
+
+Atlanta, Georgia · Founded 2026 · Georgia LLC
+
+Purplelink LLC is a one-person software studio building Mac apps and manuscript tools for academic researchers, plus iOS apps for travel and health. The mission is simple: make software that solves real problems and lasts - not software that ships fast and deteriorates.
+
+## Who makes this
+
+I'm Benjamin Ampel, a researcher in cybersecurity, AI and information systems, based in Atlanta. I've spent a lot of time in LaTeX: writing manuscripts, watching compile errors scroll by, checking references by hand before a deadline. The apps that stuck, for me, were always the ones that solved a specific problem I had, for people I understood. Purplelink is where I build those.
+
+It is a one-person studio, so the person who answers your email is the person who wrote the code. If something is broken or missing, write to ben@purplelink.llc.
+
+Ben
+
+## What we build
+
+ModernTex, Vitae, GlobePin and the web tools are shipping. Haea is in active development:
+
+### ModernTex
+
+A native macOS LaTeX studio for academic researchers. Multi-file editing, synchronized PDF preview, BibTeX autocomplete, and submission-readiness checks built for the manuscript workflow. Shipping since September 2026, now at version 1.3; a free 7-day trial, then $10 once.
+
+### Vitae
+
+A local-first Mac app for academics: submissions, grants, projects and your CV in one place. Free, with an optional Vitae Plus subscription from $3 a month.
+
+### Paper Review
+
+A pre-submission read of your manuscript: four AI reviewers, a check of every reference against CrossRef, and a figure scan. From $9, no account, nothing kept after delivery.
+
+### Free tools
+
+LaTeX to PDF, BibTeX validation, citation generation, LaTeX diff and more, in your browser. Plus Scholar Utility Belt, a free Chrome extension for Google Scholar.
+
+### Haea
+
+An on-device iOS health analytics platform. Advanced ML models for recovery, circadian rhythm, and biological age - all running locally with no cloud sync.
+
+### GlobePin
+
+An iOS travel tracking app for mapping everywhere you've been, every flight taken, and every destination on the list. 3D globe, stats, goals, and shareable postcards. Version 1.0 shipped in September 2026, free on the App Store.
+
+## How we build
+
+### Native first
+
+Every app is written in Swift for the Apple platform it belongs on. No cross-platform shortcuts. Fast, native, and coherent.
+
+### Privacy by design
+
+Haea runs fully on-device. No cloud sync, no analytics SDKs, no data sold. Privacy isn't a policy - it's an architecture decision.
+
+### Craft over speed
+
+Software that lasts takes more time to build. The tradeoff is worth it: apps people actually keep on their phones and open every day.
+
+### Small and focused
+
+Purplelink is a one-person studio. Small means accountable: every line of code and every design decision has an owner.
+
+## Photography
+
+Purplelink also sells Benjamin Ampel's travel and landscape photographs as canvas, framed, and fine art prints. The collection covers the Swiss Alps, Japan, Iceland, Germany, and the Arizona desert. Browse it on Fine Art America, or read how the collection is organized.
+
+## Contact
+
+For inquiries, press, or general questions: ben@purplelink.llc
+
+
+---
+
+Source: https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/
+Title: Methodology Problems Peer Reviewers Flag, and How to Fix Them | Purplelink LLC
+
+← All guides
+
+Guide
+
+# Methodology problems peer reviewers flag, and how to fix them
+
+By Benjamin Ampel · September 24, 2026
+
+Many reviewer comments on empirical papers are not about the idea. They are about the distance between what a paper claims and what its methods can support. The same fifteen gaps come up again and again, and most of them have names. This guide defines each one, shows what it looks like on the page, and explains how to close it before a reviewer finds it.
+
+Each section gives a one-sentence definition, why reviewers care, a sentence of the kind that draws the comment, and the fix. The example sentences are invented but typical. Primary literature is listed in the references, and each section links to a shorter explainer you can send to a co-author.
+
+None of these problems means a paper is wrong. They mean it has not yet shown that it is right. Most can be fixed with an extra table, a clearer methods paragraph, or narrower wording in the abstract.
+
+## Statistics and inference
+
+The first four problems share a root. A p-value means what it claims only if the analysis was fixed before the data could influence it. Each is a different way the data ends up choosing the analysis.
+
+### p-hacking
+
+p-hacking is running several analyses of the same data and reporting the ones that reach statistical significance while leaving the others out.
+
+Why reviewers care. A 5% significance threshold assumes one planned test. Simmons, Nelson and Simonsohn (2011) showed by simulation that a handful of ordinary, individually defensible choices (picking between two correlated outcome measures, adding participants after an early look, controlling for a covariate, dropping one condition) could together push the false-positive rate from 5% to more than 60%. Head et al. (2015) later found distributions of reported p-values across many fields that are consistent with p-hacking. Reviewers look for the traces: several p-values just under .05, measures in the methods that never reach the results, and covariates that appear in one model but not the next.
+
+How it shows up. A results paragraph such as: Participants in the treatment condition reported higher satisfaction (p = .047); no significant differences emerged on the remaining measures, which are not discussed further. "Not discussed further" tells the reviewer other tests were run and set aside.
+
+How to fix it. Decide the primary outcome and analysis before looking at the data, and write the decision down somewhere with a timestamp, such as a preregistration (Nosek et al., 2018). Report every measure, every condition and every exclusion, and if you excluded observations or added a covariate, also report the result without that choice, as Simmons and colleagues recommend. State how the sample size was decided, and label any unplanned analysis as exploratory.
+
+Short explainer: p-hacking
+
+### The garden of forking paths
+
+The garden of forking paths is the set of reasonable, data-dependent analysis choices a researcher could have made, which inflates false positives even when only one analysis was actually run.
+
+Why reviewers care. Gelman and Loken (2013) introduced the term to describe a problem that needs no fishing at all. A researcher runs one analysis in good faith, but the exclusion rule, the transformation, the subgroup and the covariate set were each chosen after seeing the data. Had the data come out differently, a different set of choices would have looked just as reasonable, so the single reported test carries the same inflated error rate as an explicit search (Gelman & Loken, 2014).
+
+How it shows up. A methods sentence such as: Because reaction times were positively skewed, we log-transformed them and excluded trials more than 2.5 standard deviations from each participant's mean. Every clause is standard practice, but "because" signals that the choices followed the data.
+
+How to fix it. Preregister the exclusion rules, transformations and covariates, or state that they follow an established lab or field convention and cite it. Where choices were made after seeing the data, show that they do not drive the result. A multiverse analysis reports the estimate under every reasonable combination of choices (Steegen et al., 2016), and a specification curve plots those estimates in order so the reader can see how many support the claim (Simonsohn, Simmons & Nelson, 2020).
+
+Short explainer: garden of forking paths
+
+### HARKing
+
+HARKing (hypothesizing after the results are known) is presenting a hypothesis that was formed after seeing the data as if it had been stated before the study began.
+
+Why reviewers care. Kerr (1998) named the practice and set out its costs. A hypothesis suggested by a pattern in the data cannot fail a test on that same data, so the "confirmation" carries no evidential weight. It also hides the original hypothesis, which may have failed. Reviewers become suspicious when every prediction is confirmed, or when predictions are oddly specific, such as an effect in exactly one subgroup.
+
+How it shows up. A results sentence such as: As predicted, the effect emerged only among participants high in need for cognition. If nothing earlier in the paper predicts that moderation, the reviewer will assume the prediction came after the finding.
+
+How to fix it. Keep a dated record of your hypotheses before analysis; a preregistration is the most credible version. In the paper, separate confirmatory from exploratory results under their own headings. An unexpected finding is worth reporting, as long as it is reported as unexpected and framed as a hypothesis for future work. Some journals accept Registered Reports, in which the introduction and methods are reviewed and accepted in principle before data collection (Chambers, 2013).
+
+Short explainer: HARKing
+
+### Multiple comparisons
+
+The multiple comparisons problem is that the chance of at least one false positive rises with every additional test run at the same significance threshold.
+
+Why reviewers care. At α = .05, each test of a true null hypothesis has a 5% chance of a false positive. Across 20 independent tests, the chance of at least one is 1 − 0.9520, about 64%, and the expected number of false positives is one. Reviewers count the tests, including those implied by tables, and compare that number to the number of starred cells.
+
+How it shows up. A sentence such as: We correlated each of the 12 personality facets with each of the 8 outcome measures; significant correlations are marked with an asterisk in Table 3. That is 96 tests; about five would reach p < .05 by chance.
+
+How to fix it. Say how many tests you ran and apply a correction that fits your goal. To control the chance of any false positive (the familywise error rate), use Bonferroni or Holm's step-down procedure, which never rejects fewer hypotheses than Bonferroni (Holm, 1979). When you are screening many hypotheses and can tolerate a known proportion of false discoveries, control the false discovery rate with the Benjamini-Hochberg procedure (Benjamini & Hochberg, 1995). Better still, designate a few primary comparisons in advance, so the correction applies to a short list.
+
+Short explainer: multiple comparisons
+
+## Samples and generalization
+
+One of these limits what a study can detect; the other limits whom the findings apply to.
+
+### Underpowered samples
+
+An underpowered sample is one too small to reliably detect an effect of the size the authors consider meaningful.
+
+Why reviewers care. Button et al. (2013) estimated the median statistical power of neuroscience studies at about 21% and explained why this matters even for positive results: when power is low, a significant finding is less likely to reflect a true effect, and the effect sizes that do reach significance tend to be overestimates. This follows from Ioannidis (2005), where the probability that a significant result is true depends on power, prior odds and bias. A reviewer who sees a small sample and a large effect reads the effect as a warning.
+
+How it shows up. A pairing such as: The sample size was based on previous studies in this area. followed later by With 18 participants per group, the difference was significant (p = .03, d = 0.74), indicating a large effect of the intervention. The first is not a power analysis; the second is the pattern low power produces.
+
+How to fix it. Justify the sample size before collecting data. A power analysis should state the smallest effect size you care about, where that number comes from, the planned test, alpha and target power, and the resulting N. Lakens (2022) covers this and other defensible justifications. If the data are already collected, report a sensitivity analysis: the smallest effect your design could detect with 80% power. Avoid "observed power" computed from your own effect estimate; it is a transformation of the p-value and adds no information (Hoenig & Heisey, 2001).
+
+Short explainer: underpowered sample
+
+### WEIRD samples
+
+A WEIRD sample is drawn from Western, Educated, Industrialized, Rich and Democratic societies; the problem arises when findings from such a sample are presented as true of people in general.
+
+Why reviewers care. Henrich, Heine and Norenzayan (2010) reviewed comparative evidence across domains including visual perception, fairness, cooperation, spatial reasoning and self-concept, and found that WEIRD participants were often outliers rather than typical humans. Susceptibility to the Müller-Lyer illusion, for example, varies widely across societies. Arnett (2008) found that the great majority of participants in leading psychology journals came from the United States and a few other Western countries. A reviewer will check whether the abstract's claim is about the population sampled or about "people".
+
+How it shows up. An abstract sentence such as: These results show that people rely on intuition rather than deliberation when making moral judgments. where the methods describe 240 undergraduates at one US university.
+
+How to fix it. Report the sample's demographics in enough detail to judge its range. Match the wording of the conclusion to the population studied. Add a short statement of the constraints on generality, naming the populations, settings and materials to which you expect the result to extend and those to which you do not (Simons, Shoda & Lindsay, 2017). Where the claim needs to be universal, it needs data from more than one kind of society.
+
+Short explainer: WEIRD samples
+
+## Machine learning evaluation
+
+Machine learning papers usually make a comparative claim: method A beats method B on benchmark C. Each of the next five problems weakens one part of that comparison.
+
+### Test-train contamination
+
+Test-train contamination occurs when examples from the evaluation set, or close copies of them, are present in the data a model was trained or tuned on, so the test measures memory rather than generalization.
+
+Why reviewers care. Kapoor and Narayanan (2023) documented data leakage across many scientific fields that use machine learning, including preprocessing fitted on the full dataset, duplicates across splits, and splits that ignore dependence between samples. For large language models the risk is larger, because pretraining corpora are huge and benchmarks are public. Brown et al. (2020) ran an n-gram overlap analysis between their pretraining data and each benchmark and reported the results; reviewers now expect something similar.
+
+How it shows up. A methods sentence such as: We randomly split the 12,000 images into training (80%) and test (20%) sets. With several images per patient, the same patients land in both sets, and the model can score well by recognizing patients rather than disease.
+
+How to fix it. Split by the unit you want to generalize to (patient, user, document, site or time period), not by row. Fit normalization, feature selection and any other preprocessing inside the training split only. Deduplicate across splits with a near-duplicate check, not just exact matching. For pretrained models, prefer benchmarks released after the training data cutoff, report an overlap check against whatever training data you can inspect, and compare scores on items flagged as possibly contaminated with scores on the rest.
+
+Short explainer: test-train contamination
+
+### Cherry-picked seeds
+
+Cherry-picked seeds describes reporting a single training run, or the best of several, so that random run-to-run variation is presented as a difference between methods.
+
+Why reviewers care. Random initialization, data order, data splits and nondeterministic hardware all move the final score. Henderson et al. (2018) showed in deep reinforcement learning that two groups of runs of the same algorithm, differing only in random seed, could produce results that looked like two different algorithms. Bouthillier et al. (2021) catalogued the sources of variance in machine learning benchmarks and recommended randomizing as many of them as possible across runs. If the gap between methods is smaller than the spread across seeds, a single number per method does not support a ranking.
+
+How it shows up. A results sentence such as: Our method achieves 84.7% accuracy, a 0.6-point improvement over the strongest baseline (84.1%). with no mention of how many runs, no error bars, and the best number in each column in bold.
+
+How to fix it. Run several seeds for every method, including baselines, and say how many. Report the mean with a standard deviation or confidence interval, and report all runs rather than the best. For comparisons across many tasks or with few runs, Agarwal et al. (2021) recommend interval estimates such as stratified bootstrap confidence intervals and robust aggregates such as the interquartile mean. If a single run is all you can afford, say so plainly and soften the claim.
+
+Short explainer: cherry-picked seeds
+
+### Hyperparameter asymmetry
+
+Hyperparameter asymmetry is tuning the proposed method more thoroughly than the baselines it is compared against, so part of the reported gain comes from the extra tuning.
+
+Why reviewers care. Re-evaluations have found that reported gains shrink or disappear once baselines get the same tuning effort. Melis, Dyer and Blunsom (2018) found that standard LSTMs, tuned with large-scale automatic search, outperformed more recent architectures on language modeling benchmarks. Lucic et al. (2018) found that with enough hyperparameter search and random restarts, most GAN variants reached similar scores, and no tested variant consistently beat the original. Dodge et al. (2019) showed that which model looks best can depend on the tuning budget, and proposed reporting expected validation performance as a function of that budget.
+
+How it shows up. A methods sentence such as: Baselines were trained with the hyperparameters reported in their original papers; for our method, we selected the learning rate and dropout rate by grid search on the validation set.
+
+How to fix it. Give every method the same search procedure and the same number of trials, over ranges that are reasonable for each. Use the same preprocessing, augmentation, training length and early-stopping rule. Report the search space, the budget and the selected values for every method in an appendix. If you copy baseline numbers from earlier papers, say so and explain why the setups are comparable.
+
+Short explainer: hyperparameter asymmetry
+
+### Missing ablations
+
+A missing ablation is a proposed component whose individual contribution to the result was never tested by removing it and measuring the change.
+
+Why reviewers care. If a paper introduces several changes at once, the combined result cannot show which one mattered. Lipton and Steinhardt (2019) listed "failure to identify the sources of empirical gains" among the troubling trends in machine learning scholarship, noting cases where gains attributed to a new architecture actually came from tuning or from a single small change.
+
+How it shows up. A sentence such as: Combining the gated attention module, the curriculum schedule and the auxiliary contrastive loss, our model improves F1 by 3.2 points over the baseline. with no table showing what each of the three adds.
+
+How to fix it. Add an ablation table. Each row removes one component, or adds one to the baseline, with everything else held fixed, including the tuning budget. Run ablation rows with the same number of seeds as the main results; otherwise small differences between rows are noise. Include the row a skeptic would ask for, usually the baseline plus only the simplest change. If a component does not help, drop it or say so.
+
+Short explainer: missing ablations
+
+### LLM self-judge bias
+
+LLM self-judge bias is the tendency of a language model used as an evaluator to favor outputs from itself or its own model family, which inflates scores when the judge and the system under test are related.
+
+Why reviewers care. Zheng et al. (2023) found that GPT-4's judgments agreed with human preferences at a rate similar to agreement between humans. They also documented position bias (favoring the first or second answer), verbosity bias (favoring longer answers) and self-enhancement bias (favoring its own answers), while noting that their evidence on the last was limited. Panickssery, Bowman and Feng (2024) found that models can recognize their own outputs and that this ability is linked to preferring them. When the judge is related to a system being compared, the reviewer cannot tell how much of the gap is the judge.
+
+How it shows up. A methods sentence such as: Responses from our system and three baselines were rated for helpfulness on a 1 to 10 scale by the same model our system was fine-tuned from.
+
+How to fix it. Use a judge from a different model family than any system under test, or several judges,. Collect human ratings on a random subset and report how well the judge agrees with them. In pairwise comparisons, present each pair in both orders. Report response length. Publish the judge prompt and the exact model version so the evaluation can be rerun.
+
+Short explainer: LLM self-judge bias
+
+## Reporting, citations and figures
+
+These problems are not about the design of the study, but reviewers treat them as evidence of how carefully the rest was done.
+
+### Hallucinated citations
+
+A hallucinated citation is a reference that looks complete and plausible but does not correspond to a real publication, usually because it was produced by a generative AI tool.
+
+Why reviewers care. Language models generate references by predicting plausible text, not by looking papers up. Walters and Wilder (2023) asked ChatGPT to write short literature reviews and checked every citation: 55% of the GPT-3.5 citations and 18% of the GPT-4 citations were fabricated, and many of the real ones contained errors. Some fabrications pair real authors with a title they never wrote, or attach a real DOI to the wrong paper. A reviewer who cannot find a key reference will wonder what else was not checked.
+
+How it shows up. A sentence such as: Prior work has established that trust calibration improves human-AI team accuracy (Nguyen & Park, 2021). where the reference list gives a complete journal citation with volume, pages and DOI, and no such paper exists. (The citation here is invented to illustrate the pattern.)
+
+How to fix it. Check every reference against a bibliographic database before submission: resolve each DOI and confirm that it lands on the paper you meant, and search each title in Crossref or Google Scholar. For the references that carry your main claims, open the source and confirm that it supports the sentence you attached it to. Remove anything you cannot find.
+
+Short explainer: hallucinated citation
+
+### Figure presentation
+
+A figure presentation problem is a design choice in a chart, such as a truncated axis, missing or unlabeled error bars, or color-only encoding, that changes what a reader concludes from the data.
+
+Why reviewers care. Weissgerber et al. (2015) showed that bar graphs of continuous data hide the distribution: very different datasets, including ones with outliers or bimodal groups, can produce identical bars. Crameri, Shephard and Heron (2020) showed that rainbow color maps distort data by creating false boundaries, and that they are hard to read for people with color-vision deficiency.
+
+How it shows up. A text sentence such as: As Figure 3 shows, accuracy improved substantially in the treatment group. where Figure 3 is a bar chart with a y-axis running from 71% to 74%, six observations per group, and a caption reading only "Error bars show SE."
+
+How to fix it. For small samples, plot individual observations, alone or over a box or violin plot. Start bar charts at zero; for small differences, use a dot plot instead of cropped bars. In every caption, state what the error bars represent (standard deviation, standard error or a confidence interval) and the n behind them. Use perceptually uniform color maps, and pair color with shape, line style or direct labels. Check that text is readable at the journal's column width.
+
+Short explainer: figure presentation
+
+## Study design and registration
+
+The last two problems apply mostly to experiments with human or animal participants. In both cases a safeguard may well have been in place, but the manuscript does not give the reader enough to check it.
+
+### Blinding not evidenced
+
+Blinding not evidenced means a manuscript says a study was blinded without describing who was blinded, to what, and how the blinding was maintained.
+
+Why reviewers care. Blinding protects against expectation effects in participants, in those delivering an intervention, and in those measuring outcomes. The word alone does not say which were covered. Schulz and Grimes (2002) pointed out that labels such as "double-blind" are used inconsistently and argued that authors should state exactly who was blinded. The CONSORT statement for randomized trials asks for who was blinded after assignment and how (Schulz, Altman & Moher, 2010), and the ARRIVE 2.0 guidelines for animal research include blinding among their ten essential items (Percie du Sert et al., 2020).
+
+How it shows up. A single methods sentence such as: All behavioral scoring was performed blind to genotype. with no detail about who held the key or when it was opened.
+
+How to fix it. Name each group that was blinded: participants, experimenters, outcome assessors, data analysts. Say how allocation was concealed (who generated the codes, who held them, how samples or cages were labeled) and when the blind was broken relative to the analysis. If you tested whether blinding held, report the result. If blinding was not possible, say so, explain why, and describe what you did instead, such as using an objective outcome or an independent assessor.
+
+Short explainer: blinding not evidenced
+
+### Trial not registered
+
+Trial not registered describes a clinical trial reported without a public registry entry made before the first participant enrolled, which leaves readers unable to check whether the reported outcomes were the planned ones.
+
+Why reviewers care. In 2004 the International Committee of Medical Journal Editors announced that its member journals would consider a clinical trial only if it had been registered in a public registry, and for trials beginning enrollment after 1 July 2005, registered at or before the start of enrollment (De Angelis et al., 2004). The current ICMJE Recommendations keep the requirement and define a clinical trial broadly enough to include many behavioral interventions: any study that prospectively assigns people to an intervention to study its effect on a health outcome (ICMJE). Chan et al. (2004) compared trial protocols with the resulting publications and found that 62% of trials had at least one primary outcome that was changed, introduced or omitted.
+
+How it shows up. A methods section that begins: Participants were randomly assigned to the intervention or to usual care, and the primary outcome was change in HbA1c at 12 weeks. with no registration number in the paper, or a registry entry that names 24 weeks, or one dated after enrollment began.
+
+How to fix it. Register before the first participant enrolls and name the primary outcome and its time point precisely. Put the registry name and number in the abstract and methods. Make the reported primary outcome match the registered one. If it changed, report the change, when it was made and why. If a trial was registered late, say so rather than leaving the reviewer to find the date.
+
+Short explainer: trial not registered
+
+## Checking your own manuscript
+
+The most reliable check is a colleague who knows your field and reads the manuscript as a skeptic. A useful way to brief them is to send this list and ask which of these a reviewer would raise.
+
+If you want a first pass before that, Purplelink's Paper Review ($9) reads a manuscript PDF and reports methodology concerns in the terms used on this page. Several of these problems are flagged automatically, including hyperparameter asymmetry, missing sample-size justification, single-seed results, figure presentation problems and references that do not resolve, and findings link to the matching short explainer. It is advisory, it can be wrong, and it does not replace a person who knows your field.
+
+For citations alone, the free BibTeX Validator checks each entry in a .bib file against CrossRef and Semantic Scholar and flags entries that do not match a real paper. It runs in your browser and does not upload the file.
+
+## References
+
+- Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A., & Bellemare, M. G. (2021). Deep reinforcement learning at the edge of the statistical precipice. Advances in Neural Information Processing Systems 34 (NeurIPS 2021).
+
+- Arnett, J. J. (2008). The neglected 95%: Why American psychology needs to become less American. American Psychologist, 63(7), 602–614.
+
+- Benjamini, Y., & Hochberg, Y. (1995). Controlling the false discovery rate: A practical and powerful approach to multiple testing. Journal of the Royal Statistical Society: Series B (Methodological), 57(1), 289–300.
+
+- Bouthillier, X., Delaunay, P., Bronzi, M., Trofimov, A., Nichyporuk, B., Szeto, J., et al. (2021). Accounting for variance in machine learning benchmarks. Proceedings of Machine Learning and Systems 3 (MLSys 2021).
+
+- Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., et al. (2020). Language models are few-shot learners. Advances in Neural Information Processing Systems 33 (NeurIPS 2020).
+
+- Button, K. S., Ioannidis, J. P. A., Mokrysz, C., Nosek, B. A., Flint, J., Robinson, E. S. J., & Munafò, M. R. (2013). Power failure: Why small sample size undermines the reliability of neuroscience. Nature Reviews Neuroscience, 14(5), 365–376.
+
+- Chambers, C. D. (2013). Registered Reports: A new publishing initiative at Cortex. Cortex, 49(3), 609–610.
+
+- Chan, A.-W., Hróbjartsson, A., Haahr, M. T., Gøtzsche, P. C., & Altman, D. G. (2004). Empirical evidence for selective reporting of outcomes in randomized trials: Comparison of protocols to published articles. JAMA, 291(20), 2457–2465.
+
+- Crameri, F., Shephard, G. E., & Heron, P. J. (2020). The misuse of colour in science communication. Nature Communications, 11.
+
+- De Angelis, C., Drazen, J. M., Frizelle, F. A., Haug, C., Hoey, J., Horton, R., et al. (2004). Clinical trial registration: A statement from the International Committee of Medical Journal Editors. New England Journal of Medicine, 351(12), 1250–1251.
+
+- Dodge, J., Gururangan, S., Card, D., Schwartz, R., & Smith, N. A. (2019). Show your work: Improved reporting of experimental results. Proceedings of EMNLP-IJCNLP 2019.
+
+- Gelman, A., & Loken, E. (2013). The garden of forking paths: Why multiple comparisons can be a problem, even when there is no "fishing expedition" or "p-hacking" and the research hypothesis was posited ahead of time. Unpublished manuscript, Department of Statistics, Columbia University.
+
+- Gelman, A., & Loken, E. (2014). The statistical crisis in science. American Scientist, 102(6), 460–465.
+
+- Head, M. L., Holman, L., Lanfear, R., Kahn, A. T., & Jennions, M. D. (2015). The extent and consequences of p-hacking in science. PLoS Biology, 13(3).
+
+- Henderson, P., Islam, R., Bachman, P., Pineau, J., Precup, D., & Meger, D. (2018). Deep reinforcement learning that matters. Proceedings of the AAAI Conference on Artificial Intelligence (AAAI-18).
+
+- Henrich, J., Heine, S. J., & Norenzayan, A. (2010). The weirdest people in the world? Behavioral and Brain Sciences, 33(2–3), 61–83.
+
+- Hoenig, J. M., & Heisey, D. M. (2001). The abuse of power: The pervasive fallacy of power calculations for data analysis. The American Statistician, 55(1), 19–24.
+
+- Holm, S. (1979). A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 6(2), 65–70.
+
+- International Committee of Medical Journal Editors. Recommendations for the Conduct, Reporting, Editing, and Publication of Scholarly Work in Medical Journals, section on clinical trial registration. icmje.org.
+
+- Ioannidis, J. P. A. (2005). Why most published research findings are false. PLoS Medicine, 2(8), e124.
+
+- Kapoor, S., & Narayanan, A. (2023). Leakage and the reproducibility crisis in machine-learning-based science. Patterns, 4(9).
+
+- Kerr, N. L. (1998). HARKing: Hypothesizing after the results are known. Personality and Social Psychology Review, 2(3), 196–217.
+
+- Lakens, D. (2022). Sample size justification. Collabra: Psychology, 8(1).
+
+- Lipton, Z. C., & Steinhardt, J. (2019). Troubling trends in machine learning scholarship. ACM Queue, 17(1).
+
+- Lucic, M., Kurach, K., Michalski, M., Gelly, S., & Bousquet, O. (2018). Are GANs created equal? A large-scale study. Advances in Neural Information Processing Systems 31 (NeurIPS 2018).
+
+- Melis, G., Dyer, C., & Blunsom, P. (2018). On the state of the art of evaluation in neural language models. International Conference on Learning Representations (ICLR 2018).
+
+- Nosek, B. A., Ebersole, C. R., DeHaven, A. C., & Mellor, D. T. (2018). The preregistration revolution. Proceedings of the National Academy of Sciences, 115(11), 2600–2606.
+
+- Panickssery, A., Bowman, S. R., & Feng, S. (2024). LLM evaluators recognize and favor their own generations. Advances in Neural Information Processing Systems 37 (NeurIPS 2024).
+
+- Percie du Sert, N., Hurst, V., Ahluwalia, A., Alam, S., Avey, M. T., Baker, M., et al. (2020). The ARRIVE guidelines 2.0: Updated guidelines for reporting animal research. PLoS Biology, 18(7).
+
+- Schulz, K. F., & Grimes, D. A. (2002). Blinding in randomised trials: Hiding who got what. The Lancet, 359(9307), 696–700.
+
+- Schulz, K. F., Altman, D. G., & Moher, D., for the CONSORT Group. (2010). CONSORT 2010 Statement: Updated guidelines for reporting parallel group randomised trials. BMJ, 340, c332.
+
+- Simmons, J. P., Nelson, L. D., & Simonsohn, U. (2011). False-positive psychology: Undisclosed flexibility in data collection and analysis allows presenting anything as significant. Psychological Science, 22(11), 1359–1366.
+
+- Simons, D. J., Shoda, Y., & Lindsay, D. S. (2017). Constraints on generality (COG): A proposed addition to all empirical papers. Perspectives on Psychological Science, 12(6), 1123–1128.
+
+- Simonsohn, U., Simmons, J. P., & Nelson, L. D. (2020). Specification curve analysis. Nature Human Behaviour, 4(11), 1208–1214.
+
+- Steegen, S., Tuerlinckx, F., Gelman, A., & Vanpaemel, W. (2016). Increasing transparency through a multiverse analysis. Perspectives on Psychological Science, 11(5), 702–712.
+
+- Walters, W. H., & Wilder, E. I. (2023). Fabrication and errors in the bibliographic citations generated by ChatGPT. Scientific Reports, 13.
+
+- Weissgerber, T. L., Milic, N. M., Winham, S. J., & Garovic, V. D. (2015). Beyond bar and line graphs: Time for a new data presentation paradigm. PLoS Biology, 13(4), e1002128.
+
+- Zheng, L., Chiang, W.-L., Sheng, Y., Zhuang, S., Wu, Z., Zhuang, Y., et al. (2023). Judging LLM-as-a-judge with MT-Bench and Chatbot Arena. Advances in Neural Information Processing Systems 36 (NeurIPS 2023), Datasets and Benchmarks Track.
+
+
+---
+
+Source: https://purplelink.llc/guides/get-feedback-on-a-paper-before-submitting/
+Title: How to Get Feedback on a Paper Before Submitting: Options Compared | Purplelink
+
+← All guides
+
+September 24, 2026
+
+# How to Get Feedback on a Paper Before Submitting: Options Compared
+
+By Benjamin Ampel · September 24, 2026
+
+Colleagues, reading groups, writing centers, editing services, AI chat assistants, preprints and AI paper review tools compared on cost, turnaround, what each catches and what it misses.
+
+The short answer: get one read from a person who knows your field, for framing and contribution, and one systematic check of methods, statistics, references, figures and formatting, which a structured tool or a paid service can do faster than a busy colleague.
+
+No single option covers everything a journal reviewer will look at. A trusted colleague is the best judge of whether your contribution matters, and the worst person to ask to check 60 DOIs. An AI tool will check every reference in minutes and still miss that your framing ignores the debate your subfield has been having for three years. Below: what a pre-submission read should cover, how each option does, and a sequence that uses each for what it is good at.
+
+I wrote this as the person who builds Paper Review, one of the options below. I have tried to describe it with the same plainness as the others, including what it does not do.
+
+## What a pre-submission read should check
+
+Whoever reads your draft, these are the things reviewers and editors most often raise. Use the list to decide which reader covers which item.
+
+- Methods. Is the design able to answer the question you pose? Are baselines, controls and comparison conditions fair? Could someone replicate the procedure from what is written?
+
+- Statistics. Is the sample size justified? Are multiple comparisons handled? Are effect sizes and uncertainty reported, not only p-values? The Why it matters series covers the common failures one by one.
+
+- Claim-evidence alignment. Does the abstract say what the results tables show? "Outperforms" and "significantly" are the words that most often outrun the data.
+
+- References that resolve. Every DOI should point to a real paper with the title you cite, and the cited source should say what you say it says. This matters more now that AI-drafted text can introduce plausible citations that do not exist.
+
+- Figures. Readable axes, error bars where they belong, no truncated or broken scales that exaggerate a gap, and captions that match the plotted data.
+
+- Anonymization. For double-blind venues: no author names, institutions, grant numbers, ethics protocol numbers, author-owned URLs or "in our previous work" self-citations left in the body.
+
+- Journal compliance. Word and figure limits, required sections, data availability and reporting statements, reference style.
+
+- Cover letter. A short, plain statement of what the paper contributes and why it fits this journal.
+
+## The options compared
+
+Costs and turnaround below are typical ranges, not quotes. Institutions and services vary, so treat them as a starting point.
+
+Ways to get a critical read on a manuscript before submission
+
+Option
+Cost
+Turnaround
+What it catches well
+What it misses
+Confidentiality notes
+
+Trusted colleague or advisor
+Free in money; paid back in time and favors
+Days to several weeks, depending on their load
+Whether the contribution matters, framing, fit with the target venue, missing literature in your subfield
+Often too busy for a line-by-line read; may be too close to the work or too polite; rarely checks every reference
+High trust, informal. Fine for most work; get agreement first if co-authors or collaborators have constraints.
+
+Internal lab or reading group
+Free
+Next scheduled meeting, usually one to two weeks
+Unclear writing, confusing figures, gaps a smart outsider to the project notices, presentation of the argument
+Depth on statistics unless a member specializes; systematic reference and formatting checks; group members share your blind spots
+Stays inside the group. Circulate a fixed version so drafts do not spread.
+
+University writing center
+Usually free to enrolled students; availability for faculty and postdocs varies
+Appointment-based, often within a week or two
+Structure, clarity, paragraph flow, grammar, help for writers working in a second language
+Consultants are often not specialists in your field, so methods and statistics are generally out of scope
+Covered by the institution's policies. Ask how long drafts are kept if you upload files.
+
+Professional language editing
+Typically tens to a few hundred dollars, priced by word count
+A few days to about a week; rush options cost more
+Grammar, word choice, consistency, readability for an international audience
+Not designed to judge methods, statistics or whether claims are supported
+Reputable services have confidentiality terms. Read them, and check whether an editor or an AI system handles your file.
+
+Paid "pre-submission peer review" service
+Usually in the hundreds of dollars
+Typically one to a few weeks
+An outside expert-style report on methods, framing and journal fit, when the assigned reviewer knows your area
+Quality depends heavily on who is assigned; may not verify every reference; slow if your deadline is close
+Governed by the service's terms. Ask who reads the manuscript and whether they sign a confidentiality agreement.
+
+General AI chat assistant (ChatGPT, Claude, Gemini) with a pasted manuscript
+Free tier or an existing subscription
+Minutes
+Clarity edits, summarizing what the paper argues, spotting unclear passages, drafting alternatives for awkward sections
+Long papers can hit context limits or be read unevenly; figures may be lost when text is pasted; no systematic reference verification; output depends heavily on the prompt; can state errors confidently
+Whether your text may be used for training depends on the product, plan and settings. Check before pasting unpublished work.
+
+Preprint with community feedback (arXiv, SSRN, OSF, open review platforms)
+Free
+Unpredictable: days to never
+Comments from interested readers outside your circle; early visibility and a public timestamp
+Many preprints get little or no feedback; comments are unstructured; nothing systematic
+Public by design. Check the journal's preprint policy and, for double-blind venues, whether a public version is allowed.
+
+Purplelink Paper Review
+$9 Standard, $11 with Journal Pack, $15 Deep Review
+Usually 4 to 8 minutes (Standard); 10 to 15 minutes (Deep)
+Methods and statistics red flags, claims the data do not support, references that do not resolve in CrossRef, citation support at the abstract level, figure presentation issues, compliance with 25+ supported journals (Journal Pack), a bundled anonymity scan
+Not a domain expert; can be wrong; reads the manuscript as written and cannot inspect your data or code; citation support is judged from abstracts, not full texts
+Sent to Anthropic's Claude API, which retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and review when you retrieve the result.
+
+## Where Paper Review fits, and where it doesn't
+
+Paper Review is built for the systematic part of the checklist: the parts that are tedious for a person and easy to skip under deadline. You upload a PDF (up to 20 MB) and pick one of five domain profiles. A vision pass looks at every page for figure problems such as broken axes or missing error bars. Every reference is checked against CrossRef, and for the most load-bearing claims the cited source's abstract is fetched and compared to what you wrote. Four personas (Methodology Critic, Statistical Skeptic, Data Integrity Officer and Editor-in-Chief) read the paper in parallel, and findings raised independently by more than one of them are listed first. You get a Markdown report with an A/B/C rectification checklist, plus an annotated PDF with comments placed on the pages they refer to.
+
+What it does not do matters as much. It will not tell you, the way a senior colleague can, that your framing misreads where the field is heading. It reads methods as written, so if the description is accurate and the analysis is wrong in code, it will not see that. Its citation check works at the abstract level, so a claim supported only in a paper's full text is marked "not supported by abstract" rather than wrong, and you have to check. Some findings will be mistaken. Each one quotes the passage it is about, so you can confirm or dismiss it quickly. The review is advisory; every decision stays with you. If a review reads as low quality, email within 14 days of purchase and the price is refunded.
+
+## A workable sequence
+
+For a paper you care about, spread the reads out so each one catches what the others miss.
+
+- Four to six weeks out: a person who knows the field. Send your advisor, a co-author or a trusted colleague the draft with a specific question: "Is the contribution clear in the first two pages?" or "Is this the right venue?" Framing problems take the longest to fix, so find them first. A reading group session works well here too.
+
+- Once the draft is close to final: a systematic check. Run Paper Review, with the Journal Pack if your target journal is supported. Work through the A items first. The walkthrough guide explains how to read each section of the report. If you only want a reference existence check, the free BibTeX Validator covers that part.
+
+- If reviewers in your area are quick to say "you missed prior work": run Citation Gap Analysis ($3), which suggests papers an expert reviewer would expect you to cite. Treat each suggestion as a candidate to verify, since AI recall can be wrong.
+
+- For double-blind venues, on the exact file you will upload: run Anonymity Check ($2). Paper Review includes an anonymity scan, but edits made after the review can reintroduce a name or a grant number, so check the final version. Still inspect figures, supplementary files and PDF metadata by hand. The double-blind guide lists what to strip.
+
+- Last: the cover letter. Write it yourself or start from a draft with Cover Letter ($2), which works from your abstract and the journal name and never receives the full manuscript. See the cover letter guide.
+
+When reviews come back, the same logic applies in reverse. How to respond to Reviewer 2 covers the reply, and Response to Reviewers ($6) checks whether your response letter addresses every comment and whether the revised manuscript contains the fixes you claim.
+
+## Q&A
+
+### When should I ask for feedback on a paper before submitting?
+
+Ask a colleague or advisor for a read on framing and contribution four to six weeks before your target date, while there is still time to restructure. Run systematic checks on methods, statistics, references and formatting once the draft is close to final, and run a blinding check on the exact file you will upload.
+
+### Can I paste my manuscript into ChatGPT, Claude or Gemini for a review?
+
+You can, and it will often produce useful comments on clarity and argument. It is less reliable for systematic work: long manuscripts can be read unevenly, references are not checked against a bibliographic database unless the assistant has a lookup tool and uses it for every entry, and whether your text may be used for model training depends on the product, the plan and your settings. Check those settings before pasting unpublished work.
+
+### Is an AI paper review tool a substitute for a domain expert?
+
+No. An AI review can check a manuscript systematically and quickly, but it cannot tell you with an expert's confidence whether the contribution matters to your subfield, and it can be wrong. Use it alongside at least one human reader who knows the area.
+
+### What happens to my manuscript if I use Purplelink Paper Review?
+
+The manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring and does not use them for model training. Purplelink deletes the manuscript and the review from its servers when you retrieve the result, so save the report before closing the tab. Redact identifiable patient data before uploading.
+
+### Does posting a preprint count as getting feedback?
+
+Sometimes. A preprint on arXiv, SSRN or OSF can attract comments, but many preprints receive few or none, and the manuscript becomes public. Check the target journal's preprint policy first, and for double-blind venues check whether a public preprint is allowed and how it should be handled.
+
+## Related
+
+- Paper Review: four-persona pre-submission review, from $9
+
+- Anonymity Check: leak scan for double-blind submission, $2
+
+- Citation Gap Analysis: prior work you should cite but don't, $3
+
+- How to use Paper Review before submitting a manuscript
+
+- How to respond to Reviewer 2
+
+- Why it matters: the methodology problems reviewers flag
+
+
+---
+
+Source: https://purplelink.llc/guides/overleaf-alternative-mac/
+Title: Overleaf alternative for Mac: offline LaTeX editors compared | Purplelink
+
+← All guides
+
+Comparison
+
+# Overleaf alternative for Mac: offline LaTeX editors compared
+
+By Benjamin Ampel · September 24, 2026
+
+The best Overleaf alternative on a Mac is a local TeX distribution (MacTeX or TinyTeX) plus a native editor: TeXShop if you want free and standard, Texifier or ModernTex if you want a modern paid Mac app, and Overleaf itself for any draft that co-authors edit at the same time.
+
+Disclosure up front: Purplelink makes ModernTex, one of the editors compared here. I have tried to write this the way I would want to read it: Overleaf is the right tool for a lot of work, and the free options below are good enough for most people. ModernTex's entry sticks to what the app does today, including what it does not do.
+
+## When Overleaf is the right choice
+
+People go looking for an Overleaf alternative after a slow compile, a timeout on the free tier, or a flight with no Wi-Fi. Before you switch, it is worth being clear about what Overleaf does better than anything you can install.
+
+- Real-time collaboration. Several people can type in the same document at once and see each other's cursors, with comments and tracked changes alongside. No desktop LaTeX editor does this as well. If your paper has four co-authors editing the methods section in the week before a deadline, that is Overleaf's job.
+
+- Zero install. Overleaf runs the TeX distribution on its own servers. Nothing to download, no 5 GB MacTeX package, nothing to update. It also means a co-author on Windows, a student on a Chromebook and you on a Mac all compile with the same setup.
+
+- Institutional licences. Many universities pay for Overleaf through a site licence, which gives everyone on campus the premium features. If yours does, the usual free-tier complaints (compile time limits, collaborator caps, no Git) may not apply to you at all.
+
+- Journal templates. The template gallery is large, and some publishers link to their Overleaf template directly from their author instructions.
+
+If you mostly co-author, and you are always online, you may not need an alternative. What follows is for everyone else.
+
+## What you gain and give up by going local
+
+Writing LaTeX on your own Mac changes a few concrete things.
+
+You gain:
+
+- Offline work. The distribution and the editor are on your disk. Trains, planes and bad conference Wi-Fi stop mattering.
+
+- No compile limits. A long thesis with many figures compiles for as long as it needs to. On a recent Mac, local compiles are usually quick.
+
+- Your files, on your disk. The project is a folder of ordinary files. You can back it up, version it with Git, or keep sensitive material (unpublished data, reviewer identities, embargoed results) off a third-party server.
+
+- A native app. Mac keyboard shortcuts, system spell-check, dark mode, and a window that behaves like every other window on your machine.
+
+You give up:
+
+- Live co-editing. Nothing on this list matches Overleaf for several people in one document at once.
+
+- The zero-setup start. You install a TeX distribution and keep it updated, roughly once a year when a new TeX Live ships.
+
+- Identical builds for everyone. Your TeX Live year, fonts and settings are yours, so a co-author's machine can behave slightly differently.
+
+## The options, compared
+
+Every local option needs a TeX distribution installed separately, except where the table says otherwise. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back, which in most editors is done through SyncTeX. "BibTeX completion" means the editor suggests citation keys from your .bib file as you type \cite{.
+
+Overleaf and six Mac alternatives, as of September 2026
+
+Editor
+Runs
+Price
+Offline
+Real-time collaboration
+Synced PDF preview
+BibTeX completion
+Notes
+
+Overleaf
+Browser, any OS
+Free tier plus paid plans; many institutional licences
+No
+Yes
+Yes
+Yes, from the project's .bib
+Nothing to install. Git and GitHub sync are premium features.
+
+TeXShop
+macOS
+Free, included with MacTeX
+Yes
+No
+Yes
+Not built in; BibDesk (also in MacTeX) helps
+The long-standing Mac default. Plain and reliable, dated interface.
+
+TeXstudio
+macOS, Windows, Linux
+Free, open source
+Yes
+No
+Yes
+Yes, by key
+Feature-rich. Cross-platform app that does not feel like a Mac app.
+
+Texifier (formerly Texpad)
+macOS, iOS
+Paid, one-time purchase
+Yes
+No
+Yes
+Yes
+Polished native app. Can typeset without a separate MacTeX install.
+
+VS Code + LaTeX Workshop
+macOS, Windows, Linux
+Free
+Yes
+Session-based, via the Live Share extension
+Yes
+Yes, by key
+Best if you already write code in VS Code. Built-in Git.
+
+Emacs + AUCTeX, or Vim + VimTeX
+Any OS
+Free
+Yes
+No
+Yes, with a viewer such as Skim
+Yes (RefTeX in Emacs)
+Very capable, for people who already use these editors.
+
+ModernTex
+macOS 14 or later
+$10 once, after a free 7-day trial
+Yes
+No
+Yes, forward and inverse
+Yes, searches by author, title or key
+Made by Purplelink. Needs MacTeX or TinyTeX, and offers a one-click TinyTeX install.
+
+### TeXShop
+
+TeXShop ships inside MacTeX, so if you have installed MacTeX you already have it. Source on one side, PDF on the other, a Typeset button, and SyncTeX in both directions. It has been maintained for over twenty years and nearly every Mac LaTeX tutorial assumes it. What it lacks is polish: the interface is dated, and there is no built-in citation search. Choose it if you want a free, dependable default and do not mind plain.
+
+### TeXstudio
+
+TeXstudio is free, open source and runs on macOS, Windows and Linux. It has more built in than TeXShop: a structure panel, completion for commands, labels and citation keys, table and figure wizards, and an error list you can click through. It is a cross-platform Qt app, so menus and shortcuts do not follow Mac conventions. Choose it if you also work on a Windows or Linux machine and want the same editor on each.
+
+### Texifier (formerly Texpad)
+
+Texifier is the established paid native Mac editor, with an iOS app for writing on an iPad. It can typeset as you type and does not require a separate MacTeX install, which makes it the smoothest move for someone leaving Overleaf who does not want to manage a distribution. It is a one-time purchase rather than a subscription; check the developer's site for the current price. Choose it if you want a polished Mac app and an iPad companion.
+
+### VS Code with LaTeX Workshop
+
+If you already write code in VS Code, the LaTeX Workshop extension turns it into a capable LaTeX setup: build recipes, an embedded PDF viewer with SyncTeX, citation completion and Git in the sidebar. Microsoft's Live Share extension lets a co-author join a live editing session, which is the closest a desktop editor gets to Overleaf, though it is a session you host rather than a shared document that is always there. Choose it if VS Code is already open all day.
+
+### Emacs with AUCTeX, or Vim with VimTeX
+
+Both are free, run anywhere, and are among the most capable LaTeX environments available, with project-aware citation lookup and inverse search through a Mac PDF viewer such as Skim. The price is the learning curve of the editor itself. Choose one if you already use it for everything else.
+
+### ModernTex
+
+ModernTex is the native macOS LaTeX editor we make, built for journal articles, conference papers and dissertation chapters rather than general-purpose editing. It handles multi-file manuscripts with root file detection, keeps the PDF in sync in both directions, completes citations by searching your .bib by author or title, and explains compile errors in plain language. It also has submission-readiness checks (anonymization, page limits, required sections), an anonymized export for double-blind review, version snapshots, and visual editors for TikZ figures and tables that write the LaTeX for you.
+
+What it does not do: real-time collaboration. It is a single-user app, and two people cannot type in the same file at once. It runs only on macOS 14 or later, has no iPad app, and it is new, first released in 2026, so it has far less of a track record than TeXShop or Texifier. It needs a TeX distribution; if none is found when you compile, it offers to install TinyTeX for you. Choose it if you write manuscripts alone on a Mac and the submission-focused features are the ones you keep wishing for. The trial is the full app for seven days, and keeping it is $10 once.
+
+## How to move a project from Overleaf to a Mac editor
+
+A LaTeX project is portable by design, so the move takes minutes. Most of the work is matching the settings Overleaf chose for you.
+
+- Download the source. In the Overleaf editor, open the Menu and choose Download > Source. You get a zip of every file in the project. Unzip it into a folder you will keep, not your Downloads folder.
+
+- Install a TeX distribution. MacTeX is the full TeX Live for macOS, about 5 GB, and includes every package a template is likely to load. TinyTeX and BasicTeX are far smaller and add packages as you need them with tlmgr install. If disk space is not a problem, MacTeX saves you a round of "file not found" errors.
+
+- Note Overleaf's settings before you leave. In the Overleaf Menu, check the Compiler (pdfLaTeX, XeLaTeX or LuaLaTeX) and the Main document. Set the same compiler in your editor, and open the same main .tex file, or mark it as the root file.
+
+- Check the bibliography tool. Overleaf runs latexmk, which picks BibTeX or Biber automatically. If your preamble loads biblatex, your editor needs to run Biber; if it uses \bibliography{} with a .bst style, BibTeX. Most editors can run latexmk too, which removes the guesswork.
+
+- Enable shell escape if you need it. Overleaf compiles with shell escape on, so packages such as minted or some svg workflows just work there. Locally they fail until you add -shell-escape to the compile command. Turn it on only for projects that need it.
+
+- Check fonts under XeLaTeX or LuaLaTeX. A fontspec line that names a font works only if that font is installed on your Mac. Overleaf's servers have a different font set from macOS, so install the font or switch to one you have.
+
+- Compile and compare. Build once and compare the PDF against the last Overleaf PDF. Page count and reference list are the quickest checks.
+
+If you are on a machine without a TeX install and need one PDF today, our LaTeX to PDF tool compiles a project in the browser; this guide covers multi-file projects.
+
+## Keep Overleaf for collaboration, edit locally
+
+Many research groups do not choose one or the other. They keep the shared draft on Overleaf, where co-authors comment and edit, and each person who prefers a local editor works on a copy on their own machine.
+
+The clean way to do this is Git. Overleaf offers Git integration (clone the project with git, edit locally, push back) and GitHub sync (link the project to a GitHub repository). Both are premium features: they are available on Overleaf's paid plans and through many institutional licences, not on the free tier. Check your account before you plan around them.
+
+A few habits keep this working:
+
+- Pull before you start, push when you stop. If a co-author edits the same lines on Overleaf while you edit locally, Git will ask you to resolve a conflict. Short sessions and frequent pushes keep conflicts rare.
+
+- Agree on one main file and one compiler. Everyone should build the same way, or someone's PDF will differ.
+
+- Leave generated files out. Commit .tex, .bib, images and class files. Keep .aux, .log, .bbl and the PDF out of the repository with a .gitignore.
+
+- Sections you own are easiest. If each author writes in their own \input file, local editing and live editing rarely collide.
+
+On a free Overleaf account, the fallback is manual: download the source, edit locally, then upload the changed files back, replacing the old versions. It works for occasional use, but it is easy to overwrite a co-author's edit, so tell them first. Any local editor on this page, including ModernTex, fits this workflow, since each one edits ordinary files in a folder.
+
+## Which to choose
+
+- Co-authors edit at the same time? Keep Overleaf, at least for the shared draft.
+
+- Want free and standard on a Mac? TeXShop.
+
+- Also use Windows or Linux? TeXstudio.
+
+- Want a polished Mac app with an iPad version? Texifier.
+
+- Already live in VS Code, Emacs or Vim? Stay there and add the LaTeX extension.
+
+- Writing papers alone on a Mac and want help getting them submission-ready? ModernTex, $10 once.
+
+For a longer look at fourteen Mac editors, including Octree, Texmaker, LyX and others not covered here, see the best LaTeX editors for Mac.
+
+## Frequently asked questions
+
+Is there an offline version of Overleaf for Mac?
+
+No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source Community Edition that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor.
+
+What is the best free Overleaf alternative for Mac?
+
+TeXShop, for most people. It is free, it installs with MacTeX, and it has a synced PDF preview. TeXstudio is the free choice if you also work on Windows or Linux, and VS Code with the LaTeX Workshop extension is the free choice if you already write code in VS Code.
+
+Can I keep using Overleaf with co-authors and edit on my Mac?
+
+Yes. The project is the same set of .tex, .bib and image files either way. Overleaf's Git integration and GitHub sync let you pull the project to your Mac, edit locally and push back, but both are premium features, available on paid plans and through many institutional licences. On a free account you can download the source as a zip and upload changed files by hand.
+
+Will my Overleaf project compile the same way on my Mac?
+
+Usually, once you match three settings. Use the same compiler Overleaf used (pdfLaTeX, XeLaTeX or LuaLaTeX), run Biber if the project uses biblatex, and enable shell escape if it uses packages such as minted. Fonts called by name under XeLaTeX or LuaLaTeX must also be installed on the Mac.
+
+Does ModernTex have real-time collaboration like Overleaf?
+
+No. ModernTex is a single-user Mac app. Your files are ordinary files on disk, so you can share them through whatever you already use, but two people cannot type in the same document at the same time. If you need that, keep Overleaf for the shared draft.
+
+Do I need the full 5 GB MacTeX install?
+
+No. BasicTeX and TinyTeX are much smaller and install missing packages on demand with tlmgr. Full MacTeX is the easiest option if you have the disk space, because every package a template might load is already there.
+
+From the team behind these tools
+
+## Writing LaTeX on a Mac?
+
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+
+Get ModernTex — $10
+See what it does
+
+Requires macOS 14 or later. Free 7-day trial, no account.
+
+
+---
+
+Source: https://purplelink.llc/guides/best-mac-latex-editors/
+Title: Best LaTeX editor for Mac in 2026: 14 editors compared | Purplelink
+
+← All guides
+
+Comparison
+
+# Best LaTeX editor for Mac in 2026: 14 editors compared
+
+By Benjamin Ampel · May 31, 2026, updated September 11, 2026
+
+A direct comparison of the LaTeX editors that actually work on Mac in 2026, covering what each one is good at, what it costs, and which workflow it suits. No affiliate links, no rankings padding.
+
+Disclosure up front: I make one of the editors on this list (ModernTex). I've tried to write the comparison honestly. TeXShop is the right call for most academics today, and Texifier is the right call for most people who want a polished modern editor. ModernTex shipped its 1.0 in September 2026; I've kept its entry to what the app actually does today.
+
+## What you actually need to run LaTeX on a Mac
+
+A LaTeX editor is only half of the setup, and this trips up most people
+coming to LaTeX on a Mac for the first time. You need two things:
+
+- A TeX distribution. This is the engine that turns your
+.tex source into a PDF. On macOS that is almost always MacTeX,
+which bundles the TeX Live distribution with a few Mac-specific
+applications. It is a large download, around 5 GB, because it ships
+every package you might ever cite.
+
+- An editor. This is where you write. It sends your file
+to the distribution, shows you the resulting PDF, and tells you what went
+wrong when the compile fails. This is the part you get to choose, and it is
+what the rest of this page compares.
+
+The distinction matters because a lot of "LaTeX won't work on my Mac"
+problems are really "no TeX distribution is installed". If you open a
+.tex file and nothing compiles, install MacTeX first and then
+pick an editor. The one exception is Overleaf, which runs the distribution on
+its own servers, so nothing is installed locally at all.
+
+macOS does not include a TeX distribution, and neither Pages nor TextEdit
+will compile LaTeX. There is no built-in option the way there is for Markdown
+previewing.
+
+## The shortlist
+
+- TeXShop: free, ships with MacTeX, the default for most academics.
+
+- Texifier (formerly Texpad): paid, polished, modern Mac native.
+
+- Octree: free, AI-assisted, web-based with Mac wrapper.
+
+- VS Code + LaTeX Workshop: free, general-purpose code editor with a strong LaTeX extension.
+
+- Overleaf: web-based, collaborative, runs in any browser.
+
+- ModernTex: $10, native macOS, focused on the academic manuscript workflow.
+
+Those six are the ones worth a real look. Eight more that run on a Mac are covered further down, including TeXstudio and Texmaker, with a straight answer on why each is not on the shortlist.
+
+## TeXShop
+
+Cost: Free. Platform: macOS-only. Installed by: almost every academic with a Mac and MacTeX.
+
+TeXShop is the editor that ships with the MacTeX distribution. It's been around for over 20 years, it's actively maintained by Richard Koch at the University of Oregon, and it does one thing well: edit a .tex file and compile it with whatever engine MacTeX provides. Side-by-side editor and PDF preview, SyncTeX click-to-source, basic syntax highlighting, multi-file support via root document declaration.
+
+What it's good at: reliability. Compatible with every TeX distribution macro you'll encounter. No telemetry, no cloud, no subscription. If a tutorial says "open TeXShop and...", that's a feature.
+
+What it lacks: modern UX (the interface looks like 2010), no inline BibTeX autocomplete, no plain-language error messages, no built-in tracked-changes view. Searching across a multi-file project is functional but not great.
+
+Pick TeXShop if you want the closest thing to a default and you don't mind the dated interface. Most senior researchers do, in fact, pick TeXShop.
+
+## Texifier (formerly Texpad)
+
+Cost: $29.99 (occasional discount). Platform: macOS + iOS.
+
+Texifier is the polished Mac-native option that most people who actually shop for a LaTeX editor end up with. It bundles its own TeX distribution (no MacTeX install required), has incremental typesetting (PDF updates as you type with no manual compile), a structure sidebar that maps your manuscript by sections, and the best autocomplete-for-LaTeX experience available.
+
+What it's good at: the "it just works" experience. Outline sidebar makes navigating a long manuscript feel natural. iPad app is genuinely usable. Active development.
+
+What it lacks: deep bibliography tooling. The BibTeX autocomplete is good but not specifically built for academic writing workflows. Tracked-changes via latexdiff requires external tools.
+
+Pick Texifier if you want a polished, modern Mac-native experience and you're willing to pay $30 for it. This is the right answer for most working researchers writing journal-length manuscripts on a Mac today.
+
+## Octree
+
+Cost: Free tier with limits, paid plan ~$10/mo. Platform: Web + Mac wrapper.
+
+The newer entrant. AI-assisted writing (suggestions, grammar, rewrites) on top of a competent LaTeX editor. The cloud-first design is a real distinguishing feature, because your project lives on Octree's servers, accessible from any device.
+
+What it's good at: AI-assisted drafting. If you want copilot-style suggestions while you write, Octree is the only mainstream option that integrates them well.
+
+What it lacks: on-device privacy. Your manuscript is on Octree's servers by default. For sensitive research (medical, military, IP), that's disqualifying.
+
+Pick Octree if AI-assisted writing is core to your workflow and your research isn't sensitive. Avoid if "no cloud" is a requirement.
+
+## VS Code + LaTeX Workshop
+
+Cost: Free. Platform: cross-platform.
+
+If you're a developer who also writes academic papers, VS Code with the LaTeX Workshop extension is the path of least resistance. Build chains are configurable, snippets are mature, Git integration is the same as your code projects. SyncTeX preview works well.
+
+What it's good at: consistency with the rest of your toolchain if you spend most of your day in VS Code. Free, extensible, version-controllable settings.
+
+What it lacks: a manuscript-first feel. VS Code is a code editor, so the document feels like a code file, not like a paper. Outline navigation works but isn't built for chapters and bibliographies.
+
+Pick VS Code if you already live in VS Code and want one less context switch.
+
+## Overleaf
+
+Cost: Free tier (limited compile time, no Git sync), paid plans $15–$25/mo.
+
+Browser-based, collaborative. Overleaf is the de facto choice for multi-author papers where co-authors aren't all comfortable installing LaTeX. The collaboration model (Google Docs-style) works.
+
+What it's good at: multi-author collaboration. Templates for major journals. No local install required.
+
+What it lacks: offline access on the free tier, Git sync on free, native-Mac feel. The editor itself runs in a browser.
+
+Pick Overleaf if you need real-time collaboration. Many academic teams use Overleaf for collaboration and a native editor for solo writing.
+
+## ModernTex
+
+Cost: $10, one-time, every 1.x update included, after a free 7-day trial. Platform: macOS 14+. Status: shipping, version 1.0 released September 2026.
+
+I built ModernTex specifically because the existing options miss a few things that matter for academic manuscript work: plain-language compile error explanations (BibTeX-style cryptic errors are the #1 frustration for new users), BibTeX autocomplete that searches by author or title across your entire .bib, revision snapshots tied to ideas not files, submission-readiness checks that catch journal-specific issues before you upload, and a live TikZ figure editor for building flowcharts and diagrams by dragging boxes instead of writing coordinates by hand.
+
+Why a new editor when Texifier exists: Texifier is excellent but optimizes for general LaTeX users (programmers, technical writers, students). ModernTex narrows the focus to academic manuscript writers, the workflow of writing a journal article or dissertation chapter, from outline to camera-ready. That's a deliberate constraint.
+
+What it lacks: a track record. Version 1.0 shipped in September 2026, so it has none of the twenty years of edge-case coverage TeXShop has, and no iPad app. It also needs a TeX distribution installed; it does not bundle one the way Texifier does.
+
+Pick ModernTex if you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. The trial is free for seven days; keeping it is $10, once.
+
+## Eight more LaTeX editors that run on a Mac
+
+Every one of these works on macOS today. They are not on the shortlist because, for someone choosing an editor on a Mac in 2026, each is beaten by one of the six above at the thing it is best at. The exception is TeXstudio, which is the right answer for a specific person: anyone who also works on Windows or Linux.
+
+### TeXstudio
+
+Cost: Free, open source. Platform: macOS, Windows, Linux.
+
+The most widely installed LaTeX editor that is not tied to one platform. It began as a fork of Texmaker and has grown well past it: an integrated PDF viewer with SyncTeX, a structure panel for long documents, autocomplete for commands and references, wizards for tables and figures, spell-checking as you type. It is a Qt application, so it does not look or behave like a Mac app. Menus, shortcuts and dialogs feel like they were designed elsewhere, because they were.
+
+Pick TeXstudio if you move between a Mac and a Windows or Linux machine and want the identical editor on both. If you only write on a Mac, TeXShop does the same job and feels native.
+
+### Texmaker
+
+Cost: Free. Platform: macOS, Windows, Linux.
+
+The editor TeXstudio was forked from, still maintained by its original author, and simpler for it: built-in PDF viewer, SyncTeX, Unicode, spell-check, code folding, and less of everything else. If you opened TeXstudio and found it busy, this is the same idea with fewer panels.
+
+Pick Texmaker if you want a cross-platform editor and TeXstudio felt like too much. Otherwise the same advice applies: on a Mac alone, TeXShop.
+
+### TeXworks
+
+Cost: Free. Platform: macOS, Windows, Linux. Installed by: you, already, if you installed MacTeX.
+
+TeXworks ships inside MacTeX and TeX Live, and was deliberately modelled on TeXShop's simplicity so that other platforms would have something like it. Source window, PDF window, SyncTeX, a typeset button. That is the whole editor. It is fine for a first document and you will outgrow it by the second chapter.
+
+Pick TeXworks if it is already on your machine and you need to compile something today. Then pick something else.
+
+### LyX
+
+Cost: Free, open source. Platform: macOS, Windows, Linux.
+
+LyX is not a LaTeX editor in the sense of the rest of this page. It is a document processor that generates LaTeX for you: you work in a structured, roughly formatted view and rarely see a backslash. For a thesis written alone, where you never need to hand a .tex file to anyone, that can be pleasant. The moment a journal template, a co-author, or a fussy figure needs raw LaTeX, you are fighting the tool. It still needs a TeX distribution installed.
+
+Pick LyX if you want LaTeX output without writing LaTeX and will never share source. Most academics eventually need to share source.
+
+### Archimedes
+
+Cost: Paid, one-time. Platform: macOS, with an iOS version.
+
+A native Mac editor for Markdown with LaTeX math, with live preview and a math-focused toolbar. It is built for writing notes, problem sets and math-heavy documents, not for compiling a full journal manuscript with a bibliography and a class file. Good at what it is for, which is not what most of this page's readers are doing.
+
+Pick Archimedes if your LaTeX is mostly equations inside otherwise plain documents. For a paper, use one of the six above.
+
+### TeX64
+
+Cost: Paid. Platform: macOS.
+
+A newer native macOS editor that compiles locally through the MacTeX or TeX Live installation you already have, rather than bundling its own distribution the way Texifier does. It is recent enough that I would not yet rely on it for a deadline, for the same reason I say that about ModernTex: no track record. Worth watching if native-Mac matters to you and you already have MacTeX installed.
+
+Pick TeX64 if you want a native app, do not want a second TeX distribution on disk, and are comfortable being an early adopter.
+
+### Emacs with AUCTeX
+
+Cost: Free. Platform: anything.
+
+AUCTeX plus RefTeX is, feature for feature, one of the most capable LaTeX environments that exists: inline previews of equations, cross-reference and citation lookup that understands your whole project, folding, and a compile loop you can bend to any shape. The learning curve is the entire Emacs learning curve. If you already live in Emacs you know this and did not need this page. If you do not, this is not the week to start.
+
+Pick AUCTeX if you are already an Emacs user. Nobody else.
+
+### Neovim or Vim with VimTeX
+
+Cost: Free. Platform: anything.
+
+VimTeX is excellent: compilation, syntax, text objects for environments and commands, folding, and forward and inverse search when paired with a PDF viewer such as Skim on the Mac. The same caveat as Emacs applies. It rewards people who already think in Vim and punishes everyone else.
+
+Pick VimTeX if Vim is already how you write everything. Otherwise VS Code with LaTeX Workshop gives you most of the benefit with none of the modal editing.
+
+Sublime Text with the LaTeXTools package and BBEdit with its TeX syntax highlighting also exist. Neither adds anything the eight above do not, so they are not covered separately.
+
+## Decision matrix
+
+- Want the default? TeXShop.
+
+- Want polished and modern, willing to pay? Texifier.
+
+- Want AI-assisted drafting? Octree.
+
+- Already in VS Code? VS Code + LaTeX Workshop.
+
+- Need real-time collaboration? Overleaf.
+
+- Academic manuscripts on macOS as your dominant use case? ModernTex, $10.
+
+- Also work on Windows or Linux? TeXstudio.
+
+- Already live in Emacs or Vim? AUCTeX or VimTeX. You knew that.
+
+## Installing LaTeX on a Mac: MacTeX, BasicTeX, or Overleaf
+
+Whichever editor you land on, the install order is the same: distribution
+first, editor second. And "MacTeX vs Overleaf" is not really an either-or.
+One is a distribution you install, the other is a website that installs
+nothing. The question is whether you want LaTeX on your own machine.
+If you are weighing that move, Overleaf
+alternatives for Mac covers what you give up and how to move a project.
+
+MacTeX is the standard choice. Download the package from
+the TeX Users Group, run the installer, and you have TeX Live plus TeXShop,
+BibDesk and LaTeXiT. It is about 5 GB installed. Nearly every tutorial
+you will read assumes this is what you have, which is a real advantage when
+something breaks at 11pm before a deadline.
+
+BasicTeX is the same distribution trimmed to roughly
+100 MB. It omits most packages, so you install them individually with
+tlmgr as documents demand them. Worth it if disk space is tight,
+painful if you are new, because a missing package surfaces as a compile error
+rather than a prompt.
+
+Homebrew works too, via brew install --cask
+mactex or mactex-no-gui. Same distribution, managed
+alongside your other packages.
+
+Installing nothing is also an option. Overleaf runs entirely in the browser.
+For a single co-authored paper on a borrowed machine that is often the right
+answer, and you can move to a local setup later without changing your source
+files. Our LaTeX to PDF compiler will also
+build a document without any local install if you just need one PDF.
+
+Apple Silicon no longer needs any special handling. MacTeX has shipped native
+arm64 binaries for years, and every editor on this page runs natively on M
+series hardware.
+
+### Which LaTeX compiler to use on a Mac
+
+People search for the best LaTeX compiler for Mac, and the honest answer is
+that it is not a Mac question. MacTeX ships all three engines you would ever
+choose between, and every editor above lets you pick. pdfLaTeX
+is the default, the fastest, and what nearly every journal template assumes;
+start there. XeLaTeX adds system fonts and proper Unicode,
+which matters for non-Latin scripts or a document that must use a specific
+typeface. LuaLaTeX does what XeLaTeX does and is where newer
+packages are heading. Switch engines only when a package or a font forces
+you to, not because one is "best".
+
+## Frequently asked
+
+### Is there a free LaTeX editor for Mac?
+
+Yes, several. TeXShop is free and arrives with MacTeX, so most people
+already have it. VS Code with the LaTeX Workshop extension is free. Overleaf
+has a free tier with limits on compile time and no Git sync. Of the paid
+options, Texifier is a one-time $29.99 rather than a subscription.
+
+### Does macOS come with LaTeX?
+
+No. macOS ships no TeX distribution and no LaTeX editor. You need to
+install MacTeX, or use a browser-based option like Overleaf.
+
+### What is the difference between a LaTeX editor and a TeX distribution?
+
+The distribution compiles your document. The editor is where you write it
+and read the errors. MacTeX is a distribution, TeXShop and Texifier are
+editors. You need one of each, except with Overleaf, which provides both.
+
+### Which LaTeX editor is best for academic writing on a Mac?
+
+For most researchers today, Texifier if you will pay for polish, TeXShop if
+you want the default that every tutorial assumes. Choose Overleaf instead when
+co-authors need to edit the same file at the same time.
+
+### Is TeXstudio available for Mac?
+
+Yes. TeXstudio runs on macOS, Windows and Linux and is free. It is the best
+choice if you also work on another platform. On a Mac alone, TeXShop does the
+same job and feels like a Mac app, which TeXstudio does not.
+
+### MacTeX or Overleaf?
+
+MacTeX if you want LaTeX on your own machine: it works offline, compiles
+faster on any recent Mac, and every native editor on this page needs it.
+Overleaf if co-authors need to edit the same document live, or you are on a
+machine you cannot install 5 GB on. Many people use both.
+
+### Which LaTeX compiler should I use on a Mac?
+
+pdfLaTeX, unless something forces a change. It is the default in every
+editor here and what journal templates assume. Use XeLaTeX or LuaLaTeX when
+you need system fonts or full Unicode. All three ship with MacTeX.
+
+## Tools that work alongside any of these
+
+Whichever editor you pick, these free in-browser utilities pair well:
+
+- LaTeX to PDF: compile when you're on a machine without a TeX install.
+
+- LaTeX to Word: convert your manuscript for journals that require .docx.
+
+- LaTeX Diff: generate a tracked-changes PDF between two versions.
+
+- BibTeX Validator: catch citation errors before compile.
+
+Once the writing is done and submission is next, Paper Review red-teams the manuscript before a referee does: four reviewer personas argue over it, citations are checked against the live record, and figures are scanned for integrity problems. That one is paid, from $9 per review.
+
+For more on the academic LaTeX workflow generally, see the LaTeX hub and the BibTeX and citations hub.
+
+From the team behind these tools
+
+## Writing LaTeX on a Mac?
+
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+
+Get ModernTex — $10
+See what it does
+
+Requires macOS 14 or later. Free 7-day trial, no account.
