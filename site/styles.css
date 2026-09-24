@@ -2217,12 +2217,14 @@ dd {
   .hero-title span:nth-child(2) { animation-delay: 0.2s;  }
   .hero-title span:nth-child(3) { animation-delay: 0.34s; }
 
+  /* The lede and buttons are what a visitor reads and presses, so they
+     start moving almost at once rather than after the headline settles. */
   .hero-bottom {
-    animation: hero-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.54s both;
+    animation: hero-fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
   }
 
   .hero-visual {
-    animation: hero-fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+    animation: hero-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
   }
 }
 
