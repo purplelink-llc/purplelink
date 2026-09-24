@@ -19,7 +19,7 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="stylesheet" href="/styles.css?v=7fa5a022da">
     <script src="/site.js?v=55d6f84c39" defer></script>
-    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=f9941e3cf8">
+    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=f41aced340">
       <script type="application/ld+json">
     {
   "@context": "https://schema.org",
@@ -88,35 +88,53 @@
         <details open>
           <summary>Sample output <span class="pr-sample-toggle">Show or hide</span></summary>
           <div class="pr-sample-body">
-            <pre tabindex="0">
-# Anonymity Check
-**Result: 6 potential leaks detected.**
-Each item below should be removed or generalised before double-blind submission.
-
-## Self-citation patterns
-- **[CRITICAL]** Section 2, related work: "In our previous work [14], we found that review accuracy declines after the first hour of a session."
-  - Fix: Rewrite in the third person ("Prior work [14] found ...") and keep [14] as an ordinary reference.
-
-## Institutions
-- **[MAJOR]** methods section: "Participants were recruited from the professional master's program at [University Name]."
-  - Fix: Replace the name with "a large public university".
-
-## IRB and ethics protocol numbers
-- **[MAJOR]** methods section, ethics statement: "The study was approved by the [University Name] IRB under protocol 2024-0917."
-  - Fix: Write "approved by the authors' institutional review board" and withhold the protocol number until acceptance.
-
-## Funding and grants
-- **[MAJOR]** page 14 acknowledgements: "This work was supported by NSF grant #[Grant Number]."
-  - Fix: Remove the acknowledgements from the review copy and restore them in the camera-ready version.
-
-## Emails and URLs
-- **[CRITICAL]** page 6 footnote 3: "Materials and analysis scripts are available at github.com/[username]/sleep-review-study."
-  - Fix: Link an anonymized copy of the repository for review, with commit history and author names removed.
-
-## Named software, datasets and systems
-- **[MINOR]** Section 3.2: "Defects were seeded with ReviewSeed, the tool we released last year."
-  - Fix: Call it "a defect-seeding tool" and cite it as an anonymized reference.
-</pre>
+            <div class="sample-report pr-sample-md">
+<h3 class="pr-sample-h">Anonymity Check</h3>
+<p><strong>Result: 6 potential leaks detected.</strong>
+Each item below should be removed or generalised before double-blind submission.</p>
+<h4 class="pr-sample-h">Self-citation patterns</h4>
+<ul>
+<li><strong>[CRITICAL]</strong> Section 2, related work: "In our previous work [14], we found that review accuracy declines after the first hour of a session."<ul>
+<li>Fix: Rewrite in the third person ("Prior work [14] found ...") and keep [14] as an ordinary reference.</li>
+</ul>
+</li>
+</ul>
+<h4 class="pr-sample-h">Institutions</h4>
+<ul>
+<li><strong>[MAJOR]</strong> methods section: "Participants were recruited from the professional master's program at [University Name]."<ul>
+<li>Fix: Replace the name with "a large public university".</li>
+</ul>
+</li>
+</ul>
+<h4 class="pr-sample-h">IRB and ethics protocol numbers</h4>
+<ul>
+<li><strong>[MAJOR]</strong> methods section, ethics statement: "The study was approved by the [University Name] IRB under protocol 2024-0917."<ul>
+<li>Fix: Write "approved by the authors' institutional review board" and withhold the protocol number until acceptance.</li>
+</ul>
+</li>
+</ul>
+<h4 class="pr-sample-h">Funding and grants</h4>
+<ul>
+<li><strong>[MAJOR]</strong> page 14 acknowledgements: "This work was supported by NSF grant #[Grant Number]."<ul>
+<li>Fix: Remove the acknowledgements from the review copy and restore them in the camera-ready version.</li>
+</ul>
+</li>
+</ul>
+<h4 class="pr-sample-h">Emails and URLs</h4>
+<ul>
+<li><strong>[CRITICAL]</strong> page 6 footnote 3: "Materials and analysis scripts are available at github.com/[username]/sleep-review-study."<ul>
+<li>Fix: Link an anonymized copy of the repository for review, with commit history and author names removed.</li>
+</ul>
+</li>
+</ul>
+<h4 class="pr-sample-h">Named software, datasets and systems</h4>
+<ul>
+<li><strong>[MINOR]</strong> Section 3.2: "Defects were seeded with ReviewSeed, the tool we released last year."<ul>
+<li>Fix: Call it "a defect-seeding tool" and cite it as an anonymized reference.</li>
+</ul>
+</li>
+</ul>
+            </div>
             <p class="pr-checkout-meta">Illustrative example on a fictional manuscript; your result follows the same format.</p>
           </div>
         </details>

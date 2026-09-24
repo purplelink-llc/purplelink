@@ -19,7 +19,7 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="stylesheet" href="/styles.css?v=7fa5a022da">
     <script src="/site.js?v=55d6f84c39" defer></script>
-    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=f9941e3cf8">
+    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=f41aced340">
       <script type="application/ld+json">
     {
   "@context": "https://schema.org",
@@ -93,35 +93,58 @@
         <details>
           <summary>What does the report look like? <span class="pr-sample-toggle">View sample</span></summary>
           <div class="pr-sample-body">
-            <pre tabindex="0">
-# Response to Reviewers Review
-
-## Per-Comment Tracker
-
-| # | Reviewer comment | Verdict |
-|---|---|---|
-| R1.2 | "Sample size seems small for the claimed effect." | Addressed. Power analysis added to Section 3.2. |
-| R1.4 | "Figure 3 axis labels are unreadable." | Partially addressed. Labels enlarged, but the legend still overlaps the plot. |
-| R2.1 | "The related-work section ignores prior work by Chen et al." | Hand-waved. Response says "we are aware of this work" without adding a citation or comparison. |
-| R2.3 | "Why not compare against baseline X?" | Rejected with argument. Response explains X is not applicable to this setting; reasoning is sound. |
-
-## Tone Concerns
-
-- Response to R2.1 reads as dismissive: "As any reader familiar with
+            <div class="sample-report pr-sample-md">
+<h3 class="pr-sample-h">Response to Reviewers Review</h3>
+<h4 class="pr-sample-h">Per-Comment Tracker</h4>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Sample table"><table class="compare-table">
+<thead>
+<tr>
+<th>#</th>
+<th>Reviewer comment</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1.2</td>
+<td>"Sample size seems small for the claimed effect."</td>
+<td>Addressed. Power analysis added to Section 3.2.</td>
+</tr>
+<tr>
+<td>R1.4</td>
+<td>"Figure 3 axis labels are unreadable."</td>
+<td>Partially addressed. Labels enlarged, but the legend still overlaps the plot.</td>
+</tr>
+<tr>
+<td>R2.1</td>
+<td>"The related-work section ignores prior work by Chen et al."</td>
+<td>Hand-waved. Response says "we are aware of this work" without adding a citation or comparison.</td>
+</tr>
+<tr>
+<td>R2.3</td>
+<td>"Why not compare against baseline X?"</td>
+<td>Rejected with argument. Response explains X is not applicable to this setting; reasoning is sound.</td>
+</tr>
+</tbody>
+</table></div>
+<h4 class="pr-sample-h">Tone Concerns</h4>
+<ul>
+<li>Response to R2.1 reads as dismissive: "As any reader familiar with
   the field would understand, this comparison is unnecessary." Suggest:
-  "We agree this comparison is worth addressing directly. [reasoning]"
-
-## Missing Responses
-
-- R1.5 ("Please clarify the exclusion criteria for Experiment 2")
-  has no corresponding response letter entry.
-
-## Action Checklist
-
-- [A] Add a citation and one-sentence comparison to Chen et al. for R2.1.
-- [A] Write a response to the missing R1.5 comment.
-- [B] Fix the overlapping legend in Figure 3.
-            </pre>
+  "We agree this comparison is worth addressing directly. [reasoning]"</li>
+</ul>
+<h4 class="pr-sample-h">Missing Responses</h4>
+<ul>
+<li>R1.5 ("Please clarify the exclusion criteria for Experiment 2")
+  has no corresponding response letter entry.</li>
+</ul>
+<h4 class="pr-sample-h">Action Checklist</h4>
+<ul>
+<li>[A] Add a citation and one-sentence comparison to Chen et al. for R2.1.</li>
+<li>[A] Write a response to the missing R1.5 comment.</li>
+<li>[B] Fix the overlapping legend in Figure 3.</li>
+</ul>
+            </div>
           </div>
         </details>
       </section>
