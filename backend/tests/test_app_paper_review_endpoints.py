@@ -2058,3 +2058,65 @@ def test_lifecycle_stats_counts_without_addresses(client, monkeypatch):
     assert body["entries_by_product"] == {"paper-review": 1, "moderntex-trial": 2, "moderntex": 1}
     assert body["decision_reminders_waiting"] == 2 and body["unsubscribed"] == 1
     assert "@" not in str(body)
+
+
+def test_unsubscribe_works_for_capitalised_addresses_and_old_links(client, monkeypatch):
+    import hashlib, hmac
+    http, backend_app = client
+    monkeypatch.setenv("SUBSCRIBE_SECRET", "sek")
+    new_token = hmac.new(b"sek", b"lifecycle:jane.doe@uni.edu", hashlib.sha256).hexdigest()
+    r = http.get("/paper-review/lifecycle/unsubscribe", params={"email": "jane.doe@uni.edu", "token": new_token})
+    assert r.status_code == 200
+    assert backend_app.lifecycle_optout_dict.get("jane.doe@uni.edu") is True
+    # A link sent before normalisation was signed over the address as stored.
+    old_token = hmac.new(b"sek", b"lifecycle:Bob.Roe@Uni.edu", hashlib.sha256).hexdigest()
+    r = http.get("/paper-review/lifecycle/unsubscribe", params={"email": "Bob.Roe@Uni.edu", "token": old_token})
+    assert r.status_code == 200
+    assert backend_app.lifecycle_optout_dict.get("bob.roe@uni.edu") is True
+    assert http.get("/paper-review/lifecycle/unsubscribe", params={"email": "x@y.com", "token": "bad"}).status_code == 400
+    # The opt-out is honoured whatever case the address arrives in later.
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "s")
+    r = http.post("/lifecycle/register", json={"session_id": "cs_b", "email": "BOB.ROE@uni.edu", "product": "moderntex"},
+                  headers={"x-webhook-secret": "s"})
+    assert r.json()["status"] == "opted_out"
+
+
+def test_small_tool_purchase_gets_no_paper_review_follow_ups(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "s")
+    h = {"x-webhook-secret": "s"}
+    for sid, prod in (("s-cl", "cover-letter"), ("s-pr", "paper-review-standard")):
+        r = http.post("/paper-review/register-token", headers=h, json={
+            "session_id": sid, "product": prod, "email": "a@b.com",
+            "amount_paid": backend_app.PAID_PRODUCTS[prod]["amount"]})
+        assert r.status_code == 200, r.text
+    assert backend_app.customer_lifecycle_dict.get("s-cl") is None
+    assert backend_app.customer_lifecycle_dict.get("s-pr") is not None
+
+
+def test_pack_tokens_include_the_anonymity_scan(client):
+    _http, backend_app = client
+    for key in ("paper-review-pack-5", "paper-review-pack-20"):
+        assert backend_app.PAID_PRODUCTS[key].get("bundled_anonymity") is True
+
+
+def test_emails_reply_to_ben_and_can_change_sender_name(monkeypatch):
+    import asyncio, json
+    from latextools import delivery
+    monkeypatch.setenv("RESEND_API_KEY", "re_x")
+    seen = []
+
+    class Resp:
+        status_code = 200
+        text = "{}"
+        def json(self): return {"id": "1"}
+
+    class Client:
+        async def post(self, url, json=None, headers=None, **kw):
+            seen.append(json); return Resp()
+
+    asyncio.run(delivery.send_email(Client(), to="a@b.com", subject="s", html="h", from_name="Purplelink"))
+    asyncio.run(delivery.send_email(Client(), to="a@b.com", subject="s", html="h"))
+    assert seen[0]["from"] == "Purplelink <reviews@purplelink.llc>"
+    assert seen[1]["from"] == delivery.FROM_ADDRESS
+    assert all(b["reply_to"] == "ben@purplelink.llc" for b in seen)

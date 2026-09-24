@@ -34,6 +34,8 @@ logger = logging.getLogger(__name__)
 
 RESEND_API_URL = "https://api.resend.com/emails"
 FROM_ADDRESS = "Purplelink Paper Review <reviews@purplelink.llc>"
+# Every email invites a reply, and reviews@ is not a monitored inbox.
+REPLY_TO = "ben@purplelink.llc"
 
 
 def _is_valid_email(addr: str) -> bool:
@@ -65,8 +67,13 @@ async def send_email(
     plain_text: Optional[str] = None,
     attachments: Optional[list[dict]] = None,
     tags: Optional[list[dict]] = None,
+    from_name: Optional[str] = None,
 ) -> dict:
     """POST to Resend. Returns {"status": "ok"|"skipped"|"error", ...}.
+
+    *from_name* replaces the display name ("Purplelink Paper Review") for
+    emails that are not about Paper Review; the address stays on the
+    verified domain.
 
     *attachments* — list of {"filename": str, "content": bytes-or-base64-str}
     *tags* — list of {"name": "...", "value": "..."} for Resend analytics
@@ -79,8 +86,12 @@ async def send_email(
     if not _is_valid_email(to):
         return {"status": "error", "reason": "invalid_email"}
 
+    sender = FROM_ADDRESS
+    if from_name:
+        sender = f"{from_name} <{FROM_ADDRESS.split('<', 1)[1]}"
     body: dict = {
-        "from": FROM_ADDRESS,
+        "from": sender,
+        "reply_to": REPLY_TO,
         "to": [to],
         "subject": subject[:200],
         "html": html,
@@ -256,14 +267,14 @@ def html_review_ready(
     </a>
   </p>
   <p style="color: #555; font-size: 0.9em;">
-    The result is held on our server only until you retrieve it. Open the
-    link soon and save a copy locally; once you download it, it is deleted
-    from our infrastructure.
+    Open it within 24 hours and save a copy when the page loads. The result
+    is deleted from our server 30 minutes after you first open it, or after
+    24 hours if you never do.
   </p>{next_html}
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">
-    Sent by Purplelink LLC. If a result is low-quality, reply to this email
-    and we'll refund the {refund_amount}.
+    Sent by Purplelink LLC. If a result is low quality, reply to this email
+    within 14 days and we'll refund the {refund_amount}.
   </p>
 </div>
 """
