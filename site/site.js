@@ -344,3 +344,38 @@
     }
   });
 })();
+
+// In-page filter for the tools and guides indexes. The input names the items
+// it filters (data-list-filter="<selector>"); sections left with no match are
+// hidden too. "/" focuses the box, Escape clears it.
+(() => {
+  const input = document.querySelector("[data-list-filter]");
+  if (!input) return;
+  const items = [...document.querySelectorAll(input.dataset.listFilter)];
+  const status = input.parentElement.querySelector(".list-filter-status");
+  const sections = [...new Set(items.map((el) => el.closest("section")).filter(Boolean))];
+  const norm = (t) => t.toLowerCase().replace(/\s+/g, " ");
+  const text = new Map(items.map((el) => [el, norm(el.textContent + " " + (el.getAttribute("href") || el.querySelector("a")?.getAttribute("href") || ""))]));
+  const apply = () => {
+    const terms = norm(input.value).trim().split(" ").filter(Boolean);
+    let shown = 0;
+    items.forEach((el) => {
+      const hit = terms.every((t) => text.get(el).includes(t));
+      el.hidden = !hit;
+      if (hit) shown++;
+    });
+    sections.forEach((sec) => { sec.hidden = !items.some((el) => !el.hidden && sec.contains(el)); });
+    if (status) {
+      status.textContent = !terms.length ? "" : shown ? `${shown} ${shown === 1 ? "match" : "matches"}` : "Nothing matches. Try another word, or email ben@purplelink.llc and say what you were looking for.";
+    }
+  };
+  input.addEventListener("input", apply);
+  input.addEventListener("keydown", (e) => { if (e.key === "Escape") { input.value = ""; apply(); } });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target;
+    if (t.closest && t.closest("input, textarea, select, [contenteditable]")) return;
+    e.preventDefault();
+    input.focus();
+  });
+})();

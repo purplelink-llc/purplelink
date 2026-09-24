@@ -44,7 +44,8 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=695e8dc009">
+    <link rel="stylesheet" href="/styles.css?v=5aef670c7d">
+    <script src="/site.js?v=46ec2b3221" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
   <body>
@@ -68,6 +69,12 @@
         <p class="eyebrow">Free guides</p>
         <h1>LaTeX &amp; academic writing guides</h1>
         <p>How-to guides for the things researchers get stuck on: converting LaTeX to Word, fixing BibTeX errors, citation styles, tracking changes, getting a paper ready to submit. Most pair with a free tool you can use right away.</p>
+      </div>
+
+      <div class="list-filter">
+        <label class="visually-hidden" for="list-filter-input">Filter guides</label>
+        <input type="search" id="list-filter-input" data-list-filter=".guide-grid li, .guides-start .catalog-card" placeholder="Filter guides: BibTeX, Word, reviewer, CV..." autocomplete="off" spellcheck="false">
+        <p class="list-filter-status" aria-live="polite"></p>
       </div>
 
       <section class="guides-start" aria-labelledby="start-h">

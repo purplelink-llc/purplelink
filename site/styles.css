@@ -4209,3 +4209,17 @@ html { scroll-padding-top: 96px; }
 /* Privacy page: clear stored choices */
 .clear-prefs { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .clear-prefs-status { color: var(--muted); font-size: 0.9rem; }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* In-page filter on /tools/ and /guides/ */
+.list-filter { max-width: 560px; margin: 28px auto 0; padding: 0 24px; text-align: center; }
+.list-filter input[type="search"] {
+  width: 100%; min-height: 48px; padding: 0 18px;
+  border: 1.5px solid var(--line); border-radius: 100px; background: var(--panel); color: var(--ink);
+  font: inherit; font-size: 1rem;
+}
+.list-filter input[type="search"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
+.list-filter-status { min-height: 1.4em; margin: 8px 0 0; color: var(--muted); font-size: 0.88rem; }
+.tool-card[hidden], .tool-card-lg[hidden], .catalog-card[hidden], .guide-grid li[hidden],
+.tools-section[hidden], .guides-group[hidden], .guides-start[hidden] { display: none; }
