@@ -2410,7 +2410,7 @@ Short explainer: trial not registered
 
 The most reliable check is a colleague who knows your field and reads the manuscript as a skeptic. A useful way to brief them is to send this list and ask which of these a reviewer would raise.
 
-If you want a first pass before that, Purplelink's Paper Review ($9) reads a manuscript PDF and reports methodology concerns in the terms used on this page. Several of these problems are flagged automatically, including hyperparameter asymmetry, missing sample-size justification, single-seed results, figure presentation problems and references that do not resolve, and findings link to the matching short explainer. It is advisory, it can be wrong, and it does not replace a person who knows your field.
+If you want a first pass before that, Purplelink's Paper Review ($9) reads a manuscript PDF and reports methodology concerns in the terms used on this page. Several of these problems are flagged automatically, including hyperparameter asymmetry, missing sample-size justification, single-seed results, figure presentation problems and references that do not resolve, and findings link to the matching short explainer. It is advisory, it can be wrong, and it does not replace a person who knows your field. Its field profiles list what each one checks: machine learning, biomedicine, psychology and social science, and chemistry and materials.
 
 For citations alone, the free BibTeX Validator checks each entry in a .bib file against CrossRef and Semantic Scholar and flags entries that do not match a real paper. It runs in your browser and does not upload the file.
 
