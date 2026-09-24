@@ -1,5 +1,5 @@
 // Research desk: optional Amazon Associates tagging for a[data-amazon] links.
-const AMAZON_TAG = "";  // Amazon Associates tracking id, e.g. "yourtag-20". Empty = links go out untagged.
+const AMAZON_TAG = "purplelinkpl-20";  // Amazon Associates tracking id. Empty = links go out untagged.
 
 (function () {
   if (!AMAZON_TAG) return;
