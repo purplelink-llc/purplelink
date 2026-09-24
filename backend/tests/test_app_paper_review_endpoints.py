@@ -303,6 +303,33 @@ def test_register_token_skips_credit_for_self_referral(client, monkeypatch):
     assert calls == []
 
 
+
+def test_register_token_skips_credit_for_self_referral_with_other_casing(client, monkeypatch):
+    """Changing the capitalisation of the address does not make it a new person."""
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    headers = {"x-webhook-secret": "correct-secret"}
+
+    same_email = "person@school.edu"
+    code = backend_app._paper_referral_code(same_email)
+    backend_app.referral_dict[code] = same_email
+
+    calls = []
+    async def _fake_credit(referrer, referee):
+        calls.append((referrer, referee))
+    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
+
+    payload = {
+        "session_id": "s-self-referral-case",
+        "product": "paper-review-standard",
+        "email": "Person@School.EDU",
+        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
+        "referral_code": code,
+    }
+    r = http.post("/paper-review/register-token", json=payload, headers=headers)
+    assert r.status_code == 200
+    assert calls == []
+
 def test_register_token_rejects_amount_mismatch(client, monkeypatch):
     """Defense-in-depth: if the Netlify Stripe webhook ever mismaps a
     price_id to the wrong product_key (e.g. sends the 5-pack's product_key
