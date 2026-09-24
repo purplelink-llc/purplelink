@@ -355,12 +355,22 @@
   const status = input.parentElement.querySelector(".list-filter-status");
   const sections = [...new Set(items.map((el) => el.closest("section")).filter(Boolean))];
   const norm = (t) => t.toLowerCase().replace(/\s+/g, " ");
-  const text = new Map(items.map((el) => [el, norm(el.textContent + " " + (el.getAttribute("href") || el.querySelector("a")?.getAttribute("href") || ""))]));
+  // Price words make "free" and "paid" work as filters: a card's price label
+  // decides, and cards without one take data-list-default (free, on /tools/).
+  const priceWord = (el) => {
+    const price = el.querySelector("[class$='-price']");
+    if (!price) return input.dataset.listDefault || "";
+    return /free/i.test(price.textContent) ? "free" : "paid";
+  };
+  const text = new Map(items.map((el) => [el, norm(el.textContent + " " + priceWord(el) + " " + (el.getAttribute("href") || el.querySelector("a")?.getAttribute("href") || ""))]));
+  // Words people type that the cards phrase differently.
+  const SYNONYMS = { reference: ["cit", "bib"], references: ["cit", "bib"], word: ["docx"], cv: ["resume", "vitae"], doi: ["bib", "cit"], editor: ["moderntex"] };
+  const matches = (hay, t) => hay.includes(t) || (SYNONYMS[t] || []).some((alt) => hay.includes(alt));
   const apply = () => {
     const terms = norm(input.value).trim().split(" ").filter(Boolean);
     let shown = 0;
     items.forEach((el) => {
-      const hit = terms.every((t) => text.get(el).includes(t));
+      const hit = terms.every((t) => matches(text.get(el), t));
       el.hidden = !hit;
       if (hit) shown++;
     });
@@ -371,6 +381,12 @@
   };
   input.addEventListener("input", apply);
   input.addEventListener("keydown", (e) => { if (e.key === "Escape") { input.value = ""; apply(); } });
+  // On a phone the keyboard covers the results; lift the box to the top.
+  input.addEventListener("focus", () => {
+    if (window.innerWidth > 700) return;
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(() => input.scrollIntoView({ block: "start", behavior: smooth ? "smooth" : "auto" }), 250);
+  });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
     const t = e.target;
