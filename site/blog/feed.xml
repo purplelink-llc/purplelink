@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Purplelink blog</title>
+  <subtitle>Notes from a one-person studio making tools for academic researchers.</subtitle>
+  <link href="https://purplelink.llc/blog/feed.xml" rel="self"/>
+  <link href="https://purplelink.llc/blog/"/>
+  <id>https://purplelink.llc/blog/</id>
+  <updated>2026-09-23T12:00:00Z</updated>
+  <author><name>Benjamin Ampel</name></author>
+  <entry>
+    <title>Where Your Academic Record Actually Lives</title>
+    <link href="https://purplelink.llc/blog/where-your-academic-record-actually-lives/"/>
+    <id>https://purplelink.llc/blog/where-your-academic-record-actually-lives/</id>
+    <published>2026-09-23T12:00:00Z</published>
+    <updated>2026-09-23T12:00:00Z</updated>
+    <summary>Academics maintain their professional history in a dozen scattered places. When tenure reviews, grant applications, and annual reviews arrive, reconstructing the record from scratch is the problem.</summary>
+  </entry>
+  <entry>
+    <title>My travel photographs, now available as prints</title>
+    <link href="https://purplelink.llc/blog/travel-photographs-as-prints/"/>
+    <id>https://purplelink.llc/blog/travel-photographs-as-prints/</id>
+    <published>2026-09-23T12:00:00Z</published>
+    <updated>2026-09-23T12:00:00Z</updated>
+    <summary>About 500 travel and landscape photographs from the Alps, Japan, Iceland and more are now for sale as prints, plus the metadata bug that cut 65 titles short.</summary>
+  </entry>
+  <entry>
+    <title>Both bugs had the same symptom: zero</title>
+    <link href="https://purplelink.llc/blog/both-bugs-had-the-same-symptom-zero/"/>
+    <id>https://purplelink.llc/blog/both-bugs-had-the-same-symptom-zero/</id>
+    <published>2026-09-20T12:00:00Z</published>
+    <updated>2026-09-20T12:00:00Z</updated>
+    <summary>Building GlobePin's App Store analytics pipeline, I wrote code that treated absent data and broken requests identically. Two independent bugs, each enough to return nothing, sat undetected until Apple generated its first real reports.</summary>
+  </entry>
+  <entry>
+    <title>TikZ diagrams and tables in ModernTex, without writing either by hand</title>
+    <link href="https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/"/>
+    <id>https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/</id>
+    <published>2026-09-13T12:00:00Z</published>
+    <updated>2026-09-13T12:00:00Z</updated>
+    <summary>ModernTex now has a visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel — both still write plain LaTeX underneath.</summary>
+  </entry>
+  <entry>
+    <title>Checking your response letter before resubmission</title>
+    <link href="https://purplelink.llc/blog/checking-your-response-letter-before-resubmission/"/>
+    <id>https://purplelink.llc/blog/checking-your-response-letter-before-resubmission/</id>
+    <published>2026-09-09T12:00:00Z</published>
+    <updated>2026-09-09T12:00:00Z</updated>
+    <summary>A response letter can address every reviewer comment without actually resolving the underlying concern. This is how a researcher uses Response Review to check that gap before resubmitting.</summary>
+  </entry>
+  <entry>
+    <title>Detecting checkout without a click handler</title>
+    <link href="https://purplelink.llc/blog/detecting-checkout-without-a-click-handler/"/>
+    <id>https://purplelink.llc/blog/detecting-checkout-without-a-click-handler/</id>
+    <published>2026-09-02T12:00:00Z</published>
+    <updated>2026-09-02T12:00:00Z</updated>
+    <summary>The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.</summary>
+  </entry>
+  <entry>
+    <title>What Your Literature Search Misses</title>
+    <link href="https://purplelink.llc/blog/what-your-literature-search-misses/"/>
+    <id>https://purplelink.llc/blog/what-your-literature-search-misses/</id>
+    <published>2026-08-26T12:00:00Z</published>
+    <updated>2026-08-26T12:00:00Z</updated>
+    <summary>Most missed citations aren't papers you forgot to read. They're papers in adjacent fields using different terminology for the same problem, invisible to a keyword search.</summary>
+  </entry>
+  <entry>
+    <title>The comment said this would break</title>
+    <link href="https://purplelink.llc/blog/the-comment-said-this-would-break/"/>
+    <id>https://purplelink.llc/blog/the-comment-said-this-would-break/</id>
+    <published>2026-08-19T12:00:00Z</published>
+    <updated>2026-08-19T12:00:00Z</updated>
+    <summary>The Purplelink stats endpoint read event blobs one at a time, and the code even included a comment noting it would fail at higher volume. The failure arrived through latency rather than traffic spikes.</summary>
+  </entry>
+  <entry>
+    <title>Producing a diff PDF for journal resubmission</title>
+    <link href="https://purplelink.llc/blog/producing-a-diff-pdf-for-journal-resubmission/"/>
+    <id>https://purplelink.llc/blog/producing-a-diff-pdf-for-journal-resubmission/</id>
+    <published>2026-08-12T12:00:00Z</published>
+    <updated>2026-08-12T12:00:00Z</updated>
+    <summary>Many journal submission portals require a diff PDF alongside a revised manuscript. Here is how a researcher uses Purplelink's LaTeX Diff tool to produce one without a local LaTeX installation.</summary>
+  </entry>
+  <entry>
+    <title>Why the cover letter generator doesn't see your manuscript</title>
+    <link href="https://purplelink.llc/blog/why-the-cover-letter-doesnt-see-your-manuscript/"/>
+    <id>https://purplelink.llc/blog/why-the-cover-letter-doesnt-see-your-manuscript/</id>
+    <published>2026-08-05T12:00:00Z</published>
+    <updated>2026-08-05T12:00:00Z</updated>
+    <summary>The Purplelink cover letter generator takes only your abstract, not the full manuscript. Here's the capability and privacy reasoning behind that design choice.</summary>
+  </entry>
+  <entry>
+    <title>What counts as a run when the tool never calls the server</title>
+    <link href="https://purplelink.llc/blog/what-counts-as-a-run/"/>
+    <id>https://purplelink.llc/blog/what-counts-as-a-run/</id>
+    <published>2026-07-29T12:00:00Z</published>
+    <updated>2026-07-29T12:00:00Z</updated>
+    <summary>Two Purplelink tools that compute entirely in the browser had no usage data, because instrumentation relied on intercepting backend calls. Fixing that required defining what a run actually means, and the answer differed by tool.</summary>
+  </entry>
+  <entry>
+    <title>What stays in a blinded manuscript</title>
+    <link href="https://purplelink.llc/blog/what-stays-in-a-blinded-manuscript/"/>
+    <id>https://purplelink.llc/blog/what-stays-in-a-blinded-manuscript/</id>
+    <published>2026-07-22T12:00:00Z</published>
+    <updated>2026-07-22T12:00:00Z</updated>
+    <summary>Double-blind peer review requires more than removing your name from the title page. Grant numbers, IRB protocols, citation prose, and named software all identify you to a reviewer who knows your field.</summary>
+  </entry>
+  <entry>
+    <title>What OpenAlex returns when you ask for an abstract</title>
+    <link href="https://purplelink.llc/blog/what-openalex-returns-when-you-ask-for-an-abstract/"/>
+    <id>https://purplelink.llc/blog/what-openalex-returns-when-you-ask-for-an-abstract/</id>
+    <published>2026-07-15T12:00:00Z</published>
+    <updated>2026-07-15T12:00:00Z</updated>
+    <summary>OpenAlex stores paper abstracts as inverted indexes rather than strings. Building the Daily Digest's paper fetcher surfaced this, and the reconstruction has limits.</summary>
+  </entry>
+  <entry>
+    <title>Running your manuscript through Paper Review</title>
+    <link href="https://purplelink.llc/blog/running-your-manuscript-through-paper-review/"/>
+    <id>https://purplelink.llc/blog/running-your-manuscript-through-paper-review/</id>
+    <published>2026-07-08T12:00:00Z</published>
+    <updated>2026-07-08T12:00:00Z</updated>
+    <summary>Paper Review scans your manuscript before submission with four adversarial passes: figure integrity, citation cross-check, a multi-persona reviewer debate, and a prioritized checklist. Here is what using it looks like from a researcher's side.</summary>
+  </entry>
+  <entry>
+    <title>One curation call per day</title>
+    <link href="https://purplelink.llc/blog/one-curation-call-per-day/"/>
+    <id>https://purplelink.llc/blog/one-curation-call-per-day/</id>
+    <published>2026-07-01T12:00:00Z</published>
+    <updated>2026-07-01T12:00:00Z</updated>
+    <summary>The Purplelink Daily Digest harvests 400-800 items daily and picks 20 to publish. Here's why the design uses a single AI curation call instead of scoring items one at a time.</summary>
+  </entry>
+  <entry>
+    <title>Keeping up when your research crosses fields</title>
+    <link href="https://purplelink.llc/blog/keeping-up-when-your-research-crosses-fields/"/>
+    <id>https://purplelink.llc/blog/keeping-up-when-your-research-crosses-fields/</id>
+    <published>2026-06-24T12:00:00Z</published>
+    <updated>2026-06-24T12:00:00Z</updated>
+    <summary>Academic researchers who work across multiple fast-moving fields have no good daily briefing built for them. Here's why the existing infrastructure falls short, and what I built to fix it.</summary>
+  </entry>
+  <entry>
+    <title>Where BibTeX errors actually come from</title>
+    <link href="https://purplelink.llc/blog/where-bibtex-errors-actually-come-from/"/>
+    <id>https://purplelink.llc/blog/where-bibtex-errors-actually-come-from/</id>
+    <published>2026-06-17T12:00:00Z</published>
+    <updated>2026-06-17T12:00:00Z</updated>
+    <summary>Most BibTeX errors don't come from researchers making mistakes. They come from the bibliography managers and export tools researchers trust to get it right.</summary>
+  </entry>
+  <entry>
+    <title>Getting a research paper into an LLM without losing the math</title>
+    <link href="https://purplelink.llc/blog/pdf-to-llm-without-losing-the-math/"/>
+    <id>https://purplelink.llc/blog/pdf-to-llm-without-losing-the-math/</id>
+    <published>2026-06-10T12:00:00Z</published>
+    <updated>2026-06-10T12:00:00Z</updated>
+    <summary>PDF text extraction breaks on tables and equations. Here's how a researcher uses Purplelink's PDF to Structured Data tool to get clean, LLM-ready text out of an academic paper.</summary>
+  </entry>
+  <entry>
+    <title>Seven free LaTeX tools, right in your browser</title>
+    <link href="https://purplelink.llc/blog/free-latex-tools/"/>
+    <id>https://purplelink.llc/blog/free-latex-tools/</id>
+    <published>2026-05-28T12:00:00Z</published>
+    <updated>2026-09-04T12:00:00Z</updated>
+    <summary>We launched a free LaTeX tools page: compile to PDF, convert to and from Word, diff two versions, validate and build BibTeX, and render equations - no account, no install, nothing stored.</summary>
+  </entry>
+  <entry>
+    <title>Why we built Haea on-device</title>
+    <link href="https://purplelink.llc/blog/why-haea-is-on-device/"/>
+    <id>https://purplelink.llc/blog/why-haea-is-on-device/</id>
+    <published>2026-05-27T12:00:00Z</published>
+    <updated>2026-05-31T12:00:00Z</updated>
+    <summary>Why Haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.</summary>
+  </entry>
+  <entry>
+    <title>What GlobePin does that no other travel app does</title>
+    <link href="https://purplelink.llc/blog/what-globepin-does-differently/"/>
+    <id>https://purplelink.llc/blog/what-globepin-does-differently/</id>
+    <published>2026-05-27T12:00:00Z</published>
+    <updated>2026-05-31T12:00:00Z</updated>
+    <summary>Why GlobePin is different from every travel tracking app on the market - and what we built that the others missed.</summary>
+  </entry>
+  <entry>
+    <title>The LaTeX editor that academics actually want</title>
+    <link href="https://purplelink.llc/blog/the-latex-editor-academics-want/"/>
+    <id>https://purplelink.llc/blog/the-latex-editor-academics-want/</id>
+    <published>2026-05-27T12:00:00Z</published>
+    <updated>2026-09-04T12:00:00Z</updated>
+    <summary>Why existing LaTeX editors fail academic researchers - and what ModernTex does differently to serve the manuscript workflow.</summary>
+  </entry>
+  <entry>
+    <title>Starting Purplelink</title>
+    <link href="https://purplelink.llc/blog/starting-purplelink/"/>
+    <id>https://purplelink.llc/blog/starting-purplelink/</id>
+    <published>2026-05-27T12:00:00Z</published>
+    <updated>2026-09-04T12:00:00Z</updated>
+    <summary>Why I formed a software LLC, what I'm building with it, and the philosophy behind making software that's meant to last.</summary>
+  </entry>
+</feed>
