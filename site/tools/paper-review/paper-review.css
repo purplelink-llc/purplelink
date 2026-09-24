@@ -309,3 +309,12 @@
 .pr-next-price { color: var(--purple); font-size: 0.8rem; font-weight: 700; }
 .pr-next-desc { color: var(--muted); font-size: 0.88rem; }
 @media (prefers-reduced-motion: reduce) { .pr-next-card { transition: none; } }
+
+/* Status page: something useful to read during the wait */
+.pr-wait { margin-top: 1.5rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.pr-wait h2 { font-family: var(--font-display); font-size: 1.05rem; margin: 0 0 0.25rem; }
+.pr-wait p { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.88rem; }
+.pr-wait ul { margin: 0; padding-left: 1.1rem; }
+.pr-wait li { margin: 0.25rem 0; font-size: 0.93rem; }
+.pr-wait a { color: var(--purple); font-weight: 600; }
+.pr-wait[hidden] { display: none; }
