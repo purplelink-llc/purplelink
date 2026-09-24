@@ -2502,6 +2502,15 @@ dd {
   color: var(--ink);
 }
 
+.about-value h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.about-value h3 a:hover { color: var(--purple); }
+
+.about-products { margin-bottom: 2rem; }
+
 .about-value p {
   font-size: 0.83rem;
   line-height: 1.6;

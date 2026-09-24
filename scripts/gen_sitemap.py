@@ -66,15 +66,39 @@ DEFAULTS: dict[str, tuple[str | None, str]] = {
 }
 
 
+# fingerprint_assets.py rewrites the ?v= stamp in every page whenever a shared
+# CSS or JS file changes. Counting those commits dated all 105 URLs to the same
+# day, so lastmod told search engines nothing and indexnow_ping.py re-submitted
+# the whole site. A commit whose only edits to a page are stamp changes is
+# skipped when dating that page.
+_STAMP_RE = re.compile(r"\?v=[0-9a-f]+")
+_COMMIT_MARK = "\x00commit "
+
+
+def _stamp_only(removed: list[str], added: list[str]) -> bool:
+    if not removed and not added:
+        return True
+    strip = lambda lines: sorted(_STAMP_RE.sub("", ln) for ln in lines)  # noqa: E731
+    return strip(removed) == strip(added)
+
+
 def git_lastmod(path: Path) -> str:
-    """Last commit date for a file, falling back to mtime for uncommitted ones."""
+    """Date of the last commit that changed a page's content, falling back to
+    mtime for files git doesn't know."""
     try:
-        out = subprocess.run(
-            ["git", "log", "-1", "--format=%cs", "--", str(path)],
-            cwd=ROOT, capture_output=True, text=True, timeout=15,
-        ).stdout.strip()
-        if out:
-            return out
+        log = subprocess.run(
+            ["git", "log", "-p", "--no-color", "--unified=0",
+             "--format=%x00commit %cs", "--", str(path)],
+            cwd=ROOT, capture_output=True, text=True, timeout=60,
+        ).stdout
+        for chunk in log.split(_COMMIT_MARK)[1:]:
+            date, _, diff = chunk.partition("\n")
+            removed = [ln[1:] for ln in diff.splitlines()
+                       if ln.startswith("-") and not ln.startswith("---")]
+            added = [ln[1:] for ln in diff.splitlines()
+                     if ln.startswith("+") and not ln.startswith("+++")]
+            if not _stamp_only(removed, added):
+                return date.strip()
     except Exception:                                    # noqa: BLE001
         pass
     return dt.date.fromtimestamp(path.stat().st_mtime).isoformat()
