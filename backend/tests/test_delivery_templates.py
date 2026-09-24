@@ -40,7 +40,8 @@ def test_html_review_ready_caps_title_length():
         status_url="https://purplelink.llc/x",
         manuscript_title=long_title,
     )
-    assert out.count("A") <= 200
+    # The title is cut to 200 characters (other copy may contain an "A").
+    assert "A" * 200 in out and "A" * 201 not in out
 
 
 def test_html_review_ready_default_title_when_empty():
