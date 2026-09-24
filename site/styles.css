@@ -3231,3 +3231,237 @@ button.btn-coming-soon:focus-visible {
 
 .catalog-hero + .catalog-section,
 .back-link + .catalog-hero { border-top: 0; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HOME — hero product visual, "Before you submit", app grid
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.hero-bottom {
+  position: relative;
+  z-index: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.hero-lede a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--purple);
+  text-underline-offset: 3px;
+}
+
+/* The right half of the hero was empty at desktop widths. Show the product
+   there: the ModernTex window, a Paper Review finding and the app icons. */
+.hero-visual { display: none; }
+
+@media (min-width: 1200px) {
+  .hero { grid-template-columns: minmax(0, 1fr); }
+
+  .hero-bottom-copy { max-width: 560px; }
+
+  .hero-visual {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: clamp(-120px, -5vw, -40px);
+    width: min(46vw, 760px);
+    translate: 0 -46%;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-visual-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 80px oklch(20% 0.08 310 / 0.22), 0 4px 16px oklch(20% 0.08 310 / 0.1);
+  }
+
+  .hero-visual-card {
+    position: absolute;
+    left: -56px;
+    bottom: -36px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 330px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--panel);
+    box-shadow: 0 18px 44px oklch(20% 0.08 310 / 0.18);
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .hero-visual-card strong {
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+
+  .hero-visual-kicker {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+
+  .hero-visual-icons {
+    position: absolute;
+    top: -30px;
+    left: 40px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .hero-visual-icons img {
+    width: 56px;
+    height: 56px;
+    border-radius: 13px;
+    box-shadow: 0 10px 24px oklch(20% 0.08 310 / 0.22);
+  }
+}
+
+/* ─── Before you submit ───────────────────────────────────────────────── */
+
+.section-submit {
+  padding: clamp(64px, 8vw, 120px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+  background: var(--purple-xlight);
+}
+
+.submit-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+
+.section-submit .section-title em { font-style: italic; color: var(--purple); }
+
+.submit-lede {
+  max-width: 54ch;
+  margin: 18px 0 26px;
+  color: var(--muted);
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+}
+
+.submit-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.report-card {
+  margin: 0;
+  padding: 26px 28px 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 24px 60px oklch(20% 0.08 310 / 0.12);
+  font-size: 0.88rem;
+}
+
+.report-card figcaption {
+  margin-bottom: 14px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.report-h {
+  margin: 14px 0 6px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.report-h:first-of-type { margin-top: 0; }
+
+.report-item { color: var(--muted); line-height: 1.55; }
+.report-item strong { color: var(--ink); }
+
+.report-list { list-style: none; display: grid; gap: 8px; color: var(--muted); }
+
+.report-list span {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  border-radius: 6px;
+  background: var(--purple-light);
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.submit-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: clamp(40px, 5vw, 64px);
+}
+
+.submit-grid a {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.submit-grid a:hover { border-color: var(--purple); }
+
+.submit-grid strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--ink);
+}
+
+.submit-price { font-size: 0.8rem; font-weight: 700; color: var(--purple); }
+
+@media (max-width: 960px) {
+  .submit-inner { grid-template-columns: 1fr; }
+  .submit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .submit-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── "More from the studio": a card row, not full-width strips ──────── */
+
+@media (min-width: 900px) {
+  .section-apps .product-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .section-apps .product-item {
+    grid-template-columns: 1fr;
+    height: 100%;
+    padding: 26px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .section-apps .product-item-link { display: block; height: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .submit-grid a { transition: none; }
+}
