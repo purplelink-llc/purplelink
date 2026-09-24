@@ -371,3 +371,16 @@
   .pr-compare-table { font-size: 0.84rem; }
 }
 .pr-fields { margin-top: 0.7rem; font-size: 0.93rem; color: var(--muted); }
+
+/* Sample outputs converted from Markdown (anonymity, citation gap, cover
+   letter, resume and response pages). */
+.pr-sample-md { font-size: 0.93rem; line-height: 1.6; margin: 0.4rem 0 0.8rem; }
+.pr-sample-md h3.pr-sample-h { margin-top: 0.2rem; font-size: 1.15rem; }
+.pr-sample-md h4.pr-sample-h { margin: 1rem 0 0.4rem; font-size: 1rem; }
+.pr-sample-md h5.pr-sample-h { margin: 0.8rem 0 0.3rem; font-size: 0.95rem; }
+.pr-sample-md p { margin: 0 0 0.6rem; }
+.pr-sample-md ul, .pr-sample-md ol { margin: 0 0 0.6rem; padding-left: 1.2rem; }
+.pr-sample-md li + li { margin-top: 0.35rem; }
+.pr-sample-md ul ul { margin-top: 0.3rem; color: var(--muted); }
+.pr-sample-md .compare-table { margin: 0.6rem 0; min-width: 0; font-size: 0.86rem; }
+.pr-sample-md .compare-table th, .pr-sample-md .compare-table td { white-space: normal; }

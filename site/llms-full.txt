@@ -1050,32 +1050,47 @@ Deleted soon after delivery. The report is deleted from our servers 30 minutes a
 
 What does the report look like? View sample
 
-# Response to Reviewers Review
+### Response to Reviewers Review
 
-## Per-Comment Tracker
+Per-Comment Tracker
 
-| # | Reviewer comment | Verdict |
-|---|---|---|
-| R1.2 | "Sample size seems small for the claimed effect." | Addressed. Power analysis added to Section 3.2. |
-| R1.4 | "Figure 3 axis labels are unreadable." | Partially addressed. Labels enlarged, but the legend still overlaps the plot. |
-| R2.1 | "The related-work section ignores prior work by Chen et al." | Hand-waved. Response says "we are aware of this work" without adding a citation or comparison. |
-| R2.3 | "Why not compare against baseline X?" | Rejected with argument. Response explains X is not applicable to this setting; reasoning is sound. |
+#
+Reviewer comment
+Verdict
 
-## Tone Concerns
+R1.2
+"Sample size seems small for the claimed effect."
+Addressed. Power analysis added to Section 3.2.
+
+R1.4
+"Figure 3 axis labels are unreadable."
+Partially addressed. Labels enlarged, but the legend still overlaps the plot.
+
+R2.1
+"The related-work section ignores prior work by Chen et al."
+Hand-waved. Response says "we are aware of this work" without adding a citation or comparison.
+
+R2.3
+"Why not compare against baseline X?"
+Rejected with argument. Response explains X is not applicable to this setting; reasoning is sound.
+
+Tone Concerns
 
 - Response to R2.1 reads as dismissive: "As any reader familiar with
 the field would understand, this comparison is unnecessary." Suggest:
 "We agree this comparison is worth addressing directly. [reasoning]"
 
-## Missing Responses
+Missing Responses
 
 - R1.5 ("Please clarify the exclusion criteria for Experiment 2")
 has no corresponding response letter entry.
 
-## Action Checklist
+Action Checklist
 
 - [A] Add a citation and one-sentence comparison to Chen et al. for R2.1.
+
 - [A] Write a response to the missing R1.5 comment.
+
 - [B] Fix the overlapping legend in Figure 3.
 
 ## What the report includes
@@ -1134,54 +1149,90 @@ Deleted soon after delivery. The result is deleted from our servers 30 minutes a
 
 Sample output Show or hide
 
-# Citation Gap Analysis
-**Result: 5 potential gaps flagged.**
+### Citation Gap Analysis
+
+Result: 5 potential gaps flagged.
 Each entry below is a citation a domain reviewer might expect to see. Verify each suggestion against your own knowledge before adding — AI recall can be wrong.
 
-### Meta-analytic evidence on sleep deprivation and cognition
-- **Type:** Missing Canonical Paper
-- **Suggested authors:** J. Lim, D. F. Dinges
-- **Title hint:** A meta-analysis of the impact of short-term sleep deprivation on cognitive variables
-- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1037/a0018883
-- **What should be cited:** The standard meta-analysis of how short-term sleep loss affects attention, working memory, and other cognitive domains.
-- **Why a reviewer would notice:** The introduction claims sleep loss "impairs complex reasoning" using only two small studies. A sleep researcher would expect the meta-analysis behind that claim.
-- **Section to add it:** Introduction
+Meta-analytic evidence on sleep deprivation and cognition
 
-### Dose-response effects of partial sleep restriction
-- **Type:** Missing Prior Finding
-- **Suggested authors:** H. P. A. Van Dongen, G. Maislin, J. M. Mullington, D. F. Dinges
-- **Title hint:** The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology from chronic sleep restriction and total sleep deprivation
-- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1093/sleep/26.2.117
-- **What should be cited:** The controlled study showing that deficits from repeated nights of restricted sleep accumulate over time.
-- **Why a reviewer would notice:** The limitations paragraph says chronic restriction "may differ" from one night but does not cite the work that measured exactly that difference.
-- **Section to add it:** Discussion, limitations
+- Type: Missing Canonical Paper
 
-### Psychomotor Vigilance Task as the manipulation check
-- **Type:** Missing Framework
-- **Suggested authors:** D. F. Dinges, J. W. Powell
-- **Title hint:** Microcomputer analyses of performance on a portable, simple visual RT task during sustained operations
-- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.3758/BF03200977
-- **What should be cited:** The original description of the reaction-time task the manuscript uses to confirm participants were sleep restricted.
-- **Why a reviewer would notice:** The PVT is used in Section 3.3 without a source for the task or its lapse threshold.
-- **Section to add it:** Methods, Section 3.3
+- Suggested authors: J. Lim, D. F. Dinges
 
-### Origins of defect detection in code inspection
-- **Type:** Missing Canonical Paper
-- **Suggested authors:** M. E. Fagan
-- **Title hint:** Design and code inspections to reduce errors in program development
-- **Verification:** Confirmed to exist (CrossRef match) — DOI: 10.1147/sj.153.0182
-- **What should be cited:** The foundational paper on structured code inspection, which introduced defect detection rate as a measure of review effectiveness.
-- **Why a reviewer would notice:** The dependent variable is defect detection rate, and the related work section starts with modern pull-request review without acknowledging where the measure comes from.
-- **Section to add it:** Related work
+- Title hint: A meta-analysis of the impact of short-term sleep deprivation on cognitive variables
 
-### Prior experiments on sleep loss and developer performance
-- **Type:** Qualitative Gap
-- **Suggested authors:** (unknown)
-- **Title hint:** unknown
-- **Verification:** No searchable title — AI recall only, unverified
-- **What should be cited:** Earlier controlled experiments that measured programming or software-engineering task performance after a night of sleep deprivation.
-- **Why a reviewer would notice:** The manuscript describes itself as the first study of sleep and developer performance. A reviewer familiar with this small literature may question that claim.
-- **Section to add it:** Related work; also soften "first" in the abstract
+- Verification: Confirmed to exist (CrossRef match) — DOI: 10.1037/a0018883
+
+- What should be cited: The standard meta-analysis of how short-term sleep loss affects attention, working memory, and other cognitive domains.
+
+- Why a reviewer would notice: The introduction claims sleep loss "impairs complex reasoning" using only two small studies. A sleep researcher would expect the meta-analysis behind that claim.
+
+- Section to add it: Introduction
+
+Dose-response effects of partial sleep restriction
+
+- Type: Missing Prior Finding
+
+- Suggested authors: H. P. A. Van Dongen, G. Maislin, J. M. Mullington, D. F. Dinges
+
+- Title hint: The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology from chronic sleep restriction and total sleep deprivation
+
+- Verification: Confirmed to exist (CrossRef match) — DOI: 10.1093/sleep/26.2.117
+
+- What should be cited: The controlled study showing that deficits from repeated nights of restricted sleep accumulate over time.
+
+- Why a reviewer would notice: The limitations paragraph says chronic restriction "may differ" from one night but does not cite the work that measured exactly that difference.
+
+- Section to add it: Discussion, limitations
+
+Psychomotor Vigilance Task as the manipulation check
+
+- Type: Missing Framework
+
+- Suggested authors: D. F. Dinges, J. W. Powell
+
+- Title hint: Microcomputer analyses of performance on a portable, simple visual RT task during sustained operations
+
+- Verification: Confirmed to exist (CrossRef match) — DOI: 10.3758/BF03200977
+
+- What should be cited: The original description of the reaction-time task the manuscript uses to confirm participants were sleep restricted.
+
+- Why a reviewer would notice: The PVT is used in Section 3.3 without a source for the task or its lapse threshold.
+
+- Section to add it: Methods, Section 3.3
+
+Origins of defect detection in code inspection
+
+- Type: Missing Canonical Paper
+
+- Suggested authors: M. E. Fagan
+
+- Title hint: Design and code inspections to reduce errors in program development
+
+- Verification: Confirmed to exist (CrossRef match) — DOI: 10.1147/sj.153.0182
+
+- What should be cited: The foundational paper on structured code inspection, which introduced defect detection rate as a measure of review effectiveness.
+
+- Why a reviewer would notice: The dependent variable is defect detection rate, and the related work section starts with modern pull-request review without acknowledging where the measure comes from.
+
+- Section to add it: Related work
+
+Prior experiments on sleep loss and developer performance
+
+- Type: Qualitative Gap
+
+- Suggested authors: (unknown)
+
+- Title hint: unknown
+
+- Verification: No searchable title — AI recall only, unverified
+
+- What should be cited: Earlier controlled experiments that measured programming or software-engineering task performance after a night of sleep deprivation.
+
+- Why a reviewer would notice: The manuscript describes itself as the first study of sleep and developer performance. A reviewer familiar with this small literature may question that claim.
+
+- Section to add it: Related work; also soften "first" in the abstract
 
 Illustrative example on a fictional manuscript; your result follows the same format.
 
@@ -1239,32 +1290,45 @@ Deleted soon after delivery. The result is deleted from our servers 30 minutes a
 
 Sample output Show or hide
 
-# Anonymity Check
-**Result: 6 potential leaks detected.**
+### Anonymity Check
+
+Result: 6 potential leaks detected.
 Each item below should be removed or generalised before double-blind submission.
 
-## Self-citation patterns
-- **[CRITICAL]** Section 2, related work: "In our previous work [14], we found that review accuracy declines after the first hour of a session."
+Self-citation patterns
+
+- [CRITICAL] Section 2, related work: "In our previous work [14], we found that review accuracy declines after the first hour of a session."
+
 - Fix: Rewrite in the third person ("Prior work [14] found ...") and keep [14] as an ordinary reference.
 
-## Institutions
-- **[MAJOR]** methods section: "Participants were recruited from the professional master's program at [University Name]."
+Institutions
+
+- [MAJOR] methods section: "Participants were recruited from the professional master's program at [University Name]."
+
 - Fix: Replace the name with "a large public university".
 
-## IRB and ethics protocol numbers
-- **[MAJOR]** methods section, ethics statement: "The study was approved by the [University Name] IRB under protocol 2024-0917."
+IRB and ethics protocol numbers
+
+- [MAJOR] methods section, ethics statement: "The study was approved by the [University Name] IRB under protocol 2024-0917."
+
 - Fix: Write "approved by the authors' institutional review board" and withhold the protocol number until acceptance.
 
-## Funding and grants
-- **[MAJOR]** page 14 acknowledgements: "This work was supported by NSF grant #[Grant Number]."
+Funding and grants
+
+- [MAJOR] page 14 acknowledgements: "This work was supported by NSF grant #[Grant Number]."
+
 - Fix: Remove the acknowledgements from the review copy and restore them in the camera-ready version.
 
-## Emails and URLs
-- **[CRITICAL]** page 6 footnote 3: "Materials and analysis scripts are available at github.com/[username]/sleep-review-study."
+Emails and URLs
+
+- [CRITICAL] page 6 footnote 3: "Materials and analysis scripts are available at github.com/[username]/sleep-review-study."
+
 - Fix: Link an anonymized copy of the repository for review, with commit history and author names removed.
 
-## Named software, datasets and systems
-- **[MINOR]** Section 3.2: "Defects were seeded with ReviewSeed, the tool we released last year."
+Named software, datasets and systems
+
+- [MINOR] Section 3.2: "Defects were seeded with ReviewSeed, the tool we released last year."
+
 - Fix: Call it "a defect-seeding tool" and cite it as an anonymized reference.
 
 Illustrative example on a fictional manuscript; your result follows the same format.
@@ -1406,38 +1470,44 @@ Deleted soon after delivery. The report is deleted from our servers 30 minutes a
 
 What does the report look like? View sample
 
-# Resume Review
+### Resume Review
 
-## ATS Compatibility
+ATS Compatibility
 
 - Section header "Experience" is fine, but "Where I've Worked" (used for
 the second job block) won't parse: most ATS filters look for a small
 set of standard headers. Rename to "Experience" or "Work History."
+
 - Dates in "Jan 2022 - Present" format parse correctly. The single entry
 written as "22-24" does not; spell out the years.
 
-## Content & Impact
+Content & Impact
 
 - "Responsible for managing social media accounts" is a duty, not a
 result. Rewrite using a number you already have on this resume:
 "Grew Instagram following from 4,200 to 11,800 followers in 9 months."
+
 - Three bullets in the 2021 role start with "Helped with...": pick the
 one concrete outcome each bullet is actually describing and lead with
 that instead.
 
-## What a Recruiter Would Flag
+What a Recruiter Would Flag
 
 - 7-month gap between the Acme and Globex roles isn't explained anywhere
 on the resume. Doesn't need a paragraph, just a single line ("Family
 leave, 2022") to keep a recruiter from guessing.
+
 - Job title says "Senior Analyst" here but "Analyst II" on LinkedIn per
 your notes; pick one and make them match.
 
-## Action Checklist
+Action Checklist
 
 - [A] Rename "Where I've Worked" to "Experience."
+
 - [A] Add the missing number to the social-media bullet.
+
 - [B] Add a one-line explanation for the 7-month gap.
+
 - [C] Reconcile the job title between this resume and LinkedIn.
 
 ## What the report includes
