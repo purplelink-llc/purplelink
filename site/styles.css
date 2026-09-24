@@ -3807,3 +3807,57 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
     box-shadow: 0 24px 60px oklch(20% 0.08 310 / 0.18);
   }
 }
+
+/* ─── /guides/ index ──────────────────────────────────────────────────── */
+
+.guides-start,
+.guides-group {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(28px, 4vw, 44px) 24px 0;
+}
+
+.guides-group-h {
+  margin-bottom: 16px;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.guide-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.guide-grid a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 100%;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.guide-grid a::after { content: "→"; color: var(--purple); flex-shrink: 0; }
+.guide-grid a:hover { border-color: var(--purple); }
+
+.guides-group:last-of-type { padding-bottom: clamp(48px, 6vw, 80px); }
+
+@media (max-width: 700px) {
+  .guide-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-grid a { transition: none; }
+}
