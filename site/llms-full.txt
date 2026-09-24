@@ -1713,6 +1713,8 @@ Engine:
 pdfLaTeX
 XeLaTeX
 
+Compiling this often? ModernTex for Mac compiles locally with your own TeX, keeps the PDF in sync with the source and explains errors in plain language. 7-day free trial, then $10 once.
+
 Accepts a single .tex or a project .zip with main.tex at the root. Files are never written to disk.
 
 ## How to compile LaTeX to PDF online
@@ -1858,6 +1860,8 @@ Free web tool
 Enter a DOI, arXiv ID, or ISBN and get a formatted citation in four styles: APA 7th, MLA 9th, Chicago (author-date), and IEEE. Copy any of them with one click, or type the details in by hand.
 
 DOI, arXiv ID, or ISBN
+
+Before you submit, Paper Review (from $9) checks every reference in the manuscript against CrossRef.
 
 DOI and ISBN lookups go directly from your browser to Crossref / Open Library. arXiv lookups relay through our server, since arXiv does not allow direct browser access. We never log or store anything you enter.
 
