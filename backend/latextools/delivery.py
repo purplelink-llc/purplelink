@@ -597,9 +597,12 @@ def html_lifecycle_trial_setup(*, unsubscribe_url: str, **_ignored) -> str:
        style="display: inline-block; background: #7c3aed; color: #fff;
               padding: 10px 18px; border-radius: 6px; text-decoration: none;
               font-weight: 600;">
-      Download the trial again
+      Download the trial
     </a>
   </p>
+  <p style="color: #6b7280; font-size: 13px;">Signed up from a phone? Open
+  this email on your Mac and use the button above. ModernTex needs macOS 14
+  or later.</p>
   {_lifecycle_footer(unsubscribe_url, reason=_TRIAL_REASON)}
 </div>
 """

@@ -388,11 +388,34 @@
   const forms = [...document.querySelectorAll("[data-trial-signup]")];
   if (!forms.length) return;
   const API = "https://ben-ampel--purplelink-latextools-web.modal.run/lifecycle/trial";
+  // iPadOS Safari reports itself as a Mac; touch points tell them apart.
+  const ua = navigator.userAgent;
+  const onMac = /Macintosh/.test(ua) && !/iPhone|iPad|iPod/.test(ua) && !(navigator.maxTouchPoints > 1);
   document.querySelectorAll('a[href*="moderntex-download?trial=1"]').forEach((a) => {
-    a.addEventListener("click", () => {
+    a.addEventListener("click", (e) => {
       const scope = a.closest("section, .app-hero-copy") || document;
       const form = scope.querySelector("[data-trial-signup]") || forms[0];
       form.hidden = false;
+      if (onMac || a.dataset.anyway) return;
+      // A disk image is no use on a phone or a PC: offer to send the link
+      // to open on the Mac instead, with the download still one tap away.
+      e.preventDefault();
+      const head = form.querySelector(".trial-remind-head");
+      head.textContent = "ModernTex runs on a Mac. Enter your email and we will send the download link, with a setup guide, to open there.";
+      const note = form.querySelector("[data-trial-status]");
+      if (!form.querySelector("[data-trial-anyway]")) {
+        const p = document.createElement("p");
+        p.className = "trial-remind-note";
+        p.dataset.trialAnyway = "";
+        const link = document.createElement("a");
+        link.href = a.href;
+        link.dataset.anyway = "1";
+        link.textContent = "Download it here anyway";
+        p.append(link, " (15 MB disk image).");
+        note.after(p);
+      }
+      form.email.focus();
+      if (window.plTrack) window.plTrack("trial_email_offer", /iPhone|iPad|Android/.test(ua) || navigator.maxTouchPoints > 1 ? "mobile" : "other");
     });
   });
   forms.forEach((form) => {
