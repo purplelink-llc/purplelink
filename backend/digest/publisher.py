@@ -209,13 +209,11 @@ def render_html(digest: DigestData) -> str:
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="/#moderntex">Apps</a>
-        <a href="/kits/">Kits</a>
+        <a href="/products/">Products</a>
         <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
         <a href="/blog/" aria-current="page">Blog</a>
-        <a href="/changelog/">Changelog</a>
         <a href="/about/">About</a>
-        <a href="/#contact">Contact</a>
       </nav>
     </header>
 
@@ -246,22 +244,65 @@ def render_html(digest: DigestData) -> str:
     </div>
 
     <footer class="footer">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
-          <span>Purplelink LLC</span>
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
         </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/why-it-matters/">Why it matters</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
       </div>
-      <nav class="footer-links" aria-label="Footer navigation">
-        <a href="/about/">About</a>
-        <a href="/press/">Press</a>
-        <a href="/privacy/">Privacy</a>
-        <a href="/terms/">Terms</a>
-        <a href="/blog/">Blog</a>
-        <a href="/guides/">Guides</a>
-        <a href="/changelog/">Changelog</a>
-      </nav>
     </footer>
 
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{{"token": "cf4dd1d7290844b4ab9693930738cad4"}}'></script><!-- End Cloudflare Web Analytics -->
@@ -428,13 +469,11 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="/#moderntex">Apps</a>
-        <a href="/kits/">Kits</a>
+        <a href="/products/">Products</a>
         <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
         <a href="/blog/" aria-current="page">Blog</a>
-        <a href="/changelog/">Changelog</a>
         <a href="/about/">About</a>
-        <a href="/#contact">Contact</a>
       </nav>
     </header>
     <a class="back-link" href="/blog/digest/">← All digest issues</a>
@@ -446,20 +485,65 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
 <!-- DIGEST_LIST_START -->
     </div>
     <footer class="footer">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
-          <span>Purplelink LLC</span>
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
         </div>
-        <span class="footer-loc">Atlanta, Georgia &middot; Est. 2026</span>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/why-it-matters/">Why it matters</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+          </ul>
+        </nav>
       </div>
-      <nav class="footer-links" aria-label="Footer navigation">
-        <a href="/about/">About</a>
-        <a href="/privacy/">Privacy</a>
-        <a href="/terms/">Terms</a>
-        <a href="/blog/">Blog</a>
-        <a href="/changelog/">Changelog</a>
-      </nav>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
     </footer>
   </body>
 </html>"""
