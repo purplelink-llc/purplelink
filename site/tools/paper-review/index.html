@@ -32,7 +32,11 @@
           "browserRequirements": "Requires JavaScript",
           "image": "https://purplelink.llc/assets/og/paper-review.png",
           "description": "A paid AI red-team review of an academic manuscript. Combines a figure-integrity vision scan, a live CrossRef citation cross-check, a four-persona adversarial reviewer panel (Methodology Critic, Statistical Skeptic, Data Integrity Officer, Editor-in-Chief), and a targeted rectification checklist. Output is a Markdown report with the issues a journal reviewer would flag and the concrete fixes.",
-          "offers": { "@type": "Offer", "price": "9", "priceCurrency": "USD" },
+          "offers": [
+            { "@type": "Offer", "name": "Standard", "price": "9.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" },
+            { "@type": "Offer", "name": "Standard with Journal Pack", "price": "11.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" },
+            { "@type": "Offer", "name": "Deep Review", "price": "15.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" }
+          ],
           "featureList": [
             "Four-persona adversarial reviewer panel",
             "Figure-integrity and presentation scan via Claude Vision",
