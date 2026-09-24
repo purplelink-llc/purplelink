@@ -325,3 +325,22 @@
     pre.appendChild(btn);
   });
 })();
+
+// "Clear what this browser remembers" on /privacy/: removes every key the
+// site writes (saved choices, recent tools, checklist ticks, unsent drafts).
+(() => {
+  const btn = document.querySelector("[data-clear-prefs]");
+  if (!btn) return;
+  const status = document.querySelector("[data-clear-prefs-status]");
+  btn.addEventListener("click", () => {
+    let n = 0;
+    try {
+      Object.keys(localStorage).forEach((k) => {
+        if (k.startsWith("pl_") || k.startsWith("purplelink-")) { localStorage.removeItem(k); n++; }
+      });
+      if (status) status.textContent = n ? "Cleared. Nothing from this site is stored in this browser now." : "There was nothing stored.";
+    } catch (e) {
+      if (status) status.textContent = "This browser blocks site storage, so nothing was stored.";
+    }
+  });
+})();
