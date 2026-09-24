@@ -145,7 +145,7 @@ window.setupPaidToolUpload = function (cfg) {
     already_used: "This link has already been used to submit. Check your email for the status link, or email ben@purplelink.llc if you need help.",
     all_used: "All tokens for this payment have already been redeemed. Check your email for the status link, or email ben@purplelink.llc if you need help.",
     expired: "This payment link has expired. Email ben@purplelink.llc with your Stripe receipt.",
-    missing_session_id: "Missing payment session ID. Restart from the product page.",
+    missing_session_id: "We couldn't find a payment in this link. If you paid, open the email titled \"link to start\" that we sent to the address you paid with; it opens this page on any device. Still stuck? Email ben@purplelink.llc with your Stripe receipt, with no need to pay again.",
   };
 
   function redeem(attempt) {
@@ -271,7 +271,7 @@ window.setupPaidToolUpload = function (cfg) {
   });
 
   if (!sessionId) {
-    setRedeemStatus("Missing payment session ID. Restart from the product page.", true);
+    setRedeemStatus("We couldn't find a payment in this link. If you paid, open the email titled \"link to start\" that we sent to the address you paid with; it opens this page on any device. Still stuck? Email ben@purplelink.llc with your Stripe receipt, with no need to pay again.", true);
     return;
   }
   redeem();
