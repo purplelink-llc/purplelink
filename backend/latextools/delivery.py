@@ -475,9 +475,9 @@ def html_lifecycle_winback(*, unsubscribe_url: str) -> str:
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">Still writing?</h2>
-  <p>It's been a while since your last Paper Review. If you've got a new
-  manuscript, a fresh red-team pass before submission is usually cheap
-  insurance against the reviews that actually sting.</p>
+  <p>It has been a while since your last Paper Review. If a new manuscript
+  is close to submission, another review costs $9 and takes a few minutes,
+  which leaves time to fix what it finds before a journal's reviewers do.</p>
   <p>
     <a href="https://purplelink.llc/tools/paper-review/"
        style="display: inline-block; background: #7c3aed; color: #fff;
@@ -547,7 +547,7 @@ def html_lifecycle_mtx_before_submit(*, unsubscribe_url: str, **_ignored) -> str
     front of four AI reviewers (methods, statistics, data integrity and an
     editor), checks every reference against CrossRef, and quotes the
     passages it questions. Results in minutes, no account, and the file is
-    deleted when you retrieve the review.</li>
+    deleted within a day.</li>
   </ol>
   <p>
     <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=mtx-d21"
