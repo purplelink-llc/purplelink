@@ -55,7 +55,8 @@ retention work is `docs/growth-proposals-2026-09.md`.
    new customer emails in `backend/latextools/delivery.py`: ModernTex tips,
    trial, decision reminder, deadline reminder, "link to start", "still
    waiting", and the rating buttons in the review-request email. Read them
-   in your voice before deploying.
+   in your voice before deploying: `python3 scripts/preview_emails.py` writes
+   all of them to `docs/email-previews.html`.
 9. **Old digest pages** keep the old nav until the Modal cron regenerates them.
    The generator (`backend/digest/publisher.py`) already has the new nav.
 10. **Does an unlocked trial copy update itself?** `docs/products/moderntex.md`
