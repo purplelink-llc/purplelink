@@ -226,7 +226,7 @@
       var bars = ss.histogram.map(function (b) {
         var pct = Math.round((b.n / maxBucket) * 100);
         return '<div class="wc-bar-row"><span class="wc-bar-lbl">' + b.label +
-          '</span><span class="wc-bar"><span class="wc-bar-fill" style="width:' + pct + '%"></span></span>' +
+          '</span><span class="wc-bar"><span class="wc-bar-fill" data-pct="' + pct + '"></span></span>' +
           '<span class="wc-bar-n">' + b.n + "</span></div>";
       }).join("");
       html += card("Sentence length", metricGrid([
@@ -295,6 +295,10 @@
     }
 
     reportEl.innerHTML = html;
+    // Bar widths go through the DOM, not a style attribute in the markup.
+    reportEl.querySelectorAll(".wc-bar-fill[data-pct]").forEach(function (el) {
+      el.style.width = el.getAttribute("data-pct") + "%";
+    });
     wireSectionToggles(s.sections);
   }
 
