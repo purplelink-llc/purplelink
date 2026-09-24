@@ -1436,7 +1436,7 @@ You can paste an "author note" with that context when you compose. The model wil
 
 What model produces the letter?
 
-Anthropic's Claude Sonnet 4.5 with temperature 0.1. The same model + settings that power our main Paper Review tool.
+An Anthropic Claude model at a low temperature, the same model and settings as Paper Review.
 
 What does Purplelink retain?
 
@@ -2550,7 +2550,7 @@ The most reliable check is a colleague who knows your field and reads the manusc
 
 If you want a first pass before that, Purplelink's Paper Review ($9) reads a manuscript PDF and reports methodology concerns in the terms used on this page. Several of these problems are flagged automatically, including hyperparameter asymmetry, missing sample-size justification, single-seed results, figure presentation problems and references that do not resolve, and findings link to the matching short explainer. It is advisory, it can be wrong, and it does not replace a person who knows your field. Its field profiles list what each one checks: machine learning, biomedicine, psychology and social science, and chemistry and materials.
 
-For citations alone, the free BibTeX Validator checks each entry in a .bib file against CrossRef and Semantic Scholar and flags entries that do not match a real paper. It runs in your browser and does not upload the file.
+For citations alone, the free BibTeX Validator checks each entry in a .bib file against CrossRef and Semantic Scholar and flags entries that do not match a real paper. The file is checked on our server and not stored.
 
 ## References
 
@@ -3338,13 +3338,13 @@ Pick Overleaf if you need real-time collaboration. Many academic teams use Overl
 
 ## ModernTex
 
-Cost: $10, one-time, every 1.x update included, after a free 7-day trial. Platform: macOS 14+. Status: shipping, version 1.0 released September 2026.
+Cost: $10, one-time, every 1.x update included, after a free 7-day trial. Platform: macOS 14+. Status: shipping, shipping since September 2026; current version 1.3.0.
 
 I built ModernTex specifically because the existing options miss a few things that matter for academic manuscript work: plain-language compile error explanations (BibTeX-style cryptic errors are the #1 frustration for new users), BibTeX autocomplete that searches by author or title across your entire .bib, revision snapshots tied to ideas not files, submission-readiness checks that catch journal-specific issues before you upload, and a live TikZ figure editor for building flowcharts and diagrams by dragging boxes instead of writing coordinates by hand.
 
 Why a new editor when Texifier exists: Texifier is excellent but optimizes for general LaTeX users (programmers, technical writers, students). ModernTex narrows the focus to academic manuscript writers, the workflow of writing a journal article or dissertation chapter, from outline to camera-ready. That's a deliberate constraint.
 
-What it lacks: a track record. Version 1.0 shipped in September 2026, so it has none of the twenty years of edge-case coverage TeXShop has, and no iPad app. It also needs a TeX distribution installed; it does not bundle one the way Texifier does.
+What it lacks: a track record. Version 1.0 shipped in September 2026, so it has none of the twenty years of edge-case coverage TeXShop has, and no iPad app. It needs MacTeX or TinyTeX, and offers a one-click TinyTeX install if neither is found.
 
 Pick ModernTex if you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. The trial is free for seven days; keeping it is $10, once.
 

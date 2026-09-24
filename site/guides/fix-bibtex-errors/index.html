@@ -87,7 +87,7 @@
         { "@type": "Question", "name": "Why does one BibTeX error break everything?", "acceptedAnswer": { "@type": "Answer", "text": "An unbalanced brace or missing comma can cause the parser to misread every entry that follows. Fix the entry just before the first reported error and re-check." } },
         { "@type": "Question", "name": "What fields does each entry type require?", "acceptedAnswer": { "@type": "Answer", "text": "An @article needs author, title, journal, and year; @inproceedings needs booktitle; @book needs publisher. The validator flags missing required fields per entry type." } },
         { "@type": "Question", "name": "How do I escape special characters in BibTeX?", "acceptedAnswer": { "@type": "Answer", "text": "Escape LaTeX-special characters with a backslash: ampersand, percent, and hash all need a leading backslash. Underscores in titles should be escaped or wrapped in math mode." } },
-        { "@type": "Question", "name": "Is the BibTeX validator free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The validator runs entirely in your browser. Your .bib file is never uploaded or stored." } }
+        { "@type": "Question", "name": "Is the BibTeX validator free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The validator checks your file on our server in a temporary container and discards it. Nothing is stored." } }
           ]
         },
         {
@@ -226,7 +226,7 @@
         <details><summary>Why does one BibTeX error break everything?</summary><div class="faq-body">An unbalanced brace or missing comma can cause the parser to misread every entry that follows. Fix the entry just before the first reported error and re-check.</div></details>
         <details><summary>What fields does each entry type require?</summary><div class="faq-body">An @article needs author, title, journal, and year; @inproceedings needs booktitle; @book needs publisher. The <a href="/tools/bib-validator/">validator</a> flags missing required fields per entry type.</div></details>
         <details><summary>How do I escape special characters in BibTeX?</summary><div class="faq-body">Escape LaTeX-special characters with a backslash: \&amp; for ampersand, \% for percent, \# for hash. Underscores in titles should be escaped or wrapped in math mode.</div></details>
-        <details><summary>Is the BibTeX validator free and private?</summary><div class="faq-body">Yes. The validator runs entirely in your browser. Your .bib file is never uploaded or stored.</div></details>
+        <details><summary>Is the BibTeX validator free and private?</summary><div class="faq-body">Yes. The validator checks your file on our server in a temporary container and discards it. Nothing is stored.</div></details>
       </section>
 
       <!-- moderntex-cta -->

@@ -91,7 +91,7 @@
 
       <p>The Purplelink LaTeX Diff tool wraps <code>latexdiff</code> in a browser interface. The workflow takes about three clicks.</p>
 
-      <p>Go to <a href="https://purplelink.llc/tools/latex-diff/">purplelink.llc/tools/latex-diff/</a>. Upload two files: the old version and the new version. Each can be a single .tex file or a .zip archive containing the full project: figures, .bib file, custom style files. If your manuscript uses <code>\input{}</code> or <code>\include{}</code> to pull in separate chapter files, or if the bibliography lives in a .bib file the compiler needs to see, use the .zip. The tool flattens the project structure before running the diff, so the result reflects what your compiler would see.</p>
+      <p>Go to <a href="https://purplelink.llc/tools/latex-diff/">purplelink.llc/tools/latex-diff/</a>. Upload two files: the old version and the new version. Each can be a single .tex file or a .zip archive containing the full project: figures, .bib file, custom style files. If your manuscript uses <code>\input{}</code> or <code>\include{}</code> to pull in separate chapter files, or if the bibliography lives in a .bib file the compiler needs to see, use the .zip. The tool compares the two main.tex files. Text in chapter files pulled in with \input or \include is not marked, so paste those chapters into main.tex before running the diff if you need them compared.</p>
 
       <p>A few seconds later, the tool returns a compiled PDF. Additions appear underlined; deletions appear struck through. The diff operates at the word level, so if you rewrote a phrase but kept the surrounding sentence, the struck-through words and their replacements sit side by side in the rendered output.</p>
 
