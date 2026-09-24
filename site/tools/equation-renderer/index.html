@@ -47,7 +47,7 @@
             {
               "@type": "Question",
               "name": "What LaTeX packages are available?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The renderer loads amsmath, amssymb, and amsfonts automatically. You do not need to include \\usepackage commands - just paste the math expression itself." }
+              "acceptedAnswer": { "@type": "Answer", "text": "The renderer loads amsmath, amssymb, and amsfonts automatically. You do not need to include \\usepackage commands. Just paste the math expression itself." }
             },
             {
               "@type": "Question",
@@ -57,7 +57,7 @@
             {
               "@type": "Question",
               "name": "Is the background transparent?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No - the PNG has a white background, which is standard for documents and presentations. Download the PNG and paste it into your slide, document, or web page." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The PNG has a white background, which is standard for documents and presentations. Download the PNG and paste it into your slide, document, or web page." }
             }
           ]
         },
@@ -102,7 +102,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>LaTeX Equation Renderer</h1>
-        <p>Paste a LaTeX math expression and download a high-resolution PNG - ready to drop into a slide, document, or webpage. Supports <code>amsmath</code>, <code>amssymb</code>, and <code>amsfonts</code>. <strong>Just paste the math - no <code>\usepackage</code> needed.</strong></p>
+        <p>Paste a LaTeX math expression and download a high-resolution PNG, ready to drop into a slide, document, or webpage. Supports <code>amsmath</code>, <code>amssymb</code>, and <code>amsfonts</code>. <strong>Just paste the math. No <code>\usepackage</code> needed.</strong></p>
       </div>
 
       <div class="tool-app">
@@ -123,9 +123,9 @@
           </label>
           <label>Resolution:
             <select id="dpi" data-remember="eq-dpi">
-              <option value="150">150 DPI - screen</option>
-              <option value="300" selected>300 DPI - print quality</option>
-              <option value="600">600 DPI - high resolution</option>
+              <option value="150">150 DPI (screen)</option>
+              <option value="300" selected>300 DPI (print quality)</option>
+              <option value="600">600 DPI (high resolution)</option>
             </select>
           </label>
           <button type="button" class="btn btn-primary" id="run">Render equation</button>
@@ -138,7 +138,7 @@
       <section class="tool-howto">
         <h2>How to render a LaTeX equation to PNG</h2>
         <ol>
-          <li>Paste your LaTeX math expression into the box above - just the math, without surrounding <code>$</code> signs or <code>\[</code> delimiters. Those are added automatically based on the mode you choose.</li>
+          <li>Paste your LaTeX math expression into the box above: just the math, without surrounding <code>$</code> signs or <code>\[</code> delimiters. Those are added automatically based on the mode you choose.</li>
           <li>Choose <strong>Display</strong> mode for a stand-alone equation (centered, larger symbols) or <strong>Inline</strong> for compact rendering.</li>
           <li>Pick a resolution and click <strong>Render equation</strong>. The PNG appears below and is ready to download.</li>
         </ol>
@@ -147,10 +147,10 @@
       <section class="tool-faq">
         <h2>About this tool</h2>
         <p>This compiles your expression with pdfLaTeX inside a <code>\documentclass[border=6pt,preview]{standalone}</code> document, then converts the output to a PNG using Poppler. The result is a tight-cropped, white-background image at your chosen resolution.</p>
-        <details><summary>What packages are available?</summary><div class="faq-body">The renderer automatically loads <code>amsmath</code>, <code>amssymb</code>, and <code>amsfonts</code>. Paste only the math itself - no <code>\usepackage</code> or preamble needed.</div></details>
+        <details><summary>What packages are available?</summary><div class="faq-body">The renderer automatically loads <code>amsmath</code>, <code>amssymb</code>, and <code>amsfonts</code>. Paste only the math itself. No <code>\usepackage</code> or preamble needed.</div></details>
         <details><summary>Display mode vs inline mode</summary><div class="faq-body">Display mode wraps your expression in <code>\[ ... \]</code> - the equation is centered on its own line with larger symbols and generous spacing. Inline mode wraps it in <code>$ ... $</code> - compact rendering as it would appear inside a paragraph.</div></details>
         <details><summary>What if my equation doesn't render?</summary><div class="faq-body">Check for LaTeX syntax errors: mismatched braces, unknown commands, or environments that require packages not included above. The error message will include a compile log excerpt to help you debug.</div></details>
-        <details><summary>Is the background transparent?</summary><div class="faq-body">No - the PNG has a white background, which works in most documents and presentations. If you need a transparent background, open the PNG in an image editor (e.g., Preview on macOS, GIMP) and remove the white.</div></details>
+        <details><summary>Is the background transparent?</summary><div class="faq-body">No. The PNG has a white background, which works in most documents and presentations. If you need a transparent background, open the PNG in an image editor (e.g., Preview on macOS, GIMP) and remove the white.</div></details>
       </section>
 
       <!-- moderntex-cta -->
@@ -175,7 +175,7 @@
         </ul>
       </nav>
 
-      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a> — it helps keep these tools free and online.</p>
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
 
       <script src="/tools/tools.js?v=c36d36e6c1"></script>
       <script>

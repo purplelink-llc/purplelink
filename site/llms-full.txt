@@ -222,7 +222,7 @@ New in 1.3
 
 ## Two things nobody enjoys writing by hand
 
-A TikZ diagram and a results table are both perfectly capable LaTeX, and neither is a pleasant place to start from a blank line and a syntax reference. ModernTex builds both visually and drops in the real source underneath — nothing hidden, nothing you couldn't have typed yourself.
+A TikZ diagram and a results table are both perfectly capable LaTeX, and neither is a pleasant place to start from a blank line and a syntax reference. ModernTex builds both visually and drops in the real source underneath: nothing hidden, nothing you couldn't have typed yourself.
 
 ### TikZ Designer
 
@@ -230,7 +230,7 @@ Drag boxes and arrows into place, pick colors from a swatch, resize by the corne
 
 ### Table Editor
 
-Paste a range straight from Excel or Google Sheets and it lands in the right cells, growing the table if the data is bigger and leaving the rest untouched if it's smaller. Return moves down a row, ⌥Return breaks a line inside a cell, and dragging a column edge resizes it — a spreadsheet's muscle memory, producing booktabs-style tabular underneath.
+Paste a range straight from Excel or Google Sheets and it lands in the right cells, growing the table if the data is bigger and leaving the rest untouched if it's smaller. Return moves down a row, ⌥Return breaks a line inside a cell, and dragging a column edge resizes it, the way a spreadsheet does, producing booktabs-style tabular underneath.
 
 Read more about both on the blog →
 
@@ -248,7 +248,7 @@ Fast, Live, and Full compile modes let you move at the speed you need. Live mode
 
 ### Synchronized PDF preview
 
-Forward and inverse search - click the source to jump the PDF, click the PDF to jump the source. Side-by-side, always in sync.
+Forward and inverse search: click the source to jump to the PDF, click the PDF to jump to the source. Side by side, always in sync.
 
 ### Citation management
 
@@ -264,7 +264,7 @@ Automatically check anonymization, page limits, required sections, and submissio
 
 ### Version snapshots
 
-Take semantic snapshots at any point - before a major revision, after peer review, before resubmission. Diff between snapshots with meaningful context.
+Take a snapshot at any point: before a major revision, after peer review, before resubmission. Diff between snapshots with meaningful context.
 
 ### Live TikZ figure editor
 
@@ -350,7 +350,7 @@ $10, once, after a free 7-day trial. That covers every 1.x update. There is no s
 
 How is ModernTex different from TeXShop or Overleaf?
 
-ModernTex is a native macOS app designed specifically for the academic manuscript workflow - not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers. See how the best LaTeX editors for Mac compare, or read what changes when you move from Overleaf to a Mac editor.
+ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers. See how the best LaTeX editors for Mac compare, or read what changes when you move from Overleaf to a Mac editor.
 
 Why not just use a free editor like TeXstudio?
 
@@ -442,7 +442,7 @@ From version 0.3, Vitae checks purplelink.llc once a day and asks before install
 
 Why isn't it on the Mac App Store?
 
-Distributing outside the App Store lets me ship faster and avoid App Store restrictions. The DMG is Apple-notarized, so macOS Gatekeeper verifies it is safe to run — just open the DMG, drag Vitae to Applications, and launch it.
+Distributing outside the App Store lets me ship faster and avoid App Store restrictions. The DMG is Apple-notarized, so macOS Gatekeeper verifies it is safe to run. Just open the DMG, drag Vitae to Applications, and launch it.
 
 What macOS version is required?
 
@@ -460,7 +460,7 @@ How does Vitae compare to Interfolio, ORCID, or a spreadsheet?
 
 Vitae keeps your own record between deadlines; if your university requires Interfolio or Watermark for tenure review, you still submit there, using what Vitae exports. See how to track your academic CV and tenure case for a comparison of sixteen options.
 
-Vitae is free. If it saves you time, you can get the optional Vitae Plus, leave a tip or support it monthly — it helps keep it maintained.
+Vitae is free. If it saves you time, you can get the optional Vitae Plus, leave a tip or support it monthly. It helps keep it maintained.
 
 
 ---
@@ -728,7 +728,7 @@ Four layers in sequence: a Claude Vision pass over your figures and tables, a li
 
 How long does it take?
 
-Typically 4-8 minutes for a 20-page manuscript. You don't need to keep the tab in the foreground — the status page polls until the review is ready and renders it inline.
+Typically 4-8 minutes for a 20-page manuscript. You don't need to keep the tab in the foreground. The status page polls until the review is ready and renders it inline.
 
 What about my privacy? Is the manuscript stored?
 
@@ -740,7 +740,7 @@ You pick one of five domain profiles at upload: Machine Learning, Biomedicine, P
 
 How deep is the citation check?
 
-Two levels. First, every reference is checked for existence against CrossRef (dead DOIs, hallucinated or weakly-matched titles). Second, for the most load-bearing claims we fetch the cited source's abstract from OpenAlex, Semantic Scholar, or CrossRef and assess whether it supports your claim. This is an abstract-level check: a claim supported only in the full text is marked "not supported by abstract," not wrong - verify it against the source. When no abstract can be retrieved, the citation is marked "source unavailable" rather than guessed. On citation-heavy papers we audit the most important claims first and tell you how many were not audited.
+Two levels. First, every reference is checked for existence against CrossRef (dead DOIs, hallucinated or weakly-matched titles). Second, for the most load-bearing claims we fetch the cited source's abstract from OpenAlex, Semantic Scholar, or CrossRef and assess whether it supports your claim. This is an abstract-level check: a claim supported only in the full text is marked "not supported by abstract," not wrong. Verify it against the source. When no abstract can be retrieved, the citation is marked "source unavailable" rather than guessed. On citation-heavy papers we audit the most important claims first and tell you how many were not audited.
 
 Am I allowed to use an AI review on my own manuscript?
 
@@ -748,11 +748,11 @@ Yes, under the policies of the major publishers and venues we have checked. Else
 
 Is this a replacement for peer review?
 
-No. Treat it as a first-pass red team before you submit — a way to catch the obvious problems a real reviewer will flag before they do. The review is advisory only; you remain responsible for every decision about your manuscript.
+No. Treat it as a first-pass red team before you submit: a way to catch the obvious problems a real reviewer will flag before they do. The review is advisory only; you remain responsible for every decision about your manuscript.
 
 What if the review misses something or makes a mistake?
 
-AI reviewers can be wrong. The output flags concerns with hedged language and quotes the manuscript when challenging a claim, so you can verify every finding against your text. If a specific result reads as low-quality, email ben@purplelink.llc — we'll refund the price.
+AI reviewers can be wrong. The output flags concerns with hedged language and quotes the manuscript when challenging a claim, so you can verify every finding against your text. If a specific result reads as low-quality, email ben@purplelink.llc and we'll refund the price.
 
 What file format?
 
@@ -774,15 +774,15 @@ Volume packs
 
 # Buy Paper Reviews in bulk
 
-Built for PIs reviewing student manuscripts and labs running multiple submissions through the pipeline. Each pack is a one-time payment that mints tokens redeemable any time — they don't expire. Tokens are emailed to you on purchase.
+Built for PIs reviewing student manuscripts and labs running multiple submissions through the pipeline. Each pack is a one-time payment that mints tokens redeemable any time. They don't expire. Tokens are emailed to you on purchase.
 
 Choose a pack
 
 5-pack · $38
-5 Standard Paper Review tokens (vs $45 if bought one-by-one — 16% off). Tokens never expire.
+5 Standard Paper Review tokens (vs $45 if bought one-by-one, 16% off). Tokens never expire.
 
 20-pack · $150
-20 Standard Paper Review tokens (vs $180 if bought one-by-one — 17% off). Tokens never expire. Best for active labs.
+20 Standard Paper Review tokens (vs $180 if bought one-by-one, 17% off). Tokens never expire. Best for active labs.
 
 Secure checkout via Stripe. Tokens emailed to the address on the Stripe receipt.
 
@@ -812,7 +812,7 @@ Email ben@purplelink.llc with your Stripe receipt and we'll resend the token lis
 
 Can I get an invoice for institutional reimbursement?
 
-Yes — request an invoice when you complete the purchase, or email ben@purplelink.llc with your Stripe session ID afterward.
+Yes. Request an invoice when you complete the purchase, or email ben@purplelink.llc with your Stripe session ID afterward.
 
 
 ---
@@ -844,11 +844,11 @@ Nothing is kept after delivery. The result is deleted from our servers the momen
 
 What if I lost the original Markdown report?
 
-Run a fresh Paper Review on the revised manuscript (from $9) instead. We can't recover prior reviews — they're deleted from our servers on retrieval.
+Run a fresh Paper Review on the revised manuscript (from $9) instead. We can't recover prior reviews. They're deleted from our servers on retrieval.
 
 Why is this cheaper than a full review?
 
-A revision review reuses most of the analysis you already paid for, so it costs less to run. The output is also tighter — it's an evaluation against the original review, not a fresh red team.
+A revision review reuses most of the analysis you already paid for, so it costs less to run. The output is also tighter: it's an evaluation against the original review, not a fresh red team.
 
 
 ---
@@ -918,7 +918,7 @@ Paste them as plain text. Common patterns are auto-detected: "Reviewer 1:" heade
 
 And the response letter?
 
-Same — paste the draft text. We don't accept a PDF for the response.
+Same: paste the draft text. We don't accept a PDF for the response.
 
 Does the manuscript have to be the revised version?
 
@@ -926,7 +926,7 @@ Yes. We check whether the response's claimed fixes are actually present in the r
 
 What does Purplelink retain?
 
-Nothing after delivery. The report is deleted from our servers the moment you retrieve it. Your reviewer comments, response letter, and manuscript are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+Nothing after delivery. The report is deleted from our servers the moment you retrieve it. Your reviewer comments, response letter, and manuscript are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1011,7 +1011,7 @@ Illustrative example on a fictional manuscript; your result follows the same for
 
 - Dataset, technique, or theory references missing from the bibliography.
 
-Each suggestion is tagged with the section it belongs in, why a reviewer would notice the omission, and (when known) the candidate authors and title. Always verify suggestions against your own field knowledge — AI recall can be wrong.
+Each suggestion is tagged with the section it belongs in, why a reviewer would notice the omission, and (when known) the candidate authors and title. Always verify suggestions against your own field knowledge. AI recall can be wrong.
 
 ## FAQ
 
@@ -1021,11 +1021,11 @@ The free BibTeX Validator checks the citations you DO have for accuracy and exis
 
 What if it suggests papers that aren't actually relevant?
 
-AI recall is imperfect. We mark each suggestion as a candidate to verify, not a definitive call. If a specific scan is low-quality, email ben@purplelink.llc — we'll refund the $3.
+AI recall is imperfect. We mark each suggestion as a candidate to verify, not a definitive call. If a specific scan is low-quality, email ben@purplelink.llc and we'll refund the $3.
 
 What does Purplelink retain?
 
-Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1039,7 +1039,7 @@ Paid tool · $2 per scan
 
 # Anonymity Check
 
-Before you hit submit on a double-blind manuscript, run a leak scan. Flags author names, institution mentions, grant numbers, IRB protocols, self-citation patterns, named software artifacts, and author-owned URLs — anywhere they slipped into the body.
+Before you hit submit on a double-blind manuscript, run a leak scan. Flags author names, institution mentions, grant numbers, IRB protocols, self-citation patterns, named software artifacts, and author-owned URLs, anywhere they slipped into the body.
 
 Secure checkout via Stripe. One-time payment.
 
@@ -1083,7 +1083,7 @@ Illustrative example on a fictional manuscript; your result follows the same for
 
 - Author or co-author names in the body (e.g. "Smith et al." referring to the authors' own prior work).
 
-- Institution names — "at our institution X", lab names, hospital names.
+- Institution names: "at our institution X", lab names, hospital names.
 
 - Funder names and grant numbers ("NSF #1234567", "NIH R01…").
 
@@ -1099,7 +1099,7 @@ Illustrative example on a fictional manuscript; your result follows the same for
 
 What about acknowledgements?
 
-We scan the body and abstract. Acknowledgement sections often live at the end of the manuscript and we'll catch leaks there too — but always review them manually before submission, especially if your editor strips them automatically.
+We scan the body and abstract. Acknowledgement sections often live at the end of the manuscript and we'll catch leaks there too, but always review them manually before submission, especially if your editor strips them automatically.
 
 Is this a replacement for manual blinding?
 
@@ -1107,7 +1107,7 @@ No. It's a safety net. Manual review of figures, supplementary materials, and me
 
 What does Purplelink retain?
 
-Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1121,7 +1121,7 @@ Paid tool · $2 per letter
 
 # Cover Letter Generator
 
-A draft journal cover letter, calibrated to the journal you're submitting to. No hype, no superlatives. Built from your abstract and the journal name — we never receive your full manuscript.
+A draft journal cover letter, calibrated to the journal you're submitting to. No hype, no superlatives. Built from your abstract and the journal name. We never receive your full manuscript.
 
 Secure checkout via Stripe. One-time payment.
 
@@ -1160,7 +1160,7 @@ Illustrative example on a fictional manuscript; your result follows the same for
 
 - Originality affirmation included.
 
-- Reviewer suggestions only when the abstract makes the expertise obvious — never invented.
+- Reviewer suggestions only when the abstract makes the expertise obvious, never invented.
 
 - Plain prose with paragraph breaks; placeholder for your contact name and signature.
 
@@ -1180,7 +1180,7 @@ Anthropic's Claude Sonnet 4.5 with temperature 0.1. The same model + settings th
 
 What does Purplelink retain?
 
-Nothing after delivery. The letter is deleted from our servers the moment you retrieve it. Your abstract and journal name are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+Nothing after delivery. The letter is deleted from our servers the moment you retrieve it. Your abstract and journal name are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1194,7 +1194,7 @@ $5 one-time · results in minutes
 
 # Resume Review
 
-Would this resume clear an ATS filter and make a hiring manager read past the first six seconds? A three-persona AI panel — ATS Screener, Hiring Manager Skeptic, Recruiter Red Flags — reads your resume the way the people actually screening it would.
+Would this resume clear an ATS filter and make a hiring manager read past the first six seconds? A three-persona AI panel (ATS Screener, Hiring Manager Skeptic, Recruiter Red Flags) reads your resume the way the people actually screening it would.
 
 Secure checkout via Stripe.
 
@@ -1240,11 +1240,11 @@ your notes; pick one and make them match.
 
 ## What the report includes
 
-- ATS Compatibility. Formatting, section headers, and date-format issues that would break an Applicant Tracking System's parsing — before a human ever sees the resume.
+- ATS Compatibility. Formatting, section headers, and date-format issues that would break an Applicant Tracking System's parsing, before a human ever sees the resume.
 
 - Content & Impact. Every bullet that reads as generic duty-listing instead of a quantified result, with a suggested rewrite using only the facts you already gave it.
 
-- What a Recruiter Would Flag. Employment gaps, short stints, inconsistent dates, missing basics — framed as what would come up in a first-pass screen, not a judgment.
+- What a Recruiter Would Flag. Employment gaps, short stints, inconsistent dates, missing basics, framed as what would come up in a first-pass screen, not a judgment.
 
 - Action Checklist. A/B/C-prioritised list of what to fix before you send this resume out.
 
@@ -1256,15 +1256,15 @@ PDF or DOCX, up to 20 MB.
 
 Will this rewrite my resume for me?
 
-No — it critiques what you have and suggests specific rewrites for weak bullets, but you decide what to change. It won't invent facts, dates, or metrics you didn't provide.
+No. It critiques what you have and suggests specific rewrites for weak bullets, but you decide what to change. It won't invent facts, dates, or metrics you didn't provide.
 
 Does it check for ATS compatibility?
 
-Yes — one of the three personas specifically simulates how an Applicant Tracking System would parse your resume's formatting, section headers, and keywords.
+Yes. One of the three personas specifically simulates how an Applicant Tracking System would parse your resume's formatting, section headers, and keywords.
 
 What does Purplelink retain?
 
-Nothing after delivery. The report is deleted from our servers the moment you retrieve it. Your resume is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring — never for training.
+Nothing after delivery. The report is deleted from our servers the moment you retrieve it. Your resume is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1577,9 +1577,9 @@ Accepts a single .tex or a project .zip with main.tex at the root. Files are nev
 
 - Single file: drag your .tex onto the upload area, or click to choose it (up to 5 MB).
 
-- Multi-file project: zip your project with main.tex at the root - the same layout Overleaf exports - and upload the .zip (up to 10 MB).
+- Multi-file project: zip your project with main.tex at the root (the same layout Overleaf exports) and upload the .zip (up to 10 MB).
 
-- Pick your engine - pdfLaTeX (default) or XeLaTeX.
+- Pick your engine: pdfLaTeX (default) or XeLaTeX.
 
 - Click Compile to PDF. The PDF previews in your browser and downloads with one click.
 
@@ -1610,7 +1610,7 @@ See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
 
-If this saves you time, you can leave a tip — it helps keep these tools free and online.
+If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
 
 ---
@@ -1624,7 +1624,7 @@ Free web tool
 
 # BibTeX Validator
 
-Upload or paste a .bib file to check syntax, missing fields, dead DOIs, and verify your citations actually exist — including author and year correctness. Download a corrected .bib where CrossRef returns a confident match. Useful for catching AI-hallucinated references. Files are never stored.
+Upload or paste a .bib file to check syntax, missing fields, dead DOIs, and verify your citations actually exist, including author and year correctness. Download a corrected .bib where CrossRef returns a confident match. Useful for catching AI-hallucinated references. Files are never stored.
 
 Drag a .bib file here, or click to choose. Max 2 MB.
 
@@ -1634,11 +1634,11 @@ Checks to run
 
 Syntax & required fields (always on)
 
-DOI resolution - verify each DOI is a live link
+DOI resolution: verify each DOI is a live link
 
-CrossRef - check titles exist in CrossRef (catches hallucinations)
+CrossRef: check titles exist in CrossRef (catches hallucinations)
 
-Semantic Scholar - check titles in Semantic Scholar
+Semantic Scholar: check titles in Semantic Scholar
 
 Enabling DOI or database checks will send entry titles and authors to external services (doi.org, CrossRef, Semantic Scholar).
 
@@ -1664,7 +1664,7 @@ Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a t
 
 Are my files stored?
 
-No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services - this is disclosed before you run the check.
+No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services. This is disclosed before you run the check.
 
 What does the annotated .bib contain?
 
@@ -1699,7 +1699,7 @@ See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
 
-If this saves you time, you can leave a tip — it helps keep these tools free and online.
+If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
 
 ---
@@ -1713,11 +1713,11 @@ Free web tool
 
 # Citation Generator
 
-Enter a DOI, arXiv ID, or ISBN and get a formatted citation in four styles - APA 7th, MLA 9th, Chicago (author-date), and IEEE. Copy any of them with one click, or type the details in by hand.
+Enter a DOI, arXiv ID, or ISBN and get a formatted citation in four styles: APA 7th, MLA 9th, Chicago (author-date), and IEEE. Copy any of them with one click, or type the details in by hand.
 
 DOI, arXiv ID, or ISBN
 
-DOI and ISBN lookups go directly from your browser to Crossref / Open Library. arXiv lookups relay through our server, since arXiv does not allow direct browser access - we never log or store anything you enter.
+DOI and ISBN lookups go directly from your browser to Crossref / Open Library. arXiv lookups relay through our server, since arXiv does not allow direct browser access. We never log or store anything you enter.
 
 ## How to generate a citation
 
@@ -1727,7 +1727,7 @@ DOI and ISBN lookups go directly from your browser to Crossref / Open Library. a
 
 - Click Copy on the style you need. Don't have an identifier? Use enter details manually instead.
 
-- Proofread the result against your style guide - automated metadata is good but not flawless.
+- Proofread the result against your style guide. Automated metadata is good but not flawless.
 
 ## About this tool
 
@@ -1743,7 +1743,7 @@ They are built from the metadata that Crossref or Open Library returns, which is
 
 Why might an arXiv lookup fail?
 
-Usually because the identifier doesn't match a paper on arXiv, or arXiv is briefly unreachable. If a lookup fails, the tool will tell you - try the article's DOI instead (most arXiv papers have one once published), or use manual entry.
+Usually because the identifier doesn't match a paper on arXiv, or arXiv is briefly unreachable. If a lookup fails, the tool will tell you. Try the article's DOI instead (most arXiv papers have one once published), or use manual entry.
 
 Is anything stored?
 
@@ -1760,7 +1760,7 @@ See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
 
-If this saves you time, you can leave a tip — it helps keep these tools free and online.
+If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
 
 ---
@@ -1809,7 +1809,7 @@ Countries visited, cities logged, total distance traveled, continents covered. T
 
 ### Travel goals
 
-Set goals for destinations you want to reach - countries, continents, bucket-list places. Track progress and watch the gap close.
+Set goals for destinations you want to reach: countries, continents, bucket-list places. Track progress and watch the gap close.
 
 ### Shareable postcards
 
@@ -1821,7 +1821,7 @@ Your travel data stays in sync across all your devices via CloudKit. Syncs autom
 
 ### Anniversary reminders
 
-Get notified when it's been a year since you visited a place. A quiet nudge to return - or a reminder of how far you've traveled.
+Get notified when it's been a year since you visited a place. A quiet nudge to return, or a reminder of how far you've traveled.
 
 ## GlobePin is out.
 
@@ -1844,7 +1844,7 @@ Tap the + button and enter your departure and arrival airports. GlobePin calcula
 
 Does GlobePin sync across devices?
 
-Yes. GlobePin uses iCloud sync via CloudKit - Apple's own infrastructure - so your travel data is available across all your iOS devices without a separate account or subscription.
+Yes. GlobePin uses iCloud sync via CloudKit (Apple's own infrastructure), so your travel data is available across all your iOS devices without a separate account or subscription.
 
 What does GlobePin cost?
 
@@ -1852,7 +1852,7 @@ Nothing. GlobePin is free on the App Store.
 
 What's the difference between GlobePin and other travel trackers?
 
-GlobePin tracks the complete travel record: every place visited, every flight taken, and every destination on the list. It combines a 3D globe view, detailed flight statistics, travel goals, anniversary reminders, and exportable travel postcards - all synced via iCloud, no social network required.
+GlobePin tracks the complete travel record: every place visited, every flight taken, and every destination on the list. It combines a 3D globe view, detailed flight statistics, travel goals, anniversary reminders, and exportable travel postcards, all synced via iCloud, no social network required.
 
 ## Also from Purplelink
 
@@ -1878,7 +1878,7 @@ In development · 2026
 
 # Haea
 
-Your complete health picture, on your phone. Haea integrates sleep, nutrition, activity, and biometrics to surface patterns you'd otherwise miss - through advanced ML, entirely on-device.
+Your complete health picture, on your phone. Haea integrates sleep, nutrition, activity, and biometrics to surface patterns you'd otherwise miss, through advanced ML, entirely on-device.
 
 Join the waitlist
 
@@ -1903,13 +1903,13 @@ Log food, weight, water, exercise, and mood in one place. Fast entry, no frictio
 
 ### Activity timeline
 
-A unified feed of everything you've logged - workouts, meals, weight entries, sleep - in chronological context.
+A unified feed of everything you've logged (workouts, meals, weight entries, sleep) in chronological context.
 
 ### Daily briefing
 
 An optional 8am summary of your key metrics from the day before. One short morning summary.
 
-Premium - $1.99 / month or $14.99 / year
+Premium: $1.99 / month or $14.99 / year
 
 ## Premium analytics
 
@@ -1919,7 +1919,7 @@ Calculate your true daily energy expenditure from actual weight and calorie data
 
 ### Circadian Rhythm Intelligence
 
-Tracks your biological circadian phase. Identifies your optimal windows for energy, focus, and sleep - then shows the transition between active and wind-down phases.
+Tracks your biological circadian phase. Identifies your optimal windows for energy, focus, and sleep, then shows the transition between active and wind-down phases.
 
 ### Running Analytics
 
@@ -1965,7 +1965,7 @@ Haea reads from Apple Health and integrates sleep, nutrition, weight, exercise, 
 
 Is Haea HIPAA-compliant?
 
-Haea is designed with privacy-first architecture: all data is stored on-device with no cloud transmission or third-party access. While Haea is a consumer app and not a covered entity under HIPAA, its design exceeds typical health app privacy standards - there is simply no data to breach on our end.
+Haea is designed with privacy-first architecture: all data is stored on-device with no cloud transmission or third-party access. While Haea is a consumer app and not a covered entity under HIPAA, its design exceeds typical health app privacy standards: there is simply no data to breach on our end.
 
 
 ---
@@ -1977,7 +1977,7 @@ Title: About | Purplelink LLC
 
 Atlanta, Georgia · Founded 2026 · Georgia LLC
 
-Purplelink LLC is a one-person software studio building Mac apps and manuscript tools for academic researchers, plus iOS apps for travel and health. The mission is simple: make software that solves real problems and lasts - not software that ships fast and deteriorates.
+Purplelink LLC is a one-person software studio building Mac apps and manuscript tools for academic researchers, plus iOS apps for travel and health. The mission is simple: make software that solves real problems and lasts, not software that ships fast and deteriorates.
 
 ## Who makes this
 
@@ -2009,7 +2009,7 @@ LaTeX to PDF, BibTeX validation, citation generation, LaTeX diff and more, in yo
 
 ### Haea
 
-An on-device iOS health analytics platform. Advanced ML models for recovery, circadian rhythm, and biological age - all running locally with no cloud sync.
+An on-device iOS health analytics platform. Advanced ML models for recovery, circadian rhythm, and biological age, all running locally with no cloud sync.
 
 ### GlobePin
 
@@ -2023,7 +2023,7 @@ Every app is written in Swift for the Apple platform it belongs on. No cross-pla
 
 ### Privacy by design
 
-Haea runs fully on-device. No cloud sync, no analytics SDKs, no data sold. Privacy isn't a policy - it's an architecture decision.
+Haea runs fully on-device. No cloud sync, no analytics SDKs, no data sold. Privacy isn't a policy. It's an architecture decision.
 
 ### Craft over speed
 
@@ -2928,7 +2928,7 @@ From the team behind these tools
 
 ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
 
-Get ModernTex — $10
+Get ModernTex ($10)
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
@@ -3267,7 +3267,7 @@ From the team behind these tools
 
 ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
 
-Get ModernTex — $10
+Get ModernTex ($10)
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
