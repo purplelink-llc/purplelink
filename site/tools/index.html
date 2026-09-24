@@ -84,8 +84,8 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=c1b0a64928">
-    <script src="/site.js?v=41aa801289" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=01d281a311">
+    <script src="/site.js?v=c59796b38c" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
   <body>
@@ -113,8 +113,15 @@
       </div>
       <div class="list-filter">
         <label class="visually-hidden" for="list-filter-input">Filter tools</label>
-        <input type="search" id="list-filter-input" data-list-filter=".tool-card, .tool-card-lg" placeholder="Filter tools, e.g. BibTeX or PDF" autocomplete="off" spellcheck="false">
+        <input type="search" id="list-filter-input" data-list-filter=".tool-card, .tool-card-lg" data-list-default="free" placeholder="Filter tools, e.g. BibTeX, PDF or free" autocomplete="off" spellcheck="false">
         <p class="list-filter-status" aria-live="polite"></p>
+        <nav class="list-filter-jump" aria-label="Jump to a group">
+          <a href="#grp-latex">Free LaTeX tools</a>
+          <a href="#grp-convert">Converters</a>
+          <a href="#grp-cites">Citations</a>
+          <a href="#grp-premium">Paid AI review</a>
+          <a href="#grp-apps">Mac apps</a>
+        </nav>
       </div>
       <div class="recent-tools" data-recent-tools hidden></div>
 

@@ -4219,6 +4219,10 @@ html { scroll-padding-top: 96px; }
 }
 .list-filter input[type="search"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .list-filter-status { min-height: 1.4em; margin: 8px 0 0; color: var(--muted); font-size: 0.88rem; }
+.list-filter-jump { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 4px 0 0; }
+.list-filter-jump a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border: 1px solid var(--line); border-radius: 100px; background: var(--panel); color: var(--ink); font-size: 0.88rem; font-weight: 500; text-decoration: none; }
+.list-filter-jump a:hover { border-color: var(--purple); color: var(--purple); }
+.list-filter-jump a:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
 .tool-card[hidden], .tool-card-lg[hidden], .catalog-card[hidden], .guide-grid li[hidden],
 .tools-section[hidden], .guides-group[hidden], .guides-start[hidden] { display: none; }
 
