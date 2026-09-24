@@ -336,8 +336,11 @@
 
 /* Paper Review: pay, upload, report */
 .pr-steps { list-style: none; counter-reset: prs; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; margin: 14px auto 6px; padding: 0; max-width: 760px; font-size: 0.88rem; color: var(--muted); }
-.pr-steps li { counter-increment: prs; display: flex; align-items: baseline; gap: 6px; }
-.pr-steps li::before { content: counter(prs); display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 100px; background: var(--purple-xlight); color: var(--purple); font-weight: 700; font-size: 0.75rem; flex: none; }
+.pr-steps li { counter-increment: prs; position: relative; padding-left: 26px; }
+.pr-steps li::before { content: counter(prs); position: absolute; left: 0; top: 0.05em; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 100px; background: var(--purple-xlight); color: var(--purple); font-weight: 700; font-size: 0.75rem; }
+@media (max-width: 600px) {
+  .pr-steps { flex-direction: column; align-items: flex-start; gap: 8px; padding: 0 16px; text-align: left; }
+}
 .pr-steps strong { color: var(--ink); }
 
 /* Phones: bordered panels keep the 16px page gutter instead of touching

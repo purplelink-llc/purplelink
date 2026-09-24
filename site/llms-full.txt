@@ -994,6 +994,12 @@ Paid tool · $2 per pass
 
 Did your revisions actually address the original Paper Review's findings? Upload the revised manuscript + the Markdown report you downloaded last time. We'll tell you which checklist items you fixed, which you missed, and whether any new problems were introduced.
 
+- Pay through Stripe
+
+- Upload the revised PDF and paste the Markdown from your earlier review; the link is also emailed
+
+- Read the result on the page, or ask to be emailed when it is ready
+
 Requires the Markdown report from your previous review. Save it before you close the page next time.
 
 Deleted soon after delivery. The result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $2.
@@ -1029,6 +1035,12 @@ $6 one-time · results in minutes
 # Response to Reviewers
 
 The dreaded reply letter, red-teamed before you send it. A three-persona AI panel, Skeptical Reviewer, Tone Editor, Editor-in-Chief, reads your reviewer comments, your draft response, and the revised manuscript. The output: per-comment verdicts, tone concerns, missing responses, and a final accept-or-revise estimate.
+
+- Pay through Stripe
+
+- Upload the revised PDF and paste the reviewer comments and your draft letter; the link is also emailed
+
+- Read the result on the page, or ask to be emailed when it is ready
 
 Secure checkout via Stripe.
 
@@ -1107,6 +1119,12 @@ Paid tool · $3 per scan
 # Citation Gap Analysis
 
 The reverse of a citation-verifier: find prior art the manuscript should cite but doesn't. Catches the "you ignored my paper" reviewer complaint before it happens.
+
+- Pay through Stripe
+
+- Upload the manuscript PDF; the link is also emailed, so you can upload from another device
+
+- Read the result on the page, or ask to be emailed when it is ready
 
 Secure checkout via Stripe.
 
@@ -1207,6 +1225,12 @@ Paid tool · $2 per scan
 
 Before you hit submit on a double-blind manuscript, run a leak scan. Flags author names, institution mentions, grant numbers, IRB protocols, self-citation patterns, named software artifacts, and author-owned URLs, anywhere they slipped into the body.
 
+- Pay through Stripe
+
+- Upload the manuscript PDF; the link is also emailed, so you can upload from another device
+
+- Read the result on the page, or ask to be emailed when it is ready
+
 Secure checkout via Stripe. One-time payment.
 
 Deleted soon after delivery. The result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $2.
@@ -1289,6 +1313,12 @@ Paid tool · $2 per letter
 
 A draft journal cover letter, calibrated to the journal you're submitting to. No hype, no superlatives. Built from your abstract and the journal name. We never receive your full manuscript.
 
+- Pay through Stripe
+
+- Paste the title, abstract and target journal; the link is also emailed, so you can do it from another device
+
+- Read the result on the page, or ask to be emailed when it is ready
+
 Secure checkout via Stripe. One-time payment.
 
 Deleted soon after delivery. The letter is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $2.
@@ -1361,6 +1391,12 @@ $5 one-time · results in minutes
 # Resume Review
 
 Would this resume clear an ATS filter and make a hiring manager read past the first six seconds? A three-persona AI panel (ATS Screener, Hiring Manager Skeptic, Recruiter Red Flags) reads your resume the way the people actually screening it would.
+
+- Pay through Stripe
+
+- Upload your resume as PDF or DOCX; the link is also emailed, so you can upload from another device
+
+- Read the result on the page, or ask to be emailed when it is ready
 
 Secure checkout via Stripe.
 
