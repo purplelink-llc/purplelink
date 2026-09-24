@@ -106,7 +106,7 @@
             {
               "@type": "Question",
               "name": "How is ModernTex different from TeXShop or Overleaf?",
-              "acceptedAnswer": { "@type": "Answer", "text": "ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks — built around how researchers actually write." }
+              "acceptedAnswer": { "@type": "Answer", "text": "ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks, built around how researchers write. Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration, and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing; for a draft several people type in at once, keep Overleaf." }
             },
             {
               "@type": "Question",
@@ -302,7 +302,7 @@
           <tr><th scope="row">TeX distribution</th><td>Uses MacTeX or TinyTeX. If neither is installed, ModernTex offers a one-click TinyTeX install.</td></tr>
           <tr><th scope="row">Your files</th><td>Ordinary .tex, .bib and figure files in a folder on your disk. No cloud storage and no account.</td></tr>
           <tr><th scope="row">Working with co-authors</th><td>No real-time co-editing. Get Changes and Send Changes sync between your Macs or with a co-author.</td></tr>
-          <tr><th scope="row">AI features</th><td>Optional, and they use your own Claude account.</td></tr>
+          <tr><th scope="row">AI features</th><td>Optional. Fix with AI proposes a repair for a build error and shows it as a diff before anything changes. It runs on Apple Intelligence on your Mac, or on your own Claude or OpenAI account; Purplelink charges nothing for it.</td></tr>
           <tr><th scope="row">Updates</th><td>Checks once a day and installs in place, or choose Check for Updates.</td></tr>
           <tr><th scope="row">Current version</th><td>1.3.0: a visual Table Editor, after 1.2.0's TikZ Designer. <a href="/changelog/">Changelog</a></td></tr>
         </tbody>
@@ -316,9 +316,10 @@
           <li><time datetime="2026-09-11">Sep 11</time><strong>1.0.2</strong><span>A free seven-day trial.</span></li>
           <li><time datetime="2026-09-05">Sep 5</time><strong>1.0.1</strong><span>Clearer bibliography build errors, pointing at the .bib line.</span></li>
         </ol>
-        <p class="release-strip-foot">Every 1.x update is included in the $10, and the app installs it in place. <a href="/changelog/">Full changelog</a></p>
+        <p class="release-strip-foot">Every 1.x update is included in the $10, and the app installs it in place. Your work stays in ordinary .tex files, so you can open it in Overleaf or TeXShop whenever you like. <a href="/changelog/">Full changelog</a></p>
       </div>
       <p class="specs-more">Coming from Overleaf? <a href="/guides/overleaf-alternative-mac/">What changes when you write locally</a>, or see <a href="/guides/best-mac-latex-editors/">how the Mac LaTeX editors compare</a>.</p>
+      <p class="specs-more">Submitting soon? Work through the free <a href="/tools/submission-checklist/">submission checklist</a>, or see <a href="/tools/paper-review/sample/">a sample Paper Review report</a> ($9, back in minutes).</p>
     </section>
 
     <section class="waitlist-section" id="requirements">
@@ -357,11 +358,12 @@
         </details>
         <details class="faq-item">
           <summary>What does it cost?</summary>
-          <div class="faq-body">$10, once, after a free 7-day trial. That covers every 1.x update. There is no subscription and no account; the optional AI features use your own Claude account.</div>
+          <div class="faq-body">$10, once, after a free 7-day trial. That covers every 1.x update. There is no subscription and no account; the optional AI features run on Apple Intelligence or your own Claude or OpenAI account.</div>
         </details>
         <details class="faq-item">
           <summary>How is ModernTex different from TeXShop or Overleaf?</summary>
-          <div class="faq-body">ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers. <a href="/guides/best-mac-latex-editors/">See how the best LaTeX editors for Mac compare</a>, or read <a href="/guides/overleaf-alternative-mac/">what changes when you move from Overleaf to a Mac editor</a>.</div>
+          <div class="faq-body">ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers.</div>
+          <div class="faq-body">Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration, and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing; for a draft several people type in at once, keep Overleaf. <a href="/guides/best-mac-latex-editors/">See how the best LaTeX editors for Mac compare</a>, or read <a href="/guides/overleaf-alternative-mac/">what changes when you move from Overleaf to a Mac editor</a>.</div>
         </details>
         <details class="faq-item">
           <summary>Why not just use a free editor like TeXstudio?</summary>

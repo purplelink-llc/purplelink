@@ -314,7 +314,7 @@ Your filesOrdinary .tex, .bib and figure files in a folder on your disk. No clou
 
 Working with co-authorsNo real-time co-editing. Get Changes and Send Changes sync between your Macs or with a co-author.
 
-AI featuresOptional, and they use your own Claude account.
+AI featuresOptional. Fix with AI proposes a repair for a build error and shows it as a diff before anything changes. It runs on Apple Intelligence on your Mac, or on your own Claude or OpenAI account; Purplelink charges nothing for it.
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
@@ -332,9 +332,11 @@ Current version1.3.0: a visual Table Editor, after 1.2.0's TikZ Designer. Change
 
 - Sep 51.0.1Clearer bibliography build errors, pointing at the .bib line.
 
-Every 1.x update is included in the $10, and the app installs it in place. Full changelog
+Every 1.x update is included in the $10, and the app installs it in place. Your work stays in ordinary .tex files, so you can open it in Overleaf or TeXShop whenever you like. Full changelog
 
 Coming from Overleaf? What changes when you write locally, or see how the Mac LaTeX editors compare.
+
+Submitting soon? Work through the free submission checklist, or see a sample Paper Review report ($9, back in minutes).
 
 Before you install
 
@@ -366,11 +368,13 @@ Yes. The trial is the complete app for seven days from the first time you open i
 
 What does it cost?
 
-$10, once, after a free 7-day trial. That covers every 1.x update. There is no subscription and no account; the optional AI features use your own Claude account.
+$10, once, after a free 7-day trial. That covers every 1.x update. There is no subscription and no account; the optional AI features run on Apple Intelligence or your own Claude or OpenAI account.
 
 How is ModernTex different from TeXShop or Overleaf?
 
-ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers. See how the best LaTeX editors for Mac compare, or read what changes when you move from Overleaf to a Mac editor.
+ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers.
+
+Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration, and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing; for a draft several people type in at once, keep Overleaf. See how the best LaTeX editors for Mac compare, or read what changes when you move from Overleaf to a Mac editor.
 
 Why not just use a free editor like TeXstudio?
 
