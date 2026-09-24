@@ -206,13 +206,13 @@ _READY_NAMES = {
     "anonymity-check": "Anonymity Check",
     "cover-letter": "cover letter draft",
     "revision-review": "Revision Review",
-    "response-review": "Response Review",
+    "response-review": "Response to Reviewers check",
     "resume-review": "Resume Review",
 }
 _LINK = 'style="color: #6d28d9;"'
 _READY_NEXT = {
     "paper-review": (
-        f'Next, if you need it: <a href="https://purplelink.llc/tools/citation-gap/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Citation Gap</a> '
+        f'Next, if you need it: <a href="https://purplelink.llc/tools/citation-gap/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Citation Gap Analysis</a> '
         f'($3) lists prior work a reviewer may expect you to cite, and <a href="https://purplelink.llc/tools/cover-letter/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Cover Letter</a> '
         '($2) drafts the letter from your abstract.'
     ),
@@ -233,7 +233,7 @@ _READY_NEXT = {
         '($2) checks the revision against the findings in your original Paper Review.'
     ),
     "revision-review": (
-        f'For the letter that goes with it, <a href="https://purplelink.llc/tools/response-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Response Review</a> '
+        f'For the letter that goes with it, <a href="https://purplelink.llc/tools/response-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Response to Reviewers</a> '
         '($6) checks every reply against the reviewer comments.'
     ),
 }
