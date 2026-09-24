@@ -742,6 +742,10 @@ How deep is the citation check?
 
 Two levels. First, every reference is checked for existence against CrossRef (dead DOIs, hallucinated or weakly-matched titles). Second, for the most load-bearing claims we fetch the cited source's abstract from OpenAlex, Semantic Scholar, or CrossRef and assess whether it supports your claim. This is an abstract-level check: a claim supported only in the full text is marked "not supported by abstract," not wrong - verify it against the source. When no abstract can be retrieved, the citation is marked "source unavailable" rather than guessed. On citation-heavy papers we audit the most important claims first and tell you how many were not audited.
 
+Am I allowed to use an AI review on my own manuscript?
+
+Yes, under the policies of the major publishers and venues we have checked. Elsevier, Springer Nature, Wiley, Taylor & Francis, IEEE, ACM, ICMJE and NeurIPS let authors use AI tools while preparing a manuscript; the rule against uploading manuscripts to AI is for reviewers, who hold someone else's work. Paper Review writes nothing into your paper, so most disclosure rules, which cover AI-generated text, do not obviously apply; if your venue's policy is strict, a one-line note is enough. The policy guide compares ten publishers and venues.
+
 Is this a replacement for peer review?
 
 No. Treat it as a first-pass red team before you submit — a way to catch the obvious problems a real reviewer will flag before they do. The review is advisory only; you remain responsible for every decision about your manuscript.
