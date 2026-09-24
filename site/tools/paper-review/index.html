@@ -97,8 +97,8 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=9a2e125e38">
-    <script src="/site.js?v=85669fe178" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=e280ae054d">
+    <script src="/site.js?v=4732357017" defer></script>
     <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=a48e984d89">
 </head>
   <body>
@@ -201,21 +201,21 @@ _5 citations with weaker claims were not audited (per-run cap)._
       <fieldset class="pr-tier-pick">
         <legend>Choose a tier</legend>
         <label class="pr-tier-option">
-          <input type="radio" name="tier" value="paper-review-standard" checked>
+          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-standard" checked>
           <span class="pr-tier-content">
             <span class="pr-tier-head"><strong>Standard</strong> · <em>$9</em></span>
             <span class="pr-tier-desc">Single-pass four-persona review, figure scan, and live citation check. Markdown report and annotated PDF.</span>
           </span>
         </label>
         <label class="pr-tier-option">
-          <input type="radio" name="tier" value="paper-review-journal">
+          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-journal">
           <span class="pr-tier-content">
             <span class="pr-tier-head"><strong>Standard + Journal Pack</strong> · <em>$11</em></span>
             <span class="pr-tier-desc">Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.).</span>
           </span>
         </label>
         <label class="pr-tier-option pr-tier-premium">
-          <input type="radio" name="tier" value="paper-review-deep">
+          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-deep">
           <span class="pr-tier-content">
             <span class="pr-tier-head"><strong>Deep Review</strong> · <em>$15</em></span>
             <span class="pr-tier-desc">Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.</span>
@@ -294,7 +294,7 @@ _5 citations with weaker claims were not audited (per-run cap)._
         <ul>
           <li><a href="/guides/desk-reject-recovery/">Guide: Your paper got desk rejected: what to do next →</a></li>
           <li><a href="/guides/get-feedback-on-a-paper-before-submitting/">Guide: ways to get feedback before submitting, compared →</a></li>
-          <li><a href="/guides/why-it-matters/">Guide: Why it matters: the methodology problems reviewers flag →</a></li>
+          <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Guide: methodology problems peer reviewers flag, and how to fix them →</a></li>
           <li><strong>Related guide:</strong> <a href="/guides/use-paper-review-before-submitting/">How to use Paper Review before you submit →</a></li>
           <li><a href="/tools/bib-validator/">BibTeX Validator — free citation hallucination check →</a></li>
           <li><a href="/tools/latex-to-pdf/">LaTeX to PDF — compile your .tex before uploading →</a></li>
@@ -346,7 +346,7 @@ _5 citations with weaker claims were not audited (per-run cap)._
           <p class="footer-head">Learn</p>
           <ul>
             <li><a href="/guides/">Guides</a></li>
-            <li><a href="/guides/why-it-matters/">Why it matters</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
             <li><a href="/format/">Reference formats</a></li>
             <li><a href="/blog/">Blog</a></li>
             <li><a href="/blog/digest/">Daily Digest</a></li>

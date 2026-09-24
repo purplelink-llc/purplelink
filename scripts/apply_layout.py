@@ -69,7 +69,7 @@ FOOTER_COLUMNS = [
     ]),
     ("Learn", [
         ("Guides", "/guides/"),
-        ("Why it matters", "/guides/why-it-matters/"),
+        ("Research methods", "/guides/methodology-problems-peer-reviewers-flag/"),
         ("Reference formats", "/format/"),
         ("Blog", "/blog/"),
         ("Daily Digest", "/blog/digest/"),

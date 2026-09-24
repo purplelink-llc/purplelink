@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Methodology Problems Peer Reviewers Flag, and How to Fix Them | Purplelink LLC</title>
+    <meta name="description" content="Fifteen methodology problems peer reviewers flag, from p-hacking and underpowered samples to test-set leakage and unregistered trials: what each looks like in a manuscript and how to fix it.">
+    <link rel="canonical" href="https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/">
+    <meta property="og:title" content="Methodology problems peer reviewers flag, and how to fix them">
+    <meta property="og:description" content="What p-hacking, HARKing, WEIRD samples, seed cherry-picking, test-set leakage, hallucinated citations and ten other reviewer flags look like in a manuscript, and how to fix each one before you submit.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/why-it-matters.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Methodology problems peer reviewers flag, and how to fix them">
+    <meta name="twitter:description" content="What p-hacking, HARKing, WEIRD samples, seed cherry-picking, test-set leakage, hallucinated citations and ten other reviewer flags look like in a manuscript, and how to fix each one before you submit.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/why-it-matters.png">
+    <meta name="twitter:image:alt" content="Methodology problems peer reviewers flag, and how to fix them">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Methodology problems peer reviewers flag, and how to fix them",
+          "description": "Fifteen methodology problems peer reviewers flag, from p-hacking and underpowered samples to test-set leakage and unregistered trials: what each looks like in a manuscript and how to fix it.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "mainEntityOfPage": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/",
+          "datePublished": "2026-09-24",
+          "dateModified": "2026-09-24",
+          "image": "https://purplelink.llc/assets/og/why-it-matters.png",
+          "about": { "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms" }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "Methodology problems peer reviewers flag", "item": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/" }
+          ]
+        },
+        {
+          "@type": "DefinedTermSet",
+          "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms",
+          "name": "Methodology problems peer reviewers flag",
+          "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/",
+          "hasDefinedTerm": [
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#p-hacking",
+              "name": "p-hacking",
+              "description": "p-hacking is running several analyses of the same data and reporting the ones that reach statistical significance while leaving the others out.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#p-hacking",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#garden-of-forking-paths",
+              "name": "The garden of forking paths",
+              "description": "The garden of forking paths is the set of reasonable, data-dependent analysis choices a researcher could have made, which inflates false positives even when only one analysis was actually run.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#garden-of-forking-paths",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#hark-ing",
+              "name": "HARKing",
+              "description": "HARKing (hypothesizing after the results are known) is presenting a hypothesis that was formed after seeing the data as if it had been stated before the study began.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#hark-ing",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#multiple-comparisons",
+              "name": "Multiple comparisons",
+              "description": "The multiple comparisons problem is that the chance of at least one false positive rises with every additional test run at the same significance threshold.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#multiple-comparisons",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#underpowered-sample",
+              "name": "Underpowered samples",
+              "description": "An underpowered sample is one too small to reliably detect an effect of the size the authors consider meaningful.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#underpowered-sample",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#weird-sample",
+              "name": "WEIRD samples",
+              "description": "A WEIRD sample is drawn from Western, Educated, Industrialized, Rich and Democratic societies; the problem arises when findings from such a sample are presented as true of people in general.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#weird-sample",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#test-train-contamination",
+              "name": "Test-train contamination",
+              "description": "Test-train contamination occurs when examples from the evaluation set, or close copies of them, are present in the data a model was trained or tuned on, so the test measures memory rather than generalization.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#test-train-contamination",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#cherry-picked-seeds",
+              "name": "Cherry-picked seeds",
+              "description": "Cherry-picked seeds describes reporting a single training run, or the best of several, so that random run-to-run variation is presented as a difference between methods.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#cherry-picked-seeds",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#hyperparameter-asymmetry",
+              "name": "Hyperparameter asymmetry",
+              "description": "Hyperparameter asymmetry is tuning the proposed method more thoroughly than the baselines it is compared against, so part of the reported gain comes from the extra tuning.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#hyperparameter-asymmetry",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#missing-ablations",
+              "name": "Missing ablations",
+              "description": "A missing ablation is a proposed component whose individual contribution to the result was never tested by removing it and measuring the change.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#missing-ablations",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#llm-self-judge",
+              "name": "LLM self-judge bias",
+              "description": "LLM self-judge bias is the tendency of a language model used as an evaluator to favor outputs from itself or its own model family, which inflates scores when the judge and the system under test are related.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#llm-self-judge",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#hallucinated-citation",
+              "name": "Hallucinated citations",
+              "description": "A hallucinated citation is a reference that looks complete and plausible but does not correspond to a real publication, usually because it was produced by a generative AI tool.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#hallucinated-citation",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#figure-presentation",
+              "name": "Figure presentation",
+              "description": "A figure presentation problem is a design choice in a chart, such as a truncated axis, missing or unlabeled error bars, or color-only encoding, that changes what a reader concludes from the data.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#figure-presentation",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#blinding-not-evidenced",
+              "name": "Blinding not evidenced",
+              "description": "Blinding not evidenced means a manuscript says a study was blinded without describing who was blinded, to what, and how the blinding was maintained.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#blinding-not-evidenced",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            },
+            {
+              "@type": "DefinedTerm",
+              "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#trial-not-registered",
+              "name": "Trial not registered",
+              "description": "Trial not registered describes a clinical trial reported without a public registry entry made before the first participant enrolled, which leaves readers unable to check whether the reported outcomes were the planned ones.",
+              "url": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#trial-not-registered",
+              "inDefinedTermSet": {
+                "@id": "https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/#terms"
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v=e280ae054d">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">Methodology problems peer reviewers flag, and how to fix them</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time></p>
+        <p class="post-lede">Many reviewer comments on empirical papers are not about the idea. They are about the distance between what a paper claims and what its methods can support. The same fifteen gaps come up again and again, and most of them have names. This guide defines each one, shows what it looks like on the page, and explains how to close it before a reviewer finds it.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Each section gives a one-sentence definition, why reviewers care, a sentence of the kind that draws the comment, and the fix. The example sentences are invented but typical. Primary literature is listed in the <a href="#references">references</a>, and each section links to a shorter explainer you can send to a co-author.</p>
+        <p>None of these problems means a paper is wrong. They mean it has not yet shown that it is right. Most can be fixed with an extra table, a clearer methods paragraph, or narrower wording in the abstract.</p>
+
+        <nav class="page-toc" aria-labelledby="toc-heading">
+          <h2 id="toc-heading">On this page</h2>
+          <ol>
+            <li><a href="#statistics-and-inference">Statistics and inference</a>
+              <ol>
+                <li><a href="#p-hacking">p-hacking</a></li>
+                <li><a href="#garden-of-forking-paths">The garden of forking paths</a></li>
+                <li><a href="#hark-ing">HARKing</a></li>
+                <li><a href="#multiple-comparisons">Multiple comparisons</a></li>
+              </ol>
+            </li>
+            <li><a href="#samples-and-generalization">Samples and generalization</a>
+              <ol>
+                <li><a href="#underpowered-sample">Underpowered samples</a></li>
+                <li><a href="#weird-sample">WEIRD samples</a></li>
+              </ol>
+            </li>
+            <li><a href="#machine-learning-evaluation">Machine learning evaluation</a>
+              <ol>
+                <li><a href="#test-train-contamination">Test-train contamination</a></li>
+                <li><a href="#cherry-picked-seeds">Cherry-picked seeds</a></li>
+                <li><a href="#hyperparameter-asymmetry">Hyperparameter asymmetry</a></li>
+                <li><a href="#missing-ablations">Missing ablations</a></li>
+                <li><a href="#llm-self-judge">LLM self-judge bias</a></li>
+              </ol>
+            </li>
+            <li><a href="#reporting-citations-and-figures">Reporting, citations and figures</a>
+              <ol>
+                <li><a href="#hallucinated-citation">Hallucinated citations</a></li>
+                <li><a href="#figure-presentation">Figure presentation</a></li>
+              </ol>
+            </li>
+            <li><a href="#study-design-and-registration">Study design and registration</a>
+              <ol>
+                <li><a href="#blinding-not-evidenced">Blinding not evidenced</a></li>
+                <li><a href="#trial-not-registered">Trial not registered</a></li>
+              </ol>
+            </li>
+            <li><a href="#checking-your-own-manuscript">Checking your own manuscript</a></li>
+            <li><a href="#references">References</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="statistics-and-inference">Statistics and inference</h2>
+        <p>The first four problems share a root. A p-value means what it claims only if the analysis was fixed before the data could influence it. Each is a different way the data ends up choosing the analysis.</p>
+
+        <section id="p-hacking">
+          <h3>p-hacking</h3>
+          <p><dfn>p-hacking</dfn> is running several analyses of the same data and reporting the ones that reach statistical significance while leaving the others out.</p>
+          <p><strong>Why reviewers care.</strong> A 5% significance threshold assumes one planned test. <a href="#ref-simmons-2011">Simmons, Nelson and Simonsohn (2011)</a> showed by simulation that a handful of ordinary, individually defensible choices (picking between two correlated outcome measures, adding participants after an early look, controlling for a covariate, dropping one condition) could together push the false-positive rate from 5% to more than 60%. <a href="#ref-head-2015">Head et al. (2015)</a> later found distributions of reported p-values across many fields that are consistent with p-hacking. Reviewers look for the traces: several p-values just under .05, measures in the methods that never reach the results, and covariates that appear in one model but not the next.</p>
+          <p><strong>How it shows up.</strong> A results paragraph such as: <q>Participants in the treatment condition reported higher satisfaction (p = .047); no significant differences emerged on the remaining measures, which are not discussed further.</q> "Not discussed further" tells the reviewer other tests were run and set aside.</p>
+          <p><strong>How to fix it.</strong> Decide the primary outcome and analysis before looking at the data, and write the decision down somewhere with a timestamp, such as a preregistration (<a href="#ref-nosek-2018">Nosek et al., 2018</a>). Report every measure, every condition and every exclusion, and if you excluded observations or added a covariate, also report the result without that choice, as Simmons and colleagues recommend. State how the sample size was decided, and label any unplanned analysis as exploratory.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/p-hacking/">p-hacking</a></p>
+        </section>
+
+        <section id="garden-of-forking-paths">
+          <h3>The garden of forking paths</h3>
+          <p>The <dfn>garden of forking paths</dfn> is the set of reasonable, data-dependent analysis choices a researcher could have made, which inflates false positives even when only one analysis was actually run.</p>
+          <p><strong>Why reviewers care.</strong> <a href="#ref-gelman-2013">Gelman and Loken (2013)</a> introduced the term to describe a problem that needs no fishing at all. A researcher runs one analysis in good faith, but the exclusion rule, the transformation, the subgroup and the covariate set were each chosen after seeing the data. Had the data come out differently, a different set of choices would have looked just as reasonable, so the single reported test carries the same inflated error rate as an explicit search (<a href="#ref-gelman-2014">Gelman &amp; Loken, 2014</a>).</p>
+          <p><strong>How it shows up.</strong> A methods sentence such as: <q>Because reaction times were positively skewed, we log-transformed them and excluded trials more than 2.5 standard deviations from each participant's mean.</q> Every clause is standard practice, but "because" signals that the choices followed the data.</p>
+          <p><strong>How to fix it.</strong> Preregister the exclusion rules, transformations and covariates, or state that they follow an established lab or field convention and cite it. Where choices were made after seeing the data, show that they do not drive the result. A multiverse analysis reports the estimate under every reasonable combination of choices (<a href="#ref-steegen-2016">Steegen et al., 2016</a>), and a specification curve plots those estimates in order so the reader can see how many support the claim (<a href="#ref-simonsohn-2020">Simonsohn, Simmons &amp; Nelson, 2020</a>).</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/garden-of-forking-paths/">garden of forking paths</a></p>
+        </section>
+
+        <section id="hark-ing">
+          <h3>HARKing</h3>
+          <p><dfn>HARKing</dfn> (hypothesizing after the results are known) is presenting a hypothesis that was formed after seeing the data as if it had been stated before the study began.</p>
+          <p><strong>Why reviewers care.</strong> <a href="#ref-kerr-1998">Kerr (1998)</a> named the practice and set out its costs. A hypothesis suggested by a pattern in the data cannot fail a test on that same data, so the "confirmation" carries no evidential weight. It also hides the original hypothesis, which may have failed. Reviewers become suspicious when every prediction is confirmed, or when predictions are oddly specific, such as an effect in exactly one subgroup.</p>
+          <p><strong>How it shows up.</strong> A results sentence such as: <q>As predicted, the effect emerged only among participants high in need for cognition.</q> If nothing earlier in the paper predicts that moderation, the reviewer will assume the prediction came after the finding.</p>
+          <p><strong>How to fix it.</strong> Keep a dated record of your hypotheses before analysis; a preregistration is the most credible version. In the paper, separate confirmatory from exploratory results under their own headings. An unexpected finding is worth reporting, as long as it is reported as unexpected and framed as a hypothesis for future work. Some journals accept Registered Reports, in which the introduction and methods are reviewed and accepted in principle before data collection (<a href="#ref-chambers-2013">Chambers, 2013</a>).</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/hark-ing/">HARKing</a></p>
+        </section>
+
+        <section id="multiple-comparisons">
+          <h3>Multiple comparisons</h3>
+          <p>The <dfn>multiple comparisons problem</dfn> is that the chance of at least one false positive rises with every additional test run at the same significance threshold.</p>
+          <p><strong>Why reviewers care.</strong> At α = .05, each test of a true null hypothesis has a 5% chance of a false positive. Across 20 independent tests, the chance of at least one is 1 − 0.95<sup>20</sup>, about 64%, and the expected number of false positives is one. Reviewers count the tests, including those implied by tables, and compare that number to the number of starred cells.</p>
+          <p><strong>How it shows up.</strong> A sentence such as: <q>We correlated each of the 12 personality facets with each of the 8 outcome measures; significant correlations are marked with an asterisk in Table 3.</q> That is 96 tests; about five would reach p &lt; .05 by chance.</p>
+          <p><strong>How to fix it.</strong> Say how many tests you ran and apply a correction that fits your goal. To control the chance of any false positive (the familywise error rate), use Bonferroni or Holm's step-down procedure, which never rejects fewer hypotheses than Bonferroni (<a href="#ref-holm-1979">Holm, 1979</a>). When you are screening many hypotheses and can tolerate a known proportion of false discoveries, control the false discovery rate with the Benjamini-Hochberg procedure (<a href="#ref-benjamini-1995">Benjamini &amp; Hochberg, 1995</a>). Better still, designate a few primary comparisons in advance, so the correction applies to a short list.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/multiple-comparisons/">multiple comparisons</a></p>
+        </section>
+
+        <h2 id="samples-and-generalization">Samples and generalization</h2>
+        <p>One of these limits what a study can detect; the other limits whom the findings apply to.</p>
+
+        <section id="underpowered-sample">
+          <h3>Underpowered samples</h3>
+          <p>An <dfn>underpowered sample</dfn> is one too small to reliably detect an effect of the size the authors consider meaningful.</p>
+          <p><strong>Why reviewers care.</strong> <a href="#ref-button-2013">Button et al. (2013)</a> estimated the median statistical power of neuroscience studies at about 21% and explained why this matters even for positive results: when power is low, a significant finding is less likely to reflect a true effect, and the effect sizes that do reach significance tend to be overestimates. This follows from <a href="#ref-ioannidis-2005">Ioannidis (2005)</a>, where the probability that a significant result is true depends on power, prior odds and bias. A reviewer who sees a small sample and a large effect reads the effect as a warning.</p>
+          <p><strong>How it shows up.</strong> A pairing such as: <q>The sample size was based on previous studies in this area.</q> followed later by <q>With 18 participants per group, the difference was significant (p = .03, d = 0.74), indicating a large effect of the intervention.</q> The first is not a power analysis; the second is the pattern low power produces.</p>
+          <p><strong>How to fix it.</strong> Justify the sample size before collecting data. A power analysis should state the smallest effect size you care about, where that number comes from, the planned test, alpha and target power, and the resulting N. <a href="#ref-lakens-2022">Lakens (2022)</a> covers this and other defensible justifications. If the data are already collected, report a sensitivity analysis: the smallest effect your design could detect with 80% power. Avoid "observed power" computed from your own effect estimate; it is a transformation of the p-value and adds no information (<a href="#ref-hoenig-2001">Hoenig &amp; Heisey, 2001</a>).</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/underpowered-sample/">underpowered sample</a></p>
+        </section>
+
+        <section id="weird-sample">
+          <h3>WEIRD samples</h3>
+          <p>A <dfn>WEIRD sample</dfn> is drawn from Western, Educated, Industrialized, Rich and Democratic societies; the problem arises when findings from such a sample are presented as true of people in general.</p>
+          <p><strong>Why reviewers care.</strong> <a href="#ref-henrich-2010">Henrich, Heine and Norenzayan (2010)</a> reviewed comparative evidence across domains including visual perception, fairness, cooperation, spatial reasoning and self-concept, and found that WEIRD participants were often outliers rather than typical humans. Susceptibility to the Müller-Lyer illusion, for example, varies widely across societies. <a href="#ref-arnett-2008">Arnett (2008)</a> found that the great majority of participants in leading psychology journals came from the United States and a few other Western countries. A reviewer will check whether the abstract's claim is about the population sampled or about "people".</p>
+          <p><strong>How it shows up.</strong> An abstract sentence such as: <q>These results show that people rely on intuition rather than deliberation when making moral judgments.</q> where the methods describe 240 undergraduates at one US university.</p>
+          <p><strong>How to fix it.</strong> Report the sample's demographics in enough detail to judge its range. Match the wording of the conclusion to the population studied. Add a short statement of the constraints on generality, naming the populations, settings and materials to which you expect the result to extend and those to which you do not (<a href="#ref-simons-2017">Simons, Shoda &amp; Lindsay, 2017</a>). Where the claim needs to be universal, it needs data from more than one kind of society.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/weird-sample/">WEIRD samples</a></p>
+        </section>
+
+        <h2 id="machine-learning-evaluation">Machine learning evaluation</h2>
+        <p>Machine learning papers usually make a comparative claim: method A beats method B on benchmark C. Each of the next five problems weakens one part of that comparison.</p>
+
+        <section id="test-train-contamination">
+          <h3>Test-train contamination</h3>
+          <p><dfn>Test-train contamination</dfn> occurs when examples from the evaluation set, or close copies of them, are present in the data a model was trained or tuned on, so the test measures memory rather than generalization.</p>
+          <p><strong>Why reviewers care.</strong> <a href="#ref-kapoor-2023">Kapoor and Narayanan (2023)</a> documented data leakage across many scientific fields that use machine learning, including preprocessing fitted on the full dataset, duplicates across splits, and splits that ignore dependence between samples. For large language models the risk is larger, because pretraining corpora are huge and benchmarks are public. <a href="#ref-brown-2020">Brown et al. (2020)</a> ran an n-gram overlap analysis between their pretraining data and each benchmark and reported the results; reviewers now expect something similar.</p>
+          <p><strong>How it shows up.</strong> A methods sentence such as: <q>We randomly split the 12,000 images into training (80%) and test (20%) sets.</q> With several images per patient, the same patients land in both sets, and the model can score well by recognizing patients rather than disease.</p>
+          <p><strong>How to fix it.</strong> Split by the unit you want to generalize to (patient, user, document, site or time period), not by row. Fit normalization, feature selection and any other preprocessing inside the training split only. Deduplicate across splits with a near-duplicate check, not just exact matching. For pretrained models, prefer benchmarks released after the training data cutoff, report an overlap check against whatever training data you can inspect, and compare scores on items flagged as possibly contaminated with scores on the rest.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/test-train-contamination/">test-train contamination</a></p>
+        </section>
+
+        <section id="cherry-picked-seeds">
+          <h3>Cherry-picked seeds</h3>
+          <p><dfn>Cherry-picked seeds</dfn> describes reporting a single training run, or the best of several, so that random run-to-run variation is presented as a difference between methods.</p>
+          <p><strong>Why reviewers care.</strong> Random initialization, data order, data splits and nondeterministic hardware all move the final score. <a href="#ref-henderson-2018">Henderson et al. (2018)</a> showed in deep reinforcement learning that two groups of runs of the same algorithm, differing only in random seed, could produce results that looked like two different algorithms. <a href="#ref-bouthillier-2021">Bouthillier et al. (2021)</a> catalogued the sources of variance in machine learning benchmarks and recommended randomizing as many of them as possible across runs. If the gap between methods is smaller than the spread across seeds, a single number per method does not support a ranking.</p>
+          <p><strong>How it shows up.</strong> A results sentence such as: <q>Our method achieves 84.7% accuracy, a 0.6-point improvement over the strongest baseline (84.1%).</q> with no mention of how many runs, no error bars, and the best number in each column in bold.</p>
+          <p><strong>How to fix it.</strong> Run several seeds for every method, including baselines, and say how many. Report the mean with a standard deviation or confidence interval, and report all runs rather than the best. For comparisons across many tasks or with few runs, <a href="#ref-agarwal-2021">Agarwal et al. (2021)</a> recommend interval estimates such as stratified bootstrap confidence intervals and robust aggregates such as the interquartile mean. If a single run is all you can afford, say so plainly and soften the claim.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/cherry-picked-seeds/">cherry-picked seeds</a></p>
+        </section>
+
+        <section id="hyperparameter-asymmetry">
+          <h3>Hyperparameter asymmetry</h3>
+          <p><dfn>Hyperparameter asymmetry</dfn> is tuning the proposed method more thoroughly than the baselines it is compared against, so part of the reported gain comes from the extra tuning.</p>
+          <p><strong>Why reviewers care.</strong> Re-evaluations have found that reported gains shrink or disappear once baselines get the same tuning effort. <a href="#ref-melis-2018">Melis, Dyer and Blunsom (2018)</a> found that standard LSTMs, tuned with large-scale automatic search, outperformed more recent architectures on language modeling benchmarks. <a href="#ref-lucic-2018">Lucic et al. (2018)</a> found that with enough hyperparameter search and random restarts, most GAN variants reached similar scores, and no tested variant consistently beat the original. <a href="#ref-dodge-2019">Dodge et al. (2019)</a> showed that which model looks best can depend on the tuning budget, and proposed reporting expected validation performance as a function of that budget.</p>
+          <p><strong>How it shows up.</strong> A methods sentence such as: <q>Baselines were trained with the hyperparameters reported in their original papers; for our method, we selected the learning rate and dropout rate by grid search on the validation set.</q></p>
+          <p><strong>How to fix it.</strong> Give every method the same search procedure and the same number of trials, over ranges that are reasonable for each. Use the same preprocessing, augmentation, training length and early-stopping rule. Report the search space, the budget and the selected values for every method in an appendix. If you copy baseline numbers from earlier papers, say so and explain why the setups are comparable.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/hyperparameter-asymmetry/">hyperparameter asymmetry</a></p>
+        </section>
+
+        <section id="missing-ablations">
+          <h3>Missing ablations</h3>
+          <p>A <dfn>missing ablation</dfn> is a proposed component whose individual contribution to the result was never tested by removing it and measuring the change.</p>
+          <p><strong>Why reviewers care.</strong> If a paper introduces several changes at once, the combined result cannot show which one mattered. <a href="#ref-lipton-2019">Lipton and Steinhardt (2019)</a> listed "failure to identify the sources of empirical gains" among the troubling trends in machine learning scholarship, noting cases where gains attributed to a new architecture actually came from tuning or from a single small change.</p>
+          <p><strong>How it shows up.</strong> A sentence such as: <q>Combining the gated attention module, the curriculum schedule and the auxiliary contrastive loss, our model improves F1 by 3.2 points over the baseline.</q> with no table showing what each of the three adds.</p>
+          <p><strong>How to fix it.</strong> Add an ablation table. Each row removes one component, or adds one to the baseline, with everything else held fixed, including the tuning budget. Run ablation rows with the same number of seeds as the main results; otherwise small differences between rows are noise. Include the row a skeptic would ask for, usually the baseline plus only the simplest change. If a component does not help, drop it or say so.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/missing-ablations/">missing ablations</a></p>
+        </section>
+
+        <section id="llm-self-judge">
+          <h3>LLM self-judge bias</h3>
+          <p><dfn>LLM self-judge bias</dfn> is the tendency of a language model used as an evaluator to favor outputs from itself or its own model family, which inflates scores when the judge and the system under test are related.</p>
+          <p><strong>Why reviewers care.</strong> <a href="#ref-zheng-2023">Zheng et al. (2023)</a> found that GPT-4's judgments agreed with human preferences at a rate similar to agreement between humans. They also documented position bias (favoring the first or second answer), verbosity bias (favoring longer answers) and self-enhancement bias (favoring its own answers), while noting that their evidence on the last was limited. <a href="#ref-panickssery-2024">Panickssery, Bowman and Feng (2024)</a> found that models can recognize their own outputs and that this ability is linked to preferring them. When the judge is related to a system being compared, the reviewer cannot tell how much of the gap is the judge.</p>
+          <p><strong>How it shows up.</strong> A methods sentence such as: <q>Responses from our system and three baselines were rated for helpfulness on a 1 to 10 scale by the same model our system was fine-tuned from.</q></p>
+          <p><strong>How to fix it.</strong> Use a judge from a different model family than any system under test, or several judges,. Collect human ratings on a random subset and report how well the judge agrees with them. In pairwise comparisons, present each pair in both orders. Report response length. Publish the judge prompt and the exact model version so the evaluation can be rerun.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/llm-self-judge/">LLM self-judge bias</a></p>
+        </section>
+
+        <h2 id="reporting-citations-and-figures">Reporting, citations and figures</h2>
+        <p>These problems are not about the design of the study, but reviewers treat them as evidence of how carefully the rest was done.</p>
+
+        <section id="hallucinated-citation">
+          <h3>Hallucinated citations</h3>
+          <p>A <dfn>hallucinated citation</dfn> is a reference that looks complete and plausible but does not correspond to a real publication, usually because it was produced by a generative AI tool.</p>
+          <p><strong>Why reviewers care.</strong> Language models generate references by predicting plausible text, not by looking papers up. <a href="#ref-walters-2023">Walters and Wilder (2023)</a> asked ChatGPT to write short literature reviews and checked every citation: 55% of the GPT-3.5 citations and 18% of the GPT-4 citations were fabricated, and many of the real ones contained errors. Some fabrications pair real authors with a title they never wrote, or attach a real DOI to the wrong paper. A reviewer who cannot find a key reference will wonder what else was not checked.</p>
+          <p><strong>How it shows up.</strong> A sentence such as: <q>Prior work has established that trust calibration improves human-AI team accuracy (Nguyen &amp; Park, 2021).</q> where the reference list gives a complete journal citation with volume, pages and DOI, and no such paper exists. (The citation here is invented to illustrate the pattern.)</p>
+          <p><strong>How to fix it.</strong> Check every reference against a bibliographic database before submission: resolve each DOI and confirm that it lands on the paper you meant, and search each title in Crossref or Google Scholar. For the references that carry your main claims, open the source and confirm that it supports the sentence you attached it to. Remove anything you cannot find.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/hallucinated-citation/">hallucinated citation</a></p>
+        </section>
+
+        <section id="figure-presentation">
+          <h3>Figure presentation</h3>
+          <p>A <dfn>figure presentation problem</dfn> is a design choice in a chart, such as a truncated axis, missing or unlabeled error bars, or color-only encoding, that changes what a reader concludes from the data.</p>
+          <p><strong>Why reviewers care.</strong> <a href="#ref-weissgerber-2015">Weissgerber et al. (2015)</a> showed that bar graphs of continuous data hide the distribution: very different datasets, including ones with outliers or bimodal groups, can produce identical bars. <a href="#ref-crameri-2020">Crameri, Shephard and Heron (2020)</a> showed that rainbow color maps distort data by creating false boundaries, and that they are hard to read for people with color-vision deficiency.</p>
+          <p><strong>How it shows up.</strong> A text sentence such as: <q>As Figure 3 shows, accuracy improved substantially in the treatment group.</q> where Figure 3 is a bar chart with a y-axis running from 71% to 74%, six observations per group, and a caption reading only "Error bars show SE."</p>
+          <p><strong>How to fix it.</strong> For small samples, plot individual observations, alone or over a box or violin plot. Start bar charts at zero; for small differences, use a dot plot instead of cropped bars. In every caption, state what the error bars represent (standard deviation, standard error or a confidence interval) and the n behind them. Use perceptually uniform color maps, and pair color with shape, line style or direct labels. Check that text is readable at the journal's column width.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/figure-presentation/">figure presentation</a></p>
+        </section>
+
+        <h2 id="study-design-and-registration">Study design and registration</h2>
+        <p>The last two problems apply mostly to experiments with human or animal participants. In both cases a safeguard may well have been in place, but the manuscript does not give the reader enough to check it.</p>
+
+        <section id="blinding-not-evidenced">
+          <h3>Blinding not evidenced</h3>
+          <p><dfn>Blinding not evidenced</dfn> means a manuscript says a study was blinded without describing who was blinded, to what, and how the blinding was maintained.</p>
+          <p><strong>Why reviewers care.</strong> Blinding protects against expectation effects in participants, in those delivering an intervention, and in those measuring outcomes. The word alone does not say which were covered. <a href="#ref-schulz-2002">Schulz and Grimes (2002)</a> pointed out that labels such as "double-blind" are used inconsistently and argued that authors should state exactly who was blinded. The CONSORT statement for randomized trials asks for who was blinded after assignment and how (<a href="#ref-schulz-2010">Schulz, Altman &amp; Moher, 2010</a>), and the ARRIVE 2.0 guidelines for animal research include blinding among their ten essential items (<a href="#ref-percie-2020">Percie du Sert et al., 2020</a>).</p>
+          <p><strong>How it shows up.</strong> A single methods sentence such as: <q>All behavioral scoring was performed blind to genotype.</q> with no detail about who held the key or when it was opened.</p>
+          <p><strong>How to fix it.</strong> Name each group that was blinded: participants, experimenters, outcome assessors, data analysts. Say how allocation was concealed (who generated the codes, who held them, how samples or cages were labeled) and when the blind was broken relative to the analysis. If you tested whether blinding held, report the result. If blinding was not possible, say so, explain why, and describe what you did instead, such as using an objective outcome or an independent assessor.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/blinding-not-evidenced/">blinding not evidenced</a></p>
+        </section>
+
+        <section id="trial-not-registered">
+          <h3>Trial not registered</h3>
+          <p><dfn>Trial not registered</dfn> describes a clinical trial reported without a public registry entry made before the first participant enrolled, which leaves readers unable to check whether the reported outcomes were the planned ones.</p>
+          <p><strong>Why reviewers care.</strong> In 2004 the International Committee of Medical Journal Editors announced that its member journals would consider a clinical trial only if it had been registered in a public registry, and for trials beginning enrollment after 1 July 2005, registered at or before the start of enrollment (<a href="#ref-deangelis-2004">De Angelis et al., 2004</a>). The current ICMJE Recommendations keep the requirement and define a clinical trial broadly enough to include many behavioral interventions: any study that prospectively assigns people to an intervention to study its effect on a health outcome (<a href="#ref-icmje">ICMJE</a>). <a href="#ref-chan-2004">Chan et al. (2004)</a> compared trial protocols with the resulting publications and found that 62% of trials had at least one primary outcome that was changed, introduced or omitted.</p>
+          <p><strong>How it shows up.</strong> A methods section that begins: <q>Participants were randomly assigned to the intervention or to usual care, and the primary outcome was change in HbA1c at 12 weeks.</q> with no registration number in the paper, or a registry entry that names 24 weeks, or one dated after enrollment began.</p>
+          <p><strong>How to fix it.</strong> Register before the first participant enrolls and name the primary outcome and its time point precisely. Put the registry name and number in the abstract and methods. Make the reported primary outcome match the registered one. If it changed, report the change, when it was made and why. If a trial was registered late, say so rather than leaving the reviewer to find the date.</p>
+          <p>Short explainer: <a href="/guides/why-it-matters/trial-not-registered/">trial not registered</a></p>
+        </section>
+
+        <h2 id="checking-your-own-manuscript">Checking your own manuscript</h2>
+        <p>The most reliable check is a colleague who knows your field and reads the manuscript as a skeptic. A useful way to brief them is to send this list and ask which of these a reviewer would raise.</p>
+        <p>If you want a first pass before that, Purplelink's <a href="/tools/paper-review/">Paper Review</a> ($9) reads a manuscript PDF and reports methodology concerns in the terms used on this page. Several of these problems are flagged automatically, including hyperparameter asymmetry, missing sample-size justification, single-seed results, figure presentation problems and references that do not resolve, and findings link to the matching short explainer. It is advisory, it can be wrong, and it does not replace a person who knows your field.</p>
+        <p>For citations alone, the free <a href="/tools/bib-validator/">BibTeX Validator</a> checks each entry in a <code>.bib</code> file against CrossRef and Semantic Scholar and flags entries that do not match a real paper. It runs in your browser and does not upload the file.</p>
+
+        <h2 id="references">References</h2>
+        <ol>
+          <li id="ref-agarwal-2021">Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A., &amp; Bellemare, M. G. (2021). Deep reinforcement learning at the edge of the statistical precipice. <em>Advances in Neural Information Processing Systems 34 (NeurIPS 2021)</em>.</li>
+          <li id="ref-arnett-2008">Arnett, J. J. (2008). The neglected 95%: Why American psychology needs to become less American. <em>American Psychologist, 63</em>(7), 602–614.</li>
+          <li id="ref-benjamini-1995">Benjamini, Y., &amp; Hochberg, Y. (1995). Controlling the false discovery rate: A practical and powerful approach to multiple testing. <em>Journal of the Royal Statistical Society: Series B (Methodological), 57</em>(1), 289–300.</li>
+          <li id="ref-bouthillier-2021">Bouthillier, X., Delaunay, P., Bronzi, M., Trofimov, A., Nichyporuk, B., Szeto, J., et al. (2021). Accounting for variance in machine learning benchmarks. <em>Proceedings of Machine Learning and Systems 3 (MLSys 2021)</em>.</li>
+          <li id="ref-brown-2020">Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., et al. (2020). Language models are few-shot learners. <em>Advances in Neural Information Processing Systems 33 (NeurIPS 2020)</em>.</li>
+          <li id="ref-button-2013">Button, K. S., Ioannidis, J. P. A., Mokrysz, C., Nosek, B. A., Flint, J., Robinson, E. S. J., &amp; Munafò, M. R. (2013). Power failure: Why small sample size undermines the reliability of neuroscience. <em>Nature Reviews Neuroscience, 14</em>(5), 365–376.</li>
+          <li id="ref-chambers-2013">Chambers, C. D. (2013). Registered Reports: A new publishing initiative at Cortex. <em>Cortex, 49</em>(3), 609–610.</li>
+          <li id="ref-chan-2004">Chan, A.-W., Hróbjartsson, A., Haahr, M. T., Gøtzsche, P. C., &amp; Altman, D. G. (2004). Empirical evidence for selective reporting of outcomes in randomized trials: Comparison of protocols to published articles. <em>JAMA, 291</em>(20), 2457–2465.</li>
+          <li id="ref-crameri-2020">Crameri, F., Shephard, G. E., &amp; Heron, P. J. (2020). The misuse of colour in science communication. <em>Nature Communications, 11</em>.</li>
+          <li id="ref-deangelis-2004">De Angelis, C., Drazen, J. M., Frizelle, F. A., Haug, C., Hoey, J., Horton, R., et al. (2004). Clinical trial registration: A statement from the International Committee of Medical Journal Editors. <em>New England Journal of Medicine, 351</em>(12), 1250–1251.</li>
+          <li id="ref-dodge-2019">Dodge, J., Gururangan, S., Card, D., Schwartz, R., &amp; Smith, N. A. (2019). Show your work: Improved reporting of experimental results. <em>Proceedings of EMNLP-IJCNLP 2019</em>.</li>
+          <li id="ref-gelman-2013">Gelman, A., &amp; Loken, E. (2013). The garden of forking paths: Why multiple comparisons can be a problem, even when there is no "fishing expedition" or "p-hacking" and the research hypothesis was posited ahead of time. Unpublished manuscript, Department of Statistics, Columbia University.</li>
+          <li id="ref-gelman-2014">Gelman, A., &amp; Loken, E. (2014). The statistical crisis in science. <em>American Scientist, 102</em>(6), 460–465.</li>
+          <li id="ref-head-2015">Head, M. L., Holman, L., Lanfear, R., Kahn, A. T., &amp; Jennions, M. D. (2015). The extent and consequences of p-hacking in science. <em>PLoS Biology, 13</em>(3).</li>
+          <li id="ref-henderson-2018">Henderson, P., Islam, R., Bachman, P., Pineau, J., Precup, D., &amp; Meger, D. (2018). Deep reinforcement learning that matters. <em>Proceedings of the AAAI Conference on Artificial Intelligence (AAAI-18)</em>.</li>
+          <li id="ref-henrich-2010">Henrich, J., Heine, S. J., &amp; Norenzayan, A. (2010). The weirdest people in the world? <em>Behavioral and Brain Sciences, 33</em>(2–3), 61–83.</li>
+          <li id="ref-hoenig-2001">Hoenig, J. M., &amp; Heisey, D. M. (2001). The abuse of power: The pervasive fallacy of power calculations for data analysis. <em>The American Statistician, 55</em>(1), 19–24.</li>
+          <li id="ref-holm-1979">Holm, S. (1979). A simple sequentially rejective multiple test procedure. <em>Scandinavian Journal of Statistics, 6</em>(2), 65–70.</li>
+          <li id="ref-icmje">International Committee of Medical Journal Editors. <em>Recommendations for the Conduct, Reporting, Editing, and Publication of Scholarly Work in Medical Journals</em>, section on clinical trial registration. icmje.org.</li>
+          <li id="ref-ioannidis-2005">Ioannidis, J. P. A. (2005). Why most published research findings are false. <em>PLoS Medicine, 2</em>(8), e124.</li>
+          <li id="ref-kapoor-2023">Kapoor, S., &amp; Narayanan, A. (2023). Leakage and the reproducibility crisis in machine-learning-based science. <em>Patterns, 4</em>(9).</li>
+          <li id="ref-kerr-1998">Kerr, N. L. (1998). HARKing: Hypothesizing after the results are known. <em>Personality and Social Psychology Review, 2</em>(3), 196–217.</li>
+          <li id="ref-lakens-2022">Lakens, D. (2022). Sample size justification. <em>Collabra: Psychology, 8</em>(1).</li>
+          <li id="ref-lipton-2019">Lipton, Z. C., &amp; Steinhardt, J. (2019). Troubling trends in machine learning scholarship. <em>ACM Queue, 17</em>(1).</li>
+          <li id="ref-lucic-2018">Lucic, M., Kurach, K., Michalski, M., Gelly, S., &amp; Bousquet, O. (2018). Are GANs created equal? A large-scale study. <em>Advances in Neural Information Processing Systems 31 (NeurIPS 2018)</em>.</li>
+          <li id="ref-melis-2018">Melis, G., Dyer, C., &amp; Blunsom, P. (2018). On the state of the art of evaluation in neural language models. <em>International Conference on Learning Representations (ICLR 2018)</em>.</li>
+          <li id="ref-nosek-2018">Nosek, B. A., Ebersole, C. R., DeHaven, A. C., &amp; Mellor, D. T. (2018). The preregistration revolution. <em>Proceedings of the National Academy of Sciences, 115</em>(11), 2600–2606.</li>
+          <li id="ref-panickssery-2024">Panickssery, A., Bowman, S. R., &amp; Feng, S. (2024). LLM evaluators recognize and favor their own generations. <em>Advances in Neural Information Processing Systems 37 (NeurIPS 2024)</em>.</li>
+          <li id="ref-percie-2020">Percie du Sert, N., Hurst, V., Ahluwalia, A., Alam, S., Avey, M. T., Baker, M., et al. (2020). The ARRIVE guidelines 2.0: Updated guidelines for reporting animal research. <em>PLoS Biology, 18</em>(7).</li>
+          <li id="ref-schulz-2002">Schulz, K. F., &amp; Grimes, D. A. (2002). Blinding in randomised trials: Hiding who got what. <em>The Lancet, 359</em>(9307), 696–700.</li>
+          <li id="ref-schulz-2010">Schulz, K. F., Altman, D. G., &amp; Moher, D., for the CONSORT Group. (2010). CONSORT 2010 Statement: Updated guidelines for reporting parallel group randomised trials. <em>BMJ, 340</em>, c332.</li>
+          <li id="ref-simmons-2011">Simmons, J. P., Nelson, L. D., &amp; Simonsohn, U. (2011). False-positive psychology: Undisclosed flexibility in data collection and analysis allows presenting anything as significant. <em>Psychological Science, 22</em>(11), 1359–1366.</li>
+          <li id="ref-simons-2017">Simons, D. J., Shoda, Y., &amp; Lindsay, D. S. (2017). Constraints on generality (COG): A proposed addition to all empirical papers. <em>Perspectives on Psychological Science, 12</em>(6), 1123–1128.</li>
+          <li id="ref-simonsohn-2020">Simonsohn, U., Simmons, J. P., &amp; Nelson, L. D. (2020). Specification curve analysis. <em>Nature Human Behaviour, 4</em>(11), 1208–1214.</li>
+          <li id="ref-steegen-2016">Steegen, S., Tuerlinckx, F., Gelman, A., &amp; Vanpaemel, W. (2016). Increasing transparency through a multiverse analysis. <em>Perspectives on Psychological Science, 11</em>(5), 702–712.</li>
+          <li id="ref-walters-2023">Walters, W. H., &amp; Wilder, E. I. (2023). Fabrication and errors in the bibliographic citations generated by ChatGPT. <em>Scientific Reports, 13</em>.</li>
+          <li id="ref-weissgerber-2015">Weissgerber, T. L., Milic, N. M., Winham, S. J., &amp; Garovic, V. D. (2015). Beyond bar and line graphs: Time for a new data presentation paradigm. <em>PLoS Biology, 13</em>(4), e1002128.</li>
+          <li id="ref-zheng-2023">Zheng, L., Chiang, W.-L., Sheng, Y., Zhuang, S., Wu, Z., Zhuang, Y., et al. (2023). Judging LLM-as-a-judge with MT-Bench and Chatbot Arena. <em>Advances in Neural Information Processing Systems 36 (NeurIPS 2023), Datasets and Benchmarks Track</em>.</li>
+        </ol>
+      </article>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/guides/why-it-matters/">Short explainers for each problem →</a></li>
+          <li><a href="/tools/paper-review/">Paper Review: a first-pass review before you submit →</a></li>
+          <li><a href="/guides/catch-ai-hallucinated-citations/">How to catch AI-hallucinated citations →</a></li>
+          <li><a href="/guides/use-paper-review-before-submitting/">How to use Paper Review before you submit →</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/desk/">Research desk</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=e10d5c8c43" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

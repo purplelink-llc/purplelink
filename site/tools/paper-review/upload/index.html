@@ -11,8 +11,8 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=9a2e125e38">
-    <script src="/site.js?v=85669fe178" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=e280ae054d">
+    <script src="/site.js?v=4732357017" defer></script>
     <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=a48e984d89">
 </head>
   <body>
@@ -51,11 +51,11 @@
 
           <fieldset class="pr-domain-pick">
             <legend>Domain profile</legend>
-            <label><input type="radio" name="domain" value="general" checked> <span><strong>General</strong><span class="pr-domain-desc">Use when none of the others fit, or for cross-domain work.</span></span></label>
-            <label><input type="radio" name="domain" value="machine_learning"> <span><strong>Machine Learning</strong><span class="pr-domain-desc">Attack vectors: contamination, cherry-picked seeds, unfair baselines, LLM-as-judge bias, missing ablations.</span></span></label>
-            <label><input type="radio" name="domain" value="biomedicine"> <span><strong>Biomedicine</strong><span class="pr-domain-desc">Attack vectors: power calculations, multiple comparisons, blot integrity, blinding, trial registration.</span></span></label>
-            <label><input type="radio" name="domain" value="psychology_social"> <span><strong>Psychology / Social Science</strong><span class="pr-domain-desc">Attack vectors: pre-registration, WEIRD samples, garden of forking paths, manipulation checks, measurement validity.</span></span></label>
-            <label><input type="radio" name="domain" value="chemistry_materials"> <span><strong>Chemistry / Materials</strong><span class="pr-domain-desc">Attack vectors: yield reproducibility, characterization completeness, DFT specifications, catalyst leaching, scale-up feasibility.</span></span></label>
+            <label><input type="radio" name="domain" data-remember="pr-domain" value="general" checked> <span><strong>General</strong><span class="pr-domain-desc">Use when none of the others fit, or for cross-domain work.</span></span></label>
+            <label><input type="radio" name="domain" data-remember="pr-domain" value="machine_learning"> <span><strong>Machine Learning</strong><span class="pr-domain-desc">Attack vectors: contamination, cherry-picked seeds, unfair baselines, LLM-as-judge bias, missing ablations.</span></span></label>
+            <label><input type="radio" name="domain" data-remember="pr-domain" value="biomedicine"> <span><strong>Biomedicine</strong><span class="pr-domain-desc">Attack vectors: power calculations, multiple comparisons, blot integrity, blinding, trial registration.</span></span></label>
+            <label><input type="radio" name="domain" data-remember="pr-domain" value="psychology_social"> <span><strong>Psychology / Social Science</strong><span class="pr-domain-desc">Attack vectors: pre-registration, WEIRD samples, garden of forking paths, manipulation checks, measurement validity.</span></span></label>
+            <label><input type="radio" name="domain" data-remember="pr-domain" value="chemistry_materials"> <span><strong>Chemistry / Materials</strong><span class="pr-domain-desc">Attack vectors: yield reproducibility, characterization completeness, DFT specifications, catalyst leaching, scale-up feasibility.</span></span></label>
           </fieldset>
 
           <div id="journal-picker-wrap" hidden>
@@ -134,7 +134,7 @@
           <p class="footer-head">Learn</p>
           <ul>
             <li><a href="/guides/">Guides</a></li>
-            <li><a href="/guides/why-it-matters/">Why it matters</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
             <li><a href="/format/">Reference formats</a></li>
             <li><a href="/blog/">Blog</a></li>
             <li><a href="/blog/digest/">Daily Digest</a></li>
