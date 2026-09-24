@@ -261,7 +261,7 @@
   // what analytics.js records as the source of the visit.
   var NEXT_STEPS = {
     "paper-review": [
-      ["/tools/citation-gap/", "$3", "Citation Gap", "Prior work a reviewer may expect you to cite, with a reason for each."],
+      ["/tools/citation-gap/", "$3", "Citation Gap Analysis", "Prior work a reviewer may expect you to cite, with a reason for each."],
       ["/tools/cover-letter/", "$2", "Cover Letter", "A draft from your abstract and the journal name. It never sees the manuscript."],
       ["/tools/paper-review/revision/", "$2", "Revision Review", "After you revise, checks the fixes against this report. Keep the Markdown file: it reads it."]
     ],
@@ -269,7 +269,7 @@
     "anonymity-check": [["/tools/paper-review/", "From $9", "Paper Review", "The full pre-submission read, with an anonymity scan included."]],
     "cover-letter": [["/tools/paper-review/", "From $9", "Paper Review", "Before you send the letter, a reviewer panel's read of the manuscript itself."]],
     "response-review": [["/tools/paper-review/revision/", "$2", "Revision Review", "Checks the revised manuscript against the findings in your original Paper Review."]],
-    "revision-review": [["/tools/response-review/", "$6", "Response Review", "Checks every reply in your response letter against the reviewer comments."]]
+    "revision-review": [["/tools/response-review/", "$6", "Response to Reviewers", "Checks every reply in your response letter against the reviewer comments."]]
   };
 
   function renderNextSteps(product) {
@@ -323,6 +323,12 @@
       html += '<button type="button" class="btn btn-secondary" id="get-invoice">Get invoice for reimbursement</button>';
     }
     html += "</div>";
+    // One click records a rating on /feedback/; the token marks it as a buyer's.
+    var fb = "/feedback/?p=" + encodeURIComponent(product) + "&t=" + encodeURIComponent(getToken() || "") + "&r=";
+    html += '<p class="pr-feedback">Was this useful? ' +
+      '<a href="' + fb + 'useful">Yes, it caught something</a> · ' +
+      '<a href="' + fb + 'partly">Partly</a> · ' +
+      '<a href="' + fb + 'not_useful">Not really</a></p>';
     html += renderNextSteps(product);
 
     // Invoice form (hidden by default, revealed by "Get invoice" button)
