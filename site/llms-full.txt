@@ -636,6 +636,8 @@ Two-pass adversarial debate: each persona sees the others' first-round findings 
 
 Reviewing more than one manuscript? Volume packs save 16-17% per review. Buying for a lab? See invoices, purchase orders and data handling.
 
+A colleague shared this link. Pay with a .edu email address and you each receive a $2 code toward a later review.
+
 - Pay through Stripe
 
 - Upload your PDF, up to 20 MB; the link is also emailed, so you can upload from another device
@@ -752,6 +754,10 @@ Which journals does the Journal Pack check?
 - Chemistry and materials: JACS, Angewandte Chemie, Nature Materials, Nature Chemistry, ACS Nano, Advanced Materials
 
 Not listed? The Standard tier covers everything except this check. Email to ask for a venue.
+
+Is there a referral credit?
+
+Yes. Every report ends with a link carrying your own code. When a colleague opens it and buys a review with a .edu email address, you each receive a single-use $2 code by email. The link counts for 30 days in the browser that opened it.
 
 What domains does it cover?
 

@@ -109,7 +109,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=79f2cf742f">
     <script src="/site.js?v=4922eeb3a5" defer></script>
-    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=766cb70a03">
+    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=f842a58050">
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -164,6 +164,7 @@
 
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn">Start review — $9</button>
+        <p class="pr-ref-note" id="ref-note" hidden>A colleague shared this link. Pay with a .edu email address and you each receive a $2 code toward a later review.</p>
         <ol class="pr-steps" aria-label="How it works">
           <li><strong>Pay</strong> through Stripe</li>
           <li><strong>Upload</strong> your PDF, up to 20 MB; the link is also emailed, so you can upload from another device</li>
@@ -256,6 +257,7 @@
         <details><summary>How long does it take?</summary><div class="faq-body">Typically 4-8 minutes for a 20-page manuscript. You don't need to keep the tab in the foreground. The status page polls until the review is ready and renders it inline.</div></details>
         <details><summary>What about my privacy? Is the manuscript stored?</summary><div class="faq-body">Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. Purplelink itself does not store your manuscript or the resulting review after delivery: the review is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do on the status page. Save the result locally before closing the tab.</div></details>
         <details id="faq-journals"><summary>Which journals does the Journal Pack check?</summary><div class="faq-body"><p>25 venues. The pack checks word and abstract limits, required sections and reference-style hints against the one you pick at upload.</p><ul class="pr-venue-list"><li><strong>Machine learning:</strong> NeurIPS, ICML, ICLR, AAAI, TMLR, JMLR</li><li><strong>General science:</strong> Nature, Science, Cell, PLOS ONE</li><li><strong>Medicine:</strong> Nature Medicine, JAMA, NEJM, The Lancet, The BMJ</li><li><strong>Psychology and management:</strong> Psychological Science, Journal of Personality and Social Psychology, Cognition, Academy of Management Journal</li><li><strong>Chemistry and materials:</strong> JACS, Angewandte Chemie, Nature Materials, Nature Chemistry, ACS Nano, Advanced Materials</li></ul><p>Not listed? The Standard tier covers everything except this check. <a href="mailto:ben@purplelink.llc?subject=Journal%20Pack%20venue">Email to ask for a venue</a>.</p></div></details>
+        <details><summary>Is there a referral credit?</summary><div class="faq-body">Yes. Every report ends with a link carrying your own code. When a colleague opens it and buys a review with a .edu email address, you each receive a single-use $2 code by email. The link counts for 30 days in the browser that opened it.</div></details>
         <details><summary>What domains does it cover?</summary><div class="faq-body">You pick one of five domain profiles at upload: Machine Learning, Biomedicine, Psychology and Social Science, Chemistry and Materials, or General. Each profile loads domain-specific attack vectors so the reviewers focus on the failure modes that matter for your field.</div></details>
         <details><summary>How deep is the citation check?</summary><div class="faq-body">Two levels. First, every reference is checked for existence against CrossRef (dead DOIs, hallucinated or weakly-matched titles). Second, for the most load-bearing claims we fetch the cited source's abstract from OpenAlex, Semantic Scholar, or CrossRef and assess whether it supports your claim. This is an abstract-level check: a claim supported only in the full text is marked "not supported by abstract," not wrong. Verify it against the source. When no abstract can be retrieved, the citation is marked "source unavailable" rather than guessed. On citation-heavy papers we audit the most important claims first and tell you how many were not audited.</div></details>
         <details><summary>Am I allowed to use an AI review on my own manuscript?</summary><div class="faq-body">Yes, under the policies of the major publishers and venues we have checked. Elsevier, Springer Nature, Wiley, Taylor &amp; Francis, IEEE, ACM, ICMJE and NeurIPS let authors use AI tools while preparing a manuscript; the rule against uploading manuscripts to AI is for reviewers, who hold someone else's work. Paper Review writes nothing into your paper, so most disclosure rules, which cover AI-generated text, do not obviously apply; if your venue's policy is strict, a one-line note is enough. The <a href="/guides/ai-policy-checking-your-own-manuscript/">policy guide</a> compares ten publishers and venues.</div></details>
@@ -283,7 +285,7 @@
       </nav>
 
       <script src="/tools/tools.js?v=4b7f656edf"></script>
-      <script src="/tools/paper-review/paper-review.js?v=073448a3b5" defer></script>
+      <script src="/tools/paper-review/paper-review.js?v=ffc491d04e" defer></script>
     <div class="sticky-cta" data-sticky-cta data-hide-when="#choose-tier, .pr-checkout-row" hidden>
       <span class="sticky-cta-text"><strong>Paper Review</strong> from $9, ready in minutes</span>
       <a class="btn btn-primary" href="#choose-tier" data-track="sticky_cta" data-track-meta="paper-review">Choose a tier</a>
