@@ -216,7 +216,8 @@ export default async function handler(request) {
     // /blog/digest/subscribed/) was missing until 2026-09-21: nothing matched,
     // so a canceled — unpaid — digest checkout landed on the "You're
     // subscribed" page.
-    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success|subscribed)\/$/, "/")}`,
+    // ?checkout=canceled lets the page say plainly that nothing was charged.
+    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success|subscribed)\/$/, "/")}?checkout=canceled`,
     "metadata[product]": product,
   };
   // customer_creation is only valid in "payment" mode -- Stripe always

@@ -82,6 +82,13 @@ test("rejects an attacker-controlled Origin and falls back to the default", asyn
   assert.ok(!successUrl.includes("evil.com"));
 });
 
+test("a canceled checkout returns to the product page, flagged", async () => {
+  const { capturedBody } = await callHandler({ origin: "https://purplelink.llc", ip: "203.0.113.13" });
+  const cancelUrl = new URL(paramFromBody(capturedBody, "cancel_url"));
+  assert.equal(cancelUrl.searchParams.get("checkout"), "canceled");
+  assert.ok(!/\/(upload|compose|success)\/$/.test(cancelUrl.pathname), `cancel lands on a paid page: ${cancelUrl.pathname}`);
+});
+
 test("honors an allowlisted Origin", async () => {
   const { capturedBody } = await callHandler({ origin: "https://www.purplelink.llc", ip: "203.0.113.11" });
   const successUrl = paramFromBody(capturedBody, "success_url");

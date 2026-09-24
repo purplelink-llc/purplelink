@@ -539,6 +539,39 @@
   });
 })();
 
+// Back from a closed Stripe checkout (?checkout=canceled): say that nothing
+// was charged and where to ask, once, then drop the flag from the address.
+(() => {
+  const q = new URLSearchParams(location.search);
+  if (q.get("checkout") !== "canceled") return;
+  q.delete("checkout");
+  history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
+  const main = document.querySelector("main");
+  if (!main) return;
+  const note = document.createElement("div");
+  note.className = "checkout-canceled";
+  note.setAttribute("role", "status");
+  const p = document.createElement("p");
+  p.append("Checkout closed, and nothing was charged. If a question stopped you, email ");
+  const mail = document.createElement("a");
+  mail.href = "mailto:ben@purplelink.llc?subject=Question%20before%20buying";
+  mail.textContent = "ben@purplelink.llc";
+  p.append(mail, "; every price is also on the ");
+  const pricing = document.createElement("a");
+  pricing.href = "/pricing/";
+  pricing.textContent = "pricing page";
+  p.append(pricing, ".");
+  const close = document.createElement("button");
+  close.type = "button";
+  close.className = "checkout-canceled-close";
+  close.setAttribute("aria-label", "Dismiss");
+  close.textContent = "\u00d7";
+  close.addEventListener("click", () => note.remove());
+  note.append(p, close);
+  main.prepend(note);
+  if (window.plTrack) window.plTrack("checkout_canceled", location.pathname);
+})();
+
 // Phones only (CSS hides it elsewhere): a slim bar with the page's main
 // action, shown once the hero's buttons have scrolled away and hidden again
 // while any of its data-hide-when targets is on screen.
