@@ -104,7 +104,7 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=6edd19008d">
+    <link rel="stylesheet" href="/styles.css?v=dd0ec1e332">
     <script src="/site.js?v=e81ab145c9" defer></script>
   </head>
   <body>
@@ -151,6 +151,17 @@
           <li><strong>Artifacts.</strong> Code and data that are &quot;available upon request&quot; rather than released.</li>
           <li><strong>LLM-as-judge.</strong> Evaluation by a judge from the same model family as the system being tested.</li>
         </ul>
+      </section>
+
+      <section class="catalog-section" aria-labelledby="field-example">
+        <div class="catalog-section-head">
+          <p class="eyebrow">What a finding looks like</p>
+          <h2 id="field-example">An example from the report</h2>
+          <p>Illustrative, not from a real manuscript: this is the shape each finding takes. The <a href="/tools/paper-review/sample/">full sample report</a> shows every section.</p>
+        </div>
+        <div class="sample-report field-example">
+          <p><strong>Baselines tuned less than the proposed method.</strong><br><span class="sample-lbl">Quoted:</span> "We tuned learning rate and batch size on the validation set; baselines used reported defaults."<br><span class="sample-lbl">Surfaced by:</span> Methodology Critic, Statistical Skeptic (consensus).<br><span class="sample-lbl">Fix:</span> Give each baseline the same search budget, or report results with defaults for every method, and state the protocol in the methods section.</p>
+        </div>
       </section>
 
       <section class="catalog-section catalog-section-tint" aria-labelledby="field-every">
