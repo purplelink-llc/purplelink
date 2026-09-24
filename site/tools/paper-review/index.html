@@ -102,8 +102,8 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=5b080e8cd0">
-    <script src="/site.js?v=b2625c0ce8" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=fc0fefe4bb">
+    <script src="/site.js?v=be0234d0b8" defer></script>
     <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=47b9103a4d">
 </head>
   <body>
@@ -131,7 +131,7 @@
       </div>
 
 
-      <fieldset class="pr-tier-pick">
+      <fieldset class="pr-tier-pick" id="choose-tier">
         <legend>Choose a tier</legend>
         <label class="pr-tier-option">
           <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-standard" checked>
@@ -316,6 +316,10 @@ _5 citations with weaker claims were not audited (per-run cap)._
 
       <script src="/tools/tools.js?v=4b7f656edf"></script>
       <script src="/tools/paper-review/paper-review.js?v=073448a3b5" defer></script>
+    <div class="sticky-cta" data-sticky-cta data-hide-when="#choose-tier, .pr-checkout-row" hidden>
+      <span class="sticky-cta-text"><strong>Paper Review</strong> from $9, ready in minutes</span>
+      <a class="btn btn-primary" href="#choose-tier">Choose a tier</a>
+    </div>
     </main>
 
     <footer class="footer">

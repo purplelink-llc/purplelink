@@ -425,3 +425,26 @@
     });
   });
 })();
+
+// Phones only (CSS hides it elsewhere): a slim bar with the page's main
+// action, shown once the hero's buttons have scrolled away and hidden again
+// while any of its data-hide-when targets is on screen.
+(() => {
+  const bar = document.querySelector("[data-sticky-cta]");
+  if (!bar || !("IntersectionObserver" in window)) return;
+  const targets = [...document.querySelectorAll(bar.dataset.hideWhen || "")];
+  if (!targets.length) return;
+  const onScreen = new Set();
+  const update = () => {
+    const pastFirst = targets[0].getBoundingClientRect().bottom < 0;
+    const show = pastFirst && onScreen.size === 0;
+    bar.hidden = !show;
+    document.body.classList.toggle("has-sticky-cta", show);
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => (e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target)));
+    update();
+  });
+  targets.forEach((t) => io.observe(t));
+  window.addEventListener("scroll", update, { passive: true });
+})();
