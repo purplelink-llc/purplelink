@@ -57,6 +57,8 @@
             var path = "";
             try { path = new URL(url).pathname; } catch (e) { path = url.split("modal.run")[1] || ""; }
             window.plTrack("tool_use", (path || "").split("?")[0]);
+          } else if (url.indexOf("/.netlify/functions/purchases-recover") !== -1) {
+            window.plTrack("recover_request", "");
           } else if (url.indexOf(CHECKOUT_FN) !== -1) {
             // Someone pressed a buy button. Fires on intent, before Stripe is
             // reached, which is the number that was missing: 24 people landed
@@ -85,6 +87,10 @@
       if (a && a.getAttribute("href").indexOf("moderntex-download?trial=1") !== -1) {
         window.plTrack("trial_download", "moderntex");
       }
+      // Anything else marked data-track="<event>" (optional data-track-meta):
+      // template downloads, the phone sticky bar.
+      var t = ev.target && ev.target.closest && ev.target.closest("[data-track]");
+      if (t) window.plTrack(t.getAttribute("data-track"), t.getAttribute("data-track-meta") || "");
     } catch (e) { /* never interfere with the download */ }
   }, true);
 })();
