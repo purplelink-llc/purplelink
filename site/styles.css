@@ -3882,3 +3882,76 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
 @media (prefers-color-scheme: dark) {
   .plus-plan-badge { color: oklch(18% 0.06 310); }
 }
+
+/* ─── Form controls: a quiet baseline for any control a tool page does not
+   style itself. Element-only selectors, so every tool's class rules win. */
+
+main select,
+main textarea,
+main input[type="text"],
+main input[type="email"],
+main input[type="search"],
+main input[type="url"],
+main input[type="number"] {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background-color: var(--panel);
+  color: var(--ink);
+  font: inherit;
+}
+
+main select { padding: 0.5rem 0.7rem; }
+
+main select:focus-visible,
+main textarea:focus-visible,
+main input:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+/* ─── /format/ venue list as cards ────────────────────────────────────── */
+
+.venue-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 900px;
+  margin: 28px auto 12px;
+  padding: 0 24px;
+}
+
+.venue-list a {
+  display: block;
+  height: 100%;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.venue-list a:hover { border-color: var(--purple); }
+
+.venue-list strong {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.venue-list .venue-field {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--purple);
+}
+
+@media (max-width: 700px) {
+  .venue-list { grid-template-columns: 1fr; }
+}
