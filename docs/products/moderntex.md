@@ -47,6 +47,18 @@ Stripe's receipt carries no download link. A send failure alerts the operator
 (`ALERT_EMAIL_TO` = ben@purplelink.llc) with the link to forward by
 hand; it never changes the webhook's 200 to Stripe.
 
+## Follow-up emails
+
+After delivery, `stripe-webhook.mjs` posts `{session_id, email, product: "moderntex"}`
+to the backend's `/lifecycle/register` (same `x-webhook-secret` as register-token).
+That seeds `customer_lifecycle_dict` with `product: "moderntex"`, and the daily
+`lifecycle_email_sweep` sends two emails from `backend/latextools/delivery.py`:
+`html_lifecycle_mtx_tips` on day 3 and `html_lifecycle_mtx_before_submit` on day 21
+(links carry `utm_campaign=mtx-d3` / `mtx-d21`). There is no win-back. The shared
+lifecycle unsubscribe applies, and the privacy page describes the sequence.
+A failed register is logged in the function log, not alerted: the buyer
+already has the key. Needs both deploys (`deploy.sh` and `deploy.sh --backend`).
+
 ## Releasing a version
 
 From the ModernTex repo, on a clean commit:
