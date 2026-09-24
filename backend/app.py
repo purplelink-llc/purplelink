@@ -2179,7 +2179,7 @@ def web():
         buyer_email = entry["email"]
         if referral_code and buyer_email and buyer_email.lower().endswith(".edu"):
             referrer_email = referral_dict.get(referral_code)
-            if referrer_email and referrer_email != buyer_email:
+            if referrer_email and _email_key(referrer_email) != _email_key(buyer_email):
                 # Awaited (not backgrounded) to match the volume-pack email
                 # pattern below — best-effort internally (never raises), so
                 # this can't fail the purchase itself, just adds a couple
