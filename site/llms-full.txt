@@ -218,7 +218,7 @@ A native macOS LaTeX editor for researchers, not a programmer's IDE with LaTeX b
 
 Download the free 7-day trial
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, with every 1.x update included; the receipt email includes a permanent license key. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, with every 1.x update included and a full refund within 14 days if it isn't for you (terms); the receipt email includes a permanent license key. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements.
 
 In the app
 
@@ -422,6 +422,10 @@ Vitae Plus, 7 days free
 
 Requires macOS 15 Sequoia or later · Apple-notarized · Your data stays on your Mac
 
+## Your research record on one screen
+
+Projects, papers under review, open revision tasks, your acceptance rate, funding, the next deadlines and the latest decisions. The screenshots on this page use sample data for a fictional researcher.
+
 What's inside
 
 ## Everything an academic needs, nothing they don't
@@ -449,6 +453,24 @@ Track coauthors, collaborators, and projects. Link people to papers, grants, and
 ### Local-first & private
 
 Everything is stored on your Mac with SwiftData. No account and no cloud sync required, and keeping your record needs no subscription. Vitae takes a daily backup and lets you undo changes, so a bad import or merge is never permanent.
+
+## A closer look
+
+### Every submission, every round
+
+One table holds the whole history: venue, date submitted, decision, and your own estimate of the odds. Open a submission to see its review rounds, manuscript versions, cover letter and submission checklist.
+
+### A CV built from your records
+
+Pick a format, a length and a date range, and the CV fills itself from the papers, positions and grants you already track. Export to PDF, LaTeX or rich text.
+
+### Grants from proposal to final report
+
+Requested and awarded amounts, your share, the project timeline and each reporting deadline. Awarded and pending totals sit at the top of the list.
+
+### How close you are to tenure
+
+Set your tenure date and your department’s expectations, and Vitae counts your record against each one: articles, lead-author papers, funding, h-index, invited talks and service.
 
 Free & open to support
 
@@ -2254,7 +2276,7 @@ Haea is designed with privacy-first architecture: all data is stored on-device w
 ---
 
 Source: https://purplelink.llc/about/
-Title: About | Purplelink LLC
+Title: About Purplelink and Benjamin M. Ampel | Purplelink LLC
 
 # About Purplelink
 
@@ -2265,6 +2287,8 @@ Purplelink LLC is a one-person software studio building Mac apps and manuscript 
 ## Who makes this
 
 I'm Benjamin Ampel, a researcher in cybersecurity, AI and information systems, based in Atlanta. I've spent a lot of time in LaTeX: writing manuscripts, watching compile errors scroll by, checking references by hand before a deadline. The apps that stuck, for me, were always the ones that solved a specific problem I had, for people I understood. Purplelink is where I build those.
+
+My day job is assistant professor of computer information systems at Georgia State University's Robinson College of Business. My research is on AI for cybersecurity, published in venues including MIS Quarterly and the Journal of Management Information Systems. I hold a PhD from the University of Arizona, and my dissertation received the ACM SIGMIS Doctoral Dissertation Award. My research profile is on Google Scholar, Georgia State, and bampel.com.
 
 It is a one-person studio, so the person who answers your email is the person who wrote the code. If something is broken or missing, write to ben@purplelink.llc.
 
