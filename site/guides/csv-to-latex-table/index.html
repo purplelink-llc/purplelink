@@ -85,21 +85,18 @@
           </li>
           <li>
             <p>Go to <a href="https://purplelink.llc/tools/latex-table-generator/">purplelink.llc/tools/latex-table-generator/</a> and paste your data into the input field. The delimiter is auto-detected, so CSV and TSV both work without adjusting settings.</p>
-            <p>[SCREENSHOT: tool with sample CSV pasted into the input field]</p>
           </li>
           <li>
             <p>Set the column alignment. Left (<code>l</code>) suits text columns. Right (<code>r</code>) suits numerical columns. If your table mixes both, generate with all-left first, then edit the column spec string in the output directly.</p>
           </li>
           <li>
             <p>Leave <strong>booktabs</strong> checked. It generates <code>\toprule</code>, <code>\midrule</code>, and <code>\bottomrule</code>, the standard for journal-quality tables. Uncheck it only if a journal template requires <code>\hline</code>.</p>
-            <p>[SCREENSHOT: options panel with booktabs checked]</p>
           </li>
           <li>
             <p>Check <strong>Wrap in table environment</strong> and fill in a caption and a label. Use a descriptive label like <code>tab:accuracy-results</code>. You can then reference the table with <code>\ref{tab:accuracy-results}</code> anywhere in the document.</p>
           </li>
           <li>
             <p>Click <strong>Generate</strong>, then <strong>Copy</strong>. Paste the block into your <code>.tex</code> file at the position where you want the table to appear.</p>
-            <p>[SCREENSHOT: generated LaTeX output with Copy button]</p>
           </li>
           <li>
             <p>Add <code>\usepackage{booktabs}</code> to your preamble if it is not already there. Without it, the output will not compile.</p>

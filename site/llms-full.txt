@@ -1758,7 +1758,7 @@ Do I need to install anything?
 
 No. Every tool runs entirely in your browser against a hosted backend — no LaTeX installation, account, or sign-up needed.
 
-If these save you time, you can leave a tip — it helps keep them free and online.
+If these save you time, you can leave a tip; it helps keep them free and online.
 
 
 ---
