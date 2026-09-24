@@ -573,13 +573,13 @@
   function poll(token, attempt) {
     attempt = attempt || 1;
     if (attempt > MAX_POLLS) {
-      showError("Your review is taking longer than expected. It may still be running — refresh this page in a few minutes, or email ben@purplelink.llc.");
+      showError("Your review is taking longer than expected. It may still be running: refresh this page in a few minutes, or email ben@purplelink.llc.");
       return;
     }
     fetch(API_BASE + "/paper-review/status?token=" + encodeURIComponent(token))
       .then(function (resp) {
         if (resp.status === 404) {
-          showError("This review token is not recognised. Either the review has already been downloaded (we keep one copy) or the token is invalid.");
+          showError("This link does not match a review we still hold. Results are deleted 30 minutes after they are first opened, or after 24 hours; if yours should still be here, email ben@purplelink.llc.");
           return null;
         }
         if (!resp.ok) return resp.json().then(function (p) { throw p; });
@@ -606,7 +606,7 @@
 
   var token = getToken();
   if (!token) {
-    showError("Missing review token. If you've just paid, restart from the Paper Review page.");
+    showError("This page needs the link from your submission. If you paid but have not uploaded yet, open the \"link to start\" email. Otherwise email ben@purplelink.llc; there is no need to pay again.");
   } else {
     setProgress(5, ACTIVE_CONFIG.order[0]);
     poll(token);
