@@ -583,6 +583,41 @@
   if (window.plTrack) window.plTrack("checkout_canceled", location.pathname);
 })();
 
+// Mac-only downloads (data-mac-download="App name"): on a phone, tablet or
+// PC, show where the app runs and offer to email the page to yourself (a
+// plain mailto, nothing sent to Purplelink), with the download one tap away.
+(() => {
+  const ua = navigator.userAgent;
+  const onMac = /Macintosh/.test(ua) && !/iPhone|iPad|iPod/.test(ua) && !(navigator.maxTouchPoints > 1);
+  if (onMac) return;
+  document.querySelectorAll("a[data-mac-download]").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      if (a.dataset.anyway) return;
+      e.preventDefault();
+      const box = a.closest("div");
+      let note = box.parentNode.querySelector(".mac-only-note");
+      if (!note) {
+        const app = a.dataset.macDownload;
+        note = document.createElement("p");
+        note.className = "mac-only-note";
+        note.setAttribute("role", "status");
+        note.append(app + " runs on a Mac with " + (a.dataset.macReq || "a recent macOS") + ". ");
+        const mail = document.createElement("a");
+        mail.href = "mailto:?subject=" + encodeURIComponent(app + " for Mac") + "&body=" + encodeURIComponent("Download " + app + " on your Mac: " + location.origin + location.pathname);
+        mail.textContent = "Email yourself the link";
+        const again = document.createElement("a");
+        again.href = a.href;
+        again.dataset.anyway = "1";
+        again.textContent = "download it here anyway";
+        note.append(mail, " to open it there, or ", again, ".");
+        box.insertAdjacentElement("afterend", note);
+        if (window.plTrack) window.plTrack("mac_only_note", app);
+      }
+      note.querySelector("a").focus();
+    });
+  });
+})();
+
 // Phones only (CSS hides it elsewhere): a slim bar with the page's main
 // action, shown once the hero's buttons have scrolled away and hidden again
 // while any of its data-hide-when targets is on screen.
