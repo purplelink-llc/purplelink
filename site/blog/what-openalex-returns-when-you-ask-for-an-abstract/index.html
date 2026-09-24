@@ -99,6 +99,7 @@
       <p>What I didn't expect: some abstracts reconstruct cleanly and some don't. When a paper's abstract was written by multiple authors in separate segments, or when the original uses special characters, the reconstruction can produce awkward word order. Not broken. Just slightly off in ways that are hard to predict without reading each output. The ones that come back cleanest are short abstracts with simple vocabulary. The ones that come back worst are the highly technical ones, which are also the ones the curation model most needs to read carefully.</p>
 
       <p>The <code>_reconstruct_abstract</code> function in the harvester is eight lines and works for the pipeline. But every time I look at it, I'm reminded that OpenAlex is a search engine that happens to index paper content, not a repository that happens to support search. The API format says which one it is.</p>
+      <p>This lookup is part of the citation support check in <a href="/tools/paper-review/">Paper Review</a> (from $9), which reports for each audited claim whether the cited abstract supports it, and says so when no abstract could be found.</p>
     </article>
 
     <div class="post-footer">
