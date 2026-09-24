@@ -2361,6 +2361,19 @@ def web():
         }
         return {"status": "registered"}
 
+    @api.get("/lifecycle/stats")
+    async def lifecycle_stats(request: Request):
+        """Owner-only counts for the follow-up emails, read by sales.mjs for
+        the traffic dashboard. Header-authenticated like register-token.
+        Counts only; no addresses leave this endpoint."""
+        provided = request.headers.get("x-webhook-secret", "")
+        expected = os.environ.get("BACKEND_WEBHOOK_SECRET", "")
+        import hmac as _hmac
+        if not expected or not _hmac.compare_digest(provided, expected):
+            return JSONResponse({"error": "unauthorized"}, status_code=401)
+        return lifecycle_summary(list(customer_lifecycle_dict.items()),
+                                 sum(1 for _ in lifecycle_optout_dict.items()))
+
     @api.post("/lifecycle/trial")
     async def lifecycle_trial_signup(request: Request):
         """Public: someone downloading the ModernTex trial asks for a setup
@@ -3651,6 +3664,34 @@ def _schedule_decision_reminder(session_id: str, weeks: int, now: float | None =
     entry["decision_reminders"] = (reminders + [at])[-MAX_DECISION_REMINDERS:]
     customer_lifecycle_dict[session_id] = entry
     return True
+
+
+def lifecycle_summary(entries, optouts: int = 0) -> dict:
+    """Counts over customer_lifecycle_dict items for the owner dashboard."""
+    by_product: dict = {}
+    stage_reached: dict = {}
+    trial = {"signups": 0, "bought": 0}
+    reminders_waiting = 0
+    for _key, entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        product = entry.get("product") or "paper-review"
+        by_product[product] = by_product.get(product, 0) + 1
+        stage = entry.get("last_stage_sent")
+        if stage:
+            stage_reached[stage] = stage_reached.get(stage, 0) + 1
+        if product == "moderntex-trial":
+            trial["signups"] += 1
+            if entry.get("converted_at"):
+                trial["bought"] += 1
+        reminders_waiting += len([t for t in (entry.get("decision_reminders") or []) if isinstance(t, (int, float))])
+    return {
+        "entries_by_product": by_product,
+        "last_stage_sent": stage_reached,
+        "moderntex_trial": trial,
+        "decision_reminders_waiting": reminders_waiting,
+        "unsubscribed": optouts,
+    }
 
 
 def _lifecycle_next_stage(entry: dict, now: float):

@@ -1799,6 +1799,8 @@ PRODUCT_LABELS = {
     "muscleonglp-guide": "MuscleOnGLP guide", "complete-pack": "Complete pack",
     "no-gym-plan": "No-gym plan", "off-ramp": "Off-ramp guide",
     "tracker": "Tracker", "workbook": "Workbook",
+    "vitae-plus-monthly": "Vitae Plus (monthly)", "vitae-plus-annual": "Vitae Plus (annual)",
+    "digest-monthly": "Digest (monthly)", "digest-annual": "Digest (annual)",
 }
 
 
@@ -1943,6 +1945,15 @@ def sales_block(sales: dict | None) -> str:
         n = st["orders"]
         notes.append(f"{n} owner test purchase{'' if n == 1 else 's'} "
                      f"({money(st.get('gross', 0))}) excluded from every figure here.")
+    lc = sales.get("lifecycle") or {}
+    if lc:
+        tr = lc.get("moderntex_trial") or {}
+        notes.append(
+            f"Follow-up emails: {tr.get('signups', 0)} ModernTex trial sign-up"
+            f"{'' if tr.get('signups', 0) == 1 else 's'}, {tr.get('bought', 0)} later bought; "
+            f"{lc.get('decision_reminders_waiting', 0)} decision reminder"
+            f"{'' if lc.get('decision_reminders_waiting', 0) == 1 else 's'} waiting; "
+            f"{lc.get('unsubscribed', 0)} unsubscribed.")
     notes.append("Paid Checkout Sessions, gross. Refunds and Stripe fees are not deducted.")
     if sales.get("truncated"):
         notes.append("Older orders beyond the pagination cap are not counted.")
