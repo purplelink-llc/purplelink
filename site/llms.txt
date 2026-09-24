@@ -163,7 +163,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - **Volume packs:** 5 Standard review tokens for $38 or 20 for $150 at https://purplelink.llc/tools/paper-review/packs/. Tokens emailed at purchase, never expire.
 - **Delivery:** Async polling page; typically 4-8 minutes per manuscript (standard) or 10-15 minutes (deep).
 - **Output:** Markdown report with What's Working / Critical Blind Spots (with per-finding confidence tags) / Data-to-Claim Contradictions / Rectification Checklist (A/B/C priority) / True Novelty Estimate / Reference Verification Summary / Panel Transcript. Plus an annotated PDF with sticky-note comments at the right pages.
-- **Privacy disclosure:** Manuscript sent to Anthropic Claude API (30-day input retention for abuse monitoring; never used for training). Purplelink retains nothing after delivery — the review is deleted on first retrieval.
+- **Privacy disclosure:** Manuscript sent to Anthropic Claude API (30-day input retention for abuse monitoring; never used for training). Purplelink deletes the manuscript and review 30 minutes after the result is first opened, or after 24 hours if it never is.
 - **Refunds:** Full refund within 14 days; email ben@purplelink.llc.
 
 ### Cover Letter Generator — $2

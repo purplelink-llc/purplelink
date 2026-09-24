@@ -17,9 +17,9 @@
     </script>
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
-    <link rel="stylesheet" href="/styles.css?v=66198011ec">
-    <script src="/site.js?v=be0234d0b8" defer></script>
-    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=47b9103a4d">
+    <link rel="stylesheet" href="/styles.css?v=c1b0a64928">
+    <script src="/site.js?v=b25a0fa5b1" defer></script>
+    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=70eb40cd51">
       <script type="application/ld+json">
     {
   "@context": "https://schema.org",
@@ -46,7 +46,7 @@
       "name": "What does Purplelink retain?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training."
+        "text": "Only briefly. The scan result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training."
       }
     }
   ]
@@ -75,7 +75,7 @@
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="anonymity-check">Start scan — $2</button>
         <p class="pr-checkout-meta">Secure checkout via Stripe. One-time payment.</p>
-        <p class="pr-trust-line"><strong>Nothing is kept after delivery.</strong> The result is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $2.</p>
+        <p class="pr-trust-line"><strong>Deleted soon after delivery.</strong> The result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $2.</p>
       </div>
       <p class="tool-status" id="checkout-status" aria-live="polite"></p>
       <section class="pr-sample">
@@ -132,7 +132,7 @@ Each item below should be removed or generalised before double-blind submission.
         <h2>FAQ</h2>
         <details><summary>What about acknowledgements?</summary><div class="faq-body">We scan the body and abstract. Acknowledgement sections often live at the end of the manuscript and we'll catch leaks there too, but always review them manually before submission, especially if your editor strips them automatically.</div></details>
         <details><summary>Is this a replacement for manual blinding?</summary><div class="faq-body">No. It's a safety net. Manual review of figures, supplementary materials, and metadata is still required.</div></details>
-        <details><summary>What does Purplelink retain?</summary><div class="faq-body">Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.</div></details>
+        <details><summary>What does Purplelink retain?</summary><div class="faq-body">Only briefly. The scan result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.</div></details>
       </section>
       <nav class="tool-related" aria-label="Related tools"><h2>Related</h2><ul><li><a href="/guides/anonymity-check-double-blind-manuscript/"><span class="rel-kind">Guide</span>What to strip for double-blind submission</a></li><li><a href="/tools/paper-review/">Paper Review with bundled anonymity scan: $9</a></li><li><a href="/tools/cover-letter/">Cover Letter: $2</a></li></ul></nav>
       <script src="/tools/tools.js?v=4b7f656edf"></script>
@@ -194,6 +194,7 @@ Each item below should be removed or generalised before double-blind submission.
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms</a></li>
             <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
           </ul>
         </nav>
       </div>

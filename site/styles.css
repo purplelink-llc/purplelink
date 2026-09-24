@@ -4350,3 +4350,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .rl-actions { display: inline-flex; gap: 8px; }
 .rl-next { margin: 12px 0 0; color: var(--muted); font-size: 0.92rem; }
 .rl-next a { color: var(--purple); font-weight: 600; }
+/* Example report: the citation table wraps instead of scrolling. */
+.sample-report .compare-table { width: 100%; min-width: 0; table-layout: auto; }
+.sample-report .compare-table th, .sample-report .compare-table td { white-space: normal; overflow-wrap: anywhere; }
+#rl-result pre { white-space: pre-wrap; overflow-wrap: anywhere; }

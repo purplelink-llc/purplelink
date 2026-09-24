@@ -47,7 +47,7 @@ Before you submit
 
 ## Manuscript checks, paid per use
 
-Upload, pay once through Stripe, and get the result in minutes on a page that updates itself. The file and the result are deleted from our servers when you retrieve it. If a result reads as low quality, email within 14 days and the price is refunded.
+Upload, pay once through Stripe, and get the result in minutes on a page that updates itself. The file and the result are deleted from our servers soon after you open the result. If a result reads as low quality, email within 14 days and the price is refunded.
 
 $9 · $11 · $15
 
@@ -630,11 +630,11 @@ Standard review plus a compliance check against your target journal (25+ support
 Deep Review · $15
 Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.
 
-Reviewing more than one manuscript? Volume packs save 16-17% per review.
+Reviewing more than one manuscript? Volume packs save 16-17% per review. Buying for a lab? See invoices, purchase orders and data handling.
 
 Secure checkout via Stripe. One-time payment, no subscription. See a full example report first.
 
-Nothing is kept after delivery. The review is deleted from our servers the moment you retrieve it, and if a result reads as low-quality we'll refund the price. Advisory only, you decide what to change.
+Deleted soon after delivery. Purplelink deletes the manuscript and the review 30 minutes after you first open the result, or after 24 hours if you never do; Anthropic keeps API inputs for up to 30 days and does not train on them. If a result reads as low quality, email within 14 days for a refund. Advisory only: you decide what to change.
 
 ## Sample report
 
@@ -651,13 +651,14 @@ Surfaced by: Methodology Critic, Statistical Skeptic (consensus).
 Fix: Match search budget for each baseline; report the protocol
 in the methods section.
 
-- **Sample-size justification missing for Experiment 2.**
-Quoted: "We collected 24 participants ... yielding sufficient
+- **Sample-size justification missing for the human evaluation
+(Experiment 2).**
+Quoted: "We recruited 24 annotators ... yielding sufficient
 statistical power."
 Surfaced by: Statistical Skeptic.
-Fix: Provide an explicit power calculation with assumed effect
-size and the source of that assumption. With n=24 and the
-reported effect, post-hoc power is below 0.6.
+Fix: Replace the claim with a sensitivity analysis: the smallest
+effect 24 annotators can detect at 80% power. Report confidence
+intervals for the preference rates, not p-values alone.
 
 ## Data-to-Claim Contradictions
 
@@ -739,7 +740,9 @@ rectification checklist, and an honest novelty estimate.
 
 ## What you get
 
-- One review of one manuscript (up to 20 MB PDF, ~100 pages).
+- One review of one manuscript (up to 20 MB PDF, ~100 pages). To have supplementary material read too, merge it into the same PDF.
+
+- An anonymity scan for double-blind submission on every tier: author names, institutions, funders, protocol numbers and self-citations left in the text.
 
 - A Markdown report and an annotated PDF with comments on the pages they refer to.
 
@@ -757,7 +760,7 @@ Typically 4-8 minutes for a 20-page manuscript. You don't need to keep the tab i
 
 What about my privacy? Is the manuscript stored?
 
-Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. Purplelink itself does not store your manuscript or the resulting review after delivery: the review is deleted from our servers the moment you retrieve it on the status page. Save the result locally before closing the tab.
+Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. Purplelink itself does not store your manuscript or the resulting review after delivery: the review is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do on the status page. Save the result locally before closing the tab.
 
 What domains does it cover?
 
@@ -817,13 +820,11 @@ in the methods section.
 
 - 
 
-Sample-size justification missing for Experiment 2.
-Quoted: "We collected 24 participants ... yielding sufficient
+Sample-size justification missing for the human evaluation (Experiment 2).
+Quoted: "We recruited 24 annotators ... yielding sufficient
 statistical power."
 Surfaced by: Statistical Skeptic.
-Fix: Provide an explicit power calculation with assumed effect
-size and the source of that assumption. With n=24 and the
-reported effect, post-hoc power is below 0.6.
+Fix: Replace the claim with a sensitivity analysis: the smallest effect 24 annotators can detect at 80% power. Report confidence intervals for the preference rates, not p-values alone.
 
 What this section is for. The problems a reviewer is most likely to raise. Each one quotes the passage it is about, names which of the four reviewers raised it, and says what would fix it. Findings raised by more than one reviewer are marked as consensus and listed first.
 
@@ -897,7 +898,7 @@ What this section is for. For the claims that lean hardest on a citation, the ci
 
 ## Run one on your manuscript
 
-Standard review $9, with the Journal Pack $11, Deep Review $15. A Standard review is usually ready in 4 to 8 minutes. No account, and the file is deleted when you retrieve the report. If a report reads as low quality, email within 14 days for a refund.
+Standard review $9, with the Journal Pack $11, Deep Review $15. A Standard review is usually ready in 4 to 8 minutes. No account, and the file is deleted soon after you open the report. If a report reads as low quality, email within 14 days for a refund.
 
 Start a review
 How to use the report
@@ -934,7 +935,7 @@ Secure checkout via Stripe. Tokens emailed to the address on the Stripe receipt.
 
 - Hand tokens out to students, co-authors, or use them yourself. Each token is good for one Standard Paper Review.
 
-- To use a token: open the token-use page or paste it directly into the upload form.
+- To use a token, open its "Use this token" link from the email, or paste it on the upload page. To give one to a student, forward them that link.
 
 ## FAQ
 
@@ -952,7 +953,7 @@ Email ben@purplelink.llc with your Stripe receipt and we'll resend the token lis
 
 Can I get an invoice for institutional reimbursement?
 
-Yes. Request an invoice when you complete the purchase, or email ben@purplelink.llc with your Stripe session ID afterward.
+Yes. The result page of any review has a Get invoice for reimbursement button that emails a Stripe invoice for the purchase, with an optional line for your institution or tax ID. Or email ben@purplelink.llc with your Stripe receipt. Paying through a purchase order? See the page for labs and departments.
 
 
 ---
@@ -970,7 +971,7 @@ Did your revisions actually address the original Paper Review's findings? Upload
 
 Requires the Markdown report from your previous review. Save it before you close the page next time.
 
-Nothing is kept after delivery. The result is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $2.
+Deleted soon after delivery. The result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $2.
 
 ## What the report includes
 
@@ -1006,7 +1007,7 @@ The dreaded reply letter, red-teamed before you send it. A three-persona AI pane
 
 Secure checkout via Stripe.
 
-Nothing is kept after delivery. The report is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $6.
+Deleted soon after delivery. The report is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $6.
 
 ## Sample report
 
@@ -1066,7 +1067,7 @@ Yes. We check whether the response's claimed fixes are actually present in the r
 
 What does Purplelink retain?
 
-Nothing after delivery. The report is deleted from our servers the moment you retrieve it. Your reviewer comments, response letter, and manuscript are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
+Only briefly. The report is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. Your reviewer comments, response letter, and manuscript are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1084,7 +1085,7 @@ The reverse of a citation-verifier: find prior art the manuscript should cite bu
 
 Secure checkout via Stripe.
 
-Nothing is kept after delivery. The result is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $3.
+Deleted soon after delivery. The result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $3.
 
 ## Sample output
 
@@ -1165,7 +1166,7 @@ AI recall is imperfect. We mark each suggestion as a candidate to verify, not a 
 
 What does Purplelink retain?
 
-Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
+Only briefly. The scan result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1183,7 +1184,7 @@ Before you hit submit on a double-blind manuscript, run a leak scan. Flags autho
 
 Secure checkout via Stripe. One-time payment.
 
-Nothing is kept after delivery. The result is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $2.
+Deleted soon after delivery. The result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $2.
 
 ## Sample output
 
@@ -1247,7 +1248,7 @@ No. It's a safety net. Manual review of figures, supplementary materials, and me
 
 What does Purplelink retain?
 
-Nothing after delivery. The scan result is deleted from our servers the moment you retrieve it. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
+Only briefly. The scan result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1265,7 +1266,7 @@ A draft journal cover letter, calibrated to the journal you're submitting to. No
 
 Secure checkout via Stripe. One-time payment.
 
-Nothing is kept after delivery. The letter is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $2.
+Deleted soon after delivery. The letter is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $2.
 
 ## Sample output
 
@@ -1320,7 +1321,7 @@ Anthropic's Claude Sonnet 4.5 with temperature 0.1. The same model + settings th
 
 What does Purplelink retain?
 
-Nothing after delivery. The letter is deleted from our servers the moment you retrieve it. Your abstract and journal name are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
+Only briefly. The letter is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. Your abstract and journal name are sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1338,7 +1339,7 @@ Would this resume clear an ATS filter and make a hiring manager read past the fi
 
 Secure checkout via Stripe.
 
-Nothing is kept after delivery. The report is deleted from our servers the moment you retrieve it, and if it reads as low-quality we'll refund the $5.
+Deleted soon after delivery. The report is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do, and if it reads as low-quality we'll refund the $5.
 
 ## Sample report
 
@@ -1404,7 +1405,7 @@ Yes. One of the three personas specifically simulates how an Applicant Tracking 
 
 What does Purplelink retain?
 
-Nothing after delivery. The report is deleted from our servers the moment you retrieve it. Your resume is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
+Only briefly. The report is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. Your resume is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
 
 ---
@@ -1498,7 +1499,7 @@ Filter tools
 
 ## AI manuscript review · paid
 
-Pay-per-use AI checks for a manuscript before it goes out: $2 to $15 each, no account, nothing kept after delivery. Volume packs for labs.
+Pay-per-use AI checks for a manuscript before it goes out: $2 to $15 each, no account, deleted soon after delivery. Volume packs for labs.
 
 From $9
 
@@ -2599,7 +2600,7 @@ $9 Standard, $11 with Journal Pack, $15 Deep Review
 Usually 4 to 8 minutes (Standard); 10 to 15 minutes (Deep)
 Methods and statistics red flags, claims the data do not support, references that do not resolve in CrossRef, citation support at the abstract level, figure presentation issues, compliance with 25+ supported journals (Journal Pack), a bundled anonymity scan
 Not a domain expert; can be wrong; reads the manuscript as written and cannot inspect your data or code; citation support is judged from abstracts, not full texts
-Sent to Anthropic's Claude API, which retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and review when you retrieve the result.
+Sent to Anthropic's Claude API, which retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and review 30 minutes after you first open the result, or after 24 hours.
 
 ## Where Paper Review fits, and where it doesn't
 
@@ -2639,7 +2640,7 @@ No. An AI review can check a manuscript systematically and quickly, but it canno
 
 ### What happens to my manuscript if I use Purplelink Paper Review?
 
-The manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring and does not use them for model training. Purplelink deletes the manuscript and the review from its servers when you retrieve the result, so save the report before closing the tab. Redact identifiable patient data before uploading.
+The manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring and does not use them for model training. Purplelink deletes the manuscript and the review from its servers 30 minutes after you first open the result, or after 24 hours if you never do, so save the report before closing the tab. Redact identifiable patient data before uploading.
 
 ### Does posting a preprint count as getting feedback?
 
@@ -2793,7 +2794,7 @@ Venues are moving in this direction themselves. For ICML 2026, the conference of
 
 ## How Paper Review handles your manuscript
 
-For comparison against the checklist: Paper Review sends the manuscript to Anthropic's Claude API for analysis. Under Anthropic's commercial terms, inputs are retained for up to 30 days for abuse monitoring and are not used for model training. Reference titles and DOIs are sent to CrossRef to check that they exist. Purplelink deletes the manuscript and the review from its servers when you retrieve the result. The review writes nothing into your paper: it quotes your passages and lists what to check, and every change is yours. There is no account, and the privacy policy has the full detail.
+For comparison against the checklist: Paper Review sends the manuscript to Anthropic's Claude API for analysis. Under Anthropic's commercial terms, inputs are retained for up to 30 days for abuse monitoring and are not used for model training. Reference titles and DOIs are sent to CrossRef to check that they exist. Purplelink deletes the manuscript and the review from its servers 30 minutes after you first open the result, or after 24 hours if you never do. The review writes nothing into your paper: it quotes your passages and lists what to check, and every change is yours. There is no account, and the privacy policy has the full detail.
 
 ## Q&A
 
