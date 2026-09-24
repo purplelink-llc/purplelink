@@ -634,6 +634,26 @@ Standard review plus a compliance check against your target journal (25 venues, 
 Deep Review · $15
 Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.
 
+Compare the tiers
+
+FeatureStandard $9Journal Pack $11Deep $15
+
+Four reviewers, each reading independentlyYesYesYes
+
+Every reference checked against CrossRefYesYesYes
+
+Key citations checked against the cited abstractsYesYesYes
+
+Figure and table scanYesYesYes
+
+Anonymity scan for double-blind reviewYesYesYes
+
+Check against one of 25 venues' submission rulesNoYesYes
+
+A second round: each reviewer sees the others' findings and revises its ownNoNoYes
+
+Usual time4 to 8 min4 to 8 minA few minutes longer
+
 Reviewing more than one manuscript? Volume packs save 16-17% per review. Buying for a lab? See invoices, purchase orders and data handling.
 
 A colleague shared this link. Pay with a .edu email address and you each receive a $2 code toward a later review.
