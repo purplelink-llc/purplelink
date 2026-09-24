@@ -36,6 +36,8 @@
         if (typeof window.gtag === "function") {
           window.gtag('event', 'conversion', {
             'send_to': 'AW-18464618488/A2fECNzcq_8cEPjvzuRE',
+            'value': 10.0,
+            'currency': 'USD',
             'transaction_id': sessionId
           });
         }
