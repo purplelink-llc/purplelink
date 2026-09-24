@@ -629,6 +629,8 @@ From $9 per review · Anonymity Check bundled free
 
 Four AI reviewers read your manuscript the way a journal panel would and quote the passages they question, so you can fix what a reviewer would flag before you submit. A standard review is usually ready in 4 to 8 minutes; Deep Review takes 10 to 15.
 
+Field profiles for machine learning, biomedicine, psychology and chemistry, or a general one for everything else.
+
 Choose a tier
 
 Standard · $9
