@@ -147,6 +147,9 @@ python3 scripts/gen_blog_feed.py
 
 # 2b4. Site search index
 # Titles, descriptions and headings of the indexable pages, for /search/.
+step "regenerate Abstract Checker venues"
+python3 scripts/gen_venue_json.py
+
 step "regenerate search index"
 python3 scripts/gen_search_index.py
 
