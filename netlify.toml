@@ -125,6 +125,17 @@
 # 404 any direct hit so it doesn't get crawled or indexed.
 # `force = true` because the file still exists on disk; without it Netlify
 # would serve the existing file rather than apply this redirect.
+# Backend endpoint names that crawlers lifted from tool JS; send them to the tool pages.
+[[redirects]]
+  from = "/diff"
+  to = "/tools/latex-diff/"
+  status = 301
+
+[[redirects]]
+  from = "/validate-bib"
+  to = "/tools/bib-validator/"
+  status = 301
+
 [[redirects]]
   from = "/assets/og/_gen.html"
   to = "/404.html"
