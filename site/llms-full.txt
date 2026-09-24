@@ -765,7 +765,7 @@ Typically 4-8 minutes for a 20-page manuscript. You don't need to keep the tab i
 
 What about my privacy? Is the manuscript stored?
 
-Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. Purplelink itself does not store your manuscript or the resulting review after delivery: the review is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do on the status page. Save the result locally before closing the tab.
+Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. Purplelink keeps the manuscript and the review only until 30 minutes after you first open the result, or 24 hours if you never open it. Save the result locally before closing the tab.
 
 Which journals does the Journal Pack check?
 
@@ -1016,7 +1016,7 @@ Deleted soon after delivery. The result is deleted from our servers 30 minutes a
 
 What if I lost the original Markdown report?
 
-Run a fresh Paper Review on the revised manuscript (from $9) instead. We can't recover prior reviews. They're deleted from our servers 30 minutes after you first open it (or after 24 hours if you never do).
+Run a fresh Paper Review on the revised manuscript (from $9) instead. We can't recover prior reviews. They're deleted from our servers 30 minutes after you first open the result, or after 24 hours if you never do.
 
 Why is this cheaper than a full review?
 
