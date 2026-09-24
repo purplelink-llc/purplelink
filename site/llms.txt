@@ -158,7 +158,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 ### Paper Review (multiple tiers)
 - **URL:** https://purplelink.llc/tools/paper-review/
 - **Standard:** $9 — single-pass 4-persona red team + figure scan + live citation check + annotated PDF download. **Anonymity Check bundled free.**
-- **Standard + Journal Pack:** $11 — adds a compliance check against the target journal's submission rules (25+ journals supported including Nature, Cell, NeurIPS, ICML, JACS, Lancet, etc.). Anonymity Check still bundled.
+- **Standard + Journal Pack:** $11 — adds a compliance check against the target journal's submission rules (25 venues: NeurIPS, ICML, ICLR, AAAI, TMLR, JMLR, Nature, Science, Cell, PLOS ONE, Nature Medicine, JAMA, NEJM, The Lancet, The BMJ, Psychological Science, JPSP, Cognition, Academy of Management Journal, JACS, Angewandte Chemie, Nature Materials, Nature Chemistry, ACS Nano, Advanced Materials). Anonymity Check still bundled.
 - **Deep Review:** $15 — two-pass adversarial debate where each persona sees the others' first-pass findings, plus bundled Anonymity Check and Journal Pack.
 - **Volume packs:** 5 Standard review tokens for $38 or 20 for $150 at https://purplelink.llc/tools/paper-review/packs/. Tokens emailed at purchase, never expire.
 - **Delivery:** Async polling page; typically 4-8 minutes per manuscript (standard) or 10-15 minutes (deep).
