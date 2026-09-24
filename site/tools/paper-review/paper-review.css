@@ -299,3 +299,13 @@
 .pr-remind-options label { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.35rem 0.85rem; border: 1px solid var(--line); border-radius: 100px; cursor: pointer; font-size: 0.92rem; }
 .pr-remind-options label:has(input:checked) { border-color: var(--purple); background: color-mix(in oklch, var(--purple) 8%, transparent); }
 .pr-remind-options input[type=radio] { accent-color: var(--purple); width: 16px; height: 16px; }
+
+/* Status page: what comes next after a result */
+.pr-next { margin: 1.75rem 0 0; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.pr-next h2 { font-family: var(--font-display); font-size: 1.2rem; margin: 0 0 0.75rem; }
+.pr-next-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.pr-next-card { display: flex; flex-direction: column; gap: 0.25rem; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--ink); text-decoration: none; transition: border-color 0.15s; }
+.pr-next-card:hover { border-color: var(--purple); }
+.pr-next-price { color: var(--purple); font-size: 0.8rem; font-weight: 700; }
+.pr-next-desc { color: var(--muted); font-size: 0.88rem; }
+@media (prefers-reduced-motion: reduce) { .pr-next-card { transition: none; } }

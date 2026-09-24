@@ -252,6 +252,34 @@
     return new Blob([bytes], { type: mime });
   }
 
+  // One or two tools that naturally follow each result. The ?from= tag is
+  // what analytics.js records as the source of the visit.
+  var NEXT_STEPS = {
+    "paper-review": [
+      ["/tools/citation-gap/", "$3", "Citation Gap", "Prior work a reviewer may expect you to cite, with a reason for each."],
+      ["/tools/cover-letter/", "$2", "Cover Letter", "A draft from your abstract and the journal name. It never sees the manuscript."],
+      ["/tools/paper-review/revision/", "$2", "Revision Review", "After you revise, checks the fixes against this report. Keep the Markdown file: it reads it."]
+    ],
+    "citation-gap": [["/tools/paper-review/", "From $9", "Paper Review", "Four AI reviewers on methods, statistics and data, with every reference checked against CrossRef."]],
+    "anonymity-check": [["/tools/paper-review/", "From $9", "Paper Review", "The full pre-submission read, with an anonymity scan included."]],
+    "cover-letter": [["/tools/paper-review/", "From $9", "Paper Review", "Before you send the letter, a reviewer panel's read of the manuscript itself."]],
+    "response-review": [["/tools/paper-review/revision/", "$2", "Revision Review", "Checks the revised manuscript against the findings in your original Paper Review."]],
+    "revision-review": [["/tools/response-review/", "$6", "Response Review", "Checks every reply in your response letter against the reviewer comments."]]
+  };
+
+  function renderNextSteps(product) {
+    var items = NEXT_STEPS[product];
+    if (!items) return "";
+    var out = '<aside class="pr-next" aria-labelledby="pr-next-h"><h2 id="pr-next-h">What comes next</h2><div class="pr-next-grid">';
+    items.forEach(function (it) {
+      out += '<a class="pr-next-card" href="' + it[0] + '?from=after-' + product + '">' +
+        '<span class="pr-next-price">' + it[1] + '</span>' +
+        '<strong>' + it[2] + '</strong>' +
+        '<span class="pr-next-desc">' + it[3] + '</span></a>';
+    });
+    return out + "</div></aside>";
+  }
+
   function showResult(payload) {
     var md = payload.result_md || "";
     if (!md) {
@@ -289,11 +317,8 @@
     if (sessionId) {
       html += '<button type="button" class="btn btn-secondary" id="get-invoice">Get invoice for reimbursement</button>';
     }
-    if (product === "paper-review") {
-      html += '<a class="btn btn-secondary" href="/tools/cover-letter/?utm=after-review">Add a cover letter — $2</a>';
-      html += '<a class="btn btn-secondary" href="/tools/paper-review/revision/?utm=after-review">Re-review on revision — $2</a>';
-    }
     html += "</div>";
+    html += renderNextSteps(product);
 
     // Invoice form (hidden by default, revealed by "Get invoice" button)
     if (sessionId) {
