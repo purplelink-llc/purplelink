@@ -82,22 +82,18 @@
         <ol>
           <li>
             <p>Collect your DOIs and arXiv IDs as you read through your references. DOIs appear in paper headers, Google Scholar result rows, and on journal sites as doi.org URLs or "doi:" prefixed strings. arXiv IDs appear in the URL of any arXiv abstract page: arxiv.org/abs/2301.12345 gives you the ID 2301.12345. Keep them in a text file, one per line.</p>
-            <p>[SCREENSHOT: a plain text list of DOIs and arXiv IDs, one per line]</p>
           </li>
           <li>
             <p>Go to <a href="https://purplelink.llc/tools/bib-builder/">purplelink.llc/tools/bib-builder/</a> and paste your list into the input field. The tool accepts DOIs starting with "10.", doi.org URLs, arXiv IDs, and arxiv.org/abs/ URLs. Up to 50 entries per request.</p>
-            <p>[SCREENSHOT: input field with a mixed list of DOIs and arXiv IDs pasted in]</p>
           </li>
           <li>
             <p>Click "Build .bib file". Each entry is fetched live: DOIs from CrossRef, arXiv IDs from the arXiv API. The output shows formatted BibTeX entries and a separate list of any IDs that failed to resolve.</p>
-            <p>[SCREENSHOT: output area showing generated BibTeX entries and a short failed-lookups list below]</p>
           </li>
           <li>
             <p>Check the failed-lookups list. A failed entry usually means a typo in the ID or a DOI that is not yet registered in CrossRef. Open each one in your browser to verify, then add the entry by hand or correct and re-run it.</p>
           </li>
           <li>
             <p>Click "Download .bib" to save the file. Open it in a text editor and spot-check a few entries: author name formatting, title capitalization, and year. CrossRef data is generally accurate but occasionally has inconsistent title casing or missing page numbers on newer articles.</p>
-            <p>[SCREENSHOT: downloaded .bib file open in a text editor showing several entries]</p>
           </li>
           <li>
             <p>Move the .bib file into your LaTeX project directory. Reference it in your preamble with <code>\bibliography{yourfile}</code> if you are using BibTeX, or <code>\addbibresource{yourfile.bib}</code> if you are using biblatex. Compile as normal.</p>
