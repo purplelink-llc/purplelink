@@ -4134,3 +4134,43 @@ html { scroll-padding-top: 96px; }
 @media (max-width: 640px) {
   .changelog-entry { grid-template-columns: 1fr; }
 }
+
+/* ─── Code blocks in guides, templates and posts ──────────────────────── */
+
+.post-body pre {
+  margin: 1.1rem 0 1.4rem;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  tab-size: 2;
+}
+
+.post-body pre code {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.post-body pre.has-copy { position: relative; padding-top: 40px; }
+
+.code-copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: var(--bg);
+  color: var(--muted);
+  font: inherit;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.code-copy:hover { color: var(--purple); border-color: var(--purple); }

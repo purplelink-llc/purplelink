@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>IEEE Conference LaTeX Template (IEEEtran) | Purplelink</title>
+    <meta name="description" content="A minimal IEEEtran conference skeleton that compiles as written, what the class options do, and the checks that catch common IEEE submission problems.">
+    <link rel="canonical" href="https://purplelink.llc/templates/ieee-conference/">
+    <meta property="og:title" content="IEEE conference LaTeX template (IEEEtran)">
+    <meta property="og:description" content="A minimal, compilable IEEEtran conference skeleton, the class options that matter, and common submission pitfalls: anonymization, page limits, fonts and PDF eXpress.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/templates/ieee-conference/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="IEEE conference LaTeX template (IEEEtran)">
+    <meta name="twitter:description" content="A minimal, compilable IEEEtran conference skeleton, the class options that matter, and common submission pitfalls: anonymization, page limits, fonts and PDF eXpress.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta name="twitter:image:alt" content="IEEE conference LaTeX template (IEEEtran)">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "IEEE conference paper template (IEEEtran)",
+          "description": "A minimal, compilable IEEEtran conference skeleton, the class options that matter, and common submission pitfalls: anonymization, page limits, fonts and PDF eXpress.",
+          "url": "https://purplelink.llc/templates/ieee-conference/",
+          "mainEntityOfPage": "https://purplelink.llc/templates/ieee-conference/",
+          "inLanguage": "en",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-09-24",
+          "dateModified": "2026-09-24",
+          "image": "https://purplelink.llc/assets/og/templates.png"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Templates",
+              "item": "https://purplelink.llc/templates/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "IEEE conference (IEEEtran)",
+              "item": "https://purplelink.llc/templates/ieee-conference/"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v=23ac754bb9">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/site.js?v=6d4e68c38a" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/templates/">← All templates</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX template</p>
+        <h1 class="post-title">IEEE conference paper template (IEEEtran)</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time></p>
+        <p class="post-lede">For an IEEE conference paper, use <code>\documentclass[conference]{IEEEtran}</code> with <code>\bibliographystyle{IEEEtran}</code>; both come with TeX Live and MiKTeX.</p>
+      </div>
+
+      <article class="post-body">
+        <p>IEEEtran is written by Michael Shell and distributed on CTAN as the <a href="https://ctan.org/pkg/ieeetran" rel="noopener">ieeetran package</a>, with its documentation and the IEEEtran BibTeX style. The current release, 1.8b, dates from 2015, so any recent TeX distribution has it. Many IEEE conferences also post their own copy of the template with the call for papers. If yours does, start from that copy, since organizers sometimes add a copyright line or set an option for you.</p>
+
+        <h2>Minimal skeleton</h2>
+        <p>Save your references as <code>references.bib</code> in the same folder. This compiles with pdfLaTeX followed by BibTeX.</p>
+        <pre><code>\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{url}
+
+\begin{document}
+
+\title{Paper Title}
+
+\author{%
+  \IEEEauthorblockN{First Author}
+  \IEEEauthorblockA{Department, University\\
+    City, Country\\
+    first@example.edu}
+  \and
+  \IEEEauthorblockN{Second Author}
+  \IEEEauthorblockA{Company\\
+    City, Country\\
+    second@example.com}%
+}
+
+\maketitle
+
+\begin{abstract}
+One paragraph that states the problem, the method, and the result.
+\end{abstract}
+
+\begin{IEEEkeywords}
+first keyword, second keyword
+\end{IEEEkeywords}
+
+\section{Introduction}
+Text with a citation~\cite{example}.
+
+\section{Method}
+\begin{figure}[t]
+  \centering
+  \fbox{Figure placeholder}
+  \caption{A single-column figure.}
+  \label{fig:example}
+\end{figure}
+Figure~\ref{fig:example} shows the setup.
+
+\section{Conclusion}
+Summary.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}</code></pre>
+        <p>The figure uses a framed placeholder so the file compiles without an image. Replace <code>\fbox{Figure placeholder}</code> with <code>\includegraphics[width=\columnwidth]{figure.pdf}</code>, and use <code>figure*</code> for a figure that spans both columns.</p>
+
+        <h2>Key options</h2>
+        <ul>
+          <li><code>conference</code>: the conference layout. Author blocks sit side by side under the title, and journal-only commands are switched off. Without a mode option the class uses the journal layout.</li>
+          <li><code>compsoc</code>: IEEE Computer Society styling. Some Computer Society conferences ask for <code>[conference,compsoc]</code>; add it only when the call for papers says so.</li>
+          <li><code>letterpaper</code> (the default) or <code>a4paper</code>: keep US letter unless the call asks for A4.</li>
+          <li><code>9pt</code>, <code>10pt</code> (the default), <code>11pt</code>, <code>12pt</code>: conference papers use the 10pt default.</li>
+          <li><code>peerreview</code>: a journal-mode layout that puts the title and authors on a cover page that can be detached. It is not a conference layout.</li>
+          <li><code>\IEEEauthorblockN</code> and <code>\IEEEauthorblockA</code> hold each author's name and affiliation; <code>\and</code> starts the next block.</li>
+          <li><code>\IEEEoverridecommandlockouts</code>: in conference mode IEEEtran drops the text of <code>\thanks</code> and <code>\IEEEpubid</code> and only notes it in the log. Put this command on the line after <code>\documentclass</code> if you need a funding footnote or a notice at the bottom of the first page.</li>
+        </ul>
+
+        <h2>Common submission pitfalls</h2>
+        <ul>
+          <li><strong>Double-blind review.</strong> IEEEtran has no option that hides authors. For a double-blind conference, replace the author block yourself, for example with <code>\author{\IEEEauthorblockN{Anonymous Authors}}</code>, remove the acknowledgments, refer to your own earlier papers in the third person, and check that figure files, code links and the PDF's document properties do not carry your name.</li>
+          <li><strong>Page limits.</strong> Calls differ on whether references count toward the limit and whether extra pages can be bought. Count pages in the compiled PDF, and leave the margins, font size and column spacing alone; many calls say that papers which change the template can be rejected without review.</li>
+          <li><strong>Bibliography style.</strong> Use <code>\bibliographystyle{IEEEtran}</code>. IEEE references are numbered in the order they are first cited, and the <code>cite</code> package sorts and compresses a group such as <code>\cite{c,a,b}</code> into [1]–[3].</li>
+          <li><strong>Fonts and IEEE PDF eXpress.</strong> Many IEEE conferences require the final PDF to pass IEEE PDF eXpress, which checks, among other things, that every font is embedded. Run <code>pdffonts paper.pdf</code> before you upload: every row should say <code>yes</code> under <code>emb</code>, and it is worth removing any font listed as <code>Type 3</code>. Type 3 fonts usually come from matplotlib figures saved with default settings (set <code>pdf.fonttype</code> to 42 before saving) or from bitmap fonts that pdfLaTeX falls back to when a scalable version is not installed. Some venues reject them, and the bitmap ones look blurry on screen.</li>
+          <li><strong>Copyright notice.</strong> Many IEEE conferences ask for a copyright line at the bottom of the first page of the final version. The exact text comes from the conference's author instructions; if you place it with <code>\IEEEpubid</code>, remember the lockout command above.</li>
+        </ul>
+
+        <h2>Check before you submit</h2>
+        <ul>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free): upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX, including the BibTeX or Biber passes. Useful for a clean build on a machine that is not yours.</li>
+          <li><a href="/tools/bib-validator/">BibTeX validator</a> (free): flags missing required fields, duplicate keys, dead DOIs and entries that do not match a real paper. It runs in the browser.</li>
+          <li><a href="/tools/anonymity-check/">Anonymity Check</a> ($2): scans the manuscript for author names, institutions, grant numbers, self-citation patterns and author-owned URLs before a double-blind submission.</li>
+          <li><a href="/tools/paper-review/">Paper Review</a> (from $9): four AI reviewers read the manuscript for methods, statistics and the editor's view, and every reference is checked against CrossRef.</li>
+          <li><a href="/tools/word-counter/">Word counter</a> (free): word counts per section, with and without references, for abstract and length limits.</li>
+        </ul>
+
+        <h2>Writing it on a Mac</h2>
+        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so IEEEtran behaves the same as it does anywhere else, and the PDF preview stays in sync with the source. It has a 7-day free trial and then costs $10 once.</p>
+      </article>
+
+      <nav class="tool-related" aria-label="Related templates and guides">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="/format/references-for-ieee-sp/">Reference format for IEEE S&amp;P →</a></li>
+          <li><a href="/format/references-for-ieee-tdsc/">Reference format for IEEE TDSC →</a></li>
+          <li><a href="/guides/camera-ready-checklist/">Camera-ready manuscript checklist →</a></li>
+          <li><a href="/guides/anonymity-check-double-blind-manuscript/">Check a manuscript for double-blind leaks →</a></li>
+          <li><a href="/templates/">All LaTeX templates by venue →</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo-64.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/desk/">Research desk</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  <script src="/analytics.js?v=e10d5c8c43" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

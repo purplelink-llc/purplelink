@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>NeurIPS LaTeX Template: Style File and Options | Purplelink</title>
+    <meta name="description" content="How the NeurIPS LaTeX style file works: the yearly neurips_20XX.sty, the anonymized default, preprint and final options, and a minimal skeleton.">
+    <link rel="canonical" href="https://purplelink.llc/templates/neurips/">
+    <meta property="og:title" content="NeurIPS LaTeX template">
+    <meta property="og:description" content="How the yearly NeurIPS style file works, its anonymized default and preprint and final options, with a minimal skeleton and common submission pitfalls.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/templates/neurips/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NeurIPS LaTeX template">
+    <meta name="twitter:description" content="How the yearly NeurIPS style file works, its anonymized default and preprint and final options, with a minimal skeleton and common submission pitfalls.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta name="twitter:image:alt" content="NeurIPS LaTeX template">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "NeurIPS paper template",
+          "description": "How the yearly NeurIPS style file works, its anonymized default and preprint and final options, with a minimal skeleton and common submission pitfalls.",
+          "url": "https://purplelink.llc/templates/neurips/",
+          "mainEntityOfPage": "https://purplelink.llc/templates/neurips/",
+          "inLanguage": "en",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-09-24",
+          "dateModified": "2026-09-24",
+          "image": "https://purplelink.llc/assets/og/templates.png"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Templates",
+              "item": "https://purplelink.llc/templates/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "NeurIPS",
+              "item": "https://purplelink.llc/templates/neurips/"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v=23ac754bb9">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/site.js?v=6d4e68c38a" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/templates/">← All templates</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX template</p>
+        <h1 class="post-title">NeurIPS paper template</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time></p>
+        <p class="post-lede">NeurIPS papers use the standard <code>article</code> class plus that year's style file, loaded with <code>\usepackage{neurips_20XX}</code>; download the current year's style file from the <a href="https://neurips.cc/" rel="noopener">NeurIPS website</a>, because it changes every year.</p>
+      </div>
+
+      <article class="post-body">
+        <p>The style file is published with each year's call for papers on <a href="https://neurips.cc/" rel="noopener">neurips.cc</a>, together with an example .tex file and the formatting instructions. It is not part of TeX Live or MiKTeX, so it has to sit in the same folder as your .tex file. The file name includes the year, and the year's own instructions are the final word on page limits and required sections.</p>
+
+        <h2>Minimal skeleton</h2>
+        <p>Put the style file you downloaded next to this file and change <code>20XX</code> to match its name. Save your references as <code>references.bib</code>. The rest of the skeleton uses only standard packages and builds with pdfLaTeX and BibTeX.</p>
+        <pre><code>\documentclass{article}
+
+% Put the current year's style file next to this .tex file and
+% change 20XX to match its name.
+\usepackage{neurips_20XX}               % anonymized submission (default)
+% \usepackage[preprint]{neurips_20XX}   % shows names, marked as a preprint
+% \usepackage[final]{neurips_20XX}      % camera-ready, after acceptance
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{microtype}
+\usepackage{graphicx}
+
+\title{Paper Title}
+
+\author{%
+  First Author \\
+  Department, University \\
+  \texttt{first@example.edu} \\
+  \And
+  Second Author \\
+  Company \\
+  \texttt{second@example.com}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+One paragraph that states the problem, the method, and the result.
+\end{abstract}
+
+\section{Introduction}
+Text with a citation~\citep{example}.
+
+\section{Conclusion}
+Summary.
+
+\begin{ack}
+Funding and thanks. The default (anonymized) mode hides this block.
+\end{ack}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}</code></pre>
+        <p>The style file loads natbib, so <code>\citep</code> and <code>\citet</code> work. The formatting instructions accept any reference style used consistently; <code>plainnat</code> is a common choice.</p>
+
+        <h2>Key options</h2>
+        <ul>
+          <li>No option: the anonymized submission. The author block is replaced with an anonymous placeholder, the <code>ack</code> environment is hidden, and recent versions add line numbers for reviewers. This is what you submit.</li>
+          <li><code>preprint</code>: shows the author names and marks the paper as a preprint rather than a NeurIPS paper. Use it for an arXiv version while the paper is under review.</li>
+          <li><code>final</code>: the camera-ready version after acceptance. It shows the author names and prints the conference name in the footer, so do not use it for a paper that has not been accepted.</li>
+          <li><code>nonatbib</code>: stops the style file from loading natbib, for example if you use biblatex instead.</li>
+          <li><code>\And</code> and <code>\AND</code>: <code>\And</code> places the next author beside the previous one, and <code>\AND</code> forces a new row.</li>
+          <li>Some recent years have added options for particular tracks. The comments at the top of the current style file list whatever that year supports.</li>
+        </ul>
+
+        <h2>Common submission pitfalls</h2>
+        <ul>
+          <li><strong>Last year's style file.</strong> Reusing an old project is the easy way to submit with the wrong year's file. Check the file name, and the line in the log where the package is loaded, before you upload.</li>
+          <li><strong>Anonymization beyond the author block.</strong> The default mode hides the names on the title page, but not your self-citations, code links or file metadata. Cite your own work in the third person, link an anonymized repository, keep thanks and funding inside <code>ack</code>, and check the PDF's document properties.</li>
+          <li><strong>Page limits.</strong> The limit on content pages is set in each year's call. In recent years the main track has allowed nine content pages, with references, the checklist and appendices not counted, but confirm the number for the current year and count in the compiled PDF.</li>
+          <li><strong>The paper checklist.</strong> Recent calls have required the NeurIPS Paper Checklist at the end of the submission PDF and said that papers without it may be desk rejected. Check whether the current call does, and fill it in rather than leaving the template answers.</li>
+          <li><strong>Changing the format.</strong> The instructions say not to change the margins, font size or line spacing, and papers that do can be rejected without review. Fit the page limit by cutting text or moving material to the appendix.</li>
+          <li><strong>Paper size and fonts.</strong> The formatting instructions ask for US letter paper and embedded fonts. Run <code>pdffonts paper.pdf</code> to confirm every font is embedded, and look for <code>Type 3</code> fonts, which usually come from matplotlib figures saved with default settings (set <code>pdf.fonttype</code> to 42).</li>
+        </ul>
+
+        <h2>Check before you submit</h2>
+        <ul>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free): upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX, including the BibTeX or Biber passes. Useful for a clean build on a machine that is not yours.</li>
+          <li><a href="/tools/bib-validator/">BibTeX validator</a> (free): flags missing required fields, duplicate keys, dead DOIs and entries that do not match a real paper. It runs in the browser.</li>
+          <li><a href="/tools/anonymity-check/">Anonymity Check</a> ($2): scans the manuscript for author names, institutions, grant numbers, self-citation patterns and author-owned URLs before a double-blind submission.</li>
+          <li><a href="/tools/paper-review/">Paper Review</a> (from $9): four AI reviewers read the manuscript for methods, statistics and the editor's view, and every reference is checked against CrossRef.</li>
+          <li><a href="/tools/word-counter/">Word counter</a> (free): word counts per section, with and without references, for abstract and length limits.</li>
+        </ul>
+
+        <h2>Writing it on a Mac</h2>
+        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so the NeurIPS style file behaves the same as it does anywhere else, and the PDF preview stays in sync with the source. It has a 7-day free trial and then costs $10 once.</p>
+      </article>
+
+      <nav class="tool-related" aria-label="Related templates and guides">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="/guides/anonymity-check-double-blind-manuscript/">Check a manuscript for double-blind leaks →</a></li>
+          <li><a href="/guides/camera-ready-checklist/">Camera-ready manuscript checklist →</a></li>
+          <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors →</a></li>
+          <li><a href="/format/">Reference formats by venue →</a></li>
+          <li><a href="/templates/">All LaTeX templates by venue →</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo-64.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/desk/">Research desk</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  <script src="/analytics.js?v=e10d5c8c43" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

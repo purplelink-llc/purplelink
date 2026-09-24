@@ -294,6 +294,32 @@ Managing journal submissions, coauthor workflows, multiple concurrent manuscript
 
 Jumping into someone else's LaTeX project and needing to understand the structure, fix compilation issues, and contribute without breaking things.
 
+At a glance
+
+## ModernTex, in facts
+
+Price$10 once, after a free 7-day trial. Every 1.x update included. No subscription.
+
+TrialThe complete app for seven days from first launch. No account, nothing to enter.
+
+LicenseA permanent key in the receipt email; paste it into the trial copy to unlock it, with no reinstall.
+
+Runs onmacOS 14 Sonoma or later, Apple silicon and Intel. Signed and notarized disk image.
+
+TeX distributionUses MacTeX or TinyTeX. If neither is installed, ModernTex offers a one-click TinyTeX install.
+
+Your filesOrdinary .tex, .bib and figure files in a folder on your disk. No cloud storage and no account.
+
+Working with co-authorsNo real-time co-editing. Get Changes and Send Changes sync between your Macs or with a co-author.
+
+AI featuresOptional, and they use your own Claude account.
+
+UpdatesChecks once a day and installs in place, or choose Check for Updates.
+
+Current version1.3.0: a visual Table Editor, after 1.2.0's TikZ Designer. Changelog
+
+Coming from Overleaf? What changes when you write locally, or see how the Mac LaTeX editors compare.
+
 Before you install
 
 ## What ModernTex needs.
@@ -570,9 +596,26 @@ From $9 per review · Anonymity Check bundled free
 
 Four AI reviewers read your manuscript the way a journal panel would and quote the passages they question, so you can fix what a reviewer would flag before you submit. Four-persona adversarial debate, live citation cross-check, figure-integrity scan. Delivered in under 10 minutes.
 
+Choose a tier
+
+Standard · $9
+Single-pass four-persona review, figure scan, and live citation check. Markdown report and annotated PDF.
+
+Standard + Journal Pack · $11
+Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.).
+
+Deep Review · $15
+Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.
+
+Reviewing more than one manuscript? Volume packs save 16-17% per review.
+
+Secure checkout via Stripe. One-time payment, no subscription.
+
+Nothing is kept after delivery. The review is deleted from our servers the moment you retrieve it, and if a result reads as low-quality we'll refund the price. Advisory only, you decide what to change.
+
 ## Sample report
 
-What does the report look like? View sample
+What does the report look like? Show or hide
 
 # Manuscript Review
 
@@ -636,23 +679,6 @@ abstract, 1 contradicted, 3 source unavailable.
 | "Prior work proved this is optimal." | [9] | Not supported by abstract | Abstract describes a heuristic; optimality may be in the full text. |
 
 _5 citations with weaker claims were not audited (per-run cap)._
-
-Choose a tier
-
-Standard · $9
-Single-pass four-persona review, figure scan, and live citation check. Markdown report and annotated PDF.
-
-Standard + Journal Pack · $11
-Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.).
-
-Deep Review · $15
-Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.
-
-Reviewing more than one manuscript? Volume packs save 16-17% per review.
-
-Secure checkout via Stripe. One-time payment, no subscription.
-
-Nothing is kept after delivery. The review is deleted from our servers the moment you retrieve it, and if a result reads as low-quality we'll refund the price. Advisory only, you decide what to change.
 
 ## How the review works
 
@@ -1463,6 +1489,10 @@ What IEEE S&P, USENIX Security, ACM CCS, MISQ, and other venues expect, preset t
 ## Utilities
 
 A few odds and ends that pair well with the tools above.
+
+### Submission Checklist
+
+Twelve checks before you submit, each with the tool that does it. Progress saved in your browser.
 
 ### PDF Tools
 

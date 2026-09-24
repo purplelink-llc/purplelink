@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Elsevier LaTeX Template (elsarticle): Options and Frontmatter | Purplelink</title>
+    <meta name="description" content="A minimal elsarticle skeleton that compiles as written, what preprint, review, 1p, 3p and 5p do, and the pitfalls in Elsevier journal submissions.">
+    <link rel="canonical" href="https://purplelink.llc/templates/elsevier-elsarticle/">
+    <meta property="og:title" content="Elsevier LaTeX template (elsarticle)">
+    <meta property="og:description" content="A minimal, compilable elsarticle skeleton for Elsevier journals, the class options that matter, and common submission pitfalls.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/templates/elsevier-elsarticle/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Elsevier LaTeX template (elsarticle)">
+    <meta name="twitter:description" content="A minimal, compilable elsarticle skeleton for Elsevier journals, the class options that matter, and common submission pitfalls.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta name="twitter:image:alt" content="Elsevier LaTeX template (elsarticle)">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "Elsevier journal template (elsarticle)",
+          "description": "A minimal, compilable elsarticle skeleton for Elsevier journals, the class options that matter, and common submission pitfalls.",
+          "url": "https://purplelink.llc/templates/elsevier-elsarticle/",
+          "mainEntityOfPage": "https://purplelink.llc/templates/elsevier-elsarticle/",
+          "inLanguage": "en",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-09-24",
+          "dateModified": "2026-09-24",
+          "image": "https://purplelink.llc/assets/og/templates.png"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Templates",
+              "item": "https://purplelink.llc/templates/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Elsevier (elsarticle)",
+              "item": "https://purplelink.llc/templates/elsevier-elsarticle/"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v=23ac754bb9">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/site.js?v=6d4e68c38a" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/templates/">← All templates</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX template</p>
+        <h1 class="post-title">Elsevier journal template (elsarticle)</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time></p>
+        <p class="post-lede">For most Elsevier journals, submit with <code>\documentclass[preprint,12pt]{elsarticle}</code>, put the title, authors, abstract and keywords inside the <code>frontmatter</code> environment, and cite with <code>elsarticle-num</code> or <code>elsarticle-harv</code>.</p>
+      </div>
+
+      <article class="post-body">
+        <p>elsarticle is Elsevier's own class, distributed on CTAN as the <a href="https://ctan.org/pkg/elsarticle" rel="noopener">elsarticle package</a> and included in TeX Live and MiKTeX. Its bibliography styles, <code>elsarticle-num</code>, <code>elsarticle-num-names</code> and <code>elsarticle-harv</code>, come with it. A few Elsevier journals point authors to Elsevier's newer CAS templates (<code>cas-sc</code> and <code>cas-dc</code>) instead; use whichever class the journal's Guide for Authors names.</p>
+
+        <h2>Minimal skeleton</h2>
+        <p>Save your references as <code>references.bib</code> in the same folder. This compiles with pdfLaTeX followed by BibTeX. The key-value form of <code>\affiliation</code> needs a recent version of the class; older copies use <code>\address</code> instead.</p>
+        <pre><code>\documentclass[preprint,12pt]{elsarticle}
+% \documentclass[review,12pt]{elsarticle}          % wider line spacing for review
+% \documentclass[final,5p,times,twocolumn]{elsarticle} % estimate the printed length
+
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\journal{Journal Name}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Paper Title}
+
+\author[inst1]{First Author\corref{cor1}}
+\ead{first@example.edu}
+\cortext[cor1]{Corresponding author.}
+
+\author[inst2]{Second Author}
+
+\affiliation[inst1]{organization={Department, University},
+  city={City},
+  country={Country}}
+
+\affiliation[inst2]{organization={Company},
+  city={City},
+  country={Country}}
+
+\begin{abstract}
+One paragraph that states the problem, the method, and the result.
+\end{abstract}
+
+\begin{keyword}
+first keyword \sep second keyword \sep third keyword
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+Text with a citation~\cite{example}.
+
+\section{Conclusion}
+Summary.
+
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+\end{document}</code></pre>
+
+        <h2>Key options</h2>
+        <ul>
+          <li><code>preprint</code> (the default): single column, with "Preprint submitted to" and the name from <code>\journal</code> at the foot of the first page. <code>nopreprintline</code> removes that line.</li>
+          <li><code>review</code>: single column with wider line spacing, for journals that ask for a review copy with room for comments.</li>
+          <li><code>1p</code>, <code>3p</code>, <code>5p</code>, used with <code>final</code>: approximations of Elsevier's printed layouts. <code>1p</code> is single column, <code>3p</code> is single column unless you add <code>twocolumn</code>, and <code>5p</code> is two columns. Use them to estimate how long the printed article will be.</li>
+          <li><code>10pt</code> (the class default) or <code>12pt</code>: Elsevier's template uses 12pt with <code>preprint</code>.</li>
+          <li><code>number</code> (the default) or <code>authoryear</code>: sets natbib for numbered or author-year citations. Pair <code>number</code> with <code>elsarticle-num</code> and <code>authoryear</code> with <code>elsarticle-harv</code>.</li>
+          <li><code>times</code>: sets the text in a Times font.</li>
+          <li><code>doubleblind</code>: in recent versions of the class, hides the author names and affiliations for double-anonymized review.</li>
+          <li>Inside <code>frontmatter</code>: <code>\author[label]</code> links an author to <code>\affiliation[label]</code>, <code>\corref</code> and <code>\cortext</code> mark the corresponding author, <code>\ead</code> gives an email address, and <code>keyword</code> separates keywords with <code>\sep</code>.</li>
+        </ul>
+
+        <h2>Common submission pitfalls</h2>
+        <ul>
+          <li><strong>Read the Guide for Authors first.</strong> Many Elsevier journals accept a first submission in any consistent format (Elsevier calls this "Your Paper Your Way") and only ask for the template after acceptance. Others have specific rules on length, structure and reference style.</li>
+          <li><strong>Double-anonymized review.</strong> Journals that use it usually ask for a separate title page with the author details and an anonymized manuscript. The <code>doubleblind</code> option handles the title block, but check every page: in the version of elsarticle tested for this page (3.3, in TeX Live 2023), the highlights page still printed the author names with <code>doubleblind</code> on.</li>
+          <li><strong>Highlights.</strong> Many journals ask for 3 to 5 highlights of at most 85 characters each, including spaces, usually uploaded as a separate file. Recent versions of the class also have a <code>highlights</code> environment if the journal wants them in the PDF.</li>
+          <li><strong>Citation mode and style must match.</strong> An author-year style with the default <code>number</code> option, or the reverse, gives wrong or missing citations. Change the class option and the <code>.bst</code> file together.</li>
+          <li><strong>Final layouts are an estimate.</strong> Elsevier typesets accepted papers itself, so there is no need to submit in <code>5p</code>. Submit with <code>preprint</code> or <code>review</code>, whichever the journal asks for.</li>
+          <li><strong>Blurry symbols and Type 3 fonts.</strong> If <code>pdffonts paper.pdf</code> lists a <code>Type 3</code> font, it is usually a symbol that pdfLaTeX could only find as a bitmap. Adding <code>\usepackage{lmodern}</code> or installing cm-super fixes most cases; matplotlib figures need <code>pdf.fonttype</code> set to 42.</li>
+        </ul>
+
+        <h2>Check before you submit</h2>
+        <ul>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free): upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX, including the BibTeX or Biber passes. Useful for a clean build on a machine that is not yours.</li>
+          <li><a href="/tools/bib-validator/">BibTeX validator</a> (free): flags missing required fields, duplicate keys, dead DOIs and entries that do not match a real paper. It runs in the browser.</li>
+          <li><a href="/tools/anonymity-check/">Anonymity Check</a> ($2): scans the manuscript for author names, institutions, grant numbers, self-citation patterns and author-owned URLs before a double-blind submission.</li>
+          <li><a href="/tools/paper-review/">Paper Review</a> (from $9): four AI reviewers read the manuscript for methods, statistics and the editor's view, and every reference is checked against CrossRef.</li>
+          <li><a href="/tools/word-counter/">Word counter</a> (free): word counts per section, with and without references, for abstract and length limits.</li>
+        </ul>
+
+        <h2>Writing it on a Mac</h2>
+        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so elsarticle behaves the same as it does anywhere else, and the PDF preview stays in sync with the source. It has a 7-day free trial and then costs $10 once.</p>
+      </article>
+
+      <nav class="tool-related" aria-label="Related templates and guides">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors →</a></li>
+          <li><a href="/guides/check-manuscript-word-limit/">Check a manuscript's word limit →</a></li>
+          <li><a href="/guides/camera-ready-checklist/">Camera-ready manuscript checklist →</a></li>
+          <li><a href="/format/">Reference formats by venue →</a></li>
+          <li><a href="/templates/">All LaTeX templates by venue →</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo-64.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/desk/">Research desk</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  <script src="/analytics.js?v=e10d5c8c43" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
