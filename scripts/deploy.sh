@@ -159,6 +159,12 @@ python3 scripts/gen_search_index.py
 step "check share images"
 python3 scripts/check_og_images.py
 
+# 2c. Content checks: placeholders, inline styles, pages missing from their
+# index, and Amazon links without the tag or disclosure. Strict here, since a
+# manual deploy has someone watching.
+step "check content"
+python3 scripts/check_content.py --strict
+
 # 3. Frontend
 step "netlify deploy --prod"
 netlify deploy --prod --dir site --message "$MESSAGE"

@@ -1,5 +1,14 @@
 [build]
   publish = "site"
+  # Every push to main deploys, and most pushes come from unattended jobs (the
+  # weekly content routines, the daily digest cron) that never run deploy.sh.
+  # Run the same stdlib-only generation steps here so a git deploy ships the
+  # shared nav and footer, fresh asset stamps, search index, feed and
+  # llms-full.txt even when the pusher forgot. The sitemap is left out: its
+  # lastmod dates come from git history, which a shallow build clone lacks.
+  # check_content reports problems without failing, so one bad page never
+  # blocks the digest; check_og_images fails the build, as in deploy.sh.
+  command = "python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py && python3 scripts/gen_search_index.py && python3 scripts/gen_blog_feed.py && python3 scripts/gen_llms_full.py && python3 scripts/check_og_images.py && python3 scripts/check_content.py"
 
 [functions]
   directory = "netlify/functions"

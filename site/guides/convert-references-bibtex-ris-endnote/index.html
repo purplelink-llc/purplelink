@@ -27,8 +27,12 @@
           "@type": "Article",
           "headline": "How to Convert References Between BibTeX, RIS, and EndNote",
           "description": "Purplelink's Reference Converter converts citations between BibTeX, RIS, and EndNote formats entirely in your browser. This guide walks through the export, paste, and convert steps.",
-          "author": { "@id": "https://purplelink.llc/about/#person" },
-          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
           "datePublished": "2026-09-24",
           "dateModified": "2026-09-24",
           "mainEntityOfPage": "https://purplelink.llc/guides/convert-references-bibtex-ris-endnote/"
@@ -36,9 +40,53 @@
         {
           "@type": "BreadcrumbList",
           "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
-            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
-            { "@type": "ListItem", "position": 3, "name": "How to Convert References Between BibTeX, RIS, and EndNote", "item": "https://purplelink.llc/guides/convert-references-bibtex-ris-endnote/" }
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Guides",
+              "item": "https://purplelink.llc/guides/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "How to Convert References Between BibTeX, RIS, and EndNote",
+              "item": "https://purplelink.llc/guides/convert-references-bibtex-ris-endnote/"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "I pasted 40 references at once. Will all of them convert?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Paste an entire library export. The tool converts the whole block in one pass."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Some fields are missing in the output.",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Fields with no equivalent in the target format are dropped. Missing DOIs or truncated abstracts reflect the source data, not the conversion."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "My references contain accented characters like ü or é. Will they come through correctly?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The converter keeps accented characters as Unicode in every format. Current LaTeX engines read UTF-8 .bib files; if an older journal template rejects them, replace each one with its LaTeX accent command, such as {\\\"u} for ü."
+              }
+            }
           ]
         }
       ]
@@ -76,49 +124,51 @@
         <p class="post-lede">Purplelink's Reference Converter converts citations between BibTeX, RIS, and EndNote formats entirely in your browser. This guide walks through the export, paste, and convert steps.</p>
       </div>
       <div class="post-body">
-        <p>Researchers switching reference managers or moving a manuscript to LaTeX need their citations in a different format. The <a href="https://purplelink.llc/tools/reference-converter/">Reference Converter</a> handles BibTeX, RIS, and EndNote in any direction, with nothing uploaded to a server.</p>
+        <p>To convert references between BibTeX, RIS and EndNote, paste the exported records into the free <a href="/tools/reference-converter/">Reference Converter</a>, pick the target format and copy the result. It works in any direction and runs in your browser, so nothing is uploaded.</p>
 
         <h2>Steps</h2>
 
         <ol>
           <li>
-            <p>Export your references from your current tool. In Zotero: select the items, then File &gt; Export Library, and choose RIS format. In Endnote: File &gt; Export, then select RIS or the EndNote Tagged format. From a database (Web of Science, PubMed, Scopus): use the export or save option and pick RIS or BibTeX where available.</p>
-            <p>[SCREENSHOT: Zotero export dialog with RIS format selected]</p>
+            <p>Export your references from your current tool. In Zotero, select the items, then File &gt; Export Library, and choose RIS. In EndNote, use File &gt; Export and pick RIS or the EndNote tagged format. From a database such as Web of Science, PubMed or Scopus, use its export option and pick RIS or BibTeX.</p>
           </li>
           <li>
-            <p>Go to <a href="https://purplelink.llc/tools/reference-converter/">purplelink.llc/tools/reference-converter/</a> and paste the exported text into the input area. Open the .ris or .bib file in any text editor, select all, and paste.</p>
-            <p>[SCREENSHOT: Input textarea with pasted RIS records]</p>
+            <p>Open the <a href="/tools/reference-converter/">Reference Converter</a> and paste the exported text into the input box. Open the .ris or .bib file in any text editor, select all, and paste.</p>
           </li>
           <li>
-            <p>Select the target format. Click the format picker and choose BibTeX, RIS, or EndNote. The tool detects the input format automatically.</p>
-            <p>[SCREENSHOT: Format picker showing BibTeX selected]</p>
+            <p>Leave From on Auto-detect, or set it if you know the input format. Choose BibTeX, RIS or EndNote in the To menu.</p>
           </li>
           <li>
-            <p>Click Convert. The output appears in the right panel.</p>
-            <p>[SCREENSHOT: Converted BibTeX output]</p>
+            <p>Click Convert. The converted records appear below the input.</p>
           </li>
           <li>
-            <p>Copy or download the output. Click Copy to paste into your .bib file directly, or download as a text file. To import RIS into Zotero, use File &gt; Import and select the downloaded file.</p>
-            <p>[SCREENSHOT: Copy button and download link in the output panel]</p>
+            <p>Click Copy and paste the result into your .bib file, or into a new text file saved as .ris. To bring RIS into Zotero, use File &gt; Import and select that file.</p>
           </li>
         </ol>
 
         <h2>What's happening under the hood</h2>
 
-        <p>The converter parses each input record into its internal fields (title, authors, year, journal, DOI, and so on), then re-serializes each field into the target format's syntax. BibTeX stores authors as "Last, First and Last, First"; RIS stores each author on a separate AU line; EndNote uses separate %A tags. The tool maps these patterns directly. Common entry types including journal articles, conference papers, book chapters, and books convert cleanly. Unusual entry types or fields with non-standard values may come through with slight alterations; a quick scan before importing is worth it.</p>
+        <p>The converter reads each record into plain fields (title, authors, year, journal, DOI and so on), then writes those fields back out in the target format's syntax. BibTeX stores authors as "Last, First and Last, First"; RIS puts each author on its own AU line; EndNote uses a %A tag per author. Journal articles, conference papers, book chapters and books convert cleanly. Unusual entry types or non-standard fields can come through slightly altered, so scan the output before importing it.</p>
 
         <h2>Q&amp;A</h2>
 
         <h3>I pasted 40 references at once. Will all of them convert?</h3>
-        <p>Yes. Paste an entire library export. The tool processes the whole block at once.</p>
+        <p>Yes. Paste an entire library export. The tool converts the whole block in one pass.</p>
 
         <h3>Some fields are missing in the output.</h3>
         <p>Fields with no equivalent in the target format are dropped. Missing DOIs or truncated abstracts reflect the source data, not the conversion.</p>
 
-        <h3>My BibTeX contains accented characters like ü or é. Will they come through correctly?</h3>
-        <p>BibTeX expects accented characters in its own markup notation. The converter wraps them automatically for BibTeX output. RIS and EndNote output preserves them as Unicode.</p>
+        <h3>My references contain accented characters like ü or é. Will they come through correctly?</h3>
+        <p>The converter keeps accented characters as Unicode in every format. Current LaTeX engines read UTF-8 .bib files; if an older journal template rejects them, replace each one with its LaTeX accent command, such as {\"u} for ü.</p>
 
-        <p>Convert references at <a href="https://purplelink.llc/tools/reference-converter/">purplelink.llc/tools/reference-converter/</a>.</p>
+        <h2>After converting</h2>
+
+        <p>Before a .bib file goes into a manuscript, run it through the free <a href="/tools/bib-validator/">BibTeX Validator</a>, which flags missing fields, duplicate keys and references that do not match a real DOI. The <a href="/guides/fix-bibtex-errors/">guide to common BibTeX errors</a> explains what each warning means, and the <a href="/guides/bibtex/">BibTeX hub</a> collects the related tools. If you only have a list of DOIs, <a href="/guides/doi-to-bibtex/">get BibTeX from a DOI or arXiv ID</a> instead.</p>
+
+        <p>Further reading: if you manage bibliographies in LaTeX often, <a href="https://www.amazon.com/dp/0135556848?tag=purplelinkpl-20" rel="sponsored noopener noreferrer" target="_blank" data-track="affiliate_click" data-track-meta="9780135556849">The LaTeX Companion</a> (3rd edition) covers BibTeX and biblatex styles in detail in Part II. There are more books on the <a href="/desk/">research desk</a>.</p>
+        <p>Disclosure: the Amazon link above is an affiliate link. As an Amazon Associate I earn from qualifying purchases.</p>
+
+        <p>If you write in LaTeX on a Mac, <a href="/moderntex/">ModernTex</a> completes citation keys from your .bib file as you type, with a free 7-day trial and $10 to keep.</p>
       </div>
     </main>
     <footer class="footer">
