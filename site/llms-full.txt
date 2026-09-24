@@ -761,7 +761,7 @@ Yes. Every report ends with a link carrying your own code. When a colleague open
 
 What domains does it cover?
 
-You pick one of five domain profiles at upload: Machine Learning, Biomedicine, Psychology and Social Science, Chemistry and Materials, or General. Each profile loads domain-specific attack vectors so the reviewers focus on the failure modes that matter for your field.
+You pick one of five domain profiles at upload: Machine Learning, Biomedicine, Psychology and Social Science, Chemistry and Materials, or General. Each profile tells the reviewers which failure modes matter most in that field; each link lists them.
 
 How deep is the citation check?
 

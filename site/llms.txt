@@ -108,6 +108,7 @@
 - Changelog: https://purplelink.llc/changelog/
 - Find a purchase (lost ModernTex key or kit download): https://purplelink.llc/recover/
 - Pricing (every price on one page): https://purplelink.llc/pricing/
+- Paper Review by field (what each domain profile checks): https://purplelink.llc/tools/paper-review/machine-learning/ , https://purplelink.llc/tools/paper-review/biomedicine/ , https://purplelink.llc/tools/paper-review/psychology/ , https://purplelink.llc/tools/paper-review/chemistry/
 - For labs and departments (volume packs, invoices, purchase orders, data handling): https://purplelink.llc/labs/
 
 ## Frequently asked questions
