@@ -4404,3 +4404,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 @media (max-width: 600px) {
   .deadline-remind { padding: 0 16px; }
 }
+
+/* One-line next step under a free tool's result (revealed by site.js). */
+.tool-next { max-width: 820px; margin: 16px auto 0; padding: 12px 16px; border-left: 3px solid var(--purple); border-radius: 0 10px 10px 0; background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; }
+.tool-next[hidden] { display: none; }

@@ -515,6 +515,21 @@
   });
 })();
 
+// Free tools: a one-line next step under the result, revealed once a result
+// is on screen and not when the run ended in an error.
+(() => {
+  document.querySelectorAll("[data-tool-next]").forEach((line) => {
+    const target = document.querySelector(line.dataset.toolNext);
+    if (!target || !("MutationObserver" in window)) return;
+    const check = () => {
+      const failed = target.querySelector(".tool-error, [role=alert]");
+      const shown = !target.hidden && target.textContent.trim().length > 0 && !failed;
+      if (shown) line.hidden = false;
+    };
+    new MutationObserver(check).observe(target, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["hidden"] });
+  });
+})();
+
 // Phones only (CSS hides it elsewhere): a slim bar with the page's main
 // action, shown once the hero's buttons have scrolled away and hidden again
 // while any of its data-hide-when targets is on screen.
