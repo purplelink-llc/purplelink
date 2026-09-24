@@ -2636,6 +2636,7 @@ def web():
         journal_key: str = Form(""),
         anonymity_check: str = Form("false"),
         email: str = Form(""),
+        remind_weeks: str = Form(""),
     ):
         """Validate the token + PDF and spawn the Paper Review pipeline.
 
@@ -2765,6 +2766,15 @@ def web():
             )
 
         _consume_token(token, session_id, entry)
+
+        # Optional: "when do you expect a decision?" on the upload page. One
+        # email then, about the tools for answering reviewers. Never fails
+        # the submission.
+        if isinstance(remind_weeks, str) and remind_weeks in ("4", "8", "12"):
+            try:
+                _schedule_decision_reminder(session_id, int(remind_weeks))
+            except Exception:
+                logger.warning("decision reminder not scheduled for session %s", session_id[:12])
 
         return JSONResponse({
             "token": token,
@@ -3617,7 +3627,28 @@ LIFECYCLE_SUBJECTS = {
     "trial_setup": "Setting up the ModernTex trial",
     "trial_features": "Four things to try in ModernTex",
     "trial_ending": "Your ModernTex trial ends soon",
+    "decision_reminder": "When the reviews come back",
 }
+
+
+MAX_DECISION_REMINDERS = 20  # a 20-pack can ask for one per manuscript
+
+
+def _schedule_decision_reminder(session_id: str, weeks: int, now: float | None = None) -> bool:
+    """Add a decision-date reminder to a purchase's lifecycle entry.
+
+    Only purchases with a lifecycle entry get one (no entry means the buyer
+    opted out before buying, or the purchase predates the sequence).
+    """
+    import time as _time
+    entry = customer_lifecycle_dict.get(session_id)
+    if not isinstance(entry, dict):
+        return False
+    at = (now if now is not None else _time.time()) + weeks * 7 * 86400
+    reminders = [t for t in (entry.get("decision_reminders") or []) if isinstance(t, (int, float))]
+    entry["decision_reminders"] = (reminders + [at])[-MAX_DECISION_REMINDERS:]
+    customer_lifecycle_dict[session_id] = entry
+    return True
 
 
 def _lifecycle_next_stage(entry: dict, now: float):
@@ -3725,6 +3756,26 @@ def lifecycle_email_sweep() -> dict:
                 if lifecycle_optout_dict.get(email):
                     skipped_optout += 1
                     continue
+
+                reminders = [t for t in (entry.get("decision_reminders") or []) if isinstance(t, (int, float))]
+                if any(t <= now for t in reminders):
+                    unsubscribe_url = _lifecycle_unsubscribe_url_standalone(email)
+                    result = await _delivery.send_email(
+                        client,
+                        to=email,
+                        subject=LIFECYCLE_SUBJECTS["decision_reminder"],
+                        html=_delivery.html_lifecycle_decision_reminder(
+                            manuscript_title=entry.get("manuscript_title", ""),
+                            unsubscribe_url=unsubscribe_url,
+                        ),
+                        tags=[{"name": "lifecycle_stage", "value": "decision_reminder"}],
+                    )
+                    if result.get("status") == "ok":
+                        entry["decision_reminders"] = [t for t in reminders if t > now]
+                        customer_lifecycle_dict[session_id] = entry
+                        sent["decision_reminder"] = sent.get("decision_reminder", 0) + 1
+                        continue  # one email per buyer per run
+                    logger.warning("decision reminder session_id=%s not sent: %s", session_id, result)
 
                 due = _lifecycle_next_stage(entry, now)
                 if due is None:

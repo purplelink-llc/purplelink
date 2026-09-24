@@ -1964,3 +1964,68 @@ def test_trial_signups_do_not_count_as_purchases_for_winback(client):
         ("trial:a@example.com", {"email": "a@example.com", "product": "moderntex-trial", "purchased_at": 5000}),
     ]
     assert backend_app._sessions_with_later_purchase(entries) == set()
+
+
+# ---------------------------------------------------------------------------
+# Paper Review decision-date reminder (upload page, optional)
+# ---------------------------------------------------------------------------
+
+def test_submit_with_remind_weeks_schedules_one_reminder(client):
+    http, backend_app = client
+    token = _register(backend_app, session_id="sess-rem")
+    backend_app.customer_lifecycle_dict["sess-rem"] = {"email": "buyer@example.com", "purchased_at": time.time(), "last_stage_sent": None}
+    before = time.time()
+    r = http.post(
+        "/paper-review/submit",
+        data={"token": token, "domain": "general", "remind_weeks": "8"},
+        files={"file": ("paper.pdf", io.BytesIO(PDF_BYTES), "application/pdf")},
+    )
+    assert r.status_code == 200, r.text
+    reminders = backend_app.customer_lifecycle_dict.get("sess-rem")["decision_reminders"]
+    assert len(reminders) == 1
+    assert before + 8 * 7 * 86400 - 5 <= reminders[0] <= time.time() + 8 * 7 * 86400 + 5
+
+
+def test_submit_ignores_unknown_remind_values(client):
+    http, backend_app = client
+    token = _register(backend_app, session_id="sess-rem2")
+    backend_app.customer_lifecycle_dict["sess-rem2"] = {"email": "buyer@example.com", "purchased_at": time.time(), "last_stage_sent": None}
+    r = http.post(
+        "/paper-review/submit",
+        data={"token": token, "domain": "general", "remind_weeks": "999"},
+        files={"file": ("paper.pdf", io.BytesIO(PDF_BYTES), "application/pdf")},
+    )
+    assert r.status_code == 200
+    assert "decision_reminders" not in backend_app.customer_lifecycle_dict.get("sess-rem2")
+
+
+def test_schedule_decision_reminder_caps_and_skips_missing_entries(client):
+    _http, backend_app = client
+    assert backend_app._schedule_decision_reminder("nope", 4) is False
+    backend_app.customer_lifecycle_dict["pack"] = {"email": "lab@example.com", "purchased_at": 0}
+    for i in range(25):
+        backend_app._schedule_decision_reminder("pack", 4, now=i)
+    assert len(backend_app.customer_lifecycle_dict.get("pack")["decision_reminders"]) == backend_app.MAX_DECISION_REMINDERS
+
+
+def test_decision_reminder_template():
+    from latextools import delivery
+    html = delivery.html_lifecycle_decision_reminder(manuscript_title="<b>My paper</b>", unsubscribe_url="https://x/u")
+    assert "&lt;b&gt;My paper&lt;/b&gt;" in html and "Response Review ($6)" in html and "https://x/u" in html
+
+
+def test_sweep_sends_due_decision_reminder_once(client, monkeypatch):
+    _http, backend_app = client
+    sent = _no_send(monkeypatch)
+    now = time.time()
+    backend_app.customer_lifecycle_dict["s-dr"] = {
+        "email": "author@example.com", "purchased_at": now - 60 * 86400,
+        "last_stage_sent": "review_request", "manuscript_title": "T",
+        "decision_reminders": [now - 10, now + 86400],
+    }
+    out = backend_app.lifecycle_email_sweep.local()
+    assert out.get("decision_reminder") == 1
+    assert [m["subject"] for m in sent] == ["When the reviews come back"]
+    assert backend_app.customer_lifecycle_dict.get("s-dr")["decision_reminders"] == [now + 86400]
+    backend_app.lifecycle_email_sweep.local()
+    assert len(sent) == 1

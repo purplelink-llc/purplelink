@@ -290,3 +290,12 @@
   .pr-result-meta { display: none; }
   body { background: #fff; }
 }
+
+/* Upload page: optional decision-date reminder */
+.pr-remind-pick { margin: 1rem 0; border: 0; padding: 0; }
+.pr-remind-pick legend { font-weight: 600; margin-bottom: 0.25rem; }
+.pr-remind-pick .pr-field-help { margin: 0 0 0.5rem; }
+.pr-remind-options { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.pr-remind-options label { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.35rem 0.85rem; border: 1px solid var(--line); border-radius: 100px; cursor: pointer; font-size: 0.92rem; }
+.pr-remind-options label:has(input:checked) { border-color: var(--purple); background: color-mix(in oklch, var(--purple) 8%, transparent); }
+.pr-remind-options input[type=radio] { accent-color: var(--purple); width: 16px; height: 16px; }
