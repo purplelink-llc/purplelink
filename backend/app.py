@@ -174,6 +174,45 @@ def _email_key(email: str) -> str:
 # a code from a report you don't have yet.
 referral_dict = modal.Dict.from_name("paper-review-referral", create_if_missing=True)
 
+# Customer feedback from the /feedback/ page (linked from the review-request
+# email and the status page): a rating, an optional comment, and permission
+# to quote. Keyed by a random id the page keeps so it can add the comment
+# after the one-click rating. No email address is stored.
+feedback_dict = modal.Dict.from_name("purplelink-feedback", create_if_missing=True)
+FEEDBACK_RATINGS = ("useful", "partly", "not_useful")
+FEEDBACK_PRODUCTS = ("paper-review", "citation-gap", "anonymity-check", "cover-letter",
+                     "revision-review", "response-review", "resume-review", "moderntex", "other")
+
+
+def _feedback_signature(session_id: str) -> str:
+    """Signs a purchase's session id for the feedback links in its emails,
+    so a rating from that link can be marked as from a real buyer."""
+    import hashlib as _hashlib
+    import hmac as _hmac
+    secret = os.environ.get("SUBSCRIBE_SECRET", "")
+    return _hmac.new(secret.encode(), f"feedback:{session_id}".encode(), _hashlib.sha256).hexdigest()[:32]
+
+
+def _clean_feedback_text(value, limit: int) -> str:
+    return " ".join(str(value or "").split())[:limit]
+
+
+def feedback_summary(entries, recent: int = 20) -> dict:
+    """Counts by product and rating, plus the latest comments, for the owner."""
+    counts: dict = {}
+    rows = []
+    for _key, entry in entries:
+        if not isinstance(entry, dict) or entry.get("rating") not in FEEDBACK_RATINGS:
+            continue
+        product = entry.get("product") or "other"
+        counts.setdefault(product, {r: 0 for r in FEEDBACK_RATINGS})
+        counts[product][entry["rating"]] += 1
+        if entry.get("comment"):
+            rows.append(entry)
+    rows.sort(key=lambda e: e.get("at", 0), reverse=True)
+    keep = ("at", "product", "rating", "comment", "quote_ok", "name", "field", "verified")
+    return {"counts": counts, "recent_comments": [{k: e.get(k) for k in keep} for e in rows[:recent]]}
+
 # Module-level (not just a local inside web()) so the scheduled sweep below
 # can reference the same constant instead of hardcoding a second copy of
 # the TTL.
@@ -2456,8 +2495,74 @@ def web():
         import hmac as _hmac
         if not expected or not _hmac.compare_digest(provided, expected):
             return JSONResponse({"error": "unauthorized"}, status_code=401)
-        return lifecycle_summary(list(customer_lifecycle_dict.items()),
-                                 sum(1 for _ in lifecycle_optout_dict.items()))
+        summary = lifecycle_summary(list(customer_lifecycle_dict.items()),
+                                    sum(1 for _ in lifecycle_optout_dict.items()))
+        summary["feedback"] = feedback_summary(list(feedback_dict.items()))
+        return summary
+
+    @api.post("/feedback")
+    async def feedback_submit(request: Request):
+        """Public: a rating from the feedback page, then optionally a comment.
+
+        Payload: { rating, product, comment, quote_ok, name, field, id, s, k,
+        token, website }. The first call (no id) stores the rating and
+        returns an id; a later call with that id adds or changes the comment.
+        `s`/`k` (a purchase's session id and its signature, from the email
+        link) or `token` (a Paper Review token, from the status page) mark
+        the feedback as coming from a buyer; neither is stored.
+        """
+        if not _enforce_rate_limit(request, "feedback"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        try:
+            payload = await request.json()
+        except Exception:
+            return JSONResponse({"error": "invalid_json"}, status_code=400)
+        payload = payload if isinstance(payload, dict) else {}
+        if payload.get("website"):
+            return {"status": "ok", "id": ""}
+        rating = str(payload.get("rating", ""))
+        if rating not in FEEDBACK_RATINGS:
+            return JSONResponse({"error": "invalid_rating"}, status_code=400)
+        product = str(payload.get("product", "other"))
+        if product not in FEEDBACK_PRODUCTS:
+            product = "other"
+
+        import hmac as _hmac
+        import secrets as _secrets
+        fid = str(payload.get("id", ""))[:40]
+        entry = feedback_dict.get(fid) if fid else None
+        if not isinstance(entry, dict):
+            verified = False
+            s_id, sig = str(payload.get("s", ""))[:200], str(payload.get("k", ""))[:64]
+            if s_id and sig and os.environ.get("SUBSCRIBE_SECRET"):
+                verified = _hmac.compare_digest(sig, _feedback_signature(s_id))
+            token = str(payload.get("token", ""))[:200]
+            if not verified and token:
+                try:
+                    verified = paper_token_index_dict.get(token) is not None
+                except Exception:
+                    verified = False
+            fid = _secrets.token_hex(12)
+            entry = {"at": _time_module.time(), "product": product, "verified": verified}
+        entry["rating"] = rating
+        entry["comment"] = str(payload.get("comment", "") or "").strip()[:2000]
+        entry["quote_ok"] = bool(payload.get("quote_ok")) and bool(entry["comment"])
+        entry["name"] = _clean_feedback_text(payload.get("name"), 60)
+        entry["field"] = _clean_feedback_text(payload.get("field"), 80)
+        feedback_dict[fid] = entry
+        return {"status": "ok", "id": fid}
+
+    @api.get("/feedback/list")
+    async def feedback_list(request: Request):
+        """Owner-only: every feedback entry, newest first."""
+        provided = request.headers.get("x-webhook-secret", "")
+        expected = os.environ.get("BACKEND_WEBHOOK_SECRET", "")
+        import hmac as _hmac
+        if not expected or not _hmac.compare_digest(provided, expected):
+            return JSONResponse({"error": "unauthorized"}, status_code=401)
+        rows = [e for _k, e in feedback_dict.items() if isinstance(e, dict)]
+        rows.sort(key=lambda e: e.get("at", 0), reverse=True)
+        return {"feedback": rows}
 
     @api.post("/lifecycle/trial")
     async def lifecycle_trial_signup(request: Request):
@@ -4036,7 +4141,17 @@ def lifecycle_email_sweep() -> dict:
 
                 unsubscribe_url = _lifecycle_unsubscribe_url_standalone(email)
                 template_fn = getattr(_delivery, template_fn_name)
-                if stage_name in ("tips", "review_request"):
+                if stage_name == "review_request":
+                    from urllib.parse import quote as _fq
+                    html = template_fn(
+                        manuscript_title=entry.get("manuscript_title", ""),
+                        unsubscribe_url=unsubscribe_url,
+                        feedback_url=(
+                            "https://purplelink.llc/feedback/?p=paper-review"
+                            f"&s={_fq(str(session_id))}&k={_feedback_signature(str(session_id))}"
+                        ),
+                    )
+                elif stage_name == "tips":
                     html = template_fn(
                         manuscript_title=entry.get("manuscript_title", ""),
                         unsubscribe_url=unsubscribe_url,

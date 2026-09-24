@@ -351,3 +351,5 @@
 
 .pr-ref-note { margin: 0.6rem auto 0; max-width: 34rem; padding: 0.5rem 0.9rem; border-radius: 10px; background: var(--purple-xlight); color: var(--ink); font-size: 0.9rem; text-align: center; }
 .pr-ref-note[hidden] { display: none; }
+
+.pr-feedback { margin: 1.2rem 0 0; color: var(--muted); font-size: 0.93rem; }

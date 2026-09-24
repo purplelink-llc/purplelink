@@ -432,14 +432,25 @@ def html_lifecycle_tips(*, manuscript_title: str = "", unsubscribe_url: str) -> 
 """
 
 
-def html_lifecycle_review_request(*, manuscript_title: str = "", unsubscribe_url: str) -> str:
+def html_lifecycle_review_request(*, manuscript_title: str = "", unsubscribe_url: str, feedback_url: str = "") -> str:
     title = _html.escape((manuscript_title or "your manuscript")[:200])
+    rate = ""
+    if feedback_url:
+        base = _html.escape(feedback_url)
+        btn = ('<a href="%s&amp;r=%s" style="display: inline-block; margin: 0 6px 6px 0; padding: 8px 14px; '
+               'border: 1px solid #d8c8f0; border-radius: 6px; color: #4c1d95; text-decoration: none;">%s</a>')
+        rate = ('<p style="margin-bottom: 4px;">Was it useful? One click is enough:</p><p>'
+                + btn % (base, "useful", "Yes, it caught something")
+                + btn % (base, "partly", "Partly")
+                + btn % (base, "not_useful", "Not really")
+                + "</p>")
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">How did the review hold up?</h2>
   <p>You ran a Paper Review on {title} a little while ago. If it caught
   something a real reviewer later raised too, or missed something they
-  did catch, I'd like to know. Just reply to this email.</p>
+  did catch, I'd like to know. Reply to this email, or use the buttons.</p>
+  {rate}
   <p>That feedback goes directly into what gets fixed next; this is a
   small, actively-maintained tool, not a product team.</p>
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">

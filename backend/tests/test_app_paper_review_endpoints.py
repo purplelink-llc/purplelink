@@ -114,6 +114,7 @@ def client(monkeypatch):
     monkeypatch.setattr(backend_app, "customer_lifecycle_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "lifecycle_optout_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "referral_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "feedback_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "paper_review_pipeline", _FakeSpawnFunction())
     monkeypatch.setattr(backend_app, "adjacent_tool_pipeline", _FakeSpawnFunction())
 
@@ -2309,3 +2310,66 @@ def test_waiting_reminder_respects_optout(client, monkeypatch):
     backend_app.lifecycle_optout_dict["out@example.com"] = True
     backend_app.lifecycle_email_sweep.local()
     assert sent == []
+
+
+# ---------------------------------------------------------------------------
+# Feedback page
+# ---------------------------------------------------------------------------
+
+def test_feedback_rating_then_comment_updates_one_entry(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("SUBSCRIBE_SECRET", "sek")
+    sig = backend_app._feedback_signature("cs_fb")
+    r = http.post("/feedback", json={"rating": "useful", "product": "paper-review", "s": "cs_fb", "k": sig})
+    assert r.status_code == 200
+    fid = r.json()["id"]
+    entry = backend_app.feedback_dict.get(fid)
+    assert entry["rating"] == "useful" and entry["verified"] is True and entry["comment"] == ""
+    r = http.post("/feedback", json={"id": fid, "rating": "partly", "product": "moderntex",
+                                     "comment": "  Caught the power issue.  ", "quote_ok": True,
+                                     "name": "Ana\n", "field": "Psychology"})
+    assert r.json()["id"] == fid
+    entry = backend_app.feedback_dict.get(fid)
+    assert entry["rating"] == "partly" and entry["product"] == "paper-review"  # product fixed at first call
+    assert entry["comment"] == "Caught the power issue." and entry["quote_ok"] is True and entry["name"] == "Ana"
+    assert "email" not in entry and "s" not in entry
+
+
+def test_feedback_rejects_bad_rating_and_marks_forged_links_unverified(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("SUBSCRIBE_SECRET", "sek")
+    assert http.post("/feedback", json={"rating": "great"}).status_code == 400
+    r = http.post("/feedback", json={"rating": "not_useful", "product": "nope", "s": "cs_x", "k": "0" * 32})
+    entry = backend_app.feedback_dict.get(r.json()["id"])
+    assert entry["verified"] is False and entry["product"] == "other"
+    assert http.post("/feedback", json={"rating": "useful", "website": "bot"}).json() == {"status": "ok", "id": ""}
+    # Quote permission without a comment means nothing to quote.
+    r = http.post("/feedback", json={"rating": "useful", "quote_ok": True})
+    assert backend_app.feedback_dict.get(r.json()["id"])["quote_ok"] is False
+
+
+def test_feedback_summary_and_owner_endpoints(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "s")
+    http.post("/feedback", json={"rating": "useful", "product": "paper-review", "comment": "Good"})
+    http.post("/feedback", json={"rating": "not_useful", "product": "paper-review"})
+    assert http.get("/feedback/list").status_code == 401
+    rows = http.get("/feedback/list", headers={"x-webhook-secret": "s"}).json()["feedback"]
+    assert len(rows) == 2
+    stats = http.get("/lifecycle/stats", headers={"x-webhook-secret": "s"}).json()
+    assert stats["feedback"]["counts"]["paper-review"] == {"useful": 1, "partly": 0, "not_useful": 1}
+    assert [c["comment"] for c in stats["feedback"]["recent_comments"]] == ["Good"]
+
+
+def test_review_request_email_carries_signed_rating_links(client, monkeypatch):
+    _http, backend_app = client
+    monkeypatch.setenv("SUBSCRIBE_SECRET", "sek")
+    sent = _no_send(monkeypatch)
+    backend_app.customer_lifecycle_dict["cs_rr"] = {
+        "email": "a@example.com", "purchased_at": time.time() - 15 * 86400,
+        "last_stage_sent": "tips", "manuscript_title": "T",
+    }
+    backend_app.lifecycle_email_sweep.local()
+    html = [m["html"] for m in sent if m["subject"] == "How did the review hold up?"][0]
+    sig = backend_app._feedback_signature("cs_rr")
+    assert "feedback/?p=paper-review&amp;s=cs_rr&amp;k=%s&amp;r=useful" % sig in html
