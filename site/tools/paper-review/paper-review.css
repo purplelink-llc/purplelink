@@ -319,3 +319,9 @@
 .pr-wait a { color: var(--purple); font-weight: 600; }
 .pr-wait[hidden] { display: none; }
 .pr-remind-pick[hidden] { display: none; }
+
+/* Upload page: paste a pack token when there is no payment session */
+.pr-token-form { margin-top: 1rem; }
+.pr-token-form[hidden] { display: none; }
+.pr-token-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.pr-token-row .pr-input { flex: 1 1 260px; }

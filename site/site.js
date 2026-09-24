@@ -448,3 +448,15 @@
   targets.forEach((t) => io.observe(t));
   window.addEventListener("scroll", update, { passive: true });
 })();
+
+// /tools/paper-review/packs/?pack=20 opens with that pack selected.
+(() => {
+  const want = new URLSearchParams(location.search).get("pack");
+  if (!want || !/^\d{1,3}$/.test(want)) return;
+  const pick = () => {
+    const r = document.querySelector(`input[type="radio"][name="pack"][value$="-${want}"]`);
+    if (r && !r.checked) { r.checked = true; r.dispatchEvent(new Event("change", { bubbles: true })); }
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pick);
+  else pick();
+})();

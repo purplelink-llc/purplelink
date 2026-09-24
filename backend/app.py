@@ -2307,6 +2307,7 @@ def web():
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms</a></li>
             <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
           </ul>
         </nav>
       </div>

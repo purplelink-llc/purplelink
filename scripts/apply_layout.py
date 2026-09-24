@@ -84,6 +84,7 @@ FOOTER_COLUMNS = [
         ("Privacy", "/privacy/"),
         ("Terms", "/terms/"),
         ("Find a purchase", "/recover/"),
+        ("For labs", "/labs/"),
     ]),
 ]
 

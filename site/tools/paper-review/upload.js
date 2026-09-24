@@ -260,6 +260,16 @@
   } else if (sessionId) {
     redeem({ session_id: sessionId });
   } else {
-    setRedeemStatus("We couldn't find a payment session in this link. If you just paid, go back to your Stripe confirmation email or receipt and click the link there again — closing the tab mid-redirect can drop this. If you already have a token from a previous purchase, add it to the URL as ?direct_token=YOUR_TOKEN. Still stuck? Email ben@purplelink.llc with your Stripe receipt and we'll sort it out — no need to pay again.", true);
+    setRedeemStatus("We couldn't find a payment session in this link. If you just paid, open the link in your Stripe receipt email again; closing the tab mid-redirect can drop it. Still stuck? Email ben@purplelink.llc with your Stripe receipt and we'll sort it out, with no need to pay again.", true);
+    var tokenForm = document.getElementById("token-form");
+    if (tokenForm) {
+      tokenForm.hidden = false;
+      tokenForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var t = (document.getElementById("token-input").value || "").trim();
+        if (!t) return;
+        window.location.search = "?direct_token=" + encodeURIComponent(t);
+      });
+    }
   }
 })();
