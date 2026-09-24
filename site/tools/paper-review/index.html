@@ -274,6 +274,30 @@
         </ul>
       </section>
 
+      <section class="deadline-remind" aria-labelledby="deadline-h">
+        <form class="deadline-form" data-deadline-signup novalidate>
+          <h2 id="deadline-h">Not submitting yet?</h2>
+          <p class="deadline-lede">Get one email a week before your deadline, with the <a href="/tools/submission-checklist/">submission checklist</a> and the checks that fit in a week. Then nothing more.</p>
+          <div class="deadline-fields">
+            <div class="deadline-field">
+              <label for="dl-date">Deadline</label>
+              <input type="date" id="dl-date" name="deadline" required>
+            </div>
+            <div class="deadline-field">
+              <label for="dl-venue">Venue <span class="deadline-opt">(optional)</span></label>
+              <input type="text" id="dl-venue" name="venue" maxlength="80" autocomplete="off" placeholder="e.g. NeurIPS">
+            </div>
+            <div class="deadline-field deadline-field-email">
+              <label for="dl-email">Email</label>
+              <input type="email" id="dl-email" name="email" autocomplete="email" placeholder="you@university.edu" required>
+            </div>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-primary">Remind me</button>
+          </div>
+          <p class="deadline-status" data-deadline-status aria-live="polite">The address is kept until that email goes out, then deleted 30 days later. <a href="/privacy/">Privacy</a>.</p>
+        </form>
+      </section>
+
       <section class="tool-faq">
         <h2>Frequently asked questions</h2>
         <details><summary>What does the review include?</summary><div class="faq-body">Four layers in sequence: a Claude Vision pass over your figures and tables, a live CrossRef cross-check of every reference, an adversarial four-persona reviewer debate (Methodology Critic, Statistical Skeptic, Data Integrity Officer, Editor-in-Chief) with consensus filtering, and a synthesis pass producing critical blind spots, data-to-claim contradictions, a prioritised rectification checklist, and a true-novelty estimate.</div></details>
@@ -309,7 +333,7 @@
 
       <script src="/tools/tools.js?v=4b7f656edf"></script>
       <script src="/tools/paper-review/paper-review.js?v=ffc491d04e" defer></script>
-    <div class="sticky-cta" data-sticky-cta data-hide-when="#choose-tier, .pr-checkout-row" hidden>
+    <div class="sticky-cta" data-sticky-cta data-hide-when="#choose-tier, .pr-checkout-row, .deadline-remind, .footer" hidden>
       <span class="sticky-cta-text"><strong>Paper Review</strong> from $9, ready in minutes</span>
       <a class="btn btn-primary" href="#choose-tier" data-track="sticky_cta" data-track-meta="paper-review">Choose a tier</a>
     </div>
