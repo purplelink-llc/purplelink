@@ -110,6 +110,13 @@ usage_ledger_dict = modal.Dict.from_name("paper-review-usage-ledger", create_if_
 customer_lifecycle_dict = modal.Dict.from_name("paper-review-lifecycle", create_if_missing=True)
 lifecycle_optout_dict = modal.Dict.from_name("paper-review-lifecycle-optout", create_if_missing=True)
 
+
+def _email_key(email: str) -> str:
+    """The form an address is compared in: opt-outs are stored under it and
+    unsubscribe tokens are signed over it, so "Jane@Uni.edu" and
+    "jane@uni.edu" are the same person everywhere."""
+    return (email or "").strip().lower()
+
 # Co-author exposure referral loop — a Paper Review buyer's completed
 # report carries a personal referral code in its footer (see
 # _referral_footer_md below). If a co-author they shared it with buys a
@@ -178,8 +185,10 @@ PAID_PRODUCTS: dict[str, dict] = {
     "paper-review-deep":        {"category": "paper-review", "tier": "deep",     "qty": 1, "amount": 1500, "bundled_anonymity": True, "bundled_journal": True},
     # Volume packs (mint N tokens of standard Paper Review). ~15-17% off vs.
     # buying à la carte at $9 each.
-    "paper-review-pack-5":      {"category": "paper-review", "tier": "standard", "qty": 5,  "amount": 3800},
-    "paper-review-pack-20":     {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 15000},
+    # Pack tokens are Standard reviews, so they carry Standard's bundled
+    # anonymity scan (the packs page, FAQ and /labs/ say so).
+    "paper-review-pack-5":      {"category": "paper-review", "tier": "standard", "qty": 5,  "amount": 3800, "bundled_anonymity": True},
+    "paper-review-pack-20":     {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 15000, "bundled_anonymity": True},
     # Auxiliary paid tools — single/few-call pipelines, cheap even at Fable
     # rates, so these carry a wide margin rather than a thin one.
     "cover-letter":             {"category": "cover-letter", "qty": 1, "amount": 200},
@@ -471,7 +480,9 @@ def paper_review_pipeline(
                                 html=delivery.html_review_ready(
                                     status_url=f"https://purplelink.llc/tools/paper-review/status/?token={token}",
                                     manuscript_title=(final.get("structure_summary") or {}).get("title", ""),
-                                    amount_cents=PAID_PRODUCTS.get(product_key, {}).get("amount", 900),
+                                    # A pack token's refund is its share of the pack.
+                                    amount_cents=(PAID_PRODUCTS.get(product_key, {}).get("amount", 900)
+                                                  // max(1, PAID_PRODUCTS.get(product_key, {}).get("qty", 1))),
                                 ),
                                 tags=[{"name": "product", "value": "paper-review"}],
                             )
@@ -2136,7 +2147,10 @@ def web():
         # already opted out. manuscript_title starts blank — the buyer
         # hasn't uploaded anything yet at purchase time; lifecycle_email_sweep
         # falls back to "your manuscript" when rendering.
-        if entry["email"] and not lifecycle_optout_dict.get(entry["email"]):
+        # Only Paper Review purchases: the sequence talks about "your review",
+        # so a Cover Letter or Resume Review buyer must not get it.
+        if (product_cfg.get("category") == "paper-review" and entry["email"]
+                and not lifecycle_optout_dict.get(_email_key(entry["email"]))):
             customer_lifecycle_dict[session_id] = {
                 "email": entry["email"],
                 "manuscript_title": "",
@@ -2196,7 +2210,7 @@ def web():
         import hmac as _hmac_local
         secret = os.environ.get("SUBSCRIBE_SECRET", "")
         return _hmac_local.new(
-            secret.encode(), f"lifecycle:{email}".encode(), _hashlib.sha256
+            secret.encode(), f"lifecycle:{_email_key(email)}".encode(), _hashlib.sha256
         ).hexdigest()
 
     def _lifecycle_unsubscribe_url(email: str) -> str:
@@ -2204,7 +2218,7 @@ def web():
         from urllib.parse import quote as _quote
         return (
             "https://purplelink.llc/paper-review/lifecycle/unsubscribe"
-            f"?email={_quote(email)}&token={token}"
+            f"?email={_quote(_email_key(email))}&token={token}"
         )
 
     def _lifecycle_page(title: str, heading: str, body_html: str, status: int = 200) -> "HTMLResponse":
@@ -2347,7 +2361,7 @@ def web():
                 trial["last_stage_sent"] = TRIAL_LIFECYCLE_STAGES[-1][0]
                 trial["converted_at"] = _time_module.time()
                 customer_lifecycle_dict[trial_key] = trial
-        if lifecycle_optout_dict.get(email):
+        if lifecycle_optout_dict.get(_email_key(email)):
             return {"status": "opted_out"}
         if customer_lifecycle_dict.get(session_id):
             return {"status": "exists"}
@@ -2398,7 +2412,7 @@ def web():
             return JSONResponse({"error": "invalid_email"}, status_code=400)
 
         key = _trial_lifecycle_key(email)
-        if lifecycle_optout_dict.get(email) or customer_lifecycle_dict.get(key):
+        if lifecycle_optout_dict.get(_email_key(email)) or customer_lifecycle_dict.get(key):
             return {"status": "ok"}
         lowered = email.lower()
         for _sid, other in list(customer_lifecycle_dict.items()):
@@ -2423,11 +2437,11 @@ def web():
         import httpx
         token = _hmac_local.new(
             os.environ.get("SUBSCRIBE_SECRET", "").encode(),
-            f"lifecycle:{email}".encode(), _hashlib.sha256,
+            f"lifecycle:{_email_key(email)}".encode(), _hashlib.sha256,
         ).hexdigest()
         unsubscribe_url = (
             "https://purplelink.llc/paper-review/lifecycle/unsubscribe"
-            f"?email={_quote(email)}&token={token}"
+            f"?email={_quote(_email_key(email))}&token={token}"
         )
         async with httpx.AsyncClient(timeout=10.0) as client:
             result = await _delivery.send_email(
@@ -2436,6 +2450,7 @@ def web():
                 subject=LIFECYCLE_SUBJECTS["trial_setup"],
                 html=_delivery.html_lifecycle_trial_setup(unsubscribe_url=unsubscribe_url),
                 tags=[{"name": "lifecycle_stage", "value": "trial_setup"}],
+                from_name="Purplelink",
             )
         if result.get("status") == "ok":
             entry["last_stage_sent"] = "trial_setup"
@@ -2450,7 +2465,8 @@ def web():
         netlify/functions/unsubscribe.mjs's HMAC pattern but writes to
         lifecycle_optout_dict (a Modal Dict) instead of Netlify Blobs, so
         the write and the cron read that respects it live on one system."""
-        email = (request.query_params.get("email") or "").strip().lower()
+        raw_email = (request.query_params.get("email") or "").strip()
+        email = _email_key(raw_email)
         token = request.query_params.get("token") or ""
 
         if not email or not token or not os.environ.get("SUBSCRIBE_SECRET"):
@@ -2462,7 +2478,14 @@ def web():
 
         import hmac as _hmac_local
         expected = _lifecycle_unsubscribe_token(email)
-        if not _hmac_local.compare_digest(token, expected):
+        # Links sent before addresses were normalised were signed over the
+        # address exactly as Stripe stored it; accept those too.
+        import hashlib as _hashlib_legacy
+        legacy = _hmac_local.new(
+            os.environ.get("SUBSCRIBE_SECRET", "").encode(),
+            f"lifecycle:{raw_email}".encode(), _hashlib_legacy.sha256,
+        ).hexdigest()
+        if not (_hmac_local.compare_digest(token, expected) or _hmac_local.compare_digest(token, legacy)):
             return _lifecycle_page(
                 "Invalid link", "Invalid link",
                 "<p>This unsubscribe link is not valid. It may have been altered.</p>",
@@ -3796,7 +3819,7 @@ def lifecycle_email_sweep() -> dict:
                 email = entry.get("email", "")
                 if not email:
                     continue
-                if lifecycle_optout_dict.get(email):
+                if lifecycle_optout_dict.get(_email_key(email)):
                     skipped_optout += 1
                     continue
 
@@ -3850,6 +3873,7 @@ def lifecycle_email_sweep() -> dict:
                     subject=subject,
                     html=html,
                     tags=[{"name": "lifecycle_stage", "value": stage_name}],
+                    from_name="Purplelink" if stage_name.startswith(("mtx_", "trial_")) else None,
                 )
                 if result.get("status") == "ok":
                     entry["last_stage_sent"] = stage_name
@@ -3868,11 +3892,11 @@ def lifecycle_email_sweep() -> dict:
         from urllib.parse import quote as _quote
         secret = os.environ.get("SUBSCRIBE_SECRET", "")
         token = _hmac_local.new(
-            secret.encode(), f"lifecycle:{email}".encode(), _hashlib.sha256
+            secret.encode(), f"lifecycle:{_email_key(email)}".encode(), _hashlib.sha256
         ).hexdigest()
         return (
             "https://purplelink.llc/paper-review/lifecycle/unsubscribe"
-            f"?email={_quote(email)}&token={token}"
+            f"?email={_quote(_email_key(email))}&token={token}"
         )
 
     asyncio.run(_run())
