@@ -2029,3 +2029,15 @@ def test_sweep_sends_due_decision_reminder_once(client, monkeypatch):
     assert backend_app.customer_lifecycle_dict.get("s-dr")["decision_reminders"] == [now + 86400]
     backend_app.lifecycle_email_sweep.local()
     assert len(sent) == 1
+
+
+def test_ready_email_names_the_product_and_offers_one_next_step():
+    from latextools import delivery
+    pr = delivery.html_review_ready(status_url="https://x/s", manuscript_title="<i>T</i>", amount_cents=900)
+    assert "Your Paper Review is ready" in pr and "&lt;i&gt;T&lt;/i&gt;" in pr and "Citation Gap" in pr
+    cl = delivery.html_review_ready(status_url="https://x/s", amount_cents=200, product="cover-letter")
+    assert "Your cover letter draft is ready" in cl and "Paper Review is ready" not in cl and "$2" in cl
+    rr = delivery.html_review_ready(status_url="https://x/s", amount_cents=500, product="resume-review")
+    assert "Your Resume Review is ready" in rr and "utm_campaign=ready" not in rr
+    for key in ("cover-letter", "anonymity-check", "citation-gap", "revision-review", "response-review", "resume-review"):
+        assert key in delivery._READY_NAMES
