@@ -1806,3 +1806,16 @@ def test_winback_skipped_when_buyer_purchased_again(client):
         ("s-noemail", {"email": "", "purchased_at": 1000}),
     ]
     assert backend_app._sessions_with_later_purchase(entries) == {"s-first"}
+
+
+def test_anonymity_report_uses_readable_category_headings(client):
+    _http, backend_app = client
+    md = backend_app._format_anonymity_md({"leaks": [
+        {"category": "irb_number", "severity": "major", "where": "Methods", "quote": "Protocol 2024-117", "fix": "Replace with [IRB protocol]."},
+        {"category": "email_or_url", "severity": "critical", "where": "Data availability", "quote": "github.com/x", "fix": "Use an anonymized link."},
+        {"category": "something_new", "severity": "minor", "where": "Intro", "quote": "q", "fix": "f"},
+    ]})
+    assert "## IRB and ethics protocol numbers" in md
+    assert "## Emails and URLs" in md
+    assert "## Something new" in md
+    assert "Irb Number" not in md and "Email Or Url" not in md

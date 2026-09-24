@@ -728,6 +728,20 @@ def adjacent_tool_pipeline(
     _asyncio.run(_run())
 
 
+# Headings for the anonymity report. str.title() on the raw category keys
+# produced "Irb Number" and "Email Or Url" in delivered reports.
+_ANONYMITY_CATEGORY_LABELS = {
+    "author_name": "Author names",
+    "institution": "Institutions",
+    "funding": "Funding and grants",
+    "irb_number": "IRB and ethics protocol numbers",
+    "email_or_url": "Emails and URLs",
+    "self_citation_pattern": "Self-citation patterns",
+    "named_artifact": "Named software, datasets and systems",
+    "other": "Other",
+}
+
+
 def _format_anonymity_md(res: dict) -> str:
     """Render the anonymity-check JSON result as a user-facing Markdown
     report. Lives here rather than in paperreview_extras so the module
@@ -758,7 +772,8 @@ def _format_anonymity_md(res: dict) -> str:
         cat = l.get("category", "other")
         by_cat.setdefault(cat, []).append(l)
     for cat, items in by_cat.items():
-        parts.append(f"\n## {cat.replace('_', ' ').title()}\n")
+        label = _ANONYMITY_CATEGORY_LABELS.get(cat) or cat.replace("_", " ").capitalize()
+        parts.append(f"\n## {label}\n")
         for l in items:
             severity = (l.get("severity") or "minor").upper()
             quote = (l.get("quote") or "").replace("\n", " ").strip()[:300]
