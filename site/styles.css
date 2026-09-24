@@ -4502,3 +4502,4 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .stats-t th { color: var(--muted); font-weight: 600; }
 .stats-t .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .stats-note { color: var(--muted); font-size: 0.88rem; }
+.submit-free { margin-top: 16px; color: var(--muted); font-size: 0.93rem; max-width: 520px; }
