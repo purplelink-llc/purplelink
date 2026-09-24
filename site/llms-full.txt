@@ -214,7 +214,7 @@ A native macOS LaTeX editor for researchers, not a programmer's IDE with LaTeX b
 
 Download the free 7-day trial
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, with every 1.x update included; the receipt email includes a permanent license key. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks, with no reinstall. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, with every 1.x update included; the receipt email includes a permanent license key. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements.
 
 In the app
 
@@ -304,7 +304,7 @@ Price$10 once, after a free 7-day trial. Every 1.x update included. No subscript
 
 TrialThe complete app for seven days from first launch. No account, nothing to enter.
 
-LicenseA permanent key in the receipt email; paste it into the trial copy to unlock it, with no reinstall.
+LicenseA permanent key in the receipt email. Paste it into the trial copy to unlock it straight away; install the paid download once to get updates.
 
 Runs onmacOS 14 Sonoma or later, Apple silicon and Intel. Signed and notarized disk image.
 
@@ -625,12 +625,18 @@ Standard · $9
 Single-pass four-persona review, figure scan, and live citation check. Markdown report and annotated PDF.
 
 Standard + Journal Pack · $11
-Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.).
+Standard review plus a compliance check against your target journal (25 venues, from NeurIPS and Nature to JAMA and JACS; the full list is in the questions below).
 
 Deep Review · $15
 Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.
 
 Reviewing more than one manuscript? Volume packs save 16-17% per review. Buying for a lab? See invoices, purchase orders and data handling.
+
+- Pay through Stripe
+
+- Upload your PDF, up to 20 MB; the link is also emailed, so you can upload from another device
+
+- Read the report, usually in 4 to 8 minutes
 
 Secure checkout via Stripe. One-time payment, no subscription. See a full example report first.
 
@@ -761,6 +767,22 @@ Typically 4-8 minutes for a 20-page manuscript. You don't need to keep the tab i
 What about my privacy? Is the manuscript stored?
 
 Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. Purplelink itself does not store your manuscript or the resulting review after delivery: the review is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do on the status page. Save the result locally before closing the tab.
+
+Which journals does the Journal Pack check?
+
+25 venues. The pack checks word and abstract limits, required sections and reference-style hints against the one you pick at upload.
+
+- Machine learning: NeurIPS, ICML, ICLR, AAAI, TMLR, JMLR
+
+- General science: Nature, Science, Cell, PLOS ONE
+
+- Medicine: Nature Medicine, JAMA, NEJM, The Lancet, The BMJ
+
+- Psychology and management: Psychological Science, Journal of Personality and Social Psychology, Cognition, Academy of Management Journal
+
+- Chemistry and materials: JACS, Angewandte Chemie, Nature Materials, Nature Chemistry, ACS Nano, Advanced Materials
+
+Not listed? The Standard tier covers everything except this check. Email to ask for a venue.
 
 What domains does it cover?
 
@@ -2145,7 +2167,7 @@ A local-first Mac app for academics: submissions, grants, projects and your CV i
 
 ### Paper Review
 
-A pre-submission read of your manuscript: four AI reviewers, a check of every reference against CrossRef, and a figure scan. From $9, no account, nothing kept after delivery.
+A pre-submission read of your manuscript: four AI reviewers, a check of every reference against CrossRef, and a figure scan. From $9 with no account, and the manuscript is deleted within a day.
 
 ### Free tools
 
@@ -2598,7 +2620,7 @@ Public by design. Check the journal's preprint policy and, for double-blind venu
 Purplelink Paper Review
 $9 Standard, $11 with Journal Pack, $15 Deep Review
 Usually 4 to 8 minutes (Standard); 10 to 15 minutes (Deep)
-Methods and statistics red flags, claims the data do not support, references that do not resolve in CrossRef, citation support at the abstract level, figure presentation issues, compliance with 25+ supported journals (Journal Pack), a bundled anonymity scan
+Methods and statistics red flags, claims the data do not support, references that do not resolve in CrossRef, citation support at the abstract level, figure presentation issues, compliance with 25 supported journals and conferences (Journal Pack), a bundled anonymity scan
 Not a domain expert; can be wrong; reads the manuscript as written and cannot inspect your data or code; citation support is judged from abstracts, not full texts
 Sent to Anthropic's Claude API, which retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and review 30 minutes after you first open the result, or after 24 hours.
 
