@@ -2180,14 +2180,15 @@ dd {
 /* ─── Hero entrance ───────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: no-preference) {
+  /* No opacity in this one: the headline is the page's largest paint, and
+     text held at opacity 0 isn't counted until it fades in, which put up to
+     ~1.3s on LCP. It is visible from the first frame and settles into place. */
   @keyframes hero-word-up {
     from {
-      opacity: 0;
-      transform: translateY(0.32em) skewY(1.5deg);
-      filter: blur(2px);
+      transform: translateY(0.18em) skewY(1deg);
+      filter: blur(1.5px);
     }
     to {
-      opacity: 1;
       transform: none;
       filter: none;
     }
@@ -2204,7 +2205,7 @@ dd {
 
   .hero-title span {
     display: block;
-    animation: hero-word-up 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: hero-word-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .hero-title span:nth-child(1) { animation-delay: 0.06s; }
@@ -2215,8 +2216,8 @@ dd {
     animation: hero-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.54s both;
   }
 
-  .hero-orbit {
-    animation: hero-fade-up 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+  .hero-visual {
+    animation: hero-fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
   }
 }
 
