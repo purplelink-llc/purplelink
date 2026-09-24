@@ -3955,3 +3955,5 @@ main input:focus-visible {
 @media (max-width: 700px) {
   .venue-list { grid-template-columns: 1fr; }
 }
+
+.app-hero-copy .waitlist-fine-print { text-align: left; max-width: 64ch; }

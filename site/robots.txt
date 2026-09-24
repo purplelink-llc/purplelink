@@ -58,5 +58,6 @@ Allow: /
 
 # Plain-text summary of the company and its products, for language models:
 # https://purplelink.llc/llms.txt
+# Full text of the main pages: https://purplelink.llc/llms-full.txt
 
 Sitemap: https://purplelink.llc/sitemap.xml

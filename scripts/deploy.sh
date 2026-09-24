@@ -134,6 +134,12 @@ python3 scripts/apply_layout.py
 step "fingerprint assets"
 python3 scripts/fingerprint_assets.py
 
+# 2b2. llms-full.txt
+# The readable text of the main pages for language models, regenerated from
+# the HTML so it always matches what the pages say.
+step "regenerate llms-full.txt"
+python3 scripts/gen_llms_full.py
+
 # 2c. Share images
 # A page whose og:image file doesn't exist shares with no picture; stop here
 # rather than ship it.

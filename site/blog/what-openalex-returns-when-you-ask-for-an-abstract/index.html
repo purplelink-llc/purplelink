@@ -24,7 +24,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=d836301081">
+    <link rel="stylesheet" href="/styles.css?v=72444a04b8">
     <script src="/site.js?v=49aea39300" defer></script>
     <script type="application/ld+json">
     {
@@ -73,6 +73,7 @@
         <a href="/about/">About</a>
       </nav>
     </header>
+    <main id="main-content">
 
     <a class="back-link" href="/blog/">← All posts</a>
 
@@ -83,7 +84,7 @@
       <p class="post-lede">OpenAlex stores paper abstracts as inverted indexes rather than strings. Building the Daily Digest's paper fetcher surfaced this, and the reconstruction has limits.</p>
     </div>
 
-    <article id="main-content" class="post-body">
+    <article class="post-body">
       <p>OpenAlex's API returns paper abstracts as an inverted index. Not a string. A dictionary where keys are words and values are arrays of integer positions: <code>{"adversarial": [5], "attacks": [6], "large": [8, 15], "language": [9, 16], "models": [10, 17]}</code>. To read the abstract, you sort the word-position pairs and join with spaces.</p>
 
       <p>I found this when I built the Daily Digest's paper fetcher. The plan was simple: hit the OpenAlex works endpoint, grab the abstracts, pass them to the curation model as context. When I first decoded the response and saw <code>abstract_inverted_index</code>, I assumed it was supplementary metadata. Then I looked for the actual abstract field. There isn't one.</p>
@@ -103,6 +104,7 @@
       <a class="back-link" href="/blog/" style="border: none; padding: 0;">← Back to blog</a>
     </div>
 
+    </main>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">
