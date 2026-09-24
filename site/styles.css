@@ -4318,3 +4318,6 @@ html { scroll-padding-top: 96px; }
 .report-more { display: inline-block; margin-top: 14px; color: var(--purple); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
 .report-more:hover { text-decoration: underline; }
 .kit-hero p:not(.eyebrow) + p { margin-top: 12px; }
+.screenshot-grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 700px) { .screenshot-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+.app-hero-actions .store-badge { align-self: center; }
