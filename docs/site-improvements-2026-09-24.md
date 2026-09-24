@@ -14,6 +14,9 @@ retention work is `docs/growth-proposals-2026-09.md`.
    - ModernTex trial emails (page + backend)
    - Paper Review decision-date reminder (upload page + backend)
    - product-aware "ready" emails (backend)
+   - deadline reminders from the checklist and template pages
+     (`/lifecycle/deadline`, backend)
+   - the "link to start" email for single purchases (backend)
 2. **Stripe: pack buyers purged earlier.** Before the expiry fix, the weekly
    sweep deleted volume-pack entries after 7 days. Check Stripe for 5-pack and
    20-pack sessions older than a week and reissue unused tokens by hand
@@ -93,6 +96,12 @@ retention work is `docs/growth-proposals-2026-09.md`.
    would find more fake citations but sends titles and DOIs to CrossRef and
    is slower. Left as it is.
 
+16. **Referral credit is .edu only.** A shared report's link gives both
+   sides a $2 code only when the new buyer pays with a .edu address. That
+   leaves out .ac.uk, .edu.au, .ac.jp and most universities outside the US.
+   Widening it is a one-line change in `paper_review_register_token`; the
+   page and FAQ copy would need the same change.
+
 ## What changed
 
 ### Look and navigation
@@ -159,6 +168,13 @@ retention work is `docs/growth-proposals-2026-09.md`.
 - The privacy page describes each of these.
 
 ### Later additions
+- `/pricing/`: every price on one page, linked from the footer,
+  /products/, /tools/ and llms.txt.
+- Deadline reminder: the submission checklist and each template page
+  offer one email a week before a deadline you enter. New lifecycle
+  product `deadline-reminder`; event `deadline_signup`.
+- The Paper Review page now mentions the referral credit when someone
+  arrives through a shared report's link, and keeps the code for 30 days.
 - Phone fixes from a mobile walkthrough:
   - Off a Mac, the ModernTex trial button offers to email the download link
     (with a "download anyway" link) instead of fetching a .dmg. The trial
