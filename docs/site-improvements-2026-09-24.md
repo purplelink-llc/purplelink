@@ -134,6 +134,20 @@ retention work is `docs/growth-proposals-2026-09.md`.
    Nature (abstract recorded as 150 words) and Science (125) especially.
    After editing, `python3 scripts/gen_venue_json.py` (deploy runs it too).
 
+20. **Claims a fact check could not settle.** Guides and posts were checked
+   against the pages and backend code, and 25 wrong claims were fixed.
+   These need your knowledge of the apps or real timings:
+   - Cover Letter "ready in under a minute", Resume Review "typically under
+     two minutes", Response to Reviewers "three to five minutes": no page
+     states these; confirm from real runs.
+   - The cover-letter post says the prompt is "roughly 250 tokens"; a 5,000
+     character abstract is closer to 1,250.
+   - The tenure-case guide says Vitae exports "PDF, rich text or Markdown";
+     /vitae/ says "PDF, LaTeX, or rich text".
+   - Two ModernTex posts say "updates included"; the product page says
+     "every 1.x update included". One lists "package compatibility" among
+     the submission checks.
+
 ## What changed
 
 ### Look and navigation
