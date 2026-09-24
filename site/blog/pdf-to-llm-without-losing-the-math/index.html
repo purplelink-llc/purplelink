@@ -98,7 +98,7 @@
 
       <p>The JSON output has the same content split into labeled blocks, useful if you're scripting across multiple papers or building a vector store for retrieval. Most of the time, the Markdown is enough. You paste it into the LLM prompt, or drop it into your note-taking app alongside your annotations.</p>
 
-      <p>A few edge cases worth knowing: papers that were scanned rather than generated from source files have variable OCR quality. Papers with complex multi-panel figures include the captions but not the image data, by design. Born-digital PDFs from arXiv or a journal site are usually clean.</p>
+      <p>A few edge cases worth knowing: the tool needs a PDF with selectable text; scanned papers will not extract correctly. Papers with complex multi-panel figures include the captions but not the image data, by design. Born-digital PDFs from arXiv or a journal site are usually clean.</p>
 
       <p>The part that surprised me when I started testing this: once the paper is in clean text, everything you want to do with it becomes simpler. Quoting an equation accurately in a note. Asking an LLM to explain a specific derivation. Searching for a particular claim across ten papers at once. None of that requires anything sophisticated. Just content that wasn't garbled on the way out of the PDF.</p>
     </article>

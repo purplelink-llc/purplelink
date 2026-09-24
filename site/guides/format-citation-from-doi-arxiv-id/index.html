@@ -90,7 +90,7 @@
             <p>Click Generate or press Enter. The tool fetches metadata from Crossref, the arXiv API, or Open Library and renders the formatted citation. Results appear in about one second.</p>
           </li>
           <li>
-            <p>Click the tab for the style your submission requires: APA 7th, MLA 9th, Chicago author-date, or IEEE. The citation reformats without a second lookup.</p>
+            <p>All four styles appear together: APA 7th, MLA 9th, Chicago author-date and IEEE. Click Copy on the one your submission requires.</p>
           </li>
           <li>
             <p>Click Copy. Paste the citation into your document.</p>
@@ -99,13 +99,13 @@
             <p>Proofread before using. Author names with diacritics sometimes encode incorrectly in source database records. Verify the year, volume, and page range against the actual paper. Metadata from Crossref and Open Library is usually accurate but not guaranteed.</p>
           </li>
           <li>
-            <p>If the identifier does not resolve, use the manual entry form below the input field. arXiv ID lookups can fail on institutional networks that restrict browser-to-arXiv requests. The formatted output from manual entry is identical to an auto-resolved lookup.</p>
+            <p>If the identifier does not resolve, use the manual entry form below the input field. The formatted output from manual entry is identical to an auto-resolved lookup.</p>
           </li>
         </ol>
 
         <h2>What's happening under the hood</h2>
 
-        <p>DOI lookups resolve through Crossref, which indexes over 100 million published items. arXiv IDs query the arXiv API directly from your browser. ISBNs use the Open Library API. All three requests run client-side; nothing you enter reaches Purplelink's servers. Formatting applies the field-mapping rules for each style: author ordering, year placement, title capitalization, and container name conventions. The entire operation runs in the page's JavaScript with no server call after the metadata arrives.</p>
+        <p>DOI lookups resolve through Crossref, which indexes over 100 million published items. ISBNs use the Open Library API. DOI and ISBN lookups go straight from your browser; arXiv lookups pass through Purplelink's server because arXiv blocks direct browser requests. Nothing is stored. Formatting applies the field-mapping rules for each style: author ordering, year placement, title capitalization, and container name conventions. The entire operation runs in the page's JavaScript with no server call after the metadata arrives.</p>
 
         <h2>Q&amp;A</h2>
 

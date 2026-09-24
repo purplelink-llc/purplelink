@@ -111,7 +111,7 @@
 
         <h2>What's happening under the hood</h2>
 
-        <p>The tool parses the reviewer comment text to identify each numbered entry and its reviewer attribution. It matches response letter entries to those comments by number pattern ("R1.2", "Reviewer 1, comment 4", and similar). Three AI personas read each matched pair: a Skeptical Reviewer checks whether the response actually addresses the concern, a Tone Editor flags adversarial or dismissive phrasing, and an Editor-in-Chief estimates whether the overall letter holds up for the next round. When a response claims a manuscript change, the claim is cross-referenced against the revised PDF you uploaded. Everything runs in a single ephemeral job and is discarded shortly after you retrieve the report.</p>
+        <p>The tool parses the reviewer comment text to identify each numbered entry and its reviewer attribution. It matches response letter entries to those comments by number pattern ("R1.2", "Reviewer 1, comment 4", and similar). Three AI personas read each matched pair: a Skeptical Reviewer checks whether the response actually addresses the concern, a Tone Editor flags adversarial or dismissive phrasing, and an Editor-in-Chief estimates whether the overall letter holds up for the next round. When a response claims a manuscript change, the claim is cross-referenced against the revised PDF you uploaded. Everything runs in a single ephemeral job and is deleted 30 minutes after you first open the report, or after 24 hours if you never do.</p>
 
         <h2>Q&amp;A</h2>
 
