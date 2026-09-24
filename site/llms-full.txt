@@ -389,6 +389,9 @@ Buy ModernTex — $10
 
 macOS 14 or later · Apple silicon and Intel · Signed and notarized
 
+ModernTex free for 7 days, then $10
+Get ModernTex
+
 
 ---
 
@@ -783,6 +786,9 @@ PDF up to 20 MB. If you're submitting LaTeX, compile to PDF first (our free LaTe
 What about clinical or patient data?
 
 Do not submit unredacted patient data. The manuscript will be sent to Anthropic's API with 30-day retention. For papers containing identifiable health information, redact before upload.
+
+Paper Review from $9, ready in minutes
+Choose a tier
 
 
 ---
@@ -1629,6 +1635,10 @@ What IEEE S&P, USENIX Security, ACM CCS, MISQ, and other venues expect, preset t
 ## Utilities
 
 A few odds and ends that pair well with the tools above.
+
+### Response Letter Template
+
+Paste the reviewer comments; get every one numbered and quoted with space for your reply. Markdown, LaTeX or plain text.
 
 ### Submission Checklist
 

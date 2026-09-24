@@ -4344,3 +4344,9 @@ html { scroll-padding-top: 96px; }
   .sticky-cta .btn { flex: none; padding: 10px 18px; min-height: 44px; }
   body.has-sticky-cta { padding-bottom: 72px; }
 }
+
+/* Response letter template tool */
+textarea.ttg-input.rl-comments { min-height: 14rem; }
+.rl-actions { display: inline-flex; gap: 8px; }
+.rl-next { margin: 12px 0 0; color: var(--muted); font-size: 0.92rem; }
+.rl-next a { color: var(--purple); font-weight: 600; }
