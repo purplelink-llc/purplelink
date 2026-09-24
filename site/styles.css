@@ -3774,3 +3774,13 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
     box-shadow: 0 30px 70px oklch(20% 0.08 310 / 0.25);
   }
 }
+
+/* ─── /tools/ grids: no straggler rows ────────────────────────────────── */
+
+@media (min-width: 821px) {
+  .tools-grid-featured .tool-card-lg-featured { grid-column: span 2; }
+  .tools-grid:not(.tools-grid-featured) > :last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+  .tools-grid:not(.tools-grid-featured) > :last-child:nth-child(3n + 2) { grid-column: span 2; }
+  .tools-grid-apps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tools-grid-apps > :last-child { grid-column: auto; }
+}
