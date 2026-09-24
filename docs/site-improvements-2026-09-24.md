@@ -80,6 +80,13 @@ retention work is `docs/growth-proposals-2026-09.md`.
   ModernTex or kit purchase made with an address. Before this, a buyer who
   lost the receipt email lost the key. Needs the frontend deploy only.
 
+### For labs and departments
+- `/labs/` puts volume packs, invoices, purchase orders, ModernTex for
+  groups, data handling and vendor details (legal name, address, NAICS) on
+  one page for purchasing and research offices. It says a W-9 is available
+  on request and invites purchase-order and group-key requests by email:
+  those are manual for now, so reply when they come in.
+
 ### Retention (all opt-out-able through the existing lifecycle unsubscribe)
 - **ModernTex buyers:** tips on day 3, a pre-submission note on day 21.
 - **ModernTex trial:** after a trial download, an optional form sends:

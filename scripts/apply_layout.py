@@ -41,7 +41,7 @@ SKIP_PATHS = {
 # (label, href, sections that mark it current)
 NAV = [
     ("Products", "/products/", ("products/", "moderntex/", "vitae/", "globepin/",
-                                "haea/", "kits/", "scholar-utility-belt/")),
+                                "haea/", "kits/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/")),
     ("Blog", "/blog/", ("blog/", "changelog/")),
