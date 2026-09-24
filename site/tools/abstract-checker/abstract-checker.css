@@ -1,0 +1,31 @@
+.ac-app { display: flex; flex-direction: column; gap: 8px; }
+.ac-label { font-weight: 600; font-size: 0.92rem; margin-top: 8px; }
+.ac-select, .ac-custom input { min-height: 44px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; max-width: 100%; }
+.ac-custom { display: flex; flex-direction: column; gap: 6px; max-width: 220px; }
+.ac-custom[hidden] { display: none; }
+.ac-textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; line-height: 1.55; resize: vertical; }
+.ac-select:focus-visible, .ac-textarea:focus-visible, .ac-custom input:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
+.ac-count { margin: 8px 0 6px; color: var(--muted); }
+.ac-count strong { color: var(--ink); font-size: 1.15rem; }
+.ac-over { color: oklch(52% 0.19 25); font-weight: 600; }
+.ac-under { color: oklch(48% 0.12 150); font-weight: 600; }
+.ac-bar { height: 8px; border-radius: 100px; background: var(--purple-xlight); overflow: hidden; }
+.ac-bar-fill { display: block; height: 100%; border-radius: 100px; background: var(--purple); }
+.ac-bar-over { background: oklch(55% 0.19 25); }
+.ac-facts { margin-top: 18px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.ac-facts[hidden] { display: none; }
+.ac-facts h2 { margin: 0 0 10px; font-family: var(--font-display); font-size: 1.15rem; }
+.ac-facts dl { margin: 0; display: grid; gap: 6px; }
+.ac-facts dl div { display: grid; grid-template-columns: 10rem minmax(0, 1fr); gap: 12px; }
+.ac-facts dt { font-weight: 600; color: var(--ink); font-size: 0.9rem; }
+.ac-facts dd { margin: 0; color: var(--muted); font-size: 0.92rem; }
+.ac-source { margin: 12px 0 0; font-size: 0.86rem; color: var(--muted); }
+@media (max-width: 600px) {
+  .ac-facts dl div { grid-template-columns: 1fr; gap: 0; }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ac-over { color: oklch(75% 0.14 25); }
+  :root:not([data-theme="light"]) .ac-under { color: oklch(78% 0.12 150); }
+}
+:root[data-theme="dark"] .ac-over { color: oklch(75% 0.14 25); }
+:root[data-theme="dark"] .ac-under { color: oklch(78% 0.12 150); }

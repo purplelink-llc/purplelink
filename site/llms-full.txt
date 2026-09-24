@@ -1678,6 +1678,10 @@ Merge, split, and compress PDFs. Merge and split run in your browser.
 
 Live word, character, sentence, and reading-time stats in your browser.
 
+### Abstract Checker
+
+Your abstract's word count against the limit of 25 journals and conferences.
+
 ## Desktop apps from the same studio
 
 For the work these tools sit next to: writing the manuscript, and keeping track of where it went.
