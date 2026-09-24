@@ -4366,3 +4366,19 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 @media (max-width: 600px) {
   .tool-paid-cta, .checklist { margin-left: 16px; margin-right: 16px; }
 }
+
+/* ─── Pricing page ────────────────────────────────────────────────────── */
+
+.price-list { list-style: none; margin: 0; padding: 0; max-width: 860px; border-top: 1px solid var(--line); }
+.price-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.price-name { font-weight: 700; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+.price-name:hover { color: var(--purple); text-decoration: underline; }
+.price-amount { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--purple); text-align: right; white-space: nowrap; }
+.price-note { display: block; max-width: 11rem; margin-left: auto; font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; line-height: 1.35; letter-spacing: 0; color: var(--muted); white-space: normal; }
+.price-desc { grid-column: 1 / -1; margin: 0; color: var(--muted); max-width: 64ch; }

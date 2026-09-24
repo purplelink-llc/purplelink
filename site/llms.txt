@@ -107,6 +107,7 @@
 - Privacy Policy: https://purplelink.llc/privacy/
 - Changelog: https://purplelink.llc/changelog/
 - Find a purchase (lost ModernTex key or kit download): https://purplelink.llc/recover/
+- Pricing (every price on one page): https://purplelink.llc/pricing/
 - For labs and departments (volume packs, invoices, purchase orders, data handling): https://purplelink.llc/labs/
 
 ## Frequently asked questions
