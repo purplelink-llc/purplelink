@@ -145,6 +145,11 @@ python3 scripts/gen_llms_full.py
 step "regenerate blog feed"
 python3 scripts/gen_blog_feed.py
 
+# 2b4. Site search index
+# Titles, descriptions and headings of the indexable pages, for /search/.
+step "regenerate search index"
+python3 scripts/gen_search_index.py
+
 # 2c. Share images
 # A page whose og:image file doesn't exist shares with no picture; stop here
 # rather than ship it.

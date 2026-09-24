@@ -10,7 +10,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=69651e3e87">
+    <link rel="stylesheet" href="/styles.css?v=d19f7b147a">
     <script src="/site.js?v=a0fb1ae447" defer></script>
   </head>
   <body>
@@ -34,7 +34,11 @@
     <main id="main-content" class="not-found">
       <p class="error-code">404</p>
       <h1>Nothing here.</h1>
-      <p>That page doesn't exist, or it moved. These are the places most people are looking for:</p>
+      <p>That page doesn't exist, or it moved. Search for it, or start from one of the places most people are looking for:</p>
+      <form class="search-form not-found-search" action="/search/" method="get" role="search">
+        <label class="visually-hidden" for="nf-q">Search the site</label>
+        <input type="search" id="nf-q" name="q" placeholder="Search tools, guides and products" autocomplete="off">
+      </form>
       <ul class="not-found-links">
         <li><a href="/tools/latex-to-pdf/"><strong>LaTeX to PDF</strong><span>Compile a .tex file online, free</span></a></li>
         <li><a href="/tools/bib-validator/"><strong>BibTeX Validator</strong><span>Check a .bib file for errors and fake citations</span></a></li>
@@ -94,6 +98,7 @@
             <li><a href="/blog/digest/">Daily Digest</a></li>
             <li><a href="/desk/">Research desk</a></li>
             <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
           </ul>
         </nav>
         <nav class="footer-col" aria-label="Company">

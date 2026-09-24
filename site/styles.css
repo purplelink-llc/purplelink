@@ -4444,3 +4444,24 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   .field-checks { grid-template-columns: 1fr; }
 }
 .field-closing h2 { text-wrap: balance; }
+
+/* ─── Site search ─────────────────────────────────────────────────────── */
+
+.search-page { max-width: 760px; margin: 0 auto; padding: clamp(40px, 7vw, 80px) 24px; }
+.search-page h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 18px; }
+.search-form input[type="search"] { width: 100%; min-height: 54px; padding: 0 20px; border: 1.5px solid var(--line); border-radius: 100px; background: var(--panel); color: var(--ink); font: inherit; font-size: 1.05rem; }
+.search-form input[type="search"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
+.search-status { min-height: 1.4em; margin: 10px 4px 6px; color: var(--muted); font-size: 0.9rem; }
+.search-results { list-style: none; margin: 0; padding: 0; }
+.search-hit { display: flex; flex-direction: column; gap: 3px; padding: 14px 16px; margin: 0 -16px; border-radius: 12px; color: var(--ink); text-decoration: none; }
+.search-hit:hover, .search-hit:focus-visible { background: var(--purple-xlight); }
+.search-hit:focus-visible { outline: 2px solid var(--purple); outline-offset: 0; }
+.search-hit strong { font-size: 1.05rem; }
+.search-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple); }
+.search-desc { color: var(--muted); font-size: 0.92rem; }
+.search-browse { margin-top: 28px; color: var(--muted); font-size: 0.92rem; }
+@media (max-width: 600px) {
+  .search-page { padding-left: 16px; padding-right: 16px; }
+  .search-hit { margin: 0 -8px; padding: 12px 8px; }
+}
+.not-found-search { max-width: 520px; margin: 18px 0 22px; }
