@@ -111,6 +111,18 @@ customer_lifecycle_dict = modal.Dict.from_name("paper-review-lifecycle", create_
 lifecycle_optout_dict = modal.Dict.from_name("paper-review-lifecycle-optout", create_if_missing=True)
 
 
+# Where each single-use tool's buyer uploads (mirrors successPath in
+# netlify/functions/checkout.mjs). Paper Review uses its token link instead.
+PURCHASE_UPLOAD_PATHS = {
+    "cover-letter": "/tools/cover-letter/compose/",
+    "anonymity-check": "/tools/anonymity-check/upload/",
+    "citation-gap": "/tools/citation-gap/upload/",
+    "revision-review": "/tools/paper-review/revision/upload/",
+    "response-review": "/tools/response-review/upload/",
+    "resume-review": "/tools/resume-review/upload/",
+}
+
+
 def _email_key(email: str) -> str:
     """The form an address is compared in: opt-outs are stored under it and
     unsubscribe tokens are signed over it, so "Jane@Uni.edu" and
@@ -2173,6 +2185,33 @@ def web():
                 # this can't fail the purchase itself, just adds a couple
                 # seconds of webhook latency, which Stripe/Netlify tolerate.
                 await _credit_referral(referrer_email, buyer_email)
+
+        # Single purchases: email the upload link, so a buyer who paid on a
+        # phone or closed the tab can come back from any device. Paper Review
+        # redeems its token directly; the other tools redeem the session.
+        if qty == 1 and entry["email"]:
+            try:
+                from latextools import delivery as _delivery
+                import httpx as _httpx
+                from urllib.parse import quote as _q
+                category = product_cfg.get("category", "")
+                if category == "paper-review":
+                    link = f"https://purplelink.llc/tools/paper-review/upload/?direct_token={_q(tokens[0])}"
+                else:
+                    link = f"https://purplelink.llc{PURCHASE_UPLOAD_PATHS.get(category, '/tools/')}?session_id={_q(session_id)}"
+                async with _httpx.AsyncClient(timeout=10.0) as _ec:
+                    _email_result = await _delivery.send_email(
+                        _ec,
+                        to=entry["email"],
+                        subject=f"Your {_delivery._READY_NAMES.get(category, 'purchase')}: link to start",
+                        html=_delivery.html_purchase_link(
+                            product_name=_delivery._READY_NAMES.get(category, "purchase"), link=link),
+                        tags=[{"name": "product", "value": product_key}],
+                    )
+                if _email_result.get("status") != "ok":
+                    logger.warning("purchase link email not sent for session_id=%s: %s", session_id, _email_result)
+            except Exception:
+                logger.exception("purchase link email send failed")
 
         # Volume-pack tokens: email them all immediately
         if qty > 1 and entry["email"]:

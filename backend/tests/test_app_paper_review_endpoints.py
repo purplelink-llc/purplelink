@@ -2136,3 +2136,19 @@ def test_sweep_deletes_finished_and_unsubscribed_entries(client, monkeypatch):
     backend_app.lifecycle_email_sweep.local()
     assert d.get("done") is None and d.get("trial-converted") is None and d.get("gone") is None
     assert d.get("recent") is not None and d.get("waiting") is not None
+
+
+def test_single_purchase_emails_a_link_to_start(client, monkeypatch):
+    http, backend_app = client
+    sent = _no_send(monkeypatch)
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "s")
+    h = {"x-webhook-secret": "s"}
+    r = http.post("/paper-review/register-token", headers=h, json={
+        "session_id": "cs_pr", "product": "paper-review-standard", "email": "a@b.com", "amount_paid": 900})
+    tok = r.json()["tokens"][0]
+    r = http.post("/paper-review/register-token", headers=h, json={
+        "session_id": "cs_cl", "product": "cover-letter", "email": "a@b.com", "amount_paid": 200})
+    links = [m for m in sent if "link to start" in m["subject"]]
+    assert len(links) == 2
+    assert f"/tools/paper-review/upload/?direct_token={tok}" in links[0]["html"]
+    assert "/tools/cover-letter/compose/?session_id=cs_cl" in links[1]["html"]

@@ -280,6 +280,32 @@ def html_review_ready(
 """
 
 
+def html_purchase_link(*, product_name: str, link: str) -> str:
+    """Sent at purchase for single-use tools, so a buyer who paid on one
+    device, or closed the tab, can upload later from another."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Your {_html.escape(product_name)} is paid for</h2>
+  <p>Thanks for your purchase. When you are ready, open this link to start:
+  upload your file or paste your text. It works on any device, and you can
+  use it once within 7 days.</p>
+  <p>
+    <a href="{_html.escape(link)}"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 12px 22px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Open my purchase
+    </a>
+  </p>
+  <p style="color: #555; font-size: 0.9em;">Keep this email until you have
+  used the link. Anyone with it can use your purchase.</p>
+  <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
+  <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC. Questions:
+  reply to this email.</p>
+</div>
+"""
+
+
 def html_volume_pack_tokens(*, tokens: list[str], pack_size: int) -> str:
     rows = "".join(
         f'<tr><td style="padding:6px 10px;border:1px solid #eee;font-family:monospace;font-size:13px;">{t}</td>'
