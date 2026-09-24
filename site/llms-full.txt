@@ -191,6 +191,8 @@ Reading the literature
 
 Scholar Utility Belt in Chrome, and the Daily Digest.
 
+Buying for a lab or department? See volume pricing, invoices and data handling.
+
 Looking for books on writing, LaTeX or statistics? See the research desk.
 
 Not sure, or want something that isn't here? Email ben@purplelink.llc. I read and answer every message.
@@ -318,6 +320,18 @@ UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
 Current version1.3.0: a visual Table Editor, after 1.2.0's TikZ Designer. Changelog
 
+### Six releases since launch on September 4
+
+- Sep 131.3.0Table Editor: paste from a spreadsheet, get booktabs LaTeX.
+
+- Sep 121.2.0TikZ Designer: draw the diagram, get the code.
+
+- Sep 121.1.0Sync with co-authors, compile one chapter, formatting shortcuts.
+
+- Sep 111.0.2A free seven-day trial.
+
+Every 1.x update is included in the $10, and the app installs it in place. Full changelog
+
 Coming from Overleaf? What changes when you write locally, or see how the Mac LaTeX editors compare.
 
 Before you install
@@ -339,6 +353,10 @@ ModernTex checks for a new version once a day and offers to install it in place.
 What macOS version is required?
 
 ModernTex requires macOS 14 (Sonoma) or later.
+
+I lost my license key. How do I get it back?
+
+Enter the email address you used at checkout on the Find a purchase page. If it bought ModernTex, a new license key and your download page are emailed to that address. Any key you had before keeps working.
 
 Is there a free trial?
 
@@ -774,7 +792,7 @@ Volume packs
 
 # Buy Paper Reviews in bulk
 
-Built for PIs reviewing student manuscripts and labs running multiple submissions through the pipeline. Each pack is a one-time payment that mints tokens redeemable any time. They don't expire. Tokens are emailed to you on purchase.
+Built for PIs reviewing student manuscripts and labs running multiple submissions through the pipeline. Each pack is a one-time payment that mints tokens redeemable any time. They don't expire. Tokens are emailed to you on purchase. Paying through a department? See invoices and purchase orders.
 
 Choose a pack
 
