@@ -448,6 +448,7 @@ export default async function handler(request) {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-webhook-secret": backendSecret },
           body: JSON.stringify({ session_id: sessionId, email, product: rawProduct }),
+          signal: AbortSignal.timeout(5000),
         });
         if (!r.ok) console.warn("stripe-webhook: lifecycle register failed", r.status);
       } catch (err) {
