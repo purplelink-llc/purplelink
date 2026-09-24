@@ -477,6 +477,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/labs/</loc>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/moderntex/</loc>
     <lastmod>2026-09-24</lastmod>
     <changefreq>monthly</changefreq>
