@@ -79,7 +79,7 @@
       </div>
 
       <article class="post-body">
-        <p><strong>Disclosure:</strong> I'm building one of the apps in this comparison (Haea). I've tried to be honest about where the existing options are strong and what gap I think Haea fills. If on-device privacy isn't a constraint, the analytics-rich cloud options (MyFitnessPal, Strava, etc.) may serve you better — this comparison is only about the privacy-first subset.</p>
+        <p><strong>Disclosure:</strong> I'm building one of the apps in this comparison (Haea). I've tried to be honest about where the existing options are strong and what gap I think Haea fills. If on-device privacy isn't a constraint, the analytics-rich cloud options (MyFitnessPal, Strava, etc.) may serve you better. This comparison is only about the privacy-first subset.</p>
 
         <h2>What "on-device" actually means</h2>
         <p>The phrase is overused in app marketing. For this comparison, "on-device" means: your health data is stored on your iPhone, never transmitted to the developer's servers, and any analysis happens locally. There are degrees: some apps are fully on-device (no network calls related to your data), others sync via Apple's CloudKit (still your iCloud, not the developer's). Both qualify; cloud-hosted health platforms (MyFitnessPal, Fitbit's app, most weight-loss services) do not.</p>
@@ -88,13 +88,13 @@
         <p><strong>Cost:</strong> Free. <strong>Platform:</strong> iOS, comes with every iPhone.</p>
         <p>Apple Health is the foundation. It collects sleep, steps, heart rate, HRV, workouts, weight, and a long list of other measurements either from the iPhone's sensors, from an Apple Watch, or from third-party apps that write into HealthKit. All of it is stored on-device with optional end-to-end encrypted iCloud sync.</p>
         <p><strong>Strengths:</strong> the most permissive integration target. Anything that integrates with HealthKit can read from and write to your Apple Health store. Full data export available. No third-party server involved.</p>
-        <p><strong>Limitations:</strong> the analytics layer is thin. Apple shows trends and summaries but doesn't surface deeper patterns — no correlation between sleep and HRV, no circadian rhythm insights, no causal inference between nutrition and energy.</p>
+        <p><strong>Limitations:</strong> the analytics layer is thin. Apple shows trends and summaries but doesn't surface deeper patterns: no correlation between sleep and HRV, no circadian rhythm insights, no causal inference between nutrition and energy.</p>
 
         <h2>Bearable</h2>
         <p><strong>Cost:</strong> Free tier + Premium ~$5/mo. <strong>Platform:</strong> iOS + Android.</p>
         <p>Bearable is a symptom-tracking app aimed at people managing chronic conditions. The model is: track factors (sleep, food, mood, medication, weather) and symptoms over time, then surface correlations.</p>
         <p><strong>Strengths:</strong> excellent for chronic-condition tracking. Very flexible custom factor / symptom definitions. Correlation finder is genuinely useful for identifying triggers.</p>
-        <p><strong>Limitations:</strong> data lives on Bearable's servers by default (with an export option, but cloud-first). Less helpful for general analytics — it's built around symptom triggers, not fitness/wellness patterns.</p>
+        <p><strong>Limitations:</strong> data lives on Bearable's servers by default (with an export option, but cloud-first). Less helpful for general analytics: it's built around symptom triggers, not fitness/wellness patterns.</p>
 
         <h2>Welltory</h2>
         <p><strong>Cost:</strong> Free tier + Premium ~$10/mo.</p>
@@ -105,7 +105,7 @@
         <h2>Haea (in development)</h2>
         <p><strong>Cost:</strong> Free tier + Premium ($1.99/mo or $14.99/yr). <strong>Platform:</strong> iOS 17+. <strong>Status:</strong> 2026 expected launch.</p>
         <p>Haea is the app I'm building to fill what I think is a missing position: a deep-analytics health app where the analysis is fully on-device. Reads from Apple Health (HealthKit), processes everything locally, surfaces patterns through Kalman-filtered weight smoothing, TDEE calculation, circadian rhythm modeling, Granger causality between factors, and a one-line morning summary.</p>
-        <p><strong>Why a new entry:</strong> the existing options force a trade-off. Apple Health is on-device but the analytics are basic. Bearable and Welltory have richer analytics but require cloud sync. Haea aims to give you both — the analytical depth of a paid health platform with the privacy posture of Apple Health, without compromise.</p>
+        <p><strong>Why a new entry:</strong> the existing options force a trade-off. Apple Health is on-device but the analytics are basic. Bearable and Welltory have richer analytics but require cloud sync. Haea aims to give you both: the analytical depth of a paid health platform with the privacy posture of Apple Health, without compromise.</p>
         <p><strong>How "on-device" is verifiable for Haea:</strong> the app makes zero network calls related to your health data. The only network activity is the in-app purchase flow (Apple's, not ours) and a possible launch crash-report payload (anonymized, no health data). The architecture is observable in the app's network behavior.</p>
 
         <h2>Quick comparison</h2>
@@ -134,7 +134,7 @@
 
       <section class="waitlist-section">
         <p class="eyebrow">Coming to the App Store</p>
-        <h2>Haea — health analytics that stays on your phone</h2>
+        <h2>Haea: health analytics that stays on your phone</h2>
         <p>Add your email and you'll get one message the day Haea hits the App Store. Nothing else.</p>
         <form class="waitlist-form" name="waitlist-haea" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="waitlist-haea">

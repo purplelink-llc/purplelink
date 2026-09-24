@@ -86,7 +86,7 @@
           "mainEntity": [
         { "@type": "Question", "name": "What is latexdiff?", "acceptedAnswer": { "@type": "Answer", "text": "latexdiff is a tool that compares two LaTeX source files and produces a marked-up version showing additions (underlined) and deletions (struck through) as a compilable PDF." } },
         { "@type": "Question", "name": "Why do my tables break in the diff?", "acceptedAnswer": { "@type": "Answer", "text": "latexdiff can corrupt tabular environments. Our diff tool treats tables as opaque blocks to avoid Missing cr errors and table corruption." } },
-        { "@type": "Question", "name": "Do I need to install anything?", "acceptedAnswer": { "@type": "Answer", "text": "No. The free diff tool runs latexdiff in the cloud - upload your two .tex files and download the marked-up PDF. Your files are never stored." } },
+        { "@type": "Question", "name": "Do I need to install anything?", "acceptedAnswer": { "@type": "Answer", "text": "No. The free diff tool runs latexdiff in the cloud: upload your two .tex files and download the marked-up PDF. Your files are never stored." } },
         { "@type": "Question", "name": "How are additions and deletions shown?", "acceptedAnswer": { "@type": "Answer", "text": "Added text is underlined and typically blue; deleted text is struck through and typically red. The result is a normal PDF a reviewer can read." } }
           ]
         },
@@ -135,7 +135,7 @@
       </div>
 
       <article class="post-body">
-        <p>When you submit a revision, editors usually ask for a version that highlights what changed. In Word that's Track Changes; in LaTeX the equivalent is <code>latexdiff</code>, which compares two <code>.tex</code> files and produces a marked-up PDF. Our free <a href="/tools/latex-diff/">LaTeX diff tool</a> runs it for you - upload the old and new versions and get the annotated PDF back.</p>
+        <p>When you submit a revision, editors usually ask for a version that highlights what changed. In Word that's Track Changes; in LaTeX the equivalent is <code>latexdiff</code>, which compares two <code>.tex</code> files and produces a marked-up PDF. Our free <a href="/tools/latex-diff/">LaTeX diff tool</a> runs it for you: upload the old and new versions and get the annotated PDF back.</p>
         <h2>What latexdiff marks</h2>
         <ul>
           <li><strong>Added text</strong> is underlined (and usually shown in blue).</li>
@@ -150,7 +150,7 @@
         </ol>
         <h2>Common pitfalls</h2>
         <ul>
-          <li><strong>Tables can corrupt.</strong> latexdiff sometimes mangles <code>tabular</code> environments. Good tools treat tables as opaque blocks to avoid "Missing \cr" errors - ours does.</li>
+          <li><strong>Tables can corrupt.</strong> latexdiff sometimes mangles <code>tabular</code> environments. Good tools treat tables as opaque blocks to avoid "Missing \cr" errors. Ours does.</li>
           <li><strong>Moved blocks look like delete + add.</strong> If you relocate a paragraph, it shows as removed in one place and added in another.</li>
           <li><strong>Heavy macro use</strong> can confuse the diff; flatten complex macros if the output looks wrong.</li>
         </ul>
@@ -161,7 +161,7 @@
         <h2>Frequently asked questions</h2>
         <details><summary>What is latexdiff?</summary><div class="faq-body">latexdiff is a tool that compares two LaTeX source files and produces a marked-up version showing additions (underlined) and deletions (struck through) as a compilable PDF.</div></details>
         <details><summary>Why do my tables break in the diff?</summary><div class="faq-body">latexdiff can corrupt tabular environments. Our <a href="/tools/latex-diff/">diff tool</a> treats tables as opaque blocks to avoid "Missing \cr" errors and table corruption.</div></details>
-        <details><summary>Do I need to install anything?</summary><div class="faq-body">No. The free diff tool runs latexdiff in the cloud - upload your two .tex files and download the marked-up PDF. Your files are never stored.</div></details>
+        <details><summary>Do I need to install anything?</summary><div class="faq-body">No. The free diff tool runs latexdiff in the cloud: upload your two .tex files and download the marked-up PDF. Your files are never stored.</div></details>
         <details><summary>How are additions and deletions shown?</summary><div class="faq-body">Added text is underlined and typically blue; deleted text is struck through and typically red. The result is a normal PDF a reviewer can read.</div></details>
       </section>
 
@@ -171,7 +171,7 @@
         <h2>Writing LaTeX on a Mac?</h2>
         <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.</p>
         <div class="waitlist-actions">
-          <a class="btn btn-primary" href="/moderntex/">Get ModernTex &mdash; $10</a>
+          <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($10)</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
         </div>
         <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account.</p>
