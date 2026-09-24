@@ -3187,6 +3187,27 @@ button.btn-coming-soon:focus-visible {
 
 .catalog-card-cta { font-size: 0.88rem; font-weight: 600; color: var(--purple); margin-top: 6px; }
 
+/* Research desk book cards: the cover is the first thing a reader recognises,
+   and the edition line says exactly which printing the link opens. */
+.desk-cover {
+  align-self: flex-start;
+  width: auto;
+  height: 120px;
+  margin-bottom: 6px;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px oklch(0% 0 0 / 0.18), 0 6px 16px oklch(0% 0 0 / 0.14);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.desk-book:hover .desk-cover { transform: translateY(-3px); }
+
+.desk-edition { font-size: 0.82rem; color: var(--muted); margin-top: -4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-cover { transition: none; }
+  .desk-book:hover .desk-cover { transform: none; }
+}
+
 .catalog-card-lead { grid-row: span 2; background: var(--panel); }
 .catalog-card-lead h3 { font-size: 2rem; }
 
