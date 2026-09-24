@@ -218,3 +218,75 @@
   trial.classList.replace("btn-primary", "btn-ghost");
   trial.parentNode.insertBefore(buy, trial);
 })();
+
+// Remembered choices. A control marked data-remember="<key>" keeps its last
+// value in localStorage: the LaTeX engine, the Word style, the Paper Review
+// tier and field. Restored after every deferred page script has run, with a
+// change event, so each page's own handlers (prices, labels) see the value.
+// Storage can be missing or throw (private windows); the page works without it.
+(() => {
+  const KEY = "pl_prefs";
+  let prefs = {};
+  try { prefs = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { prefs = {}; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch (e) { /* ignore */ } };
+
+  const restore = () => {
+    document.querySelectorAll("select[data-remember]").forEach((sel) => {
+      const k = sel.dataset.remember;
+      const v = prefs[k];
+      if (v && sel.value !== v && [...sel.options].some((o) => o.value === v)) {
+        sel.value = v;
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      sel.addEventListener("change", () => { prefs[k] = sel.value; save(); });
+    });
+
+    document.querySelectorAll('input[type="radio"][data-remember]').forEach((radio) => {
+      const k = radio.dataset.remember;
+      if (prefs[k] === radio.value && !radio.checked) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      radio.addEventListener("change", () => { if (radio.checked) { prefs[k] = radio.value; save(); } });
+    });
+  };
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", restore);
+  else restore();
+})();
+
+// Recently used tools. Each visit to a tool page is remembered (last six, in
+// this browser only), and pages with a [data-recent-tools] slot list them so a
+// returning visitor is one click from the tool they came back for.
+(() => {
+  const KEY = "pl_recent_tools";
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem(KEY) || "[]") || []; } catch (e) { list = []; }
+  if (!Array.isArray(list)) list = [];
+
+  const m = location.pathname.match(/^\/tools\/([a-z0-9-]+)\/$/);
+  const h1 = document.querySelector(".tools-hero h1");
+  if (m && h1) {
+    const href = "/tools/" + m[1] + "/";
+    const title = h1.textContent.replace(/\s+/g, " ").trim().slice(0, 60);
+    list = [{ href, title }].concat(list.filter((t) => t && t.href !== href)).slice(0, 6);
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) { /* ignore */ }
+  }
+
+  document.querySelectorAll("[data-recent-tools]").forEach((slot) => {
+    const items = list.filter((t) => t && typeof t.href === "string" && /^\/tools\/[a-z0-9-]+\/$/.test(t.href) && t.href !== location.pathname);
+    if (!items.length) return;
+    const label = document.createElement("span");
+    label.className = "recent-tools-label";
+    label.textContent = "Recently used";
+    slot.appendChild(label);
+    items.forEach((t) => {
+      const a = document.createElement("a");
+      a.className = "tool-chip";
+      a.href = t.href;
+      a.textContent = t.title;
+      slot.appendChild(a);
+    });
+    slot.hidden = false;
+  });
+})();
