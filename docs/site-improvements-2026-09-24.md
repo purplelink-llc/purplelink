@@ -17,6 +17,8 @@ retention work is `docs/growth-proposals-2026-09.md`.
    - deadline reminders from the checklist and template pages
      (`/lifecycle/deadline`, backend)
    - the "link to start" email for single purchases (backend)
+   - the "still waiting" reminder for purchases unused after two days
+   - the feedback page (`/feedback`, `/feedback/list`)
 2. **Stripe: pack buyers purged earlier.** Before the expiry fix, the weekly
    sweep deleted volume-pack entries after 7 days. Check Stripe for 5-pack and
    20-pack sessions older than a week and reissue unused tokens by hand
@@ -102,6 +104,14 @@ retention work is `docs/growth-proposals-2026-09.md`.
    Widening it is a one-line change in `paper_review_register_token`; the
    page and FAQ copy would need the same change.
 
+17. **Read the feedback, then use it.** Ratings and comments from
+   `/feedback/` show in the sales dashboard's lifecycle block, and in full
+   with:
+   `curl -H "x-webhook-secret: $BACKEND_WEBHOOK_SECRET" https://ben-ampel--purplelink-latextools-web.modal.run/feedback/list`.
+   Entries with `quote_ok: true` may be quoted with the name and field
+   given. A few real quotes on /tools/paper-review/ and the homepage would
+   be the site's first testimonials; none were written for you.
+
 ## What changed
 
 ### Look and navigation
@@ -168,6 +178,13 @@ retention work is `docs/growth-proposals-2026-09.md`.
 - The privacy page describes each of these.
 
 ### Later additions
+- `/feedback/`: one-click rating from the review-request email and the
+  status page, then an optional comment with permission to quote.
+- Paid purchases still unused two days in get one reminder with the link.
+- Seven free tools show a one-line next step under their result; the
+  BibTeX Validator's depends on whether CrossRef was checked.
+- Ten guides and posts about free tools now end with the paid product
+  that fits.
 - `/pricing/`: every price on one page, linked from the footer,
   /products/, /tools/ and llms.txt.
 - Deadline reminder: the submission checklist and each template page
