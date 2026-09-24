@@ -207,16 +207,24 @@
   }
 })();
 
-// ModernTex: someone who pressed "Buy" inside the trial app (?from=trial) already
-// has the trial, so lead with the buy button instead of offering the trial again.
+// ModernTex: someone who pressed "Buy" inside the trial app (?from=trial), or
+// who downloaded the trial from this browser in the last 14 days, already has
+// it, so lead with the buy button instead of offering the trial again.
 (() => {
-  if (new URLSearchParams(location.search).get("from") !== "trial") return;
+  let recent = false;
+  try {
+    const at = Number(localStorage.getItem("pl_mtx_trial") || 0);
+    recent = at > 0 && Date.now() - at < 14 * 86400000;
+  } catch (e) { /* storage blocked */ }
+  const fromApp = new URLSearchParams(location.search).get("from") === "trial";
+  if (!fromApp && !recent) return;
   const buy = document.getElementById("checkout-btn");
   const trial = document.getElementById("trial-download");
   if (!buy || !trial) return;
   buy.classList.replace("btn-ghost", "btn-primary");
   trial.classList.replace("btn-primary", "btn-ghost");
   trial.parentNode.insertBefore(buy, trial);
+  if (!fromApp) trial.textContent = "Download the trial again";
 })();
 
 // Remembered choices. A control marked data-remember="<key>" keeps its last
@@ -421,7 +429,10 @@
       const scope = a.closest("section, .app-hero-copy") || document;
       const form = scope.querySelector("[data-trial-signup]") || forms[0];
       form.hidden = false;
-      if (onMac || a.dataset.anyway) return;
+      if (onMac || a.dataset.anyway) {
+        try { localStorage.setItem("pl_mtx_trial", String(Date.now())); } catch (err) { /* ignore */ }
+        return;
+      }
       // A disk image is no use on a phone or a PC: offer to send the link
       // to open on the Mac instead, with the download still one tap away.
       e.preventDefault();
