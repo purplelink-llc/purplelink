@@ -2619,7 +2619,7 @@ dd {
   font-family: 'Fraunces', serif;
   font-size: clamp(5rem, 12vw, 9rem);
   font-weight: 800;
-  color: var(--purple-light);
+  color: var(--purple);
   line-height: 1;
   margin-bottom: 0.25rem;
 }
