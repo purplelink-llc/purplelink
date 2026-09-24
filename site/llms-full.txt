@@ -59,7 +59,7 @@ Start a review →
 
 $6
 
-### Response Review
+### Response to Reviewers
 
 A reviewer panel reads your response letter against the original comments and flags missing or hand-waved replies.
 
@@ -67,7 +67,7 @@ Check my response →
 
 $3
 
-### Citation Gap
+### Citation Gap Analysis
 
 Finds prior work the manuscript should cite and doesn't, with a reason for each.
 
@@ -177,11 +177,11 @@ Paper Review. It includes the Anonymity Check. Add a Cover Letter for $2.
 
 Submitting to a double-blind venue on a budget
 
-Anonymity Check and Citation Gap, $5 together.
+Anonymity Check and Citation Gap Analysis, $5 together.
 
 Revise and resubmit
 
-Revision Review for the manuscript and Response Review for the letter.
+Revision Review for the manuscript and Response to Reviewers for the letter.
 
 Keeping track of where everything is
 
@@ -1700,7 +1700,7 @@ Free web tool
 
 Upload a .tex file or a project .zip (figures, .bib, .sty included) and download a compiled PDF. Your files are processed in memory and never stored.
 
-Drag a .tex file or project .zip here, or click to choose. Max 5 MB (.tex) / 10 MB (.zip).
+Drag a .tex file or project .zip here, or choose one. Max 5 MB (.tex) / 10 MB (.zip).
 
 Engine:
 
@@ -1711,7 +1711,7 @@ Accepts a single .tex or a project .zip with main.tex at the root. Files are nev
 
 ## How to compile LaTeX to PDF online
 
-- Single file: drag your .tex onto the upload area, or click to choose it (up to 5 MB).
+- Single file: drag your .tex onto the upload area, or choose it (up to 5 MB).
 
 - Multi-file project: zip your project with main.tex at the root (the same layout Overleaf exports) and upload the .zip (up to 10 MB).
 
@@ -1762,7 +1762,7 @@ Free web tool
 
 Upload or paste a .bib file to check syntax, missing fields, dead DOIs, and verify your citations actually exist, including author and year correctness. Download a corrected .bib where CrossRef returns a confident match. Useful for catching AI-hallucinated references. Files are never stored.
 
-Drag a .bib file here, or click to choose. Max 2 MB.
+Drag a .bib file here, or choose one. Max 2 MB.
 
 Paste up to 2 MB of BibTeX directly. Same checks, no file needed.
 
@@ -1820,7 +1820,7 @@ article, book, inproceedings, proceedings, phdthesis, mastersthesis, techreport,
 
 ## The other kind of citation problem
 
-A clean .bib fixes citations that are malformed. It cannot tell you about a citation that is well-formed and does not support the sentence attached to it. Paper Review reads it the way a referee would: four reviewer personas argue over the manuscript, every citation is checked against the live record, and figures are scanned for integrity problems. The report comes back in about ten minutes.
+A clean .bib fixes citations that are malformed. It cannot tell you about a citation that is well-formed and does not support the sentence attached to it. Paper Review reads it the way a referee would: four reviewer personas argue over the manuscript, every citation is checked against the live record, and figures are scanned for integrity problems. The report usually comes back in 4 to 8 minutes.
 
 From $9 per review, Anonymity Check bundled free. See what the report covers →
 
