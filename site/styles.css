@@ -4315,3 +4315,5 @@ html { scroll-padding-top: 96px; }
 .compile-log { margin-top: 0.75rem; }
 .compile-log summary { cursor: pointer; font-size: 0.85rem; color: var(--muted); }
 .compile-log pre { font-size: 0.72rem; white-space: pre-wrap; overflow-x: auto; max-height: 22rem; overflow-y: auto; background: oklch(14% 0.02 310); color: oklch(88% 0.01 310); padding: 0.75rem; border-radius: 6px; margin-top: 0.4rem; }
+.report-more { display: inline-block; margin-top: 14px; color: var(--purple); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+.report-more:hover { text-decoration: underline; }
