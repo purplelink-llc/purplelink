@@ -6,6 +6,9 @@
 <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* The card is rendered on its own, without styles.css, so declare the faces here. */
+  @font-face { font-family: 'Fraunces'; font-weight: 300 900; src: url('/assets/fonts/fraunces-latin.woff2') format('woff2'); }
+  @font-face { font-family: 'Plus Jakarta Sans'; font-weight: 400 700; src: url('/assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2'); }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { width: 1200px; height: 630px; overflow: hidden; }
   .card {
@@ -73,11 +76,19 @@
       "word-counter":      { emoji: "🔢", title: "Word Counter",      tagline: "Live word, character, sentence & reading-time stats." },
       "file-to-markdown":  { emoji: "📝", title: "File to Markdown",  tagline: "Convert PDF, Word, PowerPoint, Excel, HTML & CSV to clean Markdown." },
       "vitae":             { emoji: "§",  title: "Vitae", tagline: "Your CV, submissions, grants and tenure case, tracked on your Mac.", kicker: "Free Mac app", foot: "Free · Local-first · Your data stays on your Mac" },
+      "paper-review":      { emoji: "", title: "Paper Review", tagline: "Four AI reviewers read your manuscript before the journal does.", kicker: "Pre-submission review · from $9", foot: "No account · Nothing kept after delivery" },
+      "anonymity-check":   { emoji: "", title: "Anonymity Check", tagline: "Find what gives authors away before double-blind review.", kicker: "Before you submit · $2", foot: "No account · Nothing kept after delivery" },
+      "citation-gap":      { emoji: "", title: "Citation Gap", tagline: "Find the prior work your manuscript should cite and doesn't.", kicker: "Before you submit · $3", foot: "No account · Nothing kept after delivery" },
+      "cover-letter":      { emoji: "", title: "Cover Letter", tagline: "A journal cover letter drafted from your abstract and target venue.", kicker: "Before you submit · $2", foot: "No account · Nothing kept after delivery" },
+      "response-review":   { emoji: "", title: "Response Review", tagline: "A reviewer panel reads your response letter before the editor does.", kicker: "Before you resubmit · $6", foot: "No account · Nothing kept after delivery" },
+      "pdf-structure":     { emoji: "", title: "PDF to Structured Data", tagline: "Reading-order Markdown and RAG-ready JSON from any PDF.", kicker: "Free tool" },
+      "why-it-matters":    { emoji: "", title: "Why it matters", tagline: "The methodology problems peer reviewers flag, and how to fix them.", kicker: "Research methods", foot: "Free guides for academic authors" },
       "brand":             { emoji: "✦",  title: "Purplelink",       tagline: "macOS & iOS apps, applied AI, and free tools for academics.", kicker: "Purplelink LLC" }
     };
     window.renderTool = function (key) {
       var t = TOOLS[key];
       document.getElementById("emoji").textContent = t.emoji;
+      document.getElementById("emoji").hidden = !t.emoji;
       document.getElementById("kicker").textContent = t.kicker || "Free LaTeX tool";
       document.getElementById("title").textContent = t.title;
       document.getElementById("tagline").textContent = t.tagline;
