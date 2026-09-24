@@ -198,7 +198,7 @@ export default async function handler(request) {
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}`)
+    .update(`v2:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -206,7 +206,14 @@ export default async function handler(request) {
   const mode = entry.mode || "payment";
   const params = {
     mode,
+    // Instant methods only. Card also carries Apple Pay and Google Pay; Link
+    // is Stripe's saved-card wallet. Delayed methods (bank debits) would
+    // complete with payment_status "unpaid", and stripe-webhook only delivers
+    // on "paid" and never handles checkout.session.async_payment_succeeded.
     "payment_method_types[0]": "card",
+    "payment_method_types[1]": "link",
+    // Lets a buyer enter a promotion code created in the Stripe dashboard.
+    allow_promotion_codes: "true",
     "line_items[0][price]": priceId,
     "line_items[0][quantity]": "1",
     success_url: `${origin}${entry.successPath}?session_id={CHECKOUT_SESSION_ID}`,
