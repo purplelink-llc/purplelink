@@ -125,10 +125,44 @@
         <p>Four AI reviewers read your manuscript the way a journal panel would and quote the passages they question, so you can fix what a reviewer would flag before you submit. Four-persona adversarial debate, live citation cross-check, figure-integrity scan. Delivered in under 10 minutes.</p>
       </div>
 
+
+      <fieldset class="pr-tier-pick">
+        <legend>Choose a tier</legend>
+        <label class="pr-tier-option">
+          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-standard" checked>
+          <span class="pr-tier-content">
+            <span class="pr-tier-head"><strong>Standard</strong> · <em>$9</em></span>
+            <span class="pr-tier-desc">Single-pass four-persona review, figure scan, and live citation check. Markdown report and annotated PDF.</span>
+          </span>
+        </label>
+        <label class="pr-tier-option">
+          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-journal">
+          <span class="pr-tier-content">
+            <span class="pr-tier-head"><strong>Standard + Journal Pack</strong> · <em>$11</em></span>
+            <span class="pr-tier-desc">Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.).</span>
+          </span>
+        </label>
+        <label class="pr-tier-option pr-tier-premium">
+          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-deep">
+          <span class="pr-tier-content">
+            <span class="pr-tier-head"><strong>Deep Review</strong> · <em>$15</em></span>
+            <span class="pr-tier-desc">Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.</span>
+          </span>
+        </label>
+      </fieldset>
+      <p class="pr-packs-hint">Reviewing more than one manuscript? <a href="/tools/paper-review/packs/">Volume packs</a> save 16-17% per review.</p>
+
+      <div class="pr-checkout-row">
+        <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn">Start review — $9</button>
+        <p class="pr-checkout-meta">Secure checkout via Stripe. One-time payment, no subscription.</p>
+        <p class="pr-trust-line"><strong>Nothing is kept after delivery.</strong> The review is deleted from our servers the moment you retrieve it, and if a result reads as low-quality we'll refund the price. Advisory only, you decide what to change.</p>
+      </div>
+      <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+
       <section class="pr-sample">
         <h2 class="pr-sample-heading">Sample report</h2>
-        <details>
-          <summary>What does the report look like? <span class="pr-sample-toggle">View sample</span></summary>
+        <details open>
+          <summary>What does the report look like? <span class="pr-sample-toggle">Show or hide</span></summary>
           <div class="pr-sample-body">
             <pre>
 # Manuscript Review
@@ -197,39 +231,6 @@ _5 citations with weaker claims were not audited (per-run cap)._
           </div>
         </details>
       </section>
-
-      <fieldset class="pr-tier-pick">
-        <legend>Choose a tier</legend>
-        <label class="pr-tier-option">
-          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-standard" checked>
-          <span class="pr-tier-content">
-            <span class="pr-tier-head"><strong>Standard</strong> · <em>$9</em></span>
-            <span class="pr-tier-desc">Single-pass four-persona review, figure scan, and live citation check. Markdown report and annotated PDF.</span>
-          </span>
-        </label>
-        <label class="pr-tier-option">
-          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-journal">
-          <span class="pr-tier-content">
-            <span class="pr-tier-head"><strong>Standard + Journal Pack</strong> · <em>$11</em></span>
-            <span class="pr-tier-desc">Standard review plus a compliance check against your target journal (25+ supported: Nature, NeurIPS, Cell, JACS, Lancet, etc.).</span>
-          </span>
-        </label>
-        <label class="pr-tier-option pr-tier-premium">
-          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-deep">
-          <span class="pr-tier-content">
-            <span class="pr-tier-head"><strong>Deep Review</strong> · <em>$15</em></span>
-            <span class="pr-tier-desc">Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.</span>
-          </span>
-        </label>
-      </fieldset>
-      <p class="pr-packs-hint">Reviewing more than one manuscript? <a href="/tools/paper-review/packs/">Volume packs</a> save 16-17% per review.</p>
-
-      <div class="pr-checkout-row">
-        <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn">Start review — $9</button>
-        <p class="pr-checkout-meta">Secure checkout via Stripe. One-time payment, no subscription.</p>
-        <p class="pr-trust-line"><strong>Nothing is kept after delivery.</strong> The review is deleted from our servers the moment you retrieve it, and if a result reads as low-quality we'll refund the price. Advisory only, you decide what to change.</p>
-      </div>
-      <p class="tool-status" id="checkout-status" aria-live="polite"></p>
 
       <section class="pr-layers">
         <h2>How the review works</h2>
