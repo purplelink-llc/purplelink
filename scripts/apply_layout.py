@@ -73,6 +73,7 @@ FOOTER_COLUMNS = [
         ("Reference formats", "/format/"),
         ("Blog", "/blog/"),
         ("Daily Digest", "/blog/digest/"),
+        ("Research desk", "/desk/"),
         ("Changelog", "/changelog/"),
     ]),
     ("Company", [
