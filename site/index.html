@@ -6,17 +6,16 @@
     <meta name="robots" content="index, follow">
 
     <!-- Primary meta -->
-    <title>Purplelink LLC - macOS &amp; iOS App Development | Atlanta, GA</title>
-    <meta name="description" content="Purplelink LLC builds native macOS apps, iOS apps, applied AI tools, and web automation services. A custom software studio based in Atlanta, Georgia.">
-    <meta name="keywords" content="macOS app development, iOS app development, custom software, applied AI tools, web automation, Atlanta software company, Swift development, Apple platform apps">
+    <title>Purplelink: LaTeX Editor for Mac, AI Paper Review and Free LaTeX Tools</title>
+    <meta name="description" content="Mac apps and manuscript tools for academic researchers: ModernTex, a $10 native LaTeX editor; Paper Review, an AI pre-submission review from $9; Vitae, a free academic record app; and free LaTeX and BibTeX tools.">
     <meta name="author" content="Purplelink LLC">
     <link rel="canonical" href="https://purplelink.llc/">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Purplelink LLC">
-    <meta property="og:title" content="Purplelink LLC - macOS &amp; iOS App Development">
-    <meta property="og:description" content="Native macOS apps, iOS apps, applied AI tools, and web automation services. Custom software built with craft in Atlanta, Georgia.">
+    <meta property="og:title" content="Purplelink: Mac apps and manuscript tools for researchers">
+    <meta property="og:description" content="ModernTex, a native LaTeX editor for Mac. Paper Review, an AI read of your manuscript before a journal sees it. Vitae, and free LaTeX tools.">
     <meta property="og:url" content="https://purplelink.llc/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta property="og:image:width" content="1200">
@@ -26,8 +25,8 @@
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Purplelink LLC - macOS &amp; iOS App Development">
-    <meta name="twitter:description" content="Native macOS apps, iOS apps, applied AI tools, and web automation services. Custom software built with craft in Atlanta, Georgia.">
+    <meta name="twitter:title" content="Purplelink: Mac apps and manuscript tools for researchers">
+    <meta name="twitter:description" content="ModernTex, a native LaTeX editor for Mac. Paper Review, an AI read of your manuscript before a journal sees it. Vitae, and free LaTeX tools.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:image:alt" content="Purplelink LLC — making software that lasts.">
 
@@ -43,7 +42,7 @@
           "legalName": "Purplelink LLC",
           "url": "https://purplelink.llc/",
           "logo": "https://purplelink.llc/assets/purplelink-logo.png",
-          "description": "Purplelink LLC is a custom software development company based in Atlanta, Georgia, specializing in native macOS applications, iOS apps, applied AI tools, and web automation services.",
+          "description": "Purplelink LLC is a one-person software studio in Atlanta, Georgia that makes tools for academic researchers: ModernTex (a native macOS LaTeX editor), Paper Review (AI pre-submission manuscript review), Vitae (a macOS academic record app), Scholar Utility Belt (a Chrome extension for Google Scholar) and free LaTeX and BibTeX tools. It also makes the iOS apps GlobePin and Haea.",
           "foundingDate": "2026",
           "address": {
             "@type": "PostalAddress",
@@ -58,13 +57,7 @@
             "email": "ben@purplelink.llc",
             "contactType": "customer inquiries"
           },
-          "member": {
-            "@type": "Person",
-            "name": "Benjamin Ampel",
-            "jobTitle": "CEO",
-            "email": "ben@purplelink.llc",
-            "worksFor": { "@id": "https://purplelink.llc/#organization" }
-          },
+          "founder": { "@id": "https://purplelink.llc/about/#person" },
           "areaServed": "US",
           "sameAs": [
             "https://www.linkedin.com/company/purplelink-llc/",
@@ -73,43 +66,21 @@
             "https://chromewebstore.google.com/detail/scholar-utility-belt/omcogfcgldfmihfogbffflbocdbjockn"
           ],
           "knowsAbout": [
+            "LaTeX",
+            "BibTeX",
+            "Academic writing and peer review",
             "macOS application development",
             "iOS application development",
-            "Swift programming",
-            "Apple platform software",
-            "Applied AI tools",
-            "Web application development",
-            "API integration",
-            "Business automation software"
+            "Applied AI for manuscript review"
           ],
           "hasOfferCatalog": {
             "@type": "OfferCatalog",
-            "name": "Software Services",
+            "name": "Purplelink products",
+            "url": "https://purplelink.llc/products/",
             "itemListElement": [
-              {
-                "@type": "Offer",
-                "itemOffered": {
-                  "@type": "Service",
-                  "name": "Native macOS and iOS App Development",
-                  "description": "Purpose-built applications for macOS and iOS that feel right at home on Apple platforms."
-                }
-              },
-              {
-                "@type": "Offer",
-                "itemOffered": {
-                  "@type": "Service",
-                  "name": "Applied AI Tools",
-                  "description": "Internal and client-facing tools that use AI to automate analysis, writing, research, and software workflows."
-                }
-              },
-              {
-                "@type": "Offer",
-                "itemOffered": {
-                  "@type": "Service",
-                  "name": "Web Applications and Automation",
-                  "description": "Dashboards, portals, integrations, and backend services that connect tools and reduce manual work."
-                }
-              }
+              { "@type": "Offer", "price": "10", "priceCurrency": "USD", "url": "https://purplelink.llc/moderntex/", "itemOffered": { "@type": "SoftwareApplication", "name": "ModernTex", "operatingSystem": "macOS 14+", "applicationCategory": "DeveloperApplication" } },
+              { "@type": "Offer", "price": "9", "priceCurrency": "USD", "url": "https://purplelink.llc/tools/paper-review/", "itemOffered": { "@type": "Service", "name": "Paper Review", "description": "AI pre-submission review of an academic manuscript: four reviewer personas, a CrossRef check of every reference and a figure scan." } },
+              { "@type": "Offer", "price": "0", "priceCurrency": "USD", "url": "https://purplelink.llc/vitae/", "itemOffered": { "@type": "SoftwareApplication", "name": "Vitae", "operatingSystem": "macOS 15+", "applicationCategory": "BusinessApplication" } }
             ]
           }
         },
@@ -181,7 +152,7 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="styles.css?v=b90ae408ea">
+    <link rel="stylesheet" href="styles.css?v=2054170d0d">
     <script src="/site.js?v=85669fe178" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -208,7 +179,7 @@
       <!-- ── Hero ──────────────────────────────────────── -->
       <section class="hero">
         <div class="hero-meta">
-          <span>Atlanta, Georgia</span>
+          <span>Mac apps and manuscript tools for researchers</span>
         </div>
 
         <h1 class="hero-title">
@@ -219,21 +190,26 @@
 
         <div class="hero-bottom">
           <div class="hero-bottom-copy">
-            <p class="hero-lede">Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel. It builds native macOS and iOS apps for researchers and Apple-platform users, plus free in-browser tools for academic writing (<a href="/tools/latex-to-pdf/">LaTeX compilation</a>, <a href="/tools/bib-validator/">BibTeX validation</a>, <a href="/tools/citation-generator/">citation generation</a>) that process files in memory and never store them.</p>
-            <p class="hero-proof">Its free <a href="#scholar">Scholar Utility Belt</a> extension is used by <strong>1,000 researchers</strong> and rated <strong>4.5&#9733;</strong> on the Chrome Web Store.</p>
+            <p class="hero-lede">Purplelink makes <a href="/moderntex/">ModernTex</a>, a native LaTeX editor for Mac; <a href="/tools/paper-review/">Paper Review</a>, which reads your manuscript before a journal does; <a href="/vitae/">Vitae</a>, for your academic record; and <a href="/tools/">free LaTeX and BibTeX tools</a> that never store your files. It is a one-person studio in Atlanta, founded in 2026 by Benjamin Ampel, a researcher in cybersecurity, AI and information systems.</p>
+            <p class="hero-proof">Its free <a href="/scholar-utility-belt/">Scholar Utility Belt</a> extension is used by <strong>1,000 researchers</strong> and rated <strong>4.5&#9733;</strong> on the Chrome Web Store.</p>
           </div>
           <div class="hero-actions">
             <a class="btn btn-primary" href="/moderntex/">Get ModernTex for Mac &mdash; $10</a>
-            <a class="btn btn-ghost" href="/tools/">Try the free tools</a>
+            <a class="btn btn-ghost" href="/tools/paper-review/">Review my paper, from $9</a>
           </div>
         </div>
 
-        <div class="hero-orbit" aria-hidden="true">
-          <div class="orbit-ring orbit-ring-1"></div>
-          <div class="orbit-ring orbit-ring-2"></div>
-          <div class="orbit-ring orbit-ring-3"></div>
-          <div class="orbit-center">
-            <img src="assets/purplelink-mark.svg" alt="" width="64" height="64">
+        <div class="hero-visual" aria-hidden="true">
+          <img class="hero-visual-shot" src="/assets/moderntex-screens/07-tikz-editor-1440.webp" alt="" width="1440" height="919" decoding="async">
+          <div class="hero-visual-card">
+            <span class="hero-visual-kicker">Paper Review · Critical blind spot</span>
+            <strong>Hyperparameter search asymmetry favors the proposed method.</strong>
+            <span>Surfaced by: Methodology Critic, Statistical Skeptic</span>
+          </div>
+          <div class="hero-visual-icons">
+            <img src="/assets/moderntex-icon.png" alt="" width="56" height="56">
+            <img src="/assets/vitae-icon.png" alt="" width="56" height="56">
+            <img src="/assets/globepin-icon.png" alt="" width="56" height="56">
           </div>
         </div>
       </section>
@@ -254,7 +230,7 @@
         </div>
 
         <figure class="flagship-shot">
-          <img src="/assets/moderntex-screens/01-editor.webp" alt="ModernTex editor: document outline, LaTeX source with syntax highlighting, and a live PDF preview side by side" width="2940" height="1862" decoding="async" loading="lazy">
+          <img src="/assets/moderntex-screens/01-editor-clean.webp" srcset="/assets/moderntex-screens/01-editor-clean-1440.webp 1440w, /assets/moderntex-screens/01-editor-clean.webp 2880w" sizes="(max-width: 1500px) 92vw, 1470px" alt="ModernTex editor: document outline, LaTeX source with syntax highlighting, and a live PDF preview side by side" width="2880" height="1584" decoding="async" loading="lazy">
         </figure>
 
         <ul class="flagship-points">
@@ -262,6 +238,40 @@
           <li class="flagship-point">Three compile modes for drafting, full builds, and submission.</li>
           <li class="flagship-point">Citation management with BibTeX autocomplete and reference checks.</li>
           <li class="flagship-point">Submission-readiness checks before you upload to a journal.</li>
+        </ul>
+      </section>
+
+      <!-- ── Paid manuscript checks ────────────────────────── -->
+      <section id="submit" class="section-submit">
+        <div class="submit-inner">
+          <div class="submit-copy">
+            <p class="eyebrow">Before you submit</p>
+            <h2 class="section-title">Find what Reviewer 2 will find, <em>first.</em></h2>
+            <p class="submit-lede">Paper Review puts your manuscript in front of four AI reviewers (a methodology critic, a statistical skeptic, a data integrity officer and an editor), checks every reference against CrossRef and scans the figures. You get a prioritized list of fixes, quoted from your own text, in minutes. No account; the manuscript is deleted when you retrieve the review.</p>
+            <div class="submit-actions">
+              <a class="btn btn-primary" href="/tools/paper-review/">Start a review, $9</a>
+              <a class="btn btn-ghost" href="/products/#cat-review">All manuscript checks</a>
+            </div>
+          </div>
+          <figure class="report-card" aria-label="Excerpt from a sample Paper Review report">
+            <figcaption>From a sample report</figcaption>
+            <p class="report-h">Critical blind spots</p>
+            <p class="report-item"><strong>Sample-size justification missing for Experiment 2.</strong> Quoted: &ldquo;We collected 24 participants &hellip; yielding sufficient statistical power.&rdquo; Fix: give an explicit power calculation and the source of the assumed effect size.</p>
+            <p class="report-h">Data-to-claim contradictions</p>
+            <p class="report-item">Claim: &ldquo;Our method beats all baselines by a wide margin.&rdquo; Table 2 shows it tied with Baseline C within standard errors on 4 of 7 datasets.</p>
+            <p class="report-h">Rectification checklist</p>
+            <ul class="report-list">
+              <li><span>A</span> Add the hyperparameter search protocol to Section 3.2.</li>
+              <li><span>B</span> Reference [17] does not resolve in CrossRef; re-verify it.</li>
+              <li><span>C</span> Redraw Figure 3 without the broken y-axis.</li>
+            </ul>
+          </figure>
+        </div>
+        <ul class="submit-grid">
+          <li><a href="/tools/response-review/"><span class="submit-price">$6</span><strong>Response Review</strong><span>Your response letter, read against the reviewers' comments.</span></a></li>
+          <li><a href="/tools/citation-gap/"><span class="submit-price">$3</span><strong>Citation Gap</strong><span>Prior work you should cite and don't.</span></a></li>
+          <li><a href="/tools/anonymity-check/"><span class="submit-price">$2</span><strong>Anonymity Check</strong><span>What gives the authors away in a double-blind submission.</span></a></li>
+          <li><a href="/tools/cover-letter/"><span class="submit-price">$2</span><strong>Cover Letter</strong><span>Drafted from your abstract and the target journal.</span></a></li>
         </ul>
       </section>
 
@@ -373,7 +383,7 @@
             <a class="tool-chip" href="/tools/citation-generator/">Citation generator</a>
             <a class="tool-chip" href="/tools/latex-diff/">LaTeX diff</a>
             <a class="tool-chip" href="/tools/markdown-to-pdf/">Markdown to PDF</a>
-            <a class="tool-chip" href="/tools/paper-review/">Paper review</a>
+            <a class="tool-chip" href="/tools/word-counter/">Word counter</a>
           </div>
           <a class="btn btn-ghost" href="/tools/">Browse all tools</a>
         </div>
@@ -382,16 +392,16 @@
       <!-- ── Contact ────────────────────────────────────── -->
       <section id="contact" class="section-contact">
         <div class="contact-top">
-          <p class="eyebrow eyebrow-light">Get in touch</p>
+          <p class="eyebrow eyebrow-light">Questions</p>
         </div>
 
         <h2 class="contact-heading">
-          Build with<br><em>Purplelink.</em>
+          Ask the person<br><em>who built it.</em>
         </h2>
 
-        <p class="contact-sub">If a project sounds like a fit, send a note. Reach out and let's talk about what you're building.</p>
+        <p class="contact-sub">A question before you buy, a feature your field needs, or something that broke: email me. Every message is read and answered by me, not a support queue.</p>
 
-        <a class="contact-link" href="mailto:ben@purplelink.llc?subject=Purplelink%20LLC">
+        <a class="contact-link" href="mailto:ben@purplelink.llc?subject=Purplelink">
           <span class="contact-email">ben@purplelink.llc</span>
           <span class="contact-arrow" aria-hidden="true">↗</span>
         </a>
