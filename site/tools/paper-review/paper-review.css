@@ -154,13 +154,13 @@
    read better in monospace on a contrasting surface, and the styling
    here is local to the drawer rather than inherited. */
 .pr-sample-body pre {
-  background: #0f0f17;
+  background: oklch(14% 0.02 310);
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 0.75rem 1rem;
   font-size: 0.78rem;
   line-height: 1.5;
-  color: #d4d4d4;
+  color: oklch(88% 0.01 310);
   white-space: pre-wrap;
   overflow-x: auto;
   max-height: 28rem;
@@ -237,7 +237,7 @@
 .pr-result-md li { margin: 0.4rem 0; }
 /* Code blocks stay a fixed dark surface intentionally — self-contained and
    readable in both light and dark mode. */
-.pr-result-md pre { background: #0f0f17; color: #e3e3ea; border: 1px solid color-mix(in oklch, var(--ink) 20%, transparent); border-radius: 4px; padding: 0.6rem 0.85rem; font-size: 0.8rem; overflow-x: auto; }
+.pr-result-md pre { background: oklch(14% 0.02 310); color: oklch(88% 0.01 310); border: 1px solid color-mix(in oklch, var(--ink) 20%, transparent); border-radius: 4px; padding: 0.6rem 0.85rem; font-size: 0.8rem; overflow-x: auto; }
 .pr-result-md code { background: color-mix(in oklch, var(--ink) 8%, transparent); padding: 0.05em 0.35em; border-radius: 3px; font-size: 0.88em; }
 .pr-result-md pre code { background: none; }
 .pr-result-md blockquote { border-left: 3px solid color-mix(in oklch, var(--purple) 55%, transparent); padding-left: 1rem; margin: 0.6rem 0; color: var(--muted); }

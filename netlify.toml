@@ -49,6 +49,19 @@
 # immutable. The catch-all /assets/* rule below uses a shorter cache so that
 # non-fingerprinted assets (logos, icons, OG cards) can be replaced in place
 # without serving stale copies for up to a year.
+#
+# Netlify applies headers from matching [[headers]] blocks in file order, and
+# the LAST matching block wins for a given header key — not the most specific
+# one. The catch-all used to sit after the two specific rules below and was
+# silently winning for every font and vendor file, serving the 30-day policy
+# instead of the immutable 1-year one (confirmed live: `curl -I` on a fonts
+# URL returned max-age=2592000, not 31536000). It must stay first so the
+# fonts/vendor rules that follow are the ones actually applied.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=604800"
+
 [[headers]]
   for = "/assets/fonts/*"
   [headers.values]
@@ -58,11 +71,6 @@
   for = "/assets/vendor/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000, stale-while-revalidate=604800"
 
 # CSS and JS are fingerprinted: scripts/fingerprint_assets.py stamps every
 # reference in site/*.html as ?v=<hash of the file's bytes>, so changing an

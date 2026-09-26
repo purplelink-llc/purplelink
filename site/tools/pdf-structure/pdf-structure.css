@@ -12,8 +12,8 @@
 .ps-md h1,.ps-md h2,.ps-md h3 { font-family:"Fraunces",Georgia,serif; }
 .ps-md table { border-collapse:collapse; width:100%; font-size:.9rem; }
 .ps-md th,.ps-md td { border:1px solid var(--line); padding:.35rem .6rem; text-align:left; }
-.ps-md pre { background:#0f0f17; color:#e3e3ea; border-radius:4px; padding:.6rem .85rem; overflow-x:auto; font-size:.8rem; }
+.ps-md pre { background:oklch(14% 0.02 310); color:oklch(88% 0.01 310); border-radius:4px; padding:.6rem .85rem; overflow-x:auto; font-size:.8rem; }
 .ps-md code { background:color-mix(in oklch, var(--ink) 8%, transparent); padding:.05em .35em; border-radius:3px; font-size:.88em; }
 .ps-md pre code { background:none; }
-.ps-json { background:#0f0f17; color:#e3e3ea; border:1px solid color-mix(in oklch, var(--ink) 20%, transparent); border-radius:8px; padding:.8rem 1rem; font-size:.78rem; line-height:1.5; max-height:32rem; overflow:auto; white-space:pre; }
-.ps-err { color:#c0392b; font-weight:600; }
+.ps-json { background:oklch(14% 0.02 310); color:oklch(88% 0.01 310); border:1px solid color-mix(in oklch, var(--ink) 20%, transparent); border-radius:8px; padding:.8rem 1rem; font-size:.78rem; line-height:1.5; max-height:32rem; overflow:auto; white-space:pre; }
+.ps-err { color:oklch(52% 0.19 25); font-weight:600; }

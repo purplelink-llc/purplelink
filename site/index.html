@@ -152,6 +152,10 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- The hero H1 (the page's LCP element) italicizes one word ("software"),
+         which needs the separate italic face; preloaded so that word doesn't
+         wait for a second font fetch after the regular weight already arrived. -->
+    <link rel="preload" href="/assets/fonts/fraunces-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="styles.css?v=291897a271">
     <script src="/site.js?v=0dbe9e7e3c" defer></script>

@@ -1222,7 +1222,7 @@ dd {
 .tool-chip {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 16px;
   border-radius: 100px;
   border: 1px solid var(--line);
@@ -1308,6 +1308,12 @@ dd {
 @media (prefers-reduced-motion: reduce) {
   .orbit-ring   { animation: none; }
   .btn:hover    { transform: none; }
+  .tool-chip:hover,
+  .tool-card:hover,
+  .tool-card-lg:hover,
+  .tool-card-lg:hover .tool-card-lg-cta,
+  .waitlist-form button:hover { transform: none; }
+  .tool-spinner { animation: none; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -2735,7 +2741,7 @@ dd {
 @keyframes tool-spin { to { transform: rotate(360deg); } }
 .tool-faq { max-width: 820px; margin: 32px auto; padding: 0 24px; }
 .tool-faq details { border-bottom: 1px solid var(--line); padding: 14px 0; }
-.tool-faq summary { cursor: pointer; font-weight: 600; }
+.tool-faq summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 .tool-faq .faq-body { color: var(--muted); padding-top: 8px; }
 .tool-faq h2 { font-family: var(--font-display); margin-bottom: 8px; }
 .tool-howto { max-width: 820px; margin: 24px auto; padding: 0 24px; }
