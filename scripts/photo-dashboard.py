@@ -32,6 +32,8 @@ ECONOMICS = {
     "fineartamerica": ("Fine Art America", None, "your markup"),
     "123rf":          ("123RF",            50,   "30-60% tiered"),
     "depositphotos":  ("Depositphotos",    25,   "30-38%"),
+    # Etsy deposits automatically, so there is no threshold to forecast toward.
+    "etsy":           ("Etsy",             None, "price less 6.5% + 3% + $0.25"),
 }
 MONEY = {"balance", "earnings", "revenue", "sales_30d", "available_earnings"}
 SALES = {"sales", "sales_to_date", "downloads"}
@@ -55,7 +57,9 @@ PIPELINE = ["accepted_live", "on_sale_good", "on_sale_poor", "not_on_sale",
             # 123RF (draft/approved/rejected) and Depositphotos (online/
             # unfinished/deactivated) pipeline states, added 2026-09-10.
             "draft", "approved", "rejected", "online", "unfinished",
-            "deactivated"]
+            "deactivated",
+            # Etsy (added 2026-09-24): live listings and shop engagement.
+            "active_listings", "visits", "favorites", "followers", "reviews"]
 
 # tiny explanatory note attached to a chart card for a metric that reads
 # misleadingly on its own -- keyed by metric name, shown under any platform's

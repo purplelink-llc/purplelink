@@ -47,6 +47,9 @@ SENDERS = {
     "dreamstime":   ["@dreamstime.com"],
     "getty":        ["@gettyimages.com", "@istockphoto.com"],
     "fineartamerica": ["@fineartamerica.com", "@pixels.com"],
+    "depositphotos": ["@depositphotos.com"],
+    "123rf":        ["@123rf.com", "@inmagine.com"],
+    "pixsy":        ["@pixsy.com"],
 }
 
 
@@ -259,6 +262,30 @@ def parse_getty(subject, body):
     return out
 
 
+def parse_shutterstock(subject, body):
+    """"Quick Fix Needed" correction emails -- the only Shutterstock message
+    format seen in the mailbox as of 2026-09-11 (one 30-day sample). Each
+    rejected file renders as its own repeating block:
+
+        Type: image<br>ID: 2824633073<br>File Name: DSC_7933.jpeg<br>
+        Reason(s):<br>   1. Eligible for Editorial Use<br>
+
+    Every rejection reason in the one real sample was "Eligible for Editorial
+    Use" -- Shutterstock offering an editorial resubmission instead of a flat
+    reject, the same signal collect_shutterstock()'s browser scraper already
+    tracks as "correction_needed". This only counts; it does not distinguish
+    reasons beyond what's actually been observed, since a category invented
+    from a single example would be a guess dressed up as a parser.
+    """
+    out = {}
+    if "quick fix needed" not in subject.lower() and "correction" not in subject.lower():
+        return out
+    files = re.findall(r"File Name:\s*([^<]+)", body)
+    if files:
+        out["email_correction_needed"] = len(files)
+    return out
+
+
 def parse_fineartamerica(subject, body):
     """FAA's "Weekly Update" — the only session-free view of FAA activity.
 
@@ -299,16 +326,14 @@ PARSERS = {
     "dreamstime": parse_dreamstime,
     "alamy": parse_alamy,
     "getty": parse_getty,
-    # Nothing but onboarding/marketing has arrived from these two yet, so there
-    # is no format to parse. Left None deliberately: a parser written against
-    # imagined wording would report zeros that look like real data.
-    "shutterstock": None,
+    "shutterstock": parse_shutterstock,
     "fineartamerica": parse_fineartamerica,
 }
 # Metrics that are per-message events and should be summed across the day,
 # rather than last-value-wins like a balance reading.
 ADDITIVE = {"email_rf_to_editorial", "email_qc_passed", "email_qc_failed",
-            "email_approved", "email_refused", "email_accepted_contributor"}
+            "email_approved", "email_refused", "email_accepted_contributor",
+            "email_correction_needed"}
 
 
 def main():
