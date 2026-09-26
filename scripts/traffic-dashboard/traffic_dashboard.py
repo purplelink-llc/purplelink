@@ -31,6 +31,7 @@ import http.client
 import json
 import os
 import random
+import re
 import ssl
 import subprocess
 import sys
@@ -211,6 +212,22 @@ GSC_KEY_PATH = Path.home() / ".config" / "purplelink" / "gsc.json"
 GSC_DAYS = 28            # GSC's own default reporting window
 GSC_LAG_DAYS = 2         # Search Console data is ~48h behind; asking for
                          # yesterday returns zeros and reads as a traffic drop.
+
+# AdMob (in-app ad revenue). Unlike Search Console, AdMob has no
+# service-account path at all -- Google requires a real signed-in user's
+# OAuth consent for AdMob account access, service accounts cannot be granted
+# access to an AdMob account. The one-time setup (2026-09-25) authorized this
+# script via a Desktop-app OAuth client in the same GCP project as the GSC
+# service account (bampelvisitortrack), and the resulting refresh token
+# (which does not expire, since that project's OAuth consent screen is
+# "In production", not "Testing") lives at ADMOB_TOKEN_PATH. Absent on a
+# machine that has not been set up; degrades to no card, same as GSC.
+ADMOB_TOKEN_PATH = Path.home() / ".config" / "purplelink" / "admob-refresh-token.json"
+ADMOB_APPS = {
+    "globepin": {"label": "GlobePin", "publisherId": "pub-6407975157274256",
+                 "appId": "ca-app-pub-6407975157274256~3074958691"},
+}
+ADMOB_DAYS = 7  # matches the Apple Search Ads manual reading, for a fair spend-vs-earnings comparison
 
 
 # ---------------------------------------------------------------- config/io
@@ -677,6 +694,48 @@ def fetch_appstore(cfg: dict[str, str], prior: dict | None) -> dict | None:
     }
 
 
+# --- Chrome Web Store (Scholar Utility Belt) --------------------------------
+#
+# The Chrome Web Store has no install-stats API: the current publish/package
+# API (chromewebstore.googleapis.com) is management-only per Google's own
+# docs, and the Developer Dashboard (chrome.google.com/webstore/devconsole)
+# blocks automation outright. The public storefront listing page is a
+# different host, needs no auth, and shows a rounded "X,XXX users" figure --
+# not an exact daily count, but a real, zero-setup signal that beats having
+# nothing.
+
+CWS_EXTENSION_ID = "omcogfcgldfmihfogbffflbocdbjockn"
+CWS_SLUG = "scholar-utility-belt"
+CWS_LABEL = "Scholar Utility Belt"
+
+
+def fetch_chrome_web_store(prior: dict | None) -> dict | None:
+    """The storefront's rounded user count, or the prior reading on failure."""
+    url = f"https://chromewebstore.google.com/detail/{CWS_SLUG}/{CWS_EXTENSION_ID}"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (purplelink-traffic-dashboard)"})
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                body = resp.read().decode("utf-8", errors="replace")
+            m = re.search(r">([\d,]+)\+?\s*users?<", body)
+            if not m:
+                raise RuntimeError("users count not found in listing page")
+            return {"label": CWS_LABEL, "url": url, "users": m.group(1),
+                     "asOf": dt.date.today().isoformat()}
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                print(f"  ! chrome web store: HTTP {exc.code}", file=sys.stderr)
+                return prior
+            last = exc
+        except (OSError, http.client.HTTPException, RuntimeError) as exc:
+            last = exc
+    print(f"  ! chrome web store unavailable: {str(last)[:80]}", file=sys.stderr)
+    return prior
+
+
 def fetch_gsc(site: dict) -> dict | None:
     """Search Console clicks/impressions/position, plus top queries and pages.
 
@@ -738,6 +797,81 @@ def fetch_gsc(site: dict) -> dict | None:
                    "impressions": int(r.get("impressions", 0) or 0),
                    "position": round(float(r.get("position", 0) or 0), 1)}
                   for r in pages],
+    }
+
+
+def fetch_admob(app_key: str) -> dict | None:
+    """AdMob in-app ad earnings for one app, over the trailing ADMOB_DAYS days.
+
+    Returns None when ADMOB_TOKEN_PATH is missing (not set up on this
+    machine) and {"error": ...} on any API failure -- same non-fatal contract
+    as fetch_gsc(): an expired token or a Google outage must not cost us the
+    rest of the run.
+    """
+    if not ADMOB_TOKEN_PATH.exists():
+        return None
+    app = ADMOB_APPS.get(app_key)
+    if not app:
+        return None
+
+    try:
+        cfg = json.loads(ADMOB_TOKEN_PATH.read_text())
+        token_body = urllib.parse.urlencode({
+            "client_id": cfg["client_id"],
+            "client_secret": cfg["client_secret"],
+            "refresh_token": cfg["refresh_token"],
+            "grant_type": "refresh_token",
+        }).encode()
+        token_req = urllib.request.Request(cfg["token_uri"], data=token_body, method="POST")
+        with urllib.request.urlopen(token_req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+            access_token = json.loads(resp.read().decode())["access_token"]
+
+        end = dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=1)
+        start = end - dt.timedelta(days=ADMOB_DAYS - 1)
+        report_body = json.dumps({
+            "reportSpec": {
+                "dateRange": {
+                    "startDate": {"year": start.year, "month": start.month, "day": start.day},
+                    "endDate": {"year": end.year, "month": end.month, "day": end.day},
+                },
+                "dimensions": ["APP"],
+                "metrics": ["ESTIMATED_EARNINGS", "IMPRESSIONS", "CLICKS", "MATCHED_REQUESTS"],
+                "dimensionFilters": [{"dimension": "APP", "matchesAny": {"values": [app["appId"]]}}],
+            }
+        }).encode()
+        report_req = urllib.request.Request(
+            f"https://admob.googleapis.com/v1/accounts/{app['publisherId']}/networkReport:generate",
+            data=report_body, method="POST",
+            headers={"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(report_req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+            rows = json.loads(resp.read().decode())
+    except urllib.error.HTTPError as exc:
+        return {"error": f"HTTP {exc.code}: {exc.read().decode(errors='replace')[:160]}"}
+    except Exception as exc:  # noqa: BLE001 — never let an AdMob hiccup sink the run
+        return {"error": str(exc)[:200]}
+
+    earnings_micros = impressions = clicks = matched = 0
+    for item in rows:
+        r = item.get("row")
+        if not r:
+            continue
+        mv = r.get("metricValues", {})
+        earnings_micros += int(mv.get("ESTIMATED_EARNINGS", {}).get("microsValue", 0) or 0)
+        impressions += int(mv.get("IMPRESSIONS", {}).get("integerValue", 0) or 0)
+        clicks += int(mv.get("CLICKS", {}).get("integerValue", 0) or 0)
+        matched += int(mv.get("MATCHED_REQUESTS", {}).get("integerValue", 0) or 0)
+
+    return {
+        "label": app["label"],
+        "days": ADMOB_DAYS,
+        "start": start.isoformat(),
+        "end": end.isoformat(),
+        "earnings": round(earnings_micros / 1_000_000, 4),
+        "impressions": impressions,
+        "clicks": clicks,
+        "matchedRequests": matched,
+        "fetchedAt": dt.datetime.now(dt.timezone.utc).isoformat(),
     }
 
 
@@ -2107,6 +2241,26 @@ def appstore_block(app: dict | None) -> str:
 </section>"""
 
 
+def chrome_web_store_block(cws: dict | None) -> str:
+    """Scholar Utility Belt's Chrome Web Store panel."""
+    if not cws:
+        return ""
+    return f"""
+<section class="sales appstore">
+  <h2>Chrome Web Store · {html.escape(cws['label'])}</h2>
+  <div class="sales-figures">
+    <div>
+      <span class="sales-figure-label">Installed users</span>
+      <span class="sales-big">{html.escape(cws['users'])}</span>
+    </div>
+  </div>
+  <p class="sales-foot">Rounded by Google to the nearest bucket, read from the public
+    <a href="{html.escape(cws['url'])}">store listing</a> (as of {html.escape(cws['asOf'])});
+    not an exact daily count. Chrome Web Store has no install-stats API and the
+    Developer Dashboard cannot be automated.</p>
+</section>"""
+
+
 # ---------------------------------------------------------------- manual ad platforms
 #
 # Some ad platforms have no API path we're willing to automate — Apple Search
@@ -2129,27 +2283,70 @@ def load_manual_ads() -> dict:
         return {}
 
 
-def manual_ads_block(data: dict) -> str:
+def manual_ads_block(data: dict, admob: dict | None = None) -> str:
     asa = data.get("appleSearchAds")
-    if not asa:
+    globepin_admob = (admob or {}).get("globepin")
+    if not asa and not globepin_admob:
         return ""
-    chips = "".join(
-        f"<span class='sales-chip'><b>${c.get('spend', 0):,.2f}</b> <span>spend</span></span>"
-        f"<span class='sales-chip'><b>{c.get('impressions', 0):,}</b> <span>impressions</span></span>"
-        f"<span class='sales-chip'><b>{c.get('taps', 0):,}</b> <span>taps</span></span>"
-        f"<span class='sales-chip'><b>{c.get('installs', 0):,}</b> <span>installs</span></span>"
-        for c in asa.get("campaigns", [])
-    )
-    campaign_names = ", ".join(c.get("key", "campaign") for c in asa.get("campaigns", []))
-    note = (f"<p class='sales-foot'>{html.escape(asa['note'])}</p>" if asa.get("note") else "")
-    return f"""
-<section class="sales appstore">
-  <h2>Apple Search Ads · GlobePin</h2>
+
+    asa_html = ""
+    spend_total = 0.0
+    if asa:
+        chips = "".join(
+            f"<span class='sales-chip'><b>${c.get('spend', 0):,.2f}</b> <span>spend</span></span>"
+            f"<span class='sales-chip'><b>{c.get('impressions', 0):,}</b> <span>impressions</span></span>"
+            f"<span class='sales-chip'><b>{c.get('taps', 0):,}</b> <span>taps</span></span>"
+            f"<span class='sales-chip'><b>{c.get('installs', 0):,}</b> <span>installs</span></span>"
+            for c in asa.get("campaigns", [])
+        )
+        spend_total = sum(c.get("spend", 0) for c in asa.get("campaigns", []))
+        campaign_names = ", ".join(c.get("key", "campaign") for c in asa.get("campaigns", []))
+        note = (f"<p class='sales-foot'>{html.escape(asa['note'])}</p>" if asa.get("note") else "")
+        asa_html = f"""
+  <h3>Apple Search Ads · spend</h3>
   <p class="sales-foot">{html.escape(campaign_names)} — read by hand from app-ads.apple.com
     ({html.escape(asa.get('window', ''))}, as of {html.escape(asa.get('asOf', '?'))}). No API pull;
     Apple ID sign-in has no unattended path, so this updates only when read again in a session.</p>
   <div class="sales-split">{chips}</div>
-  {note}
+  {note}"""
+
+    admob_html = ""
+    earnings_total = None
+    if globepin_admob and not globepin_admob.get("error"):
+        earnings_total = globepin_admob["earnings"]
+        admob_chips = (
+            f"<span class='sales-chip'><b>${globepin_admob['earnings']:,.2f}</b> <span>earned</span></span>"
+            f"<span class='sales-chip'><b>{globepin_admob['impressions']:,}</b> <span>ad impressions</span></span>"
+            f"<span class='sales-chip'><b>{globepin_admob['clicks']:,}</b> <span>ad clicks</span></span>"
+            f"<span class='sales-chip'><b>{globepin_admob['matchedRequests']:,}</b> <span>matched requests</span></span>"
+        )
+        admob_html = f"""
+  <h3>AdMob · in-app ad earnings</h3>
+  <p class="sales-foot">{html.escape(globepin_admob['label'])}, {globepin_admob['start']} to
+    {globepin_admob['end']} ({globepin_admob['days']}d) — automated pull via the AdMob API.</p>
+  <div class="sales-split">{admob_chips}</div>"""
+    elif globepin_admob and globepin_admob.get("error"):
+        admob_html = (f"<p class='sales-foot'>AdMob (GlobePin): unavailable this run "
+                       f"({html.escape(globepin_admob['error'][:120])}).</p>")
+
+    compare_html = ""
+    if asa and earnings_total is not None:
+        net = earnings_total - spend_total
+        verdict = ("still well behind" if net < -spend_total * 0.5 else
+                   "behind" if net < 0 else "ahead")
+        compare_html = (f"<p class='sales-foot'><b>GlobePin ads, same window:</b> "
+                         f"${spend_total:,.2f} spent on Apple Search Ads vs "
+                         f"${earnings_total:,.2f} earned from AdMob — {verdict} "
+                         f"(net {'-' if net < 0 else '+'}${abs(net):,.2f}). Early days; "
+                         f"this compares paid-install spend against ad revenue from the whole "
+                         f"install base, not just paid installs, so it is not a strict ROAS.</p>")
+
+    return f"""
+<section class="sales appstore">
+  <h2>Ads · GlobePin</h2>
+  {asa_html}
+  {admob_html}
+  {compare_html}
 </section>"""
 
 
@@ -2470,7 +2667,8 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6) 
 
 def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None,
            sales: dict | None = None, appstore: dict | None = None,
-           manual_ads: dict | None = None) -> str:
+           manual_ads: dict | None = None, chrome_web_store: dict | None = None,
+           admob: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -2520,7 +2718,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
 </header>
 {sales_block(sales)}
 {appstore_block(appstore)}
-{manual_ads_block(manual_ads or {})}
+{chrome_web_store_block(chrome_web_store)}
+{manual_ads_block(manual_ads or {}, admob)}
 {revenue_block(sales, appstore)}
 <div class="grid">{cards}</div>
 <h2>What this says</h2>
@@ -2671,6 +2870,31 @@ def main() -> int:
                       f"{sm['allTime']['downloads']} since launch, {sm['allTime']['proUnits']} paid Pro"
                       f"{' (' + str(app['fetchedDays']) + ' day(s) fetched)' if app.get('fetchedDays') else ''}")
 
+        # AdMob (GlobePin in-app ad earnings): no auth setup means no card,
+        # same degrade-quietly contract as everything else here.
+        try:
+            admob = fetch_admob("globepin")
+        except Exception as exc:  # noqa: BLE001 — never let this sink the run
+            print(f"  ! admob unavailable: {str(exc)[:100]}", file=sys.stderr)
+            admob = None
+        if admob:
+            history.setdefault("admob", {})["globepin"] = admob
+            if admob.get("error"):
+                print(f"  ! AdMob (GlobePin): {admob['error']}", file=sys.stderr)
+            else:
+                print(f"  ok AdMob (GlobePin): ${admob['earnings']:.2f} earned in {admob['days']}d, "
+                      f"{admob['impressions']:,} impressions")
+
+        # Chrome Web Store (Scholar Utility Belt): no auth, so always attempted.
+        try:
+            cws = fetch_chrome_web_store(history.get("chromeWebStore"))
+        except Exception as exc:  # noqa: BLE001 — never let this sink the run
+            print(f"  ! chrome web store unavailable: {str(exc)[:100]}", file=sys.stderr)
+            cws = history.get("chromeWebStore")
+        if cws:
+            history["chromeWebStore"] = cws
+            print(f"  ok Chrome Web Store ({cws['label']}): {cws['users']} installed users")
+
         history["lastRun"] = dt.datetime.now(dt.timezone.utc).isoformat()
         HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
 
@@ -2683,10 +2907,11 @@ def main() -> int:
 
     sales = history.get("sales")
     appstore = history.get("appstore")
+    chrome_web_store = history.get("chromeWebStore")
     manual_ads = load_manual_ads()
     DASHBOARD_PATH.write_text(
         render(summaries, obs, generated, min(firsts) if firsts else None,
-               sales, appstore, manual_ads))
+               sales, appstore, manual_ads, chrome_web_store, history.get("admob")))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     if sales:
@@ -2704,6 +2929,10 @@ def main() -> int:
         print(f"\n  App Store — {sm['label']}: {sm['w7']['downloads']} downloads/7d, "
               f"{sm['w30']['downloads']}/30d, {sm['allTime']['downloads']} since launch; "
               f"{sm['allTime']['proUnits']} paid Pro, {sm['allTime']['proPromo']} promo, ${usd:,.2f} proceeds")
+
+    if chrome_web_store:
+        print(f"\n  Chrome Web Store — {chrome_web_store['label']}: "
+              f"{chrome_web_store['users']} installed users (rounded, as of {chrome_web_store['asOf']})")
 
     print(f"\n  Traffic — {generated}")
     for s in summaries:
