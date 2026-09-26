@@ -125,7 +125,7 @@ def footer_html(indent: str) -> str:
         f'{i}  <div class="footer-grid">\n'
         f'{i}    <div class="footer-about">\n'
         f'{i}      <a class="footer-brand" href="/">\n'
-        f'{i}        <img src="/assets/purplelink-logo-64.png" alt="" width="26" height="26">\n'
+        f'{i}        <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">\n'
         f'{i}        <span>Purplelink LLC</span>\n'
         f'{i}      </a>\n'
         f'{i}      <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, '
