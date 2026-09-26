@@ -171,7 +171,6 @@ def render_html(digest: DigestData) -> str:
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/purplelink-logo.png" as="image">
     <link rel="stylesheet" href="{css_url}">
     <script src="{site_js_url}" defer></script>
     <!-- No AdSense loader: this page is noindex (see above). AdSense policy

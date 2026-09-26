@@ -1,7 +1,6 @@
 # Purplelink LLC — https://purplelink.llc/
 
 User-agent: *
-Disallow: /stats/
 Allow: /
 
 # AI crawlers — explicitly welcome
