@@ -150,7 +150,6 @@ def render_html(digest: DigestData) -> str:
     <meta name="robots" content="noindex, follow">
     <title>{title} | Purplelink LLC</title>
     <meta name="description" content="{desc}">
-    <meta name="keywords" content="{html.escape(keywords)}">
     <meta name="author" content="Benjamin Ampel">
     <link rel="canonical" href="{SITE_URL}/blog/digest/{iso_date}.html">
     <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="{SITE_URL}/blog/digest/feed.xml">
