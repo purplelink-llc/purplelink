@@ -2,13 +2,14 @@
 """Collect daily stats from every photo-licensing platform into one history file.
 
 None of these platforms offer a public API, so this drives a saved browser
-session. It uses a DEDICATED Chrome profile (~/.stats-chrome) so it never
+session. It uses a DEDICATED Chrome profile (~/.photo-automation-chrome) so it never
 conflicts with the upload profiles or your everyday browser.
 
 SETUP (once)
   scripts/stats-collect.py --login
-    ...opens a visible browser. Sign in to Fine Art America, Adobe Stock, and
-    Alamy in that window, then close it. Sessions persist for months.
+    ...opens a visible browser. Sign in to Fine Art America, Adobe Stock,
+    Alamy, Shutterstock, Getty ESP, 123RF and Depositphotos in that window,
+    then close it. Sessions persist for months.
 
 USAGE
   scripts/stats-collect.py              # collect once, update dashboard
@@ -37,7 +38,7 @@ OUT = ROOT / "photo-licensing-workspace" / "stats"
 HISTORY = OUT / "history.json"
 ANALYTICS = ROOT / "photo-licensing-workspace" / "analytics"
 SNAPSHOTS = ANALYTICS / "snapshots.csv"      # tidy long format, like TikTok's growth.csv
-PROFILE = Path.home() / ".stats-chrome"
+PROFILE = Path.home() / ".photo-automation-chrome"
 
 # What each platform pays and what it withholds until you cross the threshold.
 # Money is the point of the dashboard, so this lives next to the collectors.
@@ -48,6 +49,9 @@ ECONOMICS = {
     "alamy":          {"royalty": "15-40% tiered",         "payout_min": 75},
     "dreamstime":     {"royalty": "25-50%",                "payout_min": 100},
     "getty":          {"royalty": "15% non-exclusive",     "payout_min": 100},
+    "123rf":          {"royalty": "30-60% tiered",         "payout_min": 50},
+    "depositphotos":  {"royalty": "30-38%; subs $0.25-0.33", "payout_min": 25},
+    "etsy":           {"royalty": "price less 6.5% + 3% + $0.25", "payout_min": None},
 }
 
 # Metrics that represent money, so the dashboard can total them.
@@ -106,7 +110,16 @@ def collect_faa(page):
         raise RuntimeError("not signed in")
     # FAA renders each tile as LABEL, blank lines, then the value -- so match
     # across whitespace rather than expecting the value on the next line.
+    # /controlpanel/main now redirects to the heavier /controlpanel/analytics
+    # page, whose tiles render async -- a fixed 5s wait sometimes beat the
+    # numbers there, scraping blank labels and reporting a false "not signed
+    # in" (2026-09-20). Poll for VISITORS actually landing before reading.
     body = page.inner_text("body")
+    for _ in range(5):
+        if re.search(r"\bVISITORS\b\s+[\$\d,\.]+", body):
+            break
+        page.wait_for_timeout(2000)
+        body = page.inner_text("body")
     def tile(label):
         m = re.search(rf"\b{label}\b\s+([\$\d,\.]+)", body)
         return m.group(1) if m else None
@@ -173,7 +186,17 @@ def collect_adobe(page):
         page.goto(f"https://contributor.stock.adobe.com/en/uploads{suffix}",
                   wait_until="domcontentloaded")
         page.wait_for_timeout(6000)
-        m = re.search(r"File types:\s*All\s*\((\d+)\)", page.inner_text("body"))
+        # A slow-rendering tab here used to raise out of the whole function,
+        # throwing away the DOWNLOADS/EARNINGS/AVAILABLE EARNINGS already
+        # scraped above (2026-09-20: one timed-out "review" tab lost a day's
+        # real balance). One flaky tab should cost that tab's count, not
+        # everything already gathered.
+        try:
+            body = page.inner_text("body", timeout=45_000)
+        except Exception:
+            stats[key] = None
+            continue
+        m = re.search(r"File types:\s*All\s*\((\d+)\)", body)
         stats[key] = int(m.group(1)) if m else None
     return stats
 
@@ -256,6 +279,52 @@ def collect_alamy_measures(page):
     return {"views": g(r"Total Views for [^:]+:\s*([\d,]+)"),
             "zooms": g(r"Total Zooms for [^:]+:\s*([\d,]+)"),
             "ctr": g(r"Average CTR for [^:]+:\s*([\d.]+)")}
+
+
+def collect_alamy_sales(page):
+    """Real per-sale dollar amounts from Alamy's own sales-history report --
+    added 2026-09-13 after Ben checked this page by hand and found a $6.66
+    sale (the page's own header rounds it to "$7") that collect_alamy()'s
+    dashboard scrape had missed entirely: that scrape reads "Current Cleared
+    Balance", which stays $0 until Alamy actually pays out, not the moment a
+    sale happens. This is the earlier, truer signal.
+
+    Deliberately its own metric names (lifetime_sales_amount / sales_count),
+    NOT "balance" -- MONEY_KEYS-driven totals elsewhere (the dashboard's
+    combined "$X total balance" card) look up "balance" per platform, and
+    "alamy" already owns that key for its cleared-balance figure. Writing
+    the same money under a second name here would double-count it the day
+    Alamy's cleared balance finally catches up to a sale already counted
+    here.
+
+    #drpPeriod defaults to the current month; select "All" or the summary
+    silently reports June's-worth of sales as if it were everything.
+    """
+    page.goto("https://www.alamy.com/alamycontributorreports/Reports.aspx?Rep=0",
+              wait_until="domcontentloaded")
+    page.wait_for_timeout(7000)
+    if "login" in page.url.lower() or "signin" in page.url.lower():
+        raise RuntimeError("not signed in")
+    t0 = page.inner_text("body")
+    if "Sales history" not in t0:
+        raise RuntimeError("sales history page didn't render")
+    page.select_option("#drpPeriod", label="All")
+    page.wait_for_timeout(4000)
+    t = re.sub(r"[ \t]+", " ", page.inner_text("body"))
+    out = {}
+    # The "Sales to date: $X" header rounds to whole dollars ($6.66 -> "$7").
+    # With the period forced to All, the itemized summary line covers the
+    # exact same lifetime range but keeps the cents -- prefer it, and only
+    # fall back to the rounded header if that line is somehow missing.
+    m = re.search(r"\(\s*(\d+)\s*item\(s\)\s*totalling\s*\$\s*([\d,]+\.?\d*)\s*\)", t)
+    if m:
+        out["sales_count"] = int(m.group(1))
+        out["lifetime_sales_amount"] = num(m.group(2))
+    else:
+        m = re.search(r"Sales to date:\s*\$\s*([\d,]+\.?\d*)", t)
+        if m:
+            out["lifetime_sales_amount"] = num(m.group(1))
+    return out
 
 
 def collect_dreamstime(page):
@@ -393,59 +462,338 @@ def collect_getty(page):
     "Upload" whether or not you're signed in, so checking it reported a healthy
     session for an account that wasn't logged in at all. Only esp.gettyimages.com
     proves the session and carries the batch counts.
+
+    REBUILT 2026-09-18: Getty replaced the whole ESP batches UI with a MUI SPA
+    that no longer renders per-batch Accepted/Rejected/In review text anywhere
+    -- the old text-scraping approach (walk paginated HTML, split blocks on
+    "More details", regex out labelled counts) had nothing left to scrape and
+    started silently returning None/0 for everything. The SPA turned out to
+    be backed by a clean JSON API the whole time
+    (api/submission/v1/submission_batches), found by sniffing this page's own
+    network requests. Calling it directly via page.request (which reuses the
+    page's auth cookies) replaces ~110 lines of pagination/regex/block-
+    splitting with one HTTP call and a few sums -- no scrolling, no "is this
+    digit a real count or a stray status badge" guessing, no page-count math.
     """
-    # pageSize is 10 by default and silently truncates once there are more
-    # batches than that. Ask for a page big enough that the "Showing 1 to N of M"
-    # assertion below can actually be satisfied.
-    #
-    # ESP's own client-side router rewrites the URL shortly after load, resetting
-    # pageSize back to its default 10 (and adding a dateFrom/dateTo range) -- the
-    # query param sticks for a few seconds, then silently reverts. Re-navigating
-    # to the same pageSize=100 URL a second time, right before the real wait,
-    # beats that reset; a single goto+wait does not (caught 2026-08-30 when the
-    # batch count crossed 10 and every run started reporting "only 10 of 12").
-    url = "https://esp.gettyimages.com/contribute/batches?page=1&pageSize=100"
-    page.goto(url, wait_until="domcontentloaded")
+    page.goto("https://esp.gettyimages.com/contribute/batches",
+              wait_until="domcontentloaded", timeout=60000)
     page.wait_for_timeout(4000)
-    page.goto(url, wait_until="domcontentloaded")
-    page.wait_for_timeout(13000)
-    t = re.sub(r"[ \t]+", " ", page.inner_text("body"))
-    if bot_challenged(t):
+    if bot_challenged(page.inner_text("body")):
         raise RuntimeError("blocked by anti-bot human check — collect manually")
-    if "sign-in" in page.url or not re.search(r"batch", t, re.I):
+    if "sign-in" in page.url:
         raise RuntimeError("not signed in to ESP")
 
-    # Each batch card prints its own review breakdown, e.g.
-    #   "0 Accepted  0 Rejected  0 Need revisions  88 In review  4 Not submitted"
-    # Summing these is the only way to answer the question that matters -- how
-    # much of the submission has actually cleared review. The previous version
-    # counted "iStock <type> image" strings and reported 11 for 7 batches, and
-    # its "N files" pattern matched nothing on this layout at all.
-    def total(label):
-        hits = re.findall(rf"(\d[\d,]*)\s+{label}\b", t, re.I)
-        return sum(int(h.replace(",", "")) for h in hits) if hits else None
+    resp = page.request.get(
+        "https://esp.gettyimages.com/api/submission/v1/submission_batches"
+        "?page_size=50&page=1&sort_column=created_at&sort_order=Descending")
+    if resp.status != 200:
+        raise RuntimeError(f"submission_batches API returned {resp.status}")
+    items = resp.json().get("items", [])
+    # A submission with contributions_count 0 is an empty scratch/test batch
+    # (e.g. one literally named "country-test" sitting in this account) --
+    # it carries no real review activity and would just be noise in the count.
+    items = [it for it in items if it.get("contributions_count")]
+    if not items:
+        raise RuntimeError("no batches with content returned — nothing to scrape")
 
-    out = {"accepted": total("Accepted"), "rejected": total("Rejected"),
-           "need_revisions": total("Need revisions"), "in_review": total("In review"),
-           "not_submitted": total("Not submitted")}
+    # processed_contributions_count IS the accepted count, not something to
+    # derive -- verified against all 15 real batches 2026-09-18:
+    # processed == reviewed - rejected in every single one, with zero
+    # residual, so Getty is already handing this over as its own field.
+    # pending_contributions_count is the modern equivalent of the old
+    # "not submitted" bucket: files added to a batch but not yet sent for
+    # review at all (distinct from awaiting_review, which HAS been submitted
+    # and is just waiting its turn).
+    def total(field):
+        return sum(it.get(field) or 0 for it in items)
 
-    # The page states its own total; trust that over counting rendered cards.
-    m = re.search(r"Showing\s+\d+\s+to\s+(\d+)\s+of\s+(\d+)\s+batches", t, re.I)
+    out = {
+        "accepted": total("processed_contributions_count"),
+        "rejected": total("rejected_contributions_count"),
+        "need_revisions": total("revisable_contributions_count"),
+        "in_review": total("contributions_awaiting_review_count"),
+        "not_submitted": total("pending_contributions_count"),
+        "batches": len(items),
+    }
+
+    # submission_type ("istock_creative_still" / "istock_editorial_still" /
+    # ...) is Getty's own classification, not a name we're pattern-matching --
+    # strictly better than the old "purplelink commercial 4" text-sniffing,
+    # which a 2026-09-06 getty-batch.py bug had already proven unreliable
+    # (batches NAMED commercial that were actually created editorial).
+    for it in items:
+        typ = "creative" if "creative" in it.get("submission_type", "") else \
+              "editorial" if "editorial" in it.get("submission_type", "") else None
+        if not typ:
+            continue
+        out[f"accepted_{typ}"] = out.get(f"accepted_{typ}", 0) + (it.get("processed_contributions_count") or 0)
+        out[f"rejected_{typ}"] = out.get(f"rejected_{typ}", 0) + (it.get("rejected_contributions_count") or 0)
+
+    return out
+
+
+def collect_getty_stats(page):
+    """Real download activity from ESP's own Stats page -- added 2026-09-15
+    after Ben found this page showed 10 real downloads across 9 assets while
+    collect_getty()'s batch-review counts (accepted/rejected/in_review) never
+    surfaced any of it. Same shape of gap as the Alamy dashboard hiding a
+    real sale behind "cleared balance": collect_getty() only ever looked at
+    SUBMISSION review status, never at what actually sells after acceptance.
+
+    The dollar side of this (Account Management > Royalties) explicitly
+    says "Royalties data will not be available until your first transaction
+    has occurred. Please try again next month" -- Getty batches payout by
+    statement month, so there is no per-sale dollar figure to read yet, only
+    a download count. That still beats reporting zero activity that isn't
+    zero. Revisit once a royalty statement actually posts.
+
+    Deliberately its own platform/metric names, not "downloads" under
+    "getty" -- collect_getty() doesn't currently write a "downloads" field,
+    so there's no double-count risk today, but keeping this data under
+    "getty_stats" instead keeps that true if that ever changes.
+
+    REBUILT 2026-09-18, one day after it shipped: Getty redesigned this page
+    too, in the same overhaul that broke collect_getty(). The old tabular
+    row ("MasterID TotalDownloads <7 channel columns> MM/DD/YYYY Collection
+    AssetType UsageType" all on one line) is gone, replaced by one
+    label:value block per asset -- actually simpler to parse, once found. A
+    JSON API backs this page too (statistics/downloads_for_search, sniffed
+    from network traffic the same way submission_batches was), but its exact
+    query parameters didn't reproduce cleanly outside the page's own request
+    context; the rendered text is simple and reliable enough here that
+    chasing the API further wasn't worth it.
+    """
+    page.goto("https://esp.gettyimages.com/contribute/stats"
+              "?assetTypes=Photo%2CVideo%2CIllustration&primaryDatePeriod=past_24_months"
+              "&page=1&pageSize=50&orderResultsBy=LastDownloadDate&sortDirection=Descending",
+              wait_until="domcontentloaded")
+    page.wait_for_timeout(9000)
+    if bot_challenged(page.inner_text("body")):
+        raise RuntimeError("blocked by anti-bot human check — collect manually")
+    if "sign-in" in page.url or "Content statistics" not in page.inner_text("body"):
+        raise RuntimeError("not signed in to ESP")
+    t = page.inner_text("body")
+
+    # Each asset is its own block:
+    #   <master id>\nCollection: X\nAsset type: Y\nUsage type: Z\n
+    #   Last download: MM/DD/YYYY\nTotal downloads: N
+    rows = re.findall(
+        r"(\d{6,})\s*\nCollection:.*?\nAsset type:.*?\nUsage type:.*?\n"
+        r"Last download:\s*(\d{2}/\d{2}/\d{4})\s*\nTotal downloads:\s*(\d+)",
+        t, re.S)
+    # The same page renders as a TABLE when the window is wide:
+    #   <master id> <total> <7 channel counts> MM/DD/YYYY <collection> ...
+    # Only the card layout was parsed, so every day the window happened to be
+    # wide read as 0 downloads (the 0 / 11 / 0 flip-flop, found 2026-09-23).
+    if not rows:
+        rows = [(mid, date, total) for mid, total, date in re.findall(
+            r"^\s*(\d{6,})\s+(\d+)\s+(?:\d+\s+){7}(\d{2}/\d{2}/\d{4})", t, re.M)]
+    shown = re.search(r"Showing\s+\d+\s*-\s*\d+\s+of\s+(\d+)", t)
+    if shown and int(shown.group(1)) > 0 and not rows:
+        raise RuntimeError(f"stats page lists {shown.group(1)} assets but none parsed (layout changed?)")
+    out = {"assets_with_downloads": len(rows),
+           "downloads_total": sum(int(r[2]) for r in rows)}
+    if rows:
+        out["last_download_date"] = max(rows, key=lambda r: datetime.datetime.strptime(r[1], "%m/%d/%Y"))[1]
+    return out
+
+
+def collect_123rf(page):
+    """Pipeline counts plus lifetime money. Added 2026-09-10, the day 570
+    images were FTP'd to ftp.123rf.com.
+
+    Two pages, dashboard first -- it's also LOGIN_URLS["123rf"], the page the
+    auto-login fallback opens for a human to sign in on. Visiting upload-
+    history (a table of individual photo IDs/thumbnails, not a sign-in-
+    friendly screen) first meant a retry after signing in on the dashboard
+    immediately navigated away from it. Order swapped 2026-09-13; same two
+    pages, same fields, dashboard just goes first now.
+
+    Dashboard carries "Total Earnings $x" / "Total Downloads n" and the
+    "Contributor Level N" badge. upload-history renders a table whose Photos
+    row is "Photos <draft> <pending> <rejected> <approved>". The level
+    matters: 123RF's FAQ gates full contributor status on ID verification
+    plus an initial 10-image review, and at Level 0 the FTP'd files sat
+    unprocessed (0/0/0/0) -- so a stuck all-zero row here is a real account
+    state, not a scrape failure. Signed-out, 123RF bounces to a login page
+    rather than rendering the contributor chrome, so the absence of
+    "Contributor Level" is the sign-in check.
+    """
+    # The dashboard and upload-history redirect to the face/liveness check
+    # (/contrib/account-settings/upload-id/) once per browser session, even
+    # after it has been passed before; manage-content is not gated and shows
+    # the same pipeline counts (2026-09-23). So a gated session still reports
+    # counts, just not the dashboard's money figures, instead of prompting.
+    def counts_from_manage_content():
+        page.goto("https://www.123rf.com/contributor/manage-content", wait_until="domcontentloaded")
+        # The tab counts fill in progressively. Requiring just two consecutive
+        # equal reads was not enough: 2026-09-25 read PENDING=286 twice in a
+        # row (a stalled intermediate render) while the true, stably-displayed
+        # value was 577 -- confirmed by polling the live page afterward.
+        # Three consecutive matches, spaced further apart, is what it took to
+        # rule that false-stable case out.
+        pat = r"DRAFT\s*(\d+)\s*PENDING\s*(\d+)\s*REJECTED\s*(\d+)\s*APPROVED\s*(\d+)"
+        page.wait_for_timeout(5000)
+        m, streak, prev = None, 0, None
+        for _ in range(15):
+            t = page.inner_text("body")
+            if "login" in page.url.lower():
+                raise RuntimeError("not signed in")
+            m = re.search(pat, t)
+            cur = m.groups() if m else None
+            streak = streak + 1 if cur and cur == prev else (1 if cur else 0)
+            if streak >= 3:
+                break
+            prev = cur
+            page.wait_for_timeout(4000)
+        if not m:
+            raise RuntimeError("manage-content counts not found (layout changed?)")
+        got = dict(draft=int(m.group(1)), pending=int(m.group(2)),
+                   rejected=int(m.group(3)), approved=int(m.group(4)))
+        lvl = re.search(r"Contributor Level (\d+)", t, re.I)
+        if lvl:
+            got["contributor_level"] = int(lvl.group(1))
+        return got
+
+    page.goto("https://www.123rf.com/contributor/dashboard", wait_until="domcontentloaded")
+    page.wait_for_timeout(7000)
+    if "upload-id" in page.url:
+        return counts_from_manage_content()
+    d = re.sub(r"[ \t]+", " ", page.inner_text("body"))
+    if "login" in page.url.lower() or "Contributor Level" not in d:
+        raise RuntimeError("not signed in")
+    out = {}
+    # Label-then-value on separate lines, same shape as Shutterstock's
+    # earnings page; "Total Earnings" is lifetime, mapped to balance to match
+    # how the Shutterstock collector already reports its lifetime total.
+    m = re.search(r"Total Earnings\s*\n?\s*\$?([\d,]+\.?\d*)", d, re.I)
     if m:
-        shown, all_batches = int(m.group(1)), int(m.group(2))
-        out["batches"] = all_batches
-        if shown < all_batches:
-            # Don't publish per-status sums built from a partial page.
-            raise RuntimeError(
-                f"only {shown} of {all_batches} batches rendered — raise pageSize")
+        out["balance"] = num(m.group(1))
+    m = re.search(r"Total Downloads\s*\n?\s*([\d,]+)", d, re.I)
+    if m:
+        out["downloads"] = num(m.group(1))
+    m = re.search(r"Contributor Level (\d+)", d, re.I)
+    if m:
+        out["contributor_level"] = int(m.group(1))
+
+    page.goto("https://www.123rf.com/contributor/upload-history", wait_until="domcontentloaded")
+    page.wait_for_timeout(7000)
+    if "upload-id" in page.url:
+        out.update(counts_from_manage_content())
+        return out
+    t = re.sub(r"[ \t]+", " ", page.inner_text("body"))
+    m = re.search(r"\bPhotos\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)", t)
+    if m:
+        out.update(draft=int(m.group(1)), pending=int(m.group(2)),
+                   rejected=int(m.group(3)), approved=int(m.group(4)))
+    return out
+
+
+def collect_depositphotos(page):
+    """Seller's Menu counts, plus money once the account is out of examination.
+
+    Added 2026-09-10. A brand-new Depositphotos seller is in an "Examination
+    Test": every seller page (files, sales, request_earnings) redirects to
+    files_menu_examination.html until the sample uploads are approved. The
+    six pipeline counters still render on that page, so they are collected
+    and examination_pending is set from the redirect. The sales page is only
+    parsed when it actually loads -- while the redirect is in force there is
+    simply no money to read, which is a real zero and not an error.
+    """
+    page.goto("https://depositphotos.com/files.html", wait_until="domcontentloaded")
+    page.wait_for_timeout(7000)
+    t = re.sub(r"[ \t]+", " ", page.inner_text("body"))
+    if "/login" in page.url.lower() or "Seller's Menu" not in t:
+        raise RuntimeError("not signed in")
+    out = {"examination_pending": "files_menu_examination" in page.url
+                                  or "Examination Test" in t}
+    # Each counter is "Label\n<n>" in the Seller's Menu strip.
+    for label, key in (("Online", "online"), ("Pending", "pending"),
+                       ("Unfinished", "unfinished"), ("Rejected", "rejected"),
+                       ("Deactivated", "deactivated")):
+        m = re.search(rf"\b{label}\s*\n\s*(\d+)", t)
+        if m:
+            out[key] = int(m.group(1))
+
+    # While in examination the sales redirect can abort the navigation
+    # outright (net::ERR_ABORTED, first seen 2026-09-24) instead of landing
+    # on the examination page; either way there is no money to read.
+    try:
+        page.goto("https://depositphotos.com/sales.html", wait_until="domcontentloaded")
+    except Exception:
+        if out["examination_pending"]:
+            return out
+        raise
+    page.wait_for_timeout(6000)
+    if "sales.html" in page.url:
+        s = re.sub(r"[ \t]+", " ", page.inner_text("body"))
+        m = re.search(r"(?:Balance|Earnings)\s*:?\s*\n?\s*\$\s*([\d,]+\.?\d*)", s, re.I)
+        if m:
+            out["balance"] = num(m.group(1))
+    return out
+
+
+def collect_etsy(page):
+    """Etsy shop PurplelinkDesigns: all-time shop stats plus active listings.
+
+    Added 2026-09-24, the day the shop opened with printable-download
+    listings. Shop Manager's Stats page takes date_range=all_time, so visits,
+    orders and revenue are cumulative like every other platform's balance and
+    the dashboard's day-over-day deltas mean something. Orders are recorded as
+    "sales" and revenue as "revenue" so the existing money/sales rollups pick
+    them up without special cases.
+    """
+    page.goto("https://www.etsy.com/your/shops/me/stats?date_range=all_time",
+              wait_until="domcontentloaded")
+    page.wait_for_timeout(7000)
+    if re.search(r"signin|/login", page.url, re.I):
+        raise RuntimeError("not signed in")
+    t = re.sub(r"\s+", " ", page.inner_text("body"))
+    if "Shop stats" not in t:
+        raise RuntimeError("not signed in")
+    out = {}
+    for label, key in (("Visits", "visits"), ("Orders", "sales"),
+                       ("Item favorites", "favorites"), ("Shop follows", "followers"),
+                       ("Reviews", "reviews")):
+        m = re.search(rf"\b{label} (\d[\d,]*)", t)
+        if m:
+            out[key] = num(m.group(1))
+    m = re.search(r"\bRevenue \$([\d,]+\.\d{2})", t)
+    if m:
+        out["revenue"] = num(m.group(1))
+    m = re.search(r"Conversion rate ([\d.]+)%", t)
+    if m:
+        out["conversion_pct"] = num(m.group(1))
+    if "visits" not in out or "sales" not in out:
+        raise RuntimeError("Etsy stats layout changed: visits/orders not found")
+
+    page.goto("https://www.etsy.com/your/shops/me/tools/listings", wait_until="domcontentloaded")
+    page.wait_for_timeout(6000)
+    t = re.sub(r"\s+", " ", page.inner_text("body"))
+    # The "Active N / Draft N" tab counts only render on an EMPTY shop; once
+    # there are real listings that strip is replaced by a "Filter" dropdown
+    # and the count vanishes entirely (found 2026-09-25, the day after the
+    # first 15 listings went live -- active_listings was silently missing
+    # from history.json with no error). Count listing rows instead: every
+    # row -- digital or physical -- prints its stock line, "N in stock".
+    m = re.search(r"\bActive\s*(\d+)", t)
+    if m:
+        out["active_listings"] = int(m.group(1))
+    else:
+        out["active_listings"] = len(re.findall(r"\d[\d,]*\s+in stock", t))
     return out
 
 
 PLATFORMS = [("fineartamerica", collect_faa), ("adobe_stock", collect_adobe),
              ("alamy", collect_alamy), ("alamy_qc", collect_alamy_qc),
              ("alamy_measures", collect_alamy_measures),
+             ("alamy_sales", collect_alamy_sales),
              ("shutterstock", collect_shutterstock),
-             ("getty", collect_getty)]
+             ("getty", collect_getty),
+             ("getty_stats", collect_getty_stats),
+             ("123rf", collect_123rf),
+             ("depositphotos", collect_depositphotos),
+             ("etsy", collect_etsy)]
 
 # Dreamstime dropped from the daily crawl 2026-09-03: its anti-bot "Press &
 # Hold" challenge blocks the automation profile often enough that it stopped
@@ -457,7 +805,11 @@ DREAMSTIME = ("dreamstime", collect_dreamstime)
 
 
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-CDP_PORT = 9225
+# Not 9222-9229: something on this Mac hides any Chrome running a debug port
+# in that range within a second of launch (2026-09-23: a fresh profile on
+# 9225 hid, the same profile on 9234 stayed visible), which made every
+# sign-in prompt vanish before it could be used.
+CDP_PORT = 9340
 
 
 def launch_chrome(headless=True):
@@ -570,6 +922,9 @@ LOGIN_URLS = {
     "dreamstime": "https://www.dreamstime.com/manage-account",
     "shutterstock": "https://submit.shutterstock.com/",
     "getty": "https://esp.gettyimages.com/contribute/batches",
+    "123rf": "https://www.123rf.com/contributor/dashboard",
+    "depositphotos": "https://depositphotos.com/files.html",
+    "etsy": "https://www.etsy.com/signin",
 }
 
 # Only these failure shapes get the interactive fallback. A dead session
@@ -607,16 +962,34 @@ def _wait_for_fix(page, url, fn, budget_s=180):
                 capture_output=True, timeout=5)
     except Exception:
         pass
+    # Never call fn(page) while the person is still on a sign-in screen: every
+    # collector starts with page.goto(), so retrying on a timer yanked the
+    # login tab away every 5s and wiped half-typed credentials (FAA,
+    # 2026-09-23: "the window hides itself too quickly"). Watch the URL
+    # passively instead and only retry once it has left the login flow.
+    login_markers = ("login", "signin", "sign-in", "auth", "sso", "ims-na1",
+                     "upload-id", "challenge", "captcha", "verify")
+    def on_login_screen():
+        try:
+            u = page.url.lower()
+        except Exception:
+            return True
+        return any(m in u for m in login_markers)
+
     deadline = time.time() + budget_s
-    last_err = None
     while time.time() < deadline:
-        time.sleep(5)
+        time.sleep(3)
+        if on_login_screen():
+            continue
         try:
             return fn(page)
-        except Exception as e:
-            last_err = e
-            continue
-    raise last_err or RuntimeError("timed out waiting for sign-in")
+        except Exception:
+            # fn navigated away; put the sign-in page back for another try.
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=60_000)
+            except Exception:
+                pass
+    return fn(page)
 
 
 def run(headless=True, auto_login=True, login_budget_s=180, include_dreamstime=False):
@@ -739,7 +1112,7 @@ def append_snapshots(entry):
 
 def login():
     from playwright.sync_api import sync_playwright
-    print("Opening a SEPARATE browser profile (~/.stats-chrome), not your\n"
+    print("Opening a SEPARATE browser profile (~/.photo-automation-chrome), not your\n"
           "everyday Chrome. Signing in to your normal browser does NOT give the\n"
           "collector a session -- they keep different cookie stores.\n\n"
           "Sign in to each tab:\n"
