@@ -1,5 +1,5 @@
 {
-  "version": "0.4.1",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-0.4.1.dmg",
-  "releaseNotes": "Fixes a crash when opening some submissions and counts papers in revision in the publication projection. Includes everything in 0.4."
+  "version": "1.0",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.0.dmg",
+  "releaseNotes": "Recently Deleted, RIS export, NSF/NIH grant auto-fill, Publish or Perish citation metrics, a redesigned Shareables with six new styles, an in-app Help window, Deadlines and Pipeline widgets, Quick Look for manuscript files, and an accessibility pass throughout."
 }
