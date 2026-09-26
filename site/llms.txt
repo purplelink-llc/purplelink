@@ -223,6 +223,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - BibTeX hub: https://purplelink.llc/guides/bibtex/ — pillar page covering bibliography management.
 - Methodology problems peer reviewers flag, and how to fix them: https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/ — fifteen failure modes (p-hacking, HARKing, underpowered samples, test-train contamination, LLM self-judging, fabricated citations and more), each with a definition, an example, the fix and primary references.
 - How to get feedback on a paper before submitting: https://purplelink.llc/guides/get-feedback-on-a-paper-before-submitting/ — colleagues, editing services, general AI assistants, preprints and Paper Review compared.
+- AI paper review tools compared: https://purplelink.llc/guides/ai-paper-review-tools-compared/ — Paperpal Preflight, SciScore, Writefull, a general chatbot and Paper Review: what each checks, price, and what it misses.
 - Overleaf alternatives for Mac: https://purplelink.llc/guides/overleaf-alternative-mac/ — offline LaTeX editors compared, and how to move a project off Overleaf.
 - Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
 - GlobePin vs Polarsteps vs Visited: https://purplelink.llc/guides/globepin-vs-polarsteps/ — comparison of three iOS travel-mapping approaches.

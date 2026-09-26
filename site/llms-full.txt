@@ -411,7 +411,7 @@ Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
 ← All products
 
 macOS
-Free · v0.4 Beta
+Free · v1.0 Beta
 
 # Vitae
 

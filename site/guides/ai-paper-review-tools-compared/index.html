@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>AI paper review tools compared: Paperpal, SciScore, Writefull, Paper Review | Purplelink</title>
+    <meta name="description" content="Paperpal Preflight, SciScore, Writefull, a general AI chatbot, and Purplelink Paper Review compared honestly: what each one actually checks, price, turnaround, and what it misses.">
+    <link rel="canonical" href="https://purplelink.llc/guides/ai-paper-review-tools-compared/">
+    <meta property="og:title" content="AI paper review tools compared">
+    <meta property="og:description" content="Paperpal, SciScore, Writefull, a general chatbot, and Paper Review: what each one actually checks before you submit, and what it misses.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/ai-paper-review-tools-compared/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/ai-paper-review-tools-compared.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI paper review tools compared">
+    <meta name="twitter:description" content="Paperpal, SciScore, Writefull, a general chatbot, and Paper Review: what each one actually checks before you submit, and what it misses.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/ai-paper-review-tools-compared.png">
+    <meta name="twitter:image:alt" content="AI paper review tools, comparison guide">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "AI paper review tools compared: Paperpal, SciScore, Writefull, Paper Review",
+          "description": "An honest comparison of AI tools researchers use before submitting a manuscript: Purplelink Paper Review, Paperpal Preflight, SciScore, Writefull and a general AI chatbot, covering what each checks, price, turnaround, and what it misses.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-09-26",
+          "dateModified": "2026-09-26",
+          "image": "https://purplelink.llc/assets/og/ai-paper-review-tools-compared.png",
+          "mainEntityOfPage": "https://purplelink.llc/guides/ai-paper-review-tools-compared/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "AI paper review tools compared", "item": "https://purplelink.llc/guides/ai-paper-review-tools-compared/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the best AI tool for reviewing a paper before submission?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on what you need checked. Paperpal Preflight is built for formatting and journal-specific submission requirements plus language. SciScore is built for methods-section rigor in biomedical and life-science papers. Purplelink Paper Review covers methods and statistics red flags, citation support, figure integrity and an anonymity scan in one report, across fields. None of them replaces a human reader who knows your subfield."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is Paperpal Preflight free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not on its own. Preflight is bundled into a paid Paperpal Prime subscription. Some journals license Preflight directly and offer authors a free or discounted scan through their own submission system, so check your target journal's author guidelines before paying."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does SciScore work for papers outside biomedicine?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not really. SciScore checks a methods section against reporting standards built for life-science research (NIH rigor criteria, MDAR, ARRIVE for animal studies) and looks for identifiers on resources such as antibodies, cell lines and organisms. A computer science, engineering or social science paper has none of that, so SciScore has little to check."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I just paste my paper into ChatGPT or Claude for a review?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can, and it often produces useful comments on clarity and argument in minutes. It is weaker for systematic work: a long manuscript can be read unevenly, references are not checked against a bibliographic database unless the assistant has a lookup tool and uses it for every entry, and it can state an error confidently. Whether your text may be used for training depends on the product, the plan and your settings, so check those before pasting unpublished work."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens to my manuscript if I use Purplelink Paper Review?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and the review from its own servers 30 minutes after you first open the result, or after 24 hours if you never do, so save the report before closing the tab."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is an AI paper review a substitute for peer review?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. These tools check the parts of a manuscript that are systematic and easy to skip under deadline: formatting, references, reporting completeness, statistics red flags. None of them can tell you whether your contribution matters to the field the way an expert reviewer can, and all of them can be wrong. Use one alongside at least one human reader who knows your area."
+      }
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="/styles.css?v=291897a271">
+    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo-64.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Comparison</p>
+        <h1 class="post-title">AI paper review tools compared: what each one actually checks</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-26">September 26, 2026</time></p>
+        <p class="post-lede">"AI paper review" covers three different jobs: language editing (Writefull), journal-format compliance (Paperpal Preflight), and methods or argument critique (SciScore, Purplelink Paper Review). Most manuscripts need more than one.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink makes Paper Review, one of the tools compared here. I have tried to write the other entries the way I would want to read them if I were choosing between them, using each vendor's own pricing and product pages. Prices and plans change; check the vendor's site before you pay.</p>
+
+        <h2>Three different jobs, one search term</h2>
+        <p>People search for "AI paper review tool" wanting very different things, and the tools that come up answer to different parts of that phrase.</p>
+        <ul>
+          <li><strong>Language editing.</strong> Grammar, word choice, sentence structure, whether the prose reads as native academic English. This is what a tool like Writefull does. It has no opinion on whether your methods are sound.</li>
+          <li><strong>Journal-format compliance.</strong> Word and abstract limits, required sections, reference style, whether the manuscript matches the target journal's own submission checklist. This is Paperpal Preflight's job, and it is also language-aware.</li>
+          <li><strong>Methods, statistics and argument critique.</strong> Whether the study design supports the claims, whether the statistics were reported the way the field expects, whether references actually say what you cited them for. SciScore does a narrow, deep version of this for biomedical methods sections. Paper Review does a broader version across fields, plus citation verification and figure checks.</li>
+        </ul>
+        <p>None of the tools below does all three well. Below is what each one actually checks, what it costs, and what it misses.</p>
+
+        <h2>The tools, compared</h2>
+        <p>"Self-serve" means you, the author, can go run the tool yourself before submitting, without a journal's involvement. Prices are current as of September 2026; several of these vendors run promotions or change plans, so treat the numbers as a starting point.</p>
+
+        <table class="compare-table compare-stack">
+          <caption>Five ways to get an AI read on a manuscript before you submit</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tool</th>
+              <th scope="col">Primary job</th>
+              <th scope="col">Price</th>
+              <th scope="col">Turnaround</th>
+              <th scope="col">Self-serve</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Purplelink Paper Review</th>
+              <td data-label="Primary job">Methods and statistics critique, citation support, figure integrity, anonymity scan</td>
+              <td data-label="Price">$9 Standard, $11 with Journal Pack, $15 Deep Review</td>
+              <td data-label="Turnaround">4 to 8 minutes (Standard), 10 to 15 (Deep)</td>
+              <td data-label="Self-serve">Yes, upload a PDF</td>
+              <td data-label="Notes">Four AI personas, references checked against CrossRef, an annotated PDF plus a Markdown report</td>
+            </tr>
+            <tr>
+              <th scope="row">Paperpal Preflight</th>
+              <td data-label="Primary job">Journal-specific submission-readiness checks, plus language</td>
+              <td data-label="Price">Bundled with Paperpal Prime: $25/month, or $139/year</td>
+              <td data-label="Turnaround">A few minutes</td>
+              <td data-label="Self-serve">Yes, with a Prime account; some journals license it and offer authors a free scan directly</td>
+              <td data-label="Notes">Checks against 30+ criteria per journal (word limits, structure, reference style). Not built to judge methodology.</td>
+            </tr>
+            <tr>
+              <th scope="row">SciScore</th>
+              <td data-label="Primary job">Methods-section rigor for biomedical and life-science research</td>
+              <td data-label="Price">10 free reports a year with an ORCID account, $19 for 4 more</td>
+              <td data-label="Turnaround">A few minutes</td>
+              <td data-label="Self-serve">Yes, at sciscore.asedasciences.com, or through a participating journal's submission system</td>
+              <td data-label="Notes">Scans for blinding, randomization, sample-size justification, and identifiers on resources such as antibodies and cell lines. Little to check outside life sciences.</td>
+            </tr>
+            <tr>
+              <th scope="row">Writefull</th>
+              <td data-label="Primary job">Academic language and style</td>
+              <td data-label="Price">Free tier; paid plans for unlimited use (check current pricing)</td>
+              <td data-label="Turnaround">Instant, as you type</td>
+              <td data-label="Self-serve">Yes, inside Word or Overleaf</td>
+              <td data-label="Notes">Grammar, word choice, paraphrasing. No methodology, citation or rigor checking.</td>
+            </tr>
+            <tr>
+              <th scope="row">A general AI chatbot (ChatGPT, Claude, Gemini)</th>
+              <td data-label="Primary job">Whatever you ask it to look at</td>
+              <td data-label="Price">Free tier or an existing subscription</td>
+              <td data-label="Turnaround">Minutes</td>
+              <td data-label="Self-serve">Yes</td>
+              <td data-label="Notes">No systematic reference verification, no structured or reproducible report, can state errors confidently. Check the product's training-data terms before pasting unpublished work.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Purplelink Paper Review</h3>
+        <p>Paper Review reads an uploaded PDF with four AI personas in parallel: Methodology Critic, Statistical Skeptic, Data Integrity Officer and Editor-in-Chief. Every reference is checked against CrossRef, and for the most load-bearing claims the cited source's own abstract is fetched and compared against what you wrote, with a verdict of supported, partially supported, not supported by the abstract, contradicted, or source unavailable. A vision pass looks at every page for figure problems: broken axes, missing error bars, color-only encoding. Every tier includes an anonymity scan for double-blind submission. The output is a Markdown report with an A/B/C rectification checklist and an annotated PDF with comments on the pages they refer to. <strong>Choose it if</strong> you want one systematic pass across methods, statistics, citations and figures, in any field, and you are close to submitting.</p>
+
+        <h3>Paperpal Preflight</h3>
+        <p>Preflight is built for the last mile: does this manuscript match what the target journal actually asks for. It checks word and abstract limits, required sections, figure and table formatting, and reference style against the journal you pick, and Paperpal's broader language tools run alongside it. It ships as part of Paperpal Prime, a subscription that also includes general AI academic writing and editing features. Some journals have licensed Preflight directly and put a free or discounted scan in front of authors during submission, which is worth checking before you pay for Prime yourself. <strong>Choose it if</strong> your biggest risk is a desk rejection over formatting, not the substance of the argument.</p>
+
+        <h3>SciScore</h3>
+        <p>SciScore reads only the methods section, against reporting frameworks built for life-science research: NIH rigor criteria, the MDAR framework, and ARRIVE for animal studies. It flags missing detail on blinding, randomization, sample-size justification and sex as a biological variable, and checks that resources such as antibodies, cell lines, plasmids and organisms carry a resolvable identifier (an RRID) rather than a vague name. Several journals, including the FASEB family, run it automatically during submission and offer it to authors at no cost; individual researchers can also get 10 free reports a year with an ORCID account. Outside biomedicine, there is little for it to check. <strong>Choose it if</strong> you run wet-lab or animal research and want to catch a rigor-reporting gap before a reviewer does.</p>
+
+        <h3>Writefull</h3>
+        <p>Writefull is a language tool, not a review tool, and it does not claim otherwise. It works inside Word and inside Overleaf, understands LaTeX syntax well enough to leave commands alone, and suggests grammar, word choice and style edits trained on published journal articles, plus utilities like an abstract generator and a title generator. It has no opinion on your methods, your statistics or whether a citation supports the sentence it is attached to. <strong>Choose it if</strong> your manuscript's substance is solid and what is left is making the English read like a native academic wrote it, especially if you already work in Overleaf.</p>
+
+        <h3>A general AI chatbot</h3>
+        <p>Pasting a manuscript into ChatGPT, Claude or Gemini and asking for a critique is free, fast and flexible: you can ask it to focus on anything. What you lose is structure. There is no fixed report format, no guarantee every reference gets checked (most assistants will not look one up unless you ask, and then only if they have a working search tool), and a long paper can be read unevenly if it is pasted in one piece. It can also state something wrong with complete confidence. <strong>Choose it if</strong> you want a fast first read on clarity and argument, and you plan to verify anything it tells you against the actual data and literature yourself.</p>
+
+        <h2>The one you can't buy: StatReviewer</h2>
+        <p>StatReviewer deserves a mention because it turns up in searches for this topic, but it belongs to a different category from everything above. It runs automated statistical-reporting checks (against frameworks such as CONSORT) inside a journal's own editorial system, typically Editorial Manager, after you submit, not before. A handful of publishers, including some BMC journals, use it alongside human peer review. There is no self-serve way for an individual author to buy a StatReviewer report ahead of time; if your target journal uses it, you will meet it as part of the review process rather than as a tool you choose.</p>
+
+        <h2>Which to choose</h2>
+        <ul>
+          <li><strong>Formatting risk for a specific journal?</strong> Paperpal Preflight, or check whether your target journal already licenses it for free.</li>
+          <li><strong>Wet-lab or animal-study methods section?</strong> SciScore, especially if it is free through your target journal.</li>
+          <li><strong>Prose needs a native-English pass?</strong> Writefull, in whichever of Word or Overleaf you already write in.</li>
+          <li><strong>Want a fast, free, unstructured first look?</strong> A general AI chatbot, then verify anything it flags.</li>
+          <li><strong>Want one systematic pass on methods, statistics, citations and figures, in any field?</strong> <a href="/tools/paper-review/">Paper Review</a>, from $9.</li>
+        </ul>
+        <p>Most manuscripts benefit from more than one of these, and none of them replaces a colleague or advisor who knows your subfield. For how to sequence AI tools with human readers, preprints and editing services, see <a href="/guides/get-feedback-on-a-paper-before-submitting/">how to get feedback on a paper before submitting</a>.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>What is the best AI tool for reviewing a paper before submission?</summary><div class="faq-body">It depends on what you need checked. Paperpal Preflight is built for formatting and journal-specific submission requirements plus language. SciScore is built for methods-section rigor in biomedical and life-science papers. Purplelink Paper Review covers methods and statistics red flags, citation support, figure integrity and an anonymity scan in one report, across fields. None of them replaces a human reader who knows your subfield.</div></details>
+        <details><summary>Is Paperpal Preflight free?</summary><div class="faq-body">Not on its own. Preflight is bundled into a paid Paperpal Prime subscription. Some journals license Preflight directly and offer authors a free or discounted scan through their own submission system, so check your target journal's author guidelines before paying.</div></details>
+        <details><summary>Does SciScore work for papers outside biomedicine?</summary><div class="faq-body">Not really. SciScore checks a methods section against reporting standards built for life-science research (NIH rigor criteria, MDAR, ARRIVE for animal studies) and looks for identifiers on resources such as antibodies, cell lines and organisms. A computer science, engineering or social science paper has none of that, so SciScore has little to check.</div></details>
+        <details><summary>Can I just paste my paper into ChatGPT or Claude for a review?</summary><div class="faq-body">You can, and it often produces useful comments on clarity and argument in minutes. It is weaker for systematic work: a long manuscript can be read unevenly, references are not checked against a bibliographic database unless the assistant has a lookup tool and uses it for every entry, and it can state an error confidently. Whether your text may be used for training depends on the product, the plan and your settings, so check those before pasting unpublished work.</div></details>
+        <details><summary>What happens to my manuscript if I use Purplelink Paper Review?</summary><div class="faq-body">It is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and the review from its own servers 30 minutes after you first open the result, or after 24 hours if you never do, so save the report before closing the tab.</div></details>
+        <details><summary>Is an AI paper review a substitute for peer review?</summary><div class="faq-body">No. These tools check the parts of a manuscript that are systematic and easy to skip under deadline: formatting, references, reporting completeness, statistics red flags. None of them can tell you whether your contribution matters to the field the way an expert reviewer can, and all of them can be wrong. Use one alongside at least one human reader who knows your area.</div></details>
+      </section>
+
+      <section class="waitlist-section">
+        <p class="eyebrow">From the team behind this comparison</p>
+        <h2>One systematic pass before you submit</h2>
+        <p>Four AI reviewers read your manuscript in parallel: methodology, statistics, data integrity and an editor-in-chief pass. Every reference checked against CrossRef, figures scanned for integrity problems, an anonymity scan included on every tier. A Markdown report and an annotated PDF, usually in 4 to 8 minutes.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/tools/paper-review/">Start a review ($9)</a>
+          <a class="btn btn-ghost" href="/tools/paper-review/sample/">See a sample report</a>
+        </div>
+        <p class="waitlist-fine-print">No account. Manuscript deleted within a day. <a href="/privacy/">Privacy Policy</a></p>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/tools/paper-review/">Paper Review, the four-persona pre-submission review</a></li>
+          <li><a href="/guides/get-feedback-on-a-paper-before-submitting/">How to get feedback on a paper before submitting</a></li>
+          <li><a href="/guides/use-paper-review-before-submitting/">How to use Paper Review before submitting</a></li>
+          <li><a href="/guides/ai-policy-checking-your-own-manuscript/">Using AI on your own manuscript: what venue policies allow</a></li>
+          <li><a href="/tools/bib-validator/">BibTeX Validator, free reference checks</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-logo-64.png" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/desk/">Research desk</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=bef3f65e99" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
