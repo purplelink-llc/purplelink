@@ -1,0 +1,89 @@
+{
+  "date": "2026-09-27",
+  "number": 92,
+  "intro": "Two unpatched Citrix NetScaler RCE zero-days under active exploitation, ShinyHunters WAF bypass on Oracle PeopleSoft CVE-2026-35273, Lunex Stealer abusing AMD drivers, and a Pentagon court ruling against Anthropic's safety constraints.",
+  "sections": {
+    "AI & Technology": [
+      {
+        "title": "DeepSeek Elastic Compute (DSec)",
+        "url": "https://arxiv.org/abs/2609.22978",
+        "source_name": "Hacker News",
+        "category": "ai_tech",
+        "editorial_note": "DeepSeek's DSec paper describes an elastic compute architecture for LLM inference that dynamically reallocates GPU resources across prefill and decode phases, reportedly achieving significant throughput improvements over static allocation. If the results hold, this is an infrastructure-level contribution relevant to anyone running self-hosted inference at scale \u2014 the key question is whether the gains are reproducible outside DeepSeek's proprietary cluster topology. Researchers building inference pipelines on commodity hardware should examine the scheduling assumptions carefully before treating the numbers as portable."
+      },
+      {
+        "title": "OpenAI Feared \"Optics\" of what might appear on Hacker News",
+        "url": "https://authorsguild.org/news/ag-v-openai-top-execs-knew-mass-book-piracy-was-illegal",
+        "source_name": "Hacker News",
+        "category": "ai_tech",
+        "editorial_note": "Authors Guild v. OpenAI discovery documents show senior OpenAI executives were explicitly aware that training on pirated book datasets was illegal and discussed suppressing information to manage public perception rather than halt the practice. The internal communications framing the concern as an \"optics\" problem rather than a legal or ethical one is the operationally significant detail \u2014 it directly undermines OpenAI's public fair-use arguments and strengthens the plaintiffs' willfulness case. For researchers studying AI governance and the economics of training data, this is primary source evidence of deliberate policy, not negligence."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Warning: Two Unpatched Citrix NetScaler RCE Zero-Days Under Active Exploitation",
+        "url": "https://thehackernews.com/2026/09/warning-two-unpatched-citrix-netscaler.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "Two RCE zero-days in Citrix NetScaler ADC and Gateway are being actively exploited with no patch available and no CVE assignment yet from Citrix as of September 26. The vendor silence while exploitation is confirmed in the wild is the critical operational detail \u2014 administrators cannot wait for an official advisory. Any org running NetScaler ADC or Gateway at the perimeter should treat this as an immediate isolation decision, not a patch-cycle item."
+      },
+      {
+        "title": "ShinyHunters uses WAF bypass trick in Oracle PeopleSoft attacks",
+        "url": "https://www.bleepingcomputer.com/news/security/shinyhunters-uses-waf-bypass-trick-in-oracle-peoplesoft-attacks",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "ShinyHunters is bypassing WAF mitigations for CVE-2026-35273 (CVSS 9.8) in Oracle PeopleSoft using URL-encoding tricks, meaning organizations that believed WAF rules provided adequate coverage are still exposed. The non-obvious implication is that WAF-as-compensating-control is insufficient against a threat actor actively fuzzing encoding variants \u2014 the bypass technique is trivially reproducible once known. Connects to: Attackers Bypass WAFs to Exploit Oracle PeopleSoft Flaw and Deploy Web Shells."
+      },
+      {
+        "title": "Attackers Bypass WAFs to Exploit Oracle PeopleSoft Flaw and Deploy Web Shells",
+        "url": "https://thehackernews.com/2026/09/attackers-bypass-wafs-to-exploit-oracle.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "Google's threat intelligence confirms this is a multi-sector mass exploitation campaign tied to ShinyHunters, with web shell deployment as the post-exploitation objective \u2014 persistent access, not just data exfiltration. The ShinyHunters attribution is notable because the group is primarily known for credential theft and extortion, and web shell deployment signals a pivot toward longer-dwell infrastructure access. Connects to: ShinyHunters uses WAF bypass trick in Oracle PeopleSoft attacks."
+      },
+      {
+        "title": "Lunex Stealer Abuses AMD Driver to Disable Security Monitoring and Steal Browser Credentials",
+        "url": "https://thehackernews.com/2026/09/lunex-stealer-abuses-amd-driver-to.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "Lunex is a MaaS platform deploying a four-stage chain that uses a legitimate AMD driver to blind security monitoring before credential harvesting \u2014 a BYOVD (Bring Your Own Vulnerable Driver) pattern now appearing in commodity stealer tooling, not just APT campaigns. The ClickFix-style Cloudflare verification lure distributed via compromised Ukrainian sites is the initial access vector, meaning the social engineering layer is indistinguishable from legitimate bot challenges. Defenders relying on EDR telemetry without kernel-level driver allowlisting are specifically targeted by this design."
+      }
+    ],
+    "Finance & Business": [
+      {
+        "title": "Anthropic Pushes Its $2 Trillion IPO to November, Meta's Muse Hits #1, and a $40M Seed for a Model That Doesn't Talk: The Latest 20VC x SaaStr",
+        "url": "https://www.saastr.com/anthropic-pushes-its-2-trillion-ipo-to-november-metas-muse-hits-1-and-a-40m-seed-for-a-model-that-doesnt-talk-the-latest-20vc-x-saastr",
+        "source_name": "SaaStr",
+        "category": "finance",
+        "editorial_note": "OpenAI's internal forecast projects $278 billion in total burn through 2030 \u2014 a figure that, if accurate, implies the company needs sustained revenue growth at a rate that makes current ARR numbers look like rounding errors. Meta's Muse reaching the #1 app store position with a persistent Linux VM per user is the infrastructure story buried in the consumer narrative: Meta is subsidizing per-user compute at a scale that no startup or indie developer can match as a competitive moat. The $40M seed for a \"model that doesn't talk\" (presumably action/embodied AI) signals where institutional capital is moving as language model differentiation compresses."
+      }
+    ],
+    "Entrepreneurship": [
+      {
+        "title": "5 Interesting Learnings from GitLab at $1.13 Billion in Revenue: 24% Billings Growth, $20M of Flex in Six Weeks, and 400 Basis Points of AI Margin Cost",
+        "url": "https://www.saastr.com/5-interesting-learnings-from-gitlab-at-1-13-billion-in-revenue-24-billings-growth-20m-of-flex-in-six-weeks-and-400-basis-points-of-ai-margin-cost",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "GitLab's AI features are costing 400 basis points of gross margin \u2014 a concrete, public data point on the infrastructure cost of embedding LLM capabilities into a B2B SaaS product at scale. The $20M in flexible compute spend deployed in six weeks to handle AI workload spikes reveals how unpredictable inference demand is even for a company with $1.13B in revenue and dedicated infrastructure teams. For indie developers or small studios pricing AI-augmented features, this is a useful upper-bound calibration on what margin compression looks like at production scale."
+      },
+      {
+        "title": "Everyone Should Publish the Deepest, Most Direct Competitive Evals They Can. Case Study: $100m ARR Gorgias for AI CX",
+        "url": "https://www.saastr.com/everyone-should-publish-the-deepest-most-direct-competitive-evals-they-can-case-study-100m-arr-gorgias-for-ai-cx",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "Gorgias open-sourced its full evaluation harness covering 8,356 live customer conversations across 18 vendors, publishing results that show a competitor (Yuma) outperforming them on at least one metric. Transparent competitive benchmarking with open-sourced eval infrastructure is a distribution and trust-building strategy that most SaaS companies avoid \u2014 Gorgias is betting that methodological credibility compounds faster than the short-term cost of showing a loss. For anyone building AI-augmented products, the open eval harness itself is worth examining as a template for reproducible product benchmarking."
+      }
+    ],
+    "Worth Reading": [
+      {
+        "title": "Court rules Pentagon can blacklist Anthropic for refusing to enable Claude features",
+        "url": "https://arstechnica.com/tech-policy/2026/09/court-rules-trump-can-blacklist-anthropic-for-refusing-to-enable-claude-features",
+        "source_name": "Ars Technica",
+        "category": "general_tech",
+        "editorial_note": "A federal court ruled that the Pentagon can exclude Anthropic from defense contracts if Claude's safety constraints are deemed operationally limiting, with judges explicitly stating that \"overly constrained AI models\" could cause military operations to fail. This sets a legal precedent that government procurement power can be used to coerce AI safety policy \u2014 a mechanism distinct from regulation and harder to challenge. The ruling creates a structural incentive for AI labs competing for defense contracts to weaken refusal behaviors, with direct implications for any researcher studying alignment under adversarial deployment conditions."
+      }
+    ]
+  },
+  "sources_reviewed": 666,
+  "items_selected": 10
+}
