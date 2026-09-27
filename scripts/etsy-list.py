@@ -258,6 +258,32 @@ def create(t, stem):
 FAILED = ETSY / "failed.json"
 
 
+def live_count(t, title):
+    """How many live listings in the shop carry this exact title.
+
+    listed.json alone can't answer that: 2026-09-26 a listing published, then
+    the tab connection reset before the script saw the redirect, so it was
+    logged as failed and a rerun published a duplicate."""
+    import urllib.parse
+    t.goto("https://www.etsy.com/your/shops/me/tools/listings?query="
+           + urllib.parse.quote(title[:60]), 8)
+    return t.text().count(title)
+
+
+def fresh_tab(t):
+    try:
+        t.eval("1")
+        return t
+    except Exception:
+        log("  tab connection dead, reopening")
+        try:
+            t.close()
+        except Exception:
+            pass
+        t = Tab.new("about:blank"); t.front()
+        return t
+
+
 def main():
     stems = sys.argv[1:]
     state = json.loads(STATE.read_text()) if STATE.exists() else {}
@@ -269,17 +295,20 @@ def main():
             # peer" cascaded into "Broken pipe" for every remaining stem,
             # because the same dead Tab object kept getting reused) is
             # recovered by opening a fresh tab rather than losing the batch.
-            try:
-                t.eval("1")
-            except Exception:
-                log("  tab connection dead, reopening")
-                try:
-                    t.close()
-                except Exception:
-                    pass
-                t = Tab.new("about:blank"); t.front()
+            t = fresh_tab(t)
             if s in state:
                 log("skip (live)", s); continue
+            want = kit(s)["title"]
+            try:
+                if live_count(t, want):
+                    log("skip (already live in shop)", s)
+                    state[s] = {"title": want, "at": time.strftime("%Y-%m-%dT%H:%M:%S")}
+                    STATE.write_text(json.dumps(state, indent=1))
+                    failed.pop(s, None); FAILED.write_text(json.dumps(failed, indent=1))
+                    continue
+            except Exception as e:
+                log("  could not check the shop, skipping this run:", s, "--", e)
+                continue
             log("listing", s)
             try:
                 try:
@@ -287,9 +316,8 @@ def main():
                 except Exception as e:      # the editor is occasionally flaky; one clean retry
                     log("  retrying after:", e)
                     time.sleep(15)
-                    want = kit(s)["title"]
-                    t.goto("https://www.etsy.com/your/shops/me/tools/listings", 8)
-                    if want[:40] in t.text():   # it did publish before failing: don't duplicate
+                    t = fresh_tab(t)
+                    if live_count(t, want):   # it did publish before failing: don't duplicate
                         title = want
                     else:
                         title = create(t, s)
