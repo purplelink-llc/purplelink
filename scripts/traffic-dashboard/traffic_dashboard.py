@@ -3233,7 +3233,130 @@ def _usd(v: float) -> str:
     return f"-${-v:,.2f}" if v < 0 else f"${v:,.2f}"
 
 
-def profit_block(p: dict | None, ch: dict | None) -> str:
+# ---------------------------------------------------------------- tax estimate
+#
+# Purplelink LLC is a Georgia single-member LLC taxed as a disregarded entity
+# (docs/photo-licensing/legal-ops.md), so business profit lands on Ben's
+# Schedule C: self-employment tax on 92.35% of it, then federal income tax
+# (after half the SE tax and the 20% QBI deduction) and Georgia's flat tax at
+# the margin on top of his other income. A loss pays no SE tax and offsets
+# other income instead, which is a saving at the same marginal rates. The
+# marginal federal rate and filing status live in TAX_PROFILE_PATH because
+# they depend on income outside the business. An estimate, not a return.
+
+TAX_PROFILE_PATH = Path.home() / ".config" / "purplelink" / "tax-profile.json"
+TAX_DEFAULTS = {
+    "taxYear": 2026,
+    "filingStatus": "single",
+    "federalMarginal": 0.22,       # bracket the last dollar of other income falls in
+    "stateRate": 0.0499,           # Georgia flat rate for 2026 (HB 463, signed 2026-05-11)
+    "wagesAboveSSBase": False,     # W-2 wages over $184,500 (2026) remove the 12.4% SS part of SE tax
+}
+ESTIMATED_TAX_DUE = {2026: ["2026-04-15", "2026-06-15", "2026-09-15", "2027-01-15"]}
+SALES_TAX_GROSS = 100_000          # lowest common economic-nexus threshold, per state
+SALES_TAX_ORDERS = 200             # the transaction-count alternative some states still use
+SE_MIN_PROFIT = 400                # no SE tax below $400 of net SE earnings
+
+
+def load_tax_profile() -> tuple[dict, bool]:
+    try:
+        return {**TAX_DEFAULTS, **json.loads(TAX_PROFILE_PATH.read_text())}, True
+    except Exception:
+        return dict(TAX_DEFAULTS), False
+
+
+def schedule_c_tax(profit: float, prof: dict) -> dict:
+    """Extra tax (negative: saving) from `profit` of annual Schedule C profit."""
+    fed, st = prof["federalMarginal"], prof["stateRate"]
+    if profit <= 0:
+        return {"se": 0.0, "federal": profit * fed, "state": profit * st, "total": profit * (fed + st)}
+    se_rate = 0.029 if prof.get("wagesAboveSSBase") else 0.153
+    se = profit * 0.9235 * se_rate if profit * 0.9235 >= SE_MIN_PROFIT else 0.0
+    agi = profit - se / 2
+    federal = agi * 0.8 * fed          # QBI: 20% of profit after half SE, well under the phase-in
+    state = agi * st                   # Georgia starts from federal AGI; no QBI
+    return {"se": se, "federal": federal, "state": state, "total": se + federal + state}
+
+
+def tax_view(p: dict | None, history: dict) -> dict | None:
+    if not p:
+        return None
+    prof, from_file = load_tax_profile()
+    days = p["days"]
+    week_profit = p["total"]["profit"]
+    annual_profit = week_profit * 365 / days
+    annual = schedule_c_tax(annual_profit, prof)
+    week_tax = annual["total"] * days / 365
+    at_1k = schedule_c_tax(1000, prof)["total"] / 1000
+    loss_rate = prof["federalMarginal"] + prof["stateRate"]
+
+    today = dt.date.today().isoformat()
+    dues = ESTIMATED_TAX_DUE.get(prof["taxYear"], [])
+    next_due = next((d for d in dues if d >= today), None)
+
+    year_ago = dt.datetime.now().timestamp() - 365 * 86400
+    recent = [r for r in (history.get("ledger") or {}).values() if r["ts"] >= year_ago]
+    gross_12m = sum(r["gross"] for r in recent) / 100
+    return {
+        "profile": prof, "profileFile": from_file,
+        "rateProfit": at_1k, "rateLoss": loss_rate,
+        "weekProfit": week_profit, "weekTax": week_tax, "weekAfterTax": week_profit - week_tax,
+        "annualProfit": annual_profit, "annual": annual,
+        "nextDue": next_due, "estimatesNeeded": annual["total"] >= 1000,
+        "gross12m": gross_12m, "orders12m": len(recent),
+        "nexusPct": max(gross_12m / SALES_TAX_GROSS, len(recent) / SALES_TAX_ORDERS) * 100,
+    }
+
+
+def tax_block(t: dict | None) -> str:
+    if not t:
+        return ""
+    pr, a = t["profile"], t["annual"]
+    saving = t["weekTax"] < 0
+    week_line = (f"{'saves' if saving else 'costs'} about {_usd(abs(t['weekTax']))} in tax "
+                 f"({'loss offsets other income' if saving else 'set this aside'}), "
+                 f"{_usd(t['weekAfterTax'])} after tax")
+    est = ("At this rate the business owes no tax; its loss lowers the tax on other income."
+           if a["total"] < 0 else
+           "Projected tax is under $1,000, so no estimated payments are needed at this rate."
+           if not t["estimatesNeeded"] else
+           f"Projected tax is over $1,000: pay estimates (next due {t['nextDue']}) or raise W-2 withholding.")
+    assumed = ("" if t["profileFile"] else
+               f" These are defaults; put your real bracket in {html.escape(str(TAX_PROFILE_PATH))}.")
+    rows = f"""
+      <tr><td>This week's profit {_usd(t['weekProfit'])}</td><td colspan='2'>{week_line}</td></tr>
+      <tr><td>Full year at this week's rate</td><td class='num'>{_usd(t['annualProfit'])}</td>
+        <td>SE tax {_usd(a['se'])} · federal {_usd(a['federal'])} · Georgia {_usd(a['state'])} ·
+          total {_usd(a['total'])}</td></tr>
+      <tr><td>Rate on each extra dollar</td><td class='num'>{t['rateProfit'] * 100:.1f}%</td>
+        <td>of profit (SE {'2.9%' if pr.get('wagesAboveSSBase') else '15.3%'} on 92.35%, federal
+          {pr['federalMarginal'] * 100:.0f}% after QBI, Georgia {pr['stateRate'] * 100:.2f}%); a loss saves
+          {t['rateLoss'] * 100:.1f}%</td></tr>
+      <tr><td>Sales tax thresholds</td><td class='num'>{t['nexusPct']:.1f}%</td>
+        <td>{_usd(t['gross12m'])} and {t['orders12m']} orders in 12 months, all states combined, against a
+          single state's lowest threshold ($100,000 or 200 orders)</td></tr>"""
+    return f"""
+  <h3>Taxes · estimate for {pr['taxYear']}</h3>
+  <table><tbody>{rows}</tbody></table>
+  <p class="sales-foot">{est} Schedule C, {html.escape(pr['filingStatus'])} filer, federal bracket
+    {pr['federalMarginal'] * 100:.0f}% set by other income.{assumed} Apple collects and remits sales tax
+    on App Store sales. A business that loses money in most years can have its losses questioned under the
+    hobby-loss rule (profit in 3 of 5 years is the safe presumption). An estimate for planning, not a return.</p>"""
+
+
+def print_tax(t: dict | None) -> None:
+    if not t:
+        return
+    a = t["annual"]
+    word = "saves" if t["weekTax"] < 0 else "owes"
+    print(f"   Tax: this week {word} ~{_usd(abs(t['weekTax']))} ({_usd(t['weekAfterTax'])} after tax); "
+          f"full year at this rate {_usd(t['annualProfit'])} profit → {_usd(a['total'])} tax "
+          f"({t['rateProfit'] * 100:.1f}% per profit dollar, {t['rateLoss'] * 100:.1f}% saved per loss dollar); "
+          f"sales-tax threshold {t['nexusPct']:.1f}% of the way"
+          + ("" if t["profileFile"] else "; default bracket, set tax-profile.json"))
+
+
+def profit_block(p: dict | None, ch: dict | None, tax: dict | None = None) -> str:
     if not p:
         return ""
     def cell(v: float) -> str:
@@ -3278,11 +3401,12 @@ def profit_block(p: dict | None, ch: dict | None) -> str:
   <p class="sales-foot">Net revenue is after Stripe's fee, refunds and Apple's cut; GlobePin adds
     AdMob earnings. Claude API is the metered cost of {p['jobs']} paid job(s); hosting is Modal's
     billing report per app; fixed costs are spread evenly per day.{fixed} Not measured: {gaps}.</p>
+  {tax_block(tax)}
   {ch_html}
 </section>"""
 
 
-def print_profit(p: dict | None, ch: dict | None) -> None:
+def print_profit(p: dict | None, ch: dict | None, tax: dict | None = None) -> None:
     if not p:
         return
     t = p["total"]
@@ -3292,6 +3416,7 @@ def print_profit(p: dict | None, ch: dict | None) -> None:
     for r in p["rows"]:
         print(f"   {r['line']:<22} {_usd(r['revenue']):>9} − {_usd(r['cost']):>8} = {_usd(r['profit']):>9}")
     print(f"   Not measured: {'; '.join(p['gaps'])}")
+    print_tax(tax)
     if ch and ch["rows"]:
         print(f"   By channel since {ch['since']} (last touch): "
               + ", ".join(f"{r['channel']} {r['last']} ({_usd(r['lastNet'])})" for r in ch["rows"] if r["last"]))
@@ -3616,7 +3741,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
            sales: dict | None = None, appstore: dict | None = None,
            manual_ads: dict | None = None, chrome_web_store: dict | None = None,
            admob: dict | None = None, metrics: dict | None = None,
-           profit: dict | None = None, channels: dict | None = None) -> str:
+           profit: dict | None = None, channels: dict | None = None, tax: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -3665,7 +3790,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
   <p class="stamp">Updated {html.escape(generated)} · refreshes daily at 9:00am</p>
 </header>
 {metrics_block(metrics)}
-{profit_block(profit, channels)}
+{profit_block(profit, channels, tax)}
 {sales_block(sales)}
 {appstore_block(appstore)}
 {chrome_web_store_block(chrome_web_store)}
@@ -3909,14 +4034,15 @@ def main() -> int:
     metrics = revenue_metrics(history, summaries, manual_ads)
     profit = profit_view(history, manual_ads)
     channels = channel_revenue(history)
+    tax = tax_view(profit, history)
     DASHBOARD_PATH.write_text(
         render(summaries, obs, generated, min(firsts) if firsts else None,
                sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics,
-               profit, channels))
+               profit, channels, tax))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
-    print_profit(profit, channels)
+    print_profit(profit, channels, tax)
     if sales:
         w, a = sales.get("window", {}), sales.get("allTime", {})
         print(f"\n  Sales — {money(w.get('gross', 0))} in the last "
