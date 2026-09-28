@@ -3253,6 +3253,17 @@ TAX_DEFAULTS = {
     "wagesAboveSSBase": False,     # W-2 wages over $184,500 (2026) remove the 12.4% SS part of SE tax
 }
 ESTIMATED_TAX_DUE = {2026: ["2026-04-15", "2026-06-15", "2026-09-15", "2027-01-15"]}
+# 2026 federal brackets (IRS Rev. Proc. 2025-32, after the One Big Beautiful Bill):
+# (lower bound of taxable income, rate), plus the Additional Medicare threshold.
+FEDERAL_BRACKETS = {2026: {"single": [(0, .10), (12_400, .12), (50_400, .22), (105_700, .24),
+                                      (201_775, .32), (256_225, .35), (640_600, .37)]}}
+STANDARD_DEDUCTION = {2026: {"single": 16_100}}
+SS_WAGE_BASE = {2026: 184_500}
+ADDL_MEDICARE_AT = {"single": 200_000}
+# QBI: above this taxable income the 20% deduction phases out over the range for a
+# business that pays no W-2 wages and owns little property (Purplelink: none).
+QBI_THRESHOLD = {2026: {"single": 201_775}}
+QBI_PHASE_IN = {"single": 75_000}
 SALES_TAX_GROSS = 100_000          # lowest common economic-nexus threshold, per state
 SALES_TAX_ORDERS = 200             # the transaction-count alternative some states still use
 SE_MIN_PROFIT = 400                # no SE tax below $400 of net SE earnings
@@ -3265,8 +3276,41 @@ def load_tax_profile() -> tuple[dict, bool]:
         return dict(TAX_DEFAULTS), False
 
 
+def _bracket_tax(taxable: float, brackets: list[tuple[float, float]]) -> float:
+    tax = 0.0
+    for i, (lower, rate) in enumerate(brackets):
+        upper = brackets[i + 1][0] if i + 1 < len(brackets) else float("inf")
+        if taxable > lower:
+            tax += (min(taxable, upper) - lower) * rate
+    return tax
+
+
 def schedule_c_tax(profit: float, prof: dict) -> dict:
-    """Extra tax (negative: saving) from `profit` of annual Schedule C profit."""
+    """Extra tax (negative: saving) from `profit` of annual Schedule C profit.
+
+    With w2Wages in the profile this is exact against the bracket table: the
+    federal change is tax(other + change) - tax(other), so a loss that crosses
+    a bracket line is priced at both rates. SE tax counts the Social Security
+    room left under the wage base and the 0.9% Additional Medicare over $200k.
+    Without it, one flat federalMarginal rate stands in."""
+    brackets = FEDERAL_BRACKETS.get(prof["taxYear"], {}).get(prof["filingStatus"])
+    wages = prof.get("w2Wages")
+    if wages is not None and brackets:
+        base = max(0.0, wages - STANDARD_DEDUCTION[prof["taxYear"]][prof["filingStatus"]])
+        se_base = profit * 0.9235 if profit * 0.9235 >= SE_MIN_PROFIT else 0.0
+        ss = 0.124 * min(se_base, max(0.0, SS_WAGE_BASE[prof["taxYear"]] - wages))
+        medicare = 0.029 * se_base
+        addl = 0.009 * max(0.0, se_base - max(0.0, ADDL_MEDICARE_AT[prof["filingStatus"]] - wages))
+        half_se = (ss + medicare) / 2          # Additional Medicare is not deductible
+        qbi = 0.2 * (profit - half_se) if profit > 0 else 0.0
+        over = base + profit - half_se - QBI_THRESHOLD[prof["taxYear"]][prof["filingStatus"]]
+        qbi *= 1 - min(1.0, max(0.0, over / QBI_PHASE_IN[prof["filingStatus"]]))
+        change = profit - half_se - qbi
+        federal = _bracket_tax(max(0.0, base + change), brackets) - _bracket_tax(base, brackets)
+        state = prof["stateRate"] * (profit - half_se)
+        se = ss + medicare + addl
+        return {"se": se, "federal": federal, "state": state, "total": se + federal + state}
+
     fed, st = prof["federalMarginal"], prof["stateRate"]
     if profit <= 0:
         return {"se": 0.0, "federal": profit * fed, "state": profit * st, "total": profit * (fed + st)}
@@ -3288,7 +3332,7 @@ def tax_view(p: dict | None, history: dict) -> dict | None:
     annual = schedule_c_tax(annual_profit, prof)
     week_tax = annual["total"] * days / 365
     at_1k = schedule_c_tax(1000, prof)["total"] / 1000
-    loss_rate = prof["federalMarginal"] + prof["stateRate"]
+    loss_rate = -schedule_c_tax(-1000, prof)["total"] / 1000
 
     today = dt.date.today().isoformat()
     dues = ESTIMATED_TAX_DUE.get(prof["taxYear"], [])
@@ -3321,6 +3365,9 @@ def tax_block(t: dict | None) -> str:
            "Projected tax is under $1,000, so no estimated payments are needed at this rate."
            if not t["estimatesNeeded"] else
            f"Projected tax is over $1,000: pay estimates (next due {t['nextDue']}) or raise W-2 withholding.")
+    basis = (f"W-2 wages ${pr['w2Wages']:,.0f} with the standard deduction, priced against the "
+             f"{pr['taxYear']} bracket table" if pr.get("w2Wages") is not None else
+             f"federal bracket {pr['federalMarginal'] * 100:.0f}% set by other income")
     assumed = ("" if t["profileFile"] else
                f" These are defaults; put your real bracket in {html.escape(str(TAX_PROFILE_PATH))}.")
     rows = f"""
@@ -3329,17 +3376,15 @@ def tax_block(t: dict | None) -> str:
         <td>SE tax {_usd(a['se'])} · federal {_usd(a['federal'])} · Georgia {_usd(a['state'])} ·
           total {_usd(a['total'])}</td></tr>
       <tr><td>Rate on each extra dollar</td><td class='num'>{t['rateProfit'] * 100:.1f}%</td>
-        <td>of profit (SE {'2.9%' if pr.get('wagesAboveSSBase') else '15.3%'} on 92.35%, federal
-          {pr['federalMarginal'] * 100:.0f}% after QBI, Georgia {pr['stateRate'] * 100:.2f}%); a loss saves
-          {t['rateLoss'] * 100:.1f}%</td></tr>
+        <td>on the first $1,000 of profit (self-employment tax, federal after QBI, Georgia
+          {pr['stateRate'] * 100:.2f}%); the first $1,000 of loss saves {t['rateLoss'] * 100:.1f}%</td></tr>
       <tr><td>Sales tax thresholds</td><td class='num'>{t['nexusPct']:.1f}%</td>
         <td>{_usd(t['gross12m'])} and {t['orders12m']} orders in 12 months, all states combined, against a
           single state's lowest threshold ($100,000 or 200 orders)</td></tr>"""
     return f"""
   <h3>Taxes · estimate for {pr['taxYear']}</h3>
   <table><tbody>{rows}</tbody></table>
-  <p class="sales-foot">{est} Schedule C, {html.escape(pr['filingStatus'])} filer, federal bracket
-    {pr['federalMarginal'] * 100:.0f}% set by other income.{assumed} Apple collects and remits sales tax
+  <p class="sales-foot">{est} Schedule C, {html.escape(pr['filingStatus'])} filer, {basis}.{assumed} Apple collects and remits sales tax
     on App Store sales. A business that loses money in most years can have its losses questioned under the
     hobby-loss rule (profit in 3 of 5 years is the safe presumption). An estimate for planning, not a return.</p>"""
 
@@ -3351,7 +3396,7 @@ def print_tax(t: dict | None) -> None:
     word = "saves" if t["weekTax"] < 0 else "owes"
     print(f"   Tax: this week {word} ~{_usd(abs(t['weekTax']))} ({_usd(t['weekAfterTax'])} after tax); "
           f"full year at this rate {_usd(t['annualProfit'])} profit → {_usd(a['total'])} tax "
-          f"({t['rateProfit'] * 100:.1f}% per profit dollar, {t['rateLoss'] * 100:.1f}% saved per loss dollar); "
+          f"({t['rateProfit'] * 100:.1f}% on the first $1k of profit, {t['rateLoss'] * 100:.1f}% saved on the first $1k of loss); "
           f"sales-tax threshold {t['nexusPct']:.1f}% of the way"
           + ("" if t["profileFile"] else "; default bracket, set tax-profile.json"))
 
