@@ -228,6 +228,7 @@ ADMOB_APPS = {
                  "appId": "ca-app-pub-6407975157274256~3074958691"},
 }
 ADMOB_DAYS = 7  # matches the Apple Search Ads manual reading, for a fair spend-vs-earnings comparison
+GOOGLE_ADS_DAYS = 7  # matches the ModernTex Google Ads manual reading, for a fair spend-vs-revenue comparison
 
 
 # ---------------------------------------------------------------- config/io
@@ -541,7 +542,7 @@ def _asc_sales_day(token: str, cfg: dict[str, str], day: str) -> dict | None:
     })
     status, body = _asc_get(token, f"/v1/salesReports?{q}", accept="application/a-gzip")
     out = {"downloads": 0, "redownloads": 0, "updates": 0, "proUnits": 0, "proPromo": 0,
-           "proceeds": {}, "countries": {}, "empty": False}
+           "proRefunds": 0, "proceeds": {}, "countries": {}, "empty": False}
     if status == 404:
         out["empty"] = True
         return out
@@ -572,7 +573,12 @@ def _asc_sales_day(token: str, cfg: dict[str, str], day: str) -> dict | None:
             if (row.get("Promo Code") or "").strip():
                 out["proPromo"] += units
                 continue
-            out["proUnits"] += units
+            # A refund arrives as negative units with negative proceeds. Count it
+            # on its own line instead of letting it quietly shrink the sales count.
+            if units < 0:
+                out["proRefunds"] += -units
+            else:
+                out["proUnits"] += units
             cur = (row.get("Currency of Proceeds") or "").strip() or "?"
             out["proceeds"][cur] = round(out["proceeds"].get(cur, 0.0)
                                          + float(row.get("Developer Proceeds") or 0) * units, 2)
@@ -606,11 +612,17 @@ def _asc_analytics(token: str, cfg: dict[str, str], prior: dict) -> dict:
             continue
         got_any = True
         by_date: dict[str, dict[str, int]] = dict(prior.get("reports", {}).get(name, {}).get("byDate", {}))
-        # newest few instances are enough; each covers one processing day
-        for inst in sorted(instances, key=lambda i: i["attributes"].get("processingDate", ""))[-ASC_RELOOK_DAYS - 1:]:
+        ordered = sorted(instances, key=lambda i: i["attributes"].get("processingDate", ""))
+        # With nothing archived, read every instance once; after that the newest few
+        # are enough to pick up Apple's restatements.
+        for inst in (ordered if not by_date else ordered[-ASC_RELOOK_DAYS - 1:]):
             st, sb = _asc_get(token, f"/v1/analyticsReportInstances/{inst['id']}/segments")
             if st != 200:
                 continue
+            # Counts from this instance alone. They replace, never add to, what is
+            # archived for the same date: re-reading an instance on the next run
+            # used to add its counts again, inflating downloads 20-30x.
+            inst_dates: dict[str, dict[str, int]] = {}
             for seg in json.loads(sb).get("data", []):
                 url = seg["attributes"].get("url")
                 if not url:
@@ -642,8 +654,9 @@ def _asc_analytics(token: str, cfg: dict[str, str], prior: dict) -> dict:
                         n = int(float(row[count_key] or 0))
                     except ValueError:
                         continue
-                    by_date.setdefault(date, {})
-                    by_date[date][dim] = by_date[date].get(dim, 0) + n
+                    inst_dates.setdefault(date, {})
+                    inst_dates[date][dim] = inst_dates[date].get(dim, 0) + n
+            by_date.update(inst_dates)
         result["reports"][name] = {"byDate": by_date}
     if not got_any:
         result["note"] = "Apple has not generated the first report yet"
@@ -1511,6 +1524,16 @@ h2{font-size:15px;letter-spacing:.02em;margin:34px 0 12px;font-weight:640;color:
 .sales .who{color:var(--muted);font-size:.82rem}
 .sales-none{color:var(--muted);margin:8px 0 0}
 .rev-chart{width:100%;height:auto;margin-top:10px}
+.metrics h3{font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.02em;margin:22px 0 8px}
+.metric-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0 4px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.tile b{display:block;font-size:1.35rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.tile span{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
+.tile em{display:block;font-style:normal;font-size:.78rem;margin-top:3px}
+.weekly-chart{width:100%;height:auto;display:block}
+.cust-line{color:var(--ink);font-size:.88rem;margin:0}
+.events{margin:0;padding-left:18px;font-size:.88rem;color:var(--ink)}
+.events li{margin:3px 0}
 .rev-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:6px}
 .rev-legend-item{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted)}
 .rev-legend-item i{display:inline-block;width:10px;height:10px;border-radius:3px}
@@ -2350,6 +2373,494 @@ def manual_ads_block(data: dict, admob: dict | None = None) -> str:
 </section>"""
 
 
+def moderntex_revenue_window(sales: dict | None, days: int) -> dict:
+    """Gross and order count for ModernTex only, over the trailing `days`,
+    read straight off Stripe's recent-order list rather than byProduct
+    (which is all-time) -- the same technique the trial-funnel note uses to
+    scope orders to a specific window."""
+    cutoff = dt.datetime.now() - dt.timedelta(days=days)
+    ledger = (sales or {}).get("ledger")
+    if ledger is not None:  # full ledger: no 12-row cap
+        matched = [r for r in ledger if r.get("product") == "moderntex" and r["ts"] >= cutoff.timestamp()]
+        return {"orders": len(matched), "gross": sum(r.get("gross", 0) for r in matched)}
+    recent = (sales or {}).get("recent", [])
+    matched = [r for r in recent if r.get("product") == "moderntex"
+               and (_parse_sale_dt(r.get("date", "")) or dt.datetime.min) >= cutoff]
+    return {"orders": len(matched), "gross": sum(r.get("amount", 0) for r in matched)}
+
+
+def moderntex_ads_block(data: dict, sales: dict | None = None) -> str:
+    """Google Ads spend vs. ModernTex purchase revenue, same shape as the
+    GlobePin ads/AdMob comparison above -- manual reading (Google Ads has an
+    API, but it needs a developer-token application; a Chrome read matches
+    what's already working for Apple Search Ads) against Stripe, which is
+    already automated."""
+    gads = data.get("googleAdsModerntex")
+    if not gads:
+        return ""
+
+    spend = gads.get("spend", 0.0)
+    gads_html = f"""
+  <h3>Google Ads · spend</h3>
+  <p class="sales-foot">{html.escape(gads.get('campaign', 'ModernTex'))} — read by hand from
+    ads.google.com ({html.escape(gads.get('window', ''))}, as of {html.escape(gads.get('asOf', '?'))}).
+    Google Ads does have an API, but it needs a developer-token application; this reads the
+    UI by hand for now, the same way Apple Search Ads does above.</p>
+  <div class="sales-split">
+    <span class='sales-chip'><b>${spend:,.2f}</b> <span>spend</span></span>
+    <span class='sales-chip'><b>{gads.get('impressions', 0):,}</b> <span>impressions</span></span>
+    <span class='sales-chip'><b>{gads.get('clicks', 0):,}</b> <span>clicks</span></span>
+    <span class='sales-chip'><b>${gads.get('avgCPC', 0):,.2f}</b> <span>avg. CPC</span></span>
+  </div>
+  {"<p class='sales-foot'>" + html.escape(gads['note']) + "</p>" if gads.get('note') else ""}"""
+
+    rev = moderntex_revenue_window(sales, GOOGLE_ADS_DAYS)
+    rev_html = f"""
+  <h3>ModernTex · purchases, same window</h3>
+  <div class="sales-split">
+    <span class='sales-chip'><b>{money(rev['gross'])}</b> <span>gross</span></span>
+    <span class='sales-chip'><b>{orders(rev['orders'])}</b></span>
+  </div>"""
+
+    gross_dollars = rev["gross"] / 100
+    net = gross_dollars - spend
+    verdict = ("still well behind" if net < -spend * 0.5 else
+               "behind" if net < 0 else "ahead")
+    compare_html = (f"<p class='sales-foot'><b>ModernTex ads, same window:</b> "
+                     f"${spend:,.2f} spent on Google Ads vs {money(rev['gross'])} in ModernTex "
+                     f"purchases — {verdict} (net {'-' if net < 0 else '+'}${abs(net):,.2f}). "
+                     f"This compares total ad spend against all ModernTex purchases in the window, "
+                     f"not just ones Google Ads attributes to a click, so it is not a strict ROAS.</p>")
+
+    return f"""
+<section class="sales appstore">
+  <h2>Ads · ModernTex</h2>
+  {gads_html}
+  {rev_html}
+  {compare_html}
+</section>"""
+
+
+# ---------------------------------------------------------------- revenue metrics
+#
+# The in-house version of what an app-revenue service (RevenueCat and the like)
+# reports: a transaction ledger kept across runs, the last 28 days against the
+# 28 before, conversion from install or trial to paid per product, customer
+# counts and lifetime value, acquisition cost against revenue per customer, and
+# a feed of what changed since the previous run. All of it is derived from
+# sources this script already reads: Stripe (through sales.mjs, whose ledger
+# carries fees, refunds and hashed customer ids, never emails), App Store
+# Connect sales reports, the site beacons and the two manual ad readings. No
+# app ships a new SDK and no new party receives customer data.
+
+METRICS_DAYS = 28
+PRODUCT_GROUPS = [
+    ("ModernTex", "var(--purple)"),
+    ("Paper Review & tools", "oklch(75% 0.14 230)"),
+    ("Kits", "oklch(80% 0.13 85)"),
+    ("Subscriptions", "oklch(76% 0.13 165)"),
+    ("MuscleOnGLP", "oklch(72% 0.15 35)"),
+    ("GlobePin Pro", "var(--good)"),
+]
+
+
+def product_group(row: dict) -> str:
+    product, site = row.get("product", ""), row.get("site", "")
+    if site == "muscleonglp":
+        return "MuscleOnGLP"
+    if product == "moderntex":
+        return "ModernTex"
+    if product.startswith("kit-"):
+        return "Kits"
+    if product.startswith(("vitae-plus", "digest-")):
+        return "Subscriptions"
+    return "Paper Review & tools"
+
+
+def _row_net(r: dict) -> int:
+    """Cents kept from one order: Stripe's net where known, gross otherwise,
+    minus anything refunded."""
+    base = r["net"] if r.get("net") is not None else r["gross"]
+    return base - (r.get("refunded") or 0)
+
+
+def merge_ledger(history: dict, sales: dict) -> list[dict] | None:
+    """Fold this run's Stripe ledger into the archive, keyed by Stripe id, and
+    return what is new since the last run. None when sales.mjs sent no ledger
+    (older deploy). The first run returns [] so ten old orders are not
+    announced as news."""
+    rows = sales.get("ledger")
+    if rows is None:
+        return None
+    archive = history.setdefault("ledger", {})
+    first_time = not archive
+    if first_time:
+        history["ledgerSince"] = dt.date.today().isoformat()
+    events = []
+    for r in rows:
+        old = archive.get(r["id"])
+        if old is None and not first_time:
+            events.append({"kind": r["kind"], "product": r["product"], "gross": r["gross"],
+                           "net": r.get("net"), "ts": r["ts"]})
+        elif old is not None and (r.get("refunded") or 0) > (old.get("refunded") or 0):
+            events.append({"kind": "refund", "product": r["product"],
+                           "gross": (r.get("refunded") or 0) - (old.get("refunded") or 0), "ts": r["ts"]})
+        archive[r["id"]] = r
+    return events
+
+
+def appstore_events(before: dict, after: dict) -> list[dict]:
+    """GlobePin Pro sales, promo redemptions and refunds that appeared since
+    the last run, found by diffing each day's counts."""
+    events = []
+    for day, v in sorted((after or {}).items()):
+        old = (before or {}).get(day, {})
+        for field, kind in (("proUnits", "globepin-pro"), ("proPromo", "globepin-promo"),
+                            ("proRefunds", "globepin-refund")):
+            n = v.get(field, 0) - old.get(field, 0)
+            if n > 0:
+                events.append({"kind": kind, "count": n, "day": day,
+                               "proceeds": (v.get("proceeds") or {}).get("USD", 0.0)
+                               - (old.get("proceeds") or {}).get("USD", 0.0)})
+    return events
+
+
+def subscription_events(before: dict | None, after: dict | None) -> list[dict]:
+    if not before or not after:
+        return []
+    events = []
+    for field in ("active", "trialing", "mrr"):
+        a, b = before.get(field, 0), after.get(field, 0)
+        if a != b:
+            events.append({"kind": "subs", "field": field, "from": a, "to": b})
+    return events
+
+
+def _event_text(e: dict) -> str:
+    label = PRODUCT_LABELS.get(e.get("product", ""), e.get("product", ""))
+    if e["kind"] == "purchase":
+        net = f" (net {money(e['net'])})" if e.get("net") is not None else ""
+        return f"New order: {label} {money(e['gross'])}{net}"
+    if e["kind"] == "renewal":
+        return f"Renewal: {label} {money(e['gross'])}"
+    if e["kind"] == "refund":
+        return f"Refund: {money(e['gross'])} on a {label} order"
+    if e["kind"] == "globepin-pro":
+        return f"GlobePin Pro sold ×{e['count']} ({e['day']}, ${e['proceeds']:,.2f} proceeds)"
+    if e["kind"] == "globepin-promo":
+        return f"GlobePin Pro promo code redeemed ×{e['count']} ({e['day']})"
+    if e["kind"] == "globepin-refund":
+        return f"GlobePin Pro refunded ×{e['count']} ({e['day']})"
+    if e["kind"] == "subs":
+        if e["field"] == "mrr":
+            return f"MRR {money(e['from'])} → {money(e['to'])}"
+        return f"{e['field'].capitalize()} subscriptions {e['from']} → {e['to']}"
+    return str(e)
+
+
+def revenue_metrics(history: dict, summaries: list[dict], manual_ads: dict) -> dict | None:
+    sales = history.get("sales") or {}
+    ledger = sorted((history.get("ledger") or {}).values(), key=lambda r: r["ts"])
+    app_days = (history.get("appstore") or {}).get("days", {})
+    if not ledger and not app_days:
+        return None
+
+    today = dt.date.today()
+    now = dt.datetime.now().timestamp()
+    win = METRICS_DAYS * 86400
+    lo = (today - dt.timedelta(days=METRICS_DAYS)).isoformat()
+    lo2 = (today - dt.timedelta(days=2 * METRICS_DAYS)).isoformat()
+    cur = [r for r in ledger if r["ts"] >= now - win]
+    prev = [r for r in ledger if now - 2 * win <= r["ts"] < now - win]
+
+    def app_sum(field: str, a: str, b: str = "9999") -> float:
+        if field == "proceeds":
+            return sum((v.get("proceeds") or {}).get("USD", 0.0) for d, v in app_days.items() if a <= d < b)
+        return sum(v.get(field, 0) for d, v in app_days.items() if a <= d < b)
+
+    # --- overview: last 28 days vs the 28 before -------------------------------
+    app_cur, app_prev = app_sum("proceeds", lo), app_sum("proceeds", lo2, lo)
+    gross_cur = sum(r["gross"] for r in cur) / 100 + app_cur
+    gross_prev = sum(r["gross"] for r in prev) / 100 + app_prev
+    net_cur = sum(_row_net(r) for r in cur) / 100 + app_cur
+    change = None if not gross_prev else (gross_cur - gross_prev) / gross_prev * 100
+
+    # --- customers and lifetime value ----------------------------------------
+    first_seen: dict[str, float] = {}
+    orders_by: dict[str, int] = {}
+    net_by: dict[str, int] = {}
+    for r in ledger:
+        c = r.get("cust") or r["id"]
+        first_seen.setdefault(c, r["ts"])
+        orders_by[c] = orders_by.get(c, 0) + 1
+        net_by[c] = net_by.get(c, 0) + _row_net(r)
+    buyers_cur = {r.get("cust") or r["id"] for r in cur}
+    new_cur = sum(1 for c in buyers_cur if first_seen[c] >= now - win)
+    customers = len(first_seen)
+    repeat = sum(1 for n in orders_by.values() if n > 1)
+
+    refunded = [r for r in ledger if (r.get("refunded") or 0) > 0]
+    gross_all = sum(r["gross"] for r in ledger)
+
+    # --- weekly revenue by product group, last 12 weeks ------------------------
+    monday = today - dt.timedelta(days=today.weekday())
+    weeks = [(monday - dt.timedelta(weeks=i)).isoformat() for i in range(11, -1, -1)]
+    weekly = {w: {g: 0.0 for g, _c in PRODUCT_GROUPS} for w in weeks}
+    for r in ledger:
+        d = dt.date.fromtimestamp(r["ts"])
+        wk = (d - dt.timedelta(days=d.weekday())).isoformat()
+        if wk in weekly:
+            weekly[wk][product_group(r)] += r["gross"] / 100
+    for d, v in app_days.items():
+        dd = dt.date.fromisoformat(d)
+        wk = (dd - dt.timedelta(days=dd.weekday())).isoformat()
+        if wk in weekly:
+            weekly[wk]["GlobePin Pro"] += (v.get("proceeds") or {}).get("USD", 0.0)
+
+    # --- conversion ------------------------------------------------------------
+    site_hist = history.get("sites", {}).get("purplelink", {})
+    clean, _adj = without_synthetic("purplelink", site_hist.get("byDay", {}))
+    trial_since = site_hist.get("metricsFirstSeen", {}).get("trialDownloads") or "2026-09-11"
+    since_ts = dt.datetime.fromisoformat(trial_since).timestamp()
+    wk_ago = (today - dt.timedelta(days=7)).isoformat()
+
+    def trials(a: str) -> int:
+        return int(sum(v.get("trialDownloads", 0) or 0 for d, v in clean.items() if d >= a))
+
+    mt_all = [r for r in ledger if r["product"] == "moderntex" and r["ts"] >= since_ts]
+    # Same start as the trial counts: launch-week sales before the trial existed
+    # would otherwise inflate trial→paid.
+    mt_cur = [r for r in mt_all if r["ts"] >= now - win]
+    lifecycle = (sales.get("lifecycle") or {}).get("moderntex_trial") or {}
+    moderntex = {
+        "since": trial_since,
+        "trials": trials(trial_since), "orders": len(mt_all),
+        "trials28": trials(max(lo, trial_since)), "orders28": len(mt_cur),
+        "trialsInProgress": trials(wk_ago),
+        "netPerTrial": (sum(_row_net(r) for r in mt_all) / 100 / trials(trial_since)) if trials(trial_since) else None,
+        "linkedSignups": lifecycle.get("signups"), "linkedBought": lifecycle.get("bought"),
+    }
+
+    installs_all, installs_28 = app_sum("downloads", "0000"), app_sum("downloads", lo)
+    pro_all, pro_28 = app_sum("proUnits", "0000"), app_sum("proUnits", lo)
+    proceeds_all = app_sum("proceeds", "0000")
+    globepin = {
+        "installs": int(installs_all), "pro": int(pro_all), "installs28": int(installs_28), "pro28": int(pro_28),
+        "promo": int(app_sum("proPromo", "0000")), "refunds": int(app_sum("proRefunds", "0000")),
+        "revenuePerInstall": (proceeds_all / installs_all) if installs_all else None,
+        "admob7": ((history.get("admob") or {}).get("globepin") or {}).get("earnings"),
+    }
+
+    pl_summary = next((s for s in summaries if s.get("key") == "purplelink"), {}) or {}
+    ck = pl_summary.get("checkout") or {}
+    month_ago = now - 30 * 86400
+    web = {"views": ck.get("views"), "clicks": ck.get("clicks"),
+           "orders": sum(1 for r in ledger if r.get("site") == "purplelink" and r["ts"] >= month_ago)}
+
+    # --- acquisition: what a customer costs vs. what one is worth ---------------
+    acq = []
+    asa = (manual_ads or {}).get("appleSearchAds") or {}
+    if asa.get("campaigns"):
+        c0 = asa["campaigns"][0]
+        spend, inst = c0.get("spend", 0.0), c0.get("installs", 0)
+        acq.append({"channel": "Apple Search Ads → GlobePin", "asOf": asa.get("asOf"),
+                    "spend": spend, "unit": "install", "units": inst,
+                    "cost": (spend / inst) if inst else None,
+                    "worth": globepin["revenuePerInstall"]})
+    gads = (manual_ads or {}).get("googleAdsModerntex") or {}
+    if gads:
+        spend = gads.get("spend", 0.0)
+        wk_rows = [r for r in ledger if r["product"] == "moderntex" and r["ts"] >= now - 7 * 86400]
+        per_sale = [(_row_net(r) / 100) for r in mt_all]
+        acq.append({"channel": "Google Ads → ModernTex", "asOf": gads.get("asOf"),
+                    "spend": spend, "unit": "sale", "units": len(wk_rows),
+                    "cost": (spend / len(wk_rows)) if wk_rows else None,
+                    "worth": (sum(per_sale) / len(per_sale)) if per_sale else None})
+
+    # Event feed: everything detected in the last 24 hours. A rolling window, not
+    # "since the previous run", because the 7am launchd run would otherwise use
+    # up the news before the daily update is read.
+    cutoff_at = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=24)).isoformat()
+    log = history.get("eventLog") or []
+    started = history.get("ledgerSince")
+    events = {"items": [e for e in log if e.get("at", "") >= cutoff_at],
+              "firstRun": bool(started) and started >= (today - dt.timedelta(days=1)).isoformat()}
+
+    subs = sales.get("subscriptions") or {}
+    return {
+        "days": METRICS_DAYS,
+        "grossCur": gross_cur, "grossPrev": gross_prev, "netCur": net_cur, "change": change,
+        "appCur": app_cur, "ordersCur": len(cur),
+        "unknownFees": sum(1 for r in cur if r.get("net") is None),
+        "newCur": new_cur, "returningCur": len(buyers_cur) - new_cur,
+        "customers": customers, "repeat": repeat,
+        "ltv": (sum(net_by.values()) / customers / 100) if customers else None,
+        "refundOrders": len(refunded), "refundAmount": sum(r["refunded"] for r in refunded),
+        "refundRate": (sum(r["refunded"] for r in refunded) / gross_all * 100) if gross_all else None,
+        "mrr": subs.get("mrr", 0), "subsActive": subs.get("active", 0), "subsTrialing": subs.get("trialing", 0),
+        "subsWindow": subs.get("window") or {},
+        "weeks": weeks, "weekly": weekly,
+        "moderntex": moderntex, "globepin": globepin, "web": web, "acquisition": acq,
+        "events": events,
+    }
+
+
+def _pct(n: float | None, d: float | None) -> str:
+    return f"{n / d * 100:.0f}%" if d else "—"
+
+
+def weekly_chart(weeks: list[str], weekly: dict[str, dict[str, float]]) -> str:
+    totals = [sum(weekly[w].values()) for w in weeks]
+    peak = max(totals + [1.0])
+    w_, h, pad_top, pad_bottom = 640, 170, 22, 22
+    n = len(weeks)
+    bar_w, gap = (w_ / n) * 0.62, (w_ / n) * 0.38
+    parts = []
+    for i, wk in enumerate(weeks):
+        x = i * (bar_w + gap) + gap / 2
+        y = h - pad_bottom
+        for group, color in PRODUCT_GROUPS:
+            v = weekly[wk].get(group, 0.0)
+            if v <= 0:
+                continue
+            seg = v / peak * (h - pad_top - pad_bottom)
+            y -= seg
+            parts.append(f"<rect x='{x:.1f}' y='{y:.1f}' width='{bar_w:.1f}' height='{seg:.1f}' "
+                         f"fill='{color}' rx='2'><title>{html.escape(group)}: ${v:,.2f}</title></rect>")
+        if totals[i] > 0:
+            parts.append(f"<text x='{x + bar_w / 2:.1f}' y='{y - 5:.1f}' font-size='10.5' "
+                         f"fill='var(--ink)' text-anchor='middle'>${totals[i]:,.0f}</text>")
+        if i % 2 == 1 or i == n - 1:
+            label = dt.date.fromisoformat(wk).strftime("%b %-d")
+            parts.append(f"<text x='{x + bar_w / 2:.1f}' y='{h - 5}' font-size='10.5' "
+                         f"fill='var(--muted)' text-anchor='middle'>{label}</text>")
+    legend = "".join(
+        f"<span class='rev-legend-item'><i style='background:{c}'></i>{html.escape(g)}</span>"
+        for g, c in PRODUCT_GROUPS if any(weekly[w].get(g, 0) > 0 for w in weeks))
+    return (f"<svg viewBox='0 0 {w_} {h}' class='weekly-chart' role='img' "
+            f"aria-label='Revenue per week, last 12 weeks'>{''.join(parts)}</svg>"
+            f"<div class='rev-legend'>{legend}</div>")
+
+
+def metrics_block(m: dict | None) -> str:
+    if not m:
+        return ""
+    ch = ("" if m["change"] is None else
+          f"<em class='{'up' if m['change'] >= 0 else 'down'}'>{m['change']:+.0f}% vs prior {m['days']}d</em>")
+    fee_note = (f" · {m['unknownFees']} order(s) without a Stripe fee on record, counted at gross"
+                if m["unknownFees"] else "")
+    sw = m["subsWindow"]
+    tiles = [
+        (f"${m['grossCur']:,.2f}", f"revenue, last {m['days']}d", ch),
+        (f"${m['netCur']:,.2f}", "net after Stripe fees & refunds", ""),
+        (str(m["newCur"]), f"new customers ({m['returningCur']} returning)", ""),
+        (money(m["mrr"]), f"MRR · {m['subsActive']} active, {m['subsTrialing']} trialing", ""),
+        (str(m["moderntex"]["trialsInProgress"] + m["subsTrialing"]),
+         "trials running (ModernTex downloads, last 7d)", ""),
+        (str(m["refundOrders"]), f"refunds, {money(m['refundAmount'])} all time", ""),
+    ]
+    tiles_html = "".join(f"<div class='tile'><b>{v}</b><span>{html.escape(lbl)}</span>{extra}</div>"
+                         for v, lbl, extra in tiles)
+
+    mt, gp, web = m["moderntex"], m["globepin"], m["web"]
+    linked = ""
+    if mt["linkedSignups"] is not None:
+        linked = (f"<br><span class='who'>Email-linked: {mt['linkedSignups']} trial sign-up(s) → "
+                  f"{mt['linkedBought']} bought ({_pct(mt['linkedBought'], mt['linkedSignups'])})</span>")
+    npt = f"${mt['netPerTrial']:,.2f}" if mt["netPerTrial"] is not None else "—"
+    rpi = f"${gp['revenuePerInstall']:,.2f}" if gp["revenuePerInstall"] is not None else "—"
+    admob = f"; AdMob ${gp['admob7']:,.2f} in 7d" if gp.get("admob7") is not None else ""
+    web_line = ("—" if web["views"] is None else
+                f"{web['views']} product-page views → {web['clicks']} buy clicks ({_pct(web['clicks'], web['views'])}) "
+                f"→ {web['orders']} orders ({_pct(web['orders'], web['clicks'])} of clicks)")
+    conv_rows = f"""
+      <tr><td>ModernTex · trial → paid</td>
+        <td>{mt['trials']} trials → {mt['orders']} paid since {mt['since']} ({_pct(mt['orders'], mt['trials'])}){linked}</td>
+        <td class='num'>{mt['trials28']} → {mt['orders28']}</td><td class='num'>{npt} / trial</td></tr>
+      <tr><td>GlobePin · install → Pro</td>
+        <td>{gp['installs']} installs → {gp['pro']} paid Pro ({_pct(gp['pro'], gp['installs'])}),
+          {gp['promo']} promo, {gp['refunds']} refunded{admob}</td>
+        <td class='num'>{gp['installs28']} → {gp['pro28']}</td><td class='num'>{rpi} / install</td></tr>
+      <tr><td>purplelink.llc · page → order</td><td colspan='3'>{web_line} (30d)</td></tr>"""
+
+    acq_rows = "".join(
+        f"<tr><td>{html.escape(a['channel'])}</td><td class='num'>${a['spend']:,.2f}</td>"
+        f"<td class='num'>{a['units']} {a['unit']}{'' if a['units'] == 1 else 's'}</td>"
+        f"<td class='num'>{'—' if a['cost'] is None else '$' + format(a['cost'], ',.2f')}</td>"
+        f"<td class='num'>{'—' if a['worth'] is None else '$' + format(a['worth'], ',.2f')}</td>"
+        f"<td class='num'>{'—' if not a['cost'] or a['worth'] is None else format(a['worth'] / a['cost'], '.2f') + '×'}</td></tr>"
+        for a in m["acquisition"])
+    acq_html = (f"""
+  <h3>Acquisition · last 7 days</h3>
+  <table><thead><tr><th>Channel</th><th class='num'>Spend</th><th class='num'>Got</th>
+    <th class='num'>Cost each</th><th class='num'>Worth each</th><th class='num'>Payback</th></tr></thead>
+    <tbody>{acq_rows}</tbody></table>""" if acq_rows else "")
+
+    ev = m["events"]
+    items = ev.get("items") or []
+    if items:
+        ev_html = ("<h3>Last 24 hours</h3><ul class='events'>"
+                   + "".join(f"<li>{html.escape(_event_text(e))}</li>" for e in items) + "</ul>")
+    elif ev.get("firstRun"):
+        ev_html = ("<p class='sales-foot'>Event feed: today's ledger is the baseline, so new orders, "
+                   "refunds and subscription changes show here from the next run.</p>")
+    else:
+        ev_html = "<p class='sales-foot'>Last 24 hours: no new orders, refunds or subscription changes.</p>"
+
+    ltv = f"${m['ltv']:,.2f}" if m["ltv"] is not None else "—"
+    return f"""
+<section class="sales metrics">
+  <h2>Revenue metrics</h2>
+  <div class="metric-tiles">{tiles_html}</div>
+  <h3>Revenue per week</h3>
+  {weekly_chart(m['weeks'], m['weekly'])}
+  <h3>Conversion</h3>
+  <table><thead><tr><th>Funnel</th><th>All time</th><th class='num'>Last {m['days']}d</th>
+    <th class='num'>Worth</th></tr></thead><tbody>{conv_rows}</tbody></table>
+  {acq_html}
+  <h3>Customers</h3>
+  <p class="cust-line">{m['customers']} paying customers all time · {m['repeat']} bought more than once
+    ({_pct(m['repeat'], m['customers'])}) · average {ltv} net each · refund rate
+    {'—' if m['refundRate'] is None else format(m['refundRate'], '.1f') + '%'}</p>
+  {ev_html}
+  <p class="sales-foot">Revenue is Stripe gross plus GlobePin Pro proceeds (already net of
+    Apple's cut). Net subtracts Stripe's fee and any refund per order{fee_note}. ModernTex
+    trial→paid is downloads against orders over the same days; downloads and orders are not
+    linked to each other, so a buyer who never took the trial still counts. The email-linked
+    line is the exact rate for trial users who gave an email. "Worth each" is net revenue per
+    install or sale so far; "Payback" is worth ÷ cost, and 1.00× is break-even.</p>
+</section>"""
+
+
+def print_metrics(m: dict | None) -> None:
+    if not m:
+        return
+    ch = "" if m["change"] is None else f", {m['change']:+.0f}% vs prior {m['days']}d"
+    print(f"\n  Revenue metrics — ${m['grossCur']:,.2f} gross / ${m['netCur']:,.2f} net in {m['days']}d{ch}; "
+          f"{m['newCur']} new, {m['returningCur']} returning customer(s); MRR {money(m['mrr'])} "
+          f"({m['subsActive']} active, {m['subsTrialing']} trialing); refunds {m['refundOrders']} all time")
+    mt, gp = m["moderntex"], m["globepin"]
+    print(f"   ModernTex: {mt['trials']} trials → {mt['orders']} paid since {mt['since']} "
+          f"({_pct(mt['orders'], mt['trials'])}); {mt['trialsInProgress']} trial(s) in progress"
+          + (f"; email-linked {mt['linkedSignups']} → {mt['linkedBought']} bought" if mt["linkedSignups"] is not None else ""))
+    print(f"   GlobePin: {gp['installs']} installs → {gp['pro']} paid Pro ({_pct(gp['pro'], gp['installs'])}), "
+          f"{gp['promo']} promo, {gp['refunds']} refunded")
+    for a in m["acquisition"]:
+        cost = "—" if a["cost"] is None else f"${a['cost']:,.2f}"
+        worth = "—" if a["worth"] is None else f"${a['worth']:,.2f}"
+        print(f"   {a['channel']}: ${a['spend']:,.2f} for {a['units']} {a['unit']}(s), {cost} each vs {worth} worth each")
+    ltv = "—" if m["ltv"] is None else f"${m['ltv']:,.2f}"
+    print(f"   Customers: {m['customers']} all time, {m['repeat']} repeat, {ltv} average net each")
+    ev = m["events"]
+    items = ev.get("items") or []
+    if items:
+        print("   Last 24h: " + "; ".join(_event_text(e) for e in items))
+    elif ev.get("firstRun"):
+        print("   Last 24h: feed starts next run (today's ledger is the baseline)")
+    else:
+        print("   Last 24h: no new orders, refunds or subscription changes")
+
+
 # ---------------------------------------------------------------- combined revenue
 #
 # Pulls together every revenue source into one monthly view: Sales (Stripe,
@@ -2668,7 +3179,7 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6) 
 def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None,
            sales: dict | None = None, appstore: dict | None = None,
            manual_ads: dict | None = None, chrome_web_store: dict | None = None,
-           admob: dict | None = None) -> str:
+           admob: dict | None = None, metrics: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -2716,10 +3227,12 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
   <h1>Traffic</h1>
   <p class="stamp">Updated {html.escape(generated)} · refreshes daily at 9:00am</p>
 </header>
+{metrics_block(metrics)}
 {sales_block(sales)}
 {appstore_block(appstore)}
 {chrome_web_store_block(chrome_web_store)}
 {manual_ads_block(manual_ads or {}, admob)}
+{moderntex_ads_block(manual_ads or {}, sales)}
 {revenue_block(sales, appstore)}
 <div class="grid">{cards}</div>
 <h2>What this says</h2>
@@ -2748,6 +3261,11 @@ def main() -> int:
     history = load_history()
 
     if not args.no_fetch:
+        # State before this run, for the event feed (what changed since last time).
+        prev_app_days = json.loads(json.dumps((history.get("appstore") or {}).get("days", {})))
+        prev_subs = (history.get("sales") or {}).get("subscriptions")
+        new_events: list[dict] = []
+
         for site in SITES:
             token = cfg.get(site["token_env"])
             entry = history["sites"].setdefault(site["key"], {"byDay": {}, "snapshots": {}})
@@ -2835,6 +3353,13 @@ def main() -> int:
         if sales_token:
             sales = fetch_sales(sales_token)
             if sales:
+                new_events += merge_ledger(history, sales) or []
+                new_events += subscription_events(prev_subs, sales.get("subscriptions"))
+                if sales.get("subscriptions") is not None:
+                    s_ = sales["subscriptions"]
+                    history.setdefault("subsDaily", {})[dt.date.today().isoformat()] = {
+                        "mrr": s_.get("mrr", 0), "active": s_.get("active", 0),
+                        "trialing": s_.get("trialing", 0)}
                 history["sales"] = sales
                 w, a = sales.get("window", {}), sales.get("allTime", {})
                 print(f"  ok Sales: {money(w.get('gross', 0))} in {w.get('days', FETCH_DAYS)}d "
@@ -2864,6 +3389,7 @@ def main() -> int:
                 print(f"  ! appstore unavailable: {str(exc)[:100]}", file=sys.stderr)
                 app = None
             if app:
+                new_events += appstore_events(prev_app_days, app.get("days", {}))
                 history["appstore"] = app
                 sm = appstore_summary(app)
                 print(f"  ok App Store ({app['label']}): {sm['w7']['downloads']} downloads in 7d, "
@@ -2895,7 +3421,11 @@ def main() -> int:
             history["chromeWebStore"] = cws
             print(f"  ok Chrome Web Store ({cws['label']}): {cws['users']} installed users")
 
-        history["lastRun"] = dt.datetime.now(dt.timezone.utc).isoformat()
+        stamp = dt.datetime.now(dt.timezone.utc).isoformat()
+        month_ago = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)).isoformat()
+        history["eventLog"] = ([e for e in history.get("eventLog", []) if e.get("at", "") >= month_ago]
+                               + [{**e, "at": stamp} for e in new_events])
+        history["lastRun"] = stamp
         HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
 
     summaries = [summarise(s, history["sites"].get(s["key"], {})) for s in SITES]
@@ -2909,11 +3439,13 @@ def main() -> int:
     appstore = history.get("appstore")
     chrome_web_store = history.get("chromeWebStore")
     manual_ads = load_manual_ads()
+    metrics = revenue_metrics(history, summaries, manual_ads)
     DASHBOARD_PATH.write_text(
         render(summaries, obs, generated, min(firsts) if firsts else None,
-               sales, appstore, manual_ads, chrome_web_store, history.get("admob")))
+               sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics))
 
     # Terminal summary, so a manual run is useful without opening a browser.
+    print_metrics(metrics)
     if sales:
         w, a = sales.get("window", {}), sales.get("allTime", {})
         print(f"\n  Sales — {money(w.get('gross', 0))} in the last "

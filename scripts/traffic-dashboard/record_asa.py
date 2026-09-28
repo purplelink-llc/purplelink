@@ -40,12 +40,13 @@ def main() -> int:
         print(f"record_asa: page read is missing {missing}; nothing written", file=sys.stderr)
         return 1
 
-    prev = {}
+    data = {}
     if PATH.exists():
         try:
-            prev = (json.loads(PATH.read_text()).get("appleSearchAds") or {})
+            data = json.loads(PATH.read_text())
         except json.JSONDecodeError:
-            prev = {}
+            data = {}
+    prev = data.get("appleSearchAds") or {}
     prev_c = (prev.get("campaigns") or [{}])[0]
 
     spend, installs = num(m["spend"]), int(num(m["totalInstalls"]))
@@ -80,10 +81,10 @@ def main() -> int:
         trend = "up" if d > 0 else "down" if d < 0 else "unchanged"
         note += f" Installs {trend} from {prev_c['installs']} in the reading of {prev['asOf']}."
 
-    out = {"appleSearchAds": {"asOf": today, "window": window,
-                              "campaigns": [c], "note": note}}
+    data["appleSearchAds"] = {"asOf": today, "window": window,
+                              "campaigns": [c], "note": note}
     PATH.parent.mkdir(parents=True, exist_ok=True)
-    PATH.write_text(json.dumps(out, indent=2) + "\n")
+    PATH.write_text(json.dumps(data, indent=2) + "\n")
     print(note)
     return 0
 
