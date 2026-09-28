@@ -529,7 +529,45 @@ def collect_getty(page):
         out[f"accepted_{typ}"] = out.get(f"accepted_{typ}", 0) + (it.get("processed_contributions_count") or 0)
         out[f"rejected_{typ}"] = out.get(f"rejected_{typ}", 0) + (it.get("rejected_contributions_count") or 0)
 
+    # Money: the latest royalty statement. A statement failing to read must
+    # not cost the batch counts above, so it only adds fields when it works.
+    try:
+        out.update(getty_royalty_statement(page))
+    except Exception as e:
+        print(f"  WARN getty royalties: {type(e).__name__}: {e}")
     return out
+
+
+def getty_royalty_statement(page):
+    """Latest monthly royalty statement from Account Management > Royalties >
+    Summary (first posted for August 2026: $2.22, carried forward).
+
+    "balance" is the statement's "Minimum payment not met and carried
+    forward" figure -- the unpaid total Getty is holding toward its $100
+    iStock minimum, which is what the dashboard's payout bar measures. It is
+    cumulative: each statement carries the previous one's balance forward
+    until a payment goes out, and then it resets. Statements post around the
+    20th for the prior month, so this only moves once a month."""
+    page.goto("https://accountmanagement.gettyimages.com/Reports/Statement",
+              wait_until="domcontentloaded")
+    page.wait_for_timeout(9000)
+    t = re.sub(r"[ \t]+", " ", page.inner_text("body"))
+    if "Royalty earnings" not in t:
+        if "sign-in" in page.url or "Sign in" in t[:400]:
+            raise RuntimeError("not signed in")
+        return {}          # no statement posted yet
+    money = lambda label: (lambda m: num(m.group(1)) if m else None)(
+        re.search(rf"{label}\s*\n?\s*\$\s*([\d,]+\.\d\d)", t, re.I))
+    out = {
+        "statement_gross": money(r"Total gross earnings"),
+        "statement_payment": money(r"Payment amount"),
+        "balance": money(r"Minimum payment not met and carried forward") or 0.0,
+    }
+    month = page.evaluate("""() => { const s = document.querySelector('select[name=statementPeriod],#statementPeriod');
+        return s ? s.options[s.selectedIndex].text.trim() : null }""")
+    if month:
+        out["statement_month"] = month
+    return {k: v for k, v in out.items() if v is not None}
 
 
 def collect_getty_stats(page):
