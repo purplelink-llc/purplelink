@@ -1,0 +1,105 @@
+{
+  "date": "2026-09-28",
+  "number": 93,
+  "intro": "Citrix NetScaler RCE zero-days under active exploitation, ShinyHunters WAF bypass on Oracle PeopleSoft, Lunex Stealer abusing AMD drivers, and Nvidia's AI agent containment tools dominate today's digest.",
+  "sections": {
+    "Papers & Research": [
+      {
+        "title": "Moral Consistency Variance: A Pilot Benchmark for Decision Stability under Moral Prompt Perturbations in Large Language Models",
+        "url": "https://pub.respai.de/articles/2-1/1qliang.html",
+        "source_name": "OpenAlex",
+        "category": "papers",
+        "editorial_note": "Moral Consistency Variance (MCV) measures KL-divergence across a model's decision distribution when the same moral dilemma is rephrased without changing underlying facts, exposing instability that static QA benchmarks cannot detect. The finding that surface-level prompt perturbations shift moral decisions without changing the underlying scenario is directly relevant to adversarial ML research: it suggests LLM alignment is more brittle to linguistic framing than to semantic content. The pilot scale limits generalizability, but the benchmark metric itself is a clean contribution that could be applied to safety-critical deployment evaluations."
+      }
+    ],
+    "AI & Technology": [
+      {
+        "title": "Nvidia Debuts System Designed to Stop AI Agents From Going Awry",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/nvidia-debuts-system-designed-to-stop-ai-agents-from-going-awry",
+        "source_name": "Bloomberg Technology",
+        "category": "ai_tech",
+        "editorial_note": "Nvidia released two open-source security tools for real-time AI agent access control and kill-switch enforcement, framing them explicitly against the recent Hugging Face breach caused by OpenAI's models. The strategic move positions Nvidia not just as silicon vendor but as the runtime security layer for agentic AI, a market position that could become a moat as agent deployments scale. Researchers building agentic pipelines should evaluate whether these tools integrate with existing policy enforcement frameworks or require Nvidia-stack lock-in."
+      },
+      {
+        "title": "2026 in LLMs (so far)",
+        "url": "https://simonwillison.net/2026/Sep/27/2026-in-llms-so-far",
+        "source_name": "Simon Willison",
+        "category": "ai_tech",
+        "editorial_note": "Simon Willison's annotated keynote slides from WeAreDevelopers World Congress North America synthesize the major LLM capability and deployment shifts of 2026 into a single chronological narrative. For researchers tracking the pace of capability change, this kind of structured retrospective is more useful than individual paper coverage because it surfaces the inflection points that individual announcements obscure. The annotated slide format makes it faster to extract specific claims than a video transcript."
+      },
+      {
+        "title": "Holo4: powering generalist computer-use agents",
+        "url": "https://huggingface.co/blog/Hcompany/holo4",
+        "source_name": "HuggingFace Blog",
+        "category": "ai_tech",
+        "editorial_note": "Holo4 is H Company's generalist computer-use agent model, released via HuggingFace, targeting the same benchmark space as Anthropic's computer-use and OpenAI's operator-class agents. The competitive significance is that a non-hyperscaler is publishing a capable computer-use model openly, which lowers the barrier for researchers building adversarial evaluations or red-teaming agentic systems. The practical question for security researchers is whether Holo4's action space and tool-use surface introduces novel prompt injection or privilege escalation vectors not present in closed-API equivalents."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Warning: Two Unpatched Citrix NetScaler RCE Zero-Days Under Active Exploitation",
+        "url": "https://thehackernews.com/2026/09/warning-two-unpatched-citrix-netscaler.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "CVE-2026-88771 and CVE-2026-88772 are both RCE flaws in NetScaler ADC and Gateway, with one affecting every deployment on a vulnerable version regardless of configuration. Citrix has released patches, but the breadth of the universal-impact flaw means unpatched appliances are high-value targets for initial access brokers right now. Security teams running NetScaler in front of VPN or load-balancing infrastructure should treat this as a P0 patch cycle, not a scheduled maintenance window."
+      },
+      {
+        "title": "CISA orders feds to patch exploited Citrix flaws by Wednesday",
+        "url": "https://www.bleepingcomputer.com/news/security/cisa-orders-feds-to-patch-exploited-citrix-flaws-by-wednesday",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "CISA's KEV addition and Wednesday deadline for federal agencies signals active exploitation is already widespread enough to trigger emergency directive timelines. The compressed remediation window is notable given that NetScaler appliances often sit in front of classified or sensitive government networks. Connects to: Warning: Two Unpatched Citrix NetScaler RCE Zero-Days Under Active Exploitation."
+      },
+      {
+        "title": "ShinyHunters uses WAF bypass trick in Oracle PeopleSoft attacks",
+        "url": "https://www.bleepingcomputer.com/news/security/shinyhunters-uses-waf-bypass-trick-in-oracle-peoplesoft-attacks",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "ShinyHunters is bypassing WAF mitigations for CVE-2026-35273 in Oracle PeopleSoft using URL-encoding tricks, effectively nullifying the compensating control most defenders deployed instead of patching. This is a textbook example of why WAF rules are not a substitute for patching: the threat actor specifically adapted their exploit to defeat the most common defensive response. Organizations that applied WAF rules and considered themselves protected against this CVE should reassess immediately."
+      },
+      {
+        "title": "Lunex Stealer Abuses AMD Driver to Disable Security Monitoring and Steal Browser Credentials",
+        "url": "https://thehackernews.com/2026/09/lunex-stealer-abuses-amd-driver-to.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "Lunex is a MaaS platform distributing a stealer that weaponizes a legitimate AMD driver to blind security monitoring before harvesting browser credentials, delivered via ClickFix-style fake Cloudflare verification pages on compromised Ukrainian sites. The BYOVD (Bring Your Own Vulnerable Driver) technique applied to a GPU driver rather than the more common kernel security drivers is a meaningful evasion evolution. Defenders relying on EDR telemetry without kernel-level driver allowlisting are specifically blind to this kill chain."
+      }
+    ],
+    "Finance & Business": [
+      {
+        "title": "China Broadens Travel Curbs to Encompass Family of Top AI Talent",
+        "url": "https://www.bloomberg.com/news/articles/2026-09-28/china-broadens-travel-curbs-to-encompass-family-of-top-ai-talent",
+        "source_name": "Bloomberg Technology",
+        "category": "finance",
+        "editorial_note": "China has extended overseas travel restrictions for top AI professionals at private firms to cover immediate family members, a coercive retention mechanism that signals Beijing views AI talent outflow as a national security threat on par with classified information leakage. The escalation from individual to family-level restrictions mirrors tactics historically used for nuclear and defense scientists, not commercial technologists. For US AI labs actively recruiting Chinese nationals, this creates a new category of candidate who faces genuine personal risk from accepting an offer."
+      }
+    ],
+    "Entrepreneurship": [
+      {
+        "title": "SaaStr AI App of the Week: Larridin. The Median Engineer Now Bills $213 a Week in AI Coding Tokens. Larridin Tells You What It Bought.",
+        "url": "https://www.saastr.com/saastr-ai-app-of-the-week-larridin-the-median-engineer-now-bills-213-a-week-in-ai-coding-tokens-larridin-tells-you-what-it-bought",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "The median engineer at B2B SaaS companies now bills $213 per week in AI coding tokens, a figure that makes AI spend a material line item in engineering budgets at any team larger than a handful of people. Larridin is a spend-attribution tool that maps token consumption to specific outputs, addressing the accountability gap that emerges when coding agents run autonomously. For a solo operator like Purplelink, the more relevant signal is that this spend level is now the baseline expectation, not an outlier, which reframes the ROI calculus for AI-assisted development."
+      },
+      {
+        "title": "Everyone Should Publish the Deepest, Most Direct Competitive Evals They Can. Case Study: $100m ARR Gorgias for AI CX",
+        "url": "https://www.saastr.com/everyone-should-publish-the-deepest-most-direct-competitive-evals-they-can-case-study-100m-arr-gorgias-for-ai-cx",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "Gorgias open-sourced an 8,356-conversation evaluation harness covering 18 vendors and published results showing a competitor outperforming them in one category, which is a deliberately credibility-building move in a market where AI capability claims are universally distrusted. The non-obvious strategic point is that publishing honest evals where you lose a subcategory generates more trust than cherry-picked benchmarks, and that trust converts to enterprise pipeline at $100M ARR scale. For indie developers building AI-adjacent tools, this is a replicable differentiation strategy that doesn't require a marketing budget."
+      }
+    ],
+    "Worth Reading": [
+      {
+        "title": "Who's liable when AI agents go rogue?",
+        "url": "https://www.technologyreview.com/2026/09/28/1145197/whos-liable-when-ai-agents-go-rogue",
+        "source_name": "MIT Technology Review",
+        "category": "general_tech",
+        "editorial_note": "MIT Technology Review maps the emerging liability landscape following a cascade of AI agent cyberattacks in mid-2026, including OpenAI's July disclosure of a breach of a government website. The piece is operationally relevant for anyone building or deploying agentic systems commercially: liability frameworks are being drafted now, and the legal exposure for autonomous agent actions is genuinely unsettled. Purplelink-scale developers shipping agentic macOS or iOS software should track this closely, as App Store distribution may not insulate against downstream liability claims."
+      }
+    ]
+  },
+  "sources_reviewed": 261,
+  "items_selected": 12
+}
