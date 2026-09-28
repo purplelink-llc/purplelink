@@ -47,7 +47,7 @@ LEDGER = AN / "dreamstime-sales.csv"
 SNAPSHOTS = AN / "snapshots.csv"
 TITLES = WS / "alamy-metadata.csv"   # Filename,Caption,...,Title
 URL = "https://www.dreamstime.com/account/earnings-images"
-CDP = "http://127.0.0.1:9225"
+CDP = "http://127.0.0.1:9340"
 
 FIELDS = ["sale_date", "filename", "image_id", "title", "amount",
           "royalty_pct", "license", "tier", "url"]
@@ -113,24 +113,25 @@ def parse(html):
 
 
 def live_html():
-    from playwright.sync_api import sync_playwright
-    with sync_playwright() as p:
-        b = p.chromium.connect_over_cdp(CDP)
-        pg = b.contexts[0].new_page()
-        try:
-            pg.goto(URL, wait_until="domcontentloaded", timeout=60000)
-            pg.wait_for_timeout(7000)
-            body = pg.inner_text("body")
-            if re.search(r"Press & Hold|confirm you are a human", body, re.I):
-                raise SystemExit(
-                    "Dreamstime is serving its press-and-hold check to this profile.\n"
-                    "Open the page in your normal browser, save it, and re-run with\n"
-                    f"  scripts/dreamstime-sales.py --html <saved.html>")
-            if re.search(r"\bSign in\b", body[:500], re.I):
-                raise SystemExit("not signed in — run stats-collect.py --login")
-            return pg.content()
-        finally:
-            pg.close()
+    # Raw CDP, not Playwright: connect_over_cdp on this profile started failing
+    # with "Browser context management is not supported" (2026-09-28) and
+    # hangs outright when synced extensions are loaded.
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from cdp_tab import Tab
+    pg = Tab.new(background=True)
+    try:
+        pg.goto(URL, settle=7)
+        body = pg.text()
+        if re.search(r"Press & Hold|confirm you are a human", body, re.I):
+            raise SystemExit(
+                "Dreamstime is serving its press-and-hold check to this profile.\n"
+                "Open the page in your normal browser, save it, and re-run with\n"
+                f"  scripts/dreamstime-sales.py --html <saved.html>")
+        if re.search(r"\bSign in\b", body[:500], re.I):
+            raise SystemExit("not signed in — run stats-collect.py --login")
+        return pg.eval("document.documentElement.outerHTML")
+    finally:
+        pg.close()
 
 
 def write_snapshot(sales):

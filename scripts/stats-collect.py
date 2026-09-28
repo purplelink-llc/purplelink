@@ -770,17 +770,22 @@ def collect_etsy(page):
     page.goto("https://www.etsy.com/your/shops/me/tools/listings", wait_until="domcontentloaded")
     page.wait_for_timeout(6000)
     t = re.sub(r"\s+", " ", page.inner_text("body"))
-    # The "Active N / Draft N" tab counts only render on an EMPTY shop; once
-    # there are real listings that strip is replaced by a "Filter" dropdown
-    # and the count vanishes entirely (found 2026-09-25, the day after the
-    # first 15 listings went live -- active_listings was silently missing
-    # from history.json with no error). Count listing rows instead: every
-    # row -- digital or physical -- prints its stock line, "N in stock".
-    m = re.search(r"\bActive\s*(\d+)", t)
-    if m:
-        out["active_listings"] = int(m.group(1))
-    else:
-        out["active_listings"] = len(re.findall(r"\d[\d,]*\s+in stock", t))
+    # The authoritative count is the "Listing status" filter's Active radio
+    # label ("Active43"). That sidebar is collapsed at the collector's window
+    # size, so it never appears in inner_text; read the radio's label from
+    # the DOM. Counting "N in stock" rows is only a last resort: the page
+    # shows 40 per page, so it read 40 for a 43-listing shop (2026-09-28).
+    n = page.evaluate("""() => { const r = document.querySelector('input[type=radio][value=active]');
+        const m = r && ((r.closest('label') || r.parentElement).textContent || '').match(/Active\\s*(\\d+)/);
+        return m ? parseInt(m[1]) : null }""")
+    if n is None:
+        m = re.search(r"\bActive\s*(\d+)", t)
+        n = int(m.group(1)) if m else None
+    if n is None:
+        rows = len(re.findall(r"\d[\d,]*\s+in stock", t))
+        if rows < 40:           # a full page means there may be more pages
+            n = rows
+    out["active_listings"] = n
     return out
 
 
