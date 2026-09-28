@@ -4,22 +4,30 @@
  * GET /.netlify/functions/sales?token=SECRET&days=30
  *
  * Both sites sell through the same Stripe account and tag every Checkout
- * Session with metadata.product, so one pass over the sessions gives revenue
- * for purplelink.llc and getmuscleonglp.com at once, split by product. The
- * traffic dashboard renders this above the traffic cards.
+ * Session (and every subscription) with metadata.product, so one pass gives
+ * revenue for purplelink.llc and getmuscleonglp.com at once, split by product.
+ * The traffic dashboard renders this above the traffic cards.
  *
  * Gated by STATS_TOKEN, the same owner-only token the stats function uses, so
  * the dashboard needs no second credential.
  *
- * Counts paid Checkout Sessions. Refunds and disputes are NOT deducted — the
- * Stripe balance at the bottom of the response is the authority on money that
- * actually landed.
+ * Revenue is paid Checkout Sessions plus paid subscription renewals. Every
+ * order in `ledger` carries its Stripe fee, net and refunded amount, so the
+ * dashboard can report gross and net the way an app-store revenue tool does.
+ * Customers appear in the ledger only as a salted hash of their email: enough
+ * to count new vs. returning buyers, never the address itself. The emails in
+ * `recent` are unchanged from before, for the owner's own "Recent" table.
  */
 
+import { createHash } from "node:crypto";
+
 const STRIPE_API = "https://api.stripe.com/v1";
+// Pinned so invoice.subscription / invoice.charge keep the shape this code reads,
+// whatever the account's default API version becomes.
+const STRIPE_VERSION = "2024-06-20";
 const LIFECYCLE_STATS_URL = "https://ben-ampel--purplelink-latextools-web.modal.run/lifecycle/stats";
 const PAGE_SIZE = 100;
-const MAX_PAGES = 10; // 1000 sessions; `truncated` says when that was not enough
+const MAX_PAGES = 10; // 1000 rows per list; `truncated` says when that was not enough
 
 // Product key -> which site sold it. Derived from netlify/functions/checkout.mjs
 // and muscleonglp-site/netlify/functions/lib/products.mjs; a key missing here
@@ -52,14 +60,44 @@ function json(status, body) {
 }
 
 const bump = (o, k, n = 1) => { if (k) o[k] = (o[k] || 0) + n; };
+const isoDay = (ts) => new Date(ts * 1000).toISOString().slice(0, 10);
 
 async function stripeGet(path, params, key) {
   const qs = new URLSearchParams(params).toString();
   const resp = await fetch(`${STRIPE_API}${path}${qs ? `?${qs}` : ""}`, {
-    headers: { Authorization: `Bearer ${key}` },
+    headers: { Authorization: `Bearer ${key}`, "Stripe-Version": STRIPE_VERSION },
   });
   if (!resp.ok) throw new Error(`stripe ${path} ${resp.status}: ${(await resp.text()).slice(0, 200)}`);
   return resp.json();
+}
+
+/** Every row of a Stripe list endpoint, up to MAX_PAGES pages. `extra` may carry
+ *  repeated keys (expand[]) as [key, value] pairs. */
+async function stripeList(path, extra, key) {
+  const rows = [];
+  let startingAfter = null, pages = 0;
+  for (; pages < MAX_PAGES; pages++) {
+    const params = new URLSearchParams({ limit: String(PAGE_SIZE) });
+    for (const [k, v] of extra) params.append(k, v);
+    if (startingAfter) params.set("starting_after", startingAfter);
+    const page = await stripeGet(path, params, key);
+    const data = page.data || [];
+    rows.push(...data);
+    if (!page.has_more || !data.length) return { rows, truncated: false };
+    startingAfter = data[data.length - 1].id;
+  }
+  return { rows, truncated: true };
+}
+
+/** Monthly value of one subscription item, in cents. */
+function monthlyCents(item) {
+  const price = item.price || {};
+  const r = price.recurring;
+  if (!r) return 0;
+  const amount = (price.unit_amount || 0) * (item.quantity || 1);
+  const every = r.interval_count || 1;
+  const perMonth = { day: 365 / 12, week: 52 / 12, month: 1, year: 1 / 12 }[r.interval] ?? 0;
+  return Math.round((amount * perMonth) / every);
 }
 
 export default async function handler(request) {
@@ -73,7 +111,8 @@ export default async function handler(request) {
 
   let days = parseInt(url.searchParams.get("days") || "30", 10);
   if (!Number.isFinite(days) || days < 1) days = 30;
-  const cutoff = Math.floor(Date.now() / 1000) - days * 86400;
+  const now = Math.floor(Date.now() / 1000);
+  const cutoff = now - days * 86400;
 
   // The owner's own end-to-end test purchases are real Stripe charges and would
   // otherwise pad the order count and revenue. Kept out of every total and
@@ -83,42 +122,78 @@ export default async function handler(request) {
     (Netlify.env.get("SALES_EXCLUDE_EMAILS") || "")
       .split(",").map((e) => e.trim().toLowerCase()).filter(Boolean),
   );
+  const isOwner = (email) => ownerEmails.has((email || "").toLowerCase());
+  // Salted with the stats token so the hash can't be matched against a list of
+  // addresses by anyone who only sees the dashboard archive.
+  const custKey = (email) => email
+    ? createHash("sha256").update(`${expected}:${email.trim().toLowerCase()}`).digest("hex").slice(0, 16)
+    : "";
 
-  // --- collect paid sessions --------------------------------------------------
-  const paid = [];
-  let startingAfter = null, pages = 0, truncated = false;
+  // --- pull everything in parallel ---------------------------------------------
+  let sessions, invoices, subs, fees;
   try {
-    for (; pages < MAX_PAGES; pages++) {
-      const params = { limit: String(PAGE_SIZE) };
-      if (startingAfter) params.starting_after = startingAfter;
-      const page = await stripeGet("/checkout/sessions", params, key);
-      const rows = page.data || [];
-      for (const s of rows) {
-        if (s.payment_status !== "paid") continue;
-        const product = (s.metadata && s.metadata.product) || "unknown";
-        paid.push({
-          created: s.created,
-          product,
-          site: SITE_OF_PRODUCT.get(product) || "unknown",
-          amount: s.amount_total || 0,
-          currency: s.currency || "usd",
-          email: (s.customer_details && s.customer_details.email) || "",
-        });
-      }
-      if (!page.has_more || !rows.length) break;
-      startingAfter = rows[rows.length - 1].id;
-    }
-    truncated = pages >= MAX_PAGES;
+    [sessions, invoices, subs, fees] = await Promise.all([
+      stripeList("/checkout/sessions", [["expand[]", "data.payment_intent.latest_charge"]], key),
+      stripeList("/invoices", [["status", "paid"], ["expand[]", "data.charge"]], key),
+      stripeList("/subscriptions", [["status", "all"], ["expand[]", "data.customer"]], key),
+      stripeList("/balance_transactions", [["type", "charge"]], key),
+    ]);
   } catch (err) {
     return json(502, { error: "stripe_unreachable", detail: String(err).slice(0, 300) });
   }
+  const truncated = sessions.truncated || invoices.truncated || subs.truncated;
 
+  // Stripe fee and net per charge, from Stripe's own ledger.
+  const feeOf = new Map(fees.rows.map((t) => [t.source, { fee: t.fee || 0, net: t.net || 0 }]));
+  const chargeFacts = (charge) => {
+    if (!charge || typeof charge !== "object") return { fee: null, net: null, refunded: 0, disputed: false };
+    const f = feeOf.get(charge.id);
+    return {
+      fee: f ? f.fee : null,
+      net: f ? f.net : null,
+      refunded: charge.amount_refunded || 0,
+      disputed: !!charge.disputed,
+    };
+  };
+
+  // Subscription id -> product key, for mapping renewal invoices.
+  const productOfSub = new Map(subs.rows.map((s) => [s.id, (s.metadata && s.metadata.product) || "unknown"]));
+
+  // --- one ledger: first purchases and subscription renewals --------------------
+  const paid = [];
+  for (const s of sessions.rows) {
+    if (s.payment_status !== "paid") continue; // trials start at "no_payment_required"
+    const product = (s.metadata && s.metadata.product) || "unknown";
+    const pi = s.payment_intent && typeof s.payment_intent === "object" ? s.payment_intent : null;
+    paid.push({
+      id: s.id, kind: "purchase", created: s.created, product,
+      site: SITE_OF_PRODUCT.get(product) || "unknown",
+      amount: s.amount_total || 0, currency: s.currency || "usd",
+      email: (s.customer_details && s.customer_details.email) || "",
+      ...chargeFacts(pi && pi.latest_charge),
+    });
+  }
+  for (const inv of invoices.rows) {
+    // The first invoice of a paid (non-trial) subscription is already the
+    // Checkout Session above; everything after it is a renewal. A trial's first
+    // charge is a "subscription_cycle" invoice, so trial conversions land here.
+    if (!["subscription_cycle", "subscription_update"].includes(inv.billing_reason)) continue;
+    if (!(inv.amount_paid > 0)) continue;
+    const product = productOfSub.get(inv.subscription) || "unknown";
+    paid.push({
+      id: inv.id, kind: "renewal", created: inv.created, product,
+      site: SITE_OF_PRODUCT.get(product) || "unknown",
+      amount: inv.amount_paid, currency: inv.currency || "usd",
+      email: inv.customer_email || "",
+      ...chargeFacts(inv.charge),
+    });
+  }
   paid.sort((a, b) => b.created - a.created);
 
-  const selfTests = paid.filter((p) => ownerEmails.has(p.email.toLowerCase()));
-  const customer = paid.filter((p) => !ownerEmails.has(p.email.toLowerCase()));
+  const selfTests = paid.filter((p) => isOwner(p.email));
+  const customer = paid.filter((p) => !isOwner(p.email));
 
-  // --- aggregate --------------------------------------------------------------
+  // --- aggregate (same shape as before, renewals now included) -----------------
   const allTime = { orders: customer.length, gross: customer.reduce((n, p) => n + p.amount, 0) };
   const inWindow = customer.filter((p) => p.created >= cutoff);
   const windowTotals = { days, orders: inWindow.length, gross: inWindow.reduce((n, p) => n + p.amount, 0) };
@@ -131,7 +206,7 @@ export default async function handler(request) {
     if (!prodLast[p.product] || p.created > prodLast[p.product]) prodLast[p.product] = p.created;
     if (p.created >= cutoff) {
       bump(winOrders, p.site); bump(winGross, p.site, p.amount);
-      const day = new Date(p.created * 1000).toISOString().slice(0, 10);
+      const day = isoDay(p.created);
       byDay[day] = byDay[day] || { orders: 0, gross: 0 };
       byDay[day].orders += 1;
       byDay[day].gross += p.amount;
@@ -150,9 +225,48 @@ export default async function handler(request) {
     .map((k) => ({
       key: k, site: SITE_OF_PRODUCT.get(k) || "unknown",
       orders: prodOrders[k], gross: prodGross[k],
-      lastOrder: new Date(prodLast[k] * 1000).toISOString().slice(0, 10),
+      lastOrder: isoDay(prodLast[k]),
     }))
     .sort((a, b) => b.gross - a.gross);
+
+  const refunds = {
+    orders: customer.filter((p) => p.refunded > 0).length,
+    amount: customer.reduce((n, p) => n + p.refunded, 0),
+    disputes: customer.filter((p) => p.disputed).length,
+  };
+
+  // --- subscriptions: MRR, active, trials, churn --------------------------------
+  const subRows = subs.rows.filter((s) => {
+    const c = s.customer && typeof s.customer === "object" ? s.customer : null;
+    return !isOwner(c && c.email);
+  });
+  const liveStatus = new Set(["active", "past_due"]);
+  const perProduct = {};
+  let mrr = 0, active = 0, trialing = 0, cancelScheduled = 0;
+  let newInWindow = 0, trialsStarted = 0, trialsEnded = 0, trialsConverted = 0, churned = 0;
+  for (const s of subRows) {
+    const product = (s.metadata && s.metadata.product) || "unknown";
+    const row = perProduct[product] || (perProduct[product] = { active: 0, trialing: 0, mrr: 0 });
+    const itemsMrr = ((s.items && s.items.data) || []).reduce((n, it) => n + monthlyCents(it), 0);
+    if (liveStatus.has(s.status)) { active++; row.active++; mrr += itemsMrr; row.mrr += itemsMrr; }
+    if (s.status === "trialing") { trialing++; row.trialing++; }
+    if (s.cancel_at_period_end && (liveStatus.has(s.status) || s.status === "trialing")) cancelScheduled++;
+    if (s.created >= cutoff) newInWindow++;
+    if (s.trial_start && s.trial_start >= cutoff) trialsStarted++;
+    if (s.trial_end && s.trial_end >= cutoff && s.trial_end <= now) {
+      trialsEnded++;
+      if (liveStatus.has(s.status) || (s.status === "canceled" && s.ended_at && s.ended_at > s.trial_end + 86400)) {
+        trialsConverted++;
+      }
+    }
+    const endedAfterPaying = s.ended_at && (!s.trial_end || s.ended_at > s.trial_end + 86400);
+    if (s.status === "canceled" && s.ended_at >= cutoff && endedAfterPaying) churned++;
+  }
+  const subscriptions = {
+    mrr, active, trialing, cancelScheduled,
+    window: { days, new: newInWindow, trialsStarted, trialsEnded, trialsConverted, churned },
+    byProduct: perProduct,
+  };
 
   let balance = null;
   try {
@@ -192,6 +306,14 @@ export default async function handler(request) {
       date: new Date(p.created * 1000).toISOString().slice(0, 16).replace("T", " "),
       product: p.product, site: p.site, amount: p.amount, email: p.email,
     })),
+    // Every customer order, newest first. No emails: `cust` is a salted hash.
+    ledger: customer.map((p) => ({
+      id: p.id, kind: p.kind, ts: p.created, product: p.product, site: p.site,
+      gross: p.amount, fee: p.fee, net: p.net, refunded: p.refunded, disputed: p.disputed,
+      cust: custKey(p.email),
+    })),
+    refunds,
+    subscriptions,
     balance,
     truncated,
     selfTests: {
