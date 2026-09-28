@@ -159,6 +159,19 @@ export default async function handler(request) {
   // Subscription id -> product key, for mapping renewal invoices.
   const productOfSub = new Map(subs.rows.map((s) => [s.id, (s.metadata && s.metadata.product) || "unknown"]));
 
+  // Channel attribution that checkout.mjs stored as metadata (first and last
+  // touch, compact JSON). Absent on orders from before 2026-09-28 and for
+  // buyers with Do Not Track or blocked storage.
+  const touch = (v) => {
+    if (typeof v !== "string" || !v) return null;
+    try { const t = JSON.parse(v); return t && typeof t === "object" ? t : null; } catch (_) { return null; }
+  };
+  const attrOf = (md) => {
+    const first = touch(md && md.attr_first), last = touch(md && md.attr_last);
+    return first || last ? { first, last } : null;
+  };
+  const attrOfSub = new Map(subs.rows.map((s) => [s.id, attrOf(s.metadata)]));
+
   // --- one ledger: first purchases and subscription renewals --------------------
   const paid = [];
   for (const s of sessions.rows) {
@@ -170,6 +183,7 @@ export default async function handler(request) {
       site: SITE_OF_PRODUCT.get(product) || "unknown",
       amount: s.amount_total || 0, currency: s.currency || "usd",
       email: (s.customer_details && s.customer_details.email) || "",
+      attr: attrOf(s.metadata),
       ...chargeFacts(pi && pi.latest_charge),
     });
   }
@@ -185,6 +199,7 @@ export default async function handler(request) {
       site: SITE_OF_PRODUCT.get(product) || "unknown",
       amount: inv.amount_paid, currency: inv.currency || "usd",
       email: inv.customer_email || "",
+      attr: attrOfSub.get(inv.subscription) || null,
       ...chargeFacts(inv.charge),
     });
   }
@@ -310,7 +325,7 @@ export default async function handler(request) {
     ledger: customer.map((p) => ({
       id: p.id, kind: p.kind, ts: p.created, product: p.product, site: p.site,
       gross: p.amount, fee: p.fee, net: p.net, refunded: p.refunded, disputed: p.disputed,
-      cust: custKey(p.email),
+      cust: custKey(p.email), attr: p.attr,
     })),
     refunds,
     subscriptions,

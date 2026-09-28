@@ -33,6 +33,44 @@
     }
     catch (e) { return ""; }
   }
+  // Where visits come from, remembered so a later purchase can say which
+  // channel led to it: the first arrival and the most recent one that was not
+  // direct (a referring site, a campaign tag, or a Google ad click, as a yes/no
+  // flag only, never the click id). Kept in local storage for 90 days and sent
+  // only with a checkout request, where it is attached to the Stripe order.
+  // Direct visits, Stripe's return trip and hops within the site never
+  // overwrite it. The privacy page's clear button removes it (pl_ prefix).
+  var ATTR_KEY = "pl_attr";
+  var ATTR_DAYS = 90;
+  function clip(v, n) { return String(v || "").replace(/[^\w.\-:\/ ]/g, "").slice(0, n); }
+  function arrival() {
+    try {
+      var q = new URLSearchParams(location.search);
+      var r = refHost();
+      if (/(^|\.)(stripe\.com|purplelink\.llc)$/.test(r)) r = "";
+      var t = {
+        s: clip(utmSource(), 60), m: clip(q.get("utm_medium"), 40), c: clip(q.get("utm_campaign"), 80),
+        r: clip(r, 80), g: (q.get("gclid") || q.get("gbraid") || q.get("wbraid")) ? 1 : 0,
+        l: clip(location.pathname, 120), d: new Date().toISOString().slice(0, 10)
+      };
+      return (t.s || t.r || t.g) ? t : null;
+    } catch (e) { return null; }
+  }
+  var attr = (function () {
+    var a = {};
+    try { a = JSON.parse(localStorage.getItem(ATTR_KEY) || "{}") || {}; } catch (e) { a = {}; }
+    var cutoff = new Date(Date.now() - ATTR_DAYS * 864e5).toISOString().slice(0, 10);
+    if (a.first && !(a.first.d >= cutoff)) a.first = null;
+    if (a.last && !(a.last.d >= cutoff)) a.last = null;
+    var now = arrival();
+    if (now) { if (!a.first) a.first = now; a.last = now; }
+    try {
+      if (a.first || a.last) localStorage.setItem(ATTR_KEY, JSON.stringify({ first: a.first || null, last: a.last || null }));
+      else localStorage.removeItem(ATTR_KEY);
+    } catch (e) { /* storage blocked: the sale just shows as direct */ }
+    return a;
+  })();
+
   function send(payload) {
     try {
       var body = JSON.stringify(payload);
@@ -73,12 +111,19 @@
             var product = "";
             try {
               var body = init && init.body;
-              if (typeof body === "string") { product = (JSON.parse(body) || {}).product || ""; }
+              if (typeof body === "string") {
+                var parsed = JSON.parse(body) || {};
+                product = parsed.product || "";
+                if ((attr.first || attr.last) && !parsed.attr) {
+                  parsed.attr = { first: attr.first || null, last: attr.last || null };
+                  init = Object.assign({}, init, { body: JSON.stringify(parsed) });
+                }
+              }
             } catch (e) { /* meta is optional; never break checkout for it */ }
             window.plTrack("checkout_click", product);
           }
         } catch (e) { /* ignore */ }
-        return _fetch.apply(this, arguments);
+        return _fetch.call(this, input, init);
       };
     }
   } catch (e) { /* leave fetch untouched on any error */ }

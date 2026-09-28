@@ -142,6 +142,24 @@ function formEncode(params) {
   return parts.join("&");
 }
 
+// Channel attribution sent by analytics.js: how the buyer first and most
+// recently arrived (campaign tags, referring site, a Google-ad-click flag,
+// landing page, date). Untrusted and optional. Each field is clipped to a
+// short safe charset so the JSON stays under Stripe's 500-character metadata
+// limit; sales.mjs reads it back to report revenue by channel.
+const ATTR_FIELDS = { s: 60, m: 40, c: 80, r: 80, l: 120, d: 10 };
+function cleanTouch(t) {
+  if (!t || typeof t !== "object") return null;
+  const out = {};
+  for (const [k, n] of Object.entries(ATTR_FIELDS)) {
+    if (typeof t[k] !== "string") continue;
+    const v = t[k].replace(/[^\w.\-:/ ]/g, "").slice(0, n);
+    if (v) out[k] = v;
+  }
+  if (t.g === 1 || t.g === true) out.g = 1;
+  return Object.keys(out).length ? JSON.stringify(out) : "";
+}
+
 export default async function handler(request) {
   if (request.method !== "POST") {
     return jsonResponse(405, { error: "method_not_allowed" });
@@ -173,6 +191,8 @@ export default async function handler(request) {
   // opaque string, validated server-side against referral_dict, not used
   // for anything here.
   const referralCode = typeof body?.ref === "string" ? body.ref.trim().slice(0, 32) : "";
+  const attrFirst = cleanTouch(body?.attr?.first);
+  const attrLast = cleanTouch(body?.attr?.last);
 
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   const priceId = Netlify.env.get(entry.envKey);
@@ -194,11 +214,12 @@ export default async function handler(request) {
   // genuinely new purchase attempt after the window (or by a different
   // client) still gets a fresh session.
   // Pages that send a per-page-load `attempt` nonce (Vitae Plus) keep two buyers behind one
-  // campus NAT apart; the referral code is included so differing tags never collide.
+  // campus NAT apart; the referral code and attribution are included so
+  // differing tags never collide (Stripe rejects a reused key with new params).
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v2:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}`)
+    .update(`v3:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -236,10 +257,14 @@ export default async function handler(request) {
   if (referralCode) {
     params["metadata[referral_code]"] = referralCode;
   }
+  if (attrFirst) params["metadata[attr_first]"] = attrFirst;
+  if (attrLast) params["metadata[attr_last]"] = attrLast;
   if (mode === "subscription") {
     // Copy the product key onto the Subscription too, so customer.subscription.*
     // events and the dashboard can tell a Vitae Plus subscription from a digest one.
     params["subscription_data[metadata][product]"] = product;
+    if (attrFirst) params["subscription_data[metadata][attr_first]"] = attrFirst;
+    if (attrLast) params["subscription_data[metadata][attr_last]"] = attrLast;
     if (entry.trialDays) {
       params["subscription_data[trial_period_days]"] = String(entry.trialDays);
     }

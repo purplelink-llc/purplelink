@@ -888,6 +888,215 @@ def fetch_admob(app_key: str) -> dict | None:
     }
 
 
+# ---------------------------------------------------------------- cost sources
+#
+# What running the business costs, measured rather than estimated, for the
+# profit view: Modal's billing API (every backend app's compute), the Paper
+# Review usage ledger (real Claude API tokens and cost per paid job), and the
+# Apple Search Ads API (spend per day, and which search terms spend it). Each
+# degrades to None the same way AdMob does, so a missing key or an outage
+# costs one line of the profit view, never the run.
+
+MODAL_APP_LINES = {  # Modal app name -> product line the compute belongs to
+    "purplelink-latextools": "Paper Review & tools",
+    "muscleonglp-research": "MuscleOnGLP",
+}
+COST_DAYS = 28
+
+
+def _modal_sdk():
+    try:
+        import modal  # present on the launchd interpreter (Python 3.12 framework)
+        import modal.billing  # noqa: F401
+        return modal
+    except Exception:
+        return None
+
+
+def fetch_modal_costs(days: int = COST_DAYS) -> dict | None:
+    """Modal compute cost per app per day, from Modal's own billing report."""
+    modal = _modal_sdk()
+    if modal is None:
+        return None
+    end = dt.datetime.now(dt.timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    try:
+        rows = modal.billing.workspace_billing_report(start=end - dt.timedelta(days=days), end=end,
+                                                      resolution="d")
+    except Exception as exc:  # noqa: BLE001
+        return {"error": str(exc)[:160]}
+    by_app: dict[str, dict[str, float]] = {}
+    for r in rows:
+        day = r["interval_start"].date().isoformat()
+        app = r.get("description") or r.get("object_id") or "unknown"
+        by_app.setdefault(app, {})
+        by_app[app][day] = by_app[app].get(day, 0.0) + float(r["cost"])
+    return {"byAppDay": by_app, "through": (end - dt.timedelta(days=1)).date().isoformat()}
+
+
+def fetch_api_usage() -> list[dict] | None:
+    """Per-job Claude API cost from backend/app.py's paper-review-usage-ledger.
+    Records with no model call (a job that failed before reaching Claude) are
+    dropped: they cost nothing and would only pad the job counts."""
+    modal = _modal_sdk()
+    if modal is None:
+        return None
+    try:
+        d = modal.Dict.from_name("paper-review-usage-ledger")
+        rows = [v for _k, v in d.items()]
+    except Exception as exc:  # noqa: BLE001
+        print(f"  ! usage ledger unavailable: {str(exc)[:100]}", file=sys.stderr)
+        return None
+    return sorted(({k: r.get(k) for k in ("ts", "product_key", "status", "cost_usd",
+                                          "input_tokens", "output_tokens", "price_charged_usd")}
+                   for r in rows if r.get("models")), key=lambda r: r["ts"])
+
+
+ASA_API = "https://api.searchads.apple.com/api/v5"
+ASA_KEY_DEFAULT = "~/.config/purplelink/asa-private-key.pem"
+
+
+def _asa_request(url: str, token: str, org: str | None, body: dict | None = None) -> dict:
+    headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
+    if org:
+        headers["X-AP-Context"] = f"orgId={org}"
+    data = None
+    if body is not None:
+        data = json.dumps(body).encode()
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST" if data else "GET")
+    with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as r:
+        return json.loads(r.read().decode())
+
+
+def _asa_money(v) -> float:
+    if isinstance(v, dict):
+        v = v.get("amount")
+    try:
+        return float(v or 0)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _asa_metrics(m: dict) -> dict:
+    installs = m.get("totalInstalls", m.get("installs", m.get("tapInstalls", 0))) or 0
+    return {"impressions": int(m.get("impressions") or 0), "taps": int(m.get("taps") or 0),
+            "installs": int(installs), "spend": round(_asa_money(m.get("localSpend")), 2)}
+
+
+def fetch_asa_api(cfg: dict[str, str]) -> dict | None:
+    """Apple Search Ads through its API: an API user's EC key signs a client
+    secret, exchanged for a one-hour token. No Apple ID sign-in and no 2FA, so
+    it runs unattended like everything else here. Returns None when the
+    ASA_* settings are absent (not set up), {"error": ...} on failure."""
+    need = ("ASA_CLIENT_ID", "ASA_TEAM_ID", "ASA_KEY_ID")
+    if not all(cfg.get(k) for k in need):
+        return None
+    try:
+        import jwt
+    except ImportError:
+        return {"error": "PyJWT not installed for this interpreter"}
+    key_path = Path(os.path.expanduser(cfg.get("ASA_KEY_PATH") or ASA_KEY_DEFAULT))
+    if not key_path.exists():
+        return {"error": f"private key not found at {key_path}"}
+    try:
+        now = int(time.time())
+        secret = jwt.encode({"sub": cfg["ASA_CLIENT_ID"], "iss": cfg["ASA_TEAM_ID"], "iat": now,
+                             "exp": now + 3600, "aud": "https://appleid.apple.com"},
+                            key_path.read_text(), algorithm="ES256", headers={"kid": cfg["ASA_KEY_ID"]})
+        body = urllib.parse.urlencode({"grant_type": "client_credentials", "client_id": cfg["ASA_CLIENT_ID"],
+                                       "client_secret": secret, "scope": "searchadsorg"}).encode()
+        req = urllib.request.Request("https://appleid.apple.com/auth/oauth2/token", data=body, method="POST",
+                                     headers={"Content-Type": "application/x-www-form-urlencoded"})
+        with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as r:
+            token = json.loads(r.read().decode())["access_token"]
+
+        org = cfg.get("ASA_ORG_ID")
+        if not org:
+            acls = _asa_request(f"{ASA_API}/acls", token, None).get("data") or []
+            if not acls:
+                return {"error": "API user has no organization access"}
+            org = str(acls[0]["orgId"])
+
+        today = dt.date.today()
+        start = (today - dt.timedelta(days=COST_DAYS - 1)).isoformat()
+        selector = {"orderBy": [{"field": "localSpend", "sortOrder": "DESCENDING"}],
+                    "pagination": {"offset": 0, "limit": 1000}}
+        rep = _asa_request(f"{ASA_API}/reports/campaigns", token, org, {
+            "startTime": start, "endTime": today.isoformat(), "granularity": "DAILY", "timeZone": "ORTZ",
+            "selector": selector, "returnRecordsWithNoMetrics": True, "returnRowTotals": False,
+            "returnGrandTotals": False})
+        rows = ((rep.get("data") or {}).get("reportingDataResponse") or {}).get("row") or []
+
+        wk_lo = (today - dt.timedelta(days=6)).isoformat()
+        campaigns, daily = [], {}
+        for row in rows:
+            md = row.get("metadata") or {}
+            days = row.get("granularity") or []
+            last7 = {"impressions": 0, "taps": 0, "installs": 0, "spend": 0.0}
+            for g in days:
+                m = _asa_metrics(g)
+                day = g.get("date", "")[:10]
+                slot = daily.setdefault(day, {"spend": 0.0, "installs": 0, "taps": 0, "impressions": 0})
+                for k in slot:
+                    slot[k] += m[k]
+                if day >= wk_lo:
+                    for k in last7:
+                        last7[k] += m[k]
+            spend, inst, taps, imp = last7["spend"], last7["installs"], last7["taps"], last7["impressions"]
+            campaigns.append({
+                "id": md.get("campaignId"), "key": md.get("campaignName", "campaign"),
+                "status": (md.get("displayStatus") or md.get("campaignStatus") or "").title(),
+                "dailyBudget": _asa_money(md.get("dailyBudget")) or None,
+                "spend": round(spend, 2), "impressions": imp, "taps": taps, "installs": inst,
+                "avgCPT": round(spend / taps, 2) if taps else None,
+                "avgCPA": round(spend / inst, 2) if inst else None,
+                "ttr": f"{taps / imp * 100:.2f}%" if imp else "—",
+                "conversionRate": f"{inst / taps * 100:.0f}%" if taps else "—",
+            })
+
+        terms = []
+        for c in campaigns[:3]:
+            if not c["id"]:
+                continue
+            try:
+                t = _asa_request(f"{ASA_API}/reports/campaigns/{c['id']}/searchterms", token, org, {
+                    "startTime": wk_lo, "endTime": today.isoformat(), "timeZone": "ORTZ",
+                    "selector": selector, "returnRecordsWithNoMetrics": False, "returnRowTotals": True})
+            except urllib.error.HTTPError:
+                continue
+            for row in ((t.get("data") or {}).get("reportingDataResponse") or {}).get("row") or []:
+                md = row.get("metadata") or {}
+                terms.append({"term": md.get("searchTermText") or "(low volume terms)",
+                              "keyword": md.get("keyword") or "", **_asa_metrics(row.get("total") or {})})
+        terms.sort(key=lambda t: (-t["spend"], -t["installs"]))
+    except urllib.error.HTTPError as exc:
+        return {"error": f"HTTP {exc.code}: {exc.read().decode(errors='replace')[:160]}"}
+    except Exception as exc:  # noqa: BLE001
+        return {"error": str(exc)[:200]}
+
+    return {"asOf": today.isoformat(), "window": "Last 7 days", "source": "api",
+            "campaigns": campaigns, "searchTerms": terms[:15],
+            "daily": {d: {k: round(v, 2) if k == "spend" else v for k, v in m.items()}
+                      for d, m in sorted(daily.items())}}
+
+
+def record_asa_api(reading: dict) -> None:
+    """Write an API reading into manual-ads.json under the same key the manual
+    Chrome reading used, so every card and metric downstream reads it as-is."""
+    data = load_manual_ads()
+    prev = (data.get("appleSearchAds") or {}).get("campaigns") or []
+    prev_inst = prev[0].get("installs") if prev else None
+    c0 = reading["campaigns"][0] if reading["campaigns"] else {}
+    note = (f"Last 7 days: {c0.get('impressions', 0):,} impressions, {c0.get('taps', 0)} taps and "
+            f"{c0.get('installs', 0)} installs for ${c0.get('spend', 0):,.2f}"
+            + (f", ${c0['avgCPA']:,.2f} per install" if c0.get("avgCPA") else "") + ".")
+    if prev_inst is not None and prev_inst != c0.get("installs"):
+        note += f" Installs {prev_inst} → {c0.get('installs')} since the last reading."
+    data["appleSearchAds"] = {k: reading[k] for k in ("asOf", "window", "source", "campaigns", "searchTerms")}
+    data["appleSearchAds"]["note"] = note
+    MANUAL_ADS_PATH.write_text(json.dumps(data, indent=2))
+
+
 def _netlify_token() -> str | None:
     """Reuse the Netlify CLI's stored token rather than keeping a second copy."""
     if os.environ.get("NETLIFY_AUTH_TOKEN"):
@@ -1527,6 +1736,7 @@ h2{font-size:15px;letter-spacing:.02em;margin:34px 0 12px;font-weight:640;color:
 .metrics h3{font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.02em;margin:22px 0 8px}
 .metric-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0 4px}
 .tile{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sales tr.total td{font-weight:600;border-top:2px solid var(--line)}
 .tile b{display:block;font-size:1.35rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .tile span{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
 .tile em{display:block;font-style:normal;font-size:.78rem;margin-top:3px}
@@ -2325,13 +2535,29 @@ def manual_ads_block(data: dict, admob: dict | None = None) -> str:
         spend_total = sum(c.get("spend", 0) for c in asa.get("campaigns", []))
         campaign_names = ", ".join(c.get("key", "campaign") for c in asa.get("campaigns", []))
         note = (f"<p class='sales-foot'>{html.escape(asa['note'])}</p>" if asa.get("note") else "")
+        source = ("pulled from the Apple Search Ads API" if asa.get("source") == "api" else
+                  "read by hand from app-ads.apple.com; set up the API user (ASA_* in traffic.env) "
+                  "to make this automatic")
+        terms = asa.get("searchTerms") or []
+        terms_html = ""
+        if terms:
+            trows = "".join(
+                f"<tr><td>{html.escape(t['term'])}</td><td>{html.escape(t.get('keyword', ''))}</td>"
+                f"<td class='num'>{t['impressions']:,}</td><td class='num'>{t['taps']}</td>"
+                f"<td class='num'>{t['installs']}</td><td class='num'>${t['spend']:,.2f}</td>"
+                f"<td class='num'>{'—' if not t['installs'] else '$' + format(t['spend'] / t['installs'], ',.2f')}</td></tr>"
+                for t in terms[:10])
+            terms_html = f"""
+  <h3>Search terms · last 7 days</h3>
+  <table><thead><tr><th>Search term</th><th>Keyword</th><th class='num'>Impr.</th><th class='num'>Taps</th>
+    <th class='num'>Installs</th><th class='num'>Spend</th><th class='num'>Per install</th></tr></thead>
+    <tbody>{trows}</tbody></table>"""
         asa_html = f"""
   <h3>Apple Search Ads · spend</h3>
-  <p class="sales-foot">{html.escape(campaign_names)} — read by hand from app-ads.apple.com
-    ({html.escape(asa.get('window', ''))}, as of {html.escape(asa.get('asOf', '?'))}). No API pull;
-    Apple ID sign-in has no unattended path, so this updates only when read again in a session.</p>
+  <p class="sales-foot">{html.escape(campaign_names)} — {source}
+    ({html.escape(asa.get('window', ''))}, as of {html.escape(asa.get('asOf', '?'))}).</p>
   <div class="sales-split">{chips}</div>
-  {note}"""
+  {note}{terms_html}"""
 
     admob_html = ""
     earnings_total = None
@@ -2861,6 +3087,216 @@ def print_metrics(m: dict | None) -> None:
         print("   Last 24h: no new orders, refunds or subscription changes")
 
 
+# ---------------------------------------------------------------- profit view
+#
+# Revenue minus what it cost to earn, per product line, over the last 7 days
+# (the window every ad reading covers). Net revenue is already after Stripe's
+# fee, refunds and Apple's cut; from it come ad spend, Claude API cost per paid
+# job, Modal compute, and fixed costs from COSTS_PATH, spread evenly per day.
+# Only measured or entered costs appear; what is not measured is listed.
+
+PROFIT_DAYS = 7
+COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
+PROFIT_LINES = ["ModernTex", "Paper Review & tools", "Kits", "Subscriptions", "MuscleOnGLP",
+                "GlobePin", "Company"]
+
+
+def load_costs() -> list[dict]:
+    try:
+        return json.loads(COSTS_PATH.read_text()).get("items") or []
+    except Exception:
+        return []
+
+
+def profit_view(history: dict, manual_ads: dict, days: int = PROFIT_DAYS) -> dict | None:
+    ledger = list((history.get("ledger") or {}).values())
+    app_days = (history.get("appstore") or {}).get("days", {})
+    if not ledger and not app_days:
+        return None
+    today = dt.date.today()
+    now = dt.datetime.now().timestamp()
+    lo_ts, lo = now - days * 86400, (today - dt.timedelta(days=days)).isoformat()
+    lines = {k: {"revenue": 0.0, "ads": 0.0, "api": 0.0, "hosting": 0.0, "fixed": 0.0, "orders": 0}
+             for k in PROFIT_LINES}
+    gaps: list[str] = []
+
+    for r in ledger:
+        if r["ts"] >= lo_ts:
+            g = product_group(r)
+            g = "GlobePin" if g == "GlobePin Pro" else g
+            lines[g]["revenue"] += _row_net(r) / 100
+            lines[g]["orders"] += 1
+    gp = lines["GlobePin"]
+    gp["revenue"] += sum((v.get("proceeds") or {}).get("USD", 0.0) for d, v in app_days.items() if d >= lo)
+    gp["orders"] += int(sum(v.get("proUnits", 0) for d, v in app_days.items() if d >= lo))
+    admob = (history.get("admob") or {}).get("globepin") or {}
+    if admob.get("earnings") is not None and not admob.get("error"):
+        gp["revenue"] += admob["earnings"] * days / (admob.get("days") or days)
+    else:
+        gaps.append("AdMob earnings (no reading)")
+
+    stale_before = (today - dt.timedelta(days=2)).isoformat()
+    asa = (manual_ads or {}).get("appleSearchAds") or {}
+    if asa.get("campaigns"):
+        gp["ads"] += sum(c.get("spend", 0.0) for c in asa["campaigns"]) * days / 7
+        if (asa.get("asOf") or "") < stale_before:
+            gaps.append(f"Apple Search Ads reading is from {asa.get('asOf')}")
+    gads = (manual_ads or {}).get("googleAdsModerntex") or {}
+    if gads:
+        lines["ModernTex"]["ads"] += gads.get("spend", 0.0) * days / 7
+        if (gads.get("asOf") or "") < stale_before:
+            gaps.append(f"Google Ads reading is from {gads.get('asOf')}")
+
+    usage = history.get("apiUsage")
+    if usage is None:
+        gaps.append("Claude API cost per paid job (usage ledger unreachable)")
+    jobs = 0
+    for u in usage or []:
+        if u["ts"] >= lo_ts:
+            g = product_group({"product": u.get("product_key", ""), "site": "purplelink"})
+            lines[g]["api"] += u.get("cost_usd") or 0.0
+            jobs += 1
+
+    mc = history.get("modalCosts") or {}
+    if not mc.get("byAppDay"):
+        gaps.append("Modal compute (billing report unreachable)")
+    for app, by_day in (mc.get("byAppDay") or {}).items():
+        lines[MODAL_APP_LINES.get(app, "Company")]["hosting"] += sum(v for d, v in by_day.items() if d >= lo)
+
+    items = load_costs()
+    for it in items:
+        per_day = (it.get("usdPerMonth", 0) * 12 + it.get("usdPerYear", 0)) / 365
+        line = it.get("line") if it.get("line") in lines else "Company"
+        lines[line]["fixed"] += per_day * days
+    gaps.append("Claude API calls outside paid jobs (the daily digest's curation)")
+    if not items:
+        gaps.append(f"fixed costs (none entered in {COSTS_PATH})")
+
+    rows = []
+    for k in PROFIT_LINES:
+        v = lines[k]
+        cost = v["ads"] + v["api"] + v["hosting"] + v["fixed"]
+        if abs(v["revenue"]) < 0.005 and cost < 0.005:
+            continue
+        rows.append({"line": k, **v, "cost": cost, "profit": v["revenue"] - cost,
+                     "margin": ((v["revenue"] - cost) / v["revenue"] * 100) if v["revenue"] else None})
+    tot = {f: sum(r[f] for r in rows) for f in ("revenue", "ads", "api", "hosting", "fixed", "cost", "profit")}
+    return {"days": days, "rows": rows, "total": tot, "jobs": jobs, "gaps": gaps,
+            "fixedItems": [it.get("name", "?") for it in items]}
+
+
+def classify_touch(t: dict | None) -> str:
+    """One arrival (from analytics.js via Stripe metadata) -> a channel name."""
+    if not t:
+        return "Direct / no record"
+    s, m, r = (t.get("s") or "").lower(), (t.get("m") or "").lower(), (t.get("r") or "").lower()
+    if t.get("g") or (s in ("google", "adwords") and m in ("cpc", "ppc", "paid")):
+        return "Google Ads"
+    if s.startswith("from:") or s.startswith("ref:") or s in ("vitae", "moderntex"):
+        return "Own apps & links"
+    if s in ("email", "newsletter", "rss"):
+        return "Email & RSS"
+    probe = r or s
+    if any(a in probe for a in AI_REFERRERS) or "chatgpt" in s:
+        return "AI assistants"
+    if "reddit" in probe:
+        return "Reddit"
+    if any(x in probe for x in SOCIAL_REFERRERS):
+        return "Social"
+    if any(x in probe for x in SEARCH_REFERRERS):
+        return "Search"
+    return "Other sites" if r else f"Campaign: {s}"
+
+
+def channel_revenue(history: dict) -> dict | None:
+    ledger = sorted((history.get("ledger") or {}).values(), key=lambda r: r["ts"])
+    tagged = [r for r in ledger if r.get("attr")]
+    if not ledger:
+        return None
+    since = dt.date.fromtimestamp(tagged[0]["ts"]).isoformat() if tagged else None
+    window = [r for r in ledger if tagged and r["ts"] >= tagged[0]["ts"]]
+    table: dict[str, dict] = {}
+    for r in window:
+        a = r.get("attr") or {}
+        for which in ("first", "last"):
+            ch = classify_touch(a.get(which) or (a.get("first") if which == "last" else None))
+            row = table.setdefault(ch, {"first": 0, "firstNet": 0.0, "last": 0, "lastNet": 0.0})
+            row[which] += 1
+            row[which + "Net"] += _row_net(r) / 100
+    rows = sorted(({"channel": k, **v} for k, v in table.items()), key=lambda x: (-x["lastNet"], -x["firstNet"]))
+    return {"since": since, "orders": len(window), "tagged": len(tagged),
+            "untaggedBefore": len(ledger) - len(window), "rows": rows}
+
+
+def _usd(v: float) -> str:
+    v = round(v, 2) + 0.0  # no "-$0.00" for a fraction of a cent
+    return f"-${-v:,.2f}" if v < 0 else f"${v:,.2f}"
+
+
+def profit_block(p: dict | None, ch: dict | None) -> str:
+    if not p:
+        return ""
+    def cell(v: float) -> str:
+        return "<td class='num'>—</td>" if abs(v) < 0.005 else f"<td class='num'>{_usd(v)}</td>"
+    body = "".join(
+        f"<tr><td>{html.escape(r['line'])}</td><td class='num'>{_usd(r['revenue'])}</td>"
+        f"{cell(r['ads'])}{cell(r['api'])}{cell(r['hosting'])}{cell(r['fixed'])}"
+        f"<td class='num {'down' if r['profit'] < 0 else 'up'}'>{_usd(r['profit'])}</td>"
+        f"<td class='num'>{'—' if r['margin'] is None else format(r['margin'], '.0f') + '%'}</td></tr>"
+        for r in p["rows"])
+    t = p["total"]
+    body += (f"<tr class='total'><td>All lines</td><td class='num'>{_usd(t['revenue'])}</td>"
+             f"{cell(t['ads'])}{cell(t['api'])}{cell(t['hosting'])}{cell(t['fixed'])}"
+             f"<td class='num {'down' if t['profit'] < 0 else 'up'}'>{_usd(t['profit'])}</td><td></td></tr>")
+    gaps = "; ".join(html.escape(g) for g in p["gaps"])
+    fixed = (f" Fixed costs entered: {html.escape(', '.join(p['fixedItems']))}." if p["fixedItems"] else "")
+
+    ch_html = ""
+    if ch:
+        if ch["rows"]:
+            ch_rows = "".join(
+                f"<tr><td>{html.escape(r['channel'])}</td><td class='num'>{r['first']}</td>"
+                f"<td class='num'>{_usd(r['firstNet'])}</td><td class='num'>{r['last']}</td>"
+                f"<td class='num'>{_usd(r['lastNet'])}</td></tr>" for r in ch["rows"])
+            ch_html = f"""
+  <h3>Revenue by channel · since {ch['since']}</h3>
+  <table><thead><tr><th>Channel</th><th class='num'>Orders, first touch</th><th class='num'>Net</th>
+    <th class='num'>Orders, last touch</th><th class='num'>Net</th></tr></thead><tbody>{ch_rows}</tbody></table>
+  <p class="sales-foot">First touch is how the buyer first found the site; last touch is the most
+    recent arrival from somewhere else before buying. {ch['tagged']} of {ch['orders']} orders since
+    {ch['since']} carry a record; the rest came from browsers with Do Not Track or blocked storage.
+    {ch['untaggedBefore']} earlier orders predate channel tracking.</p>"""
+        else:
+            ch_html = ("<h3>Revenue by channel</h3><p class='sales-foot'>Channel tracking started "
+                       "2026-09-28. The first order placed after that shows here with where the buyer came from.</p>")
+    return f"""
+<section class="sales metrics">
+  <h2>Profit by product · last {p['days']} days</h2>
+  <table><thead><tr><th>Line</th><th class='num'>Net revenue</th><th class='num'>Ads</th>
+    <th class='num'>Claude API</th><th class='num'>Hosting</th><th class='num'>Fixed</th>
+    <th class='num'>Profit</th><th class='num'>Margin</th></tr></thead><tbody>{body}</tbody></table>
+  <p class="sales-foot">Net revenue is after Stripe's fee, refunds and Apple's cut; GlobePin adds
+    AdMob earnings. Claude API is the metered cost of {p['jobs']} paid job(s); hosting is Modal's
+    billing report per app; fixed costs are spread evenly per day.{fixed} Not measured: {gaps}.</p>
+  {ch_html}
+</section>"""
+
+
+def print_profit(p: dict | None, ch: dict | None) -> None:
+    if not p:
+        return
+    t = p["total"]
+    print(f"\n  Profit, last {p['days']}d — {_usd(t['revenue'])} net revenue − {_usd(t['cost'])} costs "
+          f"(ads {_usd(t['ads'])}, Claude API {_usd(t['api'])}, hosting {_usd(t['hosting'])}, "
+          f"fixed {_usd(t['fixed'])}) = {_usd(t['profit'])}")
+    for r in p["rows"]:
+        print(f"   {r['line']:<22} {_usd(r['revenue']):>9} − {_usd(r['cost']):>8} = {_usd(r['profit']):>9}")
+    print(f"   Not measured: {'; '.join(p['gaps'])}")
+    if ch and ch["rows"]:
+        print(f"   By channel since {ch['since']} (last touch): "
+              + ", ".join(f"{r['channel']} {r['last']} ({_usd(r['lastNet'])})" for r in ch["rows"] if r["last"]))
+
+
 # ---------------------------------------------------------------- combined revenue
 #
 # Pulls together every revenue source into one monthly view: Sales (Stripe,
@@ -3179,7 +3615,8 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6) 
 def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None,
            sales: dict | None = None, appstore: dict | None = None,
            manual_ads: dict | None = None, chrome_web_store: dict | None = None,
-           admob: dict | None = None, metrics: dict | None = None) -> str:
+           admob: dict | None = None, metrics: dict | None = None,
+           profit: dict | None = None, channels: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -3228,6 +3665,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
   <p class="stamp">Updated {html.escape(generated)} · refreshes daily at 9:00am</p>
 </header>
 {metrics_block(metrics)}
+{profit_block(profit, channels)}
 {sales_block(sales)}
 {appstore_block(appstore)}
 {chrome_web_store_block(chrome_web_store)}
@@ -3411,6 +3849,35 @@ def main() -> int:
                 print(f"  ok AdMob (GlobePin): ${admob['earnings']:.2f} earned in {admob['days']}d, "
                       f"{admob['impressions']:,} impressions")
 
+        # Costs for the profit view: Modal compute per app, and the Claude API
+        # cost of each paid job from the backend's usage ledger.
+        mc = fetch_modal_costs()
+        if mc and not mc.get("error"):
+            history["modalCosts"] = mc
+            wk = (dt.date.today() - dt.timedelta(days=PROFIT_DAYS)).isoformat()
+            print(f"  ok Modal compute: ${sum(v for a in mc['byAppDay'].values() for d, v in a.items() if d >= wk):,.2f} in 7d")
+        elif mc:
+            print(f"  ! Modal billing: {mc['error']}", file=sys.stderr)
+        usage = fetch_api_usage()
+        if usage is not None:
+            history["apiUsage"] = usage
+            print(f"  ok Claude API usage ledger: {len(usage)} paid job(s), "
+                  f"${sum(u.get('cost_usd') or 0 for u in usage):,.2f} all time")
+
+        # Apple Search Ads API. When configured it replaces the manual Chrome
+        # reading: same manual-ads.json key, so every card reads it unchanged.
+        try:
+            asa = fetch_asa_api(cfg)
+        except Exception as exc:  # noqa: BLE001
+            asa = {"error": str(exc)[:160]}
+        if asa and asa.get("error"):
+            print(f"  ! Apple Search Ads API: {asa['error']}", file=sys.stderr)
+        elif asa and asa.get("campaigns"):
+            record_asa_api(asa)
+            history["asaDaily"] = {**(history.get("asaDaily") or {}), **asa["daily"]}
+            c0 = asa["campaigns"][0]
+            print(f"  ok Apple Search Ads API: ${c0['spend']:,.2f} spend, {c0['installs']} installs in 7d")
+
         # Chrome Web Store (Scholar Utility Belt): no auth, so always attempted.
         try:
             cws = fetch_chrome_web_store(history.get("chromeWebStore"))
@@ -3440,12 +3907,16 @@ def main() -> int:
     chrome_web_store = history.get("chromeWebStore")
     manual_ads = load_manual_ads()
     metrics = revenue_metrics(history, summaries, manual_ads)
+    profit = profit_view(history, manual_ads)
+    channels = channel_revenue(history)
     DASHBOARD_PATH.write_text(
         render(summaries, obs, generated, min(firsts) if firsts else None,
-               sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics))
+               sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics,
+               profit, channels))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
+    print_profit(profit, channels)
     if sales:
         w, a = sales.get("window", {}), sales.get("allTime", {})
         print(f"\n  Sales — {money(w.get('gross', 0))} in the last "
