@@ -4131,6 +4131,8 @@ main input:focus-visible {
 .specs-table a { color: var(--purple); }
 .specs-more { margin-top: 18px; color: var(--muted); }
 .specs-more a { color: var(--purple); font-weight: 600; }
+.specs-table caption a { color: var(--purple); }
+.specs-table thead th { width: auto; }
 
 @media (max-width: 640px) {
   .specs-table th { white-space: normal; width: 40%; }

@@ -111,6 +111,11 @@
             },
             {
               "@type": "Question",
+              "name": "Can I move a project from Overleaf?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Download the project as a zip, or clone it with Overleaf's Git integration, and open the folder in ModernTex. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf at any time." }
+            },
+            {
+              "@type": "Question",
               "name": "Why not just use a free editor like TeXstudio?",
               "acceptedAnswer": { "@type": "Answer", "text": "TeXstudio is free, cross-platform, and already parses compile errors into a readable list, so it's a legitimate choice, especially if you also work on Windows or Linux. ModernTex is narrower on purpose: Mac only, built around the manuscript workflow specifically. Three things TeXstudio doesn't do: BibTeX autocomplete that searches your whole .bib by author or title rather than just the keys already cited in the file, submission-readiness checks for what journals actually reject on, and an anonymized export for double-blind review. If none of those matter to you, TeXstudio is a perfectly good free option." }
             },
@@ -324,6 +329,26 @@
       <p class="specs-more">Submitting soon? Work through the free <a href="/tools/submission-checklist/">submission checklist</a>, or see <a href="/tools/paper-review/sample/">a sample Paper Review report</a> ($9, back in minutes).</p>
     </section>
 
+    <section class="specs-section" id="vs-overleaf" aria-labelledby="vs-overleaf-h">
+      <p class="eyebrow">Comparison</p>
+      <h2 id="vs-overleaf-h">ModernTex compared with Overleaf</h2>
+      <table class="compare-table specs-table">
+        <caption>Overleaf pricing is from its <a href="https://www.overleaf.com/user/subscription/plans" rel="noopener">plans page</a>, checked September 29, 2026.</caption>
+        <thead>
+          <tr><th scope="col"><span class="visually-hidden">Topic</span></th><th scope="col">ModernTex</th><th scope="col">Overleaf</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Price</th><td>$10 once, after a free 7-day trial. No subscription.</td><td>Standard plan: $199 per year. A free plan is also offered.</td></tr>
+          <tr><th scope="row">Compiling</th><td>On your Mac, so there is no server compile timeout.</td><td>On Overleaf's servers. The free plan has a compile timeout.</td></tr>
+          <tr><th scope="row">Account</th><td>None.</td><td>Required.</td></tr>
+          <tr><th scope="row">Where it runs</th><td>Native macOS app. Files are ordinary .tex and .bib files in a folder on your disk.</td><td>In the browser.</td></tr>
+          <tr><th scope="row">Co-authors</th><td>No real-time co-editing. Get Changes and Send Changes sync with a co-author.</td><td>Real-time collaboration in the browser.</td></tr>
+          <tr><th scope="row">Manuscript tools</th><td>Multi-file navigation, synchronized PDF preview, plain-language errors, submission-readiness checks, revision snapshots, BibTeX completion.</td><td>See Overleaf's own feature list.</td></tr>
+        </tbody>
+      </table>
+      <p class="specs-more"><strong>Prefer Overleaf</strong> when several people edit the same draft at the same time, or when you work on Windows, Linux or an iPad. <strong>Prefer ModernTex</strong> when you write mostly alone on a Mac and want no subscription, no account and no compile limit. Moving over is a zip download or a Git clone; see <a href="#faq">the FAQ</a>.</p>
+    </section>
+
     <section class="waitlist-section" id="requirements">
       <p class="eyebrow">Before you install</p>
       <h2>What ModernTex needs.</h2>
@@ -366,6 +391,10 @@
           <summary>How is ModernTex different from TeXShop or Overleaf?</summary>
           <div class="faq-body">ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers.</div>
           <div class="faq-body">Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration, and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing; for a draft several people type in at once, keep Overleaf. <a href="/guides/best-mac-latex-editors/">See how the best LaTeX editors for Mac compare</a>, or read <a href="/guides/overleaf-alternative-mac/">what changes when you move from Overleaf to a Mac editor</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I move a project from Overleaf?</summary>
+          <div class="faq-body">Yes. Download the project as a zip, or clone it with Overleaf's Git integration, and open the folder in ModernTex. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf at any time. <a href="/guides/overleaf-alternative-mac/">What changes when you write locally</a></div>
         </details>
         <details class="faq-item">
           <summary>Why not just use a free editor like TeXstudio?</summary>

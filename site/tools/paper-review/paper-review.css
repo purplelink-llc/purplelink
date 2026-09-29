@@ -96,6 +96,9 @@
    FAQ; this repeats a compressed version where it will actually be read. */
 .pr-trust-line { font-size: 0.85rem; color: var(--muted); margin: 0; max-width: 56ch; }
 .pr-trust-line strong { color: var(--ink); font-weight: 600; }
+.pr-handling-list { margin: 12px 0 0; padding-left: 1.2rem; color: var(--muted); }
+.pr-handling-list li { margin: 0 0 10px; }
+.pr-handling-list strong { color: var(--ink); font-weight: 600; }
 
 /* Sentence-case price kicker — replaces the tracked-uppercase .eyebrow
    pattern (banned: see PRODUCT.md anti-references) while still surfacing

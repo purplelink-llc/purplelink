@@ -298,6 +298,16 @@
         </form>
       </section>
 
+      <section class="tool-faq" id="data-handling" aria-labelledby="data-handling-h">
+        <h2 id="data-handling-h">How your manuscript is handled</h2>
+        <ul class="pr-handling-list">
+          <li><strong>Analysis.</strong> The PDF is read in memory. To check figures and tables, pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.</li>
+          <li><strong>Anthropic.</strong> The text and page images are sent to Anthropic's Claude API. Anthropic keeps API inputs for up to 30 days for abuse monitoring and does not train on them.</li>
+          <li><strong>Deletion.</strong> Purplelink deletes the manuscript and the review 30 minutes after you first open the result, or after 24 hours if you never open it. Save the result before closing the tab.</li>
+          <li><strong>What we keep.</strong> A permanent cost record per job: product, status, price, token counts and model names. It contains no manuscript text.</li>
+        </ul>
+      </section>
+
       <section class="tool-faq">
         <h2>Frequently asked questions</h2>
         <details><summary>What does the review include?</summary><div class="faq-body">Four layers in sequence: a Claude Vision pass over your figures and tables, a live CrossRef cross-check of every reference, an adversarial four-persona reviewer debate (Methodology Critic, Statistical Skeptic, Data Integrity Officer, Editor-in-Chief) with consensus filtering, and a synthesis pass producing critical blind spots, data-to-claim contradictions, a prioritised rectification checklist, and a true-novelty estimate.</div></details>
