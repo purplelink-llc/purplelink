@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_VERSION = "2023-06-01"
-DIGEST_MODEL = "claude-sonnet-4-6"
+DIGEST_MODEL = "claude-sonnet-5-5"
+DIGEST_EFFORT = "medium"
 
 
 async def anthropic_message(
@@ -27,7 +28,6 @@ async def anthropic_message(
     user_content: list[dict],
     max_tokens: int,
     model: str = DIGEST_MODEL,
-    temperature: float = 0.2,
 ) -> str:
     """Call Anthropic /v1/messages and return assistant text.
 
@@ -40,7 +40,7 @@ async def anthropic_message(
     body = {
         "model": model,
         "max_tokens": max_tokens,
-        "temperature": temperature,
+        "output_config": {"effort": DIGEST_EFFORT},
         "system": system,
         "messages": [{"role": "user", "content": user_content}],
     }
@@ -72,7 +72,8 @@ async def anthropic_message(
                 continue
         resp.raise_for_status()
         data = resp.json()
-        return data["content"][0]["text"]
+        # Sonnet 5.5 always thinks; skip any thinking blocks ahead of the text.
+        return next(b["text"] for b in data["content"] if b.get("type") == "text")
     raise RuntimeError("anthropic_message: exhausted retries") from last_exc
 
 

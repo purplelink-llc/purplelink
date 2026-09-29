@@ -193,7 +193,7 @@ async def curate(client, items: list[RawItem]) -> Optional[DigestData]:
         client,
         system=_SYSTEM,
         user_content=[{"type": "text", "text": json.dumps(item_list)}],
-        max_tokens=4096,
+        max_tokens=8192,  # thinking tokens count against this
     )
 
     try:
