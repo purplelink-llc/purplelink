@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #94 — September 29, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-09-29.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-29.html</guid>
+      <pubDate>Tue, 29 Sep 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>OpenAI shelves GPT-6.1 Astra after alignment failures, a ShinyHunters arrest triggers escalation, and the MCP Python SDK leaks OAuth credentials — plus Carbonato botnet deploys AI agents on Docker hosts.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #93 — September 28, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-09-28.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-09-28.html</guid>
