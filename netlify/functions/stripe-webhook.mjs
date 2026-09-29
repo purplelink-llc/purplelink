@@ -79,6 +79,7 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["moderntex",         { name: "ModernTex for macOS",               successPath: "/moderntex/success/" }],
   ["sheet-submission",  { name: "the Journal Submission & R&R Tracker", successPath: "/sheets/success/" }],
   ["sheet-tenure",      { name: "the Tenure & Promotion Dossier Tracker", successPath: "/sheets/success/" }],
+  ["sheet-jobmarket",   { name: "the Academic Job Market Tracker", successPath: "/sheets/success/" }],
   ["sheet-bundle",      { name: "the Researcher Spreadsheet Bundle",  successPath: "/sheets/success/" }],
 ]);
 

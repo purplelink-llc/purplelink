@@ -2182,6 +2182,7 @@ PRODUCT_LABELS = {
     "vitae-plus-monthly": "Vitae Plus (monthly)", "vitae-plus-annual": "Vitae Plus (annual)",
     "digest-monthly": "Digest (monthly)", "digest-annual": "Digest (annual)",
     "sheet-submission": "Submission tracker (sheet)", "sheet-tenure": "Tenure tracker (sheet)",
+    "sheet-jobmarket": "Job market tracker (sheet)",
     "sheet-bundle": "Researcher sheet bundle", "live-scholar": "Live Citation Dashboard",
     "live-funding": "Live Funding Feed", "tracker-sheet": "GLP-1 tracker (sheet)",
 }

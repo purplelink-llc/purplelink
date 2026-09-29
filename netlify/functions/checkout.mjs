@@ -131,6 +131,7 @@ const PRODUCT_CATALOG = {
   // Delivery: kit-download.mjs streams the .xlsx from the kit-files store.
   "sheet-submission": { amount: 1200, name: "Journal Submission & R&R Tracker (spreadsheet)", successPath: "/sheets/success/" },
   "sheet-tenure":     { amount: 1200, name: "Tenure & Promotion Dossier Tracker (spreadsheet)", successPath: "/sheets/success/" },
+  "sheet-jobmarket":  { amount: 900,  name: "Academic Job Market Tracker (spreadsheet)", successPath: "/sheets/success/" },
   "sheet-bundle":     { amount: 2900, name: "Researcher Spreadsheet Bundle", successPath: "/sheets/success/" },
   // Live-data sheets: yearly subscriptions whose feed live-sheet.mjs serves as
   // CSV for Google Sheets' IMPORTDATA or Excel's From Web. The setup page turns
