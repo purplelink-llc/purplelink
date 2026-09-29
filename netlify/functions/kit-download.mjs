@@ -78,6 +78,18 @@ const FILES = {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     grants: new Set(["sheet-jobmarket"]),
   },
+  "sheet-grantpipeline": {
+    name: "grant-pipeline-tracker.xlsx",
+    label: "Grant Pipeline & PI Effort Tracker (Excel / Google Sheets)",
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    grants: new Set(["sheet-grantpipeline"]),
+  },
+  "sheet-reviewmatrix": {
+    name: "systematic-review-screening-matrix.xlsx",
+    label: "Systematic Review Screening Matrix (Excel / Google Sheets)",
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    grants: new Set(["sheet-reviewmatrix"]),
+  },
   "sheet-grant-budget": {
     name: "grant-budget-builder.xlsx",
     label: "Grant Budget Builder for NSF and NIH (Excel / Google Sheets)",

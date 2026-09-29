@@ -80,6 +80,8 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["sheet-submission",  { name: "the Journal Submission & R&R Tracker", successPath: "/sheets/success/" }],
   ["sheet-tenure",      { name: "the Tenure & Promotion Dossier Tracker", successPath: "/sheets/success/" }],
   ["sheet-jobmarket",   { name: "the Academic Job Market Tracker", successPath: "/sheets/success/" }],
+  ["sheet-grantpipeline", { name: "the Grant Pipeline & PI Effort Tracker", successPath: "/sheets/success/" }],
+  ["sheet-reviewmatrix", { name: "the Systematic Review Screening Matrix", successPath: "/sheets/success/" }],
   ["sheet-bundle",      { name: "the Researcher Spreadsheet Bundle",  successPath: "/sheets/success/" }],
 ]);
 

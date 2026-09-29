@@ -43,7 +43,7 @@ const SITE_OF_PRODUCT = new Map(Object.entries({
   "kit-clip": "purplelink", "moderntex": "purplelink",
   "vitae-plus-monthly": "purplelink", "vitae-plus-annual": "purplelink",
   "digest-monthly": "purplelink", "digest-annual": "purplelink",
-  "sheet-submission": "purplelink", "sheet-tenure": "purplelink", "sheet-jobmarket": "purplelink", "sheet-bundle": "purplelink",
+  "sheet-submission": "purplelink", "sheet-tenure": "purplelink", "sheet-jobmarket": "purplelink", "sheet-grantpipeline": "purplelink", "sheet-reviewmatrix": "purplelink", "sheet-bundle": "purplelink",
   "live-scholar": "purplelink", "live-funding": "purplelink",
   "tracker-sheet": "muscleonglp",
 

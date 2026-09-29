@@ -573,6 +573,18 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/sheets/grant-pipeline-tracker/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/sheets/review-screening-matrix/</loc>
+    <lastmod>2026-09-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/sheets/tenure-tracker/</loc>
     <lastmod>2026-09-28</lastmod>
     <changefreq>monthly</changefreq>
