@@ -42,7 +42,7 @@ import urllib.request
 from pathlib import Path
 
 CONFIG_PATH = Path.home() / ".config" / "purplelink" / "traffic.env"
-OUT_DIR = Path.home() / ".purplelink" / "traffic"
+OUT_DIR = Path(os.environ.get("PURPLELINK_TRAFFIC_DIR") or Path.home() / ".purplelink" / "traffic")
 HISTORY_PATH = OUT_DIR / "history.json"
 DASHBOARD_PATH = OUT_DIR / "dashboard.html"
 
@@ -2184,7 +2184,8 @@ PRODUCT_LABELS = {
     "sheet-submission": "Submission tracker (sheet)", "sheet-tenure": "Tenure tracker (sheet)",
     "sheet-jobmarket": "Job market tracker (sheet)",
     "sheet-grantpipeline": "Grant pipeline tracker (sheet)", "sheet-reviewmatrix": "Screening matrix (sheet)",
-    "sheet-bundle": "Researcher sheet bundle", "live-scholar": "Live Citation Dashboard",
+    "sheet-bundle": "Researcher sheet bundle", "sheet-other": "Spreadsheet (unmatched listing)",
+    "photo-print": "Photo print (Etsy)", "live-scholar": "Live Citation Dashboard",
     "live-funding": "Live Funding Feed", "tracker-sheet": "GLP-1 tracker (sheet)",
 }
 
@@ -2691,6 +2692,7 @@ PRODUCT_GROUPS = [
     ("Kits", "oklch(80% 0.13 85)"),
     ("Spreadsheets", "oklch(70% 0.12 280)"),
     ("Subscriptions", "oklch(76% 0.13 165)"),
+    ("Photo prints (Etsy)", "oklch(74% 0.10 20)"),
     ("MuscleOnGLP", "oklch(72% 0.15 35)"),
     ("GlobePin Pro", "var(--good)"),
 ]
@@ -2698,6 +2700,8 @@ PRODUCT_GROUPS = [
 
 def product_group(row: dict) -> str:
     product, site = row.get("product", ""), row.get("site", "")
+    if product == "photo-print":
+        return "Photo prints (Etsy)"
     if site == "muscleonglp":
         return "MuscleOnGLP"
     if product == "moderntex":
@@ -2743,6 +2747,308 @@ def merge_ledger(history: dict, sales: dict) -> list[dict] | None:
     return events
 
 
+# ---------------------------------------------------------------- marketplaces
+#
+# Etsy (PurplelinkDesigns), Gumroad (purplelink.gumroad.com) and Payhip sell the
+# spreadsheet products and, on Etsy, photo prints. None of it passes through
+# this Stripe account, so it needs its own readers:
+#   * Gumroad: fetch_gumroad() below, unattended, personal access token.
+#   * Etsy, Payhip (and Gumroad without a token): record_marketplaces.py reads the
+#     signed-in automation Chrome and writes MARKETPLACES_PATH; run.sh's copy of
+#     this script only merges that file.
+# Every order becomes a ledger row: id "<marketplace>:<id>", kind "order".
+#
+# Fee schedules, checked 2026-09-29 (used only when the page/API gives no fee):
+#   Etsy    6.5% transaction + 3% + $0.25 payment processing (US), $0.20 per listing
+#           https://www.etsy.com/legal/fees/  (Etsy returns 403 to scripts, so the
+#           figures are Etsy's published US schedule, not re-fetched today)
+#   Gumroad 10% + $0.50 on direct sales, 30% on Discover; processing is included
+#           https://gumroad.com/pricing  (the API's gumroad_fee is used when present)
+#   Payhip  Free plan 5% transaction fee; PayPal/Stripe charge their standard rates on top
+#           https://payhip.com/pricing  (processor assumed Stripe 2.9% + $0.30)
+# Listing fees are per listing, not per order, so they are shown as a shop-level
+# note and never spread over orders.
+#
+# Double counting: sales.mjs reads only this account's Checkout Sessions and
+# subscription invoices (product metadata set by checkout.mjs). Gumroad is merchant
+# of record and Payhip/Etsy settle in their own systems, so their sales never
+# appear in that ledger. As a guard anyway, a marketplace row is dropped when a
+# Stripe ledger row has the same product, the same gross and a timestamp within
+# MARKETPLACE_DEDUPE_SECS.
+
+MARKETPLACES_PATH = OUT_DIR / "marketplaces.json"
+GUMROAD_TOKEN_ENV = "GUMROAD_TOKEN"
+GUMROAD_API = "https://api.gumroad.com/v2/sales"
+MARKETPLACE_LABELS = {"etsy": "Etsy", "gumroad": "Gumroad", "payhip": "Payhip"}
+MARKETPLACE_STALE_DAYS = 2
+MARKETPLACE_DEDUPE_SECS = 900
+MARKETPLACE_EVENT_HOURS = 48
+ETSY_SHEET_LISTING_FEES = 1.40   # 7 spreadsheet listings x $0.20, one time (2026-09-29)
+
+# Order matters: the bundle title also names its parts.
+SHEET_KEYWORDS = [
+    ("bundle", "sheet-bundle", "purplelink"),
+    ("glp-1", "tracker-sheet", "muscleonglp"), ("glp1", "tracker-sheet", "muscleonglp"),
+    ("grant pipeline", "sheet-grantpipeline", "purplelink"),
+    ("job market", "sheet-jobmarket", "purplelink"),
+    ("screening matrix", "sheet-reviewmatrix", "purplelink"),
+    ("systematic review", "sheet-reviewmatrix", "purplelink"),
+    ("submission tracker", "sheet-submission", "purplelink"),
+    ("tenure", "sheet-tenure", "purplelink"),
+]
+
+
+def marketplace_product(market: str, title: str) -> tuple[str, str]:
+    """Listing title -> (product key, site). An unmatched Etsy title is taken to be
+    a photo print (the shop's other stock); on Gumroad and Payhip everything for
+    sale is a sheet, so an unmatched title stays in Spreadsheets."""
+    t = (title or "").lower()
+    for kw, product, site in SHEET_KEYWORDS:
+        if kw in t:
+            return product, site
+    if market == "etsy":
+        return "photo-print", "purplelink"
+    return "sheet-other", "purplelink"
+
+
+def estimate_fee(market: str, gross: int) -> int:
+    """Cents of fees from the published schedule (see the comment above)."""
+    if market == "etsy":
+        return round(gross * 0.065 + gross * 0.03 + 25)
+    if market == "gumroad":
+        return round(gross * 0.10 + 50)
+    return round(gross * 0.05 + gross * 0.029 + 30)
+
+
+def marketplace_row(market: str, o: dict) -> dict | None:
+    """One stored/API order -> a ledger row, or None when it is not a usable sale."""
+    try:
+        gross, ts = int(o["gross"]), float(o["ts"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    if gross <= 0:
+        return None
+    product, site = marketplace_product(market, o.get("title", ""))
+    fee = o.get("fee")
+    estimated = fee is None
+    if estimated:
+        fee = estimate_fee(market, gross)
+    return {"id": f"{market}:{o['id']}", "kind": "order", "product": product, "site": site,
+            "gross": gross, "fee": int(fee), "net": gross - int(fee), "feeEstimated": estimated,
+            "refunded": int(o.get("refunded") or 0), "ts": ts, "market": market,
+            "attr": {"first": {"s": market}}}
+
+
+def load_marketplaces() -> dict:
+    try:
+        d = json.loads(MARKETPLACES_PATH.read_text())
+        return d if isinstance(d, dict) else {}
+    except Exception:
+        return {}
+
+
+def parse_gumroad_sale(s: dict) -> dict | None:
+    """API sale -> the stored order shape (no buyer fields). None for a free or
+    non-USD sale, which cannot be summed with the rest."""
+    price = s.get("price")
+    if not isinstance(price, (int, float)) or price <= 0 or (s.get("currency") or "usd").lower() != "usd":
+        return None
+    try:
+        ts = dt.datetime.fromisoformat(str(s["created_at"]).replace("Z", "+00:00")).timestamp()
+    except (KeyError, ValueError):
+        return None
+    refunded = int(s.get("amount_refunded_cents") or 0)
+    if (s.get("refunded") or s.get("chargedback")) and not refunded:
+        refunded = int(price)
+    fee = s.get("gumroad_fee")
+    return {"id": str(s["id"]), "ts": ts, "title": s.get("product_name", ""), "gross": int(price),
+            "fee": int(fee) if isinstance(fee, (int, float)) else None, "refunded": refunded}
+
+
+def fetch_gumroad(cfg: dict[str, str], since_days: int | None = None) -> dict | None:
+    """Sales from the Gumroad API (GET /v2/sales, scope view_sales).
+
+    Docs: https://gumroad.com/api . Each sale carries id, created_at, product_name,
+    price (cents), gumroad_fee (cents, processing included), refunded,
+    partially_refunded, amount_refunded_cents, chargedback, currency. Pages come
+    back with next_page_key, passed on as page_key. Buyer emails are never read
+    into the result. None when there is no token, {"error": ...} on failure.
+    """
+    token = cfg.get(GUMROAD_TOKEN_ENV)
+    if not token:
+        return None
+    params = {"access_token": token}
+    if since_days:
+        params["after"] = (dt.date.today() - dt.timedelta(days=since_days)).isoformat()
+    orders: list[dict] = []
+    skipped = 0
+    try:
+        for _page in range(60):
+            url = GUMROAD_API + "?" + urllib.parse.urlencode(params)
+            req = urllib.request.Request(url, headers={"User-Agent": "purplelink-traffic-dashboard"})
+            payload = None
+            for attempt in range(RETRIES):
+                if attempt:
+                    time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+                try:
+                    with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                        payload = json.loads(resp.read().decode("utf-8"))
+                    break
+                except urllib.error.HTTPError as exc:
+                    if exc.code < 500 and exc.code != 429:
+                        return {"error": f"HTTP {exc.code}" + (" (token rejected)" if exc.code in (401, 403) else "")}
+                except (OSError, http.client.HTTPException, json.JSONDecodeError):
+                    pass
+            if payload is None:
+                return {"error": "unreachable"}
+            if not payload.get("success", True):
+                return {"error": str(payload.get("message") or "API refused")[:80]}
+            for s in payload.get("sales", []):
+                parsed = parse_gumroad_sale(s)
+                if parsed:
+                    orders.append(parsed)
+                else:
+                    skipped += 1
+            key = payload.get("next_page_key")
+            if not key:
+                break
+            params["page_key"] = key
+    except Exception as exc:  # noqa: BLE001 -- never let this sink the run
+        return {"error": str(exc)[:80]}
+    return {"orders": orders, "skipped": skipped, "asOf": dt.datetime.now(dt.timezone.utc).isoformat()}
+
+
+def marketplace_step(history: dict, cfg: dict[str, str], fetch: bool) -> tuple[list[dict], bool]:
+    """Fold marketplaces.json and (when fetching) the Gumroad API into the ledger.
+    Returns (feed events, whether the ledger or meta changed)."""
+    archive = history.setdefault("ledger", {})
+    prior = history.get("marketplaceMeta") or {}
+    data = load_marketplaces()
+    incoming: dict[str, list[dict]] = {m: [] for m in MARKETPLACE_LABELS}
+    for o in (data.get("orders") or {}).values():
+        if o.get("site") in incoming:
+            incoming[o["site"]].append(o)
+    meta: dict[str, dict] = {}
+    for m in MARKETPLACE_LABELS:
+        meta[m] = {"asOf": (data.get("asOf") or {}).get(m), "status": (data.get("status") or {}).get(m)}
+        if not meta[m]["asOf"] and (prior.get(m) or {}).get("asOf"):
+            meta[m] = {"asOf": prior[m]["asOf"], "status": prior[m].get("status")}
+        if (prior.get(m) or {}).get("api"):
+            meta[m]["api"] = prior[m]["api"]
+
+    if fetch:
+        try:
+            g = fetch_gumroad(cfg, 90 if any(k.startswith("gumroad:") for k in archive) else None)
+        except Exception as exc:  # noqa: BLE001
+            g = {"error": str(exc)[:80]}
+        if g is None:
+            print(f"  ! Gumroad: no token ({GUMROAD_TOKEN_ENV} not set in {CONFIG_PATH})", file=sys.stderr)
+            meta["gumroad"]["api"] = "no token"
+        elif g.get("error"):
+            print(f"  ! Gumroad API: {g['error']}", file=sys.stderr)
+            meta["gumroad"]["api"] = g["error"]
+        else:
+            # The API is authoritative for Gumroad and supersedes a browser reading.
+            incoming["gumroad"] = g["orders"]
+            meta["gumroad"] = {"asOf": g["asOf"], "status": "ok", "api": "ok"}
+            print(f"  ok Gumroad API: {len(g['orders'])} paid sale(s) read")
+
+    stripe_rows = [r for r in archive.values() if not r.get("market")]
+    now = dt.datetime.now().timestamp()
+    events, changed = [], False
+    for m, orders in incoming.items():
+        for o in orders:
+            row = marketplace_row(m, o)
+            if not row:
+                continue
+            if any(sr["product"] == row["product"] and sr["gross"] == row["gross"]
+                   and abs(sr["ts"] - row["ts"]) <= MARKETPLACE_DEDUPE_SECS for sr in stripe_rows):
+                continue
+            old = archive.get(row["id"])
+            if old == row:
+                continue
+            if old is None and row["ts"] >= now - MARKETPLACE_EVENT_HOURS * 3600:
+                events.append({"kind": "purchase", "product": row["product"], "gross": row["gross"],
+                               "net": row["net"], "ts": row["ts"], "via": MARKETPLACE_LABELS[m]})
+            elif old is not None and row["refunded"] > (old.get("refunded") or 0):
+                events.append({"kind": "refund", "product": row["product"], "via": MARKETPLACE_LABELS[m],
+                               "gross": row["refunded"] - (old.get("refunded") or 0), "ts": row["ts"]})
+            archive[row["id"]] = row
+            changed = True
+    if meta != prior:
+        history["marketplaceMeta"] = meta
+        changed = True
+    return events, changed
+
+
+def marketplace_summary(history: dict, days: int = 30) -> dict:
+    """Per-marketplace figures for the sales panel, the terminal and the report."""
+    rows = [r for r in (history.get("ledger") or {}).values() if r.get("market")]
+    meta = history.get("marketplaceMeta") or {}
+    now = dt.datetime.now().timestamp()
+    today = dt.date.today()
+    out = {}
+    for m, label in MARKETPLACE_LABELS.items():
+        mine = [r for r in rows if r["market"] == m]
+        win = [r for r in mine if r["ts"] >= now - days * 86400]
+        info = meta.get(m) or {}
+        as_of = (info.get("asOf") or "")[:10]
+        age = _days_since(as_of, today) if as_of else None
+        status = info.get("status")
+        issues = []
+        if not as_of:
+            issues.append("never read")
+        elif age is not None and age > MARKETPLACE_STALE_DAYS:
+            issues.append(f"last read {as_of}, {age} days ago")
+        if status and status != "ok":
+            issues.append(status)
+        if m == "gumroad" and info.get("api") == "no token":
+            issues.append("no API token")
+        out[m] = {"label": label, "orders": len(mine), "windowOrders": len(win),
+                  "gross": sum(r["gross"] for r in mine), "windowGross": sum(r["gross"] for r in win),
+                  "windowNet": sum(_row_net(r) for r in win), "windowRefunded": sum(r["refunded"] for r in win),
+                  "estimated": sum(1 for r in win if r.get("feeEstimated")),
+                  "last": max((r["ts"] for r in mine), default=None), "asOf": as_of or None,
+                  "issues": issues, "days": days}
+    return out
+
+
+def marketplaces_block(summary: dict | None) -> str:
+    if not summary:
+        return ""
+    body = ""
+    for s in summary.values():
+        last = (dt.datetime.fromtimestamp(s["last"]).strftime("%Y-%m-%d") if s["last"] else "none yet")
+        reading = html.escape(s["asOf"] or "never") + (
+            f" <span class='who'>({html.escape('; '.join(s['issues']))})</span>" if s["issues"] else "")
+        body += (f"<tr><td>{html.escape(s['label'])}</td><td class='num'>{s['windowOrders']}</td>"
+                 f"<td class='num'>{money(s['windowGross'])}</td><td class='num'>{money(s['windowNet'])}</td>"
+                 f"<td class='num'>{s['orders']} / {money(s['gross'])}</td><td class='who'>{last}</td>"
+                 f"<td class='who'>{reading}</td></tr>")
+    est = sum(s["estimated"] for s in summary.values())
+    notes = [f"Net is after the marketplace's fees. {est} order(s) in the window use the published fee "
+             "schedule because the page did not show the fee; the rest use the reported fee.",
+             f"Shop-level Etsy costs are not tied to orders and are not in these figures: listing fees for the "
+             f"7 spreadsheet listings, ${ETSY_SHEET_LISTING_FEES:.2f} one time ($0.20 each)."]
+    return f"""<section class="sales">
+  <h2>Sales · marketplaces</h2>
+  <table><thead><tr><th>Marketplace</th><th class="num">Orders, {summary['etsy']['days']}d</th>
+    <th class="num">Gross</th><th class="num">Net</th><th class="num">All time</th><th>Last order</th>
+    <th>Last read</th></tr></thead><tbody>{body}</tbody></table>
+  <p class="sales-foot">{html.escape(' '.join(notes))}</p>
+</section>"""
+
+
+def print_marketplaces(summary: dict | None) -> None:
+    if not summary:
+        return
+    print(f"\n  Marketplace sales (last {summary['etsy']['days']}d, net after fees)")
+    for s in summary.values():
+        gap = f"  [{'; '.join(s['issues'])}]" if s["issues"] else ""
+        print(f"   {s['label']:<10} {s['windowOrders']:>3} orders  {money(s['windowGross']):>8} gross  "
+              f"{money(s['windowNet']):>8} net   all time {s['orders']} / {money(s['gross'])}{gap}")
+
+
 def appstore_events(before: dict, after: dict) -> list[dict]:
     """GlobePin Pro sales, promo redemptions and refunds that appeared since
     the last run, found by diffing each day's counts."""
@@ -2774,11 +3080,13 @@ def _event_text(e: dict) -> str:
     label = PRODUCT_LABELS.get(e.get("product", ""), e.get("product", ""))
     if e["kind"] == "purchase":
         net = f" (net {money(e['net'])})" if e.get("net") is not None else ""
-        return f"New order: {label} {money(e['gross'])}{net}"
+        via = f" on {e['via']}" if e.get("via") else ""
+        return f"New order{via}: {label} {money(e['gross'])}{net}"
     if e["kind"] == "renewal":
         return f"Renewal: {label} {money(e['gross'])}"
     if e["kind"] == "refund":
-        return f"Refund: {money(e['gross'])} on a {label} order"
+        via = f" {e['via']}" if e.get("via") else ""
+        return f"Refund: {money(e['gross'])} on a{via} {label} order"
     if e["kind"] == "globepin-pro":
         return f"GlobePin Pro sold ×{e['count']} ({e['day']}, ${e['proceeds']:,.2f} proceeds)"
     if e["kind"] == "globepin-promo":
@@ -2889,7 +3197,8 @@ def revenue_metrics(history: dict, summaries: list[dict], manual_ads: dict) -> d
     ck = pl_summary.get("checkout") or {}
     month_ago = now - 30 * 86400
     web = {"views": ck.get("views"), "clicks": ck.get("clicks"),
-           "orders": sum(1 for r in ledger if r.get("site") == "purplelink" and r["ts"] >= month_ago)}
+           "orders": sum(1 for r in ledger if r.get("site") == "purplelink" and not r.get("market")
+                         and r["ts"] >= month_ago)}
 
     # --- acquisition: what a customer costs vs. what one is worth ---------------
     acq = []
@@ -3105,7 +3414,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Paper Review & tools", "Kits", "Spreadsheets", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 
@@ -3155,6 +3464,13 @@ def profit_view(history: dict, manual_ads: dict, days: int = PROFIT_DAYS) -> dic
         if (gads.get("asOf") or "") < stale_before:
             gaps.append(f"Google Ads reading is from {gads.get('asOf')}")
 
+    for m, ms in marketplace_summary(history).items():
+        for issue in ms["issues"]:
+            gaps.append(f"{ms['label']} sales ({issue})")
+    if any(r.get("feeEstimated") and r["ts"] >= lo_ts for r in ledger):
+        gaps.append("marketplace fees estimated from the published schedule where the page showed none")
+    gaps.append(f"shop-level Etsy costs (listing fees for the 7 new sheets, ${ETSY_SHEET_LISTING_FEES:.2f} one time)")
+
     usage = history.get("apiUsage")
     if usage is None:
         gaps.append("Claude API cost per paid job (usage ledger unreachable)")
@@ -3198,6 +3514,8 @@ def classify_touch(t: dict | None) -> str:
     if not t:
         return "Direct / no record"
     s, m, r = (t.get("s") or "").lower(), (t.get("m") or "").lower(), (t.get("r") or "").lower()
+    if s in MARKETPLACE_LABELS:
+        return MARKETPLACE_LABELS[s]
     if t.get("g") or (s in ("google", "adwords") and m in ("cpc", "ppc", "paid")):
         return "Google Ads"
     if s.startswith("from:") or s.startswith("ref:") or s in ("vitae", "moderntex"):
@@ -3221,8 +3539,11 @@ def channel_revenue(history: dict) -> dict | None:
     tagged = [r for r in ledger if r.get("attr")]
     if not ledger:
         return None
-    since = dt.date.fromtimestamp(tagged[0]["ts"]).isoformat() if tagged else None
-    window = [r for r in ledger if tagged and r["ts"] >= tagged[0]["ts"]]
+    # Site tracking starts with the first Stripe order that carries a record;
+    # marketplace orders always know their channel, so they are always in.
+    own = [r for r in tagged if not r.get("market")] or tagged
+    since = dt.date.fromtimestamp(own[0]["ts"]).isoformat() if own else None
+    window = [r for r in ledger if tagged and (r.get("market") or r["ts"] >= own[0]["ts"])]
     table: dict[str, dict] = {}
     for r in window:
         a = r.get("attr") or {}
@@ -3573,6 +3894,15 @@ def appstore_revenue_by_month(appstore: dict | None, months: list[str]) -> dict[
     return out
 
 
+def marketplace_revenue_by_month(rows: list[dict], months: list[str]) -> dict[str, float]:
+    out = {}
+    for month in months:
+        lo, hi = _month_bounds(month)
+        out[month] = sum(r["gross"] for r in rows
+                         if lo <= dt.date.fromtimestamp(r["ts"]).isoformat() <= hi) / 100.0
+    return out
+
+
 def photo_revenue_by_month(months: list[str]) -> dict[str, float]:
     """This month's real photo-licensing revenue, derived by diffing
     per-platform balances at each month's start and end (via the shared
@@ -3615,6 +3945,7 @@ REVENUE_SOURCES = [
     ("sales", "Sales", "var(--purple)"),
     ("appstore", "App Store", "var(--good)"),
     ("photo", "Photo licensing", "oklch(75% 0.14 230)"),
+    ("marketplaces", "Etsy, Gumroad, Payhip", "oklch(70% 0.12 280)"),
     ("ads", "Ads", "var(--line)"),
 ]
 
@@ -3739,12 +4070,14 @@ def revenue_chart(months: list[str], series: dict[str, dict[str, float]],
             f"<div class='rev-legend'>{legend}</div>")
 
 
-def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6) -> str:
+def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
+                  market_rows: list[dict] | None = None) -> str:
     months = recent_months(n_months)
     series = {
         "sales": sales_revenue_by_month(sales, months),
         "appstore": appstore_revenue_by_month(appstore, months),
         "photo": photo_revenue_by_month(months),
+        "marketplaces": marketplace_revenue_by_month(market_rows or [], months),
         "ads": {m: 0.0 for m in months},  # see the module docstring above
     }
     this_month = months[-1]
@@ -3794,7 +4127,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
            sales: dict | None = None, appstore: dict | None = None,
            manual_ads: dict | None = None, chrome_web_store: dict | None = None,
            admob: dict | None = None, metrics: dict | None = None,
-           profit: dict | None = None, channels: dict | None = None, tax: dict | None = None) -> str:
+           profit: dict | None = None, channels: dict | None = None, tax: dict | None = None,
+           marketplaces: dict | None = None, market_rows: list[dict] | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -3845,11 +4179,12 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
 {metrics_block(metrics)}
 {profit_block(profit, channels, tax)}
 {sales_block(sales)}
+{marketplaces_block(marketplaces)}
 {appstore_block(appstore)}
 {chrome_web_store_block(chrome_web_store)}
 {manual_ads_block(manual_ads or {}, admob)}
 {moderntex_ads_block(manual_ads or {}, sales)}
-{revenue_block(sales, appstore)}
+{revenue_block(sales, appstore, market_rows=market_rows)}
 <div class="grid">{cards}</div>
 <h2>What this says</h2>
 <ul class="obs">{obs_html}</ul>
@@ -4068,10 +4403,28 @@ def main() -> int:
 
         stamp = dt.datetime.now(dt.timezone.utc).isoformat()
         month_ago = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)).isoformat()
+        # Etsy, Gumroad, Payhip: after Stripe so merge_ledger's first-run logic is untouched.
+        try:
+            mk_events, _mk_changed = marketplace_step(history, cfg, fetch=True)
+            new_events += mk_events
+        except Exception as exc:  # noqa: BLE001 -- never let this sink the run
+            print(f"  ! marketplaces unavailable: {str(exc)[:100]}", file=sys.stderr)
         history["eventLog"] = ([e for e in history.get("eventLog", []) if e.get("at", "") >= month_ago]
                                + [{**e, "at": stamp} for e in new_events])
         history["lastRun"] = stamp
         HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
+    else:
+        # Re-render only, but pick up a fresh marketplaces.json (the daily update
+        # records it, then re-renders with --no-fetch).
+        try:
+            mk_events, mk_changed = marketplace_step(history, cfg, fetch=False)
+        except Exception as exc:  # noqa: BLE001
+            mk_events, mk_changed = [], False
+            print(f"  ! marketplaces unavailable: {str(exc)[:100]}", file=sys.stderr)
+        if mk_changed and HISTORY_PATH.exists():
+            stamp = dt.datetime.now(dt.timezone.utc).isoformat()
+            history["eventLog"] = history.get("eventLog", []) + [{**e, "at": stamp} for e in mk_events]
+            HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
 
     summaries = [summarise(s, history["sites"].get(s["key"], {})) for s in SITES]
     obs = (observations(summaries, history.get("sales"))
@@ -4088,14 +4441,17 @@ def main() -> int:
     profit = profit_view(history, manual_ads)
     channels = channel_revenue(history)
     tax = tax_view(profit, history)
+    marketplaces = marketplace_summary(history)
+    market_rows = [r for r in (history.get("ledger") or {}).values() if r.get("market")]
     DASHBOARD_PATH.write_text(
         render(summaries, obs, generated, min(firsts) if firsts else None,
                sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics,
-               profit, channels, tax))
+               profit, channels, tax, marketplaces, market_rows))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
     print_profit(profit, channels, tax)
+    print_marketplaces(marketplaces)
     if sales:
         w, a = sales.get("window", {}), sales.get("allTime", {})
         print(f"\n  Sales — {money(w.get('gross', 0))} in the last "
