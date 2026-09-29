@@ -77,6 +77,19 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["kit-bundle",        { name: "the kit bundle",                    successPath: "/kits/success/" }],
   ["kit-clip",          { name: "The Clip Pipeline kit",             successPath: "/kits/success/" }],
   ["moderntex",         { name: "ModernTex for macOS",               successPath: "/moderntex/success/" }],
+  ["sheet-submission",  { name: "the Journal Submission & R&R Tracker", successPath: "/sheets/success/" }],
+  ["sheet-tenure",      { name: "the Tenure & Promotion Dossier Tracker", successPath: "/sheets/success/" }],
+  ["sheet-bundle",      { name: "the Researcher Spreadsheet Bundle",  successPath: "/sheets/success/" }],
+]);
+
+// Live-data sheets (checkout.mjs: live-scholar, live-funding). Yearly
+// subscriptions with a 7-day trial; live-sheet.mjs checks the subscription's
+// status itself on every feed refresh, so renewals and cancellations need no
+// webhook action. On checkout the buyer is emailed the setup page, which turns
+// the session into their private feed key, so closing the tab loses nothing.
+export const LIVE_PRODUCTS = new Map([
+  ["live-scholar", { name: "the Live Citation Dashboard", successPath: "/sheets/live/setup/" }],
+  ["live-funding", { name: "the Live Funding Feed",       successPath: "/sheets/live/setup/" }],
 ]);
 
 // Vitae Plus subscriptions (checkout.mjs: vitae-plus-monthly, vitae-plus-annual).
@@ -325,6 +338,40 @@ async function emailVitaePlusLink(to, sessionId) {
   return false;
 }
 
+/** Email a live-sheet subscriber their setup page. Same contract as the other senders. */
+async function emailLiveSetupLink(to, sessionId, productKey) {
+  const apiKey = Netlify.env.get("RESEND_API_KEY");
+  const entry = LIVE_PRODUCTS.get(productKey);
+  if (!apiKey || !to || !entry) return false;
+  const link = `${SITE_ORIGIN}${entry.successPath}?session_id=${encodeURIComponent(sessionId)}`;
+  const text =
+    `Thanks for subscribing to ${entry.name}.\n\n` +
+    `Set it up here (it takes a minute, and you can come back to change it):\n${link}\n\n` +
+    `The page gives you one formula to paste into Google Sheets, or a link for Excel's From Web. ` +
+    `The data refreshes on its own after that.\n\n` +
+    `Your 7-day trial is free. The setup page also has a Manage or cancel button.\n\n` +
+    `Questions: reply to this email.\n\nPurplelink LLC, Atlanta, Georgia`;
+  const html =
+    `<p>Thanks for subscribing to ${entry.name}.</p>` +
+    `<p><a href="${link}">Open your setup page</a>. It takes a minute, and you can come back to change it.</p>` +
+    `<p>The page gives you one formula to paste into Google Sheets, or a link for Excel's From Web. The data refreshes on its own after that.</p>` +
+    `<p>Your 7-day trial is free. The setup page also has a Manage or cancel button.</p>` +
+    `<p>Questions: reply to this email.</p><p>Purplelink LLC, Atlanta, Georgia</p>`;
+  try {
+    const resp = await fetch(RESEND_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ from: ORDER_FROM_ADDRESS, reply_to: ORDER_REPLY_TO, to: [to],
+        subject: `Set up ${entry.name}`, text, html }),
+    });
+    if (resp.ok) return true;
+    await alertOperator("Live sheet setup email failed", `session_id=${sessionId}\nemail=${to}\nresend_status=${resp.status}\nSend the buyer: ${link}`);
+  } catch (err) {
+    await alertOperator("Live sheet setup email failed", `session_id=${sessionId}\nemail=${to}\nerror=${String(err)}\nSend the buyer: ${link}`);
+  }
+  return false;
+}
+
 export default async function handler(request) {
   if (request.method !== "POST") {
     return jsonResponse(405, { error: "method_not_allowed" });
@@ -402,6 +449,17 @@ export default async function handler(request) {
     const to = (session.customer_details && session.customer_details.email) || session.customer_email || "";
     const emailed = session.status === "complete" && to ? await emailVitaePlusLink(to, session.id) : false;
     return jsonResponse(200, { status: "vitae_plus_acknowledged", product: sessionProduct, emailed });
+  }
+  if (LIVE_PRODUCTS.has(sessionProduct)) {
+    const to = (session.customer_details && session.customer_details.email) || session.customer_email || "";
+    const dedupeStore = getStore("webhook-events");
+    const dedupeKey = `live-setup:${event.id || session.id}`;
+    if (await dedupeStore.get(dedupeKey)) {
+      return jsonResponse(200, { status: "duplicate_event_ignored", product: sessionProduct });
+    }
+    await dedupeStore.set(dedupeKey, new Date().toISOString());
+    const emailed = session.status === "complete" && to ? await emailLiveSetupLink(to, session.id, sessionProduct) : false;
+    return jsonResponse(200, { status: "live_sheet_acknowledged", product: sessionProduct, emailed });
   }
   if (session.payment_status !== "paid") {
     return jsonResponse(200, { status: "not_paid", payment_status: session.payment_status });

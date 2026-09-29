@@ -17,7 +17,7 @@
 
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
-import { issueModernTexLicense, BLOB_DELIVERED_PRODUCTS } from "./stripe-webhook.mjs";
+import { issueModernTexLicense, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const RESEND_API_URL = "https://api.resend.com/emails";
@@ -74,8 +74,10 @@ export async function purchasesForEmail(email, secretKey) {
       const rows = res.data?.data ?? [];
       for (const s of rows) {
         const product = s?.metadata?.product || "";
-        if (typeof s?.id !== "string" || s.payment_status !== "paid") continue;
-        if (!BLOB_DELIVERED_PRODUCTS.has(product)) continue;
+        if (typeof s?.id !== "string") continue;
+        // Live sheets start on a free trial, so their session is complete but unpaid.
+        const live = LIVE_PRODUCTS.has(product) && s.status === "complete";
+        if (!live && (s.payment_status !== "paid" || !BLOB_DELIVERED_PRODUCTS.has(product))) continue;
         found.set(s.id, { sessionId: s.id, product, created: s.created || 0 });
       }
       if (!res.data?.has_more || rows.length === 0) break;
@@ -111,10 +113,12 @@ export function recoveryEmail(purchases, license) {
     lines.push("");
   }
   for (const p of purchases.filter((q) => q.product !== "moderntex")) {
-    const entry = BLOB_DELIVERED_PRODUCTS.get(p.product);
+    const live = LIVE_PRODUCTS.has(p.product);
+    const entry = live ? LIVE_PRODUCTS.get(p.product) : BLOB_DELIVERED_PRODUCTS.get(p.product);
     const link = `${SITE_ORIGIN}${entry.successPath}?session_id=${encodeURIComponent(p.sessionId)}`;
-    lines.push(entry.name.charAt(0).toUpperCase() + entry.name.slice(1), `Download page: ${link}`, "");
-    html.push(`<h3>${escapeHtml(entry.name.charAt(0).toUpperCase() + entry.name.slice(1))}</h3><p><a href="${escapeHtml(link)}">Open your download page</a></p>`);
+    const what = live ? "Setup page (your formulas and billing)" : "Download page";
+    lines.push(entry.name.charAt(0).toUpperCase() + entry.name.slice(1), `${what}: ${link}`, "");
+    html.push(`<h3>${escapeHtml(entry.name.charAt(0).toUpperCase() + entry.name.slice(1))}</h3><p><a href="${escapeHtml(link)}">Open your ${live ? "setup" : "download"} page</a></p>`);
   }
   const intro = "Here are the purchases made with this address, as requested.";
   const outro = "If you did not ask for this, you can ignore it; nothing has changed.";

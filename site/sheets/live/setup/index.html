@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Set up your live sheet | Purplelink</title>
+    <meta name="description" content="Set up your live sheet.">
+    <link rel="canonical" href="https://purplelink.llc/sheets/live/setup/">
+    <meta property="og:title" content="Set up your live sheet">
+    <meta property="og:description" content="Set up your live sheet.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/sheets/live/setup/">
+    <meta property="og:image" content="https://purplelink.llc/sheets/assets/citation-dashboard.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Set up your live sheet">
+    <meta name="twitter:description" content="Set up your live sheet.">
+    <meta name="twitter:image" content="https://purplelink.llc/sheets/assets/citation-dashboard.png">
+    <meta name="twitter:image:alt" content="Set up your live sheet">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v=291897a271">
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/sheets/">Spreadsheets</a>
+        <a href="/tools/">Tools</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <div class="kit-hero">
+        <p class="eyebrow">Live sheet setup</p>
+        <h1 id="setup-title">Set up your live sheet</h1>
+        <p id="setup-lede">Tell the sheet what to track, then paste the formulas it gives you. You can come back to this page, from the link in your email, to change the settings at any time; your formulas stay the same.</p>
+      </div>
+
+      <section class="kit-trust sheet-setup" aria-labelledby="cfg-h">
+        <p class="tool-status" id="setup-status" role="status" aria-live="polite"><span class="tool-spinner" aria-hidden="true"></span>Checking your subscription…</p>
+
+        <form class="sheet-form" id="form-scholar" hidden novalidate>
+          <h2 id="cfg-h" class="tools-section-heading">Whose publications?</h2>
+          <label for="author">ORCID iD or OpenAlex author id</label>
+          <input type="text" id="author" name="author" placeholder="0000-0002-1825-0097" autocomplete="off" spellcheck="false">
+          <p class="kit-buy-meta">Your ORCID iD is on orcid.org, under your name. No ORCID? Search your name at openalex.org and use the id that starts with A.</p>
+          <button type="submit" class="btn btn-primary">Save and show my formulas</button>
+        </form>
+
+        <form class="sheet-form" id="form-funding" hidden novalidate>
+          <h2 class="tools-section-heading">Which topics?</h2>
+          <label for="keywords">Up to five topics, one per line or separated by commas</label>
+          <textarea id="keywords" name="keywords" rows="5" placeholder="phishing&#10;large language models&#10;misinformation"></textarea>
+          <p class="kit-buy-meta">Multi-word topics match as exact phrases on grants.gov. A single broad word finds more, but also more noise.</p>
+          <fieldset class="sheet-agencies">
+            <legend>Only these agencies (optional; leave all unticked for every agency)</legend>
+            <label><input type="checkbox" name="agency" value="NSF"> NSF</label>
+            <label><input type="checkbox" name="agency" value="HHS-NIH11"> NIH</label>
+            <label><input type="checkbox" name="agency" value="DOD"> Defense</label>
+            <label><input type="checkbox" name="agency" value="DOE"> Energy</label>
+            <label><input type="checkbox" name="agency" value="USDA"> Agriculture</label>
+            <label><input type="checkbox" name="agency" value="ED"> Education</label>
+            <label><input type="checkbox" name="agency" value="NEH"> Humanities</label>
+          </fieldset>
+          <button type="submit" class="btn btn-primary">Save and show my formulas</button>
+        </form>
+        <p class="tool-status" id="save-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="kit-trust sheet-setup" id="feeds-section" hidden aria-labelledby="feeds-h">
+        <h2 id="feeds-h" class="tools-section-heading">Your formulas</h2>
+        <p id="feeds-who" class="sheet-section-lede"></p>
+        <h3>Google Sheets</h3>
+        <p>Make a tab for each row below and paste its formula into cell A1. The data appears in a few seconds and Google refreshes it about once an hour.</p>
+        <div id="feeds-sheets" class="sheet-feeds"></div>
+        <h3>Excel</h3>
+        <p>For each link: Data, Get Data, From Web, paste the link, Load. Then Query Properties, "Refresh data when opening the file".</p>
+        <div id="feeds-excel" class="sheet-feeds"></div>
+      </section>
+
+      <section class="kit-trust sheet-setup" id="manage-section" hidden aria-labelledby="manage-h">
+        <h2 id="manage-h" class="tools-section-heading">Billing</h2>
+        <p>Update your card, see invoices or cancel on Stripe's billing page. If you cancel, the sheet keeps working to the end of the period you paid for.</p>
+        <button type="button" class="btn" id="manage-btn">Manage or cancel</button>
+        <p class="tool-status" id="manage-status" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/sheets/">Spreadsheets</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/desk/">Research desk</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+    <script src="/sheets/live/setup.js?v=1" defer></script>
+    <script src="/analytics.js?v=bef3f65e99" defer></script>
+  </body>
+</html>

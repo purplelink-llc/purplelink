@@ -124,6 +124,19 @@ const PRODUCT_CATALOG = {
     successPath: "/blog/digest/subscribed/",
     mode: "subscription",
   },
+  // Spreadsheet templates (/sheets/). These carry their price inline
+  // (`amount`, `name`) instead of an env-var Price id: Checkout builds the price
+  // from price_data, so a new product needs no Stripe dashboard setup and the
+  // price shown on the page and the one charged live side by side here.
+  // Delivery: kit-download.mjs streams the .xlsx from the kit-files store.
+  "sheet-submission": { amount: 1200, name: "Journal Submission & R&R Tracker (spreadsheet)", successPath: "/sheets/success/" },
+  "sheet-tenure":     { amount: 1200, name: "Tenure & Promotion Dossier Tracker (spreadsheet)", successPath: "/sheets/success/" },
+  "sheet-bundle":     { amount: 2900, name: "Researcher Spreadsheet Bundle", successPath: "/sheets/success/" },
+  // Live-data sheets: yearly subscriptions whose feed live-sheet.mjs serves as
+  // CSV for Google Sheets' IMPORTDATA or Excel's From Web. The setup page turns
+  // the session into a private feed key.
+  "live-scholar": { amount: 3900, name: "Live Citation Dashboard (yearly)", interval: "year", successPath: "/sheets/live/setup/", mode: "subscription", trialDays: 7 },
+  "live-funding": { amount: 5900, name: "Live Funding Feed (yearly)", interval: "year", successPath: "/sheets/live/setup/", mode: "subscription", trialDays: 7 },
 };
 
 function jsonResponse(status, body) {
@@ -195,8 +208,8 @@ export default async function handler(request) {
   const attrLast = cleanTouch(body?.attr?.last);
 
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
-  const priceId = Netlify.env.get(entry.envKey);
-  if (!secretKey || !priceId) {
+  const priceId = entry.amount ? null : Netlify.env.get(entry.envKey);
+  if (!secretKey || (!entry.amount && !priceId)) {
     return jsonResponse(500, {
       error: "misconfigured",
       detail: `Set STRIPE_SECRET_KEY and ${entry.envKey} on this site.`,
@@ -235,7 +248,14 @@ export default async function handler(request) {
     "payment_method_types[1]": "link",
     // Lets a buyer enter a promotion code created in the Stripe dashboard.
     allow_promotion_codes: "true",
-    "line_items[0][price]": priceId,
+    ...(entry.amount
+      ? {
+          "line_items[0][price_data][currency]": "usd",
+          "line_items[0][price_data][unit_amount]": String(entry.amount),
+          "line_items[0][price_data][product_data][name]": entry.name,
+          ...(entry.interval ? { "line_items[0][price_data][recurring][interval]": entry.interval } : {}),
+        }
+      : { "line_items[0][price]": priceId }),
     "line_items[0][quantity]": "1",
     success_url: `${origin}${entry.successPath}?session_id={CHECKOUT_SESSION_ID}`,
     // Strips the terminal path segment to send a canceled checkout back to
@@ -245,7 +265,7 @@ export default async function handler(request) {
     // so a canceled — unpaid — digest checkout landed on the "You're
     // subscribed" page.
     // ?checkout=canceled lets the page say plainly that nothing was charged.
-    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success|subscribed)\/$/, "/")}?checkout=canceled`,
+    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success|subscribed|setup)\/$/, "/")}?checkout=canceled`,
     "metadata[product]": product,
   };
   // customer_creation is only valid in "payment" mode -- Stripe always

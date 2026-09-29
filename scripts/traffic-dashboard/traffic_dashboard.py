@@ -2181,6 +2181,9 @@ PRODUCT_LABELS = {
     "tracker": "Tracker", "workbook": "Workbook",
     "vitae-plus-monthly": "Vitae Plus (monthly)", "vitae-plus-annual": "Vitae Plus (annual)",
     "digest-monthly": "Digest (monthly)", "digest-annual": "Digest (annual)",
+    "sheet-submission": "Submission tracker (sheet)", "sheet-tenure": "Tenure tracker (sheet)",
+    "sheet-bundle": "Researcher sheet bundle", "live-scholar": "Live Citation Dashboard",
+    "live-funding": "Live Funding Feed", "tracker-sheet": "GLP-1 tracker (sheet)",
 }
 
 
@@ -2684,6 +2687,7 @@ PRODUCT_GROUPS = [
     ("ModernTex", "var(--purple)"),
     ("Paper Review & tools", "oklch(75% 0.14 230)"),
     ("Kits", "oklch(80% 0.13 85)"),
+    ("Spreadsheets", "oklch(70% 0.12 280)"),
     ("Subscriptions", "oklch(76% 0.13 165)"),
     ("MuscleOnGLP", "oklch(72% 0.15 35)"),
     ("GlobePin Pro", "var(--good)"),
@@ -2698,7 +2702,9 @@ def product_group(row: dict) -> str:
         return "ModernTex"
     if product.startswith("kit-"):
         return "Kits"
-    if product.startswith(("vitae-plus", "digest-")):
+    if product.startswith("sheet-"):
+        return "Spreadsheets"
+    if product.startswith(("vitae-plus", "digest-", "live-")):
         return "Subscriptions"
     return "Paper Review & tools"
 
@@ -3097,7 +3103,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Paper Review & tools", "Kits", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Paper Review & tools", "Kits", "Spreadsheets", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 

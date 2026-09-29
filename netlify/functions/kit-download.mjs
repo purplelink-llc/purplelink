@@ -58,6 +58,26 @@ const FILES = {
     type: "application/zip",
     grants: new Set(["kit-clip", "kit-bundle"]),
   },
+  // Spreadsheet templates (/sheets/). One .xlsx each; opens in Excel and
+  // imports into Google Sheets. The grant budget builder is bundle-only.
+  "sheet-submission": {
+    name: "journal-submission-tracker.xlsx",
+    label: "Journal Submission & R&R Tracker (Excel / Google Sheets)",
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    grants: new Set(["sheet-submission", "sheet-bundle"]),
+  },
+  "sheet-tenure": {
+    name: "tenure-dossier-tracker.xlsx",
+    label: "Tenure & Promotion Dossier Tracker (Excel / Google Sheets)",
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    grants: new Set(["sheet-tenure", "sheet-bundle"]),
+  },
+  "sheet-grant-budget": {
+    name: "grant-budget-builder.xlsx",
+    label: "Grant Budget Builder for NSF and NIH (Excel / Google Sheets)",
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    grants: new Set(["sheet-bundle"]),
+  },
 };
 
 function json(status, body) {
@@ -104,7 +124,7 @@ export default async function handler(request) {
       .filter(([, f]) => f.grants.has(product))
       .map(([key, f]) => ({ key, label: f.label,
         url: `/.netlify/functions/kit-download?session_id=${encodeURIComponent(sessionId)}&file=${key}` }));
-    if (!files.length) return json(404, { error: "unknown_product", detail: "We could not match this order to a kit. Contact ben@purplelink.llc." });
+    if (!files.length) return json(404, { error: "unknown_product", detail: "We could not match this order to a product. Contact ben@purplelink.llc." });
     return json(200, { product, files });
   }
 

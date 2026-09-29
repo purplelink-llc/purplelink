@@ -32,6 +32,8 @@ SKIP_PREFIXES = ("blog/digest/", "assets/", "stats/")
 SKIP_PATHS = {
     "moderntex/success/index.html",
     "kits/success/index.html",
+    "sheets/success/index.html",
+    "sheets/live/setup/index.html",
     "vitae/plus/success/index.html",
     "vitae/plus/manage/index.html",
     "vitae/plus/recover/index.html",
@@ -41,7 +43,7 @@ SKIP_PATHS = {
 # (label, href, sections that mark it current)
 NAV = [
     ("Products", "/products/", ("products/", "moderntex/", "vitae/", "globepin/",
-                                "haea/", "kits/", "scholar-utility-belt/", "labs/", "recover/")),
+                                "haea/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/")),
     ("Blog", "/blog/", ("blog/", "changelog/")),
@@ -57,6 +59,7 @@ FOOTER_COLUMNS = [
         ("GlobePin", "/globepin/"),
         ("Haea", "/haea/"),
         ("Kits", "/kits/"),
+        ("Spreadsheets", "/sheets/"),
         ("All products", "/products/"),
     ]),
     ("Free tools", [
