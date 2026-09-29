@@ -39,7 +39,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "photo-licensing-workspace" / "exports"
 URL = "https://www.alamy.com/myupload/Index.aspx"
-CDP = "http://127.0.0.1:9225"
+CDP = "http://127.0.0.1:9340"
 PANEL = "Download your data"
 
 

@@ -22,7 +22,7 @@ signed_in() {
 from playwright.sync_api import sync_playwright
 try:
     with sync_playwright() as p:
-        b = p.chromium.connect_over_cdp("http://127.0.0.1:9222")
+        b = p.chromium.connect_over_cdp("http://127.0.0.1:9340")
         pg = b.contexts[0].new_page()
         pg.goto("https://fineartamerica.com/profiles/benjamin-ampel.html",
                 wait_until="domcontentloaded", timeout=40000)

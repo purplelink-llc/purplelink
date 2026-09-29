@@ -16,7 +16,7 @@ USAGE
 import argparse, re, sys, time
 from pathlib import Path
 
-CDP = "http://127.0.0.1:9225"
+CDP = "http://127.0.0.1:9340"
 TYPE_LABEL = {"creative": "iStock creative image",
               "editorial": "iStock editorial image"}
 
@@ -53,14 +53,21 @@ def create(pg, name, kind):
     # Submission type is a MUI Select, not a <select>. Its options render in a
     # portal, and clicking them by text hits the dialog's backdrop instead
     # ("subtree intercepts pointer events"). Target [role=option] by data-value.
+    #
+    # ALWAYS click through the dropdown, never assume a default. This used to
+    # skip the click for kind=="creative" on the assumption that creative was
+    # the dialog's default selection -- true when written, but ESP's default
+    # apparently later became editorial (or was never reliable), and a batch
+    # created with --type creative silently came out as istock_editorial_still.
+    # Caught 2026-09-06 when 13 files meant for a creative resubmission landed
+    # in a batch whose own API record read submission_type: istock_editorial_still.
     VALUE = {"creative": "istock_creative_still",
              "editorial": "istock_editorial_still"}
-    if kind != "creative":
-        pg.locator("[data-cy=create-batch-dialog] [role=combobox], "
-                   "[data-cy=create-batch-dialog] .MuiSelect-select").first.click()
-        pg.wait_for_timeout(3_500)
-        pg.locator(f"[role=option][data-value='{VALUE[kind]}']").first.click()
-        pg.wait_for_timeout(2_500)
+    pg.locator("[data-cy=create-batch-dialog] [role=combobox], "
+               "[data-cy=create-batch-dialog] .MuiSelect-select").first.click()
+    pg.wait_for_timeout(3_500)
+    pg.locator(f"[role=option][data-value='{VALUE[kind]}']").first.click()
+    pg.wait_for_timeout(2_500)
 
     boxes = pg.locator("input[type=text], input:not([type])")
     n = boxes.count()

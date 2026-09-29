@@ -47,7 +47,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STATE = ROOT / "photo-licensing-workspace" / "analytics" / "shutterstock-editorial.json"
 SRC = Path("/Volumes/Extreme SSD/Nikon Photos")
 URL = "https://submit.shutterstock.com/portfolio/correction_needed/photo"
-CDP = "http://127.0.0.1:9225"
+CDP = "http://127.0.0.1:9340"
 
 # Every "<id> - <filename>" label. Deliberately loose about the filename:
 # tightening it to \S+ silently dropped every name containing a space.

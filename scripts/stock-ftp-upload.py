@@ -30,16 +30,36 @@ STATE_DIR = WS / "ftp-state"          # one file per agency; concurrent-safe
 
 # min_mp: agency's stated minimum. folder: remote dir to upload into ("" = root).
 AGENCIES = {
-    # Shutterstock requires FTPS (FTP over explicit TLS); username is your account
-    # email, password is your contributor password.
-    "shutterstock": {"host": "ftp.shutterstock.com", "folder": "", "min_mp": 4.0,
+    # Shutterstock requires FTPS (FTP over explicit TLS) on port 21; username is
+    # your contributor email/username, password is your account password. No
+    # provisioning or support ticket needed -- it's just your login.
+    #
+    # Host corrected 2026-09-10: this said "ftp.shutterstock.com", which appears
+    # only in an old Shutterstock blog post. Their current help doc (updated
+    # 2025-04-21) says "ftps.shutterstock.com". The wrong host is the leading
+    # suspect for the 108 `error_reply: 200 Command TYPE okay` failures in
+    # stock-ftp-state.json -- that error is a SUCCESS code arriving where the
+    # client expected something else, i.e. a control-channel desync, which is
+    # what talking plain-FTP semantics at a mis-resolved endpoint looks like.
+    # https://submit.shutterstock.com/help/en/articles/10617392-how-do-i-upload-content-via-ftps
+    #
+    # SUBMISSION CAP: 500 images per ROLLING 7-DAY window (not per day, not per
+    # batch). Exceeding it is an account-level throttle, so a 600-file backlog
+    # has to be split across two weeks -- see --limit.
+    # https://submit.shutterstock.com/help/en/articles/10594612-is-there-an-upload-or-submission-limit-for-images-and-video
+    "shutterstock": {"host": "ftps.shutterstock.com", "folder": "", "min_mp": 4.0,
                      "service": "shutterstock-ftp", "env": "SHUTTERSTOCK_USER",
-                     "tls": True},
+                     "tls": True, "weekly_cap": 500},
     "dreamstime":   {"host": "upload.dreamstime.com", "folder": "", "min_mp": 3.0,
                      "service": "dreamstime-ftp", "env": "DREAMSTIME_USER"},
     "depositphotos":{"host": "ftp.depositphotos.com", "folder": "", "min_mp": 3.8,
                      "service": "depositphotos-ftp", "env": "DEPOSITPHOTOS_USER"},
-    "123rf":        {"host": "submit.123rf.com", "folder": "", "min_mp": 6.0,
+    # Host corrected 2026-09-11: this said "submit.123rf.com", which errored.
+    # 123RF's own contributor upload page (contributor/upload-content) states
+    # the real host as "ftp.123rf.com" -- same class of stale-host bug as
+    # Shutterstock's ftp./ftps. mixup found the same week. Password is the
+    # account login password, not a separate FTP credential.
+    "123rf":        {"host": "ftp.123rf.com", "folder": "", "min_mp": 6.0,
                      "service": "123rf-ftp", "env": "RF123_USER"},
     "alamy":        {"host": "upload.alamy.com", "folder": "Stock", "min_mp": 6.0,
                      "service": "alamy-ftp", "env": "ALAMY_USER"},

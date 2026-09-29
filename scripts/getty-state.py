@@ -26,7 +26,7 @@ WS = ROOT / "photo-licensing-workspace"
 SET = WS / "getty-ready-set.csv"
 STATE = WS / "getty-upload-state.json"
 PLAN = WS / "getty-batch-plan.json"
-CDP = "http://127.0.0.1:9225"
+CDP = "http://127.0.0.1:9340"
 API = "https://esp.gettyimages.com/api/submission/v1/submission_batches/{}/contributions"
 
 

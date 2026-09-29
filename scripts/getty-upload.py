@@ -24,7 +24,7 @@ WS = ROOT / "photo-licensing-workspace"
 SRC = Path("/Volumes/Extreme SSD/Nikon Photos")
 SET = WS / "getty-ready-set.csv"
 STATE = WS / "getty-upload-state.json"
-CDP = "http://127.0.0.1:9225"
+CDP = "http://127.0.0.1:9340"
 # Playwright refuses to transfer more than 50MB per set_input_files call when it
 # talks to the browser over CDP (it treats it as "not co-located"), so chunks are
 # sized by BYTES, not by file count. Panoramas here run past 40MB on their own.

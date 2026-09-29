@@ -23,7 +23,7 @@ SRC = Path("/Volumes/Extreme SSD/Nikon Photos")
 SET = WS / "getty-ready-set.csv"
 STATE = WS / "getty-upload-state.json"
 PLAN = WS / "getty-batch-plan.json"
-CDP = "http://127.0.0.1:9225"
+CDP = "http://127.0.0.1:9340"
 CAP = 100
 PY = sys.executable
 

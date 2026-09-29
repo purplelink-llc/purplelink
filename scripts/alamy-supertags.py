@@ -53,9 +53,9 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parent.parent
 STATE = ROOT / "photo-licensing-workspace" / "analytics" / "alamy-supertags.json"
 URL = "https://www.alamy.com/myupload/Index.aspx"
-CDP = "http://127.0.0.1:9225"
+CDP = "http://127.0.0.1:9340"
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-PROFILE = str(Path.home() / ".stats-chrome")
+PROFILE = str(Path.home() / ".photo-automation-chrome")
 
 # Count tiles by their filename label. Only DSC_* -- the iPhone frames and the
 # purchased race photos are not ours to license and must never be promoted.
@@ -96,7 +96,7 @@ def chrome_up():
     except Exception:
         pass
     subprocess.Popen(
-        [CHROME, "--remote-debugging-port=9225", f"--user-data-dir={PROFILE}",
+        [CHROME, "--remote-debugging-port=9340", f"--user-data-dir={PROFILE}",
          "--no-first-run", "--no-default-browser-check", "about:blank"],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(14)
@@ -163,41 +163,40 @@ def load_all_tiles(pg, verbose=True):
     return last
 
 
-def tile_names(pg):
-    return pg.evaluate(
-        "()=>[...document.querySelectorAll('*')]"
-        ".filter(e=>/^DSC_[\\w.\\-() ]+\\.jpe?g$/i.test((e.textContent||'').trim())"
-        "&&e.children.length===0).map(e=>e.textContent.trim())")
+def tile_refs(pg):
+    """(ref, filename) for every rendered tile, keyed by Alamy's own per-image
+    ref (e.g. "3FE80D8", shown on-page as "Image ID: 3FE80D8") -- NOT
+    filename. Each <li ref="..."> holds one image; the ref is unique and
+    stable, unlike the filename.
+    2026-09-08: the 285-file batch that failed QC on 2026-08-30 (IMG_9209
+    poisoning it) was cleanly resubmitted on 2026-09-03 with the SAME
+    filenames as before -- Alamy assigned them brand-new refs/image IDs, but
+    the old filename-keyed dedup (tile_names() + state["done"]) saw those
+    names already marked done from the original 565-image upload and skipped
+    all ~285 of them, leaving the whole resubmitted batch at 0/10 supertags
+    ("poor discoverability" on 854/854 on-sale images, 0 sales). Keying by
+    ref instead of filename is what actually identifies a unique Alamy asset.
+    """
+    return pg.evaluate("""()=>[...document.querySelectorAll('li[ref]')].map(li=>{
+        const cap = li.querySelector('.img_cap');
+        return {ref: li.getAttribute('ref'), name: cap ? cap.textContent.trim() : null};
+    }).filter(x=>x.name && /^DSC_[\\w.\\-() ]+\\.jpe?g$/i.test(x.name))""")
 
 
-def click_tile(pg, name):
-    """Select exactly one image by filename. Returns True once the panel
-    agrees that one image is selected."""
-    box = pg.evaluate("""(nm)=>{
-        const lab=[...document.querySelectorAll('*')].find(e=>
-            (e.textContent||'').trim()===nm && e.children.length===0);
-        if(!lab) return null;
-        let t=lab;
-        for(let i=0;i<6&&t;i++){ if(t.querySelector&&t.querySelector('img')) break;
-                                 t=t.parentElement; }
-        const im=t&&t.querySelector('img'); if(!im) return null;
-        im.scrollIntoView({block:'center'});
-        return true;}""", name)
-    if not box:
+def click_tile(pg, ref):
+    """Select exactly one image by its Alamy ref (Image ID). Returns True
+    once the panel agrees that one image is selected. Selecting by ref via
+    its unique #automationImage<ref> id avoids the ambiguity a filename-based
+    lookup has whenever two tiles share a filename (see tile_refs)."""
+    loc = pg.locator(f"#automationImage{ref}")
+    if loc.count() == 0:
         return False
-    pg.wait_for_timeout(900)
-    pt = pg.evaluate("""(nm)=>{
-        const lab=[...document.querySelectorAll('*')].find(e=>
-            (e.textContent||'').trim()===nm && e.children.length===0);
-        let t=lab; for(let i=0;i<6&&t;i++){ if(t.querySelector&&t.querySelector('img')) break;
-                                            t=t.parentElement; }
-        const im=t&&t.querySelector('img'); if(!im) return null;
-        const r=im.getBoundingClientRect();
-        if(r.width<40||r.bottom<0) return null;
-        return {x:Math.round(r.x+r.width/2), y:Math.round(r.y+r.height/2)};}""", name)
-    if not pt:
+    try:
+        loc.first.scroll_into_view_if_needed(timeout=5000)
+        pg.wait_for_timeout(700)
+        loc.first.click(timeout=5000)
+    except Exception:
         return False
-    pg.mouse.click(pt["x"], pt["y"])
     pg.wait_for_timeout(2200)
     if selected(pg) != 1:
         # A stray earlier click can leave two selected; clearing is cheaper
@@ -207,7 +206,10 @@ def click_tile(pg, name):
             pg.wait_for_timeout(1500)
         except Exception:
             pass
-        pg.mouse.click(pt["x"], pt["y"])
+        try:
+            loc.first.click(timeout=5000)
+        except Exception:
+            return False
         pg.wait_for_timeout(2200)
     return selected(pg) == 1
 
@@ -223,8 +225,8 @@ def star_first_ten(pg, n_tags):
     return want
 
 
-def process(pg, name, state):
-    if not click_tile(pg, name):
+def process(pg, ref, state):
+    if not click_tile(pg, ref):
         return "unreachable"
     n_tags, n_super = counts(pg)
     if n_tags is None:
@@ -234,7 +236,7 @@ def process(pg, name, state):
     if n_super != 0:
         # Already starred by a human or an earlier run. Never re-toggle:
         # clicking a lit star removes it.
-        state["done"].append(name)
+        state["done"].append(ref)
         return f"already {n_super}/10"
 
     want = star_first_ten(pg, n_tags)
@@ -252,7 +254,7 @@ def process(pg, name, state):
     _, confirmed = counts(pg)
     if confirmed != want:
         return f"save unconfirmed ({confirmed}/{want})"
-    state["done"].append(name)
+    state["done"].append(ref)
     return f"ok {want}/10"
 
 
@@ -263,6 +265,11 @@ def main():
     a = ap.parse_args()
 
     state = load_state()
+    # "done" is keyed by Alamy's per-image ref (Image ID), not filename -- see
+    # tile_refs(). A state file written before 2026-09-08 has filenames in
+    # here instead; those never match a real ref, so this run re-verifies
+    # every tile once (cheap for the ones already starred -- process() just
+    # reads the panel and re-marks them done by ref) and self-heals the file.
     done = set(state["done"])
     chrome_up()
 
@@ -273,9 +280,9 @@ def main():
         pg.set_viewport_size({"width": 1500, "height": 950})
         print("opening Image Manager (this takes ~2 min to load all tiles)", flush=True)
         total = open_grid(pg)
-        names = tile_names(pg)
-        todo = [n for n in names if n not in done]
-        print(f"\n{total} tiles loaded | {len(done)} already starred | {len(todo)} to do")
+        items = tile_refs(pg)
+        todo = [it for it in items if it["ref"] not in done]
+        print(f"\n{total} tiles loaded | {len(items) - len(todo)} already starred | {len(todo)} to do")
 
         if a.status:
             pg.close()
@@ -285,15 +292,38 @@ def main():
             todo = todo[:a.limit]
         print(f"processing {len(todo)} this run\n", flush=True)
 
+        # Filename -> refs seen in this scan. Alamy's virtual-scroll grid can
+        # momentarily recycle a DOM node between two images: tile_refs() reads
+        # a ref off a node that gets reassigned to a different image before
+        # click_tile() reaches it, so #automationImage<ref> then matches
+        # nothing -- "unreachable" forever, not a real image. Found 2026-09-08:
+        # 5 such ghost refs, every one a duplicate of a filename whose OTHER
+        # (real) ref had already been supertagged successfully. Confirmed via
+        # Alamy's own data (same filename, different ref, real ref already
+        # done) before trusting this, per the platform-terms-research skill's
+        # confidence-sequencing rule -- do not silently swallow "unreachable"
+        # without that cross-check, since a genuinely broken tile looks
+        # identical to a ghost one from process()'s point of view.
+        by_name = {}
+        for it in items:
+            by_name.setdefault(it["name"], []).append(it["ref"])
+
         fails = 0
-        for i, name in enumerate(todo, 1):
-            r = process(pg, name, state)
+        for i, it in enumerate(todo, 1):
+            name, ref = it["name"], it["ref"]
+            r = process(pg, ref, state)
             ok = r.startswith("ok") or r.startswith("already")
-            print(f"  [{i}/{len(todo)}] {name:34s} {r}", flush=True)
+            if not ok and r == "unreachable" and any(
+                    other in done for other in by_name.get(name, []) if other != ref):
+                r = "ghost (duplicate of an already-done ref, ignored)"
+                ok = True
+                state["done"].append(ref)
+                done.add(ref)
+            print(f"  [{i}/{len(todo)}] {name:34s} {ref:10s} {r}", flush=True)
             if ok:
                 fails = 0
             else:
-                state["skipped"][name] = r
+                state["skipped"][ref] = f"{name}: {r}"
                 fails += 1
                 # Five in a row means the page state is wrong -- a modal
                 # reappeared, the session dropped, or Chrome is wedged.
