@@ -66,7 +66,7 @@ All 8 entries below were fetched and confirmed live. Where a named librarian was
 4. **Montclair State University — Citation Tools and Tutorials**
    - URL: https://montclair.libguides.com/citing/tools
    - Lists: BibMe, Citation Machine, EasyBib, Zotero, Mendeley
-   - **Contact: Clair Bair — bairdc@mail.montclair.edu**
+   - **Contact: Catherine Baird — bairdc@mail.montclair.edu**
    - Fit: Citation Generator, citation-styles-explained guide
 
 5. **Tennessee State University — Citation Styles and Tools**

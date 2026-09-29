@@ -12,7 +12,7 @@ After 4 weeks with no response, mark `no-response` and move on.
 |---|---|---|---|---|
 | 2026-09-23 | University of Virginia | Ricky Patterson (ricky@virginia.edu) | sent | Target 1 template, via ben.ampel@gmail.com |
 | 2026-09-28 | RMIT University | Mike Brooks (mike.brooks@rmit.edu.au) | sent | Target 2 template, via ben.ampel@gmail.com |
-| | Montclair — Citation Tools | Clair Bair (bairdc@mail.montclair.edu) | | |
+| 2026-09-29 | Montclair State | Catherine Baird (bairdc@mail.montclair.edu) | sent | Target 3 template, via ben.ampel@gmail.com |
 | | TSU — Citation Tools | Dr. Xuemei Ge (xge@tnstate.edu) | | |
 | | Fresno State — Citation Managers | D. Drexler (ddrexler@csufresno.edu) | | |
 | | MIT — LaTeX/BibTeX | (Ask form) | | |
@@ -29,7 +29,7 @@ After 4 weeks with no response, mark `no-response` and move on.
 
 | Date | Subreddit | Post URL | Template used | Upvotes 7d | Notes |
 |---|---|---|---|---|---|
-| | | | | | |
+| 2026-09-29 | r/macapps | https://www.reddit.com/r/macapps/comments/1w4brkd/megathread_the_app_pile_september_2026/ (comment in App Pile megathread; exact comment URL TBD) | Custom (growth brief 2026-09-29) | TBD | ModernTex, developer disclosed, posted by Ben. Check score and replies after 7 days. |
 
 ## LinkedIn / Bluesky posts
 

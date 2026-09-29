@@ -59,15 +59,15 @@ Eight verified target LibGuides. Five have named-librarian contacts; three need 
 > Benjamin Ampel
 > Purplelink LLC
 
-## Target 3 — Montclair State · Clair Bair
+## Target 3 — Montclair State · Catherine Baird
 
 **LibGuide:** https://montclair.libguides.com/citing/tools
-**Contact:** Clair Bair — bairdc@mail.montclair.edu
+**Contact:** Catherine Baird — bairdc@mail.montclair.edu
 **Best fit:** Citation Generator + citation-styles-explained guide
 
 **Subject:** Free citation generator for your Montclair Citation Tools guide
 
-> Hi Clair,
+> Hi Catherine,
 >
 > Your Citation Tools and Tutorials guide at montclair.libguides.com/citing/tools is well-curated — the inclusion of both reference managers (Zotero, Mendeley) and one-off generators (BibMe, EasyBib) covers the workflow well.
 >

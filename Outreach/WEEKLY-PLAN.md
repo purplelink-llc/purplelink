@@ -47,7 +47,7 @@ Time: ~90 min (a little over budget, but one-time).
 ## Week 5 — Reddit + LibGuide email #3 (~60 min)
 
 - [ ] **Search `r/LaTeX` for current questions** (link in `02-community/discovered-targets.md`). If you find one matching the templates, post a reply.
-- [ ] **Send LibGuide outreach email #3** to Clair Bair at Montclair
+- [ ] **Send LibGuide outreach email #3** to Catherine Baird at Montclair
 - [ ] **LinkedIn post 4** (Week 4 content)
 - [ ] **Bluesky post 4**
 
