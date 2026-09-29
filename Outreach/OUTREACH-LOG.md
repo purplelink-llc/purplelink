@@ -10,8 +10,8 @@ After 4 weeks with no response, mark `no-response` and move on.
 
 | Date sent | Target | Contact | Status | Notes |
 |---|---|---|---|---|
-| | UVa — Overleaf guide | Ricky Patterson (ricky@virginia.edu) | | |
-| | RMIT — LaTeX/BibTeX | Mike Brooks (mike.brooks@rmit.edu.au) | | |
+| 2026-09-23 | University of Virginia | Ricky Patterson (ricky@virginia.edu) | sent | Target 1 template, via ben.ampel@gmail.com |
+| 2026-09-28 | RMIT University | Mike Brooks (mike.brooks@rmit.edu.au) | sent | Target 2 template, via ben.ampel@gmail.com |
 | | Montclair — Citation Tools | Clair Bair (bairdc@mail.montclair.edu) | | |
 | | TSU — Citation Tools | Dr. Xuemei Ge (xge@tnstate.edu) | | |
 | | Fresno State — Citation Managers | D. Drexler (ddrexler@csufresno.edu) | | |
@@ -23,7 +23,7 @@ After 4 weeks with no response, mark `no-response` and move on.
 
 | Date | Question URL | Template used | Score after 7d | Notes |
 |---|---|---|---|---|
-| 2026-09-20 | https://tex.stackexchange.com/a/766562 (Q 766504, changes pkg: delete whole section) | T4 latexdiff (adapted; answer is changes-native, latexdiff + tool link in last line only) | TBD | Tested MWE on changes 4.2.1. Account showed "past answers not well-received / danger of answer ban" warning at post time. Check score 2026-09-27. |
+| 2026-09-20 | https://tex.stackexchange.com/a/766562 (Q 766504, changes pkg: delete whole section) | T4 latexdiff (adapted; answer is changes-native, latexdiff + tool link in last line only) | 3 (checked 2026-09-28, not accepted) | Tested MWE on changes 4.2.1. Account showed "past answers not well-received / danger of answer ban" warning at post time. Check score 2026-09-27. |
 
 ## Reddit posts
 
@@ -37,6 +37,8 @@ After 4 weeks with no response, mark `no-response` and move on.
 |---|---|---|---|---|
 | 2026-05-31 | Bluesky | Post 1 (studio intro) | TBD | pinned to profile |
 | 2026-06-01 | LinkedIn | Post 1 (studio intro) | TBD | posted to company page (purplelink-llc) |
+| 2026-09-23 | LinkedIn | Post 2 (tools highlight) | TBD | company page, via outreach.py |
+| 2026-09-28 | LinkedIn | Post 3 (privacy stance) | TBD | company page, via outreach.py |
 
 ## Syndication (canonical back to purplelink.llc)
 

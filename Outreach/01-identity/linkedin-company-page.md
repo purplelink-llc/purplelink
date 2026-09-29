@@ -56,7 +56,7 @@ Post Mondays 10am ET. Each is ~700 chars and links to a page on the site.
 ### Week 3 — Privacy stance
 > "Privacy-first" gets used loosely, so here's what it concretely means at Purplelink:
 >
-> Haea (our upcoming iOS health analytics app) processes everything on-device. No cloud sync to our servers. No third-party SDKs. No analytics calls. The data — sleep, nutrition, biometrics — is stored in your iPhone's Apple Health and analyzed locally.
+> Haea (our upcoming iOS health analytics app) processes everything on-device. No cloud sync to our servers. No third-party SDKs. No analytics calls. Sleep, nutrition, and biometrics are read from Apple Health and analyzed on the phone.
 >
 > That's an architectural decision, not a toggle you have to find. The app literally cannot leak data because the code that would leak it doesn't exist.
 >

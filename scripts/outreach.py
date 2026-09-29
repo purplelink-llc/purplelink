@@ -11,6 +11,7 @@ unit of work per channel, and writes the row to Outreach/OUTREACH-LOG.md.
     scripts/outreach.py bluesky  --next [--dry-run]   # next Post-N template post
     scripts/outreach.py texse [--days 60] [--max-views 10000]   # candidate scan
     scripts/outreach.py weekly [--dry-run]        # what launchd runs Tue-Thu 09:30
+    scripts/outreach.py lint                      # every unposted template: length, URLs, stale claims
 
 CHANNELS
   email     Gmail SMTP with the same Keychain app password mail-collect.py uses
@@ -424,7 +425,7 @@ def cmd_texse(a) -> int:
         for q in queries:
             params = urllib.parse.urlencode({
                 "site": "tex", "order": "desc", "sort": "creation", "q": q,
-                "fromdate": since, "accepted": "False", "pagesize": 30,
+                "fromdate": since, "accepted": "False", "closed": "False", "pagesize": 30,
             })
             try:
                 d = http_json(f"{SE_API}/search/advanced?{params}")
@@ -433,7 +434,7 @@ def cmd_texse(a) -> int:
                 continue
             quota = d.get("quota_remaining", quota)
             for it in d.get("items", []):
-                if it["view_count"] > a.max_views or it["link"] in logged:
+                if it["view_count"] > a.max_views or it["link"] in logged or any(str(it["question_id"]) in r for r in logged):
                     continue
                 if it["question_id"] in seen:
                     continue
@@ -462,6 +463,79 @@ def cmd_texse(a) -> int:
         print(f"  [{it['_template'][:2]}] {flag:>10} {it['view_count']:>5}v  {it['title'][:70]}\n"
               f"        {it['link']}")
     return 0
+
+
+# ── lint ─────────────────────────────────────────────────────────────────────
+
+# Phrases that were true when a template was written and go stale silently.
+# A hit is a "re-verify this claim against the live site before it posts" flag.
+STALE_CLAIMS = [
+    (r"\b(upcoming|coming soon|not (yet )?shipping|waitlist|pre-?order|beta)\b", "product-status wording"),
+    (r"\b(later|early|late) (this|next) (year|month)\b|\b20(2[5-9])\b", "dated ship/timing claim"),
+    (r"\$\s?\d", "price stated inline"),
+    (r"\b(asked about a lot|lots of people|many users|everyone)\b", "unverifiable popularity claim"),
+]
+LIMITS = {"Bluesky": 300, "LinkedIn": 3000}
+
+
+def url_alive(url: str) -> str:
+    req = urllib.request.Request(url if url.startswith("http") else "https://" + url,
+                                 headers={"User-Agent": UA}, method="HEAD")
+    try:
+        with urllib.request.urlopen(req, timeout=10, context=ssl_context()) as r:
+            return str(r.status)
+    except urllib.error.HTTPError as e:
+        return str(e.code)
+    except Exception as e:
+        return type(e).__name__
+
+
+def lint_text(label: str, text: str, limit: int | None) -> list[str]:
+    problems = []
+    if limit and len(text) > limit:
+        problems.append(f"{label}: {len(text)} chars > {limit} limit")
+    for m in URL_RE.finditer(text):
+        st = url_alive(m.group(0))
+        if st != "200":
+            problems.append(f"{label}: URL {m.group(0)} -> {st}")
+    for pat, why in STALE_CLAIMS:
+        for m in re.finditer(pat, text, re.I):
+            problems.append(f"{label}: re-verify '{m.group(0)}' ({why})")
+    return problems
+
+
+def cmd_lint(a) -> int:
+    """Print every queued-but-unposted item and check it before the scheduler drains it.
+
+    A content queue ages faster than the cadence that empties it; this is the
+    pre-arm read of the whole queue, not just the next item.
+    """
+    problems: list[str] = []
+    for platform, doc, hre in (("LinkedIn", LINKEDIN_DOC, r"^### Week (\d+) — (.+)$"),
+                               ("Bluesky", BLUESKY_DOC, r"^### Post (\d+) — (.+)$")):
+        done = posted_numbers(platform)
+        for n, (topic, text) in sorted(template_posts(doc, hre).items()):
+            if n in done:
+                continue
+            label = f"{platform} post {n} ({topic})"
+            print(f"\n== {label} [{len(text)} chars] ==\n{text}")
+            problems += lint_text(label, text, LIMITS[platform])
+    sent = libguide_sent_titles()
+    for n, t in sorted(libguide_targets().items()):
+        short = t["title"].split("·")[0].strip()
+        if any(short.split(" ")[0] in s for s in sent):
+            continue
+        label = f"Email target {n} ({short})"
+        body = strip_md(t["body"])
+        print(f"\n== {label} -> {t['email']} ==\nSubject: {t['subject']}\n{body}")
+        problems += lint_text(label, t["subject"] + "\n" + body, None)
+    print("\n== lint ==")
+    if not problems:
+        print("clean: no length, URL, or stale-claim flags in the unposted queue")
+        return 0
+    for p in problems:
+        print(f"- {p}")
+    return 2
 
 
 # ── status / weekly ──────────────────────────────────────────────────────────
@@ -517,12 +591,14 @@ def main() -> None:
     t.add_argument("--max-views", type=int, default=10000)
     t.add_argument("--show", type=int, default=8)
     sub.add_parser("weekly")
+    sub.add_parser("lint")
     a = ap.parse_args()
     for k, v in (("target", None), ("to", None), ("days", 60), ("max_views", 10000), ("show", 8)):
         if not hasattr(a, k):
             setattr(a, k, v)
     sys.exit({"status": cmd_status, "email": cmd_email, "linkedin": cmd_linkedin,
-              "bluesky": cmd_bluesky, "texse": cmd_texse, "weekly": cmd_weekly}[a.cmd](a))
+              "bluesky": cmd_bluesky, "texse": cmd_texse, "weekly": cmd_weekly,
+              "lint": cmd_lint}[a.cmd](a))
 
 
 if __name__ == "__main__":

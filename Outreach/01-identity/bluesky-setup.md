@@ -57,16 +57,16 @@ The custom-domain handle is verifiable: anyone who sees `@purplelink.llc` on a p
 > purplelink.llc/haea
 
 ### Post 4 — On Mac LaTeX editors
-> Published a comparison of the LaTeX editors that actually work on Mac in 2026 (TeXShop / Texifier / Octree / VS Code / Overleaf, plus what I'm building).
+> Compared the LaTeX editors that actually work on Mac: TeXShop, Texifier, Octree, VS Code, Overleaf, and my own ModernTex ($10 once).
 >
-> Honest take: most academics should pick TeXShop. Polished and modern? Texifier. My own answer, ModernTex, is $10 once at purplelink.llc/moderntex.
+> Honest take: most academics should pick TeXShop. Want polished and modern? Texifier.
 >
 > Full comparison: purplelink.llc/guides/best-mac-latex-editors
 
 ### Post 5 — Behind the build
 > Why one person, building three apps and a tools site?
 >
-> Because every decision is a craft decision. No growth team optimizing for engagement; no investor clock forcing the next pivot. The software gets to last longer than any quarterly OKR.
+> Because every decision is a craft decision. No growth team optimizing for engagement, no investor clock forcing the next pivot. The software gets to outlast any quarterly OKR.
 >
 > Curious whether others building solo feel the same trade-offs.
 
