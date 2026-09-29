@@ -275,7 +275,7 @@ async function emailDownloadLink(to, sessionId, productKey) {
         from: ORDER_FROM_ADDRESS,
         reply_to: ORDER_REPLY_TO,
         to: [to],
-        subject: `Your ${entry.name} download`,
+        subject: `Your ${entry.name.replace(/^the\s+/i, "")} download`,
         text,
         html,
       }),
