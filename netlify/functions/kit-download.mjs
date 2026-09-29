@@ -59,7 +59,7 @@ const FILES = {
     grants: new Set(["kit-clip", "kit-bundle"]),
   },
   // Spreadsheet templates (/sheets/). One .xlsx each; opens in Excel and
-  // imports into Google Sheets. The grant budget builder is bundle-only.
+  // imports into Google Sheets. The grant budget builder is bundle-only; the bundle grants all six files.
   "sheet-submission": {
     name: "journal-submission-tracker.xlsx",
     label: "Journal Submission & R&R Tracker (Excel / Google Sheets)",
@@ -76,19 +76,19 @@ const FILES = {
     name: "academic-job-market-tracker.xlsx",
     label: "Academic Job Market Tracker (Excel / Google Sheets)",
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    grants: new Set(["sheet-jobmarket"]),
+    grants: new Set(["sheet-jobmarket", "sheet-bundle"]),
   },
   "sheet-grantpipeline": {
     name: "grant-pipeline-tracker.xlsx",
     label: "Grant Pipeline & PI Effort Tracker (Excel / Google Sheets)",
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    grants: new Set(["sheet-grantpipeline"]),
+    grants: new Set(["sheet-grantpipeline", "sheet-bundle"]),
   },
   "sheet-reviewmatrix": {
     name: "systematic-review-screening-matrix.xlsx",
     label: "Systematic Review Screening Matrix (Excel / Google Sheets)",
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    grants: new Set(["sheet-reviewmatrix"]),
+    grants: new Set(["sheet-reviewmatrix", "sheet-bundle"]),
   },
   "sheet-grant-budget": {
     name: "grant-budget-builder.xlsx",
