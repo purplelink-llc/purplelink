@@ -43,7 +43,7 @@ BITS = {"etsy": 1, "payhip": 2, "gumroad": 4}
 
 ETSY_LISTS = ["https://www.etsy.com/your/orders/sold", "https://www.etsy.com/your/orders/sold/completed"]
 ETSY_ORDER = "https://www.etsy.com/your/orders/sold/{id}"
-PAYHIP_PAGES = ["https://payhip.com/orders", "https://payhip.com/dashboard/orders", "https://payhip.com/sales"]
+PAYHIP_PAGES = ["https://payhip.com/customers"]  # orders list lives under Customers; empty state reads "No orders have been made yet"
 GUMROAD_PAGES = ["https://gumroad.com/customers"]
 
 
@@ -216,7 +216,7 @@ def classify_page(url: str, text: str, has_password: bool) -> str:
 
 EMPTY_PHRASES = {
     "etsy": r"take a tour|no orders|you don.t have any (open |completed )?orders|orders\s+easily manage",
-    "payhip": r"no orders|no sales|nothing here yet",
+    "payhip": r"no orders|no sales|nothing here yet|no orders have been made yet",
     "gumroad": r"no sales|no customers|you haven.t (made|had) any",
 }
 
