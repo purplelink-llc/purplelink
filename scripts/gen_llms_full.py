@@ -42,6 +42,7 @@ PAGES = [
     "tools/citation-generator/",
     "globepin/",
     "haea/",
+    "binnacle/",
     "about/",
     "guides/methodology-problems-peer-reviewers-flag/",
     "guides/get-feedback-on-a-paper-before-submitting/",

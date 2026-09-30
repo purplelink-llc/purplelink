@@ -75,6 +75,13 @@
 - **Waitlist:** https://purplelink.llc/haea/
 - **Key differentiators:** Full on-device ML (Kalman filtering, Granger causality, biological age estimation); no cloud transmission of health data; privacy-first architecture as a core design constraint, not an add-on
 
+### Binnacle (macOS)
+- **Platform:** macOS 14+
+- **Description:** A local-first Mac app for solo founders, indie developers and creators. Keeps a double-entry ledger, imports income and expenses using your own API keys (Stripe, Mercury, Plaid, Square, Gumroad, Lemon Squeezy, Paddle, YouTube, App Store Connect, CSV), and estimates federal quarterly taxes for 2025 and 2026. It does not file returns and is not tax advice.
+- **Pricing:** Planned at about $49 per year with a 14-day trial; not final.
+- **Status:** Private beta. Waitlist only, not yet available to download.
+- **Waitlist:** https://purplelink.llc/binnacle/
+
 ## Open source
 
 ### Scholar Utility Belt
