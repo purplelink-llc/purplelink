@@ -40,4 +40,11 @@ r = run({"metric": {"kind": "manual", "how": "x"}, "review": (T0 + dt.timedelta(
 check(r["verdict"] == "REVIEW", "review date")
 r = run({"status": "kill-pending-ben", "metric": {"kind": "manual"}}, 3)
 check(r["verdict"] == "PENDING", "pending")
+r = run({"metric": {"kind": "forms", "form": "waitlist-x"}, "scale_if": {"gte": 3}}, 3)
+check(r["measured"] == 0, "forms metric missing key reads as 0")
+hist["sites"]["purplelink"]["latest"]["formBreakdown"] = [{"key": "waitlist-x", "count": 5}]
+r = run({"metric": {"kind": "forms", "form": "waitlist-x"}, "scale_if": {"gte": 3}}, 3)
+check(r["verdict"] == "SCALE" and r["measured"] == 5, "forms metric")
+r = run({"status": "proposed", "metric": {"kind": "manual", "how": "later"}}, 3)
+check(r["verdict"] == "PROPOSED", "proposed rows are not evaluated")
 print("experiments tests ok")

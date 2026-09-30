@@ -7,7 +7,7 @@
 
 Reads docs/growth-briefs/experiments.json (kept out of git: strategy notes) and
 ~/.purplelink/traffic/history.json (or $PURPLELINK_TRAFFIC_DIR). Read-only.
-Verdicts: SCALE, KILL, REVIEW (review date reached), PENDING (needs Ben), HOLD
+Verdicts: SCALE, KILL, REVIEW (review date reached), PENDING (needs Ben), PROPOSED (not started), HOLD
 (running, no trigger), MANUAL (nothing measurable), DONE (killed/scaled already).
 Guards: a kill needs age >= after_days; an orders-based scale needs n >= min_n.
 """
@@ -49,6 +49,11 @@ def measure(metric: dict, history: dict, started: dt.date) -> dict:
         paths = ((site.get("latest") or {}).get("topPaths")) or []
         v = next((p["count"] for p in paths if p.get("key") == metric["path"]), 0)
         return {"value": v, "n": v}
+    if kind == "forms":
+        site = (history.get("sites") or {}).get(metric.get("site", "purplelink")) or {}
+        rows = ((site.get("latest") or {}).get("formBreakdown")) or []
+        v = next((p["count"] for p in rows if p.get("key") == metric["form"]), 0)
+        return {"value": v, "n": v}
     if kind == "clicks":
         site = (history.get("sites") or {}).get(metric.get("site", "purplelink")) or {}
         rows = ((site.get("latest") or {}).get("checkoutByProduct")) or []
@@ -69,6 +74,9 @@ def evaluate(ex: dict, history: dict, today: dt.date) -> dict:
         return out
     if st == "kill-pending-ben":
         out.update(verdict="PENDING", detail=ex.get("on_kill", "needs Ben"))
+        return out
+    if st == "proposed":
+        out.update(verdict="PROPOSED", detail="not started; " + (m.get("how") or ex.get("hypothesis", "")))
         return out
     got = measure(m, history, started)
     out["measured"] = got["value"]
