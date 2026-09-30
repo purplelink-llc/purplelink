@@ -17,7 +17,7 @@ pass --public only after Ben has approved that specific video in chat.
 Prints the video URL on success. Exit 2 means the channel was not reachable
 (wrong account in the automation Chrome).
 """
-import argparse, os, sys, time
+import argparse, os, sys, time, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cdp_tab import Tab  # noqa: E402
@@ -46,7 +46,7 @@ def type_into(tab, selector_js, text):
         raise LookupError(selector_js)
     for t in ("mousePressed", "mouseReleased"):
         tab.send("Input.dispatchMouseEvent", type=t, x=box[0], y=box[1], button="left", clickCount=1)
-    time.sleep(0.3)
+    time.sleep(0.4)
     tab.send("Input.dispatchKeyEvent", type="keyDown", key="a", code="KeyA", modifiers=4,
              windowsVirtualKeyCode=65, commands=["selectAll"])
     tab.send("Input.dispatchKeyEvent", type="keyUp", key="a", code="KeyA", modifiers=4, windowsVirtualKeyCode=65)
@@ -68,8 +68,11 @@ def main():
     if len(a.title) > 100:
         sys.exit("title over 100 characters")
 
-    tab = Tab.new(UPLOAD_URL, background=True)
+    # Foreground on purpose: Chrome gives a hidden tab no layout, so every
+    # rect is 0x0 and Input events land nowhere. Studio's fields need real clicks.
+    tab = Tab.new(UPLOAD_URL)
     try:
+        urllib.request.urlopen(f"http://127.0.0.1:9340/json/activate/{tab.info['id']}").read()
         tab.wait_idle(8)
         if "permission" in tab.text().lower() and "Oops" in (tab.eval("document.title") or ""):
             print("automation Chrome is not signed in to an account that manages the channel", file=sys.stderr)
@@ -91,17 +94,18 @@ def main():
             type_into(tab, "document.querySelectorAll('#textbox')[1]", a.description)
 
         # Audience: not made for kids.
-        tab.eval("""(()=>{const r=[...document.querySelectorAll('tp-yt-paper-radio-button')]
-            .find(e=>/not made for kids/i.test(e.innerText)); if(r){r.scrollIntoView({block:'center'});} return !!r})()""")
-        time.sleep(0.5)
-        tab.click_text("No, it's not made for kids", tag="tp-yt-paper-radio-button", exact=False)
+        # Radios and buttons are Polymer web components; click their centre by
+        # the text they show, walking shadow roots (click_text does that).
+        # The audience radios sit in shadow DOM (body.innerText never sees
+        # them); click_text walks shadow roots and scrolls the target itself.
+        time.sleep(1)
+        tab.click_text("No, it's not made for kids")
 
         for _ in range(3):
-            tab.click_text("Next", tag="ytcp-button, button", exact=False)
+            tab.click_text("Next")
             time.sleep(1.5)
 
-        label = "Public" if a.public else "Unlisted"
-        tab.click_text(label, tag="tp-yt-paper-radio-button", exact=False)
+        tab.click_text("Public" if a.public else "Unlisted")
         time.sleep(0.8)
 
         # The upload itself must finish before Publish/Save is enabled.
@@ -110,14 +114,17 @@ def main():
             return !!b && !b.hasAttribute('disabled') && b.getAttribute('aria-disabled')!=='true'})()""", 900, 2)
         for name in ("Publish", "Save", "Done"):
             try:
-                tab.click_text(name, tag="ytcp-button, button")
+                tab.click_text(name)
                 break
             except LookupError:
                 continue
         link = wait_for(tab, """(()=>{const a=[...document.querySelectorAll('a')]
             .find(x=>/youtu\\.be\\//.test(x.href)); return a? a.href : null})()""", 120)
         print(link)
-    finally:
+    except Exception:
+        print(f"left the Studio tab open for manual recovery: {tab.url()}", file=sys.stderr)
+        raise
+    else:
         tab.close()
 
 
