@@ -24,8 +24,8 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=f87c816421">
-    <link rel="stylesheet" href="/motion.css?v=6ab23a954d">
+    <link rel="stylesheet" href="/styles.css?v=a23117e78d">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=2d9de1f83d" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script type="application/ld+json">
@@ -113,13 +113,17 @@
       </nav>
     </header>
 
-    <main id="main-content" class="static-page">
+    <main id="main-content" class="static-page about-page">
       <h1>About Purplelink</h1>
       <p class="page-meta">Atlanta, Georgia · Founded 2026 · Georgia LLC</p>
 
-      <p>Purplelink LLC is a one-person software studio building Mac apps and manuscript tools for academic researchers, plus iOS apps for travel and health. The mission is simple: make software that solves real problems and lasts, not software that ships fast and deteriorates.</p>
+      <p class="about-lede">Purplelink LLC is a one-person software studio building Mac apps and manuscript tools for academic researchers, plus iOS apps for travel and health. The mission is simple: make software that solves real problems and lasts, not software that ships fast and deteriorates.</p>
 
-      <section class="founder-note" aria-labelledby="founder-h">
+      <section class="founder-note founder-note-photo" aria-labelledby="founder-h">
+        <figure class="founder-photo">
+          <img src="/assets/photography/matterhorn-800.webp" srcset="/assets/photography/matterhorn-800.webp 800w, /assets/photography/matterhorn.webp 1440w" sizes="(max-width: 859px) 92vw, 260px" alt="The Matterhorn reflected in the still water of Riffelsee under a deep blue sky" width="800" height="532" loading="lazy" decoding="async">
+          <figcaption>The Matterhorn from Riffelsee, Switzerland. One of Ben's photographs; the collection is <a href="/photography/">on this site</a> and sold as prints.</figcaption>
+        </figure>
         <h2 id="founder-h">Who makes this</h2>
         <p>I'm Benjamin Ampel, a researcher in cybersecurity, AI and information systems, based in Atlanta. I've spent a lot of time in LaTeX: writing manuscripts, watching compile errors scroll by, checking references by hand before a deadline. The apps that stuck, for me, were always the ones that solved a specific problem I had, for people I understood. Purplelink is where I build those.</p>
         <p>My day job is assistant professor of computer information systems at Georgia State University's Robinson College of Business. My research is on AI for cybersecurity, published in venues including MIS Quarterly and the Journal of Management Information Systems. I hold a PhD from the University of Arizona, and my dissertation received the ACM SIGMIS Doctoral Dissertation Award. My research profile is on <a href="https://scholar.google.com/citations?user=XDdwaZUAAAAJ">Google Scholar</a>, <a href="https://robinson.gsu.edu/profile/benjamin-ampel/">Georgia State</a>, and <a href="https://bampel.com/">bampel.com</a>.</p>
@@ -132,26 +136,32 @@
 
       <div class="about-values about-products">
         <div class="about-value">
+          <img class="about-value-icon" src="/assets/moderntex-icon.webp" alt="" width="40" height="40" loading="lazy">
           <h3><a href="/moderntex/">ModernTex</a></h3>
           <p>A native macOS LaTeX studio for academic researchers. Multi-file editing, synchronized PDF preview, BibTeX autocomplete, and submission-readiness checks built for the manuscript workflow. Shipping since September 2026, now at version 1.3; a free 7-day trial, then $10 once.</p>
         </div>
         <div class="about-value">
+          <img class="about-value-icon" src="/assets/vitae-icon.webp" alt="" width="40" height="40" loading="lazy">
           <h3><a href="/vitae/">Vitae</a></h3>
           <p>A local-first Mac app for academics: submissions, grants, projects and your CV in one place. Free, with an optional <a href="/vitae/plus/">Vitae Plus</a> subscription from $3 a month.</p>
         </div>
         <div class="about-value">
+          <span class="about-value-tile" aria-hidden="true">PR</span>
           <h3><a href="/tools/paper-review/">Paper Review</a></h3>
           <p>A pre-submission read of your manuscript: four AI reviewers, a check of every reference against CrossRef, and a figure scan. From $9 with no account, and the manuscript is deleted within a day.</p>
         </div>
         <div class="about-value">
+          <span class="about-value-tile" aria-hidden="true">TeX</span>
           <h3><a href="/tools/">Free tools</a></h3>
           <p>LaTeX to PDF, BibTeX validation, citation generation, LaTeX diff and more, in your browser. Plus <a href="/#scholar">Scholar Utility Belt</a>, a Chrome extension for Google Scholar with a free core.</p>
         </div>
         <div class="about-value">
+          <img class="about-value-icon" src="/assets/haea-icon.webp" alt="" width="40" height="40" loading="lazy">
           <h3><a href="/haea/">Haea</a></h3>
           <p>An on-device iOS health analytics platform. Advanced ML models for recovery, circadian rhythm, and biological age, all running locally with no cloud sync.</p>
         </div>
         <div class="about-value">
+          <img class="about-value-icon" src="/assets/globepin-icon.webp" alt="" width="40" height="40" loading="lazy">
           <h3><a href="/globepin/">GlobePin</a></h3>
           <p>An iOS travel tracking app for mapping everywhere you've been, every flight taken, and every destination on the list. 3D globe, stats, goals, and shareable postcards. Version 1.0 shipped in September 2026, <a href="https://apps.apple.com/us/app/globepin/id6762313540">free on the App Store</a>.</p>
         </div>
@@ -179,6 +189,11 @@
       </div>
 
       <h2>Photography</h2>
+      <div class="photo-strip" data-motion="stagger">
+        <a href="/photography/"><img src="/assets/photography/saguaro-sunset-800.webp" alt="A dark desert mountain silhouetted against an orange and gold sunset above saguaro cactus" width="800" height="532" loading="lazy" decoding="async"></a>
+        <a href="/photography/"><img src="/assets/photography/hozu-gorge-800.webp" alt="Mist rising from forested slopes above the Hozu River near Arashiyama" width="800" height="400" loading="lazy" decoding="async"></a>
+        <a href="/photography/"><img src="/assets/photography/skogafoss-800.webp" alt="Skógafoss waterfall falling from a green cliff, with a rainbow in the spray at its base" width="800" height="533" loading="lazy" decoding="async"></a>
+      </div>
       <p>Purplelink also sells Benjamin Ampel's travel and landscape photographs as canvas, framed, and fine art prints. The collection covers the Swiss Alps, Japan, Iceland, Germany, and the Arizona desert. Browse it on <a href="https://fineartamerica.com/profiles/benjamin-ampel">Fine Art America</a>, or read <a href="/blog/travel-photographs-as-prints/">how the collection is organized</a>.</p>
 
       <h2>Contact</h2>

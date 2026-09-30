@@ -67,8 +67,8 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=f87c816421">
-    <link rel="stylesheet" href="/motion.css?v=6ab23a954d">
+    <link rel="stylesheet" href="/styles.css?v=a23117e78d">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=2d9de1f83d" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
   </head>
@@ -91,7 +91,7 @@
     <main id="main-content" data-progress>
       <a class="back-link" href="/products/">← Products</a>
 
-      <section class="catalog-hero">
+      <section class="catalog-hero catalog-hero-with-visual">
         <p class="eyebrow">Chrome extension, free core</p>
         <h1>Scholar Utility Belt</h1>
         <p class="catalog-lede">Scholar Utility Belt is a Chrome extension that adds journal quality badges, citation velocity, author metrics, lineage trees and retraction alerts to Google Scholar results. The core is free and open source. Since version 0.6.0 a few workflow tools are part of an optional Pro tier. The ranking lists ship inside the extension, so badges need no network request.</p>
@@ -100,6 +100,30 @@
           <a class="btn btn-ghost" href="https://github.com/purplelink-llc" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
         </div>
         <p class="sub-proof"><strong>About 1,000 researchers</strong> use it. Rated <strong>4.5 out of 5</strong> from 16 ratings on the Chrome Web Store.</p>
+        <figure class="scholar-demo scholar-demo-light catalog-hero-visual" data-motion="reveal">
+          <div class="scholar-demo-result">
+            <span class="scholar-demo-title">Attention sinks in small vision transformers</span>
+            <span class="scholar-demo-meta">J Smith, A Vaswani · MIS Quarterly, 2024 · Cited by 1,204</span>
+            <div class="scholar-demo-badges" aria-label="Badges the extension adds">
+              <span class="sd-rank">ABDC A*</span><span class="sd-rank">FT50</span><span class="sd-rank">UTD24</span><span>SJR Q1</span><span class="sd-velocity">+38 citations / year</span>
+            </div>
+          </div>
+          <div class="scholar-demo-result">
+            <span class="scholar-demo-title">Deep learning for threat intelligence: a survey</span>
+            <span class="scholar-demo-meta">B Ampel, S Samtani · Journal of Management Information Systems, 2023 · Cited by 96</span>
+            <div class="scholar-demo-badges">
+              <span class="sd-rank">ABDC A*</span><span class="sd-rank">FT50</span><span>SJR Q1</span><span class="sd-velocity">+31 citations / year</span><span>h-index 14 · g-index 22</span>
+            </div>
+          </div>
+          <div class="scholar-demo-result">
+            <span class="scholar-demo-title">A unified theory of everything in one regression</span>
+            <span class="scholar-demo-meta">R Doe · Journal of Examples, 2019 · Cited by 312</span>
+            <div class="scholar-demo-badges">
+              <span class="sd-retracted">Retracted</span><span>SJR Q3</span><span class="sd-velocity">+2 citations / year</span>
+            </div>
+          </div>
+          <figcaption>What the extension adds beside a Google Scholar result. The papers and numbers here are made up to show each badge.</figcaption>
+        </figure>
       </section>
 
       <section class="catalog-section tour-section">
@@ -186,6 +210,10 @@
           <p class="eyebrow">From the same studio</p>
           <h2 id="sub-next">Found the papers. Now write yours.</h2>
           <p>ModernTex is a native LaTeX editor for Mac with BibTeX completion that searches by author or title. Paper Review reads your manuscript before a journal does. Both are made by the same one-person studio as this extension.</p>
+        </div>
+        <div class="cover-row cover-row-xl" data-motion="stagger">
+          <a href="/moderntex/"><img src="/assets/moderntex-screens/01-editor-clean-800.webp" srcset="/assets/moderntex-screens/01-editor-clean-800.webp 800w, /assets/moderntex-screens/01-editor-clean-1440.webp 1440w" sizes="(max-width: 600px) 92vw, 300px" alt="ModernTex: LaTeX source and the compiled PDF side by side" width="800" height="440" loading="lazy" decoding="async"></a>
+          <a href="/tools/paper-review/sample/"><img src="/assets/tool-shots/paper-review-sample-800.webp" srcset="/assets/tool-shots/paper-review-sample-800.webp 800w, /assets/tool-shots/paper-review-sample.webp 1440w" sizes="(max-width: 600px) 92vw, 300px" alt="A sample Paper Review report, quoting the manuscript for each finding" width="800" height="290" loading="lazy" decoding="async"></a>
         </div>
         <div class="catalog-actions">
           <a class="btn btn-primary" href="/moderntex/">See ModernTex, $10</a>

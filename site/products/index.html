@@ -62,8 +62,8 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css?v=f87c816421">
-    <link rel="stylesheet" href="/motion.css?v=6ab23a954d">
+    <link rel="stylesheet" href="/styles.css?v=a23117e78d">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=2d9de1f83d" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
   </head>
@@ -84,10 +84,25 @@
     </header>
 
     <main id="main-content" data-progress>
-      <section class="catalog-hero">
+      <section class="catalog-hero catalog-hero-with-visual">
         <p class="eyebrow">Products</p>
         <h1>Tools for the paper, <em>from first draft to accepted.</em></h1>
         <p class="catalog-lede">Two Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on <a href="/pricing/">one page</a>. None of it needs an account.</p>
+        <div class="collage catalog-hero-visual" aria-hidden="true">
+          <div class="collage-icons">
+            <img src="/assets/moderntex-icon.webp" alt="" width="52" height="52">
+            <img src="/assets/vitae-icon.webp" alt="" width="52" height="52">
+            <img src="/assets/globepin-icon.webp" alt="" width="52" height="52">
+            <img src="/assets/haea-icon.webp" alt="" width="52" height="52">
+            <span>SUB</span>
+          </div>
+          <figure class="collage-window frame-soft">
+            <img src="/assets/moderntex-screens/01-editor-clean-800.webp" srcset="/assets/moderntex-screens/01-editor-clean-800.webp 800w, /assets/moderntex-screens/01-editor-clean-1440.webp 1440w" sizes="(max-width: 1099px) 80vw, 40vw" alt="" width="800" height="440" decoding="async">
+          </figure>
+          <figure class="collage-phone frame-phone">
+            <img src="/assets/globepin-screens/03-globe-400.webp" srcset="/assets/globepin-screens/03-globe-400.webp 400w, /assets/globepin-screens/03-globe-800.webp 800w" sizes="(max-width: 640px) 42vw, 15vw" alt="" width="800" height="1739" decoding="async">
+          </figure>
+        </div>
       </section>
 
       <section class="catalog-section tour-section">
@@ -133,7 +148,7 @@
           </div>
         </div>
         <figure class="catalog-feature-shot">
-          <img src="/assets/moderntex-screens/08-table-editor.webp" alt="ModernTex table editor turning pasted spreadsheet cells into a booktabs LaTeX table" width="2940" height="1862" loading="lazy" decoding="async">
+          <img src="/assets/moderntex-screens/08-table-editor-800.webp" srcset="/assets/moderntex-screens/08-table-editor-800.webp 800w, /assets/moderntex-screens/08-table-editor.webp 2940w" sizes="(max-width: 960px) 92vw, 55vw" alt="ModernTex table editor turning pasted spreadsheet cells into a booktabs LaTeX table" width="2940" height="1862" loading="lazy" decoding="async">
         </figure>
       </section>
 
@@ -144,6 +159,11 @@
         </div>
         <div class="catalog-grid catalog-grid-2" data-motion="stagger">
           <a class="catalog-card" href="/vitae/">
+            <div class="peek peek-wide catalog-card-media">
+              <figure class="frame-soft">
+                <img src="/assets/vitae-screens/dashboard-800.webp" srcset="/assets/vitae-screens/dashboard-800.webp 800w, /assets/vitae-screens/dashboard-1440.webp 1440w" sizes="(max-width: 640px) 92vw, 46vw" alt="Vitae dashboard with sample data: submissions, acceptance rate, funding and deadlines" width="800" height="415" loading="lazy" decoding="async">
+              </figure>
+            </div>
             <img class="catalog-icon" src="/assets/vitae-icon.webp" alt="" width="56" height="56" loading="lazy">
             <span class="catalog-card-price">Free</span>
             <h3>Vitae</h3>
@@ -151,6 +171,11 @@
             <span class="catalog-card-cta">Download Vitae →</span>
           </a>
           <a class="catalog-card" href="/vitae/plus/">
+            <div class="peek peek-wide catalog-card-media">
+              <figure class="frame-soft">
+                <img src="/assets/vitae-screens/cv-800.webp" srcset="/assets/vitae-screens/cv-800.webp 800w, /assets/vitae-screens/cv-1440.webp 1440w" sizes="(max-width: 640px) 92vw, 46vw" alt="Vitae's CV view: a formatted academic CV generated from the tracked record" width="800" height="592" loading="lazy" decoding="async">
+              </figure>
+            </div>
             <img class="catalog-icon" src="/assets/vitae-icon.webp" alt="" width="56" height="56" loading="lazy">
             <span class="catalog-card-price">$3 a month or $24 a year</span>
             <h3>Vitae Plus</h3>
@@ -168,6 +193,11 @@
         </div>
         <div class="catalog-grid catalog-grid-3" data-motion="stagger">
           <a class="catalog-card catalog-card-lead" href="/tools/paper-review/">
+            <div class="peek peek-wide catalog-card-media">
+              <figure class="frame-browser" data-url="purplelink.llc/tools/paper-review/sample/">
+                <img src="/assets/tool-shots/paper-review-sample-800.webp" srcset="/assets/tool-shots/paper-review-sample-800.webp 800w, /assets/tool-shots/paper-review-sample.webp 1440w" sizes="(max-width: 960px) 92vw, 30vw" alt="The sample Paper Review report: critical blind spots, each quoting the manuscript and naming the reviewer that raised it" width="800" height="290" loading="lazy" decoding="async">
+              </figure>
+            </div>
             <span class="catalog-card-price">$9 · $11 · $15</span>
             <h3>Paper Review</h3>
             <p>Four AI reviewers read the manuscript the way a panel would: methods, statistics, data integrity and the editor's view. Every reference is checked against CrossRef and the figures are scanned. Markdown report and annotated PDF.</p>
@@ -233,6 +263,11 @@
             <span class="catalog-card-cta">See the extension →</span>
           </a>
           <a class="catalog-card" href="/tools/">
+            <div class="peek peek-wide catalog-card-media">
+              <figure class="frame-browser" data-url="purplelink.llc/tools/equation-renderer/">
+                <img src="/assets/tool-shots/equation-renderer-800.webp" srcset="/assets/tool-shots/equation-renderer-800.webp 800w, /assets/tool-shots/equation-renderer.webp 1440w" sizes="(max-width: 640px) 92vw, 46vw" alt="The Equation Renderer with a LaTeX loss function typed in, ready to render at print resolution" width="800" height="500" loading="lazy" decoding="async">
+              </figure>
+            </div>
             <span class="catalog-tile" aria-hidden="true">TeX</span>
             <span class="catalog-card-price">Free · in your browser</span>
             <h3>LaTeX and citation tools</h3>
@@ -249,6 +284,11 @@
         </div>
         <div class="catalog-grid catalog-grid-2" data-motion="stagger">
           <a class="catalog-card" href="/globepin/">
+            <div class="peek peek-wide peek-dark catalog-card-media">
+              <figure class="frame-phone">
+                <img src="/assets/globepin-screens/02-map-400.webp" srcset="/assets/globepin-screens/02-map-400.webp 400w, /assets/globepin-screens/02-map-800.webp 800w" sizes="(max-width: 640px) 42vw, 15vw" alt="GlobePin's map with pinned cities and flight arcs across Europe" width="800" height="1739" loading="lazy" decoding="async">
+              </figure>
+            </div>
             <img class="catalog-icon" src="/assets/globepin-icon.webp" alt="" width="56" height="56" loading="lazy">
             <span class="catalog-card-price">Free on the App Store</span>
             <h3>GlobePin</h3>
@@ -256,6 +296,11 @@
             <span class="catalog-card-cta">See GlobePin →</span>
           </a>
           <a class="catalog-card" href="/haea/">
+            <div class="peek peek-wide catalog-card-media">
+              <figure class="frame-phone">
+                <img src="/assets/haea-screens/02-strength-400.webp" srcset="/assets/haea-screens/02-strength-400.webp 400w, /assets/haea-screens/02-strength-800.webp 800w" sizes="(max-width: 640px) 42vw, 15vw" alt="Haea's Strength view with a workout program and a mobility assessment" width="800" height="1739" loading="lazy" decoding="async">
+              </figure>
+            </div>
             <img class="catalog-icon" src="/assets/haea-icon.webp" alt="" width="56" height="56" loading="lazy">
             <span class="catalog-card-price">In development</span>
             <h3>Haea</h3>
@@ -280,20 +325,29 @@
         </div>
       </section>
 
-      <section class="catalog-section" aria-labelledby="cat-kits">
+      <section class="catalog-section catalog-section-media" aria-labelledby="cat-kits">
         <div class="catalog-section-head">
           <p class="eyebrow">For builders</p>
           <h2 id="cat-kits">Kits</h2>
           <p>Production-tested automation systems, each with a setup guide: a content pipeline, a static-site monetization stack and a clip pipeline. One-time purchase, from $10.</p>
         </div>
+        <div class="cover-row" data-motion="stagger">
+          <a href="/kits/faceless-content-pipeline/"><img src="/kits/assets/faceless-cover.png" alt="Cover of the Faceless Content Pipeline guide" width="1240" height="1754" loading="lazy" decoding="async"></a>
+          <a href="/kits/monetization-stack/"><img src="/kits/assets/monetization-cover.png" alt="Cover of the Monetization Stack guide" width="1240" height="1754" loading="lazy" decoding="async"></a>
+          <a href="/kits/clip-pipeline/"><img src="/kits/assets/clip-cover.png" alt="Cover of the Clip Pipeline guide" width="1241" height="1754" loading="lazy" decoding="async"></a>
+        </div>
         <a class="btn btn-ghost" href="/kits/">See the kits</a>
       </section>
 
-      <section class="catalog-section" aria-labelledby="cat-sheets">
+      <section class="catalog-section catalog-section-media" aria-labelledby="cat-sheets">
         <div class="catalog-section-head">
           <p class="eyebrow">For researchers</p>
           <h2 id="cat-sheets">Spreadsheets</h2>
           <p>Excel and Google Sheets files for the work around research: a submission and R&amp;R tracker, a tenure dossier tracker, an academic job market tracker, a grant pipeline and effort tracker, a systematic review screening matrix, an NSF/NIH grant budget builder, and two live sheets that fill themselves with your citations or funding calls. From $9.</p>
+        </div>
+        <div class="cover-row cover-row-wide" data-motion="stagger">
+          <a href="/sheets/submission-tracker/"><img src="/sheets/assets/submission-tracker-800.webp" alt="The Journal Submission and R&amp;R Tracker dashboard" width="800" height="533" loading="lazy" decoding="async"></a>
+          <a href="/sheets/tenure-tracker/"><img src="/sheets/assets/tenure-tracker-800.webp" alt="The Tenure and Promotion Dossier Tracker dashboard" width="800" height="533" loading="lazy" decoding="async"></a>
         </div>
         <a class="btn btn-ghost" href="/sheets/">See the spreadsheets</a>
       </section>

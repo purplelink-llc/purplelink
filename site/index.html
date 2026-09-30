@@ -157,8 +157,8 @@
          wait for a second font fetch after the regular weight already arrived. -->
     <link rel="preload" href="/assets/fonts/fraunces-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="styles.css?v=f87c816421">
-    <link rel="stylesheet" href="/motion.css?v=6ab23a954d">
+    <link rel="stylesheet" href="styles.css?v=a23117e78d">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=2d9de1f83d" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
@@ -207,7 +207,7 @@
         </div>
 
         <div class="hero-visual" aria-hidden="true">
-          <img class="hero-visual-shot" src="/assets/moderntex-screens/07-tikz-editor-1440.webp" alt="" width="1440" height="919" decoding="async">
+          <img class="hero-visual-shot" src="/assets/moderntex-screens/07-tikz-editor-1440.webp" alt="" width="1440" height="919" fetchpriority="high" decoding="async">
           <div class="hero-visual-card">
             <span class="hero-visual-kicker">Paper Review · Critical blind spot</span>
             <strong>Hyperparameter search asymmetry favors the proposed method.</strong>
@@ -314,6 +314,23 @@
             <p class="scholar-source">Rating and install count from the Chrome Web Store.</p>
           </div>
         </div>
+        <figure class="scholar-demo" data-motion="reveal">
+          <div class="scholar-demo-result">
+            <span class="scholar-demo-title">Attention sinks in small vision transformers</span>
+            <span class="scholar-demo-meta">J Smith, A Vaswani · MIS Quarterly, 2024 · Cited by 1,204</span>
+            <div class="scholar-demo-badges" aria-label="Badges the extension adds">
+              <span class="sd-rank">ABDC A*</span><span class="sd-rank">FT50</span><span class="sd-rank">UTD24</span><span>SJR Q1</span><span class="sd-velocity">+38 citations / year</span>
+            </div>
+          </div>
+          <div class="scholar-demo-result">
+            <span class="scholar-demo-title">A unified theory of everything in one regression</span>
+            <span class="scholar-demo-meta">R Doe · Journal of Examples, 2019 · Cited by 312</span>
+            <div class="scholar-demo-badges">
+              <span class="sd-retracted">Retracted</span><span>SJR Q3</span><span class="sd-velocity">+2 citations / year</span>
+            </div>
+          </div>
+          <figcaption>What the extension adds beside a Google Scholar result, drawn here with made-up papers.</figcaption>
+        </figure>
       </section>
 
       <!-- ── Apps lineup ──────────────────────────────────── -->
@@ -325,11 +342,16 @@
           <h2 class="section-title">More from the studio</h2>
         </div>
 
-        <ul class="product-list">
+        <ul class="studio-grid" data-motion="stagger">
           <li>
-            <a class="product-item-link" href="/vitae/">
+            <a class="studio-card" href="/vitae/">
+              <div class="peek">
+                <figure class="frame-soft">
+                  <img src="/assets/vitae-screens/dashboard-800.webp" srcset="/assets/vitae-screens/dashboard-800.webp 800w, /assets/vitae-screens/dashboard-1440.webp 1440w" sizes="(max-width: 960px) 92vw, 30vw" alt="Vitae dashboard with sample data: papers under review, acceptance rate, funding and the next deadlines" width="800" height="415" loading="lazy" decoding="async">
+                </figure>
+              </div>
               <div class="product-item">
-                <img class="product-icon" src="/assets/vitae-icon.webp" alt="Vitae app icon" width="72" height="72" loading="lazy">
+                <img class="product-icon" src="/assets/vitae-icon.webp" alt="" width="72" height="72" loading="lazy">
                 <div class="product-body">
                   <div class="product-meta">
                     <span class="platform-tag platform-macos">macOS</span>
@@ -343,9 +365,14 @@
           </li>
 
           <li>
-            <a class="product-item-link" href="/haea/">
+            <a class="studio-card" href="/haea/">
+              <div class="peek">
+                <figure class="frame-phone">
+                  <img src="/assets/haea-screens/01-today-400.webp" srcset="/assets/haea-screens/01-today-400.webp 400w, /assets/haea-screens/01-today-800.webp 800w" sizes="(max-width: 640px) 42vw, 15vw" alt="Haea's Today view: a morning briefing, a command center and today's sleep, movement and recovery" width="800" height="1739" loading="lazy" decoding="async">
+                </figure>
+              </div>
               <div class="product-item">
-                <img class="product-icon" src="/assets/haea-icon.webp" alt="Haea app icon" width="72" height="72" loading="lazy">
+                <img class="product-icon" src="/assets/haea-icon.webp" alt="" width="72" height="72" loading="lazy">
                 <div class="product-body">
                   <div class="product-meta">
                     <span class="platform-tag platform-ios">iOS</span>
@@ -359,9 +386,14 @@
           </li>
 
           <li>
-            <a class="product-item-link" href="/globepin/">
+            <a class="studio-card" href="/globepin/">
+              <div class="peek peek-dark">
+                <figure class="frame-phone">
+                  <img src="/assets/globepin-screens/03-globe-400.webp" srcset="/assets/globepin-screens/03-globe-400.webp 400w, /assets/globepin-screens/03-globe-800.webp 800w" sizes="(max-width: 640px) 42vw, 15vw" alt="GlobePin's 3D globe at night, with flight arcs from Europe across the Atlantic" width="800" height="1739" loading="lazy" decoding="async">
+                </figure>
+              </div>
               <div class="product-item">
-                <img class="product-icon" src="/assets/globepin-icon.webp" alt="GlobePin app icon" width="72" height="72" loading="lazy">
+                <img class="product-icon" src="/assets/globepin-icon.webp" alt="" width="72" height="72" loading="lazy">
                 <div class="product-body">
                   <div class="product-meta">
                     <span class="platform-tag platform-ios">iOS</span>
@@ -378,28 +410,33 @@
 
       <!-- ── Free tools (researcher front door) ──────────── -->
       <section id="tools" class="section-tools">
-        <div class="tools-inner">
-          <div class="section-top">
-            <div class="section-top-left">
-              <p class="eyebrow">Free · in your browser</p>
+        <div class="tools-inner tools-inner-split">
+          <div class="tools-copy">
+            <div class="section-top">
+              <div class="section-top-left">
+                <p class="eyebrow">Free · in your browser</p>
+              </div>
+              <h2 class="section-title">Free tools for academic writing</h2>
             </div>
-            <h2 class="section-title">Free tools for academic writing</h2>
+            <p class="tools-lede">LaTeX to PDF, BibTeX validation, citation generation, Markdown conversion, and more than twenty others. Everything runs in your browser or an ephemeral container.</p>
+            <p class="tools-privacy"><strong>Files are processed in memory and never stored.</strong> No account, no upload retention.</p>
+            <div class="recent-tools" data-recent-tools hidden></div>
+            <div class="tool-chips" data-motion="stagger">
+              <a class="tool-chip" href="/tools/latex-to-pdf/">LaTeX to PDF</a>
+              <a class="tool-chip" href="/tools/bib-validator/">BibTeX validator</a>
+              <a class="tool-chip" href="/tools/citation-generator/">Citation generator</a>
+              <a class="tool-chip" href="/tools/latex-diff/">LaTeX diff</a>
+              <a class="tool-chip" href="/tools/markdown-to-pdf/">Markdown to PDF</a>
+              <a class="tool-chip" href="/tools/word-counter/">Word counter</a>
+              <a class="tool-chip" href="/tools/abstract-checker/">Abstract checker</a>
+              <a class="tool-chip" href="/tools/submission-checklist/">Submission checklist</a>
+              <a class="tool-chip" href="/tools/response-letter-template/">Response letter template</a>
+            </div>
+            <a class="btn btn-ghost" href="/tools/">Browse all tools</a>
           </div>
-          <p class="tools-lede">LaTeX to PDF, BibTeX validation, citation generation, Markdown conversion, and more than twenty others. Everything runs in your browser or an ephemeral container.</p>
-          <p class="tools-privacy"><strong>Files are processed in memory and never stored.</strong> No account, no upload retention.</p>
-          <div class="recent-tools" data-recent-tools hidden></div>
-          <div class="tool-chips" data-motion="stagger">
-            <a class="tool-chip" href="/tools/latex-to-pdf/">LaTeX to PDF</a>
-            <a class="tool-chip" href="/tools/bib-validator/">BibTeX validator</a>
-            <a class="tool-chip" href="/tools/citation-generator/">Citation generator</a>
-            <a class="tool-chip" href="/tools/latex-diff/">LaTeX diff</a>
-            <a class="tool-chip" href="/tools/markdown-to-pdf/">Markdown to PDF</a>
-            <a class="tool-chip" href="/tools/word-counter/">Word counter</a>
-            <a class="tool-chip" href="/tools/abstract-checker/">Abstract checker</a>
-            <a class="tool-chip" href="/tools/submission-checklist/">Submission checklist</a>
-            <a class="tool-chip" href="/tools/response-letter-template/">Response letter template</a>
-          </div>
-          <a class="btn btn-ghost" href="/tools/">Browse all tools</a>
+          <figure class="tools-shot frame-browser" data-url="purplelink.llc/tools/latex-table-generator/" data-motion="reveal">
+            <img src="/assets/tool-shots/latex-table-generator-800.webp" srcset="/assets/tool-shots/latex-table-generator-800.webp 800w, /assets/tool-shots/latex-table-generator.webp 1440w" sizes="(max-width: 999px) 92vw, 42vw" alt="The LaTeX Table Generator with a pasted CSV of model results and the booktabs, header and caption options" width="800" height="500" loading="lazy" decoding="async">
+          </figure>
         </div>
       </section>
 

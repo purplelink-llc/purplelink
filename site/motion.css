@@ -136,12 +136,23 @@
       to   { scale: 1; }
     }
     .screenshot-wide img,
-    .screenshot-grid img {
+    .screenshot-grid > *,
+    .tools-shot,
+    .catalog-feature-shot img,
+    .founder-photo,
+    .kit-bundle-covers,
+    .pr-hero-visual .frame-browser {
       animation: motion-depth var(--motion-ease) backwards;
       animation-timeline: view();
       animation-range: entry 0% entry 75%;
     }
-    .screenshot-grid img:nth-child(even) { animation-range: entry 10% entry 90%; }
+    .screenshot-grid > :nth-child(even) { animation-range: entry 10% entry 90%; }
+    /* Card media settles as the card scrolls in, a touch slower than the card. */
+    .peek > * {
+      animation: motion-settle var(--motion-ease) backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
     .flagship-shot img {
       animation: motion-settle var(--motion-ease) backwards;
       animation-timeline: view();
@@ -251,11 +262,11 @@
   .feature-item:hover::before,
   .feature-item:focus-within::before { transform: scaleX(1); }
 
-  /* Gallery: a gentle zoom on the phone screenshots. */
-  .screenshot-grid img {
+  /* Gallery: a gentle zoom on bare phone screenshots (framed ones lift instead). */
+  .screenshot-grid > img {
     transition: transform 0.6s var(--motion-ease), box-shadow 0.6s var(--motion-ease);
   }
-  .screenshot-grid img:hover {
+  .screenshot-grid > img:hover {
     transform: scale(1.03);
     box-shadow: 0 16px 36px oklch(50% 0.24 310 / 0.16);
     position: relative;
