@@ -26,7 +26,9 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/moderntex-icon.webp" as="image" fetchpriority="high">
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
+    <link rel="stylesheet" href="/motion.css?v=10d2437dff">
     <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <script src="/motion.js?v=b15d43b120" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
     {
@@ -196,8 +198,13 @@
     <section class="screenshots-section">
       <p class="eyebrow">In the app</p>
       <h2>Source and PDF, always in sync</h2>
-      <div class="screenshot-wide">
+      <div class="screenshot-wide hero-media" data-motion="video">
         <img src="/assets/moderntex-screens/01-editor-clean.webp" srcset="/assets/moderntex-screens/01-editor-clean-1440.webp 1440w, /assets/moderntex-screens/01-editor-clean.webp 2880w" sizes="(max-width: 1500px) 92vw, 1470px" alt="ModernTex editor: document outline, LaTeX source with syntax highlighting, and live PDF preview side by side" width="2880" height="1584" decoding="async" fetchpriority="high">
+        <video muted loop playsinline preload="none" poster="/assets/moderntex-screens/01-editor-clean-1440.webp" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+          <source data-src="/assets/video/moderntex-hero.webm" type="video/webm">
+          <source data-src="/assets/video/moderntex-hero.mp4" type="video/mp4">
+        </video>
+        <button type="button" class="motion-toggle" data-motion-toggle hidden>Pause video</button>
       </div>
     </section>
 
@@ -205,7 +212,7 @@
       <p class="eyebrow">New in 1.3</p>
       <h2>Two things nobody enjoys writing by hand</h2>
       <p class="section-intro">A TikZ diagram and a results table are both perfectly capable LaTeX, and neither is a pleasant place to start from a blank line and a syntax reference. ModernTex builds both visually and drops in the real source underneath: nothing hidden, nothing you couldn't have typed yourself.</p>
-      <div class="screenshot-block">
+      <div class="screenshot-block" data-motion="reveal">
         <div class="screenshot-callout">
           <h3>TikZ Designer</h3>
           <p>Drag boxes and arrows into place, pick colors from a swatch, resize by the corner, connect two shapes by dragging between them. Start from a flowchart, pipeline, state machine, or tree preset, or a blank canvas. Reopen an existing diagram from the Figures menu to keep editing it instead of redrawing it.</p>
@@ -214,7 +221,7 @@
           <img src="/assets/moderntex-screens/07-tikz-editor.webp" alt="ModernTex's TikZ Designer: a flowchart built from draggable, connected boxes with the generated TikZ code shown below, ready to insert at the cursor" width="2840" height="1812" decoding="async" loading="lazy">
         </div>
       </div>
-      <div class="screenshot-block">
+      <div class="screenshot-block" data-motion="reveal">
         <div class="screenshot-callout">
           <h3>Table Editor</h3>
           <p>Paste a range straight from Excel or Google Sheets and it lands in the right cells, growing the table if the data is bigger and leaving the rest untouched if it's smaller. Return moves down a row, &#8997;Return breaks a line inside a cell, and dragging a column edge resizes it, the way a spreadsheet does, producing booktabs-style <code>tabular</code> underneath.</p>
@@ -275,6 +282,34 @@
       </div>
     </section>
 
+    <section class="specs-section fix-demo" data-motion="fix" aria-labelledby="fix-h">
+      <p class="eyebrow">Plain-language errors</p>
+      <h2 id="fix-h">From a cryptic error to a fix</h2>
+      <p class="section-intro">LaTeX reports a mistake in its own terms and leaves you to work out what it means. ModernTex reads the error and says what went wrong in plain language, with a suggested fix.</p>
+      <div class="fix-stage">
+        <div class="fix-panel fix-raw">
+          <p class="fix-label">What LaTeX prints</p>
+<pre><code>! Undefined control sequence.
+l.42 As shown by <span class="fix-bad">\citeauthr</span>
+                           {smith2024}, the effect holds.</code></pre>
+        </div>
+        <div class="fix-link fix-step" aria-hidden="true"></div>
+        <div class="fix-panel fix-step fix-explain-panel">
+          <p class="fix-label">What ModernTex tells you</p>
+          <p class="fix-explain">LaTeX does not recognize the command <code>\citeauthr</code> on line 42. This is usually a misspelled command, or a package that defines it is not loaded.</p>
+        </div>
+        <div class="fix-panel fix-step fix-fix-panel">
+          <p class="fix-label">Suggested fix</p>
+          <div class="fix-diff">
+            <div class="fix-minus"><span aria-hidden="true">- </span><span class="visually-hidden">Remove: </span>\citeauthr{smith2024}</div>
+            <div class="fix-plus"><span aria-hidden="true">+ </span><span class="visually-hidden">Add: </span>\citeauthor{smith2024}</div>
+          </div>
+        </div>
+      </div>
+      <p class="fix-note">An illustrative example, not a capture from the app; the wording varies with the error.</p>
+      <button type="button" class="btn btn-ghost fix-replay" data-motion-replay hidden>Replay the example</button>
+    </section>
+
     <section class="features-section bg-purple-xlight">
       <div class="features-header">
         <p class="eyebrow">Who it's for</p>
@@ -300,7 +335,7 @@
     <section class="specs-section" aria-labelledby="specs-h">
       <p class="eyebrow">At a glance</p>
       <h2 id="specs-h">ModernTex, in facts</h2>
-      <table class="compare-table specs-table">
+      <table class="compare-table specs-table" data-motion="rows">
         <tbody>
           <tr><th scope="row">Price</th><td>$10 once, after a free 7-day trial. Every 1.x update included. No subscription.</td></tr>
           <tr><th scope="row">Trial</th><td>The complete app for seven days from first launch. No account, nothing to enter.</td></tr>
@@ -316,7 +351,7 @@
       </table>
       <div class="release-strip">
         <h3 class="release-strip-head">Five updates since launch on September 4</h3>
-        <ol class="release-list">
+        <ol class="release-list" data-motion="stagger">
           <li><time datetime="2026-09-13">Sep 13</time><strong>1.3.0</strong><span>Table Editor: paste from a spreadsheet, get booktabs LaTeX.</span></li>
           <li><time datetime="2026-09-12">Sep 12</time><strong>1.2.0</strong><span>TikZ Designer: draw the diagram, get the code.</span></li>
           <li><time datetime="2026-09-12">Sep 12</time><strong>1.1.0</strong><span>Sync with co-authors, compile one chapter, formatting shortcuts.</span></li>
@@ -332,7 +367,7 @@
     <section class="specs-section" id="vs-overleaf" aria-labelledby="vs-overleaf-h">
       <p class="eyebrow">Comparison</p>
       <h2 id="vs-overleaf-h">ModernTex compared with Overleaf</h2>
-      <table class="compare-table specs-table">
+      <table class="compare-table specs-table" data-motion="rows">
         <caption>Overleaf pricing is from its <a href="https://www.overleaf.com/user/subscription/plans" rel="noopener">plans page</a>, checked September 29, 2026.</caption>
         <thead>
           <tr><th scope="col"><span class="visually-hidden">Topic</span></th><th scope="col">ModernTex</th><th scope="col">Overleaf</th></tr>
@@ -407,7 +442,7 @@
       </div>
     </section>
 
-    <section class="closing-cta" aria-labelledby="closing-cta-heading">
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
       <img src="/assets/moderntex-icon.webp" alt="" width="88" height="88" loading="lazy">
       <h2 id="closing-cta-heading">Try it on your own manuscript.</h2>
       <p>Seven days of the full app, no account and nothing to enter. If it earns a place in your workflow, it's $10 once, with every 1.x update included.</p>

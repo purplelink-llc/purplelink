@@ -1,0 +1,198 @@
+/* Motion for product pages. Linked from /moderntex/ only.
+   Everything below enhances content that is already fully visible: the
+   motion.js module adds data-motion-armed / is-armed only when it can
+   animate (IntersectionObserver present, reduced motion not requested).
+   Without the script, the content renders in its final state. */
+
+:root {
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Scroll reveal: data-motion="reveal | stagger | rows" ───────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-motion-armed] {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.6s var(--motion-ease),
+      transform 0.6s var(--motion-ease);
+  }
+
+  /* A full-width band fades only; moving it would open a gap at its edge. */
+  .closing-cta[data-motion-armed] { transform: none; }
+
+  /* Sibling delay, assigned by the module per batch and capped at 5. */
+  [data-motion-i="1"] { transition-delay: 60ms; }
+  [data-motion-i="2"] { transition-delay: 120ms; }
+  [data-motion-i="3"] { transition-delay: 180ms; }
+  [data-motion-i="4"] { transition-delay: 240ms; }
+  [data-motion-i="5"] { transition-delay: 300ms; }
+
+  /* A table row settles in, then a wash of purple fades off its cells. */
+  @keyframes motion-row-wash {
+    from { background-color: color-mix(in oklch, var(--purple) 12%, transparent); }
+    to   { background-color: transparent; }
+  }
+
+  tr[data-motion-flash] > th,
+  tr[data-motion-flash] > td {
+    animation: motion-row-wash 1.1s var(--motion-ease) both;
+  }
+}
+
+/* ─── Hero media slot: data-motion="video" ───────────────────────────── */
+
+.hero-media { position: relative; }
+
+.hero-media video {
+  position: absolute;
+  inset: 1px;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  object-fit: cover;
+  border-radius: 11px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--motion-ease);
+}
+
+.hero-media.is-playing video { opacity: 1; }
+
+.motion-toggle {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  min-height: 32px;
+  padding: 4px 14px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: color-mix(in oklch, var(--bg) 92%, transparent);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.motion-toggle:hover { background: var(--purple-light); }
+.motion-toggle[hidden] { display: none; }
+
+/* ─── Error to fix: data-motion="fix" ────────────────────────────────── */
+
+.fix-demo .fix-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  max-width: 900px;
+  margin: 1.6rem 0 1rem;
+}
+
+.fix-panel {
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.fix-label {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.fix-raw {
+  background: color-mix(in oklch, var(--ink) 5%, var(--bg));
+}
+
+.fix-raw pre,
+.fix-diff {
+  margin: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  word-spacing: 0;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.fix-raw code { font: inherit; word-spacing: 0; }
+
+.fix-bad {
+  text-decoration: underline wavy var(--purple);
+  text-underline-offset: 3px;
+}
+
+.fix-link {
+  width: 2px;
+  height: 22px;
+  margin-left: 32px;
+  background: var(--purple-dim);
+  transform-origin: top;
+}
+
+.fix-explain { margin: 0; max-width: 62ch; }
+.fix-explain code { font-size: 0.9em; }
+
+.fix-diff { margin-top: 10px; white-space: normal; }
+.fix-diff div { padding: 1px 8px; border-radius: 4px; white-space: pre-wrap; }
+.fix-fix-panel { margin-top: 12px; }
+.fix-diff .fix-minus { color: var(--muted); }
+.fix-diff .fix-plus {
+  background: color-mix(in oklch, var(--purple) 10%, var(--bg));
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.fix-note {
+  margin: 0.4rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+.fix-replay[hidden] { display: none; }
+.fix-replay { margin-top: 0.8rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Before it plays, only the raw error shows. Space stays reserved, so
+     nothing below the demo moves. */
+  .fix-demo.is-armed:not(.is-playing) .fix-step { opacity: 0; }
+  .fix-demo.is-armed:not(.is-playing) .fix-link { transform: scaleY(0); }
+
+  @keyframes fix-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes fix-draw {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+  @keyframes fix-wash {
+    from { background-color: color-mix(in oklch, var(--purple) 28%, var(--bg)); }
+    to   { background-color: color-mix(in oklch, var(--purple) 10%, var(--bg)); }
+  }
+
+  .fix-demo.is-playing .fix-link {
+    animation: fix-draw 0.5s var(--motion-ease) 0.9s both;
+  }
+  .fix-demo.is-playing .fix-explain-panel {
+    animation: fix-in 0.6s var(--motion-ease) 1.3s both;
+  }
+  .fix-demo.is-playing .fix-fix-panel {
+    animation: fix-in 0.6s var(--motion-ease) 2.1s both;
+  }
+  .fix-demo.is-playing .fix-plus {
+    animation: fix-wash 1.2s var(--motion-ease) 2.5s both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-armed] { opacity: 1; transform: none; transition: none; }
+  .hero-media video,
+  .motion-toggle,
+  .fix-replay { display: none; }
+}
