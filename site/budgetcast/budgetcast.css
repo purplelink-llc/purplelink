@@ -1,0 +1,77 @@
+/* Budgetcast demand-validation page. Uses the site tokens from /styles.css. */
+.bc { max-width: 980px; margin: 0 auto; padding: 0 16px 72px; }
+.bc h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1.1; margin: 4px 0 14px; }
+.bc h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 4.5vw, 2rem); line-height: 1.2; margin: 0 0 10px; }
+.bc h3 { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.25; margin: 0; }
+.bc-hero { padding: clamp(32px, 6vw, 64px) 0 24px; }
+.bc-lead { font-size: 1.15rem; max-width: 60ch; margin: 0 0 12px; }
+.bc-note { max-width: 62ch; color: var(--muted); margin: 0 0 24px; }
+.bc-sub { max-width: 68ch; color: var(--muted); margin: 0 0 18px; }
+.bc-section { padding: 36px 0 8px; }
+
+.bc-form { display: grid; gap: 14px; max-width: 520px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+.bc-field { display: grid; gap: 6px; }
+.bc-field label { font-weight: 600; font-size: 0.92rem; }
+.bc-opt { font-weight: 400; color: var(--muted); }
+.bc-field input, .bc-field select {
+  width: 100%; min-height: 44px; padding: 10px 14px;
+  border: 1.5px solid var(--line); border-radius: 12px;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 1rem;
+}
+.bc-field input:focus-visible, .bc-field select:focus-visible, .bc-submit:focus-visible,
+.bc-scroll:focus-visible, .bc-table-wrap summary:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+.bc-submit {
+  min-height: 44px; padding: 12px 22px; border: 0; border-radius: 100px;
+  background: var(--purple); color: oklch(99% 0.003 310);
+  font-family: var(--font-body); font-size: 1rem; font-weight: 600; cursor: pointer;
+}
+.bc-submit[disabled] { opacity: 0.6; cursor: default; }
+.bc-status { margin: 0; padding: 12px 16px; border-radius: 12px; background: var(--purple-light); color: var(--ink); font-weight: 600; }
+.bc-status[hidden] { display: none; }
+.bc-form.is-done .bc-field, .bc-form.is-done .bc-submit { display: none; }
+.bc-hero .waitlist-fine-print { text-align: left; max-width: 62ch; margin-top: 12px; }
+
+.bc-card { border: 1px solid var(--line); border-radius: 16px; background: var(--panel); padding: 20px; min-width: 0; }
+.bc-chart-card { margin-bottom: 20px; }
+.bc-chart-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; justify-content: space-between; margin-bottom: 8px; }
+.bc-cat { min-width: 200px; }
+.bc-chart svg { display: block; width: 100%; height: auto; }
+.bc-chart .axis { stroke: var(--line); stroke-width: 1; }
+.bc-chart .grid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 4; }
+.bc-chart text { fill: var(--muted); font-family: var(--font-body); font-size: 15px; }
+.bc-chart .hist { fill: none; stroke: var(--muted); stroke-width: 2; }
+.bc-chart .band { fill: var(--purple-light); stroke: var(--purple-dim); stroke-width: 1; }
+.bc-chart .mid { fill: none; stroke: var(--purple); stroke-width: 2.5; }
+.bc-chart .dot { fill: var(--purple); }
+.bc-legend { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 8px 0 0; padding: 0; font-size: 0.88rem; color: var(--muted); }
+.bc-key { display: inline-block; width: 22px; height: 10px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
+.bc-key-hist { background: var(--muted); height: 3px; }
+.bc-key-band { background: var(--purple-light); border: 1px solid var(--purple-dim); }
+.bc-key-mid { background: var(--purple); height: 4px; }
+.bc-fine { font-size: 0.86rem; color: var(--muted); margin: 12px 0 0; max-width: 70ch; }
+.bc-tag { font-size: 0.88rem; color: var(--muted); margin: 4px 0 12px; }
+
+.bc-table-wrap { margin-top: 12px; }
+.bc-table-wrap summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.bc-scroll { overflow-x: auto; }
+.bc-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+.bc-table th, .bc-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: right; }
+.bc-table th:first-child, .bc-table td:first-child { text-align: left; }
+.bc-table thead th, .bc-table caption { font-weight: 600; }
+.bc-table tbody th { font-weight: 500; text-align: left; }
+.bc-table .bc-total th, .bc-table .bc-total td { font-weight: 700; border-bottom: 0; }
+.bc-vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.bc-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.bc-big { font-family: var(--font-display); font-size: 2.6rem; line-height: 1; margin: 6px 0 2px; color: var(--purple); }
+.bc-bigcap { margin: 0 0 12px; color: var(--muted); font-size: 0.92rem; }
+.bc-list { max-width: 68ch; padding-left: 1.2rem; }
+.bc-list li { margin: 0 0 8px; }
+
+@media (max-width: 860px) { .bc-cards { grid-template-columns: 1fr; } }
+@media (max-width: 480px) {
+  .bc-form, .bc-card { padding: 16px; }
+  .bc-cat { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .bc * { transition: none !important; animation: none !important; } }

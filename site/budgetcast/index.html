@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Budgetcast Waitlist | Purplelink LLC</title>
+    <meta name="description" content="Budgetcast is an idea for a local-first budgeting app for iPhone and Mac. It is not built yet. This page measures interest.">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v=9721937a03">
+    <link rel="stylesheet" href="/budgetcast/budgetcast.css">
+    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <script src="/budgetcast/budgetcast.js" defer></script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+    </header>
+
+    <main id="main-content" class="bc">
+
+      <section class="bc-hero" aria-labelledby="bc-title">
+        <p class="eyebrow">Not built yet</p>
+        <h1 id="bc-title">Budgetcast</h1>
+        <p class="bc-lead">A budgeting app for iPhone and Mac that keeps your transactions on your device and shows spending forecasts as ranges instead of single numbers.</p>
+        <p class="bc-note">Budgetcast is a working title and the app does not exist yet. This page is a way to find out whether enough people want it. Nothing below is a shipped feature, and the numbers are illustrations.</p>
+
+        <form class="bc-form" id="bc-form" name="finance-waitlist" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="finance-waitlist">
+          <p class="bc-hp" hidden><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+          <div class="bc-field">
+            <label for="bc-email">Email</label>
+            <input id="bc-email" type="email" name="email" required autocomplete="email" placeholder="your@email.com">
+          </div>
+          <div class="bc-field">
+            <label for="bc-want">What would you most want it to do</label>
+            <select id="bc-want" name="most-wanted">
+              <option>Forecast ranges</option>
+              <option>Tax estimate</option>
+              <option>Area benchmarks</option>
+              <option>Retirement projection</option>
+              <option>Net worth</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="bc-field">
+            <label for="bc-pay">Would you pay about $8 a month for it</label>
+            <select id="bc-pay" name="would-pay-8">
+              <option>Yes</option>
+              <option selected>Maybe</option>
+              <option>No</option>
+            </select>
+          </div>
+          <div class="bc-field">
+            <label for="bc-current">Which budgeting app do you use now <span class="bc-opt">(optional)</span></label>
+            <input id="bc-current" type="text" name="current-app" autocomplete="off">
+          </div>
+          <button type="submit" class="bc-submit">Join the waitlist</button>
+          <p class="bc-status" id="bc-status" role="status" aria-live="polite" hidden>Thanks. You are on the list. If there is enough interest to build it, I will write to you once.</p>
+        </form>
+        <p class="waitlist-fine-print">Your email and these answers are used only to gauge interest and to tell you if Budgetcast gets built. See the <a href="/privacy/">Privacy Policy</a>.</p>
+      </section>
+
+      <section class="bc-section" aria-labelledby="bc-demo-h">
+        <p class="eyebrow">Illustration</p>
+        <h2 id="bc-demo-h">What a forecast could look like</h2>
+        <p class="bc-sub">Everything in this section uses a sample household on synthetic data. No real person, account or transaction is behind any figure. The figures are estimates and projections for illustration only.</p>
+
+        <div class="bc-card bc-chart-card">
+          <div class="bc-chart-head">
+            <h3 id="bc-chart-h">Monthly spending, next 3 months</h3>
+            <div class="bc-field bc-cat">
+              <label for="bc-category">Category</label>
+              <select id="bc-category"></select>
+            </div>
+          </div>
+          <p class="bc-sub" id="bc-chart-sum">Loading the sample forecast.</p>
+          <div class="bc-chart" id="bc-chart" role="group" aria-labelledby="bc-chart-h"></div>
+          <ul class="bc-legend" aria-hidden="true">
+            <li><span class="bc-key bc-key-hist"></span>Sample past months</li>
+            <li><span class="bc-key bc-key-band"></span>P10 to P90 range</li>
+            <li><span class="bc-key bc-key-mid"></span>P50 (middle estimate)</li>
+          </ul>
+          <p class="bc-fine">P10, P50 and P90 mean that in about one of ten simulated futures spending lands below the P10 figure, about half below P50, and about nine of ten below P90. A range can be wrong; the prototype's ranges covered about 87% of held-out sample months against an 80% target, on synthetic data only.</p>
+          <details class="bc-table-wrap">
+            <summary>Show the data as a table</summary>
+            <div class="bc-scroll" tabindex="0" role="region" aria-label="Forecast data table">
+              <table class="bc-table" id="bc-table"></table>
+            </div>
+          </details>
+          <noscript><p class="bc-fine">The chart needs JavaScript. The same figures are in the JSON file this page loads.</p></noscript>
+        </div>
+
+        <div class="bc-cards">
+          <article class="bc-card" aria-labelledby="bc-tax-h">
+            <h3 id="bc-tax-h">Tax due estimate</h3>
+            <p class="bc-tag">Sample single filer, $95,000 wages, Georgia, 2026</p>
+            <table class="bc-table bc-mini">
+              <caption class="bc-vh">Estimated 2026 tax for the sample filer</caption>
+              <tbody>
+                <tr><th scope="row">Federal taxable income</th><td>$78,900</td></tr>
+                <tr><th scope="row">Federal income tax</th><td>$12,070</td></tr>
+                <tr><th scope="row">Social Security (6.2%)</th><td>$5,890</td></tr>
+                <tr><th scope="row">Medicare (1.45%)</th><td>$1,378</td></tr>
+                <tr><th scope="row">Georgia, approximate</th><td>$3,937</td></tr>
+                <tr class="bc-total"><th scope="row">Estimated total</th><td>$23,275</td></tr>
+              </tbody>
+            </table>
+            <p class="bc-fine">Uses the 2026 federal standard deduction of $16,100 and the 2026 single-filer brackets from IRS Rev. Proc. 2025-32, with the $184,500 Social Security wage base. Georgia is approximate and ignores Georgia deductions: it is 4.99% of federal taxable income. It leaves out credits, other income and state-specific rules. An estimate for illustration, not tax advice.</p>
+          </article>
+
+          <article class="bc-card" aria-labelledby="bc-area-h">
+            <h3 id="bc-area-h">Your area benchmark</h3>
+            <p class="bc-tag">Illustrative sample figures, not real data</p>
+            <table class="bc-table bc-mini">
+              <caption class="bc-vh">Sample household spending against an invented area figure</caption>
+              <thead><tr><th scope="col">Category</th><th scope="col">Sample household</th><th scope="col">Sample area</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Groceries</th><td>$680</td><td>$610</td></tr>
+                <tr><th scope="row">Dining out</th><td>$325</td><td>$290</td></tr>
+                <tr><th scope="row">Utilities</th><td>$250</td><td>$270</td></tr>
+                <tr><th scope="row">Transport</th><td>$185</td><td>$240</td></tr>
+              </tbody>
+            </table>
+            <p class="bc-fine">Every figure here is made up to show the layout. A real version would need a named public data source and year for each number, and would say so on the card.</p>
+          </article>
+
+          <article class="bc-card" aria-labelledby="bc-ret-h">
+            <h3 id="bc-ret-h">Retirement projection</h3>
+            <p class="bc-tag">Sample saver, age 35 to 65, simulated</p>
+            <p class="bc-big">43%</p>
+            <p class="bc-bigcap">simulated share of scenarios that reach $1,000,000 in today's dollars</p>
+            <table class="bc-table bc-mini">
+              <caption class="bc-vh">Simulated balance at 65, in today's dollars</caption>
+              <tbody>
+                <tr><th scope="row">P10 (weaker scenarios)</th><td>$521,000</td></tr>
+                <tr><th scope="row">P50 (middle)</th><td>$922,000</td></tr>
+                <tr><th scope="row">P90 (stronger)</th><td>$1,682,000</td></tr>
+              </tbody>
+            </table>
+            <p class="bc-fine">Assumptions: $80,000 saved today, $12,000 added each year, yearly returns after inflation drawn from a normal distribution with a 4.5% mean and 12% standard deviation, 10,000 scenarios, 30 years. Change any assumption and the result changes. This is a projection, not a prediction or advice.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="bc-section" aria-labelledby="bc-limits-h">
+        <h2 id="bc-limits-h">What you would not get</h2>
+        <ul class="bc-list">
+          <li>The first version would run on iPhone and Mac only. An Android app or a web version is not planned.</li>
+          <li>Bank sync coverage will vary by institution, and some banks may not connect. Manual entry and file import would cover the gaps.</li>
+          <li>Estimates and projections show what a set of assumptions implies. They are not financial, tax or investment advice.</li>
+          <li>There is no promised feature list, price or date, because the app has not been built.</li>
+        </ul>
+      </section>
+
+      <section class="bc-section" aria-labelledby="bc-faq-h">
+        <h2 id="bc-faq-h">Questions</h2>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary>Where would my data live?</summary>
+            <p>The plan is local-first: your transactions are stored on your iPhone or Mac, and forecasts are computed there. Purplelink would not receive them. This is a design goal for an app that does not exist yet, not a description of shipped software.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Why a waitlist?</summary>
+            <p>Building this is months of work. I would like to know whether enough people want it before I start, and which parts matter most. The two select fields on the form are there for that.</p>
+          </details>
+          <details class="faq-item">
+            <summary>What will it cost?</summary>
+            <p>The price is undecided. The $8 a month question on the form tests one possible price and is not an announcement of it.</p>
+          </details>
+          <details class="faq-item">
+            <summary>What happens to my email?</summary>
+            <p>It is stored with the form answers so I can count interest and write to you if the app gets built. I will not share it. Details are in the <a href="/privacy/">Privacy Policy</a>.</p>
+          </details>
+        </div>
+      </section>
+
+    </main>
+  </body>
+</html>
