@@ -20,6 +20,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -37,7 +38,7 @@
       </nav>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" data-progress>
       <a class="back-link" href="/products/">&larr; All products</a>
 
       <div class="kit-hero">
@@ -46,7 +47,7 @@
         <p>Submissions and revisions, the tenure file, grant budgets, citations and funding calls. Each one is a plain spreadsheet with its formulas in view: no macros, no account, nothing to install. They open in Excel and import into Google Sheets. Two of them, the live sheets, fill themselves from public research data.</p>
       </div>
 
-      <section class="kit-grid sheet-grid" aria-label="Spreadsheets">
+      <section class="kit-grid sheet-grid" data-motion="stagger" aria-label="Spreadsheets">
         <article class="kit-card">
           <a class="kit-card-cover" href="/sheets/submission-tracker/">
             <img src="/sheets/assets/submission-tracker.png" alt="The Journal Submission and R&amp;R Tracker dashboard" width="840" height="560" loading="lazy">
@@ -163,7 +164,7 @@
       </section>
 
       <section class="kit-bundle" aria-labelledby="bundle-h">
-        <div class="kit-bundle-inner">
+        <div class="kit-bundle-inner" data-motion="reveal">
           <div>
             <p class="eyebrow">Researcher bundle</p>
             <h2 id="bundle-h">All six spreadsheets</h2>
@@ -181,7 +182,7 @@
       <section class="kit-trust" aria-labelledby="live-h">
         <h2 id="live-h" class="tools-section-heading">Live sheets: data that keeps itself current</h2>
         <p class="sheet-section-lede">A yearly subscription. You paste one formula into Google Sheets, or one link into Excel's From Web, and the sheet refreshes itself from public research databases. Seven days free, then billed yearly; cancel from your setup page.</p>
-        <div class="kit-grid sheet-live-grid">
+        <div class="kit-grid sheet-live-grid" data-motion="stagger">
           <article class="kit-card">
             <div class="kit-card-body">
               <h2><a href="/sheets/live/citation-dashboard/">Live Citation Dashboard</a></h2>
@@ -207,7 +208,7 @@
 
       <section class="kit-trust" aria-labelledby="trust-h">
         <h2 id="trust-h" class="tools-section-heading">What these are, plainly</h2>
-        <div class="kit-trust-grid">
+        <div class="kit-trust-grid" data-motion="stagger">
           <div>
             <h3>Spreadsheets, not software</h3>
             <p>Every number comes from a formula you can read and change. Blue cells on yellow are yours to fill in; the rest calculates. Each file opens with a Start Here tab and one example row.</p>
@@ -297,7 +298,8 @@
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
       </div>
     </footer>
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script src="/analytics.js?v=fd29b28099" defer></script>
   </body>

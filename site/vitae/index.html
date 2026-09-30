@@ -25,7 +25,9 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -77,7 +79,7 @@
         <a href="/about/">About</a>
       </nav>
     </header>
-    <main id="main-content">
+    <main id="main-content" data-progress>
 
     <a class="back-link" href="/">← All products</a>
 
@@ -142,7 +144,7 @@
     <section class="screenshots-section">
       <h2>A closer look</h2>
       <div class="screenshot-block">
-        <div class="screenshot-callout">
+        <div class="screenshot-callout" data-motion="reveal">
           <h3>Every submission, every round</h3>
           <p>One table holds the whole history: venue, date submitted, decision, and your own estimate of the odds. Open a submission to see its review rounds, manuscript versions, cover letter and submission checklist.</p>
         </div>
@@ -151,7 +153,7 @@
         </div>
       </div>
       <div class="screenshot-block">
-        <div class="screenshot-callout">
+        <div class="screenshot-callout" data-motion="reveal">
           <h3>A CV built from your records</h3>
           <p>Pick a format, a length and a date range, and the CV fills itself from the papers, positions and grants you already track. Export to PDF, LaTeX or rich text.</p>
         </div>
@@ -160,7 +162,7 @@
         </div>
       </div>
       <div class="screenshot-block">
-        <div class="screenshot-callout">
+        <div class="screenshot-callout" data-motion="reveal">
           <h3>Grants from proposal to final report</h3>
           <p>Requested and awarded amounts, your share, the project timeline and each reporting deadline. Awarded and pending totals sit at the top of the list.</p>
         </div>
@@ -169,7 +171,7 @@
         </div>
       </div>
       <div class="screenshot-block">
-        <div class="screenshot-callout">
+        <div class="screenshot-callout" data-motion="reveal">
           <h3>How close you are to tenure</h3>
           <p>Set your tenure date and your department’s expectations, and Vitae counts your record against each one: articles, lead-author papers, funding, h-index, invited talks and service.</p>
         </div>
@@ -185,7 +187,7 @@
         <h2>Vitae is free. If it saves you time, consider supporting it.</h2>
         <p class="features-note">All core record-keeping is free, with no limits, and nothing that was free before Plus becomes paid. No third-party ads, no data harvesting. <a href="/vitae/plus/">Vitae Plus</a> is an optional subscription, $3 a month or $24 a year, for newer tools such as reports, Word templates, the revision workspace and Shareables. Subscribing, or leaving a one-time tip, helps keep Vitae maintained and updated.</p>
       </div>
-      <div class="features-cta">
+      <div class="features-cta" data-motion="reveal">
         <a class="btn btn-primary" href="/vitae/plus/">Vitae Plus, from $3 a month</a>
         <a class="btn btn-ghost" href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">Leave a one-time tip</a>
       </div>
@@ -193,7 +195,7 @@
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">
       <h2 id="faq-heading">Frequently asked questions</h2>
-      <div class="faq-list">
+      <div class="faq-list" data-motion="stagger">
         <details class="faq-item">
           <summary>Is Vitae really free?</summary>
           <div class="faq-body">Yes. Vitae is free to download and use, with all core record-keeping and no limits, and nothing that was free before Plus becomes paid. An optional subscription, <a href="/vitae/plus/">Vitae Plus</a> ($3 a month or $24 a year, with a 7-day free trial), adds newer tools: reports such as an NIH biosketch draft, Word export with your own templates, the revision workspace, Shareables, the collaboration map, batch DOI lookup and ORCID sync, Reminders and calendar sync, and themes. You do not need it to keep your record. A tip via Buy Me a Coffee is also appreciated but never required.</div>
@@ -234,6 +236,10 @@
     </div>
 
     </main>
+    <div class="sticky-cta" data-sticky-cta data-hide-when=".app-hero-actions, .features-cta, .footer" hidden>
+      <span class="sticky-cta-text"><strong>Vitae</strong> free for Mac</span>
+      <a class="btn btn-primary" href="/vitae/download" data-mac-download="Vitae" data-mac-req="macOS 15 or later" data-track="sticky_cta" data-track-meta="vitae">Download for Mac</a>
+    </div>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

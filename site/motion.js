@@ -1,4 +1,5 @@
-/* Motion module. Deferred, no dependencies, safe to include on any page.
+/* Motion module for the home page and product pages. Deferred, no
+   dependencies, one shared IntersectionObserver for every reveal.
 
    Markup API (all optional; content is fully visible without this script):
      data-motion="reveal"   the element eases in when scrolled to
@@ -21,10 +22,13 @@
   const finishers = []; // demos that must show their end state if nobody scrolls
 
   /* Reveal ------------------------------------------------------------ */
+  // Armed = hidden, waiting. Shown = a one-off animation that ends on the
+  // element's own styles, so hover and focus transitions are never delayed.
   const show = (el) => {
     reveal.unobserve(el);
     armed.delete(el);
     el.removeAttribute('data-motion-armed');
+    el.setAttribute('data-motion-in', '');
     if (el.tagName === 'TR') el.setAttribute('data-motion-flash', '');
   };
 
@@ -41,6 +45,8 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -24px 0px' });
 
   const arm = (el) => {
+    // site.js already reveals some elements; one system per element.
+    if (el.closest('.will-reveal')) return;
     // Already on screen at load: leave it alone so nothing flashes.
     if (el.getBoundingClientRect().top < window.innerHeight * 0.9) return;
     el.setAttribute('data-motion-armed', '');

@@ -112,7 +112,9 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
     <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=333bc3f898">
 </head>
   <body>
@@ -131,7 +133,7 @@
       </nav>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" data-progress>
       <a class="back-link" href="/tools/">← All tools</a>
       <div class="tools-hero">
         <p class="tools-kicker">From $9 per review · Anonymity Check bundled free</p>
@@ -188,7 +190,7 @@
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn">Start review — $9</button>
         <p class="pr-ref-note" id="ref-note" hidden>A colleague shared this link. Pay with a .edu email address and you each receive a $2 code toward a later review.</p>
-        <ol class="pr-steps" aria-label="How it works">
+        <ol class="pr-steps" data-motion="stagger" aria-label="How it works">
           <li><strong>Pay</strong> through Stripe</li>
           <li><strong>Upload</strong> your PDF, up to 20 MB; the link is also emailed, so you can upload from another device</li>
           <li><strong>Read the report</strong>, usually in 4 to 8 minutes</li>
@@ -198,7 +200,7 @@
       </div>
       <p class="tool-status" id="checkout-status" aria-live="polite"></p>
 
-      <section class="pr-sample">
+      <section class="pr-sample" data-motion="reveal">
         <h2 class="pr-sample-heading">Sample report</h2>
         <details open>
           <summary>What does the report look like? <span class="pr-sample-toggle">Show or hide</span></summary>
@@ -230,7 +232,7 @@
 
       <section class="pr-layers">
         <h2>How the review works</h2>
-        <ol class="pr-layer-list">
+        <ol class="pr-layer-list" data-motion="stagger">
           <li>
             <strong>Layer 1: figure-integrity scan.</strong>
             Every page is rendered and reviewed for digital manipulation
@@ -300,7 +302,7 @@
 
       <section class="tool-faq" id="data-handling" aria-labelledby="data-handling-h">
         <h2 id="data-handling-h">How your manuscript is handled</h2>
-        <ul class="pr-handling-list">
+        <ul class="pr-handling-list" data-motion="stagger">
           <li><strong>Analysis.</strong> The PDF is read in memory. To check figures and tables, pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.</li>
           <li><strong>Anthropic.</strong> The text and page images are sent to Anthropic's Claude API. Anthropic keeps API inputs for up to 30 days for abuse monitoring and does not train on them.</li>
           <li><strong>Deletion.</strong> Purplelink deletes the manuscript and the review 30 minutes after you first open the result, or after 24 hours if you never open it. Save the result before closing the tab.</li>

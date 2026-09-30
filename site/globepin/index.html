@@ -26,7 +26,9 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/globepin-icon.webp" as="image" fetchpriority="high">
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -107,7 +109,7 @@
         <a href="/about/">About</a>
       </nav>
     </header>
-    <main id="main-content">
+    <main id="main-content" data-progress>
 
     <a class="back-link" href="/">← All products</a>
 
@@ -200,7 +202,7 @@
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">
       <h2 id="faq-heading">Frequently asked questions</h2>
-      <div class="faq-list">
+      <div class="faq-list" data-motion="stagger">
         <details class="faq-item">
           <summary>Is GlobePin available yet?</summary>
           <div class="faq-body">Yes. GlobePin 1.0 was released on the App Store on 3 September 2026. It is free and needs iOS 17 or later. <a href="https://apps.apple.com/us/app/globepin/id6762313540">Download it here</a>.</div>
@@ -226,7 +228,7 @@
 
     <section class="faq-section" aria-labelledby="more-heading">
       <h2 id="more-heading">Also from Purplelink</h2>
-      <ul class="product-list">
+      <ul class="product-list" data-motion="stagger">
         <li>
           <a class="product-item-link" href="/haea/">
             <div class="product-item">
@@ -246,6 +248,10 @@
     </section>
 
     </main>
+    <div class="sticky-cta" data-sticky-cta data-hide-when=".app-hero-actions, #get, .footer" hidden>
+      <span class="sticky-cta-text"><strong>GlobePin</strong> for iPhone and iPad</span>
+      <a class="btn btn-primary" href="https://apps.apple.com/us/app/globepin/id6762313540" data-track="sticky_cta" data-track-meta="globepin">App Store</a>
+    </div>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

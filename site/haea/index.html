@@ -26,7 +26,9 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/haea-icon.webp" as="image" fetchpriority="high">
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -106,7 +108,7 @@
         <a href="/about/">About</a>
       </nav>
     </header>
-    <main id="main-content">
+    <main id="main-content" data-progress>
 
     <a class="back-link" href="/">← All products</a>
 
@@ -220,7 +222,7 @@
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">
       <h2 id="faq-heading">Frequently asked questions</h2>
-      <div class="faq-list">
+      <div class="faq-list" data-motion="stagger">
         <details class="faq-item">
           <summary>When does Haea ship?</summary>
           <div class="faq-body">Haea is expected to launch in 2026. Join the waitlist above to be notified the moment it's available.</div>
@@ -245,6 +247,10 @@
     </section>
 
     </main>
+    <div class="sticky-cta" data-sticky-cta data-hide-when=".app-hero-actions, #waitlist, .footer" hidden>
+      <span class="sticky-cta-text"><strong>Haea</strong> in development</span>
+      <a class="btn btn-primary" href="#waitlist" data-track="sticky_cta" data-track-meta="haea">Join the waitlist</a>
+    </div>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

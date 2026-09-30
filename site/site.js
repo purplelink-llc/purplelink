@@ -58,7 +58,6 @@
     '.changelog-entry',
     '.oss-copy',
     '.section-top',
-    '.app-hero-copy',
     '.waitlist-section h2',
     '.waitlist-section p',
     '.waitlist-section .waitlist-form',
@@ -618,27 +617,45 @@
   });
 })();
 
-// Phones only (CSS hides it elsewhere): a slim bar with the page's main
-// action, shown once the hero's buttons have scrolled away and hidden again
-// while any of its data-hide-when targets is on screen.
+// A slim bar with the page's main action, shown once the hero's buttons have
+// scrolled away and hidden again while any of its data-hide-when targets is
+// on screen. Driven by IntersectionObserver only, and dismissible for the
+// rest of the visit.
 (() => {
   const bar = document.querySelector("[data-sticky-cta]");
   if (!bar || !("IntersectionObserver" in window)) return;
   const targets = [...document.querySelectorAll(bar.dataset.hideWhen || "")];
   if (!targets.length) return;
+  let dismissed = false;
+  try { dismissed = sessionStorage.getItem("sticky-cta-off") === "1"; } catch (e) { /* storage blocked */ }
+  if (dismissed) return;
+  const close = document.createElement("button");
+  close.type = "button";
+  close.className = "sticky-cta-close";
+  close.setAttribute("aria-label", "Dismiss");
+  close.textContent = "\u00d7";
+  bar.appendChild(close);
   const onScreen = new Set();
+  let pastFirst = false;
   const update = () => {
-    const pastFirst = targets[0].getBoundingClientRect().bottom < 0;
-    const show = pastFirst && onScreen.size === 0;
+    const show = !dismissed && pastFirst && onScreen.size === 0;
     bar.hidden = !show;
     document.body.classList.toggle("has-sticky-cta", show);
   };
   const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => (e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target)));
+    entries.forEach((e) => {
+      if (e.isIntersecting) onScreen.add(e.target); else onScreen.delete(e.target);
+      if (e.target === targets[0]) pastFirst = !e.isIntersecting && e.boundingClientRect.bottom < 0;
+    });
     update();
   });
   targets.forEach((t) => io.observe(t));
-  window.addEventListener("scroll", update, { passive: true });
+  close.addEventListener("click", () => {
+    dismissed = true;
+    try { sessionStorage.setItem("sticky-cta-off", "1"); } catch (e) { /* storage blocked */ }
+    io.disconnect();
+    update();
+  });
 })();
 
 // /tools/paper-review/packs/?pack=20 opens with that pack selected.

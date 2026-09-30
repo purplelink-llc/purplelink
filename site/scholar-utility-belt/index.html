@@ -68,7 +68,9 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -86,7 +88,7 @@
       </nav>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" data-progress>
       <a class="back-link" href="/products/">← Products</a>
 
       <section class="catalog-hero">
@@ -105,7 +107,7 @@
           <p class="eyebrow">What it adds</p>
           <h2 id="sub-what">Context next to every result</h2>
         </div>
-        <div class="catalog-grid catalog-grid-3">
+        <div class="catalog-grid catalog-grid-3" data-motion="stagger">
           <div class="catalog-card catalog-card-static">
             <h3>Journal quality badges</h3>
             <p>ABDC, FT50, UTD24 and SJR rankings shown beside each result, so you can see where a paper appeared without looking the venue up.</p>
@@ -139,7 +141,7 @@
           <h2 id="sub-pro">What is free and what is Pro</h2>
           <p>Reading and browsing aids stay free: quality badges, the result action grid, citation velocity, the saved-paper library, author summary metrics (h-index, g-index and similar), the query trend tracker, retraction and tortured-phrase warnings, and related works. Pro covers workflow tools that save power users time.</p>
         </div>
-        <div class="catalog-grid catalog-grid-3">
+        <div class="catalog-grid catalog-grid-3" data-motion="stagger">
           <div class="catalog-card catalog-card-static">
             <h3>Pro features</h3>
             <p>Author compare, citation lineage, extended bibliometrics (p-index, FWCI, Relative Citation Ratio, influential citations), narrative CV, the systematic-review workspace, the citation-graph overlay and the Publish-or-Perish report.</p>
@@ -181,7 +183,7 @@
         </div>
       </section>
 
-      <section class="tool-faq" aria-labelledby="sub-faq">
+      <section class="tool-faq" aria-labelledby="sub-faq" data-motion="reveal">
         <h2 id="sub-faq">Frequently asked questions</h2>
         <details><summary>Is Scholar Utility Belt free?</summary><div class="faq-body">The core is free and open source under the ISC license. Since version 0.6.0 there is also an optional Pro tier for people who install for the first time: $40 once, or $3 a month, or $20 a year. Anyone who installed before 0.6.0 keeps every earlier feature free.</div></details>
         <details><summary>Which features are Pro?</summary><div class="faq-body">Author compare, citation lineage, the extended bibliometrics (p-index, FWCI, Relative Citation Ratio and influential citations), narrative CV, the systematic-review workspace, the citation-graph overlay and the Publish-or-Perish report.</div></details>
@@ -192,6 +194,10 @@
       </section>
     </main>
 
+    <div class="sticky-cta" data-sticky-cta data-hide-when=".catalog-actions, .footer" hidden>
+      <span class="sticky-cta-text"><strong>Scholar Utility Belt</strong> free Chrome extension</span>
+      <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/scholar-utility-belt/omcogfcgldfmihfogbffflbocdbjockn" target="_blank" rel="noopener noreferrer" data-track="sticky_cta" data-track-meta="scholar">Add to Chrome</a>
+    </div>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

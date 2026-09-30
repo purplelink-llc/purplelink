@@ -63,7 +63,9 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -81,7 +83,7 @@
       </nav>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" data-progress>
       <section class="catalog-hero">
         <p class="eyebrow">Products</p>
         <h1>Tools for the paper, <em>from first draft to accepted.</em></h1>
@@ -107,7 +109,7 @@
         <p class="catalog-contact">Not sure, or want something that isn't here? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. I read and answer every message.</p>
       </section>
 
-      <section class="catalog-feature" aria-labelledby="cat-moderntex">
+      <section class="catalog-feature" data-motion="reveal" aria-labelledby="cat-moderntex">
         <div class="catalog-feature-copy">
           <div class="catalog-meta">
             <span class="platform-tag platform-macos">macOS</span>
@@ -130,7 +132,7 @@
           <p class="eyebrow">Mac</p>
           <h2 id="cat-mac">Keep your academic record in one place</h2>
         </div>
-        <div class="catalog-grid catalog-grid-2">
+        <div class="catalog-grid catalog-grid-2" data-motion="stagger">
           <a class="catalog-card" href="/vitae/">
             <img class="catalog-icon" src="/assets/vitae-icon.webp" alt="" width="56" height="56" loading="lazy">
             <span class="catalog-card-price">Free</span>
@@ -154,7 +156,7 @@
           <h2 id="cat-review">Manuscript checks, paid per use</h2>
           <p>Upload, pay once through Stripe, and get the result in minutes on a page that updates itself. The file and the result are deleted from our servers soon after you open the result. If a result reads as low quality, email within 14 days and the price is refunded.</p>
         </div>
-        <div class="catalog-grid catalog-grid-3">
+        <div class="catalog-grid catalog-grid-3" data-motion="stagger">
           <a class="catalog-card catalog-card-lead" href="/tools/paper-review/">
             <span class="catalog-card-price">$9 · $11 · $15</span>
             <h3>Paper Review</h3>
@@ -212,7 +214,7 @@
           <p class="eyebrow">Free</p>
           <h2 id="cat-free">No account, no charge</h2>
         </div>
-        <div class="catalog-grid catalog-grid-2">
+        <div class="catalog-grid catalog-grid-2" data-motion="stagger">
           <a class="catalog-card" href="/scholar-utility-belt/">
             <span class="catalog-tile" aria-hidden="true">SUB</span>
             <span class="catalog-card-price">Free · Chrome extension</span>
@@ -235,7 +237,7 @@
           <p class="eyebrow">iPhone</p>
           <h2 id="cat-ios">Away from the desk</h2>
         </div>
-        <div class="catalog-grid catalog-grid-2">
+        <div class="catalog-grid catalog-grid-2" data-motion="stagger">
           <a class="catalog-card" href="/globepin/">
             <img class="catalog-icon" src="/assets/globepin-icon.webp" alt="" width="56" height="56" loading="lazy">
             <span class="catalog-card-price">Free on the App Store</span>
@@ -258,7 +260,7 @@
           <p class="eyebrow">Mac, private beta</p>
           <h2 id="cat-founders">For solo founders</h2>
         </div>
-        <div class="catalog-grid catalog-grid-2">
+        <div class="catalog-grid catalog-grid-2" data-motion="stagger">
           <a class="catalog-card" href="/binnacle/">
             <span class="catalog-card-price">Private beta, waitlist open</span>
             <h3>Binnacle</h3>

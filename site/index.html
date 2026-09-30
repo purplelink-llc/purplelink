@@ -158,7 +158,9 @@
     <link rel="preload" href="/assets/fonts/fraunces-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
   <body>
@@ -179,7 +181,7 @@
       </nav>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" data-progress>
 
       <!-- ── Hero ──────────────────────────────────────── -->
       <section class="hero">
@@ -260,7 +262,7 @@
             </div>
             <p class="submit-free">Not ready to pay? The free <a href="/tools/submission-checklist/">submission checklist</a> walks through the twelve checks worth doing, and can email you a week before your deadline.</p>
           </div>
-          <figure class="report-card" aria-label="Excerpt from a sample Paper Review report">
+          <figure class="report-card" data-motion="reveal" aria-label="Excerpt from a sample Paper Review report">
             <figcaption>From a sample report</figcaption>
             <p class="report-h">Critical blind spots</p>
             <p class="report-item"><strong>Sample-size justification missing for the human evaluation.</strong> Quoted: &ldquo;We recruited 24 annotators &hellip; yielding sufficient statistical power.&rdquo; Fix: report a sensitivity analysis (the smallest effect 24 annotators can detect) and confidence intervals.</p>
@@ -275,7 +277,7 @@
             <a class="report-more" href="/tools/paper-review/sample/">Read the whole example report →</a>
           </figure>
         </div>
-        <ul class="submit-grid">
+        <ul class="submit-grid" data-motion="stagger">
           <li><a href="/tools/response-review/"><span class="submit-price">$6</span><strong>Response to Reviewers</strong><span>Your response letter, read against the reviewers' comments.</span></a></li>
           <li><a href="/tools/citation-gap/"><span class="submit-price">$3</span><strong>Citation Gap Analysis</strong><span>Prior work you should cite and don't.</span></a></li>
           <li><a href="/tools/anonymity-check/"><span class="submit-price">$2</span><strong>Anonymity Check</strong><span>What gives the authors away in a double-blind submission.</span></a></li>
@@ -386,7 +388,7 @@
           <p class="tools-lede">LaTeX to PDF, BibTeX validation, citation generation, Markdown conversion, and more than twenty others. Everything runs in your browser or an ephemeral container.</p>
           <p class="tools-privacy"><strong>Files are processed in memory and never stored.</strong> No account, no upload retention.</p>
           <div class="recent-tools" data-recent-tools hidden></div>
-          <div class="tool-chips">
+          <div class="tool-chips" data-motion="stagger">
             <a class="tool-chip" href="/tools/latex-to-pdf/">LaTeX to PDF</a>
             <a class="tool-chip" href="/tools/bib-validator/">BibTeX validator</a>
             <a class="tool-chip" href="/tools/citation-generator/">Citation generator</a>
@@ -409,7 +411,7 @@
           </div>
           <h2 class="section-title" id="reading-h">Worth reading before you submit</h2>
         </div>
-        <div class="catalog-grid catalog-grid-3">
+        <div class="catalog-grid catalog-grid-3" data-motion="stagger">
           <a class="catalog-card" href="/guides/methodology-problems-peer-reviewers-flag/">
             <span class="catalog-card-price">Research methods</span>
             <h3>Methodology problems peer reviewers flag</h3>

@@ -85,7 +85,9 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/motion.css?v=6ede841b9b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/motion.js?v=c7c2dc67fa" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
   <body>
@@ -104,7 +106,7 @@
       </nav>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" data-progress>
       <a class="back-link" href="/">← Home</a>
       <div class="tools-hero">
         <p class="eyebrow">Tools for academics</p>
@@ -128,7 +130,7 @@
       <section class="tools-section" aria-labelledby="grp-premium">
         <h2 class="tools-section-heading" id="grp-premium">AI manuscript review · paid</h2>
         <p class="tools-section-intro">Pay-per-use AI checks for a manuscript before it goes out: $2 to $15 each, no account, deleted soon after delivery. <a href="/tools/paper-review/packs/">Volume packs</a> for labs; <a href="/pricing/">every price on one page</a>.</p>
-        <div class="tools-grid tools-grid-featured">
+        <div class="tools-grid tools-grid-featured" data-motion="stagger">
           <a class="tool-card-lg tool-card-lg-featured" href="/tools/paper-review/">
             <span class="tool-card-lg-price">From $9</span>
             <h3>Paper Review</h3>
@@ -183,7 +185,7 @@
       <section class="tools-section" aria-labelledby="grp-latex">
         <h2 class="tools-section-heading" id="grp-latex">LaTeX manuscript tools</h2>
         <p class="tools-section-intro">Compile, compare, and produce publication-ready artifacts from <code>.tex</code> sources.</p>
-        <div class="tools-grid">
+        <div class="tools-grid" data-motion="stagger">
           <a class="tool-card" href="/tools/latex-to-pdf/">
             <h3>LaTeX to PDF</h3>
             <p>Upload a .tex file and get a compiled PDF. pdfLaTeX or XeLaTeX.</p>
@@ -206,7 +208,7 @@
       <section class="tools-section" aria-labelledby="grp-convert">
         <h2 class="tools-section-heading" id="grp-convert">Convert between formats</h2>
         <p class="tools-section-intro">Move documents in and out of LaTeX, Markdown, and Word.</p>
-        <div class="tools-grid">
+        <div class="tools-grid" data-motion="stagger">
           <a class="tool-card" href="/tools/latex-to-word/">
             <h3>LaTeX to Word</h3>
             <p>Convert a .tex paper into a standard double-spaced Word manuscript.</p>
@@ -233,7 +235,7 @@
       <section class="tools-section" aria-labelledby="grp-cites">
         <h2 class="tools-section-heading" id="grp-cites">Citations and bibliographies</h2>
         <p class="tools-section-intro">Build, verify, and convert reference lists across the major formats.</p>
-        <div class="tools-grid">
+        <div class="tools-grid" data-motion="stagger">
           <a class="tool-card" href="/tools/bib-validator/">
             <h3>BibTeX Validator</h3>
             <p>Check citations for missing fields, dead DOIs, and AI hallucinations.</p>
@@ -260,7 +262,7 @@
       <section class="tools-section" aria-labelledby="grp-util">
         <h2 class="tools-section-heading" id="grp-util">Utilities</h2>
         <p class="tools-section-intro">A few odds and ends that pair well with the tools above.</p>
-        <div class="tools-grid">
+        <div class="tools-grid" data-motion="stagger">
           <a class="tool-card" href="/tools/response-letter-template/">
             <h3>Response Letter Template</h3>
             <p>Paste the reviewer comments; get every one numbered and quoted with space for your reply. Markdown, LaTeX or plain text.</p>
@@ -287,7 +289,7 @@
       <section class="tools-section" aria-labelledby="grp-apps">
         <h2 class="tools-section-heading" id="grp-apps">Desktop apps from the same studio</h2>
         <p class="tools-section-intro">For the work these tools sit next to: writing the manuscript, and keeping track of where it went.</p>
-        <div class="tools-grid tools-grid-apps">
+        <div class="tools-grid tools-grid-apps" data-motion="stagger">
           <a class="tool-card-lg" href="/moderntex/">
             <span class="tool-card-lg-price">7-day trial, then $10 once</span>
             <h3>ModernTex for Mac</h3>
