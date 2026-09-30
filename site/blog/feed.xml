@@ -5,8 +5,16 @@
   <link href="https://purplelink.llc/blog/feed.xml" rel="self"/>
   <link href="https://purplelink.llc/blog/"/>
   <id>https://purplelink.llc/blog/</id>
-  <updated>2026-09-23T12:00:00Z</updated>
+  <updated>2026-09-30T12:00:00Z</updated>
   <author><name>Benjamin Ampel</name></author>
+  <entry>
+    <title>The co-author who writes in Word</title>
+    <link href="https://purplelink.llc/blog/the-co-author-who-writes-in-word/"/>
+    <id>https://purplelink.llc/blog/the-co-author-who-writes-in-word/</id>
+    <published>2026-09-30T12:00:00Z</published>
+    <updated>2026-09-30T12:00:00Z</updated>
+    <summary>Converting cleanly between LaTeX and Word is the easy half of a coauthored manuscript. The harder half is getting a reviewed Word file's tracked changes and comments back into your LaTeX source without retyping them.</summary>
+  </entry>
   <entry>
     <title>Where Your Academic Record Actually Lives</title>
     <link href="https://purplelink.llc/blog/where-your-academic-record-actually-lives/"/>

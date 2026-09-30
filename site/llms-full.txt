@@ -193,6 +193,18 @@ Health analytics that run entirely on your iPhone: sleep, nutrition, training an
 
 Join the waitlist →
 
+Mac, private beta
+
+## For solo founders
+
+Private beta, waitlist open
+
+### Binnacle
+
+A double-entry ledger on your Mac that imports income and expenses with your own API keys and estimates quarterly taxes. It does not file returns and is not tax advice.
+
+Join the waitlist →
+
 For builders
 
 ## Kits
@@ -200,6 +212,14 @@ For builders
 Production-tested automation systems, each with a setup guide: a content pipeline, a static-site monetization stack and a clip pipeline. One-time purchase, from $10.
 
 See the kits
+
+For researchers
+
+## Spreadsheets
+
+Excel and Google Sheets files for the work around research: a submission and R&R tracker, a tenure dossier tracker, an academic job market tracker, a grant pipeline and effort tracker, a systematic review screening matrix, an NSF/NIH grant budget builder, and two live sheets that fill themselves with your citations or funding calls. From $9.
+
+See the spreadsheets
 
 
 ---
@@ -344,6 +364,28 @@ Coming from Overleaf? What changes when you write locally, or see how the Mac La
 
 Submitting soon? Work through the free submission checklist, or see a sample Paper Review report ($9, back in minutes).
 
+Comparison
+
+## ModernTex compared with Overleaf
+
+Overleaf pricing is from its plans page, checked September 29, 2026.
+
+TopicModernTexOverleaf
+
+Price$10 once, after a free 7-day trial. No subscription.Standard plan: $199 per year. A free plan is also offered.
+
+CompilingOn your Mac, so there is no server compile timeout.On Overleaf's servers. The free plan has a compile timeout.
+
+AccountNone.Required.
+
+Where it runsNative macOS app. Files are ordinary .tex and .bib files in a folder on your disk.In the browser.
+
+Co-authorsNo real-time co-editing. Get Changes and Send Changes sync with a co-author.Real-time collaboration in the browser.
+
+Manuscript toolsMulti-file navigation, synchronized PDF preview, plain-language errors, submission-readiness checks, revision snapshots, BibTeX completion.See Overleaf's own feature list.
+
+Prefer Overleaf when several people edit the same draft at the same time, or when you work on Windows, Linux or an iPad. Prefer ModernTex when you write mostly alone on a Mac and want no subscription, no account and no compile limit. Moving over is a zip download or a Git clone; see the FAQ.
+
 Before you install
 
 ## What ModernTex needs.
@@ -381,6 +423,10 @@ How is ModernTex different from TeXShop or Overleaf?
 ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers.
 
 Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration, and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing; for a draft several people type in at once, keep Overleaf. See how the best LaTeX editors for Mac compare, or read what changes when you move from Overleaf to a Mac editor.
+
+Can I move a project from Overleaf?
+
+Yes. Download the project as a zip, or clone it with Overleaf's Git integration, and open the folder in ModernTex. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf at any time. What changes when you write locally
 
 Why not just use a free editor like TeXstudio?
 
@@ -774,6 +820,16 @@ rectification checklist, and an honest novelty estimate.
 - A Markdown report and an annotated PDF with comments on the pages they refer to.
 
 - Standard reviews are usually ready in 4-8 minutes, Deep Review in 10-15, on a status page that updates itself.
+
+## How your manuscript is handled
+
+- Analysis. The PDF is read in memory. To check figures and tables, pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.
+
+- Anthropic. The text and page images are sent to Anthropic's Claude API. Anthropic keeps API inputs for up to 30 days for abuse monitoring and does not train on them.
+
+- Deletion. Purplelink deletes the manuscript and the review 30 minutes after you first open the result, or after 24 hours if you never open it. Save the result before closing the tab.
+
+- What we keep. A permanent cost record per job: product, status, price, token counts and model names. It contains no manuscript text.
 
 ## Frequently asked questions
 
@@ -1568,13 +1624,13 @@ Title: Scholar Utility Belt: Journal Rankings and h-index in Google Scholar | Pu
 
 ← Products
 
-Free Chrome extension
+Chrome extension, free core
 
 # Scholar Utility Belt
 
-Scholar Utility Belt is a free Chrome extension that adds journal quality badges, citation velocity, author metrics, lineage trees and retraction alerts to Google Scholar results. The ranking lists ship inside the extension, so nothing you search leaves your browser.
+Scholar Utility Belt is a Chrome extension that adds journal quality badges, citation velocity, author metrics, lineage trees and retraction alerts to Google Scholar results. The core is free and open source. Since version 0.6.0 a few workflow tools are part of an optional Pro tier. The ranking lists ship inside the extension, so badges need no network request.
 
-Add to Chrome, free
+Add to Chrome
 Source on GitHub
 
 About 1,000 researchers use it. Rated 4.5 out of 5 from 16 ratings on the Chrome Web Store.
@@ -1605,7 +1661,39 @@ A visible warning on results that have been retracted, before you cite them.
 
 ### Private by design
 
-No account, no analytics, no remote lookups for rankings. MIT-licensed, so you can read exactly what it does.
+No account, no analytics, no remote lookups for rankings. The source is open under the ISC license, so you can read exactly what it does.
+
+Free and Pro
+
+## What is free and what is Pro
+
+Reading and browsing aids stay free: quality badges, the result action grid, citation velocity, the saved-paper library, author summary metrics (h-index, g-index and similar), the query trend tracker, retraction and tortured-phrase warnings, and related works. Pro covers workflow tools that save power users time.
+
+### Pro features
+
+Author compare, citation lineage, extended bibliometrics (p-index, FWCI, Relative Citation Ratio, influential citations), narrative CV, the systematic-review workspace, the citation-graph overlay and the Publish-or-Perish report.
+
+### Prices
+
+$40 once (lifetime), or $3 a month, or $20 a year. Payment goes through ExtensionPay and Stripe.
+
+### If you installed before 0.6.0
+
+Every feature you had stays free, permanently. Updating from an earlier version marks your install as free for good. A fresh install, including reinstalling after removing the extension, counts as new.
+
+Privacy and network calls
+
+## What the extension sends, and to whom
+
+The extension has no Purplelink server and no analytics. It sends no searches, reading history or saved papers to Purplelink. Your library and settings stay in the extension's storage in your browser. It does make these requests from your browser:
+
+- Public scholarly services, for optional enrichment. Depending on the features you enable, it queries OpenAlex, Crossref, Unpaywall, OpenCitations, Semantic Scholar, DBLP, NIH iCite, PubMed, Europe PMC and ROR. These requests carry what the lookup needs, such as a DOI, a title, an author name or a search term, and go straight from your browser to that service.
+
+- ExtensionPay, for the Pro license check. ExtensionPay (extensionpay.com) sells and verifies Pro licenses, with Stripe processing payment. If you never open its payment or sign-in page, the extension makes no request to extensionpay.com. When you click Unlock or "Already purchased", the extension asks ExtensionPay for a random per-install key and stores it in the extension's storage, which Chrome may sync through your Google account. After that, each time the extension checks your Pro status it sends that key to extensionpay.com and receives your plan and paid status, which it keeps locally. On extensionpay.com pages, an ExtensionPay script passes payment confirmation back to the extension. ExtensionPay and Stripe see the key and your IP address like any web request, plus whatever you enter at checkout. Purplelink never sees card details.
+
+- No ExtensionPay calls for early installs. Installs that were updated from a version before 0.6.0 skip the license check entirely.
+
+The full policy is in the Purplelink privacy policy.
 
 From the same studio
 
@@ -1620,11 +1708,19 @@ Paper Review, from $9
 
 Is Scholar Utility Belt free?
 
-Yes. It is free and MIT-licensed, with no paid tier.
+The core is free and open source under the ISC license. Since version 0.6.0 there is also an optional Pro tier for people who install for the first time: $40 once, or $3 a month, or $20 a year. Anyone who installed before 0.6.0 keeps every earlier feature free.
+
+Which features are Pro?
+
+Author compare, citation lineage, the extended bibliometrics (p-index, FWCI, Relative Citation Ratio and influential citations), narrative CV, the systematic-review workspace, the citation-graph overlay and the Publish-or-Perish report.
+
+I installed it before Pro existed. Do I have to pay?
+
+No. Installs that were updated to version 0.6.0 or later from an earlier version keep every feature free permanently. A fresh install, including reinstalling after removing the extension, is treated as a new install.
 
 Does it track what I search?
 
-No. The journal ranking lists are bundled with the extension, so badges are looked up locally in your browser. There is no account and no analytics.
+There is no account and no analytics, and nothing about your searches or reading is sent to Purplelink. Ranking badges are looked up locally. Optional lookups go to public scholarly services, and the Pro license check goes to ExtensionPay; both are described under Privacy and network calls above.
 
 Which journal lists does it show?
 
@@ -2275,6 +2371,127 @@ Haea is designed with privacy-first architecture: all data is stored on-device w
 
 ---
 
+Source: https://purplelink.llc/binnacle/
+Title: Binnacle - Bookkeeping and Tax Estimates for Solo Founders | Purplelink LLC
+
+← All products
+
+macOS 14+
+Private beta
+
+# Binnacle
+
+Books and quarterly tax estimates for solo founders, indie developers and creators. Binnacle pulls income and expenses from the services you already use into a double-entry ledger on your Mac, using your own API keys. It organizes the numbers and estimates what you may owe. It does not file your return and it is not tax advice.
+
+Join the waitlist
+
+What it does today
+
+## What works in the current beta build
+
+### Double-entry ledger
+
+Every transaction posts balanced entries to a chart of accounts you can edit. Imports skip duplicates, reconciled entries lock, and changes are kept in an append-only audit trail.
+
+### Imports from your sources
+
+Stripe, Mercury, Plaid-connected banks and cards, Square, Gumroad, Lemon Squeezy, Paddle, YouTube and App Store Connect, plus CSV files from anywhere else. Setup uses your own API keys.
+
+### Quarterly tax estimates
+
+Self-employment tax, the QBI deduction, additional Medicare tax and NIIT, with safe-harbor amounts, a quarterly calendar, and a place to record the payments you make.
+
+### Numbers for Schedule C and SE
+
+Expenses map to Schedule C lines, and the self-employment tax figure is calculated for Schedule SE. You still enter them on the return yourself.
+
+### Reports
+
+Profit and loss, balance sheet, monthly cash flow, and a per-platform breakdown of gross sales, fees, refunds and net to compare against 1099-K forms.
+
+### Invoices and time
+
+Invoices with sales tax, payment terms and printable statements. Marking one paid posts a balanced entry. Billable time converts to invoices.
+
+Still in beta
+
+## Rough edges and work in progress
+
+### Connector coverage
+
+Each connector is still being hardened. Some sync only the most recent page of results, and some book gross sales without separating processor fees or refunds. Compare totals against the provider's own report.
+
+### More connectors
+
+Connectors for PayPal, Shopify, Etsy, Wise, Google AdSense and AdMob, Brex, Ramp and Amazon are in development and are not in the current build.
+
+### Multiple businesses and states
+
+Grouping income into several Schedule C activities and a multi-state sales-tax nexus alert exist in early form. State income tax beyond a rate lookup is not built.
+
+What it does not do
+
+## Limits, stated plainly
+
+### Binnacle does not
+
+- File a tax return, e-file, or submit anything to the IRS or a state.
+
+- Give tax advice. The estimates use published IRS tables and your entries, and can be wrong for your situation.
+
+- Link your bank in one click. Every source needs your own API key or a CSV export.
+
+- Sync through a Purplelink account. There is no account.
+
+### Your keys, your Mac
+
+Provider keys are stored in the macOS Keychain on this Mac. The ledger is a local database, and backups can go to your own iCloud Drive. Purplelink does not receive your transactions.
+
+Private beta
+
+## Ask for a beta invitation.
+
+Binnacle is in private beta and is not yet available to download. The plan is about $49 per year after a 14-day trial, which may change before launch. Add your email and you will hear from me when beta spots open and when Binnacle launches.
+
+We store your email address and nothing else, and use it only for beta and launch notices. Privacy Policy · Binnacle Terms
+
+## Frequently asked questions
+
+Does Binnacle file my tax return?
+
+No. Binnacle organizes your books and estimates what you may owe. It does not file returns with the IRS or any state, and it is not tax advice. It produces the numbers you or your preparer carry onto Schedule C and Schedule SE. Check them with a professional before you file or pay.
+
+Which tax year does it cover?
+
+The federal estimator has tables for tax years 2025 and 2026 and picks one from today's date. It covers self-employment tax, the qualified business income deduction, additional Medicare tax, net investment income tax, brackets and quarterly safe-harbor amounts.
+
+Which states does it cover?
+
+The focus is federal estimates. For state income tax there is a rate lookup for all 50 states and DC, which is a rate figure and not a full state calculation, and most rates are still 2025 numbers. Treat state amounts as rough.
+
+What happens to my data?
+
+The ledger is a database on your Mac. You supply your own API keys, they are stored in the macOS Keychain, and imports go from the provider to your Mac. Purplelink does not run a server that holds your books. The optional AI insights feature uses your own Anthropic API key and sends a summary of your books to Anthropic when you use it.
+
+What does the waitlist store?
+
+Your email address and nothing else, kept by Netlify Forms. It is used to invite you to the beta and to tell you when Binnacle launches. See the privacy policy.
+
+What does it need to run?
+
+A Mac with macOS 14 or later.
+
+What will it cost?
+
+The plan is a private beta first, then about $49 per year with a 14-day trial. That is an intention, not a final price, and it may change before launch.
+
+Can I link my bank with one click?
+
+No. Setup uses your own API keys or a CSV export from the provider, so connecting a source means copying a key. The bank and card connector is built on Plaid, and you create your own Plaid keys for it.
+
+
+---
+
 Source: https://purplelink.llc/about/
 Title: About Purplelink and Benjamin M. Ampel | Purplelink LLC
 
@@ -2312,7 +2529,7 @@ A pre-submission read of your manuscript: four AI reviewers, a check of every re
 
 ### Free tools
 
-LaTeX to PDF, BibTeX validation, citation generation, LaTeX diff and more, in your browser. Plus Scholar Utility Belt, a free Chrome extension for Google Scholar.
+LaTeX to PDF, BibTeX validation, citation generation, LaTeX diff and more, in your browser. Plus Scholar Utility Belt, a Chrome extension for Google Scholar with a free core.
 
 ### Haea
 
