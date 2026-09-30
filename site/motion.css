@@ -522,3 +522,6 @@
 .yt-embed .yt-play:hover { background: var(--purple-light); }
 .yt-embed.is-loaded .yt-poster,
 .yt-embed.is-loaded .yt-play { display: none; }
+
+.tour-section .section-intro { color: var(--muted); max-width: 640px; margin-bottom: 24px; }
+.tour-section.catalog-section .yt-embed { margin-top: 8px; }
