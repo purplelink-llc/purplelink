@@ -86,6 +86,7 @@ FOOTER_COLUMNS = [
         ("About", "/about/"),
         ("Pricing", "/pricing/"),
         ("Press", "/press/"),
+        ("Photography", "/photography/"),
         ("Contact", "mailto:ben@purplelink.llc"),
         ("Privacy", "/privacy/"),
         ("Terms", "/terms/"),
