@@ -29,3 +29,8 @@ docs/muscleonglp-outreach-kit.md
 docs/purplelink-tool-distribution-kit.md
 docs/muscleonglp-outreach-prospects.md
 photo-licensing-workspace/
+
+# video framework (Remotion)
+video/out/
+video/node_modules/
+video/.cache/

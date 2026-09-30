@@ -1,0 +1,11 @@
+# moderntex-promo render, 2026-09-30T14:34:11.513Z
+stage assets: 0.2s
+bundle: 1.6s
+timeline: 4.6s + 5.8s + 4.2s + 5.0s + 7.4s = 27.0s
+render 16x9 (1920x1080, 27.0s): 17.1s, 10.43 MB -> out/moderntex-promo/moderntex-promo-16x9.mp4
+frames: .cache/frames/moderntex-promo-16x9
+render 9x16 (1080x1920, 27.0s): 15.5s, 5.97 MB -> out/moderntex-promo/moderntex-promo-9x16.mp4
+frames: .cache/frames/moderntex-promo-9x16
+poster: 0.50 MB -> out/moderntex-promo/moderntex-promo-poster.png
+hero loop (6s, 1280x720, silent): 48.5s, mp4 1.05 MB (crf 28), webm 1.32 MB (crf 46)
+total: 84.1s, warnings: 0
