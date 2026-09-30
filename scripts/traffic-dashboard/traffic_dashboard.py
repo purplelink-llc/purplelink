@@ -3591,7 +3591,7 @@ SS_WAGE_BASE = {2026: 184_500}
 ADDL_MEDICARE_AT = {"single": 200_000}
 # QBI: above this taxable income the 20% deduction phases out over the range for a
 # business that pays no W-2 wages and owns little property (Purplelink: none).
-QBI_THRESHOLD = {2026: {"single": 201_775}}
+QBI_THRESHOLD = {2026: {"single": 201_750}}  # Rev. Proc. 2025-32: single/HoH 201,750 (201,775 is the MFS figure)
 QBI_PHASE_IN = {"single": 75_000}
 SALES_TAX_GROSS = 100_000          # lowest common economic-nexus threshold, per state
 SALES_TAX_ORDERS = 200             # the transaction-count alternative some states still use
