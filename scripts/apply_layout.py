@@ -147,6 +147,25 @@ def footer_html(indent: str) -> str:
     )
 
 
+MOTION_CSS = '    <link rel="stylesheet" href="/motion.css">\n'
+MOTION_JS = '    <script src="/motion.js" defer></script>\n'
+
+
+def with_motion(html: str) -> str:
+    """Every page loads the shared motion module (fingerprint_assets stamps
+    the ?v hash). Pages that already carry it are left alone."""
+    if "motion.js" in html or "</head>" not in html:
+        return html
+    if "/site.js" not in html:
+        return html.replace("</head>", MOTION_CSS + MOTION_JS + "</head>", 1)
+    out = re.sub(r'(<link rel="stylesheet" href="/?styles\.css[^"]*">\n)',
+                 lambda m: m.group(1) + MOTION_CSS, html, count=1)
+    if "motion.css" not in out:
+        out = out.replace("</head>", MOTION_CSS + "</head>", 1)
+    return re.sub(r'(<script src="/?site\.js[^"]*" defer></script>\n)',
+                  lambda m: m.group(1) + MOTION_JS, out, count=1) if "motion.js" not in out else out
+
+
 def render(rel: str, html: str) -> str:
     def nav_sub(m: re.Match) -> str:
         inline = "\n" not in m.group(2)
@@ -156,7 +175,7 @@ def render(rel: str, html: str) -> str:
 
     out = NAV_RE.sub(nav_sub, html, count=1)
     out = FOOTER_RE.sub(lambda m: footer_html(m.group(1)), out, count=1)
-    return out
+    return with_motion(out)
 
 
 def pages():

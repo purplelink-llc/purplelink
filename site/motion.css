@@ -62,6 +62,24 @@
     to   { opacity: 1; scale: 1; }
   }
 
+  /* Home hero: the product window rises, the finding card slides in, the
+     three app icons pop one after another. Desktop only (the block is hidden
+     below 1200px), and pointer-events stay off so nothing here takes a click. */
+  @keyframes motion-rise-scale {
+    from { opacity: 0; transform: translateY(28px) scale(0.975); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes motion-slide-in {
+    from { opacity: 0; transform: translateX(-24px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hero-visual-shot { animation: motion-rise-scale 1s var(--motion-ease) 0.1s backwards; }
+  .hero-visual-card { animation: motion-slide-in 0.8s var(--motion-ease) 0.55s backwards; }
+  .hero-visual-icons img { animation: motion-pop 0.7s var(--motion-ease) backwards; }
+  .hero-visual-icons img:nth-child(1) { animation-delay: 0.35s; }
+  .hero-visual-icons img:nth-child(2) { animation-delay: 0.45s; }
+  .hero-visual-icons img:nth-child(3) { animation-delay: 0.55s; }
+
   .app-hero-icon { animation: motion-pop 0.8s var(--motion-ease) backwards; }
   .app-hero-phone { animation: motion-pop 0.9s var(--motion-ease) 0.2s backwards; }
   .app-hero-name,

@@ -148,6 +148,26 @@
     else if (kind === 'fix') fix(box);
   });
 
+  /* Pages with no markup of their own (tools, blog, learn, legal) still get
+     the same quiet reveal: the main content's own sections, figures, tables
+     and code blocks below the fold. Anything taller than most of a screen is
+     skipped, since it could never reach the reveal threshold. */
+  if (!doc.querySelector('[data-motion]')) {
+    const main = doc.querySelector('main');
+    if (main) {
+      const sel = 'section, figure, details, table, pre, .card, ul[class], ol[class], ' +
+        'main > h2, main > div, article > h2, article > div';
+      const fits = [...main.querySelectorAll(sel)].filter((el) =>
+        !el.closest('form, [hidden], nav, aside') &&
+        el.getBoundingClientRect().height < window.innerHeight * 0.7);
+      const set = new Set(fits);
+      fits.filter((el) => { // outermost only
+        for (let p = el.parentElement; p && p !== main; p = p.parentElement) if (set.has(p)) return false;
+        return true;
+      }).forEach(arm);
+    }
+  }
+
   const revealAll = () => {
     [...armed].forEach(show);
     finishers.forEach((fn) => fn());
