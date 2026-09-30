@@ -1,0 +1,507 @@
+/* Photography page: a dark viewing stage for the slideshow, then the shops.
+   Colors are OKLCH at the site's purple hue (310). The stage is dark in both
+   themes because the photographs are the design; everything below follows
+   the site tokens. */
+
+.photo-page {
+  --stage-bg: oklch(11% 0.035 310);
+  --stage-ink: oklch(99% 0.004 310);
+  --stage-dim: oklch(90% 0.02 310);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --slide-ms: 7000ms;
+}
+
+/* ─── Stage ─────────────────────────────────────────────────────────── */
+
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto auto auto auto;
+  min-height: clamp(640px, 92svh, 980px);
+  background: var(--stage-bg);
+  color: var(--stage-ink);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.stage-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.stage-frame:focus-visible {
+  outline: 2px solid var(--stage-ink);
+  outline-offset: -6px;
+}
+
+.stage-slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease-out);
+}
+
+.stage-slide.is-active { opacity: 1; }
+
+.stage-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stage-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, oklch(10% 0.04 310 / 0.92) 0%, oklch(10% 0.04 310 / 0.62) 30%, oklch(10% 0.04 310 / 0) 62%),
+    linear-gradient(to right, oklch(10% 0.04 310 / 0.55) 0%, oklch(10% 0.04 310 / 0) 58%);
+}
+
+.stage > :not(.stage-frame) { position: relative; z-index: 1; }
+
+.stage-copy {
+  grid-row: 2;
+  padding: 0 clamp(20px, 6vw, 80px) clamp(18px, 3vw, 30px);
+  max-width: 62rem;
+}
+
+.stage-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 6.2vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  text-shadow: 0 2px 30px oklch(8% 0.04 310 / 0.55);
+}
+
+.stage-title span { display: block; }
+
+.stage-title span + span {
+  font-style: italic;
+  font-weight: 700;
+  color: oklch(88% 0.11 310);
+}
+
+.stage-lede {
+  margin-top: clamp(14px, 2vw, 22px);
+  max-width: 54ch;
+  font-size: clamp(1rem, 1.25vw, 1.12rem);
+  line-height: 1.6;
+  color: var(--stage-dim);
+  text-wrap: pretty;
+}
+
+.stage-bar {
+  grid-row: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 clamp(20px, 6vw, 80px) 14px;
+}
+
+.stage-caption {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-width: 0;
+  font-size: 0.95rem;
+}
+
+.stage-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--stage-dim);
+  letter-spacing: 0.04em;
+}
+
+.stage-place {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  transition: opacity 0.45s var(--ease-out);
+}
+
+.stage-place.is-swapping { opacity: 0; }
+
+.stage-controls { display: flex; gap: 8px; flex-shrink: 0; }
+
+.stage-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 100px;
+  border: 1px solid oklch(99% 0.004 310 / 0.35);
+  background: oklch(12% 0.04 310 / 0.5);
+  color: var(--stage-ink);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: background-color 0.25s var(--ease-out), border-color 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+
+.stage-btn:hover {
+  background: oklch(50% 0.24 310 / 0.85);
+  border-color: oklch(88% 0.11 310);
+}
+
+.stage-btn:active { transform: scale(0.94); }
+
+.stage-btn-play .ico-play { display: none; }
+.stage-btn-play[aria-pressed="true"] .ico-play { display: block; }
+.stage-btn-play[aria-pressed="true"] .ico-pause { display: none; }
+
+.stage :focus-visible {
+  outline: 2px solid var(--stage-ink);
+  outline-offset: 3px;
+}
+
+.stage-thumbs {
+  grid-row: 4;
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0 clamp(20px, 6vw, 80px) 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.stage-thumbs::-webkit-scrollbar { display: none; }
+
+.stage-thumb {
+  position: relative;
+  display: block;
+  width: 108px;
+  height: 68px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  background: oklch(20% 0.04 310);
+  opacity: 0.62;
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.stage-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stage-thumb:hover { opacity: 0.95; transform: translateY(-2px); }
+.stage-thumb.is-active { opacity: 1; }
+
+.stage-thumb.is-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 2px var(--stage-ink);
+  pointer-events: none;
+}
+
+.stage-thumb-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: oklch(70% 0.2 310);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.stage-note {
+  grid-row: 5;
+  padding: 6px clamp(20px, 6vw, 80px) 22px;
+  font-size: 0.82rem;
+  color: var(--stage-dim);
+}
+
+/* Motion: drift on the active photograph, a progress line on its thumbnail,
+   and a staggered rise for the headline. Nothing here gates visibility. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes stage-drift {
+    from { transform: scale(1.09); }
+    to   { transform: scale(1); }
+  }
+
+  @keyframes stage-progress {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  @keyframes stage-rise {
+    from { transform: translateY(0.24em); }
+    to   { transform: none; }
+  }
+
+  /* Transform only: content is visible from the first frame and settles
+     into place, so a renderer that never advances animations still shows it. */
+  @keyframes stage-fade-up {
+    from { transform: translateY(16px); }
+    to   { transform: none; }
+  }
+
+  .stage-slide.is-active img {
+    animation: stage-drift 16s cubic-bezier(0.25, 0.6, 0.3, 1) both;
+  }
+
+  .stage[data-playing="true"] .stage-thumb.is-active .stage-thumb-bar {
+    animation: stage-progress var(--slide-ms) linear both;
+  }
+
+  .stage-title span {
+    animation: stage-rise 0.95s var(--ease-out) both;
+  }
+  .stage-title span:nth-child(2) { animation-delay: 0.16s; }
+
+  .stage-lede,
+  .stage-bar,
+  .stage-thumbs {
+    animation: stage-fade-up 0.8s var(--ease-out) both;
+  }
+  .stage-lede   { animation-delay: 0.28s; }
+  .stage-bar    { animation-delay: 0.4s; }
+  .stage-thumbs { animation-delay: 0.5s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-slide { transition: none; }
+  .stage-thumb-bar { display: none; }
+}
+
+@media (max-width: 720px) {
+  /* On a phone the photograph is shown as a photograph (wide, uncropped
+     to a sliver) and the copy sits below it on the dark stage. */
+  .stage {
+    min-height: 0;
+    grid-template-rows: auto auto auto auto auto;
+  }
+  .stage-frame {
+    position: relative;
+    inset: auto;
+    grid-row: 1;
+    aspect-ratio: 4 / 3.1;
+  }
+  .stage-scrim {
+    background: linear-gradient(to top, var(--stage-bg) 0%, oklch(11% 0.035 310 / 0) 38%);
+  }
+  .stage-copy { padding-top: 6px; }
+  .stage-title { font-size: clamp(2.2rem, 10.4vw, 3rem); }
+  .stage-thumb { width: 84px; height: 54px; }
+  .stage-count { white-space: nowrap; }
+  .stage-caption { gap: 10px; }
+}
+
+/* ─── Shops ─────────────────────────────────────────────────────────── */
+
+.shops,
+.license,
+.more {
+  padding: clamp(56px, 8vw, 104px) clamp(20px, 6vw, 80px) 0;
+  max-width: 1360px;
+  margin-inline: auto;
+}
+
+.shops-head,
+.license-head { max-width: 46rem; margin-bottom: clamp(24px, 3.4vw, 40px); }
+
+.shops h2,
+.license h2,
+.more h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.shops-head p,
+.license-head p,
+.more p { margin-top: 12px; color: var(--muted); text-wrap: pretty; }
+
+.shops-grid {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: clamp(14px, 2vw, 24px);
+}
+
+.shop {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(360px, 46vw, 560px);
+  border-radius: 18px;
+  overflow: hidden;
+  color: oklch(99% 0.004 310);
+  text-decoration: none;
+  background: oklch(14% 0.05 310);
+  isolation: isolate;
+}
+
+.shop img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  transition: transform 1.2s var(--ease-out);
+}
+
+.shop-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, oklch(10% 0.04 310 / 0.94) 0%, oklch(10% 0.04 310 / 0.6) 42%, oklch(10% 0.04 310 / 0.05) 78%);
+  transition: opacity 0.6s var(--ease-out);
+}
+
+.shop-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(20px, 2.6vw, 34px);
+  max-width: 36rem;
+}
+
+.shop-kind { font-size: 0.85rem; color: oklch(90% 0.04 310); }
+
+.shop-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.shop-text { color: oklch(93% 0.02 310); font-size: 0.98rem; line-height: 1.55; text-wrap: pretty; }
+
+.shop-cta {
+  margin-top: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.shop-cta span { display: inline-block; transition: transform 0.35s var(--ease-out); }
+
+.shop:hover img,
+.shop:focus-visible img { transform: scale(1.045); }
+.shop:hover .shop-cta span,
+.shop:focus-visible .shop-cta span { transform: translateX(6px); }
+
+.shop:focus-visible {
+  outline: 3px solid var(--purple);
+  outline-offset: 4px;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes shop-parallax {
+      from { transform: translateY(-3%) scale(1.06); }
+      to   { transform: translateY(3%) scale(1.06); }
+    }
+    .shop img {
+      animation: shop-parallax linear both;
+      animation-timeline: view();
+    }
+    .shop:hover img { animation: none; transform: scale(1.09); }
+  }
+}
+
+@media (max-width: 820px) {
+  .shops-grid { grid-template-columns: 1fr; }
+  .shop { min-height: clamp(320px, 78vw, 460px); }
+}
+
+/* ─── Licensing ─────────────────────────────────────────────────────── */
+
+.license-list { list-style: none; border-top: 1px solid var(--line); }
+
+.license-list li { border-bottom: 1px solid var(--line); }
+
+.license-list a {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.7fr) 1.6fr auto;
+  align-items: baseline;
+  gap: 8px clamp(16px, 3vw, 40px);
+  padding: clamp(18px, 2.4vw, 28px) 12px;
+  text-decoration: none;
+  transition: background-color 0.3s var(--ease-out);
+}
+
+.license-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  letter-spacing: -0.015em;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.license-note { color: var(--muted); }
+
+.license-go { color: var(--purple); font-weight: 700; transition: transform 0.35s var(--ease-out); }
+
+.license-list a:hover,
+.license-list a:focus-visible { background: var(--purple-xlight); }
+
+.license-list a:hover .license-name,
+.license-list a:focus-visible .license-name { transform: translateX(10px); }
+
+.license-list a:hover .license-go,
+.license-list a:focus-visible .license-go { transform: translateX(6px); }
+
+.license-more { margin-top: 22px; max-width: 46rem; color: var(--muted); }
+.license-more a { color: var(--purple); font-weight: 600; }
+
+@media (max-width: 720px) {
+  .license-list a { grid-template-columns: 1fr auto; }
+  .license-note { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* ─── Referral ──────────────────────────────────────────────────────── */
+
+.more { padding-bottom: clamp(64px, 9vw, 120px); }
+
+.more-inner {
+  max-width: 46rem;
+  padding: clamp(24px, 3.4vw, 40px);
+  border-radius: 18px;
+  background: var(--purple-xlight);
+  border: 1px solid var(--line);
+}
+
+.more-inner h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); }
+
+.more-link {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 12px 22px;
+  border-radius: 100px;
+  background: var(--purple);
+  color: oklch(99% 0.003 310);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+
+.more-link:hover { background: var(--purple-dim); }
+.more-link:active { transform: scale(0.98); }
+.more-link span { display: inline-block; transition: transform 0.35s var(--ease-out); }
+.more-link:hover span { transform: translateX(5px); }
+
+.more-disclosure { margin-top: 16px; font-size: 0.9rem; }
+
+@media (prefers-color-scheme: dark) {
+  .more-link { color: oklch(18% 0.06 310); }
+}

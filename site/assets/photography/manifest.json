@@ -1,0 +1,112 @@
+[
+ {
+  "slug": "skogafoss",
+  "caption": "Skógafoss, Iceland",
+  "alt": "Skógafoss waterfall falling from a green cliff, with a rainbow in the spray at its base",
+  "focus": [
+   62,
+   40
+  ],
+  "w": 2200,
+  "h": 1467
+ },
+ {
+  "slug": "itsukushima",
+  "caption": "Itsukushima Shrine, Miyajima, Japan",
+  "alt": "The red torii gate of Itsukushima Shrine standing in the sea at dusk beneath heavy clouds",
+  "focus": [
+   55,
+   55
+  ],
+  "w": 2200,
+  "h": 1238
+ },
+ {
+  "slug": "matterhorn",
+  "caption": "Matterhorn from Riffelsee, Switzerland",
+  "alt": "The Matterhorn reflected in the still water of Riffelsee under a deep blue sky",
+  "focus": [
+   60,
+   40
+  ],
+  "w": 2200,
+  "h": 1464
+ },
+ {
+  "slug": "big-ben",
+  "caption": "Big Ben at sunset, London",
+  "alt": "Big Ben and the Houses of Parliament under an orange and violet sunset sky",
+  "focus": [
+   72,
+   45
+  ],
+  "w": 2200,
+  "h": 1464
+ },
+ {
+  "slug": "jokulsarlon",
+  "caption": "Jökulsárlón glacier lagoon, Iceland",
+  "alt": "Blue and white icebergs floating on Jökulsárlón lagoon with a glacier beyond",
+  "focus": [
+   50,
+   55
+  ],
+  "w": 2200,
+  "h": 1100
+ },
+ {
+  "slug": "saguaro-sunset",
+  "caption": "Sonoran Desert at sunset, Arizona",
+  "alt": "A dark desert mountain silhouetted against an orange and gold sunset above saguaro cactus",
+  "focus": [
+   50,
+   50
+  ],
+  "w": 2200,
+  "h": 1464
+ },
+ {
+  "slug": "gorner",
+  "caption": "Gorner Glacier, Zermatt, Switzerland",
+  "alt": "The Gorner Glacier winding between snow-covered peaks above Zermatt",
+  "focus": [
+   55,
+   50
+  ],
+  "w": 2200,
+  "h": 1464
+ },
+ {
+  "slug": "waipio",
+  "caption": "Waipio Valley, Hawaii",
+  "alt": "Green cliffs of Waipio Valley dropping to a black sand beach and surf",
+  "focus": [
+   50,
+   50
+  ],
+  "w": 2200,
+  "h": 1464
+ },
+ {
+  "slug": "hozu-gorge",
+  "caption": "Hozu Gorge in mist, Arashiyama, Japan",
+  "alt": "Mist rising from forested slopes above the Hozu River near Arashiyama",
+  "focus": [
+   50,
+   55
+  ],
+  "w": 2200,
+  "h": 1100
+ },
+ {
+  "slug": "copenhagen",
+  "caption": "Copenhagen rooftops, Denmark",
+  "alt": "Copenhagen's red rooftops and a green copper spire under a broken, cloudy sky",
+  "focus": [
+   75,
+   50
+  ],
+  "w": 2200,
+  "h": 1512
+ }
+]

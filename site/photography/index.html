@@ -11,21 +11,24 @@
     <meta property="og:title" content="Photography">
     <meta property="og:description" content="Travel photographs for sale as prints and available to license, with links to each shop.">
     <meta property="og:url" content="https://purplelink.llc/photography/">
-    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="https://purplelink.llc/assets/photography/matterhorn-2200.webp">
+    <meta property="og:image:width" content="2200">
+    <meta property="og:image:height" content="1464">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Photography">
     <meta name="twitter:description" content="Travel photographs for sale as prints and available to license, with links to each shop.">
-    <meta name="twitter:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/photography/matterhorn-2200.webp">
     <meta name="twitter:image:alt" content="Photography">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/photography/skogafoss-2200.webp" as="image" type="image/webp" fetchpriority="high">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=9721937a03">
-    <script src="/site.js?v=0dbe9e7e3c" defer></script>
+    <link rel="stylesheet" href="/photography/photography.css?v=6100efe16b">
+    <script src="/site.js?v=2d9de1f83d" defer></script>
+    <script src="/photography/photography.js?v=bce0c174a7" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -53,73 +56,116 @@
       </nav>
     </header>
 
-    <main id="main-content">
-      <section class="catalog-hero">
-        <p class="eyebrow">Photography</p>
-        <h1>Travel photographs, <em>to hang or to license.</em></h1>
-        <p class="catalog-lede">I photograph when I travel, on a Nikon: the Alps, Japan, Iceland, Hawaii, the Arizona desert and a few cities in between. The pictures are for sale as prints and available to license. This page lists where each one lives, so you can go straight to the right shop.</p>
+    <main id="main-content" class="photo-page">
+      <section class="stage" aria-label="Selected photographs" data-stage>
+        <div class="stage-frame" role="region" aria-roledescription="carousel" aria-label="Photograph slideshow" tabindex="0">
+          <figure class="stage-slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 10" data-caption="Skógafoss, Iceland">
+            <img src="/assets/photography/skogafoss-2200.webp" alt="Skógafoss waterfall falling from a green cliff, with a rainbow in the spray at its base" width="2200" height="1467" fetchpriority="high" decoding="async" data-focus="62 40">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="2 of 10" data-caption="Itsukushima Shrine, Miyajima, Japan">
+            <img data-src="/assets/photography/itsukushima-2200.webp" alt="The red torii gate of Itsukushima Shrine standing in the sea at dusk beneath heavy clouds" width="2200" height="1238" decoding="async" data-focus="55 55">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="3 of 10" data-caption="Matterhorn from Riffelsee, Switzerland">
+            <img data-src="/assets/photography/matterhorn-2200.webp" alt="The Matterhorn reflected in the still water of Riffelsee under a deep blue sky" width="2200" height="1464" decoding="async" data-focus="60 40">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="4 of 10" data-caption="Big Ben at sunset, London">
+            <img data-src="/assets/photography/big-ben-2200.webp" alt="Big Ben and the Houses of Parliament under an orange and violet sunset sky" width="2200" height="1464" decoding="async" data-focus="72 45">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="5 of 10" data-caption="Jökulsárlón glacier lagoon, Iceland">
+            <img data-src="/assets/photography/jokulsarlon-2200.webp" alt="Blue and white icebergs floating on Jökulsárlón lagoon with a glacier beyond" width="2200" height="1100" decoding="async" data-focus="50 55">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="6 of 10" data-caption="Sonoran Desert at sunset, Arizona">
+            <img data-src="/assets/photography/saguaro-sunset-2200.webp" alt="A dark desert mountain silhouetted against an orange and gold sunset above saguaro cactus" width="2200" height="1464" decoding="async" data-focus="50 50">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="7 of 10" data-caption="Gorner Glacier, Zermatt, Switzerland">
+            <img data-src="/assets/photography/gorner-2200.webp" alt="The Gorner Glacier winding between snow-covered peaks above Zermatt" width="2200" height="1464" decoding="async" data-focus="55 50">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="8 of 10" data-caption="Waipio Valley, Hawaii">
+            <img data-src="/assets/photography/waipio-2200.webp" alt="Green cliffs of Waipio Valley dropping to a black sand beach and surf" width="2200" height="1464" decoding="async" data-focus="50 50">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="9 of 10" data-caption="Hozu Gorge in mist, Arashiyama, Japan">
+            <img data-src="/assets/photography/hozu-gorge-2200.webp" alt="Mist rising from forested slopes above the Hozu River near Arashiyama" width="2200" height="1100" decoding="async" data-focus="50 55">
+          </figure>
+          <figure class="stage-slide" role="group" aria-roledescription="slide" aria-label="10 of 10" data-caption="Copenhagen rooftops, Denmark">
+            <img data-src="/assets/photography/copenhagen-2200.webp" alt="Copenhagen's red rooftops and a green copper spire under a broken, cloudy sky" width="2200" height="1512" decoding="async" data-focus="75 50">
+          </figure>
+          <div class="stage-scrim" aria-hidden="true"></div>
+        </div>
+        <div class="stage-copy">
+          <h1 class="stage-title"><span>Travel photographs,</span> <span>to hang or to license.</span></h1>
+          <p class="stage-lede">I photograph when I travel, on a Nikon: the Alps, Japan, Iceland, Hawaii, the Arizona desert and a few cities in between. Prints are for the wall, licenses are for your project, and each has its own shop below.</p>
+        </div>
+        <div class="stage-bar">
+          <p class="stage-caption" aria-live="off"><span class="stage-count" data-count>1 / 10</span><span class="stage-place" data-place>Skógafoss, Iceland</span></p>
+          <div class="stage-controls">
+            <button type="button" class="stage-btn" data-prev aria-label="Previous photograph"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button type="button" class="stage-btn stage-btn-play" data-toggle aria-label="Pause slideshow" aria-pressed="false"><svg class="ico-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><svg class="ico-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></button>
+            <button type="button" class="stage-btn" data-next aria-label="Next photograph"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+        <ul class="stage-thumbs" aria-label="Choose a photograph">
+            <li><button type="button" class="stage-thumb is-active" data-index="0" aria-label="Show photograph 1: Skógafoss, Iceland" aria-current="true"><img src="/assets/photography/skogafoss-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="1" aria-label="Show photograph 2: Itsukushima Shrine, Miyajima, Japan"><img src="/assets/photography/itsukushima-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="2" aria-label="Show photograph 3: Matterhorn from Riffelsee, Switzerland"><img src="/assets/photography/matterhorn-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="3" aria-label="Show photograph 4: Big Ben at sunset, London"><img src="/assets/photography/big-ben-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="4" aria-label="Show photograph 5: Jökulsárlón glacier lagoon, Iceland"><img src="/assets/photography/jokulsarlon-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="5" aria-label="Show photograph 6: Sonoran Desert at sunset, Arizona"><img src="/assets/photography/saguaro-sunset-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="6" aria-label="Show photograph 7: Gorner Glacier, Zermatt, Switzerland"><img src="/assets/photography/gorner-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="7" aria-label="Show photograph 8: Waipio Valley, Hawaii"><img src="/assets/photography/waipio-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="8" aria-label="Show photograph 9: Hozu Gorge in mist, Arashiyama, Japan"><img src="/assets/photography/hozu-gorge-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+            <li><button type="button" class="stage-thumb" data-index="9" aria-label="Show photograph 10: Copenhagen rooftops, Denmark"><img src="/assets/photography/copenhagen-thumb.webp" alt="" width="140" height="88" loading="lazy" decoding="async"><span class="stage-thumb-bar" aria-hidden="true"></span></button></li>
+        </ul>
+        <p class="stage-note">The photographs here carry a watermark. Prints and licensed files are clean.</p>
       </section>
 
-      <section class="catalog-section" aria-labelledby="photo-prints">
-        <div class="catalog-section-head">
-          <p class="eyebrow">For your wall</p>
+      <section class="shops" aria-labelledby="photo-prints">
+        <div class="shops-head">
           <h2 id="photo-prints">Buy a print</h2>
-          <p>Two shops, for two different needs: a finished print delivered to your door, or a file you print yourself.</p>
+          <p>A finished print delivered to your door, or a file you print yourself.</p>
         </div>
-        <div class="catalog-grid catalog-grid-2">
-          <a class="catalog-card" href="https://fineartamerica.com/profiles/benjamin-ampel" rel="noopener noreferrer" target="_blank">
-            <span class="catalog-card-price">Finished prints</span>
-            <h3>Fine Art America</h3>
-            <p>Hundreds of photographs, each orderable as a canvas, a framed print or a fine art print, and shipped ready to hang. The shop is organized into collections by place.</p>
-            <span class="catalog-card-cta">Browse the shop →</span>
+        <div class="shops-grid">
+          <a class="shop shop-lead" href="https://fineartamerica.com/profiles/benjamin-ampel" rel="noopener noreferrer" target="_blank" data-reveal>
+            <img src="/assets/photography/hozu-gorge-2200.webp" alt="" width="2200" height="1100" loading="lazy" decoding="async">
+            <span class="shop-scrim" aria-hidden="true"></span>
+            <span class="shop-body">
+              <span class="shop-kind">Finished prints</span>
+              <span class="shop-name">Fine Art America</span>
+              <span class="shop-text">Hundreds of photographs, each orderable as a canvas, a framed print or a fine art print, shipped ready to hang and sorted into collections by place.</span>
+              <span class="shop-cta">Browse the shop <span aria-hidden="true">&rarr;</span></span>
+            </span>
           </a>
-          <a class="catalog-card" href="https://www.etsy.com/shop/PurplelinkDesigns" rel="noopener noreferrer" target="_blank">
-            <span class="catalog-card-price">Printable downloads</span>
-            <h3>Etsy: PurplelinkDesigns</h3>
-            <p>Each photograph comes as high-resolution files in the common frame ratios, so you can print at home or at a print shop. Nothing is shipped. The files are for personal use.</p>
-            <span class="catalog-card-cta">Browse the shop →</span>
+          <a class="shop shop-side" href="https://www.etsy.com/shop/PurplelinkDesigns" rel="noopener noreferrer" target="_blank" data-reveal>
+            <img src="/assets/photography/itsukushima-2200.webp" alt="" width="2200" height="1238" loading="lazy" decoding="async">
+            <span class="shop-scrim" aria-hidden="true"></span>
+            <span class="shop-body">
+              <span class="shop-kind">Printable downloads, PurplelinkDesigns shop</span>
+              <span class="shop-name">Etsy</span>
+              <span class="shop-text">High-resolution files in the common frame ratios, to print at home or at a print shop. Nothing is shipped. Personal use.</span>
+              <span class="shop-cta">Browse the shop <span aria-hidden="true">&rarr;</span></span>
+            </span>
           </a>
         </div>
       </section>
 
-      <section class="catalog-section" aria-labelledby="photo-license">
-        <div class="catalog-section-head">
-          <p class="eyebrow">For your project</p>
+      <section class="license" aria-labelledby="photo-license">
+        <div class="license-head" data-reveal>
           <h2 id="photo-license">License a photograph</h2>
           <p>For websites, publications, marketing and other commercial use, the photographs are licensed through stock agencies. Two of them have public portfolios you can browse.</p>
         </div>
-        <div class="catalog-grid catalog-grid-2">
-          <a class="catalog-card" href="https://www.istockphoto.com/portfolio/BenjaminAmpel" rel="noopener noreferrer" target="_blank">
-            <span class="catalog-card-price">Getty Images</span>
-            <h3>iStock portfolio</h3>
-            <p>Creative and editorial photographs, licensed through iStock, which is part of Getty Images.</p>
-            <span class="catalog-card-cta">View the portfolio →</span>
-          </a>
-          <a class="catalog-card" href="https://www.dreamstime.com/benampel_info" rel="noopener noreferrer" target="_blank">
-            <span class="catalog-card-price">Stock photography</span>
-            <h3>Dreamstime portfolio</h3>
-            <p>A selection of travel and landscape photographs, licensed through Dreamstime.</p>
-            <span class="catalog-card-cta">View the portfolio →</span>
-          </a>
-        </div>
-        <p class="catalog-contact">The photographs are also licensed through Adobe Stock, Shutterstock and Alamy. If you cannot find the one you want, or you need a larger file or terms an agency does not offer, write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will reply directly.</p>
+        <ul class="license-list">
+          <li data-reveal><a href="https://www.istockphoto.com/portfolio/BenjaminAmpel" rel="noopener noreferrer" target="_blank"><span class="license-name">iStock portfolio</span><span class="license-note">Creative and editorial photographs, licensed through iStock, part of Getty Images.</span><span class="license-go" aria-hidden="true">&rarr;</span></a></li>
+          <li data-reveal><a href="https://www.dreamstime.com/benampel_info" rel="noopener noreferrer" target="_blank"><span class="license-name">Dreamstime portfolio</span><span class="license-note">A selection of travel and landscape photographs, licensed through Dreamstime.</span><span class="license-go" aria-hidden="true">&rarr;</span></a></li>
+        </ul>
+        <p class="license-more" data-reveal>The photographs are also licensed through Adobe Stock, Shutterstock and Alamy. If you cannot find the one you want, or you need a larger file or terms an agency does not offer, write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will reply directly.</p>
       </section>
 
-      <section class="catalog-section" aria-labelledby="photo-more">
-        <div class="catalog-section-head">
-          <p class="eyebrow">If you need more than mine</p>
+      <section class="more" aria-labelledby="photo-more">
+        <div class="more-inner" data-reveal>
           <h2 id="photo-more">A stock library for the rest</h2>
           <p>I am also a contributor to Depositphotos. If you are choosing a stock library for a project and want a wider range of images than one photographer can offer, their plans are a reasonable place to start.</p>
+          <a class="more-link" href="https://depositphotos.com/?ref=100298704&amp;utm_source=linkCopy&amp;utm_medium=referral" rel="sponsored noopener noreferrer" target="_blank" data-track="affiliate_click" data-track-meta="depositphotos-referral">See Depositphotos plans <span aria-hidden="true">&rarr;</span></a>
+          <p class="more-disclosure">Disclosure: the Depositphotos link above is a referral link. If you sign up and buy a plan through it, Purplelink earns a cash reward from Depositphotos at no extra cost to you. The link opens in a new tab.</p>
         </div>
-        <div class="catalog-grid catalog-grid-2">
-          <a class="catalog-card" href="https://depositphotos.com/?ref=100298704&amp;utm_source=linkCopy&amp;utm_medium=referral" rel="sponsored noopener noreferrer" target="_blank" data-track="affiliate_click" data-track-meta="depositphotos-referral">
-            <span class="catalog-card-price">Stock plans</span>
-            <h3>Depositphotos</h3>
-            <p>Photos, vectors, video and music, sold by subscription or credit pack.</p>
-            <span class="catalog-card-cta">See Depositphotos plans →</span>
-          </a>
-        </div>
-        <p class="catalog-contact">Disclosure: the Depositphotos link above is a referral link. If you sign up and buy a plan through it, Purplelink earns a cash reward from Depositphotos at no extra cost to you. The link opens in a new tab.</p>
       </section>
     </main>
 
