@@ -981,7 +981,7 @@ def _needs_human(err_msg):
     return "not signed in" in m or "anti-bot human check" in m
 
 
-def _wait_for_fix(page, url, fn, budget_s=180):
+def _wait_for_fix(page, url, fn, budget_s=180, front=True):
     """Bring the login/challenge page to the front and retry fn(page) every
     few seconds until it stops raising or the budget runs out.
 
@@ -991,7 +991,8 @@ def _wait_for_fix(page, url, fn, budget_s=180):
     """
     try:
         page.goto(url, wait_until="domcontentloaded", timeout=60_000)
-        page.bring_to_front()
+        if front:
+            page.bring_to_front()
     except Exception:
         pass
     # bring_to_front() alone was not enough: verified 2026-08-27 that after a
@@ -1001,8 +1002,9 @@ def _wait_for_fix(page, url, fn, budget_s=180):
     # A real macOS "activate" on the app is the belt-and-suspenders fix.
     try:
         import subprocess as _sp
-        _sp.run(["osascript", "-e", 'tell application "Google Chrome" to activate'],
-                capture_output=True, timeout=5)
+        if front:
+            _sp.run(["osascript", "-e", 'tell application "Google Chrome" to activate'],
+                    capture_output=True, timeout=5)
     except Exception:
         pass
     # Never call fn(page) while the person is still on a sign-in screen: every
@@ -1035,7 +1037,7 @@ def _wait_for_fix(page, url, fn, budget_s=180):
     return fn(page)
 
 
-def run(headless=True, auto_login=True, login_budget_s=180, include_dreamstime=False):
+def run_sequential(headless=True, auto_login=True, login_budget_s=180, include_dreamstime=False):
     from playwright.sync_api import sync_playwright
     OUT.mkdir(parents=True, exist_ok=True)
     entry = {"date": datetime.date.today().isoformat(),
@@ -1118,6 +1120,204 @@ def run(headless=True, auto_login=True, login_budget_s=180, include_dreamstime=F
     return entry
 
 
+class CdpPage:
+    """The slice of Playwright's Page API the collectors use, over raw CDP.
+
+    Why: Playwright allows ONE client on this Chrome (a second gets "Browser
+    context management is not supported") and hangs when synced extensions
+    load, so the collectors could never run at the same time. Each CdpPage is
+    its own tab on its own websocket, so many can run in parallel threads."""
+
+    def __init__(self, background=True):
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from cdp_tab import Tab
+        self.tab = Tab.new(background=background)
+        self.request = _CdpRequest(self)
+
+    @property
+    def url(self):
+        return self.tab.eval("location.href") or ""
+
+    def goto(self, url, wait_until="domcontentloaded", timeout=30000):
+        self.tab.send("Page.navigate", url=url)
+        time.sleep(0.5)
+        end = time.time() + timeout / 1000
+        while time.time() < end:
+            try:
+                if self.tab.eval("document.readyState") in ("interactive", "complete"):
+                    return
+            except Exception:
+                pass
+            time.sleep(0.3)
+        raise TimeoutError(f"goto {url} timed out")
+
+    def reload(self, wait_until="domcontentloaded"):
+        self.tab.send("Page.reload")
+        time.sleep(0.5)
+        self.goto(self.url)
+
+    def wait_for_timeout(self, ms):
+        """Wait up to `ms`, but return early once the page has finished
+        loading and its text has stopped changing for 2.5s (min 2s). Most
+        collectors used fixed 6-11s pauses; this cuts them to what the page
+        actually needs and never waits longer than the original pause."""
+        end = time.time() + ms / 1000
+        time.sleep(min(ms / 1000, 2.0))
+        last, since = None, time.time()
+        while time.time() < end:
+            try:
+                sig = self.tab.eval("document.readyState+'|'+(document.body?document.body.innerText.length:0)")
+            except Exception:
+                sig = None
+            if sig != last:
+                last, since = sig, time.time()
+            elif sig and sig.startswith("complete|") and time.time() - since >= 2.5:
+                return
+            time.sleep(0.5)
+
+    def inner_text(self, selector, timeout=None):
+        return self.tab.eval(f"(document.querySelector({json.dumps(selector)})||{{}}).innerText||''") or ""
+
+    def evaluate(self, js, arg=None):
+        return self.tab.eval(f"({js})()")
+
+    def select_option(self, selector, label=None):
+        self.tab.eval(f"""(()=>{{const s=document.querySelector({json.dumps(selector)});
+            const o=[...s.options].find(o=>o.text.trim()==={json.dumps(label)});
+            Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(s,o.value);
+            s.dispatchEvent(new Event('input',{{bubbles:true}})); s.dispatchEvent(new Event('change',{{bubbles:true}}))}})()""")
+
+    def bring_to_front(self):
+        self.tab.front()
+
+    def close(self):
+        self.tab.close()
+
+
+class _CdpRequest:
+    def __init__(self, page):
+        self.page = page
+
+    def get(self, url, **kw):
+        r = self.page.tab.eval(f"""fetch({json.dumps(url)},{{credentials:'include',headers:{{Accept:'application/json'}}}})
+            .then(async r=>({{status:r.status,text:await r.text()}}))""")
+        return _CdpResponse(r["status"], r["text"])
+
+
+class _CdpResponse:
+    def __init__(self, status, text):
+        self.status, self._text = status, text
+        self.ok = 200 <= status < 300
+
+    def json(self):
+        return json.loads(self._text)
+
+    def text(self):
+        return self._text
+
+
+def run(headless=True, auto_login=True, login_budget_s=300, include_dreamstime=False, workers=6):
+    """Collect every platform in parallel, each in its own tab.
+
+    Phase 1 runs all collectors at once with no login prompts. Any that
+    report "not signed in" keep their tab open, all the sign-in pages are
+    put up together, and each is retried the moment its URL leaves the login
+    flow, so signing in to several sites takes one pass instead of a wait per
+    site."""
+    from concurrent.futures import ThreadPoolExecutor
+    import threading
+    OUT.mkdir(parents=True, exist_ok=True)
+    entry = {"date": datetime.date.today().isoformat(),
+             "collected_at": datetime.datetime.now().isoformat(timespec="seconds"),
+             "platforms": {}}
+    lock = threading.Lock()
+    platforms = PLATFORMS + [DREAMSTIME] if include_dreamstime else PLATFORMS
+    # No Playwright client here, so an already-running Chrome is simply used as
+    # is; launch_chrome's "another client attached" refusal doesn't apply.
+    import socket
+    with socket.socket() as _s:
+        _s.settimeout(0.4)
+        up = _s.connect_ex(("127.0.0.1", CDP_PORT)) == 0
+    proc = None if up else launch_chrome(headless=False if auto_login else headless)
+    pages, needs_login = {}, []
+
+    def numeric_ok(got):
+        nums = [v for v in got.values() if isinstance(v, (int, float)) and not isinstance(v, bool)]
+        return (not got) or bool(nums)
+
+    def record(name, got, note=""):
+        if got and not numeric_ok(got):
+            raise RuntimeError("no numeric fields scraped (layout changed or session expired)")
+        with lock:
+            entry["platforms"][name] = {"ok": True, **got}
+            print(f"  OK   {name}{note}", flush=True)
+
+    def work(item):
+        name, fn = item
+        page = CdpPage(background=True)
+        pages[name] = page
+        try:
+            record(name, fn(page))
+            page.close()
+        except Exception as e:
+            url = LOGIN_URLS.get(name)
+            with lock:
+                if auto_login and url and _needs_human(str(e)):
+                    needs_login.append((name, fn, url))
+                    print(f"  ...  {name}: {str(e)[:60]} -- will need you to sign in", flush=True)
+                else:
+                    entry["platforms"][name] = {"ok": False, "error": f"{type(e).__name__}: {e}"[:160]}
+                    print(f"  WARN {name}: {type(e).__name__}: {str(e)[:80]}", flush=True)
+
+    t0 = time.time()
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        list(ex.map(work, platforms))
+    print(f"  ({time.time() - t0:.0f}s for the parallel pass)", flush=True)
+
+    if needs_login:
+        names = ", ".join(n for n, _, _ in needs_login)
+        print(f"  Sign in to: {names}. Every sign-in page is open now; each retries the "
+              f"moment it sees you signed in (up to {login_budget_s}s).", flush=True)
+        for name, _fn, url in needs_login:       # last one opened ends up in front
+            try:
+                pages[name].goto(url, timeout=60_000)
+                pages[name].bring_to_front()
+            except Exception:
+                pass
+        try:
+            import subprocess as _sp
+            _sp.run(["osascript", "-e", 'tell application "Google Chrome" to activate'],
+                    capture_output=True, timeout=5)
+        except Exception:
+            pass
+
+        def fix(item):
+            name, fn, url = item
+            page = pages[name]
+            try:
+                got = _wait_for_fix(page, url, fn, budget_s=login_budget_s, front=False)
+                record(name, got, " (after sign-in)")
+                page.close()
+            except Exception as e2:
+                with lock:
+                    entry["platforms"][name] = {"ok": False, "error": f"{type(e2).__name__}: {e2}"[:160]}
+                    print(f"  WARN {name}: still failing after waiting: {type(e2).__name__}: {str(e2)[:80]}", flush=True)
+
+        with ThreadPoolExecutor(max_workers=len(needs_login)) as ex:
+            list(ex.map(fix, needs_login))
+
+    if proc:
+        quit_chrome(proc)
+    hist = load_history()
+    hist = [h for h in hist if h["date"] != entry["date"]] + [entry]
+    hist.sort(key=lambda h: h["date"])
+    HISTORY.write_text(json.dumps(hist, indent=2))
+    append_snapshots(entry)
+    print(f"\nwrote {HISTORY} ({len(hist)} day(s) of history); total {time.time() - t0:.0f}s")
+    return entry
+
+
+
 def append_snapshots(entry):
     """Append today's numbers to a tidy long-format CSV.
 
@@ -1185,6 +1385,8 @@ def login():
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--sequential", action="store_true",
+                    help="old one-platform-at-a-time Playwright path (fallback)")
     ap.add_argument("--login", action="store_true")
     ap.add_argument("--show", action="store_true")
     ap.add_argument("--headed", action="store_true", help="run visibly, for debugging")
@@ -1192,7 +1394,7 @@ if __name__ == "__main__":
                     help="don't pop up a login page on a dead session; just "
                          "fail like before. Auto-login is on by default and "
                          "forces a headed browser so it has a window to show.")
-    ap.add_argument("--login-wait", type=int, default=180,
+    ap.add_argument("--login-wait", type=int, default=300,
                     help="seconds to wait per platform for you to sign in "
                          "before giving up on it (default 180)")
     ap.add_argument("--include-dreamstime", action="store_true",
@@ -1207,7 +1409,8 @@ if __name__ == "__main__":
         h = load_history()
         print(json.dumps(h[-1] if h else {}, indent=2))
     else:
-        run(headless=not a.headed, auto_login=not a.no_auto_login,
+        (run_sequential if a.sequential else run)(
+            headless=not a.headed, auto_login=not a.no_auto_login,
             login_budget_s=a.login_wait, include_dreamstime=a.include_dreamstime)
         import subprocess
         # Mail second: it survives when browser sessions don't, so it fills gaps
