@@ -29,6 +29,7 @@ from pathlib import Path
 
 TRAFFIC = Path(os.environ.get("PURPLELINK_TRAFFIC_DIR") or Path.home() / ".purplelink" / "traffic")
 SNAP = TRAFFIC / "asa-keywords.json"
+SHARE = TRAFFIC / "asa-impression-share.json"
 MANUAL = TRAFFIC / "manual-ads.json"
 
 TARGET_CPI = 1.50      # dollars per install we are willing to pay; edit as GlobePin Pro economics firm up
@@ -167,6 +168,54 @@ def analyze(snaps: dict, today: dt.date | None = None) -> dict:
             "window": snaps[last].get("window")}
 
 
+LOW_SHARE = 0.10       # impression share under this on a term with real volume: we rarely win it
+TERM_MIN_TAPS = 5
+
+
+def analyze_terms(snaps: dict, today: dt.date | None = None) -> dict:
+    """Search-term impression share (Apple's report) against the keyword list. Advisory."""
+    if not SHARE.exists():
+        return {"terms": [], "note": "no impression-share reading yet"}
+    rows = list(json.loads(SHARE.read_text()).get("rows", {}).values())
+    kws = set()
+    if snaps:
+        for k in by_kw(snaps[sorted(snaps)[-1]]):
+            kws.add(k.strip("[]").lower())
+    agg: dict[str, dict] = {}
+    for r in rows:
+        a = agg.setdefault(r["term"], {"term": r["term"], "popularity": r["popularity"], "days": 0, "spend": 0.0,
+                                       "impressions": 0, "taps": 0, "installs": 0, "share": [], "rank": []})
+        a["days"] += 1
+        for f in ("spend", "impressions", "taps", "installs"):
+            a[f] += r[f]
+        a["share"].append(r["share"])
+        a["rank"].append(r["rank"])
+    out = []
+    for a in agg.values():
+        share = max(a["share"]) / 100 if a["share"] else 0.0
+        cpi = a["spend"] / a["installs"] if a["installs"] else None
+        covered = a["term"].lower() in kws
+        action, why = "watch", "little activity"
+        if a["installs"] > 0 and cpi is not None and cpi <= TARGET_CPI and not covered:
+            action = "add"
+            why = (f"{a['installs']} install(s) at {money(cpi)} each from this search term, and it is not a keyword: "
+                   f"add [{a['term']}] as an exact keyword")
+        elif a["taps"] >= TERM_MIN_TAPS and a["installs"] == 0:
+            action, why = "negative", f"{a['taps']} taps and no installs: add as a negative"
+        elif share < LOW_SHARE and a["popularity"] >= 3 and a["impressions"] >= 10 and (covered or a["taps"] >= 1):
+            action = "bid-up" if covered else "add"
+            why = (f"peak impression share {share*100:.0f}% on a popularity-{a['popularity']} term: "
+                   + ("raise its bid" if covered else f"add [{a['term']}] as an exact keyword"))
+        elif share < LOW_SHARE and a["impressions"] >= 10:
+            why = (f"low impression share ({share*100:.0f}%) but no taps yet: relevance unproven, so it is not worth a bid")
+        out.append({**a, "share": round(share, 3), "cpi": round(cpi, 2) if cpi else None, "covered": covered,
+                    "action": action, "why": why,
+                    "sample": f"{a['impressions']} impr, {a['taps']} taps, {a['installs']} installs over {a['days']} day(s)"})
+    order = {"add": 0, "bid-up": 1, "negative": 2, "watch": 3}
+    out.sort(key=lambda t: (order[t["action"]], -t["installs"], -t["impressions"]))
+    return {"terms": out, "note": None}
+
+
 def render(res: dict) -> str:
     if res.get("error"):
         return f"Ads optimizer: {res['error']}"
@@ -180,6 +229,11 @@ def render(res: dict) -> str:
     out.append(f"  {d['verdict']}")
     out.append(f"  Totals in window: {money(t['spend'])}, {t['impressions']} impressions, {t['taps']} taps, {t['installs']} installs"
                + (f" ({money(t['spend']/t['installs'])} per install)." if t["installs"] else "."))
+    terms = res.get("searchTerms") or {}
+    if terms.get("terms"):
+        out.append("  Search-term impression share (Apple report; advisory):")
+        for t in terms["terms"][:8]:
+            out.append(f"   {t['action'].upper():<8} {t['term']:<24} share {t['share']*100:.0f}% pop {t['popularity']}  {t['why']} [{t['sample']}]")
     acts = [r for r in res["keywords"] if r["action"] != "hold"]
     holds = [r for r in res["keywords"] if r["action"] == "hold"]
     if acts:
@@ -194,7 +248,9 @@ def render(res: dict) -> str:
 
 
 def main() -> int:
-    res = analyze(load())
+    snaps = load()
+    res = analyze(snaps)
+    res["searchTerms"] = analyze_terms(snaps)
     if "--json" in sys.argv[1:]:
         print(json.dumps(res, indent=1))
     else:

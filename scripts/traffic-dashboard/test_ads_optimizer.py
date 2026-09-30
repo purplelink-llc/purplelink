@@ -60,3 +60,18 @@ for d in range(0, 4):
     s.update([snap(d, [kw("big", 1.0, spend=9.5 * d, impr=500 * d, taps=20 * d)])])
 check("Budget limited" in ao.analyze(s, D0 + dt.timedelta(days=3))["delivery"]["verdict"], "near-full spend is budget limited")
 print("ads optimizer tests ok")
+
+# search-term impression share: converting uncovered term -> add; low-share zero-tap term -> watch
+import json, tempfile
+tmp = Path(tempfile.mkdtemp())
+(tmp / "asa-impression-share.json").write_text(json.dumps({"rows": {
+    "2026-09-22|mapquest": {"day": "2026-09-22", "term": "mapquest", "popularity": 3, "share": 9.0, "rank": "3", "spend": 5.95, "impressions": 434, "taps": 9, "installs": 5},
+    "2026-09-24|trusted traveler": {"day": "2026-09-24", "term": "trusted traveler", "popularity": 3, "share": 2.0, "rank": ">5", "spend": 0.0, "impressions": 37, "taps": 0, "installs": 0},
+    "2026-09-25|travel map": {"day": "2026-09-25", "term": "travel map", "popularity": 4, "share": 3.0, "rank": ">5", "spend": 0.0, "impressions": 40, "taps": 1, "installs": 0}}}))
+ao.SHARE = tmp / "asa-impression-share.json"
+snaps = dict([snap(0, [kw("[travel map]", 1.0)])])
+terms = {t["term"]: t for t in ao.analyze_terms(snaps)["terms"]}
+check(terms["mapquest"]["action"] == "add", "converting uncovered term is added")
+check(terms["trusted traveler"]["action"] == "watch", "low share with no taps is not chased")
+check(terms["travel map"]["action"] == "bid-up", "covered term with low share gets a bid-up")
+print("term tests ok")
