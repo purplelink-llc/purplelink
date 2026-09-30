@@ -2664,12 +2664,31 @@ def moderntex_ads_block(data: dict, sales: dict | None = None) -> str:
                      f"This compares total ad spend against all ModernTex purchases in the window, "
                      f"not just ones Google Ads attributes to a click, so it is not a strict ROAS.</p>")
 
+    life = gads.get("allTime")
+    life_html = ""
+    if life:
+        lrev = moderntex_revenue_window(sales, 3650)
+        lnet = lrev["gross"] / 100 - life.get("spend", 0.0)
+        life_html = f"""
+  <h3>Lifetime (all time, as of {html.escape(life.get('asOf', '?'))})</h3>
+  <div class="sales-split">
+    <span class='sales-chip'><b>${life.get('spend', 0):,.2f}</b> <span>Google Ads spend</span></span>
+    <span class='sales-chip'><b>{life.get('clicks', 0):,}</b> <span>clicks</span></span>
+    <span class='sales-chip'><b>{life.get('impressions', 0):,}</b> <span>impressions</span></span>
+    <span class='sales-chip'><b>{money(lrev['gross'])}</b> <span>ModernTex purchases, all sources</span></span>
+    <span class='sales-chip'><b>{orders(lrev['orders'])}</b></span>
+  </div>
+  <p class='sales-foot'><b>Lifetime:</b> ${life.get('spend', 0):,.2f} on Google Ads against {money(lrev['gross'])} in
+    ModernTex purchases from every source (net {'-' if lnet < 0 else '+'}${abs(lnet):,.2f}). Purchases are not
+    click-attributed to Google Ads, so this is an upper bound on what the ads earned, not a strict ROAS.</p>"""
+
     return f"""
 <section class="sales appstore">
   <h2>Ads · ModernTex</h2>
   {gads_html}
   {rev_html}
   {compare_html}
+  {life_html}
 </section>"""
 
 

@@ -47,6 +47,16 @@ def main() -> int:
     avg_cpc = num(m.get("Avg. CPC", "0"))
     window = read.get("window", "Last 7 days")
 
+    if window.strip().lower() in ("all time", "lifetime"):
+        # Lifetime reading: stored beside the 7-day reading, never in place of it.
+        prev["allTime"] = {"asOf": dt.date.today().isoformat(), "spend": spend,
+                           "impressions": impressions, "clicks": clicks, "avgCPC": avg_cpc}
+        data["googleAdsModerntex"] = prev
+        PATH.parent.mkdir(parents=True, exist_ok=True)
+        PATH.write_text(json.dumps(data, indent=2) + "\n")
+        print(f"All time: {impressions:,} impressions, {clicks} clicks for ${spend:.2f}.")
+        return 0
+
     if impressions == 0:
         note = f"No delivery in the {window.lower()} window."
     else:
@@ -64,6 +74,8 @@ def main() -> int:
         "spend": spend, "impressions": impressions, "clicks": clicks,
         "avgCPC": avg_cpc, "note": note,
     }
+    if prev.get("allTime"):
+        data["googleAdsModerntex"]["allTime"] = prev["allTime"]
     PATH.parent.mkdir(parents=True, exist_ok=True)
     PATH.write_text(json.dumps(data, indent=2) + "\n")
     print(note)
