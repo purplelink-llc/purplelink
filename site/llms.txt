@@ -81,6 +81,7 @@
 - **Pricing:** Planned at about $49 per year with a 14-day trial; not final.
 - **Status:** Private beta. Waitlist only, not yet available to download.
 - **Waitlist:** https://purplelink.llc/binnacle/
+- **Terms:** https://purplelink.llc/binnacle/terms/ (version 2026-09-29-1)
 
 ## Open source
 
