@@ -1,0 +1,8 @@
+{
+  "name": "example_job",
+  "description": "Harmless template: one trivial model call, logs the result, writes nothing outward.",
+  "schedule": {"hour": 7, "minute": 30, "weekdays": [1, 2, 3, 4, 5]},
+  "budget": {"max_calls": 3, "max_tokens": 2000, "max_usd": 0.05, "max_seconds": 120},
+  "endpoints": ["gpu-local", "haiku"],
+  "writes_queue": false
+}

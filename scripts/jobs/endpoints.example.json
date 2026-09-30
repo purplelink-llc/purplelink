@@ -1,0 +1,9 @@
+{
+  "endpoints": [
+    {"name": "gpu-local", "kind": "openai", "model": "gpt-oss-20b", "base_url": "http://192.168.1.50:8080/v1",
+     "api_key_file": "~/.purplelink/jobs/gpu-key.txt", "timeout": 120},
+    {"name": "haiku", "kind": "anthropic", "model": "claude-haiku-4-5", "api_key_env": "ANTHROPIC_API_KEY",
+     "timeout": 60, "price_in_per_m": 1.0, "price_out_per_m": 5.0},
+    {"name": "claude-plan", "kind": "claude-cli", "model": "haiku", "timeout": 180}
+  ]
+}
