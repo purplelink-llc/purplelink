@@ -3039,6 +3039,46 @@ def marketplaces_block(summary: dict | None) -> str:
 </section>"""
 
 
+QUEUE_INDEX = Path(os.environ.get("PURPLELINK_QUEUE") or Path.home() / ".purplelink" / "queue") / "queue.json"
+
+
+def queue_summary() -> dict | None:
+    """Approval-queue counts, read from the index approval_queue.py maintains. None when unset."""
+    try:
+        idx = json.loads(QUEUE_INDEX.read_text())
+    except Exception:
+        return None
+    c, st = idx.get("counts", {}), idx.get("stats30", {})
+    soon = 0
+    for p in idx.get("pending", []):
+        try:
+            if (dt.date.fromisoformat(str(p["expires"])[:10]) - dt.date.today()).days <= 2:
+                soon += 1
+        except Exception:
+            pass
+    return {"pending": c.get("pending", 0), "needsWork": c.get("needs-work", 0), "approved": c.get("approved", 0),
+            "soon": soon, "acceptance": st.get("acceptance_pct", 0), "decided": st.get("decided", 0),
+            "expiredPct": st.get("expired_pct", 0), "updated": idx.get("updated", "")}
+
+
+def print_queue(q: dict | None) -> None:
+    if not q:
+        return
+    print(f"\n  Approval queue: {q['pending']} pending ({q['soon']} expiring within 2 days), {q['needsWork']} in needs-work, "
+          f"{q['approved']} approved awaiting action; acceptance {q['acceptance']}% over {q['decided']} decisions, "
+          f"expired unread {q['expiredPct']}%")
+
+
+def queue_block() -> str:
+    q = queue_summary()
+    if not q:
+        return ""
+    return (f"<section class=\"sales\"><h2>Approval queue</h2><p class=\"sales-foot\">"
+            f"{q['pending']} pending ({q['soon']} expiring within 2 days), {q['needsWork']} in needs-work, "
+            f"{q['approved']} approved awaiting action. 30-day acceptance {q['acceptance']}% over {q['decided']} decisions; "
+            f"expired unread {q['expiredPct']}%. Index updated {html.escape(q['updated'][:16].replace('T', ' '))}.</p></section>")
+
+
 def print_marketplaces(summary: dict | None) -> None:
     if not summary:
         return
@@ -4180,6 +4220,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
 {profit_block(profit, channels, tax)}
 {sales_block(sales)}
 {marketplaces_block(marketplaces)}
+{queue_block()}
 {appstore_block(appstore)}
 {chrome_web_store_block(chrome_web_store)}
 {manual_ads_block(manual_ads or {}, admob)}
@@ -4452,6 +4493,7 @@ def main() -> int:
     print_metrics(metrics)
     print_profit(profit, channels, tax)
     print_marketplaces(marketplaces)
+    print_queue(queue_summary())
     if sales:
         w, a = sales.get("window", {}), sales.get("allTime", {})
         print(f"\n  Sales — {money(w.get('gross', 0))} in the last "
