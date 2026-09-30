@@ -139,6 +139,36 @@
     finishers.push(stop);
   };
 
+  /* YouTube embed: a poster and a plain link until the box is near the
+     screen, then the privacy-enhanced player, muted, so autoplay is allowed
+     and no YouTube script loads for visitors who never scroll this far. */
+  const youtube = (box) => {
+    const id = box.dataset.youtubeId;
+    if (!id) return;
+    const conn = navigator.connection || {};
+    if (conn.saveData) return;
+    let done = false;
+    const mount = () => {
+      if (done) return;
+      done = true;
+      const f = doc.createElement('iframe');
+      const q = 'autoplay=1&mute=1&loop=1&playlist=' + id + '&playsinline=1&rel=0&modestbranding=1';
+      f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?' + q;
+      f.title = box.dataset.youtubeTitle || 'Video';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.setAttribute('allowfullscreen', '');
+      f.loading = 'lazy';
+      f.referrerPolicy = 'strict-origin-when-cross-origin';
+      box.appendChild(f);
+      box.classList.add('is-loaded');
+    };
+    const near = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { mount(); near.disconnect(); }
+    }, { rootMargin: '400px 0px' });
+    near.observe(box);
+    cleanups.push(() => near.disconnect());
+  };
+
   doc.querySelectorAll('[data-motion]').forEach((box) => {
     const kind = box.dataset.motion;
     if (kind === 'reveal') arm(box);
@@ -146,6 +176,7 @@
     else if (kind === 'rows') box.querySelectorAll('tbody > tr').forEach(arm);
     else if (kind === 'video') video(box);
     else if (kind === 'fix') fix(box);
+    else if (kind === 'youtube') youtube(box);
   });
 
   /* Pages with no markup of their own (tools, blog, learn, legal) still get
