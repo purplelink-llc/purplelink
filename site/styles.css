@@ -1890,6 +1890,32 @@ dd {
   border-top: 1px solid var(--line);
 }
 
+/* ─── Post signature (site.js adds it after every article.post-body) ───── */
+
+.post-signature {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  /* Same left edge and measure as the article text above it. */
+  width: min(720px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
+  margin: 48px 0 0 clamp(24px, 6vw, 80px);
+  padding: 24px 0 40px;
+  border-top: 1px solid var(--line);
+}
+.post-signature-mark { flex: none; line-height: 0; }
+.post-signature-mark img { width: 48px; height: 48px; }
+.post-signature-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.post-signature-name a { color: var(--ink); text-decoration: none; }
+.post-signature-line { margin: 4px 0 0; font-size: 0.9rem; color: var(--muted); }
+.post-signature-line a { color: var(--purple); }
+@media print { .post-signature { break-inside: avoid; } }
+
 /* ─── Daily Digest ─────────────────────────────────────────────────────── */
 
 .digest-body {

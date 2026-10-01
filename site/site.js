@@ -669,3 +669,28 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pick);
   else pick();
 })();
+
+// Signature: every post-style page (blog, guides, templates, digest issues)
+// ends with the Purplelink mark, the studio name and the author, so a page that
+// is shared or printed on its own still says who made it. Added here rather
+// than in each page so the cron-written digest issues get it without a commit.
+(() => {
+  const add = () => {
+    const body = document.querySelector("article.post-body");
+    if (!body || document.querySelector(".post-signature")) return;
+    const sig = document.createElement("aside");
+    sig.className = "post-signature";
+    sig.setAttribute("aria-label", "About the author");
+    sig.innerHTML =
+      '<a class="post-signature-mark" href="/" aria-label="Purplelink LLC home">' +
+      '<img src="/assets/purplelink-mark.svg" alt="" width="48" height="48" loading="lazy"></a>' +
+      '<div class="post-signature-text">' +
+      '<p class="post-signature-name"><a href="/">Purplelink LLC</a></p>' +
+      '<p class="post-signature-line">Written by <a href="/about/" rel="author">Benjamin Ampel</a>. ' +
+      'Mac apps and manuscript tools for researchers. <a href="/">purplelink.llc</a></p>' +
+      "</div>";
+    body.insertAdjacentElement("afterend", sig);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add);
+  else add();
+})();
