@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>First Ten Minutes with ModernTex: Install, TeX Setup, First Build | Purplelink</title>
+    <meta name="description" content="Install ModernTex on a Mac, set up MacTeX or TinyTeX, build the sample manuscript, open your own project, fix a first error and run the submission checks.">
+    <link rel="canonical" href="https://purplelink.llc/moderntex/start/">
+    <meta property="og:title" content="First Ten Minutes with ModernTex: Install, TeX Setup, First Build">
+    <meta property="og:description" content="Seven steps from the disk image to a built PDF: install, TeX distribution, sample manuscript, your own project, a first error, a venue template, submission checks.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/moderntex.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/moderntex/start/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="First Ten Minutes with ModernTex: Install, TeX Setup, First Build">
+    <meta name="twitter:description" content="Seven steps from the disk image to a built PDF: install, TeX distribution, sample manuscript, your own project, a first error, a venue template, submission checks.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/moderntex.png">
+    <meta name="twitter:image:alt" content="ModernTex, a native LaTeX editor for Mac">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=b140b81664">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=68150b3301" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "HowTo",
+          "@id": "https://purplelink.llc/moderntex/start/#howto",
+          "name": "First ten minutes with ModernTex",
+          "description": "Install ModernTex on a Mac, set up a TeX distribution, build the sample manuscript, open your own project, fix a first error, start from a venue template and run the submission checks.",
+          "url": "https://purplelink.llc/moderntex/start/",
+          "image": "https://purplelink.llc/assets/og/moderntex.png",
+          "totalTime": "PT10M",
+          "datePublished": "2026-10-01",
+          "dateModified": "2026-10-01",
+          "inLanguage": "en",
+          "tool": [
+            { "@type": "HowToTool", "name": "A Mac running macOS 14 (Sonoma) or later" },
+            { "@type": "HowToTool", "name": "ModernTex" },
+            { "@type": "HowToTool", "name": "A TeX distribution: MacTeX or TinyTeX" }
+          ],
+          "step": [
+            {
+              "@type": "HowToStep",
+              "position": 1,
+              "name": "Install ModernTex",
+              "url": "https://purplelink.llc/moderntex/start/#install",
+              "text": "Download the trial, open the disk image and drag ModernTex to Applications. The trial is the complete app for seven days from first launch, with no account and nothing to enter."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 2,
+              "name": "Set up a TeX distribution",
+              "url": "https://purplelink.llc/moderntex/start/#tex",
+              "text": "ModernTex uses MacTeX or TinyTeX. If neither is found when you build, Build Results offers Install TinyTeX, which downloads the TinyTeX project's installer (about 200 MB) into your home folder with no administrator password."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 3,
+              "name": "Open the sample manuscript and build once",
+              "url": "https://purplelink.llc/moderntex/start/#sample",
+              "text": "Choose Try the Sample Manuscript on the welcome screen. It creates a short example in Documents, opens it and builds it. Then try the Fast, Live and Full compile modes and the Build button."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 4,
+              "name": "Open your own project",
+              "url": "https://purplelink.llc/moderntex/start/#project",
+              "text": "Choose File, Open Project Folder and pick the folder that holds your .tex and .bib files. ModernTex picks the root file by scoring each .tex file; click the root file name in the toolbar to change it. For biblatex with biber, turn on Use biber for bibliography in Compile Engine and Profile."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 5,
+              "name": "Fix your first error",
+              "url": "https://purplelink.llc/moderntex/start/#errors",
+              "text": "When a build fails, the Build button shows the error count and Build Results lists each error. Install fix chips install TinyTeX or a missing package. Fix with AI proposes a repair as a diff that is applied only when you choose Accept and Rebuild."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 6,
+              "name": "Start from a venue template",
+              "url": "https://purplelink.llc/moderntex/start/#templates",
+              "text": "Choose File, New from Template, pick a template such as IEEE Conference, ACM (acmart), NeurIPS / ICML / ICLR or Elsevier (elsarticle), name the project and choose Create Project. Or download a starter folder and open it."
+            },
+            {
+              "@type": "HowToStep",
+              "position": 7,
+              "name": "Run the submission checks",
+              "url": "https://purplelink.llc/moderntex/start/#submit",
+              "text": "Switch to the Submission layout, choose a target and choose Run Checks. The checker reports on the build, anonymization, references and citations, figures, formatting and export readiness."
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "ModernTex", "item": "https://purplelink.llc/moderntex/" },
+            { "@type": "ListItem", "position": 3, "name": "First ten minutes", "item": "https://purplelink.llc/moderntex/start/" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/moderntex/">← ModernTex</a>
+
+    <div class="post-hero">
+      <p class="post-kicker"><img src="/assets/purplelink-mark.svg" alt="" width="18" height="18"><span>ModernTex setup guide</span></p>
+      <h1 class="post-title">First ten minutes with ModernTex</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time> · written for version 1.3.0</p>
+      <p class="post-lede">Seven steps, in order: install the app, sort out a TeX distribution, build the sample manuscript, open your own project, fix a first error, start from a venue template, and run the checks before you submit.</p>
+    </div>
+
+    <article class="post-body">
+      <p>Every button and menu name below is the label the app uses. You need a Mac running macOS 14 (Sonoma) or later, on Apple silicon or Intel. If you have not downloaded ModernTex yet, the trial is on the <a href="/moderntex/">ModernTex page</a>.</p>
+
+      <figure class="post-figure">
+        <div class="yt-embed" data-motion="youtube" data-youtube-id="IPQwf_ahLUo" data-youtube-title="ModernTex tour: LaTeX editor for Mac with TikZ designer, table editor and submission checks">
+          <img class="yt-poster" src="/assets/video/moderntex-tour-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+          <a class="yt-play" href="https://www.youtube.com/watch?v=IPQwf_ahLUo" rel="noopener">Play the tour on YouTube</a>
+        </div>
+      </figure>
+      <p>The tour is sixty-five seconds of the app on a sample manuscript. The steps below cover the same ground at reading speed.</p>
+
+      <h2 id="install">1. Install</h2>
+      <p>Open the disk image you downloaded and drag ModernTex to Applications, then open it from there. The disk image is signed and notarized.</p>
+      <p>The trial is the complete app for seven days from the first time you open it. There is no account to create and nothing to enter. While the trial runs, a thin bar above the toolbar shows two links: <strong>Have a license key?</strong> and <strong>Buy ModernTex, $10</strong>.</p>
+      <p>The first window is a welcome screen with three actions: <strong>Open Project…</strong>, <strong>New from Template…</strong> and <strong>Try the Sample Manuscript</strong>.</p>
+
+      <h2 id="tex">2. TeX distribution</h2>
+      <p>ModernTex is an editor. The typesetting is done by a TeX distribution on your Mac, and ModernTex works with <a href="https://tug.org/mactex/" rel="noopener">MacTeX</a> or <a href="https://yihui.org/tinytex/" rel="noopener">TinyTeX</a>. It looks in the places those installers use, including <code>/Library/TeX/texbin</code> for MacTeX and <code>~/Library/TinyTeX</code> for TinyTeX. If you already have one, there is nothing to set up.</p>
+      <p>If you have neither, you do not need to install one first. Build anyway. The Build Results panel reports that no TeX was found and shows an <strong>Install TinyTeX</strong> button under <strong>Install fix</strong>. Clicking it opens a confirmation that says what will happen:</p>
+      <ul>
+        <li>TinyTeX is a small TeX distribution, about 200 MB.</li>
+        <li>ModernTex downloads the installer script published by the TinyTeX project at yihui.org and runs it with your user privileges.</li>
+        <li>It installs into your home folder. No administrator password is asked for, and nothing is written outside your account.</li>
+        <li>ModernTex cannot verify the script's contents, because the TinyTeX project does not publish a fixed checksum for it. The dialog says so.</li>
+      </ul>
+      <p>If you would rather install a distribution you download yourself, choose <strong>Install MacTeX Instead…</strong> in the same dialog, which opens the MacTeX site. When the TinyTeX install finishes, ModernTex builds again on its own.</p>
+      <p>TinyTeX starts with a small set of packages. When a document needs one that is missing, the error in Build Results carries an <strong>Install</strong> button with the package name, and the build runs again after the install.</p>
+
+      <h2 id="sample">3. Open the sample manuscript and build once</h2>
+      <p>On the welcome screen, choose <strong>Try the Sample Manuscript</strong>. ModernTex creates a short example in a folder named ModernTex Sample inside Documents, opens its <code>main.tex</code>, and runs a build, so the first thing you see is source next to a PDF.</p>
+      <figure class="post-figure post-figure-shot">
+        <img src="/assets/moderntex-screens/01-editor-clean-1440.webp" alt="ModernTex with a manuscript open: the document outline in the sidebar, LaTeX source in the editor, and the built PDF beside it" width="1440" height="792" loading="lazy" decoding="async">
+        <figcaption>Sidebar, source and PDF. Click in the PDF to move the cursor to that spot in the source.</figcaption>
+      </figure>
+      <p>The toolbar has a three-way compile mode control and a <strong>Build</strong> button (&#8984;Return). The app describes the modes like this:</p>
+      <ul>
+        <li><strong>Fast</strong>: one engine pass, no bibliography. A quick check of layout and errors.</li>
+        <li><strong>Live</strong>: rebuilds on every pause while you type, one engine pass, no bibliography. Citations show as keys until you run Full.</li>
+        <li><strong>Full</strong>: the complete latexmk build with bibtex or biber and every rerun. Run it before you read the references or submit. The shortcut is &#8679;&#8984;Return.</li>
+      </ul>
+      <p>Next to the Build button are three layout buttons. <strong>Writing</strong> shows the editor without the PDF, <strong>Review</strong> puts the PDF beside the source, and <strong>Submission</strong> adds the submission checker. The sidebar has four tabs: <strong>Files</strong>, <strong>Outline</strong>, <strong>Bib</strong> and <strong>Revisions</strong>.</p>
+
+      <h2 id="project">4. Open your own project</h2>
+      <p>A project is a folder: your <code>.tex</code> files, your <code>.bib</code> files and your figures, exactly as they are on disk. Choose <strong>File &rsaquo; Open Project Folder…</strong> (&#8679;&#8984;O), or <strong>Open Project…</strong> on the welcome screen, and pick that folder. Nothing is imported or converted.</p>
+      <p><strong>How the root file is chosen.</strong> ModernTex reads each <code>.tex</code> file in the folder and scores it. A file gains points for containing <code>\documentclass</code>, <code>\begin{document}</code> and <code>\end{document}</code>, a few more for <code>\title</code>, <code>\author</code> and a bibliography command, and a few more when it is named main, paper, manuscript, article, thesis or dissertation. The highest score becomes the root file, and its name appears in the toolbar next to the project name. If the guess is wrong, click that name and pick another file under <strong>Set Root File</strong>.</p>
+      <p><strong>Engine.</strong> If the root file starts with a line such as <code>% !TEX program = xelatex</code>, ModernTex selects that engine when the project is first opened. To set it by hand, choose <strong>Compile &rsaquo; Compile Engine &amp; Profile…</strong> (&#8997;&#8984;,).</p>
+      <p><strong>BibTeX or biblatex with biber.</strong> The same Compile Engine &amp; Profile window has a switch named <strong>Use biber for bibliography</strong>. Leave it off for a BibTeX project and turn it on for a biblatex project that uses biber. Then run one <strong>Full</strong> build so the references resolve.</p>
+
+      <h2 id="errors">5. Fix your first error</h2>
+      <p>When a build fails, the Build button turns into an error count, such as "1 error", and the last good PDF stays on screen. The <strong>Build Results</strong> panel lists each error, warning and note in plain language. <strong>Compile &rsaquo; Next Issue</strong> (&#8984;') and <strong>Previous Issue</strong> (&#8679;&#8984;') step through them, and <strong>Raw Log</strong> shows the full LaTeX log when you want it.</p>
+      <p>Some errors come with buttons under an <strong>Install fix</strong> heading:</p>
+      <ul>
+        <li><strong>Install TinyTeX</strong> appears when no TeX distribution was found (step 2).</li>
+        <li><strong>Install</strong> followed by a package name appears when the document needs a package your distribution does not have. ModernTex installs it and builds again.</li>
+        <li><strong>Fix with AI</strong> appears on an error that points to a line in one of your project's files.</li>
+      </ul>
+      <p><strong>How Fix with AI works.</strong> It sends the lines around the error to a model and shows the proposed repair as a diff. Nothing changes until you choose <strong>Accept and Rebuild</strong>; <strong>Reject</strong> discards it. It only changes files inside the project. When the model cannot write a safe fix, you get exact steps to do by hand instead.</p>
+      <p>The model is Apple Intelligence, running on your Mac, when your Mac supports it. Otherwise, or if you prefer, sign in to your own Claude account or add your own OpenAI API key under <strong>Account &amp; AI Settings</strong>. A privacy consent step appears the first time a cloud provider is used. Purplelink charges nothing for these features, and every one of them is optional.</p>
+
+      <h2 id="templates">6. Start from a venue template</h2>
+      <p>Choose <strong>File &rsaquo; New from Template…</strong> (&#8997;&#8984;N), or the button of the same name on the welcome screen. Pick a template, type a project name, choose <strong>Create Project</strong>, and pick the folder the new project should live in. The built-in list includes IEEE Conference, ACM (acmart), NeurIPS / ICML / ICLR and Elsevier (elsarticle), along with others. You can also point the gallery at a folder of your own templates with <strong>Add Folder…</strong>.</p>
+      <p>Each of these pages explains the class options and the submission pitfalls for one venue, and offers a starter folder to download:</p>
+      <ul>
+        <li><a href="/templates/ieee-conference/">IEEE conference (IEEEtran)</a></li>
+        <li><a href="/templates/acm-acmart/">ACM (acmart)</a></li>
+        <li><a href="/templates/neurips/">NeurIPS</a></li>
+        <li><a href="/templates/elsevier-elsarticle/">Elsevier (elsarticle)</a></li>
+        <li><a href="/templates/apa7/">APA 7</a></li>
+      </ul>
+      <p>APA 7 is not in the app's built-in list. Download the starter from its page, unzip it, and open the folder as in step 4. The same works for any of the other starters, and for a template your conference or university supplies.</p>
+
+      <h2 id="submit">7. Before you submit</h2>
+      <p>Switch to the <strong>Submission</strong> layout (the third layout button, or <strong>View &rsaquo; Submission Mode</strong>, &#8963;&#8984;3). The Submission Checker opens beside the PDF. Set <strong>Target</strong> to Draft, Blinded Submission, Camera Ready or Supplement, then choose <strong>Run Checks</strong>. The results are grouped:</p>
+      <ul>
+        <li><strong>Build</strong>: whether a compiled PDF exists.</li>
+        <li><strong>Anonymization</strong>: identifying markup in the source, and a reminder to check self-citations for blind review.</li>
+        <li><strong>References &amp; Citations</strong>: citation keys missing from the bibliography, unused entries, undefined labels.</li>
+        <li><strong>Figures &amp; Assets</strong>: missing figure files and image format problems.</li>
+        <li><strong>Formatting</strong>: page count and an approximate word count.</li>
+        <li><strong>Export Readiness</strong>: document class, bibliography command and <code>.bib</code> files present.</li>
+      </ul>
+      <p>Run a Full build first so the checks read a current PDF. <strong>Export Bundle</strong> at the bottom of the checker packages the project as a zip.</p>
+      <p>These checks cover what can be read from the files. For a read of the argument itself before reviewers see it, <a href="/tools/paper-review/">Paper Review</a> is a separate paid service on this site.</p>
+
+      <h2 id="next">After the first ten minutes</h2>
+      <p>Four more toolbar buttons are worth a look once the build is working: <strong>TikZ Figure Editor</strong>, <strong>Table Editor</strong>, <strong>Symbol Palette</strong> and <strong>Library</strong>, the bibliography library. The <strong>User Guide</strong> button at the left of the toolbar opens the in-app guide.</p>
+      <figure class="post-figure post-figure-shot">
+        <img src="/assets/moderntex-screens/07-tikz-editor-1440.webp" alt="The TikZ Figure Editor in ModernTex: a flowchart of connected boxes on a canvas, with the generated TikZ code shown underneath" width="1440" height="919" loading="lazy" decoding="async">
+        <figcaption>The TikZ Figure Editor: draw the diagram, and the TikZ source is written underneath.</figcaption>
+      </figure>
+
+      <h2 id="help">If something goes wrong</h2>
+      <ul>
+        <li><strong>Where the license key goes.</strong> Click <strong>Have a license key?</strong> in the trial bar above the toolbar and paste the key from your receipt email. The same button is on the notice shown when the trial ends. The copy you already have unlocks, with no fresh download. The trial copy does not update itself, so install the paid download from your receipt once to get updates.</li>
+        <li><strong>Lost the key.</strong> <a href="/recover/">Find a purchase</a> emails a new key to the address you paid with. Any key you had before keeps working.</li>
+        <li><strong>Something is broken or unclear.</strong> The <a href="/support/">support page</a> says what to include in an email. One person reads and answers every message.</li>
+        <li><strong>What changed in each version.</strong> The <a href="/changelog/">changelog</a> lists every release.</li>
+      </ul>
+      <p>Your <code>.tex</code> files are ordinary files on disk throughout. They open in any other editor, whether or not you keep ModernTex.</p>
+    </article>
+
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=fd29b28099" defer></script>
+</body>
+</html>

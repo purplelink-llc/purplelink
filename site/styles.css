@@ -5299,3 +5299,102 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   font-size: 0.85rem;
   color: var(--muted);
 }
+
+/* Researcher list signup: added by site.js after the article on guides and
+   blog posts and after "Link to this tool" on tool pages; also the form on
+   /checklist/. Colours come from the tokens, so both themes are covered. */
+.list-signup {
+  box-sizing: border-box;
+  padding: 22px clamp(18px, 3vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+/* Same left edge and measure as the article text and the signature. */
+.list-signup--post {
+  width: min(720px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
+  margin: 48px 0 0 clamp(24px, 6vw, 80px);
+}
+/* Older guides have no signature after the block. */
+.list-signup--post:last-child { margin-bottom: 48px; }
+.list-signup--tool {
+  width: min(772px, calc(100% - 48px));
+  margin: 8px auto 32px;
+}
+.list-signup--page { margin: 28px 0; }
+.list-signup .list-signup-head {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.list-signup .list-signup-lede {
+  margin: 0 0 16px;
+  max-width: 60ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.list-signup-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+.list-signup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.list-signup-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.list-signup-field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+.list-signup-field input:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-color: var(--purple);
+}
+.list-signup-field input[aria-invalid="true"] { border-color: var(--ink); }
+.list-signup-form .btn { flex: 0 0 auto; min-height: 44px; }
+.list-signup-form .btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+/* The line is always there, so a message never pushes the page down. */
+.list-signup .list-signup-status {
+  margin: 10px 0 0;
+  min-height: 1.5em;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.list-signup .list-signup-status.is-error { color: var(--ink); }
+.list-signup .list-signup-status:focus { outline: none; }
+.list-signup.is-done .list-signup-status { margin-top: 4px; font-size: 1rem; color: var(--ink); }
+.list-signup .list-signup-fine {
+  margin: 2px 0 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.list-signup a { color: var(--purple); text-decoration: underline; }
+@media (max-width: 520px) {
+  .list-signup-form .btn { flex: 1 1 100%; }
+  .list-signup--tool { width: calc(100% - 32px); }
+}
+@media print { .list-signup { display: none; } }
+.checklist-get { margin: 20px 0 0; }

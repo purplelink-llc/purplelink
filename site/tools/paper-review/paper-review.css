@@ -408,3 +408,40 @@
 .pr-sample-md ul ul { margin-top: 0.3rem; color: var(--muted); }
 .pr-sample-md .compare-table { margin: 0.6rem 0; min-width: 0; font-size: 0.86rem; }
 .pr-sample-md .compare-table th, .pr-sample-md .compare-table td { white-space: normal; }
+
+/* ─── Free reference check (landing page, before payment) ─────────────
+   Sits under the checkout row. Left-aligned inside the centered column:
+   it is a form and a list of quotes, which read badly centered. Colors
+   come from the theme tokens, so dark and light need no overrides. */
+.pr-preview { max-width: 820px; margin: 1.75rem auto 0; padding: 20px 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--purple-xlight); text-align: left; box-sizing: border-box; }
+.pr-preview h2 { margin: 0 0 6px; font-size: 1.3rem; line-height: 1.25; }
+.pr-preview-lede { margin: 0 0 14px; color: var(--muted); font-size: 0.95rem; max-width: 62ch; }
+.pr-preview-row { display: flex; gap: 10px; align-items: stretch; }
+.pr-preview-file { flex: 1 1 auto; min-width: 0; cursor: pointer; }
+.pr-preview-btn { flex: 0 0 auto; min-width: 7.5rem; justify-content: center; }
+.pr-preview-status { min-height: 1.5em; margin: 12px 0 0; color: var(--muted); font-size: 0.93rem; line-height: 1.5; }
+.pr-preview-status.is-error { color: color-mix(in oklch, oklch(58% 0.2 25) 75%, var(--ink)); }
+.pr-preview-results { margin-top: 6px; }
+.pr-preview-results:focus-visible { outline: 2px solid var(--purple); outline-offset: 6px; border-radius: 8px; }
+.pr-preview-counts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 6px; padding: 0; }
+.pr-preview-count { margin: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); display: flex; flex-direction: column-reverse; gap: 2px; }
+.pr-preview-count dt { font-size: 0.8rem; color: var(--muted); line-height: 1.3; }
+.pr-preview-count dd { margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--ink); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.pr-preview-note { margin: 6px 0 0; font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.pr-preview-findings { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
+.pr-preview-finding { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.pr-preview-finding h3 { margin: 0 0 6px; font-size: 0.98rem; line-height: 1.35; color: var(--ink); }
+.pr-preview-where { font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+.pr-preview-quote { margin: 0 0 6px; padding: 0; font-size: 0.9rem; line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
+.pr-preview-quote::before { content: "\201C"; }
+.pr-preview-quote::after { content: "\201D"; }
+.pr-preview-detail { margin: 0; font-size: 0.87rem; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
+.pr-preview-upsell { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.pr-preview-upsell p { margin: 0; flex: 1 1 260px; color: var(--ink); font-weight: 600; font-size: 0.97rem; }
+@media (max-width: 600px) {
+  .pr-preview { padding: 16px; }
+  .pr-preview-row { flex-direction: column; }
+  .pr-preview-btn { width: 100%; }
+  .pr-preview-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pr-preview-upsell .btn { width: 100%; justify-content: center; }
+}

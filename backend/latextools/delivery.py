@@ -239,10 +239,71 @@ _READY_NEXT = {
 }
 
 
+# Resend's documented cap is 40 MB per email, attachments included, measured
+# after Base64 encoding (https://resend.com/docs/dashboard/emails/attachments,
+# read 2026-10-01). We stop well short of it: many receiving mail servers
+# reject messages over roughly 25 MB, and a report is normally well under 1 MB.
+RESEND_MAX_EMAIL_BYTES = 40 * 1024 * 1024
+MAX_REPORT_ATTACHMENT_B64_BYTES = 20 * 1024 * 1024
+REPORT_PDF_FILENAME = "paper-review-report.pdf"
+REPORT_MD_FILENAME = "report.md"
+
+
+def build_report_attachment(
+    *, result_md: str = "", result_pdf_b64: Optional[str] = None,
+) -> tuple[list[dict], str]:
+    """Attachment list for the "review is ready" email, plus what it holds.
+
+    Returns (attachments, kind) with kind one of "pdf", "md", "too_large",
+    "none". Only the report is ever attached. This function is deliberately
+    never handed the manuscript bytes or the annotated PDF (which contains
+    the manuscript's pages), so neither can be emailed by mistake.
+    """
+    if result_pdf_b64 and isinstance(result_pdf_b64, str):
+        if len(result_pdf_b64) > MAX_REPORT_ATTACHMENT_B64_BYTES:
+            return [], "too_large"
+        out = [{"filename": REPORT_PDF_FILENAME, "content": result_pdf_b64}]
+        # The Markdown goes along too: Revision Review asks for it later, and
+        # the online copy is gone by then.
+        if result_md and isinstance(result_md, str):
+            md_b64 = base64.b64encode(result_md.encode("utf-8")).decode("ascii")
+            if len(result_pdf_b64) + len(md_b64) <= MAX_REPORT_ATTACHMENT_B64_BYTES:
+                out.append({"filename": REPORT_MD_FILENAME, "content": md_b64})
+        return out, "pdf"
+    if result_md and isinstance(result_md, str):
+        encoded = base64.b64encode(result_md.encode("utf-8")).decode("ascii")
+        if len(encoded) > MAX_REPORT_ATTACHMENT_B64_BYTES:
+            return [], "too_large"
+        return [{"filename": REPORT_MD_FILENAME, "content": encoded}], "md"
+    return [], "none"
+
+
+_READY_DELETION = (
+    "The manuscript and the online copy are deleted 30 minutes after you "
+    "first open the result, or after 24 hours."
+)
+
+
 def html_review_ready(
     *, status_url: str, manuscript_title: str = "", amount_cents: int = 900,
-    product: str = "paper-review",
+    product: str = "paper-review", attachment: str = "",
 ) -> str:
+    """*attachment* is the kind returned by build_report_attachment(). Left
+    empty (the adjacent tools, which attach nothing), the email keeps the
+    "save a copy" wording."""
+    if attachment in ("pdf", "md"):
+        retention = f"The report is attached. {_READY_DELETION}"
+    elif attachment == "too_large":
+        retention = (
+            "The report was too large to attach, so open it with the button "
+            f"above and save a copy. {_READY_DELETION}"
+        )
+    else:
+        retention = (
+            "Open it within 24 hours and save a copy when the page loads. The result "
+            "is deleted from our server 30 minutes after you first open it, or after "
+            "24 hours if you never do."
+        )
     name = _READY_NAMES.get(product, "result")
     refund_amount = f"${amount_cents / 100:.2f}".rstrip("0").rstrip(".")
     if product == "paper-review":
@@ -267,9 +328,7 @@ def html_review_ready(
     </a>
   </p>
   <p style="color: #555; font-size: 0.9em;">
-    Open it within 24 hours and save a copy when the page loads. The result
-    is deleted from our server 30 minutes after you first open it, or after
-    24 hours if you never do.
+    {retention}
   </p>{next_html}
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">

@@ -1,0 +1,43 @@
+/* /format/ venue pages and hub. Tokens only, so the dark default and the light
+   opt-out both follow styles.css without theme rules here. */
+
+.format-checked,
+.format-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.format-checked { margin-top: 10px; }
+.format-note { margin-top: 12px; }
+
+.tool-howto .ref-examples {
+  margin: 12px 0 0 1.4rem;
+  color: var(--ink);
+}
+
+.ref-examples li {
+  margin-bottom: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.format-sources {
+  margin: 10px 0 0 1.1rem;
+  color: var(--muted);
+}
+
+.format-sources li { margin-bottom: 6px; overflow-wrap: anywhere; }
+
+.venue-group {
+  max-width: 900px;
+  margin: 36px auto 0;
+  padding: 0 24px;
+}
+
+.venue-group h2 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--ink);
+}
+
+.venue-group + .venue-list { margin-top: 12px; }

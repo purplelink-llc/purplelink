@@ -226,6 +226,15 @@ PAPER_JOB_TTL_SECONDS = 24 * 3600          # 24h before stale jobs expire
 # noticing a blank tab and reloading it.
 PAPER_RESULT_GRACE_SECONDS = 30 * 60       # 30 minutes after first delivery
 
+# Free pre-payment preview (/paper-review/preview): deterministic reference
+# and anonymity checks, no LLM. Counters live in rate_dict under hashed-IP
+# keys, like every other limit here.
+PREVIEW_HOURLY_LIMIT = 5            # per IP per UTC hour
+PREVIEW_DAILY_LIMIT = 20            # per IP per UTC day
+PREVIEW_GLOBAL_DAILY_LIMIT = 300    # all callers per UTC day
+PREVIEW_TIMEOUT_SECONDS = 60
+PREVIEW_MAX_CONCURRENT = 2          # per web container, so paid routes keep CPU
+
 # Secrets — create via:
 #   modal secret create anthropic-secret      ANTHROPIC_API_KEY="sk-ant-..."
 #   modal secret create paper-review-shared   BACKEND_WEBHOOK_SECRET="<random>"
@@ -506,6 +515,7 @@ def paper_review_pipeline(
 ) -> None:
     """Run the full Paper Review pipeline (any tier) and persist to dict."""
     import asyncio as _asyncio
+    import base64
     import time as _time
     import httpx
 
@@ -558,7 +568,25 @@ def paper_review_pipeline(
                 _write_usage_ledger(token, product_key, job_status, usage)
                 if deliver_email and final.get("result_md"):
                     try:
-                        async with httpx.AsyncClient(timeout=10.0) as ec:
+                        # The email carries the report itself. Only the report:
+                        # build_report_attachment is given the review Markdown
+                        # (and its PDF rendering), never pdf_bytes or
+                        # annotated_pdf_b64, both of which hold the manuscript.
+                        report_pdf_b64 = final.get("result_pdf_b64")
+                        if not report_pdf_b64:
+                            try:
+                                from latextools import report_pdf as _report_pdf
+                                _rendered = _report_pdf.render_report_pdf(final["result_md"])
+                                if _rendered:
+                                    report_pdf_b64 = base64.b64encode(_rendered).decode("ascii")
+                            except Exception:
+                                logger.exception("report PDF render failed for token=%s", token[:12])
+                        _attachments, _attachment_kind = delivery.build_report_attachment(
+                            result_md=final["result_md"], result_pdf_b64=report_pdf_b64,
+                        )
+                        # Up to 20 MB of Base64 will not upload inside the
+                        # 10 s budget that suits a body-only email.
+                        async with httpx.AsyncClient(timeout=60.0 if _attachments else 10.0) as ec:
                             _email_result = await delivery.send_email(
                                 ec,
                                 to=deliver_email,
@@ -569,7 +597,9 @@ def paper_review_pipeline(
                                     # A pack token's refund is its share of the pack.
                                     amount_cents=(PAID_PRODUCTS.get(product_key, {}).get("amount", 900)
                                                   // max(1, PAID_PRODUCTS.get(product_key, {}).get("qty", 1))),
+                                    attachment=_attachment_kind,
                                 ),
+                                attachments=_attachments or None,
                                 tags=[{"name": "product", "value": "paper-review"}],
                             )
                         if _email_result.get("status") != "ok":
@@ -2990,13 +3020,28 @@ def web():
         # release the claim so the token is still redeemable and report a
         # 500 instead of silently burning the customer's paid credit on a
         # job that never started.
+        # The finished report is emailed as an attachment. It goes to the
+        # address typed on the upload form or, when that is blank, to the
+        # address on the Stripe receipt for this purchase, so every buyer
+        # holds a copy that outlives the 30-minute online window.
+        def _usable_email(addr) -> str:
+            return addr if isinstance(addr, str) and "@" in addr and len(addr) <= 254 else ""
+        # A pack is bought by one person and its tokens are handed to others
+        # (a PI and their students), so a pack token never falls back to the
+        # buyer's address: the uploader's report would reach someone they did
+        # not send it to. Pack uploads are emailed only to an address typed here.
+        _pack_cfg = entry.get("product_cfg") or PAID_PRODUCTS.get(entry.get("product_key", ""), {})
+        _is_pack = int(_pack_cfg.get("qty", 1) or 1) > 1 or len(entry.get("tokens") or []) > 1
+        _deliver_to = _usable_email(email.strip() if isinstance(email, str) else "") \
+            or ("" if _is_pack else _usable_email(entry.get("email")))
+
         try:
             await paper_review_pipeline.spawn.aio(
                 token, data, domain,
                 tier=tier,
                 journal_key=chosen_journal,
                 anonymity_check=do_anonymity,
-                deliver_email=email if email and "@" in email and len(email) <= 254 else "",
+                deliver_email=_deliver_to,
             )
         except Exception:
             logger.exception("paper_review_pipeline.spawn failed for token=%s", token[:12])
@@ -3160,6 +3205,77 @@ def web():
             # with instead of emailing support. See _reissue_token_on_failure.
             "replacement_token": entry.get("replacement_token"),
         })
+
+    # ------------------------------------------------------------------
+    # /paper-review/preview — free check before payment. No token, no LLM,
+    # no Anthropic call (this function does not even mount the Anthropic
+    # secret). The PDF is parsed in memory and the answer returned; nothing
+    # is written to paper_jobs_dict or any other store except the hashed-IP
+    # rate counters, and no manuscript text is logged.
+    # ------------------------------------------------------------------
+    import asyncio as _preview_asyncio
+    _preview_slots = _preview_asyncio.Semaphore(PREVIEW_MAX_CONCURRENT)
+
+    def _preview_error(code: str, detail: str, status: int) -> JSONResponse:
+        return JSONResponse({"error": code, "detail": detail}, status_code=status)
+
+    @api.post("/paper-review/preview")
+    async def paper_review_preview(request: Request, file: UploadFile = File(...)):
+        too_large = "File is too large (max 20 MB)."
+        if _too_large(request, core.MAX_PAPER_UPLOAD_BYTES):
+            return _preview_error("invalid", too_large, 400)
+
+        # Rate limits first, before any bytes are read. Fail closed: if the
+        # counter store is unreachable the preview is refused, not waved on.
+        now = datetime.datetime.utcnow()
+        day, hour = now.strftime("%Y-%m-%d"), now.strftime("%Y-%m-%dT%H")
+        ip = _client_ip(request)
+        try:
+            blocked = core.check_limits_and_increment(rate_dict, [
+                (core.rate_limit_key(ip, hour, bucket="paper-preview-hour"), PREVIEW_HOURLY_LIMIT),
+                (core.rate_limit_key(ip, day, bucket="paper-preview-day"), PREVIEW_DAILY_LIMIT),
+                (f"rl:paper-preview-global:{day}", PREVIEW_GLOBAL_DAILY_LIMIT),
+            ])
+        except Exception:
+            logger.exception("paper preview: rate-limit store unavailable")
+            return _preview_error("unavailable", "The free check is unavailable right now. Please try again later.", 503)
+        if blocked is not None:
+            detail = (
+                "You have used the free checks for this hour. Try again later.",
+                "You have used today's free checks. Try again tomorrow.",
+                "The free check has reached its daily limit for everyone. Try again tomorrow.",
+            )[blocked]
+            return _preview_error("rate_limited", detail, 429)
+
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return _preview_error("invalid", too_large, 400)
+        try:
+            core.validate_paper_upload(file.filename or "", len(data))
+        except core.ValidationError as e:
+            return _preview_error("invalid", str(e), 400)
+        if not data.startswith(b"%PDF-"):
+            return _preview_error("invalid", "File is not a valid PDF.", 400)
+
+        if _preview_slots.locked():
+            return _preview_error("busy", "The free check is busy. Please try again in a minute.", 503)
+
+        from latextools import papercheck as _pc, preview as _preview
+        async with _preview_slots:
+            try:
+                result = await _preview_asyncio.wait_for(
+                    _preview.run_preview(data), timeout=PREVIEW_TIMEOUT_SECONDS,
+                )
+            except _preview_asyncio.TimeoutError:
+                return _preview_error("timeout", "The check took longer than 60 seconds and was stopped. Try a shorter PDF.", 504)
+            except _pc.PaperExtractionError as e:
+                return _preview_error("unreadable", str(e), 422)
+            except Exception as e:
+                # Type only: the message can carry text from the PDF.
+                logger.error("paper preview failed: %s", type(e).__name__)
+                return _preview_error("failed", "This PDF could not be read. Export it again from your editor and retry.", 422)
+        return JSONResponse(result, headers={"Cache-Control": "no-store"})
 
     # ------------------------------------------------------------------
     # /paper-review/journals — list journal compliance specs for a domain

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Reference Formats by Venue | Purplelink</title>
-    <meta name="description" content="What reference/bibliography format each academic venue expects, with a free converter preset to the right output.">
+    <meta name="description" content="Reference format, BibTeX style and template for 26 journals and conferences, each checked against the venue&#x27;s own author instructions.">
     <link rel="canonical" href="https://purplelink.llc/format/">
     <meta property="og:title" content="Reference Formats by Venue | Purplelink">
-    <meta property="og:description" content="What reference/bibliography format each academic venue expects, with a free converter preset to the right output.">
+    <meta property="og:description" content="Reference format, BibTeX style and template for 26 journals and conferences, each checked against the venue&#x27;s own author instructions.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/format/">
     <script type="application/ld+json">
@@ -19,7 +19,7 @@
       "@type": "CollectionPage",
       "name": "Reference formats by venue",
       "url": "https://purplelink.llc/format/",
-      "description": "Reference format converters for specific venues: ACM CCS, NDSS, IEEE S&P, USENIX Security, MISQ, ISR and more.",
+      "description": "Reference format, BibTeX style and template for 26 journals and conferences, each checked against the venue's own author instructions.",
       "publisher": {
         "@id": "https://purplelink.llc/#organization"
       }
@@ -55,10 +55,11 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
-    <link rel="stylesheet" href="/styles.css?v=fa6feca4b1">
+    <link rel="stylesheet" href="/styles.css?v=b140b81664">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/tools/reference-converter/reference-converter.css?v=0930d1e8d8">
-    <script src="/site.js?v=6df44e6a80" defer></script>
+    <link rel="stylesheet" href="/format/format.css?v=c690f03b8e">
+    <script src="/site.js?v=68150b3301" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
   </head>
   <body>
@@ -82,23 +83,67 @@
       <div class="tools-hero">
         <p class="eyebrow">Reference formats</p>
         <h1>What each venue expects</h1>
-        <p>A quick reference for what manuscript format, template, and bibliography format specific CS / IS / security venues use, with a free converter preset to the right output for each.</p>
+        <p>26 journals and conferences, grouped by field. Each page gives the reference style, the BibTeX style file where one exists, the template, and a link to the venue's own instructions.</p>
       </div>
 
-      <nav aria-label="Venues">
-        <ul class="venue-list">
-          <li><a href="/format/references-for-ieee-sp/"><strong>IEEE S&amp;P (“Oakland”)</strong>: IEEE Symposium on Security and Privacy<br><span class="venue-field">Computer security</span></a></li>
-          <li><a href="/format/references-for-usenix-security/"><strong>USENIX Security</strong>: USENIX Security Symposium<br><span class="venue-field">Computer security</span></a></li>
-          <li><a href="/format/references-for-acm-ccs/"><strong>ACM CCS</strong>: ACM Conference on Computer and Communications Security<br><span class="venue-field">Computer security</span></a></li>
-          <li><a href="/format/references-for-ndss/"><strong>NDSS</strong>: Network and Distributed System Security Symposium<br><span class="venue-field">Computer and network security</span></a></li>
-          <li><a href="/format/references-for-misq/"><strong>MISQ</strong>: MIS Quarterly<br><span class="venue-field">Information systems</span></a></li>
-          <li><a href="/format/references-for-isr/"><strong>ISR</strong>: Information Systems Research<br><span class="venue-field">Information systems</span></a></li>
-          <li><a href="/format/references-for-acm-csur/"><strong>ACM CSUR</strong>: ACM Computing Surveys<br><span class="venue-field">Computer science (survey articles)</span></a></li>
-          <li><a href="/format/references-for-ieee-tdsc/"><strong>IEEE TDSC</strong>: IEEE Transactions on Dependable and Secure Computing<br><span class="venue-field">Computer security and dependable computing</span></a></li>
-        </ul>
-      </nav>
+      <section class="venue-group" aria-labelledby="grp-information-systems">
+        <h2 id="grp-information-systems">Information systems</h2>
+      </section>
+      <ul class="venue-list" aria-labelledby="grp-information-systems">
+          <li><a href="/format/references-for-misq/"><strong>MISQ</strong>: MIS Quarterly</a></li>
+          <li><a href="/format/references-for-isr/"><strong>ISR</strong>: Information Systems Research</a></li>
+          <li><a href="/format/references-for-jmis/"><strong>JMIS</strong>: Journal of Management Information Systems</a></li>
+          <li><a href="/format/references-for-jais/"><strong>JAIS</strong>: Journal of the Association for Information Systems</a></li>
+          <li><a href="/format/references-for-ejis/"><strong>EJIS</strong>: European Journal of Information Systems</a></li>
+          <li><a href="/format/references-for-isj/"><strong>ISJ</strong>: Information Systems Journal</a></li>
+          <li><a href="/format/references-for-icis/"><strong>ICIS</strong>: International Conference on Information Systems</a></li>
+          <li><a href="/format/references-for-hicss/"><strong>HICSS</strong>: Hawaii International Conference on System Sciences</a></li>
+      </ul>
+      <section class="venue-group" aria-labelledby="grp-security">
+        <h2 id="grp-security">Security</h2>
+      </section>
+      <ul class="venue-list" aria-labelledby="grp-security">
+          <li><a href="/format/references-for-ieee-sp/"><strong>IEEE S&amp;P (“Oakland”)</strong>: IEEE Symposium on Security and Privacy</a></li>
+          <li><a href="/format/references-for-usenix-security/"><strong>USENIX Security</strong>: USENIX Security Symposium</a></li>
+          <li><a href="/format/references-for-acm-ccs/"><strong>ACM CCS</strong>: ACM Conference on Computer and Communications Security</a></li>
+          <li><a href="/format/references-for-ndss/"><strong>NDSS</strong>: Network and Distributed System Security Symposium</a></li>
+          <li><a href="/format/references-for-ieee-tdsc/"><strong>IEEE TDSC</strong>: IEEE Transactions on Dependable and Secure Computing</a></li>
+      </ul>
+      <section class="venue-group" aria-labelledby="grp-machine-learning-and-nlp">
+        <h2 id="grp-machine-learning-and-nlp">Machine learning and NLP</h2>
+      </section>
+      <ul class="venue-list" aria-labelledby="grp-machine-learning-and-nlp">
+          <li><a href="/format/references-for-icml/"><strong>ICML</strong>: International Conference on Machine Learning</a></li>
+          <li><a href="/format/references-for-iclr/"><strong>ICLR</strong>: International Conference on Learning Representations</a></li>
+          <li><a href="/format/references-for-acl/"><strong>ACL (ACL Rolling Review)</strong>: Association for Computational Linguistics conferences, submitted through ACL Rolling Review</a></li>
+          <li><a href="/format/references-for-aaai/"><strong>AAAI</strong>: AAAI Conference on Artificial Intelligence</a></li>
+      </ul>
+      <section class="venue-group" aria-labelledby="grp-hci-and-data-mining">
+        <h2 id="grp-hci-and-data-mining">HCI and data mining</h2>
+      </section>
+      <ul class="venue-list" aria-labelledby="grp-hci-and-data-mining">
+          <li><a href="/format/references-for-chi/"><strong>CHI</strong>: ACM CHI Conference on Human Factors in Computing Systems</a></li>
+          <li><a href="/format/references-for-kdd/"><strong>KDD</strong>: ACM SIGKDD Conference on Knowledge Discovery and Data Mining</a></li>
+          <li><a href="/format/references-for-www/"><strong>WWW (The Web Conference)</strong>: The ACM Web Conference</a></li>
+      </ul>
+      <section class="venue-group" aria-labelledby="grp-general-science">
+        <h2 id="grp-general-science">General science</h2>
+      </section>
+      <ul class="venue-list" aria-labelledby="grp-general-science">
+          <li><a href="/format/references-for-plos-one/"><strong>PLOS ONE</strong></a></li>
+          <li><a href="/format/references-for-nature/"><strong>Nature</strong></a></li>
+          <li><a href="/format/references-for-science/"><strong>Science</strong></a></li>
+          <li><a href="/format/references-for-pnas/"><strong>PNAS</strong>: Proceedings of the National Academy of Sciences</a></li>
+      </ul>
+      <section class="venue-group" aria-labelledby="grp-publisher-series">
+        <h2 id="grp-publisher-series">Publisher series</h2>
+      </section>
+      <ul class="venue-list" aria-labelledby="grp-publisher-series">
+          <li><a href="/format/references-for-acm-csur/"><strong>ACM CSUR</strong>: ACM Computing Surveys</a></li>
+          <li><a href="/format/references-for-springer-lncs/"><strong>Springer LNCS</strong>: Springer Lecture Notes in Computer Science</a></li>
+      </ul>
 
-      <p class="tool-support">Don't see your venue? Use the <a href="/tools/reference-converter/">full reference converter</a>. It converts between BibTeX, RIS, and EndNote for any target.</p>
+      <p class="tool-support">Don't see your venue? Use the <a href="/tools/reference-converter/">full reference converter</a>. It converts between BibTeX, RIS, and EndNote for any target. For class files and skeletons, see <a href="/templates/">LaTeX templates by venue</a>.</p>
     </main>
 
     <footer class="footer">

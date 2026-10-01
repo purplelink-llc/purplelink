@@ -858,3 +858,151 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
   else build();
 })();
+
+// Researcher list: the submission checklist PDF by email, then a note when a
+// tool changes. One block, added after the article on guides and blog posts
+// (before the signature) and after "Link to this tool" on tool pages. Not on
+// digest issues, waitlist, success or noindex pages, and not shown again to a
+// browser that has signed up. /checklist/ carries the same form in its own
+// markup; this wires it up too. The function is checklist-signup.mjs.
+(() => {
+  const API = "/.netlify/functions/checklist-signup";
+  const PDF = "/assets/downloads/submission-checklist.pdf";
+  const KEY = "pl_checklist_signup";
+  const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+
+  const signedUp = () => {
+    try { return localStorage.getItem(KEY) === "1"; } catch (_) { return false; }
+  };
+  const remember = () => {
+    try { localStorage.setItem(KEY, "1"); } catch (_) { /* private mode: ask again next time */ }
+  };
+
+  const markup =
+    '<h2 class="list-signup-head" id="list-signup-h">The submission checklist, by email</h2>' +
+    '<p class="list-signup-lede">Twelve checks reviewers run first, as a one-page PDF, plus one note when a tool changes. No daily mail.</p>' +
+    '<form class="list-signup-form" novalidate>' +
+    '<div class="list-signup-field">' +
+    '<label for="list-signup-email">Email</label>' +
+    '<input type="email" id="list-signup-email" name="email" autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@university.edu" required>' +
+    "</div>" +
+    '<input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+    '<button type="submit" class="btn btn-primary">Send me the checklist</button>' +
+    "</form>" +
+    '<p class="list-signup-status" data-list-signup-status role="status" aria-live="polite"></p>' +
+    '<p class="list-signup-fine">Unsubscribe from any email with one click. <a href="/privacy/">Privacy</a>.</p>';
+
+  const pdfLink = (text) => {
+    const a = document.createElement("a");
+    a.href = PDF;
+    a.setAttribute("download", "");
+    a.textContent = text;
+    return a;
+  };
+
+  const wire = (box) => {
+    const form = box.querySelector("form");
+    const status = box.querySelector("[data-list-signup-status]");
+    if (!form || !status) return;
+    const input = form.querySelector('input[type="email"]');
+    const btn = form.querySelector('button[type="submit"]');
+    const label = btn.textContent;
+    const say = (text, isError, withLink) => {
+      status.textContent = text;
+      status.classList.toggle("is-error", !!isError);
+      if (withLink) {
+        status.appendChild(document.createTextNode(" "));
+        status.appendChild(pdfLink("Download the checklist (PDF)"));
+        status.appendChild(document.createTextNode("."));
+      }
+    };
+    const done = () => {
+      // Hold the height so nothing below the block jumps when the form goes.
+      box.style.minHeight = box.offsetHeight + "px";
+      box.classList.add("is-done");
+      [...box.children].forEach((child) => {
+        if (child !== status && !child.matches(".list-signup-head")) child.remove();
+      });
+      status.classList.remove("is-error");
+      status.textContent = "Sent. Check your inbox. You can also ";
+      status.appendChild(pdfLink("download it now"));
+      status.appendChild(document.createTextNode("."));
+      status.setAttribute("tabindex", "-1");
+      status.focus({ preventScroll: true });
+    };
+    input.addEventListener("input", () => {
+      if (status.classList.contains("is-error")) say("");
+      input.removeAttribute("aria-invalid");
+    });
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (btn.disabled) return;
+      const email = input.value.trim();
+      if (!EMAIL.test(email)) {
+        say("That address doesn't look complete.", true);
+        input.setAttribute("aria-invalid", "true");
+        input.focus();
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = "Sending";
+      say("");
+      try {
+        const r = await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, page: location.pathname, website: form.website.value }),
+        });
+        if (!r.ok) throw new Error(String(r.status));
+        remember();
+        done();
+        if (window.plTrack) window.plTrack("checklist_signup", "");
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = label;
+        const why = err && err.message === "429"
+          ? "Too many requests from here today, so the email was not sent."
+          : "The email didn't go through. Try again in a minute.";
+        say(why, true, true);
+      }
+    });
+  };
+
+  const build = () => {
+    // A form already in the page (the /checklist/ page) is wired, never doubled.
+    const present = document.querySelector("[data-list-signup]");
+    if (present) { wire(present); return; }
+
+    const path = location.pathname;
+    if (/^\/checklist(\/|$)/.test(path) || /^\/blog\/digest(\/|$)/.test(path)) return;
+    if (/(^|\/)(waitlist|success)(\/|\.html|$)/.test(path)) return;
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots && /noindex/i.test(robots.getAttribute("content") || "")) return;
+    if (signedUp()) return;
+
+    let anchor = null;
+    let variant = "";
+    // Most posts are <article class="post-body">; older guides use a div in <main>.
+    const main = document.querySelector("main");
+    const article = document.querySelector("article.post-body") || (main && main.querySelector(".post-body"));
+    const app = main && main.querySelector(".tool-app");
+    if (article && /^\/(guides|blog)\/./.test(path)) {
+      anchor = article;
+      variant = "list-signup--post";
+    } else if (app) {
+      anchor = document.querySelector(".tool-link") || app;
+      variant = "list-signup--tool";
+    }
+    if (!anchor) return;
+
+    const box = document.createElement("aside");
+    box.className = "list-signup " + variant;
+    box.setAttribute("data-list-signup", "");
+    box.setAttribute("aria-labelledby", "list-signup-h");
+    box.innerHTML = markup;
+    anchor.insertAdjacentElement("afterend", box);
+    wire(box);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
+  else build();
+})();

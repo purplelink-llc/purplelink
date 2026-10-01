@@ -465,16 +465,35 @@ def rate_limit_key(ip: str, day: str, bucket: str = "") -> str:
     return f"{prefix}{day}:{digest}"
 
 
-def check_and_increment(store, key: str) -> tuple[bool, int]:
+def check_and_increment(store, key: str, limit: int | None = None) -> tuple[bool, int]:
     """Increment the counter for *key* in a dict-like *store*.
 
-    Returns (allowed, remaining). When the prior count is already at
-    DAILY_LIMIT, returns (False, 0) and does not increment further.
+    Returns (allowed, remaining). When the prior count is already at the
+    limit (DAILY_LIMIT unless *limit* is given), returns (False, 0) and does
+    not increment further.
     *store* is any object supporting .get(key, default) and item assignment
     (a plain dict in tests, a modal.Dict in production).
     """
+    cap = DAILY_LIMIT if limit is None else limit
     current = store.get(key, 0)
-    if current >= DAILY_LIMIT:
+    if current >= cap:
         return False, 0
     store[key] = current + 1
-    return True, DAILY_LIMIT - (current + 1)
+    return True, cap - (current + 1)
+
+
+def check_limits_and_increment(store, limits: list[tuple[str, int]]) -> int | None:
+    """Enforce several counters at once (e.g. hourly + daily + global).
+
+    *limits* is a list of (key, cap). Every counter is checked first, and
+    only if all are under their cap is each one incremented, so a request
+    blocked by one window does not burn quota in the others. Returns None
+    when allowed, else the index of the first exhausted limit.
+    """
+    counts = [store.get(key, 0) for key, _ in limits]
+    for i, (count, (_, cap)) in enumerate(zip(counts, limits)):
+        if count >= cap:
+            return i
+    for count, (key, _) in zip(counts, limits):
+        store[key] = count + 1
+    return None

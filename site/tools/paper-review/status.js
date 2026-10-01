@@ -141,6 +141,11 @@
   if (ACTIVE_PRODUCT !== "paper-review") {
     var waitPanel = document.querySelector(".pr-wait");
     if (waitPanel) waitPanel.hidden = true;
+    // The page's default blurb describes Paper Review, which emails its
+    // report. The other tools do not, so they keep the save-it-here wording.
+    if (pageBlurb) {
+      pageBlurb.innerHTML = "You don't have to keep this tab in the foreground. Once it finishes, the result renders below. <strong>The result is deleted from our servers shortly after delivery: save it locally rather than relying on this page.</strong>";
+    }
   }
   var STAGE_LABEL = ACTIVE_CONFIG.labels;
 
@@ -292,8 +297,10 @@
       return;
     }
     pageTitle.textContent = "Your review is ready";
-    pageBlurb.innerHTML =
-      "<strong>This is the only copy.</strong> Save it locally now — once you leave this page the review is gone from our servers.";
+    // Paper Review also emails the report as a PDF; the other tools do not.
+    pageBlurb.innerHTML = (payload.product || ACTIVE_PRODUCT) === "paper-review"
+      ? "<strong>A PDF of the report is on its way to your email.</strong> If it has not arrived, download a copy below. The manuscript and this online copy are deleted 30 minutes after you first open the result."
+      : "<strong>This is the only copy.</strong> Save it locally now — once you leave this page the review is gone from our servers.";
     if (progressWrap) progressWrap.style.display = "none";
 
     // session_id is deliberately never carried in the status page URL (see
@@ -309,7 +316,9 @@
       : product.replace(/-/g, "_");
 
     var html = '<div class="pr-result-wrap">';
-    html += '<div class="pr-result-meta">Saved nowhere on our side. Download the Markdown to keep a copy.</div>';
+    html += (product === "paper-review")
+      ? '<div class="pr-result-meta">Also emailed to you as a PDF. The online copy is deleted 30 minutes after you first open it.</div>'
+      : '<div class="pr-result-meta">Saved nowhere on our side. Download the Markdown to keep a copy.</div>';
     html += renderDeterministicPanel(payload.deterministic_findings);
     html += '<article class="pr-result-md">' + renderMarkdown(md) + '</article>';
     html += '<div class="pr-result-actions">';

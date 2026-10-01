@@ -34,6 +34,7 @@
 - **Privacy:** No cloud sync, no data collection
 - **Status:** Shipping. Current version 1.3.0, which added a visual Table Editor; 1.2.0 added the TikZ Designer. Version 1.0.0 released 2026-09-04; the free trial arrived in 1.0.2.
 - **Trial and purchase:** https://purplelink.llc/moderntex/
+- **Setup guide:** https://purplelink.llc/moderntex/start/ (first ten minutes: install, MacTeX or TinyTeX setup, first build, first error, venue templates, submission checks)
 - **Requirements:** macOS 14 (Sonoma) or later, Apple silicon or Intel, and a TeX distribution such as MacTeX or TinyTeX (ModernTex offers a one-click TinyTeX install if none is found). Signed, notarized disk image.
 - **Updates:** The app checks once a day and installs in place; updates are included in the purchase.
 - **Key differentiators:** Plain-language LaTeX error explanations; submission-readiness checks for journal/conference requirements; native macOS (not Electron, not web); academic manuscript workflow as first-class feature
@@ -176,9 +177,10 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - **Standard + Journal Pack:** $11 — adds a compliance check against the target journal's submission rules (25 venues: NeurIPS, ICML, ICLR, AAAI, TMLR, JMLR, Nature, Science, Cell, PLOS ONE, Nature Medicine, JAMA, NEJM, The Lancet, The BMJ, Psychological Science, JPSP, Cognition, Academy of Management Journal, JACS, Angewandte Chemie, Nature Materials, Nature Chemistry, ACS Nano, Advanced Materials). Anonymity Check still bundled.
 - **Deep Review:** $15 — two-pass adversarial debate where each persona sees the others' first-pass findings, plus bundled Anonymity Check and Journal Pack.
 - **Volume packs:** 5 Standard review tokens for $38 or 20 for $150 at https://purplelink.llc/tools/paper-review/packs/. Tokens emailed at purchase, never expire.
-- **Delivery:** Async polling page; typically 4-8 minutes per manuscript (standard) or 10-15 minutes (deep).
+- **Delivery:** Async polling page; typically 4-8 minutes per manuscript (standard) or 10-15 minutes (deep). The report is emailed as a PDF when the review finishes, through Resend, to the address on the Stripe receipt. The manuscript is never emailed.
+- **Free reference check:** Before paying, upload the PDF on the Paper Review page to see how many references CrossRef confirms and up to three quoted findings (unmatched references, DOIs that point to another title, anonymity leftovers). No AI, no account; the file is not sent to Anthropic and is discarded after the check.
 - **Output:** Markdown report with What's Working / Critical Blind Spots (with per-finding confidence tags) / Data-to-Claim Contradictions / Rectification Checklist (A/B/C priority) / True Novelty Estimate / Reference Verification Summary / Panel Transcript. Plus an annotated PDF with sticky-note comments at the right pages.
-- **Privacy disclosure:** Manuscript sent to Anthropic Claude API (30-day input retention for abuse monitoring; never used for training). Purplelink deletes the manuscript and review 30 minutes after the result is first opened, or after 24 hours if it never is.
+- **Privacy disclosure:** Manuscript sent to Anthropic Claude API (30-day input retention for abuse monitoring; never used for training). The report is emailed to the buyer as a PDF; Purplelink deletes the manuscript and the online copy 30 minutes after the result is first opened, or after 24 hours if it never is.
 - **Refunds:** Full refund within 14 days; email ben@purplelink.llc.
 
 ### Cover Letter Generator — $2
@@ -231,6 +233,25 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Response to reviewers template: https://purplelink.llc/tools/response-letter-template/ - paste the reviewer comments and get a response letter with every comment numbered and quoted (Markdown, LaTeX or plain text); runs in the browser.
 - Submission Checklist: https://purplelink.llc/tools/submission-checklist/ - twelve pre-submission checks for a manuscript, each linked to the tool that does it; progress saved in the browser.
 - LaTeX templates by venue: https://purplelink.llc/templates/ - IEEEtran (conference), ACM acmart, NeurIPS, Elsevier elsarticle and APA 7 (apa7): compilable skeletons with a downloadable starter (main.tex and references.bib), key class options and submission pitfalls.
+- Reference formats by venue: https://purplelink.llc/format/ - reference style, BibTeX style file and template for 26 journals and conferences, grouped by field, each checked against the venue's own author instructions.
+- JMIS reference format: https://purplelink.llc/format/references-for-jmis/ - a numbered list in alphabetical order, cited as [9]. The journal's own rules, three real examples, and a .bib checker. Checked 2026-10-01.
+- JAIS reference format: https://purplelink.llc/format/references-for-jais/ - APA 7th edition, author-date. The journal's own rules, three real JAIS examples in APA 7, and a .bib checker. Checked 2026-10-01.
+- EJIS reference format: https://purplelink.llc/format/references-for-ejis/ - format-free submission, any consistent citation style, and a .bib file required with LaTeX. Rules, examples, checker. Checked 2026-10-01.
+- ISJ reference format: https://purplelink.llc/format/references-for-isj/ - APA 6th edition per the Wiley author guidelines, with a DOI on every reference. Rules, three real examples, checker. Checked 2026-10-01.
+- ICIS reference format: https://purplelink.llc/format/references-for-icis/ - APA 7th edition, alphabetical, inside a 16-page limit that includes references. Rules, examples, .bib checker. Checked 2026-10-01.
+- HICSS reference format: https://purplelink.llc/format/references-for-hicss/ - APA, 7th edition preferred, alphabetical and unnumbered, inside a 10-page limit. Rules, three real examples, checker. Checked 2026-10-01.
+- CHI reference format: https://purplelink.llc/format/references-for-chi/ - ACM Reference Format with acmart, single-column manuscript for review. BibTeX setup, three CHI examples, checker. Checked 2026-10-01.
+- KDD reference format: https://purplelink.llc/format/references-for-kdd/ - ACM Reference Format with acmart sigconf. References sit outside the 8 content pages. BibTeX setup, examples. Checked 2026-10-01.
+- WWW reference format: https://purplelink.llc/format/references-for-www/ - ACM Reference Format with acmart sigconf, 8 pages plus references up to 12. BibTeX setup, examples. Checked 2026-10-01.
+- ICML reference format: https://purplelink.llc/format/references-for-icml/ - APA-style author-year with natbib and icml2026.bst. Setup lines, three examples run through the official .bst, checker. Checked 2026-10-01.
+- ICLR reference format: https://purplelink.llc/format/references-for-iclr/ - natbib author-year with the iclr conference .bst from the official Master-Template. Setup, examples, page limits. Checked 2026-10-01.
+- ACL reference format: https://purplelink.llc/format/references-for-acl/ - acl_natbib.bst with the acl style file, DOIs or Anthology links required. Setup, three ACL examples, checker. Checked 2026-10-01.
+- AAAI reference format: https://purplelink.llc/format/references-for-aaai/ - aaai2027.bst, set by the style file, with natbib. 7 content pages plus 2 for references. Setup, examples, checker. Checked 2026-10-01.
+- Springer LNCS reference format: https://purplelink.llc/format/references-for-springer-lncs/ - llncs.cls with splncs04.bst, numbered citations in square brackets. Setup lines, three LNCS examples, checker. Checked 2026-10-01.
+- PLOS ONE reference format: https://purplelink.llc/format/references-for-plos-one/ - Vancouver style, numbered in order of appearance, first six authors then et al. plos2025.bst setup and examples. Checked 2026-10-01.
+- Nature reference format: https://purplelink.llc/format/references-for-nature/ - numbered superscripts in order of citation, et al. after five authors, about 50 references. Rules, three examples, checker. Checked 2026-10-01.
+- Science reference format: https://purplelink.llc/format/references-for-science/ - numbered in order of citation, italic numbers in parentheses, full author lists with no et al. Rules, examples, checker. Checked 2026-10-01.
+- PNAS reference format: https://purplelink.llc/format/references-for-pnas/ - numbered in order of appearance, et al. after five authors, pnas-new.bst in the Overleaf template. Rules, examples, checker. Checked 2026-10-01.
 - Tools hub: https://purplelink.llc/tools/
 
 ## Guides (free how-to articles)

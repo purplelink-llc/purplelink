@@ -500,8 +500,13 @@ def _parse_reference(raw: str) -> PaperReference:
     return ref
 
 
-def extract_paper(pdf_bytes: bytes) -> PaperStructure:
+def extract_paper(pdf_bytes: bytes, page_texts: Optional[list] = None) -> PaperStructure:
     """Extract structured content from a manuscript PDF using pdfplumber.
+
+    *page_texts*, when given, is filled with (page_number, raw_text) tuples
+    as pages are read, so a caller that needs page-level text (the free
+    preview's anonymity scan) does not have to parse the PDF a second time.
+    That text is NOT sanitised; never embed it in an LLM prompt.
 
     Returns a PaperStructure dataclass populated as best we can. This is
     inherently best-effort — academic PDFs vary wildly — but the downstream
@@ -575,6 +580,8 @@ def extract_paper(pdf_bytes: bytes) -> PaperStructure:
                 # and keep going rather than failing the whole review.
                 logger.warning("pdfplumber failed on page %d", page_idx)
                 continue
+            if page_texts is not None:
+                page_texts.append((page_idx, page_text))
 
             # First page → title + abstract heuristics
             if page_idx == 1:
