@@ -134,6 +134,9 @@ def main():
                     help="qc = first 5 (for agencies that inspect a first batch)")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--delay", type=float, default=1.0)
+    ap.add_argument("--only", help="JSON list of filenames: restrict the upload to these")
+    ap.add_argument("--shard", help="K/N: upload only every Nth file starting at K, so N copies can run at once "
+                                    "(each keeps its own state file; needed when per-file latency, not bandwidth, is the limit)")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--status", action="store_true")
     a = ap.parse_args()
@@ -159,10 +162,21 @@ def main():
 
     rows = eligible(cfg["min_mp"])
     names = [r["filename"] for r in rows]
+    if a.only:
+        allow = set(json.loads(Path(a.only).read_text()))
+        names = [n for n in names if n in allow]
     if a.set == "qc":
         names = names[:5]
-    st = load_state(a.agency)
-    todo = [n for n in names if n not in st["uploaded"]]
+    state_key = a.agency
+    done_elsewhere = set()
+    if a.shard:
+        k, n = (int(x) for x in a.shard.split("/"))
+        names = names[k::n]
+        state_key = f"{a.agency}-shard{k}of{n}"
+        for f in STATE_DIR.glob(f"{a.agency}*.json"):
+            done_elsewhere |= set(json.loads(f.read_text()).get("uploaded", []))
+    st = load_state(state_key)
+    todo = [n for n in names if n not in st["uploaded"] and n not in done_elsewhere]
     if a.limit:
         todo = todo[: a.limit]
     if not todo:
@@ -233,7 +247,7 @@ def main():
             else:
                 st["failed"][name] = f"{type(last_err).__name__}: {last_err}"; fail += 1
                 print(f"  FAIL [{i}/{len(todo)}] {name} — {last_err}")
-            save_state(a.agency, st)
+            save_state(state_key, st)
             time.sleep(a.delay)
         print(f"\ndone: {ok} uploaded, {fail} failed")
     finally:
