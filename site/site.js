@@ -694,3 +694,92 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add);
   else add();
 })();
+
+// Post hero: a kicker above the title and a banner image under it, on every
+// post-style page (blog, guides, templates, digest issues). The title styling
+// is CSS; this adds the two bits CSS cannot. Product posts show the real app
+// capture and the prints post shows one of Ben's photographs (the site's own
+// watermarked copy). Pages with no fitting image, digest issues included, get
+// the kicker and the styled title only. Added here, not in each page, so
+// the cron-written digest issues get it without a commit.
+(() => {
+  const PHOTOS = [{"s":"skogafoss","a":"Skógafoss waterfall falling from a green cliff, with a rainbow in the spray at its base","c":"Skógafoss, Iceland","f":[62,40],"w":1400,"h":934}];
+  const SHOTS = {"mt":{"src":"/assets/moderntex-screens/01-editor-clean-1440.webp","w":1440,"h":792},"tikz":{"src":"/assets/moderntex-screens/07-tikz-editor-1440.webp","w":1440,"h":919},"pr":{"src":"/assets/tool-shots/paper-review-sample.webp","w":1440,"h":522},"vit":{"src":"/assets/vitae-screens/dashboard-1440.webp","w":1440,"h":747},"gp":{"src":"/assets/globepin-screens/03-globe-800.webp","w":800,"h":1739},"haea":{"src":"/assets/haea-screens/01-today-800.webp","w":800,"h":1739}};
+  // slug -> screenshot key (product posts) or photo slug (travel posts)
+  const BY_SLUG = {
+    "the-latex-editor-academics-want": "mt", "best-mac-latex-editors": "mt",
+    "overleaf-alternative-mac": "mt", "the-co-author-who-writes-in-word": "mt",
+    "latex-track-changes": "mt", "compile-latex-project-to-pdf-online": "mt",
+    "tikz-and-tables-without-the-syntax": "tikz",
+    "ai-paper-review-tools-compared": "pr", "paper-review": "pr", "use-paper-review-before-submitting": "pr",
+    "running-your-manuscript-through-paper-review": "pr", "get-feedback-on-a-paper-before-submitting": "pr",
+    "methodology-problems-peer-reviewers-flag": "pr", "desk-reject-recovery": "pr",
+    "reviewer-says-novelty-is-limited": "pr", "how-to-respond-to-reviewer-2": "pr",
+    "catch-ai-hallucinated-citations": "pr", "what-stays-in-a-blinded-manuscript": "pr",
+    "where-your-academic-record-actually-lives": "vit", "track-academic-cv-tenure-case": "vit",
+    "globepin-vs-polarsteps": "gp", "what-globepin-does-differently": "gp",
+    "why-haea-is-on-device": "haea", "best-on-device-health-apps": "haea",
+    "travel-photographs-as-prints": "skogafoss"
+  };
+  const ALT = {
+    mt: "ModernTex with a LaTeX source on the left and the compiled PDF on the right",
+    tikz: "ModernTex TikZ designer showing a flowchart and the generated TikZ code",
+    pr: "A Paper Review report excerpt listing critical blind spots with quoted passages",
+    vit: "The Vitae dashboard showing submissions, grants and deadlines",
+    gp: "GlobePin showing a 3D globe with places visited", haea: "Haea showing the Today view with sleep and activity"
+  };
+  const PHONE = { gp: 1, haea: 1 };
+
+  const kind = () => {
+    const p = location.pathname;
+    if (p.indexOf("/blog/digest/") === 0) return "Daily Digest";
+    if (p.indexOf("/guides/") === 0) return "Guide";
+    if (p.indexOf("/templates/") === 0) return "Template";
+    return "Blog";
+  };
+  const pick = (hero) => {
+    const slug = location.pathname.replace(/\/index\.html$/, "").replace(/\.html$/, "").split("/").filter(Boolean).pop() || "";
+    const key = BY_SLUG[slug];
+    if (key && SHOTS[key]) return { shot: key };
+    const wanted = key && PHOTOS.find((p) => p.s === key);
+    if (wanted) return { photo: wanted };
+    return null;
+  };
+  const el = (tag, cls, attrs) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    Object.keys(attrs || {}).forEach((k) => n.setAttribute(k, attrs[k]));
+    return n;
+  };
+  const build = () => {
+    const hero = document.querySelector(".post-hero");
+    if (!hero || document.querySelector(".post-kicker")) return;
+    const title = hero.querySelector(".post-title");
+    if (title) {
+      const k = el("p", "post-kicker");
+      k.innerHTML = '<img src="/assets/purplelink-mark.svg" alt="" width="18" height="18"><span></span>';
+      k.lastChild.textContent = kind();
+      title.insertAdjacentElement("beforebegin", k);
+    }
+    const choice = pick(hero);
+    if (!choice) return;
+    const fig = el("figure", "post-banner" + (choice.shot ? (PHONE[choice.shot] ? " post-banner-phone" : " post-banner-shot") : " post-banner-photo"));
+    let img;
+    if (choice.photo) {
+      const p = choice.photo;
+      img = el("img", "", { src: "/assets/photography/" + p.s + "-1400.webp", alt: p.a, width: p.w, height: p.h, decoding: "async", fetchpriority: "high" });
+      img.style.objectPosition = p.f[0] + "% " + p.f[1] + "%";
+      fig.appendChild(img);
+      const cap = el("figcaption", "post-banner-caption");
+      cap.textContent = p.c + ". A photograph by Benjamin Ampel.";
+      fig.appendChild(cap);
+    } else {
+      const s = SHOTS[choice.shot];
+      img = el("img", "", { src: s.src, alt: ALT[choice.shot], width: s.w, height: s.h, decoding: "async", fetchpriority: "high" });
+      fig.appendChild(img);
+    }
+    hero.insertAdjacentElement("afterend", fig);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
+  else build();
+})();
