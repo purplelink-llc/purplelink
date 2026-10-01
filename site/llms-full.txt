@@ -13,6 +13,16 @@ Products
 
 Two Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
 
+SUB
+
+Watch the overview
+
+## Everything Purplelink makes
+
+A short look at each product, with prices.
+
+Play the video on YouTube
+
 Which one do I need?
 
 ## Start from where the paper is
@@ -240,6 +250,14 @@ Download the free 7-day trial
 
 The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, with every 1.x update included and a full refund within 14 days if it isn't for you (terms); the receipt email includes a permanent license key. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements.
 
+Watch the tour
+
+## Sixty-five seconds, start to submission
+
+A mistyped command caught as you type, TikZ and tables built visually, a searchable symbol palette, revision snapshots, and the submission checker. Real footage of the app on a sample manuscript.
+
+Play the tour on YouTube
+
 In the app
 
 ## Source and PDF, always in sync
@@ -303,6 +321,30 @@ Paste a range from Excel or Google Sheets straight into the right cells. Resize 
 ### Native macOS experience
 
 Built in Swift for macOS 14+. Native dark and light mode, system fonts, proper keyboard shortcuts, and performance that doesn't make you wait.
+
+Plain-language errors
+
+## From a cryptic error to a fix
+
+LaTeX reports a mistake in its own terms and leaves you to work out what it means. ModernTex reads the error and says what went wrong in plain language, with a suggested fix.
+
+What LaTeX prints
+
+! Undefined control sequence.
+l.42 As shown by \citeauthr
+{smith2024}, the effect holds.
+
+What ModernTex tells you
+
+LaTeX does not recognize the command \citeauthr on line 42. This is usually a misspelled command, or a package that defines it is not loaded.
+
+Suggested fix
+
+- Remove: \citeauthr{smith2024}
+
++ Add: \citeauthor{smith2024}
+
+An illustrative example, not a capture from the app; the wording varies with the error.
 
 Who it's for
 
@@ -468,9 +510,7 @@ Vitae Plus, 7 days free
 
 Requires macOS 15 Sequoia or later · Apple-notarized · Your data stays on your Mac
 
-## Your research record on one screen
-
-Projects, papers under review, open revision tasks, your acceptance rate, funding, the next deadlines and the latest decisions. The screenshots on this page use sample data for a fictional researcher.
+Your research record on one screen: projects, papers under review, open revision tasks, your acceptance rate, funding, the next deadlines and the latest decisions. The screenshots on this page use sample data for a fictional researcher.
 
 What's inside
 
@@ -499,6 +539,14 @@ Track coauthors, collaborators, and projects. Link people to papers, grants, and
 ### Local-first & private
 
 Everything is stored on your Mac with SwiftData. No account and no cloud sync required, and keeping your record needs no subscription. Vitae takes a daily backup and lets you undo changes, so a bad import or merge is never permanent.
+
+Watch the tour
+
+## Your academic record, in one place
+
+Submissions, grants, projects and co-authors tracked in one local record, with your CV built from it.
+
+Play the video on YouTube
 
 ## A closer look
 
@@ -699,6 +747,8 @@ Four AI reviewers read your manuscript the way a journal panel would and quote t
 
 Field profiles for machine learning, biomedicine, psychology and chemistry, or a general one for everything else.
 
+From the example report. Every finding quotes your text. Read the whole report.
+
 Choose a tier
 
 Standard · $9
@@ -744,6 +794,14 @@ Secure checkout via Stripe. One-time payment, no subscription. See a full exampl
 
 Deleted soon after delivery. Purplelink deletes the manuscript and the review 30 minutes after you first open the result, or after 24 hours if you never do; Anthropic keeps API inputs for up to 30 days and does not train on them. If a result reads as low quality, email within 14 days for a refund. Advisory only: you decide what to change.
 
+Watch the tour
+
+## What a Paper Review looks like
+
+Four reviewers, every reference checked against CrossRef, and a fix checklist.
+
+Play the video on YouTube
+
 ## Sample report
 
 What does the report look like? Show or hide
@@ -780,6 +838,14 @@ Claim "Method X reduces error by 40%" cites [14], whose abstract reports a 4% re
 Read the full example report, with a note on each section →
 
 ## How the review works
+
+- MCMethodology CriticDesign, controls, confounds and what the method can and cannot show.
+
+- SSStatistical SkepticPower, tests, intervals and claims the numbers do not support.
+
+- DIData Integrity OfficerFigures, tables and whether the data shown matches the text.
+
+- ECEditor-in-ChiefNovelty, fit, structure and what a desk editor would send back.
 
 - 
 Layer 1: figure-integrity scan.
@@ -820,6 +886,8 @@ rectification checklist, and an honest novelty estimate.
 - A Markdown report and an annotated PDF with comments on the pages they refer to.
 
 - Standard reviews are usually ready in 4-8 minutes, Deep Review in 10-15, on a status page that updates itself.
+
+Reviewing a grant proposal instead of a paper? Grant Review is an idea for NSF and NIH proposals, and the waitlist measures interest.
 
 ## How your manuscript is handled
 
@@ -1635,6 +1703,31 @@ Source on GitHub
 
 About 1,000 researchers use it. Rated 4.5 out of 5 from 16 ratings on the Chrome Web Store.
 
+Attention sinks in small vision transformers
+J Smith, A Vaswani · MIS Quarterly, 2024 · Cited by 1,204
+
+ABDC A*FT50UTD24SJR Q1+38 citations / year
+
+Deep learning for threat intelligence: a survey
+B Ampel, S Samtani · Journal of Management Information Systems, 2023 · Cited by 96
+
+ABDC A*FT50SJR Q1+31 citations / yearh-index 14 · g-index 22
+
+A unified theory of everything in one regression
+R Doe · Journal of Examples, 2019 · Cited by 312
+
+RetractedSJR Q3+2 citations / year
+
+What the extension adds beside a Google Scholar result. The papers and numbers here are made up to show each badge.
+
+Watch the tour
+
+## Rankings and metrics inside Google Scholar
+
+Journal rankings, h-index, citation velocity and retraction alerts, added to the results page.
+
+Play the video on YouTube
+
 What it adds
 
 ## Context next to every result
@@ -1901,6 +1994,10 @@ Merge, split, and compress PDFs. Merge and split run in your browser.
 ### Word Counter
 
 Live word, character, sentence, and reading-time stats in your browser.
+
+### Thesis Format Checker
+
+Margins, font size, embedded fonts, page numbers and line spacing of a thesis PDF, measured in your browser.
 
 ### Abstract Checker
 
@@ -2184,6 +2281,14 @@ App Store
 
 What it does
 
+Watch the tour
+
+## Every place, every flight
+
+The map, the 3D globe, stats and goals in GlobePin, free on the App Store.
+
+Play the video on YouTube
+
 In the app
 
 ## See where you've been
@@ -2285,6 +2390,14 @@ Join the waitlist
 
 Coming to the
 App Store
+
+Watch the tour
+
+## Health patterns that stay on your phone
+
+Sleep, nutrition, exercise and biometrics, analyzed on the device.
+
+Play the video on YouTube
 
 In the app
 
@@ -2501,6 +2614,8 @@ Atlanta, Georgia · Founded 2026 · Georgia LLC
 
 Purplelink LLC is a one-person software studio building Mac apps and manuscript tools for academic researchers, plus iOS apps for travel and health. The mission is simple: make software that solves real problems and lasts, not software that ships fast and deteriorates.
 
+The Matterhorn from Riffelsee, Switzerland. One of Ben's photographs; the collection is on this site and sold as prints.
+
 ## Who makes this
 
 I'm Benjamin Ampel, a researcher in cybersecurity, AI and information systems, based in Atlanta. I've spent a lot of time in LaTeX: writing manuscripts, watching compile errors scroll by, checking references by hand before a deadline. The apps that stuck, for me, were always the ones that solved a specific problem I had, for people I understood. Purplelink is where I build those.
@@ -2523,9 +2638,13 @@ A native macOS LaTeX studio for academic researchers. Multi-file editing, synchr
 
 A local-first Mac app for academics: submissions, grants, projects and your CV in one place. Free, with an optional Vitae Plus subscription from $3 a month.
 
+PR
+
 ### Paper Review
 
 A pre-submission read of your manuscript: four AI reviewers, a check of every reference against CrossRef, and a figure scan. From $9 with no account, and the manuscript is deleted within a day.
+
+TeX
 
 ### Free tools
 

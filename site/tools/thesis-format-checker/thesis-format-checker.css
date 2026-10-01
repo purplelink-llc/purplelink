@@ -1,0 +1,48 @@
+/* Thesis Format Checker */
+.tf-app { display: grid; gap: 20px; }
+.tf-settings { border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 20px; background: var(--panel); display: grid; gap: 14px; }
+.tf-settings legend { padding: 0 8px; font-weight: 700; }
+.tf-row { display: flex; flex-wrap: wrap; gap: 14px; }
+.tf-row .tf-field { flex: 1 1 200px; }
+.tf-margins .tf-field { flex: 1 1 110px; }
+.tf-field { display: grid; gap: 6px; }
+.tf-field label { font-size: 0.9rem; font-weight: 600; }
+.tf-opt { font-weight: 400; color: var(--muted); }
+.tf-field input, .tf-field select {
+  font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+}
+.tf-field input:focus-visible, .tf-field select:focus-visible, .tf-drop:focus-within { outline: 2px solid var(--purple); outline-offset: 2px; }
+.tf-drop {
+  border: 2px dashed var(--line); border-radius: 14px; padding: 28px 20px; text-align: center; background: var(--panel);
+  display: grid; gap: 10px; justify-items: center;
+}
+.tf-drop.is-over { border-color: var(--purple); background: var(--purple-xlight); }
+.tf-drop-label { font-size: 1.1rem; cursor: pointer; }
+.tf-drop input[type="file"] { font: inherit; max-width: 100%; }
+.tf-hint { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.tf-status { margin: 0; min-height: 1.4em; color: var(--muted); }
+.tf-status.is-busy::after { content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-left: 8px; border: 2px solid var(--purple); border-right-color: transparent; border-radius: 50%; vertical-align: -2px; }
+@media (prefers-reduced-motion: no-preference) { .tf-status.is-busy::after { animation: tf-spin 0.8s linear infinite; } }
+@keyframes tf-spin { to { transform: rotate(360deg); } }
+.tf-results { display: grid; gap: 14px; outline: none; }
+.tf-results h2 { margin: 0; font-size: 1.4rem; overflow-wrap: anywhere; }
+.tf-summary { margin: 0; color: var(--muted); }
+.tf-card { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--panel); }
+.tf-card h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 1.15rem; display: flex; align-items: center; gap: 8px; }
+.tf-card p { margin: 0 0 6px; }
+.tf-card ul { margin: 6px 0 0; padding-left: 1.2em; color: var(--muted); font-size: 0.95rem; }
+.tf-card li { margin-bottom: 4px; overflow-wrap: anywhere; }
+.tf-tag { font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); }
+.tf-pass .tf-tag { background: var(--purple-light); color: var(--ink); }
+.tf-review { border-color: var(--purple); }
+.tf-review .tf-tag { background: var(--purple); color: oklch(18% 0.06 310); border-color: var(--purple); }
+.tf-info .tf-tag { color: var(--muted); }
+.tf-download, .tf-reqbtn {
+  font: inherit; font-weight: 600; padding: 10px 20px; border-radius: 999px; border: 1px solid var(--purple);
+  background: transparent; color: var(--purple); cursor: pointer; justify-self: start;
+}
+.tf-reqbtn { background: var(--purple); color: oklch(18% 0.06 310); }
+.tf-download:hover { background: var(--purple-xlight); }
+.tf-download[hidden], .tf-results[hidden] { display: none; }
+.tf-request { padding: 32px clamp(24px, 6vw, 80px) 0; max-width: calc(760px + clamp(48px, 12vw, 160px)); }
+.tf-reqform { display: grid; gap: 14px; max-width: 520px; margin-top: 16px; }

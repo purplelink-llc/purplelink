@@ -216,6 +216,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Equation Renderer: https://purplelink.llc/tools/equation-renderer/ — render LaTeX math to an image, runs in your browser.
 - LaTeX Table Generator: https://purplelink.llc/tools/latex-table-generator/ — build LaTeX tabular code from a visual grid, runs in your browser.
 - Word & Character Counter: https://purplelink.llc/tools/word-counter/ — count words, characters, sentences, and reading time, runs in your browser.
+- Thesis Format Checker: https://purplelink.llc/tools/thesis-format-checker/ — checks a thesis or dissertation PDF for page size, margins against the minimums you enter, body font size, embedded fonts, page numbers and their sequence, line spacing and front-matter headings; the PDF is read in the browser and never uploaded.
 - Abstract Checker: https://purplelink.llc/tools/abstract-checker/ — an abstract's word count against the limit of 25 journals and conferences (NeurIPS, ICML, Nature, JAMA, NEJM, JACS and others), with the sections and reference style each expects; runs in your browser.
 - PDF Tools: https://purplelink.llc/tools/pdf-tools/ — merge, split, and compress PDF files, files never stored.
 - File to Markdown: https://purplelink.llc/tools/file-to-markdown/ - convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to Markdown, files never stored.
