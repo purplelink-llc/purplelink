@@ -728,46 +728,43 @@ def collect_123rf(page):
 
 
 def collect_depositphotos(page):
-    """Seller's Menu counts, plus money once the account is out of examination.
+    """Seller's Menu counts plus the Sold table, read with in-page fetch().
 
-    Added 2026-09-10. A brand-new Depositphotos seller is in an "Examination
-    Test": every seller page (files, sales, request_earnings) redirects to
-    files_menu_examination.html until the sample uploads are approved. The
-    six pipeline counters still render on that page, so they are collected
-    and examination_pending is set from the redirect. The sales page is only
-    parsed when it actually loads -- while the redirect is in force there is
-    simply no money to read, which is a real zero and not an error.
+    Depositphotos' contributor side has no public API (its API suite is
+    buyer/partner only), but both pages are server-rendered, so a credentialed
+    fetch() from the signed-in tab returns them in under a second each -- no
+    render waits. During the examination test every seller page redirects to
+    files_menu_examination.html; that is reported as examination_pending and
+    there is simply no money to read (a real zero, not an error).
     """
     page.goto("https://depositphotos.com/files.html", wait_until="domcontentloaded")
-    page.wait_for_timeout(7000)
-    t = re.sub(r"[ \t]+", " ", page.inner_text("body"))
-    if "/login" in page.url.lower() or "Seller's Menu" not in t:
+    page.wait_for_timeout(1500)
+    r = page.evaluate("""async () => {
+      const get = async u => { const x = await fetch(u, {credentials: 'include'});
+        const d = new DOMParser().parseFromString(await x.text(), 'text/html');
+        return {url: x.url, text: d.body.innerText, doc: d}; };
+      const f = await get('/files.html');
+      const s = await get('/sales.html');
+      const rows = [...s.doc.querySelectorAll('tr')].map(tr => [...tr.children].map(c => c.innerText.trim()))
+                     .filter(c => c.length >= 8 && /\\d{4}/.test(c.join(' ')) && /\\$/.test(c.join(' ')));
+      return {files_url: f.url, files: f.text, sales_url: s.url, sales: s.text, rows: rows};
+    }""")
+    t = re.sub(r"[ \t]+", " ", r["files"])
+    if "/login" in r["files_url"].lower() or "Seller's Menu" not in t:
         raise RuntimeError("not signed in")
-    out = {"examination_pending": "files_menu_examination" in page.url
+    out = {"examination_pending": "files_menu_examination" in r["files_url"]
                                   or "Examination Test" in t}
-    # Each counter is "Label\n<n>" in the Seller's Menu strip.
     for label, key in (("Online", "online"), ("Pending", "pending"),
                        ("Unfinished", "unfinished"), ("Rejected", "rejected"),
                        ("Deactivated", "deactivated")):
-        m = re.search(rf"\b{label}\s*\n\s*(\d+)", t)
+        m = re.search(rf"\b{label}\s*(\d+)", t)
         if m:
             out[key] = int(m.group(1))
-
-    # While in examination the sales redirect can abort the navigation
-    # outright (net::ERR_ABORTED, first seen 2026-09-24) instead of landing
-    # on the examination page; either way there is no money to read.
-    try:
-        page.goto("https://depositphotos.com/sales.html", wait_until="domcontentloaded")
-    except Exception:
-        if out["examination_pending"]:
-            return out
-        raise
-    page.wait_for_timeout(6000)
-    if "sales.html" in page.url:
-        s = re.sub(r"[ \t]+", " ", page.inner_text("body"))
-        m = re.search(r"(?:Balance|Earnings)\s*:?\s*\n?\s*\$\s*([\d,]+\.?\d*)", s, re.I)
-        if m:
-            out["balance"] = num(m.group(1))
+    if "sales.html" in r["sales_url"]:
+        # Last cell is NET EARNED; rows are one sale each.
+        out["sales"] = len(r["rows"])
+        mb = re.search(r"Balance\s*:?\s*\$\s*([\d,]+\.?\d*)", t)
+        out["balance"] = num(mb.group(1)) if mb else round(sum(num(row[-1]) or 0 for row in r["rows"]), 2)
     return out
 
 
