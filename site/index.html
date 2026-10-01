@@ -43,7 +43,7 @@
           "legalName": "Purplelink LLC",
           "url": "https://purplelink.llc/",
           "logo": "https://purplelink.llc/assets/purplelink-logo.png",
-          "description": "Purplelink LLC is a one-person software studio in Atlanta, Georgia that makes tools for academic researchers: ModernTex (a native macOS LaTeX editor), Paper Review (AI pre-submission manuscript review), Vitae (a macOS academic record app), Scholar Utility Belt (a Chrome extension for Google Scholar) and free LaTeX and BibTeX tools. It also makes the iOS apps GlobePin and Haea.",
+          "description": "Purplelink LLC is a one-person software studio in Atlanta, Georgia that makes tools for academic researchers: ModernTex (a native macOS LaTeX editor), Paper Review (AI pre-submission manuscript review), Vitae (a macOS academic record app), Scholar Utility Belt (a Chrome extension for Google Scholar) and free LaTeX and BibTeX tools.",
           "foundingDate": "2026",
           "address": {
             "@type": "PostalAddress",
@@ -71,7 +71,6 @@
             "BibTeX",
             "Academic writing and peer review",
             "macOS application development",
-            "iOS application development",
             "Applied AI for manuscript review"
           ],
           "hasOfferCatalog": {
@@ -116,33 +115,6 @@
           "softwareVersion": "1.3.0",
           "url": "https://purplelink.llc/moderntex/",
           "offers": { "@type": "Offer", "price": "10", "priceCurrency": "USD", "url": "https://purplelink.llc/moderntex/" }
-        },
-        {
-          "@type": "SoftwareApplication",
-          "name": "Haea",
-          "alternateName": "Health Analytics Everything Application",
-          "applicationCategory": "HealthApplication",
-          "operatingSystem": "iOS 17+",
-          "description": "An on-device health app for iOS. Integrates sleep, nutrition, weight, exercise, and biometric data to surface patterns and trends through advanced ML models. All data stays on-device.",
-          "author": { "@id": "https://purplelink.llc/#organization" },
-          "offers": [
-            { "@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free tier", "availability": "https://schema.org/PreOrder" },
-            { "@type": "Offer", "price": "1.99", "priceCurrency": "USD", "name": "Premium monthly", "availability": "https://schema.org/PreOrder" },
-            { "@type": "Offer", "price": "14.99", "priceCurrency": "USD", "name": "Premium annual", "availability": "https://schema.org/PreOrder" }
-          ],
-          "releaseNotes": "In development - expected 2026"
-        },
-        {
-          "@type": "SoftwareApplication",
-          "name": "GlobePin",
-          "applicationCategory": "TravelApplication",
-          "operatingSystem": "iOS 17+",
-          "description": "An iOS travel mapping app for tracking visited places, flights taken, and travel goals. Features map visualization, statistics dashboards, goal tracking, and shareable travel postcards.",
-          "author": { "@id": "https://purplelink.llc/#organization" },
-          "softwareVersion": "1.0",
-          "datePublished": "2026-09-03",
-          "downloadUrl": "https://apps.apple.com/us/app/globepin/id6762313540",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://apps.apple.com/us/app/globepin/id6762313540" }
         }
       ]
     }
@@ -152,15 +124,15 @@
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <!-- The hero H1 (the page's LCP element) italicizes one word ("software"),
-         which needs the separate italic face; preloaded so that word doesn't
-         wait for a second font fetch after the regular weight already arrived. -->
+    <!-- The hero subhead italicizes one word ("software"), which needs the
+         separate italic face; preloaded so that word doesn't wait for a second
+         font fetch after the regular weight already arrived. -->
     <link rel="preload" href="/assets/fonts/fraunces-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
-    <link rel="stylesheet" href="styles.css?v=93996c334f">
+    <link rel="stylesheet" href="styles.css?v=fa6feca4b1">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <script src="/site.js?v=89f3a39484" defer></script>
+    <script src="/site.js?v=6df44e6a80" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -190,20 +162,23 @@
           <span>Mac apps and manuscript tools for researchers</span>
         </div>
 
-        <h1 class="hero-title">
-          <span>Making</span>
-          <span class="hero-italic">software</span>
-          <span>that lasts.</span>
+        <h1 class="hero-title flagship-title">
+          <span>A native LaTeX editor for Mac.</span>
+          <span>Free for 7 days,</span>
+          <span>$10 to keep.</span>
         </h1>
 
         <div class="hero-bottom">
+          <p class="flagship-lede">Making <em class="hero-italic">software</em> that lasts.</p>
           <div class="hero-bottom-copy">
-            <p class="hero-lede">Purplelink makes <a href="/moderntex/">ModernTex</a>, a native LaTeX editor for Mac; <a href="/tools/paper-review/">Paper Review</a>, which reads your manuscript before a journal does; <a href="/vitae/">Vitae</a>, for your academic record; and <a href="/tools/">free LaTeX and BibTeX tools</a> that never store your files. It is a one-person studio in Atlanta, founded in 2026 by Benjamin Ampel, a researcher in cybersecurity, AI and information systems.</p>
-            <p class="hero-proof">Its free <a href="/scholar-utility-belt/">Scholar Utility Belt</a> extension is used by <strong>1,000 researchers</strong> and rated <strong>4.5&#9733;</strong> on the Chrome Web Store.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="/moderntex/#buy" data-track="home_cta" data-track-meta="moderntex-trial">Download the free trial</a>
+            </div>
+            <p class="hero-proof">Submitting a paper instead? <a href="/tools/paper-review/">See Paper Review, from $9.</a></p>
           </div>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="/moderntex/#buy" data-track="home_cta" data-track-meta="moderntex-trial">Try ModernTex free for 7 days</a>
-            <a class="btn btn-ghost" href="/tools/paper-review/">Review my paper, from $9</a>
+          <div class="hero-bottom-copy">
+            <p class="hero-lede">Purplelink makes <a href="/moderntex/">ModernTex</a>; <a href="/tools/paper-review/">Paper Review</a>, which reads your manuscript before a journal does; <a href="/vitae/">Vitae</a>, for your academic record; and <a href="/tools/">free LaTeX and BibTeX tools</a> that never store your files.</p>
+            <p class="hero-proof">Its free <a href="/scholar-utility-belt/">Scholar Utility Belt</a> extension is used by <strong>1,000 researchers</strong> and rated <strong>4.5&#9733;</strong> on the Chrome Web Store.</p>
           </div>
         </div>
 
@@ -236,6 +211,7 @@
             <a class="btn btn-primary" href="/moderntex/#buy" data-track="home_cta" data-track-meta="moderntex-trial-2">Try it free for 7 days</a>
             <a class="btn btn-ghost" href="/moderntex/#buy">Buy ModernTex, $10 once</a>
           </div>
+          <p class="submit-free">Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase and it is refunded.</p>
         </div>
 
         <figure class="flagship-shot">
@@ -256,12 +232,13 @@
           <div class="submit-copy">
             <p class="eyebrow">Before you submit</p>
             <h2 class="section-title">Find what Reviewer 2 will find, <em>first.</em></h2>
-            <p class="submit-lede">Paper Review puts your manuscript in front of four AI reviewers (a methodology critic, a statistical skeptic, a data integrity officer and an editor), checks every reference against CrossRef and scans the figures. You get a prioritized list of fixes, quoted from your own text, in minutes. No account; the manuscript is deleted soon after you open the review.</p>
+            <p class="submit-lede">Paper Review puts your manuscript in front of four AI reviewers (a methodology critic, a statistical skeptic, a data integrity officer and an editor), checks every reference against CrossRef and scans the figures. You get a prioritized list of fixes, quoted from your own text, in minutes. No account. The manuscript and the review are deleted 30 minutes after you first open the result, or after 24 hours if you never open it.</p>
             <div class="submit-actions">
               <a class="btn btn-primary" href="/tools/paper-review/">Start a review, $9</a>
               <a class="btn btn-ghost" href="/products/#cat-review">All manuscript checks</a>
             </div>
             <p class="submit-free">Not ready to pay? The free <a href="/tools/submission-checklist/">submission checklist</a> walks through the twelve checks worth doing, and can email you a week before your deadline.</p>
+            <p class="submit-free">Buying for a lab? Volume packs, invoices and a W-9 are on the <a href="/labs/">labs page</a>.</p>
           </div>
           <figure class="report-card" data-motion="reveal" aria-label="Excerpt from a sample Paper Review report">
             <figcaption>From a sample report</figcaption>
@@ -338,7 +315,7 @@
       <section id="apps" class="section-apps">
         <div class="section-top">
           <div class="section-top-left">
-            <p class="eyebrow">macOS &amp; iOS</p>
+            <p class="eyebrow">macOS</p>
           </div>
           <h2 class="section-title">More from the studio</h2>
         </div>
@@ -356,7 +333,7 @@
                 <div class="product-body">
                   <div class="product-meta">
                     <span class="platform-tag platform-macos">macOS</span>
-                    <span class="product-status product-status-live">Free · v0.4 Beta · Available now</span>
+                    <span class="product-status product-status-live">Free · v1.0 Beta · Available now</span>
                   </div>
                   <strong class="product-name">Vitae</strong>
                   <p class="product-desc">Academic research management for macOS: track submissions, grants, projects, and your CV in one local-first app. Free, notarized, no App Store required.</p>
@@ -365,47 +342,6 @@
             </a>
           </li>
 
-          <li>
-            <a class="studio-card" href="/haea/">
-              <div class="peek">
-                <figure class="frame-phone">
-                  <img src="/assets/haea-screens/01-today-400.webp" srcset="/assets/haea-screens/01-today-400.webp 400w, /assets/haea-screens/01-today-800.webp 800w" sizes="(max-width: 640px) 42vw, 15vw" alt="Haea's Today view: a morning briefing, a command center and today's sleep, movement and recovery" width="800" height="1739" loading="lazy" decoding="async">
-                </figure>
-              </div>
-              <div class="product-item">
-                <img class="product-icon" src="/assets/haea-icon.webp" alt="" width="72" height="72" loading="lazy">
-                <div class="product-body">
-                  <div class="product-meta">
-                    <span class="platform-tag platform-ios">iOS</span>
-                    <span class="product-status">In development</span>
-                  </div>
-                  <strong class="product-name">Haea</strong>
-                  <p class="product-desc">An on-device iOS health app. Integrates sleep, nutrition, activity, and biometrics to surface patterns and trends through advanced ML, privately, entirely on-device.</p>
-                </div>
-              </div>
-            </a>
-          </li>
-
-          <li>
-            <a class="studio-card" href="/globepin/">
-              <div class="peek peek-dark">
-                <figure class="frame-phone">
-                  <img src="/assets/globepin-screens/03-globe-400.webp" srcset="/assets/globepin-screens/03-globe-400.webp 400w, /assets/globepin-screens/03-globe-800.webp 800w" sizes="(max-width: 640px) 42vw, 15vw" alt="GlobePin's 3D globe at night, with flight arcs from Europe across the Atlantic" width="800" height="1739" loading="lazy" decoding="async">
-                </figure>
-              </div>
-              <div class="product-item">
-                <img class="product-icon" src="/assets/globepin-icon.webp" alt="" width="72" height="72" loading="lazy">
-                <div class="product-body">
-                  <div class="product-meta">
-                    <span class="platform-tag platform-ios">iOS</span>
-                    <span class="product-status product-status-live">Free on the App Store</span>
-                  </div>
-                  <strong class="product-name">GlobePin</strong>
-                  <p class="product-desc">A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Map visualization, stats dashboards, and shareable travel postcards.</p>
-                </div>
-              </div>
-            </a>
-          </li>
         </ul>
       </section>
 
@@ -509,11 +445,6 @@
             <li><a href="/vitae/">Vitae</a></li>
             <li><a href="/tools/paper-review/">Paper Review</a></li>
             <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
-            <li><a href="/globepin/">GlobePin</a></li>
-            <li><a href="/haea/">Haea</a></li>
-            <li><a href="/binnacle/">Binnacle</a></li>
-            <li><a href="/kits/">Kits</a></li>
-            <li><a href="/sheets/">Spreadsheets</a></li>
             <li><a href="/products/">All products</a></li>
           </ul>
         </nav>
@@ -536,8 +467,6 @@
             <li><a href="/templates/">LaTeX templates</a></li>
             <li><a href="/format/">Reference formats</a></li>
             <li><a href="/blog/">Blog</a></li>
-            <li><a href="/blog/digest/">Daily Digest</a></li>
-            <li><a href="/desk/">Research desk</a></li>
             <li><a href="/changelog/">Changelog</a></li>
             <li><a href="/search/">Search</a></li>
           </ul>
@@ -548,7 +477,7 @@
             <li><a href="/about/">About</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/press/">Press</a></li>
-            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms</a></li>

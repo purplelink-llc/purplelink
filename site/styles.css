@@ -5250,3 +5250,52 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 }
 
 .pr-grant-note { max-width: 64ch; margin: 24px clamp(24px, 6vw, 80px) 0; color: var(--muted); font-size: 0.95rem; }
+
+/* Link to this tool: appended by site.js after .tool-app on free tool pages. */
+.tool-link {
+  max-width: 820px;
+  margin: 8px auto 32px;
+  padding: 0 24px;
+}
+.tool-link-head {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+.tool-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.tool-link-input {
+  flex: 1 1 240px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+}
+.tool-link-input:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-color: var(--purple);
+}
+.tool-link-copy { min-height: 44px; flex: 0 0 auto; }
+.tool-link-status {
+  margin: 8px 0 0;
+  min-height: 1.4em;
+  font-size: 0.85rem;
+  color: var(--muted);
+}

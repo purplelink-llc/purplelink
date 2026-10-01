@@ -8,9 +8,9 @@
   if (!btn) return;
 
   var TIER_LABELS = {
-    "paper-review-standard": "Start review — $9",
-    "paper-review-journal": "Start review — $11",
-    "paper-review-deep": "Start review — $15",
+    "paper-review-standard": "Start a review, $9",
+    "paper-review-journal": "Start a review, $11",
+    "paper-review-deep": "Start a review, $15",
   };
 
   function updateButton() {

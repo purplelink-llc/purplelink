@@ -110,6 +110,7 @@
 - Kits (downloadable automation systems): https://purplelink.llc/kits/
 - Daily Digest (curated reading on cybersecurity, AI, research and entrepreneurship): https://purplelink.llc/blog/digest/
 - About: https://purplelink.llc/about/
+- Support (how to reach Ben, refunds, lost keys and purchases, update notes, data handling): https://purplelink.llc/support/
 - Blog: https://purplelink.llc/blog/
 - Press: https://purplelink.llc/press/
 - Privacy Policy: https://purplelink.llc/privacy/
@@ -118,6 +119,7 @@
 - Pricing (every price on one page): https://purplelink.llc/pricing/
 - Paper Review by field (what each domain profile checks): https://purplelink.llc/tools/paper-review/machine-learning/ , https://purplelink.llc/tools/paper-review/biomedicine/ , https://purplelink.llc/tools/paper-review/psychology/ , https://purplelink.llc/tools/paper-review/chemistry/
 - For labs and departments (volume packs, invoices, purchase orders, data handling): https://purplelink.llc/labs/
+- Security and data handling (what each product does with a file, subprocessor table, encryption, deletion timing, breach notice; DPA and HECVAT Lite on request): https://purplelink.llc/security/
 
 ## Frequently asked questions
 
@@ -153,6 +155,9 @@ It is a native macOS app built around the academic manuscript rather than the fi
 
 **Who built Purplelink?**
 Purplelink LLC was founded by Benjamin Ampel in Atlanta, Georgia in 2026. It is a one-person studio.
+
+**Will Purplelink sign a data processing addendum or complete a HECVAT?**
+Yes. A DPA, the subprocessor list and a completed HECVAT Lite or a department's own vendor questionnaire are available on request from ben@purplelink.llc. The plain-language summary of data handling per product is at https://purplelink.llc/security/.
 
 **How do I contact Purplelink?**
 Email ben@purplelink.llc for product inquiries, press, or general questions.
@@ -210,12 +215,12 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Word to LaTeX: https://purplelink.llc/tools/word-to-latex/ — convert a Word .docx into LaTeX source, files never stored.
 - Markdown to PDF: https://purplelink.llc/tools/markdown-to-pdf/ — render Markdown to a typeset PDF, files never stored.
 - BibTeX Builder: https://purplelink.llc/tools/bib-builder/ — generate BibTeX entries from a DOI or arXiv ID, nothing stored.
-- BibTeX Validator: https://purplelink.llc/tools/bib-validator/ — check a .bib file for syntax errors and missing required fields, runs in your browser.
+- BibTeX Validator: https://purplelink.llc/tools/bib-validator/ — check a .bib file for syntax errors and missing required fields, processed on Purplelink's server and not stored.
 - Citation Generator: https://purplelink.llc/tools/citation-generator/ — build IEEE, APA, MLA, and Chicago citations from entry fields, runs in your browser.
 - Reference Converter: https://purplelink.llc/tools/reference-converter/ — convert references between BibTeX, RIS, and other formats, runs in your browser.
-- Equation Renderer: https://purplelink.llc/tools/equation-renderer/ — render LaTeX math to an image, runs in your browser.
+- Equation Renderer: https://purplelink.llc/tools/equation-renderer/ — render LaTeX math to an image; the equation is compiled on Purplelink's server and not stored.
 - LaTeX Table Generator: https://purplelink.llc/tools/latex-table-generator/ — build LaTeX tabular code from a visual grid, runs in your browser.
-- Word & Character Counter: https://purplelink.llc/tools/word-counter/ — count words, characters, sentences, and reading time, runs in your browser.
+- Word & Character Counter: https://purplelink.llc/tools/word-counter/ — count words, characters, sentences, and reading time, the text is processed on Purplelink's server and not stored.
 - Thesis Format Checker: https://purplelink.llc/tools/thesis-format-checker/ — checks a thesis or dissertation PDF for page size, margins against the minimums you enter, body font size, embedded fonts, page numbers and their sequence, line spacing and front-matter headings; the PDF is read in the browser and never uploaded.
 - Abstract Checker: https://purplelink.llc/tools/abstract-checker/ — an abstract's word count against the limit of 25 journals and conferences (NeurIPS, ICML, Nature, JAMA, NEJM, JACS and others), with the sections and reference style each expects; runs in your browser.
 - PDF Tools: https://purplelink.llc/tools/pdf-tools/ — merge, split, and compress PDF files, files never stored.

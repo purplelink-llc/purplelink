@@ -45,9 +45,9 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
-    <link rel="stylesheet" href="/styles.css?v=93996c334f">
+    <link rel="stylesheet" href="/styles.css?v=fa6feca4b1">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <script src="/site.js?v=89f3a39484" defer></script>
+    <script src="/site.js?v=6df44e6a80" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
   </head>
   <body>
@@ -104,8 +104,8 @@
         </div>
         <dl class="chooser">
           <div><dt>Reimbursing a card payment</dt><dd>Every Paper Review result page has a "Get invoice for reimbursement" button that emails a Stripe PDF invoice, with an optional line for your institution or tax ID. For packs and other purchases, email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> with the Stripe receipt.</dd></div>
-          <div><dt>Paying by purchase order or invoice</dt><dd>If your purchasing office needs to pay against an invoice before anything is delivered, email <a href="mailto:ben@purplelink.llc?subject=Purchase%20order">ben@purplelink.llc</a> with what you need and the quantity.</dd></div>
-          <div><dt>ModernTex for several people</dt><dd>$10 a person, once. To pay for a group in one transaction and receive a license key for each person, email <a href="mailto:ben@purplelink.llc?subject=ModernTex%20keys">ben@purplelink.llc</a>.</dd></div>
+          <div><dt>Paying by purchase order or invoice</dt><dd>If your purchasing office must pay first, email <a href="mailto:ben@purplelink.llc?subject=Purchase%20order">ben@purplelink.llc</a> with the quantity and billing address; a Stripe invoice follows within one business day, payable by card or US bank transfer.</dd></div>
+          <div><dt>ModernTex for several people</dt><dd>$10 a Mac, once. For a lab, email <a href="mailto:ben@purplelink.llc?subject=ModernTex%20keys">ben@purplelink.llc</a> with the number of Macs and your billing address. You get one invoice and keys the lab can reassign when a student leaves.</dd></div>
           <div><dt>Supplier forms</dt><dd>A W-9 and any supplier registration details are available on request.</dd></div>
         </dl>
       </section>
@@ -118,12 +118,20 @@
         </div>
         <dl class="chooser">
           <div><dt>Paper Review and the other paid checks</dt><dd>The manuscript is sent to Anthropic's Claude API for analysis. Under Anthropic's commercial terms, inputs are retained for up to 30 days for abuse monitoring and are not used for model training. Reference titles and DOIs are sent to CrossRef. Purplelink deletes the manuscript and the result 30 minutes after the result is first opened, or after 24 hours if it never is.</dd></div>
-          <div><dt>Clinical and patient data</dt><dd>Do not upload identifiable patient data. Redact it before upload.</dd></div>
+          <div><dt>Clinical and patient data</dt><dd>Purplelink is not a HIPAA business associate. Do not upload protected health information or identifiable participant data; de-identify first. Unpublished results are fine: the manuscript is deleted 30 minutes after you open the result, and Anthropic does not train on it.</dd></div>
           <div><dt>The free tools</dt><dd>Files are processed in memory to produce the result and are not stored.</dd></div>
           <div><dt>ModernTex and Vitae</dt><dd>Desktop apps. Files and records stay on your Mac unless you use an optional feature that sends them: ModernTex's AI features go to your own AI account, and Vitae contacts only the services you connect, such as your mailbox or Zotero.</dd></div>
           <div><dt>Payments</dt><dd>Handled by Stripe on its own checkout page; Purplelink never sees card details. No account is created.</dd></div>
           <div><dt>Journal AI policies</dt><dd>Publishers let authors use AI tools on their own manuscripts, with rules on disclosure. See <a href="/guides/ai-policy-checking-your-own-manuscript/">what ten publisher and venue policies say</a>.</dd></div>
         </dl>
+      </section>
+
+      <section class="catalog-section catalog-section-tint" aria-labelledby="labs-it">
+        <div class="catalog-section-head">
+          <p class="eyebrow">Vendor review</p>
+          <h2 id="labs-it">For your IT or research office</h2>
+        </div>
+        <p class="catalog-contact">A data processing addendum, the subprocessor list, and a completed HECVAT Lite or your department's own vendor questionnaire are available on request: <a href="mailto:ben@purplelink.llc?subject=Vendor%20questionnaire">ben@purplelink.llc</a>. The <a href="/security/">security and data handling page</a> sets out what each product does with a file, who processes it, how it is encrypted and when it is deleted.</p>
       </section>
 
       <section class="catalog-section" aria-labelledby="labs-company">
@@ -158,11 +166,6 @@
             <li><a href="/vitae/">Vitae</a></li>
             <li><a href="/tools/paper-review/">Paper Review</a></li>
             <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
-            <li><a href="/globepin/">GlobePin</a></li>
-            <li><a href="/haea/">Haea</a></li>
-            <li><a href="/binnacle/">Binnacle</a></li>
-            <li><a href="/kits/">Kits</a></li>
-            <li><a href="/sheets/">Spreadsheets</a></li>
             <li><a href="/products/">All products</a></li>
           </ul>
         </nav>
@@ -185,8 +188,6 @@
             <li><a href="/templates/">LaTeX templates</a></li>
             <li><a href="/format/">Reference formats</a></li>
             <li><a href="/blog/">Blog</a></li>
-            <li><a href="/blog/digest/">Daily Digest</a></li>
-            <li><a href="/desk/">Research desk</a></li>
             <li><a href="/changelog/">Changelog</a></li>
             <li><a href="/search/">Search</a></li>
           </ul>
@@ -197,7 +198,7 @@
             <li><a href="/about/">About</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/press/">Press</a></li>
-            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="/privacy/">Privacy</a></li>
             <li><a href="/terms/">Terms</a></li>

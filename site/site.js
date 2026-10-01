@@ -783,3 +783,78 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
   else build();
 })();
+
+// Link to this tool: on every page whose <main> holds a .tool-app, append a
+// small block after the app with a ready-made sentence and a Copy button, so
+// a reader can paste the tool into a lab wiki or a course page. Skipped on
+// noindex pages (the paid upload and success pages carry a .tool-app too).
+// Pages that load /tools/tools.js send the file to the backend, so their
+// sentence says "files are not stored" rather than "runs in your browser".
+(() => {
+  const build = () => {
+    const main = document.querySelector("main");
+    if (!main) return;
+    const app = main.querySelector(".tool-app");
+    if (!app || document.querySelector(".tool-link")) return;
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots && /noindex/i.test(robots.getAttribute("content") || "")) return;
+    const canonical = document.querySelector('link[rel="canonical"]');
+    const h1 = main.querySelector("h1") || document.querySelector("h1");
+    if (!canonical || !h1) return;
+    const url = canonical.href;
+    const name = (h1.textContent || "").replace(/\s+/g, " ").trim();
+    if (!url || !name) return;
+    const onServer = !!document.querySelector('script[src^="/tools/tools.js"]');
+    const text = name + (onServer ? ", free, no account, files are not stored: " : ", free and runs in your browser: ") + url;
+
+    const el = (tag, cls, attrs) => {
+      const n = document.createElement(tag);
+      if (cls) n.className = cls;
+      Object.keys(attrs || {}).forEach((k) => n.setAttribute(k, attrs[k]));
+      return n;
+    };
+    const box = el("aside", "tool-link", { "aria-labelledby": "tool-link-heading" });
+    const head = el("h2", "tool-link-head", { id: "tool-link-heading" });
+    head.textContent = "Link to this tool";
+    const row = el("div", "tool-link-row");
+    const input = el("input", "tool-link-input", { type: "text", readonly: "", "aria-label": "Text to paste when linking to this tool", spellcheck: "false" });
+    input.value = text;
+    const btn = el("button", "btn btn-ghost tool-link-copy", { type: "button" });
+    btn.textContent = "Copy";
+    const status = el("p", "tool-link-status", { role: "status", "aria-live": "polite" });
+    row.appendChild(input);
+    row.appendChild(btn);
+    box.appendChild(head);
+    box.appendChild(row);
+    box.appendChild(status);
+    app.insertAdjacentElement("afterend", box);
+
+    let timer = null;
+    const say = (msg) => {
+      status.textContent = msg;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => { status.textContent = ""; }, 4000);
+    };
+    const selectAll = () => {
+      input.focus();
+      input.select();
+      try { input.setSelectionRange(0, input.value.length); } catch (_) {}
+    };
+    const fallback = () => {
+      selectAll();
+      let ok = false;
+      try { ok = document.execCommand && document.execCommand("copy"); } catch (_) { ok = false; }
+      say(ok ? "Copied." : "Selected. Press Command-C or Ctrl-C to copy.");
+    };
+    input.addEventListener("focus", () => { input.select(); });
+    btn.addEventListener("click", () => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => { say("Copied."); }, fallback);
+      } else {
+        fallback();
+      }
+    });
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
+  else build();
+})();
