@@ -1,0 +1,1 @@
+JSZip 3.10.2 (npm: jszip, dist/jszip.min.js), dual licensed MIT or GPL-3.0-or-later and used here under the MIT license, https://github.com/Stuk/jszip. Bundles pako (MIT). Self-hosted for the Replication Package Checker.

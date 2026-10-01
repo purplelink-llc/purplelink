@@ -2011,6 +2011,10 @@ Live word, character, sentence, and reading-time stats in your browser.
 
 Margins, font size, embedded fonts, page numbers and line spacing of a thesis PDF, measured in your browser.
 
+### Replication Package Checker
+
+README sections, random seeds, absolute paths and missing data files in a replication package zip, checked in your browser.
+
 ### Abstract Checker
 
 Your abstract's word count against the limit of 25 journals and conferences.

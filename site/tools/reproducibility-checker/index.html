@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Replication Package Checker: README, Seeds, Paths, Data | Purplelink</title>
+    <meta name="description" content="Check a replication package zip for a README, license, pinned dependencies, a main script, absolute paths, random seeds and missing data files. Free, and the zip never leaves your browser.">
+    <link rel="canonical" href="https://purplelink.llc/tools/reproducibility-checker/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Replication Package Checker: README, seeds, paths, data">
+    <meta property="og:description" content="Check a replication package for README sections, seeds, absolute paths and missing data files. Free, in your browser.">
+    <meta property="og:url" content="https://purplelink.llc/tools/reproducibility-checker/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/reproducibility-checker.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Replication Package Checker: README, seeds, paths, data">
+    <meta name="twitter:description" content="Check a replication package for README sections, seeds, absolute paths and missing data files. Free, in your browser.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/reproducibility-checker.png">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Replication Package Checker",
+      "alternateName": "Reproducibility Check",
+      "url": "https://purplelink.llc/tools/reproducibility-checker/",
+      "description": "Check a replication package zip for a README, license, pinned dependencies, a main script, absolute paths, random seeds and missing data files. Free, and the zip never leaves your browser.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my replication package uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The zip is opened in your browser with a copy of JSZip hosted on this site, and nothing is sent anywhere. You can disconnect from the network after the page loads and it still works."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it run my code?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It reads file names and the text of code files and matches patterns. It cannot tell whether the code runs or whether the output matches the paper. Someone still has to run the package from start to finish on a clean machine."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which standards does it follow?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Social Science Data Editors' template README, the Data and Code Availability Standard, and the AEA Data Editor's guidance on preparing a deposit. Each check on this page links to the source it comes from. The hygiene check is this tool's own and is marked as such."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does it say Review instead of Fail?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A pattern match can be right and the package still be fine. A data file may be absent because the README tells the replicator to download it, and a path may sit in the one configuration file a replicator is expected to edit. Review means a person should look at those lines."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will the data editor accept my package if every check passes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not necessarily. Journals set their own policies, and a data editor runs the code, which this tool does not. Read the policy of the journal you are submitting to."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it read?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A zip up to 500 MB. It reads R, R Markdown, Quarto, Python, Jupyter, Stata, Julia, MATLAB, SAS and shell files, Makefiles, and Markdown, text, YAML, TOML and lock files. Files over 5 MB are listed but not read, and only the header row of a CSV is kept."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Replication Package Checker",
+          "item": "https://purplelink.llc/tools/reproducibility-checker/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=fa6feca4b1">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=6df44e6a80" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/assets/vendor/jszip/jszip.min.js?v=7f839b2d46" defer></script>
+    <link rel="stylesheet" href="/tools/reproducibility-checker/reproducibility-checker.css?v=2a0ac971d4">
+    <script src="/tools/reproducibility-checker/reproducibility-checker.js?v=3396bba706" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Replication Package Checker</h1>
+        <p>Drop in the .zip of your replication package: code, data and README. You get a reproducibility check with ten results, each with file paths and line numbers: README sections, license, dependencies, entry point, absolute paths, random seeds, data files, outputs and stray files. <strong>The zip never leaves your browser, and none of your code is run.</strong></p>
+      </div>
+
+      <div class="tool-app rp-app">
+        <div class="rp-drop" id="rp-drop">
+          <label for="rp-file" class="rp-drop-label"><strong>Choose a .zip</strong> or drop it here</label>
+          <input id="rp-file" type="file" accept=".zip,application/zip,application/x-zip-compressed">
+          <p class="rp-hint">Up to 500 MB. Files over 5 MB are listed but not read.</p>
+        </div>
+        <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
+        <div class="rp-results" id="rp-results" tabindex="-1" hidden></div>
+        <button type="button" class="rp-download" id="rp-download" hidden>Download this report as text</button>
+      </div>
+
+      <section class="rp-sources" aria-labelledby="rp-src-h">
+        <h2 id="rp-src-h">What it checks</h2>
+        <p class="rp-note">Each check is a pattern match on file names and text. The source beside it is where the expectation comes from.</p>
+        <ol>
+          <li><strong>README.</strong> Looks for a README at the top level of the package, then matches the headings of a text README against the seven sections of the template: Data Availability and Provenance Statements, Dataset list, Computational requirements, Description of programs/code, Instructions to replicators, List of tables and programs, and References. It also looks for a runtime and a hardware statement. The standard asks for a README with a Data Availability Statement, the software and hardware requirements including the expected run time, and instructions for reproducing the results, following the template. The AEA guidance asks for the README in the package, ideally in the root directory. <span class="rp-src">Source: <a href="https://social-science-data-editors.github.io/template_README/" rel="noopener">Social Science Data Editors' template README</a>; <a href="https://datacodestandard.org/" rel="noopener">Data and Code Availability Standard, rule 13</a>; <a href="https://aeadataeditor.github.io/aea-de-guidance/preparing-for-data-deposit.html" rel="noopener">AEA Data Editor, Preparing your files for verification</a></span></li>
+          <li><strong>License.</strong> Looks for a LICENSE file or a license statement in the README. The standard asks for a license that sets the terms of use of code and data. The template says the license should be in a LICENSE.txt file, separate from the README. <span class="rp-src">Source: <a href="https://datacodestandard.org/" rel="noopener">Data and Code Availability Standard, rule 15</a>; <a href="https://social-science-data-editors.github.io/template_README/" rel="noopener">Social Science Data Editors' template README</a></span></li>
+          <li><strong>Environment.</strong> For each language found, looks for a dependency file (requirements.txt, environment.yml, pyproject.toml, Pipfile.lock, renv.lock, DESCRIPTION, Project.toml and Manifest.toml), checks whether versions are exact, and looks for the software version in the README. Stata has no manifest, so it reports where ado packages are installed. The template says to list all software requirements and, in all cases, the version you used. The AEA guidance says not to assume the replicator has your packages installed and to provide a setup program. <span class="rp-src">Source: <a href="https://social-science-data-editors.github.io/template_README/" rel="noopener">Social Science Data Editors' template README</a>; <a href="https://aeadataeditor.github.io/aea-de-guidance/preparing-for-data-deposit.html" rel="noopener">AEA Data Editor, Preparing your files for verification</a></span></li>
+          <li><strong>Entry point.</strong> Looks for a main, master or run script or a Makefile, or for numbered scripts. The template says that when replication takes more than four or five manual steps, a main program or Makefile should wrap them. <span class="rp-src">Source: <a href="https://social-science-data-editors.github.io/template_README/" rel="noopener">Social Science Data Editors' template README</a></span></li>
+          <li><strong>Paths.</strong> Lists every line of code with an absolute path: a Windows drive letter, /Users/, /home/, ~/, setwd() or cd with an absolute path. The AEA guidance says code and data should run as downloaded, without further manual changes, and that the only exception is a single change to set a small number of program and data directory paths. <span class="rp-src">Source: <a href="https://aeadataeditor.github.io/aea-de-guidance/preparing-for-data-deposit.html" rel="noopener">AEA Data Editor, Preparing your files for verification</a></span></li>
+          <li><strong>Randomness.</strong> Finds code that draws random numbers and checks for a seed in the same file or in the entry script. The template says code that uses a pseudorandom number generator should be given a deterministic seed, set once and not from a time stamp, and asks the README to name the line and program where it is set. <span class="rp-src">Source: <a href="https://social-science-data-editors.github.io/template_README/" rel="noopener">Social Science Data Editors' template README</a></span></li>
+          <li><strong>Data.</strong> Compares the data files named in code with the data files in the package, in both directions, and reports size by folder and any file over 100 MB. The standard asks for analysis data to be in the package unless it can be fully reproduced from accessible data in reasonable time. The template asks for a list of datasets and whether each is provided. The AEA guidance advises keeping data and code in separate folders. The 100 MB line is this tool&#x27;s own cut-off, not a rule from these sources. <span class="rp-src">Source: <a href="https://datacodestandard.org/" rel="noopener">Data and Code Availability Standard, rule 3</a>; <a href="https://social-science-data-editors.github.io/template_README/" rel="noopener">Social Science Data Editors' template README</a>; <a href="https://aeadataeditor.github.io/aea-de-guidance/preparing-for-data-deposit.html" rel="noopener">AEA Data Editor, Preparing your files for verification</a></span></li>
+          <li><strong>Outputs.</strong> Looks for code that writes tables or figures, for an output folder, and for README lines that tie a table or figure number to a program. The template asks for a list of tables and figures that identifies the program, and possibly the line number, where each is created. <span class="rp-src">Source: <a href="https://social-science-data-editors.github.io/template_README/" rel="noopener">Social Science Data Editors' template README</a></span></li>
+          <li><strong>Hygiene.</strong> Lists system and editor debris (.DS_Store, Thumbs.db, .Rhistory, __pycache__, .ipynb_checkpoints), lines that look like a stored API key, token or password (the value is hidden in the report), and notebooks with more than 1 MB of stored outputs. This check is not taken from the three sources. It is here because a deposit is public and these files are not needed to reproduce anything. </li>
+          <li><strong>Summary.</strong> Lists the languages found with file counts and says what a person still has to do. The AEA guidance says the package should reproduce the tables, figures and in-text numbers by running code without manual intervention. Only running it shows that. <span class="rp-src">Source: <a href="https://aeadataeditor.github.io/aea-de-guidance/preparing-for-data-deposit.html" rel="noopener">AEA Data Editor, Preparing your files for verification</a></span></li>
+        </ol>
+      </section>
+
+      <section class="rp-request" aria-labelledby="rp-req-h">
+        <h2 id="rp-req-h">Want it checked against your journal's policy?</h2>
+        <p>The checks above are the same for every journal. A paid AI read of the package against a named journal's data and code policy is being considered. Tell me which journal or data editor you are submitting to, and I will build it if enough people ask for the same one.</p>
+        <form class="rp-reqform" name="repro-checker-request" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="repro-checker-request">
+          <p hidden><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <div class="rp-field"><label for="rp-journal">Journal or data editor you are submitting to</label><input id="rp-journal" name="journal" type="text" required placeholder="e.g. American Economic Review"></div>
+          <div class="rp-field"><label for="rp-mail">Email <span class="rp-opt">(optional, only to tell you when it exists)</span></label><input id="rp-mail" name="email" type="email" autocomplete="email"></div>
+          <button type="submit" class="rp-reqbtn">Send</button>
+        </form>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Is my replication package uploaded?</summary><div class="faq-body">No. The zip is opened in your browser with a copy of JSZip hosted on this site, and nothing is sent anywhere. You can disconnect from the network after the page loads and it still works.</div></details>
+        <details><summary>Does it run my code?</summary><div class="faq-body">No. It reads file names and the text of code files and matches patterns. It cannot tell whether the code runs or whether the output matches the paper. Someone still has to run the package from start to finish on a clean machine.</div></details>
+        <details><summary>Which standards does it follow?</summary><div class="faq-body">The Social Science Data Editors&#x27; template README, the Data and Code Availability Standard, and the AEA Data Editor&#x27;s guidance on preparing a deposit. Each check on this page links to the source it comes from. The hygiene check is this tool&#x27;s own and is marked as such.</div></details>
+        <details><summary>Why does it say Review instead of Fail?</summary><div class="faq-body">A pattern match can be right and the package still be fine. A data file may be absent because the README tells the replicator to download it, and a path may sit in the one configuration file a replicator is expected to edit. Review means a person should look at those lines.</div></details>
+        <details><summary>Will the data editor accept my package if every check passes?</summary><div class="faq-body">Not necessarily. Journals set their own policies, and a data editor runs the code, which this tool does not. Read the policy of the journal you are submitting to.</div></details>
+        <details><summary>What does it read?</summary><div class="faq-body">A zip up to 500 MB. It reads R, R Markdown, Quarto, Python, Jupyter, Stata, Julia, MATLAB, SAS and shell files, Makefiles, and Markdown, text, YAML, TOML and lock files. Files over 5 MB are listed but not read, and only the header row of a CSV is kept.</div></details>
+      </section>
+    </main>
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js?v=fd29b28099" defer></script>
+  </body>
+</html>

@@ -799,6 +799,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/reproducibility-checker/</loc>
+    <lastmod>2026-10-01</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/tools/response-letter-template/</loc>
     <lastmod>2026-09-30</lastmod>
     <priority>0.7</priority>
