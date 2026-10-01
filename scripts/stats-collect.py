@@ -1303,6 +1303,16 @@ def run(headless=True, auto_login=True, login_budget_s=300, include_dreamstime=F
         with ThreadPoolExecutor(max_workers=len(needs_login)) as ex:
             list(ex.map(fix, needs_login))
 
+    # Per-sale ledgers (Adobe, Shutterstock, Getty) while the signed-in Chrome is
+    # still up. A failure here must never cost the day's snapshot.
+    try:
+        import subprocess as _sp
+        r = _sp.run([sys.executable, str(Path(__file__).resolve().parent / "sales-ledgers.py")],
+                    capture_output=True, text=True, timeout=120)
+        for line in (r.stdout + r.stderr).strip().splitlines():
+            print(f"  ledger {line}", flush=True)
+    except Exception as e:
+        print(f"  WARN sales ledgers: {type(e).__name__}: {e}", flush=True)
     if proc:
         quit_chrome(proc)
     hist = load_history()
