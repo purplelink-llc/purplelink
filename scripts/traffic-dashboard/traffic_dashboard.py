@@ -541,8 +541,8 @@ def _asc_sales_day(token: str, cfg: dict[str, str], day: str) -> dict | None:
         "filter[reportDate]": day,
     })
     status, body = _asc_get(token, f"/v1/salesReports?{q}", accept="application/a-gzip")
-    out = {"downloads": 0, "redownloads": 0, "updates": 0, "proUnits": 0, "proPromo": 0,
-           "proRefunds": 0, "proceeds": {}, "countries": {}, "empty": False}
+    out = {"downloads": 0, "desktopDownloads": 0, "redownloads": 0, "updates": 0, "proUnits": 0,
+           "proPromo": 0, "proRefunds": 0, "proceeds": {}, "countries": {}, "empty": False}
     if status == 404:
         out["empty"] = True
         return out
@@ -558,13 +558,23 @@ def _asc_sales_day(token: str, cfg: dict[str, str], day: str) -> dict | None:
         ptype = row.get("Product Type Identifier", "")
         units = int(float(row.get("Units") or 0))
         country = (row.get("Country Code") or "").strip()
+        # Apple's product type identifiers: 1x = first-time download, 3x =
+        # redownload, 7x = update. Until 2026-10-01 the last two were swapped
+        # here, which showed 19 "redownloads" where Apple showed 6.
         if ptype.startswith("1"):
+            # Device "Desktop" is the iPhone app fetched on a Mac. App Store
+            # Connect's Analytics tab (platform iOS) leaves those out of
+            # First-Time Downloads, so count them on their own line and keep the
+            # headline equal to Apple's (26 here against Apple's 18 was 8 of them).
+            if (row.get("Device") or "").strip().lower() == "desktop":
+                out["desktopDownloads"] += units
+                continue
             out["downloads"] += units
             if country:
                 out["countries"][country] = out["countries"].get(country, 0) + units
-        elif ptype.startswith("7"):
-            out["redownloads"] += units
         elif ptype.startswith("3"):
+            out["redownloads"] += units
+        elif ptype.startswith("7"):
             out["updates"] += units
         elif ptype.startswith("IA") or ptype.startswith("FI"):
             # A promo-code redemption is a Pro unit with a code and no money;
@@ -675,13 +685,16 @@ def fetch_appstore(cfg: dict[str, str], prior: dict | None) -> dict | None:
     days: dict[str, dict] = dict(prior.get("days", {}))
     today = dt.date.today()
     launch = dt.date.fromisoformat(cfg.get("ASC_APP_LAUNCH", "2026-09-03"))
-    start = max(launch, today - dt.timedelta(days=FETCH_DAYS))
+    # Days parsed before the 2026-10-01 fix lack desktopDownloads and are read
+    # again once, so start from launch while any such day is on file.
+    stale = any("desktopDownloads" not in v for v in days.values())
+    start = launch if stale else max(launch, today - dt.timedelta(days=FETCH_DAYS))
     relook = today - dt.timedelta(days=ASC_RELOOK_DAYS)
     fetched = 0
     d = start
     while d < today:                       # today's report does not exist until tomorrow
         key = d.isoformat()
-        if key not in days or d >= relook:
+        if key not in days or d >= relook or "desktopDownloads" not in days[key]:
             try:
                 rec = _asc_sales_day(token, cfg, key)
             except RuntimeError as exc:
@@ -2405,6 +2418,8 @@ def appstore_summary(app: dict | None) -> dict | None:
         day = (today - dt.timedelta(days=i)).isoformat()
         spark.append({"day": day, "pv": days.get(day, {}).get("downloads", 0)})
     all_time = {"downloads": sum(v.get("downloads", 0) for v in days.values()),
+                "redownloads": sum(v.get("redownloads", 0) for v in days.values()),
+                "desktopDownloads": sum(v.get("desktopDownloads", 0) for v in days.values()),
                 "proUnits": sum(v.get("proUnits", 0) for v in days.values()),
                 "proPromo": sum(v.get("proPromo", 0) for v in days.values())}
     # analytics funnel, if Apple has delivered anything yet
@@ -2461,7 +2476,7 @@ def appstore_block(app: dict | None) -> str:
     <div>
       <span class="sales-figure-label">Downloads, last 7 days</span>
       <span class="sales-big">{w7['downloads']:,}</span>
-      <span class="sales-sub"> · {w30['downloads']:,} in 30d · {at['downloads']:,} since launch</span>
+      <span class="sales-sub"> · {w30['downloads']:,} in 30d · {at['downloads']:,} first-time since launch{f" · {at['redownloads']:,} redownloads" if at.get('redownloads') else ''}{f" · {at['desktopDownloads']:,} on Mac (left out, as Apple's Analytics does)" if at.get('desktopDownloads') else ''}</span>
     </div>
     <div>
       <span class="sales-figure-label">Pro proceeds, since launch</span>
