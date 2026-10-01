@@ -2015,6 +2015,10 @@ Margins, font size, embedded fonts, page numbers and line spacing of a thesis PD
 
 README sections, random seeds, absolute paths and missing data files in a replication package zip, checked in your browser.
 
+### Camera-Ready PDF Checker
+
+Embedded and Type 3 fonts, page size, margins, page numbers and metadata of an accepted paper's final PDF, checked in your browser.
+
 ### Abstract Checker
 
 Your abstract's word count against the limit of 25 journals and conferences.

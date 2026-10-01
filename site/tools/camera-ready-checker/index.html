@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Camera-Ready PDF Checker: Fonts, Page Size, Margins, Metadata | Purplelink</title>
+    <meta name="description" content="Check the final PDF of an accepted paper for embedded and Type 3 fonts, page size, page count, margins, page numbers, metadata and blind-review leftovers. Free, and the file never leaves your browser.">
+    <link rel="canonical" href="https://purplelink.llc/tools/camera-ready-checker/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Camera-Ready PDF Checker: fonts, page size, margins, metadata">
+    <meta property="og:description" content="Check a camera-ready PDF for embedded and Type 3 fonts, page size, margins, page numbers and metadata. Free, in your browser.">
+    <meta property="og:url" content="https://purplelink.llc/tools/camera-ready-checker/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/camera-ready-checker.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Camera-Ready PDF Checker: fonts, page size, margins, metadata">
+    <meta name="twitter:description" content="Check a camera-ready PDF for embedded and Type 3 fonts, page size, margins, page numbers and metadata. Free, in your browser.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/camera-ready-checker.png">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Camera-Ready PDF Checker",
+      "url": "https://purplelink.llc/tools/camera-ready-checker/",
+      "description": "Check the final PDF of an accepted paper for embedded and Type 3 fonts, page size, page count, margins, page numbers, metadata and blind-review leftovers. Free, and the file never leaves your browser.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my paper uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The PDF is read in your browser with a copy of pdf.js hosted on this site, and nothing is sent anywhere. You can disconnect from the network after the page loads and it still works."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this replace IEEE PDF eXpress or ACM TAPS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Those are the checks the publisher accepts, and they see things a browser cannot, such as how the PDF was created. This page finds the common problems first, with page numbers, so the publisher's validator has less to send back."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where do the venue presets come from?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "From the publishers' own author pages, read on 1 October 2026 and linked on this page. A preset holds only what those pages state. Where a page gives no number, such as IEEE margins, the field is blank for you to fill in from your template. Page limits are never preset, because they differ between conferences."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a Type 3 font and why is it flagged?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A Type 3 font draws each letter with PDF drawing commands, and in papers it is usually a bitmap font from an old TeX setup or text inside a figure from a plotting library. It can look rough on screen and in print. The NeurIPS instructions say files with Type 3 fonts are sent back. The report lists the pages each one appears on so you can find the figure."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does it say Review instead of Fail?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A measurement can be right and the paper still be fine. A wide table may be allowed into the margin, and some templates print conference headers on purpose. Review means a person should look at those pages."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it not check?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Image resolution and color space, figures or rules that run into the margin (only text is measured), reference formatting, copyright forms, and anything about how the PDF was created. It reads the text layer, so a scanned PDF has nothing to measure."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Camera-Ready PDF Checker",
+          "item": "https://purplelink.llc/tools/camera-ready-checker/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=fa6feca4b1">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=6df44e6a80" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <link rel="stylesheet" href="/tools/camera-ready-checker/camera-ready-checker.css?v=a5259fc6bb">
+    <script src="/tools/camera-ready-checker/camera-ready-checker.js?v=609347ce44" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Camera-Ready PDF Checker</h1>
+        <p>Drop in the final PDF of your accepted paper and pick the venue. You get ten results with page numbers: fonts that are not embedded or are Type 3, page size, page count, margins, page numbers and running heads, metadata, blind-review leftovers, links and file size. <strong>The PDF never leaves your browser.</strong> It does not replace IEEE PDF eXpress, ACM TAPS or your venue's own check; it finds the usual problems before they do.</p>
+      </div>
+
+      <div class="tool-app cr-app">
+        <fieldset class="cr-settings">
+          <legend>Venue and limits</legend>
+          <div class="cr-row">
+            <div class="cr-field"><label for="cr-venue">Venue preset</label>
+              <select id="cr-venue"><option value="ieee">IEEE conference (two-column)</option><option value="acm">ACM (acmart sigconf)</option><option value="lncs">Springer LNCS</option><option value="neurips">NeurIPS</option><option value="custom">Custom</option></select></div>
+            <div class="cr-field"><label for="cr-paper">Page size</label>
+              <select id="cr-paper"><option value="letter">US Letter</option><option value="a4">A4</option><option value="either">US Letter or A4</option></select></div>
+          </div>
+          <p class="cr-note" id="cr-venue-note"></p>
+          <div class="cr-row">
+            <div class="cr-field"><label for="cr-limit">Page limit <span class="cr-opt">(from your call for papers)</span></label><input id="cr-limit" type="number" step="1" min="1" inputmode="numeric" placeholder="e.g. 8"></div>
+            <div class="cr-field"><label for="cr-size">File-size limit in MB <span class="cr-opt">(optional)</span></label><input id="cr-size" type="number" step="1" min="0" inputmode="decimal" placeholder="e.g. 10"></div>
+          </div>
+          <div class="cr-row cr-margins">
+            <div class="cr-field"><label for="cr-ml">Left margin (in)</label><input id="cr-ml" type="number" step="0.01" min="0" inputmode="decimal"></div>
+            <div class="cr-field"><label for="cr-mr">Right margin (in)</label><input id="cr-mr" type="number" step="0.01" min="0" inputmode="decimal"></div>
+            <div class="cr-field"><label for="cr-mt">Top margin (in)</label><input id="cr-mt" type="number" step="0.01" min="0" inputmode="decimal"></div>
+            <div class="cr-field"><label for="cr-mb">Bottom margin (in)</label><input id="cr-mb" type="number" step="0.01" min="0" inputmode="decimal"></div>
+          </div>
+          <div class="cr-row">
+            <div class="cr-field"><label for="cr-numbers">Page numbers</label>
+              <select id="cr-numbers"><option value="none">Venue wants none</option><option value="report">Report only</option></select></div>
+            <div class="cr-field"><label for="cr-heads">Running heads</label>
+              <select id="cr-heads"><option value="none">Venue wants none</option><option value="report">Report only</option></select></div>
+            <div class="cr-field"><label for="cr-links">Links and bookmarks</label>
+              <select id="cr-links"><option value="none">Venue wants none</option><option value="report">Report only</option></select></div>
+          </div>
+        </fieldset>
+
+        <div class="cr-drop" id="cr-drop">
+          <label for="cr-file" class="cr-drop-label"><strong>Choose a PDF</strong> or drop it here</label>
+          <input id="cr-file" type="file" accept="application/pdf,.pdf">
+          <p class="cr-hint">Up to 200 MB. A ten-page paper takes a few seconds.</p>
+        </div>
+        <p class="cr-status" id="cr-status" role="status" aria-live="polite"></p>
+        <div class="cr-results" id="cr-results" tabindex="-1" hidden></div>
+        <button type="button" class="cr-download" id="cr-download" hidden>Download this report as text</button>
+      </div>
+
+      <section class="cr-sources" aria-labelledby="cr-checks-h">
+        <h2 id="cr-checks-h">What it checks</h2>
+        <ol>
+          <li><strong>Fonts.</strong> Lists every font that is not embedded and every Type 3 font, with the pages each appears on. Fonts are read on every page of a paper up to 40 pages; longer files are sampled and the report says so.</li>
+          <li><strong>Page size.</strong> Every page against US Letter or A4, and whether all pages are the same size.</li>
+          <li><strong>Page count.</strong> The number of pages against the limit you type, and the page the References heading is on.</li>
+          <li><strong>Margins.</strong> The closest text to each edge, with the page it is on, against the minimums in the fields above. Only text is measured, not figures or rules.</li>
+          <li><strong>Page numbers, headers and footers.</strong> Numbers that step with the pages, and any text repeated at the same height near the top or bottom of several pages.</li>
+          <li><strong>Metadata.</strong> The PDF Title and Author fields, whether the title is empty or a file name, the PDF version, producer, security settings and attachments.</li>
+          <li><strong>Anonymity leftovers.</strong> "Anonymous" in the document information fields, and on the first page and in headers and footers: anonymous-author text, "under review", "do not distribute", a "submitted to" line or a submission number.</li>
+          <li><strong>Links, bookmarks and images.</strong> Counts link annotations and bookmarks and the pages with raster images. Image resolution and color space are not checked.</li>
+          <li><strong>File size.</strong> Against the limit you type.</li>
+          <li><strong>Still to do.</strong> What the publisher's validator or a person must still do for the venue you picked.</li>
+        </ol>
+        <p>The companion guide is the <a href="/guides/camera-ready-checklist/">camera-ready manuscript checklist</a>, which covers the parts no PDF check can see: the current-year template, author names and ORCID, the bibliography format, figures, and the copyright form.</p>
+      </section>
+
+      <section class="cr-sources" aria-labelledby="cr-src-h">
+        <h2 id="cr-src-h">Where the presets come from</h2>
+        <p class="cr-note">Each preset holds only what the publisher's own pages state. All were read on 1 October 2026. A field left blank means the page gives no number, and you fill it in from your template. Page limits and file-size limits are never preset.</p>
+        <ul>
+          <li><strong>IEEE conference.</strong> IEEE provides a US Letter and an A4 Word template and a LaTeX template with a conference mode, and says to remove all template guidance text. The preset starts at US Letter; switch it if your conference uses A4. IEEE PDF eXpress checks that the PDF is version 1.4 or later, that all fonts are embedded or subset, that there is no password or security setting, no bookmarks or links, no attachments, and no crop marks or date stamps. Not all conferences use PDF eXpress. Blank: all four margins, and the rule on page numbers, because the template page states neither. What PDF eXpress does with Type 3 fonts is not stated on these pages. <span class="cr-src">Source: <a href="https://www.ieee.org/conferences/publishing/templates" rel="noopener">IEEE, Manuscript Templates for Conference Proceedings</a>; <a href="https://conferences.ieeeauthorcenter.ieee.org/write-your-paper/meet-ieee-xplore-requirements/" rel="noopener">IEEE Author Center, Meet IEEE Xplore Requirements</a>; <a href="https://conferences.ieeeauthorcenter.ieee.org/get-published/finalize-your-paper/" rel="noopener">IEEE Author Center, Finalize Your Paper</a>. Checked 1 October 2026.</span></li>
+          <li><strong>ACM (acmart sigconf).</strong> Conference proceedings use the sigconf or sigplan format of acmart; fonts cannot be substituted and margin adjustments are not allowed. The class sets sigconf pages to 8.5 by 11 in with 54 pt (0.75 in) at each side, 57 pt (0.79 in) at the top and 73 pt (1.01 in) at the bottom, header and footer included. Proceedings formats print conference headers and no page numbers unless the author turns them on. The class fills in the PDF title and author fields. For TAPS conferences the author uploads a zip of the source, which TAPS turns into the PDF; the uploader takes a zip under 10 MB. Blank: a PDF file-size limit, because the 10 MB figure is for the source zip. What TAPS does with Type 3 fonts is not stated on these pages. <span class="cr-src">Source: <a href="https://www.acm.org/publications/proceedings-template" rel="noopener">ACM Primary Article Template</a>; <a href="https://portalparts.acm.org/hippo/latex_templates/acmart.pdf" rel="noopener">acmart user and implementation guide, version 2.20</a>; <a href="https://authors.acm.org/proceedings/production-information/taps-production-workflow" rel="noopener">ACM, TAPS Workflow</a>; <a href="https://www.acm.org/publications/taps/taps-best-practices" rel="noopener">ACM, TAPS Best Practices</a>. Checked 1 October 2026.</span></li>
+          <li><strong>Springer LNCS.</strong> The instructions say there is no need to include page numbers or running heads, because Springer adds them, and that Springer needs the source files as well as the PDF. They describe full papers as 12 to 15 pages or more and short papers as 6 to 11, but your conference sets the limit. Blank: page size and all four margins, because the instructions state neither; both come from the llncs class or the Word template. The preset accepts US Letter or A4 as long as every page matches. The instructions do not mention font embedding or Type 3 fonts. <span class="cr-src">Source: <a href="https://link.springer.com/series/558/information-for-authors-and-editors" rel="noopener">Springer, LNCS information for authors and editors</a> and the Instructions for Authors PDF linked there. Checked 1 October 2026.</span></li>
+          <li><strong>NeurIPS.</strong> The 2026 formatting instructions ask for US Letter and not A4, text inside a rectangle 5.5 in wide and 9 in long with a left margin of 1.5 in, and only Type 1 or embedded TrueType fonts; they say a file with Type 3 fonts or TrueType fonts that are not embedded will be sent back. Papers may be up to nine content pages; acknowledgments, references, the checklist and optional appendices do not count. The right margin of 1.5 in is what is left of an 8.5 in page. Blank: top and bottom margins, and the rule on page numbers, because the instructions do not state them. <span class="cr-src">Source: <a href="https://neurips.cc/Conferences/2026/CallForPapers" rel="noopener">NeurIPS 2026 Call for Papers</a> and the <a href="https://media.neurips.cc/Conferences/NeurIPS2026/Formatting_Instructions_For_NeurIPS_2026.zip" rel="noopener">NeurIPS 2026 formatting instructions</a> (neurips_2026.tex). Checked 1 October 2026.</span></li>
+          <li><strong>Custom.</strong> Everything is blank. Type the numbers from your venue's author instructions.</li>
+        </ul>
+      </section>
+
+      <section class="cr-request" aria-labelledby="cr-req-h">
+        <h2 id="cr-req-h">Want your venue as a preset?</h2>
+        <p>Presets are added from the publisher's own author instructions, one venue at a time. Tell me which conference or journal you are preparing a camera-ready for, and I will add it when enough people ask for the same one.</p>
+        <form class="cr-reqform" name="camera-ready-request" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="camera-ready-request">
+          <p hidden><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <div class="cr-field"><label for="cr-venue-req">Venue you are preparing for</label><input id="cr-venue-req" name="venue" type="text" required placeholder="e.g. ICSE 2027, AAAI, an Elsevier journal"></div>
+          <div class="cr-field"><label for="cr-mail">Email <span class="cr-opt">(optional, only to tell you when it exists)</span></label><input id="cr-mail" name="email" type="email" autocomplete="email"></div>
+          <button type="submit" class="cr-reqbtn">Send</button>
+        </form>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Is my paper uploaded?</summary><div class="faq-body">No. The PDF is read in your browser with a copy of pdf.js hosted on this site, and nothing is sent anywhere. You can disconnect from the network after the page loads and it still works.</div></details>
+        <details><summary>Does this replace IEEE PDF eXpress or ACM TAPS?</summary><div class="faq-body">No. Those are the checks the publisher accepts, and they see things a browser cannot, such as how the PDF was created. This page finds the common problems first, with page numbers, so the publisher's validator has less to send back.</div></details>
+        <details><summary>Where do the venue presets come from?</summary><div class="faq-body">From the publishers' own author pages, read on 1 October 2026 and linked on this page. A preset holds only what those pages state. Where a page gives no number, such as IEEE margins, the field is blank for you to fill in from your template. Page limits are never preset, because they differ between conferences.</div></details>
+        <details><summary>What is a Type 3 font and why is it flagged?</summary><div class="faq-body">A Type 3 font draws each letter with PDF drawing commands, and in papers it is usually a bitmap font from an old TeX setup or text inside a figure from a plotting library. It can look rough on screen and in print. The NeurIPS instructions say files with Type 3 fonts are sent back. The report lists the pages each one appears on so you can find the figure.</div></details>
+        <details><summary>Why does it say Review instead of Fail?</summary><div class="faq-body">A measurement can be right and the paper still be fine. A wide table may be allowed into the margin, and some templates print conference headers on purpose. Review means a person should look at those pages.</div></details>
+        <details><summary>What does it not check?</summary><div class="faq-body">Image resolution and color space, figures or rules that run into the margin (only text is measured), reference formatting, copyright forms, and anything about how the PDF was created. It reads the text layer, so a scanned PDF has nothing to measure.</div></details>
+      </section>
+    </main>
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js?v=fd29b28099" defer></script>
+  </body>
+</html>
