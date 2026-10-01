@@ -121,6 +121,18 @@ def main():
         link = wait_for(tab, """(()=>{const a=[...document.querySelectorAll('a')]
             .find(x=>/youtu\\.be\\//.test(x.href)); return a? a.href : null})()""", 120)
         print(link)
+        # The link shows in the dialog before publishing, so it proves nothing.
+        # On 2026-10-01 three uploads printed a link and stayed drafts because
+        # the visibility radio never took. oEmbed answers 200 only once public.
+        if a.public:
+            time.sleep(8)
+            try:
+                urllib.request.urlopen(
+                    "https://www.youtube.com/oembed?format=json&url=" + link, timeout=20).read()
+            except Exception:
+                print("NOT PUBLIC: the video is still a draft or private; finish it in Studio "
+                      "(Edit draft, Visibility, Public, Publish)", file=sys.stderr)
+                sys.exit(3)
     except Exception:
         print(f"left the Studio tab open for manual recovery: {tab.url()}", file=sys.stderr)
         raise
