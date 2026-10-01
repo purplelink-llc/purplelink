@@ -116,7 +116,10 @@
             if (fontInfo.has(it.font)) {
               const o = fontInfo.get(it.font);
               f.name = String(o.name || o.loadedName || it.font).replace(/^[A-Z]{6}\+/, "");
-              f.embedded = o.missingFile ? false : true;
+              // pdf.js 6 reports missingFile as true for every font, so it cannot be
+              // used. An embedded font program carries a mimetype; a base font left
+              // out of the file does not. Type 3 fonts are always in the file.
+              f.embedded = o.isType3Font ? true : !!o.mimetype && o.mimetype !== "null";
             }
           } catch (e) { /* font not resolved on this page */ }
         }
