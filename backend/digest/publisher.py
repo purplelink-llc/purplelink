@@ -62,7 +62,7 @@ _MONTHS = [
 # a stale copy. scripts/fingerprint_assets.py does the same for the hand-written
 # pages; it skips site/blog/digest/ because this module owns those files.
 # Same sha256-of-bytes, first 10 hex, so both produce the same stamp.
-_STAMPED_ASSETS = ("/styles.css", "/site.js")
+_STAMPED_ASSETS = ("/styles.css", "/site.js", "/theme.js")
 _asset_stamps: dict[str, str] = {}
 
 
@@ -130,6 +130,7 @@ def render_html(digest: DigestData) -> str:
     sections_html = _render_sections_html(digest)
     css_url = asset_url("/styles.css")
     site_js_url = asset_url("/site.js")
+    theme_js_url = asset_url("/theme.js")
     desc = _meta_desc(digest)
     topic_labels = list(digest.sections.keys())
     keywords = ", ".join(topic_labels + ["Purplelink Daily Digest", "Benjamin Ampel", "cybersecurity research", "AI papers"])
@@ -171,6 +172,7 @@ def render_html(digest: DigestData) -> str:
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="{theme_js_url}"></script>
     <link rel="stylesheet" href="{css_url}">
     <script src="{site_js_url}" defer></script>
     <!-- No AdSense loader: this page is noindex (see above). AdSense policy
@@ -422,6 +424,7 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
     of only existing as a flat reverse-chronological list."""
     css_url = asset_url("/styles.css")
     site_js_url = asset_url("/site.js")
+    theme_js_url = asset_url("/theme.js")
     canonical = f"{SITE_URL}/blog/digest/topics/{slug}/"
     title = f"{section_label} — Purplelink Daily Digest"
     return f"""<!doctype html>
@@ -447,6 +450,7 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="/blog/digest/feed.xml">
+    <script src="{theme_js_url}"></script>
     <link rel="stylesheet" href="{css_url}">
     <script src="{site_js_url}" defer></script>
     <script type="application/ld+json">

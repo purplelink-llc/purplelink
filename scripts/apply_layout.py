@@ -142,6 +142,7 @@ def footer_html(indent: str) -> str:
         f'{i}  <div class="footer-bottom">\n'
         f'{i}    <span>&copy; 2026 Purplelink LLC</span>\n'
         f'{i}    <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>\n'
+        f'{i}    <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>\n'
         f'{i}  </div>\n'
         f'{i}</footer>'
     )
@@ -149,6 +150,20 @@ def footer_html(indent: str) -> str:
 
 MOTION_CSS = '    <link rel="stylesheet" href="/motion.css">\n'
 MOTION_JS = '    <script src="/motion.js" defer></script>\n'
+
+
+THEME_JS = '    <script src="/theme.js"></script>\n'
+
+
+def with_theme(html: str) -> str:
+    """theme.js must run before first paint, so it goes in <head> ahead of the
+    stylesheet and without defer. Pages that already carry it are left alone."""
+    if "theme.js" in html or "</head>" not in html:
+        return html
+    m = re.search(r'[ \t]*<link rel="stylesheet" href="/?styles\.css', html)
+    if m:
+        return html[:m.start()] + THEME_JS + html[m.start():]
+    return html.replace("</head>", THEME_JS + "</head>", 1)
 
 
 def with_motion(html: str) -> str:
@@ -175,7 +190,7 @@ def render(rel: str, html: str) -> str:
 
     out = NAV_RE.sub(nav_sub, html, count=1)
     out = FOOTER_RE.sub(lambda m: footer_html(m.group(1)), out, count=1)
-    return with_motion(out)
+    return with_theme(with_motion(out))
 
 
 def pages():

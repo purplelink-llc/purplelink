@@ -12,6 +12,10 @@ design work, read the two root context files:
 - **`DESIGN.md`** — the visual system captured from `site/styles.css`: OKLCH
   purple palette (hue 310), Fraunces display + Plus Jakarta Sans body, pill
   buttons, radius scale, dark-mode behavior, motion rules.
+  **Dark is the default theme** (owner decision, 2026-09-30): do not add
+  `@media (prefers-color-scheme)` rules; gate dark overrides as
+  `:where(:root:not([data-theme="light"]))`. Light is an opt-out via the footer
+  toggle (`site/theme.js`).
 
 **Hard constraints (from DESIGN.md — never violate):**
 

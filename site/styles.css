@@ -41,8 +41,9 @@
   --font-display: 'Fraunces', Georgia, serif;
   --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
 
-  /* Native controls (selects, checkboxes, scrollbars) follow the theme. */
-  color-scheme: light dark;
+  /* Native controls (selects, checkboxes, scrollbars) follow the theme.
+     Dark is the default; a visitor can opt into light from the footer. */
+  color-scheme: dark;
   accent-color: var(--purple);
 }
 
@@ -1836,11 +1837,9 @@ dd {
   max-width: 66ch;
   margin-bottom: 1.4em;
 }
-@media (prefers-color-scheme: dark) {
-  .post-body p,
-  .post-body ul,
-  .post-body ol { color: var(--muted); }
-}
+  :where(:root:not([data-theme="light"])) .post-body p,
+  :where(:root:not([data-theme="light"])) .post-body ul,
+  :where(:root:not([data-theme="light"])) .post-body ol { color: var(--muted); }
 
 .post-body h2 {
   font-family: var(--font-display);
@@ -2066,9 +2065,7 @@ dd {
   font-size: 0.85rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .digest-item-note { color: oklch(76% 0.04 310); }
-}
+  :where(:root:not([data-theme="light"])) .digest-item-note { color: oklch(76% 0.04 310); }
 
 /* ─── Changelog ────────────────────────────────────────────────────────── */
 
@@ -2813,8 +2810,7 @@ dd {
 }
 
 /* fix 7 — dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg:            oklch(20% 0.02 310);
     --ink:           oklch(95% 0.01 310);
     --purple:        oklch(72% 0.17 310);
@@ -2826,7 +2822,7 @@ dd {
     --panel:         oklch(24% 0.02 310);
   }
 
-  .tool-error {
+  :where(:root:not([data-theme="light"])) .tool-error {
     border-color: oklch(55% 0.16 25);
     background: oklch(28% 0.06 25);
     color: oklch(85% 0.10 25);
@@ -2835,25 +2831,24 @@ dd {
   /* Inverted brand panels: their backgrounds use var(--ink)/var(--purple),
      which invert to light in dark mode and leave white text unreadable.
      Pin them to fixed dark surfaces so white text keeps high contrast. */
-  .section-contact,
-  .footer { background: oklch(14% 0.02 310); }
-  .section-oss,
-  .section-scholar { background: oklch(32% 0.10 310); }
+  :where(:root:not([data-theme="light"])) .section-contact,
+  :where(:root:not([data-theme="light"])) .footer { background: oklch(14% 0.02 310); }
+  :where(:root:not([data-theme="light"])) .section-oss,
+  :where(:root:not([data-theme="light"])) .section-scholar { background: oklch(32% 0.10 310); }
 
   /* "Available now" green needs to lift for AA on the dark apps-section tint. */
-  .product-status-live { color: oklch(78% 0.16 150); }
+  :where(:root:not([data-theme="light"])) .product-status-live { color: oklch(78% 0.16 150); }
 
   /* The light-mode hero italic is pinned to a dark purple (45% L) to clear
      3:1 on the near-white hero. In dark mode the hero bg is dark, so restore
      the light --purple (72% L) for contrast. */
-  .hero-italic { color: var(--purple); }
+  :where(:root:not([data-theme="light"])) .hero-italic { color: var(--purple); }
 
   /* Primary buttons / skip link sit on var(--purple), which is light (72% L)
      in dark mode — hardcoded white label text fails (2.58:1). Use dark text. */
-  .btn-primary,
-  .waitlist-form button,
-  .skip-link { color: oklch(18% 0.06 310); }
-}
+  :where(:root:not([data-theme="light"])) .btn-primary,
+  :where(:root:not([data-theme="light"])) .waitlist-form button,
+  :where(:root:not([data-theme="light"])) .skip-link { color: oklch(18% 0.06 310); }
 
 /* ─── "Coming soon" purchase buttons ─────────────────────────────────── */
 /* All Stripe-checkout buttons are disabled while we wait for Stripe
@@ -2929,19 +2924,17 @@ button.btn-coming-soon:focus-visible {
 }
 /* Dark-mode override — the gradient already gives strong contrast, keep
    the lighter purple tone in dark mode so it doesn't go too dim. */
-@media (prefers-color-scheme: dark) {
-  .uc-banner {
+  :where(:root:not([data-theme="light"])) .uc-banner {
     background: linear-gradient(90deg, oklch(48% 0.20 295), oklch(72% 0.12 295));
     color: oklch(18% 0.06 310);
     border-bottom-color: rgba(0, 0, 0, 0.35);
   }
-  .uc-banner-close {
+  :where(:root:not([data-theme="light"])) .uc-banner-close {
     background: rgba(0, 0, 0, 0.15);
     border-color: rgba(0, 0, 0, 0.3);
     color: oklch(18% 0.06 310);
   }
-  .uc-banner-close:hover { background: rgba(0, 0, 0, 0.25); }
-}
+  :where(:root:not([data-theme="light"])) .uc-banner-close:hover { background: rgba(0, 0, 0, 0.25); }
 
 
 /* ============================================================
@@ -3235,9 +3228,7 @@ button.btn-coming-soon:focus-visible {
   letter-spacing: 0.02em;
 }
 
-@media (prefers-color-scheme: dark) {
-  .catalog-tile { color: oklch(18% 0.06 310); }
-}
+  :where(:root:not([data-theme="light"])) .catalog-tile { color: oklch(18% 0.06 310); }
 
 
 .chooser { display: grid; gap: 0; max-width: 860px; }
@@ -3784,10 +3775,8 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
   color: oklch(99% 0.003 310);
 }
 
-@media (prefers-color-scheme: dark) {
-  .blog-filter button[aria-pressed="true"],
-  .blog-filter button[aria-pressed="true"]:hover { color: oklch(18% 0.06 310); }
-}
+  :where(:root:not([data-theme="light"])) .blog-filter button[aria-pressed="true"],
+  :where(:root:not([data-theme="light"])) .blog-filter button[aria-pressed="true"]:hover { color: oklch(18% 0.06 310); }
 
 .blog-post-item[hidden] { display: none; }
 
@@ -3938,9 +3927,7 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
   letter-spacing: 0.04em;
 }
 
-@media (prefers-color-scheme: dark) {
-  .plus-plan-badge { color: oklch(18% 0.06 310); }
-}
+  :where(:root:not([data-theme="light"])) .plus-plan-badge { color: oklch(18% 0.06 310); }
 
 /* ─── Form controls: a quiet baseline for any control a tool page does not
    style itself. Element-only selectors, so every tool's class rules win. */
@@ -4094,9 +4081,7 @@ main input:focus-visible {
   font-size: 0.85rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .checklist-list li.is-done::before { color: oklch(18% 0.06 310); }
-}
+  :where(:root:not([data-theme="light"])) .checklist-list li.is-done::before { color: oklch(18% 0.06 310); }
 
 @media (prefers-reduced-motion: reduce) {
   .checklist-bar span { transition: none; }
@@ -4360,9 +4345,7 @@ html { scroll-padding-top: 96px; }
 
 /* Dark mode: --purple-light turns dark, so the Update tag's fixed dark text
    lost contrast. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .tag-update { color: var(--ink); }
-}
+  :root:not([data-theme="light"]):not([data-theme="light"]) .tag-update { color: var(--ink); }
 :root[data-theme="dark"] .tag-update { color: var(--ink); }
 
 /* Sticky call to action on phones (ModernTex, Paper Review) */
@@ -4654,11 +4637,9 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .frame-phone-sm { padding: 5px; border-radius: 28px; }
 .frame-phone-sm img { border-radius: 23px; }
 
-@media (prefers-color-scheme: dark) {
-  .frame-browser { background: color-mix(in oklch, var(--ink) 6%, var(--panel)); }
-  .frame-browser::before { background: oklch(48% 0.05 310); box-shadow: 16px 0 0 oklch(48% 0.05 310), 32px 0 0 oklch(48% 0.05 310); }
-  .frame-phone { background: oklch(30% 0.02 310); box-shadow: inset 0 0 0 1px oklch(48% 0.02 310), 0 24px 60px oklch(0% 0 0 / 0.5); }
-}
+  :where(:root:not([data-theme="light"])) .frame-browser { background: color-mix(in oklch, var(--ink) 6%, var(--panel)); }
+  :where(:root:not([data-theme="light"])) .frame-browser::before { background: oklch(48% 0.05 310); box-shadow: 16px 0 0 oklch(48% 0.05 310), 32px 0 0 oklch(48% 0.05 310); }
+  :where(:root:not([data-theme="light"])) .frame-phone { background: oklch(30% 0.02 310); box-shadow: inset 0 0 0 1px oklch(48% 0.02 310), 0 24px 60px oklch(0% 0 0 / 0.5); }
 
 /* ─── Peek media: a card top where a window or phone slides into view ── */
 
@@ -4822,13 +4803,11 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 }
 .scholar-demo-light .scholar-demo-result + .scholar-demo-result { border-top-color: var(--line); }
 .scholar-demo-light figcaption { color: var(--muted); }
-@media (prefers-color-scheme: dark) {
-  .scholar-demo-light .scholar-demo-title { color: oklch(78% 0.1 260); }
-  .scholar-demo-light .scholar-demo-meta { color: oklch(75% 0.08 150); }
-  .scholar-demo-light .scholar-demo-badges span { background: oklch(30% 0.04 310); border-color: oklch(40% 0.04 310); color: oklch(90% 0.04 310); }
-  .scholar-demo-light .scholar-demo-badges .sd-rank { background: var(--purple); color: oklch(18% 0.06 310); }
-  .scholar-demo-light .scholar-demo-badges .sd-velocity { background: oklch(32% 0.07 150); border-color: oklch(42% 0.08 150); color: oklch(85% 0.1 150); }
-}
+  :where(:root:not([data-theme="light"])) .scholar-demo-light .scholar-demo-title { color: oklch(78% 0.1 260); }
+  :where(:root:not([data-theme="light"])) .scholar-demo-light .scholar-demo-meta { color: oklch(75% 0.08 150); }
+  :where(:root:not([data-theme="light"])) .scholar-demo-light .scholar-demo-badges span { background: oklch(30% 0.04 310); border-color: oklch(40% 0.04 310); color: oklch(90% 0.04 310); }
+  :where(:root:not([data-theme="light"])) .scholar-demo-light .scholar-demo-badges .sd-rank { background: var(--purple); color: oklch(18% 0.06 310); }
+  :where(:root:not([data-theme="light"])) .scholar-demo-light .scholar-demo-badges .sd-velocity { background: oklch(32% 0.07 150); border-color: oklch(42% 0.08 150); color: oklch(85% 0.1 150); }
 
 /* ─── Collage: a window, a phone and the app icons, for catalog heroes ── */
 
@@ -4873,7 +4852,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   font-weight: 800;
   font-size: 0.9rem;
 }
-@media (prefers-color-scheme: dark) { .collage-icons span { color: oklch(18% 0.06 310); } }
+ :where(:root:not([data-theme="light"])) .collage-icons span { color: oklch(18% 0.06 310); } 
 
 .catalog-hero-with-visual .catalog-hero-visual { margin-top: clamp(36px, 6vw, 56px); max-width: 680px; }
 @media (min-width: 1100px) {
@@ -5080,7 +5059,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   font-weight: 800;
   font-size: 0.72rem;
 }
-@media (prefers-color-scheme: dark) { .about-value-tile { color: oklch(18% 0.06 310); } }
+ :where(:root:not([data-theme="light"])) .about-value-tile { color: oklch(18% 0.06 310); } 
 .photo-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -5152,3 +5131,19 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   .peek > *, .cover-row img, .photo-strip img, .screenshot-grid .frame-phone, .studio-card { transition: none; }
   .app-hero-window .frame-soft { transform: none; }
 }
+
+:root[data-theme="light"] { color-scheme: light; }
+
+.theme-toggle {
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--purple); }
+.theme-toggle:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.theme-toggle[hidden] { display: none; }

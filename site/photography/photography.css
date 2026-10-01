@@ -502,6 +502,4 @@
 
 .more-disclosure { margin-top: 16px; font-size: 0.9rem; }
 
-@media (prefers-color-scheme: dark) {
-  .more-link { color: oklch(18% 0.06 310); }
-}
+  :where(:root:not([data-theme="light"])) .more-link { color: oklch(18% 0.06 310); }

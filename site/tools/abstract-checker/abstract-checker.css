@@ -23,9 +23,7 @@
 @media (max-width: 600px) {
   .ac-facts dl div { grid-template-columns: 1fr; gap: 0; }
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .ac-over { color: oklch(75% 0.14 25); }
-  :root:not([data-theme="light"]) .ac-under { color: oklch(78% 0.12 150); }
-}
+  :root:not([data-theme="light"]):not([data-theme="light"]) .ac-over { color: oklch(75% 0.14 25); }
+  :root:not([data-theme="light"]):not([data-theme="light"]) .ac-under { color: oklch(78% 0.12 150); }
 :root[data-theme="dark"] .ac-over { color: oklch(75% 0.14 25); }
 :root[data-theme="dark"] .ac-under { color: oklch(78% 0.12 150); }
