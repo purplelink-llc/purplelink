@@ -78,3 +78,15 @@ Coordinates are fractions of the media (0 to 1). `cue` is a spoken word: the rin
 ## Approval rule
 
 Nothing is uploaded or posted without the owner's explicit yes. Rendering only writes to `video/out/`. To publish, queue the file through the approval queue (`scripts/queue/approval_queue.py`); this framework never calls it.
+
+## LaTeX error shorts
+
+"Fix this LaTeX error" videos (20 to 25 s, 16:9 and 9:16) drawn entirely in Remotion: bumper, the log excerpt typed in a dark panel, the source line highlighted and corrected, a plain "Compiles" state, an end card, bumper. Composition `src/LatexFix.jsx`; content (log excerpt, minimal example, fix) in `src/latexfix/data.js`, copied from `site/latex-errors/<slug>/`; timing in `src/latexfix/plan.js`; narration and lower-third captions in `storyboards/latex-errors/<slug>.json`.
+
+```
+node check-latexfix.mjs                                  # every code line must appear verbatim on the page
+node build-latexfix.mjs undefined-control-sequence       # narrate, render 16:9 then 9:16, poster, review frames
+node build-latexfix.mjs <slug> --stills 5,9,14           # JPG stills into .cache/stills/<slug>/
+```
+
+Output: `out/latex-errors/<slug>/<slug>-16x9.mp4`, `-9x16.mp4`, `-poster.jpg`, `frames/`. Code is 36 px in both formats. In 9:16 the log's continuation line keeps its text but is indented less so it fits the panel, and long source lines soft-wrap. The build fails if narration overlaps a bumper and warns outside 20 to 25 s. Run one build at a time.
