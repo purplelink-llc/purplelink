@@ -2,6 +2,9 @@
 
 User-agent: *
 Allow: /
+# The daily digest is machine-compiled and kept for its RSS and email readers,
+# not for search or ad review.
+Disallow: /blog/digest/
 
 # AI crawlers — explicitly welcome
 User-agent: GPTBot
@@ -24,6 +27,12 @@ Allow: /
 
 User-agent: Googlebot
 Allow: /
+Disallow: /blog/digest/
+
+# AdSense crawler
+User-agent: Mediapartners-Google
+Allow: /
+Disallow: /blog/digest/
 
 User-agent: Google-Extended
 Allow: /
