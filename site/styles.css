@@ -5398,3 +5398,56 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 }
 @media print { .list-signup { display: none; } }
 .checklist-get { margin: 20px 0 0; }
+
+/* ─── Home price ladder (#cost) ───────────────────────────────────────── */
+/* A plain four-step list, cheapest first. Not a plan table: no cards, no
+   highlighted step, every step the same weight. */
+.section-cost {
+  padding: clamp(40px, 5vw, 72px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+}
+.cost-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: clamp(20px, 2.5vw, 28px);
+}
+.cost-ladder {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 clamp(20px, 3vw, 40px);
+}
+.cost-step {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.cost-price {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.cost-what { font-size: 0.93rem; line-height: 1.55; color: var(--muted); }
+.cost-what a,
+.cost-foot a { color: var(--purple); text-decoration: underline; text-underline-offset: 2px; }
+.cost-foot { margin-top: 20px; font-size: 0.93rem; line-height: 1.55; color: var(--muted); }
+.cost-foot + .cost-foot { margin-top: 6px; }
+@media (max-width: 860px) {
+  .cost-ladder { grid-template-columns: 1fr; }
+  .cost-step {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 14px;
+    align-items: baseline;
+    padding: 12px 0;
+  }
+  .cost-price { font-size: 1.15rem; }
+}
