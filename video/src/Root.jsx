@@ -4,6 +4,8 @@ import { Promo, Hero } from "./Promo.jsx";
 import { PromoV2, HeroV2, PromoLong } from "./V2.jsx";
 import { StillPromo, StillHero } from "./Stills.jsx";
 import { PRODUCTS } from "./products/index.js";
+import { LatexFix } from "./LatexFix.jsx";
+import { build as buildLatexFix } from "./latexfix/plan.js";
 import { bumperTotal, BUMPER } from "./Bumper.jsx";
 import { FORMATS, brand } from "./theme.js";
 import { buildTimeline, totalFrames } from "./timeline.js";
@@ -35,6 +37,9 @@ export const Root = () => (
     <Composition id="StillPromo" component={StillPromo} fps={brand.fps} width={1920} height={1080} durationInFrames={90}
       defaultProps={{ id: "vitae-promo", format: "16x9", timing: { scenes: [] }, bumper: BUMPER }}
       calculateMetadata={({ props }) => { const fmt = FORMATS[props.format]; const total = props.timing.scenes.length ? bumperTotal(PRODUCTS[props.id].build(props.timing).total, props.bumper || BUMPER) : 3; return { width: fmt.W, height: fmt.H, durationInFrames: Math.round(total * brand.fps) }; }} />
+    <Composition id="LatexFix" component={LatexFix} fps={brand.fps} width={1920} height={1080} durationInFrames={90}
+      defaultProps={{ id: "undefined-control-sequence", format: "16x9", timing: { scenes: [] }, storyboard: { scenes: [] }, bumper: BUMPER }}
+      calculateMetadata={({ props }) => { const fmt = FORMATS[props.format]; const total = props.timing.scenes.length ? bumperTotal(buildLatexFix(props.id, props.timing, props.storyboard).total, props.bumper || BUMPER) : 3; return { width: fmt.W, height: fmt.H, durationInFrames: Math.round(total * brand.fps) }; }} />
     <Composition id="StillHero" component={StillHero} fps={brand.fps} width={1920} height={1080} durationInFrames={240}
       defaultProps={{ id: "vitae-promo", timing: { scenes: [] } }}
       calculateMetadata={({ props }) => ({ durationInFrames: Math.round((props.timing.scenes.length ? PRODUCTS[props.id].build(props.timing).hero.T : 8) * brand.fps) })} />
