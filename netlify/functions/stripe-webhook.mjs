@@ -266,12 +266,19 @@ async function emailDownloadLink(to, sessionId, productKey) {
       `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${license}</p>` +
       `<p>This unlocks the app permanently — no account, no further steps.</p>`
     : "";
+  // ModernTex only: one plain request for a one-line review. No link, no tracking.
+  const reviewAsk =
+    "If ModernTex is useful, reply to this email with one sentence about what you use it for. " +
+    "With your permission I may quote it on the product page, first name and field only.";
+  const reviewTextBlock = productKey === "moderntex" ? `${reviewAsk}\n\n` : "";
+  const reviewHtmlBlock = productKey === "moderntex" ? `<p>${reviewAsk}</p>` : "";
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
     licenseTextBlock +
     `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
     `Questions or trouble downloading: reply to this email.\n\n` +
+    reviewTextBlock +
     `Purplelink LLC, Atlanta, Georgia`;
   const html =
     `<p>Thanks for buying ${entry.name}.</p>` +
@@ -279,6 +286,7 @@ async function emailDownloadLink(to, sessionId, productKey) {
     licenseHtmlBlock +
     `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
     `<p>Questions or trouble downloading: reply to this email.</p>` +
+    reviewHtmlBlock +
     `<p>Purplelink LLC, Atlanta, Georgia</p>`;
   try {
     const resp = await fetch(RESEND_API_URL, {
