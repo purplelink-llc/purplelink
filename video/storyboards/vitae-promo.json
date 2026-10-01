@@ -1,0 +1,34 @@
+{
+  "id": "vitae-promo",
+  "title": "Vitae promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Your whole research record on one screen."
+    },
+    {
+      "narration": "Log every submission, each review round and the decision, with your own estimate of the odds."
+    },
+    {
+      "narration": "Track grants from proposal to final report: requested and awarded amounts, and your share."
+    },
+    {
+      "narration": "Your CV fills itself from those records."
+    },
+    {
+      "narration": "Set a tenure date and your department's expectations; Vitae counts your record against each."
+    },
+    {
+      "narration": "Free for Mac, notarized, and your data stays on your Mac."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "paper-review-promo",
+  "title": "Paper Review promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Four AI reviewers read your manuscript the way a journal panel would, and quote what they question."
+    },
+    {
+      "narration": "Standard is nine dollars, the Journal Pack eleven, Deep Review fifteen."
+    },
+    {
+      "narration": "Each tier checks every reference against CrossRef and scans the figures."
+    },
+    {
+      "narration": "The report lists blind spots, contradictions and a fix checklist, each quoting the passage."
+    },
+    {
+      "narration": "Pay through Stripe, upload the PDF, and read the report in four to eight minutes."
+    },
+    {
+      "narration": "From nine dollars. One-time payment, no subscription."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

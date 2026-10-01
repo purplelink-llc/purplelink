@@ -1,0 +1,28 @@
+{
+  "id": "purplelink-sizzle",
+  "title": "Purplelink sizzle",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Purplelink makes tools for the paper, from first draft to accepted."
+    },
+    {
+      "narration": "ModernTex for LaTeX. Vitae for your record. Paper Review before you submit."
+    },
+    {
+      "narration": "Scholar Utility Belt in Chrome. GlobePin and Haea on iPhone."
+    },
+    {
+      "narration": "No account needed."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

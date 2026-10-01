@@ -1,8 +1,8 @@
 {
   "id": "moderntex-promo",
   "title": "ModernTex promo",
-  "voice": "en-US-AndrewNeural",
-  "rate": "+4%",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
   "hero": {
     "scene": 1,
     "seconds": 6
@@ -33,7 +33,16 @@
         "h": 0.87,
         "cue": "PDF"
       },
-      "vertical": { "zoom": { "from": 1.0, "to": 1.06, "x": 0.72, "y": 0.5, "x0": 0.72, "y0": 0.5 } },
+      "vertical": {
+        "zoom": {
+          "from": 1.0,
+          "to": 1.06,
+          "x": 0.72,
+          "y": 0.5,
+          "x0": 0.72,
+          "y0": 0.5
+        }
+      },
       "seconds": 5
     },
     {

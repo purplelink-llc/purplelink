@@ -11,6 +11,19 @@ node render.mjs storyboards/moderntex-promo.json --format both      # or 16x9 | 
 
 Output goes to `video/out/<id>/` (gitignored, never committed): `<id>-16x9.mp4`, `<id>-9x16.mp4`, `<id>-poster.png`, `<id>-hero.mp4`, `<id>-hero.webm` (1280x720, silent, under 1.5 MB each, seamless loop), and `run-log.txt`. Remotion is free for individuals and companies of up to three people; check its license if the studio grows.
 
+## Still-driven promos and the brand bumper
+
+Products without a screen recording (Vitae, GlobePin, Haea, Scholar Utility Belt, Paper Review, the brand sizzle) are driven by real screenshots inside a device frame (`mac`, `phone`, `browser`) with eased pans, punch-ins, rings, a cursor or tap ripple and lower thirds. The plan for each lives in `src/products/<name>.js` (pure data from the narration timing; see `src/stillplan.js`), the narration in `storyboards/<id>.json`, the renderer in `src/Stills.jsx`.
+
+```
+python3 capture.py                       # browser captures: /tools/paper-review/, /products/ (serve site/ on 127.0.0.1:8765 first), extension mockups with invented names, icons
+node build-stills.mjs vitae-promo        # narrate, stage, render 16:9 + 9:16 + poster + hero loop + review frames into out/vitae-promo/
+node build-stills.mjs <id> --stills 3,8  # PNG stills at those seconds (both formats) into .cache/stills/<id>/
+node build-v2.mjs --v3 ; node build-v2.mjs --long --v3   # ModernTex cuts with the bumper, written beside v2 as *-v3
+```
+
+Every cut (ModernTex v3 included) opens and closes with the Purplelink LLC bumper (`src/Bumper.jsx`, timing in `src/bumper.js`, storyboard `bumper` field): 2.2 s open with `assets/sting-intro.wav` at frame 0, 2.5 s close with `assets/sting-outro.wav` and the product URL, fade to the background at the end. Narration is normalised to -16 LUFS at staging (`audio.mjs`); the stings peak near -1.4 dBFS and are left as delivered. Hero loops carry no bumper.
+
 ## Files
 
 - `storyboards/<id>.json`: the content. `storyboards/<id>.md`: the written storyboard, written first.

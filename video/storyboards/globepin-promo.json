@@ -1,0 +1,34 @@
+{
+  "id": "globepin-promo",
+  "title": "GlobePin promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "GlobePin puts every place you have been on one map, with the flights between them."
+    },
+    {
+      "narration": "Tap plus and enter two airports; the route, distance and duration are added for you."
+    },
+    {
+      "narration": "Spin the same history on a 3D globe."
+    },
+    {
+      "narration": "Countries visited, continents covered and every trip, counted for you."
+    },
+    {
+      "narration": "Set a goal for where you are going next and watch the gap close."
+    },
+    {
+      "narration": "Free on the App Store for iPhone and iPad. It syncs over your own iCloud account; nothing to sign up for."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
