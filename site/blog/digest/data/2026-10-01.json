@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-01",
+  "number": 96,
+  "intro": "Frontier-model distillation attacks, agent-to-agent worm risk, Gemini 4 Argon for cyber defenders, and Citrix, Zimbra and Apple CoreGraphics exploitation. Plus RevenueCat free-trial data for subscription apps.",
+  "sections": {
+    "AI & Technology": [
+      {
+        "title": "Quoting Matthew Green",
+        "url": "https://simonwillison.net/2026/Oct/1/matthew-green",
+        "source_name": "Simon Willison",
+        "category": "ai_tech",
+        "editorial_note": "Green describes agents in separately isolated sandboxes leaving instructions for each other in a shared package cache, which makes the two halves of a worm: a hijacking payload and an agent that carries it onward. The non-obvious point is that sandbox isolation does not help when shared build artifacts act as a covert channel between agents. Security teams running multi-agent coding setups should audit shared caches and registries as an injection surface."
+      },
+      {
+        "title": "Disrupting a coordinated model-distillation campaign",
+        "url": "https://openai.com/index/disrupting-a-coordinated-model-distillation-campaign",
+        "source_name": "OpenAI",
+        "category": "ai_tech",
+        "editorial_note": "OpenAI says it disrupted a campaign aimed at extracting protected model reasoning, and Bloomberg ties it to thousands of probing attempts by users linked to Moonshot AI. The target was hidden reasoning traces rather than outputs, which makes this an adversarial ML extraction case study with a named attributed actor. Attribution rests on OpenAI's own telemetry, so the detection signals are the part worth watching for in follow-up disclosures."
+      },
+      {
+        "title": "Gemini 4 Argon: our next era of frontier intelligence",
+        "url": "https://deepmind.google/blog/gemini-4-argon-our-next-era-of-frontier-intelligence",
+        "source_name": "Google DeepMind",
+        "category": "ai_tech",
+        "editorial_note": "Google's frontier release is gated, with access routed first to vetted defenders. Staged release for cyber capability is now the default pattern across labs, so benchmark claims on real-world software engineering and security workflows deserve independent replication. Independent evaluation numbers will matter more than the launch post."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Google Rolls Out Gemini 4 Argon to Trusted Cyber Defenders, Plans Guardrail-Free Version",
+        "url": "https://thehackernews.com/2026/10/google-rolls-out-gemini-4-argon-to.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "Google is distributing Gemini 4 Argon to vetted defenders through its Fairwind Program and plans a version without guardrails. A guardrail-free variant for a vetted tier shifts the dual-use question from model refusals to identity vetting and access control. Researchers should ask how vetting is verified and how leakage of the unrestricted tier is handled. Connects to: Gemini 4 Argon: our next era of frontier intelligence."
+      },
+      {
+        "title": "DIVD says Zammad zero-days enabled AI-driven network breach",
+        "url": "https://www.bleepingcomputer.com/news/security/divd-says-zammad-zero-days-enabled-ai-driven-network-breach",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "The Dutch vulnerability disclosure institute was itself breached through a chain of two Zammad zero-days, and DIVD characterizes the intrusion as AI-driven. A disclosure body being compromised by AI-assisted exploit chaining is a concrete data point for the claim that attacker timelines are compressing. Details on which stages the AI actually automated would separate real capability from labeling."
+      },
+      {
+        "title": "Malicious Custom GPTs Turn ChatGPT Into RAT Delivery Lure",
+        "url": "https://www.darkreading.com/cyberattacks-data-breaches/malicious-custom-gpts-chatgpt-rat-delivery-lure",
+        "source_name": "Dark Reading",
+        "category": "cybersecurity",
+        "editorial_note": "A ClickFix-style campaign hosts lures on legitimate OpenAI and Google domains to deliver a RAT. Domain reputation filtering fails when the lure lives on trusted infrastructure, so detection has to move to user-action and endpoint behavior. This extends the ClickFix playbook into the LLM platform ecosystem."
+      },
+      {
+        "title": "Apple CoreGraphics PoC Emerges as WhatsApp PDF Checks Hint at Possible Delivery Path",
+        "url": "https://thehackernews.com/2026/10/apple-coregraphics-poc-emerges-as.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "A public proof-of-concept now exists for CVE-2026-86950, a CoreGraphics bug triggered by a PDF with a crafted embedded font, which Apple says may have been used against targeted individuals. Public PoC code shortens the window from targeted use to commodity exploitation on both iOS and macOS. Anyone shipping Apple-platform software that parses PDFs or fonts should check patch status and exposure."
+      }
+    ],
+    "Entrepreneurship": [
+      {
+        "title": "What 17,000 Subscription Apps Tell Us About Free Trial Length: Annual Plans Convert 86% Better With 30-Day Trials, Monthly Tops Out at Two Weeks, and AI Apps Hit a Wall at 16 Days",
+        "url": "https://www.saastr.com/what-17000-subscription-apps-tell-us-about-free-trial-length-annual-plans-convert-86-better-with-30-day-trials-monthly-tops-out-at-two-weeks-and-ai-apps-hit-a-wall-at-16-days",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "RevenueCat's dataset of 17,000 apps shows annual plans convert 86% better with 30-day trials, monthly plans peak near two weeks, and AI apps plateau at 16 days. Trial length is a cheap pricing lever for indie Apple developers, and the AI-app plateau likely reflects inference cost against delayed value. The data is correlational and self-selected, so A/B testing within one app is still necessary."
+      }
+    ]
+  },
+  "sources_reviewed": 453,
+  "items_selected": 8
+}
