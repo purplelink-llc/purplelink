@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>LaTeX found a <code>\cite</code> key with no matching entry in the bibliography data it read on this run, so it printed a question mark in place of the citation. This is a warning, not an error, and the build finishes. At the end of the log LaTeX adds the summary line <code>There were undefined references</code>. The cause is either a missing step in the build (BibTeX or Biber was not run, or LaTeX was not run again afterwards) or a key that does not exist in the <code>.bib</code> file.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="cEgQawus6Dw" data-youtube-title="Citation undefined: running BibTeX in the right order">
+            <img class="yt-poster" src="/assets/video/latex-error-citation-undefined-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=cEgQawus6Dw" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the warning:</p>
         <pre><code>\documentclass{article}

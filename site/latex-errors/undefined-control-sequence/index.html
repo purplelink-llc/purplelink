@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>TeX read a backslash followed by a name it has no definition for. A control sequence is TeX's term for a command such as <code>\emph</code> or <code>\section</code>. Either the name is misspelled, or it is defined by a package or class that is not loaded, or it was never meant to be a command at all, as with a backslash in a file path. TeX drops the unknown command and carries on, so a PDF may still appear, but whatever the command was meant to do is missing from it.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="icITQm2K6UY" data-youtube-title="Undefined control sequence: reading the log and fixing the typo">
+            <img class="yt-poster" src="/assets/video/latex-error-undefined-control-sequence-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=icITQm2K6UY" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the error:</p>
         <pre><code>\documentclass{article}

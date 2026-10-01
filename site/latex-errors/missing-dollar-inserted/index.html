@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>TeX met something that is only allowed in math mode, such as <code>_</code>, <code>^</code> or a math command like <code>\beta</code>, while it was setting ordinary text. It inserted a <code>$</code> to switch into math mode and carried on. The same message appears the other way round when math mode has to end unexpectedly, for example at a blank line inside a formula. After the inserted <code>$</code>, a stretch of your text is usually set in math italics with the spaces removed.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="A8m-t1rPuug" data-youtube-title="Missing $ inserted: an underscore in ordinary text and the fix">
+            <img class="yt-poster" src="/assets/video/latex-error-missing-dollar-inserted-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=A8m-t1rPuug" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the error:</p>
         <pre><code>\documentclass{article}
