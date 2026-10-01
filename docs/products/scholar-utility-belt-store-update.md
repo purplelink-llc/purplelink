@@ -54,11 +54,15 @@ Journal rankings (ABDC, FT50, UTD24), citation analytics, author metrics and lin
 
 ## Detailed description
 
+Note (2026-10-01): the store auto-rejected a version that listed ten lookup
+services in one sentence ("excessive keywords", reference Yellow Argon). Keep
+lists of names short in this text; the long lists live on the privacy page.
+
 ```
 Scholar Utility Belt adds journal quality badges, citation analytics, author metrics, academic lineage trees and research trend tracking to Google Scholar results and author profiles.
 
 FREE, FOREVER
-- Journal quality badges: ABDC, FT50, UTD24, VHB, SJR quartile, ERA, ABS, CORE, CCF, Norwegian Register, FNEGE, and impact factor quartiles, from lists bundled with the extension.
+- Journal quality badges from ranking lists bundled with the extension, including ABDC, FT50, UTD24 and CORE.
 - Citation velocity and an "Emerging" signal for recent papers.
 - Author profile summary metrics: h-index, m-index, L-index, g-index, h5-index and open-access share.
 - Search-result actions: save, BibTeX export, abstract preview, PDF and DOI lookup.
@@ -73,7 +77,7 @@ If you installed before version 0.6.0, every feature you had stays free permanen
 
 PRIVACY AND NETWORK CALLS
 - No account, no analytics, and no Purplelink server. Your library and settings stay in the extension's storage in your browser. Nothing about your searches or reading is sent to the developer.
-- Optional lookups go directly from your browser to public scholarly services (OpenAlex, Crossref, Unpaywall, OpenCitations, Semantic Scholar, DBLP, NIH iCite, PubMed, Europe PMC, ROR). A request carries what the lookup needs, such as a DOI, a title, an author name or a search term.
+- Optional lookups go directly from your browser to public scholarly services such as OpenAlex and Crossref. The privacy policy lists every service. A request carries what the lookup needs, such as a DOI, a title, an author name or a search term.
 - Pro licensing uses ExtensionPay (extensionpay.com), with Stripe for payment. If you never open the payment or sign-in page, the extension makes no request to ExtensionPay. When you click Unlock or "Already purchased", it requests a random per-install key and stores it in extension storage, which Chrome may sync through your Google account. After that, each Pro status check sends that key to extensionpay.com and receives your plan and paid status. Installs updated from a version before 0.6.0 skip the license check entirely.
 - Privacy policy: https://purplelink.llc/privacy/#scholar-utility-belt
 
