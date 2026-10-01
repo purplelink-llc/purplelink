@@ -140,7 +140,28 @@ const PRODUCT_CATALOG = {
   // the session into a private feed key.
   "live-scholar": { amount: 3900, name: "Live Citation Dashboard (yearly)", interval: "year", successPath: "/sheets/live/setup/", mode: "subscription", trialDays: 7 },
   "live-funding": { amount: 5900, name: "Live Funding Feed (yearly)", interval: "year", successPath: "/sheets/live/setup/", mode: "subscription", trialDays: 7 },
+  // Photograph licenses (/photography/license/). The request carries `photo`
+  // (a DSC_ stem from site/photography/hub-data.json); it is copied into the
+  // session metadata so photo-download.mjs knows which original to stream.
+  // Tiers are non-exclusive; terms are on the page and in the delivered
+  // license text. The agencies' contributor terms are non-exclusive too, so
+  // selling the same file here is allowed; price parity is not required.
+  "photo-license-web":        { amount: 2900,  name: "Photograph license: web and social (one site)", successPath: "/photography/license/success/", photo: true },
+  "photo-license-commercial": { amount: 7900,  name: "Photograph license: commercial (one business)", successPath: "/photography/license/success/", photo: true },
+  "photo-license-extended":   { amount: 19900, name: "Photograph license: extended (print, editorial, products)", successPath: "/photography/license/success/", photo: true },
+  // 2027 printable calendars (/photography/calendars/). PDFs in the photo-files store.
+  "photo-calendar-iceland":         { amount: 700,  name: "2027 Iceland calendar (PDF)", successPath: "/photography/calendars/success/" },
+  "photo-calendar-japan":           { amount: 700,  name: "2027 Japan calendar (PDF)", successPath: "/photography/calendars/success/" },
+  "photo-calendar-switzerland":     { amount: 700,  name: "2027 Switzerland calendar (PDF)", successPath: "/photography/calendars/success/" },
+  "photo-calendar-european-cities": { amount: 700,  name: "2027 European Cities calendar (PDF)", successPath: "/photography/calendars/success/" },
+  "photo-calendar-arizona-desert":  { amount: 700,  name: "2027 Arizona Desert calendar (PDF)", successPath: "/photography/calendars/success/" },
+  "photo-calendar-hawaii":          { amount: 700,  name: "2027 Hawaii calendar (PDF)", successPath: "/photography/calendars/success/" },
+  "photo-calendar-best-of":         { amount: 700,  name: "2027 Best Of calendar (PDF)", successPath: "/photography/calendars/success/" },
+  "photo-calendar-bundle":          { amount: 1900, name: "2027 calendars, all seven (PDF)", successPath: "/photography/calendars/success/" },
 };
+
+// A photo stem as hub-data.json names it: DSC_1326, DSC_6629-Edit, DSC_7559-Pano-Edit.
+const PHOTO_RE = /^DSC_[A-Za-z0-9-]{1,40}$/;
 
 function jsonResponse(status, body) {
   return new Response(JSON.stringify(body), {
@@ -209,6 +230,11 @@ export default async function handler(request) {
   const referralCode = typeof body?.ref === "string" ? body.ref.trim().slice(0, 32) : "";
   const attrFirst = cleanTouch(body?.attr?.first);
   const attrLast = cleanTouch(body?.attr?.last);
+  // Photograph licenses need the photo; anything else ignores it.
+  const photo = entry.photo && typeof body?.photo === "string" && PHOTO_RE.test(body.photo) ? body.photo : "";
+  if (entry.photo && !photo) {
+    return jsonResponse(400, { error: "missing_photo", detail: "Choose a photograph first." });
+  }
 
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   const priceId = entry.amount ? null : Netlify.env.get(entry.envKey);
@@ -235,7 +261,7 @@ export default async function handler(request) {
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v3:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}`)
+    .update(`v3:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -255,7 +281,7 @@ export default async function handler(request) {
       ? {
           "line_items[0][price_data][currency]": "usd",
           "line_items[0][price_data][unit_amount]": String(entry.amount),
-          "line_items[0][price_data][product_data][name]": entry.name,
+          "line_items[0][price_data][product_data][name]": photo ? `${entry.name}: ${photo}` : entry.name,
           ...(entry.interval ? { "line_items[0][price_data][recurring][interval]": entry.interval } : {}),
         }
       : { "line_items[0][price]": priceId }),
@@ -279,6 +305,9 @@ export default async function handler(request) {
   }
   if (referralCode) {
     params["metadata[referral_code]"] = referralCode;
+  }
+  if (photo) {
+    params["metadata[photo]"] = photo;
   }
   if (attrFirst) params["metadata[attr_first]"] = attrFirst;
   if (attrLast) params["metadata[attr_last]"] = attrLast;

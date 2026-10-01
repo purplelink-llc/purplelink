@@ -83,6 +83,19 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["sheet-grantpipeline", { name: "the Grant Pipeline & PI Effort Tracker", successPath: "/sheets/success/" }],
   ["sheet-reviewmatrix", { name: "the Systematic Review Screening Matrix", successPath: "/sheets/success/" }],
   ["sheet-bundle",      { name: "the Researcher Spreadsheet Bundle",  successPath: "/sheets/success/" }],
+  // Photograph licenses and calendars: photo-download.mjs streams the file
+  // from the photo-files store once the session is paid.
+  ["photo-license-web",        { name: "a photograph license (web and social)", successPath: "/photography/license/success/" }],
+  ["photo-license-commercial", { name: "a photograph license (commercial)",     successPath: "/photography/license/success/" }],
+  ["photo-license-extended",   { name: "a photograph license (extended)",       successPath: "/photography/license/success/" }],
+  ["photo-calendar-iceland",         { name: "the 2027 Iceland calendar",         successPath: "/photography/calendars/success/" }],
+  ["photo-calendar-japan",           { name: "the 2027 Japan calendar",           successPath: "/photography/calendars/success/" }],
+  ["photo-calendar-switzerland",     { name: "the 2027 Switzerland calendar",     successPath: "/photography/calendars/success/" }],
+  ["photo-calendar-european-cities", { name: "the 2027 European Cities calendar", successPath: "/photography/calendars/success/" }],
+  ["photo-calendar-arizona-desert",  { name: "the 2027 Arizona Desert calendar",  successPath: "/photography/calendars/success/" }],
+  ["photo-calendar-hawaii",          { name: "the 2027 Hawaii calendar",          successPath: "/photography/calendars/success/" }],
+  ["photo-calendar-best-of",         { name: "the 2027 Best Of calendar",         successPath: "/photography/calendars/success/" }],
+  ["photo-calendar-bundle",          { name: "the 2027 calendar bundle",          successPath: "/photography/calendars/success/" }],
 ]);
 
 // Live-data sheets (checkout.mjs: live-scholar, live-funding). Yearly

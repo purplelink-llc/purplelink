@@ -69,3 +69,5 @@ Allow: /
 # Full text of the main pages: https://purplelink.llc/llms-full.txt
 
 Sitemap: https://purplelink.llc/sitemap.xml
+
+Sitemap: https://purplelink.llc/sitemap-images.xml
