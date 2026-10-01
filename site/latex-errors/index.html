@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>LaTeX Error Messages: What They Mean and How to Fix Them | Purplelink</title>
+    <meta name="description" content="Twelve common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/">
+    <meta property="og:title" content="LaTeX error messages: what they mean and how to fix them">
+    <meta property="og:description" content="Twelve common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LaTeX error messages: what they mean and how to fix them">
+    <meta name="twitter:description" content="Twelve common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="LaTeX error messages: what they mean and how to fix them">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "LaTeX error messages: what they mean and how to fix them",
+      "description": "Twelve common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.",
+      "url": "https://purplelink.llc/latex-errors/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-01",
+      "dateModified": "2026-10-01",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "ItemList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Undefined control sequence",
+          "url": "https://purplelink.llc/latex-errors/undefined-control-sequence/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Missing $ inserted",
+          "url": "https://purplelink.llc/latex-errors/missing-dollar-inserted/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "File `x.sty' not found",
+          "url": "https://purplelink.llc/latex-errors/file-not-found/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Missing \\begin{document}",
+          "url": "https://purplelink.llc/latex-errors/missing-begin-document/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Runaway argument",
+          "url": "https://purplelink.llc/latex-errors/runaway-argument/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 6,
+          "name": "Extra alignment tab has been changed to \\cr",
+          "url": "https://purplelink.llc/latex-errors/extra-alignment-tab/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 7,
+          "name": "Misplaced alignment tab character &",
+          "url": "https://purplelink.llc/latex-errors/misplaced-alignment-tab/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 8,
+          "name": "LaTeX Error: Environment x undefined",
+          "url": "https://purplelink.llc/latex-errors/environment-undefined/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 9,
+          "name": "Citation `x' undefined",
+          "url": "https://purplelink.llc/latex-errors/citation-undefined/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 10,
+          "name": "Overfull \\hbox",
+          "url": "https://purplelink.llc/latex-errors/overfull-hbox/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 11,
+          "name": "Paragraph ended before \\x was complete",
+          "url": "https://purplelink.llc/latex-errors/paragraph-ended-before-complete/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 12,
+          "name": "Too many }'s / Missing } inserted",
+          "url": "https://purplelink.llc/latex-errors/too-many-closing-braces/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does the l. number mean in a LaTeX log?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is the line of the source file TeX was reading when it reported the error. The text after the number is that line, split in two at the exact point TeX had reached. For most errors the mistake is the last thing before the split."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does one mistake produce many LaTeX errors?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After an error TeX guesses at a repair and keeps going, and a wrong guess makes the following lines fail too. Fix the first error in the log, compile again, and most of the others usually disappear."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I have to fix LaTeX warnings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Warnings do not stop the build, but two of them change the PDF: an undefined citation prints a question mark in place of the reference, and an overfull box pushes text into the margin. Clear both before you submit."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=b140b81664">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=68150b3301" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX errors</p>
+        <h1 class="post-title">LaTeX error messages, explained</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time></p>
+        <p class="post-lede">Twelve messages that LaTeX prints when a document does not compile cleanly. Each page shows the real log output, what it means, the causes in order of likelihood and the fix for each.</p>
+      </div>
+
+      <article class="post-body">
+        <p>LaTeX error messages were written for people who know how TeX works inside, which is why <code>Missing $ inserted</code> can turn out to be about an underscore and <code>Runaway argument?</code> about a forgotten brace. Each page below starts from the exact text in the log. Every log excerpt on these pages is real output: I wrote a small file that triggers the message, compiled it with pdfLaTeX from TeX Live 2026, and copied the lines from the <code>.log</code> file. The corrected version of each file was compiled as well.</p>
+
+        <h2>How to read an error in the log</h2>
+        <p>An error in the log has three parts. This is the log for a misspelled command:</p>
+        <pre><code>! Undefined control sequence.
+l.3 The effect is \textbf{large} and \emhp
+                                          {robust} across samples.
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.</code></pre>
+        <ul>
+          <li><strong>The message.</strong> The line that starts with <code>!</code> is the error itself. This is the text to search for.</li>
+          <li><strong>The position.</strong> The line that starts with <code>l.</code> and a number is the source line. TeX prints it in two halves, split at the point it had reached. The mistake is nearly always the last thing on the upper half.</li>
+          <li><strong>The help text.</strong> The sentences after that are TeX's own explanation. It is terse, but it often names the fix.</li>
+        </ul>
+        <p>Warnings look different. They start with <code>LaTeX Warning:</code> or, for line-breaking problems, with <code>Overfull</code> or <code>Underfull</code>, and they carry the line number inside the message.</p>
+
+        <h2>Fix the first error first</h2>
+        <p>After an error TeX guesses at a repair and carries on, and when the guess is wrong the lines that follow fail too. A single missing brace can produce twenty messages. Fix the first one in the log, compile again, and read the log again from the top. To reproduce a message outside your project, save a small example as a <code>.tex</code> file and compile it with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Errors that stop the build</h2>
+        <ul>
+          <li><a href="/latex-errors/undefined-control-sequence/">Undefined control sequence</a>: TeX met a command name it has no definition for. Usually the name is misspelled or the package that defines it is not loaded.</li>
+          <li><a href="/latex-errors/missing-dollar-inserted/">Missing $ inserted</a>: TeX found something that only works in math mode while it was setting ordinary text, so it switched to math mode on its own.</li>
+          <li><a href="/latex-errors/file-not-found/">File `x.sty' not found</a>: LaTeX asked for a package, class or input file and could not find it in the project folder or in the TeX distribution.</li>
+          <li><a href="/latex-errors/missing-begin-document/">Missing \begin{document}</a>: LaTeX found something to print before \begin{document}. The line is usually there; something printable sits above it.</li>
+          <li><a href="/latex-errors/environment-undefined/">LaTeX Error: Environment x undefined</a>: A \begin{...} names an environment LaTeX has no definition for.</li>
+          <li><a href="/latex-errors/runaway-argument/">Runaway argument</a>: TeX was reading the argument of a command and ran out of file or paragraph before it found the closing brace.</li>
+          <li><a href="/latex-errors/paragraph-ended-before-complete/">Paragraph ended before \x was complete</a>: TeX was reading a command's argument and reached a blank line before the closing brace.</li>
+          <li><a href="/latex-errors/too-many-closing-braces/">Too many }'s / Missing } inserted</a>: Two messages for one problem: braces that do not pair up. One reports a closing brace too many, the other a group that was never closed.</li>
+          <li><a href="/latex-errors/extra-alignment-tab/">Extra alignment tab has been changed to \cr</a>: A table or matrix row has more &amp; separators than the column specification allows.</li>
+          <li><a href="/latex-errors/misplaced-alignment-tab/">Misplaced alignment tab character &amp;</a>: TeX found an &amp; outside a table or alignment. For an ampersand in text, type \&amp;.</li>
+        </ul>
+
+        <h2>Warnings that change the PDF</h2>
+        <ul>
+          <li><a href="/latex-errors/citation-undefined/">Citation `x' undefined</a>: LaTeX found a \cite key with no bibliography entry to match on this run, so the PDF shows a question mark where the citation should be.</li>
+          <li><a href="/latex-errors/overfull-hbox/">Overfull \hbox</a>: TeX could not break a paragraph without letting one line stick out past the right margin. The number in the message says by how much.</li>
+        </ul>
+
+        <h2>Where your editor shows the log</h2>
+        <p>Every editor keeps the full log somewhere, and most also show a summary with one entry per message.</p>
+        <ul>
+          <li><strong>ModernTex</strong>: when a build fails, the Build button shows the error count and the last good PDF stays on screen. The Build Results panel lists each error, warning and note in plain language, <strong>Compile &rsaquo; Next Issue</strong> steps through them, and <strong>Raw Log</strong> shows the full LaTeX log. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the console window shows the log as it is written and stops at the error. <strong>Goto Error</strong> moves the source window to the line.</li>
+          <li><strong>A terminal</strong>: the same text is printed as TeX runs, and the complete log is in the <code>.log</code> file next to your source.</li>
+        </ul>
+        <p>If the message you are looking at comes from the bibliography, the <a href="/guides/fix-bibtex-errors/">guide to common BibTeX errors</a> covers the <code>.bib</code> side.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>What does the l. number mean in a LaTeX log?</summary><div class="faq-body">It is the line of the source file TeX was reading when it reported the error. The text after the number is that line, split in two at the exact point TeX had reached. For most errors the mistake is the last thing before the split.</div></details>
+        <details><summary>Why does one mistake produce many LaTeX errors?</summary><div class="faq-body">After an error TeX guesses at a repair and keeps going, and a wrong guess makes the following lines fail too. Fix the first error in the log, compile again, and most of the others usually disappear.</div></details>
+        <details><summary>Do I have to fix LaTeX warnings?</summary><div class="faq-body">Warnings do not stop the build, but two of them change the PDF: an undefined citation prints a question mark in place of the reference, and an overfull box pushes text into the margin. Clear both before you submit.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related guides">
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+          <li><a href="/templates/">LaTeX templates by venue</a></li>
+          <li><a href="/guides/fix-bibtex-errors/">How to fix common BibTeX errors</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=fd29b28099" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

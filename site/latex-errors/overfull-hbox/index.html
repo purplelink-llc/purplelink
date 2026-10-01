@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Overfull \hbox: What It Means and How to Fix It | Purplelink</title>
+    <meta name="description" content="What the LaTeX warning &quot;Overfull \hbox (...pt too wide)&quot; means, a real log excerpt, the four usual causes (long URLs, wide tables, wide figures, unbreakable words) and the fixes.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/overfull-hbox/">
+    <meta property="og:title" content="Overfull \hbox: what it means and how to fix it">
+    <meta property="og:description" content="What the LaTeX warning &quot;Overfull \hbox (...pt too wide)&quot; means, a real log excerpt, the four usual causes (long URLs, wide tables, wide figures, unbreakable words) and the fixes.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/overfull-hbox/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Overfull \hbox: what it means and how to fix it">
+    <meta name="twitter:description" content="What the LaTeX warning &quot;Overfull \hbox (...pt too wide)&quot; means, a real log excerpt, the four usual causes (long URLs, wide tables, wide figures, unbreakable words) and the fixes.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="Overfull \hbox: what it means and how to fix it">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Overfull \\hbox: what it means and how to fix it",
+      "description": "What the LaTeX warning \"Overfull \\hbox (...pt too wide)\" means, a real log excerpt, the four usual causes (long URLs, wide tables, wide figures, unbreakable words) and the fixes.",
+      "url": "https://purplelink.llc/latex-errors/overfull-hbox/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/overfull-hbox/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-01",
+      "dateModified": "2026-10-01",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I ignore Overfull \\hbox warnings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Under about one point, yes, because nobody can see it. Anything larger shows as text, a table or a figure reaching into the margin. Look at each of those in the PDF and fix the ones you can see."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between Overfull \\hbox and Underfull \\hbox?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Overfull means the line is too wide for the text block. Underfull means TeX had to stretch the spaces in a line further than it considers acceptable, so the line looks loose. Underfull lines stay inside the margins."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I stop long URLs from running into the margin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Put them in \\url{...} from the url or hyperref package, which lets the address break at slashes and dots. Loading the xurl package as well allows a break after any character."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Overfull \\hbox",
+          "item": "https://purplelink.llc/latex-errors/overfull-hbox/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=b140b81664">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=68150b3301" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX warning</p>
+        <h1 class="post-title">Overfull \hbox</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time></p>
+        <p class="post-lede">TeX could not break a paragraph without letting one line stick out past the right margin. The number in the message says by how much.</p>
+      </div>
+
+      <article class="post-body">
+        <h2>What it means</h2>
+        <p>TeX could not break a paragraph into lines without letting one of them stick out past the right margin. An hbox is a horizontal box, in this case one line of text. Overfull means its contents are wider than the space allowed, by the amount given in points (72.27 pt make one inch). It is a warning: the PDF is produced, with that line running into the margin. An overshoot of a fraction of a point cannot be seen. Larger ones should be fixed before you submit.</p>
+
+        <h2>The log line</h2>
+        <p>This small file triggers the warning:</p>
+        <pre><code>\documentclass{article}
+\begin{document}
+The replication files are available from the project repository at
+\texttt{https://example.org/research/replication-archive/2026/final-dataset-v2.tar.gz}
+for anyone who wants to rerun the analysis.
+\end{document}</code></pre>
+        <p>Compiled with pdfLaTeX (TeX Live 2026), it writes this to the <code>.log</code> file:</p>
+        <pre><code>Overfull \hbox (345.63582pt too wide) in paragraph at lines 3--6
+[]\OT1/cmr/m/n/10 The repli-ca-tion files are avail-able from the project repos-i-tory at \OT1/cmtt/m/n/10 https://example.org/research/replication-archive/2026/final-dataset-v2.tar.gz
+ []</code></pre>
+        <p><code>345.63582pt too wide</code> is how far the line sticks out, here almost five inches, because TeX will not break the monospaced URL anywhere. <code>in paragraph at lines 3--6</code> gives the source lines of the whole paragraph, not of the bad line alone. The next line prints the content of the offending line, with font names such as <code>\OT1/cmr/m/n/10</code> and the possible hyphenation points marked by hyphens. Whatever is at the end of that text is what went into the margin.</p>
+        <p>To try a fix without touching your project, save the example as a <code>.tex</code> file and compile it online with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Why it happens</h2>
+        <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
+        <h3>1. A long URL or path</h3>
+        <p>Text in <code>\texttt</code> is never hyphenated. Put addresses in <code>\url{...}</code>, which allows breaks at slashes and dots. In the example above that still left the line 8pt too wide. Loading <code>xurl</code>, which lets a URL break after any character, removed the warning.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\texttt{https://example.org/research/replication-archive/2026/final-dataset-v2.tar.gz}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\usepackage{xurl} % in the preamble
+\url{https://example.org/research/replication-archive/2026/final-dataset-v2.tar.gz}</code></pre>
+        <h3>2. A table wider than the text block</h3>
+        <p><code>l</code>, <code>c</code> and <code>r</code> columns never wrap, so long cells push the table past the margin. Give the long columns a fixed width with <code>p{...}</code>, or use <code>tabularx</code> with <code>X</code> columns.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\begin{tabular}{lll}
+Baseline &amp; Wikipedia and newswire articles collected before 2020 &amp; Reported by the original authors on the public test split \\</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\begin{tabular}{lp{4.5cm}p{5cm}}
+Baseline &amp; Wikipedia and newswire articles collected before 2020 &amp; Reported by the original authors on the public test split \\</code></pre>
+        <h3>3. A figure wider than the text block</h3>
+        <p><code>\includegraphics</code> uses the natural size of the image unless told otherwise. Scale it to the line width.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\includegraphics{wide-chart.pdf}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\includegraphics[width=\linewidth]{wide-chart.pdf}</code></pre>
+        <h3>4. A word TeX cannot hyphenate</h3>
+        <p>Code identifiers, words in <code>\texttt</code> and anything inside <code>\mbox</code> cannot be split. If such a word lands at the end of a line, TeX has to choose between a very loose line and an overfull one, and by default it picks overfull. Setting <code>\emergencystretch</code> lets it choose the loose line. Rewording the sentence so the word falls elsewhere works too.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>We split the sample by firm and pass each fold to the function
+\texttt{StratifiedGroupKFoldCrossValidator} before fitting the model.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\emergencystretch=3em % in the preamble
+\texttt{StratifiedGroupKFoldCrossValidator} before fitting the model.</code></pre>
+
+        <h2>How to find the line</h2>
+        <p>There is no <code>l.</code> marker and no <code>?</code> prompt for a warning. The log gives the line range of the paragraph and prints the text of the bad line. To see it on the page, add the <code>draft</code> class option, as in <code>\documentclass[draft]{article}</code>. LaTeX then prints a black bar in the margin next to every overfull line. With <code>graphicx</code> loaded, the same option replaces figures by empty frames, so remove it again afterwards.</p>
+        <p>Because this is a warning, TeX does not stop for it even in a terminal run. The message scrolls past and the only record is the <code>.log</code> file, so search that file for the first word of the message.</p>
+        <p>What each editor shows:</p>
+        <ul>
+          <li><strong>ModernTex</strong>: the Build Results panel lists warnings and notes as well as errors, in plain language, and <strong>Raw Log</strong> shows the full LaTeX log. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the build does not stop for a warning. Scroll the console window, or open the <code>.log</code> file next to your source, and search for the first word of the message.</li>
+        </ul>
+
+        <h2>Related errors</h2>
+        <ul>
+          <li><a href="/latex-errors/extra-alignment-tab/">Extra alignment tab has been changed to \cr</a>: when the table does not compile at all.</li>
+          <li><a href="/latex-errors/missing-dollar-inserted/">Missing $ inserted</a>: underscores in the same file names and identifiers that cause overfull lines.</li>
+          <li><a href="/latex-errors/citation-undefined/">Citation `x' undefined</a>: the other warning worth clearing before submission.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Can I ignore Overfull \hbox warnings?</summary><div class="faq-body">Under about one point, yes, because nobody can see it. Anything larger shows as text, a table or a figure reaching into the margin. Look at each of those in the PDF and fix the ones you can see.</div></details>
+        <details><summary>What is the difference between Overfull \hbox and Underfull \hbox?</summary><div class="faq-body">Overfull means the line is too wide for the text block. Underfull means TeX had to stretch the spaces in a line further than it considers acceptable, so the line looks loose. Underfull lines stay inside the margins.</div></details>
+        <details><summary>How do I stop long URLs from running into the margin?</summary><div class="faq-body">Put them in \url{...} from the url or hyperref package, which lets the address break at slashes and dots. Loading the xurl package as well allows a break after any character.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="More on LaTeX errors">
+        <h2>More on LaTeX errors</h2>
+        <ul>
+          <li><a href="/latex-errors/">All LaTeX error messages</a></li>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=fd29b28099" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

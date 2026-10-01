@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Runaway argument: What It Means and How to Fix It | Purplelink</title>
+    <meta name="description" content="What &quot;Runaway argument?&quot; means in a LaTeX log, a real excerpt, the five usual causes (a missing closing brace, a commented-out brace, a truncated .aux file) and the fix.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/runaway-argument/">
+    <meta property="og:title" content="Runaway argument: what it means and how to fix it">
+    <meta property="og:description" content="What &quot;Runaway argument?&quot; means in a LaTeX log, a real excerpt, the five usual causes (a missing closing brace, a commented-out brace, a truncated .aux file) and the fix.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/runaway-argument/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Runaway argument: what it means and how to fix it">
+    <meta name="twitter:description" content="What &quot;Runaway argument?&quot; means in a LaTeX log, a real excerpt, the five usual causes (a missing closing brace, a commented-out brace, a truncated .aux file) and the fix.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="Runaway argument: what it means and how to fix it">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Runaway argument: what it means and how to fix it",
+      "description": "What \"Runaway argument?\" means in a LaTeX log, a real excerpt, the five usual causes (a missing closing brace, a commented-out brace, a truncated .aux file) and the fix.",
+      "url": "https://purplelink.llc/latex-errors/runaway-argument/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/runaway-argument/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-01",
+      "dateModified": "2026-10-01",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does \\ETC. mean in a Runaway argument message?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TeX prints only the start of the text it had collected as the argument and ends it with \\ETC. to show that it was cut off. The words before \\ETC. come from your file, so search for them to find where the argument started."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the error name a command I never typed, like \\@xdblarg?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Commands such as \\section pass their argument to internal helper macros. The error names the helper that was reading when the file or the paragraph ended. Use the text printed under Runaway argument? to find the place."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "The Runaway argument text comes from my .aux or .toc file. How do I fix it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "An earlier build stopped part of the way through and left a truncated auxiliary file. Delete the .aux, .toc, .lof, .lot and .out files next to your main file and compile twice. They are rebuilt from your source."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Runaway argument",
+          "item": "https://purplelink.llc/latex-errors/runaway-argument/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=b140b81664">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=68150b3301" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX error</p>
+        <h1 class="post-title">Runaway argument</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time></p>
+        <p class="post-lede">TeX was reading the argument of a command and ran out of file or paragraph before it found the closing brace.</p>
+      </div>
+
+      <article class="post-body">
+        <h2>What it means</h2>
+        <p>TeX was collecting the argument of a command, the part between <code>{</code> and <code>}</code>, and reached a place where the argument could not continue: the end of the file, or a blank line for commands that do not accept paragraphs. <code>Runaway argument?</code> is the first of a pair of lines. The second, which begins with <code>!</code>, says what stopped it. In nearly every case a closing brace is missing.</p>
+
+        <h2>The log line</h2>
+        <p>This small file triggers the error:</p>
+        <pre><code>\documentclass{article}
+\begin{document}
+\section{Related work
+
+Prior studies report mixed results.
+\end{document}</code></pre>
+        <p>Compiled with pdfLaTeX (TeX Live 2026), it writes this to the <code>.log</code> file:</p>
+        <pre><code>Runaway argument?
+{Related work \par Prior studies report mixed results. \end {document\ETC.
+! File ended while scanning use of \@xdblarg.
+&lt;inserted text&gt;
+                \par
+&lt;*&gt; main.tex
+
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.</code></pre>
+        <p>The line under <code>Runaway argument?</code> shows what TeX had swallowed so far, starting at the opening brace: <code>{Related work</code> and then the rest of the file. That first brace is the one that was never closed. <code>\ETC.</code> means the display was cut short. The <code>!</code> line names the macro that was reading. <code>\@xdblarg</code> is an internal helper behind <code>\section</code>, so the name does not always match what you typed. There is no <code>l.</code> line, because TeX reached the end of the file before it noticed anything wrong.</p>
+        <p>To try a fix without touching your project, save the example as a <code>.tex</code> file and compile it online with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Why it happens</h2>
+        <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
+        <h3>1. A missing closing brace</h3>
+        <p>The argument of <code>\section</code>, <code>\footnote</code>, <code>\caption</code> or a similar command was opened and never closed. TeX reads on to the end of the file.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>Wages rose\footnote{See Appendix B for the sample.
+The effect persists.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>Wages rose\footnote{See Appendix B for the sample.}
+The effect persists.</code></pre>
+        <h3>2. A blank line inside a short argument</h3>
+        <p>Commands such as <code>\date</code>, <code>\label</code> and <code>\cite</code> stop at the first blank line. The second log line then reads <code>Paragraph ended before \date was complete</code>, which has <a href="/latex-errors/paragraph-ended-before-complete/">its own page</a>.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\date{October 2026
+
+\maketitle</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\date{October 2026}
+
+\maketitle</code></pre>
+        <h3>3. A % comment hides the closing brace</h3>
+        <p>Everything after <code>%</code> on a line is ignored, including a brace. A note added at the end of a line can remove the brace that closed the argument.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>The effect is \textbf{significant % check this}
+in all samples.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>The effect is \textbf{significant} % check this
+in all samples.</code></pre>
+        <h3>4. A truncated .aux, .toc or .bbl file</h3>
+        <p>When a build is interrupted, the auxiliary files can end in the middle of a line. On the next run TeX reads the broken file first and reports a runaway argument whose text you never typed, such as <code>{{1}{1}</code>. Delete the auxiliary files and compile twice.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>% main.aux ends in the middle of an entry:
+\newlabel{sec:data}{{1}{1}</code></pre>
+        <p><strong>After (in a terminal)</strong></p>
+        <pre><code>rm main.aux main.toc main.out
+pdflatex main.tex</code></pre>
+        <h3>5. An optional argument that is never closed</h3>
+        <p>Square brackets are delimiters too. An <code>\item[</code> without its <code>]</code> makes TeX read on in search of the closing bracket.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\begin{description}
+\item[Sample size The number of firms.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\begin{description}
+\item[Sample size] The number of firms.</code></pre>
+
+        <h2>How to find the line</h2>
+        <p>Read the swallowed text, not the line number. Its first few words show where the argument began, so search the source for them. When the second line is <code>File ended while scanning use of ...</code>, there is no line number at all. When it is <code>Paragraph ended before ... was complete</code>, the <code>l.</code> line points at the blank line where TeX gave up, and the unclosed brace is above it.</p>
+        <p>When you run <code>pdflatex</code> in a terminal without <code>-interaction=nonstopmode</code>, TeX stops at the error and prints a <code>?</code> prompt. Press Return to carry on past the error, type <code>x</code> to quit, or type <code>h</code> for TeX's own help text, which is the paragraph you see after the <code>l.</code> line in the log. Editors run TeX in non-stop mode, so you get the log and never see the prompt.</p>
+        <p>What each editor shows:</p>
+        <ul>
+          <li><strong>ModernTex</strong>: when a build fails, the Build button shows the error count and the last good PDF stays on screen. The Build Results panel lists each error, warning and note in plain language, <strong>Compile &rsaquo; Next Issue</strong> steps through them, and <strong>Raw Log</strong> shows the full LaTeX log. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the console window shows the log as it is written and stops at the error. <strong>Goto Error</strong> moves the source window to the line. TeXShop's default pdfLaTeX command includes <code>--file-line-error</code>, but with no line to report, this message keeps its <code>!</code> form.</li>
+        </ul>
+
+        <h2>Related errors</h2>
+        <ul>
+          <li><a href="/latex-errors/paragraph-ended-before-complete/">Paragraph ended before \x was complete</a>: the second line of this message when a blank line stops the argument.</li>
+          <li><a href="/latex-errors/too-many-closing-braces/">Too many }'s / Missing } inserted</a>: the opposite imbalance, an extra <code>}</code> or a group left open.</li>
+          <li><a href="/latex-errors/undefined-control-sequence/">Undefined control sequence</a>: the other error that usually comes down to one mistyped character.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>What does \ETC. mean in a Runaway argument message?</summary><div class="faq-body">TeX prints only the start of the text it had collected as the argument and ends it with \ETC. to show that it was cut off. The words before \ETC. come from your file, so search for them to find where the argument started.</div></details>
+        <details><summary>Why does the error name a command I never typed, like \@xdblarg?</summary><div class="faq-body">Commands such as \section pass their argument to internal helper macros. The error names the helper that was reading when the file or the paragraph ended. Use the text printed under Runaway argument? to find the place.</div></details>
+        <details><summary>The Runaway argument text comes from my .aux or .toc file. How do I fix it?</summary><div class="faq-body">An earlier build stopped part of the way through and left a truncated auxiliary file. Delete the .aux, .toc, .lof, .lot and .out files next to your main file and compile twice. They are rebuilt from your source.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="More on LaTeX errors">
+        <h2>More on LaTeX errors</h2>
+        <ul>
+          <li><a href="/latex-errors/">All LaTeX error messages</a></li>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=fd29b28099" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

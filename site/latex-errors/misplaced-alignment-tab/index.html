@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Misplaced alignment tab character &amp;: What It Means and How to Fix It | Purplelink</title>
+    <meta name="description" content="What &quot;Misplaced alignment tab character &amp;&quot; means in LaTeX, a real log excerpt, the four usual causes (an &amp; in text, in an equation, in a URL, in a .bib entry) and the fix.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/misplaced-alignment-tab/">
+    <meta property="og:title" content="Misplaced alignment tab character &amp;: what it means and how to fix it">
+    <meta property="og:description" content="What &quot;Misplaced alignment tab character &amp;&quot; means in LaTeX, a real log excerpt, the four usual causes (an &amp; in text, in an equation, in a URL, in a .bib entry) and the fix.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/misplaced-alignment-tab/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Misplaced alignment tab character &amp;: what it means and how to fix it">
+    <meta name="twitter:description" content="What &quot;Misplaced alignment tab character &amp;&quot; means in LaTeX, a real log excerpt, the four usual causes (an &amp; in text, in an equation, in a URL, in a .bib entry) and the fix.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="Misplaced alignment tab character &amp;: what it means and how to fix it">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Misplaced alignment tab character &: what it means and how to fix it",
+      "description": "What \"Misplaced alignment tab character &\" means in LaTeX, a real log excerpt, the four usual causes (an & in text, in an equation, in a URL, in a .bib entry) and the fix.",
+      "url": "https://purplelink.llc/latex-errors/misplaced-alignment-tab/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/misplaced-alignment-tab/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-01",
+      "dateModified": "2026-10-01",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I type an ampersand in LaTeX?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Type \\& in text, titles, captions and table cells. For a web address, use \\url{...} from the url or hyperref package, which accepts a bare &."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do I get this error inside an equation?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The equation environment does not align anything, so it has no columns for & to separate. Use align, or aligned inside an equation, both from amsmath, where & marks the alignment point."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "The error is in my .bbl file. Where is the ampersand?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "In the .bib entry that produced that line, usually a journal or publisher name. Change & to \\& in the .bib file and run BibTeX again. Editing the .bbl file does not last, because BibTeX rewrites it."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Misplaced alignment tab character &",
+          "item": "https://purplelink.llc/latex-errors/misplaced-alignment-tab/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=b140b81664">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=68150b3301" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX error</p>
+        <h1 class="post-title">Misplaced alignment tab character &amp;</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time></p>
+        <p class="post-lede">TeX found an &amp; outside a table or alignment. For an ampersand in text, type \&amp;.</p>
+      </div>
+
+      <article class="post-body">
+        <h2>What it means</h2>
+        <p>TeX found an <code>&amp;</code> where no table or alignment is open. In LaTeX the bare <code>&amp;</code> is reserved for separating columns in <code>tabular</code>, <code>align</code>, the matrix environments and similar. Anywhere else it is an error, and TeX leaves the character out of the PDF. If you wanted an ampersand in the text, type <code>\&amp;</code>.</p>
+
+        <h2>The log line</h2>
+        <p>This small file triggers the error:</p>
+        <pre><code>\documentclass{article}
+\begin{document}
+This follows Smith &amp; Jones (2024).
+\end{document}</code></pre>
+        <p>Compiled with pdfLaTeX (TeX Live 2026), it writes this to the <code>.log</code> file:</p>
+        <pre><code>! Misplaced alignment tab character &amp;.
+l.3 This follows Smith &amp;
+                         Jones (2024).
+I can't figure out why you would want to use a tab mark
+here. If you just want an ampersand, the remedy is
+simple: Just type `I\&amp;' now. But if some right brace
+up above has ended a previous alignment prematurely,
+you're probably due for more error messages, and you
+might try typing `S' now just to see what is salvageable.</code></pre>
+        <p>The <code>l.3</code> line breaks right after the offending <code>&amp;</code>, the one between Smith and Jones. TeX's help text gives the remedy itself: type <code>\&amp;</code>.</p>
+        <p>To try a fix without touching your project, save the example as a <code>.tex</code> file and compile it online with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Why it happens</h2>
+        <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
+        <h3>1. An ampersand in running text, a heading or a caption</h3>
+        <p>Company names, author pairs and section titles are the usual places.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\section{Mergers &amp; acquisitions}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\section{Mergers \&amp; acquisitions}</code></pre>
+        <h3>2. An &amp; in an environment that does not align</h3>
+        <p><code>equation</code> sets one formula and has no columns. To line up equals signs, use <code>align</code>, or <code>aligned</code> inside an equation, both from <code>amsmath</code>.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\begin{equation}
+y &amp;= ax + b</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\begin{align}
+y &amp;= ax + b</code></pre>
+        <h3>3. A URL with a query string</h3>
+        <p>Web addresses use <code>&amp;</code> between parameters. Put the address in <code>\url{...}</code> from the <code>url</code> or <code>hyperref</code> package, which accepts it as typed.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>See https://example.org/search?q=latex&amp;page=2 for the list.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>See \url{https://example.org/search?q=latex&amp;page=2} for the list.</code></pre>
+        <h3>4. An &amp; in a .bib field</h3>
+        <p>A journal or publisher name with an ampersand passes through BibTeX unchanged and fails when LaTeX reads the <code>.bbl</code> file. The log then shows a <code>.bbl</code> line such as <code>\newblock {\em Science &amp;</code>. Fix the <code>.bib</code> file and run BibTeX again.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>journal = {Science &amp; Society},</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>journal = {Science \&amp; Society},</code></pre>
+
+        <h2>How to find the line</h2>
+        <p>The <code>l.</code> line is exact when the <code>&amp;</code> is in your own text. When the last file opened in the log is a <code>.bbl</code> file, the ampersand is in your bibliography: find the entry by the words around the break and correct the <code>.bib</code> file, not the <code>.bbl</code>, which is rewritten on every BibTeX run. If the <code>&amp;</code> is inside what should be a table, something above it closed the table early.</p>
+        <p>When you run <code>pdflatex</code> in a terminal without <code>-interaction=nonstopmode</code>, TeX stops at the error and prints a <code>?</code> prompt. Press Return to carry on past the error, type <code>x</code> to quit, or type <code>h</code> for TeX's own help text, which is the paragraph you see after the <code>l.</code> line in the log. Editors run TeX in non-stop mode, so you get the log and never see the prompt.</p>
+        <p>What each editor shows:</p>
+        <ul>
+          <li><strong>ModernTex</strong>: when a build fails, the Build button shows the error count and the last good PDF stays on screen. The Build Results panel lists each error, warning and note in plain language, <strong>Compile &rsaquo; Next Issue</strong> steps through them, and <strong>Raw Log</strong> shows the full LaTeX log. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the console window shows the log as it is written and stops at the error. <strong>Goto Error</strong> moves the source window to the line. TeXShop's default pdfLaTeX command includes <code>--file-line-error</code>, so the same error starts with the file and line in place of the <code>!</code>: <code>./main.tex:3: Misplaced alignment tab character &amp;.</code></li>
+        </ul>
+
+        <h2>Related errors</h2>
+        <ul>
+          <li><a href="/latex-errors/extra-alignment-tab/">Extra alignment tab has been changed to \cr</a>: too many <code>&amp;</code> inside a table.</li>
+          <li><a href="/latex-errors/missing-dollar-inserted/">Missing $ inserted</a>: the matching error for <code>_</code> and <code>^</code> in text.</li>
+          <li><a href="/latex-errors/citation-undefined/">Citation `x' undefined</a>: the other common problem that starts in the <code>.bib</code> file.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>How do I type an ampersand in LaTeX?</summary><div class="faq-body">Type \&amp; in text, titles, captions and table cells. For a web address, use \url{...} from the url or hyperref package, which accepts a bare &amp;.</div></details>
+        <details><summary>Why do I get this error inside an equation?</summary><div class="faq-body">The equation environment does not align anything, so it has no columns for &amp; to separate. Use align, or aligned inside an equation, both from amsmath, where &amp; marks the alignment point.</div></details>
+        <details><summary>The error is in my .bbl file. Where is the ampersand?</summary><div class="faq-body">In the .bib entry that produced that line, usually a journal or publisher name. Change &amp; to \&amp; in the .bib file and run BibTeX again. Editing the .bbl file does not last, because BibTeX rewrites it.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="More on LaTeX errors">
+        <h2>More on LaTeX errors</h2>
+        <ul>
+          <li><a href="/latex-errors/">All LaTeX error messages</a></li>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=fd29b28099" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

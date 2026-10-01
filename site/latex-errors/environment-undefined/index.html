@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>LaTeX Error: Environment x undefined: What It Means and How to Fix It | Purplelink</title>
+    <meta name="description" content="What &quot;LaTeX Error: Environment x undefined&quot; means, a real log excerpt, the five usual causes (amsmath not loaded, no \newtheorem, a misspelled name) and the fix for each.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/environment-undefined/">
+    <meta property="og:title" content="LaTeX Error: Environment x undefined: what it means and how to fix it">
+    <meta property="og:description" content="What &quot;LaTeX Error: Environment x undefined&quot; means, a real log excerpt, the five usual causes (amsmath not loaded, no \newtheorem, a misspelled name) and the fix for each.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/environment-undefined/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LaTeX Error: Environment x undefined: what it means and how to fix it">
+    <meta name="twitter:description" content="What &quot;LaTeX Error: Environment x undefined&quot; means, a real log excerpt, the five usual causes (amsmath not loaded, no \newtheorem, a misspelled name) and the fix for each.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="LaTeX Error: Environment x undefined: what it means and how to fix it">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "LaTeX Error: Environment x undefined: what it means and how to fix it",
+      "description": "What \"LaTeX Error: Environment x undefined\" means, a real log excerpt, the five usual causes (amsmath not loaded, no \\newtheorem, a misspelled name) and the fix for each.",
+      "url": "https://purplelink.llc/latex-errors/environment-undefined/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/environment-undefined/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-01",
+      "dateModified": "2026-10-01",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which package defines the align environment?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "amsmath. Add \\usepackage{amsmath} to the preamble. The same package defines align*, gather, multline, equation* and the matrix environments such as pmatrix and bmatrix."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is the theorem environment undefined?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "LaTeX does not predefine theorem, lemma or definition. Declare each one with a line such as \\newtheorem{theorem}{Theorem} in the preamble. The proof environment comes from the amsthm package."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "I loaded the package. Why is the environment still undefined?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Check the spelling inside \\begin{...}, including a trailing star: equation* and equation are separate environments. Some templates also define environments only in their own class file, so the same text in another class leaves them undefined."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "LaTeX Error: Environment x undefined",
+          "item": "https://purplelink.llc/latex-errors/environment-undefined/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=b140b81664">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=68150b3301" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX error</p>
+        <h1 class="post-title">LaTeX Error: Environment x undefined</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time></p>
+        <p class="post-lede">A \begin{...} names an environment LaTeX has no definition for.</p>
+      </div>
+
+      <article class="post-body">
+        <h2>What it means</h2>
+        <p>A <code>\begin{...}</code> names an environment that LaTeX does not know. Either the package or class that defines it is not loaded, the name is misspelled, or it is an environment you are expected to declare yourself, as with <code>theorem</code> and <code>lemma</code>. LaTeX ignores the <code>\begin</code>. If the build continues, the matching <code>\end</code> then raises a second error, <code>\begin{document} ended by \end{theorem}</code>.</p>
+
+        <h2>The log line</h2>
+        <p>This small file triggers the error:</p>
+        <pre><code>\documentclass{article}
+\begin{document}
+\begin{theorem}
+Every bounded sequence has a convergent subsequence.
+\end{theorem}
+\end{document}</code></pre>
+        <p>Compiled with pdfLaTeX (TeX Live 2026), it writes this to the <code>.log</code> file:</p>
+        <pre><code>! LaTeX Error: Environment theorem undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H &lt;return&gt;  for immediate help.
+ ...
+
+l.3 \begin{theorem}
+
+Your command was ignored.
+Type  I &lt;command&gt; &lt;return&gt;  to replace it with another command,
+or  &lt;return&gt;  to continue without it.</code></pre>
+        <p>The message names the environment, here <code>theorem</code>, and the <code>l.3</code> line shows the <code>\begin{theorem}</code> that failed. LaTeX does not predefine <code>theorem</code>. It has to be declared with <code>\newtheorem</code> in the preamble.</p>
+        <p>To try a fix without touching your project, save the example as a <code>.tex</code> file and compile it online with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Why it happens</h2>
+        <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
+        <h3>1. The package that defines it is not loaded</h3>
+        <p><code>align</code>, <code>gather</code>, <code>multline</code> and the matrix environments come from <code>amsmath</code>. <code>algorithm</code> comes from the <code>algorithm</code> package, <code>tikzpicture</code> from <code>tikz</code>, <code>proof</code> from <code>amsthm</code>.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>% preamble has no \usepackage{amsmath}
+\begin{align}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\usepackage{amsmath} % in the preamble
+\begin{align}</code></pre>
+        <h3>2. A theorem-like environment was never declared</h3>
+        <p><code>theorem</code>, <code>lemma</code>, <code>definition</code> and the rest exist only after a <code>\newtheorem</code> line creates them.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\begin{lemma}
+The set is closed.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\newtheorem{lemma}{Lemma} % in the preamble
+\begin{lemma}</code></pre>
+        <h3>3. A misspelled environment name</h3>
+        <p>The name in the error message is exactly what LaTeX read. Compare it letter by letter, and fix the matching <code>\end</code> as well.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\begin{enumarate}
+\item First step</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\begin{enumerate}
+\item First step</code></pre>
+        <h3>4. A starred form that needs amsmath</h3>
+        <p><code>equation*</code> is not part of basic LaTeX. Without <code>amsmath</code> the message reads <code>Environment equation* undefined</code>.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\begin{equation*}
+y = ax + b</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\usepackage{amsmath} % in the preamble
+\begin{equation*}</code></pre>
+        <h3>5. An environment from a different class</h3>
+        <p>Classes define different sets of environments. The <code>book</code> class has no <code>abstract</code>, and <code>frame</code> exists only in <code>beamer</code>. Use a class that has the environment, or replace it.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\documentclass{book}
+\begin{abstract}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\documentclass{report}
+\begin{abstract}</code></pre>
+
+        <h2>How to find the line</h2>
+        <p>The <code>l.</code> line is exact: it shows the <code>\begin{...}</code> that failed. Fix this error first and leave the <code>\begin{document} ended by \end{...}</code> error that follows it alone. That one disappears as soon as the environment exists.</p>
+        <p>When you run <code>pdflatex</code> in a terminal without <code>-interaction=nonstopmode</code>, TeX stops at the error and prints a <code>?</code> prompt. Press Return to carry on past the error, type <code>x</code> to quit, or type <code>h</code> for TeX's own help text, which is the paragraph you see after the <code>l.</code> line in the log. Editors run TeX in non-stop mode, so you get the log and never see the prompt.</p>
+        <p>What each editor shows:</p>
+        <ul>
+          <li><strong>ModernTex</strong>: when a build fails, the Build button shows the error count and the last good PDF stays on screen. The Build Results panel lists each error, warning and note in plain language, <strong>Compile &rsaquo; Next Issue</strong> steps through them, and <strong>Raw Log</strong> shows the full LaTeX log. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the console window shows the log as it is written and stops at the error. <strong>Goto Error</strong> moves the source window to the line. TeXShop's default pdfLaTeX command includes <code>--file-line-error</code>, so the same error starts with the file and line in place of the <code>!</code>: <code>./main.tex:3: LaTeX Error: Environment theorem undefined.</code></li>
+        </ul>
+
+        <h2>Related errors</h2>
+        <ul>
+          <li><a href="/latex-errors/undefined-control-sequence/">Undefined control sequence</a>: the same problem for commands.</li>
+          <li><a href="/latex-errors/file-not-found/">File `x.sty' not found</a>: when the package you add is not installed.</li>
+          <li><a href="/latex-errors/missing-begin-document/">Missing \begin{document}</a>: another error that is about the preamble.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Which package defines the align environment?</summary><div class="faq-body">amsmath. Add \usepackage{amsmath} to the preamble. The same package defines align*, gather, multline, equation* and the matrix environments such as pmatrix and bmatrix.</div></details>
+        <details><summary>Why is the theorem environment undefined?</summary><div class="faq-body">LaTeX does not predefine theorem, lemma or definition. Declare each one with a line such as \newtheorem{theorem}{Theorem} in the preamble. The proof environment comes from the amsthm package.</div></details>
+        <details><summary>I loaded the package. Why is the environment still undefined?</summary><div class="faq-body">Check the spelling inside \begin{...}, including a trailing star: equation* and equation are separate environments. Some templates also define environments only in their own class file, so the same text in another class leaves them undefined.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="More on LaTeX errors">
+        <h2>More on LaTeX errors</h2>
+        <ul>
+          <li><a href="/latex-errors/">All LaTeX error messages</a></li>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=fd29b28099" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

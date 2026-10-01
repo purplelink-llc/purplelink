@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Missing \begin{document}: What It Means and How to Fix It | Purplelink</title>
+    <meta name="description" content="What &quot;LaTeX Error: Missing \begin{document}&quot; means, a real log excerpt, the five usual causes (text in the preamble, a missing backslash, compiling the wrong file) and the fix.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/missing-begin-document/">
+    <meta property="og:title" content="Missing \begin{document}: what it means and how to fix it">
+    <meta property="og:description" content="What &quot;LaTeX Error: Missing \begin{document}&quot; means, a real log excerpt, the five usual causes (text in the preamble, a missing backslash, compiling the wrong file) and the fix.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/missing-begin-document/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Missing \begin{document}: what it means and how to fix it">
+    <meta name="twitter:description" content="What &quot;LaTeX Error: Missing \begin{document}&quot; means, a real log excerpt, the five usual causes (text in the preamble, a missing backslash, compiling the wrong file) and the fix.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="Missing \begin{document}: what it means and how to fix it">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Missing \\begin{document}: what it means and how to fix it",
+      "description": "What \"LaTeX Error: Missing \\begin{document}\" means, a real log excerpt, the five usual causes (text in the preamble, a missing backslash, compiling the wrong file) and the fix.",
+      "url": "https://purplelink.llc/latex-errors/missing-begin-document/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/missing-begin-document/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-01",
+      "dateModified": "2026-10-01",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "I have \\begin{document} in my file. Why does LaTeX say it is missing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The message means something printable came before \\begin{document}, not that the line is absent. Look at the line number in the log: the stray text or mistyped command is in the preamble at that line."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do I get this error when I compile a chapter file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A chapter or section file pulled in with \\input or \\include has no \\documentclass or \\begin{document} of its own. Compile the main file, or tell your editor which file is the root."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a package file cause Missing \\begin{document}?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. If a .sty or .cls file contains plain text, LaTeX tries to typeset it while it is still in the preamble. This happens when a download saved a web page under the .sty name. Open the file: it should start with TeX code, not HTML."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Missing \\begin{document}",
+          "item": "https://purplelink.llc/latex-errors/missing-begin-document/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=b140b81664">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=68150b3301" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX error</p>
+        <h1 class="post-title">Missing \begin{document}</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time></p>
+        <p class="post-lede">LaTeX found something to print before \begin{document}. The line is usually there; something printable sits above it.</p>
+      </div>
+
+      <article class="post-body">
+        <h2>What it means</h2>
+        <p>LaTeX found something to typeset, a letter, a digit or any other printable character, before <code>\begin{document}</code>. Only declarations belong in the preamble: <code>\documentclass</code>, <code>\usepackage</code>, <code>\newcommand</code>, <code>\title</code> and the like. The message does not mean the <code>\begin{document}</code> line is absent. It means text arrived before it. The usual causes are stray words in the preamble, a preamble command that lost its backslash, or compiling a file that is not the main file of the project.</p>
+
+        <h2>The log line</h2>
+        <p>This small file triggers the error:</p>
+        <pre><code>\documentclass{article}
+\usepackage{amsmath}
+Draft of the introduction.
+\begin{document}
+Body text.
+\end{document}</code></pre>
+        <p>Compiled with pdfLaTeX (TeX Live 2026), it writes this to the <code>.log</code> file:</p>
+        <pre><code>! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H &lt;return&gt;  for immediate help.
+ ...
+
+l.3 D
+     raft of the introduction.
+You're in trouble here.  Try typing  &lt;return&gt;  to proceed.
+If that doesn't work, type  X &lt;return&gt;  to quit.</code></pre>
+        <p>The <code>l.3</code> line breaks after the first character LaTeX could not place, here the D of Draft. Line 3 of this file is a sentence sitting between <code>\usepackage{amsmath}</code> and <code>\begin{document}</code>.</p>
+        <p>To try a fix without touching your project, save the example as a <code>.tex</code> file and compile it online with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Why it happens</h2>
+        <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
+        <h3>1. Text in the preamble</h3>
+        <p>A note, a title typed without <code>\title{...}</code>, or a line that was meant to be a comment. Move it below <code>\begin{document}</code> or put a <code>%</code> in front of it.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\usepackage{amsmath}
+Draft of the introduction.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\usepackage{amsmath}
+% Draft of the introduction.</code></pre>
+        <h3>2. A preamble command without its backslash</h3>
+        <p>Without the backslash, <code>usepackage{booktabs}</code> is just a word, and LaTeX tries to print it.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>usepackage{booktabs}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\usepackage{booktabs}</code></pre>
+        <h3>3. Compiling a chapter or section file</h3>
+        <p>A file pulled in with <code>\input</code> or <code>\include</code> has no preamble of its own. If the editor compiles that file, the first word in it raises this error at <code>l.1</code>. Compile the main file. Many editors also accept a root-file comment at the top of the chapter.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>% chapters/review.tex, compiled directly
+This chapter reviews prior work.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>% !TEX root = ../main.tex
+This chapter reviews prior work.</code></pre>
+        <h3>4. \begin{document} is commented out or was deleted</h3>
+        <p>If the line is really gone, the first sectioning command or word of the body triggers the error.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>% \begin{document}
+\section{Introduction}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\begin{document}
+\section{Introduction}</code></pre>
+        <h3>5. A package file that is really a web page</h3>
+        <p>Saving a <code>.sty</code> file from a website sometimes saves the HTML page around it. LaTeX loads the file in the preamble and trips over the first character of the HTML. Open the <code>.sty</code> file: it should start with TeX code. Download the raw file again.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>% journalstyle.sty starts with &lt;!DOCTYPE html&gt;
+\usepackage{journalstyle}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>% journalstyle.sty starts with \ProvidesPackage
+\usepackage{journalstyle}</code></pre>
+
+        <h2>How to find the line</h2>
+        <p>The <code>l.</code> number is reliable here, but check which file it refers to. The log lists each file in parentheses as it opens it, and the last one opened before the error is the file with the stray text. If that is a chapter file, you are compiling the wrong file. If it is a <code>.sty</code> or <code>.cls</code> file, the problem is inside that file.</p>
+        <p>When you run <code>pdflatex</code> in a terminal without <code>-interaction=nonstopmode</code>, TeX stops at the error and prints a <code>?</code> prompt. Press Return to carry on past the error, type <code>x</code> to quit, or type <code>h</code> for TeX's own help text, which is the paragraph you see after the <code>l.</code> line in the log. Editors run TeX in non-stop mode, so you get the log and never see the prompt.</p>
+        <p>What each editor shows:</p>
+        <ul>
+          <li><strong>ModernTex</strong>: when a build fails, the Build button shows the error count and the last good PDF stays on screen. The Build Results panel lists each error, warning and note in plain language, <strong>Compile &rsaquo; Next Issue</strong> steps through them, and <strong>Raw Log</strong> shows the full LaTeX log. The root file's name appears in the toolbar next to the project name. If it is not your main file, click it and pick another under <strong>Set Root File</strong>. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the console window shows the log as it is written and stops at the error. <strong>Goto Error</strong> moves the source window to the line. TeXShop's default pdfLaTeX command includes <code>--file-line-error</code>, so the same error starts with the file and line in place of the <code>!</code>: <code>./main.tex:3: LaTeX Error: Missing \begin{document}.</code></li>
+        </ul>
+
+        <h2>Related errors</h2>
+        <ul>
+          <li><a href="/latex-errors/file-not-found/">File `x.sty' not found</a>: when the main file's <code>\input</code> paths are wrong.</li>
+          <li><a href="/latex-errors/undefined-control-sequence/">Undefined control sequence</a>: what a chapter file gives when it starts with a command.</li>
+          <li><a href="/latex-errors/runaway-argument/">Runaway argument</a>: when an unclosed brace in the preamble swallows <code>\begin{document}</code>.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>I have \begin{document} in my file. Why does LaTeX say it is missing?</summary><div class="faq-body">The message means something printable came before \begin{document}, not that the line is absent. Look at the line number in the log: the stray text or mistyped command is in the preamble at that line.</div></details>
+        <details><summary>Why do I get this error when I compile a chapter file?</summary><div class="faq-body">A chapter or section file pulled in with \input or \include has no \documentclass or \begin{document} of its own. Compile the main file, or tell your editor which file is the root.</div></details>
+        <details><summary>Can a package file cause Missing \begin{document}?</summary><div class="faq-body">Yes. If a .sty or .cls file contains plain text, LaTeX tries to typeset it while it is still in the preamble. This happens when a download saved a web page under the .sty name. Open the file: it should start with TeX code, not HTML.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="More on LaTeX errors">
+        <h2>More on LaTeX errors</h2>
+        <ul>
+          <li><a href="/latex-errors/">All LaTeX error messages</a></li>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=fd29b28099" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

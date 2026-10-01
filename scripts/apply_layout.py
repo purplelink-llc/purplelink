@@ -45,7 +45,7 @@ NAV = [
     ("Products", "/products/", ("products/", "moderntex/", "vitae/", "globepin/",
                                 "haea/", "binnacle/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
-    ("Guides", "/guides/", ("guides/", "templates/")),
+    ("Guides", "/guides/", ("guides/", "templates/", "latex-errors/")),
     ("Blog", "/blog/", ("blog/", "changelog/")),
     ("About", "/about/", ("about/", "press/")),
 ]
@@ -70,6 +70,7 @@ FOOTER_COLUMNS = [
         ("Guides", "/guides/"),
         ("Research methods", "/guides/methodology-problems-peer-reviewers-flag/"),
         ("LaTeX templates", "/templates/"),
+        ("LaTeX errors", "/latex-errors/"),
         ("Reference formats", "/format/"),
         ("Blog", "/blog/"),
         ("Changelog", "/changelog/"),

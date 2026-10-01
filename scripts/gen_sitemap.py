@@ -58,6 +58,7 @@ NOINDEX_RE = re.compile(r'<meta[^>]+name=["\']robots["\'][^>]*noindex', re.I)
 # Chosen to match what that section already uses; None means omit the element.
 DEFAULTS: dict[str, tuple[str | None, str]] = {
     "guides":  ("monthly", "0.6"),
+    "latex-errors": ("monthly", "0.6"),
     "tools":   (None,      "0.7"),
     "kits":    (None,      "0.8"),
     "blog":    ("never",   "0.7"),
