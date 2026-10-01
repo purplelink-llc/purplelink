@@ -327,12 +327,14 @@
   if (!navigator.clipboard) return;
   document.querySelectorAll(".post-body pre").forEach((pre) => {
     if ((pre.textContent.match(/\n/g) || []).length < 3) return;
+    // Read the code before the button goes in, or its label is copied too.
+    const text = pre.innerText;
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "code-copy";
     btn.textContent = "Copy";
     btn.addEventListener("click", () => {
-      navigator.clipboard.writeText(pre.innerText).then(() => {
+      navigator.clipboard.writeText(text).then(() => {
         btn.textContent = "Copied";
         setTimeout(() => { btn.textContent = "Copy"; }, 1600);
       }, () => { btn.textContent = "Select and copy"; });
@@ -735,6 +737,7 @@
     if (p.indexOf("/blog/digest/") === 0) return "Daily Digest";
     if (p.indexOf("/guides/") === 0) return "Guide";
     if (p.indexOf("/templates/") === 0) return "Template";
+    if (p.indexOf("/latex-errors/") === 0) return "LaTeX errors";
     return "Blog";
   };
   const pick = (hero) => {

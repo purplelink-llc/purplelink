@@ -108,7 +108,7 @@
     <script src="/theme.js?v=e7bc0b7c72"></script>
     <link rel="stylesheet" href="/styles.css?v=b140b81664">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <script src="/site.js?v=68150b3301" defer></script>
+    <script src="/site.js?v=cefe20b388" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -131,7 +131,7 @@
     <main id="main-content">
       <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
       <div class="post-hero">
-        <p class="post-date">LaTeX warning</p>
+        <p class="post-date">Warning message</p>
         <h1 class="post-title">Citation `x' undefined</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time></p>
         <p class="post-lede">LaTeX found a \cite key with no bibliography entry to match on this run, so the PDF shows a question mark where the citation should be.</p>
@@ -198,12 +198,12 @@ pdflatex main &amp;&amp; pdflatex main</code></pre>
 
         <h2>How to find the line</h2>
         <p>A warning has no <code>l.</code> marker and no <code>?</code> prompt. The line number is inside the message: <code>on input line 3</code>. For the cause, read two other files. The <code>.blg</code> file is BibTeX's own log and lists the keys it could not find and the entries it could not parse. The <code>.bbl</code> file is what BibTeX produced. If your key is not in it, LaTeX cannot resolve the citation.</p>
-        <p>Because this is a warning, TeX does not stop for it even in a terminal run. The message scrolls past and the only record is the <code>.log</code> file, so search that file for the first word of the message.</p>
+        <p>Because this is a warning, TeX does not stop for it even in a terminal run. The message scrolls past and the only record is the <code>.log</code> file, so search that file for a word from the message, such as <code>Overfull</code> or <code>undefined</code>.</p>
         <p>What each editor shows:</p>
         <ul>
           <li><strong>ModernTex</strong>: the Build Results panel lists warnings and notes as well as errors, in plain language, and <strong>Raw Log</strong> shows the full LaTeX log. For a biblatex project, the Compile Engine &amp; Profile window has a switch named <strong>Use biber for bibliography</strong>. Turn it on and run one <strong>Full</strong> build so the references resolve. See <a href="/moderntex/">ModernTex</a>.</li>
           <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
-          <li><strong>TeXShop</strong>: the build does not stop for a warning. Scroll the console window, or open the <code>.log</code> file next to your source, and search for the first word of the message.</li>
+          <li><strong>TeXShop</strong>: the build does not stop for a warning. Scroll the console window, or open the <code>.log</code> file next to your source, and search for a word from the message, such as <code>Overfull</code> or <code>undefined</code>.</li>
         </ul>
 
         <h2>Related errors</h2>
