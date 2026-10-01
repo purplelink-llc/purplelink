@@ -454,6 +454,19 @@ def hub_page():
 
 def main():
     fmt_dir = os.path.join(SITE, "format")
+    # The dataset has fallen behind the site: venue pages added by hand on
+    # 2026-10-01 are not in VENUES, and the hub index links to all of them.
+    # Running this would rewrite the hub without those links, so refuse
+    # unless the dataset covers every page on disk.
+    on_disk = {d[len("references-for-"):] for d in os.listdir(fmt_dir)
+               if d.startswith("references-for-")} if os.path.isdir(fmt_dir) else set()
+    missing = sorted(on_disk - {v["slug"] for v in VENUES})
+    if missing:
+        raise SystemExit(
+            f"refusing to run: {len(missing)} venue pages on disk are not in "
+            f"format_pages_data.VENUES ({', '.join(missing[:5])}, ...). "
+            "Add them to the dataset first."
+        )
     os.makedirs(fmt_dir, exist_ok=True)
     with open(os.path.join(fmt_dir, "index.html"), "w", encoding="utf-8") as fh:
         fh.write(hub_page())
