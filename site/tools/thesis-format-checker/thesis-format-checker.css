@@ -1,6 +1,7 @@
 /* Thesis Format Checker */
-.tf-app { display: grid; gap: 20px; }
-.tf-settings { border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 20px; background: var(--panel); display: grid; gap: 14px; }
+.tf-app { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+/* A fieldset's default min-inline-size is min-content, which let it push the page wider than a phone. */
+.tf-settings { min-inline-size: 0; border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px 20px; background: var(--panel); display: grid; gap: 14px; }
 .tf-settings legend { padding: 0 8px; font-weight: 700; }
 .tf-row { display: flex; flex-wrap: wrap; gap: 14px; }
 .tf-row .tf-field { flex: 1 1 200px; }
@@ -14,11 +15,11 @@
 .tf-field input:focus-visible, .tf-field select:focus-visible, .tf-drop:focus-within { outline: 2px solid var(--purple); outline-offset: 2px; }
 .tf-drop {
   border: 2px dashed var(--line); border-radius: 14px; padding: 28px 20px; text-align: center; background: var(--panel);
-  display: grid; gap: 10px; justify-items: center;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; justify-items: center;
 }
 .tf-drop.is-over { border-color: var(--purple); background: var(--purple-xlight); }
 .tf-drop-label { font-size: 1.1rem; cursor: pointer; }
-.tf-drop input[type="file"] { font: inherit; max-width: 100%; }
+.tf-drop input[type="file"] { font: inherit; max-width: 100%; min-width: 0; }
 .tf-hint { margin: 0; color: var(--muted); font-size: 0.9rem; }
 .tf-status { margin: 0; min-height: 1.4em; color: var(--muted); }
 .tf-status.is-busy::after { content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-left: 8px; border: 2px solid var(--purple); border-right-color: transparent; border-radius: 50%; vertical-align: -2px; }
