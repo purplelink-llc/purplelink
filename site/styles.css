@@ -5248,3 +5248,5 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 @media (max-width: 600px) {
   .post-banner-photo img { aspect-ratio: 4 / 3; }
 }
+
+.pr-grant-note { max-width: 64ch; margin: 24px clamp(24px, 6vw, 80px) 0; color: var(--muted); font-size: 0.95rem; }
