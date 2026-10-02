@@ -14,6 +14,19 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'AW-18464618488');
+      // Purchase conversion for the ModernTex Google Ads campaign. Fires only on
+      // the Stripe redirect (live session id), once per order: the session id is
+      // the transaction id, so reloads and re-opened receipt links do not recount.
+      (function () {
+        var id = new URLSearchParams(location.search).get('session_id') || '';
+        if (!/^cs_live_[A-Za-z0-9]+$/.test(id)) return;
+        gtag('event', 'conversion', {
+          send_to: 'AW-18464618488/A2fECNzcq_8cEPjvzuRE',
+          value: 10.0,
+          currency: 'USD',
+          transaction_id: id
+        });
+      })();
     </script>
 </head>
   <body>
