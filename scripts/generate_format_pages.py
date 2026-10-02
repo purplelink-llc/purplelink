@@ -475,7 +475,7 @@ def main():
         raise SystemExit(
             f"refusing to run: {len(missing)} venue pages on disk are not in "
             f"format_pages_data.VENUES ({', '.join(missing[:5])}, ...). "
-            "Add them to the dataset first."
+            "Read this file's docstring first: the pages use a richer template than venue_page() produces."
         )
     os.makedirs(fmt_dir, exist_ok=True)
     with open(os.path.join(fmt_dir, "index.html"), "w", encoding="utf-8") as fh:
