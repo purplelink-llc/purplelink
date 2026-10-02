@@ -4,6 +4,16 @@ format_pages_data.VENUES. Re-run after editing the dataset; this fully
 overwrites the generated files so there's no drift between the dataset and
 the pages on disk.
 
+RETIRED IN PRACTICE (2026-10-02). Only the original 8 venues are in VENUES.
+The 18 venue pages added on 2026-10-01 (aaai, acl, chi, ejis, hicss, ...) were
+written directly and use a richer structure than venue_page() produces
+(a "LaTeX template" block, "Three references in <style>.bst", "Common
+mistakes", "Check your .bib file"), and the hub index lists all 26. Adding
+them to VENUES would not reproduce them, and running this script would
+overwrite the hub and the 8 original pages with the shorter template. So
+main() refuses while any page on disk is missing from VENUES. Edit the pages
+and site/format/index.html by hand, or build a new template before using this.
+
 Usage: python3 scripts/generate_format_pages.py
 """
 import html
