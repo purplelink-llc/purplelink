@@ -87,6 +87,8 @@ Nothing is uploaded or posted without the owner's explicit yes. Rendering only w
 node check-latexfix.mjs                                  # every code line must appear verbatim on the page
 node build-latexfix.mjs undefined-control-sequence       # narrate, render 16:9 then 9:16, poster, review frames
 node build-latexfix.mjs <slug> --stills 5,9,14           # JPG stills into .cache/stills/<slug>/
+node verify-latexfix.mjs [slug]                          # compile each example with the local pdflatex, compare logs
+zsh render-latexfix-batch.sh <slug> <slug> ...           # several videos strictly one after another
 ```
 
 Output: `out/latex-errors/<slug>/<slug>-16x9.mp4`, `-9x16.mp4`, `-poster.jpg`, `frames/`. Code is 36 px in both formats. In 9:16 the log's continuation line keeps its text but is indented less so it fits the panel, and long source lines soft-wrap. The build fails if narration overlaps a bumper and warns outside 20 to 25 s. Run one build at a time.
