@@ -956,12 +956,19 @@ def quit_chrome(proc):
 # session. ESP, not contributors.gettyimages.com -- that one is public
 # marketing and looks logged-in whether or not you actually are.
 LOGIN_URLS = {
-    "fineartamerica": "https://fineartamerica.com/login.html",
+    # /login.html now answers "Page Not Found" (2026-10-02). The control panel
+    # redirects an anonymous visitor to a working sign-in, and lands on the
+    # panel itself once signed in.
+    "fineartamerica": "https://fineartamerica.com/controlpanel/main",
     "adobe_stock": "https://contributor.stock.adobe.com/en/uploads",
     "alamy": "https://www.alamy.com/log-in/",
     "dreamstime": "https://www.dreamstime.com/manage-account",
     "shutterstock": "https://submit.shutterstock.com/",
     "getty": "https://esp.gettyimages.com/contribute/batches",
+    # Same ESP login as "getty"; without its own entry the stats collector was
+    # never given a sign-in page, so it stayed "not signed in" after Ben logged in
+    # (2026-10-02).
+    "getty_stats": "https://esp.gettyimages.com/contribute/stats",
     "123rf": "https://www.123rf.com/contributor/dashboard",
     "depositphotos": "https://depositphotos.com/files.html",
     "etsy": "https://www.etsy.com/signin",
@@ -1016,7 +1023,16 @@ def _wait_for_fix(page, url, fn, budget_s=180, front=True):
             u = page.url.lower()
         except Exception:
             return True
-        return any(m in u for m in login_markers)
+        if not any(m in u for m in login_markers):
+            return False
+        # FAA signs you in and then drops you on "Page Not Found" at
+        # /login.html (Ben, 2026-10-02): the URL still says login but the
+        # login is over, so retry the collector instead of waiting on it.
+        try:
+            title = (page.evaluate("document.title") or "").lower()
+        except Exception:
+            title = ""
+        return "page not found" not in title
 
     deadline = time.time() + budget_s
     while time.time() < deadline:
