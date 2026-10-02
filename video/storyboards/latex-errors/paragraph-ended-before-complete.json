@@ -1,0 +1,47 @@
+{
+  "id": "paragraph-ended-before-complete",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: Paragraph ended before complete",
+  "source": "https://purplelink.llc/latex-errors/paragraph-ended-before-complete/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Paragraph ended before label was complete.",
+      "tag": "The error",
+      "caption": "Paragraph ended before \\label was complete"
+    },
+    {
+      "narration": "Runaway argument shows what TeX collected, from the brace that was never closed. Line four is the blank line.",
+      "tag": "The log",
+      "caption": "{sec:methods was never closed."
+    },
+    {
+      "narration": "Close the brace on line three.",
+      "tag": "The fix",
+      "caption": "Add the missing }."
+    },
+    {
+      "narration": "Now it compiles.",
+      "tag": "Result",
+      "caption": "Now it compiles."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

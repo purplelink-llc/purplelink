@@ -1,0 +1,47 @@
+{
+  "id": "runaway-argument",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: Runaway argument",
+  "source": "https://purplelink.llc/latex-errors/runaway-argument/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Runaway argument.",
+      "tag": "The error",
+      "caption": "Runaway argument?"
+    },
+    {
+      "narration": "The log shows what TeX swallowed, from the opening brace of section. The brace was never closed; TeX read to the end of the file.",
+      "tag": "The log",
+      "caption": "The { of \\section was never closed."
+    },
+    {
+      "narration": "Close it after Related work.",
+      "tag": "The fix",
+      "caption": "Add the missing }."
+    },
+    {
+      "narration": "Now it compiles.",
+      "tag": "Result",
+      "caption": "Now it compiles."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

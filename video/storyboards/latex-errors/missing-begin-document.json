@@ -1,0 +1,47 @@
+{
+  "id": "missing-begin-document",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: Missing begin document",
+  "source": "https://purplelink.llc/latex-errors/missing-begin-document/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Missing begin document. The line is there.",
+      "tag": "The error",
+      "caption": "Missing \\begin{document}"
+    },
+    {
+      "narration": "Line three breaks after the first character LaTeX could not place, the D of Draft. Text arrived before begin document.",
+      "tag": "The log",
+      "caption": "Text sits before \\begin{document}."
+    },
+    {
+      "narration": "Comment it out.",
+      "tag": "The fix",
+      "caption": "Comment it out, or move it below."
+    },
+    {
+      "narration": "Now it compiles.",
+      "tag": "Result",
+      "caption": "Now it compiles."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

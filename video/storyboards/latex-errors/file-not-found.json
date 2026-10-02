@@ -1,0 +1,47 @@
+{
+  "id": "file-not-found",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: File not found",
+  "source": "https://purplelink.llc/latex-errors/file-not-found/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "File graphics x dot S T Y not found.",
+      "tag": "The error",
+      "caption": "File `graphicsx.sty' not found"
+    },
+    {
+      "narration": "The first line names the file LaTeX wanted. It is a typo for graphic x, so the build stops here.",
+      "tag": "The log",
+      "caption": "graphicsx is a typo for graphicx."
+    },
+    {
+      "narration": "Fix the package name.",
+      "tag": "The fix",
+      "caption": "\\usepackage{graphicx}"
+    },
+    {
+      "narration": "Now it compiles.",
+      "tag": "Result",
+      "caption": "Now it compiles."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

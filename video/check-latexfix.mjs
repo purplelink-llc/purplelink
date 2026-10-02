@@ -14,7 +14,7 @@ for (const [slug, E] of Object.entries(ERRORS)) {
   const html = fs.existsSync(local) ? fs.readFileSync(local, "utf8") : execFileSync("git", ["show", `origin/main:${rel}`], { cwd: ROOT, encoding: "utf8" });
   const pres = [...html.matchAll(/<pre[^>]*>([\s\S]*?)<\/pre>/g)].map((m) => dec(m[1]).split("\n")).flat();
   const want = [...E.log, ...E.stages.flatMap((s) => s.lines)];
-  for (const l of want) if (!pres.includes(l) && !(E.derived || []).includes(l)) { bad++; console.log(`${slug}: NOT ON PAGE: ${JSON.stringify(l)}`); }
+  for (const l of want) if (l !== "" && !pres.includes(l) && !(E.derived || []).includes(l)) { bad++; console.log(`${slug}: NOT ON PAGE: ${JSON.stringify(l)}`); }
   console.log(`${slug}: ${want.length} lines checked`);
 }
 process.exit(bad ? 1 : 0);

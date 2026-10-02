@@ -1,0 +1,47 @@
+{
+  "id": "overfull-hbox",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: Overfull hbox",
+  "source": "https://purplelink.llc/latex-errors/overfull-hbox/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Overfull h box, 345 points too wide.",
+      "tag": "The warning",
+      "caption": "Overfull \\hbox, 345pt too wide"
+    },
+    {
+      "narration": "A warning: one line runs into the margin, here a U R L in text T T that TeX cannot break.",
+      "tag": "The log",
+      "caption": "\\texttt never breaks a URL."
+    },
+    {
+      "narration": "Load x url and use backslash url.",
+      "tag": "The fix",
+      "caption": "\\usepackage{xurl} and \\url{...}"
+    },
+    {
+      "narration": "The warning is gone.",
+      "tag": "Result",
+      "caption": "The warning is gone."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

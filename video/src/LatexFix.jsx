@@ -69,7 +69,7 @@ function LogBody({ plan, t, L, vertical }) {
   const E = plan.E;
   const lines = vertical ? fitLog(E.log, L.cols) : E.log;
   // typing: count visible (non-space) characters; whitespace comes for free
-  let budget = Math.max(0, (t - TYPE_T0) * TYPE_CPS);
+  let budget = Math.max(0, (t - TYPE_T0) * (E.cps || TYPE_CPS));
   const typedAll = budget >= E.log.join("").replace(/\s/g, "").length;
   const markP = expoOut(clamp01((t - plan.markT) / 0.5));
   const okP = expoOut(clamp01((t - plan.okT) / 0.6));
@@ -132,14 +132,15 @@ function StageBody({ stage, p, hiP, L }) {
       {stage.lines.map((line, k) => {
         const hot = stage.hi.line === k;
         const also = stage.hi.alsoLine === k;
-        const [a, b, c] = hot ? split(line, stage.hi.token) : [line, "", ""];
+        const [a, b, c] = hot ? split(line, stage.hi.token, stage.hi.last) : [line, "", ""];
         return (
           <div key={k} style={{ display: "flex", margin: `0 ${-L.pad * 0.4}px`, padding: `0 ${L.pad * 0.4}px`, borderRadius: 9, background: hot || also ? tint.band.replace(/\/ ([\d.]+)\)/, (m, x) => `/ ${(x * hiP).toFixed(3)})`) : "transparent" }}>
-            {stage.gutter && <span style={{ flex: "none", width: "2ch", marginRight: 18, color: hot ? tint.line : DIM, opacity: hot ? 1 : 0.75, textAlign: "right" }}>{k + 1}</span>}
+            {stage.gutter && <span style={{ flex: "none", width: "2ch", marginRight: 18, color: hot ? tint.line : DIM, opacity: hot ? 1 : 0.75, textAlign: "right" }}>{(stage.start || 1) + k}</span>}
             <span style={{ flex: 1, minWidth: 0, whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
               {a}
               {b && <Tok tint={tint} p={hiP}>{b}</Tok>}
               {c}
+              {line === "" ? "\u00a0" : ""}
             </span>
           </div>
         );
@@ -174,8 +175,8 @@ function Cut({ id, format, timing, storyboard }) {
   const frame = useCurrentFrame();
   const t = frame / brand.fps;
   const f = FMT[format];
-  const L = LAY[format];
   const plan = build(id, timing, storyboard);
+  const L = { ...LAY[format], size: (!f.v && plan.E.size16) || LAY[format].size };
   const inP = expoOut(clamp01((t - 0.1) / 0.8));
   const outP = expoOut(clamp01((t - (plan.ENDs - 0.1)) / 0.6));
   const s1 = plan.stages[0];

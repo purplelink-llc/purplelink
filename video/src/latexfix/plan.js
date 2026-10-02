@@ -15,7 +15,7 @@ export const TYPE_CPS = 42;
 export function build(id, timing, storyboard) {
   const E = ERRORS[id];
   const START = 0.5, GAP = 0.28;
-  const typed = E.log.join("").replace(/\s/g, "").length / TYPE_CPS;
+  const typed = E.log.join("").replace(/\s/g, "").length / (E.cps || TYPE_CPS);
   const hold = { 0: TYPE_T0 + typed + 0.35 - START, 3: 2.0 };
   let t = START;
   const B = [];
