@@ -175,10 +175,10 @@
         <img src="/assets/moderntex-screens/01-editor-clean-1440.webp" alt="ModernTex with a manuscript open: the document outline in the sidebar, LaTeX source in the editor, and the built PDF beside it" width="1440" height="792" loading="lazy" decoding="async">
         <figcaption>Sidebar, source and PDF. Click in the PDF to move the cursor to that spot in the source.</figcaption>
       </figure>
-      <p>The toolbar has a three-way compile mode control and a <strong>Build</strong> button (&#8984;Return). The app describes the modes like this:</p>
+      <p>The toolbar has a three-way compile mode control and a <strong>Build</strong> button (&#8984;Return). The three modes work like this:</p>
       <ul>
-        <li><strong>Fast</strong>: one engine pass, no bibliography. A quick check of layout and errors.</li>
-        <li><strong>Live</strong>: rebuilds on every pause while you type, one engine pass, no bibliography. Citations show as keys until you run Full.</li>
+        <li><strong>Fast</strong>: one engine pass. A quick check of layout and errors. The bibliography runs once after you change a citation or .bib file.</li>
+        <li><strong>Live</strong>: rebuilds on every pause while you type, one engine pass. The bibliography runs once after a citation or .bib change, so references appear on the next cycle.</li>
         <li><strong>Full</strong>: the complete latexmk build with bibtex or biber and every rerun. Run it before you read the references or submit. The shortcut is &#8679;&#8984;Return.</li>
       </ul>
       <p>Next to the Build button are three layout buttons. <strong>Writing</strong> shows the editor without the PDF, <strong>Review</strong> puts the PDF beside the source, and <strong>Submission</strong> adds the submission checker. The sidebar has four tabs: <strong>Files</strong>, <strong>Outline</strong>, <strong>Bib</strong> and <strong>Revisions</strong>.</p>
