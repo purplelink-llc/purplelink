@@ -12,7 +12,7 @@
       "caption": "Overfull \\hbox, 345pt too wide"
     },
     {
-      "narration": "A warning: one line runs into the margin, here a U R L in text T T that TeX cannot break.",
+      "narration": "A warning: one line runs into the margin, a U R L that TeX cannot break.",
       "tag": "The log",
       "caption": "\\texttt never breaks a URL."
     },

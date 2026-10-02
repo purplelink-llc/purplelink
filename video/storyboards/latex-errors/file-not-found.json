@@ -12,7 +12,7 @@
       "caption": "File `graphicsx.sty' not found"
     },
     {
-      "narration": "The first line names the file LaTeX wanted. It is a typo for graphic x, so the build stops here.",
+      "narration": "The first line names the file LaTeX wanted: a typo for graphic x. The build stops here.",
       "tag": "The log",
       "caption": "graphicsx is a typo for graphicx."
     },

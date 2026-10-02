@@ -85,6 +85,7 @@ export const ERRORS = {
   },
   "environment-undefined": {
     name: "Environment theorem undefined",
+    cps: 60,
     size16: 34,
     file: ["\\documentclass{article}", "\\begin{document}", "\\begin{theorem}", "Every bounded sequence has a convergent subsequence.", "\\end{theorem}", "\\end{document}"],
     log: [
@@ -181,6 +182,7 @@ export const ERRORS = {
   },
   "runaway-argument": {
     name: "Runaway argument",
+    cps: 70,
     size16: 32,
     file: ["\\documentclass{article}", "\\begin{document}", "\\section{Related work", "", "Prior studies report mixed results.", "\\end{document}"],
     log: ["Runaway argument?", "{Related work \\par Prior studies report mixed results. \\end {document\\ETC.", "! File ended while scanning use of \\@xdblarg.", "<inserted text>", "                \\par", "<*> main.tex"],

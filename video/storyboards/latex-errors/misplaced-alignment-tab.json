@@ -12,7 +12,7 @@
       "caption": "Misplaced alignment tab character &"
     },
     {
-      "narration": "Line three breaks right after the ampersand between Smith and Jones. Outside a table, a bare ampersand is an error.",
+      "narration": "Line three breaks right after the ampersand. Outside a table, a bare ampersand is an error.",
       "tag": "The log",
       "caption": "A bare & outside a table."
     },
