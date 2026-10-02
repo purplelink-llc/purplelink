@@ -762,6 +762,54 @@ def fetch_chrome_web_store(prior: dict | None) -> dict | None:
     return prior
 
 
+# Search Console rows that are not readers. A new site with a handful of
+# real visitors gets most of its impressions from tools that run queries
+# (citation checkers, research agents): quoted phrases, site: filters, bare
+# PMC ids. They carry impressions and never clicks, so left in they drag the
+# headline CTR to zero and the average position to a number that describes
+# nobody. Classified here so the card can show them separately.
+_OPERATOR_QUERY = re.compile(
+    r'"|^[+%]|\bsite[.:]|pmc\d{5,}|fdcid|\b(?:intitle|inurl|filetype)\b', re.I)
+
+
+def is_operator_query(q: str) -> bool:
+    return bool(_OPERATOR_QUERY.search(q or ""))
+
+
+def split_queries(rows: list[dict], total_impressions: int) -> dict:
+    """Split Search Console query rows into operator-style and natural-language.
+
+    Google hides rare queries, so the visible rows usually cover a minority of
+    impressions; the remainder is reported as anonymized rather than guessed at.
+    """
+    op = {"queries": 0, "impressions": 0, "clicks": 0}
+    nat = {"queries": 0, "impressions": 0, "clicks": 0, "top10_impressions": 0, "_pos": 0.0}
+    natural_rows = []
+    for r in rows:
+        key = (r.get("keys") or [""])[0]
+        imp = int(r.get("impressions", 0) or 0)
+        clk = int(r.get("clicks", 0) or 0)
+        pos = float(r.get("position", 0) or 0)
+        if is_operator_query(key):
+            bucket = op
+        else:
+            bucket = nat
+            nat["_pos"] += pos * imp
+            if pos <= 10:
+                nat["top10_impressions"] += imp
+            natural_rows.append({"key": key, "count": clk, "impressions": imp,
+                                 "position": round(pos, 1)})
+        bucket["queries"] += 1
+        bucket["impressions"] += imp
+        bucket["clicks"] += clk
+    nat["position"] = round(nat.pop("_pos") / nat["impressions"], 1) if nat["impressions"] else 0.0
+    visible = op["impressions"] + nat["impressions"]
+    natural_rows.sort(key=lambda r: (-r["impressions"], r["key"]))
+    return {"operator": op, "natural": nat, "natural_top": natural_rows[:10],
+            "visible_impressions": visible,
+            "anonymized_impressions": max(0, int(total_impressions) - visible)}
+
+
 def fetch_gsc(site: dict) -> dict | None:
     """Search Console clicks/impressions/position, plus top queries and pages.
 
@@ -796,11 +844,14 @@ def fetch_gsc(site: dict) -> dict | None:
 
         # No dimensions => one row of site-wide totals for the window.
         totals = (query([], 1).get("rows") or [{}])[0]
-        queries = query(["query"], 10).get("rows") or []
+        query_rows = query(["query"], 1000).get("rows") or []
         pages = query(["page"], 10).get("rows") or []
+        device_rows = query(["device"], 5).get("rows") or []
     except Exception as exc:                                # noqa: BLE001
         detail = getattr(exc, "reason", None) or str(exc)
         return {"error": detail[:200]}
+
+    split = split_queries(query_rows, int(totals.get("impressions", 0) or 0))
 
     def strip(u: str) -> str:
         for pre in ("https://", "http://"):
@@ -815,10 +866,15 @@ def fetch_gsc(site: dict) -> dict | None:
         "position": float(totals.get("position", 0) or 0),
         "start": start.isoformat(),
         "end": end.isoformat(),
-        "queries": [{"key": r["keys"][0], "count": int(r.get("clicks", 0) or 0),
-                     "impressions": int(r.get("impressions", 0) or 0),
-                     "position": round(float(r.get("position", 0) or 0), 1)}
-                    for r in queries],
+        # Natural-language queries only; operator-style ones are counted in
+        # "split" so the table is not ten rows of one PMC id.
+        "queries": split["natural_top"],
+        "split": split,
+        "devices": {(r["keys"][0] or "").lower(): {
+            "impressions": int(r.get("impressions", 0) or 0),
+            "clicks": int(r.get("clicks", 0) or 0),
+            "position": round(float(r.get("position", 0) or 0), 1)}
+            for r in device_rows},
         "pages": [{"key": strip(r["keys"][0]), "count": int(r.get("clicks", 0) or 0),
                    "impressions": int(r.get("impressions", 0) or 0),
                    "position": round(float(r.get("position", 0) or 0), 1)}
@@ -2090,12 +2146,50 @@ def funnel(s: dict) -> str:
 
 
 def gsc_card(g: dict) -> str:
-    """Headline Search Console figures.
+    """Headline Search Console figures, with the non-reader share broken out.
 
     Impressions and position are the useful pair here: position says whether
     Google ranks the site at all, impressions say whether anyone is searching
-    for what it ranks for. Clicks alone can't separate those.
+    for what it ranks for. Clicks alone can't separate those. Archived entries
+    from before the device/query split carry neither key and render as before.
     """
+    dev = g.get("devices") or {}
+    split = g.get("split")
+
+    def dcell(name: str) -> str:
+        d = dev.get(name)
+        if not d:
+            return ""
+        return (f"<div><span class='n'>{d['impressions']}</span>"
+                f"<span class='l'>{name} impr. &middot; {d['clicks']} clicks "
+                f"&middot; pos {d['position']:.1f}</span></div>")
+
+    dev_row = ""
+    if dev:
+        dev_row = (f"<div class='row' style='margin-top:10px'>"
+                   f"{dcell('mobile')}{dcell('desktop')}{dcell('tablet')}</div>")
+
+    note = ""
+    if split:
+        tot = max(1, int(g["impressions"]))
+        op, nat = split["operator"], split["natural"]
+        note = (
+            f"<p class='fnote'>Only {split['visible_impressions'] * 100 // tot}% of impressions "
+            f"carry a visible query (Google hides rare ones). "
+            f"Natural-language queries: {nat['impressions']} impressions, "
+            f"{nat['top10_impressions']} of them at position 10 or better, "
+            f"{nat['clicks']} clicks, average position {nat['position']:.1f}.")
+        # Only warn when operator-style searches are a real share of what we
+        # can see; a couple of stray ones are not worth a caveat.
+        if op["impressions"] * 10 >= max(1, split["visible_impressions"]):
+            note += (
+                f" {op['impressions']} impressions come from {op['queries']} operator-style "
+                f"{'search' if op['queries'] == 1 else 'searches'} (quoted phrases, site: filters, "
+                f"paper ids), which look like citation checkers rather than readers. Read the "
+                f"device row and the natural-language figures as the human signal; the headline "
+                f"position above is skewed by them.")
+        note += "</p>"
+
     return (
         f"<div class='card'><h2 style='margin-top:0'>Google Search</h2>"
         f"<div class='row'>"
@@ -2103,7 +2197,7 @@ def gsc_card(g: dict) -> str:
         f"<div><span class='n'>{g['impressions']}</span><span class='l'>impressions</span></div>"
         f"<div><span class='n'>{g['ctr']:.1f}%</span><span class='l'>CTR</span></div>"
         f"<div><span class='n'>{g['position']:.1f}</span><span class='l'>avg position</span></div>"
-        f"</div>"
+        f"</div>{dev_row}{note}"
         f"<p class='fnote'>{html.escape(g['start'])} to {html.escape(g['end'])}. "
         f"Search Console lags about two days, so this window ends before the "
         f"beacon figures above.</p></div>")
@@ -4218,7 +4312,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
         tables += ai_trend_card(s.get("ai_trend") or [])
         if s.get("gsc"):
             tables += gsc_card(s["gsc"])
-            tables += gsc_table("Search queries", s["gsc"]["queries"],
+            tables += gsc_table("Search queries (natural language)" if s["gsc"].get("split") else "Search queries",
+                                s["gsc"]["queries"],
                                 "No queries returned for this window.")
             tables += gsc_table("Search landing pages", s["gsc"]["pages"],
                                 "No pages returned for this window.")
@@ -4363,8 +4458,16 @@ def main() -> int:
                 gsc = fetch_gsc(site)
                 if gsc and not gsc.get("error"):
                     entry["gsc"] = gsc
+                    mob = (gsc.get("devices") or {}).get("mobile", {})
+                    sp = gsc.get("split") or {}
                     print(f"     search: {gsc['clicks']} clicks, "
                           f"{gsc['impressions']} impressions, pos {gsc['position']:.1f}")
+                    if sp:
+                        print(f"     search (readers): mobile {mob.get('impressions', 0)} impr / "
+                              f"{mob.get('clicks', 0)} clicks; natural queries "
+                              f"{sp['natural']['impressions']} impr, "
+                              f"{sp['natural']['top10_impressions']} at pos<=10; "
+                              f"operator-style {sp['operator']['impressions']} impr")
                 elif gsc:
                     print(f"  ! {site['label']}: Search Console unavailable "
                           f"({gsc['error'][:80]})", file=sys.stderr)
