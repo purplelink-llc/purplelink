@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-03",
+  "number": 98,
+  "intro": "Warlock ransomware hitting utilities through SharePoint, a CVSS 9.9 GitLab AI Gateway RCE, and Apple's Full Disk Access changes aimed at AI agents lead this digest. It also covers Stratego-solving AI, agent API cost economics, and Nvidia chip smuggling.",
+  "sections": {
+    "AI & Technology": [
+      {
+        "title": "With most information hidden, the game Stratego had stumped AI until now",
+        "url": "https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget",
+        "source_name": "Hacker News",
+        "category": "ai_tech",
+        "editorial_note": "An AI system has beaten the strongest Stratego player in history, published in Nature, and reportedly did so on a modest compute budget. Stratego's hidden information and huge game tree make it a closer proxy for adversarial settings like deception and threat hunting than perfect-information games. The key question is whether the method transfers to imperfect-information security games, where opponents adapt."
+      },
+      {
+        "title": "Greg Kroah-Hartman \u2013 Security in the LLM Age [video]",
+        "url": "https://www.youtube.com/watch?v=NnV_cWeoo5Q",
+        "source_name": "Hacker News",
+        "category": "ai_tech",
+        "editorial_note": "The Linux kernel stable maintainer discusses how LLMs change vulnerability reporting and triage. Kroah-Hartman handles one of the largest real-world bug report streams, so his view on AI-generated report quality is an operational data point rather than speculation. Worth watching for how maintainers cope with report volume and what signal separates real findings from noise."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "GitLab Patches Critical 9.9 AI Gateway Flaw Allowing Command Execution on Self-Hosted Servers",
+        "url": "https://thehackernews.com/2026/10/gitlab-patches-critical-self-hosted-ai.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "A CVSS 9.9 flaw in GitLab's AI Gateway lets a logged-in user with Duo Agent Platform access run commands on self-hosted gateways. The gateway sits between the instance and the model providers, so compromise there reaches credentials and prompts flowing through the AI layer. This is the pattern to watch: AI plumbing components ship with the same command-injection classes as any other middleware, but with broader trust."
+      },
+      {
+        "title": "Warlock ransomware breach SharePoint in water, telecom operator attacks",
+        "url": "https://www.bleepingcomputer.com/news/security/warlock-ransomware-breach-sharepoint-in-water-telecom-operator-attacks",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "The China-linked Warlock group used SharePoint vulnerabilities for initial access against a water utility, a telecom provider, a regional government body, and a university. Targeting critical infrastructure with a ransomware brand blurs the line between espionage-adjacent and financially motivated activity. Attribution and motive analysis for this cluster is worth tracking, since the victim mix looks more opportunistic than sector-focused."
+      },
+      {
+        "title": "Antino Backdoor Uses Outlook and OneDrive for C2 in China-Nexus Espionage Campaign",
+        "url": "https://thehackernews.com/2026/10/antino-backdoor-uses-outlook-and.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "A new China-nexus backdoor, Antino, routes C2 through Outlook and OneDrive against government and policy bodies in Taiwan, India, the Philippines, Cambodia, Pakistan, Thailand, and Myanmar. Abusing trusted Microsoft cloud traffic defeats domain-reputation and egress filtering, so detection has to rely on tenant-level telemetry and anomalous API usage. The open question is how many of these victims log Graph API activity at all."
+      },
+      {
+        "title": "Is It Fair to Blame 'Rogue' AI for Security Failures?",
+        "url": "https://www.darkreading.com/insider-threats/blame-rogue-ai-security-failures",
+        "source_name": "Dark Reading",
+        "category": "cybersecurity",
+        "editorial_note": "The argument is that \"rogue AI\" language anthropomorphizes LLMs and shifts liability away from the vendors and deployers who granted the access. The practical takeaway is to model agents as untrusted, nondeterministic software and apply least privilege and audit logging accordingly. It is a framing contrarian take, but it pairs well with the Apple and GitLab items this week, where the real failures were permission scope and command execution."
+      }
+    ],
+    "Finance & Business": [
+      {
+        "title": "Why Western Digital and Seagate are seeing big stock drops today",
+        "url": "https://www.marketwatch.com/story/why-western-digital-and-seagate-are-seeing-big-stock-drops-today-6b16d95e?mod=mw_rss_topstories",
+        "source_name": "MarketWatch",
+        "category": "finance",
+        "editorial_note": "WDC and STX fell on fears that Toshiba will expand output of a key AI storage product and erode the pricing power both currently hold. It is a clean signal that AI infrastructure margins extend to bulk storage, and that they hinge on supply discipline among a few vendors. Watch whether Toshiba's capacity timeline actually materializes, since pricing power in this segment has been assumed rather than tested."
+      }
+    ],
+    "Entrepreneurship": [
+      {
+        "title": "We Got a $240,000 Estimate for Agent API Access. Our Agent Suggested a $5 Postgres Instance.",
+        "url": "https://www.saastr.com/we-got-a-240000-estimate-for-agent-api-access-our-agent-suggested-a-5-postgres-instance",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "SaaStr's AI revenue agent makes 35,000 to 40,000 API calls a day, and a vendor quoted $240,000 for that access. The agent proposed a $5 Postgres instance instead, which shows how agent-scale traffic breaks SaaS pricing built around human usage. Expect vendors to start metering API access to agents, and expect agent operators to route around them by syncing data locally."
+      }
+    ],
+    "Worth Reading": [
+      {
+        "title": "Apple changes full-disk access permissions to curb abuse from AI agents",
+        "url": "https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents",
+        "source_name": "Ars Technica",
+        "category": "general_tech",
+        "editorial_note": "Apple is tightening Full Disk Access on macOS specifically because AI agents hold broad data access, with Meta's Muse reading messages as the flashpoint. Indie developers shipping agentic or automation tools on macOS face a direct distribution and UX hit, since FDA has been the default workaround for file access. Purplelink-style apps should audit which features depend on FDA and move to narrower scoped APIs now."
+      }
+    ]
+  },
+  "sources_reviewed": 419,
+  "items_selected": 9
+}
