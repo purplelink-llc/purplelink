@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>LaTeX found something to typeset, a letter, a digit or any other printable character, before <code>\begin{document}</code>. Only declarations belong in the preamble: <code>\documentclass</code>, <code>\usepackage</code>, <code>\newcommand</code>, <code>\title</code> and the like. The message does not mean the <code>\begin{document}</code> line is absent. It means text arrived before it. The usual causes are stray words in the preamble, a preamble command that lost its backslash, or compiling a file that is not the main file of the project.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="Izr0LARPKtA" data-youtube-title="Missing begin document: text before the preamble ends">
+            <img class="yt-poster" src="/assets/video/latex-error-missing-begin-document-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=Izr0LARPKtA" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the error:</p>
         <pre><code>\documentclass{article}

@@ -17,7 +17,7 @@ pass --public only after Ben has approved that specific video in chat.
 Prints the video URL on success. Exit 2 means the channel was not reachable
 (wrong account in the automation Chrome).
 """
-import argparse, os, sys, time, urllib.request
+import argparse, os, subprocess, sys, time, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cdp_tab import Tab  # noqa: E402
@@ -188,13 +188,15 @@ def main():
             ok = False
             for _ in range(8):
                 time.sleep(8)
-                try:
-                    urllib.request.urlopen(
-                        "https://www.youtube.com/oembed?format=json&url=" + link, timeout=20).read()
+                # curl, not urllib: this Mac's python.org build has no CA bundle, so
+                # urllib raised CERTIFICATE_VERIFY_FAILED and every check failed.
+                r = subprocess.run(
+                    ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "--max-time", "20",
+                     "https://www.youtube.com/oembed?format=json&url=" + link],
+                    capture_output=True, text=True)
+                if r.stdout.strip() == "200":
                     ok = True
                     break
-                except Exception:
-                    continue
             if not ok:
                 print("NOT PUBLIC: the video is still a draft or private; finish it in Studio "
                       "(Edit draft, Visibility, Public, Publish)", file=sys.stderr)

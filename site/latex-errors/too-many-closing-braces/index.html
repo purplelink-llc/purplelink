@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>These two messages are opposite sides of one problem, braces that do not pair up. <code>Too many }'s</code> means TeX met a closing brace with no opening brace before it to match. <code>Missing } inserted</code> means a group was still open at a point where it had to be closed, such as the end of a formula, a table cell or an environment, so TeX closed it for you. In both cases the build continues, and the formatting around that spot is likely to be wrong.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="C_8pv42BDqs" data-youtube-title="Too many closing braces: deleting the extra one">
+            <img class="yt-poster" src="/assets/video/latex-error-too-many-closing-braces-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=C_8pv42BDqs" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the error:</p>
         <pre><code>\documentclass{article}

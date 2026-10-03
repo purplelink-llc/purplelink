@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>A <code>\begin{...}</code> names an environment that LaTeX does not know. Either the package or class that defines it is not loaded, the name is misspelled, or it is an environment you are expected to declare yourself, as with <code>theorem</code> and <code>lemma</code>. LaTeX ignores the <code>\begin</code>. If the build continues, the matching <code>\end</code> then raises a second error, <code>\begin{document} ended by \end{theorem}</code>.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="RJ7MIxjx1_o" data-youtube-title="Environment undefined: declaring the missing environment">
+            <img class="yt-poster" src="/assets/video/latex-error-environment-undefined-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=RJ7MIxjx1_o" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the error:</p>
         <pre><code>\documentclass{article}

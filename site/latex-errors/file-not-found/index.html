@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>LaTeX looked for a file named in <code>\usepackage</code>, <code>\documentclass</code>, <code>\input</code> or <code>\include</code> and did not find it, either next to your document or in the TeX distribution. For a <code>.sty</code> file this means the package is not installed, its name is misspelled, or it is a file that should sit beside your <code>.tex</code> file and does not. The build stops here, because nothing after that line can work without the file.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="LQvPpDTgaqQ" data-youtube-title="File not found: fixing a mistyped package name">
+            <img class="yt-poster" src="/assets/video/latex-error-file-not-found-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=LQvPpDTgaqQ" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the error:</p>
         <pre><code>\documentclass{article}

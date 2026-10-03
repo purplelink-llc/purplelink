@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>TeX was reading the argument of a command and hit a blank line, or a <code>\par</code>, before the closing brace. Many commands, among them <code>\label</code>, <code>\cite</code>, <code>\date</code> and everything defined with <code>\newcommand*</code>, refuse an argument that contains a paragraph break. That way a forgotten <code>}</code> is reported at the next blank line and not at the end of the file. The <code>\x</code> in the message is the macro that was reading, and the message always follows a <code>Runaway argument?</code> line.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="lQmcTtyuVuI" data-youtube-title="Paragraph ended before the argument was complete">
+            <img class="yt-poster" src="/assets/video/latex-error-paragraph-ended-before-complete-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=lQmcTtyuVuI" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the error:</p>
         <pre><code>\documentclass{article}

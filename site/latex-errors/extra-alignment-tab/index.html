@@ -140,6 +140,12 @@
         <h2>What it means</h2>
         <p>A row in a table or matrix contains more <code>&amp;</code> separators than there are columns to separate. With <code>\begin{tabular}{ll}</code> there are two columns, so each row may contain one <code>&amp;</code>. At the extra <code>&amp;</code>, TeX acts as if the row had ended there (<code>\cr</code> is TeX's internal end-of-row command), and whatever follows on that row lands in the wrong place.</p>
 
+        <figure class="post-figure">
+          <div class="yt-embed" data-motion="youtube" data-youtube-id="vZ4GNH_Ii24" data-youtube-title="Extra alignment tab: matching the columns to the cells">
+            <img class="yt-poster" src="/assets/video/latex-error-extra-alignment-tab-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+            <a class="yt-play" href="https://www.youtube.com/watch?v=vZ4GNH_Ii24" rel="noopener">Play the 24-second fix on YouTube</a>
+          </div>
+        </figure>
         <h2>The log line</h2>
         <p>This small file triggers the error:</p>
         <pre><code>\documentclass{article}
