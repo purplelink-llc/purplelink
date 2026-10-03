@@ -184,11 +184,18 @@ def main():
         # On 2026-10-01 three uploads printed a link and stayed drafts because
         # the visibility radio never took. oEmbed answers 200 only once public.
         if a.public:
-            time.sleep(8)
-            try:
-                urllib.request.urlopen(
-                    "https://www.youtube.com/oembed?format=json&url=" + link, timeout=20).read()
-            except Exception:
+            # oEmbed can lag the publish by half a minute; retry before calling it a failure.
+            ok = False
+            for _ in range(8):
+                time.sleep(8)
+                try:
+                    urllib.request.urlopen(
+                        "https://www.youtube.com/oembed?format=json&url=" + link, timeout=20).read()
+                    ok = True
+                    break
+                except Exception:
+                    continue
+            if not ok:
                 print("NOT PUBLIC: the video is still a draft or private; finish it in Studio "
                       "(Edit draft, Visibility, Public, Publish)", file=sys.stderr)
                 sys.exit(3)
