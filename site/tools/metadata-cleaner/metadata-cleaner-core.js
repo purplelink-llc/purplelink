@@ -19,8 +19,10 @@
     s = String(s).replace(/[\u0000-\u001f]+/g, " ").trim();
     return s.length > MAX_VALUE ? s.slice(0, MAX_VALUE - 1) + "\u2026" : s;
   }
-  function add(found, group, field, value) {
-    found.push({ group: group, field: field, value: value == null ? "" : trunc(value) });
+  function add(found, group, field, value, info) {
+    const f = { group: group, field: field, value: value == null ? "" : trunc(value) };
+    if (info) f.info = true; // reported but deliberately left in place
+    found.push(f);
   }
   function ascii(b, s, e) {
     let out = "";
@@ -519,7 +521,7 @@
       const names = doc.catalog.lookupMaybe(PDFName.of("Names"), PDFDict);
       const ef = names && names.lookupMaybe(PDFName.of("EmbeddedFiles"), PDFDict);
       const list = ef && ef.lookupMaybe(PDFName.of("Names"), PDFArray);
-      if (list && list.size() > 0) add(found, "Other", "Attached files", list.size() / 2 + " (left in place, they are content)");
+      if (list && list.size() > 0) add(found, "Left in place", "Attached files", list.size() / 2 + " (they are content)", true);
     } catch (e) { /* ignore */ }
     // Leftover objects from earlier saves.
     const roots = [ctx.trailerInfo.Root];
@@ -537,15 +539,26 @@
     return found;
   }
 
-  async function processPdf(PDFLib, bytes, opts) {
-    opts = opts || {};
+  async function processPdf(PDFLib, bytes, opts, progress) {
+    opts = opts || {}; progress = progress || function () {};
+    progress(0.1, "Reading the PDF");
     const { PDFName, PDFDict, PDFStream, PDFRawStream, PDFHexString } = PDFLib;
     const doc = await loadPdf(PDFLib, bytes);
     const ctx = doc.context;
     const found = pdfScan(PDFLib, doc), kept = [];
-    // 1. Info dictionary and file ID.
+    // 1. Info dictionary and file ID. Optionally keep the title or set an author.
+    const oldInfoRef = ctx.trailerInfo.Info;
+    const oldInfo = oldInfoRef ? ctx.lookupMaybe(oldInfoRef, PDFDict) : null;
+    const keepTitle = opts.keepTitle && oldInfo ? pdfText(oldInfo.get(PDFName.of("Title"))) : "";
     ctx.trailerInfo.Info = undefined;
     ctx.trailerInfo.ID = undefined;
+    if (keepTitle || opts.author) {
+      const d = ctx.obj({});
+      if (keepTitle) d.set(PDFName.of("Title"), PDFHexString.fromText(keepTitle));
+      if (opts.author) d.set(PDFName.of("Author"), PDFHexString.fromText(String(opts.author)));
+      ctx.trailerInfo.Info = ctx.register(d);
+    }
+    progress(0.3, "Removing hidden data");
     // 2. XMP and private application data, anywhere they hang.
     const METADATA = PDFName.of("Metadata"), PIECE = PDFName.of("PieceInfo");
     let jpegs = 0;
@@ -582,11 +595,16 @@
       }
     }
     // 4. Drop everything no longer reachable (old revisions, the old Info dictionary).
-    const live = reachable(PDFLib, ctx, [ctx.trailerInfo.Root]);
+    progress(0.6, "Dropping leftovers");
+    const rootsLive = [ctx.trailerInfo.Root];
+    if (ctx.trailerInfo.Info) rootsLive.push(ctx.trailerInfo.Info);
+    const live = reachable(PDFLib, ctx, rootsLive);
     for (const [ref] of ctx.enumerateIndirectObjects()) if (!live.has(ref.tag)) ctx.delete(ref);
+    const pages = doc.getPageCount();
+    progress(0.75, "Writing the PDF");
     const out = await doc.save();
     kept.push("Page content is not touched: text, figures and fonts are exactly as they were.");
-    return { kind: "pdf", found: found, out: out, kept: kept };
+    return { kind: "pdf", found: found, out: out, kept: kept, pages: pages };
   }
 
   // ---------- Office files (JSZip passed in) ----------
@@ -649,7 +667,7 @@
         const x = await read(n);
         for (const m of x.matchAll(/\bw:author="([^"]*)"/g)) { if (m[1] !== "Author") { authors.add(decodeEntities(m[1])); revisions++; } }
         rsid += (x.match(/\sw:rsid[A-Za-z]*="[0-9A-Fa-f]+"/g) || []).length;
-      } else if (/^xl\/comments[^/]*\.xml$/.test(n)) {
+      } else if (/^xl\/comments(?:[^/]*|\/[^/]+)\.xml$/.test(n)) {
         const x = await read(n);
         for (const m of x.matchAll(/<author>([^<]*)<\/author>/g)) { if (m[1] !== "Author") { authors.add(decodeEntities(m[1])); revisions++; } }
       } else if (/^xl\/persons\/[^/]+\.xml$/.test(n)) {
@@ -682,11 +700,12 @@
     }
     if (withMeta) add(found, "Embedded images", "Photo metadata inside embedded images", withMeta + " image" + (withMeta > 1 ? "s" : "") + (gps ? ", " + gps + " with a GPS position" : ""));
     const cx = names.filter((n) => n.startsWith("customXml/") && /\.xml$/.test(n) && !/Props\d*\.xml$/.test(n) && !/_rels/.test(n));
-    if (cx.length) add(found, "Other", "Custom XML parts", cx.length + " (SharePoint or add-in data, left in place)");
+    if (cx.length) add(found, "Left in place", "Custom XML parts", cx.length + " (SharePoint or add-in data)", true);
   }
 
-  async function processOffice(JSZip, bytes, opts) {
-    opts = opts || {};
+  async function processOffice(JSZip, bytes, opts, progress) {
+    opts = opts || {}; progress = progress || function () {};
+    progress(0.1, "Opening the file");
     const zip = await JSZip.loadAsync(bytes);
     const names = Object.keys(zip.files).filter((n) => !zip.files[n].dir);
     let kind = null;
@@ -698,18 +717,29 @@
     await officeScan(zip, found);
     const anonymize = opts.anonymize !== false;
     const read = async (n) => zip.file(n).async("string");
+    // Every XML part we rewrite must still be well-formed, or the whole clean is refused.
+    const put = (n, x) => { if (/\.(xml|rels)$/.test(n)) mustBeWellFormed(n, x); zip.file(n, x); };
 
-    if (zip.file("docProps/core.xml")) zip.file("docProps/core.xml", CORE_EMPTY);
-    if (zip.file("docProps/custom.xml")) zip.file("docProps/custom.xml", CUSTOM_EMPTY);
+    if (zip.file("docProps/core.xml")) {
+      const oldCore = await read("docProps/core.xml");
+      const t = opts.keepTitle ? xmlTag(oldCore, "dc:title") : "";
+      const au = opts.author ? String(opts.author) : "";
+      put("docProps/core.xml", t || au
+        ? CORE_EMPTY.replace(/\/>$/, ">" + (t ? "<dc:title>" + xmlEsc(t) + "</dc:title>" : "") + (au ? "<dc:creator>" + xmlEsc(au) + "</dc:creator>" : "") + "</cp:coreProperties>")
+        : CORE_EMPTY);
+    }
+    if (zip.file("docProps/custom.xml")) put("docProps/custom.xml", CUSTOM_EMPTY);
     if (zip.file("docProps/app.xml")) {
       let x = await read("docProps/app.xml");
       x = x.replace(new RegExp("<(" + APP_FIELDS.join("|") + ")\\b[^>]*?(?:/>|>[\\s\\S]*?</\\1>)", "g"), "");
-      zip.file("docProps/app.xml", x);
+      put("docProps/app.xml", x);
     }
     for (const n of names.filter((x) => /^docProps\/thumbnail\./.test(x))) await removePart(zip, n);
     if (names.includes("word/people.xml")) await removePart(zip, "word/people.xml");
 
+    let doneParts = 0;
     for (const n of names) {
+      progress(0.15 + 0.65 * (doneParts++ / names.length), "Cleaning " + n.split("/").pop());
       if (!zip.file(n)) continue;
       if (/^word\/[^/]+\.xml$/.test(n)) {
         let x = await read(n), y = x;
@@ -722,26 +752,26 @@
           y = y.replace(/\bw:author="[^"]*"/g, 'w:author="Author"').replace(/\sw:initials="[^"]*"/g, "")
             .replace(/\sw:date="[^"]*"/g, "").replace(/\sw16du:dateUtc="[^"]*"/g, "").replace(/\sw16cex:dateUtc="[^"]*"/g, "");
         }
-        if (y !== x) zip.file(n, y);
+        if (y !== x) put(n, y);
       } else if (n === "word/_rels/settings.xml.rels") {
         const x = await read(n), y = dropRel(x, "/attachedTemplate");
-        if (y !== x) zip.file(n, y);
-      } else if (anonymize && /^xl\/comments[^/]*\.xml$/.test(n)) {
+        if (y !== x) put(n, y);
+      } else if (anonymize && /^xl\/comments(?:[^/]*|\/[^/]+)\.xml$/.test(n)) {
         const x = await read(n);
-        zip.file(n, x.replace(/<author>[^<]*<\/author>/g, "<author>Author</author>"));
+        put(n, x.replace(/<author>[^<]*<\/author>/g, "<author>Author</author>"));
       } else if (anonymize && /^xl\/persons\/[^/]+\.xml$/.test(n)) {
         const x = await read(n);
-        zip.file(n, x.replace(/\sdisplayName="[^"]*"/g, ' displayName="Author"').replace(/\suserId="[^"]*"/g, ' userId="Author"').replace(/\sproviderId="[^"]*"/g, ' providerId="None"'));
+        put(n, x.replace(/\sdisplayName="[^"]*"/g, ' displayName="Author"').replace(/\suserId="[^"]*"/g, ' userId="Author"').replace(/\sproviderId="[^"]*"/g, ' providerId="None"'));
       } else if (anonymize && /^xl\/threadedComments\/[^/]+\.xml$/.test(n)) {
         const x = await read(n);
-        zip.file(n, x.replace(/\sdT="[^"]*"/g, ""));
+        put(n, x.replace(/\sdT="[^"]*"/g, ""));
       } else if (anonymize && (n === "ppt/commentAuthors.xml" || n === "ppt/authors.xml")) {
         const x = await read(n);
-        zip.file(n, x.replace(/\sname="[^"]*"/g, ' name="Author"').replace(/\sinitials="[^"]*"/g, ' initials="A"')
+        put(n, x.replace(/\sname="[^"]*"/g, ' name="Author"').replace(/\sinitials="[^"]*"/g, ' initials="A"')
           .replace(/\suserId="[^"]*"/g, ' userId="Author"').replace(/\sproviderId="[^"]*"/g, ' providerId="None"'));
       } else if (n === "xl/workbook.xml") {
         const x = await read(n);
-        zip.file(n, x.replace(/<mc:AlternateContent\b[^>]*>\s*<mc:Choice\b[^>]*>\s*<x15ac:absPath\b[^>]*\/>\s*<\/mc:Choice>\s*<\/mc:AlternateContent>/g, ""));
+        put(n, x.replace(/<mc:AlternateContent\b[^>]*>\s*<mc:Choice\b[^>]*>\s*<x15ac:absPath\b[^>]*\/>\s*<\/mc:Choice>\s*<\/mc:AlternateContent>/g, ""));
       } else if (/\/media\/[^/]+\.(jpe?g|png|webp)$/i.test(n)) {
         try {
           const r = processImage(await zip.file(n).async("uint8array"), { keepOrientation: true });
@@ -750,6 +780,7 @@
       }
     }
     zip.forEach((p, f) => { f.date = FIXED_DATE; });
+    progress(0.85, "Writing the file");
     const out = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE", compressionOptions: { level: 6 } });
     kept.push("Text, tables, slides and pictures are not touched. Names typed into the body are content, not metadata.");
     return { kind: kind, found: found, out: out, kept: kept };
@@ -793,26 +824,500 @@
     return { text: t, counts: counts, total: Object.values(counts).reduce((a, b) => a + b, 0) };
   }
 
+  // ---------- XML helpers ----------
+
+  // Light well-formedness check: tags balance and nothing stray sits between them.
+  // Used on every XML part this file rewrites, so a bad edit is caught before download.
+  function wellFormed(xml) {
+    const re = /<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>|<\?[\s\S]*?\?>|<!DOCTYPE[^>\[]*(?:\[[\s\S]*?\])?\s*>|<\/([^\s>]+)\s*>|<([^\s\/>!?]+)((?:[^>"']|"[^"]*"|'[^']*')*?)(\/?)>/g;
+    const stack = [];
+    let m, last = 0;
+    while ((m = re.exec(xml))) {
+      if (xml.slice(last, m.index).indexOf("<") !== -1) return false;
+      last = re.lastIndex;
+      if (m[1] !== undefined) { if (stack.pop() !== m[1]) return false; }
+      else if (m[2] !== undefined && m[4] !== "/") stack.push(m[2]);
+    }
+    if (xml.slice(last).indexOf("<") !== -1) return false;
+    return stack.length === 0;
+  }
+  function xmlEsc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function mustBeWellFormed(name, xml) {
+    if (!wellFormed(xml)) throw new Error("Cleaning would have broken " + name + ", so nothing was changed. Your original is untouched.");
+  }
+
+  // ---------- GIF ----------
+
+  function processGif(b) {
+    if (!(startsWith(b, 0, "GIF87a") || startsWith(b, 0, "GIF89a"))) throw new Error("This does not look like a GIF file.");
+    const found = [], parts = [];
+    let i = 13, copyStart = 0;
+    if (b[10] & 0x80) i += 3 * (1 << ((b[10] & 7) + 1));
+    function skipSub(p) { while (p < b.length && b[p] !== 0) p += b[p] + 1; return p + 1; }
+    let end = b.length;
+    while (i < b.length) {
+      const t = b[i];
+      if (t === 0x3b) { end = i + 1; break; }
+      if (t === 0x21) {
+        const label = b[i + 1];
+        const next = label === 0xff ? skipSub(i + 3 + b[i + 2]) : skipSub(i + 2);
+        // Application extension: id is 8 bytes + 3 byte auth code, announced by block size 11.
+        let drop = false;
+        if (label === 0xfe) { drop = true; add(found, "Comments", "GIF comment", utf8(b, i + 2, next).replace(/[\u0000-\u001f]/g, "")); }
+        else if (label === 0xff) {
+          const id = ascii(b, i + 3, i + 3 + 11);
+          if (/^XMP Data/.test(id)) { drop = true; add(found, "XMP packet", "XMP metadata", (next - i) + " bytes"); }
+          else if (!/^(NETSCAPE2\.0|ANIMEXTS1\.0|ICCRGBG1012)/.test(id)) { drop = true; add(found, "Other", "Application block", id.slice(0, 8).trim()); }
+        }
+        if (drop) { parts.push(b.subarray(copyStart, i)); copyStart = next; }
+        i = next;
+      } else if (t === 0x2c) {
+        let p = i + 10;
+        if (b[i + 9] & 0x80) p += 3 * (1 << ((b[i + 9] & 7) + 1));
+        p += 1;
+        i = skipSub(p);
+      } else { i++; }
+    }
+    if (end < b.length) add(found, "Other", "Data after the end of the image", (b.length - end) + " bytes");
+    parts.push(b.subarray(copyStart, end));
+    return { kind: "gif", found: found, out: concat(parts), kept: [] };
+  }
+
+  // ---------- SVG ----------
+
+  function processSvg(b) {
+    const text = utf8(b, 0, b.length);
+    if (!/<svg[\s>]/.test(text)) throw new Error("This does not look like an SVG file.");
+    mustBeWellFormed("the SVG", text);
+    const found = [];
+    let t = text;
+    const meta = [...t.matchAll(/<metadata\b[\s\S]*?<\/metadata>/g)];
+    meta.forEach((m) => xmpFindings(m[0], found, m[0].length));
+    t = t.replace(/<metadata\b[\s\S]*?<\/metadata>/g, "");
+    const comments = [...t.matchAll(/<!--([\s\S]*?)-->/g)].filter((m) => m[1].trim());
+    comments.slice(0, 3).forEach((m) => add(found, "Comments", "XML comment", m[1]));
+    if (comments.length > 3) add(found, "Comments", "More comments", (comments.length - 3) + " more");
+    t = t.replace(/<!--[\s\S]*?-->/g, "");
+    const attr = (name) => { const m = new RegExp("\\s" + name + '="([^"]*)"').exec(t); return m ? decodeEntities(m[1]) : ""; };
+    if (attr("sodipodi:docname")) add(found, "Paths", "Document name", attr("sodipodi:docname"));
+    if (attr("inkscape:export-filename")) add(found, "Paths", "Export path", attr("inkscape:export-filename"));
+    if (attr("inkscape:version")) add(found, "Camera and software", "Created with", "Inkscape " + attr("inkscape:version"));
+    if (/<sodipodi:namedview\b/.test(t) || /\sinkscape:[\w-]+=/.test(t)) {
+      t = t.replace(/<sodipodi:namedview\b[\s\S]*?(?:\/>|<\/sodipodi:namedview>)/g, "");
+      t = t.replace(/\s(?:inkscape|sodipodi):[\w-]+="[^"]*"/g, "");
+      add(found, "Other", "Editor settings", "window, grid and layer data from Inkscape");
+    }
+    if (/<i:pgf\b/.test(t)) {
+      t = t.replace(/<i:pgf\b[\s\S]*?<\/i:pgf>/g, "");
+      add(found, "Other", "Illustrator private data", "embedded editing data");
+    }
+    t = t.replace(/<\?xpacket[\s\S]*?\?>/g, "");
+    // Drop namespace declarations no longer used.
+    for (const p of ["inkscape", "sodipodi", "dc", "cc", "rdf", "i", "x", "a", "xmpGImg", "xmp", "xmpMM", "stRef", "stEvt", "illustrator", "pdf", "pdfx", "xapGImg"]) {
+      const decl = new RegExp('\\sxmlns:' + p + '="[^"]*"', "g");
+      if (decl.test(t) && !new RegExp("[<\\s/]" + p + ":", "g").test(t.replace(decl, ""))) t = t.replace(decl, "");
+    }
+    t = t.replace(/\n\s*\n+/g, "\n");
+    mustBeWellFormed("the SVG", t);
+    return { kind: "svg", found: found, out: new TextEncoder().encode(t), kept: ["Drawing, text and styling are not touched."] };
+  }
+
+  // ---------- TIFF (byte-level, in place) ----------
+
+  const TIFF_DROP = new Set([269, 270, 271, 272, 285, 305, 306, 315, 316, 33432, 700, 33723, 34377, 34665, 34853, 50341, 37724, 40091, 40092, 40093, 40094, 40095, 18246, 18247, 18248, 18249]);
+  const TIFF_TYPE = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 6: 1, 7: 1, 8: 2, 9: 4, 10: 8, 11: 4, 12: 8, 13: 4 };
+
+  function processTiff(b0, opts) {
+    opts = opts || {};
+    const b = Uint8Array.from(b0);
+    const le = b[0] === 0x49 && b[1] === 0x49;
+    if (!(le || (b[0] === 0x4d && b[1] === 0x4d)) || (le ? b[2] | (b[3] << 8) : (b[2] << 8) | b[3]) !== 42) {
+      throw new Error(b[2] === 43 || b[3] === 43 ? "BigTIFF files are not supported." : "This does not look like a TIFF file.");
+    }
+    const n = b.length, touched = [];
+    const r16 = (o) => (le ? b[o] | (b[o + 1] << 8) : (b[o] << 8) | b[o + 1]);
+    const r32 = (o) => (le ? (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24)) >>> 0 : ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]) >>> 0);
+    const w32 = (o, v) => { if (le) { b[o] = v & 255; b[o + 1] = (v >>> 8) & 255; b[o + 2] = (v >>> 16) & 255; b[o + 3] = (v >>> 24) & 255; } else { b[o] = (v >>> 24) & 255; b[o + 1] = (v >>> 16) & 255; b[o + 2] = (v >>> 8) & 255; b[o + 3] = v & 255; } };
+    const found = parseTiff(b, 0, n).found.filter((f) => f.field !== "Embedded thumbnail");
+    const zero = (s, e) => { if (e > s) { b.fill(0, s, e); touched.push([s, e]); } };
+    const seen = new Set();
+    let dropped = 0;
+
+    function extSize(e) { return (TIFF_TYPE[r16(e + 2)] || 1) * r32(e + 4); }
+    function zeroValue(e) {
+      const sz = extSize(e);
+      if (sz > 4) { const off = r32(e + 8); if (off + sz <= n) zero(off, off + sz); }
+    }
+    function zeroIfd(off, depth) {
+      if (depth > 3 || off < 8 || off + 2 > n || seen.has(off)) return;
+      seen.add(off);
+      const cnt = r16(off);
+      for (let i = 0; i < cnt && off + 2 + i * 12 + 12 <= n; i++) {
+        const e = off + 2 + i * 12, tag = r16(e);
+        if (tag === 34665 || tag === 34853 || tag === 40965) zeroIfd(r32(e + 8), depth + 1);
+        zeroValue(e);
+      }
+      zero(off, Math.min(n, off + 2 + cnt * 12 + 4));
+    }
+    function cleanIfd(off, depth) {
+      if (depth > 64 || off < 8 || off + 2 > n || seen.has(off)) return 0;
+      seen.add(off);
+      const cnt = r16(off);
+      if (off + 2 + cnt * 12 + 4 > n) throw new Error("This TIFF is damaged.");
+      const keep = [];
+      let subs = [];
+      for (let i = 0; i < cnt; i++) {
+        const e = off + 2 + i * 12, tag = r16(e);
+        if (tag === 330) { const sz = extSize(e); const cntS = r32(e + 4); if (cntS === 1) subs.push(r32(e + 8)); else if (sz <= n) for (let k = 0; k < cntS && k < 16; k++) subs.push(r32(r32(e + 8) + 4 * k)); }
+        if (TIFF_DROP.has(tag)) {
+          if (tag === 34665 || tag === 34853) zeroIfd(r32(e + 8), 0);
+          zeroValue(e);
+          dropped++;
+        } else keep.push(Uint8Array.from(b.subarray(e, e + 12)));
+      }
+      const next = r32(off + 2 + cnt * 12);
+      const newCnt = keep.length;
+      if (newCnt !== cnt) {
+        b[off] = le ? newCnt & 255 : (newCnt >> 8) & 255; b[off + 1] = le ? (newCnt >> 8) & 255 : newCnt & 255;
+        keep.forEach((k, i) => b.set(k, off + 2 + i * 12));
+        w32(off + 2 + newCnt * 12, next);
+        zero(off + 2 + newCnt * 12 + 4, off + 2 + cnt * 12 + 4);
+        touched.push([off, off + 2 + newCnt * 12 + 4]);
+      }
+      subs.forEach((s) => cleanIfd(s, depth + 1));
+      return next;
+    }
+    let ifd = r32(4), guard = 0;
+    while (ifd && guard++ < 64) ifd = cleanIfd(ifd, 0);
+    if (dropped && !found.length) add(found, "Other", "Metadata tags", dropped + " tag" + (dropped > 1 ? "s" : ""));
+    return { kind: "tiff", found: found, out: b, kept: ["Color profile and rotation are kept; the image data is byte-for-byte the same."], touched: touched, original: b0 };
+  }
+
+  // ---------- MP4 / MOV (boxes blanked in place, so no offsets move) ----------
+
+  const MP4_TEXT = { "xyz": "GPS position", "mak": "Camera make", "mod": "Camera model", "swr": "Software", "too": "Created with", "nam": "Title", "ART": "Artist", "alb": "Album", "day": "Date", "cmt": "Comment", "des": "Description", "cpy": "Copyright", "aut": "Author", "inf": "Information", "wrt": "Writer", "grp": "Group", "enc": "Encoded by", "dir": "Director", "prd": "Producer" };
+  function iso6709(s) {
+    const m = /^([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)/.exec(s);
+    return m ? parseFloat(m[1]).toFixed(5) + ", " + parseFloat(m[2]).toFixed(5) : s;
+  }
+
+  function processMp4(b, opts) {
+    opts = opts || {};
+    const n = b.length, found = [], kept = [];
+    const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
+    const u32 = (o) => dv.getUint32(o);
+    const view = (o, len) => b.subarray(o, o + len);
+    function boxAt(o, end) {
+      if (o + 8 > end) return null;
+      let size = u32(o), hdr = 8;
+      const type = ascii(b, o + 4, o + 8);
+      if (size === 1) { if (o + 16 > end) return null; size = u32(o + 8) * 4294967296 + u32(o + 12); hdr = 16; }
+      else if (size === 0) size = end - o;
+      if (size < hdr || o + size > end) return null;
+      return { o: o, size: size, hdr: hdr, type: type, end: o + size, p: o + hdr };
+    }
+    function children(box, skip) {
+      const out = [];
+      let o = box.p + (skip || 0);
+      for (;;) { const c = boxAt(o, box.end); if (!c) break; out.push(c); o = c.end; }
+      return out;
+    }
+    function blank(box) {
+      if (!opts.scanOnly) { b.set(strBytes("free"), box.o + 4); b.fill(0, box.p, box.end); }
+    }
+    function typeLabel(t) { return t.charCodeAt(0) === 0xa9 ? MP4_TEXT[t.slice(1)] || t.slice(1) : t; }
+    function textOf(c) {
+      // c-symbol xyz style: 2 byte length, 2 byte language, text. 3GPP boxes start with version/flags + language.
+      const len = (b[c.p] << 8) | b[c.p + 1];
+      if (c.type.charCodeAt(0) === 0xa9 && len <= c.size - c.hdr - 4) return utf8(b, c.p + 4, c.p + 4 + len);
+      return utf8(b, c.p, c.end).replace(/[\u0000-\u001f]/g, " ");
+    }
+    function readMeta(meta) {
+      const kids = children(meta, 4);
+      const keysBox = kids.find((k) => k.type === "keys");
+      const keys = [];
+      if (keysBox) { let o = keysBox.p + 8; for (let i = 0; i < u32(keysBox.p + 4) && o + 8 <= keysBox.end; i++) { const sz = u32(o); keys.push(ascii(b, o + 8, o + sz)); o += sz; } }
+      const ilst = kids.find((k) => k.type === "ilst");
+      if (!ilst) return;
+      for (const item of children(ilst)) {
+        const data = children(item).find((d) => d.type === "data");
+        if (!data) continue;
+        const flag = u32(data.p) & 0xffffff;
+        let val = flag === 1 || flag === 0 ? utf8(b, data.p + 8, data.end) : "(" + (data.end - data.p - 8) + " bytes)";
+        let label = item.type;
+        const idx = u32(item.o + 4);
+        if (item.type.charCodeAt(0) !== 0xa9 && keys[idx - 1]) label = keys[idx - 1].replace(/^com\.apple\.quicktime\./, "");
+        else label = typeLabel(item.type);
+        if (/location|xyz|iso6709/i.test(label)) { add(found, "Location", "GPS position", iso6709(val)); continue; }
+        if (/creationdate|^day$/i.test(label)) { add(found, "Camera and software", "Recorded", val); continue; }
+        label = label.replace(/_/g, " "); add(found, "Camera and software", /^[a-z]/.test(label) ? label.charAt(0).toUpperCase() + label.slice(1) : label, val);
+      }
+    }
+    function readUdta(u) {
+      for (const c of children(u)) {
+        if (c.type === "meta") { readMeta(c); continue; }
+        if (c.type.charCodeAt(0) === 0xa9) {
+          const txt = textOf(c);
+          if (!txt) continue;
+          if (c.type.slice(1) === "xyz") add(found, "Location", "GPS position", iso6709(txt));
+          else add(found, "Camera and software", typeLabel(c.type), txt);
+        } else if (["titl", "auth", "dscp", "cprt", "perf", "yrrc", "name"].includes(c.type)) {
+          add(found, "Camera and software", typeLabel(c.type), utf8(b, c.p + (c.type === "name" ? 0 : 6), c.end));
+        } else if (c.type === "loci") {
+          // 3GPP location: version/flags, language, null-terminated name, role, then longitude, latitude, altitude as 16.16 fixed point.
+          let q = c.p + 6;
+          while (q < c.end && b[q] !== 0) q++;
+          q += 2;
+          if (q + 8 <= c.end) { const fx = (o) => dv.getInt32(o) / 65536; add(found, "Location", "GPS position", fx(q + 4).toFixed(5) + ", " + fx(q).toFixed(5)); }
+        } else if (c.type !== "free" && c.type !== "skip" && c.type !== "WLOC") {
+          add(found, "Other", "User data: " + c.type, (c.size - c.hdr) + " bytes");
+        }
+      }
+    }
+    const MAC_EPOCH = 2082844800;
+    function stampBox(box, fieldStart, label) {
+      // version 0: 4 byte times; version 1: 8 byte times. creation and modification, back to back.
+      const ver = b[box.p], w = ver === 1 ? 8 : 4, off = box.p + 4 + fieldStart;
+      let secs = 0;
+      for (let i = 0; i < w; i++) secs = secs * 256 + b[off + i];
+      if (secs > MAC_EPOCH) { add(found, "Camera and software", label, new Date((secs - MAC_EPOCH) * 1000).toISOString().replace(/\.\d+Z$/, "Z")); }
+      if (!opts.scanOnly) b.fill(0, off, off + 2 * w);
+    }
+
+    let moovSeen = false;
+    for (let o = 0; o < n;) {
+      const box = boxAt(o, n);
+      if (!box) { if (o < n) add(found, "Other", "Unreadable data at the end", (n - o) + " bytes (left in place)"); break; }
+      if (box.type === "moov") {
+        moovSeen = true;
+        for (const c of children(box)) {
+          if (c.type === "mvhd") stampBox(c, 0, "Recorded (movie header)");
+          else if (c.type === "udta") { readUdta(c); blank(c); }
+          else if (c.type === "meta") { readMeta(c); blank(c); }
+          else if (c.type === "Xtra") { add(found, "Other", "Windows media tags", (c.size - c.hdr) + " bytes"); blank(c); }
+          else if (c.type === "uuid") { add(found, "Other", "Private data (uuid)", (c.size - c.hdr) + " bytes"); blank(c); }
+          else if (c.type === "trak") {
+            for (const t of children(c)) {
+              if (t.type === "tkhd") stampBox(t, 0, "Track created");
+              else if (t.type === "udta") { readUdta(t); blank(t); }
+              else if (t.type === "meta") { readMeta(t); blank(t); }
+              else if (t.type === "mdia") {
+                for (const m of children(t)) {
+                  if (m.type === "mdhd") stampBox(m, 0, "Track created");
+                  else if (m.type === "hdlr") {
+                    const h = ascii(b, m.p + 8, m.p + 12);
+                    if (h === "meta" || h === "mett" || h === "camm" || h === "gpmd") add(found, "Left in place", "Timed metadata track", "GPS or motion data recorded alongside the video; removing it needs re-muxing", true);
+                  }
+                }
+              }
+            }
+          }
+        }
+      } else if (box.type === "uuid") {
+        add(found, "XMP packet", "Private data (uuid)", (box.size - box.hdr) + " bytes"); blank(box);
+      } else if (box.type === "meta" || box.type === "udta") { readMeta(box); blank(box); }
+      o = box.end;
+    }
+    if (!moovSeen) throw new Error("This does not look like an MP4 or MOV video.");
+    // De-duplicate repeated findings (track and movie both carry a time).
+    const seenKeys = new Set();
+    const uniq = found.filter((f) => { const k = f.field + "|" + f.value; if (seenKeys.has(k)) return false; seenKeys.add(k); return true; });
+    kept.push("Picture and sound are not re-encoded. Removed boxes are blanked in place, so nothing moves and playback is unchanged.");
+    return { kind: "mp4", found: uniq, out: b, kept: kept };
+  }
+
+  // ---------- OpenDocument (JSZip passed in) ----------
+
+  const ODF_META_FIELDS = [
+    ["meta:initial-creator", "Author"], ["dc:creator", "Last saved by"], ["dc:title", "Title"], ["dc:subject", "Subject"],
+    ["dc:description", "Comments"], ["meta:keyword", "Keywords"], ["meta:creation-date", "Created"], ["dc:date", "Modified"],
+    ["meta:generator", "Created with"], ["meta:editing-duration", "Editing time"],
+  ];
+  async function odfScan(zip, found) {
+    const names = Object.keys(zip.files).filter((n) => !zip.files[n].dir);
+    const read = async (n) => (zip.file(n) ? zip.file(n).async("string") : "");
+    const meta = await read("meta.xml");
+    for (const [tag, label] of ODF_META_FIELDS) {
+      if (tag === "meta:keyword") { const kws = [...meta.matchAll(/<meta:keyword>([^<]*)<\/meta:keyword>/g)].map((m) => decodeEntities(m[1])); if (kws.length) add(found, "Document properties", label, kws.join(", ")); continue; }
+      const v = xmlTag(meta, tag); if (v) add(found, "Document properties", label, v);
+    }
+    const custom = [...meta.matchAll(/<meta:user-defined\b[^>]*meta:name="([^"]*)"/g)].map((m) => decodeEntities(m[1]));
+    if (custom.length) add(found, "Document properties", "Custom properties", custom.join(", "));
+    const tpl = /<meta:template\b[^>]*xlink:href="([^"]*)"/.exec(meta);
+    if (tpl && tpl[1]) add(found, "Paths", "Template path", decodeEntities(tpl[1]));
+    if (names.some((n) => /^Thumbnails\//.test(n))) add(found, "Document properties", "Preview thumbnail", "a small picture of the first page");
+    const authors = new Set();
+    for (const n of ["content.xml", "styles.xml"]) {
+      const x = await read(n);
+      for (const m of x.matchAll(/<dc:creator>([^<]*)<\/dc:creator>/g)) if (m[1] !== "Author") authors.add(decodeEntities(m[1]));
+    }
+    if (authors.size) add(found, "Comments and revisions", "Names on comments and tracked changes", [...authors].join(", "));
+    const settings = await read("settings.xml");
+    const pr = /config:name="PrinterName"[^>]*>([^<]+)</.exec(settings);
+    if (pr) add(found, "Other", "Printer name", decodeEntities(pr[1]));
+    let withMeta = 0;
+    for (const n of names.filter((x) => /\.(jpe?g|png|webp)$/i.test(x))) {
+      try { if (processImage(await zip.file(n).async("uint8array"), { keepOrientation: true }).found.length) withMeta++; } catch (e) { /* skip */ }
+    }
+    if (withMeta) add(found, "Embedded images", "Photo metadata inside embedded images", withMeta + " image" + (withMeta > 1 ? "s" : ""));
+  }
+  async function processOdf(JSZip, bytes, opts, progress) {
+    opts = opts || {}; progress = progress || function () {};
+    const zip = await JSZip.loadAsync(bytes);
+    const mime = zip.file("mimetype") ? await zip.file("mimetype").async("string") : "";
+    if (!/^application\/vnd\.oasis\.opendocument\./.test(mime)) throw new Error("This zip is not an OpenDocument file.");
+    const found = [], kept = [];
+    await odfScan(zip, found);
+    const oldMeta = zip.file("meta.xml") ? await zip.file("meta.xml").async("string") : "";
+    const ver = (/office:version="([^"]*)"/.exec(oldMeta) || [0, "1.2"])[1];
+    const keepTitle = opts.keepTitle ? xmlTag(oldMeta, "dc:title") : "";
+    const author = opts.author ? String(opts.author) : "";
+    const metaOut = '<?xml version="1.0" encoding="UTF-8"?>\n<office:document-meta xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" office:version="' + xmlEsc(ver) + '">' +
+      (keepTitle || author ? "<office:meta>" + (keepTitle ? "<dc:title>" + xmlEsc(keepTitle) + "</dc:title>" : "") + (author ? "<meta:initial-creator>" + xmlEsc(author) + "</meta:initial-creator>" : "") + "</office:meta>" : "<office:meta/>") + "</office:document-meta>";
+    mustBeWellFormed("meta.xml", metaOut);
+    zip.file("meta.xml", metaOut);
+    const names = Object.keys(zip.files).filter((n) => !zip.files[n].dir);
+    let done = 0;
+    for (const n of names) {
+      progress(0.1 + 0.7 * (done++ / names.length), "Cleaning " + n.split("/").pop());
+      if (/^Thumbnails\//.test(n)) {
+        zip.remove(n);
+        const man = zip.file("META-INF/manifest.xml");
+        if (man) {
+          const x = await man.async("string");
+          const y = x.replace(new RegExp('<manifest:file-entry\\b[^>]*manifest:full-path="' + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '"[^>]*/>', "g"), "");
+          mustBeWellFormed("the manifest", y);
+          zip.file("META-INF/manifest.xml", y);
+        }
+      } else if (n === "content.xml" || n === "styles.xml") {
+        if (opts.anonymize !== false) {
+          const x = await zip.file(n).async("string");
+          const y = x.replace(/<dc:creator>[^<]*<\/dc:creator>/g, "<dc:creator>Author</dc:creator>").replace(/<dc:date>[^<]*<\/dc:date>/g, "");
+          if (y !== x) { mustBeWellFormed(n, y); zip.file(n, y); }
+        }
+      } else if (n === "settings.xml") {
+        const x = await zip.file(n).async("string");
+        const y = x.replace(/(<config:config-item\b[^>]*config:name="Printer(?:Name|Setup)"[^>]*>)[^<]*(<\/config:config-item>)/g, "$1$2");
+        if (y !== x) { mustBeWellFormed(n, y); zip.file(n, y); }
+      } else if (/\.(jpe?g|png|webp)$/i.test(n)) {
+        try { const r = processImage(await zip.file(n).async("uint8array"), { keepOrientation: true }); if (r.found.length) zip.file(n, r.out); } catch (e) { /* leave as is */ }
+      }
+    }
+    // The mimetype entry must stay first and stored, uncompressed.
+    zip.file("mimetype", mime, { compression: "STORE" });
+    zip.forEach((p, f) => { f.date = FIXED_DATE; });
+    progress(0.85, "Writing the file");
+    const out = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE", compressionOptions: { level: 6 } });
+    kept.push("Text, tables, slides and pictures are not touched. Names typed into the body are content, not metadata.");
+    return { kind: "odf", found: found, out: out, kept: kept };
+  }
+
+  // ---------- checks ----------
+
+  async function sha256(bytes) {
+    try {
+      const c = root.crypto && root.crypto.subtle;
+      if (!c) return null;
+      const d = new Uint8Array(await c.digest("SHA-256", bytes));
+      let h = "";
+      for (let i = 0; i < d.length; i++) h += (d[i] < 16 ? "0" : "") + d[i].toString(16);
+      return h;
+    } catch (e) { return null; }
+  }
+
+  function mp4Structure(b) {
+    let o = 0, moov = false;
+    const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
+    while (o + 8 <= b.length) {
+      let size = dv.getUint32(o);
+      const type = ascii(b, o + 4, o + 8);
+      if (size === 1) size = dv.getUint32(o + 8) * 4294967296 + dv.getUint32(o + 12);
+      if (size === 0) size = b.length - o;
+      if (size < 8 || o + size > b.length) return false;
+      if (type === "moov") moov = true;
+      o += size;
+    }
+    return moov && o === b.length;
+  }
+
+  // Confirms the cleaned file still opens. Returns { ok, note }.
+  async function integrity(res, orig, libs, ctx) {
+    const kind = res.kind;
+    try {
+      if (["jpeg", "png", "webp", "gif"].includes(kind)) {
+        if (typeof root.createImageBitmap !== "function" || typeof root.Blob !== "function") return { ok: true, note: "Image decode check skipped on this browser." };
+        const mime = { jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" }[kind];
+        let a = null;
+        try { a = await root.createImageBitmap(new Blob([orig], { type: mime })); } catch (e) { return { ok: true, note: "Original could not be decoded here, so no comparison was made." }; }
+        let o;
+        try { o = await root.createImageBitmap(new Blob([res.out], { type: mime })); } catch (e) { a.close(); return { ok: false, note: "The cleaned picture would not open." }; }
+        const same = a.width === o.width && a.height === o.height;
+        a.close(); o.close();
+        return same ? { ok: true, note: "Cleaned picture opens at the same size." } : { ok: false, note: "The cleaned picture came out a different size." };
+      }
+      if (kind === "tiff") {
+        const touched = res.touched || [];
+        const o = res.out, a = res.original;
+        if (o.length !== a.length) return { ok: false, note: "File length changed." };
+        let i = 0;
+        const sorted = touched.slice().sort((x, y) => x[0] - y[0]);
+        for (const [s, e] of sorted) { for (; i < s; i++) if (o[i] !== a[i]) return { ok: false, note: "Image data changed." }; i = Math.max(i, e); }
+        for (; i < o.length; i++) if (o[i] !== a[i]) return { ok: false, note: "Image data changed." };
+        return { ok: true, note: "Image data is byte-for-byte unchanged." };
+      }
+      if (kind === "mp4") return mp4Structure(res.out) ? { ok: true, note: "Video structure is intact." } : { ok: false, note: "Video structure check failed." };
+      if (kind === "svg") return wellFormed(utf8(res.out, 0, res.out.length)) ? { ok: true, note: "SVG is well-formed." } : { ok: false, note: "SVG check failed." };
+      if (kind === "pdf") {
+        const d = await loadPdf(libs.PDFLib, res.out);
+        return d.getPageCount() === res.pages ? { ok: true, note: "PDF reopens with " + res.pages + " page" + (res.pages === 1 ? "" : "s") + "." } : { ok: false, note: "Page count changed." };
+      }
+      if (["docx", "xlsx", "pptx", "odf"].includes(kind)) {
+        const z = await libs.JSZip.loadAsync(res.out);
+        const main = kind === "odf" ? "mimetype" : "[Content_Types].xml";
+        if (!z.file(main)) return { ok: false, note: "Package is missing " + main + "." };
+        const origZip = await libs.JSZip.loadAsync(orig);
+        const lost = Object.keys(origZip.files).filter((n) => !origZip.files[n].dir && !z.files[n] && !/^docProps\/thumbnail\.|^Thumbnails\/|^word\/people\.xml$/.test(n));
+        return lost.length ? { ok: false, note: "Parts went missing: " + lost.slice(0, 3).join(", ") } : { ok: true, note: "Package reopens with every part present." };
+      }
+    } catch (e) { return { ok: false, note: "Check failed: " + (e && e.message ? e.message : e) }; }
+    return { ok: true, note: "" };
+  }
+
   // ---------- dispatch ----------
 
+  const ZIP_EXT = /\.(docx|xlsx|pptx|docm|xlsm|pptm)$/;
+  const ODF_EXT = /\.(odt|ods|odp|odg|ott|ots|otp)$/;
   function kindOf(name, bytes) {
-    if (detectImage(bytes)) return detectImage(bytes);
     const lower = String(name).toLowerCase();
+    const img = detectImage(bytes);
+    if (img) return img;
+    if (startsWith(bytes, 0, "GIF87a") || startsWith(bytes, 0, "GIF89a")) return "gif";
     if (startsWith(bytes, 0, "%PDF")) return "pdf";
-    if (bytes[0] === 0x50 && bytes[1] === 0x4b && /\.(docx|xlsx|pptx|docm|xlsm|pptm)$/.test(lower)) return "office";
+    if ((bytes[0] === 0x49 && bytes[1] === 0x49 && bytes[2] === 0x2a && bytes[3] === 0) || (bytes[0] === 0x4d && bytes[1] === 0x4d && bytes[2] === 0 && bytes[3] === 0x2a)) return "tiff";
+    if (bytes[0] === 0x50 && bytes[1] === 0x4b) {
+      if (ZIP_EXT.test(lower)) return "office";
+      if (ODF_EXT.test(lower)) return "odf";
+    }
+    if (bytes.length > 12 && ascii(bytes, 4, 8) === "ftyp") return "mp4";
+    if (/\.svg$/.test(lower) || (bytes[0] === 0x3c && /^\s*(<\?xml[^>]*>\s*)?(<!--[\s\S]*?-->\s*)*(<!DOCTYPE[^>]*>\s*)?<svg[\s>]/.test(utf8(bytes, 0, Math.min(bytes.length, 4096))))) return "svg";
     if (/\.(doc|xls|ppt)$/.test(lower)) return "legacy";
     return null;
   }
+  const SUPPORTED = "JPG, PNG, WebP, GIF, TIFF, SVG, PDF, DOCX, XLSX, PPTX, ODT/ODS/ODP and MP4/MOV";
 
-  async function run(name, bytes, libs, opts) {
+  async function run(name, bytes, libs, opts, progress) {
+    progress = progress || function () {};
     const k = kindOf(name, bytes);
     if (k === "legacy") throw new Error("Old .doc, .xls and .ppt files are not supported. Save as .docx, .xlsx or .pptx first.");
-    if (!k) throw new Error("Not supported. Use a JPG, PNG, WebP, PDF, DOCX, XLSX or PPTX file.");
-    let res;
-    if (k === "pdf") res = await processPdf(libs.PDFLib, bytes, opts);
-    else if (k === "office") res = await processOffice(libs.JSZip, bytes, opts);
-    else res = processImage(bytes, opts);
-    return res;
+    if (!k) throw new Error("Not supported. Use " + SUPPORTED + ".");
+    if (k === "pdf") return processPdf(libs.PDFLib, bytes, opts, progress);
+    if (k === "office") return processOffice(libs.JSZip, bytes, opts, progress);
+    if (k === "odf") return processOdf(libs.JSZip, bytes, opts, progress);
+    if (k === "gif") return processGif(bytes);
+    if (k === "tiff") return processTiff(bytes, opts);
+    if (k === "svg") return processSvg(bytes);
+    if (k === "mp4") return processMp4(bytes, opts);
+    return processImage(bytes, opts);
   }
 
   // Re-read a cleaned file with the same readers. Anything it still finds is shown to the user.
@@ -823,10 +1328,36 @@
       await officeScan(zip, found);
       return found;
     }
+    if (kindName === "odf") { const zip = await libs.JSZip.loadAsync(out), found = []; await odfScan(zip, found); return found; }
+    if (kindName === "gif") return processGif(out).found;
+    if (kindName === "svg") return processSvg(out).found;
+    if (kindName === "tiff") return processTiff(out, {}).found;
+    if (kindName === "mp4") return processMp4(out, { scanOnly: true }).found;
     return processImage(out, { keepOrientation: true }).found;
   }
 
-  const api = { run, verify, kindOf, processJpeg, processPng, processWebp, processImage, processPdf, processOffice, cleanText, parseTiff, minimalTiff, crc32 };
+  // Full pipeline used by the page and its worker: clean, re-read, check, hash.
+  async function clean(name, bytes, libs, opts, progress) {
+    opts = opts || {}; progress = progress || function () {};
+    progress(0.02, "Reading");
+    const inHash = await sha256(bytes);
+    const orig = bytes.length > 64 * 1048576 ? null : Uint8Array.from(bytes); // images and zips are not edited in place; MP4 is
+    const inSize = bytes.length;
+    const res = await run(name, bytes, libs, opts, progress);
+    progress(0.88, "Reading the result again");
+    let after = await verify(res.kind, res.out, libs);
+    const keepFields = [];
+    if (opts.keepTitle) keepFields.push("Title");
+    if (opts.author) keepFields.push("Author");
+    after = after.filter((f) => !f.info && !(f.group === "Document properties" && keepFields.indexOf(f.field) !== -1));
+    progress(0.94, "Checking the file still opens");
+    const check = res.kind === "mp4" ? await integrity(res, null, libs) : await integrity(res, orig || res.original || bytes, libs);
+    const outHash = await sha256(res.out);
+    progress(1, "Done");
+    return { kind: res.kind, found: res.found.filter((f) => !f.info), left: res.found.filter((f) => f.info), kept: res.kept, after: after, check: check, inSize: inSize, outSize: res.out.length, inHash: inHash, outHash: outHash, out: res.out };
+  }
+
+  const api = { clean, run, verify, kindOf, SUPPORTED, wellFormed, processJpeg, processPng, processWebp, processImage, processGif, processSvg, processTiff, processMp4, processPdf, processOffice, processOdf, cleanText, parseTiff, minimalTiff, crc32, sha256, integrity };
   if (typeof module === "object" && module.exports) module.exports = api;
   root.MetaClean = api;
 })(typeof globalThis !== "undefined" ? globalThis : this);

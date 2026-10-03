@@ -4,19 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Metadata Cleaner: Remove EXIF, PDF and Word Author Data | Purplelink</title>
-    <meta name="description" content="Remove author names, GPS, camera details, comment authors and edit history from photos, PDFs and Word, Excel and PowerPoint files. Free, and your files never leave your browser.">
+    <title>Metadata Cleaner: Remove EXIF, PDF, Word and Video Metadata | Purplelink</title>
+    <meta name="description" content="Remove author names, GPS, camera details, comment authors and edit history from photos, PDFs, Office files and video. Cover parts of a picture. Free, and your files never leave your browser.">
     <link rel="canonical" href="https://purplelink.llc/tools/metadata-cleaner/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Metadata Cleaner: remove EXIF, PDF and Word author data">
-    <meta property="og:description" content="Strip author names, GPS and edit history from photos, PDFs and Office files. Free, in your browser, nothing uploaded.">
+    <meta property="og:title" content="Metadata Cleaner: remove EXIF, PDF, Word and video metadata">
+    <meta property="og:description" content="Strip author names, GPS and edit history from photos, PDFs, Office files and video, or cover parts of a picture. Free, in your browser, nothing uploaded.">
     <meta property="og:url" content="https://purplelink.llc/tools/metadata-cleaner/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/metadata-cleaner.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Metadata Cleaner: remove EXIF, PDF and Word author data">
-    <meta name="twitter:description" content="Strip author names, GPS and edit history from photos, PDFs and Office files. Free, in your browser, nothing uploaded.">
+    <meta name="twitter:title" content="Metadata Cleaner: remove EXIF, PDF, Word and video metadata">
+    <meta name="twitter:description" content="Strip author names, GPS and edit history from photos, PDFs, Office files and video, or cover parts of a picture. Free, in your browser, nothing uploaded.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/metadata-cleaner.png">
     <script type="application/ld+json">
 {
@@ -26,7 +26,7 @@
       "@type": "WebApplication",
       "name": "Metadata Cleaner",
       "url": "https://purplelink.llc/tools/metadata-cleaner/",
-      "description": "Remove author names, GPS, camera details, comment authors and edit history from photos, PDFs and Word, Excel and PowerPoint files. Free, and your files never leave your browser.",
+      "description": "Remove author names, GPS, camera details, comment authors and edit history from photos, PDFs, Office files and video. Cover parts of a picture. Free, and your files never leave your browser.",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Any",
       "offers": {
@@ -36,7 +36,15 @@
       },
       "publisher": {
         "@id": "https://purplelink.llc/#organization"
-      }
+      },
+      "featureList": [
+        "Remove EXIF, XMP and IPTC from JPG, PNG, WebP, GIF and TIFF",
+        "Clean PDF, Word, Excel, PowerPoint and OpenDocument properties and comment authors",
+        "Blank location and device tags in MP4 and MOV video without re-encoding",
+        "Cover faces or text in a picture",
+        "Strip hidden characters from text",
+        "Runs in the browser; files are never uploaded"
+      ]
     },
     {
       "@type": "FAQPage",
@@ -46,7 +54,7 @@
           "name": "Are my files uploaded?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. The page reads the file with your browser, rewrites it in memory and hands you the result as a download. There is no server step. The only requests the page makes are for its own scripts, such as the PDF library when you add your first PDF."
+            "text": "No. The page reads the file with your browser, rewrites it in memory in a background worker and hands you the result as a download. There is no server step. The meter on the page counts the requests it makes while it works, so you can see this for yourself. The only requests the page makes are for its own scripts, such as the PDF library when you add your first PDF."
           }
         },
         {
@@ -54,7 +62,7 @@
           "name": "How do I know the metadata is really gone?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Each result is read a second time with the same reader that found the fields in the first place, and the page says what, if anything, is still there. For your own check, open the cleaned file in a PDF reader's properties dialog, or run a tool such as ExifTool on it."
+            "text": "Each result is read a second time with the same reader that found the fields in the first place, and the page says what, if anything, is still there. It also checks that the cleaned file still opens: pictures are decoded, PDFs are reloaded, and Office and OpenDocument files are unzipped and their XML is checked. If a check fails, the file is not offered for download. For your own check, open the cleaned file's properties dialog, or run a tool such as ExifTool on it."
           }
         },
         {
@@ -62,7 +70,7 @@
           "name": "Does it change my photos or reduce their quality?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. JPEG, PNG and WebP are edited at the byte level: the metadata blocks are cut out and the image data is copied as it was. The file gets a little smaller and looks identical. Color profiles are kept so colors do not shift."
+            "text": "No. JPEG, PNG, WebP, GIF and TIFF are edited at the byte level: the metadata blocks are cut out and the image data is copied as it was. The file gets a little smaller and looks identical. Color profiles are kept so colors do not shift. The cover tool is the exception, because it has to change pixels, and it redraws the picture to do it."
           }
         },
         {
@@ -78,7 +86,7 @@
           "name": "What does it not remove?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Anything that is content. Names written in a document's text, headers and footers, watermarks, visible stamps, and what a photo shows. It does not touch the file system dates your computer keeps, and it does not change pixels, so a face or a street sign is still there. Attached files inside a PDF and custom XML parts in an Office file are reported and left in place."
+            "text": "Anything that is content. Names written in a document's text, headers and footers, watermarks, visible stamps, and what a photo shows. It does not touch the file system dates your computer keeps, and it does not change pixels outside the cover tool, so a face or a street sign is still there until you cover it. Attached files inside a PDF, custom XML parts in an Office file and separate GPS or motion tracks inside a video (some action cameras and drones record them) are reported and left in place, because removing them needs more than cutting out a block."
           }
         },
         {
@@ -86,7 +94,23 @@
           "name": "Can I keep comments and tracked changes?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. They are always kept. Only the names, initials and timestamps on them are replaced, so reviewers can still see what changed but not who made the change. Untick the rename option to keep the names."
+            "text": "Yes. They are always kept. Only the names, initials and timestamps on them are replaced, so reviewers can still see what changed but not who made the change. Untick the rename option to keep the names. You can also keep the document title, or set the author to a name of your choice, such as “Anonymous”."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the checksums for?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They are SHA-256 fingerprints of the file before and after. Put the report with your submission records and you can show later which file was cleaned and what was in it. The report lists the removed values, so keep it apart from the cleaned files."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How large a file can it handle?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Up to 200 MB per file, and 600 MB for video. It is limited by your device's memory, not a server. Files are cleaned one at a time in a background worker, so the page stays responsive, and a progress bar shows each step."
           }
         },
         {
@@ -99,10 +123,10 @@
         },
         {
           "@type": "Question",
-          "name": "What about video, OpenDocument and HEIC?",
+          "name": "What about HEIC photos and other formats?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Not yet. Export a HEIC photo as JPG on your phone or Mac first. Save OpenDocument files as Office files, or export to PDF and clean that."
+            "text": "Not yet. Export a HEIC photo as JPG on your phone or Mac first. BigTIFF, AVI, MKV and WebM are not supported either."
           }
         }
       ]
@@ -143,9 +167,10 @@
     <script src="/site.js?v=cefe20b388" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script src="/assets/vendor/jszip/jszip.min.js?v=7f839b2d46" defer></script>
-    <link rel="stylesheet" href="/tools/metadata-cleaner/metadata-cleaner.css?v=b0ea88e2ef">
-    <script src="/tools/metadata-cleaner/metadata-cleaner-core.js?v=df497b26e3" defer></script>
-    <script src="/tools/metadata-cleaner/metadata-cleaner.js?v=4e6e89a9e9" defer></script>
+    <link rel="stylesheet" href="/tools/metadata-cleaner/metadata-cleaner.css?v=6eba1fa001">
+    <link rel="prefetch" as="script" data-mc-worker href="/tools/metadata-cleaner/metadata-cleaner-worker.js?v=2da8b049c3">
+    <script src="/tools/metadata-cleaner/metadata-cleaner-core.js?v=b311404d43" defer></script>
+    <script src="/tools/metadata-cleaner/metadata-cleaner.js?v=4bc86e615b" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -168,31 +193,103 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>Metadata Cleaner</h1>
-        <p>Remove author names, GPS positions, camera details, comment authors and edit history from photos, PDFs and Word, Excel and PowerPoint files. A second tab strips invisible characters from pasted text. <strong>Everything runs in your browser. Your files are never uploaded.</strong></p>
+        <p>Remove author names, GPS positions, camera details, comment authors and edit history from photos, PDFs, Word, Excel, PowerPoint, OpenDocument and video files. Cover faces or text in a picture. Strip invisible characters from pasted text. <strong>Everything runs in your browser. Your files are never uploaded.</strong></p>
       </div>
+
+      <figure class="mc-demo">
+        <div class="mc-demo-file" aria-hidden="true">
+          <div class="mc-demo-top">
+            <svg class="mc-demo-icon" viewBox="0 0 24 24" width="22" height="22"><path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v4h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            <span class="mc-demo-name">IMG_4821.jpg</span>
+            <span class="mc-demo-size">3.1 MB</span>
+          </div>
+          <ul class="mc-demo-rows">
+            <li><span class="mc-k">Camera</span><span class="mc-v">iPhone 15 Pro</span></li>
+            <li><span class="mc-k">Taken</span><span class="mc-v">14 Sep 2026, 08:12</span></li>
+            <li><span class="mc-k">Location</span><span class="mc-v">33.7490, -84.3880</span></li>
+            <li><span class="mc-k">Owner</span><span class="mc-v">Alex Sample</span></li>
+            <li><span class="mc-k">Software</span><span class="mc-v">PhotoEditor 4.2</span></li>
+          </ul>
+          <p class="mc-demo-clean">
+            <svg viewBox="0 0 24 24" width="18" height="18" class="mc-check"><circle cx="12" cy="12" r="10"/><path d="M7 12.5l3.2 3.2L17 9"/></svg>
+            Nothing left to read
+          </p>
+        </div>
+        <figcaption>An example of what travels with a photo. The cleaner lists it, then removes it.</figcaption>
+      </figure>
 
       <div class="tool-app mc-app">
         <div class="mc-tabs" role="tablist" aria-label="What to clean">
-          <button type="button" class="mc-tab" id="mc-tab-files" role="tab" aria-selected="true" aria-controls="mc-panel-files">Files</button>
-          <button type="button" class="mc-tab" id="mc-tab-text" role="tab" aria-selected="false" aria-controls="mc-panel-text">Text</button>
+          <button type="button" class="mc-tab" id="mc-tab-files" role="tab" aria-selected="true" aria-controls="mc-panel-files">Clean files</button>
+          <button type="button" class="mc-tab" id="mc-tab-redact" role="tab" aria-selected="false" aria-controls="mc-panel-redact">Cover parts of a picture</button>
+          <button type="button" class="mc-tab" id="mc-tab-text" role="tab" aria-selected="false" aria-controls="mc-panel-text">Clean text</button>
         </div>
 
         <section class="mc-panel" id="mc-panel-files" role="tabpanel" aria-labelledby="mc-tab-files">
           <div class="mc-drop" id="mc-drop">
-            <label for="mc-file" class="mc-drop-label"><strong>Choose files</strong> or drop them here</label>
-            <input id="mc-file" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.pdf,.docx,.xlsx,.pptx,image/jpeg,image/png,image/webp,application/pdf">
-            <p class="mc-hint">JPG, PNG, WebP, PDF, DOCX, XLSX and PPTX. Up to 200 MB each.</p>
+            <svg class="mc-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+              <path d="M12 5h17l9 9v29H12z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+              <path d="M29 5v9h9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+              <rect class="mc-scan" x="15" y="20" width="20" height="2.6" rx="1.3" fill="currentColor"/>
+            </svg>
+            <p class="mc-drop-label"><strong>Drop files or a folder here</strong></p>
+            <div class="mc-pick">
+              <label class="btn btn-primary mc-small" for="mc-file">Choose files</label>
+              <label class="btn btn-ghost mc-small" for="mc-folder">Choose a folder</label>
+              <button type="button" class="btn btn-ghost mc-small" id="mc-sample">Try a sample photo</button>
+            </div>
+            <input id="mc-file" class="sr-only" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.tif,.tiff,.svg,.pdf,.docx,.xlsx,.pptx,.docm,.xlsm,.pptm,.odt,.ods,.odp,.mp4,.mov,.m4v">
+            <input id="mc-folder" class="sr-only" type="file" webkitdirectory multiple>
+            <p class="mc-hint">JPG, PNG, WebP, GIF, TIFF, SVG, PDF, DOCX, XLSX, PPTX, ODT, ODS, ODP, MP4 and MOV. You can also paste a picture with Ctrl or Cmd V.</p>
           </div>
-          <div class="mc-options">
-            <label><input type="checkbox" id="mc-opt-rotate" checked> Keep photo rotation</label>
-            <label><input type="checkbox" id="mc-opt-anon" checked> Rename reviewers and commenters to &ldquo;Author&rdquo;</label>
-          </div>
+          <details class="mc-opts" open>
+            <summary>Options</summary>
+            <div class="mc-opts-body">
+              <label><input type="checkbox" id="mc-opt-rotate" checked> Keep photo rotation</label>
+              <label><input type="checkbox" id="mc-opt-anon" checked> Rename reviewers and commenters to &ldquo;Author&rdquo;</label>
+              <label><input type="checkbox" id="mc-opt-title"> Keep the document title</label>
+              <label class="mc-opt-text">Set the author to <input type="text" id="mc-opt-author" autocomplete="off" placeholder="leave empty for none"></label>
+            </div>
+          </details>
+          <p class="mc-net" id="mc-net"><span class="mc-net-dot" aria-hidden="true"></span><span id="mc-net-text">Bytes of your files sent anywhere: 0</span></p>
           <p class="mc-status" id="mc-status" role="status" aria-live="polite"></p>
           <ul class="mc-list" id="mc-list"></ul>
           <div class="mc-bar" id="mc-bar" hidden>
-            <button type="button" class="btn btn-primary" id="mc-all">Download all as .zip</button>
+            <button type="button" class="btn btn-primary" id="mc-all" hidden>Download all as .zip</button>
+            <button type="button" class="btn btn-ghost" id="mc-report" hidden>Download report</button>
             <button type="button" class="btn btn-ghost" id="mc-clear">Clear</button>
           </div>
+        </section>
+
+        <section class="mc-panel" id="mc-panel-redact" role="tabpanel" aria-labelledby="mc-tab-redact" hidden>
+          <div class="mc-drop mc-rd-drop" id="mc-rd-drop">
+            <svg class="mc-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+              <rect x="6" y="9" width="36" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              <circle cx="17" cy="20" r="3.4" fill="none" stroke="currentColor" stroke-width="2.2"/>
+              <path d="M8 36l10-10 8 8 6-6 10 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+              <rect class="mc-scan" x="14" y="15" width="20" height="9" rx="1.5" fill="currentColor" opacity="0.55"/>
+            </svg>
+            <p class="mc-drop-label"><strong>Drop a picture here</strong></p>
+            <div class="mc-pick"><label class="btn btn-primary mc-small" for="mc-rd-file">Choose a picture</label></div>
+            <input id="mc-rd-file" class="sr-only" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif">
+            <p class="mc-hint">JPG, PNG, WebP or GIF. You can also paste a picture.</p>
+          </div>
+          <div id="mc-rd-work" hidden>
+            <div class="mc-rd-tools">
+              <label>Cover with <select id="mc-rd-mode"><option value="block">Solid black</option><option value="pixel">Pixelation</option></select></label>
+              <button type="button" class="btn btn-ghost mc-small" id="mc-rd-add">Add a box</button>
+              <button type="button" class="btn btn-ghost mc-small" id="mc-rd-undo" disabled>Undo</button>
+              <button type="button" class="btn btn-ghost mc-small" id="mc-rd-clear" disabled>Remove all boxes</button>
+              <button type="button" class="btn btn-ghost mc-small" id="mc-rd-new">Different picture</button>
+            </div>
+            <div class="mc-rd-stage"><canvas id="mc-rd-canvas" tabindex="0" aria-label="Picture editor. Drag to draw a box over anything to hide. With a box selected, the arrow keys move it, Shift with the arrow keys resizes it, and Delete removes it."></canvas></div>
+            <div class="mc-rd-tools">
+              <label>Save as <select id="mc-rd-format"><option value="png">PNG</option><option value="jpeg">JPEG</option></select></label>
+              <button type="button" class="btn btn-primary mc-small" id="mc-rd-save" disabled>Download picture</button>
+            </div>
+          </div>
+          <p class="mc-status" id="mc-rd-status" role="status" aria-live="polite"></p>
+          <p class="mc-hint mc-hint-left">Covers become part of the pixels, so they cannot be lifted off later. The saved picture is redrawn from pixels, so it carries no metadata either. Solid black is the safest cover. Pixelation is weaker on small areas.</p>
         </section>
 
         <section class="mc-panel" id="mc-panel-text" role="tabpanel" aria-labelledby="mc-tab-text" hidden>
@@ -216,15 +313,17 @@
           </div>
         </section>
 
-        <p class="tool-privacy">Files are read and rewritten in this tab. The only requests the page makes are for its own scripts. Your files and text are never sent anywhere.</p>
+        <p class="tool-privacy">Files are read and rewritten in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files and text are never sent anywhere.</p>
       </div>
 
       <section class="mc-sources" aria-labelledby="mc-rm-h">
         <h2 id="mc-rm-h">What it removes</h2>
         <ul class="mc-rm">
-          <li><strong>Photos (JPG, PNG, WebP).</strong> EXIF, including camera make and model, serial numbers, date taken and GPS position. XMP and IPTC captions and bylines, comments, embedded thumbnails and Content Credentials. Pixels are not decoded or re-encoded, so quality does not change. The rotation tag is kept by default so a portrait photo does not turn sideways.</li>
+          <li><strong>Photos (JPG, PNG, WebP, GIF, TIFF).</strong> EXIF, including camera make and model, serial numbers, date taken and GPS position. XMP and IPTC captions and bylines, comments, embedded thumbnails and Content Credentials. Pixels are not decoded or re-encoded, so quality does not change. The rotation tag is kept by default so a portrait photo does not turn sideways.</li>
           <li><strong>PDF.</strong> The document properties (author, title, subject, keywords, creator, producer, dates), the XMP packet, the file ID and private application data. Comment and markup authors. Photo metadata inside embedded JPEGs. Old versions of edited content that some PDF writers leave inside the file.</li>
-          <li><strong>Word, Excel and PowerPoint.</strong> Author, last saved by, company, manager, template, title and the custom properties. The preview thumbnail. Names and dates on comments and tracked changes. The people list, editing-session ids, the attached template path and the folder an Excel workbook was saved in. Photo metadata inside embedded pictures.</li>
+          <li><strong>Word, Excel, PowerPoint and OpenDocument.</strong> Author, last saved by, company, manager, template, title and the custom properties. The preview thumbnail. Names and dates on comments and tracked changes. The people list, editing-session ids, the attached template path, the folder an Excel workbook was saved in and the printer name. Photo metadata inside embedded pictures.</li>
+          <li><strong>Video (MP4, MOV).</strong> Title, artist, comment, device, software, GPS position and recording times. The video and sound are not re-encoded, so it plays exactly as before and large files finish in a moment.</li>
+          <li><strong>SVG.</strong> Editor settings, local file paths, author metadata and comments from Inkscape and Illustrator. The drawing itself is not touched.</li>
           <li><strong>Text.</strong> Zero-width characters, text-direction controls, hidden tag characters, soft hyphens, control characters and odd spaces. These break LaTeX builds and can carry instructions a reader cannot see.</li>
         </ul>
       </section>
@@ -234,21 +333,23 @@
         <ol>
           <li>Clean the PDF you will upload. This removes the author and producer fields that reviewers can see in the document properties.</li>
           <li>Clean any Word or Excel supplement the same way, and leave the rename option on so comment authors read &ldquo;Author&rdquo;.</li>
-          <li>Open the result in a PDF reader and check File, Properties. The author field should be empty.</li>
+          <li>Open the result in a PDF reader and check File, Properties. The author field should be empty. Download the report if the journal or your institution wants a record of what was removed.</li>
           <li>Metadata is only one way authors are identified. Names in acknowledgements, self-citations and file paths in figures are content. <a href="/tools/anonymity-check/">Anonymity Check</a> reads the text for those.</li>
         </ol>
       </section>
 
       <section class="tool-faq">
         <h2>Questions</h2>
-        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads the file with your browser, rewrites it in memory and hands you the result as a download. There is no server step. The only requests the page makes are for its own scripts, such as the PDF library when you add your first PDF.</div></details>
-        <details><summary>How do I know the metadata is really gone?</summary><div class="faq-body">Each result is read a second time with the same reader that found the fields in the first place, and the page says what, if anything, is still there. For your own check, open the cleaned file in a PDF reader&#x27;s properties dialog, or run a tool such as ExifTool on it.</div></details>
-        <details><summary>Does it change my photos or reduce their quality?</summary><div class="faq-body">No. JPEG, PNG and WebP are edited at the byte level: the metadata blocks are cut out and the image data is copied as it was. The file gets a little smaller and looks identical. Color profiles are kept so colors do not shift.</div></details>
+        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads the file with your browser, rewrites it in memory in a background worker and hands you the result as a download. There is no server step. The meter on the page counts the requests it makes while it works, so you can see this for yourself. The only requests the page makes are for its own scripts, such as the PDF library when you add your first PDF.</div></details>
+        <details><summary>How do I know the metadata is really gone?</summary><div class="faq-body">Each result is read a second time with the same reader that found the fields in the first place, and the page says what, if anything, is still there. It also checks that the cleaned file still opens: pictures are decoded, PDFs are reloaded, and Office and OpenDocument files are unzipped and their XML is checked. If a check fails, the file is not offered for download. For your own check, open the cleaned file&#x27;s properties dialog, or run a tool such as ExifTool on it.</div></details>
+        <details><summary>Does it change my photos or reduce their quality?</summary><div class="faq-body">No. JPEG, PNG, WebP, GIF and TIFF are edited at the byte level: the metadata blocks are cut out and the image data is copied as it was. The file gets a little smaller and looks identical. Color profiles are kept so colors do not shift. The cover tool is the exception, because it has to change pixels, and it redraws the picture to do it.</div></details>
         <details><summary>Why does it keep the rotation tag?</summary><div class="faq-body">Phones store portrait photos sideways and add a tag that says which way is up. Removing every tag makes those photos appear rotated. The tag says nothing about you, so it is kept as a one-field replacement for the original block. Untick Keep photo rotation to drop it.</div></details>
-        <details><summary>What does it not remove?</summary><div class="faq-body">Anything that is content. Names written in a document&#x27;s text, headers and footers, watermarks, visible stamps, and what a photo shows. It does not touch the file system dates your computer keeps, and it does not change pixels, so a face or a street sign is still there. Attached files inside a PDF and custom XML parts in an Office file are reported and left in place.</div></details>
-        <details><summary>Can I keep comments and tracked changes?</summary><div class="faq-body">Yes. They are always kept. Only the names, initials and timestamps on them are replaced, so reviewers can still see what changed but not who made the change. Untick the rename option to keep the names.</div></details>
+        <details><summary>What does it not remove?</summary><div class="faq-body">Anything that is content. Names written in a document&#x27;s text, headers and footers, watermarks, visible stamps, and what a photo shows. It does not touch the file system dates your computer keeps, and it does not change pixels outside the cover tool, so a face or a street sign is still there until you cover it. Attached files inside a PDF, custom XML parts in an Office file and separate GPS or motion tracks inside a video (some action cameras and drones record them) are reported and left in place, because removing them needs more than cutting out a block.</div></details>
+        <details><summary>Can I keep comments and tracked changes?</summary><div class="faq-body">Yes. They are always kept. Only the names, initials and timestamps on them are replaced, so reviewers can still see what changed but not who made the change. Untick the rename option to keep the names. You can also keep the document title, or set the author to a name of your choice, such as &ldquo;Anonymous&rdquo;.</div></details>
+        <details><summary>What are the checksums for?</summary><div class="faq-body">They are SHA-256 fingerprints of the file before and after. Put the report with your submission records and you can show later which file was cleaned and what was in it. The report lists the removed values, so keep it apart from the cleaned files.</div></details>
+        <details><summary>How large a file can it handle?</summary><div class="faq-body">Up to 200 MB per file, and 600 MB for video. It is limited by your device&#x27;s memory, not a server. Files are cleaned one at a time in a background worker, so the page stays responsive, and a progress bar shows each step.</div></details>
         <details><summary>What about password-protected or old-format files?</summary><div class="faq-body">Password-protected PDFs are refused because the file cannot be rewritten without the password. Remove the password in your PDF reader, then clean the result. The old .doc, .xls and .ppt formats are not supported. Open them in Word, Excel or PowerPoint and save as .docx, .xlsx or .pptx.</div></details>
-        <details><summary>What about video, OpenDocument and HEIC?</summary><div class="faq-body">Not yet. Export a HEIC photo as JPG on your phone or Mac first. Save OpenDocument files as Office files, or export to PDF and clean that.</div></details>
+        <details><summary>What about HEIC photos and other formats?</summary><div class="faq-body">Not yet. Export a HEIC photo as JPG on your phone or Mac first. BigTIFF, AVI, MKV and WebM are not supported either.</div></details>
       </section>
 
       <nav class="tool-related" aria-label="Related tools">

@@ -192,3 +192,141 @@ test("text: hidden characters", () => {
   assert.equal(MC.cleanText("\u201Cq\u201D \u2014 it\u2019s\u2026", { typography: true }).text, '"q" - it\'s...');
   assert.equal(MC.cleanText("plain text", {}).total, 0);
 });
+
+// ---------- v2: more formats, options, checks ----------
+
+test("clean(): returns found, after, check and hashes", async () => {
+  const steps = [];
+  const r = await MC.clean("photo.jpg", read("photo.jpg"), libs, {}, (p, l) => steps.push(p));
+  assert.equal(r.kind, "jpeg");
+  assert.deepEqual(r.after, []);
+  assert.equal(r.check.ok, true);
+  assert.match(r.inHash, /^[0-9a-f]{64}$/);
+  assert.match(r.outHash, /^[0-9a-f]{64}$/);
+  assert.notEqual(r.inHash, r.outHash);
+  assert.ok(steps.length >= 3 && steps[steps.length - 1] === 1 && steps.every((x, i) => i === 0 || x >= steps[i - 1]), "progress rises to 1");
+});
+
+test("gif: comment removed, frames identical", async () => {
+  const r = await MC.clean("photo.gif", read("photo.gif"), libs, {});
+  assert.equal(r.kind, "gif");
+  assert.ok(r.found.some((f) => f.field === "GIF comment" && /Ben Ampel/.test(f.value)));
+  assert.ok(!Buffer.from(r.out).includes("Ben Ampel"));
+  assert.equal(r.out[r.out.length - 1], 0x3b);
+});
+
+test("tiff: tags zeroed in place, image data unchanged", async () => {
+  const r = await MC.clean("photo.tif", read("photo.tif"), libs, {});
+  assert.equal(r.kind, "tiff");
+  for (const f of ["Artist", "Camera make", "Camera model", "Software", "Copyright", "GPS position"]) assert.ok(r.found.some((x) => x.field === f), "found " + f);
+  assert.equal(r.outSize, r.inSize);
+  assert.equal(r.check.ok, true);
+  const bin = Buffer.from(r.out).toString("latin1");
+  for (const bad of ["Ben Ampel", "Nikon", "D850", "Photoshop", "lab bench"]) assert.ok(!bin.includes(bad), bad);
+  if (hasExiftool) { const o = exif(r.out, "tif"); assert.ok(!/Artist|Make|Model|GPS|Copyright|Software|Creator/.test(o), o); assert.match(o, /Orientation/); assert.ok(!/Warning|Error/.test(o), o); }
+});
+
+test("svg: editor data, paths and metadata removed, drawing kept", async () => {
+  const r = await MC.clean("photo.svg", read("photo.svg"), libs, {});
+  const out = Buffer.from(r.out).toString("utf8");
+  assert.ok(out.includes("<rect") && out.includes("#7c3aed") && out.includes("Blue square"));
+  for (const bad of ["Ben Ampel", "/Users/ben", "inkscape", "sodipodi", "Secret figure", "<metadata"]) assert.ok(!out.includes(bad), bad);
+  assert.ok(MC.wellFormed(out));
+  assert.deepEqual(r.after, []);
+});
+
+test("mp4: boxes blanked in place, same length, still decodes", async () => {
+  const src = read("photo.mp4");
+  const r = await MC.clean("photo.mp4", src, libs, {});
+  assert.equal(r.kind, "mp4");
+  for (const f of ["Title", "Artist", "Comment", "GPS position"]) assert.ok(r.found.some((x) => x.field === f), "found " + f);
+  assert.equal(r.outSize, r.inSize);
+  assert.equal(r.check.ok, true);
+  const bin = Buffer.from(r.out).toString("latin1");
+  for (const bad of ["Ben Ampel", "Lab demo", "recorded at home", "+33.7490"]) assert.ok(!bin.includes(bad), bad);
+  assert.deepEqual(r.after, []);
+  if (hasExiftool) { const o = exif(r.out, "mp4"); assert.ok(!/Artist|Title|Location|Comment|CreateDate\s*:\s*2026/.test(o), o); }
+});
+
+for (const n of ["photo.odt", "photo.ods", "photo.odp"]) {
+  test("opendocument: " + n, async () => {
+    const r = await MC.clean(n, read(n), libs, {});
+    assert.equal(r.kind, "odf");
+    assert.ok(r.found.some((f) => f.field === "Author" && f.value === "Ben Ampel"));
+    assert.deepEqual(r.after, []);
+    assert.equal(r.check.ok, true, r.check.note);
+    const z = await JSZip.loadAsync(r.out);
+    assert.equal(Object.keys(z.files)[0], "mimetype", "mimetype first");
+    assert.ok(!z.file("Thumbnails/thumbnail.png"));
+    const meta = await z.file("meta.xml").async("string");
+    assert.ok(!/Ben Ampel|Jane|EPSON|LibreOffice/.test(meta));
+    assert.ok(!/EPSON/.test(await z.file("settings.xml").async("string")));
+    assert.ok(MC.wellFormed(await z.file("content.xml").async("string")));
+  });
+}
+
+for (const n of ["real.docx", "real.xlsx", "real.pptx", "lo.docx", "lo.xlsx", "lo.pptx"]) {
+  test("office written by python libs and LibreOffice: " + n, async () => {
+    const r = await MC.clean(n, read(n), libs, {});
+    assert.ok(["docx", "xlsx", "pptx"].includes(r.kind));
+    assert.ok(r.found.some((f) => f.field === "Author" && f.value === "Ben Ampel"));
+    assert.deepEqual(r.after, [], "re-read finds nothing: " + JSON.stringify(r.after));
+    assert.equal(r.check.ok, true, r.check.note);
+    const z = await JSZip.loadAsync(r.out);
+    const core = await z.file("docProps/core.xml").async("string");
+    assert.ok(!/Ben Ampel|Jane|Blind Paper|Secret/.test(core), core);
+    for (const name of Object.keys(z.files)) if (/\.(xml|rels)$/.test(name)) assert.ok(MC.wellFormed(await z.file(name).async("string")), "well-formed " + name);
+    if (hasExiftool) assert.ok(!/Ben Ampel|Jane|Creator|LastModifiedBy/.test(exif(r.out, r.kind)));
+  });
+}
+
+test("xlsx comment authors found under xl/comments/ too", async () => {
+  const r = await MC.clean("real.xlsx", read("real.xlsx"), libs, {});
+  assert.ok(r.found.some((f) => /Names on comments/.test(f.field)));
+  const z = await JSZip.loadAsync(r.out);
+  const files = Object.keys(z.files).filter((n) => /comment/i.test(n) && /\.xml$/.test(n));
+  for (const f of files) assert.ok(!(await z.file(f).async("string")).includes("Ben Ampel"), f);
+});
+
+test("options: keep title and set author (pdf, docx, odt)", async () => {
+  const doc = await PDFLib.PDFDocument.create();
+  doc.setTitle("My Title"); doc.setAuthor("Ben Ampel"); doc.addPage([100, 100]);
+  const pdf = await doc.save();
+  let r = await MC.clean("a.pdf", pdf, libs, { keepTitle: true, author: "Anonymous" });
+  const back = await PDFLib.PDFDocument.load(r.out, { updateMetadata: false });
+  assert.equal(back.getTitle(), "My Title");
+  assert.equal(back.getAuthor(), "Anonymous");
+  assert.deepEqual(r.after, []);
+  r = await MC.clean("real.docx", read("real.docx"), libs, { keepTitle: true, author: "Anonymous" });
+  let core = await (await JSZip.loadAsync(r.out)).file("docProps/core.xml").async("string");
+  assert.ok(core.includes("<dc:title>Blind Paper</dc:title>") && core.includes("<dc:creator>Anonymous</dc:creator>") && !core.includes("Jane"));
+  assert.deepEqual(r.after, []);
+  r = await MC.clean("photo.odt", read("photo.odt"), libs, { keepTitle: true, author: "Anonymous" });
+  const meta = await (await JSZip.loadAsync(r.out)).file("meta.xml").async("string");
+  assert.ok(meta.includes("Blind Paper") && meta.includes("Anonymous") && !meta.includes("Ben Ampel"));
+});
+
+test("left-in-place items are reported but not flagged as leftovers", async () => {
+  const r = await MC.clean("real.docx", read("real.docx"), libs, {});
+  assert.ok(r.left.some((f) => f.field === "Custom XML parts"));
+  assert.deepEqual(r.after, []);
+});
+
+test("an edit that breaks XML is refused, not shipped", async () => {
+  const z = new JSZip();
+  z.file("[Content_Types].xml", '<Types xmlns="x"/>');
+  z.file("word/document.xml", '<w:document xmlns:w="w"><w:p w:author="Bad & Co"><w:t>x</w:p></w:document>');
+  const bytes = await z.generateAsync({ type: "uint8array" });
+  await assert.rejects(MC.clean("bad.docx", bytes, libs, {}), /broken|untouched/);
+});
+
+test("wellFormed", () => {
+  assert.ok(MC.wellFormed('<?xml version="1.0"?><a x="1"><b/><!-- c --><![CDATA[<z>]]></a>'));
+  assert.ok(!MC.wellFormed("<a><b></a>"));
+  assert.ok(!MC.wellFormed("<a>text < more</a>"));
+});
+
+test("unsupported inputs give a plain message", async () => {
+  await assert.rejects(MC.clean("x.doc", new Uint8Array([0xd0, 0xcf, 0x11, 0xe0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]), libs, {}), /Old \.doc/);
+  await assert.rejects(MC.clean("x.bin", new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]), libs, {}), /Not supported/);
+});
