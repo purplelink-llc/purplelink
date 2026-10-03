@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Metadata Cleaner: Remove EXIF, PDF and Word Author Data | Purplelink</title>
+    <meta name="description" content="Remove author names, GPS, camera details, comment authors and edit history from photos, PDFs and Word, Excel and PowerPoint files. Free, and your files never leave your browser.">
+    <link rel="canonical" href="https://purplelink.llc/tools/metadata-cleaner/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Metadata Cleaner: remove EXIF, PDF and Word author data">
+    <meta property="og:description" content="Strip author names, GPS and edit history from photos, PDFs and Office files. Free, in your browser, nothing uploaded.">
+    <meta property="og:url" content="https://purplelink.llc/tools/metadata-cleaner/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/metadata-cleaner.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Metadata Cleaner: remove EXIF, PDF and Word author data">
+    <meta name="twitter:description" content="Strip author names, GPS and edit history from photos, PDFs and Office files. Free, in your browser, nothing uploaded.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/metadata-cleaner.png">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Metadata Cleaner",
+      "url": "https://purplelink.llc/tools/metadata-cleaner/",
+      "description": "Remove author names, GPS, camera details, comment authors and edit history from photos, PDFs and Word, Excel and PowerPoint files. Free, and your files never leave your browser.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The page reads the file with your browser, rewrites it in memory and hands you the result as a download. There is no server step. The only requests the page makes are for its own scripts, such as the PDF library when you add your first PDF."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I know the metadata is really gone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each result is read a second time with the same reader that found the fields in the first place, and the page says what, if anything, is still there. For your own check, open the cleaned file in a PDF reader's properties dialog, or run a tool such as ExifTool on it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it change my photos or reduce their quality?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. JPEG, PNG and WebP are edited at the byte level: the metadata blocks are cut out and the image data is copied as it was. The file gets a little smaller and looks identical. Color profiles are kept so colors do not shift."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does it keep the rotation tag?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Phones store portrait photos sideways and add a tag that says which way is up. Removing every tag makes those photos appear rotated. The tag says nothing about you, so it is kept as a one-field replacement for the original block. Untick Keep photo rotation to drop it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it not remove?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Anything that is content. Names written in a document's text, headers and footers, watermarks, visible stamps, and what a photo shows. It does not touch the file system dates your computer keeps, and it does not change pixels, so a face or a street sign is still there. Attached files inside a PDF and custom XML parts in an Office file are reported and left in place."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I keep comments and tracked changes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. They are always kept. Only the names, initials and timestamps on them are replaced, so reviewers can still see what changed but not who made the change. Untick the rename option to keep the names."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about password-protected or old-format files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Password-protected PDFs are refused because the file cannot be rewritten without the password. Remove the password in your PDF reader, then clean the result. The old .doc, .xls and .ppt formats are not supported. Open them in Word, Excel or PowerPoint and save as .docx, .xlsx or .pptx."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about video, OpenDocument and HEIC?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not yet. Export a HEIC photo as JPG on your phone or Mac first. Save OpenDocument files as Office files, or export to PDF and clean that."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Metadata Cleaner",
+          "item": "https://purplelink.llc/tools/metadata-cleaner/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+    <link rel="stylesheet" href="/styles.css?v=be9f0a97b9">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=cefe20b388" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/assets/vendor/jszip/jszip.min.js?v=7f839b2d46" defer></script>
+    <link rel="stylesheet" href="/tools/metadata-cleaner/metadata-cleaner.css?v=b0ea88e2ef">
+    <script src="/tools/metadata-cleaner/metadata-cleaner-core.js?v=df497b26e3" defer></script>
+    <script src="/tools/metadata-cleaner/metadata-cleaner.js?v=4e6e89a9e9" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Metadata Cleaner</h1>
+        <p>Remove author names, GPS positions, camera details, comment authors and edit history from photos, PDFs and Word, Excel and PowerPoint files. A second tab strips invisible characters from pasted text. <strong>Everything runs in your browser. Your files are never uploaded.</strong></p>
+      </div>
+
+      <div class="tool-app mc-app">
+        <div class="mc-tabs" role="tablist" aria-label="What to clean">
+          <button type="button" class="mc-tab" id="mc-tab-files" role="tab" aria-selected="true" aria-controls="mc-panel-files">Files</button>
+          <button type="button" class="mc-tab" id="mc-tab-text" role="tab" aria-selected="false" aria-controls="mc-panel-text">Text</button>
+        </div>
+
+        <section class="mc-panel" id="mc-panel-files" role="tabpanel" aria-labelledby="mc-tab-files">
+          <div class="mc-drop" id="mc-drop">
+            <label for="mc-file" class="mc-drop-label"><strong>Choose files</strong> or drop them here</label>
+            <input id="mc-file" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.pdf,.docx,.xlsx,.pptx,image/jpeg,image/png,image/webp,application/pdf">
+            <p class="mc-hint">JPG, PNG, WebP, PDF, DOCX, XLSX and PPTX. Up to 200 MB each.</p>
+          </div>
+          <div class="mc-options">
+            <label><input type="checkbox" id="mc-opt-rotate" checked> Keep photo rotation</label>
+            <label><input type="checkbox" id="mc-opt-anon" checked> Rename reviewers and commenters to &ldquo;Author&rdquo;</label>
+          </div>
+          <p class="mc-status" id="mc-status" role="status" aria-live="polite"></p>
+          <ul class="mc-list" id="mc-list"></ul>
+          <div class="mc-bar" id="mc-bar" hidden>
+            <button type="button" class="btn btn-primary" id="mc-all">Download all as .zip</button>
+            <button type="button" class="btn btn-ghost" id="mc-clear">Clear</button>
+          </div>
+        </section>
+
+        <section class="mc-panel" id="mc-panel-text" role="tabpanel" aria-labelledby="mc-tab-text" hidden>
+          <div class="mc-field">
+            <label for="mc-in">Paste text</label>
+            <textarea id="mc-in" rows="7" spellcheck="false" placeholder="Paste text from a chatbot, a PDF or a web page"></textarea>
+          </div>
+          <div class="mc-options">
+            <label><input type="checkbox" id="mc-t-spaces" checked> Turn non-breaking and wide spaces into normal spaces</label>
+            <label><input type="checkbox" id="mc-t-typo"> Use plain quotes, dashes and ellipses</label>
+            <label><input type="checkbox" id="mc-t-trim"> Trim trailing spaces</label>
+          </div>
+          <div class="mc-field">
+            <label for="mc-out">Cleaned text</label>
+            <textarea id="mc-out" rows="7" spellcheck="false" readonly></textarea>
+          </div>
+          <p class="mc-status" id="mc-t-status" role="status" aria-live="polite"></p>
+          <ul class="mc-counts" id="mc-counts"></ul>
+          <div class="mc-bar">
+            <button type="button" class="btn btn-primary" id="mc-copy" disabled>Copy cleaned text</button>
+          </div>
+        </section>
+
+        <p class="tool-privacy">Files are read and rewritten in this tab. The only requests the page makes are for its own scripts. Your files and text are never sent anywhere.</p>
+      </div>
+
+      <section class="mc-sources" aria-labelledby="mc-rm-h">
+        <h2 id="mc-rm-h">What it removes</h2>
+        <ul class="mc-rm">
+          <li><strong>Photos (JPG, PNG, WebP).</strong> EXIF, including camera make and model, serial numbers, date taken and GPS position. XMP and IPTC captions and bylines, comments, embedded thumbnails and Content Credentials. Pixels are not decoded or re-encoded, so quality does not change. The rotation tag is kept by default so a portrait photo does not turn sideways.</li>
+          <li><strong>PDF.</strong> The document properties (author, title, subject, keywords, creator, producer, dates), the XMP packet, the file ID and private application data. Comment and markup authors. Photo metadata inside embedded JPEGs. Old versions of edited content that some PDF writers leave inside the file.</li>
+          <li><strong>Word, Excel and PowerPoint.</strong> Author, last saved by, company, manager, template, title and the custom properties. The preview thumbnail. Names and dates on comments and tracked changes. The people list, editing-session ids, the attached template path and the folder an Excel workbook was saved in. Photo metadata inside embedded pictures.</li>
+          <li><strong>Text.</strong> Zero-width characters, text-direction controls, hidden tag characters, soft hyphens, control characters and odd spaces. These break LaTeX builds and can carry instructions a reader cannot see.</li>
+        </ul>
+      </section>
+
+      <section class="tool-howto">
+        <h2>Cleaning a manuscript for double-blind review</h2>
+        <ol>
+          <li>Clean the PDF you will upload. This removes the author and producer fields that reviewers can see in the document properties.</li>
+          <li>Clean any Word or Excel supplement the same way, and leave the rename option on so comment authors read &ldquo;Author&rdquo;.</li>
+          <li>Open the result in a PDF reader and check File, Properties. The author field should be empty.</li>
+          <li>Metadata is only one way authors are identified. Names in acknowledgements, self-citations and file paths in figures are content. <a href="/tools/anonymity-check/">Anonymity Check</a> reads the text for those.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads the file with your browser, rewrites it in memory and hands you the result as a download. There is no server step. The only requests the page makes are for its own scripts, such as the PDF library when you add your first PDF.</div></details>
+        <details><summary>How do I know the metadata is really gone?</summary><div class="faq-body">Each result is read a second time with the same reader that found the fields in the first place, and the page says what, if anything, is still there. For your own check, open the cleaned file in a PDF reader&#x27;s properties dialog, or run a tool such as ExifTool on it.</div></details>
+        <details><summary>Does it change my photos or reduce their quality?</summary><div class="faq-body">No. JPEG, PNG and WebP are edited at the byte level: the metadata blocks are cut out and the image data is copied as it was. The file gets a little smaller and looks identical. Color profiles are kept so colors do not shift.</div></details>
+        <details><summary>Why does it keep the rotation tag?</summary><div class="faq-body">Phones store portrait photos sideways and add a tag that says which way is up. Removing every tag makes those photos appear rotated. The tag says nothing about you, so it is kept as a one-field replacement for the original block. Untick Keep photo rotation to drop it.</div></details>
+        <details><summary>What does it not remove?</summary><div class="faq-body">Anything that is content. Names written in a document&#x27;s text, headers and footers, watermarks, visible stamps, and what a photo shows. It does not touch the file system dates your computer keeps, and it does not change pixels, so a face or a street sign is still there. Attached files inside a PDF and custom XML parts in an Office file are reported and left in place.</div></details>
+        <details><summary>Can I keep comments and tracked changes?</summary><div class="faq-body">Yes. They are always kept. Only the names, initials and timestamps on them are replaced, so reviewers can still see what changed but not who made the change. Untick the rename option to keep the names.</div></details>
+        <details><summary>What about password-protected or old-format files?</summary><div class="faq-body">Password-protected PDFs are refused because the file cannot be rewritten without the password. Remove the password in your PDF reader, then clean the result. The old .doc, .xls and .ppt formats are not supported. Open them in Word, Excel or PowerPoint and save as .docx, .xlsx or .pptx.</div></details>
+        <details><summary>What about video, OpenDocument and HEIC?</summary><div class="faq-body">Not yet. Export a HEIC photo as JPG on your phone or Mac first. Save OpenDocument files as Office files, or export to PDF and clean that.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/anonymity-check/">Anonymity Check</a></li>
+          <li><a href="/tools/pdf-tools/">PDF Tools</a></li>
+          <li><a href="/tools/camera-ready-checker/">Camera-ready Checker</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+    </main>
+
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js?v=fd29b28099" defer></script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+/* Metadata Cleaner. External file so the strict CSP permits it. */
+.mc-app { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.mc-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.mc-tab { padding: 8px 18px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-size: 0.95rem; cursor: pointer; min-height: 44px; }
+.mc-tab[aria-selected="true"] { background: var(--purple); border-color: var(--purple); color: oklch(18% 0.06 310); font-weight: 600; }
+.mc-tab:focus-visible, .mc-drop:focus-within { outline: 2px solid var(--purple); outline-offset: 2px; }
+.mc-panel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.mc-panel[hidden], .mc-bar[hidden], .mc-bar .btn[hidden] { display: none; }
+.mc-drop {
+  border: 2px dashed var(--line); border-radius: 14px; padding: 28px 20px; text-align: center; background: var(--panel);
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; justify-items: center;
+}
+.mc-drop.is-over { border-color: var(--purple); background: var(--purple-xlight); }
+.mc-drop-label { font-size: 1.1rem; cursor: pointer; }
+.mc-drop input[type="file"] { font: inherit; max-width: 100%; min-width: 0; }
+.mc-hint { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.mc-options { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.mc-options label { display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; min-height: 32px; }
+.mc-options input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--purple); }
+.mc-status { margin: 0; min-height: 1.4em; color: var(--muted); }
+.mc-status.is-busy::after { content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-left: 8px; border: 2px solid var(--purple); border-right-color: transparent; border-radius: 50%; vertical-align: -2px; }
+@media (prefers-reduced-motion: no-preference) { .mc-status.is-busy::after { animation: mc-spin 0.8s linear infinite; } }
+@keyframes mc-spin { to { transform: rotate(360deg); } }
+.mc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.mc-item { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--panel); display: grid; gap: 8px; }
+.mc-item[data-state="error"] { border-color: oklch(62% 0.2 25); }
+.mc-item-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.mc-name { font-weight: 600; overflow-wrap: anywhere; min-width: 0; }
+.mc-size, .mc-note { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.mc-item p { margin: 0; }
+.mc-summary { font-weight: 600; }
+.mc-verified, .mc-kept { color: var(--muted); font-size: 0.92rem; }
+.mc-error, .mc-warn { color: oklch(72% 0.17 25); font-size: 0.95rem; }
+:where(:root[data-theme="light"]) .mc-error, :where(:root[data-theme="light"]) .mc-warn { color: oklch(45% 0.2 25); }
+.mc-found summary { cursor: pointer; color: var(--purple); font-size: 0.95rem; min-height: 32px; display: flex; align-items: center; }
+.mc-group { font-family: var(--font-body); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 12px 0 4px; }
+.mc-rows { margin: 0; display: grid; grid-template-columns: minmax(0, max-content) minmax(0, 1fr); gap: 4px 16px; font-size: 0.92rem; }
+.mc-rows dt { color: var(--muted); }
+.mc-rows dd { margin: 0; overflow-wrap: anywhere; }
+.mc-dl { justify-self: start; margin-top: 4px; overflow-wrap: anywhere; text-align: left; }
+.mc-bar { display: flex; flex-wrap: wrap; gap: 12px; }
+.mc-field { display: grid; gap: 6px; }
+.mc-field label { font-size: 0.9rem; font-weight: 600; }
+.mc-field textarea {
+  font: inherit; font-size: 0.95rem; line-height: 1.5; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--bg); color: var(--ink); resize: vertical; width: 100%; box-sizing: border-box; min-height: 8rem;
+}
+.mc-field textarea:focus-visible { outline: 2px solid var(--purple); outline-offset: 1px; }
+.mc-counts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--muted); font-size: 0.92rem; }
+.mc-sources { max-width: 820px; margin: 32px auto; padding: 0 24px; }
+.mc-sources h2 { font-family: var(--font-display); margin-bottom: 8px; }
+.mc-rm { padding-left: 1.2em; display: grid; gap: 12px; }
+.mc-rm li { overflow-wrap: anywhere; }
+.mc-howto a, .tool-howto a { color: var(--purple); }
