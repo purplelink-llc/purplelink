@@ -88,6 +88,29 @@ def choose_visibility(tab, name):
     raise RuntimeError(f"could not select the {name} visibility option in Studio")
 
 
+def wait_for_checks(tab, timeout=1500):
+    """Block until Studio's automated content check reports it is complete.
+
+    Pressing Publish while the footer still says "Checking N% ... M minutes
+    left" does not publish: Studio raises "We're still checking your content"
+    (Publish anyway / Go back) and the video stays a private draft. That, not
+    the visibility radio, is what left three 2026-10-01 uploads as drafts.
+    """
+    js = """(()=>{const all=[];(function walk(r){for(const e of r.querySelectorAll('*')){all.push(e); if(e.shadowRoot)walk(e.shadowRoot);}})(document);
+      const f=all.find(x=>/Checks complete|Checking|issues? found|No issues/i.test(x.innerText||'') && (x.innerText||'').length<120 && x.getBoundingClientRect().width>0);
+      return f? f.innerText.trim():''})()"""
+    end = time.time() + timeout
+    last = ""
+    while time.time() < end:
+        last = tab.eval(js) or ""
+        if "complete" in last.lower():
+            return
+        if "issue" in last.lower() and "no issues" not in last.lower():
+            raise RuntimeError("Studio reports a content check issue: " + last[:100])
+        time.sleep(15)
+    raise TimeoutError("content check did not finish: " + last[:100])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("file")
@@ -146,6 +169,8 @@ def main():
         wait_for(tab, """(()=>{const b=[...document.querySelectorAll('ytcp-button, button')]
             .find(e=>/^(Publish|Save|Done)$/.test((e.innerText||'').trim()));
             return !!b && !b.hasAttribute('disabled') && b.getAttribute('aria-disabled')!=='true'})()""", 900, 2)
+        if a.public:
+            wait_for_checks(tab)
         for name in ("Publish", "Save", "Done"):
             try:
                 tab.click_text(name)
