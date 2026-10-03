@@ -136,7 +136,9 @@ def getty(t):
 
 
 def main():
-    t = Tab([x for x in json.load(urllib.request.urlopen(CDP + "/json")) if x["type"] == "page"][0])
+    pages = [x for x in json.load(urllib.request.urlopen(CDP + "/json")) if x["type"] == "page"]
+    # The sweep closes its own tabs before this runs, so there may be none.
+    t = Tab(pages[0]) if pages else Tab.new()
     t.front()
     for name, fn in (("adobe", adobe), ("shutterstock", shutterstock), ("getty", getty)):
         try:
