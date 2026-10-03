@@ -54,6 +54,40 @@ def type_into(tab, selector_js, text):
     time.sleep(0.5)
 
 
+def choose_visibility(tab, name):
+    """Select Studio's PRIVATE / UNLISTED / PUBLIC radio and confirm it took.
+
+    click_text("Public") printed a link but left three 2026-10-01 uploads as
+    private drafts: the label text matched a non-radio element. This finds the
+    <tp-yt-paper-radio-button name="PUBLIC"> itself (through shadow roots),
+    taps its real position, and reads aria-checked back, retrying, so a missed
+    click fails loudly here instead of surfacing as a draft later.
+    """
+    want = name.upper()
+    find = f"""(()=>{{const all=[];(function walk(r){{for(const e of r.querySelectorAll('*')){{
+        all.push(e); if(e.shadowRoot)walk(e.shadowRoot);}}}})(document);
+        return all.find(x=>x.tagName==='TP-YT-PAPER-RADIO-BUTTON' && x.getAttribute('name')==={want!r})||null}})()"""
+    pos = f"""(()=>{{const all=[];(function walk(r){{for(const e of r.querySelectorAll('*')){{
+        all.push(e); if(e.shadowRoot)walk(e.shadowRoot);}}}})(document);
+        const e=all.find(x=>x.tagName==='TP-YT-PAPER-RADIO-BUTTON' && x.getAttribute('name')==={want!r});
+        if(!e) return null; e.scrollIntoView({{block:'center'}}); const b=e.getBoundingClientRect();
+        return [b.x+Math.min(b.width/2,120), b.y+b.height/2]}})()"""
+    state = f"""(()=>{{const all=[];(function walk(r){{for(const e of r.querySelectorAll('*')){{
+        all.push(e); if(e.shadowRoot)walk(e.shadowRoot);}}}})(document);
+        const e=all.find(x=>x.tagName==='TP-YT-PAPER-RADIO-BUTTON' && x.getAttribute('name')==={want!r});
+        return !!e && (e.getAttribute('aria-checked')==='true' || e.hasAttribute('checked'))}})()"""
+    for _ in range(4):
+        pt = tab.eval(pos)
+        if pt:
+            time.sleep(0.4)
+            tab.tap(pt[0], pt[1], pause=1.2)
+            if tab.eval(state):
+                return
+        else:
+            time.sleep(1.5)
+    raise RuntimeError(f"could not select the {name} visibility option in Studio")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("file")
@@ -105,7 +139,7 @@ def main():
             tab.click_text("Next")
             time.sleep(1.5)
 
-        tab.click_text("Public" if a.public else "Unlisted")
+        choose_visibility(tab, "Public" if a.public else "Unlisted")
         time.sleep(0.8)
 
         # The upload itself must finish before Publish/Save is enabled.
