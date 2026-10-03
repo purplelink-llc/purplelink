@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- noindex: these pages are machine-compiled daily. Over 90 days the 54
+         of them earned 3 ranked pages, 13 impressions and 0 clicks, against
+         3,746 impressions and 54 clicks for the 73 hand-written pages. They
+         were 37% of the indexable site contributing 0.3% of its impressions,
+         which is the profile AdSense rejected as "low value content" on
+         2026-07-05. They stay published and stay in the RSS feed, which is
+         where their readers actually come from; they just stop being offered
+         to the index. follow is kept so outbound links still carry. -->
+    <meta name="robots" content="noindex, follow">
+    <title>Purplelink Daily Digest #98 — October 3, 2026 | Purplelink LLC</title>
+    <meta name="description" content="Warlock ransomware hitting utilities through SharePoint, a CVSS 9.9 GitLab AI Gateway RCE, and Apple's Full Disk Access changes aimed at AI agents lead thi">
+    <meta name="author" content="Benjamin Ampel">
+    <link rel="canonical" href="https://purplelink.llc/blog/digest/2026-10-03.html">
+    <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="https://purplelink.llc/blog/digest/feed.xml">
+    <meta property="og:title" content="Purplelink Daily Digest #98 — October 3, 2026">
+    <meta property="og:description" content="Warlock ransomware hitting utilities through SharePoint, a CVSS 9.9 GitLab AI Gateway RCE, and Apple's Full Disk Access changes aimed at AI agents lead thi">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/blog/digest/2026-10-03.html">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="article:published_time" content="2026-10-03">
+    <meta property="article:author" content="Benjamin Ampel">
+    <meta property="article:section" content="Research Digest">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Purplelink Daily Digest #98 — October 3, 2026">
+    <meta name="twitter:description" content="Warlock ransomware hitting utilities through SharePoint, a CVSS 9.9 GitLab AI Gateway RCE, and Apple's Full Disk Access changes aimed at AI agents lead thi">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/styles.css?v=be9f0a97b9">
+    <script src="/site.js?v=cefe20b388" defer></script>
+    <!-- No AdSense loader: this page is noindex (see above). AdSense policy
+         prohibits ad code on pages excluded from the search index, and having
+         it here on all 72 issues was a live violation sitting on top of the
+         low-value-content problem the noindex was meant to fix. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Purplelink Daily Digest #98 — October 3, 2026",
+      "description": "Warlock ransomware hitting utilities through SharePoint, a CVSS 9.9 GitLab AI Gateway RCE, and Apple's Full Disk Access changes aimed at AI agents lead thi",
+      "keywords": "AI &amp; Technology, Cybersecurity, Finance &amp; Business, Entrepreneurship, Worth Reading, Purplelink Daily Digest, Benjamin Ampel, cybersecurity research, AI papers",
+      "datePublished": "2026-10-03",
+      "author": {
+        "@type": "Person",
+        "@id": "https://purplelink.llc/about/#person",
+        "name": "Benjamin Ampel",
+        "url": "https://purplelink.llc/about/"
+      },
+      "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" },
+      "url": "https://purplelink.llc/blog/digest/2026-10-03.html",
+      "isPartOf": { "@type": "Blog", "url": "https://purplelink.llc/blog/digest/" }
+    }
+    </script>
+  </head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/blog/" aria-current="page">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <a class="back-link" href="/blog/digest/">← All issues</a>
+
+    <div class="post-hero">
+      <p class="post-date">October 3, 2026</p>
+      <h1 class="post-title">Purplelink Daily Digest #98 — October 3, 2026</h1>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-03">October 3, 2026</time></p>
+      <p class="post-lede">419 sources reviewed. 9 selected.</p>
+    </div>
+
+    <article id="main-content" class="post-body digest-body">
+
+      <p class="digest-intro">Warlock ransomware hitting utilities through SharePoint, a CVSS 9.9 GitLab AI Gateway RCE, and Apple&#x27;s Full Disk Access changes aimed at AI agents lead this digest. It also covers Stratego-solving AI, agent API cost economics, and Nvidia chip smuggling.</p>
+
+    <section class="digest-section" id="section-ai_tech">
+      <h2>AI & Technology</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://arstechnica.com/science/2026/10/ai-finally-beat-the-best-stratego-player-in-history-and-did-it-on-a-budget" target="_blank" rel="noopener">With most information hidden, the game Stratego had stumped AI until now</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">An AI system has beaten the strongest Stratego player in history, published in Nature, and reportedly did so on a modest compute budget. Stratego&#x27;s hidden information and huge game tree make it a closer proxy for adversarial settings like deception and threat hunting than perfect-information games. The key question is whether the method transfers to imperfect-information security games, where opponents adapt.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.youtube.com/watch?v=NnV_cWeoo5Q" target="_blank" rel="noopener">Greg Kroah-Hartman – Security in the LLM Age [video]</a>
+          <span class="digest-item-source">Hacker News</span>
+        </div>
+        <p class="digest-item-note">The Linux kernel stable maintainer discusses how LLMs change vulnerability reporting and triage. Kroah-Hartman handles one of the largest real-world bug report streams, so his view on AI-generated report quality is an operational data point rather than speculation. Worth watching for how maintainers cope with report volume and what signal separates real findings from noise.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-cybersecurity">
+      <h2>Cybersecurity</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/10/gitlab-patches-critical-self-hosted-ai.html" target="_blank" rel="noopener">GitLab Patches Critical 9.9 AI Gateway Flaw Allowing Command Execution on Self-Hosted Servers</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">A CVSS 9.9 flaw in GitLab&#x27;s AI Gateway lets a logged-in user with Duo Agent Platform access run commands on self-hosted gateways. The gateway sits between the instance and the model providers, so compromise there reaches credentials and prompts flowing through the AI layer. This is the pattern to watch: AI plumbing components ship with the same command-injection classes as any other middleware, but with broader trust.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.bleepingcomputer.com/news/security/warlock-ransomware-breach-sharepoint-in-water-telecom-operator-attacks" target="_blank" rel="noopener">Warlock ransomware breach SharePoint in water, telecom operator attacks</a>
+          <span class="digest-item-source">Bleeping Computer</span>
+        </div>
+        <p class="digest-item-note">The China-linked Warlock group used SharePoint vulnerabilities for initial access against a water utility, a telecom provider, a regional government body, and a university. Targeting critical infrastructure with a ransomware brand blurs the line between espionage-adjacent and financially motivated activity. Attribution and motive analysis for this cluster is worth tracking, since the victim mix looks more opportunistic than sector-focused.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://thehackernews.com/2026/10/antino-backdoor-uses-outlook-and.html" target="_blank" rel="noopener">Antino Backdoor Uses Outlook and OneDrive for C2 in China-Nexus Espionage Campaign</a>
+          <span class="digest-item-source">The Hacker News</span>
+        </div>
+        <p class="digest-item-note">A new China-nexus backdoor, Antino, routes C2 through Outlook and OneDrive against government and policy bodies in Taiwan, India, the Philippines, Cambodia, Pakistan, Thailand, and Myanmar. Abusing trusted Microsoft cloud traffic defeats domain-reputation and egress filtering, so detection has to rely on tenant-level telemetry and anomalous API usage. The open question is how many of these victims log Graph API activity at all.</p>
+      </div>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.darkreading.com/insider-threats/blame-rogue-ai-security-failures" target="_blank" rel="noopener">Is It Fair to Blame &#x27;Rogue&#x27; AI for Security Failures?</a>
+          <span class="digest-item-source">Dark Reading</span>
+        </div>
+        <p class="digest-item-note">The argument is that &quot;rogue AI&quot; language anthropomorphizes LLMs and shifts liability away from the vendors and deployers who granted the access. The practical takeaway is to model agents as untrusted, nondeterministic software and apply least privilege and audit logging accordingly. It is a framing contrarian take, but it pairs well with the Apple and GitLab items this week, where the real failures were permission scope and command execution.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-finance">
+      <h2>Finance & Business</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.marketwatch.com/story/why-western-digital-and-seagate-are-seeing-big-stock-drops-today-6b16d95e?mod=mw_rss_topstories" target="_blank" rel="noopener">Why Western Digital and Seagate are seeing big stock drops today</a>
+          <span class="digest-item-source">MarketWatch</span>
+        </div>
+        <p class="digest-item-note">WDC and STX fell on fears that Toshiba will expand output of a key AI storage product and erode the pricing power both currently hold. It is a clean signal that AI infrastructure margins extend to bulk storage, and that they hinge on supply discipline among a few vendors. Watch whether Toshiba&#x27;s capacity timeline actually materializes, since pricing power in this segment has been assumed rather than tested.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-entrepreneurship">
+      <h2>Entrepreneurship</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://www.saastr.com/we-got-a-240000-estimate-for-agent-api-access-our-agent-suggested-a-5-postgres-instance" target="_blank" rel="noopener">We Got a $240,000 Estimate for Agent API Access. Our Agent Suggested a $5 Postgres Instance.</a>
+          <span class="digest-item-source">SaaStr</span>
+        </div>
+        <p class="digest-item-note">SaaStr&#x27;s AI revenue agent makes 35,000 to 40,000 API calls a day, and a vendor quoted $240,000 for that access. The agent proposed a $5 Postgres instance instead, which shows how agent-scale traffic breaks SaaS pricing built around human usage. Expect vendors to start metering API access to agents, and expect agent operators to route around them by syncing data locally.</p>
+      </div>
+    </section>
+
+    <section class="digest-section" id="section-general_tech">
+      <h2>Worth Reading</h2>
+      <div class="digest-item">
+        <div class="digest-item-meta">
+          <a class="digest-item-title" href="https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents" target="_blank" rel="noopener">Apple changes full-disk access permissions to curb abuse from AI agents</a>
+          <span class="digest-item-source">Ars Technica</span>
+        </div>
+        <p class="digest-item-note">Apple is tightening Full Disk Access on macOS specifically because AI agents hold broad data access, with Meta&#x27;s Muse reading messages as the flashpoint. Indie developers shipping agentic or automation tools on macOS face a direct distribution and UX hit, since FDA has been the default workaround for file access. Purplelink-style apps should audit which features depend on FDA and move to narrower scoped APIs now.</p>
+      </div>
+    </section>
+
+    </article>
+
+    <div class="post-footer digest-footer">
+      <p>Get this in your inbox, same-day, for $5/mo or $40/yr. <a href="/blog/digest/#subscribe-form">Subscribe</a>,
+      or get it free with a 2-day delay via the <a href="/blog/digest/#subscribe-form">free tier</a>.</p>
+      <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">
+        <img src="/assets/bmac-badge.svg" alt="Buy Me a Coffee" width="150" height="32" loading="lazy">
+      </a>
+      <a class="back-link" href="/blog/digest/">← All issues</a>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/globepin/">GlobePin</a></li>
+            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/kits/">Kits</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/why-it-matters/">Why it matters</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/digest/">Daily Digest</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  </body>
+</html>
