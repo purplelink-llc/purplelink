@@ -19,6 +19,12 @@ the automation Chrome (port 9340). No render waits; a few seconds per platform.
                           export (exportFormat=tsv on Reports/Export). Getty
                           posts a statement around the 20th for the prior
                           month, so rows arrive monthly, not daily.
+  getty-downloads.csv     one row per asset from ESP's Stats page (last
+                          download date, channel counts). Money lags a month
+                          behind, downloads do not, so this is where a new
+                          Getty sale first shows. Every run names the assets
+                          whose count rose since the last run, with the photo
+                          and caption, as "NEW getty download" lines.
 
 Sources verified 2026-09-30. Each ledger is rewritten from the source on every
 run (the sources are full histories), and a platform that fails to read is
@@ -135,12 +141,79 @@ def getty(t):
                                      "royalty_rate", "gross_royalty"], rows)
 
 
+ESP_STATS = ("https://esp.gettyimages.com/contribute/stats?assetTypes=Photo%2CVideo%2CIllustration"
+             "&primaryDatePeriod=past_24_months&page=1&pageSize=100&orderResultsBy=LastDownloadDate&sortDirection=Descending")
+CHANNELS = ["gi_premium", "gi_subscriptions", "gi_ultrapack", "gi_single", "is_subscriptions", "is_credits", "other"]
+
+
+def getty_downloads(t):
+    """Per-asset download counts from ESP, plus a diff against the previous run."""
+    import re
+    t.goto(ESP_STATS, settle=11)
+    body = t.text()
+    if "Content statistics" not in body:
+        raise RuntimeError("Getty ESP: not signed in")
+    flat = re.sub(r"[ \t]+", " ", body)
+    rows = {}
+    for mid, total, ch, d, rest in re.findall(r"^\s*(\d{6,})\s+(\d+)\s+((?:\d+\s+){7})(\d{2}/\d{2}/\d{4})\s+(.+?)$", flat, re.M):
+        parts = ch.split()
+        iso = f"{d[6:]}-{d[:2]}-{d[3:5]}"
+        rows[mid] = {"asset_id": mid, "total": int(total), "last_download": iso, "collection_type": rest.strip()[:60],
+                     **{c: int(v) for c, v in zip(CHANNELS, parts)}}
+    shown = re.search(r"Showing\s+\d+\s*-\s*\d+\s+of\s+(\d+)", flat)
+    if shown and int(shown.group(1)) != len(rows):
+        raise RuntimeError(f"Getty ESP lists {shown.group(1)} assets but {len(rows)} parsed (layout changed?)")
+    path = AN / "getty-downloads.csv"
+    old = {}
+    if path.exists():
+        old = {r["asset_id"]: int(r["total"]) for r in csv.DictReader(open(path, newline="", encoding="utf-8"))}
+    new = [r for r in rows.values() if r["total"] > old.get(r["asset_id"], 0)]
+    first_run = not old
+    if new and not first_run:
+        names = getty_names(t, {r["asset_id"] for r in new})
+        for r in sorted(new, key=lambda r: r["last_download"], reverse=True):
+            how = ", ".join(f"{c.replace('_', ' ')} {r[c]}" for c in CHANNELS if r[c])
+            f, cap, _ = names.get(r["asset_id"], ("?", "?", ""))
+            gained = r["total"] - old.get(r["asset_id"], 0)
+            print(f"NEW getty download: {r['last_download']}  {f}  asset {r['asset_id']}  +{gained} ({how})  {cap[:90]}", flush=True)
+    write("getty-downloads.csv", ["asset_id", "total", "last_download", "collection_type"] + CHANNELS,
+          sorted(rows.values(), key=lambda r: r["last_download"], reverse=True))
+    total = sum(r["total"] for r in rows.values())
+    return f"{len(rows)} assets, {total} downloads" + ("" if first_run else f", {len(new)} with new downloads")
+
+
+def getty_names(t, ids):
+    """Map ESP master ids to (file name, caption, status) through the batches API."""
+    out = {}
+    cache = AN / "getty-assets.json"
+    known = json.loads(cache.read_text()) if cache.exists() else {}
+    out.update({k: tuple(v) for k, v in known.items() if k in ids})
+    missing = set(ids) - set(out)
+    if missing:
+        t.goto("https://esp.gettyimages.com/contribute/batches", settle=7)
+        batches = t.eval("fetch('/api/submission/v1/submission_batches?page=1&page_size=100',{credentials:'include'}).then(r=>r.json())")
+        for b in (batches.get("items", batches) if isinstance(batches, dict) else batches):
+            if not missing:
+                break
+            bid = b.get("id") or b.get("batch_id")
+            c = t.eval(f"fetch('/api/submission/v1/submission_batches/{bid}/contributions?page=1&page_size=200',{{credentials:'include'}}).then(r=>r.json())")
+            for r in (c.get("items", c) if isinstance(c, dict) else c):
+                blob = json.dumps(r)
+                for w in list(missing):
+                    if w in blob:
+                        out[w] = (r.get("file_name", "?"), (r.get("caption") or r.get("title") or "")[:200], r.get("status", ""))
+                        missing.discard(w)
+        known.update({k: list(v) for k, v in out.items()})
+        cache.write_text(json.dumps(known, indent=1, ensure_ascii=False) + "\n")
+    return out
+
+
 def main():
     pages = [x for x in json.load(urllib.request.urlopen(CDP + "/json")) if x["type"] == "page"]
     # The sweep closes its own tabs before this runs, so there may be none.
     t = Tab(pages[0]) if pages else Tab.new()
     t.front()
-    for name, fn in (("adobe", adobe), ("shutterstock", shutterstock), ("getty", getty)):
+    for name, fn in (("adobe", adobe), ("shutterstock", shutterstock), ("getty", getty), ("getty-downloads", getty_downloads)):
         try:
             print(f"{name}: {fn(t)}")
         except Exception as e:
