@@ -66,7 +66,7 @@
     return states.map(function (s) { return SHARE[s]; }).join("");
   }
 
-  function emptyStats() { return { played: 0, won: 0, streak: 0, max: 0, last: -1, dist: {} }; }
+  function emptyStats() { return { played: 0, won: 0, streak: 0, max: 0, last: -1, dist: {}, wins: [] }; }
 
   // Update the stats once per puzzle, when it ends. `idx` is the puzzle's day index.
   function recordResult(stats, idx, won, tries) {
@@ -77,12 +77,55 @@
       s.streak = s.last === idx - 1 ? s.streak + 1 : 1;
       s.last = idx;
       s.dist[tries] = (s.dist[tries] || 0) + 1;
+      s.wins = (s.wins || []).filter(function (x) { return x !== idx; }).concat([idx]);
       if (s.streak > s.max) s.max = s.streak;
     } else {
       s.streak = 0;
       s.last = idx;
     }
     return s;
+  }
+
+  // ---- ranks and the weekly tracker (Linkle) ----
+  var RANKS = [[0, "Newcomer"], [5, "Reader"], [15, "Scribe"], [30, "Wordsmith"], [60, "Lexicographer"], [100, "Sage"]];
+  function rankFor(wins) {
+    var i = 0;
+    for (var k = 0; k < RANKS.length; k++) if (wins >= RANKS[k][0]) i = k;
+    var next = RANKS[i + 1] || null;
+    return { name: RANKS[i][1], next: next ? next[1] : null, toNext: next ? next[0] - wins : 0 };
+  }
+
+  // Weeks run Monday to Sunday. `epochDow` is the weekday (Sunday = 0) of puzzle day 0.
+  function weekNo(idx, epochDow) { return Math.floor((idx + ((epochDow + 6) % 7)) / 7); }
+
+  // Which days of the current week are won, and how many full weeks were ever completed.
+  function weekProgress(wins, idx, epochDow) {
+    wins = wins || [];
+    var w = weekNo(idx, epochDow), days = [], i, startOffset = (((epochDow + idx) % 7) + 6) % 7;
+    for (i = 0; i < 7; i++) days.push(wins.indexOf(idx - startOffset + i) >= 0);
+    var perWeek = {};
+    wins.forEach(function (d) { var k = weekNo(d, epochDow); perWeek[k] = (perWeek[k] || 0) + 1; });
+    var full = 0;
+    for (var k in perWeek) if (perWeek[k] >= 7) full++;
+    return { week: w, days: days, count: days.filter(Boolean).length, today: startOffset, fullWeeks: full };
+  }
+
+  // Hard mode: every hint from earlier guesses must be used. history = [{guess, score}].
+  function hardModeError(guess, history) {
+    var ord = ["first", "second", "third", "fourth", "fifth"];
+    for (var h = 0; h < history.length; h++) {
+      var g = history[h].guess, sc = history[h].score, need = {}, i;
+      for (i = 0; i < g.length; i++) {
+        if (sc[i] === "c" && guess[i] !== g[i]) return "The " + ord[i] + " letter must be " + g[i].toUpperCase() + ".";
+        if (sc[i] !== "a") need[g[i]] = (need[g[i]] || 0) + 1;
+      }
+      for (var ch in need) {
+        var have = 0;
+        for (i = 0; i < guess.length; i++) if (guess[i] === ch) have++;
+        if (have < need[ch]) return "The guess must contain " + ch.toUpperCase() + ".";
+      }
+    }
+    return null;
   }
 
   // Progress lives in localStorage only. Any access can throw (private windows, blocked
@@ -110,6 +153,7 @@
   return {
     dayIndex: dayIndex, pick: pick, decode: decode, decodeText: decodeText, score: score, mergeKeys: mergeKeys,
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
+    rankFor: rankFor, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
     getGame: getGame, setGame: setGame, track: track, copyText: copyText,
   };
 });

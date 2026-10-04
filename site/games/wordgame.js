@@ -10,7 +10,19 @@
   var LEN = 5;
   var NAMES = { c: "correct", p: "in the word, wrong place", a: "not in the word" };
 
-  var state = { idx: 0, answers: [], guesses: [], current: "", done: false, won: false, valid: null, busy: false };
+  // Linkle's weekday twists, keyed by getDay() (Sunday = 0). `max` changes the guess limit,
+  // `hard` turns on hard mode, `hint(answer)` is the line shown above the board.
+  var VOWELS = /[aeiou]/g;
+  var TWISTS = {
+    0: { name: "Hard mode", hard: true, text: "Every hint you have found must be used in your next guess." },
+    1: { name: "Standard", text: "Standard rules today." },
+    2: { name: "Head start", hint: function (a) { return "The word starts with " + a[0].toUpperCase() + "."; } },
+    3: { name: "Extra guess", max: 7, text: "You have seven guesses today." },
+    4: { name: "Vowel count", hint: function (a) { var n = (a.match(VOWELS) || []).length; return "The word has " + n + (n === 1 ? " vowel" : " vowels") + " (A, E, I, O, U)."; } },
+    5: { name: "No repeats", text: "No letter appears twice in today's word." },
+    6: { name: "Double up", text: "At least one letter appears twice in today's word." }
+  };
+  var state = { idx: 0, twist: null, answers: [], guesses: [], current: "", done: false, won: false, valid: null, busy: false };
 
   function boardCount() { return C.boards; }
   function solvedAt(b) {
@@ -163,6 +175,11 @@
     var g = state.current;
     if (g.length < LEN) { say("Not enough letters.", "Not enough letters."); shake(); return; }
     if (!state.valid[g]) { say(g.toUpperCase() + " is not in the word list.", g.toUpperCase() + " is not in the word list."); shake(); return; }
+    if (state.twist && state.twist.hard) {
+      var hist = state.guesses.map(function (x) { return { guess: x, score: G.score(x, state.answers[0]) }; });
+      var err = G.hardModeError(g, hist);
+      if (err) { say(err, err); shake(); return; }
+    }
     if (state.guesses.length === 0) G.track("game_start", C.name);
     state.guesses.push(g);
     state.current = "";
@@ -192,7 +209,7 @@
   }
 
   function shareText() {
-    var lines = [C.title + " " + (state.idx + 1) + " " + (state.won ? state.guesses.length : "X") + "/" + C.maxGuesses];
+    var lines = [C.title + " " + (state.idx + 1) + " " + (state.won ? state.guesses.length : "X") + "/" + C.maxGuesses + (state.twist && state.twist.name !== "Standard" ? " (" + state.twist.name + ")" : "")];
     for (var b = 0; b < boardCount(); b++) {
       var stop = solvedAt(b);
       var rows = [];
@@ -244,8 +261,33 @@
       row.appendChild(lab); row.appendChild(m); row.appendChild(num);
       dist.appendChild(row);
     }
+    if (C.twists) renderMeta(s);
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  var DAYS_ABBR = ["M", "T", "W", "T", "F", "S", "S"];
+  // Rank, the Monday-to-Sunday tracker and a teaser for tomorrow's twist: the reasons to come back.
+  function renderMeta(s) {
+    var wins = s.wins || [];
+    var rk = G.rankFor(wins.length);
+    $("wg-rank").textContent = "Rank: " + rk.name + (rk.next ? ". " + rk.toNext + (rk.toNext === 1 ? " win" : " wins") + " to " + rk.next + "." : ". You have reached the top rank.");
+    var epochDow = (function () { var p = C.epoch.split("-").map(Number); return new Date(p[0], p[1] - 1, p[2]).getDay(); })();
+    var wp = G.weekProgress(wins, state.idx, epochDow);
+    var row = $("wg-week");
+    row.textContent = "";
+    for (var i = 0; i < 7; i++) {
+      var cell = document.createElement("span");
+      cell.className = "wg-weekday";
+      cell.textContent = DAYS_ABBR[i];
+      if (wp.days[i]) cell.setAttribute("data-won", "1");
+      if (i === wp.today) cell.setAttribute("data-today", "1");
+      cell.setAttribute("aria-label", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][i] + (wp.days[i] ? ", solved" : ""));
+      row.appendChild(cell);
+    }
+    $("wg-week-note").textContent = wp.count + " of 7 this week." + (wp.fullWeeks ? " Full weeks so far: " + wp.fullWeeks + "." : "");
+    var tomorrow = TWISTS[(new Date().getDay() + 1) % 7];
+    $("wg-tomorrow").textContent = "Tomorrow's twist: " + tomorrow.name + ".";
   }
 
   function tick() {
@@ -297,6 +339,16 @@
     if (C.boards === 1) state.answers = [G.decode(G.pick(dataset.answers, state.idx))];
     else state.answers = G.pick(dataset.days, state.idx).map(G.decode);
     $("wg-number").textContent = "Puzzle " + (state.idx + 1);
+    if (C.twists) {
+      state.twist = TWISTS[new Date().getDay()];
+      if (state.twist.max) C.maxGuesses = state.twist.max;
+      var tw = $("wg-twist");
+      if (tw) {
+        tw.hidden = false;
+        $("wg-twist-name").textContent = state.twist.name;
+        $("wg-twist-text").textContent = state.twist.hint ? state.twist.hint(state.answers[0]) : state.twist.text;
+      }
+    }
     var saved = G.getGame(C.name);
     if (saved.today && saved.today.idx === state.idx) {
       state.guesses = saved.today.guesses || [];

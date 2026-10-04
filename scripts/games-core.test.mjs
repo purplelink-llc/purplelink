@@ -78,6 +78,45 @@ test("recordResult: streaks, losses and distribution", () => {
   assert.deepEqual(s.dist, { 3: 1, 4: 1, 5: 1 });
 });
 
+test("rankFor climbs the ladder", () => {
+  assert.deepEqual(G.rankFor(0), { name: "Newcomer", next: "Reader", toNext: 5 });
+  assert.equal(G.rankFor(5).name, "Reader");
+  assert.equal(G.rankFor(29).name, "Scribe");
+  assert.deepEqual(G.rankFor(150), { name: "Sage", next: null, toNext: 0 });
+});
+
+test("weekProgress follows Monday to Sunday weeks", () => {
+  // epoch is a Sunday (dow 0): day 0 Sun, day 1 Mon ... day 7 Sun, day 8 Mon
+  const wins = [1, 2, 3, 4, 5, 6, 7, 9, 10];
+  let p = G.weekProgress(wins, 10, 0); // Wednesday of the second week (days 8..14)
+  assert.deepEqual(p.days, [false, true, true, false, false, false, false]);
+  assert.equal(p.today, 2);
+  assert.equal(p.fullWeeks, 1);
+  p = G.weekProgress(wins, 3, 0); // Wednesday of the first week (days 1..7)
+  assert.equal(p.count, 7);
+  assert.equal(G.weekNo(0, 0), 0);
+  assert.equal(G.weekNo(1, 0), 1);
+  assert.equal(G.weekNo(7, 0), 1);
+  assert.equal(G.weekNo(8, 0), 2);
+});
+
+test("recordResult keeps the list of won days", () => {
+  let s = G.recordResult(null, 5, true, 3);
+  s = G.recordResult(s, 6, false, 6);
+  s = G.recordResult(s, 7, true, 2);
+  assert.deepEqual(JSON.parse(JSON.stringify(s.wins)), [5, 7]);
+});
+
+test("hardModeError enforces known letters", () => {
+  const hist = [{ guess: "crane", score: G.score("crane", "trace") }]; // c a e present, r correct? trace: t r a c e
+  assert.equal(G.hardModeError("trace", hist), null);
+  assert.match(G.hardModeError("stout", hist), /second letter must be R|must contain/);
+  // a present letter must be reused
+  const h2 = [{ guess: "slate", score: G.score("slate", "tower") }]; // t, e present
+  assert.match(G.hardModeError("brick", h2), /must contain/);
+  assert.equal(G.hardModeError("tower", h2), null);
+});
+
 test("generated data: deterministic, stable prefix, valid words", () => {
   const out = (args) => execFileSync("python3", ["scripts/gen_games.py", ...args], { encoding: "utf8" });
   assert.match(out(["--check"]), /up to date/);
