@@ -130,7 +130,7 @@ GAMES = {
         title="Chess Puzzles: unlimited rated tactics from the Lichess database",
         desc="Free, unlimited chess puzzles with a rating that rises and falls as you solve. Puzzles come from the Lichess database. Sign in to join the leaderboard.",
         answer="Chess Puzzles is a free, unlimited chess tactics trainer. Each puzzle is picked near your rating from the Lichess puzzle database. Solve it and your rating goes up, miss it and it goes down, with no daily limit.",
-        features=["Unlimited puzzles, picked near your rating", "An Elo-style puzzle rating", "Optional leaderboard for signed-in players", "Puzzles from the Lichess database (CC0)"],
+        features=["Unlimited puzzles, picked near your rating", "Rush: three minutes, as many as you can", "An Elo-style puzzle rating", "Optional leaderboard for signed-in players", "Puzzles from the Lichess database (CC0)"],
         steps=[("See the position", "The opponent has just moved. Find the best move for the side shown at the bottom of the board."),
                ("Play your moves", "Click a piece, then its destination square. After each correct move the opponent replies and you continue."),
                ("Solve or miss", "The first wrong move ends the puzzle and shows the correct line. A checkmate always counts."),

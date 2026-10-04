@@ -6,7 +6,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var KEYS = ["qwertyuiop", "asdfghjkl", "zxcvbnm-"];
 
-  var st = {
+  var st = { pencilMode: false, pencil: {},
     key: "", idx: 0, p: null, n: 0, sol: [], cells: [], black: [], entries: [], map: [], // map[r][c] = {a: entryIndex, d: entryIndex}
     r: 0, c: 0, dir: "across", auto: false, elapsed: 0, checks: 0, reveals: 0, done: false, wrong: {}, ticking: false, last: 0
   };
@@ -89,6 +89,7 @@
       el.toggleAttribute("data-active", r === st.r && c === st.c);
       el.toggleAttribute("data-entry", !!inEntry[key] && !(r === st.r && c === st.c));
       el.toggleAttribute("data-wrong", !!st.wrong[key]);
+      el.toggleAttribute("data-pencil", !!st.pencil[key] && !!st.cells[r][c]);
       el.setAttribute("aria-label", (el.getAttribute("data-n") ? el.getAttribute("data-n") + ", " : "") + (st.cells[r][c] ? st.cells[r][c] : "blank"));
       el.setAttribute("tabindex", r === st.r && c === st.c ? "0" : "-1");
     }
@@ -176,6 +177,7 @@
   function typeLetter(ch) {
     if (st.done || st.black[st.r][st.c]) return;
     st.cells[st.r][st.c] = ch.toUpperCase();
+    if (st.pencilMode) st.pencil[st.r + "," + st.c] = 1; else delete st.pencil[st.r + "," + st.c];
     delete st.wrong[st.r + "," + st.c];
     if (st.auto && st.cells[st.r][st.c] !== st.sol[st.r][st.c]) st.wrong[st.r + "," + st.c] = 1;
     var FX = window.PLFX;
@@ -234,6 +236,13 @@
   }
 
   // Auto-check marks a wrong letter the moment it is typed. Like Check, it counts as help.
+  // Pencil: letters typed in pencil mode look lighter until you ink them. They still count when you finish or check.
+  function setPencil(on) {
+    st.pencilMode = on;
+    $("cw-pencil").setAttribute("aria-pressed", on ? "true" : "false"); $("cw-pencil").textContent = on ? "Pencil: on" : "Pencil: off";
+  }
+  function inkAll() { st.pencil = {}; paint(); $("cw-status").textContent = "All pencil letters are now in ink."; }
+
   function setAuto(on) {
     st.auto = on;
     var s = G.getGame(NAME); s.auto = on; G.setGame(NAME, s);
@@ -378,6 +387,8 @@
     bar("cw-check-word", function () { check("word"); });
     bar("cw-check", function () { check("puzzle"); });
     bar("cw-auto", function () { setAuto(!st.auto); });
+    bar("cw-pencil", function () { setPencil(!st.pencilMode); });
+    bar("cw-ink", inkAll);
     bar("cw-reveal-puzzle", revealPuzzle, true);
     bar("cw-reveal-letter", revealLetter);
     bar("cw-reveal-word", revealWord);

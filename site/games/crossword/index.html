@@ -141,6 +141,14 @@
           "mainEntity": [
             {
               "@type": "Question",
+              "name": "What does Pencil do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Pencil mode marks the letters you type as tentative: they show lighter until you tap Ink all. They count exactly like any other letter when you check or finish."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "Is there a new crossword every day?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -217,7 +225,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=4bc40a25bd">
+    <link rel="stylesheet" href="/games/games-ui.css?v=e908b93f9b">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -286,6 +294,8 @@
                 <button type="button" class="btn btn-ghost" id="cw-check-word">Word</button>
                 <button type="button" class="btn btn-ghost" id="cw-check">Puzzle</button>
                 <button type="button" class="btn btn-ghost" id="cw-auto" aria-pressed="false">Auto-check: off</button>
+                <button type="button" class="btn btn-ghost" id="cw-pencil" aria-pressed="false">Pencil: off</button>
+                <button type="button" class="btn btn-ghost" id="cw-ink">Ink all</button>
                 <span class="cw-timer" id="cw-timer" aria-label="Elapsed time">0:00</span>
               </div>
               <div class="cw-bar" role="group" aria-label="Reveal answers">
@@ -336,6 +346,8 @@
           <li><strong>Sunday:</strong> 15 by 15, the biggest grid.</li>
         </ul>
         <h2>Questions</h2>
+        <h3>What does Pencil do?</h3>
+        <p>Pencil mode marks the letters you type as tentative: they show lighter until you tap Ink all. They count exactly like any other letter when you check or finish.</p>
         <h3>Is there a new crossword every day?</h3>
         <p>Yes. A new themeless puzzle is ready at midnight your time. Monday is the easiest and Sunday the hardest, with bigger grids and trickier clues as the week goes on.</p>
         <h3>How is the crossword made?</h3>
@@ -369,12 +381,12 @@
     <script src="/games/core.js?v=41593da540" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
+    <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
     <script src="/games/goals.js?v=e58364109c" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=a52b682b21" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
-    <script src="/games/crossword.js?v=e308c1bb94" defer></script>
+    <script src="/games/crossword.js?v=ae61865120" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

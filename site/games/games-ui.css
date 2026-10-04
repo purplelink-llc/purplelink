@@ -500,3 +500,33 @@
   .ph-photo[data-fx="blur"] { animation: none; filter: blur(8px); }
   .ph-photo[data-fx="zoom"] { animation: none; transform: scale(1.8); }
 }
+
+/* Daily Stars extras */
+.stars-lucky { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 16px 0; }
+.stars-lucky > div { padding: 10px 14px; border-radius: 14px; background: color-mix(in oklch, var(--gc) 14%, transparent); }
+.stars-lucky dt { font-size: 0.78rem; font-weight: 800; color: var(--muted); }
+.stars-lucky dd { margin: 2px 0 0; font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.stars-sw { width: 16px; height: 16px; border-radius: 50%; display: inline-block; border: 2px solid var(--ink); }
+.stars-sw[data-c="violet"] { background: oklch(60% 0.22 300); } .stars-sw[data-c="amber"] { background: oklch(78% 0.16 80); }
+.stars-sw[data-c="teal"] { background: oklch(68% 0.12 190); } .stars-sw[data-c="coral"] { background: oklch(70% 0.16 30); }
+.stars-sw[data-c="indigo"] { background: oklch(48% 0.2 270); } .stars-sw[data-c="green"] { background: oklch(66% 0.16 150); }
+.stars-sw[data-c="rose"] { background: oklch(72% 0.15 5); } .stars-sw[data-c="sky"] { background: oklch(75% 0.12 230); }
+.stars-pair { margin: 8px 0 14px; display: grid; gap: 8px; justify-items: start; }
+.stars-pair label { font-weight: 800; font-size: 0.9rem; }
+.stars-pair select { min-height: 46px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: 700 1rem/1 var(--font-body); }
+.stars-pair p { margin: 0; font-weight: 700; min-height: 1.4em; }
+
+/* Chess Rush */
+.mode-switch { display: inline-flex; gap: 6px; padding: 4px; border-radius: 16px; background: color-mix(in oklch, var(--ink) 8%, transparent); margin: 0 0 14px; }
+.mode-opt { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 12px; font-weight: 800; font-size: 0.92rem; text-decoration: none; color: var(--ink); }
+.mode-opt[aria-current="page"] { background: var(--gc, var(--purple)); color: var(--gc-ink, #fff); box-shadow: 0 3px 0 var(--gc-d, var(--purple-dim)); }
+.mode-opt:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.rush-hud { display: flex; flex-wrap: wrap; gap: 12px 32px; margin: 4px 0 14px; padding: 14px 20px; border-radius: 20px; background: var(--panel); border: 2px solid var(--line); box-shadow: 0 4px 0 var(--line); }
+.rush-hud[hidden] { display: none; }
+
+/* Sudoku: digit-first pad */
+.sd-pad .wg-key[data-armed] { background: var(--gc); color: var(--gc-ink); box-shadow: 0 3px 0 var(--gc-d); transform: translateY(-2px); }
+
+/* Crossword: pencil letters are lighter and slanted until inked */
+.cw-cell[data-pencil] .cw-letter { opacity: 0.6; font-style: italic; }
+.run-tier span { color: color-mix(in oklch, var(--ink) 78%, var(--panel)); }

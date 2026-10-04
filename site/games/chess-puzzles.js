@@ -15,11 +15,14 @@
     clearance: "Clearance", interference: "Interference", intermezzo: "In-between move", zugzwang: "Zugzwang", advancedPawn: "Advanced pawn" };
 
 
+  var RUSH = /[?&]mode=rush\b/.test(location.search);
+  var rush = { ms: 180000, penalty: 0, t0: 0, score: 0, strikes: 0, over: false, level: 600, seen: {}, timer: 0 };
+  window.PLChessPuzzle = function () { return st.pz; };   // lets tests read the current puzzle
   var Chess = null;
   var st = { pz: null, bucket: 0, game: null, ply: 1, done: false, won: false, sel: null, last: null, orient: "w", busy: false, focus: "e1", pendingPromo: null, t0: 0, rec: null, signedIn: false };
 
   function cur() { return { id: st.pz.id, bucket: st.bucket, t0: st.t0, ply: st.ply }; }
-  function save() { if (!st.done) R.current("chess", cur()); }
+  function save() { if (!RUSH && !st.done) R.current("chess", cur()); }
   function sq(f, r) { return "abcdefgh"[f] + (r + 1); }
   function say(t) { $("ch-msg").textContent = t || ""; }
 
@@ -109,6 +112,7 @@
       if (bad) { bad.setAttribute("data-wrong", "1"); window.setTimeout(function () { bad.removeAttribute("data-wrong"); }, 700); }
       if (window.PLFX) { window.PLFX.play("bad"); window.PLFX.vibrate(40); window.PLFX.kick($("ch-board"), "fx-shake", 500); }
       say("That is not the move.");
+      if (RUSH) { rushMiss(); return; }
       reveal(false);
       return;
     }
@@ -116,7 +120,7 @@
     st.ply += 1;
     say("");
     paint(); moveFx(m);
-    if (st.game.isCheckmate() || st.ply >= st.pz.moves.length) { st.done = true; st.won = true; save(); finish(true, "solved"); return; }
+    if (st.game.isCheckmate() || st.ply >= st.pz.moves.length) { st.done = true; st.won = true; if (RUSH) { rushSolved(); return; } save(); finish(true, "solved"); return; }
     save();
     reply();
   }
@@ -258,14 +262,80 @@
     st.t0 = resume ? resume.t0 : Date.now();
     if (resume) for (var k = 1; k < (resume.ply || 1) && k < st.pz.moves.length; k++) { var mv = st.game.move(parse(st.pz.moves[k])); st.last = { from: mv.from, to: mv.to }; st.ply = k + 1; }
     $("ch-number").textContent = "Puzzle rated " + st.pz.rating;
-    build(); wire();
+    st.sel = null; st.pendingPromo = null; st.done = false; st.won = false; st.busy = false;
+    build(); if (!st.wired) { wire(); st.wired = true; }
     st.focus = st.orient === "w" ? "e2" : "e7";
     $("ch-loading").hidden = true; $("ch-game").hidden = false;
     paint(); save();
     if (st.game.turn() !== st.orient) reply();
   }
 
+  // ---- Rush: three minutes, as many puzzles as you can. Each miss costs five seconds and a strike; three strikes end it. ----
+  function rushBest() { try { return Number(localStorage.getItem("pl-chess-rush-best")) || 0; } catch (e) { return 0; } }
+  function rushLeft() { return Math.max(0, rush.ms - rush.penalty - (Date.now() - rush.t0)); }
+  function fmtClock(ms) { var t = Math.ceil(ms / 1000); return Math.floor(t / 60) + ":" + ("0" + (t % 60)).slice(-2); }
+  function rushHud() {
+    $("rush-score").textContent = String(rush.score);
+    $("rush-strikes").textContent = rush.strikes + " of 3";
+    $("rush-time").textContent = fmtClock(rushLeft());
+  }
+  function rushPuzzle() {
+    var target = rush.level + Math.round((Math.random() - 0.5) * 160);
+    return loadBucket(pickBucket(target)).then(function (d) {
+      var pool = d.p.filter(function (p) { return !rush.seen[p.i]; });
+      if (!pool.length) pool = d.p;
+      var raw = pool[Math.floor(Math.random() * pool.length)];
+      rush.seen[raw.i] = 1;
+      return { raw: raw, bucket: d.b };
+    });
+  }
+  function rushNext() {
+    if (rush.over) return;
+    rushPuzzle().then(function (x) { if (!rush.over) begin(x.raw, x.bucket, null); }).catch(fail);
+  }
+  function rushSolved() {
+    rush.score += 1; rush.level = 600 + 100 * Math.floor(rush.score / 2);
+    rushHud();
+    if (window.PLFX) { window.PLFX.play("good"); window.PLFX.kick($("rush-score"), "fx-pop", 300); }
+    window.setTimeout(rushNext, 380);
+  }
+  function rushMiss() {
+    rush.strikes += 1; rush.penalty += 5000; rushHud();
+    if (window.PLFX) window.PLFX.kick($("rush-strikes"), "fx-shake", 400);
+    if (rush.strikes >= 3 || rushLeft() <= 0) { rushEnd(rush.strikes >= 3 ? "Three strikes" : "Time is up"); return; }
+    window.setTimeout(rushNext, 750);
+  }
+  function rushEnd(why) {
+    if (rush.over) return;
+    rush.over = true; window.clearInterval(rush.timer); st.busy = true;
+    var best = rushBest(), isBest = rush.score > best;
+    if (isBest) { try { localStorage.setItem("pl-chess-rush-best", String(rush.score)); } catch (e) { /* ignore */ } best = rush.score; }
+    $("ru-head").textContent = why;
+    $("ru-score").textContent = String(rush.score);
+    $("ru-best").textContent = isBest ? "A new personal best." : "Your best is " + best + ".";
+    $("ch-game").hidden = true; $("rush-hud").hidden = true; $("rush-result").hidden = false;
+    window.PLShareText = function () { return "Chess Puzzles Rush: " + rush.score + " puzzle" + (rush.score === 1 ? "" : "s") + " in three minutes" + (isBest && rush.score > 0 ? " (a new best)" : "") + ".\n\nhttps://purplelink.llc/games/chess-puzzles/"; };
+    if (window.PLFX) { window.PLFX.play(rush.score >= 8 ? "big" : rush.score ? "win" : "lose"); }
+    if (rush.score >= 10 && window.PLConfetti) window.PLConfetti.big();
+    if (window.PLAch) window.PLAch.check({ game: "chess-puzzles", rated: true, idx: G.dayIndex(new Date(), "2026-10-04"), rush: rush.score });
+    G.track("game_end", "chess-rush:" + rush.score);
+    $("ru-again").focus({ preventScroll: true });
+  }
+  function startRush() {
+    $("rate-hud").hidden = true; $("rush-start").hidden = false; $("ch-loading").hidden = true;
+    $("rush-best-line").textContent = rushBest() ? "Your best: " + rushBest() + "." : "No score yet.";
+    $("rush-go").addEventListener("click", function () {
+      $("rush-start").hidden = true; $("rush-hud").hidden = false; $("ch-loading").hidden = false; $("ch-loading").textContent = "Loading the first puzzle.";
+      rush.t0 = Date.now(); rushHud();
+      rush.timer = window.setInterval(function () { rushHud(); if (rushLeft() <= 0) rushEnd("Time is up"); }, 250);
+      rushPuzzle().then(function (x) { begin(x.raw, x.bucket, null); $("ch-controls").hidden = true; }).catch(fail);
+    });
+    window.PLShareText = function () { return ""; };
+  }
+
   function start() {
+    $(RUSH ? "mode-rush" : "mode-rated").setAttribute("aria-current", "page");
+    if (RUSH) { startRush(); return; }
     R.load("chess").then(function (info) {
       st.rec = info.rec; st.signedIn = info.signedIn; st.isPublic = !!info.public;
       $("cr-rating").textContent = String(info.rec.r); $("cr-tier-top").textContent = R.tierFor(info.rec.r);

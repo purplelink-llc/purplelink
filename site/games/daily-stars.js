@@ -16,9 +16,40 @@
     return { key: d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()), date: d };
   })();
   var data = null, current = null, tracked = false;
+  // Lucky extras: picked from the sign and the date, the same for everyone. Entertainment only, like the readings.
+  var COLORS = ["Violet", "Amber", "Teal", "Coral", "Indigo", "Green", "Rose", "Sky"];
+  var MOODS = ["Calm", "Curious", "Bold", "Restless", "Generous", "Focused", "Playful", "Reflective"];
+  function hash(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619); return h >>> 0; }
+  function hour(h) { return (h % 12 === 0 ? 12 : h % 12) + (h < 12 ? " am" : " pm"); }
+  function luckyItems(sign) {
+    var h = hash(sign + "|" + today.key);
+    return [["Lucky number", String(h % 99 + 1)], ["Lucky color", COLORS[(h >>> 7) % COLORS.length]], ["Mood", MOODS[(h >>> 13) % MOODS.length]], ["Best hour", hour(7 + (h >>> 19) % 14)]];
+  }
+  function lucky(sign) {
+    var box = $("st-lucky");
+    if (!box) return;
+    box.textContent = "";
+    var items = luckyItems(sign);
+    items.forEach(function (it) {
+      var dt = document.createElement("dt"), dd = document.createElement("dd");
+      dt.textContent = it[0]; dd.textContent = it[1];
+      if (it[0] === "Lucky color") { var sw = document.createElement("i"); sw.className = "stars-sw"; sw.setAttribute("data-c", it[1].toLowerCase()); sw.setAttribute("aria-hidden", "true"); dd.insertBefore(sw, dd.firstChild); }
+      var wrap = document.createElement("div"); wrap.appendChild(dt); wrap.appendChild(dd); box.appendChild(wrap);
+    });
+    pair();
+  }
+  function pair() {
+    var sel = $("st-pair"), out = $("st-pair-out");
+    if (!sel || !out || !current) return;
+    if (!sel.value) { out.textContent = ""; return; }
+    var key = [current, sel.value].sort().join("+"), pct = 40 + hash(key + "|" + today.key) % 61;
+    var word = pct >= 85 ? "Easy company today." : pct >= 65 ? "A good match for today." : "Worth a little patience.";
+    out.textContent = current + " and " + sel.value + ": " + pct + "%. " + word;
+  }
 
   function show(sign) {
     current = sign;
+    lucky(sign);
     var day = data && data.days[today.key];
     Array.prototype.forEach.call(document.querySelectorAll("#st-signs button"), function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-sign") === sign ? "true" : "false");
@@ -31,7 +62,8 @@
     $("st-card").hidden = false;
     window.PLShareText = function () {
       var t = $("st-text").textContent, first = (t.match(/^.*?[.!?](\s|$)/) || [t])[0].trim();
-      return "Daily Stars, " + sign + " (for entertainment): " + first + "\n\nhttps://purplelink.llc/games/daily-stars/";
+      var li = luckyItems(sign);
+      return "Daily Stars, " + sign + " (for entertainment): " + first + "\nLucky number " + li[0][1] + ", lucky color " + li[1][1] + ".\n\nhttps://purplelink.llc/games/daily-stars/";
     };
     var s = G.getGame("daily-stars");
     s.sign = sign;
@@ -62,6 +94,12 @@
       li.appendChild(b);
       list.appendChild(li);
     });
+    var sel = $("st-pair");
+    if (sel) {
+      var first = document.createElement("option"); first.value = ""; first.textContent = "Choose a sign"; sel.appendChild(first);
+      SIGNS.forEach(function (s) { var o = document.createElement("option"); o.value = s[0]; o.textContent = s[0]; sel.appendChild(o); });
+      sel.addEventListener("change", pair);
+    }
     $("st-loading").hidden = true;
     if (!day) {
       $("st-missing").hidden = false;

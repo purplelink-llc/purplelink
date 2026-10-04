@@ -151,13 +151,13 @@ ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudo
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
     "linkle": "Five letters, six tries, and a new twist every weekday.",
-    "quadlink": "Four hidden words at once, in nine guesses.",
-    "daily-five": "Five trivia questions, from research to geography.",
-    "daily-photo": "Five travel photographs. Which country is each?",
-    "daily-chess": "A Lichess tactics puzzle, easy on Monday and hard on Sunday.",
+    "quadlink": "Four hidden words at once, with a new twist every weekday.",
+    "daily-five": "Five trivia questions with a 50:50 lifeline and a Lightning day.",
+    "daily-photo": "Five travel photographs, with blur, zoom and black-and-white days.",
+    "daily-chess": "A Lichess tactics puzzle with a theme each day, easy Monday to hard Sunday.",
     "sudoku": "One solution, and harder every week of a ten-week season.",
     "crossword": "A themeless crossword, easy Monday to hard Sunday.",
-    "daily-stars": "A short horoscope for every sign, for entertainment.",
+    "daily-stars": "A short horoscope for every sign, with lucky numbers and sign matches.",
     "landlink": "Guess the country from seven comparable facts.",
     "citylink": "Guess the city, with latitude and longitude arrows as a compass.",
     "thinkerlink": "Guess the scientist from field, era and birthplace.",
@@ -167,7 +167,7 @@ TAGLINE = {
     "codelink": "Guess the programming language from its design.",
     "atomlink": "Guess the element from its place on the periodic table.",
     "prizelink": "Guess the Nobel laureate from prize, year and birthplace.",
-    "chess-puzzles": "Unlimited rated tactics from the Lichess database.",
+    "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
     "leaderboard": "The top ratings in chess and Sudoku, and this week's climbers.",
 }
@@ -375,6 +375,7 @@ page("games/quadlink/",
 
 # ---------------- Daily Five ----------------
 DF_FAQ = [
+    ('How do the lifelines and Lightning day work?', 'Each set has one 50:50 lifeline, which removes two wrong answers from a question. Tuesday gives two, and Sunday gives none. On Friday, Lightning day, each question has fifteen seconds, and running out of time counts as a wrong answer.'),
     ("How many questions are there?", "Five multiple-choice questions a day, with one correct answer each. Two come from a set we write about science, computing, research methods and Macs. Three come from a general trivia pool."),
     ("When do the questions change?", "At midnight in your time zone. Everyone sees the same five on the same date."),
     ("Where do the questions come from?", "Part of the pool is the Open Trivia Database, licensed CC BY-SA 4.0. The rest we write ourselves. We check our own questions, but a general trivia pool can contain mistakes. If you spot one, email ben@purplelink.llc."),
@@ -445,6 +446,7 @@ page("games/daily-five/",
 
 # ---------------- Daily Stars ----------------
 ST_FAQ = [
+    ('What are the lucky number, color, mood and best hour?', 'They are picked from your sign and the date, so everyone with the same sign sees the same ones on the same day. Like the readings, they are for entertainment only.'),
     ("Are these real predictions?", "No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships."),
     ("How are the readings made?", "They are written ahead of time in batches, one short reading per sign per day, and published on the date. The moon phase shown is calculated from the date and is accurate to about half a day."),
     ("When do they change?", "At midnight in your time zone."),
@@ -469,6 +471,12 @@ ST_BODY = """      <div class="games-wrap">
             <h2 id="st-name"></h2>
             <p class="stars-sub" id="st-range"></p>
             <p id="st-text"></p>
+            <dl class="stars-lucky" id="st-lucky"></dl>
+            <div class="stars-pair">
+              <label for="st-pair">See how your sign gets on with another</label>
+              <select id="st-pair"></select>
+              <p id="st-pair-out" role="status" aria-live="polite"></p>
+            </div>
             <div class="game-actions">
               <button type="button" class="btn btn-primary" id="st-share">Share my reading</button>
               <span class="game-note" id="st-share-note"></span>
@@ -502,6 +510,7 @@ page("games/daily-stars/",
 
 # ---------------- Crossword ----------------
 CW_FAQ = [
+    ('What does Pencil do?', 'Pencil mode marks the letters you type as tentative: they show lighter until you tap Ink all. They count exactly like any other letter when you check or finish.'),
     ("Is there a new crossword every day?", "Yes. A new themeless puzzle is ready at midnight your time. Monday is the easiest and Sunday the hardest, with bigger grids and trickier clues as the week goes on."),
     ("How is the crossword made?", "The grids are built by a program that fills a symmetric pattern from a word list, and the clues are written for each puzzle. The size of the grid, how rare the words are and how the clues are phrased all grow from Monday to Sunday."),
     ("What do Check and Reveal do?", "You can check one letter, one word or the whole puzzle, and wrong letters turn red. Auto-check marks a wrong letter as soon as you type it. Reveal fills in a letter, a word or the whole puzzle. Using any of them is shown as solving with help, and only unaided solves count toward your best time."),
@@ -534,6 +543,8 @@ CW_BODY = """      <div class="games-wrap">
                 <button type="button" class="btn btn-ghost" id="cw-check-word">Word</button>
                 <button type="button" class="btn btn-ghost" id="cw-check">Puzzle</button>
                 <button type="button" class="btn btn-ghost" id="cw-auto" aria-pressed="false">Auto-check: off</button>
+                <button type="button" class="btn btn-ghost" id="cw-pencil" aria-pressed="false">Pencil: off</button>
+                <button type="button" class="btn btn-ghost" id="cw-ink">Ink all</button>
                 <span class="cw-timer" id="cw-timer" aria-label="Elapsed time">0:00</span>
               </div>
               <div class="cw-bar" role="group" aria-label="Reveal answers">
@@ -589,6 +600,7 @@ page("games/crossword/",
 
 # ---------------- Daily Photo ----------------
 PH_FAQ = [
+    ('What are the weekday twists?', 'Tuesday is Blur reveal: each photo starts blurred and sharpens over ten seconds. Thursday is Zoom out: each photo starts zoomed in and pulls back. Saturday is Black and white: the photos are in grayscale until you answer. Other days show the photographs as they are. Answering at any time shows the full picture.'),
     ("What is Daily Photo?", "Five photographs a day, each taken by Ben Ampel on his travels. For each one you pick which of four countries it was taken in. After every answer you see the exact place, a short description and a link to more photographs from there."),
     ("Where do the photographs come from?", "They are Purplelink's own photographs from Iceland, Japan, Switzerland, the United Kingdom, Germany, Denmark, the Netherlands, Canada, Panama and the United States. They are also available to license through the photography pages."),
     ("When do the photographs change?", "At midnight in your time zone. Everyone sees the same five on the same date."),
@@ -657,6 +669,7 @@ page("games/daily-photo/",
 
 # ---------------- Daily Chess ----------------
 CH_FAQ = [
+    ('What is the theme of the day?', 'From the second week on, each weekday leans toward one idea when the puzzle bank has a match: checkmates on Monday, forks on Tuesday, pins and skewers on Wednesday, endgames on Thursday, back-rank and loose pieces on Friday, sacrifices on Saturday and crushing wins on Sunday. The banner above the board names the theme, and it is a hint about what to look for.'),
     ("Where do the chess puzzles come from?", "From the Lichess puzzle database, which is released under the Creative Commons CC0 licence. Each puzzle starts from a position in a real game, and Lichess rates its difficulty from how many players have solved it."),
     ("How does the difficulty change through the week?", "Monday's puzzle comes from the easiest rating band, roughly 800 to 1250, and each day is harder than the last. Sunday's comes from the 2150 to 2600 band."),
     ("What counts as a slip?", "A wrong move or a hint. You can keep trying after a wrong move, but your result shows the number of slips, and a clean solve has none."),
@@ -678,6 +691,7 @@ CH_BODY = """      <div class="games-wrap">
         <p class="game-lede">Daily Chess is a free daily chess tactics puzzle.</p>
         <p id="ch-loading" class="games-note">Loading today's puzzle.</p>
         <div id="ch-game" hidden>
+          <p class="wg-twist" id="ch-twist" hidden><strong id="ch-twist-name"></strong> <span id="ch-twist-text"></span></p>
           <p class="ch-turn" id="ch-turn"></p>
           <p class="ch-msg" id="ch-msg" role="status" aria-live="polite"></p>
           <div class="cb-board" id="ch-board" role="group" aria-label="Chess board"></div>
@@ -726,6 +740,7 @@ page("games/daily-chess/", "", "", CH_BODY,
 
 # ---------------- Sudoku ----------------
 SD_FAQ = [
+    ('What do Digit first and Zen do?', 'Digit first lets you pick a digit on the pad and then tap squares to fill them, which is faster on a phone. Zen hides the clock so you can solve without watching the time. Both settings are remembered on this device.'),
     ("How hard is each week's Sudoku?", "Difficulty rises every week across a ten-week season. Weeks 1 and 2 are Beginner, weeks 3 and 4 Easy, weeks 5 and 6 Medium, weeks 7 and 8 Hard and weeks 9 and 10 Expert. After week 10 a new season starts again at Beginner."),
     ("Does every puzzle have exactly one solution?", "Yes. Each puzzle is generated by removing digits from a complete grid one pair at a time, and a solver confirms that exactly one solution remains."),
     ("How is the difficulty decided?", "By the techniques a person needs to solve the puzzle without guessing. Beginner needs only singles. Easy adds locked candidates, Medium adds pairs and triples, Hard needs X-Wing, and Expert needs a forced guess to get started."),
@@ -759,6 +774,8 @@ SD_BODY = """      <div class="games-wrap">
             <div class="sd-main">
               <div class="cw-bar" role="group" aria-label="Notes and checking">
                 <button type="button" class="btn btn-ghost" id="sd-notes-btn" aria-pressed="false">Notes: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-digit" aria-pressed="false">Digit first: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-zen" aria-pressed="false">Zen: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-check-cell">Check square</button>
                 <button type="button" class="btn btn-ghost" id="sd-check">Check puzzle</button>
                 <button type="button" class="btn btn-ghost" id="sd-auto" aria-pressed="false">Auto-check: off</button>
@@ -807,6 +824,7 @@ page("games/sudoku/", "", "", SD_BODY,
 
 # ---------------- Chess Puzzles (rated, unlimited) ----------------
 CP_FAQ = [
+    ('What is Rush?', 'Rush is a three-minute run mode on the same page. Puzzles start easy and get harder. A wrong move costs five seconds and a strike, three strikes end the run, and your score is the number of puzzles solved. Rush does not change your rating, and your best score is kept on this device.'),
     ("How is my puzzle rating worked out?", "It is an Elo rating, like a chess rating. Each puzzle has a rating from the Lichess database. If you solve a puzzle rated above you, you gain a lot; if you solve one well below you, you gain a little; a miss costs more the easier the puzzle was. Early on, ratings move faster, and they settle after about 20 puzzles."),
     ("Is this the same as my Lichess puzzle rating?", "No. It is a separate rating that starts at 1000 here, so the numbers are not comparable with Lichess or any other site."),
     ("What counts as a miss?", "The first wrong move ends the puzzle, as on Lichess, and the correct line is shown. Show solution also counts as a miss. A move that gives checkmate is always accepted."),
@@ -835,7 +853,32 @@ CP_BODY = """      <div class="games-wrap">
           <span class="game-num" id="ch-number"></span>
         </div>
         <p class="game-lede">Chess Puzzles is a free, unlimited chess tactics trainer.</p>
-        <div class="rate-hud">
+        <p class="mode-switch" role="group" aria-label="Choose a mode"><a class="mode-opt" id="mode-rated" href="/games/chess-puzzles/">Rated</a><a class="mode-opt" id="mode-rush" href="/games/chess-puzzles/?mode=rush">Rush, 3 minutes</a></p>
+        <section class="game-result" id="rush-start" hidden aria-labelledby="rush-start-h">
+          <h2 id="rush-start-h">Rush</h2>
+          <p class="game-reveal">Three minutes. Solve as many puzzles as you can, starting easy and getting harder. A wrong move costs five seconds and a strike, and three strikes end the run. Rush does not change your rating.</p>
+          <p class="game-note" id="rush-best-line"></p>
+          <div class="game-actions"><button type="button" class="gbtn" id="rush-go" data-g="chess-puzzles">Start the clock</button></div>
+        </section>
+        <div class="rush-hud" id="rush-hud" hidden>
+          <div class="rate-stat"><span class="rate-n" id="rush-time" role="timer">3:00</span><span class="rate-l">Time left</span></div>
+          <div class="rate-stat"><span class="rate-n rate-n--sm" id="rush-score">0</span><span class="rate-l">Solved</span></div>
+          <div class="rate-stat"><span class="rate-n rate-n--sm" id="rush-strikes">0 of 3</span><span class="rate-l">Strikes</span></div>
+        </div>
+        <section class="game-result rate-result" id="rush-result" hidden aria-labelledby="ru-head">
+          <h2 id="ru-head"></h2>
+          <p class="rate-delta" id="ru-score" data-up="1"></p>
+          <p class="rate-line">puzzles solved</p>
+          <p class="game-reveal" id="ru-best"></p>
+          <div class="game-actions">
+            <a class="gbtn" id="ru-again" href="/games/chess-puzzles/?mode=rush" data-g="chess-puzzles">Play again</a>
+            <button type="button" class="btn btn-primary" id="ru-share">Share</button>
+            <a class="gbtn gbtn--ghost" href="/games/chess-puzzles/">Back to rated</a>
+            <span class="game-note" id="ru-share-note"></span>
+          </div>
+          <textarea class="wg-share-text" id="ru-share-text" hidden readonly aria-label="Result text"></textarea>
+        </section>
+        <div class="rate-hud" id="rate-hud">
           <div class="rate-stat"><span class="rate-n" id="cr-rating">1000</span><span class="rate-l" id="cr-tier-top">Learner</span></div>
           <div class="rate-stat"><span class="rate-n rate-n--sm" id="cr-streak-top">0</span><span class="rate-l">Solved in a row</span></div>
           <a class="gbtn gbtn--ghost" href="/games/leaderboard/?g=chess" data-g="leaderboard">Leaderboard</a>
@@ -888,6 +931,7 @@ page("games/chess-puzzles/", "", "", CP_BODY,
 
 # ---------------- Sudoku Unlimited ----------------
 SU_FAQ = [
+    ('What do Digit first and Zen do?', 'Digit first lets you pick a digit on the pad and then tap squares to fill them. Zen hides the clock, though the time is still used for your rating. Both settings are remembered on this device.'),
     ("How does the rating work?", "It is an Elo rating. Each level has a rating: Beginner 900, Easy 1250, Medium 1600, Hard 1950 and Expert 2300. Solving a level above your rating gains more. Solving faster than the level's usual pace earns a bigger gain, a slow solve earns a smaller one, and a solve with checks or reveals counts for less."),
     ("What are the five levels?", "Beginner needs only singles. Easy adds locked candidates, Medium adds pairs and triples, Hard needs X-Wing patterns, and Expert needs a forced guess to get started. Every puzzle has exactly one solution."),
     ("Which level will I get?", "The level follows your rating, with some variety. As your rating climbs you see harder levels more often."),
@@ -928,6 +972,8 @@ SU_BODY = """      <div class="games-wrap">
             <div class="sd-main">
               <div class="cw-bar" role="group" aria-label="Notes and checking">
                 <button type="button" class="btn btn-ghost" id="sd-notes-btn" aria-pressed="false">Notes: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-digit" aria-pressed="false">Digit first: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-zen" aria-pressed="false">Zen: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-check-cell">Check square</button>
                 <button type="button" class="btn btn-ghost" id="sd-check">Check puzzle</button>
                 <button type="button" class="btn btn-ghost" id="sd-auto" aria-pressed="false">Auto-check: off</button>

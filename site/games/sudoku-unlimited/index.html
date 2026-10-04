@@ -142,6 +142,14 @@
           "mainEntity": [
             {
               "@type": "Question",
+              "name": "What do Digit first and Zen do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Digit first lets you pick a digit on the pad and then tap squares to fill them. Zen hides the clock, though the time is still used for your rating. Both settings are remembered on this device."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "How does the rating work?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -242,7 +250,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=4bc40a25bd">
+    <link rel="stylesheet" href="/games/games-ui.css?v=e908b93f9b">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -312,6 +320,8 @@
             <div class="sd-main">
               <div class="cw-bar" role="group" aria-label="Notes and checking">
                 <button type="button" class="btn btn-ghost" id="sd-notes-btn" aria-pressed="false">Notes: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-digit" aria-pressed="false">Digit first: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-zen" aria-pressed="false">Zen: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-check-cell">Check square</button>
                 <button type="button" class="btn btn-ghost" id="sd-check">Check puzzle</button>
                 <button type="button" class="btn btn-ghost" id="sd-auto" aria-pressed="false">Auto-check: off</button>
@@ -362,6 +372,8 @@
           </tbody>
         </table>
         <h2>Questions</h2>
+        <h3>What do Digit first and Zen do?</h3>
+        <p>Digit first lets you pick a digit on the pad and then tap squares to fill them. Zen hides the clock, though the time is still used for your rating. Both settings are remembered on this device.</p>
         <h3>How does the rating work?</h3>
         <p>It is an Elo rating. Each level has a rating: Beginner 900, Easy 1250, Medium 1600, Hard 1950 and Expert 2300. Solving a level above your rating gains more. Solving faster than the level&#x27;s usual pace earns a bigger gain, a slow solve earns a smaller one, and a solve with checks or reveals counts for less.</p>
         <h3>What are the five levels?</h3>
@@ -402,13 +414,13 @@
     <script src="/games/core.js?v=41593da540" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
+    <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
     <script src="/games/goals.js?v=e58364109c" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=a52b682b21" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/ratings.js?v=db6e9898b5" defer></script>
-    <script src="/games/sudoku.js?v=9443fb206b" defer></script>
+    <script src="/games/sudoku.js?v=cbe07b1170" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

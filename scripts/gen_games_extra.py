@@ -283,6 +283,11 @@ def photo_days(root: Path, epoch: str, days: int) -> dict:
 
 
 # ---- Daily Chess (Lichess puzzle database, CC0) ----
+# A tactical theme for each weekday (Monday = 0). A day's puzzle comes from that weekday's rating band and carries the theme when the band has one left.
+CHESS_THEMES = {0: ("mateIn1", "mateIn2", "mate"), 1: ("fork",), 2: ("pin", "skewer"), 3: ("endgame",), 4: ("backRankMate", "hangingPiece"), 5: ("sacrifice", "deflection"), 6: ("crushing", "advantage")}
+CHESS_THEME_LABEL = {0: "Checkmate", 1: "Forks", 2: "Pins and skewers", 3: "Endgames", 4: "Back rank and loose pieces", 5: "Sacrifices", 6: "Crushing wins"}
+
+
 def chess_days(src: Path, epoch: str, days: int) -> dict:
     p = src / "chess-puzzles.json"
     if not p.exists():
@@ -290,14 +295,32 @@ def chess_days(src: Path, epoch: str, days: int) -> dict:
     bands = json.loads(p.read_text(encoding="utf-8"))["bands"]
     y, m, d = map(int, epoch.split("-"))
     start = date(y, m, d)
-    nxt = [0] * 7
+    used = [set() for _ in range(7)]
     out = []
     for i in range(days):
         wd = (start + timedelta(days=i)).weekday()      # Monday easiest ... Sunday hardest
         band = bands[wd]
-        pz = band[nxt[wd] % len(band)]
-        nxt[wd] += 1
-        out.append({"i": pz["id"], "f": pz["f"], "m": enc_text(pz["m"]), "r": pz["r"], "t": pz["t"], "g": pz["g"]})
+        want = CHESS_THEMES[wd]
+        if i < 7:                                         # the first week is already live: keep those puzzles exactly as published
+            pick = len(used[wd])
+            used[wd].add(pick)
+            pz = band[pick]
+            out.append({"i": pz["id"], "f": pz["f"], "m": enc_text(pz["m"]), "r": pz["r"], "t": pz["t"], "g": pz["g"]})
+            continue
+        pick = next((k for k, pz in enumerate(band) if k not in used[wd] and any(t in want for t in pz["t"])), None)
+        themed = pick is not None
+        if pick is None:
+            pick = next((k for k in range(len(band)) if k not in used[wd]), None)
+        if pick is None:                                  # the band is used up: start it again
+            used[wd].clear()
+            pick = next((k for k, pz in enumerate(band) if any(t in want for t in pz["t"])), 0)
+            themed = any(t in want for t in band[pick]["t"])
+        used[wd].add(pick)
+        pz = band[pick]
+        row = {"i": pz["id"], "f": pz["f"], "m": enc_text(pz["m"]), "r": pz["r"], "t": pz["t"], "g": pz["g"]}
+        if themed:
+            row["th"] = CHESS_THEME_LABEL[wd]
+        out.append(row)
     return {"epoch": epoch, "days": out}
 
 

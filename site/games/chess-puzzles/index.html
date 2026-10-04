@@ -90,6 +90,7 @@
           },
           "featureList": [
             "Unlimited puzzles, picked near your rating",
+            "Rush: three minutes, as many as you can",
             "An Elo-style puzzle rating",
             "Optional leaderboard for signed-in players",
             "Puzzles from the Lichess database (CC0)"
@@ -139,6 +140,14 @@
         {
           "@type": "FAQPage",
           "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is Rush?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Rush is a three-minute run mode on the same page. Puzzles start easy and get harder. A wrong move costs five seconds and a strike, three strikes end the run, and your score is the number of puzzles solved. Rush does not change your rating, and your best score is kept on this device."
+              }
+            },
             {
               "@type": "Question",
               "name": "How is my puzzle rating worked out?",
@@ -241,7 +250,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=4bc40a25bd">
+    <link rel="stylesheet" href="/games/games-ui.css?v=e908b93f9b">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -299,7 +308,32 @@
           <span class="game-num" id="ch-number"></span>
         </div>
         <p class="game-lede">Chess Puzzles is a free, unlimited chess tactics trainer. Each puzzle is picked near your rating from the Lichess puzzle database. Solve it and your rating goes up, miss it and it goes down, with no daily limit.</p>
-        <div class="rate-hud">
+        <p class="mode-switch" role="group" aria-label="Choose a mode"><a class="mode-opt" id="mode-rated" href="/games/chess-puzzles/">Rated</a><a class="mode-opt" id="mode-rush" href="/games/chess-puzzles/?mode=rush">Rush, 3 minutes</a></p>
+        <section class="game-result" id="rush-start" hidden aria-labelledby="rush-start-h">
+          <h2 id="rush-start-h">Rush</h2>
+          <p class="game-reveal">Three minutes. Solve as many puzzles as you can, starting easy and getting harder. A wrong move costs five seconds and a strike, and three strikes end the run. Rush does not change your rating.</p>
+          <p class="game-note" id="rush-best-line"></p>
+          <div class="game-actions"><button type="button" class="gbtn" id="rush-go" data-g="chess-puzzles">Start the clock</button></div>
+        </section>
+        <div class="rush-hud" id="rush-hud" hidden>
+          <div class="rate-stat"><span class="rate-n" id="rush-time" role="timer">3:00</span><span class="rate-l">Time left</span></div>
+          <div class="rate-stat"><span class="rate-n rate-n--sm" id="rush-score">0</span><span class="rate-l">Solved</span></div>
+          <div class="rate-stat"><span class="rate-n rate-n--sm" id="rush-strikes">0 of 3</span><span class="rate-l">Strikes</span></div>
+        </div>
+        <section class="game-result rate-result" id="rush-result" hidden aria-labelledby="ru-head">
+          <h2 id="ru-head"></h2>
+          <p class="rate-delta" id="ru-score" data-up="1"></p>
+          <p class="rate-line">puzzles solved</p>
+          <p class="game-reveal" id="ru-best"></p>
+          <div class="game-actions">
+            <a class="gbtn" id="ru-again" href="/games/chess-puzzles/?mode=rush" data-g="chess-puzzles">Play again</a>
+            <button type="button" class="btn btn-primary" id="ru-share">Share</button>
+            <a class="gbtn gbtn--ghost" href="/games/chess-puzzles/">Back to rated</a>
+            <span class="game-note" id="ru-share-note"></span>
+          </div>
+          <textarea class="wg-share-text" id="ru-share-text" hidden readonly aria-label="Result text"></textarea>
+        </section>
+        <div class="rate-hud" id="rate-hud">
           <div class="rate-stat"><span class="rate-n" id="cr-rating">1000</span><span class="rate-l" id="cr-tier-top">Learner</span></div>
           <div class="rate-stat"><span class="rate-n rate-n--sm" id="cr-streak-top">0</span><span class="rate-l">Solved in a row</span></div>
           <a class="gbtn gbtn--ghost" href="/games/leaderboard/?g=chess" data-g="leaderboard">Leaderboard</a>
@@ -353,6 +387,8 @@
           </tbody>
         </table>
         <h2>Questions</h2>
+        <h3>What is Rush?</h3>
+        <p>Rush is a three-minute run mode on the same page. Puzzles start easy and get harder. A wrong move costs five seconds and a strike, three strikes end the run, and your score is the number of puzzles solved. Rush does not change your rating, and your best score is kept on this device.</p>
         <h3>How is my puzzle rating worked out?</h3>
         <p>It is an Elo rating, like a chess rating. Each puzzle has a rating from the Lichess database. If you solve a puzzle rated above you, you gain a lot; if you solve one well below you, you gain a little; a miss costs more the easier the puzzle was. Early on, ratings move faster, and they settle after about 20 puzzles.</p>
         <h3>Is this the same as my Lichess puzzle rating?</h3>
@@ -394,14 +430,14 @@
     <script src="/games/core.js?v=41593da540" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
+    <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
     <script src="/games/goals.js?v=e58364109c" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=a52b682b21" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/ratings.js?v=db6e9898b5" defer></script>
     <script src="/games/partners.js?v=e83de79a74" defer></script>
-    <script src="/games/chess-puzzles.js?v=d0dc294402" defer></script>
+    <script src="/games/chess-puzzles.js?v=36f3f34a52" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

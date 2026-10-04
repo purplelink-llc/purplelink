@@ -140,6 +140,14 @@
           "mainEntity": [
             {
               "@type": "Question",
+              "name": "What is the theme of the day?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "From the second week on, each weekday leans toward one idea when the puzzle bank has a match: checkmates on Monday, forks on Tuesday, pins and skewers on Wednesday, endgames on Thursday, back-rank and loose pieces on Friday, sacrifices on Saturday and crushing wins on Sunday. The banner above the board names the theme, and it is a hint about what to look for."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "Where do the chess puzzles come from?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -232,7 +240,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=4bc40a25bd">
+    <link rel="stylesheet" href="/games/games-ui.css?v=e908b93f9b">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -292,6 +300,7 @@
         <p class="game-lede">Daily Chess is a free daily chess tactics puzzle drawn from the Lichess puzzle database. Find the best move, then the follow-up, to win material or deliver checkmate. Monday&#x27;s puzzle is the easiest and Sunday&#x27;s is the hardest.</p>
         <p id="ch-loading" class="games-note">Loading today's puzzle.</p>
         <div id="ch-game" hidden>
+          <p class="wg-twist" id="ch-twist" hidden><strong id="ch-twist-name"></strong> <span id="ch-twist-text"></span></p>
           <p class="ch-turn" id="ch-turn"></p>
           <p class="ch-msg" id="ch-msg" role="status" aria-live="polite"></p>
           <div class="cb-board" id="ch-board" role="group" aria-label="Chess board"></div>
@@ -333,6 +342,8 @@
         <h2>How to play</h2>
         <p>The position shows a game where the opponent has just moved. Find the best move for the side shown at the bottom of the board. Click a piece to see where it can go, then click the square. After a correct move the opponent replies and you continue until the puzzle is won.</p>
         <h2>Questions</h2>
+        <h3>What is the theme of the day?</h3>
+        <p>From the second week on, each weekday leans toward one idea when the puzzle bank has a match: checkmates on Monday, forks on Tuesday, pins and skewers on Wednesday, endgames on Thursday, back-rank and loose pieces on Friday, sacrifices on Saturday and crushing wins on Sunday. The banner above the board names the theme, and it is a hint about what to look for.</p>
         <h3>Where do the chess puzzles come from?</h3>
         <p>From the Lichess puzzle database, which is released under the Creative Commons CC0 licence. Each puzzle starts from a position in a real game, and Lichess rates its difficulty from how many players have solved it.</p>
         <h3>How does the difficulty change through the week?</h3>
@@ -371,13 +382,13 @@
     <script src="/games/core.js?v=41593da540" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
+    <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
     <script src="/games/goals.js?v=e58364109c" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=a52b682b21" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/partners.js?v=e83de79a74" defer></script>
-    <script src="/games/daily-chess.js?v=9c595e3078" defer></script>
+    <script src="/games/daily-chess.js?v=ea10997199" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

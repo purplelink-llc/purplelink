@@ -262,6 +262,13 @@
       if (st.done && !st.won) { for (; st.ply < st.pz.moves.length; st.ply++) st.game.move(parse(st.pz.moves[st.ply])); }
     }
     $("ch-number").textContent = "Puzzle " + (st.idx + 1) + ", rated " + st.pz.rating;
+    var tw = $("ch-twist");
+    if (tw) {
+      var th = raw.th || "";
+      $("ch-twist-name").textContent = th ? "Theme: " + th : "Mixed day";
+      $("ch-twist-text").textContent = th ? "Today's puzzle is one of these. The theme is a hint about the idea to look for." : "Today's puzzle has no single theme.";
+      tw.hidden = false;
+    }
     build(); wire();
     st.focus = st.orient === "w" ? "e2" : "e7";
     $("ch-loading").hidden = true;
