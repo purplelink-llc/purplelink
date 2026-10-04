@@ -292,7 +292,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Overleaf alternatives for Mac: https://purplelink.llc/guides/overleaf-alternative-mac/ — offline LaTeX editors compared, and how to move a project off Overleaf.
 - Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
 - GlobePin vs Polarsteps vs Visited: https://purplelink.llc/guides/globepin-vs-polarsteps/ — comparison of three iOS travel-mapping approaches.
-- Best on-device health apps for iPhone: https://purplelink.llc/guides/best-on-device-health-apps/ — comparison of Apple Health, Bearable, Welltory, and Haea.
+- Best health tracking apps that keep your data on your phone (2026): https://purplelink.llc/guides/best-on-device-health-apps/ — about 30 iPhone health apps compared by App Store privacy label, account, where the data lives and price, with Haea (Purplelink's own, not yet released) disclosed.
 - Convert a LaTeX paper to Word: https://purplelink.llc/guides/latex-to-word/ — step-by-step .tex → .docx for journal submission.
 - Fix common BibTeX errors: https://purplelink.llc/guides/fix-bibtex-errors/ — diagnose and repair the most frequent .bib mistakes.
 - IEEE vs APA vs MLA vs Chicago: https://purplelink.llc/guides/citation-styles-explained/ — how the four major citation styles differ and when to use each.
