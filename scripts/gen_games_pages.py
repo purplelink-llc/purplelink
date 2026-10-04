@@ -3,6 +3,7 @@ from datetime import date
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from games_meta import GAMES as META, HUB as HUBMETA, FOUNDED
+from games_art import art
 SITE = Path(__file__).resolve().parent.parent / "site"
 TODAY = date.today().isoformat()
 ORG = {"@type": "Organization", "@id": "https://purplelink.llc/#organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/"}
@@ -64,6 +65,12 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
         title, desc, og_title = HUBMETA["title"], HUBMETA["desc"], HUBMETA["title"]
         og_image, og_alt = "https://purplelink.llc/assets/og/games-hub.png", "Purplelink's free daily games"
         robots = "index, follow, max-image-preview:large"
+    slug = m["slug"] if m else None
+    main_attr = f' data-g="{slug}"' if slug else ""
+    dock_html = dock(slug) if slug else ""
+    if slug:
+        scripts = [x for x in scripts if x not in ("/games/achievements.js", "/games/confetti.js", "/games/sync.js")]
+        scripts = ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js"] + [x for x in scripts if x != "/games/core.js"]
     ld = json.dumps(jsonld, indent=2)
     ld = "\n".join("    " + l for l in ld.splitlines())
     sc = "\n".join(f'    <script src="{s}"{" defer" if True else ""}></script>' for s in scripts)
@@ -105,6 +112,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
     <link rel="stylesheet" href="/games/games.css">
+    <link rel="stylesheet" href="/games/games-ui.css">
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
 </head>
@@ -119,8 +127,8 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
       </nav>
     </header>
 
-    <main id="main-content" class="games">
-{body}
+    <main id="main-content" class="games"{main_attr}>
+{dock_html}{body}
     </main>
 
 {sc}
@@ -133,6 +141,49 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     p = SITE / path / "index.html"
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(out)
+
+
+ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
+BYSLUG = {m["slug"]: m for m in META.values()}
+TAGLINE = {
+    "linkle": "Five letters, six tries, and a new twist every weekday.",
+    "quadlink": "Four hidden words at once, in nine guesses.",
+    "daily-five": "Five trivia questions, from research to geography.",
+    "daily-photo": "Five travel photographs. Which country is each?",
+    "daily-chess": "A Lichess tactics puzzle, easy on Monday and hard on Sunday.",
+    "sudoku": "One solution, and harder every week of a ten-week season.",
+    "crossword": "A themeless crossword, easy Monday to hard Sunday.",
+    "daily-stars": "A short horoscope for every sign, for entertainment.",
+}
+MINUTES = {"linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
+
+
+def dock(current):
+    items = []
+    for slug in ORDER:
+        m = BYSLUG[slug]
+        cur = ' aria-current="page"' if slug == current else ""
+        items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
+                     f'<span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>')
+    return ('    <nav class="game-dock" aria-label="Daily games">\n'
+            f'      <ul class="dock-list">\n        <li><a class="dock-link dock-all" href="/games/" title="All games">{USE.format("grid")}<span class="dock-name">All games</span></a></li>\n        ' + "\n        ".join(items) + '\n      </ul>\n'
+            '      <div class="dock-tools">\n'
+            '        <span class="dock-chip" id="dock-streak" hidden></span>\n'
+            '        <a class="dock-chip" id="dock-level" href="/games/account/" title="Your level and achievements"></a>\n'
+            f'        <button type="button" class="dock-btn" data-fx-sound aria-pressed="true" aria-label="Sound on. Turn sound off">{USE.format("sound-on")}<span class="fx-label visually-hidden">Sound on</span></button>\n'
+            '      </div>\n    </nav>\n')
+
+
+def tile(slug):
+    m = BYSLUG[slug]
+    return (f'          <a class="tile" data-game="{slug}" data-g="{slug}" href="/games/{slug}/">\n'
+            f'            <span class="tile-art">{art(slug)}<span class="tile-badge">{USE.format("bolt").replace('class="gl"', 'class="gl gl-sm"')}Spotlight</span>'
+            f'<span class="tile-check" aria-hidden="true">{USE.format("check")}</span></span>\n'
+            f'            <span class="tile-body"><h2>{html.escape(m["name"])}</h2><p>{html.escape(TAGLINE[slug])}</p>\n'
+            f'              <span class="tile-foot"><span class="tile-status" data-status>About {MINUTES[slug]} {"minute" if MINUTES[slug] == 1 else "minutes"}</span><span class="tile-go" data-go>Play</span></span></span>\n'
+            f'          </a>\n')
+
 
 def crumbs(*items):
     return {"@type": "BreadcrumbList", "itemListElement": [
@@ -754,74 +805,53 @@ HUB_FAQ = [
     ("Do you track my results?", "Your streaks and results are saved in your own browser. We count anonymous plays and anonymous scores (so we can show how you did against other players) in our own statistics, with no cookies and no third party, and nothing in them identifies you. If you choose to sign in, we also keep your email address, a display name and your saved progress so they follow you between devices; you can delete all of it from the account page at any time."),
     ("Why does a research software site have games?", "Purplelink makes tools for researchers. These are small puzzles for a break between drafts, built by the same person."),
 ]
-HUB_BODY = """      <div class="games-wrap">
-        <section class="games-hero">
-          <p class="eyebrow">Free, daily</p>
-          <h1>Daily games</h1>
-          <p class="game-lede">""" + html.escape(HUBMETA["answer"]) + """</p>
-          <p>Sign in with an email link if you want your streaks and achievements on every device.</p>
-        </section>
-        <section class="hub-today" aria-labelledby="hub-today-h">
-          <div class="hub-today-main">
-            <h2 id="hub-today-h">Today</h2>
-            <p class="hub-count" id="hub-count">Eight puzzles, a few minutes each.</p>
-            <progress id="hub-progress" max="8" value="0" aria-label="Puzzles finished today"></progress>
-            <p class="hub-level" id="hub-level"></p>
-            <p class="games-note">Streak saver: miss one day a week and your streak survives.</p>
+HUB_BODY = """      <div class="games-wrap hub">
+        <header class="hub-top">
+          <div>
+            <h1>Daily games</h1>
+            <p class="hub-date" id="hub-date"></p>
           </div>
-          <a class="btn btn-primary" id="hub-next" href="/games/daily-photo/">Start with a photo</a>
+          <div class="hub-chips">
+            <span class="dock-chip" id="dock-streak" hidden></span>
+            <a class="dock-chip" id="dock-level" href="/games/account/" title="Your level and achievements"></a>
+            <button type="button" class="dock-btn" data-fx-sound aria-pressed="true" aria-label="Sound on. Turn sound off">""" + USE.format("sound-on") + """<span class="fx-label visually-hidden">Sound on</span></button>
+          </div>
+        </header>
+        <p class="game-lede">""" + html.escape(HUBMETA["answer"]) + """</p>
+        <section class="run" aria-labelledby="run-h">
+          <div class="run-ring" id="run-ring">
+            <svg viewBox="0 0 168 168" aria-hidden="true" focusable="false" id="run-svg"></svg>
+            <div class="run-center"><span class="run-count"><span id="run-n">0</span><small>/8</small></span><span class="run-label">done today</span></div>
+          </div>
+          <div class="run-side">
+            <div>
+              <h2 id="run-h">Today's run</h2>
+              <p class="run-line" id="run-line">Finish two puzzles for a Warm-up, four for Steady, all eight for a Full run.</p>
+            </div>
+            <ol class="run-tiers" id="run-tiers" aria-label="Run milestones">
+              <li class="run-tier" data-n="2"><b>Warm-up</b><span>2 puzzles, +20 XP</span></li>
+              <li class="run-tier" data-n="4"><b>Steady</b><span>4 puzzles, +20 XP</span></li>
+              <li class="run-tier" data-n="8"><b>Full run</b><span>All 8, +60 XP</span></li>
+            </ol>
+            <div class="run-actions">
+              <a class="gbtn" id="hub-next" href="/games/daily-photo/" data-g="daily-photo"><span id="hub-next-text">Start with Daily Photo</span></a>
+              <span class="run-line" id="hub-level"></span>
+            </div>
+          </div>
+          <ul class="quests" id="quests" aria-label="Today's quests"></ul>
         </section>
-        <div class="games-grid">
-          <a class="game-card" href="/games/linkle/" data-game="linkle">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-3940-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Linkle</h2>
-            <p>One five-letter word a day, with a new twist each weekday.</p>
-            <span class="game-status" data-status></span>
-          </a>
-          <a class="game-card" href="/games/quadlink/" data-game="quadlink">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-8610-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Quadlink</h2>
-            <p>Four words at once, nine guesses.</p>
-            <span class="game-status" data-status></span>
-          </a>
-          <a class="game-card" href="/games/daily-five/" data-game="daily-five">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-7888-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Five</h2>
-            <p>Five trivia questions, with a few from the world of research and software.</p>
-            <span class="game-status" data-status></span>
-          </a>
-          <a class="game-card" href="/games/daily-photo/" data-game="daily-photo">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-3638-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Photo</h2>
-            <p>Five travel photographs. Which country was each one taken in?</p>
-            <span class="game-status" data-status></span>
-          </a>
-          <a class="game-card" href="/games/daily-chess/" data-game="daily-chess">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-6626-edit-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Chess</h2>
-            <p>A tactics puzzle from the Lichess database, easier on Monday and harder through the week.</p>
-            <span class="game-status" data-status></span>
-          </a>
-          <a class="game-card" href="/games/sudoku/" data-game="sudoku">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-4267-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Sudoku</h2>
-            <p>One solution, and harder every week across a ten-week season.</p>
-            <span class="game-status" data-status></span>
-          </a>
-          <a class="game-card" href="/games/crossword/" data-game="crossword">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-7919-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Crossword</h2>
-            <p>A new themeless crossword every day, easy on Monday and hard on Sunday.</p>
-            <span class="game-status" data-status></span>
-          </a>
-          <a class="game-card" href="/games/daily-stars/" data-game="daily-stars">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-8053-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Stars</h2>
-            <p>A short horoscope for every sign, for entertainment only.</p>
-            <span class="game-status" data-status></span>
-          </a>
-        </div>
-        <p class="games-note"><span id="hub-ach"></span><a href="/games/account/">Your stats, achievements and sign-in</a></p>
+        <div class="tiles">
+""" + "".join(tile(sl) for sl in ORDER) + """        </div>
+        <section class="week" aria-labelledby="week-h">
+          <h2 id="week-h">This week</h2>
+          <p class="week-sub" id="week-sub">Finish two puzzles in a day to earn that day's stamp. Five stamps in a week is worth 50 XP.</p>
+          <ol class="stamps" id="stamps"></ol>
+        </section>
+        <section class="inreach" aria-labelledby="reach-h">
+          <h2 id="reach-h">Within reach</h2>
+          <p class="week-sub"><span id="hub-ach"></span><a href="/games/account/">Your stats, achievements and sign-in</a></p>
+          <ul class="reach-list" id="reach"></ul>
+        </section>
         <div class="games-prose">
           <h2>The daily games at a glance</h2>
           <table class="games-table">
@@ -845,4 +875,4 @@ page("games/",
               {"@type": "ListItem", "position": i + 1, "name": m_["name"], "url": "https://purplelink.llc/" + p_} for i, (p_, m_) in enumerate(META.items())]}},
          faq(HUB_FAQ),
          crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"))]},
-     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/hub.js"])
+     ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js", "/games/hub.js"])

@@ -90,7 +90,8 @@
       try { ok = !!d.test(all, ctx || {}); } catch (e) { ok = false; }
       if (ok) { have[d.id] = ctx && ctx.idx !== undefined ? ctx.idx : 0; fresh.push(d); }
     });
-    if (fresh.length) { G.setGame("ach", have); toast(fresh); }
+    if (fresh.length) { G.setGame("ach", have); toast(fresh); if (window.PLFX) window.setTimeout(function () { window.PLFX.play("ach"); }, 350); }
+    if (window.PLGoals && ctx && ctx.game) window.setTimeout(function () { window.PLGoals.afterResult(ctx); }, 0);   // after the game has saved its own result
     return fresh;
   }
 

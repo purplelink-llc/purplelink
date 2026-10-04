@@ -73,6 +73,14 @@
 
   function parse(uci) { return { from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci.length > 4 ? uci[4] : undefined }; }
 
+  // the sound and a small landing pulse for a move that was just played
+  function moveFx(m) {
+    var FX = window.PLFX; if (!FX) return;
+    FX.play(m.captured ? "capture" : "place");
+    if (m.san && /[+#]/.test(m.san)) window.setTimeout(function () { FX.play("check"); }, 110);
+    var c = cellOf(m.to); if (c) FX.kick(c.querySelector(".cb-piece"), "fx-pop", 200);
+  }
+
   function reply() {
     // the opponent's scripted answer, shown after a short pause so the move can be seen
     st.busy = true;
@@ -81,7 +89,7 @@
       st.last = { from: m.from, to: m.to };
       st.ply += 1;
       st.busy = false;
-      save(); paint();
+      save(); paint(); moveFx(m);
     }, 500);
   }
 
@@ -101,11 +109,13 @@
       save(); paint();
       var bad = cellOf(to);
       if (bad) { bad.setAttribute("data-wrong", "1"); window.setTimeout(function () { bad.removeAttribute("data-wrong"); }, 700); }
+      if (window.PLFX) { window.PLFX.play("bad"); window.PLFX.vibrate(30); window.PLFX.kick($("ch-board"), "fx-shake", 500); }
       return;
     }
     st.last = { from: m.from, to: m.to };
     st.ply += 1;
     say("");
+    paint(); moveFx(m);
     if (st.game.isCheckmate() || st.ply >= st.pz.moves.length) { win(); return; }
     save(); paint();
     reply();

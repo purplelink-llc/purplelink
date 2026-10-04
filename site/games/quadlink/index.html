@@ -215,6 +215,7 @@
     <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
+    <link rel="stylesheet" href="/games/games-ui.css?v=1dddba703d">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -235,7 +236,25 @@
       </nav>
     </header>
 
-    <main id="main-content" class="games">
+    <main id="main-content" class="games" data-g="quadlink">
+    <nav class="game-dock" aria-label="Daily games">
+      <ul class="dock-list">
+        <li><a class="dock-link dock-all" href="/games/" title="All games"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#grid"/></svg><span class="dock-name">All games</span></a></li>
+        <li><a class="dock-link" data-g="linkle" href="/games/linkle/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#linkle"/></svg><span class="dock-name">Linkle</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="quadlink" href="/games/quadlink/" aria-current="page"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#quadlink"/></svg><span class="dock-name">Quadlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="daily-five" href="/games/daily-five/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#daily-five"/></svg><span class="dock-name">Daily Five</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="daily-photo" href="/games/daily-photo/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#daily-photo"/></svg><span class="dock-name">Daily Photo</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="daily-chess" href="/games/daily-chess/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#daily-chess"/></svg><span class="dock-name">Daily Chess</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="sudoku" href="/games/sudoku/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sudoku"/></svg><span class="dock-name">Sudoku</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="crossword" href="/games/crossword/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#crossword"/></svg><span class="dock-name">Daily Crossword</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="daily-stars" href="/games/daily-stars/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#daily-stars"/></svg><span class="dock-name">Daily Stars</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+      </ul>
+      <div class="dock-tools">
+        <span class="dock-chip" id="dock-streak" hidden></span>
+        <a class="dock-chip" id="dock-level" href="/games/account/" title="Your level and achievements"></a>
+        <button type="button" class="dock-btn" data-fx-sound aria-pressed="true" aria-label="Sound on. Turn sound off"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sound-on"/></svg><span class="fx-label visually-hidden">Sound on</span></button>
+      </div>
+    </nav>
       <div class="games-wrap">
         <div class="game-head">
           <h1>Quadlink</h1>
@@ -310,12 +329,15 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=1ec0fafbb1" defer></script>
+    <script src="/games/core.js?v=4f38abed6e" defer></script>
+    <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=5b3ebc28ff" defer></script>
+    <script src="/games/achievements.js?v=3081555ef5" defer></script>
+    <script src="/games/goals.js?v=927ed68d73" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
+    <script src="/games/dock.js?v=f5894cf365" defer></script>
     <script src="/games/config-quadlink.js?v=2e75e0a8f1" defer></script>
-    <script src="/games/wordgame.js?v=841ab29af3" defer></script>
+    <script src="/games/wordgame.js?v=871b4e505a" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

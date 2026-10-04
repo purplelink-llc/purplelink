@@ -178,6 +178,11 @@
     st.cells[st.r][st.c] = ch.toUpperCase();
     delete st.wrong[st.r + "," + st.c];
     if (st.auto && st.cells[st.r][st.c] !== st.sol[st.r][st.c]) st.wrong[st.r + "," + st.c] = 1;
+    var FX = window.PLFX;
+    if (FX) {
+      if (st.wrong[st.r + "," + st.c]) { FX.play("bad"); FX.vibrate(20); FX.kick(cellEl(st.r, st.c), "fx-shake", 400); }
+      else { FX.play("key"); FX.kick(cellEl(st.r, st.c), "fx-pop", 180); }
+    }
     nextInEntry(1);
     afterEdit();
   }
@@ -225,6 +230,7 @@
       : bad ? bad + (bad === 1 ? " letter is" : " letters are") + " wrong, shown in red."
       : (scope === "letter" ? "That letter is correct." : "Every letter entered so far is correct.");
     startClock(); persist(); paint();
+    if (window.PLFX && filled) { window.PLFX.play(bad ? "bad" : "good"); if (bad) window.PLFX.vibrate(20); }
   }
 
   // Auto-check marks a wrong letter the moment it is typed. Like Check, it counts as help.
@@ -243,6 +249,7 @@
     }
   }
   function revealLetter() {
+    if (window.PLFX) window.PLFX.play("reveal");
     if (st.done || st.black[st.r][st.c]) return;
     st.reveals += 1; st.cells[st.r][st.c] = st.sol[st.r][st.c]; delete st.wrong[st.r + "," + st.c];
     afterEdit();
@@ -258,6 +265,7 @@
     afterEdit();
   }
   function revealWord() {
+    if (window.PLFX) window.PLFX.play("reveal");
     var e = currentEntry();
     if (st.done || !e) return;
     st.reveals += 1;

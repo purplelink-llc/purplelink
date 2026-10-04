@@ -217,3 +217,15 @@ test("chess and sudoku progress survives cleanData; junk is dropped", () => {
   const bad = cleanData({ sudoku: { today: { idx: 3, cells: "<script>", done: false } } });
   assert.ok(!bad.sudoku.today.cells);
 });
+
+test("goals sync: whitelisted, bounded, merged without losing XP", () => {
+  const a = cleanData({ goals: { d: { 5: { t: 2, q: 5 }, "x": { t: 9 } }, w: { 0: 1 }, banked: 30 } });
+  assert.deepEqual(Object.keys(a.goals.d), ["5"]);
+  const b = cleanData({ goals: { d: { 5: { t: 3, q: 2 }, 6: { t: 1, q: 0 } }, w: { 1: 1 }, banked: 10 } });
+  const m = mergeData(a, b);
+  assert.deepEqual(m.goals.d["5"], { t: 3, q: 7 });
+  assert.equal(m.goals.d["6"].t, 1);
+  assert.deepEqual(Object.keys(m.goals.w).sort(), ["0", "1"]);
+  assert.equal(m.goals.banked, 30);
+  assert.equal(cleanData({ goals: { d: { 1: { t: 99, q: 99 } } } }).goals.d["1"].t, 3);
+});

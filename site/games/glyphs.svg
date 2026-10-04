@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="0" height="0" aria-hidden="true">
+  <!-- Icon set for /games/. Stroke icons on a 24 grid; colour comes from currentColor. -->
+  <symbol id="linkle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="1.8" y="8" width="5.6" height="8" rx="1.6"/><rect x="9.2" y="8" width="5.6" height="8" rx="1.6" fill="currentColor" fill-opacity=".28"/><rect x="16.6" y="8" width="5.6" height="8" rx="1.6"/>
+  </symbol>
+  <symbol id="quadlink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="7.6" height="7.6" rx="1.8"/><rect x="13.4" y="3" width="7.6" height="7.6" rx="1.8" fill="currentColor" fill-opacity=".28"/><rect x="3" y="13.4" width="7.6" height="7.6" rx="1.8" fill="currentColor" fill-opacity=".28"/><rect x="13.4" y="13.4" width="7.6" height="7.6" rx="1.8"/>
+  </symbol>
+  <symbol id="daily-five" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.4a2.8 2.8 0 1 1 4.2 2.4c-.9.5-1.5 1.1-1.5 2.1"/><circle cx="12" cy="17" r=".5" fill="currentColor"/>
+  </symbol>
+  <symbol id="daily-photo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.6" y="4.6" width="18.8" height="14.8" rx="2.4"/><path d="M2.8 16.6l5.2-5.4 4.2 4.2 3-3 6.2 5.4"/><circle cx="16.4" cy="9" r="1.5"/>
+  </symbol>
+  <symbol id="daily-chess" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="6.6" r="3"/><path d="M9.6 10.8h4.8M10.4 10.8c0 3.2-1.8 4.6-2.6 6.6h8.4c-.8-2-2.6-3.4-2.6-6.6M6.4 20.6h11.2"/>
+  </symbol>
+  <symbol id="sudoku" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2.4"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18" stroke-width="1.2"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/>
+  </symbol>
+  <symbol id="crossword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2.4"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18" stroke-width="1.2"/><rect x="9" y="9" width="6" height="6" fill="currentColor" stroke="none"/><rect x="3.9" y="15.9" width="5.1" height="5.1" fill="currentColor" stroke="none" opacity=".6"/>
+  </symbol>
+  <symbol id="daily-stars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 3.4l1.9 5.2 5.2 1.9-5.2 1.9L10 17.6l-1.9-5.2L2.9 10.5l5.2-1.9z" transform="translate(1.6 1)"/><path d="M19.2 3.2v3.6M17.4 5h3.6" stroke-width="1.5"/><path d="M18.6 16.8v2.8M17.2 18.2h2.8" stroke-width="1.3"/>
+  </symbol>
+  <symbol id="flame" viewBox="0 0 24 24" fill="currentColor"><path d="M12.4 2.4c.3 2.7-.9 4.3-2.4 6C8.5 10 7 11.7 7 14.4c0 3.1 2.2 5.6 5 5.6s5-2.3 5-5.3c0-2-.8-3.4-1.8-4.6-.3 1-.9 1.7-1.6 2 .4-3-.2-6.5-1.2-9.7z"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.6l4.4 4.4L19 7.4"/></symbol>
+  <symbol id="bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13.4 2L5 13.4h5.6L9.6 22 19 9.8h-5.8z"/></symbol>
+  <symbol id="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="grid" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="6" r="1.9"/><circle cx="6" cy="12" r="1.9"/><circle cx="6" cy="18" r="1.9"/><circle cx="12" cy="6" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="12" cy="18" r="1.9"/><circle cx="18" cy="6" r="1.9"/><circle cx="18" cy="12" r="1.9"/><circle cx="18" cy="18" r="1.9"/></symbol>
+  <symbol id="sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.6h3.4L12 5.6v12.8l-4.6-4H4z" fill="currentColor" fill-opacity=".2"/><path d="M15.4 9a4 4 0 0 1 0 6M18 6.6a7.4 7.4 0 0 1 0 10.8"/></symbol>
+  <symbol id="sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.6h3.4L12 5.6v12.8l-4.6-4H4z" fill="currentColor" fill-opacity=".2"/><path d="M16 9.6l4.6 4.8M20.6 9.6L16 14.4"/></symbol>
+  <symbol id="medal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14.4" r="5.4"/><path d="M8.6 9.8L6.4 3.4h4l1.6 3.4M15.4 9.8l2.2-6.4h-4"/></symbol>
+</svg>

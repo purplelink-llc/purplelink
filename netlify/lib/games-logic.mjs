@@ -81,6 +81,12 @@ export function cleanData(data) {
     out.ach = {};
     for (const [k, v] of Object.entries(data.ach).slice(0, 80)) if (/^[a-z0-9-]{2,40}$/.test(k)) out.ach[k] = int(v, 0, 100000);
   }
+  if (isObj(data.goals)) {
+    const g = data.goals, o = { d: {}, w: {}, banked: int(g.banked, 0, 1e6) };
+    if (isObj(g.d)) for (const [k, v] of Object.entries(g.d).slice(0, 90)) if (/^\d{1,5}$/.test(k) && isObj(v)) o.d[k] = { t: int(v.t, 0, 3), q: int(v.q, 0, 15) };
+    if (isObj(g.w)) for (const k of Object.keys(g.w).slice(0, 60)) if (/^\d{1,4}$/.test(k)) o.w[k] = 1;
+    out.goals = o;
+  }
   return out;
 }
 
@@ -155,6 +161,12 @@ export function mergeData(a, b) {
   if (a.ach || b.ach) {
     out.ach = { ...(a.ach || {}) };
     for (const [k, v] of Object.entries(b.ach || {})) out.ach[k] = out.ach[k] !== undefined ? Math.min(out.ach[k], v) : v;
+  }
+  if (a.goals || b.goals) {
+    const x = a.goals || { d: {}, w: {}, banked: 0 }, y = b.goals || { d: {}, w: {}, banked: 0 };
+    const d = { ...x.d };
+    for (const [k, v] of Object.entries(y.d)) d[k] = d[k] ? { t: Math.max(d[k].t, v.t), q: d[k].q | v.q } : v;
+    out.goals = { d, w: { ...x.w, ...y.w }, banked: Math.max(x.banked, y.banked) };
   }
   return out;
 }

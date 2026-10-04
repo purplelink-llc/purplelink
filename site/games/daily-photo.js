@@ -68,6 +68,8 @@
     st.picks[st.cur] = i;
     persist(); show();
     if (window.PLConfetti && isRight(st.cur)) window.PLConfetti.small();
+    var FX = window.PLFX, ok = isRight(st.cur), opts = document.querySelectorAll(".quiz-opt");
+    if (FX) { FX.play(ok ? "good" : "bad"); if (!ok) FX.vibrate(30); FX.kick(opts[i], ok ? "fx-glow" : "fx-shake", 800); }
   }
   function next() {
     if (st.cur < st.rounds.length - 1) { st.cur += 1; show(); return; }

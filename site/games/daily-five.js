@@ -73,6 +73,8 @@
     st.picks[st.cur] = i;
     persist();
     showQuestion();
+    var ok = isRight(st.cur), FX = window.PLFX, btn = $("qz-opts").querySelectorAll(".quiz-opt")[i];
+    if (FX) { FX.play(ok ? "good" : "bad"); if (!ok) FX.vibrate(30); FX.kick(btn, ok ? "fx-glow" : "fx-shake", 800); }
   }
 
   function next() {

@@ -135,6 +135,19 @@
 
   // XP and level are derived from saved progress, so they never drift and need no storage of their own.
   var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword"];
+  // Daily run bonuses: finishing 2, 4 and all 8 puzzles; each quest and the day's spotlight game add 15; a week with
+  // five stamped days adds 50. Stored in all.goals = { d: { day: { t: tier, q: bitmask } }, w: { week: 1 }, banked: xp of pruned days }.
+  var TIER_XP = [0, 20, 40, 100], QUEST_XP = 15, WEEK_XP = 50;
+  function bits(n) { var c = 0; while (n) { c += n & 1; n >>= 1; } return c; }
+  function goalXp(all) {
+    var g = all && all.goals; if (!g) return 0;
+    var xp = g.banked || 0, k;
+    for (k in (g.d || {})) xp += TIER_XP[Math.min(3, g.d[k].t || 0)] + QUEST_XP * bits(g.d[k].q || 0);
+    for (k in (g.w || {})) xp += WEEK_XP;
+    return xp;
+  }
+  var TITLES = ["Newcomer", "Regular", "Solver", "Puzzler", "Tactician", "Wordsmith", "Strategist", "Adept", "Virtuoso", "Sage"];
+  function titleFor(level) { return TITLES[Math.min(TITLES.length - 1, Math.max(0, level - 1))]; }
   function xpOf(all) {
     var xp = 0;
     XP_GAMES.forEach(function (g) {
@@ -142,10 +155,11 @@
       xp += 10 * (s.played || 0) + 5 * (s.won || 0) + 3 * (s.max || 0);
     });
     xp += 25 * Object.keys(all.ach || {}).length;
+    xp += goalXp(all);
     var level = 1;
     while (30 * (level + 1) * level <= xp) level++;
     var floor = 30 * level * (level - 1), ceil = 30 * (level + 1) * level;
-    return { xp: xp, level: level, into: xp - floor, need: ceil - floor };
+    return { xp: xp, level: level, into: xp - floor, need: ceil - floor, title: titleFor(level) };
   }
 
   function saverNote(stats, idx) {
@@ -211,7 +225,7 @@
   return {
     dayIndex: dayIndex, pick: pick, decode: decode, decodeText: decodeText, score: score, mergeKeys: mergeKeys,
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
-    rankFor: rankFor, xpOf: xpOf, saverNote: saverNote, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
+    rankFor: rankFor, xpOf: xpOf, goalXp: goalXp, titleFor: titleFor, TIER_XP: TIER_XP, QUEST_XP: QUEST_XP, WEEK_XP: WEEK_XP, saverNote: saverNote, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
     getGame: getGame, setGame: setGame, all: load, replaceAll: replaceAll, ready: Promise.resolve(),
     submitScore: submitScore, describePercentile: describePercentile, track: track, copyText: copyText,
   };

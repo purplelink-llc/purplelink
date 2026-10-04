@@ -158,17 +158,42 @@
     if (state.done || state.busy || state.current.length >= LEN) return;
     state.current += ch;
     paint();
+    if (window.PLFX) {
+      window.PLFX.play("key");
+      for (var b = 0; b < boardCount(); b++) window.PLFX.kick(tilesOf(b, state.guesses.length)[state.current.length - 1], "fx-pop", 160);
+    }
   }
   function back() {
     if (state.done || state.busy) return;
     state.current = state.current.slice(0, -1);
     paint();
+    if (window.PLFX) window.PLFX.play("back");
   }
   function shake() {
     var wrap = $("wg-boards");
     wrap.classList.remove("wg-shake");
     void wrap.offsetWidth;
     wrap.classList.add("wg-shake");
+    if (window.PLFX) { window.PLFX.play("bad"); window.PLFX.vibrate(30); }
+  }
+  // Turn the newest row over tile by tile, showing each colour as its tile passes edge-on. Returns how long that takes.
+  function flipRow(row) {
+    var FX = window.PLFX;
+    if (!FX || FX.reduced()) return 0;
+    for (var b = 0; b < boardCount(); b++) {
+      var tiles = tilesOf(b, row);
+      for (var t = 0; t < tiles.length; t++) (function (tile, t) {
+        var s = tile.getAttribute("data-s");
+        if (!s) return;
+        tile.removeAttribute("data-s");
+        tile.classList.add("wg-filled");
+        tile.style.animationDelay = (t * 110) + "ms";
+        FX.kick(tile, "fx-flip", 900);
+        window.setTimeout(function () { tile.setAttribute("data-s", s); tile.classList.remove("wg-filled"); }, t * 110 + 250);
+        if (b === 0) window.setTimeout(function () { FX.play("flip", t); }, t * 110 + 220);
+      })(tiles[t], t);
+    }
+    return LEN * 110 + 450;
   }
   function submit() {
     if (state.done || state.busy) return;
@@ -188,7 +213,15 @@
     persist();
     paint();
     announce(g);
-    if (over) finish(true);
+    var wait = flipRow(state.guesses.length - 1);
+    if (wait) {
+      state.busy = true;
+      window.setTimeout(function () {
+        state.busy = false;
+        if (state.won && window.PLFX) for (var b = 0; b < boardCount(); b++) if (solvedAt(b) === state.guesses.length - 1) window.PLFX.wave(tilesOf(b, state.guesses.length - 1), "fx-hop", 70, 700);
+        if (over) finish(true);
+      }, wait);
+    } else if (over) finish(true);
   }
 
   function announce(g) {

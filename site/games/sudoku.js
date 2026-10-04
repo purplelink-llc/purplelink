@@ -93,7 +93,29 @@
         if (st.auto && d !== st.sol[i]) st.wrong[i] = 1;
       }
     }
-    persist(); paint(); checkDone();
+    persist(); paint(); fx(i, d); checkDone();
+  }
+
+  // Sound and motion for a digit: a clack, a shake for a clash, and a ripple when a row, column or box is complete.
+  function fx(i, d) {
+    var FX = window.PLFX; if (!FX) return;
+    if (st.noteMode) { FX.play("key"); return; }
+    if (!d) { FX.play("back"); return; }
+    var cells = $("sd-grid").children;
+    FX.kick(cells[i], "fx-pop", 200);
+    if (conflicts()[i] || st.wrong[i]) { FX.play("bad"); FX.vibrate(25); FX.kick(cells[i], "fx-shake", 420); return; }
+    FX.play("place");
+    var r = Math.floor(i / 9), c = i % 9, b0 = Math.floor(r / 3) * 27 + Math.floor(c / 3) * 3, row = [], col = [], box = [], k;
+    for (k = 0; k < 9; k++) { row.push(r * 9 + k); col.push(k * 9 + c); box.push(b0 + Math.floor(k / 3) * 9 + (k % 3)); }
+    var any = false;
+    [row, col, box].forEach(function (u) {
+      var seen = {};
+      if (u.every(function (x) { seen[st.cells[x]] = 1; return st.cells[x]; }) && Object.keys(seen).length === 9) {
+        any = true;
+        FX.wave(u.map(function (x) { return cells[x]; }), "fx-flash", 45, 600);
+      }
+    });
+    if (any) window.setTimeout(function () { FX.play("unit"); }, 140);
   }
 
   function checkDone() {
@@ -109,6 +131,7 @@
     list.forEach(function (i) { delete st.wrong[i]; if (!st.cells[i] || st.given[i]) return; filled++; if (st.cells[i] !== st.sol[i]) { st.wrong[i] = 1; bad++; } });
     $("sd-status").textContent = !filled ? "Nothing entered to check yet." : bad ? bad + (bad === 1 ? " square is" : " squares are") + " wrong, shown in red." : (scope === "cell" ? "That square is correct." : "Everything entered so far is correct.");
     startClock(); persist(); paint();
+    if (window.PLFX && filled) { window.PLFX.play(bad ? "bad" : "good"); if (bad) window.PLFX.vibrate(25); }
   }
   function setAuto(on) {
     st.auto = on; var s = G.getGame(NAME); s.auto = on; G.setGame(NAME, s);

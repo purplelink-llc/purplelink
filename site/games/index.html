@@ -157,6 +157,7 @@
     <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
+    <link rel="stylesheet" href="/games/games-ui.css?v=1dddba703d">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -178,74 +179,93 @@
     </header>
 
     <main id="main-content" class="games">
-      <div class="games-wrap">
-        <section class="games-hero">
-          <p class="eyebrow">Free, daily</p>
-          <h1>Daily games</h1>
-          <p class="game-lede">Purplelink&#x27;s daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account, and there are no third-party ads.</p>
-          <p>Sign in with an email link if you want your streaks and achievements on every device.</p>
-        </section>
-        <section class="hub-today" aria-labelledby="hub-today-h">
-          <div class="hub-today-main">
-            <h2 id="hub-today-h">Today</h2>
-            <p class="hub-count" id="hub-count">Eight puzzles, a few minutes each.</p>
-            <progress id="hub-progress" max="8" value="0" aria-label="Puzzles finished today"></progress>
-            <p class="hub-level" id="hub-level"></p>
-            <p class="games-note">Streak saver: miss one day a week and your streak survives.</p>
+      <div class="games-wrap hub">
+        <header class="hub-top">
+          <div>
+            <h1>Daily games</h1>
+            <p class="hub-date" id="hub-date"></p>
           </div>
-          <a class="btn btn-primary" id="hub-next" href="/games/daily-photo/">Start with a photo</a>
+          <div class="hub-chips">
+            <span class="dock-chip" id="dock-streak" hidden></span>
+            <a class="dock-chip" id="dock-level" href="/games/account/" title="Your level and achievements"></a>
+            <button type="button" class="dock-btn" data-fx-sound aria-pressed="true" aria-label="Sound on. Turn sound off"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sound-on"/></svg><span class="fx-label visually-hidden">Sound on</span></button>
+          </div>
+        </header>
+        <p class="game-lede">Purplelink&#x27;s daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account, and there are no third-party ads.</p>
+        <section class="run" aria-labelledby="run-h">
+          <div class="run-ring" id="run-ring">
+            <svg viewBox="0 0 168 168" aria-hidden="true" focusable="false" id="run-svg"></svg>
+            <div class="run-center"><span class="run-count"><span id="run-n">0</span><small>/8</small></span><span class="run-label">done today</span></div>
+          </div>
+          <div class="run-side">
+            <div>
+              <h2 id="run-h">Today's run</h2>
+              <p class="run-line" id="run-line">Finish two puzzles for a Warm-up, four for Steady, all eight for a Full run.</p>
+            </div>
+            <ol class="run-tiers" id="run-tiers" aria-label="Run milestones">
+              <li class="run-tier" data-n="2"><b>Warm-up</b><span>2 puzzles, +20 XP</span></li>
+              <li class="run-tier" data-n="4"><b>Steady</b><span>4 puzzles, +20 XP</span></li>
+              <li class="run-tier" data-n="8"><b>Full run</b><span>All 8, +60 XP</span></li>
+            </ol>
+            <div class="run-actions">
+              <a class="gbtn" id="hub-next" href="/games/daily-photo/" data-g="daily-photo"><span id="hub-next-text">Start with Daily Photo</span></a>
+              <span class="run-line" id="hub-level"></span>
+            </div>
+          </div>
+          <ul class="quests" id="quests" aria-label="Today's quests"></ul>
         </section>
-        <div class="games-grid">
-          <a class="game-card" href="/games/linkle/" data-game="linkle">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-3940-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Linkle</h2>
-            <p>One five-letter word a day, with a new twist each weekday.</p>
-            <span class="game-status" data-status></span>
+        <div class="tiles">
+          <a class="tile" data-game="linkle" data-g="linkle" href="/games/linkle/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a1" x="22" y="22" width="28" height="28" rx="6"/><rect class="a2" x="54" y="22" width="28" height="28" rx="6"/><rect class="a3" x="87.5" y="23.5" width="25" height="25" rx="6"/><rect class="a3" x="119.5" y="23.5" width="25" height="25" rx="6"/><rect class="a3" x="151.5" y="23.5" width="25" height="25" rx="6"/><rect class="a2" x="22" y="54" width="28" height="28" rx="6"/><rect class="a2" x="54" y="54" width="28" height="28" rx="6"/><rect class="a1" x="86" y="54" width="28" height="28" rx="6"/><rect class="a3" x="119.5" y="55.5" width="25" height="25" rx="6"/><rect class="a3" x="151.5" y="55.5" width="25" height="25" rx="6"/><rect class="a1" x="22" y="86" width="28" height="28" rx="6"/><rect class="a1" x="54" y="86" width="28" height="28" rx="6"/><rect class="a1" x="86" y="86" width="28" height="28" rx="6"/><rect class="a1" x="118" y="86" width="28" height="28" rx="6"/><rect class="a1" x="150" y="86" width="28" height="28" rx="6"/><g class="mv"><rect class="a5" x="22" y="118" width="28" height="8" rx="4"/><rect class="a5" x="56" y="118" width="12" height="8" rx="4" opacity=".6"/></g></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Linkle</h2><p>Five letters, six tries, and a new twist every weekday.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 3 minutes</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
-          <a class="game-card" href="/games/quadlink/" data-game="quadlink">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-8610-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Quadlink</h2>
-            <p>Four words at once, nine guesses.</p>
-            <span class="game-status" data-status></span>
+          <a class="tile" data-game="quadlink" data-g="quadlink" href="/games/quadlink/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a1" x="20" y="14" width="17" height="17" rx="3.5"/><rect class="a2" x="39" y="14" width="17" height="17" rx="3.5"/><rect class="a3" x="59" y="15" width="15" height="15" rx="3.5"/><rect class="a1" x="20" y="33" width="17" height="17" rx="3.5"/><rect class="a3" x="40" y="34" width="15" height="15" rx="3.5"/><rect class="a3" x="59" y="34" width="15" height="15" rx="3.5"/><rect class="a3" x="21" y="53" width="15" height="15" rx="3.5"/><rect class="a3" x="40" y="53" width="15" height="15" rx="3.5"/><rect class="a3" x="59" y="53" width="15" height="15" rx="3.5"/><rect class="a3" x="105" y="15" width="15" height="15" rx="3.5"/><rect class="a3" x="124" y="15" width="15" height="15" rx="3.5"/><rect class="a3" x="143" y="15" width="15" height="15" rx="3.5"/><rect class="a2" x="104" y="33" width="17" height="17" rx="3.5"/><rect class="a1" x="123" y="33" width="17" height="17" rx="3.5"/><rect class="a2" x="142" y="33" width="17" height="17" rx="3.5"/><rect class="a3" x="105" y="53" width="15" height="15" rx="3.5"/><rect class="a3" x="124" y="53" width="15" height="15" rx="3.5"/><rect class="a3" x="143" y="53" width="15" height="15" rx="3.5"/><rect class="a3" x="21" y="77" width="15" height="15" rx="3.5"/><rect class="a1" x="39" y="76" width="17" height="17" rx="3.5"/><rect class="a3" x="59" y="77" width="15" height="15" rx="3.5"/><rect class="a3" x="21" y="96" width="15" height="15" rx="3.5"/><rect class="a2" x="39" y="95" width="17" height="17" rx="3.5"/><rect class="a3" x="59" y="96" width="15" height="15" rx="3.5"/><rect class="a1" x="20" y="114" width="17" height="17" rx="3.5"/><rect class="a1" x="39" y="114" width="17" height="17" rx="3.5"/><rect class="a1" x="58" y="114" width="17" height="17" rx="3.5"/><rect class="a2" x="104" y="76" width="17" height="17" rx="3.5"/><rect class="a2" x="123" y="76" width="17" height="17" rx="3.5"/><rect class="a2" x="142" y="76" width="17" height="17" rx="3.5"/><rect class="a3" x="105" y="96" width="15" height="15" rx="3.5"/><rect class="a3" x="124" y="96" width="15" height="15" rx="3.5"/><rect class="a3" x="143" y="96" width="15" height="15" rx="3.5"/><rect class="a1" x="104" y="114" width="17" height="17" rx="3.5"/><rect class="a2" x="123" y="114" width="17" height="17" rx="3.5"/><rect class="a3" x="143" y="115" width="15" height="15" rx="3.5"/></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Quadlink</h2><p>Four hidden words at once, in nine guesses.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 5 minutes</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
-          <a class="game-card" href="/games/daily-five/" data-game="daily-five">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-7888-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Five</h2>
-            <p>Five trivia questions, with a few from the world of research and software.</p>
-            <span class="game-status" data-status></span>
+          <a class="tile" data-game="daily-five" data-g="daily-five" href="/games/daily-five/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><circle class="a2" cx="100" cy="58" r="40"/><g class="mv"><path class="a6" d="M85 50c0-9 7-15 16-15 9 0 16 6 16 14 0 12-16 12-16 25"/></g><circle class="a1" cx="101" cy="86" r="5.5"/><circle class="a1" cx="60" cy="121" r="6"/><circle class="a1" cx="80" cy="121" r="6"/><circle class="a1" cx="100" cy="121" r="6"/><circle class="a5" cx="120" cy="121" r="6" opacity=".55"/><circle class="a5" cx="140" cy="121" r="6" opacity=".55"/></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Daily Five</h2><p>Five trivia questions, from research to geography.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 2 minutes</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
-          <a class="game-card" href="/games/daily-photo/" data-game="daily-photo">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-3638-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Photo</h2>
-            <p>Five travel photographs. Which country was each one taken in?</p>
-            <span class="game-status" data-status></span>
+          <a class="tile" data-game="daily-photo" data-g="daily-photo" href="/games/daily-photo/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a2" x="24" y="18" width="152" height="104" rx="12"/><circle class="a5" cx="140" cy="48" r="13"/><path class="a1" d="M24 112l42-46 30 30 22-22 58 50v10a12 12 0 0 1-12 12H36a12 12 0 0 1-12-12z"/><path class="a4" opacity=".28" d="M96 96l22-22 58 50v-4L118 74z"/><g class="mv"><path class="a4" d="M158 74c-9 0-16 7-16 16 0 12 16 26 16 26s16-14 16-26c0-9-7-16-16-16z"/><circle class="a5" cx="158" cy="90" r="6"/></g></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Daily Photo</h2><p>Five travel photographs. Which country is each?</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 2 minutes</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
-          <a class="game-card" href="/games/daily-chess/" data-game="daily-chess">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-6626-edit-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Chess</h2>
-            <p>A tactics puzzle from the Lichess database, easier on Monday and harder through the week.</p>
-            <span class="game-status" data-status></span>
+          <a class="tile" data-game="daily-chess" data-g="daily-chess" href="/games/daily-chess/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a2" x="0" y="0" width="25" height="28" opacity=".5"/><rect class="a2" x="50" y="0" width="25" height="28" opacity=".5"/><rect class="a2" x="100" y="0" width="25" height="28" opacity=".5"/><rect class="a2" x="150" y="0" width="25" height="28" opacity=".5"/><rect class="a2" x="25" y="28" width="25" height="28" opacity=".5"/><rect class="a2" x="75" y="28" width="25" height="28" opacity=".5"/><rect class="a2" x="125" y="28" width="25" height="28" opacity=".5"/><rect class="a2" x="175" y="28" width="25" height="28" opacity=".5"/><rect class="a2" x="0" y="56" width="25" height="28" opacity=".5"/><rect class="a2" x="50" y="56" width="25" height="28" opacity=".5"/><rect class="a2" x="100" y="56" width="25" height="28" opacity=".5"/><rect class="a2" x="150" y="56" width="25" height="28" opacity=".5"/><rect class="a2" x="25" y="84" width="25" height="28" opacity=".5"/><rect class="a2" x="75" y="84" width="25" height="28" opacity=".5"/><rect class="a2" x="125" y="84" width="25" height="28" opacity=".5"/><rect class="a2" x="175" y="84" width="25" height="28" opacity=".5"/><rect class="a2" x="0" y="112" width="25" height="28" opacity=".5"/><rect class="a2" x="50" y="112" width="25" height="28" opacity=".5"/><rect class="a2" x="100" y="112" width="25" height="28" opacity=".5"/><rect class="a2" x="150" y="112" width="25" height="28" opacity=".5"/><g class="mv"><path class="a4" d="M70 112h60v-10H70zM76 100h48l-5-34h-38zM68 66h64V48h-12v8h-10v-8h-16v8H80v-8H68z"/><rect class="a1" x="62" y="112" width="76" height="12" rx="4"/></g><circle class="a5" cx="158" cy="40" r="7" opacity=".9"/></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Daily Chess</h2><p>A Lichess tactics puzzle, easy on Monday and hard on Sunday.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 3 minutes</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
-          <a class="game-card" href="/games/sudoku/" data-game="sudoku">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-4267-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Sudoku</h2>
-            <p>One solution, and harder every week across a ten-week season.</p>
-            <span class="game-status" data-status></span>
+          <a class="tile" data-game="sudoku" data-g="sudoku" href="/games/sudoku/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a2" x="42" y="14" width="116" height="116" rx="10"/><rect class="a1" x="54.4" y="14" width="1" height="116"/><rect class="a1" x="42" y="26.4" width="116" height="1"/><rect class="a1" x="67.3" y="14" width="1" height="116"/><rect class="a1" x="42" y="39.3" width="116" height="1"/><rect class="a1" x="79.2" y="14" width="3" height="116"/><rect class="a1" x="42" y="51.2" width="116" height="3"/><rect class="a1" x="93.1" y="14" width="1" height="116"/><rect class="a1" x="42" y="65.1" width="116" height="1"/><rect class="a1" x="106.0" y="14" width="1" height="116"/><rect class="a1" x="42" y="78.0" width="116" height="1"/><rect class="a1" x="117.8" y="14" width="3" height="116"/><rect class="a1" x="42" y="89.8" width="116" height="3"/><rect class="a1" x="131.7" y="14" width="1" height="116"/><rect class="a1" x="42" y="103.7" width="116" height="1"/><rect class="a1" x="144.6" y="14" width="1" height="116"/><rect class="a1" x="42" y="116.6" width="116" height="1"/><text class="a4" x="48.4" y="23.6" text-anchor="middle" font-size="10">5</text><text class="a4" x="100.0" y="23.6" text-anchor="middle" font-size="10">7</text><text class="a4" x="74.2" y="36.5" text-anchor="middle" font-size="10">3</text><text class="a4" x="125.7" y="49.4" text-anchor="middle" font-size="10">8</text><text class="a4" x="61.3" y="62.3" text-anchor="middle" font-size="10">4</text><text class="a4" x="100.0" y="75.2" text-anchor="middle" font-size="10">1</text><text class="a4" x="138.6" y="75.2" text-anchor="middle" font-size="10">6</text><text class="a4" x="112.9" y="88.0" text-anchor="middle" font-size="10">9</text><text class="a4" x="74.2" y="100.9" text-anchor="middle" font-size="10">2</text><text class="a4" x="125.7" y="113.8" text-anchor="middle" font-size="10">5</text><text class="a4" x="87.1" y="126.7" text-anchor="middle" font-size="10">7</text><text class="a4" x="151.5" y="126.7" text-anchor="middle" font-size="10">3</text><text class="a4" x="61.3" y="49.4" text-anchor="middle" font-size="10">6</text><text class="a4" x="138.6" y="100.9" text-anchor="middle" font-size="10">4</text><g class="mv"><rect class="a3" x="42" y="14" width="116" height="116" rx="10"/></g></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Sudoku</h2><p>One solution, and harder every week of a ten-week season.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 12 minutes</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
-          <a class="game-card" href="/games/crossword/" data-game="crossword">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-7919-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Crossword</h2>
-            <p>A new themeless crossword every day, easy on Monday and hard on Sunday.</p>
-            <span class="game-status" data-status></span>
+          <a class="tile" data-game="crossword" data-g="crossword" href="/games/crossword/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a2" x="16.0" y="22.0" width="24" height="19.5" rx="3"/><rect class="a2" x="41.5" y="22.0" width="24" height="19.5" rx="3"/><rect class="a2" x="67.0" y="22.0" width="24" height="19.5" rx="3"/><rect class="a1" x="92.5" y="22.0" width="24" height="19.5" rx="3"/><rect class="a2" x="118.0" y="22.0" width="24" height="19.5" rx="3"/><rect class="a2" x="143.5" y="22.0" width="24" height="19.5" rx="3"/><rect class="a2" x="169.0" y="22.0" width="24" height="19.5" rx="3"/><rect class="a2" x="16.0" y="42.5" width="24" height="19.5" rx="3"/><rect class="a1" x="41.5" y="42.5" width="24" height="19.5" rx="3"/><rect class="a1" x="67.0" y="42.5" width="24" height="19.5" rx="3"/><rect class="a2" x="92.5" y="42.5" width="24" height="19.5" rx="3"/><rect class="a1" x="118.0" y="42.5" width="24" height="19.5" rx="3"/><rect class="a2" x="143.5" y="42.5" width="24" height="19.5" rx="3"/><rect class="a2" x="169.0" y="42.5" width="24" height="19.5" rx="3"/><rect class="a1" x="16.0" y="63.0" width="24" height="19.5" rx="3"/><rect class="a2" x="41.5" y="63.0" width="24" height="19.5" rx="3"/><rect class="a2" x="67.0" y="63.0" width="24" height="19.5" rx="3"/><rect class="a2" x="92.5" y="63.0" width="24" height="19.5" rx="3"/><rect class="a2" x="118.0" y="63.0" width="24" height="19.5" rx="3"/><rect class="a1" x="143.5" y="63.0" width="24" height="19.5" rx="3"/><rect class="a1" x="169.0" y="63.0" width="24" height="19.5" rx="3"/><rect class="a2" x="16.0" y="83.5" width="24" height="19.5" rx="3"/><rect class="a2" x="41.5" y="83.5" width="24" height="19.5" rx="3"/><rect class="a1" x="67.0" y="83.5" width="24" height="19.5" rx="3"/><rect class="a2" x="92.5" y="83.5" width="24" height="19.5" rx="3"/><rect class="a2" x="118.0" y="83.5" width="24" height="19.5" rx="3"/><rect class="a2" x="143.5" y="83.5" width="24" height="19.5" rx="3"/><rect class="a2" x="169.0" y="83.5" width="24" height="19.5" rx="3"/><rect class="a2" x="16.0" y="104.0" width="24" height="19.5" rx="3"/><rect class="a2" x="41.5" y="104.0" width="24" height="19.5" rx="3"/><rect class="a2" x="67.0" y="104.0" width="24" height="19.5" rx="3"/><rect class="a2" x="92.5" y="104.0" width="24" height="19.5" rx="3"/><rect class="a1" x="118.0" y="104.0" width="24" height="19.5" rx="3"/><rect class="a2" x="143.5" y="104.0" width="24" height="19.5" rx="3"/><rect class="a1" x="169.0" y="104.0" width="24" height="19.5" rx="3"/><text class="a4" x="18.0" y="31.0" font-size="7">1</text><text class="a4" x="94.5" y="51.5" font-size="7">3</text><text class="a4" x="43.5" y="72.0" font-size="7">4</text><text class="a4" x="94.5" y="92.5" font-size="7">5</text><text class="a4" x="18.0" y="113.0" font-size="7">6</text><g class="mv"><rect class="a5" x="41.5" y="22" width="22" height="19" rx="3" opacity=".9"/><text class="a4" x="52.5" y="37" font-size="14" text-anchor="middle">A</text></g></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Daily Crossword</h2><p>A themeless crossword, easy Monday to hard Sunday.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 10 minutes</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
-          <a class="game-card" href="/games/daily-stars/" data-game="daily-stars">
-            <img class="game-card-art" src="/assets/photography/hub/dsc-8053-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
-            <h2>Daily Stars</h2>
-            <p>A short horoscope for every sign, for entertainment only.</p>
-            <span class="game-status" data-status></span>
+          <a class="tile" data-game="daily-stars" data-g="daily-stars" href="/games/daily-stars/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><circle class="a2" cx="70" cy="68" r="38"/><circle class="a1" cx="86" cy="56" r="34"/><g class="mv"><path class="a5" d="M150 21L154.76 33.24L167 38L154.76 42.76L150 55L145.24 42.76L133 38L145.24 33.24Z"/></g><g class="mv2"><path class="a2" d="M142 88L144.8 95.2L152 98L144.8 100.8L142 108L139.2 100.8L132 98L139.2 95.2Z"/><path class="a5" d="M36 21L37.96 26.04L43 28L37.96 29.96L36 35L34.04 29.96L29 28L34.04 26.04Z"/></g><circle class="a5" cx="108" cy="116" r="2.8"/><circle class="a5" cx="174" cy="72" r="2.6"/><circle class="a5" cx="24" cy="104" r="2.4"/></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Daily Stars</h2><p>A short horoscope for every sign, for entertainment.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 1 minute</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
         </div>
-        <p class="games-note"><span id="hub-ach"></span><a href="/games/account/">Your stats, achievements and sign-in</a></p>
+        <section class="week" aria-labelledby="week-h">
+          <h2 id="week-h">This week</h2>
+          <p class="week-sub" id="week-sub">Finish two puzzles in a day to earn that day's stamp. Five stamps in a week is worth 50 XP.</p>
+          <ol class="stamps" id="stamps"></ol>
+        </section>
+        <section class="inreach" aria-labelledby="reach-h">
+          <h2 id="reach-h">Within reach</h2>
+          <p class="week-sub"><span id="hub-ach"></span><a href="/games/account/">Your stats, achievements and sign-in</a></p>
+          <ul class="reach-list" id="reach"></ul>
+        </section>
         <div class="games-prose">
           <h2>The daily games at a glance</h2>
           <table class="games-table">
@@ -275,10 +295,14 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=1ec0fafbb1" defer></script>
+    <script src="/games/core.js?v=4f38abed6e" defer></script>
+    <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=5b3ebc28ff" defer></script>
-    <script src="/games/hub.js?v=4dd7068161" defer></script>
+    <script src="/games/achievements.js?v=3081555ef5" defer></script>
+    <script src="/games/goals.js?v=927ed68d73" defer></script>
+    <script src="/games/confetti.js?v=c90899c137" defer></script>
+    <script src="/games/dock.js?v=f5894cf365" defer></script>
+    <script src="/games/hub.js?v=835eacfafc" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

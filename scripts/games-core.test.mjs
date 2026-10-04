@@ -93,12 +93,22 @@ test("streak saver forgives one missed day a week", () => {
 });
 
 test("xpOf and levels", () => {
-  assert.deepEqual(JSON.parse(JSON.stringify(G.xpOf({}))), { xp: 0, level: 1, into: 0, need: 60 });
+  assert.deepEqual(JSON.parse(JSON.stringify(G.xpOf({}))), { xp: 0, level: 1, into: 0, need: 60, title: "Newcomer" });
   const all = { linkle: { stats: { played: 10, won: 8, max: 5 } }, ach: { a: 1, b: 2 } };
   const r = G.xpOf(all);   // 100 + 40 + 15 + 50 = 205
   assert.equal(r.xp, 205);
   assert.equal(r.level, 3);   // level 3 starts at 180
   assert.equal(r.into, 25);
+});
+
+test("daily run bonuses count toward XP and survive pruning", () => {
+  const goals = { d: { 3: { t: 2, q: 0b0101 }, 4: { t: 3, q: 0b1111 } }, w: { 0: 1 }, banked: 10 };
+  // day 3: 40 + 2*15, day 4: 100 + 4*15, week 50, banked 10
+  assert.equal(G.goalXp({ goals }), 40 + 30 + 100 + 60 + 50 + 10);
+  assert.equal(G.goalXp({}), 0);
+  assert.equal(G.xpOf({ goals }).xp, G.goalXp({ goals }));
+  assert.equal(G.titleFor(1), "Newcomer");
+  assert.equal(G.titleFor(99), "Sage");
 });
 
 test("rankFor climbs the ladder", () => {

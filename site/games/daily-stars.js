@@ -32,9 +32,10 @@
     var s = G.getGame("daily-stars");
     s.sign = sign;
     var idx = G.dayIndex(new Date(), "2026-10-04");
+    var firstToday = (s.viewed || []).indexOf(idx) < 0;
     s.viewed = (s.viewed || []).filter(function (x) { return x !== idx; }).concat([idx]).slice(-120);
     G.setGame("daily-stars", s);
-    if (window.PLAch) window.PLAch.check({ game: "daily-stars", idx: idx });
+    if (window.PLAch) window.PLAch.check({ game: "daily-stars", idx: idx, fresh: firstToday });
     if (!tracked) { tracked = true; G.track("game_start", "daily-stars"); }
   }
 
