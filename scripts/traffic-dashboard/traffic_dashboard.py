@@ -3533,7 +3533,7 @@ def metrics_block(m: dict | None) -> str:
     ltv = f"${m['ltv']:,.2f}" if m["ltv"] is not None else "—"
     return f"""
 <section class="sales metrics">
-  <h2>Revenue metrics</h2>
+  <h2>Revenue metrics &middot; card sales (Stripe) and GlobePin Pro</h2>
   <div class="metric-tiles">{tiles_html}</div>
   <h3>Revenue per week</h3>
   {weekly_chart(m['weeks'], m['weekly'])}
@@ -4267,6 +4267,11 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
         for key, label, _c in REVENUE_SOURCES
     )
     monthly_totals = {m: sum(series[k].get(m, 0.0) for k, _l, _c in REVENUE_SOURCES) for m in months}
+    last_month_fig = ""
+    if len(months) >= 2:
+        prev = months[-2]
+        last_month_fig = (f"<div><span class=\"sales-figure-label\">Last month ({dt.datetime.strptime(prev, '%Y-%m').strftime('%B')})</span>"
+                          f"<span class=\"sales-secondary\">${monthly_totals[prev]:,.2f}</span></div>")
     proj = project_revenue(monthly_totals, months)
     if proj.get("insufficient"):
         proj_note = (f"Not projecting future months yet: {proj['have']} real month(s) of revenue "
@@ -4287,6 +4292,7 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
       <span class="sales-figure-label">This month so far</span>
       <span class="sales-big">${this_month_total:,.2f}</span>
     </div>
+    {last_month_fig}
   </div>
   <div class="sales-split">{chips}</div>
   {revenue_chart(months, series, proj)}
@@ -4303,6 +4309,226 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
 </section>"""
 
 
+
+# ---------------------------------------------------------------- navigation
+#
+# The page grew into one long scroll. render() now files each block under a tab
+# (Overview, Money, Ads, Apps, one per site) and a small script adds: tab
+# switching with the choice remembered, click-to-collapse headings, a filter box
+# that searches every tab, and expand/collapse all. With JavaScript off the
+# blocks all show, in the old order, so nothing is hidden by the script's absence.
+
+NAV_CSS = """
+.topnav{position:sticky;top:0;z-index:5;margin:0 -4px 22px;padding:10px 4px;background:var(--bg);
+  border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.topnav .tabs{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 auto}
+.topnav a.tab{padding:6px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);
+  text-decoration:none;font-size:14px;white-space:nowrap}
+.topnav a.tab:hover{border-color:var(--purple);color:var(--ink)}
+.topnav a.tab.on{background:var(--purple);border-color:var(--purple);color:oklch(18% 0.06 310);font-weight:640}
+.topnav .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex:0 1 auto;max-width:100%}
+.topnav input[type=search]{font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);width:min(240px,46vw)}
+.topnav input[type=search]:focus{outline:2px solid var(--purple);outline-offset:1px}
+.topnav button{font:inherit;font-size:13px;padding:6px 12px;white-space:nowrap;border-radius:999px;border:1px solid var(--line);
+  background:transparent;color:var(--muted);cursor:pointer}
+.topnav button:hover{border-color:var(--purple);color:var(--ink)}
+.topnav .count{font-size:13px;color:var(--muted);min-width:5.5em}
+.js [data-panel]:not(.active){display:none}
+[data-panel] > h2.panel-title{display:none}
+.js.all [data-panel]{display:block}
+.js.all [data-panel] > h2.panel-title{display:block;margin:30px 0 14px;font-size:18px;color:var(--ink);
+  padding-bottom:6px;border-bottom:1px solid var(--line)}
+.js h2.fold,.js .sales > h2{cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none}
+.js h2.fold::before,.js .sales > h2::before{content:"";width:0;height:0;flex:none;border-left:6px solid var(--muted);
+  border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .15s}
+.js .fold-block:not(.collapsed) > h2.fold::before,.js .sales:not(.collapsed) > h2::before{transform:rotate(90deg)}
+.js .collapsed > :not(h2){display:none}
+.js .collapsed > h2{margin-bottom:0}
+.hidden-by-filter{display:none!important}
+.embed{width:100%;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);min-height:480px;display:block}
+.embed-meta{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+.embed-meta code{font-size:.8rem}
+.embed-meta a{color:var(--purple)}
+.glance{width:100%;border-collapse:collapse;font-size:.92rem}
+.glance th{text-align:left;font-weight:600;color:var(--muted);font-size:.78rem;padding:6px 10px 6px 0;
+  border-bottom:1px solid var(--line)}
+.glance td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line)}
+.glance td.num,.glance th.num{text-align:right;font-variant-numeric:tabular-nums}
+.site-notes{background:var(--panel);border:1px solid var(--purple-soft);border-radius:var(--radius);padding:16px 22px;margin:0 0 22px}
+.site-notes h2{margin:0 0 6px}
+.site-notes ul{margin:6px 0 0;padding-left:1.1em}
+.site-notes li{margin:4px 0}
+.site-notes details{margin-top:10px;color:var(--muted);font-size:.9rem}
+.site-notes summary{cursor:pointer}
+@media (prefers-reduced-motion:reduce){.js h2.fold::before,.js .sales > h2::before{transition:none}}
+"""
+
+NAV_JS = """
+(function(){
+  var root=document.documentElement; root.classList.add('js');
+  var tabs=[].slice.call(document.querySelectorAll('a.tab')), panels=[].slice.call(document.querySelectorAll('[data-panel]'));
+  var KEY='dash-tab', filterEl=document.getElementById('dash-filter'), countEl=document.getElementById('dash-count');
+  function store(v){try{localStorage.setItem(KEY,v)}catch(e){}}
+  function recall(){try{return localStorage.getItem(KEY)}catch(e){return null}}
+  function show(name){
+    var all=name==='all';
+    root.classList.toggle('all',all);
+    panels.forEach(function(p){p.classList.toggle('active',all||p.dataset.panel===name)});
+    tabs.forEach(function(t){t.classList.toggle('on',t.dataset.tab===name)});
+    if(history.replaceState)history.replaceState(null,'','#'+name);
+    if(typeof fitSoon==='function')fitSoon();
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(e){e.preventDefault();clearFilter();show(t.dataset.tab);store(t.dataset.tab);window.scrollTo(0,0)})});
+  var start=(location.hash||'').slice(1)||recall()||'overview';
+  if(!tabs.some(function(t){return t.dataset.tab===start}))start='overview';
+  // Embedded dashboards (iframes): size each to its content whenever it is shown or resized.
+  function fitFrames(){
+    [].slice.call(document.querySelectorAll('iframe.embed')).forEach(function(f){
+      if(f.offsetParent===null)return;
+      try{var d=f.contentDocument; if(d&&d.documentElement){f.style.height=Math.max(480,d.documentElement.scrollHeight+4)+'px'}}catch(e){}
+    });
+  }
+  [].slice.call(document.querySelectorAll('iframe.embed')).forEach(function(f){f.addEventListener('load',function(){fitFrames();setTimeout(fitFrames,400);setTimeout(fitFrames,1500)})});
+  window.addEventListener('resize',fitFrames);
+  function fitSoon(){fitFrames();setTimeout(fitFrames,150);setTimeout(fitFrames,700);setTimeout(fitFrames,2000)}
+  show(start);
+  window.addEventListener('hashchange',function(){var h=(location.hash||'').slice(1);if(tabs.some(function(t){return t.dataset.tab===h}))show(h)});
+
+  // Collapsible blocks: a section.sales, or a card inside .tables, folds under its heading.
+  function blocks(){return [].slice.call(document.querySelectorAll('section.sales, .tables > .card, .fold-block'))}
+  blocks().forEach(function(b){
+    var h=b.querySelector(':scope > h2'); if(!h)return;
+    h.classList.add('fold'); h.tabIndex=0; h.setAttribute('role','button');
+    var title=(h.textContent||'').trim().toLowerCase();
+    if(/top referrers|signup forms|campaign sources|search landing pages|ai-assistant|lifetime/.test(title))b.classList.add('collapsed');
+    function toggle(){b.classList.toggle('collapsed');h.setAttribute('aria-expanded',String(!b.classList.contains('collapsed')))}
+    h.setAttribute('aria-expanded',String(!b.classList.contains('collapsed')));
+    h.addEventListener('click',toggle);
+    h.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}});
+  });
+  document.getElementById('dash-expand').addEventListener('click',function(){blocks().forEach(function(b){b.classList.remove('collapsed')})});
+  document.getElementById('dash-collapse').addEventListener('click',function(){blocks().forEach(function(b){if(b.querySelector(':scope > h2'))b.classList.add('collapsed')})});
+
+  // Filter: searches every tab. Rows, tiles, notes and whole blocks that do not match are hidden.
+  var wasTab=null;
+  function items(){return [].slice.call(document.querySelectorAll('tr, .tile, .site-notes li, .obs li, .sales-chip'))}
+  function clearFilter(){
+    if(!filterEl)return; filterEl.value=''; apply();
+  }
+  function apply(){
+    var q=(filterEl.value||'').trim().toLowerCase();
+    document.querySelectorAll('.hidden-by-filter').forEach(function(e){e.classList.remove('hidden-by-filter')});
+    [].slice.call(document.querySelectorAll('iframe.embed')).forEach(function(f){try{[].slice.call(f.contentDocument.querySelectorAll('tr, li')).forEach(function(it){it.style.display=''})}catch(e){}});
+    if(!q){countEl.textContent=''; if(wasTab){show(wasTab);wasTab=null} return}
+    if(!wasTab){wasTab=(tabs.filter(function(t){return t.classList.contains('on')})[0]||{dataset:{}}).dataset.tab||'overview'}
+    show('all'); tabs.forEach(function(t){t.classList.remove('on')});
+    var n=0;
+    items().forEach(function(it){ if((it.textContent||'').toLowerCase().indexOf(q)<0)it.classList.add('hidden-by-filter'); else n++ });
+    [].slice.call(document.querySelectorAll('iframe.embed')).forEach(function(f){
+      f._hits=0;
+      try{
+        var d=f.contentDocument; if(!d)return;
+        [].slice.call(d.querySelectorAll('tr, li')).forEach(function(it){
+          if((it.textContent||'').toLowerCase().indexOf(q)<0)it.style.display='none'; else {it.style.display=''; n++; f._hits++}
+        });
+      }catch(e){}
+    });
+    blocks().concat([].slice.call(document.querySelectorAll('[data-panel]'))).forEach(function(b){
+      var hit=[].slice.call(b.querySelectorAll('tr, .tile, .site-notes li, .obs li, .sales-chip')).some(function(x){return !x.classList.contains('hidden-by-filter')});
+      if(!hit&&[].slice.call(b.querySelectorAll('iframe.embed')).some(function(f){return f._hits>0}))hit=true;
+      var titleHit=((b.querySelector(':scope > h2')||{}).textContent||'').toLowerCase().indexOf(q)>=0;
+      if(!hit&&!titleHit)b.classList.add('hidden-by-filter'); else b.classList.remove('collapsed');
+    });
+    fitSoon();
+    countEl.textContent=n+(n===1?' match':' matches');
+  }
+  if(filterEl){filterEl.addEventListener('input',apply);
+    filterEl.addEventListener('keydown',function(e){if(e.key==='Escape')clearFilter()});
+    document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==filterEl&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();filterEl.focus()}})}
+})();
+"""
+
+_RESTATES_CARD = re.compile(
+    r"^[\d,]+ (?:pageviews in the last 7 days|tool runs in the last 7 days|calculator runs in the last 7 days|"
+    r"Vitae downloads in the last 7 days|checkout clicks in the last 7 days|trial downloads in the last 7 days|"
+    r"ModernTex release-notes signups in the last 7 days|subscribes in the last 7 days|"
+    r"[A-Za-z ]+ signups in the last 7 days)", re.I)
+
+
+def split_notes(summaries: list[dict], obs: list[str]) -> tuple[dict, list[str]]:
+    """Group the observation lines by site, drop the ones that only repeat a number the
+    site card already shows, and set aside the "excluded our own test clicks" footnotes.
+    Returns ({label: {"notes": [...], "footnotes": [...]}}, [lines about no single site])."""
+    labels = [s["label"] for s in summaries]
+    per = {l: {"notes": [], "footnotes": []} for l in labels}
+    general: list[str] = []
+    for o in obs:
+        site, _, rest = o.partition(": ")
+        if site in per and rest:
+            if "excluded above" in rest or "were ours and are excluded" in rest:
+                per[site]["footnotes"].append(rest)
+            elif _RESTATES_CARD.match(rest):
+                continue
+            else:
+                per[site]["notes"].append(rest)
+        else:
+            general.append(o)
+    return per, general
+
+
+def glance_table(summaries: list[dict]) -> str:
+    rows = ""
+    for s in summaries:
+        d = s["delta_pct"]
+        delta = "" if d is None else (f"+{d}%" if d > 0 else f"{d}%")
+        rows += (f"<tr><td>{html.escape(s['label'])}</td><td class='num'>{s['last7']}</td>"
+                 f"<td class='num'>{delta}</td><td class='num'>{s['today']}</td>"
+                 f"<td class='num'>{s['uniques7']}</td><td class='num'>{s['last30']}</td></tr>")
+    return ("<section class='sales'><h2>Traffic at a glance</h2><table class='glance'><thead><tr><th>Site</th>"
+            "<th class='num'>Pageviews 7d</th><th class='num'>vs prior 7d</th><th class='num'>Today</th>"
+            "<th class='num'>Visitors 7d</th><th class='num'>Pageviews 30d</th></tr></thead>"
+            f"<tbody>{rows}</tbody></table></section>")
+
+
+def notes_block(label: str, notes: list[str], footnotes: list[str]) -> str:
+    if not notes and not footnotes:
+        return ""
+    li = "".join(f"<li>{html.escape(n)}</li>" for n in notes) or "<li>Nothing beyond the numbers above.</li>"
+    foot = ""
+    if footnotes:
+        foot = ("<details><summary>Data notes (test traffic excluded)</summary><ul>"
+                + "".join(f"<li>{html.escape(n)}</li>" for n in footnotes) + "</ul></details>")
+    return f"<section class='site-notes'><h2>What this says</h2><ul>{li}</ul>{foot}</section>"
+
+
+
+# The photography and TikTok arms keep their own dashboards (written by their own jobs). They
+# are folded in as tabs here, each inside an iframe built from the file's current contents, so
+# their CSS and scripts cannot touch this page and no web server is needed to view them.
+EMBEDS = [
+    ("photography", "Photography",
+     Path("/Volumes/Extreme SSD/Purplelink LLC/photo-licensing-workspace/analytics/dashboard.html")),
+    ("tiktok", "TikTok",
+     Path("/Volumes/Extreme SSD/TikTokPipeline/analytics/dashboard.html")),
+]
+
+
+def embed_panel(label: str, path: Path) -> str:
+    try:
+        doc = path.read_text(encoding="utf-8", errors="replace")
+        stamp = dt.datetime.fromtimestamp(path.stat().st_mtime).strftime("%a %d %b %Y, %-I:%M%p").replace("AM", "am").replace("PM", "pm")
+    except OSError:
+        return (f"<section class='site-notes'><h2>{html.escape(label)}</h2><p>Dashboard file not found: "
+                f"<code>{html.escape(str(path))}</code>. It is written by that arm's own job.</p></section>")
+    link = html.escape("file://" + str(path).replace(" ", "%20"))
+    return (f"<p class='embed-meta'>Snapshot of <code>{html.escape(str(path))}</code>, written {html.escape(stamp)}. "
+            f"That job refreshes it on its own schedule; this tab picks up the newest copy each time this page is built. "
+            f"<a href=\"{link}\">Open on its own</a></p>"
+            f"<iframe class='embed' title=\"{html.escape(label)} dashboard\" loading='eager' "
+            f"sandbox='allow-scripts allow-same-origin allow-popups' srcdoc=\"{html.escape(doc, quote=True)}\"></iframe>")
+
+
 def render(summaries: list[dict], obs: list[str], generated: str, first_day: str | None,
            sales: dict | None = None, appstore: dict | None = None,
            manual_ads: dict | None = None, chrome_web_store: dict | None = None,
@@ -4312,8 +4538,9 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
-    tables = ""
+    site_tables: dict[str, str] = {}
     for s in summaries:
+        tables = ""
         # Everything below the Conversion card comes from the live payload,
         # which is a 30-day window — say so, rather than letting it sit next to
         # 7-day headline numbers looking like the same period.
@@ -4345,32 +4572,54 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
         if s["top_utm"] and not (s["tool_runs"] or s["calc_runs"]):
             tables += table("Campaign sources", s["top_utm"], "None recorded.")
         tables += "</div>"
+        site_tables[s["label"]] = tables
+
+    since = f" Tracking since {first_day}." if first_day else ""
+    per_site, general = split_notes(summaries, obs)
+    general_html = ("<section class='site-notes'><h2>Other notes</h2><ul>"
+                    + "".join(f"<li>{html.escape(g)}</li>" for g in general) + "</ul></section>") if general else ""
+    overview = (f"{revenue_block(sales, appstore, market_rows=market_rows)}\n{metrics_block(metrics)}\n"
+                f"{profit_block(profit, channels, tax)}\n{glance_table(summaries)}\n"
+                f"{queue_block()}\n{general_html}")
+    money = f"{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
+    ads = f"{manual_ads_block(manual_ads or {}, admob)}\n{moderntex_ads_block(manual_ads or {}, sales)}"
+    apps = f"{appstore_block(appstore)}\n{chrome_web_store_block(chrome_web_store)}"
+    panels = [("overview", "Overview", overview), ("money", "Money", money), ("ads", "Ads", ads), ("apps", "Apps", apps)]
+    for s_ in summaries:
+        key = "site-" + re.sub(r"[^a-z0-9]+", "-", s_["label"].lower()).strip("-")
+        n = per_site.get(s_["label"], {"notes": [], "footnotes": []})
+        body = (f"<div class='grid'>{site_card(s_)}</div>"
+                f"{notes_block(s_['label'], n['notes'], n['footnotes'])}"
+                f"{site_tables[s_['label']]}")
+        panels.append((key, s_["label"], body))
+    for k_, t_, path_ in EMBEDS:
+        panels.append((k_, t_, embed_panel(t_, path_)))
+    tabs_html = "".join(f"<a class='tab' href='#{k}' data-tab='{k}'>{html.escape(t)}</a>" for k, t, _ in panels)
+    tabs_html += "<a class='tab' href='#all' data-tab='all'>Everything</a>"
+    panels_html = "".join(
+        f"<div data-panel='{k}'><h2 class='panel-title'>{html.escape(t)}</h2>{body}</div>" for k, t, body in panels)
 
     since = f" Tracking since {first_day}." if first_day else ""
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Traffic — Purplelink &amp; MuscleOnGLP</title>
-<style>{CSS}</style></head>
+<style>{CSS}{NAV_CSS}</style></head>
 <body><div class="wrap">
 <header>
   <h1>Traffic</h1>
   <p class="stamp">Updated {html.escape(generated)} · refreshes daily at 9:00am</p>
 </header>
-{metrics_block(metrics)}
-{profit_block(profit, channels, tax)}
-{sales_block(sales)}
-{marketplaces_block(marketplaces)}
-{queue_block()}
-{appstore_block(appstore)}
-{chrome_web_store_block(chrome_web_store)}
-{manual_ads_block(manual_ads or {}, admob)}
-{moderntex_ads_block(manual_ads or {}, sales)}
-{revenue_block(sales, appstore, market_rows=market_rows)}
-<div class="grid">{cards}</div>
-<h2>What this says</h2>
-<ul class="obs">{obs_html}</ul>
-{tables}
+<nav class="topnav" aria-label="Dashboard sections">
+  <div class="tabs">{tabs_html}</div>
+  <div class="tools">
+    <input id="dash-filter" type="search" placeholder="Filter (press /)" aria-label="Filter the dashboard" autocomplete="off">
+    <span id="dash-count" class="count" role="status" aria-live="polite"></span>
+    <button type="button" id="dash-expand">Expand all</button>
+    <button type="button" id="dash-collapse">Collapse all</button>
+  </div>
+</nav>
+{panels_html}
 <footer>
   First-party, cookieless analytics from each site's own beacon — no third-party
   vendor, Do Not Track honoured, so these counts are conservative and exclude
@@ -4378,7 +4627,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
   Daily figures are archived to <code>~/.purplelink/traffic/history.json</code>,
   which keeps growing even if the source window rolls off.
 </footer>
-</div></body></html>"""
+</div><script>{NAV_JS}</script></body></html>"""
 
 
 # ---------------------------------------------------------------- main

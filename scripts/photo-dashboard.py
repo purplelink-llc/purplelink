@@ -980,6 +980,13 @@ collector could not sign in that day — the number shown is not current; re-run
     PAGE.write_text(page)
     print(f"wrote {PAGE}")
     print(f"wrote {SUMMARY}")
+    # The traffic dashboard embeds this page as its Photography tab; ask it to rebuild.
+    try:
+        import subprocess
+        subprocess.run([sys.executable, str(ROOT / "scripts" / "traffic-dashboard" / "rebuild_hook.py"), "photography"],
+                       timeout=360, check=False)
+    except Exception as e:  # noqa: BLE001 - never fail the photo dashboard over this
+        print(f"traffic dashboard rebuild skipped ({e})")
 
 
 if __name__ == "__main__":
