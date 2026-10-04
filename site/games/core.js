@@ -134,7 +134,7 @@
   }
 
   // XP and level are derived from saved progress, so they never drift and need no storage of their own.
-  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"];
+  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink", "teamlink", "gridlink", "unbeaten"];
   // Daily run bonuses: finishing 2, 4 and all 8 puzzles; each quest and the day's spotlight game add 15; a week with
   // five stamped days adds 50. Stored in all.goals = { d: { day: { t: tier, q: bitmask } }, w: { week: 1 }, banked: xp of pruned days }.
   var TIER_XP = [0, 20, 40, 100], QUEST_XP = 15, WEEK_XP = 50;

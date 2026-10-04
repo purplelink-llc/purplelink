@@ -31,7 +31,7 @@ TAG = {"linkle": "Five letters. Six tries. A new twist every weekday.", "quadlin
        "daily-chess": "A new tactics puzzle from Lichess.", "sudoku": "Harder every week of the season.",
        "crossword": "A new crossword daily. Easy Monday, hard Sunday.", "daily-stars": "A short horoscope for every sign.",
        "landlink": "Guess the country from seven clues.", "citylink": "Guess the city with a compass.", "peaklink": "Guess the mountain.", "codelink": "Guess the programming language.", "thinkerlink": "Guess the scientist.", "riverlink": "Guess the river.", "wildlink": "Guess the animal.", "atomlink": "Guess the element on the periodic table.", "prizelink": "Guess the Nobel laureate.",
-       "chess-puzzles": "Unlimited puzzles. Climb the rating.", "sudoku-unlimited": "Unlimited Sudoku, five levels, rated.", "leaderboard": "Top ratings in chess and Sudoku."}
+       "teamlink": "Link two players through teammates.", "gridlink": "Fill the grid with players who fit.", "unbeaten": "Build a team. Go undefeated.", "chess-puzzles": "Unlimited puzzles. Climb the rating.", "sudoku-unlimited": "Unlimited Sudoku, five levels, rated.", "leaderboard": "Top ratings in chess and Sudoku."}
 
 def card(name, kind, tag, photo, site):
     return (f"<!doctype html><meta charset=utf-8><style>{CSS.replace('@SITE@', site)}</style><div class=card>"

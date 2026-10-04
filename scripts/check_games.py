@@ -94,6 +94,26 @@ def main() -> int:
         if bad:
             problems.append(f"{gid}.json: rows with the wrong number of values: {bad[:3]}")
 
+
+    # sports games: every sport in the rotation has a data file, enough days of puzzles, and a connected teammate graph
+    sx = DATA / "sports-index.json"
+    if not sx.exists():
+        problems.append("sports-index.json: missing (run scripts/gen_sports.py)")
+    else:
+        for sport in json.loads(sx.read_text(encoding="utf-8"))["rotation"]:
+            f = DATA / f"sports-{sport}.json"
+            if not f.exists():
+                problems.append(f"sports-{sport}.json: missing")
+                continue
+            d = json.loads(f.read_text(encoding="utf-8"))
+            names = {p[0] for p in d["p"]}
+            bad = [n for pr in d["tl"] for n in pr if n not in names]
+            notes.append(f"sports-{sport}.json: {len(d['p'])} players, {len(d['tl'])} link days, {len(d['gr'])} grids")
+            if bad:
+                problems.append(f"sports-{sport}.json: link puzzles name players not in the pool: {sorted(set(bad))[:3]}")
+            if len(d["tl"]) < 200 or len(d["gr"]) < 200:
+                problems.append(f"sports-{sport}.json: fewer than 200 days of puzzles")
+
     sp = DATA / "stars.json"
     if not sp.exists():
         problems.append("stars.json: missing")
