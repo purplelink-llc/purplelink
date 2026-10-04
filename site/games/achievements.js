@@ -8,8 +8,9 @@
 
   function stats(all, g) { return (all[g] && all[g].stats) || {}; }
   function wins(all, g) { return stats(all, g).wins || []; }
-  function best(all) { return Math.max(0, stats(all, "linkle").max || 0, stats(all, "quadlink").max || 0, stats(all, "daily-five").max || 0, stats(all, "crossword").max || 0); }
-  function played(all) { return ["linkle", "quadlink", "daily-five", "crossword"].reduce(function (n, g) { return n + (stats(all, g).played || 0); }, 0); }
+  var PLAYED = ["linkle", "quadlink", "daily-five", "daily-photo", "crossword"];
+  function best(all) { return PLAYED.reduce(function (n, g) { return Math.max(n, stats(all, g).max || 0); }, 0); }
+  function played(all) { return PLAYED.reduce(function (n, g) { return n + (stats(all, g).played || 0); }, 0); }
   function dowOf(idx) { return (EPOCH_DOW + idx) % 7; }
 
   var DEFS = [
@@ -26,6 +27,8 @@
     { id: "quad-fast", name: "Quick quad", desc: "Solve Quadlink in seven guesses or fewer.", test: function (a, c) { return c.game === "quadlink" && c.won && c.tries <= 7; } },
     { id: "five-perfect", name: "Perfect five", desc: "Answer all five Daily Five questions correctly.", test: function (a, c) { return c.game === "daily-five" && c.score === 5; } },
     { id: "five-habit", name: "Quiz habit", desc: "Finish Daily Five on ten different days.", test: function (a) { return stats(a, "daily-five").played >= 10; } },
+    { id: "photo-perfect", name: "Globetrotter", desc: "Place all five photographs in Daily Photo correctly.", test: function (a, c) { return c.game === "daily-photo" && c.score === 5; } },
+    { id: "photo-habit", name: "Armchair traveller", desc: "Finish Daily Photo on ten different days.", test: function (a) { return stats(a, "daily-photo").played >= 10; } },
     { id: "cw-first", name: "First crossword", desc: "Solve your first daily crossword.", test: function (a) { return stats(a, "crossword").won >= 1; } },
     { id: "cw-monday", name: "Quick Monday", desc: "Solve a Monday crossword with no help in under four minutes.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Monday" && c.seconds < 240; } },
     { id: "cw-sunday", name: "Sunday finisher", desc: "Solve a Sunday crossword with no help.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Sunday"; } },
@@ -35,6 +38,13 @@
     { id: "streak-30", name: "Month streak", desc: "Keep a thirty-day streak in any game.", test: function (a) { return best(a) >= 30; } },
     { id: "full-set", name: "Full set", desc: "Finish Linkle, Quadlink, Daily Five and the crossword on the same day.", test: function (a, c) {
       return ["linkle", "quadlink", "daily-five", "crossword"].every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; }); } },
+    { id: "daily-set", name: "Daily set", desc: "Finish all five daily puzzles and read your sign on the same day.", test: function (a, c) {
+      var five = PLAYED.every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; });
+      var stars = ((a["daily-stars"] && a["daily-stars"].viewed) || []).indexOf(c.idx) >= 0;
+      return five && stars; } },
+    { id: "close-call", name: "Close call", desc: "Let the weekly streak saver rescue a streak.", test: function (a) {
+      return PLAYED.some(function (g) { return (stats(a, g).freezes || []).length > 0; }); } },
+    { id: "level-5", name: "Level 5", desc: "Reach level 5.", test: function (a) { return G.xpOf(a).level >= 5; } },
     { id: "top-tenth", name: "Top tenth", desc: "Finish ahead of 90% of the day's players (at least 20 played).", test: function (a, c) { return c.pct >= 90 && c.total >= 20; } },
     { id: "regular", name: "Regular", desc: "Finish 30 daily puzzles.", test: function (a) { return played(a) >= 30; } },
     { id: "centurion", name: "Centurion", desc: "Finish 100 daily puzzles.", test: function (a) { return played(a) >= 100; } },

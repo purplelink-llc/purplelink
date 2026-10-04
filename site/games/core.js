@@ -66,7 +66,7 @@
     return states.map(function (s) { return SHARE[s]; }).join("");
   }
 
-  function emptyStats() { return { played: 0, won: 0, streak: 0, max: 0, last: -1, dist: {}, wins: [] }; }
+  function emptyStats() { return { played: 0, won: 0, streak: 0, max: 0, last: -1, dist: {}, wins: [], freezes: [] }; }
 
   // Update the stats once per puzzle, when it ends. `idx` is the puzzle's day index.
   function recordResult(stats, idx, won, tries) {
@@ -74,7 +74,12 @@
     s.played += 1;
     if (won) {
       s.won += 1;
-      s.streak = s.last === idx - 1 ? s.streak + 1 : 1;
+      if (s.last === idx - 1) s.streak += 1;
+      else if (s.last === idx - 2 && s.streak > 0 && !(s.freezes || []).some(function (f) { return f > idx - 8; })) {
+        // The streak saver: one missed day per week is forgiven, so a streak survives a busy day.
+        s.freezes = (s.freezes || []).concat([idx - 1]);
+        s.streak += 2;
+      } else s.streak = 1;
       s.last = idx;
       s.dist[tries] = (s.dist[tries] || 0) + 1;
       s.wins = (s.wins || []).filter(function (x) { return x !== idx; }).concat([idx]);
@@ -126,6 +131,25 @@
       }
     }
     return null;
+  }
+
+  // XP and level are derived from saved progress, so they never drift and need no storage of their own.
+  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "crossword"];
+  function xpOf(all) {
+    var xp = 0;
+    XP_GAMES.forEach(function (g) {
+      var s = (all[g] && all[g].stats) || {};
+      xp += 10 * (s.played || 0) + 5 * (s.won || 0) + 3 * (s.max || 0);
+    });
+    xp += 25 * Object.keys(all.ach || {}).length;
+    var level = 1;
+    while (30 * (level + 1) * level <= xp) level++;
+    var floor = 30 * level * (level - 1), ceil = 30 * (level + 1) * level;
+    return { xp: xp, level: level, into: xp - floor, need: ceil - floor };
+  }
+
+  function saverNote(stats, idx) {
+    return stats && (stats.freezes || []).indexOf(idx - 1) >= 0 ? "Your streak saver covered yesterday, so your streak is still alive. You get one a week." : "";
   }
 
   // Progress lives in localStorage only. Any access can throw (private windows, blocked
@@ -187,7 +211,7 @@
   return {
     dayIndex: dayIndex, pick: pick, decode: decode, decodeText: decodeText, score: score, mergeKeys: mergeKeys,
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
-    rankFor: rankFor, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
+    rankFor: rankFor, xpOf: xpOf, saverNote: saverNote, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
     getGame: getGame, setGame: setGame, all: load, replaceAll: replaceAll, ready: Promise.resolve(),
     submitScore: submitScore, describePercentile: describePercentile, track: track, copyText: copyText,
   };

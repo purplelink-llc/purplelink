@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Daily Stars: a short daily horoscope for every sign | Purplelink</title>
-    <meta name="description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, with no third-party ads.">
-    <link rel="canonical" href="https://purplelink.llc/games/daily-stars/">
-    <meta property="og:title" content="Daily Stars: a short daily horoscope for every sign">
-    <meta property="og:description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, with no third-party ads.">
+    <title>Daily Photo: guess the country in five photographs | Purplelink</title>
+    <meta name="description" content="Five photographs a day from Purplelink&#x27;s own travel photography. Pick the country for each one. Free, with no third-party ads. You do not need an account.">
+    <link rel="canonical" href="https://purplelink.llc/games/daily-photo/">
+    <meta property="og:title" content="Daily Photo: guess the country in five photographs">
+    <meta property="og:description" content="Five photographs a day from Purplelink&#x27;s own travel photography. Pick the country for each one. Free, with no third-party ads. You do not need an account.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://purplelink.llc/games/daily-stars/">
+    <meta property="og:url" content="https://purplelink.llc/games/daily-photo/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Daily Stars: a short daily horoscope for every sign">
-    <meta name="twitter:description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, with no third-party ads.">
+    <meta name="twitter:title" content="Daily Photo: guess the country in five photographs">
+    <meta name="twitter:description" content="Five photographs a day from Purplelink&#x27;s own travel photography. Pick the country for each one. Free, with no third-party ads. You do not need an account.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <script type="application/ld+json">
     {
@@ -22,12 +22,12 @@
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "Daily Stars",
-          "url": "https://purplelink.llc/games/daily-stars/",
-          "applicationCategory": "EntertainmentApplication",
+          "name": "Daily Photo",
+          "url": "https://purplelink.llc/games/daily-photo/",
+          "applicationCategory": "GameApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A short daily reading for each of the twelve signs, for entertainment only.",
+          "description": "A free daily game: pick the country each of five travel photographs was taken in.",
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -44,34 +44,34 @@
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "Are these real predictions?",
+              "name": "What is Daily Photo?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships."
+                "text": "Five photographs a day, each taken by Ben Ampel on his travels. For each one you pick which of four countries it was taken in. After every answer you see the exact place, a short description and a link to more photographs from there."
               }
             },
             {
               "@type": "Question",
-              "name": "How are the readings made?",
+              "name": "Where do the photographs come from?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "They are written ahead of time in batches, one short reading per sign per day, and published on the date. The moon phase shown is calculated from the date and is accurate to about half a day."
+                "text": "They are Purplelink's own photographs from Iceland, Japan, Switzerland, the United Kingdom, Germany, Denmark, the Netherlands, Canada, Panama and the United States. They are also available to license through the photography pages."
               }
             },
             {
               "@type": "Question",
-              "name": "When do they change?",
+              "name": "When do the photographs change?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "At midnight in your time zone."
+                "text": "At midnight in your time zone. Everyone sees the same five on the same date."
               }
             },
             {
               "@type": "Question",
-              "name": "Is anything stored about me?",
+              "name": "What counts as my streak?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Your chosen sign, in this browser. If you sign in with an email link, it follows you between devices."
+                "text": "Finishing the day's five photographs, whatever your score. Your streak and scores are saved in this browser, or on your account if you sign in with an email link."
               }
             }
           ]
@@ -94,8 +94,8 @@
             {
               "@type": "ListItem",
               "position": 3,
-              "name": "Daily Stars",
-              "item": "https://purplelink.llc/games/daily-stars/"
+              "name": "Daily Photo",
+              "item": "https://purplelink.llc/games/daily-photo/"
             }
           ]
         }
@@ -133,37 +133,56 @@
     <main id="main-content" class="games">
       <div class="games-wrap">
         <div class="game-head">
-          <h1>Daily Stars</h1>
-          <span class="game-num" id="st-date"></span>
+          <h1>Daily Photo</h1>
+          <span class="game-num" id="ph-number"></span>
         </div>
-        <p class="game-lede">A short reading for each sign, new every day. For entertainment only.</p>
-        <p id="st-loading" class="games-note">Loading today's readings.</p>
-        <p id="st-missing" class="games-note" hidden>Today's readings are not ready yet. Please check back soon.</p>
-        <div id="st-game" hidden>
-          <p class="stars-sky" id="st-sky"></p>
-          <ul class="stars-signs" id="st-signs" aria-label="Choose your sign"></ul>
-          <section class="stars-card" id="st-card" hidden aria-live="polite">
-            <h2 id="st-name"></h2>
-            <p class="stars-sub" id="st-range"></p>
-            <p id="st-text"></p>
-          </section>
-          <div class="stars-all">
-            <h2>All signs today</h2>
-            <div id="st-all"></div>
+        <p class="game-lede">Five photographs, five countries. Where in the world was each one taken?</p>
+        <p id="ph-loading" class="games-note">Loading today's photographs.</p>
+        <div id="ph-game" hidden>
+          <div class="quiz" id="ph-quiz" hidden>
+            <p class="quiz-progress" id="ph-progress"></p>
+            <div class="quiz-dots" id="ph-dots" aria-hidden="true"></div>
+            <img class="ph-photo" id="ph-img" alt="Today's photograph. Its description appears after you answer." width="1200" height="800" decoding="async">
+            <p class="quiz-cat">Which country?</p>
+            <ul class="quiz-opts" id="ph-opts"></ul>
+            <div class="ph-reveal" id="ph-reveal" hidden>
+              <p class="ph-where" id="ph-where"></p>
+              <p id="ph-caption"></p>
+              <p><a id="ph-more" href="/photography/">More photographs</a></p>
+            </div>
+            <button type="button" class="btn btn-primary" id="ph-next" hidden>Next photo</button>
           </div>
+          <section class="game-result" id="ph-result" hidden aria-labelledby="ph-result-head">
+            <h2 id="ph-result-head"></h2>
+            <div class="game-statline">
+              <div><b id="ph-played">0</b><span>Days played</span></div>
+              <div><b id="ph-avg">0.0</b><span>Average score</span></div>
+              <div><b id="ph-streak">0</b><span>Streak</span></div>
+              <div><b id="ph-max">0</b><span>Best streak</span></div>
+            </div>
+            <p class="game-pct" id="ph-pct"></p>
+            <p class="game-pct" id="ph-saver"></p>
+            <ul class="quiz-review" id="ph-review"></ul>
+            <div class="game-actions">
+              <button type="button" class="btn btn-primary" id="ph-share">Copy result</button>
+              <span class="game-note" id="ph-share-note"></span>
+            </div>
+            <textarea class="wg-share-text" id="ph-share-text" hidden readonly aria-label="Result text"></textarea>
+            <p class="game-next">Next set in <span id="ph-next-in"></span>.</p>
+          </section>
         </div>
         <div class="games-prose">
-        <h2>About these readings</h2>
-        <p>Daily Stars gives each sign a short suggestion for the day. They are meant to be read in a few seconds. Nothing here is a forecast, and no reading is advice about health, money or relationships.</p>
+        <h2>How it works</h2>
+        <p>Look at the photograph, pick the country you think it was taken in, and see the answer straight away. After the fifth photograph you get your score and a result you can copy and share.</p>
         <h2>Questions</h2>
-        <h3>Are these real predictions?</h3>
-        <p>No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships.</p>
-        <h3>How are the readings made?</h3>
-        <p>They are written ahead of time in batches, one short reading per sign per day, and published on the date. The moon phase shown is calculated from the date and is accurate to about half a day.</p>
-        <h3>When do they change?</h3>
-        <p>At midnight in your time zone.</p>
-        <h3>Is anything stored about me?</h3>
-        <p>Your chosen sign, in this browser. If you sign in with an email link, it follows you between devices.</p>
+        <h3>What is Daily Photo?</h3>
+        <p>Five photographs a day, each taken by Ben Ampel on his travels. For each one you pick which of four countries it was taken in. After every answer you see the exact place, a short description and a link to more photographs from there.</p>
+        <h3>Where do the photographs come from?</h3>
+        <p>They are Purplelink&#x27;s own photographs from Iceland, Japan, Switzerland, the United Kingdom, Germany, Denmark, the Netherlands, Canada, Panama and the United States. They are also available to license through the photography pages.</p>
+        <h3>When do the photographs change?</h3>
+        <p>At midnight in your time zone. Everyone sees the same five on the same date.</p>
+        <h3>What counts as my streak?</h3>
+        <p>Finishing the day&#x27;s five photographs, whatever your score. Your streak and scores are saved in this browser, or on your account if you sign in with an email link.</p>
         </div>
         <p class="games-note"><a href="/games/">All daily games</a></p>
       </div>
@@ -172,7 +191,8 @@
     <script src="/games/core.js?v=4c7b664fd9" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
     <script src="/games/achievements.js?v=2316f25ec7" defer></script>
-    <script src="/games/daily-stars.js?v=5ca53f7d91" defer></script>
+    <script src="/games/confetti.js?v=c90899c137" defer></script>
+    <script src="/games/daily-photo.js?v=ea61af4b28" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

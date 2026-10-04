@@ -33,7 +33,7 @@ def main() -> int:
     problems: list[str] = []
     notes: list[str] = []
 
-    for name, key in (("linkle.json", "answers"), ("quadlink.json", "days"), ("trivia.json", "days")):
+    for name, key in (("linkle.json", "answers"), ("quadlink.json", "days"), ("trivia.json", "days"), ("photo.json", "days")):
         p = DATA / name
         if not p.exists():
             problems.append(f"{name}: missing")
@@ -41,6 +41,8 @@ def main() -> int:
         d = json.loads(p.read_text(encoding="utf-8"))
         left = len(d[key]) - day_index(d["epoch"], today)
         notes.append(f"{name}: {left} days ahead")
+        if name == "photo.json":
+            continue   # wraps around after 150 days by design
         if left < LONG_MIN:
             problems.append(f"{name}: only {left} days of puzzles ahead (need {LONG_MIN})")
         if name == "quadlink.json":

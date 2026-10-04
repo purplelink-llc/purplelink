@@ -265,6 +265,8 @@
         if (res && window.PLAch) window.PLAch.check({ game: NAME, idx: st.idx, won: true, clean: true, seconds: st.elapsed, weekdayName: st.p.weekday, pct: res.percentile, total: res.total });
       });
     }
+    if (fresh && window.PLConfetti) window.PLConfetti.big();
+    var sv = $("cw-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
     $("cw-result").hidden = false;
     $("cw-result-head").textContent = "Solved in " + fmt(st.elapsed) + (clean ? "" : " with help");
     $("cw-played").textContent = s.played;

@@ -257,3 +257,56 @@
 .ac-ach-item[data-got="1"] { border-color: var(--purple); background: var(--purple-xlight); }
 .ac-ach-item[data-got="1"] em { color: var(--purple); }
 .ac-ach-item[data-got="0"] strong { color: var(--muted); }
+
+/* confetti: each piece gets its own direction, spin and colour from these rules (no inline styles) */
+.pl-confetti { position: fixed; left: 50%; top: 42%; width: 0; height: 0; z-index: 60; pointer-events: none; }
+.pl-confetti i { position: absolute; width: 9px; height: 14px; border-radius: 2px; opacity: 0; animation: pl-confetti-fly 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
+@keyframes pl-confetti-fly { 0% { opacity: 1; transform: translate(0, 0) rotate(0); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); } }
+.pl-confetti i:nth-child(1) { --dx: -77px; --dy: 25px; --rot: -392deg; background: oklch(70% 0.17 85); animation-delay: 105ms; }
+.pl-confetti i:nth-child(2) { --dx: 20px; --dy: -116px; --rot: 499deg; background: oklch(70% 0.17 150); animation-delay: 27ms; }
+.pl-confetti i:nth-child(3) { --dx: -181px; --dy: -8px; --rot: -355deg; background: oklch(70% 0.17 25); animation-delay: 70ms; }
+.pl-confetti i:nth-child(4) { --dx: -63px; --dy: -183px; --rot: -83deg; background: oklch(70% 0.17 260); animation-delay: 80ms; }
+.pl-confetti i:nth-child(5) { --dx: 113px; --dy: -126px; --rot: 272deg; background: oklch(70% 0.17 200); animation-delay: 6ms; }
+.pl-confetti i:nth-child(6) { --dx: 119px; --dy: 133px; --rot: 53deg; background: oklch(70% 0.17 310); animation-delay: 53ms; }
+.pl-confetti i:nth-child(7) { --dx: -126px; --dy: 41px; --rot: -170deg; background: oklch(70% 0.17 85); animation-delay: 13ms; }
+.pl-confetti i:nth-child(8) { --dx: 59px; --dy: -115px; --rot: -412deg; background: oklch(70% 0.17 150); animation-delay: 72ms; }
+.pl-confetti i:nth-child(9) { --dx: -140px; --dy: 84px; --rot: 335deg; background: oklch(70% 0.17 25); animation-delay: 99ms; }
+.pl-confetti i:nth-child(10) { --dx: -124px; --dy: -64px; --rot: 73deg; background: oklch(70% 0.17 260); animation-delay: 31ms; }
+.pl-confetti i:nth-child(11) { --dx: 196px; --dy: -53px; --rot: 74deg; background: oklch(70% 0.17 200); animation-delay: 67ms; }
+.pl-confetti i:nth-child(12) { --dx: -2px; --dy: -58px; --rot: -391deg; background: oklch(70% 0.17 310); animation-delay: 15ms; }
+.pl-confetti i:nth-child(13) { --dx: 5px; --dy: -41px; --rot: 461deg; background: oklch(70% 0.17 85); animation-delay: 53ms; }
+.pl-confetti i:nth-child(14) { --dx: -238px; --dy: 137px; --rot: 102deg; background: oklch(70% 0.17 150); animation-delay: 43ms; }
+.pl-confetti i:nth-child(15) { --dx: 106px; --dy: -59px; --rot: 394deg; background: oklch(70% 0.17 25); animation-delay: 8ms; }
+.pl-confetti i:nth-child(16) { --dx: 254px; --dy: -13px; --rot: -407deg; background: oklch(70% 0.17 260); animation-delay: 7ms; }
+.pl-confetti i:nth-child(17) { --dx: 116px; --dy: 9px; --rot: 372deg; background: oklch(70% 0.17 200); animation-delay: 36ms; }
+.pl-confetti i:nth-child(18) { --dx: 144px; --dy: -130px; --rot: 405deg; background: oklch(70% 0.17 310); animation-delay: 45ms; }
+.pl-confetti i:nth-child(19) { --dx: -121px; --dy: -2px; --rot: 48deg; background: oklch(70% 0.17 85); animation-delay: 16ms; }
+.pl-confetti i:nth-child(20) { --dx: 130px; --dy: 47px; --rot: 476deg; background: oklch(70% 0.17 150); animation-delay: 10ms; }
+.pl-confetti i:nth-child(21) { --dx: -143px; --dy: -29px; --rot: -260deg; background: oklch(70% 0.17 25); animation-delay: 104ms; }
+.pl-confetti i:nth-child(22) { --dx: -47px; --dy: -54px; --rot: 194deg; background: oklch(70% 0.17 260); animation-delay: 87ms; }
+.pl-confetti i:nth-child(23) { --dx: 273px; --dy: -22px; --rot: -180deg; background: oklch(70% 0.17 200); animation-delay: 19ms; }
+.pl-confetti i:nth-child(24) { --dx: -101px; --dy: 1px; --rot: -167deg; background: oklch(70% 0.17 310); animation-delay: 33ms; }
+.pl-confetti i:nth-child(25) { --dx: -92px; --dy: 21px; --rot: 112deg; background: oklch(70% 0.17 85); animation-delay: 16ms; }
+.pl-confetti i:nth-child(26) { --dx: 119px; --dy: -29px; --rot: -430deg; background: oklch(70% 0.17 150); animation-delay: 58ms; }
+.pl-confetti i:nth-child(27) { --dx: 219px; --dy: 42px; --rot: 263deg; background: oklch(70% 0.17 25); animation-delay: 50ms; }
+.pl-confetti i:nth-child(28) { --dx: -43px; --dy: 17px; --rot: -413deg; background: oklch(70% 0.17 260); animation-delay: 24ms; }
+
+/* hub: today panel, card art */
+.hub-today { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; max-width: 760px; margin: 18px 0 6px; padding: 18px 22px; border: 1px solid var(--purple); border-radius: 16px; background: var(--purple-xlight); }
+.hub-today h2 { font-family: var(--font-display); font-size: 1.3rem; margin: 0 0 2px; }
+.hub-today-main { flex: 1 1 280px; min-width: 0; }
+.hub-count { margin: 0 0 6px; font-weight: 600; }
+.hub-level { margin: 6px 0 2px; font-size: 0.9rem; color: var(--muted); }
+#hub-progress { width: 100%; max-width: 360px; height: 12px; }
+.game-card-art { width: calc(100% + 44px); margin: -20px -22px 8px; height: 132px; object-fit: cover; border-radius: 16px 16px 0 0; display: block; }
+.game-card { overflow: hidden; }
+.game-card[data-done] { border-color: var(--g-good); }
+.game-card[data-done] .game-status { color: var(--g-good); }
+
+/* Daily Photo */
+.ph-photo { width: 100%; max-width: 640px; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 14px; background: var(--panel); display: block; margin: 8px 0 14px; }
+.ph-reveal { max-width: 640px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); margin: 0 0 14px; }
+.ph-reveal p { margin: 0 0 6px; }
+.ph-where { font-weight: 700; }
+.ac-check { display: flex; gap: 10px; align-items: flex-start; margin: 4px 0 14px; max-width: 520px; font-size: 0.92rem; }
+.ac-check input { margin-top: 4px; }

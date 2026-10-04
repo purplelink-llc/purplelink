@@ -156,3 +156,52 @@ test("percentile and cleanName basics", () => {
   assert.equal(cleanName("  Grace   Hopper "), "Grace Hopper");
   assert.equal(cleanName("x".repeat(30)), null);
 });
+
+// ---- streak reminder ----
+import { createReminder, reminderMail } from "../functions/games-reminder.mjs";
+import { streakAtRisk } from "../lib/games-logic.mjs";
+
+test("streakAtRisk: alive, not yet played today, streak of two or more", () => {
+  const data = {
+    linkle: { stats: { streak: 4, last: 9 }, today: { idx: 9, done: true } },          // played yesterday only
+    "daily-five": { stats: { streak: 3, last: 9 } },
+    quadlink: { stats: { streak: 1, last: 9 } },                                         // too short
+    crossword: { stats: { streak: 5, last: 10 }, today: { idx: 10, done: true } },       // already played today
+    "daily-photo": { stats: { streak: 6, last: 7 } },                                    // streak already broken
+  };
+  assert.deepEqual(streakAtRisk(data, 10).map((r) => r.game), ["linkle", "daily-five"]);
+});
+
+test("reminder emails go only to opted-in accounts with a live streak, once a day", async () => {
+  const idxNow = dayIndexUTC(new Date(Date.UTC(2026, 9, 6, 0, 5) - 6 * 3600 * 1000));   // 00:05 UTC Oct 6 is still Oct 5 in the US
+  const live = { linkle: { stats: { streak: 4, last: idxNow - 1 } } };
+  const accounts = {
+    ["acct:" + "a".repeat(64)]: { email: "yes@example.com", remind: true, remindToken: "b".repeat(32), data: live },
+    ["acct:" + "c".repeat(64)]: { email: "off@example.com", remind: false, remindToken: "d".repeat(32), data: live },
+    ["acct:" + "e".repeat(64)]: { email: "nostreak@example.com", remind: true, remindToken: "f".repeat(32), data: { linkle: { stats: { streak: 1, last: idxNow - 1 } } } },
+  };
+  const getStore = () => ({
+    list: async () => ({ blobs: Object.keys(accounts).map((key) => ({ key })) }),
+    get: async (k) => accounts[k] ?? null,
+    setJSON: async (k, v) => { accounts[k] = v; },
+  });
+  const sent = [];
+  const run = createReminder({ getStore, env: () => "re_test", fetchFn: async (u, o) => { sent.push(JSON.parse(o.body)); return new Response("{}"); }, now: () => Date.UTC(2026, 9, 6, 0, 5) });
+  assert.equal((await run()).sent, 1);
+  assert.equal(sent[0].to[0], "yes@example.com");
+  assert.match(sent[0].subject, /4-day Linkle streak/);
+  assert.match(sent[0].headers["List-Unsubscribe"], /\/games\/account\/\?off=a{64}\.b{32}/);
+  assert.equal((await run()).sent, 0);   // not twice in one day
+});
+
+test("reminder unsubscribe link switches it off; wrong token does not", async () => {
+  const s = await signIn();
+  await call({ action: "set_reminder", on: true }, bearer(s));
+  const acct = [...stores.data.keys()].find((k) => k.startsWith("games-accounts/acct:"));
+  const rec = JSON.parse(stores.data.get(acct));
+  assert.equal(rec.remind, true);
+  const hash = acct.split("acct:")[1];
+  assert.equal((await call({ action: "remind_off", acct: hash, token: "0".repeat(32) })).status, 400);
+  assert.equal((await call({ action: "remind_off", acct: hash, token: rec.remindToken })).status, 200);
+  assert.equal(JSON.parse(stores.data.get(acct)).remind, false);
+});

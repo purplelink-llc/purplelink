@@ -104,6 +104,8 @@
         if (res && window.PLAch) window.PLAch.check({ game: NAME, idx: st.idx, won: true, score: sc, pct: res.percentile, total: res.total });
       });
     }
+    if (fresh && sc === st.qs.length && window.PLConfetti) window.PLConfetti.big();
+    var sv = $("qz-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
     $("qz-quiz").hidden = true;
     var box = $("qz-result");
     box.hidden = false;

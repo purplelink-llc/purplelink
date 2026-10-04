@@ -2,8 +2,8 @@
 // cleaning what a browser sends, and turning a score histogram into a percentile.
 // No I/O here so it can be tested without Netlify.
 
-export const GAMES = ["linkle", "quadlink", "daily-five", "crossword", "daily-stars"];
-const COMPLETION_GAMES = ["linkle", "quadlink", "daily-five", "crossword"];
+export const GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "crossword", "daily-stars"];
+const COMPLETION_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "crossword"];
 export const EPOCH = "2026-10-04";
 export const MAX_DATA_BYTES = 60000;
 const MAX_WINS = 800;
@@ -21,9 +21,10 @@ function cleanStats(s) {
   const dist = {};
   if (isObj(s.dist)) for (const [k, v] of Object.entries(s.dist)) if (/^\d{1,3}$/.test(k)) dist[k] = int(v, 0, 1e6);
   const wins = Array.isArray(s.wins) ? [...new Set(s.wins.map((x) => int(x, 0, 100000)))].sort((a, b) => a - b).slice(-MAX_WINS) : [];
+  const freezes = Array.isArray(s.freezes) ? [...new Set(s.freezes.map((x) => int(x, 0, 100000)))].sort((a, b) => a - b).slice(-60) : [];
   return {
     played: int(s.played), won: int(s.won), streak: int(s.streak, 0, 100000), max: int(s.max, 0, 100000),
-    last: Number.isFinite(s.last) ? Math.trunc(s.last) : -1, dist, wins,
+    last: Number.isFinite(s.last) ? Math.trunc(s.last) : -1, dist, wins, freezes,
   };
 }
 
@@ -80,16 +81,18 @@ export function cleanData(data) {
   return out;
 }
 
-function streakFrom(wins, last) {
+// A "streak saver" day bridges one missed day, so it counts toward a streak but is not itself a win.
+function streakFrom(wins, last, freezes = []) {
   if (!wins.length || last < 0 || !wins.includes(last)) return 0;
-  const set = new Set(wins);
+  const set = new Set([...wins, ...freezes]);
   let n = 0;
   for (let d = last; set.has(d); d--) n++;
   return n;
 }
-function longestRun(wins) {
+function longestRun(wins, freezes = []) {
+  const all = [...new Set([...wins, ...freezes])].sort((a, b) => a - b);
   let best = 0, run = 0, prev = null;
-  for (const w of wins) { run = prev !== null && w === prev + 1 ? run + 1 : 1; best = Math.max(best, run); prev = w; }
+  for (const w of all) { run = prev !== null && w === prev + 1 ? run + 1 : 1; best = Math.max(best, run); prev = w; }
   return best;
 }
 
@@ -99,13 +102,14 @@ function mergeStats(a, b) {
   const wins = [...new Set([...(a.wins || []), ...(b.wins || [])])].sort((x, y) => x - y).slice(-MAX_WINS);
   const dist = { ...a.dist };
   for (const [k, v] of Object.entries(b.dist || {})) dist[k] = Math.max(dist[k] || 0, v);
+  const freezes = [...new Set([...(a.freezes || []), ...(b.freezes || [])])].sort((x, y) => x - y).slice(-60);
   const last = Math.max(a.last, b.last);
   return {
     played: Math.max(a.played, b.played, wins.length),
     won: Math.max(a.won, b.won, wins.length),
-    streak: streakFrom(wins, last),
-    max: Math.max(a.max, b.max, longestRun(wins)),
-    last, dist, wins,
+    streak: streakFrom(wins, last, freezes),
+    max: Math.max(a.max, b.max, longestRun(wins, freezes)),
+    last, dist, wins, freezes,
   };
 }
 
@@ -156,7 +160,7 @@ export function mergeData(a, b) {
 
 /** Allowed score range per game. Every score is "lower is better": guesses, misses, or
  *  20-second blocks for the crossword. 99 means the player lost. */
-export const SCORE_LIMITS = { linkle: 99, quadlink: 99, "daily-five": 5, crossword: 400 };
+export const SCORE_LIMITS = { linkle: 99, quadlink: 99, "daily-five": 5, "daily-photo": 5, crossword: 400 };
 
 export function percentile(buckets, score) {
   let total = 0, worse = 0, same = 0;
@@ -174,4 +178,18 @@ export function cleanName(name) {
   if (n.length < 2 || n.length > 24) return null;
   if (!/^[A-Za-z0-9 _.\-]+$/.test(n)) return null;
   return n;
+}
+
+export const SAVER_GAP_DAYS = 8;   // one streak saver per rolling week
+
+/** Accounts that opted in to a "your streak ends tonight" email, and have a streak worth protecting. */
+export function streakAtRisk(data, idx) {
+  const risks = [];
+  for (const g of ["linkle", "quadlink", "daily-five", "daily-photo", "crossword"]) {
+    const s = data?.[g]?.stats, t = data?.[g]?.today;
+    if (!s || s.streak < 2 || s.last !== idx - 1) continue;      // played yesterday, so the streak is alive
+    if (t && t.idx === idx && t.done) continue;                  // already played today
+    risks.push({ game: g, streak: s.streak });
+  }
+  return risks.sort((a, b) => b.streak - a.streak);
 }

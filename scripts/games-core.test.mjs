@@ -69,13 +69,36 @@ test("recordResult: streaks, losses and distribution", () => {
   s = G.recordResult(s, 11, true, 3);
   assert.equal(s.streak, 2);
   assert.equal(s.max, 2);
-  s = G.recordResult(s, 13, true, 5); // skipped a day
+  s = G.recordResult(s, 14, true, 5);   // missed two days: no saver, streak restarts
   assert.equal(s.streak, 1);
-  s = G.recordResult(s, 14, false, 6);
+  s = G.recordResult(s, 15, false, 6);
   assert.equal(s.streak, 0);
   assert.equal(s.played, 4);
   assert.equal(s.won, 3);
-  assert.deepEqual(s.dist, { 3: 1, 4: 1, 5: 1 });
+  assert.deepEqual(JSON.parse(JSON.stringify(s.dist)), { 3: 1, 4: 1, 5: 1 });
+});
+
+test("streak saver forgives one missed day a week", () => {
+  let s = G.recordResult(null, 10, true, 4);
+  s = G.recordResult(s, 11, true, 3);
+  s = G.recordResult(s, 13, true, 3);   // day 12 missed: the saver covers it
+  assert.equal(s.streak, 4);
+  assert.deepEqual(JSON.parse(JSON.stringify(s.freezes)), [12]);
+  assert.match(G.saverNote(s, 13), /streak saver/);
+  s = G.recordResult(s, 15, true, 3);   // day 14 missed within a week of the last saver: streak restarts
+  assert.equal(s.streak, 1);
+  s = G.recordResult(s, 16, true, 3);
+  s = G.recordResult(s, 18, true, 3);   // day 17 missed; the last saver was day 12, only six days earlier, so none is left
+  assert.equal(s.streak, 1);
+});
+
+test("xpOf and levels", () => {
+  assert.deepEqual(JSON.parse(JSON.stringify(G.xpOf({}))), { xp: 0, level: 1, into: 0, need: 60 });
+  const all = { linkle: { stats: { played: 10, won: 8, max: 5 } }, ach: { a: 1, b: 2 } };
+  const r = G.xpOf(all);   // 100 + 40 + 15 + 50 = 205
+  assert.equal(r.xp, 205);
+  assert.equal(r.level, 3);   // level 3 starts at 180
+  assert.equal(r.into, 25);
 });
 
 test("rankFor climbs the ladder", () => {

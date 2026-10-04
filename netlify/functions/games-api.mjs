@@ -8,6 +8,8 @@
  *   login_verify  {token}        Spends the link, creates the account on first use, returns a session.
  *   sync          {data}         (session) Merges the browser's saved progress with the account's and returns the result.
  *   set_name      {name}         (session) Display name, 2 to 24 characters.
+ *   set_reminder  {on}           (session) Turns the optional "your streak ends tonight" email on or off.
+ *   remind_off    {acct,token}   (anonymous) The one-click unsubscribe link in that email.
  *   logout                       (session) Ends this session.
  *   delete_account               (session) Deletes the account, its progress and every session.
  *   score         {game,idx,score}   (anonymous) Adds one score to that day's histogram, returns the percentile.
@@ -139,7 +141,17 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         account.sessions = [...(account.sessions || []), sha(session)];
         while (account.sessions.length > MAX_SESSIONS) await auth().delete(`sess:${account.sessions.shift()}`);
         await accounts().setJSON(`acct:${acct}`, account);
-        return json(200, { session, email: account.email, name: account.name, data: account.data }, origin);
+        return json(200, { session, email: account.email, name: account.name, data: account.data, remind: !!account.remind }, origin);
+      }
+
+      if (action === "remind_off") {
+        const acct = String(b.acct || ""), token = String(b.token || "");
+        if (!/^[a-f0-9]{64}$/.test(acct) || !/^[a-f0-9]{32}$/.test(token)) return json(400, { error: "invalid_link" }, origin);
+        const rec = await loadAccount(acct);
+        if (!rec || rec.remindToken !== token) return json(400, { error: "invalid_link" }, origin);
+        rec.remind = false;
+        await accounts().setJSON(`acct:${acct}`, rec);
+        return json(200, { ok: true }, origin);
       }
 
       if (action === "score") {
@@ -173,7 +185,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         account.data = merged;
         account.updated = now();
         await accounts().setJSON(`acct:${sess.acct}`, account);
-        return json(200, { data: merged, name: account.name, email: account.email }, origin);
+        return json(200, { data: merged, name: account.name, email: account.email, remind: !!account.remind }, origin);
       }
       if (action === "set_name") {
         const name = cleanName(b.name);
@@ -181,6 +193,12 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         account.name = name;
         await accounts().setJSON(`acct:${sess.acct}`, account);
         return json(200, { ok: true, name }, origin);
+      }
+      if (action === "set_reminder") {
+        account.remind = !!b.on;
+        if (!account.remindToken) account.remindToken = randomBytes(16).toString("hex");
+        await accounts().setJSON(`acct:${sess.acct}`, account);
+        return json(200, { ok: true, remind: account.remind }, origin);
       }
       if (action === "logout") {
         await auth().delete(`sess:${sess.hash}`);

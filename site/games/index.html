@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Daily games: word puzzles, trivia and horoscopes | Purplelink</title>
-    <meta name="description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
+    <meta name="description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, Daily Photo, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
     <link rel="canonical" href="https://purplelink.llc/games/">
     <meta property="og:title" content="Daily games: word puzzles, trivia and horoscopes">
-    <meta property="og:description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
+    <meta property="og:description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, Daily Photo, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/games/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Daily games: word puzzles, trivia and horoscopes">
-    <meta name="twitter:description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
+    <meta name="twitter:description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, Daily Photo, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <script type="application/ld+json">
     {
@@ -90,7 +90,7 @@
     <script src="/theme.js?v=e7bc0b7c72"></script>
     <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/games/games.css?v=3f078ea6a2">
+    <link rel="stylesheet" href="/games/games.css?v=046488f52a">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -118,28 +118,49 @@
           <h1>Daily games</h1>
           <p>A few quick puzzles that change every day at midnight. No third-party ads. Play without an account, or sign in with an email link to keep your streaks and achievements on every device.</p>
         </section>
+        <section class="hub-today" aria-labelledby="hub-today-h">
+          <div class="hub-today-main">
+            <h2 id="hub-today-h">Today</h2>
+            <p class="hub-count" id="hub-count">Six puzzles, a few minutes each.</p>
+            <progress id="hub-progress" max="6" value="0" aria-label="Puzzles finished today"></progress>
+            <p class="hub-level" id="hub-level"></p>
+            <p class="games-note">Streak saver: miss one day a week and your streak survives.</p>
+          </div>
+          <a class="btn btn-primary" id="hub-next" href="/games/daily-photo/">Start with a photo</a>
+        </section>
         <div class="games-grid">
           <a class="game-card" href="/games/linkle/" data-game="linkle">
+            <img class="game-card-art" src="/assets/photography/hub/dsc-3940-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
             <h2>Linkle</h2>
-            <p>One five-letter word a day, six guesses.</p>
+            <p>One five-letter word a day, with a new twist each weekday.</p>
             <span class="game-status" data-status></span>
           </a>
           <a class="game-card" href="/games/quadlink/" data-game="quadlink">
+            <img class="game-card-art" src="/assets/photography/hub/dsc-8610-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
             <h2>Quadlink</h2>
             <p>Four words at once, nine guesses.</p>
             <span class="game-status" data-status></span>
           </a>
           <a class="game-card" href="/games/daily-five/" data-game="daily-five">
+            <img class="game-card-art" src="/assets/photography/hub/dsc-7888-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
             <h2>Daily Five</h2>
             <p>Five trivia questions, with a few from the world of research and software.</p>
             <span class="game-status" data-status></span>
           </a>
+          <a class="game-card" href="/games/daily-photo/" data-game="daily-photo">
+            <img class="game-card-art" src="/assets/photography/hub/dsc-3638-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
+            <h2>Daily Photo</h2>
+            <p>Five travel photographs. Which country was each one taken in?</p>
+            <span class="game-status" data-status></span>
+          </a>
           <a class="game-card" href="/games/crossword/" data-game="crossword">
+            <img class="game-card-art" src="/assets/photography/hub/dsc-7919-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
             <h2>Daily Crossword</h2>
             <p>A new themeless crossword every day, easy on Monday and hard on Sunday.</p>
             <span class="game-status" data-status></span>
           </a>
           <a class="game-card" href="/games/daily-stars/" data-game="daily-stars">
+            <img class="game-card-art" src="/assets/photography/hub/dsc-8053-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
             <h2>Daily Stars</h2>
             <p>A short horoscope for every sign, for entertainment only.</p>
             <span class="game-status" data-status></span>
@@ -160,10 +181,10 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=b6b982f374" defer></script>
-    <script src="/games/sync.js?v=ead2ecf42a" defer></script>
-    <script src="/games/achievements.js?v=28cb21454c" defer></script>
-    <script src="/games/hub.js?v=b3407cd60e" defer></script>
+    <script src="/games/core.js?v=4c7b664fd9" defer></script>
+    <script src="/games/sync.js?v=0269d4661c" defer></script>
+    <script src="/games/achievements.js?v=2316f25ec7" defer></script>
+    <script src="/games/hub.js?v=119b89dd15" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

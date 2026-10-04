@@ -212,11 +212,84 @@ def crossword(src: Path) -> dict:
     return {"days": days}
 
 
+# ---- Daily Photo ("where in the world was this taken") ----
+PHOTOS_PER_DAY = 5
+SKIP_WORDS = ("close-up", "close up", "closeup", "macro", "texture", "detail", "pattern", "petal", "bokeh", "abstract", "sign ", "plaque", "stalk", "menu")
+
+
+def photo_pool(root: Path) -> dict[str, list[dict]]:
+    """Photographs from the published photography hubs that are recognisable as a place, grouped by country."""
+    hub = root / "site" / "photography" / "hub-data.json"
+    img_dir = root / "site" / "assets" / "photography" / "hub"
+    if not hub.exists():
+        return {}
+    data = json.loads(hub.read_text(encoding="utf-8"))
+    pool: dict[str, list[dict]] = {}
+    for c in data["countries"]:
+        items = []
+        for pl in c["places"]:
+            for im in pl["images"]:
+                items.append((im, pl["name"] + ", " + c["name"], pl["url"]))
+        for im in c["extra"]:
+            items.append((im, c["name"], c["url"]))
+        for im, label, url in items:
+            stem = im["stem"].lower().replace("_", "-")
+            title = im["title"]
+            if any(w in title.lower() for w in SKIP_WORDS):
+                continue
+            if not (img_dir / f"{stem}-1200.webp").exists():
+                continue
+            pool.setdefault(c["name"], []).append({"i": stem, "t": title, "p": label, "c": im["caption"], "u": url})
+    for lst in pool.values():
+        lst.sort(key=lambda x: x["i"])
+    return pool
+
+
+def photo_days(root: Path, epoch: str, days: int) -> dict:
+    pool = photo_pool(root)
+    countries = sorted(c for c, v in pool.items() if len(v) >= 3)
+    if len(countries) < 4:
+        return {}
+    cycles = {c: [] for c in countries}
+    counters = {c: 0 for c in countries}
+
+    def next_photo(c: str) -> dict:
+        if not cycles[c]:
+            order = pool[c][:]
+            random.Random(f"photo-{c}-{counters[c]}").shuffle(order)
+            counters[c] += 1
+            cycles[c] = order
+        return cycles[c].pop()
+
+    weights = [len(pool[c]) ** 0.5 for c in countries]
+    out = []
+    for d in range(days):
+        rng = random.Random(f"photo-day:{d}")
+        chosen: list[str] = []
+        while len(chosen) < PHOTOS_PER_DAY:
+            c = rng.choices(countries, weights=weights)[0]
+            if c not in chosen:
+                chosen.append(c)
+        rounds = []
+        for c in chosen:
+            ph = next_photo(c)
+            others = [x for x in countries if x != c]
+            rng.shuffle(others)
+            opts = [c] + others[:3]
+            rng.shuffle(opts)
+            rounds.append({"i": ph["i"], "o": opts, "a": enc_text(c), "t": ph["t"], "p": ph["p"], "c": ph["c"], "u": ph["u"]})
+        out.append(rounds)
+    return {"epoch": epoch, "days": out}
+
+
 def build(src: Path, epoch: str, days: int, enc) -> dict[str, str]:
     files: dict[str, str] = {}
     t = trivia(src, epoch, days, enc_text)
     if t:
         files["trivia.json"] = json.dumps(t, ensure_ascii=False, separators=(",", ":")) + "\n"
+    ph = photo_days(src.parent.parent, epoch, 150)   # 150 days is ~280 KB; the page wraps around after that
+    if ph:
+        files["photo.json"] = json.dumps(ph, ensure_ascii=False, separators=(",", ":")) + "\n"
     cw = crossword(src)
     if cw:
         files["crossword.json"] = json.dumps(cw, ensure_ascii=False, separators=(",", ":")) + "\n"

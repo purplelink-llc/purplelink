@@ -30,7 +30,7 @@
       if (res.status === 401) { setSession(null); return null; }
       if (res.status === 200) {
         if (JSON.stringify(G.all()) === snapshot) G.replaceAll(res.body.data);
-        if (res.body.name !== s.name) { s.name = res.body.name; setSession(s); }
+        if (res.body.name !== s.name || !!res.body.remind !== !!s.remind) { s.name = res.body.name; s.remind = !!res.body.remind; setSession(s); }
       }
       return res;
     }).catch(function () { return null; });

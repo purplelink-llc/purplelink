@@ -4,7 +4,7 @@
   var G = window.PLGames, A = window.PLAch;
   if (!G || !A) return;
   var $ = function (id) { return document.getElementById(id); };
-  var GAMES = [["linkle", "Linkle"], ["quadlink", "Quadlink"], ["daily-five", "Daily Five"], ["crossword", "Crossword"]];
+  var GAMES = [["linkle", "Linkle"], ["quadlink", "Quadlink"], ["daily-five", "Daily Five"], ["daily-photo", "Daily Photo"], ["crossword", "Crossword"]];
 
   function msg(t) { $("ac-msg").textContent = t || ""; }
   function fmt(sec) { var m = Math.floor(sec / 60), s = sec % 60; return m + ":" + (s < 10 ? "0" : "") + s; }
@@ -52,7 +52,7 @@
     $("ac-signin").hidden = !!s;
     $("ac-profile").hidden = !s;
     $("ac-who").textContent = s ? (s.name || s.email) : "";
-    if (s) { $("ac-email-shown").textContent = s.email; $("ac-name").value = s.name || ""; }
+    if (s) { $("ac-email-shown").textContent = s.email; $("ac-name").value = s.name || ""; $("ac-remind").checked = !!s.remind; }
     renderStats(); renderAch();
   }
 
@@ -87,6 +87,14 @@
         else msg("Use 2 to 24 letters, numbers, spaces, dots, dashes or underscores.");
       });
     });
+    $("ac-remind").addEventListener("change", function () {
+      var s = G.session.get(), on = $("ac-remind").checked;
+      if (!s) return;
+      G.api({ action: "set_reminder", on: on }, s.session).then(function (res) {
+        if (res.status === 200) { s.remind = on; G.session.set(s); msg(on ? "Streak reminders are on. You will get at most one email a day, only when a streak is about to end." : "Streak reminders are off."); }
+        else { $("ac-remind").checked = !on; msg("Could not change that right now."); }
+      });
+    });
     $("ac-sync").addEventListener("click", function () {
       msg("Syncing.");
       G.sync().then(function (res) { msg(res && res.status === 200 ? "Synced." : "Could not sync right now."); renderAccount(); });
@@ -111,8 +119,17 @@
   }
 
   wire();
+  var off = (location.search.match(/[?&]off=([a-f0-9]{64})\.([a-f0-9]{32})/) || []);
   var token = (location.search.match(/[?&]t=([a-f0-9]{48})/) || [])[1];
-  if (token) {
+  if (off[1]) {
+    history.replaceState(null, "", location.pathname);
+    G.api({ action: "remind_off", acct: off[1], token: off[2] }).then(function (res) {
+      msg(res.status === 200 ? "Streak reminder emails are turned off." : "That link is not valid any more. Sign in to change the setting.");
+      var s = G.session.get(); if (s) { s.remind = false; G.session.set(s); }
+      renderAccount();
+    });
+    G.ready.then(renderAccount);
+  } else if (token) {
     history.replaceState(null, "", location.pathname);
     verify(token).then(function () { renderAccount(); });
   } else {

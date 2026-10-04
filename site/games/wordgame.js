@@ -263,12 +263,14 @@
     }
     if (C.twists) renderMeta(s);
     if (fresh) reward(saved);
+    var sv = $("wg-saver"); if (sv) sv.textContent = G.saverNote(s, state.idx);
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   // Unlock achievements, then ask for the percentile and show it.
   function reward(saved) {
+    if (state.won && window.PLConfetti) window.PLConfetti[state.guesses.length <= 2 ? "big" : "small"]();
     var ctx = { game: C.name, idx: state.idx, won: state.won, tries: state.guesses.length, weekday: new Date().getDay() };
     if (window.PLAch) window.PLAch.check(ctx);
     G.submitScore(C.name, state.idx, state.won ? state.guesses.length : 99).then(function (res) {
