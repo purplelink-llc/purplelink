@@ -47,6 +47,10 @@ Revise and resubmit
 
 Revision Review for the manuscript and Response to Reviewers for the letter.
 
+Sending something with names or numbers in it
+
+Outbound Veil checks what you type for personal information before you send it.
+
 Keeping track of where everything is
 
 Vitae, free.
@@ -90,6 +94,14 @@ $3 a month or $24 a year
 Optional. Adds reports, Word templates, a revision workspace and Shareables on top of the free app. Seven days free before the first charge.
 
 See what Plus adds →
+
+Free 7-day trial, then a single payment
+
+### Outbound Veil
+
+A menu-bar app that checks what you type for names, numbers and addresses before you send it. It runs on your Mac and stores nothing. macOS 14 or later.
+
+See Outbound Veil →
 
 Before you submit
 
@@ -499,6 +511,135 @@ macOS 14 or later · Apple silicon and Intel · Signed and notarized
 
 ModernTex free for 7 days, then $10
 Get ModernTex
+
+
+---
+
+Source: https://purplelink.llc/outbound-veil/
+Title: Outbound Veil - Personal Information Checker for Mac | Purplelink LLC
+
+← All products
+
+macOS
+Free 7-day trial · $19 to keep
+
+# Outbound Veil
+
+Outbound Veil checks what you type for personal information before you send it. It runs in the Mac menu bar, the checking happens on your Mac, and the text never leaves it.
+
+Try it free for 7 days
+
+The trial is the full app for seven days, with no account and nothing to enter. Buying is a single payment; the price is at the top of this page. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). macOS 14 or later, Apple silicon and Intel.
+
+## How it works
+
+### It watches the field you are typing in
+
+Outbound Veil reads the text field that has focus, on your Mac, through macOS Accessibility. It does not look at other windows.
+
+### It shows a badge when it finds something
+
+A small badge appears with the number of findings, and the matching text is highlighted where the app allows it.
+
+### You decide
+
+Redact a finding, redact them all, or ignore them. In apps you choose, Outbound Veil can also hold the send key until you have decided.
+
+## What it finds
+
+People and contactNames, street addresses, phone numbers, email addresses.
+
+Government and taxSocial Security numbers, passport and driver's license numbers, tax identifiers.
+
+MoneyCard numbers, bank identifiers, IBANs.
+
+Health and datesDates of birth, medical record numbers.
+
+## Where it works
+
+Tested on macOS 26 with the apps below. Each one can be read, and Redact all rewrites the field in place.
+
+AppHow findings are shown
+
+TextEditEach finding highlighted word by word.
+
+NotesEach finding highlighted word by word.
+
+Microsoft WordEach finding highlighted word by word.
+
+MessagesBadge and Redact all. Send hold works here, as an example of an app you can choose.
+
+Chrome text areasWord by word in a plain text area. In the ChatGPT and claude.ai prompts the whole field is outlined instead.
+
+Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens.
+
+## Privacy
+
+### Checked on your Mac
+
+What you type is checked by a model that runs on your Mac. Nothing you type is stored or sent. There are no accounts and no analytics in the app.
+
+### Accessibility permission
+
+macOS asks you to allow Accessibility so Outbound Veil can read the text field you are typing in. Without it the app has nothing to check.
+
+### Input Monitoring, only for send hold
+
+This second permission is requested only if you turn on send hold, so the app can notice the send key. If you never use send hold, you never grant it.
+
+The only network use is the check for a new version and, for buyers, the download. Details are on the privacy page.
+
+## Limits
+
+NamesRecognized in Latin script only.
+
+Public figuresTheir names are flagged too. You can ignore those findings.
+
+AccuracyIt will miss some things, and it can flag things that are not personal information.
+
+ComplianceIt lowers the chance of a mistake. It is not a compliance product, and it does not make any workflow compliant with a regulation.
+
+## Credit
+
+The detection model is Rampart by National Design Studio, released under CC BY 4.0. Purplelink ported Rampart's processing code to Swift and added rules for dates of birth, medical record numbers and IBANs. The model file is unchanged.
+
+## Frequently asked questions
+
+What does it need to run?
+
+macOS 14 (Sonoma) or later, on Apple silicon or Intel.
+
+Does it send what I type anywhere?
+
+No. What you type is checked on your Mac. Nothing you type is stored or sent, and the app has no analytics. The only network use is the check for a new version and, for buyers, the download.
+
+Are updates included?
+
+Yes. The app checks for a new version and offers to install it in place, or you can choose Check for Updates from its menu. Each download is signed by Purplelink LLC.
+
+What happens when the trial ends?
+
+The trial is the complete app for seven days from the first time you open it, with no account. When it ends, Outbound Veil stops checking, shows one notice and offers a link to buy. Buying gives you a separate download of the full app to install in its place.
+
+Can I get a refund?
+
+Email ben@purplelink.llc within 14 days of purchase. See the terms.
+
+How do I get help?
+
+Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with.
+
+## Try it for a week.
+
+Seven days of the full app, no account and nothing to enter. Then decide whether to keep it.
+
+Try it free for 7 days
+Buy Outbound Veil
+
+macOS 14 or later · Apple silicon and Intel · Signed and notarized
+
+Outbound Veil free for 7 days
+Get Outbound Veil
 
 
 ---
@@ -2008,6 +2149,10 @@ Twelve checks before you submit, each with the tool that does it. Progress saved
 ### PDF Tools
 
 Merge, split, and compress PDFs. Merge and split run in your browser.
+
+### Metadata Cleaner
+
+Remove author names, GPS and edit history from photos, PDFs, Office files and video, or cover parts of a picture. Nothing is uploaded.
 
 ### Word Counter
 

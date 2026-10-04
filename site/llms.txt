@@ -18,7 +18,7 @@
 
 ## What Purplelink builds
 
-1. **Mac apps for academic writing** — ModernTex (LaTeX manuscript editor) and Vitae (academic record keeping).
+1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type) and Vitae (academic record keeping).
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
 4. **iOS apps** — GlobePin (travel mapping, shipping) and Haea (on-device health analytics, in development).
@@ -38,6 +38,16 @@
 - **Requirements:** macOS 14 (Sonoma) or later, Apple silicon or Intel, and a TeX distribution such as MacTeX or TinyTeX (ModernTex offers a one-click TinyTeX install if none is found). Signed, notarized disk image.
 - **Updates:** The app checks once a day and installs in place; updates are included in the purchase.
 - **Key differentiators:** Plain-language LaTeX error explanations; submission-readiness checks for journal/conference requirements; native macOS (not Electron, not web); academic manuscript workflow as first-class feature
+
+### Outbound Veil (macOS)
+- **Platform:** macOS 14 (Sonoma) or later, Apple silicon and Intel
+- **Category:** Privacy utility
+- **Description:** A Mac menu-bar app that checks what you type for personal information before you send it: names, street addresses, phone numbers, email addresses, Social Security numbers, card numbers, passport and driver's license numbers, tax and bank identifiers, dates of birth, medical record numbers and IBANs. It shows a badge when it finds something, and you redact, ignore, or in apps you choose have it hold the send key until you decide.
+- **Pricing:** Free 7-day trial (the complete app, no account), then a single payment to keep. See the product page for the price.
+- **Privacy:** The checking runs on the Mac. Nothing typed is stored or sent, there are no accounts and no analytics. The only network use is the update check and, for buyers, the download.
+- **Limits:** Latin-script names only; it also flags public figures' names; it will miss some things. It lowers the chance of a mistake and is not a compliance product.
+- **Credit:** The detection model is Rampart by National Design Studio (CC BY 4.0), https://github.com/nationaldesignstudio/rampart. Purplelink ported its processing code to Swift and added rules for dates of birth, medical record numbers and IBANs; the model file is unchanged.
+- **Trial and purchase:** https://purplelink.llc/outbound-veil/
 
 ### Vitae (macOS)
 - **Platform:** macOS 15 (Sequoia) or later
@@ -101,6 +111,7 @@
 - Research desk (recommended books for academic writers): https://purplelink.llc/desk/
 - Guide, using AI to check your own manuscript (publisher and venue policies compared): https://purplelink.llc/guides/ai-policy-checking-your-own-manuscript/
 - ModernTex (macOS, free 7-day trial then $10, shipping): https://purplelink.llc/moderntex/
+- Outbound Veil (macOS, free 7-day trial, then a single payment): https://purplelink.llc/outbound-veil/
 - Vitae (macOS, free, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/

@@ -24,6 +24,7 @@ BASE = "https://purplelink.llc"
 PAGES = [
     "products/",
     "moderntex/",
+    "outbound-veil/",
     "vitae/",
     "vitae/plus/",
     "tools/paper-review/",
