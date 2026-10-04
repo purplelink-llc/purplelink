@@ -2,7 +2,7 @@
 
 Live since 2026-10-04 (release 1.0.0, build 41). Tour video: https://youtu.be/EWlyzL88-uo. Purchase chain tested end to end with a one-use 100%-off promotion code.
 
-Outbound Veil is sold on purplelink.llc/outbound-veil as a one-time purchase, updates included, with a
+Outbound Veil is sold on purplelink.llc/outbound-veil as a one-time purchase, all updates included forever (including future major versions; Ben, 2026-10-04), with a
 7-day trial edition. It is a menu-bar app that checks the focused text field, in any app, for personal
 information before the user sends it. Source: the `OutboundVeil` repo (`/Volumes/Extreme SSD/OutboundVeil`,
 private). Design: that repo's `docs/superpowers/specs/2026-10-03-outbound-veil-design.md`.
