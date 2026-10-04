@@ -46,6 +46,7 @@ NAV = [
                                 "haea/", "binnacle/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/", "latex-errors/")),
+    ("Games", "/games/", ("games/",)),
     ("Blog", "/blog/", ("blog/", "changelog/")),
     ("About", "/about/", ("about/", "press/")),
 ]
