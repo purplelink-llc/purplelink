@@ -50,6 +50,7 @@ PAGES = [
     "guides/ai-policy-checking-your-own-manuscript/",
     "guides/overleaf-alternative-mac/",
     "guides/best-mac-latex-editors/",
+    "guides/best-pii-redaction-tools-for-chatgpt/",
 ]
 
 SKIP_TAGS = {"script", "style", "noscript", "svg", "header", "footer", "nav", "form", "button", "template"}

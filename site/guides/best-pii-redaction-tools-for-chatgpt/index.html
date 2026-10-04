@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Best PII redaction tools for ChatGPT and AI chats (2026) | Purplelink</title>
+    <meta name="description" content="Tools and approaches for removing personal information before you use ChatGPT and other AI chats: Outbound Veil, Predact, PrivacyScrubber, Presidio, ChatGPT's own controls, local models and more, compared honestly.">
+    <link rel="canonical" href="https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/">
+    <meta property="og:title" content="Best tools to redact personal information before you use ChatGPT and other AI chats (2026)">
+    <meta property="og:description" content="Desktop apps, extensions, open-source libraries, provider settings and local models compared, with what each cannot do.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/outbound-veil.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Best tools to redact personal information before you use ChatGPT and other AI chats (2026)">
+    <meta name="twitter:description" content="Desktop apps, extensions, open-source libraries, provider settings and local models compared, with what each cannot do.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/outbound-veil.png">
+    <meta name="twitter:image:alt" content="Best PII redaction tools for ChatGPT and AI chats: comparison guide">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Best tools to redact personal information before you use ChatGPT and other AI chats (2026)",
+          "description": "An honest comparison of tools and approaches for keeping client, patient and personal data out of AI chats, including what redaction cannot do.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-10-04",
+          "dateModified": "2026-10-04",
+          "image": "https://purplelink.llc/assets/og/outbound-veil.png",
+          "mainEntityOfPage": "https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "Best PII redaction tools for ChatGPT", "item": "https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the best way to remove personal information before using ChatGPT?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use layers. Set the account so chats are not used for training, or use a business plan. Put a detector where you type. Read what you are about to send. For material you cannot send at all, use a local model."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does ChatGPT Temporary Chat keep my data private?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only partly. OpenAI says a temporary chat stays out of your history, creates no memories and is not used to improve its models while it remains temporary, but that it may keep a copy for up to 30 days for safety. The text still reaches OpenAI's servers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a redaction tool enough for HIPAA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. HIPAA defines de-identified data by an expert determination or by removing a listed set of identifiers with no actual knowledge that the rest could identify the person. A tool that catches names and numbers is neither. This is not legal advice; ask your compliance officer or counsel."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do these tools send my text to a server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most say detection runs on your device or in your browser. That is the vendor's claim, not something I tested. Enterprise DLP and the provider's own plans involve servers by design. A local model keeps text on your machine."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a free tool to redact personal information for AI chats?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Predact (Mac and Windows) and Clipmask (Apple silicon Macs) are free. RedactDesk is a free, open-source Mac app for PDFs. Rescriber is a free, open-source Chrome extension for ChatGPT. PrivacyScrubber and Caviard have free tiers with limits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a Mac app that checks for personal information as I type?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I run a local model instead of redacting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If the material must not leave your machine, yes. Ollama and LM Studio run open models on your computer. The cost is setup time and usually a less capable model. Ollama also offers cloud models that run on its servers, so choose a local one."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+<link rel="stylesheet" href="/styles.css?v=be9f0a97b9">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=cefe20b388" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Comparison</p>
+        <h1 class="post-title">Best tools to redact personal information before you use ChatGPT and other AI chats (2026)</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-04">October 4, 2026</time>, updated <time datetime="2026-10-04">October 4, 2026</time></p>
+        <p class="post-lede">What each option does, what it costs, where the checking happens and what it misses, for anyone who keeps pasting client, patient, student or personal details into an AI chat. Three of the options are not software you install: provider settings, a local model and find-and-replace.</p>
+      </div>
+
+            <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I make one of the tools on this list (<a href="/outbound-veil/">Outbound Veil</a>, a Mac menu-bar app). I have tried to write the comparison honestly, and in several cases a competitor is the better choice. <a href="https://predact.app/" rel="noopener">Predact</a> is free and handles files, which Outbound Veil does not. <a href="https://privacyscrubber.com/" rel="noopener">PrivacyScrubber</a> works on Windows and Linux, which Outbound Veil does not. If your data cannot leave your machine at all, a local model beats every redaction tool here. Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. Where a vendor says its software runs on your device, I write "says": I have not audited that.</p>
+
+        <h2>What you actually need to stop leaking data into AI chats</h2>
+        <p>Redaction means replacing specific details in your text, such as a name, a date of birth or a card number, with a placeholder before the text goes to the AI. The model still answers, because it sees "[PERSON_1] was seen on [DATE_1]" and can work with that. You put the real details back yourself, or a tool does it from a saved mapping.</p>
+        <p>There are four places to intervene, and the tools here sit in different ones:</p>
+        <ol>
+          <li><strong>As you type or paste.</strong> A menu-bar app or browser extension watches the text box and flags or replaces details before you press send. This is where the mistake usually happens.</li>
+          <li><strong>Before you paste.</strong> An app or web page where you drop in text or a file and paste the clean copy. It works on the days you remember it.</li>
+          <li><strong>At the account.</strong> The provider's settings and plan decide whether what you send is used for training. This removes nothing from their servers.</li>
+          <li><strong>Off the cloud.</strong> A model that runs on your own computer, so nothing is sent.</li>
+        </ol>
+        <p>All of them share two limits, covered in <a href="#cannot-do">what redaction cannot do</a>: detection misses things, and a redacted note can still describe a situation someone could recognize.</p>
+
+        <h2>The shortlist</h2>
+        <ol>
+          <li><strong><a href="/outbound-veil/">Outbound Veil</a></strong>: $29 once, a Mac menu-bar app that checks the text field you are typing in.</li>
+          <li><strong>Predact</strong>: free, Mac and Windows, drop in documents, images or text.</li>
+          <li><strong>PrivacyScrubber</strong>: browser-based, free tier, extension for 12 chat and work sites.</li>
+          <li><strong>Microsoft Presidio</strong>: free open-source library for developers.</li>
+          <li><strong>The provider's own controls</strong>: ChatGPT settings, Temporary Chat, business plans and the API.</li>
+          <li><strong>A local model</strong>: Ollama or LM Studio, so nothing leaves your machine.</li>
+          <li><strong>Find and replace by hand</strong>: free, slow, and still useful.</li>
+        </ol>
+        <p>Those seven cover most situations. <a href="#more-tools">Seven more tools</a> and seven narrower ones follow.</p>
+
+        <h2>Outbound Veil</h2>
+        <p><strong>Cost:</strong> $29, one-time, updates included, after a free 7-day trial with no account. <strong>Platform:</strong> macOS 14 or later, Apple silicon and Intel. Mac only. <strong>Status:</strong> version 1.0.0.</p>
+        <p>Outbound Veil lives in the menu bar and reads the text field that has focus, through macOS Accessibility. When it finds something it shows a badge with the number of findings and highlights the matching text where the app allows it. You can ignore a finding, or press Redact all, which rewrites the field in place with labelled placeholders such as [SSN_1] or [EMAIL_1]. In apps you choose, it can also hold the send key until you have decided. It looks for names, addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth, medical record numbers and IBANs.</p>
+        <p>A model that runs on your Mac does the checking. Nothing you type is stored or sent, and the app has no analytics. The model is <a href="https://github.com/nationaldesignstudio/rampart" rel="noopener">Rampart</a> by National Design Studio, released under CC BY 4.0, and I did not train it. Purplelink ported Rampart's processing code to Swift and added rules for dates of birth, medical record numbers and IBANs. The model file is unchanged.</p>
+        <p><strong>What it's good at:</strong> sitting where the mistake happens, in any Mac app it can read rather than one website. I tested TextEdit, Notes, Microsoft Word, Messages and text areas in Chrome. In the ChatGPT and claude.ai prompt boxes in Chrome, Redact all works, but the whole box is outlined instead of each word highlighted.</p>
+        <p><strong>What it lacks:</strong> Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list. Some apps do not expose their text fields to macOS: in my testing the Apple Mail compose window could not be read, and Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list. It needs the Accessibility permission, plus Input Monitoring if you turn on send hold. After Redact all it does not put the original values back into the AI's answer; you swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.</p>
+        <p><strong>Pick Outbound Veil if</strong> you write or paste client, patient or student details into chat boxes on a Mac and want a check as you send. <strong>Pick something else if</strong> you are on Windows, mostly share files or screenshots, or your data has names in non-Latin scripts. <a href="/outbound-veil/">The trial is free for seven days; keeping it is $29, once</a>.</p>
+
+        <h2>Predact</h2>
+        <p><strong>Cost:</strong> Free, no card; you enter an email address to get the download link. <strong>Platform:</strong> Mac (macOS 14 recommended, Apple silicon supported) and Windows.</p>
+        <p>Predact is a desktop app where you drop in PDFs, Word files, text files, images and email clippings, or paste text and screenshots. It shows what it found, lets you select more words to redact, and you copy the result out or open a built-in browser linked to ChatGPT, Claude, Gemini or Perplexity. Its page says processing is local, with a Safe Mode that goes online only when you export to an AI service and a Fully Offline Mode that blocks all network use. "Persona filtering" swaps in consistent made-up details instead of tags.</p>
+        <p><strong>What it's good at:</strong> being free, handling files and images, and running on Mac and Windows. <strong>What it lacks:</strong> it does not check what you type in other apps, so using it is a step you have to remember. The local-processing statement is the vendor's claim.</p>
+        <p><strong>Pick Predact if</strong> your risk is documents, scans or screenshots, you are on Windows, or the budget is zero. Outbound Veil's case is that the check happens while you type, whether or not you remembered.</p>
+
+        <h2>PrivacyScrubber</h2>
+        <p><strong>Cost:</strong> Free up to 15,000 characters per scrub; Pro is $15 a month or $110 once; Teams is $99 a month; a developer SDK is $299 a month. <strong>Platform:</strong> a web app, a Chrome extension, an MCP server and a Node.js SDK.</p>
+        <p>The Chrome extension adds a shield button to chat boxes on 12 listed sites, including ChatGPT, Claude, Gemini, Copilot and Perplexity. Click it, or press Alt+Shift+X, and the text becomes placeholders such as [NAME_1]. After the answer arrives, "Reveal Original Data" restores the real values inside the page. Its page says all of this runs in the browser tab with no server contact.</p>
+        <p><strong>What it's good at:</strong> the full loop of redact, ask, restore, on many sites, on any system that runs Chrome. <strong>What it lacks:</strong> it lives in the browser, so it does not help in a desktop app. You press the button, so a rushed send can skip it. Larger inputs, PDF OCR and custom rules need a paid plan. I have not tested the local-processing claim.</p>
+        <p><strong>Pick PrivacyScrubber if</strong> you use several AI sites in a browser, want the original values restored in the reply, and are on Windows or Linux or do not want an app.</p>
+
+        <h2>Microsoft Presidio</h2>
+        <p><strong>Cost:</strong> Free, MIT license. <strong>Platform:</strong> a Python library, with Docker and Kubernetes options.</p>
+        <p><a href="https://presidio.dataprivacystack.org/" rel="noopener">Presidio</a> is an open-source framework for finding and anonymizing personal data in text, images and structured data, using named-entity recognition, regular expressions, rules and checksums. You can write your own recognizers, and it runs wherever you run it with no external service. The project warns there is no guarantee it finds everything. It has moved from Microsoft's GitHub organization to a community-owned one, and its documentation says that transition is under way.</p>
+        <p><strong>What it's good at:</strong> control. You can run it over a folder of interview transcripts and keep the pipeline in your own infrastructure. <strong>What it lacks:</strong> an interface. It will not watch a chat box, and nothing happens until you write the code that calls it. How well it works on your data is yours to measure.</p>
+        <p><strong>Pick Presidio if</strong> you write code and need to scrub a dataset or a set of transcripts before sending it to an AI service. Everyone else should pick an app.</p>
+
+        <h2>The provider's own controls</h2>
+        <p><strong>Cost:</strong> The settings are free; business plans are priced by OpenAI. <strong>Platform:</strong> any.</p>
+        <p>This is not redaction, and it is the first thing to fix. OpenAI's help pages describe three things worth knowing. Under Settings, Data Controls, "Improve the model for everyone" decides whether chats on a personal account can be used to train its models. Temporary Chat is documented as not appearing in your history, not creating or updating memories and not being used to improve models while it stays temporary, though OpenAI may keep a copy for up to 30 days for safety. And for ChatGPT Business, Enterprise and Edu and for the API platform, OpenAI says business data is not used for training by default unless the customer opts in. For regulated health data there is a further contract, the Business Associate Agreement; the addendum OpenAI publishes names parts of its API as eligible, and which ChatGPT plans qualify is a question for OpenAI and your counsel. Claude, Gemini and the others have their own settings.</p>
+        <p><strong>What it's good at:</strong> it covers everything you type, costs nothing at the free end and settles the training question. <strong>What it lacks:</strong> your text still reaches the provider's servers and is kept for some period. A setting is a promise, not a physical barrier: in 2025 a US court order in a newspaper lawsuit reportedly required OpenAI to preserve chats that users had deleted, for a period that reportedly ended in September 2025, with some of what was preserved still held. And a business plan does not change what you are allowed to share. Your duties to a client, patient or student are the same either way.</p>
+        <p><strong>Fix this layer</strong> first. For a team, a business plan with a signed agreement matters more than any redaction tool.</p>
+
+        <h2>A local model</h2>
+        <p><strong>Cost:</strong> Free to download. <strong>Platform:</strong> macOS, Windows and Linux for both <a href="https://ollama.com/" rel="noopener">Ollama</a> and <a href="https://lmstudio.ai/" rel="noopener">LM Studio</a>.</p>
+        <p>Ollama and LM Studio run open models on your own computer. LM Studio's documentation says it can operate entirely offline once a model is downloaded, and its privacy policy says messages, chat histories and documents are not transmitted from your system when you run models locally; update checks and model downloads do use the network. Ollama has a catch: it also offers cloud models, whose names end in <code>:cloud</code>, that run on Ollama's servers. Its documentation says prompts to those are processed there, and that cloud features can be turned off. Choose a local model if the point is that nothing leaves the machine.</p>
+        <p><strong>What it's good at:</strong> it is the only option here where redaction is not needed, because there is no recipient. You can paste the whole note. <strong>What it lacks:</strong> setup time, memory and capability. Open models that fit on a laptop are generally less capable than the largest hosted ones, which matters for hard reasoning and less for summarizing or drafting. That is my judgment, not a benchmark.</p>
+        <p><strong>Pick a local model if</strong> the material must stay on your machine and a smaller model is good enough for the job.</p>
+
+        <h2>Find and replace by hand</h2>
+        <p><strong>Cost:</strong> Free. <strong>Platform:</strong> any text editor.</p>
+        <p>Copy the text into a plain-text editor, replace each name with "Person A", "Person B" and each date with "Date 1", and keep a small key in a separate note. Ask your question, then reverse the replacements in the answer. It works with any AI service, no vendor sees anything, and it forces you to read every line, which a tool does not. The cost is reliability on long text: a misspelled surname, a nickname or an employer slips through. Use it for short, occasional documents, or as the read-through after a detector's first pass.</p>
+
+        <h2 id="more-tools">Seven more tools</h2>
+        <p>Each is real and useful to someone. None is on the shortlist because one of the seven above covers the same ground for most people, or the tool addresses a different problem.</p>
+
+        <h3>Caviard</h3>
+        <p><strong>Cost:</strong> Free for up to 10 protected values per document; a lifetime plan at $9, which the page lists as an early discount from $15.30. <strong>Platform:</strong> Chrome extension for ChatGPT and DeepSeek.</p>
+        <p>It masks details in the browser before a prompt is sent, and Alt+R toggles original and redacted text. Its page describes detection as pattern-based, which suits emails and card numbers and tends to be weaker for names; I have not tested it on names. <strong>Pick Caviard if</strong> you use only ChatGPT or DeepSeek in Chrome and want a low-priced lifetime plan.</p>
+
+
+
+        <h3>ClipScrub</h3>
+        <p><strong>Cost:</strong> $29 once, 14-day free trial. <strong>Platform:</strong> macOS 15 or later; the AI-enhanced detection needs Apple silicon.</p>
+        <p>The closest Mac peer on price. ClipScrub redacts PDFs, Word files, screenshots, screen recordings, JSON, CSV, XML and clipboard text, on the Mac and with no internet needed, according to its page. A keyboard shortcut starts it. It does not watch your typing, and it says it is not a compliance service and does not guarantee complete de-identification. <strong>Pick ClipScrub over Outbound Veil if</strong> your material is files, screenshots or recordings rather than text typed into boxes.</p>
+
+        <h3>Clipmask</h3>
+        <p><strong>Cost:</strong> Free, with no time limit. <strong>Platform:</strong> Apple silicon Macs only, macOS 14 or later.</p>
+        <p>Made by the Predact company. You copy text as usual, and a shortcut (Option+Space) offers a redacted version to paste. Its page says detection runs on the Mac, and that the only server contact is a check that the app is a licensed current version. <strong>Pick Clipmask if</strong> you want a free Mac tool that works on whatever you copy.</p>
+
+        <h3>RedactDesk</h3>
+        <p><strong>Cost:</strong> Free, open source (MIT). <strong>Platform:</strong> macOS 14 or later.</p>
+        <p>A Mac app for redacting PDFs, scanned ones included, with OpenAI's open-source privacy-filter model running locally. It deletes the text from the PDF rather than covering it. PDFs only. <strong>Pick RedactDesk if</strong> your whole job is PDFs.</p>
+
+        <h3>BlurData</h3>
+        <p><strong>Cost:</strong> $79 a year or $149 once for one person; team plans are listed. No free tier is shown. <strong>Platform:</strong> macOS 13 or later, with an iOS version.</p>
+        <p>It finds and blacks out personal details in JPG and PNG screenshots and in PDFs, on the device, in batches. <strong>Pick BlurData if</strong> your leaks are screenshots.</p>
+
+        <h3>Nightfall</h3>
+        <p><strong>Cost:</strong> By quote, per user per year, in two editions. Directories quote conflicting figures, so I give none. <strong>Platform:</strong> browser, endpoint, SaaS and AI-app coverage, run by an administrator.</p>
+        <p>Data loss prevention for organizations: a security team sets policies, and the software blocks or flags sensitive data going into AI apps, email and other services. <strong>Pick Nightfall if</strong> you have to enforce a policy across many employees.</p>
+
+        <h3>Microsoft Purview</h3>
+        <p><strong>Cost:</strong> Depends on your Microsoft licensing, which I did not confirm. <strong>Platform:</strong> managed devices, Edge and other browsers.</p>
+        <p>Microsoft's documentation describes Endpoint DLP policies that block pasting and uploading sensitive information to AI app websites on managed devices, and Edge policies that inspect prompts typed or pasted into consumer AI apps including ChatGPT, Copilot, DeepSeek and Gemini. <strong>Pick Purview if</strong> your organization already runs Microsoft 365 security and IT can turn it on.</p>
+
+        <p>Seven narrower options, most of them young, with a handful of installs or stars as of this writing. <a href="https://redact.tools/" rel="noopener">ChatGPT Privacy Shield</a> is a free Chrome extension for ChatGPT only, with Pro ($9 a month) and Team ($49 a month) plans listed as a waitlist. <a href="https://github.com/PEACH-Research-Lab/Rescriber" rel="noopener">Rescriber</a> is a free, open-source ChatGPT extension from Northeastern University researchers. PII Scrubber (ChatGPT, free for 5 uses a day, Pro $7 a month) and Paste Redactor (four browsers, free for 100 redactions a month, then $1 a month) are small extensions with paid tiers. <a href="https://github.com/fujahgabriel/PIIGuardAI" rel="noopener">PIIGuardAI</a> is an open-source Mac menu-bar proxy that blocks AI requests containing patterns such as emails and card numbers but uses regular expressions only. <a href="https://github.com/straightbackward/maskbase" rel="noopener">Maskbase</a> is an open-source Mac app for documents. Veil (helloveil.com, $8 a month) is a different company's meeting recorder with a privacy engine; its changelog lists nothing that checks what you type in other apps.</p>
+
+        <h2 id="cannot-do">What redaction cannot do</h2>
+        <p>Some vendors above say this plainly, and everyone should assume it. Rampart, the model behind Outbound Veil, calls itself harm reduction, not perfect protection, and Presidio says there is no guarantee it finds everything.</p>
+        <ul>
+          <li><strong>It lowers the chance of a mistake. It is not compliance.</strong> No tool here makes a workflow compliant with a regulation or a contract.</li>
+          <li><strong>It misses things.</strong> Nicknames, initials, a case number in a format the detector has not seen. Read the text yourself before you send it.</li>
+          <li><strong>It flags the wrong things too.</strong> A detector cannot tell your client from a famous person, so public figures get flagged. You ignore those.</li>
+          <li><strong>Non-Latin scripts are a gap.</strong> Rampart's documentation reports about 98% recall for names in seven Latin-script languages but about 14% across non-Latin scripts in aggregate, from 2% for Russian to 46% for Japanese. Any tool built on it, Outbound Veil included, inherits that. Other tools use other models; test each on your languages.</li>
+          <li><strong>Context can identify a person with no name in sight.</strong> A rare diagnosis, a job title at a small employer, a town and a date. Detectors are built around identifiers such as names and numbers, and Rampart's documentation lists indirect identifiers as unaddressed.</li>
+          <li><strong>Text tools do not touch files.</strong> Attachments, screenshots and metadata need a file tool, or should not be uploaded. Nor is redaction retroactive.</li>
+        </ul>
+
+        <h2>HIPAA, FERPA and client confidentiality</h2>
+        <p>This is not legal advice, and the answer depends on who you are and what you hold.</p>
+        <p><strong>HIPAA.</strong> The rule that defines de-identified health information (45 CFR 164.514) offers two routes: an expert's documented determination that the risk of identifying a person is very small, or removal of a listed set of about 18 identifier types, including names, geographic detail, dates tied to a person, contact numbers and record and account numbers, with no actual knowledge that what is left could identify someone. A detector that catches names and numbers is neither route, so text it has cleaned can still be protected health information. Whether you may send data to an AI service at all usually turns on a Business Associate Agreement and your organization's policy, so ask your compliance officer.</p>
+        <p><strong>FERPA.</strong> The law gives parents, and students once they are 18 or in postsecondary school, rights over personally identifiable information in education records. If you grade, advise or write recommendations, check your institution's AI policy before pasting anything that names a student. Removing the name is a habit, not a rule.</p>
+        <p><strong>Client and participant confidentiality.</strong> Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools, and that tools which train on inputs call for the client's informed consent. For research, your IRB protocol and data management plan probably already say who may see participant data, and an AI service is a new recipient. For manuscripts, see <a href="/guides/ai-policy-checking-your-own-manuscript/">what publishers allow when you run your own manuscript through AI</a>.</p>
+
+        <h2>Decision matrix</h2>
+        <ul>
+          <li><strong>Mac user typing or pasting client or patient text into chat boxes?</strong> <a href="/outbound-veil/">Outbound Veil</a>, $29.</li>
+          <li><strong>Documents, scans or screenshots, or on Windows, or want it free?</strong> Predact. On a Mac, ClipScrub too.</li>
+          <li><strong>Several AI sites in a browser, values restored in the reply?</strong> PrivacyScrubber.</li>
+          <li><strong>Only ChatGPT in Chrome?</strong> Caviard, Privacy Shield or Rescriber.</li>
+          <li><strong>Only PDFs?</strong> RedactDesk. <strong>Mostly screenshots?</strong> BlurData or ClipScrub. <strong>Whatever you copy?</strong> Clipmask.</li>
+          <li><strong>A developer scrubbing a dataset or transcripts?</strong> Presidio.</li>
+          <li><strong>A team with a policy to enforce?</strong> A business plan first, then Nightfall or Purview.</li>
+          <li><strong>The data must not leave the machine?</strong> A local model.</li>
+          <li><strong>Occasional short text, no new software?</strong> Find and replace.</li>
+        </ul>
+
+        <h2>A routine that holds up</h2>
+        <ol>
+          <li><strong>Write down what must never go in</strong>, then fix the account: turn off the model-improvement setting or use a business plan, and use Temporary Chat for one-off questions.</li>
+          <li><strong>Put a detector where you type.</strong> A menu-bar app or an extension, or a scrubber page you open every time.</li>
+          <li><strong>Test it with fake data first.</strong> Paste a made-up record with a name, a number, an address and a date, and see what it catches. This applies to every tool here, including mine, and takes two minutes.</li>
+          <li><strong>Read what you are about to send.</strong> Look for what a detector would not know: a nickname, an employer.</li>
+          <li><strong>Ask with placeholders and restore by hand.</strong> Keep any key in a separate local note. For the most sensitive material, use a local model or skip AI.</li>
+        </ol>
+
+        <h2>Frequently asked</h2>
+        <h3>What is the best way to remove personal information before using ChatGPT?</h3>
+        <p>Use layers. Set the account so chats are not used for training, or use a business plan. Put a detector where you type. Read what you are about to send. For material you cannot send at all, use a local model.</p>
+        <h3>Does ChatGPT Temporary Chat keep my data private?</h3>
+        <p>Only partly. OpenAI says a temporary chat stays out of your history, creates no memories and is not used to improve its models while it remains temporary, but that it may keep a copy for up to 30 days for safety. The text still reaches OpenAI's servers.</p>
+        <h3>Is a redaction tool enough for HIPAA?</h3>
+        <p>No. HIPAA defines de-identified data by an expert determination or by removing a listed set of identifiers with no actual knowledge that the rest could identify the person. A tool that catches names and numbers is neither. This is not legal advice; ask your compliance officer or counsel.</p>
+        <h3>Do these tools send my text to a server?</h3>
+        <p>Most say detection runs on your device or in your browser. That is the vendor's claim, not something I tested. Enterprise DLP and the provider's own plans involve servers by design. A local model keeps text on your machine.</p>
+        <h3>Is there a free tool to redact personal information for AI chats?</h3>
+        <p>Yes. Predact (Mac and Windows) and Clipmask (Apple silicon Macs) are free. RedactDesk is a free, open-source Mac app for PDFs. Rescriber is a free, open-source Chrome extension for ChatGPT. PrivacyScrubber and Caviard have free tiers with limits.</p>
+        <h3>Is there a Mac app that checks for personal information as I type?</h3>
+        <p>Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things.</p>
+        <h3>Should I run a local model instead of redacting?</h3>
+        <p>If the material must not leave your machine, yes. Ollama and LM Studio run open models on your computer. The cost is setup time and usually a less capable model. Ollama also offers cloud models that run on its servers, so choose a local one.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/ai-policy-checking-your-own-manuscript/">Can you use AI to check your own manuscript?</a> What publishers allow.</li>
+                              <li><a href="/privacy/">Purplelink's privacy page</a>, <a href="/suite/">the Mac Suite</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+
+      <section class="waitlist-section">
+        <p class="eyebrow">From the team behind these tools</p>
+        <h2>Typing client notes into AI chats on a Mac?</h2>
+        <p>Outbound Veil is a Mac menu-bar app that checks the text field you are typing in for names, numbers and addresses, marks what it finds, and can redact it in one click. The checking runs on your Mac. $29 once, all updates included.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/outbound-veil/">Try Outbound Veil free for 7 days</a>
+          <a class="btn btn-ghost" href="/outbound-veil/">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account. Mac only, Latin-script names only, and it will miss some things.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=63b428f2d9" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
