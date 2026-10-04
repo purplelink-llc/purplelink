@@ -2277,7 +2277,7 @@ def site_card(s: dict) -> str:
 
 
 PRODUCT_LABELS = {
-    "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "freeboard": "Legroom", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "freeboard": "Legroom", "app-suite": "Mac Suite", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
     "citation-gap": "Citation gap", "revision-review": "Revision review",
     "response-review": "Response review", "resume-review": "Resume review",
     "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
@@ -2821,6 +2821,7 @@ PRODUCT_GROUPS = [
     ("ModernTex", "var(--purple)"),
     ("Outbound Veil", "oklch(66% 0.2 300)"),
     ("Legroom", "oklch(72% 0.14 215)"),
+    ("Mac Suite", "oklch(70% 0.18 330)"),
     ("Paper Review & tools", "oklch(75% 0.14 230)"),
     ("Kits", "oklch(80% 0.13 85)"),
     ("Spreadsheets", "oklch(70% 0.12 280)"),
@@ -2843,6 +2844,8 @@ def product_group(row: dict) -> str:
         return "Outbound Veil"
     if product in ("legroom", "freeboard"):  # Freeboard was its working name; Stripe still says so
         return "Legroom"
+    if product == "app-suite":  # all the Mac apps in one purchase; revenue is not split per app
+        return "Mac Suite"
     if product.startswith("kit-"):
         return "Kits"
     if product.startswith("sheet-"):
@@ -3591,7 +3594,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Outbound Veil", "Legroom", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Outbound Veil", "Legroom", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 

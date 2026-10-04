@@ -37,3 +37,11 @@ def test_legroom_is_its_own_line_under_either_name():
     assert "Legroom" in [g for g, _c in td.PRODUCT_GROUPS] and "Legroom" in td.PROFIT_LINES
     pv = td.profit_view({"ledger": {"cs_x": _row("legroom", 900, 871)}}, {}, 7)
     assert any(r["line"] == "Legroom" and r["orders"] == 1 for r in pv["rows"])
+
+
+def test_mac_suite_is_its_own_line():
+    assert td.product_group(_row("app-suite", 4900, 4758)) == "Mac Suite"
+    assert td.PRODUCT_LABELS["app-suite"] == "Mac Suite"
+    assert "Mac Suite" in [g for g, _c in td.PRODUCT_GROUPS] and "Mac Suite" in td.PROFIT_LINES
+    pv = td.profit_view({"ledger": {"cs_x": _row("app-suite", 4900, 4758)}}, {}, 7)
+    assert any(r["line"] == "Mac Suite" and r["orders"] == 1 for r in pv["rows"])
