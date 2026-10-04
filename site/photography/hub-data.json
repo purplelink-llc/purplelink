@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-01",
+ "generated": "2026-10-04",
  "countries": [
   {
    "slug": "iceland",
@@ -51,6 +51,7 @@
         "bucket list"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -95,6 +96,7 @@
         "spectacular"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -139,6 +141,7 @@
         "overcast light"
        ],
        "people": true,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -192,6 +195,7 @@
         "bucket list"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -236,6 +240,7 @@
         "texture"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -280,6 +285,7 @@
         "reflection"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -332,6 +338,7 @@
         "natural wonder"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -385,6 +392,7 @@
         "seascape"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -440,6 +448,7 @@
         "postcard view"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -491,6 +500,7 @@
         "dramatic scenery"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -536,6 +546,7 @@
         "geology"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -581,6 +592,7 @@
         "majestic"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -626,6 +638,7 @@
         "quaint"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -670,6 +683,7 @@
         "flowing water"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -714,6 +728,7 @@
         "countryside"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -770,6 +785,7 @@
         "dramatic scenery"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 900,
        "tw": 480,
@@ -818,6 +834,7 @@
         "steep gorge"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 960,
        "tw": 480,
@@ -863,6 +880,7 @@
         "splash"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 960,
        "tw": 480,
@@ -907,6 +925,7 @@
         "pristine nature"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -952,6 +971,7 @@
         "wayfinding"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -998,6 +1018,7 @@
         "still water"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 960,
        "tw": 480,
@@ -1044,6 +1065,7 @@
         "environmental portrait"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1092,6 +1114,7 @@
         "dramatic gorge"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1136,6 +1159,7 @@
         "watching eruption"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1182,6 +1206,7 @@
         "celebratory"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1236,6 +1261,7 @@
         "pristine nature"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1280,6 +1306,7 @@
         "popular destination"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1324,6 +1351,7 @@
         "mossy rock"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1368,6 +1396,7 @@
         "vik"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -1412,6 +1441,7 @@
         "dark cave"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1456,6 +1486,7 @@
         "picturesque"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1500,6 +1531,7 @@
         "expansive view"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -1544,6 +1576,7 @@
         "scenic"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -1595,6 +1628,7 @@
       "volcanic rock"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 960,
      "tw": 480,
@@ -1643,6 +1677,7 @@
       "tranquil"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -1690,6 +1725,7 @@
       "countryside"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -1736,6 +1772,7 @@
       "bucket list"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -1784,6 +1821,7 @@
       "soft focus background"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -1830,6 +1868,7 @@
       "still water"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 960,
      "tw": 480,
@@ -1875,6 +1914,7 @@
       "barren landscape"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 960,
      "tw": 480,
@@ -1921,6 +1961,7 @@
       "layered rock"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 960,
      "tw": 480,
@@ -1966,6 +2007,7 @@
       "dramatic scenery"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 600,
      "tw": 480,
@@ -2011,6 +2053,7 @@
       "summer"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 600,
      "tw": 480,
@@ -2055,6 +2098,7 @@
       "moody"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 600,
      "tw": 480,
@@ -2100,6 +2144,7 @@
       "detail shot"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 600,
      "tw": 480,
@@ -2161,6 +2206,7 @@
         "panoramic view"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -2209,6 +2255,7 @@
         "summer"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2253,6 +2300,7 @@
         "shaded road"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2297,6 +2345,7 @@
         "boat tour"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -2341,6 +2390,7 @@
         "peaceful"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2385,6 +2435,7 @@
         "overcast"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2425,6 +2476,7 @@
         "green forest"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2468,6 +2520,7 @@
         "commerce"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2512,6 +2565,7 @@
         "heritage"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2555,6 +2609,7 @@
         "symmetry"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2594,6 +2649,7 @@
         "destination"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -2632,6 +2688,7 @@
         "calligraphy"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2674,6 +2731,7 @@
         "panoramic photography"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 322,
        "tw": 480,
@@ -2716,6 +2774,7 @@
         "narrow street"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2756,6 +2815,7 @@
         "temple complex"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -2796,6 +2856,7 @@
         "stone lanterns"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2853,6 +2914,7 @@
         "vertical lines"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2900,6 +2962,7 @@
         "sunny day"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2946,6 +3009,7 @@
         "sunny day"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -2999,6 +3063,7 @@
         "east asia"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3043,6 +3108,7 @@
         "city at night"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3088,6 +3154,7 @@
         "izakaya"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3135,6 +3202,7 @@
         "izakaya"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3179,6 +3247,7 @@
         "east asia"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3223,6 +3292,7 @@
         "cultural heritage"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3265,6 +3335,7 @@
         "plaza"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3307,6 +3378,7 @@
         "traditional art"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -3351,6 +3423,7 @@
         "skyscrapers"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3393,6 +3466,7 @@
         "skyscrapers"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -3437,6 +3511,7 @@
         "shopping district"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3478,6 +3553,7 @@
         "red and white tower"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -3521,6 +3597,7 @@
         "landmark photography"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3562,6 +3639,7 @@
         "contrast old and new"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 900,
        "tw": 480,
@@ -3603,6 +3681,7 @@
         "sacred object"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3646,6 +3725,7 @@
         "incense burner"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -3697,6 +3777,7 @@
         "protected species"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3738,6 +3819,7 @@
         "calm"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3778,6 +3860,7 @@
         "protected species"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3819,6 +3902,7 @@
         "ancient statue"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -3864,6 +3948,7 @@
         "peaceful"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3905,6 +3990,7 @@
         "travel photography"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -3946,6 +4032,7 @@
         "cloudy sky"
        ],
        "people": true,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -3997,6 +4084,7 @@
         "modern city"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4039,6 +4127,7 @@
         "commercial district"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4083,6 +4172,7 @@
         "water reflections"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4125,6 +4215,7 @@
         "waterfront"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4168,6 +4259,7 @@
         "busy street"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4212,6 +4304,7 @@
         "destination"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4265,6 +4358,7 @@
         "evening light"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4310,6 +4404,7 @@
         "grey sky"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4354,6 +4449,7 @@
         "backpacker"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4398,6 +4494,7 @@
         "japanese culture"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4442,6 +4539,7 @@
         "scenic overlook"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 347,
        "tw": 480,
@@ -4486,6 +4584,7 @@
         "horizon"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4530,6 +4629,7 @@
         "storm approaching"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4582,6 +4682,7 @@
         "village houses"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4625,6 +4726,7 @@
         "contrast"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4669,6 +4771,7 @@
         "mountain range"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4712,6 +4815,7 @@
         "small city"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4755,6 +4859,7 @@
         "blue sky"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 960,
        "tw": 480,
@@ -4808,6 +4913,7 @@
         "destination"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4851,6 +4957,7 @@
         "travel photography"
        ],
        "people": true,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -4894,6 +5001,7 @@
         "lifestyle"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4939,6 +5047,7 @@
         "honshu"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -4991,6 +5100,7 @@
       "blossoming"
      ],
      "people": false,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -5028,6 +5138,7 @@
       "cloud cover"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 600,
      "tw": 480,
@@ -5066,6 +5177,7 @@
       "coastal scenery"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 798,
      "tw": 480,
@@ -5115,6 +5227,7 @@
       "animal close-up"
      ],
      "people": false,
+     "event": false,
      "w": 798,
      "h": 1200,
      "tw": 319,
@@ -5164,6 +5277,7 @@
       "feather detail"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -5214,6 +5328,7 @@
       "animal pattern"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 799,
      "tw": 480,
@@ -5253,6 +5368,7 @@
       "seabird"
      ],
      "people": true,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -5310,6 +5426,7 @@
         "grand vista"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5351,6 +5468,7 @@
         "grand vista"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5393,6 +5511,7 @@
         "pine trees"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5435,6 +5554,7 @@
         "mountain backdrop"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -5476,6 +5596,7 @@
         "dramatic peak"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5517,6 +5638,7 @@
         "scenic view"
        ],
        "people": false,
+       "event": false,
        "w": 799,
        "h": 1200,
        "tw": 320,
@@ -5556,6 +5678,7 @@
         "rocky slopes"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5597,6 +5720,7 @@
         "remote hotel"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5650,6 +5774,7 @@
         "panoramic landscape"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 337,
        "tw": 480,
@@ -5691,6 +5816,7 @@
         "grand vista"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5735,6 +5861,7 @@
         "flagpole"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5777,6 +5904,7 @@
         "alpine panorama"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 799,
        "tw": 480,
@@ -5817,6 +5945,7 @@
         "rocky terrain"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -5859,6 +5988,7 @@
         "snow texture"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -5899,6 +6029,7 @@
         "alpine tourism"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -5939,6 +6070,7 @@
         "grand vista"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -5981,6 +6113,7 @@
         "mountain valley"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 799,
        "tw": 480,
@@ -6023,6 +6156,7 @@
         "mountain viewpoint"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -6063,6 +6197,7 @@
         "glacier view"
        ],
        "people": true,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -6117,6 +6252,7 @@
         "bern old town"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -6161,6 +6297,7 @@
         "scenic view"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -6206,6 +6343,7 @@
         "europe"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -6249,6 +6387,7 @@
         "two animals"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -6293,6 +6432,7 @@
         "power lines"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -6337,6 +6477,7 @@
         "greenery"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -6381,6 +6522,7 @@
         "rolling hills"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -6426,6 +6568,7 @@
         "city life"
        ],
        "people": true,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -6478,6 +6621,7 @@
         "mountain valley"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -6522,6 +6666,7 @@
         "mountain scenery"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -6565,6 +6710,7 @@
         "greenery"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -6609,6 +6755,7 @@
       "tranquil"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -6657,6 +6804,7 @@
       "hobby"
      ],
      "people": false,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -6700,6 +6848,7 @@
       "golf course"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -6744,6 +6893,7 @@
       "metropolitan"
      ],
      "people": true,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -6787,6 +6937,7 @@
       "outdoor portrait"
      ],
      "people": true,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -6831,6 +6982,7 @@
       "afternoon"
      ],
      "people": true,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -6874,6 +7026,7 @@
       "river walk"
      ],
      "people": true,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -6917,6 +7070,7 @@
       "leisure"
      ],
      "people": true,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -6959,6 +7113,7 @@
       "group photo"
      ],
      "people": true,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -7003,6 +7158,7 @@
       "remote wilderness"
      ],
      "people": true,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -7047,6 +7203,7 @@
       "vacation"
      ],
      "people": true,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -7091,6 +7248,7 @@
       "risk"
      ],
      "people": true,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -7150,6 +7308,7 @@
         "scenic"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -7195,6 +7354,7 @@
         "monument"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -7240,6 +7400,7 @@
         "english heritage"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -7285,6 +7446,7 @@
         "fall"
        ],
        "people": false,
+       "event": false,
        "w": 875,
        "h": 1200,
        "tw": 350,
@@ -7330,6 +7492,7 @@
         "performance hall"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -7374,6 +7537,7 @@
         "sacred site"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -7419,6 +7583,7 @@
         "ornamentation"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -7463,6 +7628,7 @@
         "entrance"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -7508,6 +7674,7 @@
         "autumn"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -7553,6 +7720,7 @@
         "tourist boat"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -7599,6 +7767,7 @@
         "autumn"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -7644,6 +7813,7 @@
         "construction"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -7689,6 +7859,7 @@
         "daytime"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -7734,6 +7905,7 @@
         "heritage building"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -7779,6 +7951,7 @@
         "historic structure"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -7825,6 +7998,7 @@
         "autumn"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -7880,6 +8054,7 @@
         "historic buildings"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 825,
        "tw": 480,
@@ -7922,6 +8097,7 @@
         "clock tower"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -7963,6 +8139,7 @@
         "night scene"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -8002,6 +8179,7 @@
         "illuminated building"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -8040,6 +8218,7 @@
         "illuminated dome"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8075,6 +8254,7 @@
         "market stall signs"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8112,6 +8292,7 @@
         "silhouette"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 799,
        "tw": 480,
@@ -8151,6 +8332,7 @@
         "restaurants"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8191,6 +8373,7 @@
         "evening light"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8229,6 +8412,7 @@
         "boats"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 799,
        "tw": 480,
@@ -8267,6 +8451,7 @@
         "sightseeing"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8304,6 +8489,7 @@
         "european city"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -8343,6 +8529,7 @@
         "autumn garden"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8380,6 +8567,7 @@
         "city life"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -8418,6 +8606,7 @@
         "architectural detail"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -8454,6 +8643,7 @@
         "december"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -8495,6 +8685,7 @@
       "landmark"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 798,
      "tw": 480,
@@ -8533,6 +8724,7 @@
       "coastal living"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 600,
      "tw": 480,
@@ -8570,6 +8762,7 @@
       "sightseeing"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -8633,6 +8826,7 @@
         "architectural detail"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -8681,6 +8875,7 @@
         "decoration"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8728,6 +8923,7 @@
         "canal cruise"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8775,6 +8971,7 @@
         "holland"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -8822,6 +9019,7 @@
         "intricate design"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -8870,6 +9068,7 @@
         "canal view"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -8918,6 +9117,7 @@
         "ecclesiastical architecture"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 602,
        "tw": 480,
@@ -8966,6 +9166,7 @@
         "close-up detail"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -9014,6 +9215,7 @@
         "canal houses"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -9062,6 +9264,7 @@
         "european river"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 533,
        "tw": 480,
@@ -9110,6 +9313,7 @@
         "canal district"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -9158,6 +9362,7 @@
         "streetside cafe"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -9206,6 +9411,7 @@
         "city crowd"
        ],
        "people": true,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -9253,6 +9459,7 @@
         "summer travel"
        ],
        "people": true,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -9301,6 +9508,7 @@
         "church nave"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -9350,6 +9558,7 @@
         "city street"
        ],
        "people": true,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -9416,6 +9625,7 @@
         "cathedral interior"
        ],
        "people": false,
+       "event": false,
        "w": 844,
        "h": 1200,
        "tw": 338,
@@ -9464,6 +9674,7 @@
         "urban skyline"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -9513,6 +9724,7 @@
         "evening light"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -9567,6 +9779,7 @@
         "germany landmark"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -9620,6 +9833,7 @@
         "river cruise ship"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 277,
        "tw": 480,
@@ -9672,6 +9886,7 @@
         "editorial travel"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 939,
        "tw": 480,
@@ -9723,6 +9938,7 @@
         "water"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -9771,6 +9987,7 @@
         "silhouette"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -9818,6 +10035,7 @@
         "germany landmark"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -9864,6 +10082,7 @@
         "public gathering"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -9913,6 +10132,7 @@
         "german culture"
        ],
        "people": true,
+       "event": false,
        "w": 1200,
        "h": 929,
        "tw": 480,
@@ -9968,6 +10188,7 @@
         "green hills"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -10012,6 +10233,7 @@
         "old town"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 960,
        "tw": 480,
@@ -10056,6 +10278,7 @@
         "hillside town"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 595,
        "tw": 480,
@@ -10100,6 +10323,7 @@
         "water reflection"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -10143,6 +10367,7 @@
         "stone tower"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -10205,6 +10430,7 @@
         "desert plants"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -10249,6 +10475,7 @@
         "natural beauty"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -10298,6 +10525,7 @@
         "desert scene"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -10345,6 +10573,7 @@
         "dramatic lighting"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -10389,6 +10618,7 @@
         "natural pattern"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -10433,6 +10663,7 @@
         "evening glow"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -10477,6 +10708,7 @@
         "muted tones"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -10521,6 +10753,7 @@
         "peaceful"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -10565,6 +10798,7 @@
         "cosmic"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -10609,6 +10843,7 @@
         "landscape photography"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -10653,6 +10888,7 @@
         "desert vegetation"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -10697,6 +10933,7 @@
         "open sky"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -10744,6 +10981,7 @@
         "rugged terrain"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -10788,6 +11026,7 @@
         "desert landscape"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -10828,6 +11067,7 @@
         "panoramic view"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -10877,6 +11117,7 @@
         "stones"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -10934,6 +11175,7 @@
         "panoramic"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -10977,6 +11219,7 @@
         "iconic"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -11026,6 +11269,7 @@
         "waves"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 960,
        "tw": 480,
@@ -11074,6 +11318,7 @@
         "horizon"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 675,
        "tw": 480,
@@ -11120,6 +11365,7 @@
         "dramatic sky"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 960,
        "tw": 480,
@@ -11165,6 +11411,7 @@
         "unique architecture"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -11208,6 +11455,7 @@
         "underwater photography"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11250,6 +11498,7 @@
         "sea"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11293,6 +11542,7 @@
         "sea"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11335,6 +11585,7 @@
         "mysterious"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11377,6 +11628,7 @@
         "sea"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11420,6 +11672,7 @@
         "history museum"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11463,6 +11716,7 @@
         "metal"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -11505,6 +11759,7 @@
         "technical"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11549,6 +11804,7 @@
         "rows"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -11590,6 +11846,7 @@
         "archive"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -11602,8 +11859,8 @@
     {
      "slug": "atlanta",
      "name": "Atlanta",
-     "intro": "The Midtown skyline at golden hour from Piedmont Park, the Botanical Garden, and the city after a storm.",
-     "fact": "Atlanta has one of the densest urban tree canopies of any large American city, at roughly 47 percent cover.",
+     "intro": "Atlanta is home. The Midtown skyline from Piedmont Park at golden hour, the same skyline in a snowfall, the downtown connector from above, Georgia Tech at dusk, the Botanical Garden in bloom, and, below, the week in July 2025 when the MLB All-Star Game came to Truist Park.",
+     "fact": "Truist Park hosted the 2025 MLB All-Star Game on July 15, 2025, the first time Atlanta had the game since 2000.",
      "url": "https://purplelink.llc/photography/united-states/atlanta/",
      "images": [
       {
@@ -11645,6 +11902,7 @@
         "horizon"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11692,6 +11950,7 @@
         "overcast"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -11736,6 +11995,7 @@
         "downtown atlanta"
        ],
        "people": false,
+       "event": false,
        "w": 798,
        "h": 1200,
        "tw": 319,
@@ -11778,6 +12038,7 @@
         "city glow"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -11822,6 +12083,7 @@
         "skyline view"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -11869,6 +12131,7 @@
         "hedge maze"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -11918,6 +12181,7 @@
         "environmental art"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -11965,6 +12229,7 @@
         "green foliage"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -12011,6 +12276,7 @@
         "reflective glass"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 798,
        "tw": 480,
@@ -12053,6 +12319,7 @@
         "plant lover"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -12102,12 +12369,872 @@
         "artistic sculpture"
        ],
        "people": true,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
        "th": 320,
        "src": "/assets/photography/hub/dsc-5128-1200.webp",
        "thumb": "/assets/photography/hub/dsc-5128-480.webp"
+      },
+      {
+       "stem": "DSC_5449",
+       "title": "Atlanta, Georgia - July 2025: Braves and Orioles players celebrate at third base during MLB All-Star festivities",
+       "caption": "Atlanta, Georgia - July 2025: A runner celebrates reaching third base as players and a coach gather on the infield dirt during the MLB All-Star Game.",
+       "keywords": [
+        "mlb",
+        "baseball",
+        "all star game",
+        "atlanta",
+        "truist park",
+        "braves",
+        "orioles",
+        "third base",
+        "players",
+        "celebration",
+        "infield",
+        "dirt",
+        "sports",
+        "professional baseball",
+        "uniform",
+        "jersey",
+        "helmet",
+        "athletes",
+        "competition",
+        "game action",
+        "stadium",
+        "2025",
+        "sports photography",
+        "team",
+        "coach",
+        "base runner",
+        "dugout net",
+        "summer",
+        "sport event",
+        "americana"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 960,
+       "tw": 480,
+       "th": 384,
+       "src": "/assets/photography/hub/dsc-5449-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5449-480.webp"
+      },
+      {
+       "stem": "DSC_5482",
+       "title": "Pittsburgh Pirates player introduced with pyrotechnics before the MLB Home Run Derby",
+       "caption": "Atlanta, Georgia - July 2025: A Pittsburgh Pirates player stands on an elevated stage flanked by smoke plumes during pre-game introductions at the MLB Home Run Derby.",
+       "keywords": [
+        "mlb",
+        "home run derby",
+        "pirates",
+        "baseball",
+        "pyrotechnics",
+        "smoke",
+        "introduction",
+        "stage",
+        "player",
+        "sports entertainment",
+        "atlanta",
+        "truist park",
+        "jumbotron",
+        "night game",
+        "stadium",
+        "2025",
+        "sports photography",
+        "athlete",
+        "uniform",
+        "dramatic lighting",
+        "special effects",
+        "baseball culture",
+        "professional sports",
+        "event",
+        "entertainment",
+        "crowd",
+        "team logo",
+        "celebration",
+        "showmanship",
+        "field"
+       ],
+       "people": true,
+       "event": true,
+       "w": 960,
+       "h": 1200,
+       "tw": 384,
+       "th": 480,
+       "src": "/assets/photography/hub/dsc-5482-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5482-480.webp"
+      },
+      {
+       "stem": "DSC_5505",
+       "title": "MLB Home Run Derby competitors introduced with fire and smoke effects, Atlanta",
+       "caption": "Atlanta, Georgia - July 2025: Eight Home Run Derby competitors stand on lit pedestals as columns of fire and smoke rise behind them during introductions.",
+       "keywords": [
+        "mlb",
+        "home run derby",
+        "baseball",
+        "players",
+        "pyrotechnics",
+        "fire",
+        "smoke",
+        "introduction",
+        "pedestals",
+        "stadium",
+        "night",
+        "sports entertainment",
+        "atlanta",
+        "truist park",
+        "2025",
+        "team logos",
+        "uniforms",
+        "dramatic",
+        "lighting effects",
+        "athletes",
+        "lineup",
+        "competition",
+        "professional baseball",
+        "event",
+        "crowd",
+        "special effects",
+        "showmanship",
+        "sports photography",
+        "entertainment",
+        "baseball culture"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 600,
+       "tw": 480,
+       "th": 240,
+       "src": "/assets/photography/hub/dsc-5505-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5505-480.webp"
+      },
+      {
+       "stem": "DSC_5521",
+       "title": "Military flyover and giant American flag before the MLB All-Star Game, Atlanta",
+       "caption": "Atlanta, Georgia - July 2025: Military aircraft fly over Truist Park as a giant American flag is unfurled across the outfield before the MLB All-Star Game.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "truist park",
+        "atlanta",
+        "american flag",
+        "military flyover",
+        "jets",
+        "patriotic",
+        "pregame ceremony",
+        "stadium",
+        "crowd",
+        "baseball",
+        "2025",
+        "national anthem",
+        "aircraft",
+        "sports event",
+        "americana",
+        "flag ceremony",
+        "skyline",
+        "stadium lights",
+        "sunset",
+        "wide shot",
+        "aerial",
+        "honor guard",
+        "sports photography",
+        "national pride",
+        "summer",
+        "evening",
+        "athletes",
+        "ballpark"
+       ],
+       "people": true,
+       "event": true,
+       "w": 960,
+       "h": 1200,
+       "tw": 384,
+       "th": 480,
+       "src": "/assets/photography/hub/dsc-5521-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5521-480.webp"
+      },
+      {
+       "stem": "DSC_5524",
+       "title": "Military transport plane and fighter jet flying in formation over a baseball stadium",
+       "caption": "Atlanta, Georgia - July 2025: A USAF transport aircraft and a stealth fighter jet fly in formation overhead during a pregame flyover at the MLB All-Star Game.",
+       "keywords": [
+        "military flyover",
+        "fighter jet",
+        "transport plane",
+        "usaf",
+        "air force",
+        "formation flying",
+        "blue sky",
+        "aircraft",
+        "aviation",
+        "patriotic",
+        "stadium event",
+        "mlb",
+        "all star game",
+        "2025",
+        "airplane",
+        "jet",
+        "sky",
+        "low angle",
+        "military aviation",
+        "national pride",
+        "ceremony",
+        "flight",
+        "dusk light",
+        "power",
+        "strength",
+        "americana",
+        "defense",
+        "united states",
+        "flying",
+        "wings"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 675,
+       "tw": 480,
+       "th": 270,
+       "src": "/assets/photography/hub/dsc-5524-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5524-480.webp"
+      },
+      {
+       "stem": "DSC_5598",
+       "title": "Tampa Bay Rays infielder swings during the MLB Home Run Derby",
+       "caption": "Atlanta, Georgia - July 2025: A Tampa Bay Rays player takes a practice swing at home plate during the MLB Home Run Derby, seen through protective netting.",
+       "keywords": [
+        "mlb",
+        "home run derby",
+        "rays",
+        "baseball",
+        "batter",
+        "swing",
+        "home plate",
+        "catcher",
+        "practice",
+        "netting",
+        "stadium",
+        "sports",
+        "athlete",
+        "uniform",
+        "2025",
+        "atlanta",
+        "truist park",
+        "batting stance",
+        "professional baseball",
+        "competition",
+        "dirt",
+        "bat",
+        "helmet",
+        "sports photography",
+        "game action",
+        "team logo",
+        "blue uniform",
+        "baseball culture",
+        "event",
+        "ballpark",
+        "equipment bucket"
+       ],
+       "people": true,
+       "event": true,
+       "w": 960,
+       "h": 1200,
+       "tw": 384,
+       "th": 480,
+       "src": "/assets/photography/hub/dsc-5598-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5598-480.webp"
+      },
+      {
+       "stem": "DSC_5671",
+       "title": "Seattle Mariners catcher follows through on a swing during the MLB Home Run Derby",
+       "caption": "Atlanta, Georgia - July 2025: A Seattle Mariners player follows through on a home run swing at the plate, seen through protective netting.",
+       "keywords": [
+        "mlb",
+        "home run derby",
+        "mariners",
+        "baseball",
+        "batter",
+        "swing",
+        "follow through",
+        "home plate",
+        "catcher",
+        "netting",
+        "stadium",
+        "sports",
+        "athlete",
+        "uniform",
+        "2025",
+        "atlanta",
+        "truist park",
+        "batting stance",
+        "professional baseball",
+        "competition",
+        "dirt",
+        "bat",
+        "helmet",
+        "sports photography",
+        "game action",
+        "team logo",
+        "navy uniform",
+        "baseball culture",
+        "event",
+        "ballpark",
+        "equipment bucket"
+       ],
+       "people": true,
+       "event": true,
+       "w": 960,
+       "h": 1200,
+       "tw": 384,
+       "th": 480,
+       "src": "/assets/photography/hub/dsc-5671-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5671-480.webp"
+      },
+      {
+       "stem": "DSC_5737-Pano",
+       "title": "Panoramic night view of a packed baseball stadium during the MLB All-Star Game",
+       "caption": "Atlanta, Georgia - July 2025: Fans pack every seat of Truist Park under bright stadium lights during the MLB All-Star Game.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "truist park",
+        "atlanta",
+        "stadium",
+        "night game",
+        "crowd",
+        "fans",
+        "panorama",
+        "wide shot",
+        "stadium lights",
+        "baseball",
+        "2025",
+        "sports event",
+        "scoreboard",
+        "packed stadium",
+        "sports photography",
+        "ballpark",
+        "night",
+        "spectators",
+        "sold out",
+        "entertainment",
+        "sports fans",
+        "americana",
+        "evening",
+        "floodlights",
+        "audience",
+        "game night",
+        "sports venue",
+        "energy",
+        "atmosphere"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 600,
+       "tw": 480,
+       "th": 240,
+       "src": "/assets/photography/hub/dsc-5737-pano-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5737-pano-480.webp"
+      },
+      {
+       "stem": "DSC_5778",
+       "title": "Tampa Bay Rays player mid-swing during the MLB Home Run Derby",
+       "caption": "Atlanta, Georgia - July 2025: A Tampa Bay Rays player connects with a pitch during the MLB Home Run Derby, viewed through protective netting.",
+       "keywords": [
+        "mlb",
+        "home run derby",
+        "rays",
+        "baseball",
+        "batter",
+        "swing",
+        "home plate",
+        "catcher",
+        "netting",
+        "stadium",
+        "sports",
+        "athlete",
+        "uniform",
+        "2025",
+        "atlanta",
+        "truist park",
+        "batting stance",
+        "professional baseball",
+        "competition",
+        "dirt",
+        "bat",
+        "helmet",
+        "sports photography",
+        "game action",
+        "team logo",
+        "blue uniform",
+        "baseball culture",
+        "event",
+        "ballpark",
+        "rawlings bucket"
+       ],
+       "people": true,
+       "event": true,
+       "w": 960,
+       "h": 1200,
+       "tw": 384,
+       "th": 480,
+       "src": "/assets/photography/hub/dsc-5778-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5778-480.webp"
+      },
+      {
+       "stem": "DSC_5785",
+       "title": "Pittsburgh Pirates slugger swings during the MLB Home Run Derby",
+       "caption": "Atlanta, Georgia - July 2025: A Pittsburgh Pirates player takes a big swing at home plate during the MLB Home Run Derby.",
+       "keywords": [
+        "mlb",
+        "home run derby",
+        "pirates",
+        "baseball",
+        "batter",
+        "swing",
+        "home plate",
+        "catcher",
+        "netting",
+        "stadium",
+        "sports",
+        "athlete",
+        "uniform",
+        "2025",
+        "atlanta",
+        "truist park",
+        "batting stance",
+        "professional baseball",
+        "competition",
+        "dirt",
+        "bat",
+        "helmet",
+        "sports photography",
+        "game action",
+        "team logo",
+        "blue uniform",
+        "baseball culture",
+        "event",
+        "ballpark",
+        "rawlings bucket"
+       ],
+       "people": true,
+       "event": true,
+       "w": 960,
+       "h": 1200,
+       "tw": 384,
+       "th": 480,
+       "src": "/assets/photography/hub/dsc-5785-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5785-480.webp"
+      },
+      {
+       "stem": "DSC_5797",
+       "title": "Players celebrate at home plate after the MLB Home Run Derby round",
+       "caption": "Atlanta, Georgia - July 2025: A group of players and staff gather at home plate to celebrate after a round of the MLB Home Run Derby.",
+       "keywords": [
+        "mlb",
+        "home run derby",
+        "celebration",
+        "players",
+        "huddle",
+        "home plate",
+        "teammates",
+        "stadium",
+        "sports",
+        "baseball",
+        "uniform",
+        "2025",
+        "atlanta",
+        "truist park",
+        "camaraderie",
+        "team spirit",
+        "cameraman",
+        "media",
+        "young fan",
+        "batboy",
+        "sports photography",
+        "group",
+        "excitement",
+        "professional baseball",
+        "event",
+        "dugout",
+        "ballpark",
+        "jersey numbers",
+        "sportsmanship",
+        "competition"
+       ],
+       "people": true,
+       "event": true,
+       "w": 960,
+       "h": 1200,
+       "tw": 384,
+       "th": 480,
+       "src": "/assets/photography/hub/dsc-5797-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5797-480.webp"
+      },
+      {
+       "stem": "DSC_5819",
+       "title": "Seattle Mariners catcher surrounded by photographers during the MLB Home Run Derby",
+       "caption": "Atlanta, Georgia - July 2025: A Seattle Mariners player prepares to bat at home plate as photographers and media crowd around during the MLB Home Run Derby.",
+       "keywords": [
+        "mlb",
+        "home run derby",
+        "mariners",
+        "baseball",
+        "batter",
+        "home plate",
+        "media",
+        "photographers",
+        "press",
+        "stadium",
+        "sports",
+        "athlete",
+        "uniform",
+        "2025",
+        "atlanta",
+        "truist park",
+        "batting stance",
+        "professional baseball",
+        "competition",
+        "sports photography",
+        "game action",
+        "team logo",
+        "navy uniform",
+        "baseball culture",
+        "event",
+        "ballpark",
+        "crowd",
+        "press coverage",
+        "equipment bucket",
+        "spectators"
+       ],
+       "people": true,
+       "event": true,
+       "w": 960,
+       "h": 1200,
+       "tw": 384,
+       "th": 480,
+       "src": "/assets/photography/hub/dsc-5819-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5819-480.webp"
+      },
+      {
+       "stem": "DSC_5922",
+       "title": "Pitcher delivers to a batter during the MLB All-Star Game at Truist Park",
+       "caption": "Atlanta, Georgia - July 2025: A pitcher releases the ball toward home plate as a batter prepares to swing during the MLB All-Star Game.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "baseball",
+        "pitcher",
+        "batter",
+        "home plate",
+        "umpire",
+        "stadium",
+        "truist park",
+        "atlanta",
+        "game action",
+        "sports",
+        "uniform",
+        "2025",
+        "outfield",
+        "infield",
+        "crowd",
+        "sports photography",
+        "competition",
+        "professional baseball",
+        "pitching motion",
+        "scoreboard",
+        "advertising signage",
+        "field",
+        "wide shot",
+        "ballpark",
+        "americana",
+        "game day",
+        "audience",
+        "athletes",
+        "sport"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 857,
+       "tw": 480,
+       "th": 343,
+       "src": "/assets/photography/hub/dsc-5922-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-5922-480.webp"
+      },
+      {
+       "stem": "DSC_6038",
+       "title": "Outfielders track a fly ball during the MLB All-Star Game",
+       "caption": "Atlanta, Georgia - July 2025: Two outfielders watch a fly ball in the air during play at the MLB All-Star Game.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "baseball",
+        "outfielders",
+        "fly ball",
+        "infield grass",
+        "game action",
+        "sports",
+        "uniform",
+        "2025",
+        "truist park",
+        "atlanta",
+        "competition",
+        "professional baseball",
+        "sports photography",
+        "running",
+        "teamwork",
+        "defense",
+        "ball in air",
+        "green field",
+        "dirt",
+        "athletes",
+        "action shot",
+        "motion",
+        "ballpark",
+        "sport",
+        "summer",
+        "game day",
+        "ready position",
+        "catch",
+        "fielding"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 857,
+       "tw": 480,
+       "th": 343,
+       "src": "/assets/photography/hub/dsc-6038-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-6038-480.webp"
+      },
+      {
+       "stem": "DSC_6093",
+       "title": "Los Angeles Dodgers pitcher walks off the mound to applause during the MLB All-Star Game",
+       "caption": "Atlanta, Georgia - July 2025: A Los Angeles Dodgers pitcher waves to teammates in the dugout while walking off the field during the MLB All-Star Game.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "dodgers",
+        "pitcher",
+        "baseball",
+        "dugout",
+        "teammates",
+        "applause",
+        "stadium",
+        "truist park",
+        "atlanta",
+        "cameraman",
+        "sports photography",
+        "2025",
+        "uniform",
+        "professional baseball",
+        "sports event",
+        "field level view",
+        "grass logo",
+        "media coverage",
+        "celebration",
+        "walk off",
+        "game action",
+        "sport",
+        "athlete",
+        "blue uniform",
+        "competition",
+        "ballpark",
+        "crowd"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 857,
+       "tw": 480,
+       "th": 343,
+       "src": "/assets/photography/hub/dsc-6093-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-6093-480.webp"
+      },
+      {
+       "stem": "DSC_6105",
+       "title": "All-Star Game logo mowed into the outfield grass at Truist Park",
+       "caption": "Atlanta, Georgia - July 2025: The MLB All-Star Game logo is mowed into the outfield turf, framed by outfield advertising boards at Truist Park.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "truist park",
+        "atlanta",
+        "outfield",
+        "grass logo",
+        "mowing pattern",
+        "stadium",
+        "advertising boards",
+        "sponsors",
+        "baseball",
+        "2025",
+        "players",
+        "field design",
+        "groundskeeping",
+        "turf art",
+        "sports venue",
+        "wide shot",
+        "sports photography",
+        "ballpark",
+        "wall signage",
+        "green field",
+        "landscaping",
+        "sports marketing",
+        "professional baseball",
+        "stadium design",
+        "summer",
+        "game day",
+        "outfield wall"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 857,
+       "tw": 480,
+       "th": 343,
+       "src": "/assets/photography/hub/dsc-6105-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-6105-480.webp"
+      },
+      {
+       "stem": "DSC_6223",
+       "title": "National League players applaud from the dugout during the MLB All-Star Game",
+       "caption": "Atlanta, Georgia - July 2025: National League players clap and cheer from the dugout railing as a teammate takes the field during the MLB All-Star Game.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "national league",
+        "dugout",
+        "players",
+        "applause",
+        "baseball",
+        "stadium",
+        "truist park",
+        "atlanta",
+        "uniform",
+        "2025",
+        "team logos",
+        "sports photography",
+        "cheering",
+        "teammates",
+        "sponsorship signage",
+        "professional baseball",
+        "competition",
+        "sports event",
+        "crowd",
+        "excitement",
+        "game day",
+        "camaraderie",
+        "sport",
+        "athletes",
+        "support",
+        "ballpark",
+        "celebration",
+        "fans"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 857,
+       "tw": 480,
+       "th": 343,
+       "src": "/assets/photography/hub/dsc-6223-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-6223-480.webp"
+      },
+      {
+       "stem": "DSC_6306",
+       "title": "Batter faces off against catcher and umpire during the MLB All-Star Game",
+       "caption": "Atlanta, Georgia - July 2025: A batter stands ready at home plate as the catcher and umpire watch a pitch during the MLB All-Star Game.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "baseball",
+        "batter",
+        "catcher",
+        "umpire",
+        "home plate",
+        "stadium",
+        "truist park",
+        "atlanta",
+        "uniform",
+        "2025",
+        "game action",
+        "sports photography",
+        "professional baseball",
+        "competition",
+        "batting stance",
+        "protective gear",
+        "field",
+        "dirt",
+        "chalk lines",
+        "sport",
+        "athletes",
+        "game day",
+        "ballpark",
+        "official",
+        "pitch",
+        "strike zone",
+        "sports event",
+        "concentration",
+        "ready stance"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 857,
+       "tw": 480,
+       "th": 343,
+       "src": "/assets/photography/hub/dsc-6306-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-6306-480.webp"
+      },
+      {
+       "stem": "DSC_6331-Pano",
+       "title": "Panoramic night view of fans watching the MLB All-Star Game from the stands",
+       "caption": "Atlanta, Georgia - July 2025: Fans fill the stands and hold up phones as they watch play unfold on the field during the MLB All-Star Game at night.",
+       "keywords": [
+        "mlb",
+        "all star game",
+        "truist park",
+        "atlanta",
+        "night game",
+        "crowd",
+        "fans",
+        "panorama",
+        "stadium lights",
+        "baseball",
+        "2025",
+        "spectators",
+        "phones",
+        "wide shot",
+        "sports photography",
+        "ballpark",
+        "audience",
+        "sold out",
+        "entertainment",
+        "sports fans",
+        "americana",
+        "evening",
+        "floodlights",
+        "game night",
+        "sports venue",
+        "energy",
+        "atmosphere",
+        "scoreboard",
+        "outfield grass logo",
+        "excitement"
+       ],
+       "people": true,
+       "event": true,
+       "w": 1200,
+       "h": 600,
+       "tw": 480,
+       "th": 240,
+       "src": "/assets/photography/hub/dsc-6331-pano-1200.webp",
+       "thumb": "/assets/photography/hub/dsc-6331-pano-480.webp"
       }
      ]
     },
@@ -12155,6 +13282,7 @@
         "symmetry"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -12199,6 +13327,7 @@
         "sunny day"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -12244,6 +13373,7 @@
         "steep hill"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -12288,6 +13418,7 @@
         "sightseeing"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -12333,6 +13464,7 @@
         "famous landmark"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -12379,6 +13511,7 @@
         "fall"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -12423,6 +13556,7 @@
         "fall"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -12466,6 +13600,7 @@
         "west coast"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -12510,6 +13645,7 @@
         "summer"
        ],
        "people": true,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -12563,6 +13699,7 @@
         "retail"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -12607,6 +13744,7 @@
         "towering structure"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -12660,6 +13798,7 @@
         "rest"
        ],
        "people": true,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -12712,6 +13851,7 @@
       "wide sky"
      ],
      "people": false,
+     "event": false,
      "w": 1053,
      "h": 1200,
      "tw": 421,
@@ -12759,6 +13899,7 @@
       "universe"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -12803,6 +13944,7 @@
       "awe inspiring"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -12854,6 +13996,7 @@
       "falling star"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -12901,6 +14044,7 @@
       "valley city"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -12945,6 +14089,7 @@
       "wooded hillside"
      ],
      "people": false,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -12988,6 +14133,7 @@
       "walkway"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -13030,6 +14176,7 @@
       "garden path"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -13074,6 +14221,7 @@
       "park path"
      ],
      "people": false,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -13118,6 +14266,7 @@
       "serene"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -13161,6 +14310,7 @@
       "garden ornament"
      ],
      "people": false,
+     "event": false,
      "w": 960,
      "h": 1200,
      "tw": 384,
@@ -13203,6 +14353,7 @@
       "railing"
      ],
      "people": false,
+     "event": false,
      "w": 800,
      "h": 1200,
      "tw": 320,
@@ -13267,6 +14418,7 @@
         "ancient art"
        ],
        "people": false,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -13315,6 +14467,7 @@
         "overcast sky"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 600,
        "tw": 480,
@@ -13363,6 +14516,7 @@
         "city and sea"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 466,
        "tw": 480,
@@ -13409,6 +14563,7 @@
         "treetops"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13457,6 +14612,7 @@
         "north america"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13505,6 +14661,7 @@
         "animal encounter"
        ],
        "people": true,
+       "event": false,
        "w": 960,
        "h": 1200,
        "tw": 384,
@@ -13567,6 +14724,7 @@
         "iconic"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 969,
        "tw": 480,
@@ -13612,6 +14770,7 @@
         "stonework"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13657,6 +14816,7 @@
         "city skyline"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13701,6 +14861,7 @@
         "cathedral"
        ],
        "people": false,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -13745,6 +14906,7 @@
         "city street"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13789,6 +14951,7 @@
         "stucco"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13833,6 +14996,7 @@
         "coastal forest"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13878,6 +15042,7 @@
         "shoreline"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13922,6 +15087,7 @@
         "patterned shell"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -13967,6 +15133,7 @@
         "wilderness"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -14012,6 +15179,7 @@
         "turquoise water"
        ],
        "people": false,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -14055,6 +15223,7 @@
         "exploration"
        ],
        "people": true,
+       "event": false,
        "w": 1200,
        "h": 800,
        "tw": 480,
@@ -14100,6 +15269,7 @@
         "scenic"
        ],
        "people": true,
+       "event": false,
        "w": 800,
        "h": 1200,
        "tw": 320,
@@ -14148,6 +15318,7 @@
       "travel wildlife"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -14192,6 +15363,7 @@
       "water"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,
@@ -14237,6 +15409,7 @@
       "anchored ships"
      ],
      "people": false,
+     "event": false,
      "w": 1200,
      "h": 800,
      "tw": 480,

@@ -139,3 +139,5 @@
 @media (prefers-reduced-motion: reduce) {
   .hub-img img, .hub-card img { transition: none; }
 }
+
+.hub-events-note { margin: -4px 0 16px; max-width: 46rem; color: var(--muted); font-size: 0.95rem; }

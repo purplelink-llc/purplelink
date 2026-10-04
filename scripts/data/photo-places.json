@@ -2,156 +2,527 @@
   "_about": "Taxonomy for purplelink.llc/photography/<country>/<place>/. gen_photo_hubs.py matches each photograph's title, caption and keywords against `match` (case-insensitive regexes, any one is enough). `intro` is hand-written and stays as written; `fact` is one verifiable line used by the hub page and the short-video captions. Order within a country is the display order.",
   "countries": [
     {
-      "slug": "iceland", "name": "Iceland",
+      "slug": "iceland",
+      "name": "Iceland",
       "intro": "I drove the south coast and the Snaefellsnes peninsula in June 2024, mostly in rain. Waterfalls, basalt, a glacier lagoon and a black church on a green plain.",
       "places": [
-        {"slug": "skogafoss", "name": "Skógafoss", "match": ["sk[oó]gafoss"],
-         "intro": "Skógafoss drops about 60 metres off the old sea cliff on the south coast. The spray throws a rainbow across the base on any afternoon with sun, and a staircase on the east side climbs to the top of the fall.",
-         "fact": "Skógafoss is about 60 metres high and 25 metres wide; the cliff it falls over was once the coastline."},
-        {"slug": "jokulsarlon", "name": "Jökulsárlón glacier lagoon", "match": ["j[oö]kuls[aá]rl[oó]n", "glacier lagoon", "diamond beach"],
-         "intro": "Icebergs calve off Breiðamerkurjökull and drift across the lagoon toward the sea, where the tide pushes them back onto the black sand of Diamond Beach. The ice is blue where it is dense and streaked black with ash.",
-         "fact": "The lagoon only formed in the 1930s as the glacier retreated; it is now Iceland's deepest lake."},
-        {"slug": "fjadrargljufur", "name": "Fjaðrárgljúfur canyon", "match": ["fja[dð]r[aá]rglj[uú]fur", "slot canyon"],
-         "intro": "A two-kilometre canyon with mossy walls up to 100 metres high, cut by the Fjaðrá river. A path runs along the rim with several viewpoints over the river below.",
-         "fact": "The canyon is about two kilometres long and up to 100 metres deep, cut through palagonite rock."},
-        {"slug": "dyrholaey", "name": "Dyrhólaey", "match": ["dyrh[oó]laey", "sea arch"],
-         "intro": "A headland near Vík with a natural arch big enough to sail through, cliffs full of puffins in summer and a view east along the black beaches toward Reynisdrangar.",
-         "fact": "Dyrhólaey is a 120-metre headland near Vík; its name means door-hill island, after the arch."},
-        {"slug": "snaefellsnes", "name": "Snæfellsnes peninsula", "match": ["sn(ae|æ|a)fellsnes", "sn(ae|æ|a)fellsj(o|ö)kull", "b[uú][dð]akirkja", "\\bb[uú][dð]ir\\b", "l[oó]ndrangar", "bjarnarfoss", "kirkjufell"],
-         "intro": "The peninsula west of Reykjavík: a glacier-capped volcano at its tip, sea stacks and basalt cliffs on the south shore, and the black wooden church at Búðir standing alone on the lava field.",
-         "fact": "Snæfellsjökull is the volcano Jules Verne chose as the entrance in Journey to the Centre of the Earth."},
-        {"slug": "golden-circle", "name": "Gullfoss and the Golden Circle", "match": ["gullfoss", "strokkur", "geysir", "br[uú]arfoss", "thingvellir", "þingvellir"],
-         "intro": "The loop east of Reykjavík: Gullfoss falling in two steps into its gorge, Strokkur erupting every few minutes, and the blue water of Brúarfoss.",
-         "fact": "Strokkur erupts roughly every five to ten minutes, to a height of 15 to 20 metres."},
-        {"slug": "south-coast", "name": "South coast waterfalls", "match": ["seljalandsfoss", "glj[uú]frab[uú]i", "kvernufoss", "reynisfjara", "\\bv[ií]k\\b", "south iceland", "iceland.*waterfall", "waterfall.*iceland"],
-         "intro": "The road along the south coast passes one waterfall after another. Seljalandsfoss you can walk behind; Gljúfrabúi hides in a cleft a few hundred metres on.",
-         "fact": "Seljalandsfoss falls about 60 metres and a path runs behind the curtain of water."}
+        {
+          "slug": "skogafoss",
+          "name": "Skógafoss",
+          "match": [
+            "sk[oó]gafoss"
+          ],
+          "intro": "Skógafoss drops about 60 metres off the old sea cliff on the south coast. The spray throws a rainbow across the base on any afternoon with sun, and a staircase on the east side climbs to the top of the fall.",
+          "fact": "Skógafoss is about 60 metres high and 25 metres wide; the cliff it falls over was once the coastline."
+        },
+        {
+          "slug": "jokulsarlon",
+          "name": "Jökulsárlón glacier lagoon",
+          "match": [
+            "j[oö]kuls[aá]rl[oó]n",
+            "glacier lagoon",
+            "diamond beach"
+          ],
+          "intro": "Icebergs calve off Breiðamerkurjökull and drift across the lagoon toward the sea, where the tide pushes them back onto the black sand of Diamond Beach. The ice is blue where it is dense and streaked black with ash.",
+          "fact": "The lagoon only formed in the 1930s as the glacier retreated; it is now Iceland's deepest lake."
+        },
+        {
+          "slug": "fjadrargljufur",
+          "name": "Fjaðrárgljúfur canyon",
+          "match": [
+            "fja[dð]r[aá]rglj[uú]fur",
+            "slot canyon"
+          ],
+          "intro": "A two-kilometre canyon with mossy walls up to 100 metres high, cut by the Fjaðrá river. A path runs along the rim with several viewpoints over the river below.",
+          "fact": "The canyon is about two kilometres long and up to 100 metres deep, cut through palagonite rock."
+        },
+        {
+          "slug": "dyrholaey",
+          "name": "Dyrhólaey",
+          "match": [
+            "dyrh[oó]laey",
+            "sea arch"
+          ],
+          "intro": "A headland near Vík with a natural arch big enough to sail through, cliffs full of puffins in summer and a view east along the black beaches toward Reynisdrangar.",
+          "fact": "Dyrhólaey is a 120-metre headland near Vík; its name means door-hill island, after the arch."
+        },
+        {
+          "slug": "snaefellsnes",
+          "name": "Snæfellsnes peninsula",
+          "match": [
+            "sn(ae|æ|a)fellsnes",
+            "sn(ae|æ|a)fellsj(o|ö)kull",
+            "b[uú][dð]akirkja",
+            "\\bb[uú][dð]ir\\b",
+            "l[oó]ndrangar",
+            "bjarnarfoss",
+            "kirkjufell"
+          ],
+          "intro": "The peninsula west of Reykjavík: a glacier-capped volcano at its tip, sea stacks and basalt cliffs on the south shore, and the black wooden church at Búðir standing alone on the lava field.",
+          "fact": "Snæfellsjökull is the volcano Jules Verne chose as the entrance in Journey to the Centre of the Earth."
+        },
+        {
+          "slug": "golden-circle",
+          "name": "Gullfoss and the Golden Circle",
+          "match": [
+            "gullfoss",
+            "strokkur",
+            "geysir",
+            "br[uú]arfoss",
+            "thingvellir",
+            "þingvellir"
+          ],
+          "intro": "The loop east of Reykjavík: Gullfoss falling in two steps into its gorge, Strokkur erupting every few minutes, and the blue water of Brúarfoss.",
+          "fact": "Strokkur erupts roughly every five to ten minutes, to a height of 15 to 20 metres."
+        },
+        {
+          "slug": "south-coast",
+          "name": "South coast waterfalls",
+          "match": [
+            "seljalandsfoss",
+            "glj[uú]frab[uú]i",
+            "kvernufoss",
+            "reynisfjara",
+            "\\bv[ií]k\\b",
+            "south iceland",
+            "iceland.*waterfall",
+            "waterfall.*iceland"
+          ],
+          "intro": "The road along the south coast passes one waterfall after another. Seljalandsfoss you can walk behind; Gljúfrabúi hides in a cleft a few hundred metres on.",
+          "fact": "Seljalandsfoss falls about 60 metres and a path runs behind the curtain of water."
+        }
       ]
     },
     {
-      "slug": "japan", "name": "Japan",
+      "slug": "japan",
+      "name": "Japan",
       "intro": "Tokyo, Kyoto, Nara, Osaka and Miyajima in June 2025, in the early rainy season. Temples before the crowds, neon after dark, and a gorge in the mist.",
       "places": [
-        {"slug": "kyoto", "name": "Kyoto", "match": ["kyoto", "kiyomizu", "fushimi inari", "kinkaku", "\\bgion\\b", "higashiyama", "philosopher's walk"],
-         "intro": "Kiyomizu-dera on its wooden stage above the city, the vermilion gates of Fushimi Inari climbing the hill, and the lanes of Higashiyama early in the morning.",
-         "fact": "Fushimi Inari's paths carry around 10,000 torii gates, each donated by a business or family."},
-        {"slug": "arashiyama", "name": "Arashiyama and the Hozu gorge", "match": ["arashiyama", "hozu", "bamboo grove", "iwatayama", "togetsukyo", "sagano"],
-         "intro": "West of Kyoto the Hozu river comes out of its gorge under the Togetsukyo bridge. The bamboo grove is a short walk from the station; the monkey park climbs the hill opposite.",
-         "fact": "The Sagano scenic railway follows the Hozu gorge for about seven kilometres between Saga and Kameoka."},
-        {"slug": "tokyo", "name": "Tokyo", "match": ["tokyo", "shinjuku", "shibuya", "kabukicho", "zojoji", "zōjō", "meiji shrine", "asakusa", "senso-ji", "akihabara", "ginza", "harajuku"],
-         "intro": "Zōjō-ji with Tokyo Tower behind it, Shibuya crossing from above, Kabukicho after dark, and the quiet of Meiji Shrine a few minutes from Harajuku.",
-         "fact": "Tokyo Tower, finished in 1958 and modelled on the Eiffel Tower, stands 333 metres tall."},
-        {"slug": "nara", "name": "Nara", "match": ["\\bnara\\b", "todai-ji", "todaiji", "sika deer", "kasuga"],
-         "intro": "The deer of Nara Park bow for crackers in front of Tōdai-ji, whose Great Buddha Hall is among the largest wooden buildings in the world.",
-         "fact": "More than a thousand sika deer roam Nara Park and are protected as natural monuments."},
-        {"slug": "osaka", "name": "Osaka", "match": ["osaka", "dotonbori", "d[oō]tonbori", "glico", "namba", "osaka castle"],
-         "intro": "Dōtonbori at night: the Glico runner, the canal and the restaurant signs stacked above it.",
-         "fact": "The Glico running man sign over the Dōtonbori canal has been there, in six versions, since 1935."},
-        {"slug": "miyajima", "name": "Miyajima and Hiroshima", "match": ["itsukushima", "miyajima", "hiroshima", "torii.*sea", "floating torii"],
-         "intro": "The great torii of Itsukushima Shrine stands in the sea at high tide and on wet sand at low tide. Hiroshima is a short ferry and train ride away.",
-         "fact": "The current torii at Itsukushima dates from 1875 and stands about 16 metres high; it is not fixed to the seabed but held by its own weight."},
-        {"slug": "mount-fuji", "name": "Mount Fuji and Kawaguchiko", "match": ["mount fuji", "mt\\.? fuji", "kawaguchi", "chureito", "fuji five lakes"],
-         "intro": "Fuji from the north shore of Lake Kawaguchi and from the Chureito pagoda, when the cloud lifted.",
-         "fact": "Mount Fuji is 3,776 metres high and last erupted in 1707."}
+        {
+          "slug": "kyoto",
+          "name": "Kyoto",
+          "match": [
+            "kyoto",
+            "kiyomizu",
+            "fushimi inari",
+            "kinkaku",
+            "\\bgion\\b",
+            "higashiyama",
+            "philosopher's walk"
+          ],
+          "intro": "Kiyomizu-dera on its wooden stage above the city, the vermilion gates of Fushimi Inari climbing the hill, and the lanes of Higashiyama early in the morning.",
+          "fact": "Fushimi Inari's paths carry around 10,000 torii gates, each donated by a business or family."
+        },
+        {
+          "slug": "arashiyama",
+          "name": "Arashiyama and the Hozu gorge",
+          "match": [
+            "arashiyama",
+            "hozu",
+            "bamboo grove",
+            "iwatayama",
+            "togetsukyo",
+            "sagano"
+          ],
+          "intro": "West of Kyoto the Hozu river comes out of its gorge under the Togetsukyo bridge. The bamboo grove is a short walk from the station; the monkey park climbs the hill opposite.",
+          "fact": "The Sagano scenic railway follows the Hozu gorge for about seven kilometres between Saga and Kameoka."
+        },
+        {
+          "slug": "tokyo",
+          "name": "Tokyo",
+          "match": [
+            "tokyo",
+            "shinjuku",
+            "shibuya",
+            "kabukicho",
+            "zojoji",
+            "zōjō",
+            "meiji shrine",
+            "asakusa",
+            "senso-ji",
+            "akihabara",
+            "ginza",
+            "harajuku"
+          ],
+          "intro": "Zōjō-ji with Tokyo Tower behind it, Shibuya crossing from above, Kabukicho after dark, and the quiet of Meiji Shrine a few minutes from Harajuku.",
+          "fact": "Tokyo Tower, finished in 1958 and modelled on the Eiffel Tower, stands 333 metres tall."
+        },
+        {
+          "slug": "nara",
+          "name": "Nara",
+          "match": [
+            "\\bnara\\b",
+            "todai-ji",
+            "todaiji",
+            "sika deer",
+            "kasuga"
+          ],
+          "intro": "The deer of Nara Park bow for crackers in front of Tōdai-ji, whose Great Buddha Hall is among the largest wooden buildings in the world.",
+          "fact": "More than a thousand sika deer roam Nara Park and are protected as natural monuments."
+        },
+        {
+          "slug": "osaka",
+          "name": "Osaka",
+          "match": [
+            "osaka",
+            "dotonbori",
+            "d[oō]tonbori",
+            "glico",
+            "namba",
+            "osaka castle"
+          ],
+          "intro": "Dōtonbori at night: the Glico runner, the canal and the restaurant signs stacked above it.",
+          "fact": "The Glico running man sign over the Dōtonbori canal has been there, in six versions, since 1935."
+        },
+        {
+          "slug": "miyajima",
+          "name": "Miyajima and Hiroshima",
+          "match": [
+            "itsukushima",
+            "miyajima",
+            "hiroshima",
+            "torii.*sea",
+            "floating torii"
+          ],
+          "intro": "The great torii of Itsukushima Shrine stands in the sea at high tide and on wet sand at low tide. Hiroshima is a short ferry and train ride away.",
+          "fact": "The current torii at Itsukushima dates from 1875 and stands about 16 metres high; it is not fixed to the seabed but held by its own weight."
+        },
+        {
+          "slug": "mount-fuji",
+          "name": "Mount Fuji and Kawaguchiko",
+          "match": [
+            "mount fuji",
+            "mt\\.? fuji",
+            "kawaguchi",
+            "chureito",
+            "fuji five lakes"
+          ],
+          "intro": "Fuji from the north shore of Lake Kawaguchi and from the Chureito pagoda, when the cloud lifted.",
+          "fact": "Mount Fuji is 3,776 metres high and last erupted in 1707."
+        }
       ]
     },
     {
-      "slug": "switzerland", "name": "Switzerland",
+      "slug": "switzerland",
+      "name": "Switzerland",
       "intro": "Bern, Interlaken, Lauterbrunnen, the Jungfraujoch and Zermatt in June 2026. Glaciers, the Matterhorn in a lake, and a medieval town on a bend of the Aare.",
       "places": [
-        {"slug": "zermatt", "name": "Zermatt and the Matterhorn", "match": ["matterhorn", "zermatt", "riffelsee", "gorner", "gornergrat", "riffelberg", "rotenboden"],
-         "intro": "The Gornergrat railway climbs to 3,089 metres above Zermatt. From Rotenboden a short path leads to Riffelsee, where the Matterhorn reflects on a still morning, and the Gorner glacier fills the valley below.",
-         "fact": "The Matterhorn is 4,478 metres high; the Gornergrat railway, opened in 1898, was Switzerland's first electric cog railway."},
-        {"slug": "lauterbrunnen", "name": "Lauterbrunnen and the Jungfrau region", "match": ["lauterbrunnen", "staubbach", "jungfrau", "interlaken", "harder kulm", "wengen", "m[uü]rren", "grindelwald", "lake thun", "lake brienz", "brienz"],
-         "intro": "Staubbach Falls drops nearly 300 metres into the Lauterbrunnen valley. The Jungfraujoch railway tunnels through the Eiger to Europe's highest station, and Interlaken sits between two lakes.",
-         "fact": "The Jungfraujoch station at 3,454 metres is the highest railway station in Europe."},
-        {"slug": "bern", "name": "Bern", "match": ["\\bbern\\b", "bern's", "zytglogge", "aare", "bundeshaus", "rosengarten", "m[uü]nster.*bern", "bern.*m[uü]nster"],
-         "intro": "The old town fills a loop of the Aare: arcaded streets, the Zytglogge clock tower, the cathedral spire and the red roofs seen from the Rose Garden.",
-         "fact": "Bern's old town has been a UNESCO World Heritage Site since 1983; its arcades run for about six kilometres."},
-        {"slug": "swiss-alps", "name": "Swiss Alps", "match": ["swiss alps", "switzerland.*(peak|summit|mountain|glacier|alpine)", "(peak|summit|mountain|glacier|alpine).*switzerland"],
-         "intro": "Peaks and glaciers from the train windows and the viewpoints between Interlaken and Zermatt.",
-         "fact": "Switzerland has 48 peaks above 4,000 metres, more than any other country in the Alps."}
+        {
+          "slug": "zermatt",
+          "name": "Zermatt and the Matterhorn",
+          "match": [
+            "matterhorn",
+            "zermatt",
+            "riffelsee",
+            "gorner",
+            "gornergrat",
+            "riffelberg",
+            "rotenboden"
+          ],
+          "intro": "The Gornergrat railway climbs to 3,089 metres above Zermatt. From Rotenboden a short path leads to Riffelsee, where the Matterhorn reflects on a still morning, and the Gorner glacier fills the valley below.",
+          "fact": "The Matterhorn is 4,478 metres high; the Gornergrat railway, opened in 1898, was Switzerland's first electric cog railway."
+        },
+        {
+          "slug": "lauterbrunnen",
+          "name": "Lauterbrunnen and the Jungfrau region",
+          "match": [
+            "lauterbrunnen",
+            "staubbach",
+            "jungfrau",
+            "interlaken",
+            "harder kulm",
+            "wengen",
+            "m[uü]rren",
+            "grindelwald",
+            "lake thun",
+            "lake brienz",
+            "brienz"
+          ],
+          "intro": "Staubbach Falls drops nearly 300 metres into the Lauterbrunnen valley. The Jungfraujoch railway tunnels through the Eiger to Europe's highest station, and Interlaken sits between two lakes.",
+          "fact": "The Jungfraujoch station at 3,454 metres is the highest railway station in Europe."
+        },
+        {
+          "slug": "bern",
+          "name": "Bern",
+          "match": [
+            "\\bbern\\b",
+            "bern's",
+            "zytglogge",
+            "aare",
+            "bundeshaus",
+            "rosengarten",
+            "m[uü]nster.*bern",
+            "bern.*m[uü]nster"
+          ],
+          "intro": "The old town fills a loop of the Aare: arcaded streets, the Zytglogge clock tower, the cathedral spire and the red roofs seen from the Rose Garden.",
+          "fact": "Bern's old town has been a UNESCO World Heritage Site since 1983; its arcades run for about six kilometres."
+        },
+        {
+          "slug": "swiss-alps",
+          "name": "Swiss Alps",
+          "match": [
+            "swiss alps",
+            "switzerland.*(peak|summit|mountain|glacier|alpine)",
+            "(peak|summit|mountain|glacier|alpine).*switzerland"
+          ],
+          "intro": "Peaks and glaciers from the train windows and the viewpoints between Interlaken and Zermatt.",
+          "fact": "Switzerland has 48 peaks above 4,000 metres, more than any other country in the Alps."
+        }
       ]
     },
     {
-      "slug": "united-kingdom", "name": "United Kingdom",
+      "slug": "united-kingdom",
+      "name": "United Kingdom",
       "intro": "London in November: Westminster at sunset, the river, and the city after dark.",
       "places": [
-        {"slug": "london", "name": "London", "match": ["london", "big ben", "westminster", "thames", "parliament", "tower bridge", "piccadilly", "canary wharf", "st paul", "buckingham", "trafalgar", "the shard"],
-         "intro": "Big Ben and the Houses of Parliament from the south bank at sunset, Westminster Abbey, Piccadilly Circus at night and the towers of Canary Wharf.",
-         "fact": "The Elizabeth Tower, usually called Big Ben after its bell, is 96 metres tall; the bell itself weighs 13.7 tonnes."}
+        {
+          "slug": "london",
+          "name": "London",
+          "match": [
+            "london",
+            "big ben",
+            "westminster",
+            "thames",
+            "parliament",
+            "tower bridge",
+            "piccadilly",
+            "canary wharf",
+            "st paul",
+            "buckingham",
+            "trafalgar",
+            "the shard"
+          ],
+          "intro": "Big Ben and the Houses of Parliament from the south bank at sunset, Westminster Abbey, Piccadilly Circus at night and the towers of Canary Wharf.",
+          "fact": "The Elizabeth Tower, usually called Big Ben after its bell, is 96 metres tall; the bell itself weighs 13.7 tonnes."
+        }
       ]
     },
     {
-      "slug": "denmark", "name": "Denmark",
+      "slug": "denmark",
+      "name": "Denmark",
       "intro": "Copenhagen in December 2025, in Christmas lights: Nyhavn, the palace square, the rooftops from the Round Tower.",
       "places": [
-        {"slug": "copenhagen", "name": "Copenhagen", "match": ["copenhagen", "nyhavn", "amalienborg", "tivoli", "round tower", "rundet[aå]rn", "christiansborg", "angleterre", "str[oø]get", "k[oø]benhavn"],
-         "intro": "Nyhavn's painted houses along the canal, Amalienborg at dusk, the Christmas lights on Hotel d'Angleterre and the red rooftops seen from the Round Tower.",
-         "fact": "Nyhavn was dug in the 1670s as a harbour canal; Hans Christian Andersen lived at three different addresses on it."}
+        {
+          "slug": "copenhagen",
+          "name": "Copenhagen",
+          "match": [
+            "copenhagen",
+            "nyhavn",
+            "amalienborg",
+            "tivoli",
+            "round tower",
+            "rundet[aå]rn",
+            "christiansborg",
+            "angleterre",
+            "str[oø]get",
+            "k[oø]benhavn"
+          ],
+          "intro": "Nyhavn's painted houses along the canal, Amalienborg at dusk, the Christmas lights on Hotel d'Angleterre and the red rooftops seen from the Round Tower.",
+          "fact": "Nyhavn was dug in the 1670s as a harbour canal; Hans Christian Andersen lived at three different addresses on it."
+        }
       ]
     },
     {
-      "slug": "netherlands", "name": "Netherlands",
+      "slug": "netherlands",
+      "name": "Netherlands",
       "intro": "Amsterdam in December 2025: canals, the Amstel, bicycles and the Rijksmuseum.",
       "places": [
-        {"slug": "amsterdam", "name": "Amsterdam", "match": ["amsterdam", "amstel", "rijksmuseum", "jordaan", "canal house", "dutch canal"],
-         "intro": "The canals of the Jordaan, the Amstel river panorama, the Rijksmuseum and the basilica of Saint Nicholas by the station.",
-         "fact": "Amsterdam has about 165 canals and over 1,200 bridges; the canal ring is a UNESCO World Heritage Site."}
+        {
+          "slug": "amsterdam",
+          "name": "Amsterdam",
+          "match": [
+            "amsterdam",
+            "amstel",
+            "rijksmuseum",
+            "jordaan",
+            "canal house",
+            "dutch canal"
+          ],
+          "intro": "The canals of the Jordaan, the Amstel river panorama, the Rijksmuseum and the basilica of Saint Nicholas by the station.",
+          "fact": "Amsterdam has about 165 canals and over 1,200 bridges; the canal ring is a UNESCO World Heritage Site."
+        }
       ]
     },
     {
-      "slug": "germany", "name": "Germany",
+      "slug": "germany",
+      "name": "Germany",
       "intro": "Cologne and Heidelberg in December 2025: the cathedral over the Rhine, the castle over the Neckar, and the Christmas markets.",
       "places": [
-        {"slug": "cologne", "name": "Cologne", "match": ["cologne", "k[oö]ln", "hohenzollern bridge", "rhine"],
-         "intro": "Cologne Cathedral and the Hohenzollern Bridge from across the Rhine at dusk, and the Christmas markets in the old town.",
-         "fact": "Cologne Cathedral took 632 years to build, from 1248 to 1880, and was the tallest building in the world for four years."},
-        {"slug": "heidelberg", "name": "Heidelberg", "match": ["heidelberg", "neckar", "old bridge"],
-         "intro": "The red sandstone castle above the old town, the Old Bridge across the Neckar lit at dusk, and the view from the Philosophers' Walk.",
-         "fact": "Heidelberg Castle's Great Tun holds about 220,000 litres and is one of the largest wine barrels ever made."}
+        {
+          "slug": "cologne",
+          "name": "Cologne",
+          "match": [
+            "cologne",
+            "k[oö]ln",
+            "hohenzollern bridge",
+            "rhine"
+          ],
+          "intro": "Cologne Cathedral and the Hohenzollern Bridge from across the Rhine at dusk, and the Christmas markets in the old town.",
+          "fact": "Cologne Cathedral took 632 years to build, from 1248 to 1880, and was the tallest building in the world for four years."
+        },
+        {
+          "slug": "heidelberg",
+          "name": "Heidelberg",
+          "match": [
+            "heidelberg",
+            "neckar",
+            "old bridge"
+          ],
+          "intro": "The red sandstone castle above the old town, the Old Bridge across the Neckar lit at dusk, and the view from the Philosophers' Walk.",
+          "fact": "Heidelberg Castle's Great Tun holds about 220,000 litres and is one of the largest wine barrels ever made."
+        }
       ]
     },
     {
-      "slug": "united-states", "name": "United States",
+      "slug": "united-states",
+      "name": "United States",
       "intro": "Home ground and the places a few hours from it: the Sonoran Desert around Tucson, the Atlanta skyline, Hawaii's valleys and coasts, and the Bay.",
       "places": [
-        {"slug": "sonoran-desert", "name": "Sonoran Desert, Arizona", "match": ["saguaro", "sonoran", "tucson", "catalina", "sabino", "santa catalina", "arizona.*desert", "desert.*arizona", "sonoita", "mount lemmon", "southern arizona"],
-         "intro": "Saguaro forests on the bajadas around Tucson, monsoon lightning over the Santa Catalinas, and the sunsets the desert is known for.",
-         "fact": "A saguaro grows its first arm at around 50 to 70 years old and can live past 150."},
-        {"slug": "hawaii", "name": "Hawaii", "match": ["hawaii", "waipio", "waip[iʻ]o", "waikiki", "honolulu", "\\bhilo\\b", "big island", "\\boahu\\b", "o[ʻ']ahu", "volcanoes national park", "kilauea", "pearl harbor", "diamond head", "\\bakaka\\b", "hamakua", "\\bkona\\b"],
-         "intro": "Waipiʻo Valley from the lookout on the Hāmākua coast, the lava fields of Volcanoes National Park, Waikīkī from the water and Pearl Harbor.",
-         "fact": "Waipiʻo Valley's walls rise about 600 metres; the road down is one of the steepest in the United States."},
-        {"slug": "atlanta", "name": "Atlanta", "match": ["atlanta", "piedmont park", "midtown", "botanical garden", "beltline", "truist park", "jackson street bridge"],
-         "intro": "The Midtown skyline at golden hour from Piedmont Park, the Botanical Garden, and the city after a storm.",
-         "fact": "Atlanta has one of the densest urban tree canopies of any large American city, at roughly 47 percent cover."},
-        {"slug": "san-francisco", "name": "San Francisco", "match": ["san francisco", "golden gate", "alcatraz", "bay bridge", "sausalito", "lombard"],
-         "intro": "The Golden Gate Bridge from the Marin headlands and the bay from the water.",
-         "fact": "The Golden Gate Bridge's towers stand 227 metres above the water; its colour is called International Orange."},
-        {"slug": "pittsburgh", "name": "Pittsburgh", "match": ["pittsburgh", "allegheny", "monongahela", "mount washington", "duquesne incline"],
-         "intro": "The three rivers and the downtown skyline from Mount Washington.",
-         "fact": "Pittsburgh has 446 bridges, more than any other city in the world."},
-        {"slug": "sequoias", "name": "California redwoods and sequoias", "match": ["redwood", "sequoia", "muir woods", "giant forest"],
-         "intro": "Among the big trees: a bench in a redwood grove, trunks disappearing into fog.",
-         "fact": "Coast redwoods are the tallest trees on Earth, the highest known standing just over 115 metres."}
+        {
+          "slug": "sonoran-desert",
+          "name": "Sonoran Desert, Arizona",
+          "match": [
+            "saguaro",
+            "sonoran",
+            "tucson",
+            "catalina",
+            "sabino",
+            "santa catalina",
+            "arizona.*desert",
+            "desert.*arizona",
+            "sonoita",
+            "mount lemmon",
+            "southern arizona"
+          ],
+          "intro": "Saguaro forests on the bajadas around Tucson, monsoon lightning over the Santa Catalinas, and the sunsets the desert is known for.",
+          "fact": "A saguaro grows its first arm at around 50 to 70 years old and can live past 150."
+        },
+        {
+          "slug": "hawaii",
+          "name": "Hawaii",
+          "match": [
+            "hawaii",
+            "waipio",
+            "waip[iʻ]o",
+            "waikiki",
+            "honolulu",
+            "\\bhilo\\b",
+            "big island",
+            "\\boahu\\b",
+            "o[ʻ']ahu",
+            "volcanoes national park",
+            "kilauea",
+            "pearl harbor",
+            "diamond head",
+            "\\bakaka\\b",
+            "hamakua",
+            "\\bkona\\b"
+          ],
+          "intro": "Waipiʻo Valley from the lookout on the Hāmākua coast, the lava fields of Volcanoes National Park, Waikīkī from the water and Pearl Harbor.",
+          "fact": "Waipiʻo Valley's walls rise about 600 metres; the road down is one of the steepest in the United States."
+        },
+        {
+          "slug": "atlanta",
+          "name": "Atlanta",
+          "match": [
+            "atlanta",
+            "piedmont park",
+            "midtown",
+            "botanical garden",
+            "beltline",
+            "truist park",
+            "jackson street bridge",
+            "georgia tech"
+          ],
+          "intro": "Atlanta is home. The Midtown skyline from Piedmont Park at golden hour, the same skyline in a snowfall, the downtown connector from above, Georgia Tech at dusk, the Botanical Garden in bloom, and, below, the week in July 2025 when the MLB All-Star Game came to Truist Park.",
+          "fact": "Truist Park hosted the 2025 MLB All-Star Game on July 15, 2025, the first time Atlanta had the game since 2000.",
+          "max": 40,
+          "events": true,
+          "events_title": "MLB All-Star Week, Truist Park, July 2025",
+          "events_note": "The Home Run Derby and the All-Star Game, from the ballpark. These are available as prints on Fine Art America; they are not licensed for commercial use."
+        },
+        {
+          "slug": "san-francisco",
+          "name": "San Francisco",
+          "match": [
+            "san francisco",
+            "golden gate",
+            "alcatraz",
+            "bay bridge",
+            "sausalito",
+            "lombard"
+          ],
+          "intro": "The Golden Gate Bridge from the Marin headlands and the bay from the water.",
+          "fact": "The Golden Gate Bridge's towers stand 227 metres above the water; its colour is called International Orange."
+        },
+        {
+          "slug": "pittsburgh",
+          "name": "Pittsburgh",
+          "match": [
+            "pittsburgh",
+            "allegheny",
+            "monongahela",
+            "mount washington",
+            "duquesne incline"
+          ],
+          "intro": "The three rivers and the downtown skyline from Mount Washington.",
+          "fact": "Pittsburgh has 446 bridges, more than any other city in the world."
+        },
+        {
+          "slug": "sequoias",
+          "name": "California redwoods and sequoias",
+          "match": [
+            "redwood",
+            "sequoia",
+            "muir woods",
+            "giant forest"
+          ],
+          "intro": "Among the big trees: a bench in a redwood grove, trunks disappearing into fog.",
+          "fact": "Coast redwoods are the tallest trees on Earth, the highest known standing just over 115 metres."
+        }
       ]
     },
     {
-      "slug": "canada", "name": "Canada",
+      "slug": "canada",
+      "name": "Canada",
       "intro": "Vancouver: the harbour, Stanley Park and the mountains behind the city.",
       "places": [
-        {"slug": "vancouver", "name": "Vancouver", "match": ["vancouver", "stanley park", "granville", "english bay", "lions gate", "burrard", "canada place", "capilano"],
-         "intro": "The skyline across False Creek, the seawall at Stanley Park, and the North Shore mountains over Burrard Inlet.",
-         "fact": "Stanley Park's seawall, finished in 1980 after 63 years of work, runs for about nine kilometres."}
+        {
+          "slug": "vancouver",
+          "name": "Vancouver",
+          "match": [
+            "vancouver",
+            "stanley park",
+            "granville",
+            "english bay",
+            "lions gate",
+            "burrard",
+            "canada place",
+            "capilano"
+          ],
+          "intro": "The skyline across False Creek, the seawall at Stanley Park, and the North Shore mountains over Burrard Inlet.",
+          "fact": "Stanley Park's seawall, finished in 1980 after 63 years of work, runs for about nine kilometres."
+        }
       ]
     },
     {
-      "slug": "panama", "name": "Panama",
+      "slug": "panama",
+      "name": "Panama",
       "intro": "Panama City and the canal: the old town, the skyline across the bay and ships in the locks.",
       "places": [
-        {"slug": "panama-city", "name": "Panama City and the canal", "match": ["panama", "casco viejo", "miraflores", "gatun", "amador"],
-         "intro": "Casco Viejo's balconies, the skyline across the bay from the causeway, and a ship rising in the Miraflores locks.",
-         "fact": "A ship takes eight to ten hours to pass through the Panama Canal; the Miraflores locks lift it about 16 metres."}
+        {
+          "slug": "panama-city",
+          "name": "Panama City and the canal",
+          "match": [
+            "panama",
+            "casco viejo",
+            "miraflores",
+            "gatun",
+            "amador"
+          ],
+          "intro": "Casco Viejo's balconies, the skyline across the bay from the causeway, and a ship rising in the Miraflores locks.",
+          "fact": "A ship takes eight to ten hours to pass through the Panama Canal; the Miraflores locks lift it about 16 metres."
+        }
       ]
     }
   ]
