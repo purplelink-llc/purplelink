@@ -4,7 +4,17 @@
   var G = window.PLGames, NAME = "daily-photo", URL_ = "https://purplelink.llc/games/daily-photo/";
   if (!G) return;
   var $ = function (id) { return document.getElementById(id); };
-  var st = { idx: 0, rounds: [], picks: [], cur: 0, done: false, epoch: "" };
+  // Weekday twists (getDay(), Sunday = 0): how the photograph is shown until you answer.
+  var TWISTS = {
+    0: { name: "Standard", text: "The photographs are shown as they are." },
+    1: { name: "Standard", text: "The photographs are shown as they are." },
+    2: { name: "Blur reveal", fx: "blur", text: "Each photo starts blurred and sharpens over ten seconds." },
+    3: { name: "Standard", text: "The photographs are shown as they are." },
+    4: { name: "Zoom out", fx: "zoom", text: "Each photo starts zoomed in and pulls back over nine seconds." },
+    5: { name: "Standard", text: "The photographs are shown as they are." },
+    6: { name: "Black and white", fx: "mono", text: "Today's photographs are in black and white until you answer." }
+  };
+  var st = { twist: TWISTS[1], idx: 0, rounds: [], picks: [], cur: 0, done: false, epoch: "" };
 
   function answerOf(r) { return G.decodeText(r.a); }
   function isRight(i) { return st.picks[i] !== undefined && st.rounds[i].o[st.picks[i]] === answerOf(st.rounds[i]); }
@@ -35,6 +45,16 @@
     img.src = "/assets/photography/hub/" + r.i + "-1200.webp";
     img.srcset = "/assets/photography/hub/" + r.i + "-480.webp 480w, /assets/photography/hub/" + r.i + "-1200.webp 1200w";
     img.sizes = "(max-width: 700px) 100vw, 640px";
+    // restart the twist's effect for this photo; answered photos are shown plain
+    img.removeAttribute("data-fx"); img.removeAttribute("data-open");
+    void img.offsetWidth;
+    if (st.twist.fx) {
+      if (answered) img.setAttribute("data-open", "1");
+      else {
+        img.style.setProperty("--ox", (20 + ((st.idx * 37 + st.cur * 23) % 61)) + "%"); img.style.setProperty("--oy", (20 + ((st.idx * 53 + st.cur * 29) % 61)) + "%");
+        img.setAttribute("data-fx", st.twist.fx);
+      }
+    }
     var ul = $("ph-opts");
     ul.textContent = "";
     r.o.forEach(function (name, i) {
@@ -67,6 +87,7 @@
     if (st.picks.length === 0) G.track("game_start", NAME);
     st.picks[st.cur] = i;
     persist(); show();
+    var im = $("ph-img"); if (im && st.twist.fx) im.setAttribute("data-open", "1");
     if (window.PLConfetti && isRight(st.cur)) window.PLConfetti.small();
     var FX = window.PLFX, ok = isRight(st.cur), opts = document.querySelectorAll(".quiz-opt");
     if (FX) { FX.play(ok ? "good" : "bad"); if (!ok) FX.vibrate(30); FX.kick(opts[i], ok ? "fx-glow" : "fx-shake", 800); }
@@ -78,7 +99,7 @@
 
   function shareText() {
     var sq = st.rounds.map(function (_, i) { return isRight(i) ? "■" : "□"; }).join("");
-    return "Daily Photo " + (st.idx + 1) + " " + score() + "/" + st.rounds.length + "\n\n" + sq + "\n\n" + URL_;
+    return "Daily Photo " + (st.idx + 1) + (st.twist.name !== "Standard" ? " (" + st.twist.name + ")" : "") + " " + score() + "/" + st.rounds.length + "\n\n" + sq + "\n\n" + URL_;
   }
 
   function finish(fresh) {
@@ -129,6 +150,9 @@
     st.idx = G.dayIndex(new Date(), data.epoch);
     st.rounds = G.pick(data.days, st.idx);
     $("ph-number").textContent = "Set " + (st.idx + 1);
+    st.twist = TWISTS[new Date().getDay()];
+    var tw = $("ph-twist");
+    if (tw) { $("ph-twist-name").textContent = st.twist.name; $("ph-twist-text").textContent = st.twist.text; tw.hidden = false; }
     var saved = G.getGame(NAME);
     if (saved.today && saved.today.idx === st.idx) {
       st.picks = saved.today.picks || []; st.done = !!saved.today.done;

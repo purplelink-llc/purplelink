@@ -4,7 +4,19 @@
   var G = window.PLGames, NAME = "daily-five", URL_ = "https://purplelink.llc/games/daily-five/";
   if (!G) return;
   var $ = function (id) { return document.getElementById(id); };
-  var st = { idx: 0, qs: [], picks: [], cur: 0, done: false, answered: false, epoch: "" };
+  // Weekday twists (getDay(), Sunday = 0): how many 50:50 lifelines you get, and whether each question is timed.
+  var TWISTS = {
+    0: { name: "No lifelines", life: 0, text: "No 50:50 today. Five questions, on your own." },
+    1: { name: "Standard", life: 1, text: "One 50:50 lifeline for the set." },
+    2: { name: "Two lifelines", life: 2, text: "Two 50:50 lifelines for the set." },
+    3: { name: "Standard", life: 1, text: "One 50:50 lifeline for the set." },
+    4: { name: "Standard", life: 1, text: "One 50:50 lifeline for the set." },
+    5: { name: "Lightning", life: 1, secs: 15, text: "Fifteen seconds a question. One 50:50 lifeline." },
+    6: { name: "Standard", life: 1, text: "One 50:50 lifeline for the set." }
+  };
+  var TIMEOUT = 9;                        // a pick no option has: the question ran out of time
+  var timer = 0;
+  var st = { twist: TWISTS[1], used: [], gone: {}, idx: 0, qs: [], picks: [], cur: 0, done: false, answered: false, epoch: "" };
 
   function correctText(q) { return G.decodeText(q[3]); }
   function isRight(qi) { return st.picks[qi] !== undefined && st.qs[qi][2][st.picks[qi]] === correctText(st.qs[qi]); }
@@ -12,7 +24,7 @@
 
   function persist() {
     var s = G.getGame(NAME);
-    s.today = { idx: st.idx, picks: st.picks, done: st.done };
+    s.today = { idx: st.idx, picks: st.picks, done: st.done, used: st.used };
     G.setGame(NAME, s);
   }
 
@@ -42,23 +54,67 @@
       b.type = "button";
       b.className = "quiz-opt";
       b.textContent = text;
+      var gone = (st.gone[st.cur] || []).indexOf(i) >= 0;
       if (answered) {
         b.disabled = true;
         if (text === right) { b.setAttribute("data-r", "right"); b.appendChild(tag("Correct")); }
         else if (i === st.picks[st.cur]) { b.setAttribute("data-r", "wrong"); b.appendChild(tag("Your answer")); }
+      } else if (gone) {
+        b.disabled = true; b.setAttribute("data-gone", "1"); b.appendChild(tag("Removed"));
       } else {
         b.addEventListener("click", function () { choose(i); });
       }
       li.appendChild(b);
       ul.appendChild(li);
     });
-    $("qz-note").textContent = answered ? (isRight(st.cur) ? "Correct." : "The answer is " + right + ".") : "";
+    $("qz-note").textContent = answered ? (isRight(st.cur) ? "Correct." : (st.picks[st.cur] === TIMEOUT ? "Time is up. " : "") + "The answer is " + right + ".") : "";
+    paintLife(answered);
+    if (answered) stopTimer(); else if (!timer) startTimer();
     var next = $("qz-next");
     next.hidden = !answered;
     next.textContent = st.cur === st.qs.length - 1 ? "See your score" : "Next question";
     dots();
     var first = ul.querySelector("button:not(:disabled)") || next;
     if (answered && !next.hidden) next.focus();
+  }
+
+  // ---- 50:50 ----
+  function lifeLeft() { return st.twist.life - st.used.length; }
+  function paintLife(answered) {
+    var b = $("qz-fifty"); if (!b) return;
+    var left = lifeLeft(), usedHere = st.used.indexOf(st.cur) >= 0;
+    b.hidden = st.twist.life === 0;
+    b.disabled = answered || left <= 0 || usedHere;
+    b.textContent = "50:50 (" + Math.max(0, left) + " left)";
+  }
+  function useFifty() {
+    if (st.picks[st.cur] !== undefined || lifeLeft() <= 0 || st.used.indexOf(st.cur) >= 0) return;
+    var q = st.qs[st.cur], right = correctText(q), wrong = [];
+    q[2].forEach(function (t, i) { if (t !== right) wrong.push(i); });
+    // two of the three wrong answers go, chosen the same way every time for a given question
+    var keep = (st.idx + st.cur) % wrong.length;
+    st.gone[st.cur] = wrong.filter(function (_, k) { return k !== keep; });
+    st.used.push(st.cur);
+    persist(); showQuestion();
+    if (window.PLFX) window.PLFX.play("reveal");
+    $("qz-note").textContent = "Two wrong answers removed.";
+  }
+
+  // ---- timer (Lightning) ----
+  function stopTimer() { window.clearInterval(timer); timer = 0; var t = $("qz-timer"); if (t) t.hidden = true; }
+  function startTimer() {
+    stopTimer();
+    var secs = st.twist.secs; if (!secs) return;
+    var box = $("qz-timer"), bar = $("qz-timer-bar"), t0 = Date.now(), last = secs;
+    box.hidden = false; bar.style.setProperty("--p", "1");
+    $("qz-timer-text").textContent = secs + " s";
+    timer = window.setInterval(function () {
+      var left = Math.max(0, secs - (Date.now() - t0) / 1000);
+      bar.style.setProperty("--p", String(left / secs));
+      var whole = Math.ceil(left);
+      if (whole !== last) { last = whole; $("qz-timer-text").textContent = whole + " s"; }
+      if (left <= 0) { stopTimer(); if (st.picks[st.cur] === undefined) choose(TIMEOUT); }
+    }, 200);
   }
 
   function tag(t) {
@@ -69,8 +125,10 @@
   }
 
   function choose(i) {
+    if (st.picks[st.cur] !== undefined) return;
     if (st.picks.length === 0) G.track("game_start", NAME);
     st.picks[st.cur] = i;
+    stopTimer();
     persist();
     showQuestion();
     var ok = isRight(st.cur), FX = window.PLFX, btn = $("qz-opts").querySelectorAll(".quiz-opt")[i];
@@ -86,7 +144,7 @@
 
   function shareText() {
     var sq = st.qs.map(function (_, i) { return isRight(i) ? "■" : "□"; }).join("");
-    return "Daily Five " + (st.idx + 1) + " " + score() + "/" + st.qs.length + "\n\n" + sq + "\n\n" + URL_;
+    return "Daily Five " + (st.idx + 1) + (st.twist.name !== "Standard" ? " (" + st.twist.name + ")" : "") + " " + score() + "/" + st.qs.length + "\n\n" + sq + "\n\n" + URL_;
   }
 
   function finish(fresh) {
@@ -157,9 +215,15 @@
     st.idx = G.dayIndex(new Date(), data.epoch);
     st.qs = G.pick(data.days, st.idx);
     $("qz-number").textContent = "Quiz " + (st.idx + 1);
+    st.twist = TWISTS[new Date().getDay()];
+    var tw = $("qz-twist");
+    if (tw) { $("qz-twist-name").textContent = st.twist.name; $("qz-twist-text").textContent = st.twist.text; tw.hidden = false; }
+    if ($("qz-fifty")) $("qz-fifty").addEventListener("click", useFifty);
     var saved = G.getGame(NAME);
     if (saved.today && saved.today.idx === st.idx) {
       st.picks = saved.today.picks || [];
+      st.used = saved.today.used || [];
+      st.used.forEach(function (qi) { var q = st.qs[qi], right = correctText(q), wrong = []; q[2].forEach(function (t, i) { if (t !== right) wrong.push(i); }); var keep = (st.idx + qi) % wrong.length; st.gone[qi] = wrong.filter(function (_, k) { return k !== keep; }); });
       st.done = !!saved.today.done;
       st.cur = Math.min(st.picks.length, st.qs.length - 1);
       if (st.picks.length && st.picks.length < st.qs.length) st.cur = st.picks.length;

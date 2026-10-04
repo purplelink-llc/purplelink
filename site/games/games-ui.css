@@ -476,3 +476,27 @@
 }
 
 .reward[hidden] { display: none; }
+
+/* Daily Five: timer and the 50:50 lifeline */
+.quiz-timer { display: flex; align-items: center; gap: 12px; margin: 0 0 10px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.quiz-timer[hidden] { display: none; }
+.quiz-timer-track { flex: 1; height: 12px; border-radius: 6px; background: color-mix(in oklch, var(--ink) 12%, transparent); overflow: hidden; }
+.quiz-timer-track i { display: block; height: 100%; width: 100%; border-radius: 6px; background: var(--gc, var(--purple)); transform-origin: left center; transform: scaleX(var(--p, 1)); }
+.quiz-opt[data-gone] { opacity: 0.4; text-decoration: line-through; }
+#qz-fifty[hidden] { display: none; }
+.games [hidden] { display: none !important; }
+
+/* Daily Photo twists: the picture is plain once you answer */
+.ph-frame { overflow: hidden; border-radius: 14px; max-width: 640px; margin: 8px 0 14px; background: var(--panel); }
+.ph-frame .ph-photo { margin: 0; border-radius: 0; max-width: none; width: 100%; }
+.ph-photo[data-fx="blur"] { filter: blur(20px); animation: ph-sharpen 10s linear forwards; }
+.ph-photo[data-fx="zoom"] { transform: scale(3.2); transform-origin: var(--ox, 50%) var(--oy, 50%); animation: ph-zoom 9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.ph-photo[data-fx="mono"] { filter: grayscale(1) contrast(1.05); }
+.ph-photo { transition: filter 0.5s, transform 0.5s; }
+.ph-photo[data-open] { animation: none; filter: none; transform: none; }
+@keyframes ph-sharpen { to { filter: blur(0); } }
+@keyframes ph-zoom { to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .ph-photo[data-fx="blur"] { animation: none; filter: blur(8px); }
+  .ph-photo[data-fx="zoom"] { animation: none; transform: scale(1.8); }
+}

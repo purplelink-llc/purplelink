@@ -394,13 +394,18 @@ DF_BODY = """      <div class="games-wrap">
         <p id="qz-loading" class="games-note">Loading today's questions.</p>
         <div id="qz-game" hidden>
           <div class="quiz" id="qz-quiz" hidden>
+            <p class="wg-twist" id="qz-twist" hidden><strong id="qz-twist-name"></strong> <span id="qz-twist-text"></span></p>
+            <div class="quiz-timer" id="qz-timer" hidden role="timer" aria-label="Time left for this question"><span class="quiz-timer-track"><i id="qz-timer-bar"></i></span><span id="qz-timer-text"></span></div>
             <p class="quiz-progress" id="qz-progress"></p>
             <div class="quiz-dots" id="qz-dots" aria-hidden="true"></div>
             <p class="quiz-cat" id="qz-cat"></p>
             <h2 class="quiz-q" id="qz-q"></h2>
             <ul class="quiz-opts" id="qz-opts"></ul>
             <p class="quiz-note" id="qz-note" role="status" aria-live="polite"></p>
-            <button type="button" class="btn btn-primary" id="qz-next" hidden>Next question</button>
+            <div class="game-actions">
+              <button type="button" class="btn btn-ghost" id="qz-fifty">50:50</button>
+              <button type="button" class="btn btn-primary" id="qz-next" hidden>Next question</button>
+            </div>
           </div>
           <section class="game-result" id="qz-result" hidden aria-labelledby="qz-result-head">
             <h2 id="qz-result-head"></h2>
@@ -602,9 +607,10 @@ PH_BODY = """      <div class="games-wrap">
         <p id="ph-loading" class="games-note">Loading today's photographs.</p>
         <div id="ph-game" hidden>
           <div class="quiz" id="ph-quiz" hidden>
+            <p class="wg-twist" id="ph-twist" hidden><strong id="ph-twist-name"></strong> <span id="ph-twist-text"></span></p>
             <p class="quiz-progress" id="ph-progress"></p>
             <div class="quiz-dots" id="ph-dots" aria-hidden="true"></div>
-            <img class="ph-photo" id="ph-img" alt="Today's photograph. Its description appears after you answer." width="1200" height="800" decoding="async">
+            <div class="ph-frame"><img class="ph-photo" id="ph-img" alt="Today's photograph. Its description appears after you answer." width="1200" height="800" decoding="async"></div>
             <p class="quiz-cat">Which country?</p>
             <ul class="quiz-opts" id="ph-opts"></ul>
             <div class="ph-reveal" id="ph-reveal" hidden>
