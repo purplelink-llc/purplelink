@@ -724,7 +724,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/moderntex/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -1029,13 +1029,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://purplelink.llc/suite/</loc>
-    <lastmod>2026-10-04</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://purplelink.llc/recover/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1104,6 +1099,11 @@
     <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/suite/</loc>
+    <lastmod>2026-10-04</lastmod>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/support/</loc>
@@ -1341,7 +1341,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/vitae/plus/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

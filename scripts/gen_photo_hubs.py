@@ -158,11 +158,13 @@ def load_rows():
                 continue
             stem = fn[:-5]
             blob = " ".join([r["title"], r["description"], r["keywords"].replace(";", " ")])
-            if SKIP.search(blob):
-                continue
+            event = bool(SKIP.search(blob))
+            # Event and sports coverage is shown only on places that opt in
+            # ("events": true in photo-places.json), as prints, never as a
+            # direct license: player and league likeness is not ours to license.
             rows.append({"stem": stem, "title": r["title"].strip(), "caption": r["description"].strip(),
                          "keywords": [k.strip() for k in r["keywords"].split(";") if k.strip()],
-                         "people": bool(PEOPLE.search(r["title"])), "_blob": norm(blob)})
+                         "people": event or bool(PEOPLE.search(r["title"])), "event": event, "_blob": norm(blob)})
     return rows
 
 
@@ -184,12 +186,19 @@ def assign(rows, taxonomy, countries):
     """Return {country_slug: {place_slug: [rows], "_extra": [rows]}}."""
     out = {c["slug"]: {"_extra": []} for c in taxonomy["countries"]}
     matchers = []
+    caps, event_ok = {}, set()
     for c in taxonomy["countries"]:
         for p in c["places"]:
             out[c["slug"]][p["slug"]] = []
             matchers.append((c["slug"], p["slug"], [re.compile(norm(m), re.I) for m in p["match"]]))
+            if p.get("max"):
+                caps[(c["slug"], p["slug"])] = p["max"]
+            if p.get("events"):
+                event_ok.add((c["slug"], p["slug"]))
     for r in rows:
         hit = next(((cs, ps) for cs, ps, res in matchers if any(x.search(r["_blob"]) for x in res)), None)
+        if r.get("event") and hit not in event_ok:
+            continue              # sports and event coverage appears only where a place opts in
         if hit:
             out[hit[0]][hit[1]].append(r)
             continue
@@ -199,11 +208,11 @@ def assign(rows, taxonomy, countries):
     rank = {s: i for i, s in enumerate(HEROES)}
 
     def order(lst, cap):
-        lst.sort(key=lambda r: (rank.get(r["stem"], 99), r["people"], r["stem"]))
+        lst.sort(key=lambda r: (r.get("event", False), rank.get(r["stem"], 99), r["people"], r["stem"]))
         return lst[:cap]
     for cs in out:
         for ps in list(out[cs]):
-            out[cs][ps] = order(out[cs][ps], MAX_COUNTRY_EXTRA if ps == "_extra" else MAX_PER_PLACE)
+            out[cs][ps] = order(out[cs][ps], MAX_COUNTRY_EXTRA if ps == "_extra" else caps.get((cs, ps), MAX_PER_PLACE))
     return out
 
 
@@ -270,12 +279,14 @@ TAIL = """    </main>
 
 
 def image_object(img):
-    return {"@type": "ImageObject", "contentUrl": BASE + img["src"], "thumbnailUrl": BASE + img["thumb"],
-            "name": img["title"], "description": img["caption"], "width": img["w"], "height": img["h"],
-            "creator": {"@type": "Person", "name": "Benjamin Ampel"},
-            "creditText": "Benjamin Ampel / purplelink.llc", "copyrightNotice": "© Benjamin Ampel",
-            "license": f"{BASE}/photography/license/",
-            "acquireLicensePage": f"{BASE}/photography/license/?photo={img['stem']}"}
+    o = {"@type": "ImageObject", "contentUrl": BASE + img["src"], "thumbnailUrl": BASE + img["thumb"],
+         "name": img["title"], "description": img["caption"], "width": img["w"], "height": img["h"],
+         "creator": {"@type": "Person", "name": "Benjamin Ampel"},
+         "creditText": "Benjamin Ampel / purplelink.llc", "copyrightNotice": "© Benjamin Ampel"}
+    if not img.get("event"):
+        o["license"] = f"{BASE}/photography/license/"
+        o["acquireLicensePage"] = f"{BASE}/photography/license/?photo={img['stem']}"
+    return o
 
 
 def crumbs(items):
@@ -284,11 +295,13 @@ def crumbs(items):
 
 
 def figure(img, etsy):
-    if img["people"]:
+    if img.get("event"):
+        act = f'<a href="{FAA}" rel="noopener noreferrer" target="_blank">Print</a>'
+    elif img["people"]:
         act = f'<a href="mailto:ben@purplelink.llc?subject={esc("Editorial license: " + img["stem"])}">Editorial use: ask</a>'
     else:
         act = f'<a href="/photography/license/?photo={esc(img["stem"])}">License</a>'
-    if img["stem"] in etsy:
+    if img["stem"] in etsy and not img.get("event"):
         act += f'<a href="{esc(etsy[img["stem"]])}" rel="noopener noreferrer" target="_blank">Print</a>'
     return (f'          <figure class="hub-item" data-reveal>\n'
             f'            <a class="hub-img" href="{esc(img["src"])}"><img src="{esc(img["thumb"])}" '
@@ -351,7 +364,7 @@ def main():
         tw = 480 if w >= h else round(480 * w / h)
         th = round(480 * h / w) if w >= h else 480
         return {"stem": r["stem"], "title": r["title"], "caption": r["caption"], "keywords": r["keywords"],
-                "people": r["people"], "w": w, "h": h, "tw": tw, "th": th,
+                "people": r["people"], "event": bool(r.get("event")), "w": w, "h": h, "tw": tw, "th": th,
                 "src": f"/assets/photography/hub/{s}-1200.webp", "thumb": f"/assets/photography/hub/{s}-480.webp"}
 
     index_cards = []
@@ -371,7 +384,13 @@ def main():
                     f'<a href="/photography/{cs}/">{esc(c["name"])}</a> <span aria-hidden="true">/</span> <span aria-current="page">{esc(p["name"])}</span></nav>\n'
                     f'      <section class="hub-head">\n        <h1>{esc(p["name"])}</h1>\n        <p class="hub-intro">{esc(p["intro"])}</p>\n'
                     f'        <p class="hub-fact">{esc(p["fact"])}</p>\n      </section>\n'
-                    f'      <section class="hub-photos" aria-label="Photographs of {esc(p["name"])}">\n' + grid(imgs, etsy) + shop_strip() + '      </section>\n')
+                    f'      <section class="hub-photos" aria-label="Photographs of {esc(p["name"])}">\n' + grid([i for i in imgs if not i["event"]], etsy) + shop_strip() + '      </section>\n')
+            ev = [i for i in imgs if i["event"]]
+            if ev:
+                body += ('      <section class="hub-photos" aria-labelledby="hub-events">\n'
+                         f'        <h2 id="hub-events">{esc(p.get("events_title", "Events"))}</h2>\n'
+                         f'        <p class="hub-events-note">{esc(p.get("events_note", ""))}</p>\n'
+                         + grid(ev, etsy) + '      </section>\n')
             title = f"{p['name']} photographs"
             desc = f"{len(imgs)} photographs of {p['name']} by Benjamin Ampel, available as prints and to license. {p['fact']}"
             write(OUT / cs / p["slug"] / "index.html",
