@@ -64,6 +64,19 @@
     if (lb) { lb.querySelector("[data-go]").textContent = "View"; lb.querySelector("[data-status]").textContent = "Top 100, weekly climbers"; }
   }
 
+  function paintMore(sum, all) {
+    (sum.more || []).forEach(function (g) {
+      var card = document.querySelector('.tile[data-game="' + g.id + '"]'); if (!card) return;
+      var s = all[g.id] || {}, done = !!sum.done[g.id], streak = s.stats && s.stats.streak ? s.stats.streak : 0;
+      var alive = streak > 0 && s.stats && (s.stats.last === sum.idx || s.stats.last === sum.idx - 1);
+      var started = !done && s.today && s.today.idx === sum.idx;
+      card.toggleAttribute("data-done", done); card.toggleAttribute("data-streak", alive);
+      var st = card.querySelector("[data-status]"), go = card.querySelector("[data-go]");
+      if (st) st.textContent = done ? (alive && streak > 1 ? "Done. " + streak + " day streak" : "Done today") : alive && streak > 1 ? streak + " day streak to keep" : started ? "In progress" : "About " + g.min + " minutes";
+      if (go) go.textContent = done ? "Review" : started ? "Continue" : "Play";
+    });
+  }
+
   function paintQuests(sum) {
     var ul = $("quests"); if (!ul) return;
     ul.textContent = "";
@@ -138,7 +151,7 @@
     if (lv) lv.textContent = "Level " + sum.level.level + ", " + sum.level.title + ". " + sum.level.into + " of " + sum.level.need + " XP to the next.";
     var date = $("hub-date");
     if (date) date.textContent = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-    paintTiles(sum, all); paintRated(); paintQuests(sum); paintWeek(sum); paintReach();
+    paintTiles(sum, all); paintMore(sum, all); paintRated(); paintQuests(sum); paintWeek(sum); paintReach();
     if (window.PLDock) window.PLDock.paint();
   }
 

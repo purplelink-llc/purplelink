@@ -71,6 +71,13 @@
     return a;
   })();
 
+  // A short label for how this visitor first arrived ("google", "chatgpt.com", a campaign tag, or "direct"), for counting
+  // sign-ups by channel. Nothing is stored with an account; the label goes out once, as an event in our own statistics.
+  window.plFirstTouch = function () {
+    var f = attr.first || attr.last;
+    return (f && (f.s || f.r)) || (f && f.g ? "google ads" : "direct");
+  };
+
   function send(payload) {
     try {
       var body = JSON.stringify(payload);

@@ -4,7 +4,7 @@
   var G = window.PLGames, A = window.PLAch;
   if (!G || !A) return;
   var $ = function (id) { return document.getElementById(id); };
-  var GAMES = [["linkle", "Linkle"], ["quadlink", "Quadlink"], ["daily-five", "Daily Five"], ["daily-photo", "Daily Photo"], ["daily-chess", "Daily Chess"], ["sudoku", "Sudoku"], ["crossword", "Crossword"]];
+  var GAMES = [["linkle", "Linkle"], ["quadlink", "Quadlink"], ["daily-five", "Daily Five"], ["daily-photo", "Daily Photo"], ["daily-chess", "Daily Chess"], ["sudoku", "Sudoku"], ["landlink", "Landlink"], ["atomlink", "Atomlink"], ["prizelink", "Prizelink"], ["crossword", "Crossword"]];
 
   function msg(t) { $("ac-msg").textContent = t || ""; }
   function fmt(sec) { var m = Math.floor(sec / 60), s = sec % 60; return m + ":" + (s < 10 ? "0" : "") + s; }
@@ -71,6 +71,7 @@
     return G.api({ action: "login_verify", token: token }).then(function (res) {
       if (res.status !== 200) { msg("That sign-in link has expired or was already used. Request a new one below."); return; }
       G.session.set({ session: res.body.session, email: res.body.email, name: res.body.name || "" });
+      if (res.body.isNew && window.plTrack) window.plTrack("games_signup", window.plFirstTouch ? window.plFirstTouch() : "direct");
       return G.sync().then(function () { msg("Signed in. Your progress is now saved to your account."); });
     }).catch(function () { msg("Could not reach the server. Try again in a moment."); });
   }

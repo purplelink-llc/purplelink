@@ -18,7 +18,13 @@
     { id: "crossword", name: "Daily Crossword", path: "/games/crossword/", min: 10, kind: "word" },
     { id: "daily-stars", name: "Daily Stars", path: "/games/daily-stars/", min: 1, kind: "stars" }
   ];
-  var BY = {}; GAMES.forEach(function (g) { BY[g.id] = g; });
+  // More daily puzzles: they keep streaks, XP and achievements but are not part of the eight-puzzle daily run.
+  var MORE = [
+    { id: "landlink", name: "Landlink", path: "/games/landlink/", min: 3, kind: "guess" },
+    { id: "atomlink", name: "Atomlink", path: "/games/atomlink/", min: 3, kind: "guess" },
+    { id: "prizelink", name: "Prizelink", path: "/games/prizelink/", min: 3, kind: "guess" }
+  ];
+  var BY = {}; GAMES.concat(MORE).forEach(function (g) { BY[g.id] = g; });
   var QUICK_FIRST = ["daily-stars", "daily-photo", "daily-five", "daily-chess", "linkle", "quadlink", "crossword", "sudoku"];
   var TIERS = [
     { n: 2, name: "Warm-up", xp: 20 },
@@ -139,7 +145,7 @@
 
   function streaks(all, idx) {
     var out = [];
-    GAMES.forEach(function (g) {
+    GAMES.concat(MORE).forEach(function (g) {
       var s = (all[g.id] || {}).stats;
       if (!s || !s.streak) return;
       var alive = s.last === idx || s.last === idx - 1;
@@ -159,8 +165,10 @@
     });
     var tier = Math.max(rec.t, tierFor(S.count));
     var nextTier = TIERS[tier] || null;
+    var done = Object.assign({}, S.done);
+    MORE.forEach(function (g) { done[g.id] = isDone(all, g.id, idx); });
     return {
-      idx: idx, games: GAMES, done: S.done, count: S.count, total: GAMES.length, tier: tier, tiers: TIERS,
+      idx: idx, games: GAMES, more: MORE, done: done, count: S.count, total: GAMES.length, tier: tier, tiers: TIERS,
       toNextTier: nextTier ? { name: nextTier.name, need: nextTier.n - S.count, xp: nextTier.xp } : null,
       quests: qs, spotlight: { id: spot, done: S.done[spot], xp: G.QUEST_XP },
       week: weekStamps(g, idx), weekXp: G.WEEK_XP, level: G.xpOf(all), streaks: streaks(all, idx),
@@ -203,5 +211,5 @@
     document.dispatchEvent(new CustomEvent("pl-reward", { detail: info }));
   }
 
-  window.PLGoals = { GAMES: GAMES, BY: BY, TIERS: TIERS, QUESTS: QUESTS, todayIdx: todayIdx, refresh: refresh, summary: summary, afterResult: afterResult, nextFor: nextFor, spotFor: spotFor, isDone: isDone, questsFor: questsFor };
+  window.PLGoals = { GAMES: GAMES, MORE: MORE, BY: BY, TIERS: TIERS, QUESTS: QUESTS, todayIdx: todayIdx, refresh: refresh, summary: summary, afterResult: afterResult, nextFor: nextFor, spotFor: spotFor, isDone: isDone, questsFor: questsFor };
 })();

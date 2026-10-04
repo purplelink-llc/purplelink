@@ -321,4 +321,9 @@ def build(src: Path, epoch: str, days: int, enc) -> dict[str, str]:
     s = stars(src, epoch)
     if s:
         files["stars.json"] = json.dumps(s, ensure_ascii=False, separators=(",", ":")) + "\n"
+    try:
+        from gen_attr import build as attr_build
+    except ImportError:
+        from scripts.gen_attr import build as attr_build
+    files.update(attr_build(src, epoch, days, enc_text))
     return files

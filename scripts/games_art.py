@@ -155,7 +155,38 @@ def leaderboard():
     return "".join(out)
 
 
-ART = {"chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
+def landlink():
+    out = [OPEN, '<circle class="a2" cx="100" cy="70" r="54"/>']
+    out.append('<g class="mv"><path class="a1" d="M70 44c8-8 22-10 30-4 6 5 2 12-6 14-9 2-8 10-16 12-8 1-14-8-8-22zM108 74c8-4 18-2 22 6 4 8-2 16-10 18-9 2-8-8-14-12-5-4-3-9 2-12z"/></g>')
+    out.append('<g class="mv2"><path class="a1" d="M128 40c6-3 14 0 14 6s-8 8-13 5-4-8-1-11z"/></g>')
+    out.append('<path class="a3" d="M46 70h108M100 16c20 15 28 33 28 54s-8 39-28 54M100 16C80 31 72 49 72 70s8 39 28 54" fill="none"/>')
+    out.append('<g class="mv"><path class="a4" d="M146 34c-8 0-14 6-14 14 0 11 14 24 14 24s14-13 14-24c0-8-6-14-14-14z"/><circle class="a5" cx="146" cy="48" r="5"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def atomlink():
+    out = [OPEN]
+    for rot in (0, 60, 120):
+        out.append(f'<ellipse class="a3" cx="100" cy="70" rx="64" ry="24" transform="rotate({rot} 100 70)"/>')
+    out.append('<g class="mv"><circle class="a5" cx="100" cy="70" r="13"/><circle class="a1" cx="100" cy="70" r="7"/></g>')
+    for (x, y) in ((164, 70), (68, 14), (68, 126)):
+        out.append(f'<circle class="a4" cx="{x}" cy="{y}" r="7"/>')
+    out.append('<g class="mv2"><circle class="a2" cx="36" cy="70" r="5"/><circle class="a2" cx="132" cy="14" r="5"/><circle class="a2" cx="132" cy="126" r="5"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def prizelink():
+    out = [OPEN]
+    out.append('<path class="a1" d="M70 86l-14 44 44-20 44 20-14-44z"/>')
+    out.append('<g class="mv"><circle class="a5" cx="100" cy="58" r="42"/><circle class="a2" cx="100" cy="58" r="33"/>' + _star(100, 58, 22, "a1") + "</g>")
+    out.append('<g class="mv2"><circle class="a5" cx="40" cy="30" r="4"/><circle class="a5" cx="162" cy="24" r="3"/><circle class="a2" cx="170" cy="86" r="4"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+ART = {"landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
        "daily-chess": daily_chess, "sudoku": sudoku, "crossword": crossword, "daily-stars": daily_stars}
 
 

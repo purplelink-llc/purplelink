@@ -82,6 +82,18 @@ def main() -> int:
             problems.append(f"sudoku-pool level {lv}: only {have} puzzles (run scripts/gen_sudoku_pool.py)")
     notes.append("sudoku-pool: ok")
 
+    for gid in ("landlink", "atomlink", "prizelink"):
+        f = DATA / f"{gid}.json"
+        if not f.exists():
+            problems.append(f"{gid}.json: missing")
+            continue
+        d = json.loads(f.read_text(encoding="utf-8"))
+        n = len(d["rows"])
+        bad = [r["n"] for r in d["rows"] if len(r["v"]) != len(d["cols"])]
+        notes.append(f"{gid}.json: {n} rows")
+        if bad:
+            problems.append(f"{gid}.json: rows with the wrong number of values: {bad[:3]}")
+
     sp = DATA / "stars.json"
     if not sp.exists():
         problems.append("stars.json: missing")

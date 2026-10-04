@@ -25,6 +25,22 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Disallow: /blog/digest/
+
+User-agent: DuckAssistBot
+Allow: /
+
 User-agent: Googlebot
 Allow: /
 Disallow: /blog/digest/

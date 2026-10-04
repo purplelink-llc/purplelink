@@ -166,13 +166,14 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         await auth().delete(key);
         const acct = sha(rec.email);
         let account = await loadAccount(acct);
+        const isNew = !account;
         if (!account) account = { email: rec.email, name: "", created: now(), data: {}, sessions: [] };
         const session = randomBytes(32).toString("hex");
         await auth().setJSON(`sess:${sha(session)}`, { acct, exp: now() + SESSION_TTL_MS });
         account.sessions = [...(account.sessions || []), sha(session)];
         while (account.sessions.length > MAX_SESSIONS) await auth().delete(`sess:${account.sessions.shift()}`);
         await accounts().setJSON(`acct:${acct}`, account);
-        return json(200, { session, email: account.email, name: account.name, data: account.data, remind: !!account.remind, public: !!account.public }, origin);
+        return json(200, { session, email: account.email, name: account.name, data: account.data, remind: !!account.remind, public: !!account.public, isNew }, origin);
       }
 
       if (action === "remind_off") {

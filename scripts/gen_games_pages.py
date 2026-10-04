@@ -146,6 +146,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
 
 
 EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
+MORE_DAILY = ["landlink", "atomlink", "prizelink"]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
@@ -157,17 +158,25 @@ TAGLINE = {
     "sudoku": "One solution, and harder every week of a ten-week season.",
     "crossword": "A themeless crossword, easy Monday to hard Sunday.",
     "daily-stars": "A short horoscope for every sign, for entertainment.",
+    "landlink": "Guess the country from seven comparable facts.",
+    "atomlink": "Guess the element from its place on the periodic table.",
+    "prizelink": "Guess the Nobel laureate from prize, year and birthplace.",
     "chess-puzzles": "Unlimited rated tactics from the Lichess database.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
     "leaderboard": "The top ratings in chess and Sudoku, and this week's climbers.",
 }
-MINUTES = {"chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
 def dock(current):
     items = []
     for slug in ORDER:
+        m = BYSLUG[slug]
+        cur = ' aria-current="page"' if slug == current else ""
+        items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
+                     f'<span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>')
+    for slug in MORE_DAILY:
         m = BYSLUG[slug]
         cur = ' aria-current="page"' if slug == current else ""
         items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
@@ -958,6 +967,98 @@ page("games/leaderboard/", "", "", LB_BODY,
      {"@context": "https://schema.org", "@graph": [faq(LB_FAQ)]},
      ["/games/core.js", "/games/ratings.js", "/games/leaderboard.js"])
 
+
+# ---------------- Attribute-guess games (Landlink, Atomlink, Prizelink) ----------------
+def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=None):
+    faq_ = faq_items + [
+        ("How do I read the colors?", "Purple means that column matches the answer. Striped yellow means close: a number within range, or related. Gray means no match. An arrow on a number points toward the answer: up if the answer is higher, down if it is lower."),
+        ("How many guesses do I get?", "Eight. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length."),
+        ("When does a new puzzle appear?", "At midnight in your time zone, and everyone sees the same answer on the same date."),
+        ("Do I need an account?", "No. Streaks and results are kept in your browser. Signing in with an email link keeps them on every device."),
+    ]
+    prose = f"""        <h2>How to play</h2>
+        <p>Type {subject} and pick it from the list. The row that appears compares your guess with the mystery answer, one column at a time. Use the colors and arrows to rule things out, then guess again.</p>
+        <div class="game-legend" aria-label="Color key">
+          <span><i class="ag-key" data-s="c"></i> Same</span>
+          <span><i class="ag-key" data-s="p"></i> Close or related</span>
+          <span><i class="ag-key" data-s="a"></i> Different</span>
+          <span><b class="ag-arrow">&uarr;</b> Answer is higher</span>
+          <span><b class="ag-arrow">&darr;</b> Answer is lower</span>
+        </div>
+{legend_extra}
+        <h2>Questions</h2>
+""" + faq_html(faq_) + f"""
+        <p class="quiz-credit">{credit}</p>"""
+    body = f"""      <div class="games-wrap" id="ag-root" data-ds="{slug}" data-url="https://purplelink.llc/games/{slug}/">
+        <div class="game-head">
+          <h1 id="ag-title">{title}</h1>
+          <span class="game-num" id="ag-number"></span>
+        </div>
+        <p class="game-lede">{title} is a free daily guessing game.</p>
+        <p id="ag-loading" class="games-note">Loading today's puzzle.</p>
+        <div id="ag-game" hidden>
+          <form class="ag-form" id="ag-form" autocomplete="off">
+            <label for="ag-input" class="visually-hidden">Your guess</label>
+            <div class="ag-combo">
+              <input id="ag-input" type="text" role="combobox" aria-expanded="false" aria-controls="ag-list" aria-autocomplete="list" placeholder="Type to search" autocapitalize="off" spellcheck="false">
+              <ul id="ag-list" role="listbox" aria-label="Matches" hidden></ul>
+            </div>
+            <button type="submit" class="gbtn">Guess</button>
+          </form>
+          <p class="ag-meta"><span id="ag-count"></span> <span id="ag-msg" role="status" aria-live="polite"></span></p>
+          <p class="ag-hint" id="ag-hint" role="status"></p>
+          <div class="ag-scroll" id="ag-wrap" hidden>
+            <div class="ag-grid">
+              <div class="ag-row ag-headrow" id="ag-head" aria-hidden="true"></div>
+              <ol class="ag-rows" id="ag-rows" aria-label="Your guesses, newest first"></ol>
+            </div>
+          </div>
+          <section class="game-result" id="ag-result" hidden aria-labelledby="ag-result-head">
+            <h2 id="ag-result-head"></h2>
+            <p class="game-reveal" id="ag-reveal"></p>
+            <div class="game-statline">
+              <div><b id="ag-played">0</b><span>Played</span></div>
+              <div><b id="ag-winpct">0%</b><span>Win rate</span></div>
+              <div><b id="ag-streak">0</b><span>Streak</span></div>
+              <div><b id="ag-max">0</b><span>Best streak</span></div>
+            </div>
+            <p class="game-pct" id="ag-pct"></p>
+            <p class="game-pct" id="ag-saver"></p>
+            <div class="game-actions">
+              <button type="button" class="btn btn-primary" id="ag-share">Copy result</button>
+              <span class="game-note" id="ag-share-note"></span>
+            </div>
+            <textarea class="wg-share-text" id="ag-share-text" hidden readonly aria-label="Result text"></textarea>
+            <p class="game-next">Next puzzle in <span id="ag-next-in"></span>.</p>
+          </section>
+        </div>
+        <div class="games-prose">
+{prose}
+        </div>
+        <p class="games-note"><a href="/games/">All daily games</a></p>
+      </div>"""
+    page(f"games/{slug}/", "", "", body, {"@context": "https://schema.org", "@graph": [faq(faq_)]},
+         ["/games/core.js", "/games/attrguess.js"])
+
+
+attr_page("landlink", "Landlink", "a country", [
+    ("Where does the data come from?", "Country shapes and populations come from Natural Earth, which is public domain. Area, capitals and driving side come from Wikidata, released under CC0. Landlocked status is a fixed list of the countries with no sea coast."),
+    ("Which countries can be the answer?", "Any of about 165 countries, using the political list of Natural Earth. Disputed or non-sovereign territories are left out."),
+    ("What do the columns mean?", "Continent, the United Nations region, population (an estimate), area in square kilometres, whether the country is landlocked or has a coast, which side of the road traffic drives on, and the World Bank income group."),
+], "", "Country data: <a href=\"https://www.naturalearthdata.com/\" rel=\"noopener\">Natural Earth</a> (public domain) and <a href=\"https://www.wikidata.org/\" rel=\"noopener\">Wikidata</a> (CC0).")
+
+attr_page("atomlink", "Atomlink", "a chemical element, by name or symbol", [
+    ("Where does the data come from?", "From the PubChem periodic table, a US government resource in the public domain: atomic number, mass, category, state at room temperature and year of discovery."),
+    ("Which elements can be the answer?", "Elements 1 to 103. The heaviest synthetic elements can be guessed but are never the answer."),
+    ("How is the year of discovery handled?", "Elements known since antiquity, such as gold and iron, count as discovered long ago. The arrow for the year points toward the answer's year."),
+], "", "Element data: <a href=\"https://pubchem.ncbi.nlm.nih.gov/periodic-table/\" rel=\"noopener\">PubChem</a> (US National Library of Medicine, public domain).")
+
+attr_page("prizelink", "Prizelink", "a Nobel laureate", [
+    ("Where does the data come from?", "From the Nobel Prize API, released under CC0, with how well known each person is judged from the number of Wikipedia language editions (Wikidata, CC0)."),
+    ("Which laureates can be the answer?", "The 250 best-known individual laureates. Every individual laureate can be guessed, but organizations are not included."),
+    ("What do the columns mean?", "The prize field, the year awarded, the birth year, the age when awarded, the continent and country of birth (as the place is named today) and gender, as recorded by the Nobel Prize organization."),
+], "", "Laureate data: <a href=\"https://www.nobelprize.org/about/developer-zone-2/\" rel=\"noopener\">Nobel Prize API</a> (CC0) and <a href=\"https://www.wikidata.org/\" rel=\"noopener\">Wikidata</a> (CC0).")
+
 # ---------------- Account ----------------
 ACCT_BODY = """      <div class="games-wrap">
         <div class="game-head">
@@ -1060,6 +1161,12 @@ HUB_BODY = """      <div class="games-wrap hub">
         </section>
         <div class="tiles">
 """ + "".join(tile(sl) for sl in ORDER) + """        </div>
+        <section class="more" aria-labelledby="more2-h">
+          <h2 id="more2-h">More daily puzzles</h2>
+          <p class="week-sub">Guess the country, element or Nobel laureate from comparable facts. They keep streaks and XP but are not part of the daily run.</p>
+          <div class="tiles">
+""" + "".join(tile(sl) for sl in MORE_DAILY) + """          </div>
+        </section>
         <section class="more" aria-labelledby="more-h">
           <h2 id="more-h">Unlimited and rated</h2>
           <p class="week-sub">No daily limit. Chess Puzzles and Sudoku Unlimited keep a rating that moves as you solve, and signed-in players can join the leaderboards.</p>
