@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Compile stars-source.txt (date|sign|text) from the sky lines and per-sign lines below.
+"""One-time seed: compiled the first 14 days of stars-source.txt (2026-10-04 to 2026-10-17).
 
-The weekly content routine appends new dates to the same structure (see docs/games.md).
-Run:  python3 scripts/games-data/stars_build.py   (rewrites stars-source.txt)
+Do NOT run this again: it rewrites stars-source.txt and would delete every reading the weekly
+content routine has appended since. New dates are appended to stars-source.txt directly.
 """
 from pathlib import Path
 
