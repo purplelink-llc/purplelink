@@ -176,7 +176,7 @@ export default async function handler(request) {
   const wantsStats = url.searchParams.get("stats") === "1";
   if (wantsFeed || updateFile || wantsStats) {
     const expected = Netlify.env.get("OUTBOUND_VEIL_UPDATE_TOKEN") || "";
-    const presented = request.headers.get("x-outbound-veil-channel") || "";
+    const presented = request.headers.get("x-outboundveil-channel") || "";
     if (!expected || !timingSafeEqual(presented, expected)) {
       return json(403, { error: "forbidden", detail: "Updates are delivered inside Outbound Veil." });
     }
