@@ -41,6 +41,12 @@ test("decode round-trips the generator's encoding", () => {
   assert.equal(G.decode(enc("point")), "point");
 });
 
+test("decodeText handles accents and symbols", () => {
+  const enc = (s) => Buffer.from(s, "utf8").toString("base64");
+  assert.equal(G.decodeText(enc("Erwin Schrödinger")), "Erwin Schrödinger");
+  assert.equal(G.decodeText(enc("9π")), "9π");
+});
+
 test("mergeKeys keeps the best state per letter", () => {
   const k = {};
   G.mergeKeys(k, "crane", ["a", "p", "a", "a", "c"]);

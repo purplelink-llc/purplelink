@@ -37,3 +37,10 @@
 
 ## Task 8: Ship
 - Full test run, preview at both widths, rebase on origin/main, push (push = prod deploy), verify on purplelink.llc.
+
+## Task 9 (added 2026-10-04 at Ben's request): Daily crossword, easiest Monday, hardest Sunday
+- `scripts/gen_crossword.py`: symmetric grid templates by weekday (Mon/Tue 9x9, Wed/Thu 11x11, Fri/Sat 13x13, Sun 15x15), backtracking fill from a frequency-scored word list (ENABLE + wordfreq Zipf bands per weekday: Monday only very common words, Sunday allows rarer ones), no themes.
+- Clues: WordNet glosses (permissive licence) as a fallback only; the weekly content routine has Claude write original clues for the next 14 puzzles into `scripts/games-data/clues/<date>.json`. `check_games.py` rejects a clue that contains its answer or is missing.
+- Not used: scraped crossword clue datasets (NYT and similar) because they are copyrighted.
+- `site/games/crossword/` page: keyboard grid, phone entry, check and reveal, timer, share text; same storage and analytics conventions.
+- Keep 14 days of clued puzzles ahead; build fails below 3.

@@ -26,6 +26,14 @@
     return raw.split("").reverse().join("");
   }
 
+  // UTF-8 base64 (quiz answers can contain accents or symbols).
+  function decodeText(s) {
+    var raw = typeof atob === "function" ? atob(s) : Buffer.from(s, "base64").toString("binary");
+    var bytes = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    return new TextDecoder("utf-8").decode(bytes);
+  }
+
   // Standard two-pass scoring: exact matches first, then "present" only while the answer
   // still has an unmatched copy of that letter. Returns "c" (correct), "p" (present), "a" (absent).
   function score(guess, answer) {
@@ -100,7 +108,7 @@
   }
 
   return {
-    dayIndex: dayIndex, pick: pick, decode: decode, score: score, mergeKeys: mergeKeys,
+    dayIndex: dayIndex, pick: pick, decode: decode, decodeText: decodeText, score: score, mergeKeys: mergeKeys,
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
     getGame: getGame, setGame: setGame, track: track, copyText: copyText,
   };

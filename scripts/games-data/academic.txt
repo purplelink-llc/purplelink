@@ -1,0 +1,147 @@
+# category|question|correct answer|wrong 1|wrong 2|wrong 3
+Science|What is the chemical symbol for tungsten?|W|Tu|Tn|Ta
+Science|How many chromosomes do humans normally have in each body cell?|46|23|44|48
+Science|Which particle carries the electromagnetic force?|Photon|Gluon|Neutrino|W boson
+Science|What is the SI unit of electrical resistance?|Ohm|Volt|Farad|Henry
+Science|Which planet has the shortest orbital period around the Sun?|Mercury|Venus|Mars|Earth
+Science|What is the most abundant gas in Earth's atmosphere?|Nitrogen|Oxygen|Argon|Carbon dioxide
+Science|Which organelle is the main site of ATP production in a cell?|Mitochondrion|Ribosome|Golgi apparatus|Lysosome
+Science|What does DNA stand for?|Deoxyribonucleic acid|Dinucleic acid|Deoxyribose nucleic anhydride|Dioxyribonucleic acid
+Science|Who proposed the three laws of planetary motion?|Johannes Kepler|Galileo Galilei|Tycho Brahe|Isaac Newton
+Science|Which element has the atomic number 1?|Hydrogen|Helium|Lithium|Oxygen
+Science|What is the approximate speed of light in a vacuum?|300,000 km per second|30,000 km per second|3,000,000 km per second|150,000 km per second
+Science|Which scientist is credited with discovering penicillin in 1928?|Alexander Fleming|Louis Pasteur|Joseph Lister|Howard Florey
+Science|What is the hardest naturally occurring mineral on the Mohs scale?|Diamond|Quartz|Corundum|Topaz
+Science|Which blood cells carry oxygen?|Red blood cells|White blood cells|Platelets|Plasma cells
+Science|The pH of pure water at 25 degrees Celsius is closest to which value?|7|0|10|14
+Science|Which type of bond involves sharing electron pairs between atoms?|Covalent bond|Ionic bond|Hydrogen bond|Metallic bond
+Science|Which gas do plants absorb for photosynthesis?|Carbon dioxide|Oxygen|Nitrogen|Methane
+Science|What is the name of the galaxy that contains our Solar System?|Milky Way|Andromeda|Triangulum|Whirlpool
+Science|Who developed the general theory of relativity?|Albert Einstein|Niels Bohr|Max Planck|Erwin Schrödinger
+Science|What is the SI unit of frequency?|Hertz|Watt|Pascal|Joule
+Science|The Richter scale was designed to measure what?|Earthquake magnitude|Wind speed|Ocean depth|Volcanic ash
+Science|Which vitamin does skin produce in response to sunlight?|Vitamin D|Vitamin C|Vitamin A|Vitamin K
+Science|What is the largest organ of the human body?|Skin|Liver|Brain|Small intestine
+Science|Which metal is liquid at standard room temperature?|Mercury|Lead|Tin|Zinc
+Science|What force keeps the planets in orbit around the Sun?|Gravity|Magnetism|Friction|Nuclear binding
+Science|Who published the periodic table in 1869?|Dmitri Mendeleev|Antoine Lavoisier|John Dalton|Marie Curie
+Science|How many bones are in a typical adult human body?|206|180|212|300
+Science|What is the term for an organism that makes its own food?|Autotroph|Heterotroph|Decomposer|Parasite
+Science|Which layer of the atmosphere contains the ozone layer?|Stratosphere|Troposphere|Mesosphere|Thermosphere
+Science|What is absolute zero in degrees Celsius?|-273.15|-100|-373.15|0
+Computing|What does CPU stand for?|Central Processing Unit|Central Program Utility|Core Processing Unit|Computer Personal Unit
+Computing|Which data structure uses last in, first out ordering?|Stack|Queue|Heap|Tree
+Computing|Which protocol is used to load web pages securely?|HTTPS|FTP|SMTP|Telnet
+Computing|What does HTML stand for?|HyperText Markup Language|HighText Machine Language|HyperTransfer Markup Language|Home Tool Markup Language
+Computing|Who is credited with inventing the World Wide Web?|Tim Berners-Lee|Vint Cerf|Bill Gates|Marc Andreessen
+Computing|What is the decimal number 10 written as in binary?|1010|1100|1001|1000
+Computing|Which sorting algorithm uses divide and conquer and runs in O(n log n) time on average?|Merge sort|Bubble sort|Insertion sort|Selection sort
+Computing|What does SQL stand for?|Structured Query Language|Simple Question Language|Sequential Query Logic|Standard Query Library
+Computing|Which company created the Swift programming language?|Apple|Google|Microsoft|Mozilla
+Computing|What does the git commit command do?|Records changes to the repository|Downloads a remote repository|Deletes a branch|Merges two branches
+Computing|Which language is primarily used to style web pages?|CSS|SQL|XML|JSON
+Computing|What was the first widely used graphical web browser, released in 1993?|Mosaic|Netscape Navigator|Internet Explorer|Opera
+Computing|What does RAM stand for?|Random Access Memory|Read Access Memory|Rapid Application Memory|Remote Array Module
+Computing|Which cryptographic technique uses a public key and a private key?|Asymmetric encryption|Symmetric encryption|Hashing|Steganography
+Computing|What is the decimal value of the hexadecimal number FF?|255|256|15|127
+Computing|Who is often called the first computer programmer, for her work on Babbage's Analytical Engine?|Ada Lovelace|Grace Hopper|Hedy Lamarr|Margaret Hamilton
+Computing|What is the main job of a firewall?|Allow or block network traffic by rules|Speed up downloads|Compress files|Store passwords
+Computing|Which of these is a version control system?|Git|Docker|Kubernetes|Nginx
+Computing|What does API stand for?|Application Programming Interface|Automated Program Integration|Applied Protocol Instruction|Application Process Index
+Computing|In which year was the first iPhone released?|2007|2005|2008|2010
+Computing|What does bit stand for?|Binary digit|Basic input token|Binary index table|Built-in tag
+Computing|What is the time complexity of binary search on a sorted array?|O(log n)|O(n)|O(n log n)|O(1)
+Computing|Who created the Python programming language?|Guido van Rossum|Dennis Ritchie|James Gosling|Bjarne Stroustrup
+Computing|Which language did Dennis Ritchie create at Bell Labs in the early 1970s?|C|Java|Pascal|Ruby
+Computing|What does DNS do?|Translates domain names to IP addresses|Encrypts email|Assigns MAC addresses|Compresses web pages
+Computing|Who created TeX?|Donald Knuth|Leslie Lamport|Richard Stallman|Linus Torvalds
+Computing|Who wrote the first version of LaTeX in the 1980s?|Leslie Lamport|Donald Knuth|Brian Kernighan|Edsger Dijkstra
+Computing|What file extension does a BibTeX bibliography database use?|.bib|.bbl|.aux|.cls
+Computing|Which LaTeX package is commonly loaded to use the includegraphics command?|graphicx|amsmath|hyperref|biblatex
+Computing|What does the BibTeX tool primarily format?|Citations and bibliographies|Tables|Equations|Fonts
+Computing|What does PDF stand for?|Portable Document Format|Printable Document File|Personal Data Format|Page Description File
+Apple|Which Apple operating system, released in 2001, was the first Mac OS built on Unix?|Mac OS X|System 7|Mac OS 9|Rhapsody
+Apple|What do Macs use in place of Intel processors since 2020?|Apple silicon|PowerPC|Snapdragon|Ryzen
+Apple|In which year was the original Macintosh introduced?|1984|1977|1990|1981
+Apple|Which programming language did Apple introduce in 2014 as a successor to Objective-C?|Swift|Kotlin|Rust|Go
+Apple|What is the file system Apple introduced for macOS and iOS in 2016 and 2017?|APFS|HFS+|NTFS|ext4
+Apple|What does Command-Space open on a Mac by default?|Spotlight|Siri|Finder|Launchpad
+Apple|Which company designs the ARM architecture that Apple silicon is based on?|Arm Holdings|Intel|AMD|Qualcomm
+Apple|Which Apple framework builds user interfaces declaratively across its platforms?|SwiftUI|UIKit|Cocoa Touch|Metal
+Apple|What is the name of the macOS backup feature?|Time Machine|Time Capsule|iCloud Drive|Migration Assistant
+Apple|What does Command-Q do in most Mac apps?|Quits the app|Closes the window|Opens a new window|Prints the page
+Apple|Who designed the original Macintosh icons and the Chicago typeface?|Susan Kare|Jony Ive|Bill Atkinson|Steve Wozniak
+Apple|What is the name of the process where Apple scans a signed app and issues a ticket before it is distributed outside the App Store?|Notarization|Sandboxing|Provisioning|Sideloading
+Statistics|What does a p-value describe?|The probability of data at least this extreme if the null hypothesis is true|The probability that the null hypothesis is true|The size of an effect|The chance a study will replicate
+Statistics|What is the median of 3, 7, 9, 12 and 20?|9|7|12|10.2
+Statistics|Which measure of spread is the square root of the variance?|Standard deviation|Range|Interquartile range|Mean absolute deviation
+Statistics|About what percentage of values lie within one standard deviation of the mean in a normal distribution?|68%|50%|95%|99.7%
+Statistics|What is a Type I error?|Rejecting a true null hypothesis|Failing to reject a false null hypothesis|Using the wrong test|Collecting too little data
+Statistics|Which statistic is the proportion of variance in the outcome explained by a regression model?|R-squared|P-value|Z-score|Odds ratio
+Statistics|Cohen's d is a measure of what?|Effect size|Sample size|Statistical significance|Reliability
+Statistics|What is the usual purpose of a power analysis?|Deciding the sample size needed to detect an effect|Choosing a font|Testing normality|Ranking journals
+Statistics|What is the term for a hypothesis that predicts no effect or no difference?|Null hypothesis|Alternative hypothesis|Directional hypothesis|Working hypothesis
+Statistics|What is p-hacking?|Trying analyses until a result is significant|Calculating p-values by hand|Hiding raw data|Using too large a sample
+Statistics|What is a Likert scale commonly used for?|Measuring agreement or attitudes|Measuring distance|Timing responses|Counting events
+Research|What does peer review mean in academic publishing?|Independent experts evaluate a manuscript before publication|A copy editor fixes the text|Readers vote on papers|Coauthors check each other's sections
+Research|What does DOI stand for in scholarly publishing?|Digital Object Identifier|Document Online Index|Digital Open Inventory|Direct Online Indexing
+Research|What does a researcher's h-index summarize?|Productivity and citation impact together|Number of coauthors|Years of experience|Journal ranking
+Research|What is a systematic review?|A structured, reproducible synthesis of research on a question|A single large experiment|A literature list with no stated method|An opinion piece
+Research|What is the PRISMA statement used for?|Reporting systematic reviews|Randomizing trials|Formatting citations|Anonymizing data
+Research|What does preprint usually mean?|A manuscript shared before peer review|A paper rejected by a journal|A retracted paper|A conference poster
+Research|Which study design randomly assigns participants to treatment and control groups?|Randomized controlled trial|Cohort study|Case-control study|Cross-sectional survey
+Research|What does IRB stand for in US research ethics?|Institutional Review Board|Internal Research Bureau|Independent Review Body|Integrity Research Board
+Research|What is a confounding variable?|A variable that distorts the relationship being studied|A measurement error|A type of control group|A rejected hypothesis
+Research|What does FAIR stand for in research data?|Findable, Accessible, Interoperable, Reusable|Fast, Accurate, Independent, Replicable|Free, Open, Archived, Reviewed|Fair, Anonymous, Indexed, Recorded
+Research|What is ORCID?|A persistent identifier for researchers|A citation style|A preprint server|A grant database
+Research|Which term describes getting the same results from the same data and code?|Reproducibility|Replicability|Generalizability|Validity
+Research|Which citation style is common in psychology and uses author-date references?|APA|IEEE|Vancouver|Chicago notes
+Research|Which citation style uses numbered references in square brackets and is common in engineering?|IEEE|APA|MLA|Harvard
+Research|What does double-blind review mean?|Reviewers and authors do not know each other's identities|Two reviewers read each paper|There are two rounds of review|Reviewers do not see the topic
+Research|What does IMRaD stand for as a paper structure?|Introduction, Methods, Results and Discussion|Introduction, Models, Reviews and Data|Index, Methods, Results and Debate|Idea, Method, Review and Draft
+Math|What is the derivative of x squared with respect to x?|2x|x|x²/2|2
+Math|What is the value of pi to two decimal places?|3.14|3.16|3.12|3.41
+Math|What is the sum of the interior angles of a triangle?|180 degrees|90 degrees|360 degrees|270 degrees
+Math|What is the square root of 144?|12|14|11|16
+Math|What is 7 factorial?|5040|720|40320|2520
+Math|What is the next prime number after 13?|17|15|19|14
+Math|What is the value of e, rounded to two decimal places?|2.72|3.14|1.62|2.17
+Math|Who proved Fermat's Last Theorem in the 1990s?|Andrew Wiles|Grigori Perelman|Terence Tao|John Nash
+Math|What is the name of the longest side of a right triangle?|Hypotenuse|Adjacent|Opposite|Secant
+Math|What is the probability of getting two heads in two fair coin flips?|1/4|1/2|1/3|3/4
+Math|What is the base of the natural logarithm?|e|10|pi|2
+Math|How many edges does a cube have?|12|8|6|10
+Math|What is the sum of the first 10 positive integers?|55|45|50|66
+Math|What is the area of a circle with radius 3?|9π|6π|3π|18π
+Math|Which theorem relates the lengths of the sides of a right triangle?|Pythagorean theorem|Bayes' theorem|Central limit theorem|Fundamental theorem of algebra
+History|Who is known as the father of modern genetics for his pea plant experiments?|Gregor Mendel|Charles Darwin|Francis Crick|Thomas Hunt Morgan
+History|Which scientist won Nobel Prizes in both Physics and Chemistry?|Marie Curie|Lise Meitner|Rosalind Franklin|Dorothy Hodgkin
+History|In which year did humans first land on the Moon?|1969|1965|1972|1961
+History|Who published On the Origin of Species in 1859?|Charles Darwin|Alfred Russel Wallace|Thomas Huxley|Gregor Mendel
+History|Which mathematician is associated with the Turing test?|Alan Turing|John von Neumann|Claude Shannon|Kurt Gödel
+History|Who is considered the founder of information theory?|Claude Shannon|Alan Turing|Norbert Wiener|Charles Babbage
+History|Which space telescope launched in 1990 and still orbits Earth?|Hubble Space Telescope|James Webb Space Telescope|Kepler|Spitzer
+History|Who, with Francis Crick, proposed the double helix structure of DNA in 1953?|James Watson|Linus Pauling|Maurice Wilkins|Erwin Chargaff
+History|Which physician developed the first smallpox vaccine in 1796?|Edward Jenner|Louis Pasteur|Jonas Salk|Albert Sabin
+History|What was the first artificial satellite, launched in 1957?|Sputnik 1|Explorer 1|Vostok 1|Telstar
+History|Which physicist is known for the uncertainty principle?|Werner Heisenberg|Max Born|Paul Dirac|Wolfgang Pauli
+History|Galileo's 1610 discovery of four moons orbiting which planet challenged the idea that everything circles Earth?|Jupiter|Saturn|Mars|Venus
+History|Who published Philosophiae Naturalis Principia Mathematica in 1687?|Isaac Newton|Gottfried Leibniz|Robert Hooke|Edmund Halley
+History|Which institution awards the Nobel Prize in Physics?|Royal Swedish Academy of Sciences|Karolinska Institute|Norwegian Nobel Committee|Swedish Academy
+History|The Turing Award is given in which field?|Computer science|Mathematics|Physics|Chemistry
+History|Which prize, awarded every four years, is often called the Nobel of mathematics?|Fields Medal|Abel Prize|Turing Award|Wolf Prize
+Writing|What does et al. mean?|And others|In the same place|For example|That is
+Writing|What does ibid. mean in a citation?|In the same place|Above all|By itself|Beyond doubt
+Writing|What does i.e. stand for?|That is|For example|In general|Also
+Writing|What does e.g. stand for?|For example|That is|And so on|Especially
+Writing|What does cf. mean in a citation?|Compare|Confirm|Continued|Chapter follows
+Writing|Which punctuation mark joins a compound modifier such as well-known author?|Hyphen|Em dash|Colon|Semicolon
+Writing|What is a thesis statement?|The central claim of an argument|A list of sources|The conclusion of a lab report|A title page
+Earth|What is the largest ocean on Earth?|Pacific Ocean|Atlantic Ocean|Indian Ocean|Arctic Ocean
+Earth|Which type of plate boundary produced the Himalayas?|Convergent|Divergent|Transform|Hotspot
+Earth|What is the longest river in Asia?|Yangtze|Yellow River|Mekong|Ganges
+Earth|Which gas is most responsible for human-caused warming?|Carbon dioxide|Oxygen|Argon|Helium
+Earth|What is the capital of Australia?|Canberra|Sydney|Melbourne|Perth
+Earth|Which is the largest hot desert in the world?|Sahara|Gobi|Kalahari|Arabian
+Earth|Mount Everest lies on the border of Nepal and which other country?|China|India|Bhutan|Pakistan
+Earth|What is the smallest country in the world by area?|Vatican City|Monaco|San Marino|Liechtenstein
