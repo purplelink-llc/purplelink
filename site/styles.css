@@ -5451,3 +5451,21 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   }
   .cost-price { font-size: 1.15rem; }
 }
+
+/* House promo card (inserted by site.js above the footer) */
+.house-promo { max-width: 1040px; margin: 40px auto 28px; padding: 0 20px; }
+.house-promo-card { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+.house-promo-card img { width: 48px; height: 48px; border-radius: 11px; flex: none; }
+.house-promo-body { flex: 1 1 auto; min-width: 0; }
+.house-promo-body p { margin: 2px 0 0; color: var(--muted); font-size: 0.95rem; text-wrap: pretty; }
+.house-promo-body strong { color: var(--ink); }
+.house-promo-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.house-promo-cta { flex: none; white-space: nowrap; padding: 9px 16px; font-size: 0.9rem; }
+.house-promo-hide { flex: none; border: 0; background: transparent; color: var(--muted); font: 600 0.8rem var(--font-body); cursor: pointer; padding: 6px; border-radius: 6px; }
+.house-promo-hide:hover { color: var(--ink); }
+.house-promo-hide:focus-visible, .house-promo-cta:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .house-promo-card { flex-wrap: wrap; }
+  .house-promo-body { flex-basis: calc(100% - 64px); }
+  .house-promo-cta { margin-left: 64px; }
+}

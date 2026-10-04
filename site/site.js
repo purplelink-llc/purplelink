@@ -1009,3 +1009,76 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
   else build();
 })();
+
+// House promo: one small card for one of Purplelink's own apps, picked at random on each page load and
+// placed above the footer. Skipped on checkout, receipt and account-management pages, hidden for the rest of
+// the visit once dismissed, and never promotes the app a page is already about.
+(() => {
+  const path = location.pathname;
+  if (/\/(success|recover|manage|upload|packs|setup)\//.test(path) || path.startsWith('/stats/')) return;
+  try { if (sessionStorage.getItem('pl-promo-hidden') === '1') return; } catch (_) { /* storage blocked: show it */ }
+
+  const APPS = [
+    { id: 'moderntex', name: 'ModernTex', href: '/moderntex/', icon: '/assets/moderntex-icon.webp', cta: 'Try it free',
+      text: 'A native LaTeX editor for Mac. Free for 7 days, then $19.99 once, with every update included.', own: ['/moderntex/', '/suite/'] },
+    { id: 'outbound-veil', name: 'Outbound Veil', href: '/outbound-veil/', icon: '/assets/outbound-veil-icon.webp', cta: 'Try it free',
+      text: 'Checks what you type for personal information before you send it. Free 7-day trial, then $29.', own: ['/outbound-veil/', '/suite/'] },
+    { id: 'vitae', name: 'Vitae', href: '/vitae/', icon: '/assets/vitae-icon.webp', cta: 'Get it free',
+      text: 'Track submissions, grants and your CV in one place. Free for Mac.', own: ['/vitae/'] },
+    { id: 'paper-review', name: 'Paper Review', href: '/tools/paper-review/', icon: '/assets/purplelink-logo-64.png', cta: 'See how it works',
+      text: 'AI reviewers read your manuscript the way a journal would, before you submit. From $9.', own: ['/tools/paper-review/'] },
+    { id: 'scholar-utility-belt', name: 'Scholar Utility Belt', href: '/scholar-utility-belt/', icon: '/assets/scholar-utility-belt-icon.webp', cta: 'Add to Chrome',
+      text: 'Journal rankings, h-index and retraction alerts inside Google Scholar. A free Chrome extension.', own: ['/scholar-utility-belt/'] },
+    { id: 'mac-suite', name: 'Mac Suite', href: '/suite/', icon: '/assets/moderntex-icon.webp', cta: 'See the bundle',
+      text: 'ModernTex, Outbound Veil and Vitae Plus together for $39, once.', own: ['/suite/', '/moderntex/', '/outbound-veil/', '/vitae/plus/'] },
+    { id: 'globepin', name: 'GlobePin', href: '/globepin/', icon: '/assets/globepin-icon.webp', cta: 'Get it free',
+      text: 'Mark every place you have been on a map. Free for iPhone.', own: ['/globepin/'] },
+  ];
+
+  const place = () => {
+    const footer = document.querySelector('footer.footer');
+    if (!footer || document.querySelector('.house-promo')) return;
+    const pool = APPS.filter((a) => !a.own.some((p) => path.startsWith(p)));
+    if (!pool.length) return;
+    const app = pool[Math.floor(Math.random() * pool.length)];
+
+    const box = document.createElement('aside');
+    box.className = 'house-promo';
+    box.setAttribute('aria-label', 'About one of our apps');
+    const card = document.createElement('div');
+    card.className = 'house-promo-card';
+    const img = document.createElement('img');
+    img.src = app.icon; img.alt = ''; img.width = 48; img.height = 48; img.loading = 'lazy'; img.decoding = 'async';
+    const body = document.createElement('div');
+    body.className = 'house-promo-body';
+    const tag = document.createElement('span');
+    tag.className = 'house-promo-tag';
+    tag.textContent = 'From Purplelink';
+    const text = document.createElement('p');
+    const strong = document.createElement('strong');
+    strong.textContent = app.name;
+    text.appendChild(strong);
+    text.appendChild(document.createTextNode(' ' + app.text));
+    body.appendChild(tag); body.appendChild(text);
+    const link = document.createElement('a');
+    link.className = 'btn btn-ghost house-promo-cta';
+    link.href = app.href;
+    link.textContent = app.cta;
+    link.addEventListener('click', () => { try { window.plTrack && window.plTrack('promo_click', app.id); } catch (_) { /* ignore */ } });
+    const hide = document.createElement('button');
+    hide.type = 'button';
+    hide.className = 'house-promo-hide';
+    hide.setAttribute('aria-label', 'Hide this suggestion');
+    hide.textContent = 'Hide';
+    hide.addEventListener('click', () => {
+      box.remove();
+      try { sessionStorage.setItem('pl-promo-hidden', '1'); } catch (_) { /* ignore */ }
+    });
+    card.appendChild(img); card.appendChild(body); card.appendChild(link); card.appendChild(hide);
+    box.appendChild(card);
+    footer.parentNode.insertBefore(box, footer);
+    window.setTimeout(() => { try { window.plTrack && window.plTrack('promo_view', app.id); } catch (_) { /* ignore */ } }, 1200);
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place); else place();
+})();
