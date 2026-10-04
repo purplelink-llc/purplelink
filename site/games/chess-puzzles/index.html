@@ -241,7 +241,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=d076b7d5dd">
+    <link rel="stylesheet" href="/games/games-ui.css?v=7e4fa13d14">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -330,8 +330,11 @@
             <aside class="partner" id="partner" hidden aria-label="Chess resources"></aside>
             <div class="game-actions">
               <a class="gbtn" id="cr-next" href="/games/chess-puzzles/" data-g="chess-puzzles">Next puzzle</a>
+              <button type="button" class="btn btn-primary" id="cr-share">Share</button>
               <a class="gbtn gbtn--ghost" id="ch-game-link" href="https://lichess.org/training" rel="noopener">See it on Lichess</a>
+              <span class="game-note" id="cr-share-note"></span>
             </div>
+            <textarea class="wg-share-text" id="cr-share-text" hidden readonly aria-label="Result text"></textarea>
           </section>
         </div>
         <p class="ad-note">This page shows Google ads. They are how the unlimited puzzles stay free.</p>
@@ -392,9 +395,10 @@
     <script src="/games/goals.js?v=10fd66744d" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=a52b682b21" defer></script>
+    <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/ratings.js?v=db6e9898b5" defer></script>
     <script src="/games/partners.js?v=e83de79a74" defer></script>
-    <script src="/games/chess-puzzles.js?v=f45c129e37" defer></script>
+    <script src="/games/chess-puzzles.js?v=d0dc294402" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

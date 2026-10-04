@@ -365,16 +365,7 @@
       var v = k.getAttribute("data-key");
       if (v === "enter") submit(); else if (v === "back") back(); else type(v);
     });
-    $("wg-share").addEventListener("click", function () {
-      var text = shareText();
-      G.track("game_share", C.name);
-      G.copyText(text).then(function (ok) {
-        $("wg-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it.";
-        var box = $("wg-share-text");
-        box.value = text;
-        box.hidden = ok;
-      });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tick, 30000);
   }
 

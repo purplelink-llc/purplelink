@@ -381,14 +381,7 @@
     bar("cw-reveal-puzzle", revealPuzzle, true);
     bar("cw-reveal-letter", revealLetter);
     bar("cw-reveal-word", revealWord);
-    $("cw-share").addEventListener("click", function () {
-      var text = shareText();
-      G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) {
-        $("cw-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it.";
-        var box = $("cw-share-text"); box.value = text; box.hidden = ok;
-      });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tickClock, 1000);
     window.setInterval(nextIn, 30000);
     document.addEventListener("visibilitychange", function () { st.last = Date.now(); persist(); });

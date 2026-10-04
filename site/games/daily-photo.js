@@ -135,14 +135,7 @@
       st.cur = Math.min(st.picks.length, st.rounds.length - 1);
     }
     $("ph-next").addEventListener("click", next);
-    $("ph-share").addEventListener("click", function () {
-      var text = shareText();
-      G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) {
-        $("ph-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it.";
-        var box = $("ph-share-text"); box.value = text; box.hidden = ok;
-      });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tick, 30000);
     $("ph-loading").hidden = true;
     $("ph-game").hidden = false;

@@ -168,7 +168,7 @@
     var done = function (out) {
       var rec = out.rec, delta = out.delta;
       R.current("chess", null); R.recentIds("chess", st.pz.id);
-      st.rec = rec;
+      st.rec = rec; st.delta = delta;
       var up = delta >= 0;
       $("cr-head").textContent = st.won ? "Solved" : "Missed";
       $("cr-delta").textContent = (up ? "+" : "−") + Math.abs(delta);
@@ -210,6 +210,12 @@
       p("You are on the leaderboard.");
     }
   }
+
+  function shareText() {
+    var d = st.delta || 0, sign = d >= 0 ? "+" : "\u2212";
+    return "Chess Puzzles: " + (st.won ? "solved a puzzle rated " : "missed a puzzle rated ") + st.pz.rating + ". My rating is " + (st.rec ? st.rec.r : "") + " (" + sign + Math.abs(d) + ").\n\nhttps://purplelink.llc/games/chess-puzzles/";
+  }
+  window.PLShareText = shareText;
 
   function wire() {
     $("ch-board").addEventListener("click", function (e) { var c = e.target.closest(".cb-sq"); if (c) onSquare(c.getAttribute("data-sq")); });

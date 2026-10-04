@@ -70,7 +70,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     dock_html = dock(slug) if slug else ""
     if slug:
         scripts = [x for x in scripts if x not in ("/games/achievements.js", "/games/confetti.js", "/games/sync.js")]
-        scripts = ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js"] + [x for x in scripts if x != "/games/core.js"]
+        scripts = ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js", "/games/share.js"] + [x for x in scripts if x != "/games/core.js"]
     ads_tag = '    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>' if ads else ""
     ld = json.dumps(jsonld, indent=2)
     ld = "\n".join("    " + l for l in ld.splitlines())
@@ -439,6 +439,11 @@ ST_BODY = """      <div class="games-wrap">
             <h2 id="st-name"></h2>
             <p class="stars-sub" id="st-range"></p>
             <p id="st-text"></p>
+            <div class="game-actions">
+              <button type="button" class="btn btn-primary" id="st-share">Share my reading</button>
+              <span class="game-note" id="st-share-note"></span>
+            </div>
+            <textarea class="wg-share-text" id="st-share-text" hidden readonly aria-label="Reading text"></textarea>
           </section>
           <div class="stars-all">
             <h2>All signs today</h2>
@@ -833,8 +838,11 @@ CP_BODY = """      <div class="games-wrap">
             <aside class="partner" id="partner" hidden aria-label="Chess resources"></aside>
             <div class="game-actions">
               <a class="gbtn" id="cr-next" href="/games/chess-puzzles/" data-g="chess-puzzles">Next puzzle</a>
+              <button type="button" class="btn btn-primary" id="cr-share">Share</button>
               <a class="gbtn gbtn--ghost" id="ch-game-link" href="https://lichess.org/training" rel="noopener">See it on Lichess</a>
+              <span class="game-note" id="cr-share-note"></span>
             </div>
+            <textarea class="wg-share-text" id="cr-share-text" hidden readonly aria-label="Result text"></textarea>
           </section>
         </div>
         <p class="ad-note">This page shows Google ads. They are how the unlimited puzzles stay free.</p>
@@ -919,7 +927,10 @@ SU_BODY = """      <div class="games-wrap">
             <div class="rate-join" id="sr-join"></div>
             <div class="game-actions">
               <a class="gbtn" id="sr-next" href="/games/sudoku-unlimited/" data-g="sudoku-unlimited">Next puzzle</a>
+              <button type="button" class="btn btn-primary" id="sr-share">Share</button>
+              <span class="game-note" id="sr-share-note"></span>
             </div>
+            <textarea class="wg-share-text" id="sr-share-text" hidden readonly aria-label="Result text"></textarea>
           </section>
         </div>
         <p class="ad-note">This page shows Google ads. They are how the unlimited puzzles stay free.</p>

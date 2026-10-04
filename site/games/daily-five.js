@@ -166,14 +166,7 @@
     }
     // A question answered earlier but not yet advanced past shows its result with Next.
     $("qz-next").addEventListener("click", next);
-    $("qz-share").addEventListener("click", function () {
-      var text = shareText();
-      G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) {
-        $("qz-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it.";
-        var box = $("qz-share-text"); box.value = text; box.hidden = ok;
-      });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tick, 30000);
     $("qz-loading").hidden = true;
     $("qz-game").hidden = false;

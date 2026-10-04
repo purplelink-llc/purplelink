@@ -222,10 +222,7 @@
       e.preventDefault();
       if (st.matches.length) submit(st.matches[Math.max(0, st.active)]); else $("ag-msg").textContent = "Choose a name from the list.";
     });
-    $("ag-share").addEventListener("click", function () {
-      var text = shareText(); G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) { $("ag-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it."; var b = $("ag-share-text"); b.value = text; b.hidden = ok; });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tick, 30000);
   }
 

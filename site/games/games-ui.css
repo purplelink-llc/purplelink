@@ -458,3 +458,16 @@
 .wg-keys .wg-key { pointer-events: auto; box-shadow: 0 3px 0 color-mix(in oklch, var(--g-key) 55%, black), 0 8px 18px oklch(8% 0.02 310 / 0.42); }
 .wg-keys .wg-key:active { box-shadow: 0 1px 0 color-mix(in oklch, var(--g-key) 55%, black), 0 3px 8px oklch(8% 0.02 310 / 0.4); }
 .wg-keys .wg-key[data-s="c"] { box-shadow: 0 3px 0 color-mix(in oklch, var(--g-correct) 60%, black), 0 8px 18px oklch(8% 0.02 310 / 0.42); }
+
+/* ---------- sharing ---------- */
+.share-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 0; justify-content: center; }
+.share-label { font-size: 0.82rem; font-weight: 800; color: var(--muted); margin-right: 2px; }
+.share-btn { min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: transparent; color: var(--ink); font: 800 0.88rem/1 var(--font-body); cursor: pointer; box-shadow: inset 0 0 0 2px var(--line), 0 3px 0 var(--line); transition: transform 0.08s, box-shadow 0.08s; }
+.share-btn:hover { box-shadow: inset 0 0 0 2px var(--gc, var(--purple)), 0 3px 0 var(--line); }
+.share-btn:active { transform: translateY(2px); box-shadow: inset 0 0 0 2px var(--line), 0 1px 0 var(--line); }
+.share-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+@media (max-width: 520px) {
+  .share-row { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .share-label { grid-column: 1 / -1; text-align: center; }
+  .share-btn { padding: 0 8px; }
+}

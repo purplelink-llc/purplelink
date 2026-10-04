@@ -29,6 +29,10 @@
     $("st-range").textContent = range;
     $("st-text").textContent = day && day.signs[sign] ? day.signs[sign] : "";
     $("st-card").hidden = false;
+    window.PLShareText = function () {
+      var t = $("st-text").textContent, first = (t.match(/^.*?[.!?](\s|$)/) || [t])[0].trim();
+      return "Daily Stars, " + sign + " (for entertainment): " + first + "\n\nhttps://purplelink.llc/games/daily-stars/";
+    };
     var s = G.getGame("daily-stars");
     s.sign = sign;
     var idx = G.dayIndex(new Date(), "2026-10-04");

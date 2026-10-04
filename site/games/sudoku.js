@@ -185,7 +185,10 @@
     var now = new Date(), nx = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1), ms = nx - now, h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
     el.textContent = h + " h " + (m < 10 ? "0" : "") + m + " min";
   }
-  function shareText() { var clean = !st.checks && !st.hints; return "Sudoku " + (st.idx + 1) + " (" + st.pz.level + ") solved in " + fmt(st.elapsed) + (clean ? ", no help" : ", with help") + "\n\n" + URL_; }
+  function shareText() {
+    var clean = !st.checks && !st.hints;
+    if (RATED) { var d = st.delta || 0; return "Sudoku Unlimited: solved a " + st.pz.level + " puzzle in " + fmt(st.elapsed) + (clean ? ", no help" : ", with help") + ". My rating is " + (st.rec ? st.rec.r : "") + " (" + (d >= 0 ? "+" : "\u2212") + Math.abs(d) + ").\n\nhttps://purplelink.llc/games/sudoku-unlimited/"; }
+    return "Sudoku " + (st.idx + 1) + " (" + st.pz.level + ") solved in " + fmt(st.elapsed) + (clean ? ", no help" : ", with help") + "\n\n" + URL_; }
 
   function move(d) {
     var r = Math.floor(st.sel / 9), c = st.sel % 9;
@@ -217,10 +220,7 @@
       if (!b.hasAttribute("data-armed")) { b.setAttribute("data-armed", "1"); b.textContent = "Press again: counts as a miss"; window.setTimeout(function () { b.removeAttribute("data-armed"); b.textContent = "New puzzle"; }, 4000); return; }
       skipRated();
     });
-    if ($("sd-share")) $("sd-share").addEventListener("click", function () {
-      var text = shareText(); G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) { $("sd-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it."; var b = $("sd-share-text"); b.value = text; b.hidden = ok; });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tickClock, 1000); window.setInterval(tick, 30000);
     document.addEventListener("visibilitychange", function () { st.last = Date.now(); persist(); });
   }
@@ -327,6 +327,7 @@
     var clean = !st.checks && !st.hints, result = clean ? "clean" : "help";
     reportRated(result).then(function (out) {
       var rec = out.rec, delta = out.delta, up = delta >= 0;
+      st.rec = rec; st.delta = delta;
       R.current("sudoku", null); R.recentIds("sudoku", st.rid);
       $("sr-head").textContent = "Solved in " + fmt(st.elapsed) + (clean ? "" : " with help");
       $("sr-delta").textContent = (up ? "+" : "\u2212") + Math.abs(delta); $("sr-delta").setAttribute("data-up", up ? "1" : "0");

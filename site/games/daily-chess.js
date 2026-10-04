@@ -241,13 +241,7 @@
       var p = st.pendingPromo; st.pendingPromo = null; $("ch-promo").hidden = true;
       attempt(p.from, p.to, b.getAttribute("data-p"));
     });
-    $("ch-share").addEventListener("click", function () {
-      var text = shareText(); G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) {
-        $("ch-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it.";
-        var box = $("ch-share-text"); box.value = text; box.hidden = ok;
-      });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tick, 30000);
   }
 
