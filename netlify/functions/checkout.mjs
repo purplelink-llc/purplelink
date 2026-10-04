@@ -98,6 +98,9 @@ const PRODUCT_CATALOG = {
   // ModernTex for macOS: $10 one-time. Delivery is the session-gated DMG from the
   // moderntex-files Blobs store; see moderntex-download.mjs.
   "moderntex":               { envKey: "STRIPE_PRICE_MODERNTEX",               successPath: "/moderntex/success/" },
+  // Outbound Veil for macOS: one-time. Delivery is the session-gated DMG from the
+  // outbound-veil-files Blobs store; see outbound-veil-download.mjs.
+  "outbound-veil":           { envKey: "STRIPE_PRICE_OUTBOUND_VEIL",           successPath: "/outbound-veil/success/" },
   // Vitae Plus: optional subscription for the free Vitae app ($3/month or
   // $24/year, 7-day trial). The success page asks vitae-license.mjs for a
   // signed key; the app refreshes it from the same function about monthly.
