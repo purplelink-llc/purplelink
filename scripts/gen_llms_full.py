@@ -52,6 +52,7 @@ PAGES = [
     "guides/best-mac-latex-editors/",
     "guides/best-pii-redaction-tools-for-chatgpt/",
     "guides/best-academic-record-tracking-software/",
+    "guides/best-chrome-extensions-for-google-scholar/",
 ]
 
 SKIP_TAGS = {"script", "style", "noscript", "svg", "header", "footer", "nav", "form", "button", "template"}
