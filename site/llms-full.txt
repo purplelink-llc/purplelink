@@ -1926,6 +1926,8 @@ What it adds
 
 ## Context next to every result
 
+Comparing it with other Scholar extensions? The comparison of Chrome extensions for Google Scholar says plainly where a free alternative or a library tool is the better choice.
+
 ### Journal quality badges
 
 ABDC, FT50, UTD24 and SJR rankings shown beside each result, so you can see where a paper appeared without looking the venue up.
@@ -4694,3 +4696,322 @@ Get Vitae for Mac, free
 See what Plus adds
 
 Requires macOS 15 or later. Mac only, with no sync between machines. Version 1.0.1, labelled beta.
+
+
+---
+
+Source: https://purplelink.llc/guides/best-chrome-extensions-for-google-scholar/
+Title: Best Chrome extensions for Google Scholar (2026) | Purplelink
+
+← All guides
+
+Comparison
+
+# Best Chrome extensions for Google Scholar (2026)
+
+By Benjamin Ampel · October 4, 2026, updated October 4, 2026
+
+What each extension does on or around Google Scholar, what it costs, what the store says it collects and what it cannot do, for anyone who searches Scholar daily and wants journal context, metrics, retraction warnings, full text and a way to save what they find.
+
+Disclosure up front: I make one of the extensions on this list (Scholar Utility Belt). I have tried to write this honestly, and in several places another tool is the better choice. Two free extensions, Rapid Journal Quality Check and ExCITATION, each list about 200,000 users to my 1,000, and they show journal rankings as well as mine does or better. For full text, Google's own Scholar Button and your library's tool do something mine does not. I did not install or test any of the other extensions. What I say about them comes from their Chrome Web Store listings and the vendors' own pages, read on October 4, 2026; user counts, ratings and versions are as shown that day, and privacy labels are what each developer declares, not something I audited. Some tools fetch papers from unauthorized copies. I do not cover or recommend them.
+
+## What you want an extension to do
+
+Google Scholar is good at finding papers and thin on everything around them. A result shows a title, authors, a venue string, a citation count and maybe a PDF link. It does not say whether the venue is any good, whether the paper was retracted, whether you can read it through your library, or what later papers said about it. Extensions fill six gaps: venue context (a badge or quartile beside each result), citation and author metrics, full text (a legal copy or a library link), saving and exporting to a reference manager, trust signals (retractions, how later papers cite it, public comments) and finding more (related papers, alerts).
+
+Scholar already does some of this. Its help page describes email alerts from any search (the envelope icon, no Google account needed), a private library with your own labels, and Cite export to BibTeX, EndNote, RefMan and RefWorks. Try those first, then add extensions for what is still missing.
+
+## The shortlist
+
+- Scholar Utility Belt: rankings, citation and author metrics, retraction warnings and a saved list. Free core.
+
+- Rapid Journal Quality Check: free, the longest list of rankings.
+
+- ExCITATION: free, SJR quartiles plus ABS and ABDC.
+
+- Scholar H-Index Calculator: free, indices with custom formulas.
+
+- Google Scholar Button: Google's popup for finding, citing and saving from any page.
+
+- Zotero Connector: free, saves references and PDFs; Zotero warns about retractions.
+
+- Paperpile extension: the capture tool for a paid reference manager.
+
+- Unpaywall: free, finds legal free copies.
+
+- LibKey Nomad and Lean Library: free, links to full text your library subscribes to.
+
+- EndNote Click: free, one-click PDF access from Clarivate.
+
+- scite: shows whether later papers support or dispute a paper.
+
+- Publish or Perish: a free desktop program for citation analysis, not an extension.
+
+Those twelve cover most situations. Seven more extensions follow, then what I left out and why.
+
+## Scholar Utility Belt
+
+Cost: Free core, open source under the ISC license. Optional Pro is $40 once, $3 a month or $20 a year. Platform: Chrome only. Store listing: version 0.6.2, about 1,000 users, 4.5 out of 5 from 16 ratings.
+
+It adds badges beside each Scholar result. The store listing names ABDC, FT50, UTD24 and CORE, and the project's README names more, including VHB, CCF, SCImago quartiles and ERA. The lists ship inside the extension, so badges need no network request. Beside them are citations per year, an "Emerging" signal for recent papers, a retraction warning and a tortured-phrase warning, which checks each result's title and snippet against the Problematic Paper Screener's list of odd paraphrases that can point to paper-mill text. The retraction warning looks up the DOI in a Retraction Watch-derived list that ships with the extension, and can ask Crossref if that list is not loaded. Author profiles get h-, m-, L-, g- and h5-index and the share of open access papers. There is also a local saved-paper library with notes and tags, BibTeX export, a query trend panel and related works.
+
+Pro adds author compare, citation lineage, extended bibliometrics (p-index, field-weighted citation impact, Relative Citation Ratio, influential citations), a narrative CV, a systematic-review workspace, a citation-graph overlay and a Publish-or-Perish-style report. Anyone who installed before version 0.6.0 keeps the features that existed then, free.
+
+Privacy, exactly: no account, no analytics, no Purplelink server; your library and settings stay in the extension's storage in your browser. Depending on the features you turn on, it sends lookups from your browser to public services (OpenAlex, Crossref, Unpaywall, OpenCitations, Semantic Scholar, DBLP, NIH iCite, PubMed, Europe PMC and ROR), carrying what the lookup needs, such as a DOI, title, author name or search term. Pro licensing goes through ExtensionPay and Stripe: no request to ExtensionPay unless you open the payment or sign-in page, and after that a random per-install key is sent to check your plan. An optional setting in Options asks Chrome for access to all sites and does nothing unless you press its button. The product page lists each call, and the source is on GitHub.
+
+What it's good at: several jobs in one free extension, with rankings that need no lookup. What it lacks: it works in Chrome only. Its lists are strongest for business, information systems and computing venues. Elsewhere you get the broader lists the README names (SCImago quartiles, ERA, the Norwegian register), which are coarser than a field's own list, so I expect it to be less useful for medicine, law or the humanities, though I have not tested it there. It does not know your library's subscriptions: its PDF button opens the best link it can find (a publisher link, an arXiv or SSRN copy, or an open access copy flagged through Unpaywall), which is not the same as a full-text finder. It is not a reference manager: the saved list exports BibTeX, but you cannot cite from it in Word or Google Docs. The README says OpenAlex asks for a free API key, and without one some lookups may be rate-limited or fail. With 16 ratings, it has little track record.
+
+Pick Scholar Utility Belt if you search Scholar in business, information systems or computer science and want badges, retraction warnings, author metrics and a saved list in one place. Pick something else if you only want badges (the next two), need full text, or need a reference manager.
+
+## Rapid Journal Quality Check
+
+Cost: Free. Platform: Chrome. Store listing: version 4.1.4, about 200,000 users, 4.3 from 66 ratings.
+
+It shows rankings next to Scholar results, on author profile pages and on related subpages. The listing names SJR, ABDC, ABS, VHB, FT50, CORE, CCF, BFI, CNRS, FNEGE, HCERES and the SCImago journal and country rank. You choose which to display, a plus button reveals others, hovering shows the journal name and h-index, and the toolbar icon opens a search box for looking up a journal by name. The listing says it is open source and that the developer will not collect or use your data.
+
+What it's good at: the widest list of rankings here, including European ones. What it lacks: going by the listing, badges and nothing else: no citation velocity, retraction warning, author metrics or saved list.
+
+Pick it if you want only journal rankings and need a list that I do not carry, for example CNRS or HCERES.
+
+## ExCITATION
+
+Cost: Free; the listing says "No registration, no account, no premium tier required for any feature." Platform: Chrome. Store listing: version 1.4.1, about 200,000 users, 4.5 from 108 ratings.
+
+It adds SCImago (SJR) quartiles and impact scores to every result, covering more than 32,000 journals in all disciplines, plus ABS Academic Journal Guide 2024 and ABDC 2025 classes. It can also sort results by citation count, flag predatory journals and preview abstracts without leaving the page. Its privacy label lists personally identifiable information, user activity and website content.
+
+What it's good at: SJR across all fields, and sorting. What it lacks: only three ranking sources, so no FT50, UTD24 or CORE, and, going by the listing, no retraction warning or author metrics.
+
+Pick it if you work outside business and computing and want quartiles and a predatory-journal flag with nothing else on the page.
+
+## Scholar H-Index Calculator
+
+Cost: Free. Platform: Chrome. Store listing: version 4.4.1, about 10,000 users, 4.3 from 54 ratings, developer listed as Agelin Bee.
+
+It computes bibliometric indices over Scholar pages as you browse, lets you write your own formulas, can remove self-citations and ghost citations from the totals, completes author lists that Scholar truncates, and clusters authors who share a name. The listing says it runs in the browser with no backend.
+
+What it's good at: custom formulas and self-citation cleaning, which my extension does not do. What it lacks: no journal rankings or retraction warnings, and the listing does not name which indices it ships, so check before relying on a specific one.
+
+Pick it if you evaluate authors or journals and want self-citations out of the numbers. For a formal citation analysis, see Publish or Perish below.
+
+## Google Scholar Button
+
+Cost: Free. Platform: Chrome. Store listing: version 3.6, last updated May 16, 2024, about 3,000,000 users, 4.6 from 1.4K ratings, made by Google.
+
+It is a popup, not a change to the Scholar page. Select a paper title on any web page and click the button to find the full text on the web or in your university library. Send a web search to Scholar and see the top three results. Press the quote button for a formatted reference, or the star to save the paper to your Scholar library. Off-campus library links need a proxy set in Scholar Settings.
+
+What it's good at: reaching Scholar from a publisher, news or blog page in one click, from the company that runs Scholar. What it lacks: it adds nothing to the Scholar results page itself, and the listing was last updated in May 2024.
+
+Pick it if you read papers cited on other sites and want a quick route to the Scholar record, a citation or the library copy.
+
+## Zotero Connector
+
+Cost: The connector and the Zotero software are free; Zotero's storage page lists 300 MB of free file storage, then plans from $20 a year for 2 GB. Platform: Chrome, Firefox, Edge and Safari, plus the Zotero desktop app. Store listing: version 5.0.217, updated October 1, 2026, about 8,000,000 users, 4.0 from 2.5K ratings.
+
+It detects a paper on the page and saves the reference to your library in one click, with the PDF if one is available. Zotero's documentation lists Google Scholar among supported sites and describes a two-step route for several papers: star them in Scholar, then select and export them from My Library. The store label says the developer will not collect or use your data.
+
+Zotero also checks for retractions. Under a 2019 partnership with Retraction Watch it flags retracted items in your library and warns when you cite one. At that announcement it covered items with a DOI or PubMed ID, about three quarters of the database. Crossref made the database open in September 2023.
+
+What it's good at: capture for a mature, free reference manager that also writes your citations. What it lacks: it adds nothing to the Scholar page and needs the desktop app. Pick it if you want a reference manager and have none. For BibTeX, see converting between BibTeX, RIS and EndNote.
+
+## Paperpile extension
+
+Cost: The extension is free but needs a Paperpile account. Paperpile's pricing page lists annual billing only, a 30-day trial and a 50% academic discount; I could not reconcile the figures I read there, so check the price yourself. Platform: Chrome. Store listing: version 1.5.1188, updated September 28, 2026, about 300,000 users, 4.6 from 194 ratings.
+
+It collects references and PDFs from publisher sites and names Google Scholar, PubMed, arXiv, Scopus and Web of Science among the sites it integrates with. It also has a PDF viewer with annotation, citations in Google Docs, and a way to send PDFs to AI chat tools. The store label lists personally identifiable information, web history, user activity and website content.
+
+What it's good at: the best rated of the three reference-manager connectors here, with Google Docs citing. What it lacks: it is paid, and adds nothing to the results page.
+
+Pick it if you write in Google Docs and would rather pay than set up Zotero.
+
+## Unpaywall
+
+Cost: Free. Platform: Chrome. Store listing: version 3.99, last updated January 8, 2025, 1,000,000+ users, 4.0 from 283 ratings.
+
+When you land on a paywalled article, Unpaywall looks for a legal free copy and shows a tab if it finds one. Its listing says it draws on an index of about 20 million free, legal PDFs, mostly author-posted manuscripts on university and government servers, which publishers permit. The store label lists location and website content. My extension uses Unpaywall's data only to flag open access results; Unpaywall itself opens the copy.
+
+What it's good at: being free, legal and independent of your institution. What it lacks: it only finds copies that already exist outside the paywall, and as far as the listing says it acts on the article page you reach, not on the Scholar list. The listing was last updated in January 2025.
+
+Pick it if your library has no tool of its own, or you are off campus.
+
+## LibKey Nomad
+
+Cost: Free to install, but it links through your library, so your library must be a LibKey customer. Platform: Chrome, Edge, Firefox, Brave, Vivaldi and Safari, per Third Iron. Store listing: version 1.60.0, updated September 22, 2026, 1,000,000+ users, 4.5 from 17 ratings.
+
+After you choose your institution, it shows links to the full text your library subscribes to, or an open access copy, on article pages and when you search sites such as Google and PubMed. The listing says more than 2,000 libraries in over 35 countries support it, and library guides report that it works in Google Scholar. Library guides report that it flags retracted articles using Retraction Watch data, which fits Third Iron's 2022 announcement about its LibKey services. The store label lists location data.
+
+What it's good at: getting you to the PDF your institution already pays for, in one click. What it lacks: it is no use without a participating library, and it is not a reference manager.
+
+Pick it if your university library lists LibKey Nomad on its website. Ask your librarian.
+
+## Lean Library
+
+Cost: Free. Platform: Chrome. Store listing: updated October 1, 2026, about 200,000 users, 3.4 from 142 ratings.
+
+Another library-access extension. You select your institution to reach its resources, and the listing says it also lets you save references, highlight and annotate pages, get journal alerts, and see article retraction alerts and trust ratings. A "Lean Library Open" mode redirects to open access copies if you have no institution. The store label says the developer will not collect or use your data.
+
+What it's good at: the same access job as LibKey Nomad, with retraction alerts named in the listing. What it lacks: the lowest store rating of the access tools, and, like LibKey Nomad, it only helps if your library uses it. The listing does not name Google Scholar.
+
+Pick it if your library points you to it instead of LibKey.
+
+## EndNote Click
+
+Cost: Free. Platform: Chrome. Store listing: version 3.5.0, last updated May 28, 2025, about 6,000,000 users, 4.0 from 379 ratings, made by Clarivate.
+
+One-click access to PDFs on Web of Science, PubMed, arXiv, Scopus and other sites, through your library's subscriptions and open access copies. It integrates with Mendeley, EndNote, Dropbox and Zotero. The store label is the broadest of the tools here: personally identifiable information, authentication information, location, web history, user activity and website content.
+
+What it's good at: one click from the supported sites to a PDF, and a hand-off to Mendeley, EndNote or Zotero. What it lacks: the listing does not say what your institution must set up for the library part to work, the data label is broad, and there has been no update since May 2025 as of this writing.
+
+Pick it if you want one-click PDFs and a hand-off to your reference manager, and your library has not chosen LibKey Nomad or Lean Library.
+
+## scite
+
+Cost: The store lists the extension as free. scite's pricing page lists a 7-day trial and paid plans from $20 a month for "full platform access" including Smart Citation reports, and does not say what the extension shows without a plan, so check what its badge opens before you rely on it. Platform: Chrome. Store listing: version 1.40.0, updated July 1, 2026, about 100,000 users, 4.1 from 40 ratings.
+
+It shows how many citations support, contrast or only mention a paper's claims, on Google Scholar, PubMed and journal sites, instead of a bare citation count. The store label says the developer will not collect or use your data.
+
+What it's good at: the one tool here that tells you how a paper was cited, not just how often. What it lacks: clarity about what is free, and as I understand it the labels are assigned by software, so read the cited statements yourself.
+
+Pick it if you are judging whether a finding holds up before you build on it.
+
+## Publish or Perish
+
+Cost: Free; the page invites voluntary donations. Platform: Windows and macOS, and Linux through an emulator. A desktop program, not an extension.
+
+Anne-Wil Harzing's program retrieves publications and computes citation metrics, including the h-index, for an author, journal or topic. Its data-sources page lists Crossref, Google Scholar (profiles have needed a Google login since April 2025), OpenAlex and PubMed as free, Scopus and Semantic Scholar with a free API key, and Web of Science with a paid subscription, and says it cannot guarantee any source stays available. The version the page names, 8, is dated November 2021, so check the download page for the current build.
+
+What it's good at: an established tool for a citation analysis you can describe in a tenure file, with a choice of data source. What it lacks: it adds nothing to the results page. My Pro tier has a Publish-or-Perish-style report; for a formal analysis, use the original. Pick it if you need metrics for a tenure case, grant or bibliometric study; see tracking your academic CV and tenure case.
+
+## Seven more extensions
+
+Each is real and useful to someone. None is on the shortlist because one above covers the same ground for most people.
+
+### Mendeley Web Importer
+
+Free, from Elsevier. Version 3.3.49, updated March 31, 2026, about 3,000,000 users, 2.3 from 3.1K ratings, the lowest rating on this page. It imports papers and PDFs into Mendeley Reference Manager; Mendeley's page does not say whether it works from Scholar results. The store label lists authentication information, location, web history, user activity and website content. Pick it if your library is already in Mendeley.
+
+### Google Scholar PDF Reader
+
+Free, from Google. Version 0.5.2, updated June 5, 2026, about 2,000,000 users, 4.1 from 713 ratings. A PDF reader with reference previews, a generated outline, figure jumps, highlighting, and cite and save buttons. Pick it if you read many PDFs in the browser and follow their references.
+
+### PubPeer
+
+Free, from The PubPeer Foundation. Version 1.7.1, updated November 29, 2024, about 40,000 users, 3.7 from 37 ratings. It shows a link when the paper has comments on PubPeer and stays silent otherwise. A comment is not a verdict, but a thread of methodological concerns is worth reading before you cite. The store label says the developer will not collect or use your data. Pick it if you review or replicate work.
+
+### Scholarcy
+
+Free extension, with premium features through a Scholarcy Library subscription; I could not read the price because its pricing page returned an access error. Version 5.4.0, updated March 14, 2026, about 80,000 users, 4.0 from 39 ratings. It turns an article into a summary flashcard with key points and links to open access versions of the references. Pick it if you screen many papers, and read the paper before you cite it.
+
+### Elicit extension
+
+Free extension; Elicit has a free Basic plan and a Pro plan listed at $49 a month or $588 a year. Version 1.5, updated September 4, 2026, about 30,000 users, 4.5 from 11 ratings. It is narrower than the name suggests: it fetches full-text papers for Elicit's systematic reviews through your institutional access, and Elicit says your login stays on your device. It does not annotate Scholar. Pick it if you already run systematic reviews in Elicit.
+
+### LitRank and Journal List
+
+Two very small free badge extensions. LitRank (version 1.6.0, 128 users) shows SJR quartiles and h-index with filters by quartile, document type and citations, and its developer says no paid tier is planned. Journal List (version 1.3.0, 184 users, from a PhD candidate at the University of Manchester) shows ABS, ABDC, FT50, UTD24, the FMS list, the CCF list and JCR quartile. Pick Journal List if you need the FMS list, which I did not find on the larger extensions.
+
+Four web apps help with finding more but are not Chrome extensions that I could confirm. ResearchRabbit says on its homepage that it is free to sign up. Scholar Inbox describes itself as a free paper recommender that indexes arXiv, bioRxiv, medRxiv, ChemRxiv and open access computer science proceedings. I could not read the pricing pages of Connected Papers or Consensus, so I give no price.
+
+## What I left out and why
+
+I dropped anything I could not confirm on October 4, 2026. The CORE Discovery listing did not resolve on the Chrome Web Store, and CORE's own page returned an access error. Semantic Scholar's FAQ links to an extension listing that does not resolve either. RetractOMatic, a retraction-highlighting extension that library guides mention, is gone from the store. The Open Access Button was discontinued by its operator, OA.Works, in November 2025, and its page points people to Unpaywall; a listing called Open Research Button, from a different publisher (PaperPanda), is still on the store, and I did not establish how the two relate. Check the listings yourself if any is back.
+
+## What a badge does not tell you
+
+- A venue is not a verdict on the paper. Top-ranked journals publish weak papers and obscure venues publish strong ones. Rankings help you decide what to read first.
+
+- Lists disagree. ABDC, ABS, FT50, CORE and SJR rank by different rules and cover different fields, so a paper can be A* on one and unlisted on another. Pick a list your field uses.
+
+- Retraction data is incomplete. Tools built on the Retraction Watch database share its gaps, and a very recent retraction may not be in a bundled copy. Check the publisher's page before you cite anything important.
+
+- Extensions read the pages they run on. One limited to Scholar sees less than one that runs on every site. My extension's manifest limits it to Google Scholar pages, the public lookup services and extensionpay.com. Open each listing's privacy tab and compare.
+
+- Several extensions can crowd one page. I have not tested combinations. Start with two or three and remove what you do not use.
+
+## Decision matrix
+
+- Journal rankings only, in a business or computing field? Rapid Journal Quality Check, or Scholar Utility Belt if you want more on the page.
+
+- Rankings in any field, quartiles? ExCITATION.
+
+- Rankings plus citation velocity, author metrics, retraction warnings and a saved list? Scholar Utility Belt.
+
+- Author metrics with self-citations removed or custom formulas? Scholar H-Index Calculator. For a formal analysis, Publish or Perish.
+
+- Full text through your library? LibKey Nomad or Lean Library, whichever your library uses; EndNote Click if neither.
+
+- Free copies, no library? Unpaywall.
+
+- Saving references? Zotero Connector (free), Paperpile (paid), Mendeley Web Importer (if you use Mendeley).
+
+- Retraction warnings? Zotero for your library, Lean Library or LibKey Nomad, and Scholar Utility Belt on results.
+
+- How later papers cite it? scite. Public critique? PubPeer.
+
+- Reaching Scholar from other sites? Google Scholar Button.
+
+- Not on Chrome? Scholar Utility Belt does not run elsewhere. Zotero Connector and LibKey Nomad list Firefox, Edge or Safari versions.
+
+## A setup that holds up
+
+- Set up access first. Ask your library which tool it supports. If it has none, install Unpaywall.
+
+- Install one reference-manager connector. Zotero if you have no preference.
+
+- Add one badge extension. Pick the one whose list matches your field. Check that the badge you care about appears on a few papers you already know.
+
+- Add one trust check. Zotero's retraction notices, scite or PubPeer, and look at the paper itself before you cite it.
+
+- Use Scholar's own alerts and library for what is new and what you saved.
+
+## Frequently asked
+
+### What is the best Chrome extension for Google Scholar?
+
+There is no single best one, because they do different jobs. For full text, use your library's tool (LibKey Nomad or Lean Library) or Unpaywall. For saving references, use your reference manager's connector, such as Zotero Connector. For journal rankings, Rapid Journal Quality Check and ExCITATION are free and widely installed. Scholar Utility Belt, which Purplelink makes, combines rankings, citation and author metrics, retraction warnings and a saved list.
+
+### Is there a free Chrome extension that shows journal rankings in Google Scholar?
+
+Yes. Rapid Journal Quality Check and ExCITATION are free and each lists about 200,000 users on the Chrome Web Store. Scholar Utility Belt has a free core with rankings, and LitRank and Journal List are free and much smaller. They draw on different lists, so check that your field's list is among them.
+
+### How do I find the full text of a paper I found on Google Scholar?
+
+Start with the link beside the result. If there is none, an extension that knows your library's subscriptions (LibKey Nomad, Lean Library or EndNote Click) or one that looks for legal free copies (Unpaywall) will usually find it. Library tools need your institution's support. Scholar Utility Belt opens the best PDF link it can find but does not know your subscriptions.
+
+### Can a Chrome extension warn me about retracted papers?
+
+Some can. Scholar Utility Belt marks results whose DOI is on a Retraction Watch-derived list. Lean Library lists retraction alerts among its features, and Third Iron's library tools are reported to flag retractions using Retraction Watch data. Zotero checks the references in your library. Coverage is never complete, so check the publisher's page before you cite anything important.
+
+### Do these extensions track what I search?
+
+Each developer declares its own practices on the Chrome Web Store, and I have not audited them. Zotero Connector, Lean Library, scite, PubPeer and Rapid Journal Quality Check declare that they do not collect or use your data. Others declare collecting location, browsing activity or website content. Scholar Utility Belt has no account, no analytics and no Purplelink server, and sends optional lookups to public scholarly services.
+
+### Which extension should I use to save papers from Google Scholar to a reference manager?
+
+Use the connector for the manager you already have: Zotero Connector, the Paperpile extension or Mendeley Web Importer. Zotero's documentation describes a two-step route for several papers at once: star them in Scholar, then export from My Library. Scholar Utility Belt keeps a local saved list and exports BibTeX, but it is not a reference manager.
+
+### What does Scholar Utility Belt cost, and where does it fall short?
+
+The core is free and open source under the ISC license. Optional Pro is $40 once, $3 a month or $20 a year, and anyone who installed before version 0.6.0 keeps the earlier features free. It works in Chrome only, its lists are strongest for business, information systems and computing venues, it does not know your library subscriptions, and it does not manage references.
+
+## Related guides
+
+- Best software for tracking your research record, for keeping publications, citations and submissions in one place.
+
+- How to track your academic CV and tenure case.
+
+- Catch AI-hallucinated citations before you submit.
+
+- Best LaTeX editor for Mac, for writing the paper once you have found the sources.
+
+- Scholar Utility Belt and all guides.
+
+From the team behind these tools
+
+## Searching Google Scholar every day?
+
+Scholar Utility Belt is a Chrome extension that adds journal ranking badges, citation velocity, author metrics and retraction warnings beside Scholar results, with a local saved-paper library. The core is free and open source. The ranking lists ship inside the extension.
+
+See Scholar Utility Belt
+Chrome Web Store
+
+Chrome only. Free core; optional Pro from $20 a year. Strongest for business, information systems and computing venues. It does not find full text or manage references.
