@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.0.dmg",
-  "releaseNotes": "Recently Deleted, RIS export, NSF/NIH grant auto-fill, Publish or Perish citation metrics, a redesigned Shareables with six new styles, an in-app Help window, Deadlines and Pipeline widgets, Quick Look for manuscript files, and an accessibility pass throughout."
+  "version": "1.0.1",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.0.1.dmg",
+  "releaseNotes": "A Mac Suite license now shows as Lifetime (Mac Suite) in Vitae Plus settings, with no price, renewal date or subscription buttons."
 }
