@@ -444,3 +444,11 @@
   .ac-row { grid-template-columns: minmax(96px, 1.4fr) repeat(4, minmax(58px, 1fr)); gap: 6px; font-size: 0.86rem; }
 }
 @media (pointer: coarse) { .wg-key { height: 56px; } }
+
+/* affiliate card (hidden until a partner link is configured) */
+.partner { margin: 16px 0 0; padding: 16px 18px; border-radius: 16px; border: 2px dashed var(--line); text-align: left; }
+.partner[hidden] { display: none; }
+.partner h3 { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 2px; }
+.partner p { margin: 0 0 10px; color: var(--muted); font-size: 0.92rem; }
+.partner-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.partner .partner-note { margin: 12px 0 0; font-size: 0.8rem; }

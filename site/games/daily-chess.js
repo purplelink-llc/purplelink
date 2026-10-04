@@ -202,6 +202,7 @@
     var sv = $("ch-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
     $("ch-controls").hidden = true;
     var box = $("ch-result"); box.hidden = false;
+    if (window.PLPartners) window.PLPartners.show();
     $("ch-result-head").textContent = st.won ? (st.mistakes + st.hints === 0 ? "Solved on the first try" : "Solved with " + (st.mistakes + st.hints) + " slip" + (st.mistakes + st.hints === 1 ? "" : "s")) : "Not solved today";
     $("ch-about").textContent = "Puzzle rated " + st.pz.rating + (themes().length ? ". Themes: " + themes().join(", ") + "." : ".");
     var link = $("ch-game-link"); link.href = "https://lichess.org/training/" + st.pz.id; link.textContent = "See this puzzle on Lichess";

@@ -181,6 +181,7 @@
       var link = $("ch-game-link"); link.href = "https://lichess.org/training/" + st.pz.id;
       $("cr-rating").textContent = String(rec.r); $("cr-tier-top").textContent = R.tierFor(rec.r);
       $("cr-result").hidden = false;
+      if (window.PLPartners) window.PLPartners.show();
       var FX = window.PLFX;
       if (FX) { FX.play(st.won ? (delta >= 14 ? "big" : "win") : "lose"); FX.vibrate(st.won ? [20, 40, 20] : 60); FX.kick($("cr-delta"), "fx-pop", 300); if (st.won && window.PLConfetti && delta >= 14) window.PLConfetti.small(); }
       join(out);

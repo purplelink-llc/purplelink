@@ -676,6 +676,7 @@ CH_BODY = """      <div class="games-wrap">
             <textarea class="wg-share-text" id="ch-share-text" hidden readonly aria-label="Result text"></textarea>
             <p class="game-next">Next puzzle in <span id="ch-next-in"></span>.</p>
             <p class="game-more"><a class="gbtn" href="/games/chess-puzzles/" data-g="chess-puzzles">Play unlimited rated puzzles</a></p>
+            <aside class="partner" id="partner" hidden aria-label="Chess resources"></aside>
           </section>
         </div>
         <div class="games-prose">
@@ -685,7 +686,7 @@ CH_BODY = """      <div class="games-wrap">
       </div>"""
 page("games/daily-chess/", "", "", CH_BODY,
      {"@context": "https://schema.org", "@graph": [faq(CH_FAQ)]},
-     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/daily-chess.js"])
+     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/partners.js", "/games/daily-chess.js"])
 
 # ---------------- Sudoku ----------------
 SD_FAQ = [
@@ -829,6 +830,7 @@ CP_BODY = """      <div class="games-wrap">
             </div>
             <p class="game-reveal" id="cr-about"></p>
             <div class="rate-join" id="cr-join"></div>
+            <aside class="partner" id="partner" hidden aria-label="Chess resources"></aside>
             <div class="game-actions">
               <a class="gbtn" id="cr-next" href="/games/chess-puzzles/" data-g="chess-puzzles">Next puzzle</a>
               <a class="gbtn gbtn--ghost" id="ch-game-link" href="https://lichess.org/training" rel="noopener">See it on Lichess</a>
@@ -843,7 +845,7 @@ CP_BODY = """      <div class="games-wrap">
       </div>"""
 page("games/chess-puzzles/", "", "", CP_BODY,
      {"@context": "https://schema.org", "@graph": [faq(CP_FAQ)]},
-     ["/games/core.js", "/games/ratings.js", "/games/chess-puzzles.js"], ads=True)
+     ["/games/core.js", "/games/ratings.js", "/games/partners.js", "/games/chess-puzzles.js"], ads=True)
 
 # ---------------- Sudoku Unlimited ----------------
 SU_FAQ = [
