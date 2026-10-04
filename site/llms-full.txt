@@ -534,7 +534,7 @@ Outbound Veil checks what you type for personal information before you send it. 
 
 Try it free for 7 days
 
-The trial is the full app for seven days, with no account and nothing to enter. Buying is a single $29 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.0 · 36 MB disk image · macOS 14 or later, Apple silicon and Intel.
+The trial is the full app for seven days, with no account and nothing to enter. Buying is a single $29 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.0 · 36 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
 Also in the Mac Suite: Outbound Veil, ModernTex and Vitae Plus for life, $39 once.
 
@@ -646,7 +646,7 @@ No. What you type is checked on your Mac. Nothing you type is stored or sent, an
 
 Are updates included?
 
-Yes. The app checks for a new version and offers to install it in place, or you can choose Check for Updates from its menu. Each download is signed by Purplelink LLC.
+Yes, all of them, forever, including future major versions. The app checks for a new version and offers to install it in place, or you can choose Check for Updates from its menu. Each download is signed by Purplelink LLC.
 
 What happens when the trial ends?
 
@@ -681,7 +681,7 @@ Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
 ← All products
 
 macOS
-Free · v1.0 Beta
+Free · v1.0.1 Beta
 
 # Vitae
 
