@@ -531,6 +531,8 @@ Try it free for 7 days
 
 The trial is the full app for seven days, with no account and nothing to enter. Buying is a single $29 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). macOS 14 or later, Apple silicon and Intel.
 
+Outbound Veil checking a fictional client note typed into a plain text field in Chrome. Every name and number on this page is invented.
+
 ## How it works
 
 ### It watches the field you are typing in
@@ -544,6 +546,28 @@ A small badge appears with the number of findings, and the matching text is high
 ### You decide
 
 Redact a finding, redact them all, or ignore them. In apps you choose, Outbound Veil can also hold the send key until you have decided.
+
+Watch it work
+
+## Under a minute, from typing to redacted
+
+A client note typed into a text field, personal details marked as they appear, then redacted in one click. Real footage of the app, with invented data.
+
+Play the video on YouTube
+
+## A closer look
+
+### Marked where it is
+
+Each finding is highlighted on the text itself, in a colour, opacity and style you choose, and the highlight follows the text as you edit. The badge shows how many findings the field has. Turn highlighting off from the menu or with Control-Option-H.
+
+### Every finding, in a list
+
+Click the badge to see what was found and what kind of detail it is. Ignore a finding, redact all of them, or switch checking off for that app.
+
+### Redacted, still readable
+
+Redact all rewrites the field in place. Each detail becomes a labelled placeholder, such as [SSN_1] or [EMAIL_1], so the text still reads sensibly when you send it.
 
 ## What it finds
 

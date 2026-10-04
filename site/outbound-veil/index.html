@@ -41,6 +41,7 @@
           "operatingSystem": "macOS 14+",
           "url": "https://purplelink.llc/outbound-veil/",
           "description": "Outbound Veil is a Mac menu-bar app that checks what you type for personal information before you send it. The checking runs on your Mac, nothing you type is stored or sent, and the app has no analytics.",
+          "screenshot": "https://purplelink.llc/assets/outbound-veil-screens/marked.webp",
           "softwareRequirements": "macOS 14 (Sonoma) or later, Apple silicon or Intel.",
           "processorRequirements": "Apple silicon or Intel",
           "featureList": [
@@ -131,6 +132,7 @@
     <a class="back-link" href="/products/">← All products</a>
 
     <div class="app-hero">
+      <img class="app-hero-icon" src="/assets/outbound-veil-icon.webp" width="120" height="120" fetchpriority="high" alt="Outbound Veil app icon">
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
@@ -145,6 +147,17 @@
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <p class="waitlist-fine-print">The trial is the full app for seven days, with no account and nothing to enter. Buying is a single $29 payment. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). macOS 14 or later, Apple silicon and Intel.</p>
       </div>
+      <figure class="app-hero-window">
+        <div class="frame-soft hero-media" data-motion="video">
+          <img src="/assets/video/outbound-veil-hero-poster.webp" alt="Outbound Veil marking a name, date of birth, Social Security number, phone number, email address and card number in a text field, with its list of findings open beside them" width="1280" height="720" fetchpriority="high" decoding="async">
+          <video muted loop playsinline preload="none" poster="/assets/video/outbound-veil-hero-poster.webp" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+            <source data-src="/assets/video/outbound-veil-hero.webm" type="video/webm">
+            <source data-src="/assets/video/outbound-veil-hero.mp4" type="video/mp4">
+          </video>
+          <button type="button" class="motion-toggle" data-motion-toggle hidden>Pause video</button>
+        </div>
+        <figcaption>Outbound Veil checking a fictional client note typed into a plain text field in Chrome. Every name and number on this page is invented.</figcaption>
+      </figure>
     </div>
 
     <section class="features-section" aria-labelledby="how-h">
@@ -163,6 +176,47 @@
         <div class="feature-item">
           <h3>You decide</h3>
           <p>Redact a finding, redact them all, or ignore them. In apps you choose, Outbound Veil can also hold the send key until you have decided.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screenshots-section tour-section">
+      <p class="eyebrow">Watch it work</p>
+      <h2>Under a minute, from typing to redacted</h2>
+      <p class="section-intro">A client note typed into a text field, personal details marked as they appear, then redacted in one click. Real footage of the app, with invented data.</p>
+      <div class="yt-embed" data-motion="youtube" data-youtube-id="PENDING_UPLOAD" data-youtube-title="Outbound Veil: check what you type for personal information before you send it">
+        <img class="yt-poster" src="/assets/video/outbound-veil-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
+        <a class="yt-play" href="https://www.youtube.com/@PurplelinkPL" rel="noopener">Play the video on YouTube</a>
+      </div>
+    </section>
+
+    <section class="screenshots-section">
+      <h2>A closer look</h2>
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>Marked where it is</h3>
+          <p>Each finding is highlighted on the text itself, in a colour, opacity and style you choose, and the highlight follows the text as you edit. The badge shows how many findings the field has. Turn highlighting off from the menu or with Control-Option-H.</p>
+        </div>
+        <div class="screenshot-wide frame-soft">
+          <img src="/assets/outbound-veil-screens/marked.webp" srcset="/assets/outbound-veil-screens/marked-800.webp 800w, /assets/outbound-veil-screens/marked-1440.webp 1440w, /assets/outbound-veil-screens/marked.webp 2200w" sizes="(max-width: 1500px) 92vw, 1470px" alt="A text field holding a fictional client note, with the name, date of birth, Social Security number, phone number, email address and card number highlighted, and an orange badge showing 7 findings" width="2200" height="1124" decoding="async" loading="lazy">
+        </div>
+      </div>
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>Every finding, in a list</h3>
+          <p>Click the badge to see what was found and what kind of detail it is. Ignore a finding, redact all of them, or switch checking off for that app.</p>
+        </div>
+        <div class="screenshot-wide frame-soft">
+          <img src="/assets/outbound-veil-screens/findings.webp" srcset="/assets/outbound-veil-screens/findings-800.webp 800w, /assets/outbound-veil-screens/findings-1440.webp 1440w, /assets/outbound-veil-screens/findings.webp 2200w" sizes="(max-width: 1500px) 92vw, 1470px" alt="The Outbound Veil findings list open over the text field, listing a first name, last name, date of birth, Social Security number, phone number, email address and card number, each with an Ignore button, and Redact all and Not in this app buttons" width="2200" height="1124" decoding="async" loading="lazy">
+        </div>
+      </div>
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>Redacted, still readable</h3>
+          <p>Redact all rewrites the field in place. Each detail becomes a labelled placeholder, such as [SSN_1] or [EMAIL_1], so the text still reads sensibly when you send it.</p>
+        </div>
+        <div class="screenshot-wide frame-soft">
+          <img src="/assets/outbound-veil-screens/redacted.webp" srcset="/assets/outbound-veil-screens/redacted-800.webp 800w, /assets/outbound-veil-screens/redacted-1440.webp 1440w, /assets/outbound-veil-screens/redacted.webp 2200w" sizes="(max-width: 1500px) 92vw, 1470px" alt="The same text field after Redact all, with the details replaced by placeholders such as GIVEN_NAME_1, SSN_1, PHONE_1, EMAIL_1 and CREDIT_CARD_1, and a green badge showing nothing left to flag" width="2200" height="1124" decoding="async" loading="lazy">
         </div>
       </div>
     </section>
@@ -237,7 +291,7 @@
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">
       <h2 id="faq-heading">Frequently asked questions</h2>
-      <div class="faq-list">
+      <div class="faq-list" data-motion="stagger">
         <details class="faq-item">
           <summary>What does it need to run?</summary>
           <div class="faq-body">macOS 14 (Sonoma) or later, on Apple silicon or Intel.</div>

@@ -43,6 +43,11 @@ done
 
 # Run from repo root regardless of invocation path
 cd "$(dirname "$0")/.."
+# A page still carrying a placeholder (for example a YouTube id waiting on an upload) must not go live.
+if grep -rIl "PENDING_UPLOAD" site --include=*.html >/dev/null 2>&1; then
+  echo "ERROR: placeholder PENDING_UPLOAD still on: $(grep -rIl 'PENDING_UPLOAD' site --include=*.html | tr '\n' ' ')" >&2
+  exit 1
+fi
 
 # --- Sync guard: never publish a working copy that is BEHIND origin ----------
 # The content cron (Modal) commits digests to GitHub; this script publishes the
