@@ -43,13 +43,16 @@
  *     or plan changes), created once and kept in Blobs (or STRIPE_PORTAL_CONFIG_VITAE_PLUS).
  *     Any failure redirects to /vitae/plus/manage/.
 
+ * Mac Suite (metadata.product "app-suite", a one-time payment): ?session_id=cs_… issues a key with
+ *   plan "lifetime" and exp 100 years out; recover includes those keys; nothing refreshes them.
+ *
  * Key format v2 (must match the app's verifier byte for byte):
  *   payload = UTF-8 JSON.stringify({ exp, iat, id, p: "vitae-plus", plan, v: 2 })
  *             key order exactly: exp, iat, id, p, plan, v
  *     exp  = unix seconds (see above)
  *     iat  = now, unix seconds
  *     id   = first 16 hex chars of sha256(subscription.id)
- *     plan = "monthly" | "annual"
+ *     plan = "monthly" | "annual" | "lifetime"
  *   sig     = Ed25519 signature over payload
  *   key     = "VP2-" + base64url(payload) + "." + base64url(sig)   (no padding)
  *
@@ -68,6 +71,12 @@ const STRIPE_API = "https://api.stripe.com/v1";
 const PAYLOAD_PRODUCT = "vitae-plus";
 const PRODUCT_PREFIX = "vitae-plus-";
 const MAPPING_STORE = "vitae-plus";
+// The Mac Suite bundle ($39: ModernTex, Outbound Veil, Vitae Plus for life) carries a Vitae Plus
+// entitlement with no subscription behind it. Its key is the same v2 format with plan "lifetime"
+// and an expiry 100 years out, so the shipped app verifies it as is and never asks to refresh it
+// (it refreshes only inside the last 10 days). The id comes from the Checkout session id.
+const SUITE_PRODUCT = "app-suite";
+const LIFETIME_SECONDS = 100 * 365 * 24 * 60 * 60;
 const GRACE_SECONDS = 7 * 24 * 60 * 60;
 const LICENSE_DAILY_LIMIT = 60;
 const SESSION_ID = /^cs_[A-Za-z0-9_]{10,200}$/;
@@ -215,6 +224,19 @@ async function issue(sessionId, secretKey, pem) {
   const session = got.data;
 
   const product = session?.metadata?.product || "";
+  if (product === SUITE_PRODUCT && session.mode === "payment") {
+    if (session.status !== "complete" || session.payment_status !== "paid") {
+      return json(402, { error: "not_paid", detail: "The payment has not cleared yet." });
+    }
+    const now = Math.floor(Date.now() / 1000);
+    let key;
+    try {
+      key = buildLicenseKey({ subscriptionId: session.id, plan: "lifetime", exp: now + LIFETIME_SECONDS, iat: now, privateKey: loadPrivateKey(pem) });
+    } catch (_) {
+      return json(500, { error: "signing_failed", detail: "The key could not be issued." });
+    }
+    return json(200, { key, plan: "lifetime", email: session.customer_details?.email || null });
+  }
   if (!product.startsWith(PRODUCT_PREFIX) || session.mode !== "subscription") {
     return json(404, { error: "not_found", detail: "No Vitae Plus order matches this link." });
   }
@@ -382,26 +404,41 @@ export async function keysForEmail(email, secretKey, pem, now = Math.floor(Date.
       }
     }
   }
+  // Mac Suite purchases are one-time payments, so Stripe may have made no Customer for them:
+  // look the Checkout sessions up by the email on the session instead.
+  for (const address of [...new Set([email, email.toLowerCase()])]) {
+    const sessions = await stripeGet(
+      `/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100`, secretKey);
+    if (sessions.error) return { error: sessions.error };
+    for (const s of sessions.data?.data ?? []) {
+      if (s?.metadata?.product !== SUITE_PRODUCT || s.payment_status !== "paid" || typeof s.id !== "string") continue;
+      if (seen.has(s.id)) continue;
+      seen.add(s.id);
+      keys.push({ key: buildLicenseKey({ subscriptionId: s.id, plan: "lifetime", exp: now + LIFETIME_SECONDS, iat: now, privateKey }), plan: "lifetime" });
+    }
+  }
   return { keys };
 }
+
+const PLAN_LABEL = { annual: "Annual plan", monthly: "Monthly plan", lifetime: "Lifetime (Mac Suite)" };
 
 async function sendRecoveryEmail(to, keys) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   if (!apiKey) return false;
   const plural = keys.length > 1;
-  const list = keys.map((k) => `${k.plan === "annual" ? "Annual" : "Monthly"} plan:\n${k.key}`).join("\n\n");
+  const list = keys.map((k) => `${PLAN_LABEL[k.plan] || "Plan"}:\n${k.key}`).join("\n\n");
   const htmlList = keys
-    .map((k) => `<p>${k.plan === "annual" ? "Annual" : "Monthly"} plan:<br><code>${k.key}</code></p>`)
+    .map((k) => `<p>${PLAN_LABEL[k.plan] || "Plan"}:<br><code>${k.key}</code></p>`)
     .join("");
   const steps = "In Vitae, open Settings, then Vitae Plus, paste the key and click Activate.";
   const text =
     `Here ${plural ? "are your current Vitae Plus keys" : "is your current Vitae Plus key"}, as requested.\n\n${list}\n\n` +
-    `${steps} Vitae renews the key by itself while the subscription is active.\n\n` +
+    `${steps}${keys.some((k) => k.plan !== "lifetime") ? " Vitae renews the key by itself while the subscription is active." : " A lifetime key does not expire."}\n\n` +
     `If you did not ask for this, you can ignore it; nothing has changed.\n\n` +
     `Purplelink LLC, Atlanta, Georgia`;
   const html =
     `<p>Here ${plural ? "are your current Vitae Plus keys" : "is your current Vitae Plus key"}, as requested.</p>${htmlList}` +
-    `<p>${steps} Vitae renews the key by itself while the subscription is active.</p>` +
+    `<p>${steps}${keys.some((k) => k.plan !== "lifetime") ? " Vitae renews the key by itself while the subscription is active." : " A lifetime key does not expire."}</p>` +
     `<p>If you did not ask for this, you can ignore it; nothing has changed.</p>` +
     `<p>Purplelink LLC, Atlanta, Georgia</p>`;
   try {

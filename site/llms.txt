@@ -112,6 +112,7 @@
 - Guide, using AI to check your own manuscript (publisher and venue policies compared): https://purplelink.llc/guides/ai-policy-checking-your-own-manuscript/
 - ModernTex (macOS, free 7-day trial then $10, shipping): https://purplelink.llc/moderntex/
 - Outbound Veil (macOS, free 7-day trial then $29): https://purplelink.llc/outbound-veil/
+- Mac Suite (macOS, $39 once: ModernTex, Outbound Veil and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/

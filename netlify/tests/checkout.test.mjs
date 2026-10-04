@@ -23,8 +23,8 @@ const blobsModule = {
     set: async () => {},
   }),
 };
-// `exports` on newer Node, `namedExports` on Node 22.
-mock.module("@netlify/blobs", { exports: blobsModule, namedExports: blobsModule });
+// `exports` on newer Node (Node 26 rejects both together), `namedExports` on Node 22.
+try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.module("@netlify/blobs", { namedExports: blobsModule }); }
 
 globalThis.Netlify = {
   env: {
@@ -99,4 +99,32 @@ test("falls back to the default when Origin header is absent", async () => {
   const { capturedBody } = await callHandler({ origin: undefined, ip: "203.0.113.12" });
   const successUrl = paramFromBody(capturedBody, "success_url");
   assert.ok(successUrl.startsWith("https://purplelink.llc/"), `expected default origin, got ${successUrl}`);
+});
+
+test("the Mac Suite is sold at $39 with its own success page and product metadata", async () => {
+  let captured = null;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {
+    if (String(url).includes("api.stripe.com")) {
+      captured = opts.body;
+      return new Response(JSON.stringify({ id: "cs_test_suite", url: "https://checkout.stripe.com/pay/cs_test_suite" }), { status: 200 });
+    }
+    throw new Error(`Unexpected fetch to ${url}`);
+  };
+  try {
+    const res = await handler(new Request("https://purplelink.llc/.netlify/functions/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.50" },
+      body: JSON.stringify({ product: "app-suite" }),
+    }));
+    assert.equal(res.status, 200);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "3900");
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][currency]"), "usd");
+  assert.equal(paramFromBody(captured, "metadata[product]"), "app-suite");
+  assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/suite/success/"));
+  assert.equal(paramFromBody(captured, "mode"), "payment");
+  assert.ok(!paramFromBody(captured, "line_items[0][price_data][recurring][interval]"), "one-time, not a subscription");
 });

@@ -14,8 +14,8 @@ const blobsModule = {
     set: async (k, v) => { blobs.set(`${name}/${k}`, v); },
   }),
 };
-// `exports` on newer Node, `namedExports` on Node 22.
-mock.module("@netlify/blobs", { exports: blobsModule, namedExports: blobsModule });
+// `exports` on newer Node (Node 26 rejects both together), `namedExports` on Node 22.
+try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.module("@netlify/blobs", { namedExports: blobsModule }); }
 
 const { privateKey, publicKey } = generateKeyPairSync("ed25519");
 const PEM = privateKey.export({ type: "pkcs8", format: "pem" });
@@ -192,4 +192,69 @@ test("manage emails each subscriber at most 3 times a day", async () => {
   for (let i = 0; i < 3; i++) assert.equal((await post({ manage: "0123456789abcdef" }, `198.51.100.${60 + i}`)).status, 200);
   assert.equal((await post({ manage: "0123456789abcdef" }, "198.51.100.70")).status, 429);
   assert.equal(resendCalls().length, 3);
+});
+
+// ---- Mac Suite: a one-time payment that carries a lifetime Vitae Plus key ----
+
+const suiteSession = (over = {}) => ({
+  id: "cs_live_suite1234567890", mode: "payment", status: "complete", payment_status: "paid",
+  metadata: { product: "app-suite" }, customer_details: { email: "buyer@example.com" }, subscription: null, ...over,
+});
+
+function decodeKey(key) {
+  const [payload, sig] = key.slice(4).split(".");
+  assert.ok(verify(null, Buffer.from(payload, "base64url"), publicKey, Buffer.from(sig, "base64url")), "signature verifies");
+  return JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+}
+
+test("a paid Mac Suite session issues a verifiable lifetime key in the app's v2 format", async () => {
+  stripe["/checkout/sessions/cs_live_suite1234567890"] = suiteSession();
+  const res = await get("?session_id=cs_live_suite1234567890");
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.plan, "lifetime");
+  assert.equal(body.email, "buyer@example.com");
+  const decoded = decodeKey(body.key);
+  assert.deepEqual(Object.keys(decoded), ["exp", "iat", "id", "p", "plan", "v"]);
+  assert.equal(decoded.p, "vitae-plus");
+  assert.equal(decoded.v, 2);
+  assert.equal(decoded.plan, "lifetime");
+  assert.match(decoded.id, /^[0-9a-f]{16}$/);
+  const years = (decoded.exp - decoded.iat) / (365 * 86400);
+  assert.ok(years > 99 && years < 101, `expires in ${years} years`);
+  // Same session, same id: opening the page again never mints a different identity.
+  const again = decodeKey((await (await get("?session_id=cs_live_suite1234567890", "198.51.100.10")).json()).key);
+  assert.equal(again.id, decoded.id);
+});
+
+test("an unpaid Mac Suite session is refused, and other one-time products get no key", async () => {
+  stripe["/checkout/sessions/cs_live_unpaid1234567"] = suiteSession({ id: "cs_live_unpaid1234567", payment_status: "unpaid", status: "open" });
+  assert.equal((await get("?session_id=cs_live_unpaid1234567")).status, 402);
+  stripe["/checkout/sessions/cs_live_other12345678"] = suiteSession({ id: "cs_live_other12345678", metadata: { product: "moderntex" } });
+  assert.equal((await get("?session_id=cs_live_other12345678")).status, 404);
+});
+
+test("a lifetime key has no refresh mapping and nothing to manage", async () => {
+  stripe["/checkout/sessions/cs_live_suite1234567890"] = suiteSession();
+  const { key } = await (await get("?session_id=cs_live_suite1234567890")).json();
+  const { id } = decodeKey(key);
+  assert.equal((await get(`?refresh=${id}`)).status, 404);
+  assert.equal((await post({ manage: id })).status, 404);
+});
+
+test("recover includes lifetime keys for Mac Suite purchases made with that address", async () => {
+  stripe["/customers?email="] = { data: [] };
+  stripe["/checkout/sessions?customer_details"] = { data: [suiteSession(), suiteSession({ id: "cs_live_refunded12345", payment_status: "unpaid" })] };
+  const res = await post({ recover: "buyer@example.com" });
+  assert.equal(res.status, 200);
+  const sent = resendCalls();
+  assert.equal(sent.length, 1);
+  const body = JSON.parse(sent[0].opts.body);
+  assert.deepEqual(body.to, ["buyer@example.com"]);
+  assert.match(body.text, /Lifetime \(Mac Suite\)/);
+  assert.match(body.text, /does not expire/);
+  assert.doesNotMatch(body.text, /renews the key by itself/);
+  const keys = body.text.match(/VP2-[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g);
+  assert.equal(keys.length, 1);
+  assert.equal(decodeKey(keys[0]).plan, "lifetime");
 });

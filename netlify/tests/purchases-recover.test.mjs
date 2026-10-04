@@ -14,8 +14,8 @@ const blobsModule = {
     set: async (k, v) => { blobs.set(`${name}/${k}`, v); },
   }),
 };
-// `exports` on newer Node, `namedExports` on Node 22.
-mock.module("@netlify/blobs", { exports: blobsModule, namedExports: blobsModule });
+// `exports` on newer Node (Node 26 rejects both together), `namedExports` on Node 22.
+try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.module("@netlify/blobs", { namedExports: blobsModule }); }
 
 const { privateKey } = generateKeyPairSync("ed25519");
 const jwk = privateKey.export({ format: "jwk" });
@@ -96,4 +96,26 @@ test("rejects a bad address and caps requests per address", async () => {
   assert.equal((await post({ email: "not-an-email" })).status, 400);
   for (let i = 0; i < 3; i++) assert.equal((await post({ email: "same@example.com" }, `10.0.0.${i}`)).status, 200);
   assert.equal((await post({ email: "same@example.com" }, "10.0.0.9")).status, 429);
+});
+
+// ---- Mac Suite ----
+
+test("finds a paid Mac Suite purchase", async () => {
+  sessions = [
+    { id: "cs_suite", payment_status: "paid", created: 5, metadata: { product: "app-suite" } },
+    { id: "cs_unpaid", payment_status: "unpaid", created: 6, metadata: { product: "app-suite" } },
+  ];
+  const { purchases } = await purchasesForEmail("buyer@example.com", "sk_test_dummy");
+  assert.deepEqual(purchases.map((p) => p.sessionId), ["cs_suite"]);
+});
+
+test("the recovery email for the Suite links the one page and carries the ModernTex key", () => {
+  const mail = recoveryEmail([{ sessionId: "cs_suite", product: "app-suite", created: 5 }], "MTX1-AAAAA-BBBBB");
+  assert.match(mail.text, /Purplelink Mac Suite/);
+  assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_suite/);
+  assert.match(mail.text, /lifetime Vitae Plus key/);
+  assert.match(mail.text, /MTX1-AAAAA-BBBBB/);
+  assert.match(mail.html, /MTX1-AAAAA-BBBBB/);
+  // Without a signing key it does not invent one.
+  assert.doesNotMatch(recoveryEmail([{ sessionId: "cs_suite", product: "app-suite", created: 5 }], null).text, /MTX1/);
 });

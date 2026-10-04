@@ -4,8 +4,8 @@
  * ModernTex keys and kit links are emailed once at purchase and never stored,
  * so a lost email used to mean a lost key. This looks up the paid Checkout
  * Sessions for the address in Stripe and emails that same address:
- *   - for ModernTex, a newly signed license key (any validly signed key
- *     unlocks the app) and the download page of the latest purchase;
+ *   - for ModernTex (alone or in the Mac Suite), a newly signed license key (any validly
+ *     signed key unlocks the app) and the download page of the latest purchase;
  *   - for kits, the download page of each purchase.
  * The answer is the same whether or not anything matched, and it goes out
  * before the lookup, so the endpoint says nothing about an address. Requests
@@ -113,12 +113,23 @@ export function recoveryEmail(purchases, license) {
     lines.push("");
   }
   for (const p of purchases.filter((q) => q.product !== "moderntex")) {
+    const suite = p.product === "app-suite";
     const live = LIVE_PRODUCTS.has(p.product);
     const entry = live ? LIVE_PRODUCTS.get(p.product) : BLOB_DELIVERED_PRODUCTS.get(p.product);
     const link = `${SITE_ORIGIN}${entry.successPath}?session_id=${encodeURIComponent(p.sessionId)}`;
     const what = live ? "Setup page (your formulas and billing)" : "Download page";
     lines.push(entry.name.charAt(0).toUpperCase() + entry.name.slice(1), `${what}: ${link}`, "");
     html.push(`<h3>${escapeHtml(entry.name.charAt(0).toUpperCase() + entry.name.slice(1))}</h3><p><a href="${escapeHtml(link)}">Open your ${live ? "setup" : "download"} page</a></p>`);
+    if (suite) {
+      // The page holds the downloads and the Vitae Plus key; the ModernTex key is only ever emailed.
+      lines.splice(lines.length - 1, 0, "That page has the ModernTex and Outbound Veil downloads and your lifetime Vitae Plus key.");
+      html.push("<p>That page has the ModernTex and Outbound Veil downloads and your lifetime Vitae Plus key.</p>");
+      if (license) {
+        lines.splice(lines.length - 1, 0, `ModernTex license key (paste into ModernTex's "Have a license key?"): ${license}`);
+        html.push(`<p>ModernTex license key (paste into ModernTex's "Have a license key?"):</p>` +
+          `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(license)}</p>`);
+      }
+    }
   }
   const intro = "Here are the purchases made with this address, as requested.";
   const outro = "If you did not ask for this, you can ignore it; nothing has changed.";
@@ -132,7 +143,7 @@ export function recoveryEmail(purchases, license) {
 async function sendRecovery(to, purchases) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   if (!apiKey) return false;
-  const license = purchases.some((p) => p.product === "moderntex") ? issueModernTexLicense() : null;
+  const license = purchases.some((p) => p.product === "moderntex" || p.product === "app-suite") ? issueModernTexLicense() : null;
   const mail = recoveryEmail(purchases, license);
   try {
     const resp = await fetch(RESEND_API_URL, {
