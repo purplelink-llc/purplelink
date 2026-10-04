@@ -4,6 +4,8 @@
   var G = window.PLGames;
   if (!G) return;
   var EPOCHS = "2026-10-04";
+  G.ready.then(render);
+  function render() {
   var idx = G.dayIndex(new Date(), EPOCHS);
   var cards = document.querySelectorAll(".game-card[data-game]");
   Array.prototype.forEach.call(cards, function (card) {
@@ -16,4 +18,10 @@
     else if (streak > 0) out.textContent = "Streak " + streak + ". Play today's puzzle.";
     else out.textContent = "";
   });
+  var line = document.getElementById("hub-ach");
+  if (line && window.PLAch) {
+    var n = Object.keys(window.PLAch.unlocked()).length, total = window.PLAch.defs.length;
+    line.textContent = n + " of " + total + " achievements unlocked. ";
+  }
+  }
 })();

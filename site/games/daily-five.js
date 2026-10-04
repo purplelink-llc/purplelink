@@ -96,6 +96,14 @@
       G.track("game_end", NAME + ":" + sc);
     }
     var s = saved.stats || G.emptyStats();
+    if (fresh) {
+      var ctx = { game: NAME, idx: st.idx, won: true, score: sc };
+      if (window.PLAch) window.PLAch.check(ctx);
+      G.submitScore(NAME, st.idx, st.qs.length - sc).then(function (res) {
+        $("qz-pct").textContent = G.describePercentile(res);
+        if (res && window.PLAch) window.PLAch.check({ game: NAME, idx: st.idx, won: true, score: sc, pct: res.percentile, total: res.total });
+      });
+    }
     $("qz-quiz").hidden = true;
     var box = $("qz-result");
     box.hidden = false;
@@ -169,7 +177,7 @@
     else { $("qz-quiz").hidden = false; showQuestion(); }
   }
 
-  fetch("/games/data/trivia.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(start, function () {
+  fetch("/games/data/trivia.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { return G.ready.then(function () { start(d); }); }, function () {
     $("qz-loading").textContent = "Today's questions could not be loaded. Check your connection and reload the page.";
   });
 })();

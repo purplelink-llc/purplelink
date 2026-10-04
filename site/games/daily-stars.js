@@ -31,7 +31,10 @@
     $("st-card").hidden = false;
     var s = G.getGame("daily-stars");
     s.sign = sign;
+    var idx = G.dayIndex(new Date(), "2026-10-04");
+    s.viewed = (s.viewed || []).filter(function (x) { return x !== idx; }).concat([idx]).slice(-120);
     G.setGame("daily-stars", s);
+    if (window.PLAch) window.PLAch.check({ game: "daily-stars", idx: idx });
     if (!tracked) { tracked = true; G.track("game_start", "daily-stars"); }
   }
 
@@ -76,7 +79,7 @@
     if (known) show(saved);
   }
 
-  fetch("/games/data/stars.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(start, function () {
+  fetch("/games/data/stars.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { return G.ready.then(function () { start(d); }); }, function () {
     $("st-loading").textContent = "Today's readings could not be loaded. Check your connection and reload the page.";
   });
 })();

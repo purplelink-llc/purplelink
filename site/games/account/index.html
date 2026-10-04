@@ -3,79 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="index, follow">
-    <title>Daily Stars: a short daily horoscope for every sign | Purplelink</title>
-    <meta name="description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, no ads.">
-    <link rel="canonical" href="https://purplelink.llc/games/daily-stars/">
-    <meta property="og:title" content="Daily Stars: a short daily horoscope for every sign">
-    <meta property="og:description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, no ads.">
+    <meta name="robots" content="noindex, follow">
+    <title>Your games: stats, achievements and sign-in | Purplelink</title>
+    <meta name="description" content="Your stats and achievements across Purplelink&#x27;s daily games, with an optional email-link sign-in that keeps them on every device.">
+    <link rel="canonical" href="https://purplelink.llc/games/account/">
+    <meta property="og:title" content="Your games: stats, achievements and sign-in">
+    <meta property="og:description" content="Your stats and achievements across Purplelink&#x27;s daily games, with an optional email-link sign-in that keeps them on every device.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://purplelink.llc/games/daily-stars/">
+    <meta property="og:url" content="https://purplelink.llc/games/account/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Daily Stars: a short daily horoscope for every sign">
-    <meta name="twitter:description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, no ads.">
+    <meta name="twitter:title" content="Your games: stats, achievements and sign-in">
+    <meta name="twitter:description" content="Your stats and achievements across Purplelink&#x27;s daily games, with an optional email-link sign-in that keeps them on every device.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
-        {
-          "@type": "WebApplication",
-          "name": "Daily Stars",
-          "url": "https://purplelink.llc/games/daily-stars/",
-          "applicationCategory": "EntertainmentApplication",
-          "operatingSystem": "Any (web-based)",
-          "browserRequirements": "Requires JavaScript",
-          "description": "A short daily reading for each of the twelve signs, for entertainment only.",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-          },
-          "provider": {
-            "@type": "Organization",
-            "name": "Purplelink LLC",
-            "url": "https://purplelink.llc/"
-          }
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Are these real predictions?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "How are the readings made?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "They are written ahead of time in batches, one short reading per sign per day, and published on the date. The moon phase shown is calculated from the date and is accurate to about half a day."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "When do they change?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "At midnight in your time zone."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Is anything stored about me?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Your chosen sign, in this browser. If you sign in with an email link, it follows you between devices."
-              }
-            }
-          ]
-        },
         {
           "@type": "BreadcrumbList",
           "itemListElement": [
@@ -94,8 +38,8 @@
             {
               "@type": "ListItem",
               "position": 3,
-              "name": "Daily Stars",
-              "item": "https://purplelink.llc/games/daily-stars/"
+              "name": "Your games",
+              "item": "https://purplelink.llc/games/account/"
             }
           ]
         }
@@ -132,38 +76,47 @@
     <main id="main-content" class="games">
       <div class="games-wrap">
         <div class="game-head">
-          <h1>Daily Stars</h1>
-          <span class="game-num" id="st-date"></span>
+          <h1>Your games</h1>
+          <span class="game-num" id="ac-who"></span>
         </div>
-        <p class="game-lede">A short reading for each sign, new every day. For entertainment only.</p>
-        <p id="st-loading" class="games-note">Loading today's readings.</p>
-        <p id="st-missing" class="games-note" hidden>Today's readings are not ready yet. Please check back soon.</p>
-        <div id="st-game" hidden>
-          <p class="stars-sky" id="st-sky"></p>
-          <ul class="stars-signs" id="st-signs" aria-label="Choose your sign"></ul>
-          <section class="stars-card" id="st-card" hidden aria-live="polite">
-            <h2 id="st-name"></h2>
-            <p class="stars-sub" id="st-range"></p>
-            <p id="st-text"></p>
-          </section>
-          <div class="stars-all">
-            <h2>All signs today</h2>
-            <div id="st-all"></div>
+        <p class="game-lede">Your stats and achievements, and an optional sign-in that keeps them on every device.</p>
+        <p id="ac-msg" class="games-note" role="status" aria-live="polite"></p>
+
+        <section class="ac-card" id="ac-signin" hidden aria-labelledby="ac-signin-h">
+          <h2 id="ac-signin-h">Sign in to keep your progress on every device</h2>
+          <p class="games-note">You do not need an account to play. If you sign in, we email you a one-time link (no password). We store your email address, a display name and your saved game progress so they follow you between devices. You can delete all of it here at any time. See the <a href="/privacy/">privacy policy</a>.</p>
+          <form id="ac-form" class="ac-form">
+            <label for="ac-email">Email address</label>
+            <input id="ac-email" name="email" type="email" autocomplete="email" required maxlength="254">
+            <button type="submit" class="btn btn-primary" id="ac-send">Email me a sign-in link</button>
+          </form>
+        </section>
+
+        <section class="ac-card" id="ac-profile" hidden aria-labelledby="ac-profile-h">
+          <h2 id="ac-profile-h">Account</h2>
+          <p class="games-note">Signed in as <strong id="ac-email-shown"></strong>.</p>
+          <form id="ac-name-form" class="ac-form">
+            <label for="ac-name">Display name</label>
+            <input id="ac-name" name="name" type="text" maxlength="24" autocomplete="nickname">
+            <button type="submit" class="btn btn-ghost">Save name</button>
+          </form>
+          <div class="game-actions">
+            <button type="button" class="btn btn-ghost" id="ac-sync">Sync now</button>
+            <button type="button" class="btn btn-ghost" id="ac-logout">Sign out</button>
+            <button type="button" class="btn btn-ghost" id="ac-delete">Delete my account</button>
           </div>
-        </div>
-        <div class="games-prose">
-        <h2>About these readings</h2>
-        <p>Daily Stars gives each sign a short suggestion for the day. They are meant to be read in a few seconds. Nothing here is a forecast, and no reading is advice about health, money or relationships.</p>
-        <h2>Questions</h2>
-        <h3>Are these real predictions?</h3>
-        <p>No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships.</p>
-        <h3>How are the readings made?</h3>
-        <p>They are written ahead of time in batches, one short reading per sign per day, and published on the date. The moon phase shown is calculated from the date and is accurate to about half a day.</p>
-        <h3>When do they change?</h3>
-        <p>At midnight in your time zone.</p>
-        <h3>Is anything stored about me?</h3>
-        <p>Your chosen sign, in this browser. If you sign in with an email link, it follows you between devices.</p>
-        </div>
+          <p class="games-note" id="ac-delete-note" hidden>This permanently deletes your email address and saved progress from our servers and signs you out everywhere. Progress stored in this browser stays until you clear it. Press the button again to confirm.</p>
+        </section>
+
+        <section class="ac-card" aria-labelledby="ac-stats-h">
+          <h2 id="ac-stats-h">Stats</h2>
+          <div class="ac-table" id="ac-stats"></div>
+        </section>
+
+        <section class="ac-card" aria-labelledby="ac-ach-h">
+          <h2 id="ac-ach-h">Achievements <span id="ac-ach-count" class="games-note"></span></h2>
+          <ul class="ac-ach" id="ac-ach"></ul>
+        </section>
         <p class="games-note"><a href="/games/">All daily games</a></p>
       </div>
     </main>
@@ -171,7 +124,7 @@
     <script src="/games/core.js?v=b6b982f374" defer></script>
     <script src="/games/sync.js?v=ead2ecf42a" defer></script>
     <script src="/games/achievements.js?v=28cb21454c" defer></script>
-    <script src="/games/daily-stars.js?v=5ca53f7d91" defer></script>
+    <script src="/games/account.js?v=234fc29c80" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

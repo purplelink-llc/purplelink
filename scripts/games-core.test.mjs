@@ -136,3 +136,33 @@ test("crossword grids and clues are structurally sound", () => {
   const out = execFileSync("python3", ["scripts/check_crossword.py"], { encoding: "utf8" });
   assert.match(out, /0 problem/);
 });
+
+test("achievements unlock once, from saved progress and the finishing context", () => {
+  const store = {};
+  const ctx = {
+    localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+    document: { getElementById: () => null, createElement: () => ({ setAttribute() {}, appendChild() {}, style: {} }), body: { appendChild() {} } },
+    window: {}, Buffer, setTimeout: () => 0,
+  };
+  ctx.window = ctx;
+  vm.createContext(ctx);
+  vm.runInContext(readFileSync("site/games/core.js", "utf8").replace("})(typeof self", "})(typeof self"), ctx);
+  const core = vm.runInContext("typeof PLGames !== 'undefined' ? PLGames : null", ctx);
+  assert.ok(core, "core.js loaded as a browser script");
+  vm.runInContext(readFileSync("site/games/achievements.js", "utf8"), ctx);
+  const G = ctx.PLGames, A = ctx.PLAch;
+  // a Linkle win in two guesses on a Sunday
+  G.setGame("linkle", { stats: G.recordResult(null, 0, true, 2) });
+  let fresh = A.check({ game: "linkle", idx: 0, won: true, tries: 2, weekday: 0 });
+  const ids = (list) => JSON.parse(JSON.stringify(list.map((d) => d.id).sort()));
+  assert.deepEqual(ids(fresh), ["first-link", "hard-mode", "sharp"]);
+  assert.deepEqual(ids(A.check({ game: "linkle", idx: 0, won: true, tries: 2, weekday: 0 })), []);   // nothing twice
+  assert.equal(Object.keys(JSON.parse(store["pl-games-v1"]).ach).length, 3);
+  // a clean Monday crossword in under four minutes
+  G.setGame("crossword", { stats: G.recordResult(null, 1, true, 1), clean: 1 });
+  fresh = A.check({ game: "crossword", idx: 1, won: true, clean: true, seconds: 200, weekdayName: "Monday" });
+  assert.ok(fresh.some((d) => d.id === "cw-monday") && fresh.some((d) => d.id === "cw-first"));
+  // percentile achievements need a real crowd
+  assert.deepEqual(ids(A.check({ game: "linkle", idx: 1, pct: 95, total: 5 })), []);
+  assert.deepEqual(ids(A.check({ game: "linkle", idx: 1, pct: 95, total: 40 })), ["top-tenth"]);
+});

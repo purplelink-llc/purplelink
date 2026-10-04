@@ -137,10 +137,44 @@
     try { localStorage.setItem(STORE_KEY, JSON.stringify(all)); } catch (e) { /* ignore */ }
   }
   function getGame(name) { return load()[name] || {}; }
+  function replaceAll(all) { save(all && typeof all === "object" ? all : {}); }
   function setGame(name, value) { var all = load(); all[name] = value; save(all); }
 
   function track(type, meta) {
     try { if (typeof window !== "undefined" && window.plTrack) window.plTrack(type, meta || ""); } catch (e) { /* ignore */ }
+  }
+
+  // Anonymous score for the day's percentile. Lower is better (guesses, misses, 20-second blocks); 99 = lost.
+  // Sent once per puzzle; nothing identifying goes with it.
+  function submitScore(game, idx, score) {
+    var g = getGame(game);
+    if (g.scored && g.scored[idx]) return Promise.resolve(null);
+    if (typeof fetch !== "function") return Promise.resolve(null);
+    return fetch("/.netlify/functions/games-api", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "score", game: game, idx: idx, score: score }),
+    }).then(function (r) { return r.ok ? r.json() : null; }).then(function (res) {
+      if (!res || typeof res.percentile !== "number") return null;
+      var g2 = getGame(game);
+      g2.scored = g2.scored || {};
+      g2.scored[idx] = true;
+      var keys = Object.keys(g2.scored);
+      if (keys.length > 60) delete g2.scored[keys[0]];
+      // a lone early player's 50% says nothing, so the running average only counts days with a real crowd
+      if (res.total >= 10) {
+        var p = g2.pct || { sum: 0, count: 0, best: 0, last: 0 };
+        g2.pct = { sum: p.sum + res.percentile, count: p.count + 1, best: Math.max(p.best, res.percentile), last: res.percentile };
+      }
+      setGame(game, g2);
+      return res;
+    }).catch(function () { return null; });
+  }
+
+  // One line for the result screen, or "" when there is nothing useful to say yet.
+  function describePercentile(res) {
+    if (!res) return "";
+    if (res.total < 10) return res.total <= 1 ? "You are the first player today." : "You are one of " + res.total + " players so far today.";
+    return "Ahead of " + res.percentile + "% of " + res.total + " players today.";
   }
 
   function copyText(text) {
@@ -154,6 +188,7 @@
     dayIndex: dayIndex, pick: pick, decode: decode, decodeText: decodeText, score: score, mergeKeys: mergeKeys,
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
     rankFor: rankFor, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
-    getGame: getGame, setGame: setGame, track: track, copyText: copyText,
+    getGame: getGame, setGame: setGame, all: load, replaceAll: replaceAll, ready: Promise.resolve(),
+    submitScore: submitScore, describePercentile: describePercentile, track: track, copyText: copyText,
   };
 });

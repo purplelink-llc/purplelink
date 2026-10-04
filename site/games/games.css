@@ -232,3 +232,28 @@
   .games:has(.cw-layout) .game-lede { display: none; }
   .games:has(.cw-layout) .game-head { margin-bottom: 8px; }
 }
+
+/* achievements toast, percentile line, account page */
+.pl-toast { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: grid; gap: 8px; max-width: min(360px, calc(100vw - 32px)); pointer-events: none; }
+.pl-toast-item { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--purple); border-radius: 12px; background: var(--panel); color: var(--ink); box-shadow: 0 8px 28px oklch(10% 0.04 310 / 0.4); }
+.pl-toast-item span { color: var(--muted); font-size: 0.88rem; }
+@media (prefers-reduced-motion: no-preference) { .pl-toast-item { animation: wg-pop 0.25s ease-out; } }
+.game-pct { margin: 0 0 12px; font-weight: 600; }
+.game-pct:empty { display: none; }
+.ac-card { max-width: 760px; margin: 18px 0; padding: 20px 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+.ac-card h2 { font-family: var(--font-display); font-size: 1.3rem; margin: 0 0 8px; }
+.ac-form { display: grid; gap: 8px; margin: 10px 0 14px; max-width: 420px; }
+.ac-form label { font-weight: 600; font-size: 0.9rem; }
+.ac-form input { padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: 500 1rem var(--font-body); }
+.ac-form input:focus-visible { outline: 3px solid var(--purple); outline-offset: 1px; }
+.ac-table { display: grid; gap: 4px; overflow-x: auto; }
+.ac-row { display: grid; grid-template-columns: minmax(110px, 1.4fr) repeat(4, minmax(70px, 1fr)); gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.ac-head { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: none; }
+.ac-name { font-weight: 700; }
+.ac-ach { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.ac-ach-item { display: grid; gap: 3px; align-content: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; }
+.ac-ach-item span { color: var(--muted); font-size: 0.86rem; }
+.ac-ach-item em { font-style: normal; font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+.ac-ach-item[data-got="1"] { border-color: var(--purple); background: var(--purple-xlight); }
+.ac-ach-item[data-got="1"] em { color: var(--purple); }
+.ac-ach-item[data-got="0"] strong { color: var(--muted); }

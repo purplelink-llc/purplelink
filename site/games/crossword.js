@@ -250,12 +250,21 @@
     if (fresh) {
       saved.stats = G.recordResult(saved.stats, st.idx, true, 1);
       saved.best = saved.best || {};
+      if (clean) saved.clean = (saved.clean || 0) + 1;
       var day = st.p.weekday;
       if (clean && (!saved.best[day] || st.elapsed < saved.best[day])) saved.best[day] = st.elapsed;
       G.setGame(NAME, saved);
       G.track("game_end", NAME + ":" + (clean ? "clean" : "assisted"));
     }
     var s = saved.stats || G.emptyStats();
+    if (fresh) {
+      var ctx = { game: NAME, idx: st.idx, won: true, clean: clean, seconds: st.elapsed, weekdayName: st.p.weekday };
+      if (window.PLAch) window.PLAch.check(ctx);
+      if (clean) G.submitScore(NAME, st.idx, Math.min(400, Math.floor(st.elapsed / 20))).then(function (res) {
+        $("cw-pct").textContent = G.describePercentile(res);
+        if (res && window.PLAch) window.PLAch.check({ game: NAME, idx: st.idx, won: true, clean: true, seconds: st.elapsed, weekdayName: st.p.weekday, pct: res.percentile, total: res.total });
+      });
+    }
     $("cw-result").hidden = false;
     $("cw-result-head").textContent = "Solved in " + fmt(st.elapsed) + (clean ? "" : " with help");
     $("cw-played").textContent = s.played;
@@ -352,7 +361,7 @@
     if (st.done) finish(false);
   }
 
-  fetch("/games/data/crossword.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(start, function () {
+  fetch("/games/data/crossword.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { return G.ready.then(function () { start(d); }); }, function () {
     $("cw-loading").textContent = "Today's crossword could not be loaded. Check your connection and reload the page.";
   });
 })();

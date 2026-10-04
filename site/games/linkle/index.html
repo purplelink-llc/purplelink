@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Linkle: a free daily five-letter word game | Purplelink</title>
-    <meta name="description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
+    <meta name="description" content="Guess the five-letter word in six tries. A new puzzle every day, free and no ads. You do not need an account.">
     <link rel="canonical" href="https://purplelink.llc/games/linkle/">
     <meta property="og:title" content="Linkle: a free daily five-letter word game">
-    <meta property="og:description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
+    <meta property="og:description" content="Guess the five-letter word in six tries. A new puzzle every day, free and no ads. You do not need an account.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/games/linkle/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Linkle: a free daily five-letter word game">
-    <meta name="twitter:description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
+    <meta name="twitter:description" content="Guess the five-letter word in six tries. A new puzzle every day, free and no ads. You do not need an account.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <script type="application/ld+json">
     {
@@ -87,7 +87,7 @@
               "name": "Where is my streak stored?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Only in your browser on this device. There are no accounts, so clearing site data or switching devices starts a new streak."
+                "text": "Saved in your browser on this device. If you sign in with an email link, your streaks and achievements also follow you to other devices; without signing in, clearing site data or switching devices starts fresh."
               }
             },
             {
@@ -133,7 +133,7 @@
     <script src="/theme.js?v=e7bc0b7c72"></script>
     <link rel="stylesheet" href="/styles.css?v=be9f0a97b9">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/games/games.css?v=a0c0c34c96">
+    <link rel="stylesheet" href="/games/games.css?v=3f078ea6a2">
     <script src="/site.js?v=cefe20b388" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -177,6 +177,7 @@
               <div><b id="wg-max">0</b><span>Best streak</span></div>
             </div>
             <div class="wg-dist" id="wg-dist"></div>
+            <p class="game-pct" id="wg-pct"></p>
             <p class="wg-rank" id="wg-rank"></p>
             <div class="wg-week" id="wg-week" role="group" aria-label="This week"></div>
             <p class="game-note" id="wg-week-note"></p>
@@ -220,7 +221,7 @@
         <h3>What happens with repeated letters?</h3>
         <p>A letter is marked only as many times as it appears in the answer. If you guess two Es and the word has one, only one E is marked.</p>
         <h3>Where is my streak stored?</h3>
-        <p>Only in your browser on this device. There are no accounts, so clearing site data or switching devices starts a new streak.</p>
+        <p>Saved in your browser on this device. If you sign in with an email link, your streaks and achievements also follow you to other devices; without signing in, clearing site data or switching devices starts fresh.</p>
         <h3>How do I share my result?</h3>
         <p>Copy result puts the grid and your score on the clipboard as plain text, with no letters, so it does not give the word away.</p>
         </div>
@@ -228,9 +229,11 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=7aed645be4" defer></script>
+    <script src="/games/core.js?v=b6b982f374" defer></script>
+    <script src="/games/sync.js?v=ead2ecf42a" defer></script>
+    <script src="/games/achievements.js?v=28cb21454c" defer></script>
     <script src="/games/config-linkle.js?v=a746c82f0b" defer></script>
-    <script src="/games/wordgame.js?v=f20aba655b" defer></script>
+    <script src="/games/wordgame.js?v=fbc735db91" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

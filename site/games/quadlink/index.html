@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Quadlink: a free daily four-board word game | Purplelink</title>
-    <meta name="description" content="Solve four five-letter words at once in nine guesses. A new puzzle every day, free, no account and no ads.">
+    <meta name="description" content="Solve four five-letter words at once in nine guesses. A new puzzle every day, free and no ads.">
     <link rel="canonical" href="https://purplelink.llc/games/quadlink/">
     <meta property="og:title" content="Quadlink: a free daily four-board word game">
-    <meta property="og:description" content="Solve four five-letter words at once in nine guesses. A new puzzle every day, free, no account and no ads.">
+    <meta property="og:description" content="Solve four five-letter words at once in nine guesses. A new puzzle every day, free and no ads.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/games/quadlink/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Quadlink: a free daily four-board word game">
-    <meta name="twitter:description" content="Solve four five-letter words at once in nine guesses. A new puzzle every day, free, no account and no ads.">
+    <meta name="twitter:description" content="Solve four five-letter words at once in nine guesses. A new puzzle every day, free and no ads.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <script type="application/ld+json">
     {
@@ -79,7 +79,7 @@
               "name": "Where is my streak stored?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Only in your browser on this device. There are no accounts."
+                "text": "Saved in your browser on this device. If you sign in with an email link, your streaks and achievements also follow you to other devices; without signing in, clearing site data or switching devices starts fresh."
               }
             }
           ]
@@ -117,7 +117,7 @@
     <script src="/theme.js?v=e7bc0b7c72"></script>
     <link rel="stylesheet" href="/styles.css?v=be9f0a97b9">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/games/games.css?v=a0c0c34c96">
+    <link rel="stylesheet" href="/games/games.css?v=3f078ea6a2">
     <script src="/site.js?v=cefe20b388" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -161,6 +161,7 @@
               <div><b id="wg-max">0</b><span>Best streak</span></div>
             </div>
             <div class="wg-dist" id="wg-dist"></div>
+            <p class="game-pct" id="wg-pct"></p>
 
             <div class="game-actions">
               <button type="button" class="btn btn-primary" id="wg-share">Copy result</button>
@@ -189,15 +190,17 @@
         <h3>Can the four words repeat a letter?</h3>
         <p>Yes. The four words can share letters, and the same word never appears twice in one day.</p>
         <h3>Where is my streak stored?</h3>
-        <p>Only in your browser on this device. There are no accounts.</p>
+        <p>Saved in your browser on this device. If you sign in with an email link, your streaks and achievements also follow you to other devices; without signing in, clearing site data or switching devices starts fresh.</p>
         </div>
         <p class="games-note"><a href="/games/">All daily games</a></p>
       </div>
     </main>
 
-    <script src="/games/core.js?v=7aed645be4" defer></script>
+    <script src="/games/core.js?v=b6b982f374" defer></script>
+    <script src="/games/sync.js?v=ead2ecf42a" defer></script>
+    <script src="/games/achievements.js?v=28cb21454c" defer></script>
     <script src="/games/config-quadlink.js?v=2e75e0a8f1" defer></script>
-    <script src="/games/wordgame.js?v=f20aba655b" defer></script>
+    <script src="/games/wordgame.js?v=fbc735db91" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

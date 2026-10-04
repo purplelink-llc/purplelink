@@ -262,8 +262,20 @@
       dist.appendChild(row);
     }
     if (C.twists) renderMeta(s);
+    if (fresh) reward(saved);
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  // Unlock achievements, then ask for the percentile and show it.
+  function reward(saved) {
+    var ctx = { game: C.name, idx: state.idx, won: state.won, tries: state.guesses.length, weekday: new Date().getDay() };
+    if (window.PLAch) window.PLAch.check(ctx);
+    G.submitScore(C.name, state.idx, state.won ? state.guesses.length : 99).then(function (res) {
+      var el = $("wg-pct");
+      if (el) el.textContent = G.describePercentile(res);
+      if (res && window.PLAch) window.PLAch.check({ game: ctx.game, idx: ctx.idx, won: ctx.won, tries: ctx.tries, weekday: ctx.weekday, pct: res.percentile, total: res.total });
+    });
   }
 
   var DAYS_ABBR = ["M", "T", "W", "T", "F", "S", "S"];
@@ -371,5 +383,5 @@
   Promise.all([
     fetch("/games/data/" + C.dataFile).then(function (r) { if (!r.ok) throw 0; return r.json(); }),
     fetch("/games/data/valid5.txt").then(function (r) { if (!r.ok) throw 0; return r.text(); }),
-  ]).then(function (res) { start(res[0], res[1]); }, fail);
+  ]).then(function (res) { return G.ready.then(function () { start(res[0], res[1]); }); }, fail);
 })();
