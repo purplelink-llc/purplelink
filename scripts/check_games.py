@@ -19,6 +19,7 @@ DATA = Path(__file__).resolve().parent.parent / "site" / "games" / "data"
 LONG_MIN = 60      # days ahead for generated games
 STARS_MIN = 5      # days ahead for the horoscope buffer
 STARS_FAIL = 0     # strict mode fails at or below this
+CW_MIN = 4         # days of clued crosswords ahead
 
 
 def day_index(epoch: str, today: date) -> int:
@@ -68,6 +69,24 @@ def main() -> int:
         for k, v in stars.items():
             if len(v["signs"]) != 12:
                 problems.append(f"stars.json: {k} has {len(v['signs'])} signs, need 12")
+
+    # crossword: days with a published puzzle ahead (grid and valid clues), and grids still waiting for clues
+    cp = DATA / "crossword.json"
+    if cp.exists():
+        cw = json.loads(cp.read_text(encoding="utf-8"))["days"]
+        ahead = [k for k in cw if date.fromisoformat(k) >= today]
+        last = max((date.fromisoformat(k) for k in cw), default=None)
+        left = (last - today).days if last else -1
+        notes.append(f"crossword.json: puzzles through {last} ({left} days ahead)")
+        if left < CW_MIN:
+            problems.append(f"crossword.json: only {left} days of crosswords ahead (need {CW_MIN}); the clue routine may have stalled")
+        gdir = Path(__file__).resolve().parent / "games-data" / "crossword"
+        waiting = sorted(g.name.split(".")[0] for g in gdir.glob("*.grid.json")
+                         if g.name.split(".")[0] not in cw and date.fromisoformat(g.name.split(".")[0]) >= today)
+        if waiting:
+            notes.append(f"crossword grids without usable clues: {', '.join(waiting[:5])}{' ...' if len(waiting) > 5 else ''}")
+    else:
+        problems.append("crossword.json: missing")
 
     for n in notes:
         print("games:", n)

@@ -156,11 +156,70 @@ def stars(src: Path, epoch: str) -> dict:
     return {"days": out}
 
 
+# ---- Daily crossword ----
+MAX_CLUE = 110
+
+
+def clue_problems(answer: str, clue: str) -> list[str]:
+    """Rules every clue must follow; also used by check_games.py and the weekly routine."""
+    out = []
+    c = (clue or "").strip()
+    if not c:
+        return ["missing"]
+    if len(c) > MAX_CLUE:
+        out.append(f"longer than {MAX_CLUE} characters")
+    low = c.lower()
+    a = answer.lower()
+    words = re.findall(r"[a-z']+", low)
+    if a in words:
+        out.append("contains its own answer")
+    elif len(a) >= 5 and any(w.startswith(a[: max(4, len(a) - 2)]) for w in words):
+        out.append("contains most of its answer")
+    if "\u2014" in c or "\u2013" in c:
+        out.append("uses a dash character")
+    if any(ord(ch) > 0x2000 and ch not in "\u2019\u201c\u201d" for ch in c):
+        out.append("uses a symbol or emoji")
+    if "!" in c:
+        out.append("uses an exclamation mark")
+    return out
+
+
+def crossword(src: Path) -> dict:
+    gdir = src / "crossword"
+    if not gdir.exists():
+        return {}
+    days = {}
+    for gp in sorted(gdir.glob("*.grid.json")):
+        day = gp.name.split(".")[0]
+        cp = gdir / f"{day}.clues.json"
+        if not cp.exists():
+            continue
+        grid = json.loads(gp.read_text(encoding="utf-8"))
+        clues = json.loads(cp.read_text(encoding="utf-8"))
+        entries, bad = [], []
+        for e in grid["entries"]:
+            clue = clues.get(e["answer"].upper()) or clues.get(e["answer"])
+            probs = clue_problems(e["answer"], clue)
+            if probs:
+                bad.append(f'{e["answer"]}: {", ".join(probs)}')
+            entries.append({"n": e["n"], "dir": e["dir"], "row": e["row"], "col": e["col"],
+                            "len": len(e["answer"]), "clue": (clue or "").strip()})
+        if bad:
+            print(f"crossword {day}: left out ({len(bad)} clue problem(s)): " + "; ".join(bad[:5]))
+            continue
+        days[day] = {"weekday": grid["weekday"], "size": grid["size"],
+                     "solution": enc_text("/".join(grid["rows"])), "entries": entries}
+    return {"days": days}
+
+
 def build(src: Path, epoch: str, days: int, enc) -> dict[str, str]:
     files: dict[str, str] = {}
     t = trivia(src, epoch, days, enc_text)
     if t:
         files["trivia.json"] = json.dumps(t, ensure_ascii=False, separators=(",", ":")) + "\n"
+    cw = crossword(src)
+    if cw:
+        files["crossword.json"] = json.dumps(cw, ensure_ascii=False, separators=(",", ":")) + "\n"
     s = stars(src, epoch)
     if s:
         files["stars.json"] = json.dumps(s, ensure_ascii=False, separators=(",", ":")) + "\n"

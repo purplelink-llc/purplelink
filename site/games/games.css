@@ -11,6 +11,9 @@
   --g-tile-line: oklch(80% 0.04 310);
   --g-good: oklch(48% 0.14 150);
   --g-bad: oklch(48% 0.2 25);
+  --cw-cell: oklch(99% 0.004 310);
+  --cw-black: oklch(20% 0.04 310);
+  --cw-line: oklch(62% 0.05 310);
 }
 :where(:root:not([data-theme="light"])) .games {
   --g-correct: oklch(72% 0.17 310);
@@ -23,6 +26,9 @@
   --g-tile-line: oklch(44% 0.04 310);
   --g-good: oklch(78% 0.15 150);
   --g-bad: oklch(76% 0.15 25);
+  --cw-cell: oklch(27% 0.025 310);
+  --cw-black: oklch(11% 0.02 310);
+  --cw-line: oklch(46% 0.04 310);
 }
 
 .games-wrap { max-width: 980px; margin: 0 auto; padding: 8px 20px 56px; }
@@ -178,3 +184,51 @@
   .game-card { transition: border-color 0.15s ease; }
 }
 @keyframes wg-pop { from { transform: scale(0.92); } to { transform: scale(1); } }
+
+/* crossword */
+.cw-layout { display: grid; gap: 22px; align-items: start; }
+@media (min-width: 900px) { .cw-layout { grid-template-columns: max-content minmax(260px, 1fr); } }
+.cw-main { min-width: 0; }
+.cw-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 10px; }
+.cw-bar .btn { padding: 8px 14px; font-size: 0.88rem; }
+.cw-timer { margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 700; color: var(--muted); }
+.cw-current { min-height: 2.6em; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--purple-xlight); font-weight: 600; margin: 0 0 10px; max-width: 640px; }
+.cw-status { min-height: 1.4em; color: var(--muted); font-size: 0.92rem; margin: 8px 0 0; }
+.cw-grid[data-size="9"] { --n: 9; }
+.cw-grid[data-size="11"] { --n: 11; }
+.cw-grid[data-size="13"] { --n: 13; }
+.cw-grid[data-size="15"] { --n: 15; }
+.cw-grid { --cell: min(46px, calc((100vw - 46px - var(--n) * 1px) / var(--n))); display: grid; width: max-content; max-width: 100%; border: 2px solid var(--cw-line); background: var(--cw-line); gap: 1px; }
+@media (min-width: 900px) { .cw-grid { --cell: min(44px, calc((100vw - 400px) / var(--n)), calc((100vh - 240px) / var(--n))); } }
+.cw-row { display: grid; grid-template-columns: repeat(var(--n), var(--cell)); gap: 1px; }
+.cw-cell { position: relative; width: var(--cell); height: var(--cell); background: var(--cw-cell); display: grid; place-items: center; cursor: pointer; user-select: none; outline: none; }
+.cw-cell[data-black] { background: var(--cw-black); cursor: default; }
+.cw-cell[data-entry] { background: color-mix(in oklch, var(--purple) 30%, var(--cw-cell)); }
+.cw-cell[data-active] { background: var(--g-present); }
+.cw-cell[data-active] .cw-letter { color: var(--g-present-ink); }
+.cw-cell[data-wrong] .cw-letter { color: var(--g-bad); text-decoration: line-through; }
+.cw-cell:focus-visible { box-shadow: inset 0 0 0 3px var(--purple); }
+.cw-cell[data-n]::before { content: attr(data-n); position: absolute; top: 1px; left: 2px; font: 600 clamp(0.5rem, calc(var(--cell) * 0.24), 0.68rem)/1 var(--font-body); color: var(--muted); }
+.cw-cell[data-active][data-n]::before { color: var(--g-present-ink); }
+.cw-letter { font: 700 clamp(0.9rem, calc(var(--cell) * 0.55), 1.5rem)/1 var(--font-body); color: var(--ink); text-transform: uppercase; margin-top: 0.12em; }
+.cw-clues { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+@media (max-width: 899px) { .cw-clues { grid-template-columns: 1fr; } }
+.cw-clues h2 { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 6px; }
+.cw-clues ol { list-style: none; margin: 0; padding: 0; max-height: min(60vh, 560px); overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
+.cw-clue-btn { width: 100%; text-align: left; padding: 7px 10px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font: 500 0.9rem/1.35 var(--font-body); cursor: pointer; }
+.cw-clue[data-current] .cw-clue-btn { background: var(--purple-light); font-weight: 700; }
+.cw-clue[data-filled="1"] .cw-clue-btn { color: var(--muted); }
+.cw-clue-btn:focus-visible { outline: 3px solid var(--purple); outline-offset: -3px; }
+.cw-keys { margin-top: 10px; }
+@media (min-width: 900px) { .cw-keys { display: none; } }
+
+@media (max-width: 899px) {
+  .cw-cell { scroll-margin-bottom: 240px; scroll-margin-top: 70px; }
+  .cw-current { position: sticky; top: 0; z-index: 3; margin-bottom: 8px; min-height: 0; }
+  .cw-keys .wg-key { height: 44px; }
+  .cw-main { padding-bottom: 4px; }
+}
+@media (max-width: 699px) {
+  .games:has(.cw-layout) .game-lede { display: none; }
+  .games:has(.cw-layout) .game-head { margin-bottom: 8px; }
+}

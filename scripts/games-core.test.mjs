@@ -131,3 +131,8 @@ test("generated data: deterministic, stable prefix, valid words", () => {
     for (const x of w) assert.ok(valid.has(x), x);
   }
 });
+
+test("crossword grids and clues are structurally sound", () => {
+  const out = execFileSync("python3", ["scripts/check_crossword.py"], { encoding: "utf8" });
+  assert.match(out, /0 problem/);
+});

@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Daily Five: a free daily trivia quiz | Purplelink</title>
-    <meta name="description" content="Five trivia questions a day on science, computing, research and more. Free, no account, no ads. Your streak stays on your device.">
-    <link rel="canonical" href="https://purplelink.llc/games/daily-five/">
-    <meta property="og:title" content="Daily Five: a free daily trivia quiz">
-    <meta property="og:description" content="Five trivia questions a day on science, computing, research and more. Free, no account, no ads. Your streak stays on your device.">
+    <title>Daily Crossword: a free themeless puzzle, easy Monday to hard Sunday | Purplelink</title>
+    <meta name="description" content="A new free crossword every day, easiest on Monday and hardest on Sunday. No account, no ads. Your times and streak stay on your device.">
+    <link rel="canonical" href="https://purplelink.llc/games/crossword/">
+    <meta property="og:title" content="Daily Crossword: a free themeless puzzle, easy Monday to hard Sunday">
+    <meta property="og:description" content="A new free crossword every day, easiest on Monday and hardest on Sunday. No account, no ads. Your times and streak stay on your device.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://purplelink.llc/games/daily-five/">
+    <meta property="og:url" content="https://purplelink.llc/games/crossword/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Daily Five: a free daily trivia quiz">
-    <meta name="twitter:description" content="Five trivia questions a day on science, computing, research and more. Free, no account, no ads. Your streak stays on your device.">
+    <meta name="twitter:title" content="Daily Crossword: a free themeless puzzle, easy Monday to hard Sunday">
+    <meta name="twitter:description" content="A new free crossword every day, easiest on Monday and hardest on Sunday. No account, no ads. Your times and streak stay on your device.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <script type="application/ld+json">
     {
@@ -22,12 +22,12 @@
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "Daily Five",
-          "url": "https://purplelink.llc/games/daily-five/",
+          "name": "Daily Crossword",
+          "url": "https://purplelink.llc/games/crossword/",
           "applicationCategory": "GameApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free daily five-question trivia quiz.",
+          "description": "A free daily themeless crossword that gets harder from Monday to Sunday.",
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -44,34 +44,42 @@
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "How many questions are there?",
+              "name": "Is there a new crossword every day?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Five multiple-choice questions a day, with one correct answer each. Two come from a set we write about science, computing, research methods and Macs. Three come from a general trivia pool."
+                "text": "Yes. A new themeless puzzle is ready at midnight your time. Monday is the easiest and Sunday the hardest, with bigger grids and trickier clues as the week goes on."
               }
             },
             {
               "@type": "Question",
-              "name": "When do the questions change?",
+              "name": "How is the crossword made?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "At midnight in your time zone. Everyone sees the same five on the same date."
+                "text": "The grids are built by a program that fills a symmetric pattern from a word list, and the clues are written for each puzzle. The size of the grid, how rare the words are and how the clues are phrased all grow from Monday to Sunday."
               }
             },
             {
               "@type": "Question",
-              "name": "Where do the questions come from?",
+              "name": "What do Check and Reveal do?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Part of the pool is the Open Trivia Database, licensed CC BY-SA 4.0. The rest we write ourselves. We check our own questions, but a general trivia pool can contain mistakes. If you spot one, email ben@purplelink.llc."
+                "text": "Check marks any wrong letters in red. Reveal letter and Reveal word fill in the answer for you. Using either is shown as solving with help, and only unaided solves count toward your best time."
               }
             },
             {
               "@type": "Question",
-              "name": "What counts as my streak?",
+              "name": "Where are my times and streak stored?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Finishing the day's five questions, whatever your score. Your streak and scores stay in this browser only."
+                "text": "Only in your browser on this device. There are no accounts."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I play on a phone?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Tap a square, then type with the on-screen keyboard. Tap the same square again to switch between across and down, or tap a clue in the list."
               }
             }
           ]
@@ -94,8 +102,8 @@
             {
               "@type": "ListItem",
               "position": 3,
-              "name": "Daily Five",
-              "item": "https://purplelink.llc/games/daily-five/"
+              "name": "Daily Crossword",
+              "item": "https://purplelink.llc/games/crossword/"
             }
           ]
         }
@@ -132,59 +140,78 @@
     <main id="main-content" class="games">
       <div class="games-wrap">
         <div class="game-head">
-          <h1>Daily Five</h1>
-          <span class="game-num" id="qz-number"></span>
+          <h1>Daily Crossword</h1>
+          <span class="game-num" id="cw-number"></span>
         </div>
-        <p class="game-lede">Five trivia questions a day: science, computing, research and a little of everything else.</p>
-        <p id="qz-loading" class="games-note">Loading today's questions.</p>
-        <div id="qz-game" hidden>
-          <div class="quiz" id="qz-quiz" hidden>
-            <p class="quiz-progress" id="qz-progress"></p>
-            <div class="quiz-dots" id="qz-dots" aria-hidden="true"></div>
-            <p class="quiz-cat" id="qz-cat"></p>
-            <h2 class="quiz-q" id="qz-q"></h2>
-            <ul class="quiz-opts" id="qz-opts"></ul>
-            <p class="quiz-note" id="qz-note" role="status" aria-live="polite"></p>
-            <button type="button" class="btn btn-primary" id="qz-next" hidden>Next question</button>
+        <p class="game-lede">A new themeless crossword every day. Easiest on Monday, hardest on Sunday.</p>
+        <p id="cw-loading" class="games-note">Loading today's crossword.</p>
+        <p id="cw-missing" class="games-note" hidden>Today's crossword is not ready yet. Please check back soon.</p>
+        <div id="cw-game" hidden>
+          <div class="cw-layout">
+            <div class="cw-main">
+              <div class="cw-bar">
+                <button type="button" class="btn btn-ghost" id="cw-check">Check</button>
+                <button type="button" class="btn btn-ghost" id="cw-reveal-letter">Reveal letter</button>
+                <button type="button" class="btn btn-ghost" id="cw-reveal-word">Reveal word</button>
+                <span class="cw-timer" id="cw-timer" aria-label="Elapsed time">0:00</span>
+              </div>
+              <p class="cw-current" id="cw-current" aria-live="polite"></p>
+              <div class="cw-grid" id="cw-grid" role="grid" aria-label="Crossword grid"></div>
+              <p class="cw-status" id="cw-status" role="status" aria-live="polite"></p>
+              <div class="wg-keys cw-keys" id="cw-keys" aria-label="Keyboard"></div>
+              <section class="game-result" id="cw-result" hidden aria-labelledby="cw-result-head">
+                <h2 id="cw-result-head"></h2>
+                <div class="game-statline">
+                  <div><b id="cw-played">0</b><span>Solved</span></div>
+                  <div><b id="cw-streak">0</b><span>Streak</span></div>
+                  <div><b id="cw-max">0</b><span>Best streak</span></div>
+                  <div><b id="cw-best">none</b><span id="cw-best-label">Best time</span></div>
+                </div>
+                <div class="game-actions">
+                  <button type="button" class="btn btn-primary" id="cw-share">Copy result</button>
+                  <span class="game-note" id="cw-share-note"></span>
+                </div>
+                <textarea class="wg-share-text" id="cw-share-text" hidden readonly aria-label="Result text"></textarea>
+                <p class="game-next">Next crossword in <span id="cw-next-in"></span>.</p>
+              </section>
+            </div>
+            <div class="cw-clues">
+              <div><h2>Across</h2><ol id="cw-across"></ol></div>
+              <div><h2>Down</h2><ol id="cw-down"></ol></div>
+            </div>
           </div>
-          <section class="game-result" id="qz-result" hidden aria-labelledby="qz-result-head">
-            <h2 id="qz-result-head"></h2>
-            <div class="game-statline">
-              <div><b id="qz-played">0</b><span>Days played</span></div>
-              <div><b id="qz-avg">0.0</b><span>Average score</span></div>
-              <div><b id="qz-streak">0</b><span>Streak</span></div>
-              <div><b id="qz-max">0</b><span>Best streak</span></div>
-            </div>
-            <div class="wg-dist" id="qz-dist"></div>
-            <ul class="quiz-review" id="qz-review"></ul>
-            <div class="game-actions">
-              <button type="button" class="btn btn-primary" id="qz-share">Copy result</button>
-              <span class="game-note" id="qz-share-note"></span>
-            </div>
-            <textarea class="wg-share-text" id="qz-share-text" hidden readonly aria-label="Result text"></textarea>
-            <p class="game-next">Next quiz in <span id="qz-next-in"></span>.</p>
-          </section>
         </div>
         <div class="games-prose">
         <h2>How it works</h2>
-        <p>Pick one answer for each question. You see right away whether you were correct, then move on. After the fifth question you get your score and a result you can copy and share. You cannot change an answer once you choose it.</p>
+        <p>Click a square and type. Click it again, or press Space, to switch between across and down. Arrow keys move around the grid, Tab jumps to the next clue and Backspace deletes. On a phone, use the keyboard below the grid.</p>
+        <h2>Difficulty through the week</h2>
+        <ul>
+          <li><strong>Monday:</strong> 9 by 9, everyday words, direct clues.</li>
+          <li><strong>Tuesday:</strong> 9 by 9, everyday words.</li>
+          <li><strong>Wednesday:</strong> 11 by 11.</li>
+          <li><strong>Thursday:</strong> 11 by 11, harder words.</li>
+          <li><strong>Friday:</strong> 13 by 13, harder clues.</li>
+          <li><strong>Saturday:</strong> 13 by 13, the hardest words.</li>
+          <li><strong>Sunday:</strong> 15 by 15, the biggest grid.</li>
+        </ul>
         <h2>Questions</h2>
-        <h3>How many questions are there?</h3>
-        <p>Five multiple-choice questions a day, with one correct answer each. Two come from a set we write about science, computing, research methods and Macs. Three come from a general trivia pool.</p>
-        <h3>When do the questions change?</h3>
-        <p>At midnight in your time zone. Everyone sees the same five on the same date.</p>
-        <h3>Where do the questions come from?</h3>
-        <p>Part of the pool is the Open Trivia Database, licensed CC BY-SA 4.0. The rest we write ourselves. We check our own questions, but a general trivia pool can contain mistakes. If you spot one, email ben@purplelink.llc.</p>
-        <h3>What counts as my streak?</h3>
-        <p>Finishing the day&#x27;s five questions, whatever your score. Your streak and scores stay in this browser only.</p>
-        <p class="quiz-credit">Some questions come from the <a href="https://opentdb.com/" rel="noopener">Open Trivia Database</a>, used under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a>. Questions we wrote ourselves are shared under the same licence.</p>
+        <h3>Is there a new crossword every day?</h3>
+        <p>Yes. A new themeless puzzle is ready at midnight your time. Monday is the easiest and Sunday the hardest, with bigger grids and trickier clues as the week goes on.</p>
+        <h3>How is the crossword made?</h3>
+        <p>The grids are built by a program that fills a symmetric pattern from a word list, and the clues are written for each puzzle. The size of the grid, how rare the words are and how the clues are phrased all grow from Monday to Sunday.</p>
+        <h3>What do Check and Reveal do?</h3>
+        <p>Check marks any wrong letters in red. Reveal letter and Reveal word fill in the answer for you. Using either is shown as solving with help, and only unaided solves count toward your best time.</p>
+        <h3>Where are my times and streak stored?</h3>
+        <p>Only in your browser on this device. There are no accounts.</p>
+        <h3>How do I play on a phone?</h3>
+        <p>Tap a square, then type with the on-screen keyboard. Tap the same square again to switch between across and down, or tap a clue in the list.</p>
         </div>
         <p class="games-note"><a href="/games/">All daily games</a></p>
       </div>
     </main>
 
     <script src="/games/core.js?v=7aed645be4" defer></script>
-    <script src="/games/daily-five.js?v=05baf3f47e" defer></script>
+    <script src="/games/crossword.js?v=c049e6d35b" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">
