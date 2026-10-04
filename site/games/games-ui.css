@@ -443,7 +443,7 @@
   .cb-board { --sq: min(calc((100vw - 28px) / 8), 64px); }
   .ac-row { grid-template-columns: minmax(96px, 1.4fr) repeat(4, minmax(58px, 1fr)); gap: 6px; font-size: 0.86rem; }
 }
-@media (pointer: coarse) { .wg-key { height: 56px; } }
+@media (pointer: coarse) { .wg-key { height: 50px; } }
 
 /* affiliate card (hidden until a partner link is configured) */
 .partner { margin: 16px 0 0; padding: 16px 18px; border-radius: 16px; border: 2px dashed var(--line); text-align: left; }
@@ -452,3 +452,9 @@
 .partner p { margin: 0 0 10px; color: var(--muted); font-size: 0.92rem; }
 .partner-row { display: flex; flex-wrap: wrap; gap: 10px; }
 .partner .partner-note { margin: 12px 0 0; font-size: 0.8rem; }
+
+/* The on-screen keyboard floats: no panel behind it, only the keys, each lifted off the page with a shadow. */
+.wg-keys { background: transparent; pointer-events: none; padding: 8px 0 max(12px, env(safe-area-inset-bottom)); }
+.wg-keys .wg-key { pointer-events: auto; box-shadow: 0 3px 0 color-mix(in oklch, var(--g-key) 55%, black), 0 8px 18px oklch(8% 0.02 310 / 0.42); }
+.wg-keys .wg-key:active { box-shadow: 0 1px 0 color-mix(in oklch, var(--g-key) 55%, black), 0 3px 8px oklch(8% 0.02 310 / 0.4); }
+.wg-keys .wg-key[data-s="c"] { box-shadow: 0 3px 0 color-mix(in oklch, var(--g-correct) 60%, black), 0 8px 18px oklch(8% 0.02 310 / 0.42); }
