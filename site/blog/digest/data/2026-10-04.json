@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-04",
+  "number": 99,
+  "intro": "Agent security on macOS, Warlock ransomware via SharePoint, a GitLab AI Gateway RCE, and ShinyHunters arrests, plus agent cost controls and Okta's re-rating.",
+  "sections": {
+    "AI & Technology": [
+      {
+        "title": "We're going to need default hard budget caps on pretty much everything",
+        "url": "https://simonwillison.net/2026/Oct/3/default-hard-budget-caps",
+        "source_name": "Hacker News",
+        "category": "ai_tech",
+        "editorial_note": "Willison argues cloud and API services need hard spending caps by default as agents can burn money at machine speed. Runaway agent loops are a financial denial-of-service risk that few threat models cover. Anyone running autonomous agents on metered APIs should treat spend limits as a security control."
+      },
+      {
+        "title": "The Agent Said It Was Done. The Database Disagreed.",
+        "url": "https://huggingface.co/blog/microsoft/thinkingbox",
+        "source_name": "HuggingFace Blog",
+        "category": "ai_tech",
+        "editorial_note": "Microsoft's post targets the gap between an agent claiming task completion and the actual system state. Verifying outcomes against ground truth rather than the agent's self-report is the practical fix for unreliable agent evaluation. Worth reading for anyone building agent harnesses or measuring tool-use success."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Google Gemini could soon get full access to your Mac\u2019s files, apps and the web",
+        "url": "https://www.bleepingcomputer.com/news/google/google-gemini-could-soon-get-full-access-to-your-macs-files-apps-and-the-web",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "Gemini on macOS may soon open apps, read any file and browse without per-action approval. Removing the confirmation step turns every prompt injection into a potential local data exfiltration path. The open question is whether Apple's FDA changes constrain it. Connects to: Apple changes full-disk access permissions to curb abuse from AI agents."
+      },
+      {
+        "title": "GitLab Patches Critical 9.9 AI Gateway Flaw Allowing Command Execution on Self-Hosted Servers",
+        "url": "https://thehackernews.com/2026/10/gitlab-patches-critical-self-hosted-ai.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "A CVSS 9.9 flaw in GitLab's AI Gateway lets a logged-in Duo Agent Platform user run commands on self-hosted gateways. The AI connector layer is becoming a high-value, under-audited attack surface sitting next to source code and credentials. Only self-hosted deployments are affected, so patch exposure depends on who runs their own gateway."
+      },
+      {
+        "title": "Warlock Exploits SharePoint Flaws to Disable Security Tools and Deploy Ransomware",
+        "url": "https://thehackernews.com/2026/10/warlock-exploits-sharepoint-flaws-to.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "The suspected China-linked Warlock actor keeps weaponizing old and new SharePoint bugs, killing security tools before deploying ransomware. Targets include a water utility, a telecom and a university in Portuguese- and Spanish-speaking countries. That is an espionage-adjacent toolset used for criminal monetization, which blurs attribution-based defense priorities."
+      },
+      {
+        "title": "China-Aligned TA419 Targets U.S. AI Policy Experts With Microsoft AitM Phishing",
+        "url": "https://thehackernews.com/2026/10/china-aligned-ta419-targets-us-ai.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "TA419 runs adversary-in-the-middle phishing against AI policy experts at think tanks, universities and law firms, impersonating prominent economists and AI figures. AI governance researchers are now a standing espionage target, and AitM defeats standard MFA. Phishing-resistant FIDO2 keys are the relevant mitigation for academics in this space."
+      }
+    ],
+    "Entrepreneurship": [
+      {
+        "title": "We Got a $240,000 Estimate for Agent API Access. Our Agent Suggested a $5 Postgres Instance.",
+        "url": "https://www.saastr.com/we-got-a-240000-estimate-for-agent-api-access-our-agent-suggested-a-5-postgres-instance",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "SaaStr's agents make 35,000 to 40,000 API calls a day, and a vendor quoted $240,000 for access that a $5 Postgres replica handled. Vendors are starting to price agent traffic that humans never generated, and mirroring data locally is the cheap counter. The pattern also signals where API pricing for agent-heavy workloads is heading."
+      },
+      {
+        "title": "Why Okta Tripled on \u2026 11% Growth. 5 Interesting Learnings From One of the Biggest Re-Ratings in B2B This Year: 14% cRPO Growth, 30% of Bookings From New Products, and ~50x Forward Earnings",
+        "url": "https://www.saastr.com/okta-tripled-on-11-growth-5-interesting-learnings-from-one-of-the-biggest-re-ratings-in-b2b-this-year-14-crpo-growth-30-of-bookings-from-new-products-and-50x-forward-earnings",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "Okta tripled from its April low on 11% growth, with 14% cRPO growth and 30% of bookings from new products. The market is paying for identity as the control plane for AI agents, not for the core SSO business. A caveat is the roughly 50x forward earnings multiple, which leaves little room for a miss."
+      }
+    ],
+    "Worth Reading": [
+      {
+        "title": "Apple changes full-disk access permissions to curb abuse from AI agents",
+        "url": "https://arstechnica.com/security/2026/10/apple-changes-full-disk-access-permissions-to-curb-abuse-from-ai-agents",
+        "source_name": "Ars Technica",
+        "category": "general_tech",
+        "editorial_note": "Apple is tightening Full Disk Access after Meta argued FDA is insufficient for its Muse agent to read messages. The dispute shows the OS permission model is now the real control point for agent capability, not the model vendor's policy. Indie macOS developers shipping agentic features should expect stricter entitlement review and re-test any FDA-dependent workflows."
+      },
+      {
+        "title": "US arrests tech CEO accused of smuggling $300M in Nvidia chips into China",
+        "url": "https://arstechnica.com/tech-policy/2026/10/us-arrests-tech-ceo-accused-of-smuggling-300m-in-nvidia-chips-into-china",
+        "source_name": "Ars Technica",
+        "category": "general_tech",
+        "editorial_note": "A tech CEO was arrested over an alleged $300M Nvidia chip smuggling scheme into China. Enforcement is shifting from rules on paper to criminal cases against intermediaries, which raises compliance risk for GPU resellers and cloud brokers. Arrests keep arriving, which suggests export-control leakage remains large."
+      }
+    ]
+  },
+  "sources_reviewed": 852,
+  "items_selected": 10
+}
