@@ -64,7 +64,7 @@ Looking for books on writing, LaTeX or statistics? See the research desk.
 Not sure, or want something that isn't here? Email ben@purplelink.llc. I read and answer every message.
 
 macOS
-7-day free trial, then $10 once
+7-day free trial, then $19.99 once
 
 ## ModernTex
 
@@ -81,7 +81,7 @@ $39 once
 
 ### The Mac Suite
 
-ModernTex, Outbound Veil and Vitae Plus for life in one payment. Bought separately they come to $63 the first year, then $24 a year for Plus.
+ModernTex, Outbound Veil and Vitae Plus for life in one payment. Bought separately they come to $73 the first year, then $24 a year for Plus.
 
 See the Suite →
 
@@ -257,7 +257,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $10 to keep · v1.3.0
+Free 7-day trial · $19.99 to keep · v1.3.0
 
 # ModernTex
 
@@ -265,7 +265,7 @@ A native macOS LaTeX editor for researchers, not a programmer's IDE with LaTeX b
 
 Download the free 7-day trial
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $10 once, with every 1.x update included (terms); the receipt email includes a permanent license key. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil and Vitae Plus for life, $39 once. First ten minutes: install and first build.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil and Vitae Plus for life, $39 once. First ten minutes: install and first build.
 
 Watch the tour
 
@@ -385,7 +385,7 @@ At a glance
 
 ## ModernTex, in facts
 
-Price$10 once, after a free 7-day trial. Every 1.x update included. No subscription.
+Price$19.99 once, after a free 7-day trial. All updates included, forever. No subscription.
 
 TrialThe complete app for seven days from first launch. No account, nothing to enter.
 
@@ -417,7 +417,7 @@ Current version1.3.0: a visual Table Editor, after 1.2.0's TikZ Designer. Change
 
 - Sep 51.0.1Clearer bibliography build errors, pointing at the .bib line.
 
-Every 1.x update is included in the $10, and the app installs it in place. Your work stays in ordinary .tex files, so you can open it in Overleaf or TeXShop whenever you like. Full changelog
+Every update is included in the $19.99, forever, and the app installs it in place. Your work stays in ordinary .tex files, so you can open it in Overleaf or TeXShop whenever you like. Full changelog
 
 Coming from Overleaf? What changes when you write locally, or see how the Mac LaTeX editors compare.
 
@@ -431,7 +431,7 @@ Overleaf pricing is from its plans page, checked September 29, 2026.
 
 TopicModernTexOverleaf
 
-Price$10 once, after a free 7-day trial. No subscription.Standard plan: $199 per year. A free plan is also offered.
+Price$19.99 once, after a free 7-day trial. No subscription.Standard plan: $199 per year. A free plan is also offered.
 
 CompilingOn your Mac, so there is no server compile timeout.On Overleaf's servers. The free plan has a compile timeout.
 
@@ -477,7 +477,7 @@ Yes. The trial is the complete app for seven days from the first time you open i
 
 What does it cost?
 
-$10, once, after a free 7-day trial. That covers every 1.x update. There is no subscription and no account; the optional AI features run on Apple Intelligence or your own Claude or OpenAI account.
+$19.99, once, after a free 7-day trial. That covers all updates, forever. There is no subscription and no account; the optional AI features run on Apple Intelligence or your own Claude or OpenAI account.
 
 How is ModernTex different from TeXShop or Overleaf?
 
@@ -501,20 +501,20 @@ Does it work for a dissertation?
 
 Yes. A dissertation is a multi-file project like any other: open the folder and ModernTex finds the root file and lists the chapters in the sidebar. The bibliography can be BibTeX or biblatex with biber (a switch in the compile profile), reading any .bib in the project, including one exported from Zotero. A class file your university supplies goes in the project folder, where the compile picks it up and the submission export includes it. A generic thesis template is bundled.
 
-What about version 2.0?
+Will I have to pay again for a new version?
 
-A 2.0 would be a separate purchase, at a discount for everyone who bought 1.x. Every 1.x update is included in the $10.
+No. Every update to ModernTex is included in the $19.99, forever, including future major versions. There is no upgrade fee.
 
 ## Try it on your own manuscript.
 
-Seven days of the full app, no account and nothing to enter. If it earns a place in your workflow, it's $10 once, with every 1.x update included.
+Seven days of the full app, no account and nothing to enter. If it earns a place in your workflow, it's $19.99 once, with all updates included, forever.
 
 Download the free trial
-Buy ModernTex — $10
+Buy ModernTex — $19.99
 
 macOS 14 or later · Apple silicon and Intel · Signed and notarized
 
-ModernTex free for 7 days, then $10
+ModernTex free for 7 days, then $19.99
 Get ModernTex
 
 
@@ -1986,7 +1986,7 @@ From the same studio
 
 ModernTex is a native LaTeX editor for Mac with BibTeX completion that searches by author or title. Paper Review reads your manuscript before a journal does. Both are made by the same one-person studio as this extension.
 
-See ModernTex, $10
+See ModernTex, $19.99
 Paper Review, from $9
 
 ## Frequently asked questions
@@ -2211,7 +2211,7 @@ Your abstract's word count against the limit of 25 journals and conferences.
 
 For the work these tools sit next to: writing the manuscript, and keeping track of where it went.
 
-7-day trial, then $10 once
+7-day trial, then $19.99 once
 
 ### ModernTex for Mac
 
@@ -2270,7 +2270,7 @@ Engine:
 pdfLaTeX
 XeLaTeX
 
-Compiling this often? ModernTex for Mac compiles locally with your own TeX, keeps the PDF in sync with the source and explains errors in plain language. 7-day free trial, then $10 once.
+Compiling this often? ModernTex for Mac compiles locally with your own TeX, keeps the PDF in sync with the source and explains errors in plain language. 7-day free trial, then $19.99 once.
 
 Accepts a single .tex or a project .zip with main.tex at the root. Files are never written to disk.
 
@@ -2304,9 +2304,9 @@ From the team behind these tools
 
 ## Writing LaTeX on a Mac?
 
-ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
 
-Get ModernTex — $10
+Get ModernTex — $19.99
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
@@ -2393,9 +2393,9 @@ From the team behind these tools
 
 ## Writing LaTeX on a Mac?
 
-ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
 
-Get ModernTex — $10
+Get ModernTex — $19.99
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
@@ -2456,9 +2456,9 @@ From the team behind these tools
 
 ## Writing LaTeX on a Mac?
 
-ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
 
-Get ModernTex — $10
+Get ModernTex — $19.99
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
@@ -2836,7 +2836,7 @@ ModernTex, Vitae, GlobePin and the web tools are shipping. Haea is in active dev
 
 ### ModernTex
 
-A native macOS LaTeX studio for academic researchers. Multi-file editing, synchronized PDF preview, BibTeX autocomplete, and submission-readiness checks built for the manuscript workflow. Shipping since September 2026, now at version 1.3; a free 7-day trial, then $10 once.
+A native macOS LaTeX studio for academic researchers. Multi-file editing, synchronized PDF preview, BibTeX autocomplete, and submission-readiness checks built for the manuscript workflow. Shipping since September 2026, now at version 1.3; a free 7-day trial, then $19.99 once.
 
 ### Vitae
 
@@ -3656,7 +3656,7 @@ Very capable, for people who already use these editors.
 
 ModernTex
 macOS 14 or later
-$10 once, after a free 7-day trial
+$19.99 once, after a free 7-day trial
 Yes
 No
 Yes, forward and inverse
@@ -3687,7 +3687,7 @@ Both are free, run anywhere, and are among the most capable LaTeX environments a
 
 ModernTex is the native macOS LaTeX editor we make, built for journal articles, conference papers and dissertation chapters rather than general-purpose editing. It handles multi-file manuscripts with root file detection, keeps the PDF in sync in both directions, completes citations by searching your .bib by author or title, and explains compile errors in plain language. It also has submission-readiness checks (anonymization, page limits, required sections), an anonymized export for double-blind review, version snapshots, and visual editors for TikZ figures and tables that write the LaTeX for you.
 
-What it does not do: real-time collaboration. It is a single-user app, and two people cannot type in the same file at once. It runs only on macOS 14 or later, has no iPad app, and it is new, first released in 2026, so it has far less of a track record than TeXShop or Texifier. It needs a TeX distribution; if none is found when you compile, it offers to install TinyTeX for you. Choose it if you write manuscripts alone on a Mac and the submission-focused features are the ones you keep wishing for. The trial is the full app for seven days, and keeping it is $10 once.
+What it does not do: real-time collaboration. It is a single-user app, and two people cannot type in the same file at once. It runs only on macOS 14 or later, has no iPad app, and it is new, first released in 2026, so it has far less of a track record than TeXShop or Texifier. It needs a TeX distribution; if none is found when you compile, it offers to install TinyTeX for you. Choose it if you write manuscripts alone on a Mac and the submission-focused features are the ones you keep wishing for. The trial is the full app for seven days, and keeping it is $19.99 once.
 
 ## How to move a project from Overleaf to a Mac editor
 
@@ -3739,7 +3739,7 @@ On a free Overleaf account, the fallback is manual: download the source, edit lo
 
 - Already live in VS Code, Emacs or Vim? Stay there and add the LaTeX extension.
 
-- Writing papers alone on a Mac and want help getting them submission-ready? ModernTex, $10 once.
+- Writing papers alone on a Mac and want help getting them submission-ready? ModernTex, $19.99 once.
 
 For a longer look at fourteen Mac editors, including Octree, Texmaker, LyX and others not covered here, see the best LaTeX editors for Mac.
 
@@ -3773,9 +3773,9 @@ From the team behind these tools
 
 ## Writing LaTeX on a Mac?
 
-ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
 
-Get ModernTex ($10)
+Get ModernTex ($19.99)
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
@@ -3836,7 +3836,7 @@ previewing.
 
 - Overleaf: web-based, collaborative, runs in any browser.
 
-- ModernTex: $10, native macOS, focused on the academic manuscript workflow.
+- ModernTex: $19.99, native macOS, focused on the academic manuscript workflow.
 
 Those six are the ones worth a real look. Eight more that run on a Mac are covered further down, including TeXstudio and Texmaker, with a straight answer on why each is not on the shortlist.
 
@@ -3902,7 +3902,7 @@ Pick Overleaf if you need real-time collaboration. Many academic teams use Overl
 
 ## ModernTex
 
-Cost: $10, one-time, every 1.x update included, after a free 7-day trial. Platform: macOS 14+. Status: shipping, shipping since September 2026; current version 1.3.0.
+Cost: $19.99, one-time, all updates included, forever, after a free 7-day trial. Platform: macOS 14+. Status: shipping, shipping since September 2026; current version 1.3.0.
 
 I built ModernTex specifically because the existing options miss a few things that matter for academic manuscript work: plain-language compile error explanations (BibTeX-style cryptic errors are the #1 frustration for new users), BibTeX autocomplete that searches by author or title across your entire .bib, revision snapshots tied to ideas not files, submission-readiness checks that catch journal-specific issues before you upload, and a live TikZ figure editor for building flowcharts and diagrams by dragging boxes instead of writing coordinates by hand.
 
@@ -3910,7 +3910,7 @@ Why a new editor when Texifier exists: Texifier is excellent but optimizes for g
 
 What it lacks: a track record. Version 1.0 shipped in September 2026, so it has none of the twenty years of edge-case coverage TeXShop has, and no iPad app. It needs MacTeX or TinyTeX, and offers a one-click TinyTeX install if neither is found.
 
-Pick ModernTex if you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. The trial is free for seven days; keeping it is $10, once.
+Pick ModernTex if you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. The trial is free for seven days; keeping it is $19.99, once.
 
 ## Eight more LaTeX editors that run on a Mac
 
@@ -3994,7 +3994,7 @@ Sublime Text with the LaTeXTools package and BBEdit with its TeX syntax highligh
 
 - Need real-time collaboration? Overleaf.
 
-- Academic manuscripts on macOS as your dominant use case? ModernTex, $10.
+- Academic manuscripts on macOS as your dominant use case? ModernTex, $19.99.
 
 - Also work on Windows or Linux? TeXstudio.
 
@@ -4112,9 +4112,9 @@ From the team behind these tools
 
 ## Writing LaTeX on a Mac?
 
-ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $10 once, every 1.x update included.
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
 
-Get ModernTex ($10)
+Get ModernTex ($19.99)
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.

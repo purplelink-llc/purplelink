@@ -1,7 +1,7 @@
 # ModernTex launch outreach pack
 
 Prepared 2026-09-11, updated the same day once the trial shipped. Extends `purplelink-tool-distribution-kit.md`, which covers the
-free tools; this one is specifically for ModernTex ($10, macOS 14+, v1.0.2, free 7-day trial).
+free tools; this one is specifically for ModernTex ($19.99, macOS 14+, v1.0.2, free 7-day trial).
 
 The point of all of this is links and real humans. purplelink.llc has close to zero
 external links, which is the standing ceiling on every ranking the site has. Six
@@ -31,7 +31,7 @@ outreach is how that channel gets bigger.
   and applies everywhere.
 
 Facts to keep consistent across every post: native Mac LaTeX editor for researchers ·
-free 7-day trial, the complete app, no account · $10 once to keep, updates included ·
+free 7-day trial, the complete app, no account · $19.99 once to keep, updates included ·
 macOS 14 or later, Apple silicon and Intel · needs a TeX distribution such as MacTeX or
 TinyTeX · version 1.0.2 · built by an academic who writes papers in LaTeX. Trial link:
 https://purplelink.llc/moderntex/ (the download button is the first thing on the page). Features: multi-file manuscript navigation,
@@ -89,13 +89,13 @@ position ModernTex against TeXShop, Texifier, TeXstudio and Overleaf.
 
 **Reusable listing copy** (adjust length to the field):
 
-> Tagline: Native Mac LaTeX editor for academic manuscripts. Free 7-day trial, $10 once.
+> Tagline: Native Mac LaTeX editor for academic manuscripts. Free 7-day trial, $19.99 once.
 >
 > Short: ModernTex is a native macOS LaTeX editor built for writing journal articles
 > and dissertation chapters. Multi-file manuscript navigation, synchronized PDF
 > preview, BibTeX completion that searches your whole bibliography by author or title,
 > compile errors explained in plain language, submission-readiness checks and an
-> anonymized export for review. Free 7-day trial with no account, then $10 one-time
+> anonymized export for review. Free 7-day trial with no account, then $19.99 one-time
 > with updates included. Requires macOS 14
 > and a TeX distribution such as MacTeX.
 >
@@ -115,7 +115,7 @@ position ModernTex against TeXShop, Texifier, TeXstudio and Overleaf.
 
 **awesome-LaTeX PR line:**
 
-> - [ModernTex](https://purplelink.llc/moderntex/) - Native macOS editor for academic manuscripts: multi-file navigation, synced PDF preview, BibTeX completion, plain-language compile errors, submission checks. $10, one-time.
+> - [ModernTex](https://purplelink.llc/moderntex/) - Native macOS editor for academic manuscripts: multi-file navigation, synced PDF preview, BibTeX completion, plain-language compile errors, submission checks. $19.99, one-time.
 
 **Product Hunt maker comment:**
 
@@ -123,7 +123,7 @@ position ModernTex against TeXShop, Texifier, TeXstudio and Overleaf.
 > drove it: compile errors that tell you what to fix instead of quoting a log,
 > BibTeX completion that finds a reference by author or title across the whole
 > .bib, and a set of checks that catch what a journal will bounce before you upload.
-> There's a free 7-day trial with no account, then it's $10 once. macOS only, and it
+> There's a free 7-day trial with no account, then it's $19.99 once. macOS only, and it
 > needs MacTeX installed. It is one week old, so
 > the state of it is: it works, it has no track record yet, and I'd rather hear
 > what's missing than what's nice.
@@ -153,7 +153,7 @@ is the whole pitch on HN: no adjectives, say what it is.
 > on; and an anonymized export for double-blind review.
 >
 > It needs MacTeX or TinyTeX installed; it does not bundle a distribution. Free
-> 7-day trial with no account, then $10 once. It is a week old, so it has no track
+> 7-day trial with no account, then $19.99 once. It is a week old, so it has no track
 > record, and I would rather hear what is missing than what is nice. The obvious
 > comparison is Texifier, which bundles its own TeX and has years on this; if you
 > already own it you probably do not need ModernTex.
@@ -178,7 +178,7 @@ twenty years. Plain-text email, no HTML. Join first, read a week of threads, the
 > MacTeX (or TinyTeX) you already have; it doesn't bundle a distribution.
 >
 > macOS 14 or later, Apple silicon and Intel. There is a free 7-day trial with no
-> account, then $10 one-time. It is version 1.0.2 and a week old, so I'd value bug
+> account, then $19.99 one-time. It is version 1.0.2 and a week old, so I'd value bug
 > reports and missing-feature notes more than anything.
 > https://purplelink.llc/moderntex/
 >
@@ -202,7 +202,7 @@ it as a tool or project if the sub has such a flair, disclose in line one.
 > What it doesn't do: bundle a TeX distribution (you need MacTeX or TinyTeX), run on
 > Windows or Linux, or have a track record. It's 1.0.2 and a week old.
 >
-> Free 7-day trial, no account, then $10 once with updates included. If the rules
+> Free 7-day trial, no account, then $19.99 once with updates included. If the rules
 > allow a link I'll put it in a comment. Mostly I'd like to know what a room full of
 > LaTeX users thinks is missing, and what you'd want in the next update.
 
@@ -212,7 +212,7 @@ This sub expects developer posts and usually requires a specific flair for them 
 a disclosure. Check the sidebar for the flair name and whether promo codes are
 allowed; a handful of free licenses for commenters tends to be welcomed there.
 
-> **Title:** ModernTex, a native LaTeX editor for academics writing papers ($10, one-time)
+> **Title:** ModernTex, a native LaTeX editor for academics writing papers ($19.99, one-time)
 >
 > Developer here. ModernTex is a LaTeX editor for macOS built for people writing
 > journal articles and dissertations. Native app, not Electron, not a web wrapper.
@@ -222,7 +222,7 @@ allowed; a handful of free licenses for commenters tends to be welcomed there.
 > and journal submission checks. Compared with Texifier it is narrower on purpose and
 > a third of the price. It needs MacTeX or TinyTeX installed; it doesn't bundle one.
 >
-> macOS 14+, Apple silicon and Intel. Free 7-day trial, no account, then $10 once
+> macOS 14+, Apple silicon and Intel. Free 7-day trial, no account, then $19.99 once
 > with updates included. v1.0.2. Try it and tell me what's wrong with it; feature
 > requests from people who actually write in LaTeX decide what 1.1 gets.
 
@@ -259,7 +259,7 @@ than press and the lists rank. Offer a license, expect nothing.
 > because the existing editors treat a manuscript as a text file. It navigates a
 > multi-file paper, completes BibTeX by author or title across the whole
 > bibliography, explains compile errors in plain language, and checks the things
-> journals reject on before you upload. Free 7-day trial, then $10 once. macOS 14+,
+> journals reject on before you upload. Free 7-day trial, then $19.99 once. macOS 14+,
 > needs MacTeX.
 >
 > I'm an academic; it started as the editor I wanted for my own papers. If it fits

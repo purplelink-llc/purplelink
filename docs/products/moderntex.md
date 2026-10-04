@@ -1,14 +1,14 @@
 # ModernTex — paid macOS app, live status
 
-ModernTex 1.x is sold on purplelink.llc/moderntex for **$10 one-time**, updates included.
+ModernTex is sold on purplelink.llc/moderntex for **$19.99 one-time**, all updates included forever (it was $10 until 2026-10-04).
 
 ## Stripe (live mode)
 
 | Item | Value |
 |---|---|
 | Product | `prod_VCVCqJD98UKu3t` (ModernTex) |
-| Price | `price_1UC6BrJkzNxf3fKqjQwyoJqe` ($10.00 USD, one-time) |
-| Env var | `STRIPE_PRICE_MODERNTEX` (production context) |
+| Price | $19.99 USD, one-time, set inline in `checkout.mjs` (`amount: 1999`); no Stripe Price object or env var. Until 2026-10-04 it was $10.00 (`price_1UC6BrJkzNxf3fKqjQwyoJqe`, `STRIPE_PRICE_MODERNTEX`, both now unused) |
+| Updates | All updates included forever, including future major versions (Ben, 2026-10-04) |
 | Product key | `moderntex` in `netlify/functions/checkout.mjs` |
 | Success page | `/moderntex/success/?session_id=cs_…` (`site/moderntex/success.js`) |
 

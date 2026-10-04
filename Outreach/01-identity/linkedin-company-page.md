@@ -67,7 +67,7 @@ Post Mondays 10am ET. Each is ~700 chars and links to a page on the site.
 ### Week 4 — Comparison guide
 > Just published an honest comparison of LaTeX editors that work on Mac in 2026: TeXShop, Texifier, Octree, VS Code, Overleaf, and our own ModernTex.
 >
-> No affiliate links, no rankings padding. Most academics should pick TeXShop. People who want polished and modern should pick Texifier. ModernTex is the right answer when academic manuscript workflow is your dominant use case. It is $10, once, no subscription.
+> No affiliate links, no rankings padding. Most academics should pick TeXShop. People who want polished and modern should pick Texifier. ModernTex is the right answer when academic manuscript workflow is your dominant use case. It is $19.99, once, no subscription.
 >
 > Full comparison: purplelink.llc/guides/best-mac-latex-editors
 >

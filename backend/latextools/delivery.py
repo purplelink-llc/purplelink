@@ -775,7 +775,7 @@ def html_lifecycle_trial_setup(*, unsubscribe_url: str, **_ignored) -> str:
     (IEEE, ACM, NeurIPS, Elsevier, APA 7).</li>
   </ol>
   <p>The trial is the complete app for seven days from the first time you
-  open it. If you keep it, it is $10 once, and the license key from your
+  open it. If you keep it, it is $19.99 once, with all updates included forever, and the license key from your
   receipt unlocks the copy you already have.</p>
   <p>Stuck on anything? Reply to this email.</p>
   <p>
@@ -815,7 +815,7 @@ def html_lifecycle_trial_features(*, unsubscribe_url: str, **_ignored) -> str:
        style="display: inline-block; background: #7c3aed; color: #fff;
               padding: 10px 18px; border-radius: 6px; text-decoration: none;
               font-weight: 600;">
-      Keep ModernTex for $10
+      Keep ModernTex for $19.99
     </a>
   </p>
   {_lifecycle_footer(unsubscribe_url, reason=_TRIAL_REASON)}
@@ -831,7 +831,7 @@ def html_lifecycle_trial_ending(*, unsubscribe_url: str, **_ignored) -> str:
   <p>If you started the trial when you downloaded it, it ends in about a
   day. When it does, the window shows a notice and a Buy button. Your .tex
   files are ordinary files on disk and are not touched either way.</p>
-  <p>Keeping it is $10 once, with every 1.x update included. The receipt
+  <p>Keeping it is $19.99 once, with all updates included, forever. The receipt
   email carries a license key: paste it into the trial's "Have a license
   key?" and the same copy unlocks, with no reinstall. To get updates in
   place, install the download from your receipt page once.</p>
@@ -840,7 +840,7 @@ def html_lifecycle_trial_ending(*, unsubscribe_url: str, **_ignored) -> str:
        style="display: inline-block; background: #7c3aed; color: #fff;
               padding: 10px 18px; border-radius: 6px; text-decoration: none;
               font-weight: 600;">
-      Buy ModernTex, $10
+      Buy ModernTex, $19.99
     </a>
   </p>
   <p style="color: #555; font-size: 0.9em;">If it was not for you, a reply

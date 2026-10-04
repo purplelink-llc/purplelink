@@ -2,7 +2,7 @@
 
 ## What Shipped
 
-**ModernTex became a real paid product.** It had been a free trial through the summer. On September 4 it went paid: a $10 Stripe checkout, a license key issued by the webhook, gated delivery, a private Sparkle update channel. Two releases followed — 1.2.0 on the 12th (TikZ Designer, a live TikZ preview, a user guide) and 1.3.0 on the 13th (a Table Editor). ([e5fd842c](https://github.com/purplelink-llc/purplelink/commit/e5fd842c), [e54d518f](https://github.com/purplelink-llc/purplelink/commit/e54d518f))
+**ModernTex became a real paid product.** It had been a free trial through the summer. On September 4 it went paid: a $19.99 Stripe checkout, a license key issued by the webhook, gated delivery, a private Sparkle update channel. Two releases followed — 1.2.0 on the 12th (TikZ Designer, a live TikZ preview, a user guide) and 1.3.0 on the 13th (a Table Editor). ([e5fd842c](https://github.com/purplelink-llc/purplelink/commit/e5fd842c), [e54d518f](https://github.com/purplelink-llc/purplelink/commit/e54d518f))
 
 **Two new subscription products**: Vitae Plus got subscription checkout with offline-verified license keys; Daily Digest got a paid tier with its own Stripe Customer Portal for billing.
 

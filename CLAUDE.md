@@ -49,7 +49,7 @@ Invoke design work with the impeccable skill (e.g. `/impeccable critique
 - Frontend: `bash scripts/deploy.sh` (Netlify `--prod` + IndexNow ping).
 - Backend (Modal): `bash scripts/deploy.sh --backend`.
 - The site is live at https://purplelink.llc.
-- ModernTex ($10, Stripe): in the ModernTex repo, `scripts/build-release.sh` stages a
+- ModernTex ($19.99, Stripe): in the ModernTex repo, `scripts/build-release.sh` stages a
   notarized DMG and `scripts/publish-release.sh <version>` uploads the
   DMG and Sparkle appcast to the private `moderntex-files` Blobs store; nothing
   lands in `site/`. Delivery is `netlify/functions/moderntex-download.mjs`

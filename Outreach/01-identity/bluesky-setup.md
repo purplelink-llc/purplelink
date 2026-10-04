@@ -57,7 +57,7 @@ The custom-domain handle is verifiable: anyone who sees `@purplelink.llc` on a p
 > purplelink.llc/haea
 
 ### Post 4 — On Mac LaTeX editors
-> Compared the LaTeX editors that actually work on Mac: TeXShop, Texifier, Octree, VS Code, Overleaf, and my own ModernTex ($10 once).
+> Compared the LaTeX editors that actually work on Mac: TeXShop, Texifier, Octree, VS Code, Overleaf, and my own ModernTex ($19.99 once).
 >
 > Honest take: most academics should pick TeXShop. Want polished and modern? Texifier.
 >

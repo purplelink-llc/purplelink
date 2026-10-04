@@ -28,9 +28,9 @@ AlternativeTo (no links or email addresses in the description):
 ```
 Name: ModernTex
 Platform: Mac
-License: Commercial, free trial (7 days), then $10 one-time
+License: Commercial, free trial (7 days), then $19.99 one-time
 Short description: A native macOS LaTeX editor for researchers.
-Description: ModernTex is a native macOS LaTeX editor for academic writing. It keeps the source and the PDF in sync in both directions, explains LaTeX errors in plain language, and checks a manuscript for anonymization, page limits and required sections before submission. It also offers revision snapshots, BibTeX completion that searches the whole bibliography, a visual TikZ Designer and a spreadsheet-style Table Editor. It runs on macOS 14 or later, on Apple silicon and Intel, and uses MacTeX or TinyTeX. There is a free 7-day trial, then a one-time $10 purchase with all 1.x updates included. Files stay as ordinary .tex and .bib files on your disk. It compiles on your Mac, with no account, and does not offer real-time co-editing.
+Description: ModernTex is a native macOS LaTeX editor for academic writing. It keeps the source and the PDF in sync in both directions, explains LaTeX errors in plain language, and checks a manuscript for anonymization, page limits and required sections before submission. It also offers revision snapshots, BibTeX completion that searches the whole bibliography, a visual TikZ Designer and a spreadsheet-style Table Editor. It runs on macOS 14 or later, on Apple silicon and Intel, and uses MacTeX or TinyTeX. There is a free 7-day trial, then a one-time $19.99 purchase with all updates included, forever. Files stay as ordinary .tex and .bib files on your disk. It compiles on your Mac, with no account, and does not offer real-time co-editing.
 Tags: LaTeX, LaTeX editor, academic writing, PDF preview, BibTeX
 Alternative to: Overleaf, TeXShop, Texifier
 ```

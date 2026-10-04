@@ -3,7 +3,7 @@
 $39 once: ModernTex + Outbound Veil + Vitae Plus for life. Added 2026-10-04.
 
 ## Why $39
-ModernTex $10 + Outbound Veil $29 = $39, so the pitch is "the two paid apps, Vitae Plus for life included".
+At launch ModernTex was $10, so $10 + Outbound Veil $29 = $39 and the pitch was "the two paid apps, Vitae Plus for life included". ModernTex went to $19.99 on 2026-10-04: the parts now come to $48.99 plus Vitae Plus ($24 a year), $73 in the first year, so the Suite at $39 is a stronger deal than at launch. Raise it if it converts too easily.
 Vitae Plus alone is $24 a year ($3 a month). At launch Vitae Plus had 0 subscribers, so including it costs no
 existing revenue. Net per sale after Stripe fees: $37.57 (Outbound Veil alone nets $27.86, ModernTex $9.41).
 No fake "regular price" and no countdown on the page: the separate prices shown are the real ones. Raising to

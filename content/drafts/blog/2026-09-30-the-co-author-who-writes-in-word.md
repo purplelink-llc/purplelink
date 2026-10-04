@@ -12,7 +12,7 @@ Further reading: if the conversions keep breaking on packages you did not expect
 
 Disclosure: the Amazon links above are affiliate links. As an Amazon Associate I earn from qualifying purchases.
 
-If you write LaTeX on a Mac, ModernTex keeps a synced PDF preview and BibTeX autocomplete in one native app, free for a 7-day trial and $10 to keep.
+If you write LaTeX on a Mac, ModernTex keeps a synced PDF preview and BibTeX autocomplete in one native app, free for a 7-day trial and $19.99 to keep.
 
 ## Screenshots to capture
 
