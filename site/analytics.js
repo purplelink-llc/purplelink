@@ -137,6 +137,9 @@
       if (a && a.getAttribute("href").indexOf("moderntex-download?trial=1") !== -1) {
         window.plTrack("trial_download", "moderntex");
       }
+      if (a && a.getAttribute("href").indexOf("outbound-veil-download?trial=1") !== -1) {
+        window.plTrack("ov_trial_download", "outbound-veil");
+      }
       // Anything else marked data-track="<event>" (optional data-track-meta):
       // template downloads, the phone sticky bar.
       var t = ev.target && ev.target.closest && ev.target.closest("[data-track]");

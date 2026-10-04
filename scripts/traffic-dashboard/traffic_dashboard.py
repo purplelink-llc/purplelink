@@ -129,6 +129,7 @@ SITES = [
                         ("haeaSignups", "Haea waitlist signups"),
                         ("moderntexReleaseSignups", "ModernTex release-notes signups"),
                         ("trialDownloads", "trial downloads"),
+                        ("ovTrialDownloads", "Outbound Veil trial downloads"),
                         ("vitaeDownloads", "Vitae downloads"),
                         ("checkoutClicks", "checkout clicks")],
         # Paths that actually show a buy button. The useful denominator for a
@@ -159,6 +160,8 @@ SITES = [
             # weekly pageviews were silently excluded from the denominator the
             # whole time, so the site-wide checkout rate was overstated.
             "/moderntex/",
+            # Outbound Veil: buy button (pr-checkout-btn, data-product="outbound-veil"), added 2026-10-04.
+            "/outbound-veil/",
         ),
         # Waitlists are Netlify Forms, so they never reach the analytics beacon.
         # Without this they read as zero while people are actually signing up.
@@ -2274,7 +2277,7 @@ def site_card(s: dict) -> str:
 
 
 PRODUCT_LABELS = {
-    "moderntex": "ModernTex", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
     "citation-gap": "Citation gap", "revision-review": "Revision review",
     "response-review": "Response review", "resume-review": "Resume review",
     "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
@@ -2816,6 +2819,7 @@ def moderntex_ads_block(data: dict, sales: dict | None = None) -> str:
 METRICS_DAYS = 28
 PRODUCT_GROUPS = [
     ("ModernTex", "var(--purple)"),
+    ("Outbound Veil", "oklch(66% 0.2 300)"),
     ("Paper Review & tools", "oklch(75% 0.14 230)"),
     ("Kits", "oklch(80% 0.13 85)"),
     ("Spreadsheets", "oklch(70% 0.12 280)"),
@@ -2834,6 +2838,8 @@ def product_group(row: dict) -> str:
         return "MuscleOnGLP"
     if product == "moderntex":
         return "ModernTex"
+    if product == "outbound-veil":
+        return "Outbound Veil"
     if product.startswith("kit-"):
         return "Kits"
     if product.startswith("sheet-"):
@@ -3582,7 +3588,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Outbound Veil", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 
