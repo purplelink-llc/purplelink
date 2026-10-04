@@ -4,7 +4,7 @@
   var G = window.PLGames, A = window.PLAch;
   if (!G || !A) return;
   var $ = function (id) { return document.getElementById(id); };
-  var GAMES = [["linkle", "Linkle"], ["quadlink", "Quadlink"], ["daily-five", "Daily Five"], ["daily-photo", "Daily Photo"], ["crossword", "Crossword"]];
+  var GAMES = [["linkle", "Linkle"], ["quadlink", "Quadlink"], ["daily-five", "Daily Five"], ["daily-photo", "Daily Photo"], ["daily-chess", "Daily Chess"], ["sudoku", "Sudoku"], ["crossword", "Crossword"]];
 
   function msg(t) { $("ac-msg").textContent = t || ""; }
   function fmt(sec) { var m = Math.floor(sec / 60), s = sec % 60; return m + ":" + (s < 10 ? "0" : "") + s; }

@@ -8,7 +8,7 @@
 
   var st = {
     key: "", idx: 0, p: null, n: 0, sol: [], cells: [], black: [], entries: [], map: [], // map[r][c] = {a: entryIndex, d: entryIndex}
-    r: 0, c: 0, dir: "across", elapsed: 0, checks: 0, reveals: 0, done: false, wrong: {}, ticking: false, last: 0
+    r: 0, c: 0, dir: "across", auto: false, elapsed: 0, checks: 0, reveals: 0, done: false, wrong: {}, ticking: false, last: 0
   };
 
   function todayKey() {
@@ -177,6 +177,7 @@
     if (st.done || st.black[st.r][st.c]) return;
     st.cells[st.r][st.c] = ch.toUpperCase();
     delete st.wrong[st.r + "," + st.c];
+    if (st.auto && st.cells[st.r][st.c] !== st.sol[st.r][st.c]) st.wrong[st.r + "," + st.c] = 1;
     nextInEntry(1);
     afterEdit();
   }
@@ -204,18 +205,56 @@
   }
 
   // ---- help ----
-  function check() {
-    st.checks += 1; st.wrong = {};
-    var bad = 0;
-    for (var r = 0; r < st.n; r++) for (var c = 0; c < st.n; c++) {
-      if (!st.black[r][c] && st.cells[r][c] && st.cells[r][c] !== st.sol[r][c]) { st.wrong[r + "," + c] = 1; bad++; }
-    }
-    $("cw-status").textContent = bad ? bad + (bad === 1 ? " letter is" : " letters are") + " wrong, shown in red." : "Every letter entered so far is correct.";
+  // scope: "letter" (the selected square), "word" (the selected entry) or "puzzle". Wrong letters are shown in red until changed.
+  function check(scope) {
+    var cells = [];
+    if (scope === "letter") cells = [[st.r, st.c]];
+    else if (scope === "word") { var e = currentEntry(); cells = e ? e.cells : []; }
+    else for (var r = 0; r < st.n; r++) for (var c = 0; c < st.n; c++) if (!st.black[r][c]) cells.push([r, c]);
+    st.checks += 1;
+    var bad = 0, filled = 0;
+    cells.forEach(function (x) {
+      var key = x[0] + "," + x[1], ch = st.cells[x[0]][x[1]];
+      delete st.wrong[key];
+      if (!ch) return;
+      filled++;
+      if (ch !== st.sol[x[0]][x[1]]) { st.wrong[key] = 1; bad++; }
+    });
+    var what = scope === "letter" ? "That letter" : scope === "word" ? "This word" : "The puzzle";
+    $("cw-status").textContent = !filled ? what + " has nothing entered to check yet."
+      : bad ? bad + (bad === 1 ? " letter is" : " letters are") + " wrong, shown in red."
+      : (scope === "letter" ? "That letter is correct." : "Every letter entered so far is correct.");
+    startClock(); persist(); paint();
+  }
+
+  // Auto-check marks a wrong letter the moment it is typed. Like Check, it counts as help.
+  function setAuto(on) {
+    st.auto = on;
+    var s = G.getGame(NAME); s.auto = on; G.setGame(NAME, s);
+    $("cw-auto").setAttribute("aria-pressed", on ? "true" : "false");
+    $("cw-auto").textContent = on ? "Auto-check: on" : "Auto-check: off";
+    if (on) { st.checks += 1; flagWrong(); $("cw-status").textContent = "Auto-check is on: wrong letters turn red as you type."; }
+    else $("cw-status").textContent = "";
     persist(); paint();
+  }
+  function flagWrong() {
+    for (var r = 0; r < st.n; r++) for (var c = 0; c < st.n; c++) {
+      if (!st.black[r][c] && st.cells[r][c] && st.cells[r][c] !== st.sol[r][c]) st.wrong[r + "," + c] = 1;
+    }
   }
   function revealLetter() {
     if (st.done || st.black[st.r][st.c]) return;
     st.reveals += 1; st.cells[st.r][st.c] = st.sol[st.r][st.c]; delete st.wrong[st.r + "," + st.c];
+    afterEdit();
+  }
+  var revealArmed = false;
+  function revealPuzzle() {
+    if (st.done) return;
+    var btn = $("cw-reveal-puzzle");
+    if (!revealArmed) { revealArmed = true; btn.textContent = "Press again to reveal"; window.setTimeout(function () { revealArmed = false; btn.textContent = "Reveal puzzle"; }, 4000); return; }
+    revealArmed = false; btn.textContent = "Reveal puzzle";
+    st.reveals += 1; st.wrong = {};
+    for (var r = 0; r < st.n; r++) for (var c = 0; c < st.n; c++) if (!st.black[r][c]) st.cells[r][c] = st.sol[r][c];
     afterEdit();
   }
   function revealWord() {
@@ -323,9 +362,17 @@
       var v = b.getAttribute("data-key");
       if (v === "back") backspace(); else typeLetter(v);
     });
-    $("cw-check").addEventListener("click", check);
-    $("cw-reveal-letter").addEventListener("click", revealLetter);
-    $("cw-reveal-word").addEventListener("click", revealWord);
+    // After a mouse click on a toolbar button, hand focus back to the grid so typing carries on.
+    function bar(id, fn, keepFocus) {
+      $(id).addEventListener("click", function (e) { fn(); if (!keepFocus && e.detail > 0) { var el = cellEl(st.r, st.c); if (el) el.focus({ preventScroll: true }); } });
+    }
+    bar("cw-check-letter", function () { check("letter"); });
+    bar("cw-check-word", function () { check("word"); });
+    bar("cw-check", function () { check("puzzle"); });
+    bar("cw-auto", function () { setAuto(!st.auto); });
+    bar("cw-reveal-puzzle", revealPuzzle, true);
+    bar("cw-reveal-letter", revealLetter);
+    bar("cw-reveal-word", revealWord);
     $("cw-share").addEventListener("click", function () {
       var text = shareText();
       G.track("game_share", NAME);
@@ -344,7 +391,11 @@
     st.idx = G.dayIndex(new Date(), EPOCH);
     var p = data.days[st.key];
     $("cw-loading").hidden = true;
-    if (!p) { $("cw-missing").hidden = false; return; }
+    if (!p) {
+      var later = Object.keys(data.days).filter(function (k) { return k > st.key; }).sort()[0];
+      if (later) { var dt = new Date(later + "T12:00:00"); $("cw-missing").textContent = "No crossword today. The next one is " + dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) + "."; }
+      $("cw-missing").hidden = false; return;
+    }
     build(p);
     $("cw-number").textContent = p.weekday + ", puzzle " + (st.idx + 1);
     var saved = G.getGame(NAME).today;
@@ -355,6 +406,7 @@
     }
     // the cells string uses "." for empty squares so it keeps its width
     drawGrid(); drawClues(); drawKeys(); wire();
+    if (G.getGame(NAME).auto) { st.auto = true; flagWrong(); $("cw-auto").setAttribute("aria-pressed", "true"); $("cw-auto").textContent = "Auto-check: on"; }
     var first = st.entries[0];
     st.dir = first.dir; st.r = first.cells[0][0]; st.c = first.cells[0][1];
     $("cw-game").hidden = false;

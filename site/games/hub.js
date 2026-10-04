@@ -9,8 +9,10 @@
     ["daily-photo", "Daily Photo", "/games/daily-photo/", 2],
     ["daily-five", "Daily Five", "/games/daily-five/", 2],
     ["daily-stars", "Daily Stars", "/games/daily-stars/", 1],
+    ["daily-chess", "Daily Chess", "/games/daily-chess/", 3],
     ["linkle", "Linkle", "/games/linkle/", 3],
     ["quadlink", "Quadlink", "/games/quadlink/", 5],
+    ["sudoku", "Sudoku", "/games/sudoku/", 12],
     ["crossword", "the crossword", "/games/crossword/", 10]
   ];
 
@@ -35,10 +37,10 @@
     });
 
     var bar = document.getElementById("hub-progress");
-    if (bar) bar.value = n;
+    if (bar) { bar.max = ORDER.length; bar.value = n; }
     var count = document.getElementById("hub-count");
     var next = ORDER.filter(function (g) { return !done[g[0]]; })[0];
-    if (count) count.textContent = n === ORDER.length ? "All six done today. Come back at midnight for new ones." : n + " of " + ORDER.length + " done today.";
+    if (count) count.textContent = n === ORDER.length ? "Everything done today. Come back at midnight for new puzzles." : n + " of " + ORDER.length + " done today.";
     var btn = document.getElementById("hub-next");
     if (btn) {
       if (next) { btn.href = next[2]; btn.textContent = n === 0 ? "Start with " + next[1] : "Next up: " + next[1]; btn.hidden = false; }

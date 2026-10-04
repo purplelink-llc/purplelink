@@ -14,8 +14,8 @@ const RESEND_API_URL = "https://api.resend.com/emails";
 const FROM_ADDRESS = "Purplelink LLC <orders@purplelink.llc>";
 const REPLY_TO = "ben@purplelink.llc";
 const MAX_PER_RUN = 500;
-const NAMES = { linkle: "Linkle", quadlink: "Quadlink", "daily-five": "Daily Five", "daily-photo": "Daily Photo", crossword: "the crossword" };
-const PATHS = { linkle: "linkle", quadlink: "quadlink", "daily-five": "daily-five", "daily-photo": "daily-photo", crossword: "crossword" };
+const NAMES = { linkle: "Linkle", quadlink: "Quadlink", "daily-five": "Daily Five", "daily-photo": "Daily Photo", "daily-chess": "Daily Chess", sudoku: "Sudoku", crossword: "the crossword" };
+const PATHS = { linkle: "linkle", quadlink: "quadlink", "daily-five": "daily-five", "daily-photo": "daily-photo", "daily-chess": "daily-chess", sudoku: "sudoku", crossword: "crossword" };
 
 export function reminderMail(email, acct, token, risks) {
   const top = risks[0];

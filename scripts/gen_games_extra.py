@@ -282,11 +282,36 @@ def photo_days(root: Path, epoch: str, days: int) -> dict:
     return {"epoch": epoch, "days": out}
 
 
+# ---- Daily Chess (Lichess puzzle database, CC0) ----
+def chess_days(src: Path, epoch: str, days: int) -> dict:
+    p = src / "chess-puzzles.json"
+    if not p.exists():
+        return {}
+    bands = json.loads(p.read_text(encoding="utf-8"))["bands"]
+    y, m, d = map(int, epoch.split("-"))
+    start = date(y, m, d)
+    nxt = [0] * 7
+    out = []
+    for i in range(days):
+        wd = (start + timedelta(days=i)).weekday()      # Monday easiest ... Sunday hardest
+        band = bands[wd]
+        pz = band[nxt[wd] % len(band)]
+        nxt[wd] += 1
+        out.append({"i": pz["id"], "f": pz["f"], "m": enc_text(pz["m"]), "r": pz["r"], "t": pz["t"], "g": pz["g"]})
+    return {"epoch": epoch, "days": out}
+
+
 def build(src: Path, epoch: str, days: int, enc) -> dict[str, str]:
     files: dict[str, str] = {}
     t = trivia(src, epoch, days, enc_text)
     if t:
         files["trivia.json"] = json.dumps(t, ensure_ascii=False, separators=(",", ":")) + "\n"
+    ch = chess_days(src, epoch, days)
+    if ch:
+        files["chess.json"] = json.dumps(ch, ensure_ascii=False, separators=(",", ":")) + "\n"
+    sd = src / "sudoku.json"
+    if sd.exists():
+        files["sudoku.json"] = sd.read_text(encoding="utf-8")
     ph = photo_days(src.parent.parent, epoch, 150)   # 150 days is ~280 KB; the page wraps around after that
     if ph:
         files["photo.json"] = json.dumps(ph, ensure_ascii=False, separators=(",", ":")) + "\n"

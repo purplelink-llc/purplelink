@@ -134,7 +134,7 @@
   }
 
   // XP and level are derived from saved progress, so they never drift and need no storage of their own.
-  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "crossword"];
+  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword"];
   function xpOf(all) {
     var xp = 0;
     XP_GAMES.forEach(function (g) {

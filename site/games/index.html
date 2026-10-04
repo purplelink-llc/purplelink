@@ -3,19 +3,25 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="index, follow">
-    <title>Daily games: word puzzles, trivia and horoscopes | Purplelink</title>
-    <meta name="description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, Daily Photo, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <title>Free daily games: Linkle, Sudoku, crossword, chess and more</title>
+    <meta name="description" content="Free daily puzzles from Purplelink: a word game, a four-board word game, trivia, photo geography, chess, Sudoku, a crossword and a horoscope. New every midnight.">
     <link rel="canonical" href="https://purplelink.llc/games/">
-    <meta property="og:title" content="Daily games: word puzzles, trivia and horoscopes">
-    <meta property="og:description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, Daily Photo, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
+    <meta property="og:title" content="Free daily games: Linkle, Sudoku, crossword, chess and more">
+    <meta property="og:description" content="Free daily puzzles from Purplelink: a word game, a four-board word game, trivia, photo geography, chess, Sudoku, a crossword and a horoscope. New every midnight.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/games/">
-    <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
+    <meta property="og:site_name" content="Purplelink">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/games-hub.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Purplelink&#x27;s free daily games">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Daily games: word puzzles, trivia and horoscopes">
-    <meta name="twitter:description" content="Free daily games from Purplelink: Linkle, Quadlink, Daily Five trivia, Daily Photo, a daily crossword and Daily Stars. New puzzles every day, no third-party ads, no account needed.">
-    <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
+    <meta name="twitter:title" content="Free daily games: Linkle, Sudoku, crossword, chess and more">
+    <meta name="twitter:description" content="Free daily puzzles from Purplelink: a word game, a four-board word game, trivia, photo geography, chess, Sudoku, a crossword and a horoscope. New every midnight.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/games-hub.png">
+    <meta name="twitter:image:alt" content="Purplelink&#x27;s free daily games">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -24,7 +30,67 @@
           "@type": "CollectionPage",
           "name": "Daily games",
           "url": "https://purplelink.llc/games/",
-          "description": "Free daily word games, trivia and horoscopes from Purplelink."
+          "description": "Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account, and there are no third-party ads.",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".game-lede",
+              "h1"
+            ]
+          },
+          "mainEntity": {
+            "@type": "ItemList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Linkle",
+                "url": "https://purplelink.llc/games/linkle/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Quadlink",
+                "url": "https://purplelink.llc/games/quadlink/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Daily Five",
+                "url": "https://purplelink.llc/games/daily-five/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Daily Photo",
+                "url": "https://purplelink.llc/games/daily-photo/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "name": "Daily Chess",
+                "url": "https://purplelink.llc/games/daily-chess/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 6,
+                "name": "Sudoku",
+                "url": "https://purplelink.llc/games/sudoku/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 7,
+                "name": "Daily Crossword",
+                "url": "https://purplelink.llc/games/crossword/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 8,
+                "name": "Daily Stars",
+                "url": "https://purplelink.llc/games/daily-stars/"
+              }
+            ]
+          }
         },
         {
           "@type": "FAQPage",
@@ -90,7 +156,7 @@
     <script src="/theme.js?v=e7bc0b7c72"></script>
     <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/games/games.css?v=046488f52a">
+    <link rel="stylesheet" href="/games/games.css?v=737bab1292">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -116,13 +182,14 @@
         <section class="games-hero">
           <p class="eyebrow">Free, daily</p>
           <h1>Daily games</h1>
-          <p>A few quick puzzles that change every day at midnight. No third-party ads. Play without an account, or sign in with an email link to keep your streaks and achievements on every device.</p>
+          <p class="game-lede">Purplelink&#x27;s daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account, and there are no third-party ads.</p>
+          <p>Sign in with an email link if you want your streaks and achievements on every device.</p>
         </section>
         <section class="hub-today" aria-labelledby="hub-today-h">
           <div class="hub-today-main">
             <h2 id="hub-today-h">Today</h2>
-            <p class="hub-count" id="hub-count">Six puzzles, a few minutes each.</p>
-            <progress id="hub-progress" max="6" value="0" aria-label="Puzzles finished today"></progress>
+            <p class="hub-count" id="hub-count">Eight puzzles, a few minutes each.</p>
+            <progress id="hub-progress" max="8" value="0" aria-label="Puzzles finished today"></progress>
             <p class="hub-level" id="hub-level"></p>
             <p class="games-note">Streak saver: miss one day a week and your streak survives.</p>
           </div>
@@ -153,6 +220,18 @@
             <p>Five travel photographs. Which country was each one taken in?</p>
             <span class="game-status" data-status></span>
           </a>
+          <a class="game-card" href="/games/daily-chess/" data-game="daily-chess">
+            <img class="game-card-art" src="/assets/photography/hub/dsc-6626-edit-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
+            <h2>Daily Chess</h2>
+            <p>A tactics puzzle from the Lichess database, easier on Monday and harder through the week.</p>
+            <span class="game-status" data-status></span>
+          </a>
+          <a class="game-card" href="/games/sudoku/" data-game="sudoku">
+            <img class="game-card-art" src="/assets/photography/hub/dsc-4267-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
+            <h2>Sudoku</h2>
+            <p>One solution, and harder every week across a ten-week season.</p>
+            <span class="game-status" data-status></span>
+          </a>
           <a class="game-card" href="/games/crossword/" data-game="crossword">
             <img class="game-card-art" src="/assets/photography/hub/dsc-7919-480.webp" alt="" width="480" height="320" loading="lazy" decoding="async">
             <h2>Daily Crossword</h2>
@@ -168,6 +247,21 @@
         </div>
         <p class="games-note"><span id="hub-ach"></span><a href="/games/account/">Your stats, achievements and sign-in</a></p>
         <div class="games-prose">
+          <h2>The daily games at a glance</h2>
+          <table class="games-table">
+            <thead><tr><th scope="col">Game</th><th scope="col">What it is</th><th scope="col">Time</th></tr></thead>
+            <tbody>
+              <tr><th scope="row"><a href="/games/linkle/">Linkle</a></th><td>Linkle is a free daily word game.</td><td>About 3 min</td></tr>
+              <tr><th scope="row"><a href="/games/quadlink/">Quadlink</a></th><td>Quadlink is a free daily word game where you solve four hidden five-letter words at once in nine guesses.</td><td>About 5 min</td></tr>
+              <tr><th scope="row"><a href="/games/daily-five/">Daily Five</a></th><td>Daily Five is a free daily trivia quiz with five multiple-choice questions.</td><td>About 2 min</td></tr>
+              <tr><th scope="row"><a href="/games/daily-photo/">Daily Photo</a></th><td>Daily Photo is a free daily geography game.</td><td>About 2 min</td></tr>
+              <tr><th scope="row"><a href="/games/daily-chess/">Daily Chess</a></th><td>Daily Chess is a free daily chess tactics puzzle drawn from the Lichess puzzle database.</td><td>About 3 min</td></tr>
+              <tr><th scope="row"><a href="/games/sudoku/">Sudoku</a></th><td>Daily Sudoku is a free daily Sudoku with exactly one solution.</td><td>About 12 min</td></tr>
+              <tr><th scope="row"><a href="/games/crossword/">Daily Crossword</a></th><td>Daily Crossword is a free daily themeless crossword puzzle.</td><td>About 10 min</td></tr>
+              <tr><th scope="row"><a href="/games/daily-stars/">Daily Stars</a></th><td>Daily Stars is a free daily horoscope with a short reading for each of the twelve zodiac signs.</td><td>About 1 min</td></tr>
+            </tbody>
+          </table>
+          <p>Every puzzle changes at midnight in your own time zone, so everyone sees the same puzzle on the same calendar date. Difficulty rises through the week in Linkle, the crossword and Daily Chess, and rises by season in Sudoku.</p>
           <h2>Questions</h2>
           <h3>Are the games free?</h3>
           <p>Yes. You can play every game without signing in, and there are no third-party ads, only an occasional small notice about one of our own apps. An optional email-link sign-in keeps your streaks and achievements across devices.</p>
@@ -181,10 +275,10 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=4c7b664fd9" defer></script>
+    <script src="/games/core.js?v=1ec0fafbb1" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=2316f25ec7" defer></script>
-    <script src="/games/hub.js?v=119b89dd15" defer></script>
+    <script src="/games/achievements.js?v=5b3ebc28ff" defer></script>
+    <script src="/games/hub.js?v=4dd7068161" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

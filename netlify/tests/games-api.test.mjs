@@ -205,3 +205,15 @@ test("reminder unsubscribe link switches it off; wrong token does not", async ()
   assert.equal((await call({ action: "remind_off", acct: hash, token: rec.remindToken })).status, 200);
   assert.equal(JSON.parse(stores.data.get(acct)).remind, false);
 });
+
+test("chess and sudoku progress survives cleanData; junk is dropped", () => {
+  const cells = "5".repeat(40) + ".".repeat(41);
+  const out = cleanData({
+    sudoku: { today: { idx: 3, cells, notes: [0, 5, 7], elapsed: 90, done: false } },
+    "daily-chess": { today: { idx: 3, ply: 2, mistakes: 1, hints: 0, done: false } },
+  });
+  assert.equal(out.sudoku.today.cells, cells);
+  assert.equal(out["daily-chess"].today.mistakes, 1);
+  const bad = cleanData({ sudoku: { today: { idx: 3, cells: "<script>", done: false } } });
+  assert.ok(!bad.sudoku.today.cells);
+});

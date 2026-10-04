@@ -19,6 +19,7 @@ DATA = Path(__file__).resolve().parent.parent / "site" / "games" / "data"
 LONG_MIN = 60      # days ahead for generated games
 STARS_MIN = 5      # days ahead for the horoscope buffer
 STARS_FAIL = 0     # strict mode fails at or below this
+SUDOKU_MIN = 21    # days of Sudoku ahead (generation takes minutes, so the buffer is shorter)
 CW_MIN = 4         # days of clued crosswords ahead
 
 
@@ -33,7 +34,7 @@ def main() -> int:
     problems: list[str] = []
     notes: list[str] = []
 
-    for name, key in (("linkle.json", "answers"), ("quadlink.json", "days"), ("trivia.json", "days"), ("photo.json", "days")):
+    for name, key in (("linkle.json", "answers"), ("quadlink.json", "days"), ("trivia.json", "days"), ("photo.json", "days"), ("chess.json", "days"), ("sudoku.json", "days")):
         p = DATA / name
         if not p.exists():
             problems.append(f"{name}: missing")
@@ -43,6 +44,15 @@ def main() -> int:
         notes.append(f"{name}: {left} days ahead")
         if name == "photo.json":
             continue   # wraps around after 150 days by design
+        if name == "sudoku.json":
+            if left < SUDOKU_MIN:
+                problems.append(f"sudoku.json: only {left} days of puzzles ahead (need {SUDOKU_MIN}); run scripts/gen_sudoku.py --days N")
+            continue
+        if name == "chess.json":
+            for i, day in enumerate(d[key]):
+                if not day.get("f") or not day.get("m"):
+                    problems.append(f"chess.json: day {i} is malformed")
+                    break
         if left < LONG_MIN:
             problems.append(f"{name}: only {left} days of puzzles ahead (need {LONG_MIN})")
         if name == "quadlink.json":
