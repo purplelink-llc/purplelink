@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Audio, Img, Sequence, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { brand, clamp01, expoOut, lerp, FONT_BODY } from "./theme.js";
 import { Stage, TitleCard, EndCard, LowerThird, useFonts } from "./V2.jsx";
 import { PRODUCTS } from "./products/index.js";
@@ -51,6 +51,13 @@ function StillLayer({ stills }) {
         if (j < i - 1) return null;
         const o = j === 0 ? 1 : expoOut(clamp01((t - s.t0) / XF));
         const y = -scrollAt(s, t);
+        if (s.video) {
+          return (
+            <Sequence key={j} from={Math.round(s.t0 * brand.fps)} layout="none">
+              <OffthreadVideo src={staticFile(s.src)} startFrom={Math.round((s.trim || 0) * brand.fps)} playbackRate={s.rate || 1} muted style={{ position: "absolute", left: 0, top: y, width: s.w, height: s.h, opacity: o, display: "block" }} />
+            </Sequence>
+          );
+        }
         return <Img key={j} src={staticFile(s.src)} style={{ position: "absolute", left: 0, top: y, width: s.w, height: s.h, opacity: o, display: "block" }} />;
       })}
     </>

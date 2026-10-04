@@ -1,0 +1,31 @@
+{
+  "id": "outbound-veil-promo",
+  "title": "Outbound Veil promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Pasting client details into an AI chat takes a second."
+    },
+    {
+      "narration": "Outbound Veil watches the field you are typing in, on your Mac, and marks personal details as you type."
+    },
+    {
+      "narration": "Names, birth dates, Social Security, phone, email and card numbers are marked right where they are."
+    },
+    {
+      "narration": "Open the list and redact everything in one click, or ignore a finding. Nothing you type leaves your Mac."
+    },
+    {
+      "narration": "Free for seven days, then twenty-nine dollars, once. macOS 14 or later."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
