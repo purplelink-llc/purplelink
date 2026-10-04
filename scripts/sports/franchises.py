@@ -1,0 +1,46 @@
+"""Franchise maps. Each entry: id, display name (current), abbreviation, substrings that identify it in a Wikipedia team label
+(including combined labels like 'Philadelphia / San Francisco Warriors'). A relocated or renamed club is one franchise, so
+players who shared a locker room count as teammates whatever the city was called."""
+NBA = [
+ ("ATL", "Atlanta Hawks", ["hawks", "tri-cities"]),
+ ("BOS", "Boston Celtics", ["celtics"]),
+ ("BKN", "Brooklyn Nets", ["nets"]),
+ ("CHA", "Charlotte Hornets", ["bobcats"]),
+ ("CHI", "Chicago Bulls", ["bulls"]),
+ ("CLE", "Cleveland Cavaliers", ["cavaliers"]),
+ ("DAL", "Dallas Mavericks", ["mavericks"]),
+ ("DEN", "Denver Nuggets", ["nuggets"]),
+ ("DET", "Detroit Pistons", ["pistons"]),
+ ("GSW", "Golden State Warriors", ["warriors"]),
+ ("HOU", "Houston Rockets", ["rockets"]),
+ ("IND", "Indiana Pacers", ["pacers"]),
+ ("LAC", "Los Angeles Clippers", ["clippers", "buffalo braves"]),
+ ("LAL", "Los Angeles Lakers", ["lakers"]),
+ ("MEM", "Memphis Grizzlies", ["grizzlies"]),
+ ("MIA", "Miami Heat", ["heat"]),
+ ("MIL", "Milwaukee Bucks", ["bucks"]),
+ ("MIN", "Minnesota Timberwolves", ["timberwolves"]),
+ ("NOP", "New Orleans Pelicans", ["pelicans", "new orleans hornets", "oklahoma city hornets"]),
+ ("NYK", "New York Knicks", ["knicks"]),
+ ("OKC", "Oklahoma City Thunder", ["thunder", "supersonics"]),
+ ("ORL", "Orlando Magic", ["magic"]),
+ ("PHI", "Philadelphia 76ers", ["76ers", "syracuse nationals"]),
+ ("PHX", "Phoenix Suns", ["suns"]),
+ ("POR", "Portland Trail Blazers", ["trail blazers"]),
+ ("SAC", "Sacramento Kings", ["kings", "royals"]),
+ ("SAS", "San Antonio Spurs", ["spurs", "chaparrals"]),
+ ("TOR", "Toronto Raptors", ["raptors"]),
+ ("UTA", "Utah Jazz", ["jazz"]),
+ ("WAS", "Washington Wizards", ["wizards", "bullets"]),
+ # defunct or merged clubs kept as their own teams
+ ("MNL", "Minneapolis Lakers", []),
+ ("ABA-VIR", "Virginia Squires", ["squires"]),
+ ("ABA-UTS", "Utah Stars", ["utah stars"]),
+ ("ABA-KEN", "Kentucky Colonels", ["colonels"]),
+ ("ABA-SSL", "Spirits of St. Louis", ["spirits of st"]),
+ ("ABA-SDC", "San Diego Conquistadors", ["conquistadors"]),
+ ("ABA-CAR", "Carolina Cougars", ["cougars"]),
+ ("ABA-OAK", "Oakland Oaks / Washington Caps", ["oakland oaks", "washington caps"]),
+]
+# labels that look like an NBA club name but are not (keep them out)
+NOT_NBA = ["g league", "gold", "rollers", "raptors 905", "jam", "blue coats", "stars", "sizzlers", "bobcats / h"][:0]
