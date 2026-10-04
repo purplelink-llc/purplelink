@@ -286,9 +286,18 @@ async function emailDownloadLink(to, sessionId, productKey) {
     ? `<p>That page has three things: the ModernTex download, the Outbound Veil download, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
+  // Outbound Veil: the one step new users trip on is macOS Accessibility, so point at the setup guide.
+  const startUrl = `${SITE_ORIGIN}/outbound-veil/start/`;
+  const startText = productKey === "outbound-veil"
+    ? `New to it? The first ten minutes, including the macOS Accessibility permission:\n${startUrl}\n\n`
+    : "";
+  const startHtml = productKey === "outbound-veil"
+    ? `<p>New to it? <a href="${startUrl}">The first ten minutes</a>, including the macOS Accessibility permission.</p>`
+    : "";
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
+    startText +
     suiteText +
     licenseTextBlock +
     `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
@@ -298,6 +307,7 @@ async function emailDownloadLink(to, sessionId, productKey) {
   const html =
     `<p>Thanks for buying ${entry.name}.</p>` +
     `<p><a href="${link}">Open your download page</a></p>` +
+    startHtml +
     suiteHtml +
     licenseHtmlBlock +
     `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +

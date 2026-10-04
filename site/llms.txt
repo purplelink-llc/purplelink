@@ -48,6 +48,7 @@
 - **Limits:** Latin-script names only; it also flags public figures' names; it will miss some things. It lowers the chance of a mistake and is not a compliance product.
 - **Credit:** The detection model is Rampart by National Design Studio (CC BY 4.0), https://github.com/nationaldesignstudio/rampart. Purplelink ported its processing code to Swift and added rules for dates of birth, medical record numbers and IBANs; the model file is unchanged.
 - **Trial and purchase:** https://purplelink.llc/outbound-veil/
+- **Setup guide:** https://purplelink.llc/outbound-veil/start/ (first ten minutes: install, Accessibility, a first check on a made-up note, redacting, choosing apps, trial and updates)
 
 ### Vitae (macOS)
 - **Platform:** macOS 15 (Sequoia) or later
