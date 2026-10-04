@@ -31,6 +31,9 @@
 [data-g="citylink"] { --gh: 232; }
 [data-g="peaklink"] { --gh: 175; }
 [data-g="codelink"] { --gh: 335; }
+[data-g="thinkerlink"] { --gh: 298; }
+[data-g="riverlink"] { --gh: 205; }
+[data-g="wildlink"] { --gh: 40; }
 
 .gl { width: 1.5em; height: 1.5em; flex: none; }
 .gl-sm { width: 1em; height: 1em; }

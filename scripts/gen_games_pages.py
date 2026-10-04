@@ -146,7 +146,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
 
 
 EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
-MORE_DAILY = ["landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink"]
+MORE_DAILY = ["landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
@@ -160,6 +160,9 @@ TAGLINE = {
     "daily-stars": "A short horoscope for every sign, for entertainment.",
     "landlink": "Guess the country from seven comparable facts.",
     "citylink": "Guess the city, with latitude and longitude arrows as a compass.",
+    "thinkerlink": "Guess the scientist from field, era and birthplace.",
+    "riverlink": "Guess the river from its length, countries and where it flows.",
+    "wildlink": "Guess the animal from its diet, home, weight and lifespan.",
     "peaklink": "Guess the mountain from height, place and volcano clues.",
     "codelink": "Guess the programming language from its design.",
     "atomlink": "Guess the element from its place on the periodic table.",
@@ -168,7 +171,7 @@ TAGLINE = {
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
     "leaderboard": "The top ratings in chess and Sudoku, and this week's climbers.",
 }
-MINUTES = {"citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
@@ -1093,6 +1096,24 @@ attr_page("codelink", "Codelink", "a programming language", [
     ("Why can one language have several styles?", "Many languages mix object-oriented, functional and procedural styles. Sharing some but not all shows as close."),
 ], "", "Language facts: compiled by Purplelink from official documentation.")
 
+attr_page("thinkerlink", "Thinkerlink", "a scientist", [
+    ("Where does the data come from?", "From a table we wrote and checked by hand: each scientist's field, birth and death years, birthplace and gender, using standard references."),
+    ("Which scientists can be the answer?", "All 131, from Andreas Vesalius to Geoffrey Hinton. Each is assigned to one main field, even though many worked across several."),
+    ("How is the country decided?", "It is the country that contains the birthplace today, so someone born in Breslau is listed as born in Poland."),
+], "", "Scientist data: compiled by Purplelink from standard references.")
+
+attr_page("riverlink", "Riverlink", "a river", [
+    ("Where does the data come from?", "From Wikidata (CC0): length, the countries a river runs through and what it flows into, for well-documented rivers. Continents come from Natural Earth (public domain)."),
+    ("What does 'Ends at' mean?", "Whether the river flows into a sea or ocean, a lake, or another river."),
+    ("Why do some rivers share countries?", "Many rivers cross borders. Sharing at least one country with the answer shows as close."),
+], "", "River data: <a href=\"https://www.wikidata.org/\" rel=\"noopener\">Wikidata</a> (CC0) and <a href=\"https://www.naturalearthdata.com/\" rel=\"noopener\">Natural Earth</a> (public domain).")
+
+attr_page("wildlink", "Wildlink", "an animal", [
+    ("Where does the data come from?", "From a table we wrote and checked by hand, using typical adult weights and lifespans from standard field guides."),
+    ("Why might a weight or lifespan look different from what I know?", "Both vary a lot within a species. The table uses typical adult values for the wild, not records."),
+    ("What does 'Lives in' mean?", "The main kind of place the animal lives: grassland, forest, mountains, desert, polar regions, ocean, fresh water or wetlands."),
+], "", "Animal data: compiled by Purplelink from standard field guides.")
+
 # ---------------- Account ----------------
 ACCT_BODY = """      <div class="games-wrap">
         <div class="game-head">
@@ -1197,7 +1218,7 @@ HUB_BODY = """      <div class="games-wrap hub">
 """ + "".join(tile(sl) for sl in ORDER) + """        </div>
         <section class="more" aria-labelledby="more2-h">
           <h2 id="more2-h">More daily puzzles</h2>
-          <p class="week-sub">Guess the country, element or Nobel laureate from comparable facts. They keep streaks and XP but are not part of the daily run.</p>
+          <p class="week-sub">Guess a country, element, laureate, city, mountain, language, scientist, river or animal from comparable facts. They keep streaks and XP but are not part of the daily run.</p>
           <div class="tiles">
 """ + "".join(tile(sl) for sl in MORE_DAILY) + """          </div>
         </section>

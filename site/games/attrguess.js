@@ -24,6 +24,10 @@
     switch (col.f) {
       case "lat": return Math.abs(v).toFixed(1) + "\u00b0" + (v >= 0 ? "N" : "S");
       case "lon": return Math.abs(v).toFixed(1) + "\u00b0" + (v >= 0 ? "E" : "W");
+      case "life": return v === null ? "Living" : v + " yrs";
+      case "km": return Math.round(v).toLocaleString("en-US") + " km";
+      case "kg": return v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1).replace(/\.0$/, "") + " t" : v >= 1 ? (Math.round(v * 10) / 10) + " kg" : Math.round(v * 1000) + " g";
+      case "yrs": return v + " yrs";
       case "m": return Math.round(v).toLocaleString("en-US") + " m";
       case "pop": return compact(v);
       case "area": return compact(v) + " km²";

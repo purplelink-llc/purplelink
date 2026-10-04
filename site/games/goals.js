@@ -25,7 +25,10 @@
     { id: "prizelink", name: "Prizelink", path: "/games/prizelink/", min: 3, kind: "guess" },
     { id: "citylink", name: "Citylink", path: "/games/citylink/", min: 3, kind: "guess" },
     { id: "peaklink", name: "Peaklink", path: "/games/peaklink/", min: 3, kind: "guess" },
-    { id: "codelink", name: "Codelink", path: "/games/codelink/", min: 3, kind: "guess" }
+    { id: "codelink", name: "Codelink", path: "/games/codelink/", min: 3, kind: "guess" },
+    { id: "thinkerlink", name: "Thinkerlink", path: "/games/thinkerlink/", min: 3, kind: "guess" },
+    { id: "riverlink", name: "Riverlink", path: "/games/riverlink/", min: 3, kind: "guess" },
+    { id: "wildlink", name: "Wildlink", path: "/games/wildlink/", min: 3, kind: "guess" }
   ];
   var BY = {}; GAMES.concat(MORE).forEach(function (g) { BY[g.id] = g; });
   var QUICK_FIRST = ["daily-stars", "daily-photo", "daily-five", "daily-chess", "linkle", "quadlink", "crossword", "sudoku"];

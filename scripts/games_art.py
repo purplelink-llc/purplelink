@@ -221,7 +221,33 @@ def codelink():
     return "".join(out)
 
 
-ART = {"citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
+def thinkerlink():
+    out = [OPEN]
+    out.append('<g class="mv"><path class="a2" d="M82 18h36v34l34 62a8 8 0 0 1-7 12H55a8 8 0 0 1-7-12l34-62z"/><path class="a1" d="M64 92h72l16 30a8 8 0 0 1-7 12H55a8 8 0 0 1-7-12z" opacity=".95"/><rect class="a5" x="78" y="12" width="44" height="10" rx="5"/></g>')
+    out.append('<g class="mv2"><circle class="a5" cx="96" cy="110" r="6"/><circle class="a5" cx="116" cy="100" r="4.5"/><circle class="a5" cx="108" cy="122" r="3.5"/></g>')
+    out.append('<g class="mv2"><circle class="a5" cx="150" cy="30" r="5" opacity=".8"/><circle class="a5" cx="168" cy="52" r="3.5" opacity=".7"/><circle class="a2" cx="34" cy="40" r="4"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def riverlink():
+    out = [OPEN, '<path class="a2" d="M0 120c30-20 50-6 74-24s30-40 60-48 50 6 66-6V140H0z"/>']
+    out.append('<path class="a6" d="M16 20c28 6 24 28 50 34s40-8 62 6 24 40 62 46" style="stroke-width:12"/>'.replace(' style="stroke-width:12"', ''))
+    out.append('<g class="mv"><path class="a5" d="M146 30l10 14-10 14-10-14z" opacity=".95"/></g>')
+    out.append('<g class="mv2"><circle class="a5" cx="44" cy="96" r="5" opacity=".8"/><circle class="a5" cx="168" cy="104" r="4" opacity=".7"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def wildlink():
+    out = [OPEN]
+    out.append('<g class="mv"><ellipse class="a1" cx="100" cy="92" rx="40" ry="32"/><ellipse class="a1" cx="44" cy="62" rx="16" ry="21" transform="rotate(-20 44 62)"/><ellipse class="a1" cx="80" cy="28" rx="16" ry="23"/><ellipse class="a1" cx="122" cy="28" rx="16" ry="23"/><ellipse class="a1" cx="158" cy="62" rx="16" ry="21" transform="rotate(20 158 62)"/></g>')
+    out.append('<g class="mv2"><circle class="a5" cx="30" cy="112" r="5"/><circle class="a5" cx="176" cy="108" r="4"/><circle class="a2" cx="170" cy="22" r="5"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+ART = {"thinkerlink": thinkerlink, "riverlink": riverlink, "wildlink": wildlink, "citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
        "daily-chess": daily_chess, "sudoku": sudoku, "crossword": crossword, "daily-stars": daily_stars}
 
 

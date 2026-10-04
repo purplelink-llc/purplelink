@@ -261,9 +261,161 @@ WELL_KNOWN_LANGS = {"Assembly", "Bash", "BASIC", "C", "C++", "C#", "COBOL", "Dar
                     "Swift", "TypeScript", "Visual Basic", "Zig", "Clojure", "Ada", "Delphi", "Racket", "F#", "Groovy", "Nim", "Solidity"}
 
 
+# ---------------- scientists (curated here) ----------------
+# name, field, born, died (None if living), country of birth as named today, gender
+SCI = [
+    ("Albert Einstein", "Physics", 1879, 1955, "Germany", "Male"), ("Isaac Newton", "Physics", 1643, 1727, "United Kingdom", "Male"), ("Marie Curie", "Physics", 1867, 1934, "Poland", "Female"),
+    ("Niels Bohr", "Physics", 1885, 1962, "Denmark", "Male"), ("Max Planck", "Physics", 1858, 1947, "Germany", "Male"), ("Richard Feynman", "Physics", 1918, 1988, "United States", "Male"),
+    ("Stephen Hawking", "Physics", 1942, 2018, "United Kingdom", "Male"), ("Galileo Galilei", "Physics", 1564, 1642, "Italy", "Male"), ("Michael Faraday", "Physics", 1791, 1867, "United Kingdom", "Male"),
+    ("James Clerk Maxwell", "Physics", 1831, 1879, "United Kingdom", "Male"), ("Erwin Schr\u00f6dinger", "Physics", 1887, 1961, "Austria", "Male"), ("Werner Heisenberg", "Physics", 1901, 1976, "Germany", "Male"),
+    ("Enrico Fermi", "Physics", 1901, 1954, "Italy", "Male"), ("J. Robert Oppenheimer", "Physics", 1904, 1967, "United States", "Male"), ("Paul Dirac", "Physics", 1902, 1984, "United Kingdom", "Male"),
+    ("Ernest Rutherford", "Physics", 1871, 1937, "New Zealand", "Male"), ("Lise Meitner", "Physics", 1878, 1968, "Austria", "Female"), ("Nikola Tesla", "Physics", 1856, 1943, "Croatia", "Male"),
+    ("Heinrich Hertz", "Physics", 1857, 1894, "Germany", "Male"), ("Lord Kelvin", "Physics", 1824, 1907, "United Kingdom", "Male"), ("Blaise Pascal", "Physics", 1623, 1662, "France", "Male"),
+    ("Christiaan Huygens", "Physics", 1629, 1695, "Netherlands", "Male"), ("Alessandro Volta", "Physics", 1745, 1827, "Italy", "Male"), ("Andr\u00e9-Marie Amp\u00e8re", "Physics", 1775, 1836, "France", "Male"),
+    ("Georg Ohm", "Physics", 1789, 1854, "Germany", "Male"), ("Wilhelm R\u00f6ntgen", "Physics", 1845, 1923, "Germany", "Male"), ("Max Born", "Physics", 1882, 1970, "Poland", "Male"),
+    ("Wolfgang Pauli", "Physics", 1900, 1958, "Austria", "Male"), ("Murray Gell-Mann", "Physics", 1929, 2019, "United States", "Male"), ("Peter Higgs", "Physics", 1929, 2024, "United Kingdom", "Male"),
+    ("Kip Thorne", "Physics", 1940, None, "United States", "Male"), ("Roger Penrose", "Physics", 1931, None, "United Kingdom", "Male"), ("Chien-Shiung Wu", "Physics", 1912, 1997, "China", "Female"),
+    ("Antoine Lavoisier", "Chemistry", 1743, 1794, "France", "Male"), ("Dmitri Mendeleev", "Chemistry", 1834, 1907, "Russia", "Male"), ("Linus Pauling", "Chemistry", 1901, 1994, "United States", "Male"),
+    ("Rosalind Franklin", "Chemistry", 1920, 1958, "United Kingdom", "Female"), ("Robert Boyle", "Chemistry", 1627, 1691, "Ireland", "Male"), ("John Dalton", "Chemistry", 1766, 1844, "United Kingdom", "Male"),
+    ("Joseph Priestley", "Chemistry", 1733, 1804, "United Kingdom", "Male"), ("Humphry Davy", "Chemistry", 1778, 1829, "United Kingdom", "Male"), ("Svante Arrhenius", "Chemistry", 1859, 1927, "Sweden", "Male"),
+    ("Fritz Haber", "Chemistry", 1868, 1934, "Poland", "Male"), ("Dorothy Hodgkin", "Chemistry", 1910, 1994, "Egypt", "Female"), ("J\u00f6ns Jacob Berzelius", "Chemistry", 1779, 1848, "Sweden", "Male"),
+    ("Frederick Sanger", "Chemistry", 1918, 2013, "United Kingdom", "Male"), ("Jennifer Doudna", "Chemistry", 1964, None, "United States", "Female"), ("Ahmed Zewail", "Chemistry", 1946, 2016, "Egypt", "Male"),
+    ("Charles Darwin", "Biology", 1809, 1882, "United Kingdom", "Male"), ("Gregor Mendel", "Biology", 1822, 1884, "Czechia", "Male"), ("Louis Pasteur", "Biology", 1822, 1895, "France", "Male"),
+    ("Carl Linnaeus", "Biology", 1707, 1778, "Sweden", "Male"), ("Jane Goodall", "Biology", 1934, 2025, "United Kingdom", "Female"), ("Rachel Carson", "Biology", 1907, 1964, "United States", "Female"),
+    ("Alexander Fleming", "Biology", 1881, 1955, "United Kingdom", "Male"), ("Francis Crick", "Biology", 1916, 2004, "United Kingdom", "Male"), ("James Watson", "Biology", 1928, 2025, "United States", "Male"),
+    ("Barbara McClintock", "Biology", 1902, 1992, "United States", "Female"), ("E. O. Wilson", "Biology", 1929, 2021, "United States", "Male"), ("Richard Dawkins", "Biology", 1941, None, "Kenya", "Male"),
+    ("Alfred Russel Wallace", "Biology", 1823, 1913, "United Kingdom", "Male"), ("Jean-Baptiste Lamarck", "Biology", 1744, 1829, "France", "Male"), ("Alexander von Humboldt", "Biology", 1769, 1859, "Germany", "Male"),
+    ("Robert Hooke", "Biology", 1635, 1703, "United Kingdom", "Male"), ("Antonie van Leeuwenhoek", "Biology", 1632, 1723, "Netherlands", "Male"), ("Ivan Pavlov", "Biology", 1849, 1936, "Russia", "Male"),
+    ("Edward Jenner", "Medicine", 1749, 1823, "United Kingdom", "Male"), ("Joseph Lister", "Medicine", 1827, 1912, "United Kingdom", "Male"), ("Robert Koch", "Medicine", 1843, 1910, "Germany", "Male"),
+    ("Jonas Salk", "Medicine", 1914, 1995, "United States", "Male"), ("William Harvey", "Medicine", 1578, 1657, "United Kingdom", "Male"), ("Andreas Vesalius", "Medicine", 1514, 1564, "Belgium", "Male"),
+    ("Paul Ehrlich", "Medicine", 1854, 1915, "Poland", "Male"), ("Santiago Ram\u00f3n y Cajal", "Medicine", 1852, 1934, "Spain", "Male"), ("Elizabeth Blackwell", "Medicine", 1821, 1910, "United Kingdom", "Female"),
+    ("Carl Friedrich Gauss", "Mathematics", 1777, 1855, "Germany", "Male"), ("Leonhard Euler", "Mathematics", 1707, 1783, "Switzerland", "Male"), ("Pierre de Fermat", "Mathematics", 1607, 1665, "France", "Male"),
+    ("Ren\u00e9 Descartes", "Mathematics", 1596, 1650, "France", "Male"), ("Bernhard Riemann", "Mathematics", 1826, 1866, "Germany", "Male"), ("Srinivasa Ramanujan", "Mathematics", 1887, 1920, "India", "Male"),
+    ("Emmy Noether", "Mathematics", 1882, 1935, "Germany", "Female"), ("Kurt G\u00f6del", "Mathematics", 1906, 1978, "Czechia", "Male"), ("David Hilbert", "Mathematics", 1862, 1943, "Russia", "Male"),
+    ("\u00c9variste Galois", "Mathematics", 1811, 1832, "France", "Male"), ("Georg Cantor", "Mathematics", 1845, 1918, "Russia", "Male"), ("Henri Poincar\u00e9", "Mathematics", 1854, 1912, "France", "Male"),
+    ("John von Neumann", "Mathematics", 1903, 1957, "Hungary", "Male"), ("Andrew Wiles", "Mathematics", 1953, None, "United Kingdom", "Male"), ("Terence Tao", "Mathematics", 1975, None, "Australia", "Male"),
+    ("Maryam Mirzakhani", "Mathematics", 1977, 2017, "Iran", "Female"), ("Joseph-Louis Lagrange", "Mathematics", 1736, 1813, "Italy", "Male"), ("Pierre-Simon Laplace", "Mathematics", 1749, 1827, "France", "Male"),
+    ("Sophie Germain", "Mathematics", 1776, 1831, "France", "Female"), ("Katherine Johnson", "Mathematics", 1918, 2020, "United States", "Female"), ("Paul Erd\u0151s", "Mathematics", 1913, 1996, "Hungary", "Male"),
+    ("Nicolaus Copernicus", "Astronomy", 1473, 1543, "Poland", "Male"), ("Johannes Kepler", "Astronomy", 1571, 1630, "Germany", "Male"), ("Tycho Brahe", "Astronomy", 1546, 1601, "Sweden", "Male"),
+    ("Edwin Hubble", "Astronomy", 1889, 1953, "United States", "Male"), ("Carl Sagan", "Astronomy", 1934, 1996, "United States", "Male"), ("Edmond Halley", "Astronomy", 1656, 1742, "United Kingdom", "Male"),
+    ("William Herschel", "Astronomy", 1738, 1822, "Germany", "Male"), ("Caroline Herschel", "Astronomy", 1750, 1848, "Germany", "Female"), ("Henrietta Swan Leavitt", "Astronomy", 1868, 1921, "United States", "Female"),
+    ("Vera Rubin", "Astronomy", 1928, 2016, "United States", "Female"), ("Subrahmanyan Chandrasekhar", "Astronomy", 1910, 1995, "Pakistan", "Male"), ("Neil deGrasse Tyson", "Astronomy", 1958, None, "United States", "Male"),
+    ("Annie Jump Cannon", "Astronomy", 1863, 1941, "United States", "Female"), ("Cecilia Payne-Gaposchkin", "Astronomy", 1900, 1979, "United Kingdom", "Female"), ("Georges Lema\u00eetre", "Astronomy", 1894, 1966, "Belgium", "Male"),
+    ("Giovanni Cassini", "Astronomy", 1625, 1712, "Italy", "Male"),
+    ("Alan Turing", "Computer science", 1912, 1954, "United Kingdom", "Male"), ("Grace Hopper", "Computer science", 1906, 1992, "United States", "Female"), ("Ada Lovelace", "Computer science", 1815, 1852, "United Kingdom", "Female"),
+    ("Charles Babbage", "Computer science", 1791, 1871, "United Kingdom", "Male"), ("Claude Shannon", "Computer science", 1916, 2001, "United States", "Male"), ("Tim Berners-Lee", "Computer science", 1955, None, "United Kingdom", "Male"),
+    ("Linus Torvalds", "Computer science", 1969, None, "Finland", "Male"), ("Donald Knuth", "Computer science", 1938, None, "United States", "Male"), ("Dennis Ritchie", "Computer science", 1941, 2011, "United States", "Male"),
+    ("John McCarthy", "Computer science", 1927, 2011, "United States", "Male"), ("Margaret Hamilton", "Computer science", 1936, None, "United States", "Female"), ("Vint Cerf", "Computer science", 1943, None, "United States", "Male"),
+    ("Edsger Dijkstra", "Computer science", 1930, 2002, "Netherlands", "Male"), ("Barbara Liskov", "Computer science", 1939, None, "United States", "Female"), ("Geoffrey Hinton", "Computer science", 1947, None, "United Kingdom", "Male"),
+    ("Alfred Wegener", "Earth science", 1880, 1930, "Germany", "Male"), ("Mary Anning", "Earth science", 1799, 1847, "United Kingdom", "Female"), ("Charles Lyell", "Earth science", 1797, 1875, "United Kingdom", "Male"),
+    ("Inge Lehmann", "Earth science", 1888, 1993, "Denmark", "Female"),
+]
+
+
+def scientists():
+    by_a3, by_name = country_lookup()
+    alias = {"united states": "united states of america", "united kingdom": "united kingdom", "czechia": "czechia"}
+    rows = []
+    for n, f, b, d, c, g in SCI:
+        info = by_name.get(alias.get(c.lower(), c.lower()))
+        if not info:
+            print("  no continent for", c, file=sys.stderr)
+            continue
+        rows.append({"name": n.encode().decode("unicode_escape") if "\\u" in n else n, "field": f, "born": b, "life": (d - b) if d else None, "country": info["name"], "continent": info["continent"], "gender": g, "fame": 0})
+    return rows
+
+
+# ---------------- rivers (Wikidata, CC0) ----------------
+def rivers():
+    by_a3, by_name = country_lookup()
+    alias = {"people's republic of china": "china", "united states": "united states of america", "russian federation": "russia", "czech republic": "czechia",
+             "democratic republic of the congo": "dem. rep. congo", "republic of the congo": "congo"}
+    data = sparql("""SELECT ?r ?rLabel ?n ?len ?cLabel ?mouthLabel ?lat ?lon WHERE {
+      ?r wdt:P31 wd:Q4022 ; wikibase:sitelinks ?n . FILTER(?n > 45) ?r wdt:P2043 ?len .
+      OPTIONAL { ?r wdt:P17 ?c } OPTIONAL { ?r wdt:P403 ?mouth } OPTIONAL { ?r wdt:P625 ?co . BIND(geof:latitude(?co) AS ?lat) BIND(geof:longitude(?co) AS ?lon) }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } } LIMIT 4000""")
+    rv = {}
+    for r in data:
+        name = r["rLabel"]["value"]
+        if name.startswith("Q") and name[1:].isdigit():
+            continue
+        o = rv.setdefault(name, {"name": name, "n": int(r["n"]["value"]), "len": float(r["len"]["value"]), "countries": set(), "mouth": None, "lat": None, "lon": None})
+        if "cLabel" in r:
+            c = r["cLabel"]["value"]
+            o["countries"].add((by_name.get(alias.get(c.lower(), c.lower())) or {}).get("name") or c)
+        if "mouthLabel" in r and not o["mouth"]:
+            o["mouth"] = r["mouthLabel"]["value"]
+        if "lat" in r and o["lat"] is None:
+            o["lat"], o["lon"] = float(r["lat"]["value"]), float(r["lon"]["value"])
+    rows = []
+    for o in sorted(rv.values(), key=lambda o: -o["n"]):
+        cs = sorted(o["countries"])
+        conts = sorted({(by_name.get(c.lower()) or {}).get("continent") for c in cs} - {None})
+        if not cs or not conts or o["lat"] is None or not o["mouth"]:
+            continue
+        rows.append({"name": o["name"], "continent": conts[0], "countries": cs, "len": round(o["len"]), "mouth": o["mouth"], "lat": round(o["lat"], 2), "lon": round(o["lon"], 2), "fame": o["n"]})
+    return rows[:400]
+
+
+# ---------------- animals (curated here) ----------------
+# name, class, diet, home, continents, typical adult mass (kg), typical lifespan (years)
+ANIMALS = [
+    ("African elephant", "Mammal", "Herbivore", "Grassland", "Africa", 6000, 65), ("Asian elephant", "Mammal", "Herbivore", "Forest", "Asia", 4000, 60),
+    ("Lion", "Mammal", "Carnivore", "Grassland", "Africa,Asia", 190, 14), ("Tiger", "Mammal", "Carnivore", "Forest", "Asia", 220, 15),
+    ("Leopard", "Mammal", "Carnivore", "Forest", "Africa,Asia", 60, 14), ("Cheetah", "Mammal", "Carnivore", "Grassland", "Africa,Asia", 50, 12),
+    ("Jaguar", "Mammal", "Carnivore", "Forest", "North America,South America", 90, 12), ("Polar bear", "Mammal", "Carnivore", "Polar", "North America,Europe,Asia", 450, 25),
+    ("Brown bear", "Mammal", "Omnivore", "Forest", "North America,Europe,Asia", 270, 25), ("Giant panda", "Mammal", "Herbivore", "Mountains", "Asia", 100, 20),
+    ("Grey wolf", "Mammal", "Carnivore", "Forest", "North America,Europe,Asia", 40, 8), ("Red fox", "Mammal", "Omnivore", "Forest", "North America,Europe,Asia,Africa", 6, 5),
+    ("Hippopotamus", "Mammal", "Herbivore", "Freshwater", "Africa", 1500, 40), ("Giraffe", "Mammal", "Herbivore", "Grassland", "Africa", 1200, 25),
+    ("Plains zebra", "Mammal", "Herbivore", "Grassland", "Africa", 350, 25), ("Rhinoceros", "Mammal", "Herbivore", "Grassland", "Africa,Asia", 2000, 40),
+    ("Gorilla", "Mammal", "Herbivore", "Forest", "Africa", 160, 35), ("Chimpanzee", "Mammal", "Omnivore", "Forest", "Africa", 50, 40),
+    ("Orangutan", "Mammal", "Omnivore", "Forest", "Asia", 75, 35), ("Kangaroo", "Mammal", "Herbivore", "Grassland", "Oceania", 55, 15),
+    ("Koala", "Mammal", "Herbivore", "Forest", "Oceania", 9, 13), ("Camel", "Mammal", "Herbivore", "Desert", "Africa,Asia", 600, 40),
+    ("Moose", "Mammal", "Herbivore", "Forest", "North America,Europe,Asia", 450, 15), ("Bison", "Mammal", "Herbivore", "Grassland", "North America,Europe", 700, 18),
+    ("Reindeer", "Mammal", "Herbivore", "Polar", "North America,Europe,Asia", 120, 15), ("Capybara", "Mammal", "Herbivore", "Wetlands", "South America", 50, 8),
+    ("Sloth", "Mammal", "Herbivore", "Forest", "South America,North America", 6, 20), ("Beaver", "Mammal", "Herbivore", "Freshwater", "North America,Europe", 20, 12),
+    ("Gray squirrel", "Mammal", "Herbivore", "Forest", "North America,Europe", 0.6, 6), ("Hedgehog", "Mammal", "Omnivore", "Forest", "Europe,Africa,Asia", 1, 5),
+    ("Platypus", "Mammal", "Carnivore", "Freshwater", "Oceania", 1.4, 12), ("Bat", "Mammal", "Omnivore", "Forest", "Africa,Asia,Europe,North America,South America,Oceania", 0.02, 20),
+    ("Domestic cat", "Mammal", "Carnivore", "Forest", "Africa,Asia,Europe,North America,South America,Oceania", 4.5, 15), ("Domestic dog", "Mammal", "Omnivore", "Forest", "Africa,Asia,Europe,North America,South America,Oceania", 20, 12),
+    ("Horse", "Mammal", "Herbivore", "Grassland", "Africa,Asia,Europe,North America,South America,Oceania", 500, 28), ("Cow", "Mammal", "Herbivore", "Grassland", "Africa,Asia,Europe,North America,South America,Oceania", 650, 20),
+    ("Pig", "Mammal", "Omnivore", "Forest", "Africa,Asia,Europe,North America,South America,Oceania", 200, 15), ("Sheep", "Mammal", "Herbivore", "Grassland", "Africa,Asia,Europe,North America,South America,Oceania", 70, 12),
+    ("Blue whale", "Mammal", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 150000, 80), ("Humpback whale", "Mammal", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 30000, 50),
+    ("Killer whale", "Mammal", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 4500, 40), ("Bottlenose dolphin", "Mammal", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 250, 40),
+    ("Walrus", "Mammal", "Carnivore", "Polar", "North America,Europe,Asia", 1200, 40), ("Manatee", "Mammal", "Herbivore", "Wetlands", "North America,South America,Africa", 500, 50),
+    ("Emperor penguin", "Bird", "Carnivore", "Polar", "Antarctica", 30, 20), ("Bald eagle", "Bird", "Carnivore", "Forest", "North America", 5, 20),
+    ("Ostrich", "Bird", "Omnivore", "Grassland", "Africa", 110, 40), ("Peregrine falcon", "Bird", "Carnivore", "Mountains", "Africa,Asia,Europe,North America,South America,Oceania", 1, 15),
+    ("Barn owl", "Bird", "Carnivore", "Grassland", "Africa,Asia,Europe,North America,South America,Oceania", 0.5, 4), ("Flamingo", "Bird", "Omnivore", "Wetlands", "Africa,Europe,South America,North America,Asia", 3, 30),
+    ("Hummingbird", "Bird", "Omnivore", "Forest", "North America,South America", 0.005, 5), ("Albatross", "Bird", "Carnivore", "Ocean", "Antarctica,Oceania,South America,North America", 9, 50),
+    ("Pelican", "Bird", "Carnivore", "Wetlands", "Africa,Asia,Europe,North America,South America,Oceania", 8, 25), ("Toucan", "Bird", "Omnivore", "Forest", "South America,North America", 0.6, 20),
+    ("Kiwi", "Bird", "Omnivore", "Forest", "Oceania", 2.5, 25), ("Emu", "Bird", "Omnivore", "Grassland", "Oceania", 35, 12),
+    ("Parrot", "Bird", "Herbivore", "Forest", "South America,Africa,Asia,Oceania", 0.5, 40), ("Mallard duck", "Bird", "Omnivore", "Freshwater", "North America,Europe,Asia", 1.1, 8),
+    ("Chicken", "Bird", "Omnivore", "Grassland", "Africa,Asia,Europe,North America,South America,Oceania", 2.5, 8), ("Crow", "Bird", "Omnivore", "Forest", "North America,Europe,Asia,Africa", 0.5, 10),
+    ("Saltwater crocodile", "Reptile", "Carnivore", "Wetlands", "Asia,Oceania", 450, 70), ("Nile crocodile", "Reptile", "Carnivore", "Freshwater", "Africa", 500, 60),
+    ("Komodo dragon", "Reptile", "Carnivore", "Grassland", "Asia", 70, 30), ("Green sea turtle", "Reptile", "Herbivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 150, 70),
+    ("Galapagos tortoise", "Reptile", "Herbivore", "Grassland", "South America", 250, 100), ("King cobra", "Reptile", "Carnivore", "Forest", "Asia", 6, 20),
+    ("Green iguana", "Reptile", "Herbivore", "Forest", "South America,North America", 5, 15), ("Chameleon", "Reptile", "Carnivore", "Forest", "Africa,Asia,Europe", 0.1, 5),
+    ("Anaconda", "Reptile", "Carnivore", "Wetlands", "South America", 100, 10), ("American alligator", "Reptile", "Carnivore", "Wetlands", "North America", 360, 50),
+    ("Bullfrog", "Amphibian", "Carnivore", "Freshwater", "North America", 0.5, 8), ("Axolotl", "Amphibian", "Carnivore", "Freshwater", "North America", 0.2, 12),
+    ("Poison dart frog", "Amphibian", "Carnivore", "Forest", "South America,North America", 0.003, 5), ("Giant salamander", "Amphibian", "Carnivore", "Freshwater", "Asia", 25, 50),
+    ("Great white shark", "Fish", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 1100, 70), ("Whale shark", "Fish", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 20000, 70),
+    ("Clownfish", "Fish", "Omnivore", "Ocean", "Asia,Oceania,Africa", 0.25, 8), ("Goldfish", "Fish", "Omnivore", "Freshwater", "Asia,Europe,North America", 0.3, 15),
+    ("Atlantic salmon", "Fish", "Carnivore", "Freshwater", "Europe,North America", 5, 6), ("Piranha", "Fish", "Omnivore", "Freshwater", "South America", 1, 10),
+    ("Seahorse", "Fish", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 0.02, 3), ("Manta ray", "Fish", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 1400, 40),
+    ("Tuna", "Fish", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 250, 15), ("Electric eel", "Fish", "Carnivore", "Freshwater", "South America", 20, 15),
+    ("Honey bee", "Invertebrate", "Herbivore", "Forest", "Africa,Asia,Europe,North America,South America,Oceania", 0.0001, 1), ("Monarch butterfly", "Invertebrate", "Herbivore", "Grassland", "North America,South America", 0.0005, 1),
+    ("Giant squid", "Invertebrate", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 275, 5), ("Octopus", "Invertebrate", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 10, 3),
+    ("Tarantula", "Invertebrate", "Carnivore", "Forest", "South America,North America,Africa,Asia", 0.09, 20), ("Ant", "Invertebrate", "Omnivore", "Forest", "Africa,Asia,Europe,North America,South America,Oceania", 0.00001, 2),
+    ("Jellyfish", "Invertebrate", "Carnivore", "Ocean", "Africa,Asia,Europe,North America,South America,Oceania", 3, 1), ("Lobster", "Invertebrate", "Omnivore", "Ocean", "North America,Europe", 4, 50),
+]
+
+
+def animals():
+    return [{"name": n, "cls": c, "diet": d, "home": h, "continents": ct.split(","), "mass": m, "life": l} for n, c, d, h, ct, m, l in ANIMALS]
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    for name, fn in (("countries", countries), ("elements", elements), ("laureates", laureates), ("cities", cities), ("peaks", peaks), ("languages", languages)):
+    for name, fn in (("countries", countries), ("elements", elements), ("laureates", laureates), ("cities", cities), ("peaks", peaks), ("languages", languages), ("scientists", scientists), ("rivers", rivers), ("animals", animals)):
         rows = fn()
         (OUT / f"{name}.json").write_text(json.dumps(rows, separators=(",", ":"), ensure_ascii=False) + "\n", encoding="utf-8")
         print(name, len(rows))

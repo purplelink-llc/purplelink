@@ -259,7 +259,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $19.99 to keep · v1.3.0
+Free 7-day trial · $19.99 to keep · v1.3.1
 
 # ModernTex
 
@@ -405,9 +405,11 @@ AI featuresOptional. Fix with AI proposes a repair for a build error and shows i
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
-Current version1.3.0: a visual Table Editor, after 1.2.0's TikZ Designer. Changelog
+Current version1.3.1: one Settings window with editor fonts, line spacing, syntax colors and Zen mode, after 1.3.0's Table Editor. Changelog
 
-### Five updates since launch on September 4
+### Six updates since launch on September 4
+
+- Oct 41.3.1One Settings window (⌘,) with editor fonts, line spacing, syntax colors and Zen mode.
 
 - Sep 131.3.0Table Editor: paste from a spreadsheet, get booktabs LaTeX.
 

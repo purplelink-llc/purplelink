@@ -82,7 +82,7 @@ def main() -> int:
             problems.append(f"sudoku-pool level {lv}: only {have} puzzles (run scripts/gen_sudoku_pool.py)")
     notes.append("sudoku-pool: ok")
 
-    for gid in ("landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink"):
+    for gid in ("landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"):
         f = DATA / f"{gid}.json"
         if not f.exists():
             problems.append(f"{gid}.json: missing")
