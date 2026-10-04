@@ -232,7 +232,7 @@ export function TitleCard({ format, t, t0 = 0, t1 = 1.6, sub = "A native LaTeX e
   );
 }
 
-export function EndCard({ format, t, t0, name = "ModernTex", icon = "brand/moderntex-icon.png", iconRadius = 0.22, pill = "$10, one purchase", url = "purplelink.llc/moderntex" }) {
+export function EndCard({ format, t, t0, name = "ModernTex", icon = "brand/moderntex-icon.png", iconRadius = 0.22, pill = "$19.99, one purchase", url = "purplelink.llc/moderntex" }) {
   const f = FMT[format];
   if (t < t0) return null;
   const rv = (d) => expoOut(clamp01((t - t0 - d) / 0.8));

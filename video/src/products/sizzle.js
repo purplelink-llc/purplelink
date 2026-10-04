@@ -26,7 +26,7 @@ export function build(timing) {
   S(tM, Y.moderntex, 1.0);
   K(tM, 720, 330, [1.1, 1.35], 1.1, { ay: [0.44, 0.42] });
   R(tM + 0.6, tV, [80, 1545 - Y.moderntex, 1280, 528]);
-  L(tM + 0.2, tV - 0.05, "ModernTex", "LaTeX editor for Mac. $10 once.");
+  L(tM + 0.2, tV - 0.05, "ModernTex", "LaTeX editor for Mac. $19.99 once.");
   S(tV, Y.vitae, 1.0);
   R(tV + 0.6, tP, [80, 2420 - Y.vitae, 630, 272]);
   L(tV + 0.15, tP - 0.05, "Vitae", "Your academic record. Free.");
