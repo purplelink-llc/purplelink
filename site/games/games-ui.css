@@ -474,3 +474,5 @@
   .share-label { grid-column: 1 / -1; text-align: center; }
   .share-btn { padding: 0 8px; }
 }
+
+.reward[hidden] { display: none; }

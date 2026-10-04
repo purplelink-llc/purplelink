@@ -176,7 +176,15 @@
               "name": "How many guesses do I get?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Eight. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length."
+                "text": "Eight on most days. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What are the weekday twists?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each day has its own rule. Monday is standard. Tuesday reveals one fact about the answer. Wednesday gives ten guesses. Thursday hides one column in your first three guesses. Friday turns the arrows off. Saturday gives only six guesses. Sunday is hard mode: every guess must be a possible answer given your clues."
               }
             },
             {
@@ -233,7 +241,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=89e4385f76">
+    <link rel="stylesheet" href="/games/games-ui.css?v=ff44a0d217">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -293,6 +301,7 @@
         <p class="game-lede">Codelink is a free daily game about programming languages. Guess the mystery language in eight tries. After each guess, every column (first release, typing, how it runs, memory model, main use and programming style) shows whether you matched, were close, or were off.</p>
         <p id="ag-loading" class="games-note">Loading today's puzzle.</p>
         <div id="ag-game" hidden>
+          <p class="wg-twist" id="ag-twist" hidden><strong id="ag-twist-name"></strong> <span id="ag-twist-text"></span></p>
           <form class="ag-form" id="ag-form" autocomplete="off">
             <label for="ag-input" class="visually-hidden">Your guess</label>
             <div class="ag-combo">
@@ -325,7 +334,7 @@
               <span class="game-note" id="ag-share-note"></span>
             </div>
             <textarea class="wg-share-text" id="ag-share-text" hidden readonly aria-label="Result text"></textarea>
-            <p class="game-next">Next puzzle in <span id="ag-next-in"></span>.</p>
+            <p class="game-next">Next puzzle in <span id="ag-next-in"></span>. <span id="ag-tomorrow"></span></p>
           </section>
         </div>
         <div class="games-prose">
@@ -349,7 +358,9 @@
         <h3>How do I read the colors?</h3>
         <p>Purple means that column matches the answer. Striped yellow means close: a number within range, or related. Gray means no match. An arrow on a number points toward the answer: up if the answer is higher, down if it is lower.</p>
         <h3>How many guesses do I get?</h3>
-        <p>Eight. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length.</p>
+        <p>Eight on most days. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length.</p>
+        <h3>What are the weekday twists?</h3>
+        <p>Each day has its own rule. Monday is standard. Tuesday reveals one fact about the answer. Wednesday gives ten guesses. Thursday hides one column in your first three guesses. Friday turns the arrows off. Saturday gives only six guesses. Sunday is hard mode: every guess must be a possible answer given your clues.</p>
         <h3>When does a new puzzle appear?</h3>
         <p>At midnight in your time zone, and everyone sees the same answer on the same date.</p>
         <h3>Do I need an account?</h3>
@@ -382,7 +393,7 @@
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=a52b682b21" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
-    <script src="/games/attrguess.js?v=29d5c47301" defer></script>
+    <script src="/games/attrguess.js?v=4f218a0b85" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

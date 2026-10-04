@@ -255,10 +255,18 @@ WORD_UI = """      <div class="games-wrap">
 {meta}
             <div class="game-actions">
               <button type="button" class="btn btn-primary" id="wg-share">Copy result</button>
+              <button type="button" class="gbtn gbtn--ghost" id="wg-practice-btn">Play a practice word</button>
               <span class="game-note" id="wg-share-note"></span>
             </div>
             <textarea class="wg-share-text" id="wg-share-text" hidden readonly aria-label="Result text"></textarea>
             <p class="game-next">Next puzzle in <span id="wg-next"></span>.</p>
+          </section>
+          <section class="game-result" id="wg-practice" hidden aria-label="Practice result">
+            <p class="game-reveal" id="wg-practice-text" role="status"></p>
+            <div class="game-actions">
+              <button type="button" class="gbtn" id="wg-practice-again">Another word</button>
+              <a class="gbtn gbtn--ghost" href="/games/">More games</a>
+            </div>
           </section>
         </div>
         <div class="games-prose">
@@ -305,6 +313,8 @@ LINKLE_PROSE = """        <h2>How to play</h2>
           <li><strong>Saturday, double up:</strong> at least one letter appears twice.</li>
           <li><strong>Sunday, hard mode:</strong> every hint you have found must be used in your next guess.</li>
         </ul>
+        <h2>Practice words</h2>
+        <p>After you finish the daily puzzle you can play as many practice rounds as you like. They use random words and never count toward your streak, rank or stats.</p>
         <h2>Questions</h2>
 """ + faq_html(LINKLE_FAQ)
 
@@ -334,13 +344,25 @@ QUAD_PROSE = """        <h2>How to play</h2>
           <span><span class="wg-tile" data-s="a">X</span> Not in the word</span>
         </div>
         <p>The keyboard shows four small bars under each letter, one for each board, in order from the first board to the fourth.</p>
+        <h2>The weekday twists</h2>
+        <ul>
+          <li><strong>Monday:</strong> standard rules, nine guesses.</li>
+          <li><strong>Tuesday, head start:</strong> you are told the first letter of each word.</li>
+          <li><strong>Wednesday, extra guess:</strong> ten guesses.</li>
+          <li><strong>Thursday, vowel counts:</strong> you are told how many vowels each word has.</li>
+          <li><strong>Friday, last letters:</strong> you are told the last letter of each word.</li>
+          <li><strong>Saturday, tight squeeze:</strong> eight guesses.</li>
+          <li><strong>Sunday, hard mode:</strong> hints you find on the first board must be used in your next guess.</li>
+        </ul>
+        <h2>Practice words</h2>
+        <p>After you finish the daily puzzle you can play as many practice rounds as you like. They use random puzzles and never count toward your streak or stats.</p>
         <h2>Questions</h2>
 """ + faq_html(QUAD_FAQ)
 
 page("games/quadlink/",
      "Quadlink: a free daily four-board word game | Purplelink",
      "Solve four five-letter words at once in nine guesses. A new puzzle every day, free, with no third-party ads.",
-     WORD_UI.format(h1="Quadlink", boards=4, lede="Four five-letter words at once. Nine guesses.", prose=QUAD_PROSE, twist="", meta=""),
+     WORD_UI.format(h1="Quadlink", boards=4, lede="Four five-letter words at once, with a new twist each weekday.", prose=QUAD_PROSE, twist=TWIST_HTML, meta="""            <p class="game-note" id="wg-tomorrow"></p>"""),
      {"@context": "https://schema.org", "@graph": [
          game_app("Quadlink", "https://purplelink.llc/games/quadlink/", "A free daily word game where you solve four five-letter words at once in nine guesses."),
          faq(QUAD_FAQ),
@@ -348,7 +370,7 @@ page("games/quadlink/",
      ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/config-quadlink.js", "/games/wordgame.js"])
 
 (SITE / "games/config-linkle.js").write_text('window.PLWordGame = { name: "linkle", title: "Linkle", boards: 1, maxGuesses: 6, dataFile: "linkle.json", url: "https://purplelink.llc/games/linkle/", twists: true };\n')
-(SITE / "games/config-quadlink.js").write_text('window.PLWordGame = { name: "quadlink", title: "Quadlink", boards: 4, maxGuesses: 9, dataFile: "quadlink.json", url: "https://purplelink.llc/games/quadlink/" };\n')
+(SITE / "games/config-quadlink.js").write_text('window.PLWordGame = { name: "quadlink", title: "Quadlink", boards: 4, maxGuesses: 9, dataFile: "quadlink.json", url: "https://purplelink.llc/games/quadlink/", twists: "quad" };\n')
 
 
 # ---------------- Daily Five ----------------
@@ -991,7 +1013,8 @@ page("games/leaderboard/", "", "", LB_BODY,
 def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=None):
     faq_ = faq_items + [
         ("How do I read the colors?", "Purple means that column matches the answer. Striped yellow means close: a number within range, or related. Gray means no match. An arrow on a number points toward the answer: up if the answer is higher, down if it is lower."),
-        ("How many guesses do I get?", "Eight. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length."),
+        ("How many guesses do I get?", "Eight on most days. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length."),
+        ("What are the weekday twists?", "Each day has its own rule. Monday is standard. Tuesday reveals one fact about the answer. Wednesday gives ten guesses. Thursday hides one column in your first three guesses. Friday turns the arrows off. Saturday gives only six guesses. Sunday is hard mode: every guess must be a possible answer given your clues."),
         ("When does a new puzzle appear?", "At midnight in your time zone, and everyone sees the same answer on the same date."),
         ("Do I need an account?", "No. Streaks and results are kept in your browser. Signing in with an email link keeps them on every device."),
     ]
@@ -1016,6 +1039,7 @@ def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=Non
         <p class="game-lede">{title} is a free daily guessing game.</p>
         <p id="ag-loading" class="games-note">Loading today's puzzle.</p>
         <div id="ag-game" hidden>
+          <p class="wg-twist" id="ag-twist" hidden><strong id="ag-twist-name"></strong> <span id="ag-twist-text"></span></p>
           <form class="ag-form" id="ag-form" autocomplete="off">
             <label for="ag-input" class="visually-hidden">Your guess</label>
             <div class="ag-combo">
@@ -1048,7 +1072,7 @@ def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=Non
               <span class="game-note" id="ag-share-note"></span>
             </div>
             <textarea class="wg-share-text" id="ag-share-text" hidden readonly aria-label="Result text"></textarea>
-            <p class="game-next">Next puzzle in <span id="ag-next-in"></span>.</p>
+            <p class="game-next">Next puzzle in <span id="ag-next-in"></span>. <span id="ag-tomorrow"></span></p>
           </section>
         </div>
         <div class="games-prose">

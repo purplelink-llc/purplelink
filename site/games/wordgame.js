@@ -22,6 +22,17 @@
     5: { name: "No repeats", text: "No letter appears twice in today's word." },
     6: { name: "Double up", text: "At least one letter appears twice in today's word." }
   };
+  // Quadlink's weekday twists. `hintAll(answers)` is the line shown above the boards; the hard rule uses the first board.
+  var QUAD = {
+    0: { name: "Hard mode", hard: true, text: "Hints you find on the first board must be used in your next guess." },
+    1: { name: "Standard", text: "Standard rules today." },
+    2: { name: "Head start", hintAll: function (a) { return "First letters: " + a.map(function (w) { return w[0].toUpperCase(); }).join(", ") + "."; } },
+    3: { name: "Extra guess", max: 10, text: "You have ten guesses today." },
+    4: { name: "Vowel counts", hintAll: function (a) { return "Vowels in each word: " + a.map(function (w) { return (w.match(VOWELS) || []).length; }).join(", ") + "."; } },
+    5: { name: "Last letters", hintAll: function (a) { return "Last letters: " + a.map(function (w) { return w[4].toUpperCase(); }).join(", ") + "."; } },
+    6: { name: "Tight squeeze", max: 8, text: "You have eight guesses today." }
+  };
+  function TW() { return C.twists === "quad" ? QUAD : TWISTS; }
   var state = { idx: 0, twist: null, answers: [], guesses: [], current: "", done: false, won: false, valid: null, busy: false };
 
   function boardCount() { return C.boards; }
@@ -219,9 +230,34 @@
       window.setTimeout(function () {
         state.busy = false;
         if (state.won && window.PLFX) for (var b = 0; b < boardCount(); b++) if (solvedAt(b) === state.guesses.length - 1) window.PLFX.wave(tilesOf(b, state.guesses.length - 1), "fx-hop", 70, 700);
-        if (over) finish(true);
+        if (over) done();
       }, wait);
-    } else if (over) finish(true);
+    } else if (over) done();
+  }
+
+  // ---- practice rounds: any number of extra words, never counted toward streaks or stats ----
+  function done() { if (state.practice) finishPractice(); else finish(true); }
+  function startPractice() {
+    var ds = state.dataset, n;
+    state.practice = true; state.twist = TW()[1]; C.maxGuesses = C.baseMax;
+    if (C.boards === 1) { n = Math.floor(Math.random() * ds.answers.length); state.answers = [G.decode(ds.answers[n])]; }
+    else { n = Math.floor(Math.random() * ds.days.length); state.answers = ds.days[n].map(G.decode); }
+    state.guesses = []; state.current = ""; state.done = false; state.won = false; state.busy = false;
+    $("wg-result").hidden = true; $("wg-practice").hidden = true;
+    var rw = document.getElementById("reward"); if (rw) rw.hidden = true;
+    var tw = $("wg-twist");
+    if (tw) { tw.hidden = false; $("wg-twist-name").textContent = "Practice"; $("wg-twist-text").textContent = "This round does not count toward your streak."; }
+    buildBoards(); buildKeyboard(); paint();
+    say("New practice round. Start typing.");
+    $("wg-boards").scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+  function finishPractice() {
+    $("wg-practice-text").textContent = state.won ? "Solved in " + state.guesses.length + " of " + C.maxGuesses + "." : "The word" + (boardCount() > 1 ? "s were " : " was ") + state.answers.join(", ").toUpperCase() + ".";
+    $("wg-practice").hidden = false;
+    if (window.PLFX) window.PLFX.play(state.won ? "win" : "lose");
+    if (state.won && window.PLConfetti) window.PLConfetti.small();
+    $("wg-practice-again").focus({ preventScroll: true });
+    $("wg-practice").scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   function announce(g) {
@@ -236,6 +272,7 @@
 
   // ---- persistence and results ----
   function persist() {
+    if (state.practice) return;
     var saved = G.getGame(C.name);
     saved.today = { idx: state.idx, guesses: state.guesses, done: state.done, won: state.won };
     G.setGame(C.name, saved);
@@ -316,6 +353,7 @@
   var DAYS_ABBR = ["M", "T", "W", "T", "F", "S", "S"];
   // Rank, the Monday-to-Sunday tracker and a teaser for tomorrow's twist: the reasons to come back.
   function renderMeta(s) {
+    if (!$("wg-rank")) { $("wg-tomorrow").textContent = "Tomorrow's twist: " + TW()[(new Date().getDay() + 1) % 7].name + "."; return; }
     var wins = s.wins || [];
     var rk = G.rankFor(wins.length);
     $("wg-rank").textContent = "Rank: " + rk.name + (rk.next ? ". " + rk.toNext + (rk.toNext === 1 ? " win" : " wins") + " to " + rk.next + "." : ". You have reached the top rank.");
@@ -333,7 +371,7 @@
       row.appendChild(cell);
     }
     $("wg-week-note").textContent = wp.count + " of 7 this week." + (wp.fullWeeks ? " Full weeks so far: " + wp.fullWeeks + "." : "");
-    var tomorrow = TWISTS[(new Date().getDay() + 1) % 7];
+    var tomorrow = TW()[(new Date().getDay() + 1) % 7];
     $("wg-tomorrow").textContent = "Tomorrow's twist: " + tomorrow.name + ".";
   }
 
@@ -354,7 +392,7 @@
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
       if (e.key === "Enter") {
         // Enter on a focused button should press that button, not also submit the guess.
-        if (tag === "BUTTON" && e.target.id === "wg-share") return;
+        if (tag === "BUTTON" && (/^wg-(share|practice)/.test(e.target.id) || e.target.classList.contains("share-btn"))) return;
         e.preventDefault(); submit();
       } else if (e.key === "Backspace") { e.preventDefault(); back(); }
       else if (/^[a-zA-Z]$/.test(e.key)) { type(e.key.toLowerCase()); }
@@ -365,6 +403,8 @@
       var v = k.getAttribute("data-key");
       if (v === "enter") submit(); else if (v === "back") back(); else type(v);
     });
+    if ($("wg-practice-btn")) $("wg-practice-btn").addEventListener("click", startPractice);
+    if ($("wg-practice-again")) $("wg-practice-again").addEventListener("click", startPractice);
     window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tick, 30000);
   }
@@ -377,14 +417,15 @@
     if (C.boards === 1) state.answers = [G.decode(G.pick(dataset.answers, state.idx))];
     else state.answers = G.pick(dataset.days, state.idx).map(G.decode);
     $("wg-number").textContent = "Puzzle " + (state.idx + 1);
+    state.dataset = dataset; C.baseMax = C.maxGuesses;
     if (C.twists) {
-      state.twist = TWISTS[new Date().getDay()];
+      state.twist = TW()[new Date().getDay()];
       if (state.twist.max) C.maxGuesses = state.twist.max;
       var tw = $("wg-twist");
       if (tw) {
         tw.hidden = false;
         $("wg-twist-name").textContent = state.twist.name;
-        $("wg-twist-text").textContent = state.twist.hint ? state.twist.hint(state.answers[0]) : state.twist.text;
+        $("wg-twist-text").textContent = state.twist.hintAll ? state.twist.hintAll(state.answers) : state.twist.hint ? state.twist.hint(state.answers[0]) : state.twist.text;
       }
     }
     var saved = G.getGame(C.name);

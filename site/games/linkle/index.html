@@ -233,7 +233,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=89e4385f76">
+    <link rel="stylesheet" href="/games/games-ui.css?v=ff44a0d217">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -316,10 +316,18 @@
             <p class="game-note" id="wg-tomorrow"></p>
             <div class="game-actions">
               <button type="button" class="btn btn-primary" id="wg-share">Copy result</button>
+              <button type="button" class="gbtn gbtn--ghost" id="wg-practice-btn">Play a practice word</button>
               <span class="game-note" id="wg-share-note"></span>
             </div>
             <textarea class="wg-share-text" id="wg-share-text" hidden readonly aria-label="Result text"></textarea>
             <p class="game-next">Next puzzle in <span id="wg-next"></span>.</p>
+          </section>
+          <section class="game-result" id="wg-practice" hidden aria-label="Practice result">
+            <p class="game-reveal" id="wg-practice-text" role="status"></p>
+            <div class="game-actions">
+              <button type="button" class="gbtn" id="wg-practice-again">Another word</button>
+              <a class="gbtn gbtn--ghost" href="/games/">More games</a>
+            </div>
           </section>
         </div>
         <div class="games-prose">
@@ -341,6 +349,8 @@
           <li><strong>Saturday, double up:</strong> at least one letter appears twice.</li>
           <li><strong>Sunday, hard mode:</strong> every hint you have found must be used in your next guess.</li>
         </ul>
+        <h2>Practice words</h2>
+        <p>After you finish the daily puzzle you can play as many practice rounds as you like. They use random words and never count toward your streak, rank or stats.</p>
         <h2>Questions</h2>
         <h3>What are the weekday twists?</h3>
         <p>Each day has its own rule. Monday is standard. Tuesday shows the first letter. Wednesday gives you a seventh guess. Thursday tells you how many vowels the word has. Friday&#x27;s word never repeats a letter. Saturday&#x27;s word always repeats one. Sunday is hard mode, where every hint you find must be used in your next guess.</p>
@@ -386,7 +396,7 @@
     <script src="/games/dock.js?v=a52b682b21" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/config-linkle.js?v=a746c82f0b" defer></script>
-    <script src="/games/wordgame.js?v=06c58914f6" defer></script>
+    <script src="/games/wordgame.js?v=a072bf3186" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">
