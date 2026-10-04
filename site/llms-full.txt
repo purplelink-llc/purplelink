@@ -2667,7 +2667,7 @@ Early access
 
 Add your email and you'll get one message the day Haea hits the App Store. Nothing else.
 
-We'll only use your email to notify you at launch. Privacy Policy · Why on-device →
+We'll only use your email to notify you at launch. Privacy Policy · Why on-device → · Compare health apps that keep data on your phone →
 
 ## Frequently asked questions
 
@@ -5330,3 +5330,369 @@ Download on the App Store
 See what it does
 
 Requires iOS 17 or later. The free version shows ads and its privacy label lists tracking data. New app, no social network, no Android version, and you add places yourself.
+
+
+---
+
+Source: https://purplelink.llc/guides/best-on-device-health-apps/
+Title: Best health tracking apps that keep your data on your phone (2026) | Purplelink
+
+← All guides
+
+Comparison
+
+# Best health tracking apps that keep your data on your phone (2026)
+
+By Benjamin Ampel · May 31, 2026, updated October 4, 2026
+
+Where each iPhone health app keeps your sleep, food, weight, workout, mood and heart data, what its App Store privacy label says, what it costs and what it tracks. Short version: a handful keep it on the phone, and food logging is the gap.
+
+Disclosure up front: Purplelink, which publishes this site, is building one app on this list, Haea. It is not out. It has no App Store listing, only a waitlist, and I am not recommending it to anyone today. I did not install or test any of the other apps either. Everything below is read from each app's App Store listing, its privacy label, and the vendor's own pages and privacy policy, on October 4, 2026. Prices and labels change. Where a vendor page would not load for me, I say so and write "reported as".
+
+## Two questions to settle first
+
+What do you want to log? Sleep, food, weight, workouts, mood and heart data are different jobs. Where does the data live? I sorted every app into one of three groups:
+
+- On your phone, no account. The vendor has no server holding your health records: Apple Health, Gentler Streak, Athlytic, AutoSleep, Daylio and Streaks.
+
+- On your phone, synced through your own iCloud. Apple Health, Apple Journal and Streaks can; Daylio can back up to iCloud Drive.
+
+- In the vendor's cloud, behind an account. Most food loggers, rings and wearables, such as Oura, WHOOP, MacroFactor and Cronometer.
+
+The finding I did not expect: I found no food logger on this list that keeps its log off a server. Without an account, the answer today is a spreadsheet.
+
+## The shortlist
+
+- Apple Health: the store everything writes into. Free, built in.
+
+- Gentler Streak: workouts and readiness from an Apple Watch, no accounts.
+
+- Athlytic: recovery and exertion from Watch data, label "Data Not Collected".
+
+- AutoSleep: sleep from Apple Watch, "Data Not Collected", $8.99 once.
+
+- Daylio: a mood and activity log kept on the phone.
+
+- Streaks: a habit tracker that reads Health data, $5.99 once.
+
+- MacroFactor: the food logger with no tracking category on its label, if you accept an account.
+
+- A spreadsheet: the only food and weight log with no vendor.
+
+That is the best of what exists today. Haea is not on it because it does not exist yet. Eight more entries follow, then a decision matrix and how to read a privacy label.
+
+## Apple Health, Fitness and Journal
+
+Cost: Free, built into iPhone. Platform: iPhone, iPad. Listing.
+
+Health collects what your iPhone, Apple Watch and the apps you permit write into it. The listing says your data stays up to date across your devices using iCloud, encrypted in transit and on Apple's servers. Apple's Health privacy page says that with two-factor authentication on iOS 12 or later, Apple cannot read health data synced to iCloud, and that Health data is inaccessible by default on a locked, passcode-protected phone (Medical ID excepted). The label lists eight categories, all under "Data Not Linked to You". I did not audit it.
+
+Fitness is a free app whose listing mentions a paid Fitness+ subscription, and its label lists some data, including purchases and financial info, as linked to you. Journal syncs entries through iCloud and declares identifiers and usage data, not linked to you. Apple also announced in September 2026 a redesigned Health app for later in 2026, in US English first, with an Insights tab, a "Health Age" metric and lab panels sold at $119. I have not used it; if you only want trends, check what Apple ships first.
+
+What it lacks: in the listing it is a place to store and view data; most logging happens in other apps that write to it. Pick it if you want one place and are fine with iCloud sync.
+
+## Gentler Streak
+
+Cost: Free to download. Premium is listed at $8.99 a month, $39.99 a year and lifetime plans at several prices, so I give no lifetime figure. Platform: iPhone (iOS 16 or later), iPad and Apple Watch. Vendor page.
+
+A workout and daily-readiness app. The listing describes training effect, heart-rate zones, a morning summary of vitals and sleep, 14-night sleep trends, daily movement and optional cycle-phase suggestions. The vendor page says: "All analysis happens on your iPhone. ... No user accounts. No servers." The privacy policy says health data is read through Apple Health and not sent to any server. It also lists three SDKs, Sentry for crashes, Mixpanel for interaction analytics and Adjust for promotional analysis. The label, "Data Not Linked to You", matches: purchases, location, identifiers, usage data, diagnostics and other data. So the health content stays local, and usage data does not.
+
+What it lacks: the listing describes no food, weight or mood log. Pick it if you train with an Apple Watch and want readiness guidance without an account.
+
+## Athlytic
+
+Cost: Free to download; Pro is $4.99 a month or $29.99 a year, with a one-week trial and no lifetime option, per the site. Platform: iPhone (iOS 17 or later), iPad, Apple Vision and Apple Watch. Vendor page.
+
+Athlytic reads HRV, resting heart rate and workouts from Apple Health and turns them into recovery, exertion and sleep scores, a target exertion range and workout building for the Watch. Its "Athlytic Age" is the vendor's own model. The listing says "An Apple Watch is needed for most features". The label is "Data Not Collected", and the site says "Everything is read and processed on your device through Apple Health" with no accounts. The privacy-policy URL linked from the listing returned a 404, so I rest this on the label, listing and site.
+
+What it's good at: the strictest label among apps that do analysis. What it lacks: it needs a Watch, its full feature set is a subscription, and its scores are models, not measurements. Pick it if you want a daily readiness number that stays on the phone.
+
+## AutoSleep
+
+Cost: $8.99 once; the listing says no in-app purchases and no subscriptions. Platform: iPhone (iOS 15 or later) with an Apple Watch.
+
+AutoSleep tracks sleep from the Watch without buttons: time asleep, a sleep rating, heart rate and respiratory measures, and optionally Apple's sleep stages. The listing says: "No user analytics tracking. No advertising plugins. No 3rd party code. No data upload." The policy page adds that data "remains on your iPhone". The label is "Data Not Collected". Neither source mentions an account or iCloud, so I say nothing on sync. Its listing also describes health-condition features that I do not assess.
+
+What it lacks: sleep only, and a Watch is needed. Pick it if sleep is the one thing you track.
+
+## Bevel
+
+Cost: Free; Bevel Pro is $14.99 a month or $99.99 a year, and credit packs for its AI features run $4.99 to $49.99. Platform: iPhone (iOS 18 or later) and Apple Watch. Vendor page.
+
+A coach layered over Apple Health and other wearables. The listing describes recovery, sleep, strain and stress scores, meal logging against a six-million-food database, and a strength trainer. The policy is specific: Apple Health data "is not transmitted to or stored on our servers" unless you turn on Bevel Intelligence, when "certain Apple Health data may be transmitted to and stored on our servers" and goes to LLM providers it names (Google, Anthropic, OpenAI, Baseten). Data from Oura, Garmin or Google Health "is stored on our servers for the duration of your account". It describes registering an account and says health information is not used for advertising. The label lists Identifiers as used to track you.
+
+What it's good at: a policy that says when data leaves the phone. What it lacks: its headline AI feature needs a server, and it declares a tracking identifier. Pick it if you will leave Intelligence off, or accept the trade.
+
+## Daylio
+
+Cost: Free; Premium is listed at several prices from $4.99 to $59.99. Platform: iPhone (iOS 15 or later) and iPad. Vendor page.
+
+A mood and activity diary you fill in with taps. The policy says: "Your data are stored only locally on your device and all calculations are done on your device as well." It says the app has no option to create an account, and that backups are optional, to iCloud Drive on iOS. It also says Google Analytics for Firebase and Crashlytics collect anonymized usage data, not what you type. The label is "Data Not Linked to You" for purchases, usage data and diagnostics.
+
+What it's good at: mood tracking with no account. What it lacks: sleep, food and heart data come from nowhere unless you type them in. Pick it if mood is the thing you want a trend of.
+
+## Streaks
+
+Cost: $5.99 once, no in-app purchases listed. Platform: iPhone (iOS 17.6 or later), iPad, Mac, Apple Vision and Apple Watch. Vendor page.
+
+A habit tracker, not a health app, but it can complete tasks from Health data such as water and caffeine. The policy says everything is stored on your device, task history may sync through iCloud, and "Streaks does not transmit any data read from the Health app across the Internet" to its own or any third-party server. Aggregated anonymous data goes to a crash-reporting service. The label is "Data Not Linked to You", for diagnostics only.
+
+What it lacks: it logs habits, not body measurements. Pick it if you want a daily habit, such as water or a walk, tied to what Health already knows.
+
+## Oura
+
+Cost: The app is free but built for the Oura ring, sold separately (I did not read its price). Membership is $5.99 a month or $69.99 a year in the US, first month free, per Oura's membership page. Platform: iPhone (iOS 16 or later), Apple Vision and Apple Watch. Vendor page.
+
+The ring produces sleep, activity and readiness scores. This is the cloud model: you create an account, and the policy refers to "cloud service providers". It says "Oura does not sell or rent your personal information" and "We do not sell or share your personal data for cross-context behavioral advertising", though cookies on its website create advertising audiences. The label lists health and fitness, location, contact info, identifiers and diagnostics as linked to you, with no tracking category. Pick it if you want a ring and accept a vendor account.
+
+## WHOOP
+
+Cost: Membership is reported as $199, $239 or $359 a year by tier, from price trackers; whoop.com returned a 403, so I could not confirm it. Platform: iPhone (iOS 17 or later) and iPad. The listing says "The WHOOP app requires a WHOOP wearable."
+
+A screenless strap with daily sleep, strain and recovery scores. The label lists health and fitness, location, contact info, user content, identifiers, usage data and more as linked to you, and its purposes include "Developer's Advertising or Marketing" for a set of categories that includes Health & Fitness. That is the line I would read the policy for before buying. WHOOP's privacy page returned a 403, so I did not read it. Pick it if you want the strap and have read the policy yourself.
+
+## MacroFactor
+
+Cost: The listing offers subscriptions only: $11.99 a month and annual plans listed from $59.99 to $71.99, with a 7-day trial. Platform: iPhone (iOS 15 or later), iPad, Mac, Apple Vision and Apple Watch. Vendor page.
+
+A food and weight tracker that adapts calorie and macro targets from what you log; the listing calls it ad-free. The policy says user data is stored with Google (Firebase Cloud Firestore) in the USA, an account is required, and analytics and crash reporting use Firebase. It says "We do not sell your Personal Data to third parties" and "we do not share your data for cross-behavioral advertising purposes". The label lists health and fitness, purchases, contact info, user content, identifiers, usage data and diagnostics as linked to you, with no tracking category.
+
+What it's good at: the cleanest label among the food loggers. What it lacks: an account, a vendor cloud and no free tier. Pick it if you want a food log and will trade an account for no tracking declaration.
+
+## Cronometer
+
+Cost: A free Basic plan; Gold is $10.99 a month or $59.99 a year. Platform: iPhone (iOS 15.5 or later), iPad, Mac, Apple Vision and Apple Watch. Vendor page.
+
+A nutrient-detailed food logger. The policy says data is kept "in the cloud and on secure, HIPAA compliant servers in the United States", that an account is needed for most services, and that for free users it discloses limited information to advertising service providers while saying "We do not provide personal health information, or PHI, to Advertisers". The label lists contact info, identifiers and usage data as used to track you, and names Health & Fitness among data declared for the developer's advertising or marketing.
+
+What it's good at: nutrient tracking on a free plan. What it lacks: a tracking declaration and an account. Pick it if you need micronutrient detail more than a quiet label.
+
+## MyFitnessPal
+
+Cost: Free; Premium is $19.99 a month or $79.99 a year per the vendor's page, and the listing shows other tiers. Platform: iPhone (iOS 18 or later), iPad and Apple Watch. Vendor page.
+
+The most-rated app on this list, with more than 2.3 million ratings. The policy discloses personal information to "marketing and advertising partners, including social media platforms, third-party advertising networks", and says some cookie use "may constitute 'sales' or 'sharing'" under privacy laws, with an opt-out in its Privacy Center. The label lists identifiers and usage data as used to track you. Pick it if you already use it and accept the opt-outs.
+
+## Welltory
+
+Cost: Free to download; Premium is listed at $99.99 and $119.99 for a year and lifetime at $299.99. My earlier version of this guide said about $10 a month, which no longer matches the listing. Platform: iPhone (iOS 16 or later), Apple Vision and Apple Watch. Vendor page.
+
+An HRV and stress app that connects to Apple Watch and other devices. Its policy says an account is needed, the backend is in US cloud data centers, and, for US residents, it discloses hashed email, online identifiers, device information and internet activity to advertising partners including Meta, Google and TikTok. It also says "We do not create, upload, share, or use advertising audiences based on health data, wellness metrics, symptoms, diagnoses, stress, sleep, HRV." The label lists location and contact info as used to track you.
+
+What it's good at: an explicit line keeping health data out of ad audiences. What it lacks: it is a cloud app that sends identifiers to ad platforms. Pick it if you want HRV analysis and read that line as enough.
+
+## Exist
+
+Cost: $6.99 a month or $62.90 a year with a 30-day trial, per the vendor's site. The App Store listing's text says 7.99 USD and its in-app list shows $8.49 monthly, so the price depends on where you buy. Platform: iPhone (iOS 18 or later), iPad, Android and web. Vendor page.
+
+Exist combines manual entries (mood, energy, coffees) with data synced from other services, and reports correlations between them. The listing says "THIS APP REQUIRES A PAID ACCOUNT". The policy says data is hosted outside the United States, and the vendor says it makes money from subscriptions, "not your data". The label lists health and fitness, location, user content and usage data as linked to you, with no tracking category. It has 47 ratings. Pick it if you want sleep, mood and activity in one place and accept a paid, vendor-hosted account.
+
+## A spreadsheet or Notion
+
+Cost: whatever you already pay for. Platform: anything.
+
+One row a day: weight, sleep hours, meals or calories, a mood score. A spreadsheet file in a folder you control has no vendor account and no privacy label to read, and it outlives every app here. It will not chart itself or read your Watch. Notion is the other direction: its help page says "All Customer Data is stored in the cloud" and an account is required, so it is not an on-device option. I list it because people ask.
+
+Pick a spreadsheet if you want a food and weight log that no vendor ever holds, and you will type it in.
+
+## Haea (Purplelink's, not yet available)
+
+Status: In development. Platform: iOS 17 or later, per the product page. Cost: not on sale; the page plans a free tier and a Premium tier.
+
+I searched the App Store on October 4, 2026 and found no listing named Haea from Purplelink. The product page has a waitlist and says 2026; I am giving no date. I recommend it to nobody today. This is what the page says is planned, not what ships:
+
+- Free: logging for food, weight, water, exercise and mood; import from HealthKit; 7-day and 30-day trend charts; an activity timeline; an optional morning daily briefing.
+
+- Premium, planned at $1.99 a month or $14.99 a year: energy balance and TDEE, circadian analysis, running analytics, machine-learning models, and "biological metrics".
+
+- Privacy design: no cloud sync, no third-party SDKs, no ads, and local storage in a GRDB.sqlite database.
+
+The page's claims about biological age and causal models are the developer's description. It cites no validation, and I would treat them as unproven until there is an app to test. There is also a loose end in our own pages. The product page says no cloud sync. The blog post on building it on-device says cross-device sync would go through iCloud via HealthKit, Apple's infrastructure, not ours. Those are not the same statement, and I will only know which holds when it ships.
+
+Where others are better today: every app above that exists. If you need a tracker this month, use Apple Health as the store, Athlytic or Gentler Streak for Watch training data, AutoSleep for sleep and Daylio for mood. The gap Haea is aimed at is food, weight and mood in one app with no account, which nothing on this list fills. When it ships I will read its App Store label the same way as the others and update this page, whatever it says.
+
+## Eight more worth knowing
+
+Each is useful to someone. None is a first pick for a keep-it-on-the-phone reader.
+
+### Strava
+
+Activity tracking with a social side. Free tier; the subscription is $79.99 a year with a 30-day trial, per its page. The policy says it will not sell or use health information from integrations, such as heart rate, for advertising, and that it may disclose other information to ad networks to promote its services. The label lists purchases and identifiers as used to track you, and names health and fitness among data declared for the developer's marketing. Account required.
+
+### Lose It!
+
+A food logger, free with Premium at many prices ($9.99 to $79.99 listed, plus lifetime). Its policy says it may "sell or share the personal data you provide to us (excluding data that originates from Google Fit and Health Connect)" for interest-based ads, with an opt-out. The label lists contact info, identifiers and usage data as used to track you.
+
+### Carbon and Yazio
+
+Carbon (listed as "Carbon - Macro Coach & Tracker", by Reform, LLC, not the similarly named "Carbon Nutrition Tracker") is $11.99 a month or $99.99 a year. Its policy says "you must create an account and start a subscription" and "We never sell your Personal Data for money", though it discloses some categories to advertising partners. Its label has no tracking category. Yazio ("AI Calorie Tracker by Yazio") is free with Pro at many prices. Its policy describes Google Ads remarketing and a Facebook plug-in, and its label lists identifiers as used to track you.
+
+### Withings
+
+The app for Withings scales, watches and monitors. Free, with Withings+ listed at $9.99 a month or $99.99 a year. The label lists health and fitness, location, contact info and more as linked to you. Withings' policy and support pages returned 403 to me, so an account and cloud storage are reported, not confirmed.
+
+### Garmin Connect, Google Health (Fitbit) and Zepp
+
+Three wearable-maker clouds. Garmin Connect is free, Connect+ is $6.99 a month or $69.99 a year, and Garmin says existing features and data stay free. Its policy pages would not render, so I rely on the label: health and fitness, contact info and identifiers, linked to you. Google Health is the Fitbit app renamed on May 19, 2026. It requires a Google Account, and Google says it committed not to use Fitbit health data for Google Ads. The listing shows Premium at $9.99 a month or $79.99 a year, though reports say $99 a year. Zepp (Amazfit) is free, needs an account and stores data in the US, Germany or mainland China by region.
+
+### Sleep Cycle and RISE
+
+Sleep Cycle is free with Premium. Its policy says health data is stored only on the device by default, with optional cloud backup, and that an account is needed. Its label still lists health and fitness as linked to you and identifiers as used to track you, so I report both. RISE says "A Paid Subscription (or free trial) is required to access the content of the app", keeps data in US cloud storage, needs an account, and lists identifiers as used to track you.
+
+### Strong and Hevy
+
+Lifting logs. Strong says accounts are free and offers Strong Cloud sync, though I could not confirm whether an account is required; PRO is $4.99 a month or $29.99 a year, and its privacy-policy page was marked no longer active. Hevy is free with Pro at $2.99 to $3.99 monthly, $23.99 yearly or $74.99 lifetime; its policy describes account registration and lists Amplitude, Google Analytics and Adjust.
+
+### Gyroscope, Ultrahuman and Bearable
+
+Gyroscope "requires an account to sync and view your data" and keeps it on US servers. Ultrahuman is the ring's app, needs an account and stores data across AWS, Snowflake and MongoDB Atlas. Bearable, the symptom tracker from my earlier version of this guide, is free with Premium at $6.99 a month or $34.99 a year; its policy says data is on your device and, with an account, on its servers in Frankfurt, and its label lists contact info and identifiers as used to track you.
+
+## Decision matrix
+
+Label headings are Apple's: "Not Collected", "Not Linked", "Linked" and "Tracking" for data used to track you. They are what each developer declared, which I did not audit.
+
+AppLabelAccountWhere data livesPriceTracks
+
+Apple HealthNot LinkedNoPhone; optional iCloudFreeWhatever writes to it
+
+Gentler StreakNot LinkedNoPhoneFree; PremiumWorkouts, readiness
+
+AthlyticNot CollectedNoPhoneFree; $4.99 a monthRecovery, sleep
+
+AutoSleepNot CollectedNot describedPhone$8.99 onceSleep
+
+DaylioNot LinkedNoPhone; optional iCloud backupFree; PremiumMood, activities
+
+StreaksNot LinkedNot describedPhone; iCloud sync$5.99 onceHabits
+
+BevelTrackingYesPhone; servers for AIFree; $14.99 a monthScores, food, strength
+
+OuraLinkedYesOura cloud$5.99 a month plus ringSleep, activity
+
+WHOOPLinked, ad purposeYesWHOOP cloudReported $199 to $359 a yearSleep, strain
+
+MacroFactorLinkedYesFirebase, US$11.99 a monthFood, weight
+
+CronometerTrackingYesVendor cloud, USFree; $10.99 a monthFood, nutrients
+
+MyFitnessPalTrackingYesVendor cloudFree; $19.99 a monthFood, exercise
+
+Lose It!TrackingYesVendor servers, USFree; PremiumFood, weight
+
+CarbonLinkedYesAWS, US$11.99 a monthFood, weight
+
+YazioTrackingYesVendor cloudFree; ProFood
+
+WelltoryTrackingYesUS cloudFree; $99.99 a yearHRV, stress
+
+ExistLinkedYes, paidVendor servers$6.99 a monthMood, sleep
+
+StravaTrackingYesUS cloudFree; $79.99 a yearRuns, rides
+
+WithingsLinkedReported yesReported cloudFree; devices extraWeight, BP, sleep
+
+Garmin Connect, Google Health, ZeppLinkedYes (Garmin not read)Maker cloudFree; paid tierTheir own wearables
+
+Sleep CycleTrackingYesLocal default; optional cloudFree; PremiumSleep
+
+RISETrackingYesUS cloudSubscriptionSleep, energy
+
+Strong, HevyLinkedStrong optional; Hevy yesVendor cloudFree; ProLifting
+
+Gyroscope, UltrahumanLinkedYesAWS and othersSubscription or ringMany sources
+
+BearableTrackingFor backupPhone; EU serversFree; $6.99 a monthSymptoms, mood
+
+SpreadsheetNone to readNoYour fileFreeAnything
+
+Haea (planned)No listingNot statedPlanned: phone onlyPlanned: free; $1.99 a monthPlanned: food, weight, mood
+
+## How to read an App Store privacy label
+
+On an app's App Store page, scroll to App Privacy. Apple groups what the developer says it handles under four headings, from strictest to loosest:
+
+- Data Not Collected. Apple's developer page defines "collect" as transmitting data off the device in a way that lets the developer or its partners access it for longer than needed to serve the request in real time. Data processed only on the device is not collected.
+
+- Data Not Linked to You. Data may be collected, but with direct identifiers stripped and no attempt to link it back to you.
+
+- Data Linked to You. Data is tied to you through an account, a device identifier or other details.
+
+- Data Used to Track You. Data is combined with third-party data for targeted advertising or ad measurement, or shared with a data broker.
+
+Three cautions. First, the label is self-reported. Apple's page says developers are responsible for keeping answers accurate. I did not audit any label. Second, tap See Details and read the purposes. A category named next to "Developer's Advertising or Marketing" matters more than the heading, and in the labels I read, Health & Fitness appears with that purpose for WHOOP, Strava and Cronometer. Third, a label says nothing about encryption, where the servers are, how long data is kept or what happens if the company is sold. Marketing and label can both be true: Gentler Streak says no accounts and no servers and still declares identifiers and usage data.
+
+## What "on-device" can and cannot guarantee
+
+It can mean the vendor has no server holding your health records. Then a breach of that vendor, a sale of the company or a request for its data cannot expose what it never received, and there is no account to guess. It cannot mean everything below.
+
+- HealthKit permission is not on-device. Apple's security guide says apps are asked for access, with separate read and write access for each type of health data, that an app with read permission "can read data written by all sources", and that apps must follow restrictions on how the data is used. Nothing I read says an app with permission cannot send what it reads to its own servers; that is my reading, not Apple's wording. "Reads from Apple Health" is not "stays on the phone". Bevel is an example: its policy keeps Apple Health data off its servers until you turn on Bevel Intelligence.
+
+- iCloud and backups are second copies. Health data synced through iCloud is end-to-end encrypted with two-factor authentication, per Apple. Whether another app's iCloud data gets the same protection is a separate question I did not check. A phone backup to iCloud or a computer also holds app data.
+
+- Analytics SDKs still run. Gentler Streak, Daylio and Streaks send usage or crash data to services even though health content stays local.
+
+- The phone is the vault. Apple says Health data is inaccessible by default on a phone locked with a passcode, Touch ID or Face ID. With no passcode, that protection is gone.
+
+- "On-device AI" is a separate claim. Apple says its movement evaluations run entirely on the device. Bevel's AI layer uses outside LLM providers when switched on.
+
+## How to choose
+
+- List what you track. Sleep, workouts, mood and heart data have a no-account option. Food does not.
+
+- Decide whether you can accept an account. If not, stay in the first group and stop reading labels.
+
+- If you can, read the label's purposes. Prefer no tracking heading, and be wary of health data next to advertising purposes.
+
+- Check the free tier. Several apps keep trends or history behind a subscription.
+
+- Grant only the Health data types it needs. Apple lets you grant read and write for each type separately.
+
+- Check export before you commit. I did not test export in any app, so look first.
+
+## Frequently asked
+
+### What is the best health tracking app that keeps data on my phone?
+
+It depends on what you track. Apple Health is the common store. Athlytic and Gentler Streak cover training and recovery from an Apple Watch, AutoSleep covers sleep, and Daylio covers mood, all without an account. I tested none of them, so this reads listings, labels and vendor pages and is not a ranking by use.
+
+### Which apps have the Data Not Collected label?
+
+Of the apps I checked on October 4, 2026, Athlytic and AutoSleep. Apple Health, Gentler Streak, Daylio, Streaks and Journal show Data Not Linked to You. Labels are self-reported by developers and I did not audit them.
+
+### Is Apple Health private?
+
+Apple says Health data is encrypted on a locked, passcode-protected phone, and that with two-factor authentication Apple cannot read health data synced to iCloud. Apps you grant access to can read it, so each app's own label and policy still matter.
+
+### Is there a calorie counter that keeps data only on my phone?
+
+Not among the ones I checked. MacroFactor, Cronometer, MyFitnessPal, Lose It, Carbon and Yazio all use an account and a vendor cloud. MacroFactor and Carbon declare no data used to track you; the other four do. A spreadsheet is the no-vendor option.
+
+### What does Data Linked to You mean, and is it bad?
+
+It means the developer ties the data to your identity through an account, a device identifier or other details. It is not a breach and not proof of misuse. It tells you the data sits with the vendor under your name, so read the purposes and the privacy policy next.
+
+### Can an on-device app still share my data?
+
+Yes. It can sync to iCloud, appear in a phone backup, send usage or crash data through analytics tools, or send what it reads from Apple Health to its own servers if you grant permission. Gentler Streak keeps health data local, yet its policy lists three analytics SDKs.
+
+### Is Haea available yet?
+
+No. Haea is Purplelink's app. It is in development, has no App Store listing, and has a waitlist on its page. Everything described about it is planned, not shipped, and its claims about biological age and causal models are the developer's description, not validated.
+
+## Related guides
+
+- Haea: the product page, with the waitlist, and why we are building it on-device.
+
+- Best travel map apps for iPhone: the same where-does-the-data-live question, for places and flights.
+
+- Best tools to redact personal information before using ChatGPT: keeping personal data local when you use an AI service.
+
+- Purplelink's privacy page, all products and all guides.
+
+Haea is not out yet
+
+## Get one email when Haea reaches the App Store
+
+Haea is Purplelink's planned iPhone health app. It is in development, there is no App Store listing, and nothing on the product page is released. Add your email and you will get one message the day it ships. Nothing else.
+
+We use your email only to notify you at launch. Privacy Policy · What Haea plans to do
