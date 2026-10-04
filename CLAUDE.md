@@ -94,5 +94,6 @@ byte-identical DMG download, delivery email. Stripe product `prod_VNOyQCox4pCwN3
 `OUTBOUND_VEIL_UPDATE_TOKEN` (secret, write-only; local copy `~/.config/purplelink/outbound-veil-update-token`).
 The in-app update channel header is `X-OutboundVeil-Channel` (the function once checked a different spelling,
 fixed 2026-10-04). Runbook: `docs/products/outbound-veil.md`. App source: `/Volumes/Extreme SSD/OutboundVeil`.
-**Open risk:** the name. A pending USPTO application for VEIL (serial 79459516, data-security software,
-filed 2026-07-31) has not been read on TSDR; see that repo's `docs/name-clearance-2026-10-03.md`.
+**Name:** Ben reviewed the trademark note and decided "Outbound Veil is fine" (2026-10-04). Residual risk, for the
+record only: a pending USPTO application for VEIL (serial 79459516, data-security software, filed 2026-07-31).
+See that repo's `docs/name-clearance-2026-10-03.md`. Do not re-raise it unless a refusal or a letter arrives.
