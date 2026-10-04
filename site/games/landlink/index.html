@@ -233,7 +233,7 @@
     <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=22115b2e5d">
+    <link rel="stylesheet" href="/games/games-ui.css?v=997dd1fcab">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -269,6 +269,9 @@
         <li><a class="dock-link" data-g="landlink" href="/games/landlink/" aria-current="page"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#landlink"/></svg><span class="dock-name">Landlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="atomlink" href="/games/atomlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#atomlink"/></svg><span class="dock-name">Atomlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="prizelink" href="/games/prizelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#prizelink"/></svg><span class="dock-name">Prizelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="citylink" href="/games/citylink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#citylink"/></svg><span class="dock-name">Citylink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="peaklink" href="/games/peaklink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#peaklink"/></svg><span class="dock-name">Peaklink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="codelink" href="/games/codelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#codelink"/></svg><span class="dock-name">Codelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="chess-puzzles" data-x href="/games/chess-puzzles/" title="Chess Puzzles"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#chess-puzzles"/></svg><span class="dock-name">Chess Puzzles</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="sudoku-unlimited" data-x href="/games/sudoku-unlimited/" title="Sudoku Unlimited"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sudoku-unlimited"/></svg><span class="dock-name">Sudoku Unlimited</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="leaderboard" data-x href="/games/leaderboard/" title="Leaderboards"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#leaderboard"/></svg><span class="dock-name">Leaderboards</span></a></li>
@@ -297,7 +300,7 @@
           </form>
           <p class="ag-meta"><span id="ag-count"></span> <span id="ag-msg" role="status" aria-live="polite"></span></p>
           <p class="ag-hint" id="ag-hint" role="status"></p>
-          <div class="ag-scroll" id="ag-wrap" hidden>
+          <div class="ag-scroll" id="ag-wrap" hidden tabindex="0" role="region" aria-label="Your guesses. Scroll sideways to see every column.">
             <div class="ag-grid">
               <div class="ag-row ag-headrow" id="ag-head" aria-hidden="true"></div>
               <ol class="ag-rows" id="ag-rows" aria-label="Your guesses, newest first"></ol>
@@ -368,14 +371,14 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=3a9dc8ccd1" defer></script>
+    <script src="/games/core.js?v=7158bf0111" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
     <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
-    <script src="/games/goals.js?v=13a5b4cb05" defer></script>
+    <script src="/games/goals.js?v=10fd66744d" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=a52b682b21" defer></script>
-    <script src="/games/attrguess.js?v=685f792bea" defer></script>
+    <script src="/games/attrguess.js?v=b0a613cb3f" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

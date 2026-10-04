@@ -51,4 +51,13 @@
   <symbol id="prizelink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="12" cy="9.6" r="5.6"/><path d="M12 6.6l1 2 2.2.3-1.6 1.5.4 2.2L12 11.5l-2 1.1.4-2.2L8.8 8.9 11 8.6z" fill="currentColor" fill-opacity=".3" stroke-width="1.3"/><path d="M8.6 14.4L7 21l5-2.4 5 2.4-1.6-6.6"/>
   </symbol>
+  <symbol id="citylink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 21h18M5 21V9l5-3v15M10 21V4l5 3v14M15 21v-8l4-2v10M7.6 11.5h.01M7.6 15h.01M12.6 9h.01M12.6 13h.01M12.6 17h.01"/>
+  </symbol>
+  <symbol id="peaklink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.5 20l6.5-11 3.6 5.5 2.4-3.6 6.5 9.1z"/><path d="M7.4 11.7l1.6 1.4 1.5-1.3" stroke-width="1.4"/>
+  </symbol>
+  <symbol id="codelink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.8" y="4.2" width="18.4" height="15.6" rx="2.6"/><path d="M8.6 9.4l-3 2.6 3 2.6M15.4 9.4l3 2.6-3 2.6M13 8.6l-2 6.8"/>
+  </symbol>
 </svg>

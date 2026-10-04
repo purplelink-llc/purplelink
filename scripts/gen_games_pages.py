@@ -146,7 +146,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
 
 
 EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
-MORE_DAILY = ["landlink", "atomlink", "prizelink"]
+MORE_DAILY = ["landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink"]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
@@ -159,13 +159,16 @@ TAGLINE = {
     "crossword": "A themeless crossword, easy Monday to hard Sunday.",
     "daily-stars": "A short horoscope for every sign, for entertainment.",
     "landlink": "Guess the country from seven comparable facts.",
+    "citylink": "Guess the city, with latitude and longitude arrows as a compass.",
+    "peaklink": "Guess the mountain from height, place and volcano clues.",
+    "codelink": "Guess the programming language from its design.",
     "atomlink": "Guess the element from its place on the periodic table.",
     "prizelink": "Guess the Nobel laureate from prize, year and birthplace.",
     "chess-puzzles": "Unlimited rated tactics from the Lichess database.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
     "leaderboard": "The top ratings in chess and Sudoku, and this week's climbers.",
 }
-MINUTES = {"landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
@@ -1007,7 +1010,7 @@ def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=Non
           </form>
           <p class="ag-meta"><span id="ag-count"></span> <span id="ag-msg" role="status" aria-live="polite"></span></p>
           <p class="ag-hint" id="ag-hint" role="status"></p>
-          <div class="ag-scroll" id="ag-wrap" hidden>
+          <div class="ag-scroll" id="ag-wrap" hidden tabindex="0" role="region" aria-label="Your guesses. Scroll sideways to see every column.">
             <div class="ag-grid">
               <div class="ag-row ag-headrow" id="ag-head" aria-hidden="true"></div>
               <ol class="ag-rows" id="ag-rows" aria-label="Your guesses, newest first"></ol>
@@ -1059,6 +1062,24 @@ attr_page("prizelink", "Prizelink", "a Nobel laureate", [
     ("What do the columns mean?", "The prize field, the year awarded, the birth year, the age when awarded, the continent and country of birth (as the place is named today) and gender, as recorded by the Nobel Prize organization."),
 ], "", "Laureate data: <a href=\"https://www.nobelprize.org/about/developer-zone-2/\" rel=\"noopener\">Nobel Prize API</a> (CC0) and <a href=\"https://www.wikidata.org/\" rel=\"noopener\">Wikidata</a> (CC0).")
 
+attr_page("citylink", "Citylink", "a city", [
+    ("Where does the data come from?", "City names, locations and populations come from Natural Earth's populated places, which is public domain. Populations are metropolitan estimates."),
+    ("Which cities can be the answer?", "The 250 largest cities. Any of 700 large cities can be guessed."),
+    ("How do the latitude and longitude arrows work?", "An up arrow on latitude means the answer is further north, a down arrow further south. On longitude, up means further east and down means further west."),
+], "", "City data: <a href=\"https://www.naturalearthdata.com/\" rel=\"noopener\">Natural Earth</a> (public domain).")
+
+attr_page("peaklink", "Peaklink", "a mountain", [
+    ("Where does the data come from?", "From Wikidata (CC0): height, location and the countries each mountain lies in, for well-documented mountains."),
+    ("Why do some mountains list two countries?", "Peaks on a border belong to both. Sharing one country shows as close."),
+    ("What counts as a volcano?", "Wikidata marks it as a volcano as well as a mountain, for example Mount Fuji and Vesuvius."),
+], "", "Mountain data: <a href=\"https://www.wikidata.org/\" rel=\"noopener\">Wikidata</a> (CC0). Continents from Natural Earth (public domain).")
+
+attr_page("codelink", "Codelink", "a programming language", [
+    ("Where does the data come from?", "From a table we wrote and checked by hand, using each language's official documentation for its first release and design."),
+    ("What do the columns mean?", "First release year, static or dynamic typing, whether it runs compiled, interpreted or on a virtual machine, how memory is managed, its main use, and its programming styles."),
+    ("Why can one language have several styles?", "Many languages mix object-oriented, functional and procedural styles. Sharing some but not all shows as close."),
+], "", "Language facts: compiled by Purplelink from official documentation.")
+
 # ---------------- Account ----------------
 ACCT_BODY = """      <div class="games-wrap">
         <div class="game-head">
@@ -1099,7 +1120,7 @@ ACCT_BODY = """      <div class="games-wrap">
 
         <section class="ac-card" aria-labelledby="ac-stats-h">
           <h2 id="ac-stats-h">Stats</h2>
-          <div class="ac-table" id="ac-stats"></div>
+          <div class="ac-table" id="ac-stats" tabindex="0" role="region" aria-label="Your stats. Scroll sideways to see every column."></div>
         </section>
 
         <section class="ac-card" aria-labelledby="ac-ach-h">

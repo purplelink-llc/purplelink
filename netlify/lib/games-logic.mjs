@@ -2,8 +2,8 @@
 // cleaning what a browser sends, and turning a score histogram into a percentile.
 // No I/O here so it can be tested without Netlify.
 
-export const GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars", "landlink", "atomlink", "prizelink"];
-const COMPLETION_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink"];
+export const GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink"];
+const COMPLETION_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink"];
 export const EPOCH = "2026-10-04";
 export const MAX_DATA_BYTES = 60000;
 const MAX_WINS = 800;
@@ -175,7 +175,7 @@ export function mergeData(a, b) {
 
 /** Allowed score range per game. Every score is "lower is better": guesses, misses, or
  *  20-second blocks for the crossword. 99 means the player lost. */
-export const SCORE_LIMITS = { linkle: 99, quadlink: 99, "daily-five": 5, "daily-photo": 5, "daily-chess": 99, sudoku: 400, crossword: 400, landlink: 99, atomlink: 99, prizelink: 99 };
+export const SCORE_LIMITS = { linkle: 99, quadlink: 99, "daily-five": 5, "daily-photo": 5, "daily-chess": 99, sudoku: 400, crossword: 400, landlink: 99, atomlink: 99, prizelink: 99, citylink: 99, peaklink: 99, codelink: 99 };
 
 export function percentile(buckets, score) {
   let total = 0, worse = 0, same = 0;
@@ -200,7 +200,7 @@ export const SAVER_GAP_DAYS = 8;   // one streak saver per rolling week
 /** Accounts that opted in to a "your streak ends tonight" email, and have a streak worth protecting. */
 export function streakAtRisk(data, idx) {
   const risks = [];
-  for (const g of ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink"]) {
+  for (const g of ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink"]) {
     const s = data?.[g]?.stats, t = data?.[g]?.today;
     if (!s || s.streak < 2 || s.last !== idx - 1) continue;      // played yesterday, so the streak is alive
     if (t && t.idx === idx && t.done) continue;                  // already played today

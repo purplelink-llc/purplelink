@@ -186,7 +186,42 @@ def prizelink():
     return "".join(out)
 
 
-ART = {"landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
+def citylink():
+    out = [OPEN]
+    heights = [(18, 70), (42, 96), (66, 58), (90, 112), (114, 82), (138, 100), (160, 64)]
+    for x, h in heights:
+        out.append(_r(x, 124 - h, 20, h, "a1" if (x // 24) % 2 else "a2", 3))
+    for x, h in heights:
+        for y in range(124 - h + 10, 118, 16):
+            out.append(f'<rect class="a5" x="{x + 5}" y="{y}" width="4" height="6" rx="1" opacity=".75"/><rect class="a5" x="{x + 12}" y="{y}" width="4" height="6" rx="1" opacity=".75"/>')
+    out.append('<rect class="a4" x="8" y="124" width="184" height="6" rx="3"/>')
+    out.append('<g class="mv"><circle class="a5" cx="168" cy="26" r="13"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def peaklink():
+    out = [OPEN, '<g class="mv2"><circle class="a5" cx="158" cy="30" r="13"/></g>']
+    out.append('<path class="a2" d="M0 124L52 52l26 34 30-48 62 86z"/>')
+    out.append('<g class="mv"><path class="a1" d="M40 124L96 36l60 88z"/><path class="a5" d="M96 36l-15 23 9-5 6 8 7-8 9 5z"/></g>')
+    out.append('<path class="a4" opacity=".28" d="M96 36l60 88H96z"/>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def codelink():
+    out = [OPEN, _r(22, 18, 156, 104, "a1", 12), '<rect class="a4" x="22" y="18" width="156" height="22" rx="12"/><rect class="a4" x="22" y="30" width="156" height="10"/>']
+    for x in (36, 48, 60):
+        out.append(f'<circle class="a5" cx="{x}" cy="29" r="3.2"/>')
+    lines = [(38, 54, 36, "a2"), (58, 54, 70, "a5"), (38, 70, 58, "a2"), (50, 86, 46, "a5"), (38, 102, 30, "a2"), (74, 102, 40, "a5")]
+    for x, y, w, c in lines:
+        out.append(f'<rect class="{c}" x="{x}" y="{y}" width="{w}" height="8" rx="4"/>')
+    out.append('<g class="mv"><rect class="a5" x="130" y="98" width="8" height="16" rx="2"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+ART = {"citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
        "daily-chess": daily_chess, "sudoku": sudoku, "crossword": crossword, "daily-stars": daily_stars}
 
 

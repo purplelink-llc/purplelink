@@ -2,6 +2,10 @@
    External stylesheet (strict CSP). Dark is the default theme; light is the opt-out. Loads after games.css. */
 
 /* ---------- one colour per game ---------- */
+.games {
+  --gc: oklch(72% 0.15 310); --gc-d: oklch(46% 0.14 310); --gc-l: oklch(90% 0.07 310); --gc-ink: oklch(21% 0.05 310); --gc-text: oklch(50% 0.17 310);
+}
+:where(:root:not([data-theme="light"])) .games { --gc-text: oklch(79% 0.14 310); }
 [data-g] {
   --gc: oklch(72% 0.15 var(--gh, 310));
   --gc-d: oklch(46% 0.14 var(--gh, 310));
@@ -24,6 +28,9 @@
 [data-g="landlink"] { --gh: 125; }
 [data-g="atomlink"] { --gh: 190; }
 [data-g="prizelink"] { --gh: 100; }
+[data-g="citylink"] { --gh: 232; }
+[data-g="peaklink"] { --gh: 175; }
+[data-g="codelink"] { --gh: 335; }
 
 .gl { width: 1.5em; height: 1.5em; flex: none; }
 .gl-sm { width: 1em; height: 1em; }
@@ -418,3 +425,22 @@
 @media (max-width: 620px) { .ag-row { grid-template-columns: 7.4rem repeat(var(--cols, 7), 5.4rem); } .ag-cell { font-size: 0.76rem; } .ag-scroll { margin: 0 -16px 14px; padding: 4px 16px 10px; } }
 @media (prefers-reduced-motion: no-preference) { .ag-rows .ag-row:first-child { animation: ui-rise 0.35s cubic-bezier(0.22, 1, 0.36, 1); } }
 .ag-form[hidden], .ag-scroll[hidden], .ag-combo ul[hidden] { display: none; }
+
+/* ---------- touch targets and small screens ---------- */
+.dock-chip, .dock-btn { min-height: 44px; }
+.dock-btn { min-width: 44px; justify-content: center; }
+.dock-link { height: 46px; min-width: 46px; }
+.house-promo-hide { min-height: 44px; min-width: 44px; }
+.theme-toggle { min-height: 44px; }
+.lb-tab, .gbtn { min-height: 46px; }
+.ag-scroll:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; border-radius: 12px; }
+.ac-table:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; border-radius: 8px; }
+@media (max-width: 420px) {
+  .games-wrap { padding-left: 14px; padding-right: 14px; }
+  .game-dock { padding-left: 14px; padding-right: 14px; }
+  .run { padding: 18px 14px; }
+  .sd-grid { --sd: min(calc((100vw - 28px) / 9), 52px); }
+  .cb-board { --sq: min(calc((100vw - 28px) / 8), 64px); }
+  .ac-row { grid-template-columns: minmax(96px, 1.4fr) repeat(4, minmax(58px, 1fr)); gap: 6px; font-size: 0.86rem; }
+}
+@media (pointer: coarse) { .wg-key { height: 56px; } }

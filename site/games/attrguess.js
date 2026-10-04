@@ -20,7 +20,11 @@
   }
   function fmt(col, v) {
     if (v === null || v === undefined) return "Unknown";
+    if (Array.isArray(v)) return v.join(", ");
     switch (col.f) {
+      case "lat": return Math.abs(v).toFixed(1) + "\u00b0" + (v >= 0 ? "N" : "S");
+      case "lon": return Math.abs(v).toFixed(1) + "\u00b0" + (v >= 0 ? "E" : "W");
+      case "m": return Math.round(v).toLocaleString("en-US") + " m";
       case "pop": return compact(v);
       case "area": return compact(v) + " km²";
       case "mass": return String(Math.round(v * 10) / 10);
