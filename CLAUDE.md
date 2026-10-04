@@ -82,3 +82,17 @@ sends an operator alert email when forwarding to Modal fails — treat that
 email as a paid-but-undelivered incident, not a warning.
 
 See `docs/paper-review-runbook.md` and `docs/security-paper-review.md`.
+
+## Outbound Veil (Mac app) status
+
+**LIVE since 2026-10-04**, $29 one-time, 7-day trial edition. Page: https://purplelink.llc/outbound-veil/.
+Release 1.0.0 (build 41) is published in the `outbound-veil-files` Blobs store; the YouTube tour is
+`EWlyzL88-uo`. The whole purchase chain was tested end to end in live mode with a one-use 100%-off
+promotion code (Stripe coupon "Outbound Veil launch test", now redeemed): checkout, success page,
+byte-identical DMG download, delivery email. Stripe product `prod_VNOyQCox4pCwN3`, price
+`price_1UMeAEJkzNxf3fKqTmF7jfE2` (account `acct_1TnewbJkzNxf3fKq`). Env: `STRIPE_PRICE_OUTBOUND_VEIL`,
+`OUTBOUND_VEIL_UPDATE_TOKEN` (secret, write-only; local copy `~/.config/purplelink/outbound-veil-update-token`).
+The in-app update channel header is `X-OutboundVeil-Channel` (the function once checked a different spelling,
+fixed 2026-10-04). Runbook: `docs/products/outbound-veil.md`. App source: `/Volumes/Extreme SSD/OutboundVeil`.
+**Open risk:** the name. A pending USPTO application for VEIL (serial 79459516, data-security software,
+filed 2026-07-31) has not been read on TSDR; see that repo's `docs/name-clearance-2026-10-03.md`.
