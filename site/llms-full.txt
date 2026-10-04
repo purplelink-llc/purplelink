@@ -604,6 +604,8 @@ Chrome text areasWord by word in a plain text area. In the ChatGPT and claude.ai
 
 Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens.
 
+Comparing it with other ways to keep personal details out of AI chats? See the comparison of redaction tools for ChatGPT and other AI chats, which says plainly where a competitor is the better choice.
+
 ## Privacy
 
 ### Checked on your Mac
@@ -789,7 +791,7 @@ Download the DMG, open it, drag Vitae into your Applications folder, and launch 
 
 How does Vitae compare to Interfolio, ORCID, or a spreadsheet?
 
-Vitae keeps your own record between deadlines; if your university requires Interfolio or Watermark for tenure review, you still submit there, using what Vitae exports. See how to track your academic CV and tenure case for a comparison of sixteen options.
+Vitae keeps your own record between deadlines; if your university requires Interfolio or Watermark for tenure review, you still submit there, using what Vitae exports. See how to track your academic CV and tenure case for a comparison of sixteen options, or best software for tracking your research record for submission trackers, spreadsheets and profile systems.
 
 Vitae is free. If it saves you time, you can get the optional Vitae Plus, leave a tip or support it monthly. It helps keep it maintained.
 
@@ -4118,3 +4120,577 @@ Get ModernTex ($19.99)
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
+
+
+---
+
+Source: https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/
+Title: Best PII redaction tools for ChatGPT and AI chats (2026) | Purplelink
+
+← All guides
+
+Comparison
+
+# Best tools to redact personal information before you use ChatGPT and other AI chats (2026)
+
+By Benjamin Ampel · October 4, 2026, updated October 4, 2026
+
+What each option does, what it costs, where the checking happens and what it misses, for anyone who keeps pasting client, patient, student or personal details into an AI chat. Three of the options are not software you install: provider settings, a local model and find-and-replace.
+
+Disclosure up front: I make one of the tools on this list (Outbound Veil, a Mac menu-bar app). I have tried to write the comparison honestly, and in several cases a competitor is the better choice. Predact is free and handles files, which Outbound Veil does not. PrivacyScrubber works on Windows and Linux, which Outbound Veil does not. If your data cannot leave your machine at all, a local model beats every redaction tool here. Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. Where a vendor says its software runs on your device, I write "says": I have not audited that.
+
+## What you actually need to stop leaking data into AI chats
+
+Redaction means replacing specific details in your text, such as a name, a date of birth or a card number, with a placeholder before the text goes to the AI. The model still answers, because it sees "[PERSON_1] was seen on [DATE_1]" and can work with that. You put the real details back yourself, or a tool does it from a saved mapping.
+
+There are four places to intervene, and the tools here sit in different ones:
+
+- As you type or paste. A menu-bar app or browser extension watches the text box and flags or replaces details before you press send. This is where the mistake usually happens.
+
+- Before you paste. An app or web page where you drop in text or a file and paste the clean copy. It works on the days you remember it.
+
+- At the account. The provider's settings and plan decide whether what you send is used for training. This removes nothing from their servers.
+
+- Off the cloud. A model that runs on your own computer, so nothing is sent.
+
+All of them share two limits, covered in what redaction cannot do: detection misses things, and a redacted note can still describe a situation someone could recognize.
+
+## The shortlist
+
+- Outbound Veil: $29 once, a Mac menu-bar app that checks the text field you are typing in.
+
+- Predact: free, Mac and Windows, drop in documents, images or text.
+
+- PrivacyScrubber: browser-based, free tier, extension for 12 chat and work sites.
+
+- Microsoft Presidio: free open-source library for developers.
+
+- The provider's own controls: ChatGPT settings, Temporary Chat, business plans and the API.
+
+- A local model: Ollama or LM Studio, so nothing leaves your machine.
+
+- Find and replace by hand: free, slow, and still useful.
+
+Those seven cover most situations. Seven more tools and seven narrower ones follow.
+
+## Outbound Veil
+
+Cost: $29, one-time, updates included, after a free 7-day trial with no account. Platform: macOS 14 or later, Apple silicon and Intel. Mac only. Status: version 1.0.1.
+
+Outbound Veil lives in the menu bar and reads the text field that has focus, through macOS Accessibility. When it finds something it shows a badge with the number of findings and highlights the matching text where the app allows it. You can ignore a finding, or press Redact all, which rewrites the field in place with labelled placeholders such as [SSN_1] or [EMAIL_1]. In apps you choose, it can also hold the send key until you have decided. It looks for names, addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth, medical record numbers and IBANs.
+
+A model that runs on your Mac does the checking. Nothing you type is stored or sent, and the app has no analytics. The model is Rampart by National Design Studio, released under CC BY 4.0, and I did not train it. Purplelink ported Rampart's processing code to Swift and added rules for dates of birth, medical record numbers and IBANs. The model file is unchanged.
+
+What it's good at: sitting where the mistake happens, in any Mac app it can read rather than one website. I tested TextEdit, Notes, Microsoft Word, Messages and text areas in Chrome. In the ChatGPT and claude.ai prompt boxes in Chrome, Redact all works, but the whole box is outlined instead of each word highlighted.
+
+What it lacks: Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list. Some apps do not expose their text fields to macOS: in my testing the Apple Mail compose window could not be read, and Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list. It needs the Accessibility permission, plus Input Monitoring if you turn on send hold. After Redact all it does not put the original values back into the AI's answer; you swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.
+
+Pick Outbound Veil if you write or paste client, patient or student details into chat boxes on a Mac and want a check as you send. Pick something else if you are on Windows, mostly share files or screenshots, or your data has names in non-Latin scripts. The trial is free for seven days; keeping it is $29, once.
+
+## Predact
+
+Cost: Free, no card; you enter an email address to get the download link. Platform: Mac (macOS 14 recommended, Apple silicon supported) and Windows.
+
+Predact is a desktop app where you drop in PDFs, Word files, text files, images and email clippings, or paste text and screenshots. It shows what it found, lets you select more words to redact, and you copy the result out or open a built-in browser linked to ChatGPT, Claude, Gemini or Perplexity. Its page says processing is local, with a Safe Mode that goes online only when you export to an AI service and a Fully Offline Mode that blocks all network use. "Persona filtering" swaps in consistent made-up details instead of tags.
+
+What it's good at: being free, handling files and images, and running on Mac and Windows. What it lacks: it does not check what you type in other apps, so using it is a step you have to remember. The local-processing statement is the vendor's claim.
+
+Pick Predact if your risk is documents, scans or screenshots, you are on Windows, or the budget is zero. Outbound Veil's case is that the check happens while you type, whether or not you remembered.
+
+## PrivacyScrubber
+
+Cost: Free up to 15,000 characters per scrub; Pro is $15 a month or $110 once; Teams is $99 a month; a developer SDK is $299 a month. Platform: a web app, a Chrome extension, an MCP server and a Node.js SDK.
+
+The Chrome extension adds a shield button to chat boxes on 12 listed sites, including ChatGPT, Claude, Gemini, Copilot and Perplexity. Click it, or press Alt+Shift+X, and the text becomes placeholders such as [NAME_1]. After the answer arrives, "Reveal Original Data" restores the real values inside the page. Its page says all of this runs in the browser tab with no server contact.
+
+What it's good at: the full loop of redact, ask, restore, on many sites, on any system that runs Chrome. What it lacks: it lives in the browser, so it does not help in a desktop app. You press the button, so a rushed send can skip it. Larger inputs, PDF OCR and custom rules need a paid plan. I have not tested the local-processing claim.
+
+Pick PrivacyScrubber if you use several AI sites in a browser, want the original values restored in the reply, and are on Windows or Linux or do not want an app.
+
+## Microsoft Presidio
+
+Cost: Free, MIT license. Platform: a Python library, with Docker and Kubernetes options.
+
+Presidio is an open-source framework for finding and anonymizing personal data in text, images and structured data, using named-entity recognition, regular expressions, rules and checksums. You can write your own recognizers, and it runs wherever you run it with no external service. The project warns there is no guarantee it finds everything. It has moved from Microsoft's GitHub organization to a community-owned one, and its documentation says that transition is under way.
+
+What it's good at: control. You can run it over a folder of interview transcripts and keep the pipeline in your own infrastructure. What it lacks: an interface. It will not watch a chat box, and nothing happens until you write the code that calls it. How well it works on your data is yours to measure.
+
+Pick Presidio if you write code and need to scrub a dataset or a set of transcripts before sending it to an AI service. Everyone else should pick an app.
+
+## The provider's own controls
+
+Cost: The settings are free; business plans are priced by OpenAI. Platform: any.
+
+This is not redaction, and it is the first thing to fix. OpenAI's help pages describe three things worth knowing. Under Settings, Data Controls, "Improve the model for everyone" decides whether chats on a personal account can be used to train its models. Temporary Chat is documented as not appearing in your history, not creating or updating memories and not being used to improve models while it stays temporary, though OpenAI may keep a copy for up to 30 days for safety. And for ChatGPT Business, Enterprise and Edu and for the API platform, OpenAI says business data is not used for training by default unless the customer opts in. For regulated health data there is a further contract, the Business Associate Agreement; the addendum OpenAI publishes names parts of its API as eligible, and which ChatGPT plans qualify is a question for OpenAI and your counsel. Claude, Gemini and the others have their own settings.
+
+What it's good at: it covers everything you type, costs nothing at the free end and settles the training question. What it lacks: your text still reaches the provider's servers and is kept for some period. A setting is a promise, not a physical barrier: in 2025 a US court order in a newspaper lawsuit reportedly required OpenAI to preserve chats that users had deleted, for a period that reportedly ended in September 2025, with some of what was preserved still held. And a business plan does not change what you are allowed to share. Your duties to a client, patient or student are the same either way.
+
+Fix this layer first. For a team, a business plan with a signed agreement matters more than any redaction tool.
+
+## A local model
+
+Cost: Free to download. Platform: macOS, Windows and Linux for both Ollama and LM Studio.
+
+Ollama and LM Studio run open models on your own computer. LM Studio's documentation says it can operate entirely offline once a model is downloaded, and its privacy policy says messages, chat histories and documents are not transmitted from your system when you run models locally; update checks and model downloads do use the network. Ollama has a catch: it also offers cloud models, whose names end in :cloud, that run on Ollama's servers. Its documentation says prompts to those are processed there, and that cloud features can be turned off. Choose a local model if the point is that nothing leaves the machine.
+
+What it's good at: it is the only option here where redaction is not needed, because there is no recipient. You can paste the whole note. What it lacks: setup time, memory and capability. Open models that fit on a laptop are generally less capable than the largest hosted ones, which matters for hard reasoning and less for summarizing or drafting. That is my judgment, not a benchmark.
+
+Pick a local model if the material must stay on your machine and a smaller model is good enough for the job.
+
+## Find and replace by hand
+
+Cost: Free. Platform: any text editor.
+
+Copy the text into a plain-text editor, replace each name with "Person A", "Person B" and each date with "Date 1", and keep a small key in a separate note. Ask your question, then reverse the replacements in the answer. It works with any AI service, no vendor sees anything, and it forces you to read every line, which a tool does not. The cost is reliability on long text: a misspelled surname, a nickname or an employer slips through. Use it for short, occasional documents, or as the read-through after a detector's first pass.
+
+## Seven more tools
+
+Each is real and useful to someone. None is on the shortlist because one of the seven above covers the same ground for most people, or the tool addresses a different problem.
+
+### Caviard
+
+Cost: Free for up to 10 protected values per document; a lifetime plan at $9, which the page lists as an early discount from $15.30. Platform: Chrome extension for ChatGPT and DeepSeek.
+
+It masks details in the browser before a prompt is sent, and Alt+R toggles original and redacted text. Its page describes detection as pattern-based, which suits emails and card numbers and tends to be weaker for names; I have not tested it on names. Pick Caviard if you use only ChatGPT or DeepSeek in Chrome and want a low-priced lifetime plan.
+
+### ClipScrub
+
+Cost: $29 once, 14-day free trial. Platform: macOS 15 or later; the AI-enhanced detection needs Apple silicon.
+
+The closest Mac peer on price. ClipScrub redacts PDFs, Word files, screenshots, screen recordings, JSON, CSV, XML and clipboard text, on the Mac and with no internet needed, according to its page. A keyboard shortcut starts it. It does not watch your typing, and it says it is not a compliance service and does not guarantee complete de-identification. Pick ClipScrub over Outbound Veil if your material is files, screenshots or recordings rather than text typed into boxes.
+
+### Clipmask
+
+Cost: Free to download, with no subscription and no time limit. Its page also mentions a 500-copy trial limit, after which you may decide to continue, and gives no price for that. Platform: Apple silicon Macs only, macOS 14 or later.
+
+The clipboard-only sibling of Predact, made by QCG. You copy text as usual, and a shortcut (Option+Space) offers a redacted version to paste. Its page says detection runs on the Mac, and that the only server contact is a check that the app is a licensed current version. Pick Clipmask if you want a free Mac tool that works on whatever you copy.
+
+### RedactDesk
+
+Cost: Free, open source (MIT). Platform: macOS 14 or later.
+
+A Mac app for redacting PDFs, scanned ones included, with OpenAI's open-source privacy-filter model running locally. It deletes the text from the PDF rather than covering it. PDFs only. Pick RedactDesk if your whole job is PDFs.
+
+### BlurData
+
+Cost: $79 a year or $149 once for one person; team plans are listed. No free tier is shown. Platform: macOS 13 or later, with an iOS version.
+
+It finds and blacks out personal details in JPG and PNG screenshots and in PDFs, on the device, in batches. Pick BlurData if your leaks are screenshots.
+
+### Nightfall
+
+Cost: By quote, per user per year, in two editions. Directories quote conflicting figures, so I give none. Platform: browser, endpoint, SaaS and AI-app coverage, run by an administrator.
+
+Data loss prevention for organizations: a security team sets policies, and the software blocks or flags sensitive data going into AI apps, email and other services. Pick Nightfall if you have to enforce a policy across many employees.
+
+### Microsoft Purview
+
+Cost: Depends on your Microsoft licensing, which I did not confirm. Platform: managed devices, Edge and other browsers.
+
+Microsoft's documentation describes Endpoint DLP policies that block pasting and uploading sensitive information to AI app websites on managed devices, and Edge policies that inspect prompts typed or pasted into consumer AI apps including ChatGPT, Copilot, DeepSeek and Gemini. Pick Purview if your organization already runs Microsoft 365 security and IT can turn it on.
+
+Seven narrower options, most of them young, with a handful of installs or stars as of this writing. ChatGPT Privacy Shield is a free Chrome extension for ChatGPT only, with Pro ($9 a month) and Team ($49 a month) plans listed as a waitlist. Rescriber is a free, open-source ChatGPT extension from Northeastern University researchers. PII Scrubber (ChatGPT, free for 5 uses a day, Pro $7 a month) and Paste Redactor (four browsers, free for 100 redactions a month, then $1 a month) are small extensions with paid tiers. PIIGuardAI is an open-source Mac menu-bar proxy that blocks AI requests containing patterns such as emails and card numbers but uses regular expressions only. Maskbase is an open-source Mac app for documents. Veil (helloveil.com, $8 a month) is a different company's meeting recorder with a privacy engine; its changelog lists nothing that checks what you type in other apps.
+
+## What redaction cannot do
+
+Some vendors above say this plainly, and everyone should assume it. Rampart, the model behind Outbound Veil, calls itself harm reduction, not perfect protection, and Presidio says there is no guarantee it finds everything.
+
+- It lowers the chance of a mistake. It is not compliance. No tool here makes a workflow compliant with a regulation or a contract.
+
+- It misses things. Nicknames, initials, a case number in a format the detector has not seen. Read the text yourself before you send it.
+
+- It flags the wrong things too. A detector cannot tell your client from a famous person, so public figures get flagged. You ignore those.
+
+- Non-Latin scripts are a gap. Rampart's documentation reports about 98% recall for names in seven Latin-script languages but about 14% across non-Latin scripts in aggregate, from 2% for Russian to 46% for Japanese. Any tool built on it, Outbound Veil included, inherits that. Other tools use other models; test each on your languages.
+
+- Context can identify a person with no name in sight. A rare diagnosis, a job title at a small employer, a town and a date. Detectors are built around identifiers such as names and numbers, and Rampart's documentation lists indirect identifiers as unaddressed.
+
+- Text tools do not touch files. Attachments, screenshots and metadata need a file tool, or should not be uploaded. Nor is redaction retroactive.
+
+## HIPAA, FERPA and client confidentiality
+
+This is not legal advice, and the answer depends on who you are and what you hold.
+
+HIPAA. The rule that defines de-identified health information (45 CFR 164.514) offers two routes: an expert's documented determination that the risk of identifying a person is very small, or removal of a listed set of about 18 identifier types, including names, geographic detail, dates tied to a person, contact numbers and record and account numbers, with no actual knowledge that what is left could identify someone. A detector that catches names and numbers is neither route, so text it has cleaned can still be protected health information. Whether you may send data to an AI service at all usually turns on a Business Associate Agreement and your organization's policy, so ask your compliance officer.
+
+FERPA. The law gives parents, and students once they are 18 or in postsecondary school, rights over personally identifiable information in education records. If you grade, advise or write recommendations, check your institution's AI policy before pasting anything that names a student. Removing the name is a habit, not a rule.
+
+Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools, and that tools which train on inputs call for the client's informed consent. For research, your IRB protocol and data management plan probably already say who may see participant data, and an AI service is a new recipient. For manuscripts, see what publishers allow when you run your own manuscript through AI.
+
+## Decision matrix
+
+- Mac user typing or pasting client or patient text into chat boxes? Outbound Veil, $29.
+
+- Documents, scans or screenshots, or on Windows, or want it free? Predact. On a Mac, ClipScrub too.
+
+- Several AI sites in a browser, values restored in the reply? PrivacyScrubber.
+
+- Only ChatGPT in Chrome? Caviard, Privacy Shield or Rescriber.
+
+- Only PDFs? RedactDesk. Mostly screenshots? BlurData or ClipScrub. Whatever you copy? Clipmask.
+
+- A developer scrubbing a dataset or transcripts? Presidio.
+
+- A team with a policy to enforce? A business plan first, then Nightfall or Purview.
+
+- The data must not leave the machine? A local model.
+
+- Occasional short text, no new software? Find and replace.
+
+## A routine that holds up
+
+- Write down what must never go in, then fix the account: turn off the model-improvement setting or use a business plan, and use Temporary Chat for one-off questions.
+
+- Put a detector where you type. A menu-bar app or an extension, or a scrubber page you open every time.
+
+- Test it with fake data first. Paste a made-up record with a name, a number, an address and a date, and see what it catches. This applies to every tool here, including mine, and takes two minutes.
+
+- Read what you are about to send. Look for what a detector would not know: a nickname, an employer.
+
+- Ask with placeholders and restore by hand. Keep any key in a separate local note. For the most sensitive material, use a local model or skip AI.
+
+## Frequently asked
+
+### What is the best way to remove personal information before using ChatGPT?
+
+Use layers. Set the account so chats are not used for training, or use a business plan. Put a detector where you type. Read what you are about to send. For material you cannot send at all, use a local model.
+
+### Does ChatGPT Temporary Chat keep my data private?
+
+Only partly. OpenAI says a temporary chat stays out of your history, creates no memories and is not used to improve its models while it remains temporary, but that it may keep a copy for up to 30 days for safety. The text still reaches OpenAI's servers.
+
+### Is a redaction tool enough for HIPAA?
+
+No. HIPAA defines de-identified data by an expert determination or by removing a listed set of identifiers with no actual knowledge that the rest could identify the person. A tool that catches names and numbers is neither. This is not legal advice; ask your compliance officer or counsel.
+
+### Do these tools send my text to a server?
+
+Most say detection runs on your device or in your browser. That is the vendor's claim, not something I tested. Enterprise DLP and the provider's own plans involve servers by design. A local model keeps text on your machine.
+
+### Is there a free tool to redact personal information for AI chats?
+
+Yes. Predact (Mac and Windows) is free, and Clipmask (Apple silicon Macs) is free to download, with a 500-copy trial limit mentioned on its page. RedactDesk is a free, open-source Mac app for PDFs. Rescriber is a free, open-source Chrome extension for ChatGPT. PrivacyScrubber and Caviard have free tiers with limits.
+
+### Is there a Mac app that checks for personal information as I type?
+
+Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things.
+
+### Should I run a local model instead of redacting?
+
+If the material must not leave your machine, yes. Ollama and LM Studio run open models on your computer. The cost is setup time and usually a less capable model. Ollama also offers cloud models that run on its servers, so choose a local one.
+
+## Related guides
+
+- Can you use AI to check your own manuscript? What publishers allow.
+
+- Purplelink's privacy page, the Mac Suite and all guides.
+
+From the team behind these tools
+
+## Typing client notes into AI chats on a Mac?
+
+Outbound Veil is a Mac menu-bar app that checks the text field you are typing in for names, numbers and addresses, marks what it finds, and can redact it in one click. The checking runs on your Mac. $29 once, all updates included.
+
+Try Outbound Veil free for 7 days
+See what it does
+
+Requires macOS 14 or later. Free 7-day trial, no account. Mac only, Latin-script names only, and it will miss some things.
+
+
+---
+
+Source: https://purplelink.llc/guides/best-academic-record-tracking-software/
+Title: Best software for tracking your research record: submissions, grants and CV (2026) | Purplelink
+
+← All guides
+
+Comparison
+
+# Best software for tracking your research record: submissions, grants and your CV (2026)
+
+By Benjamin Ampel · October 4, 2026, updated October 4, 2026
+
+What each option costs, what it tracks, where your data lives and what it leaves out, for anyone who wants to know where a paper is in review, which grants are pending and what goes in the CV, without rebuilding it from old emails. Several options are not apps: a spreadsheet, profiles you already have, and your university's own system.
+
+Disclosure up front: Purplelink, the studio I run, makes one tool on this list, Vitae, a free Mac app, and sells the tracker spreadsheets described under spreadsheets. I have tried to write the comparison honestly, and in several cases something else is the better choice. Manuscripts is a more focused submission tracker for the Mac. Papertrek runs in a browser, which Vitae does not. A spreadsheet you build yourself costs nothing and does much of the job. If your university runs Interfolio or Watermark, you will submit your tenure case there whatever else you use. Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. I did not test the other tools; the entries describe what each vendor's page says. Some vendor sites refused automated reading; where I relied on a search excerpt, or could not read a page, I say so. Enterprise systems publish no price, so I give none.
+
+## What you are tracking, and two kinds of record
+
+A research record has four layers, and tools differ mostly in how many they cover:
+
+- Published work. Papers, books, talks. Every tool here handles it.
+
+- Work in motion. A manuscript under review at a particular journal, each revision round, the reviewer comments, a grant proposal pending, the effort you have committed. A CV shows none of it, and a tenure case or a grant renewal leans on it.
+
+- Teaching, service, mentoring and reviewing. Easy to forget and hard to evidence years later.
+
+- Documents made from the above. The annual report, the CV, the NIH biosketch, the promotion dossier. Each cuts the same facts a different way for a different period.
+
+There are also two kinds of record. An institutional faculty-activity or dossier system (Interfolio, Watermark Faculty Success, Elsevier Pure, Symplectic Elements) is bought by the university, built for reporting and review, and usually mandatory. You do not choose it. A personal record is one you choose, hold in a form you control and take with you when you change employers. It can also hold what no one asks to see: the rejections, the timing, the grant you dropped. The sensible arrangement is both: keep your own record, and copy from it into the institutional system at each deadline. This page compares software for the personal record. For how to assemble a tenure case itself, see how to track your academic CV and tenure case.
+
+## The shortlist
+
+- Vitae: free Mac app that keeps submissions, grants, projects and teaching in one local record and builds the CV from it.
+
+- A spreadsheet: your own, or one of Purplelink's trackers ($9 to $14 each, $39 for the bundle).
+
+- Notion or Airtable: a database you shape yourself.
+
+- A dedicated submission tracker: Manuscripts for Mac, or Papertrek, Paperpin and Subthesis in a browser.
+
+- ORCID and Google Scholar: free profiles for published work.
+
+- Your university's system: Interfolio, Watermark and others.
+
+- Zotero and plain notes: your papers next to your reading.
+
+- A LaTeX or Word CV: the document is the record.
+
+Those eight cover most situations. More tools follow, then what to log whichever you pick.
+
+## Vitae
+
+Cost: Free, no account, no limits on the record. Vitae Plus, an optional add-on, is $3 a month or $24 a year with a 7-day trial, and is included for life in the $39 Mac Suite. Platform: macOS 15 Sequoia or later, Mac only. Status: version 1.0.1, which its page labels beta.
+
+Vitae is a Mac app with structured records for submissions, grants, projects, collaborators, teaching, service and mentoring. A submission keeps its venue, dates, each review round, the decision, manuscript versions and a cover letter. When you pick a target venue it shows published acceptance rates for about 13,700 journals and conferences, and it forecasts publication timelines from your own history. A grant runs from planning to award with requested and awarded amounts, your share and reporting dates, and the app can search Grants.gov and fill an NSF or NIH award from its number. You can connect a mailbox read-only, and Vitae proposes updates from journal-system messages; you review each one. A tenure view counts your record against expectations you enter, such as articles, funding, h-index, talks and service.
+
+The CV is built from the record. You can import the CV you have, from Word, PDF, RTF, ODT or a web page, and check every parsed entry before it saves. Pick a format, a length and a date range and it fills itself in. Export goes to PDF, LaTeX or rich text that opens in Word; Word (.docx) export with your own templates is a Plus feature. There is also RIS export, aimed at Interfolio, Watermark and reference managers, and one-click send to Zotero.
+
+What it's good at: covering the work in motion and the finished record in one place that lives on your machine. Everything is stored on your Mac with a daily backup and undo, and the free tier is the whole record.
+
+What it lacks: it runs on a Mac only, with no Windows, Linux, iPhone, iPad or web version. Records are not synced between machines; the page says iCloud sync is supported in the data model and may be enabled in a future version. It is a one-person, one-computer record: I found nothing on its page describing shared editing, so coauthors are people you record, not people who log in. It does not submit anything to Interfolio or Watermark; you export and upload. The revision workspace (which splits a decision letter into reviewer points and exports a response letter), the NIH biosketch and Current and Pending drafts, Word templates and ORCID sync are Plus features. It is a new app with a beta label, and the forecasts and counts are only as good as what you enter.
+
+Pick Vitae if you work on a Mac and want the pipeline, the record and the CV in one place you own. Pick something else if you are on Windows or Linux, need to work from a phone, or want one record that several people edit. Vitae is a free download.
+
+## A spreadsheet
+
+Cost: Your own: whatever you already pay for Excel, Numbers or Google Sheets. Purplelink's trackers: $12 each for the submission, tenure and grant trackers, $9 for the job-market tracker, $14 for the screening matrix, $39 for all six with the Grant Budget Builder. Platform: Purplelink's are .xlsx files that open in Excel and import into Google Sheets.
+
+A spreadsheet with one row per submission attempt is the most common personal tracker, and it works. Record the journal, the date submitted, the manuscript number, each decision and its date. The failure is the rest: reviewer comments, grants, teaching and service end up in other files, and nothing makes a CV from the rows.
+
+The Purplelink trackers, which I make, skip the building. The Journal Submission and R&R Tracker keeps one row per round and counts days in review, flags a revision that is overdue or due soon and an editor worth nudging, and has a matrix for reviewer comments. It holds 150 rounds and 400 comments. The Tenure and Promotion Dossier Tracker has five logs (publications, grants, teaching, service, mentoring) measured against targets you set. No institution's standards are built in, and it tracks progress, not the likelihood of a decision. The Grant Pipeline and PI Effort Tracker follows up to 100 proposals through stages and adds up each person's committed effort. It does not know your sponsor's effort rules and does not connect to a grants system.
+
+What a spreadsheet is good at: any platform, no account, a file you own, and Google Sheets lets a coauthor see it. What it lacks: everything is typed by hand, nothing produces a formatted CV or a dossier, and the Purplelink files have row limits and one worksheet per job rather than one connected record.
+
+Pick a spreadsheet if you want something plain, you are on Windows, or you want to share it with a coauthor. Build your own if you like that, buy ours to start from a finished design, or choose Vitae if you want the CV generated.
+
+## Notion or Airtable
+
+Cost: Notion: free; Plus is $10 per member per month, and students and educators with a school email get Plus free for one member. Airtable: a free plan for individuals and small teams; Team is $20 per user per month billed annually. Platform: web, with apps.
+
+Both are databases you design. Notion's template gallery lists several academic trackers, including "Submission Tracker - Scientific Manuscripts", "Manuscript Submissions Tracker", "Paper Tracker" and "Research Project Tracker". I did not find an academic submission tracker among Airtable's templates, though it has a grant tracker template aimed at nonprofits. Either can hold submissions, grants and teaching in linked tables.
+
+What it's good at: linked records, views by deadline or status, phone access and sharing. What it lacks: the structure is yours to design and keep tidy, nothing turns the rows into a CV, and the record lives on the vendor's servers, so test the export before you rely on it.
+
+Pick Notion or Airtable if you already run your work in one of them and enjoy building.
+
+## A dedicated submission tracker
+
+Manuscripts (manuscripts-app.com). Cost: $49 once, 14-day free trial; all 1.x updates are included. Platform: macOS 14.6 or later, Apple silicon and Intel.
+
+Manuscripts is a Mac app for the submission lifecycle: drafting, review rounds, revisions, authors, journal submissions, deadlines and decision letters. Its page says there is no server and that data stays on your Mac with automatic backups on launch; one license covers up to three Macs, and lab licenses exist for five or more people. Its page mentions nothing about grants, teaching or a CV.
+
+What it's good at: being focused. If papers are the whole job, it is a simpler tool than Vitae. What it lacks: everything outside submissions, and it is Mac only. Pick Manuscripts if you only track papers on a Mac and prefer to pay once. Pick Vitae if you also want grants, teaching and the CV. Papertrek, Paperpin and the Subthesis tracker, covered below, are the ones to look at if you are not on a Mac.
+
+## ORCID and Google Scholar
+
+Cost: Both free. Platform: web.
+
+ORCID is a not-for-profit registry that gives you a persistent identifier. Its record has eleven activity sections, including works, funding, employment, education, service and peer review. You can add works yourself or let connected systems add them. One limit worth knowing: peer review items can only be added through its API, not typed in. Many systems read from ORCID, and for NIH applications due on or after January 25, 2026, the biosketch and Current and Pending forms must be completed in SciENcv with your ORCID iD linked to your eRA Commons account, according to NIH notice NOT-OD-26-018. Any biosketch draft from another tool, Vitae's included, is something to copy into SciENcv. ORCID has no place for a manuscript under review or a decision, and it does not make a CV.
+
+A Google Scholar profile needs a Google account. It computes total citations, h-index and i10-index, both overall and for recent years, and updates them as it finds new citations. You can add articles by search, enter them by hand, or let it add new ones automatically, and automatic additions are worth an occasional check for papers that are not yours. It tracks published work only.
+
+Pick both if you publish. They are the cheapest, lowest-effort part of the record, other people look at them, and keeping them current takes minutes. They are not a system of record for anything unpublished.
+
+## Your university's system
+
+Cost: Paid by the institution; no public price for any of these. Platform: web.
+
+Interfolio, which is part of Elsevier, sells Faculty Activity Reporting and Review, Promotion and Tenure to universities. Its pages describe the first as a place to collect teaching, research and service activity and export it to CVs, promotion files and annual reviews, and the second as where candidates assemble their case, pulling from the first or from institutional systems. Both say to request a consultation for pricing. Watermark Faculty Success, formerly Digital Measures, covers teaching and mentoring, publications, presentations and grants, service and administrative data such as appointments and tenure timelines, and produces CVs, biographical sketches and annual reports; its page directs institutions to contact sales.
+
+What they're good at: they are the official record. Deans and committees read from them, and they pull in course data, grants and HR data so you do not retype it. What they lack: they hold what your institution asks for, in its categories, for as long as you are employed there, and they are built around reporting more than around your own planning. Ask what you can export before you change jobs.
+
+If your university has one, use it for what it requires, and keep a personal record in the same categories so each deadline is copying, not reconstruction. Elsevier Pure and Symplectic Elements, below, are the same kind of system.
+
+## Zotero and plain notes
+
+Cost: Zotero is free with 300 MB of file storage; 2 GB is $20 a year, 6 GB $60, unlimited $120. Platform: Mac, Windows, Linux, iOS and Android.
+
+Zotero is a reference manager, not a record of submissions or grants. It does one thing well for this job: its My Publications collection builds a bibliography of your own work and can share it on your zotero.org profile, with copyright options. Keep your papers there if you keep your reading there. A plain folder of dated notes, one file per paper with the decision letters pasted in, is the low-tech option: it survives any software, and a text search finds what you need.
+
+Pick Zotero as a complement, not a replacement. It has no concept of a grant, a review round or a course.
+
+## A LaTeX or Word CV
+
+Cost: LaTeX is free; Overleaf's free plan allows one collaborator per project, the student plan is $8.25 a month billed annually, Standard is $199 a year. Word templates come with Word or from your department. Platform: anywhere.
+
+The oldest method makes the CV the record. In LaTeX, moderncv offers five ready-made styles, its current version is 2.6.1 (June 2026), and it ships with TeX Live and MiKTeX. In Word, the template your department circulates is usually the right one. If you write LaTeX on a Mac, see the Mac LaTeX editors comparison, and for browser editing the Overleaf alternatives guide.
+
+What it's good at: total control of the output, in exactly the format a committee wants. What it lacks: memory. Papers under review, rejected attempts and grant resubmissions live in your inbox, and each differently cut document is another file to keep in sync. Generators fill the gap: Vitae builds from your own records and exports LaTeX, and SigmaCV is free, open source and builds a CV from ORCID, OpenAlex and Crossref into PDF, DOCX, LaTeX or Markdown. Pick a hand-made CV if the document is all you are ever asked for.
+
+## More tools
+
+Each is real and useful to someone. None is on the shortlist because one of the eight above covers the same ground for most people, or the tool solves a narrower problem.
+
+### Papertrek
+
+Cost: Free while in beta; paid plans arrive in 2027 at the earliest, with a free tier planned. Platform: web, hosted in the EU.
+
+Tracks a paper from idea to published: submissions, revisions, reviewer notes and decisions. You connect ORCID or drop in a BibTeX file to import, and its page says you can export or delete everything at any time. Grants, teaching and the CV are not on its page. Pick Papertrek if you want a submission tracker in a browser, on any computer, and accept an early-stage product.
+
+### Paperpin
+
+Cost: Free, no card. Platform: web.
+
+Its page lists deadlines for more than 600 conferences and 75 journals, manuscript status, rebuttal windows and decision dates; I have not checked those counts. Pick Paperpin if conference deadlines drive your year and you want a free web tracker.
+
+### Auctorium
+
+Cost: $4.99 on the App Store; I could not confirm whether further unlocks are sold in the app, because its website did not load. Platform: iPhone, iPad and Mac, on OS version 26.2 or later.
+
+Tracks papers with venues, coauthors, attachments, several deadlines per submission and reminders. Pick Auctorium if you want deadlines on your phone and are on a recent Apple OS. It does not cover grants or a CV.
+
+### Subthesis journal submission tracker
+
+Cost: Free, no login. Platform: web.
+
+A form-style log with the fields a submission record needs: title, journal, date, manuscript ID, editor, status, decision dates and revision deadlines. Its page says the data is kept in your browser's local storage, with export available, so switching machines loses the log unless you exported. Pick it if you want a free log without an account.
+
+### VitaMine
+
+Cost: Free tier; VitaMine+ is 25 euros a year. Platform: web, with invitation codes for early testers.
+
+A CV manager built on a structured database: import an existing CV or biosketch, sync from ORCID, OpenAlex and Zotero, download the whole thing as an SQLite database, and export to Word templates. Its page says selected CV text goes to OpenAI if you use AI-assisted import. I found no submission or deadline tracking on its page. Pick VitaMine if you can get an invitation and want a browser-based CV record.
+
+### Interfolio Dossier
+
+Cost: Free tier; Dossier Deliver is $59.99 for 50 deliveries. Platform: web.
+
+A personal account for career materials and confidential letters of recommendation, with free applications to Interfolio-hosted positions. It is the place for letters on the job market. It stores documents, not records. Pick Dossier if you are applying for positions.
+
+### Elsevier Pure
+
+Cost: Institutional; its page says contact sales. Platform: web.
+
+A research information management system used, per its page, by more than 500 institutions. It brings together publications, funding, people and projects, syncs with Scopus, ORCID and HR and finance systems, and powers researcher profiles. It is built for research administration. If your university has it, expect it to know your published work and your funding; your pipeline still needs a home.
+
+### Symplectic Elements
+
+Cost: Institutional; its page says book a demo or contact the company. Platform: web.
+
+From Digital Science. It harvests publications from PubMed, Web of Science, Scopus, Crossref and arXiv for you to claim, picks up grants through its Dimensions integration, and records teaching and professional activities, with faculty activity reporting on top. The harvesting means less typing, if the matches are right. If your university has it, check what it matched, then let it fill in the rest.
+
+### Web of Science Reviewer Recognition
+
+Cost: Free to reviewers, according to Clarivate. Platform: web.
+
+Formerly Publons. You opt in, and reviews for participating journals (Clarivate's page counts more than 9,500) are added to your Web of Science Researcher Profile as verified, without exposing the review, and the profile can produce a CV that includes them. It records reviews you do, not manuscripts you submit. Clarivate's page refused automated reading, so this entry rests on a search excerpt. Use it if you review a lot and want evidence for a promotion file.
+
+### Journal systems: ScholarOne and Editorial Manager
+
+Cost: Not sold to authors; the journal's publisher licenses it. Platform: web.
+
+The system a journal uses is itself a tracker. ScholarOne's Author Center, per Clarivate, shows your submitted manuscripts, recent correspondence and status, with prompts for a revision. Editorial Manager lets authors track manuscript status. Each journal picks its own system, so your history is spread across logins. It is the authority on one submission and a poor place to keep the whole record.
+
+### ResearchGate, Academia.edu and Semantic Scholar
+
+Three profile sites. ResearchGate calls itself a professional network, is free to join, lets you claim publications and shows reads for work you upload. Academia.edu is built around uploading and sharing papers; its site refused automated reading, so I give no price. Semantic Scholar creates an author page automatically from public papers, and you can claim and correct it. All three are about visibility of published work. None tracks submissions, grants or tenure.
+
+## What to log, whatever tool you pick
+
+The tool matters less than the habit. The aim is that the dossier, the annual report or a grant renewal is an afternoon of copying. The existing tenure case guide covers the dossier side; this is the record underneath it.
+
+For each submission attempt:
+
+- Venue, manuscript number, date submitted and the version you sent.
+
+- Each decision, its date and its verdict, and the editor's letter saved whole.
+
+- For each round: the reviewer comments, your response and the date you resubmitted.
+
+- The outcome, and when it is a rejection, where the paper went next. "Rejected twice, 14 months to acceptance" can only be written from dates.
+
+For each grant: sponsor, mechanism, your role, date submitted, requested and awarded amounts, your share, the effort you committed, reporting dates, the outcome and the reviewer feedback. Keep the unfunded ones; resubmissions start there.
+
+For teaching, service, mentoring and reviewing: course, term and enrollment with the evaluation score and its response rate; committees with the dates; advisees and where they went; the journals you reviewed for and the year. Log a review by journal and year, not by manuscript title, and check the journal's confidentiality terms.
+
+Once a year: write a paragraph on what the research, teaching and service added up to while you remember. Update ORCID when a paper is accepted. Tag each item with its year so a review period is one filter.
+
+## Decision matrix
+
+- Mac user who wants submissions, grants and the CV in one place? Vitae, free.
+
+- Only papers, on a Mac, and you prefer to pay once? Manuscripts, $49.
+
+- Papers in a browser, on Windows or Linux? Papertrek or Paperpin. For a free log with no account, the Subthesis tracker.
+
+- Deadlines on a phone? Auctorium, or a spreadsheet in Google Sheets.
+
+- Want a plain file you control? A spreadsheet, or the Purplelink trackers at $9 to $14.
+
+- Already live in Notion or Airtable? Build it there.
+
+- Publishing at all? ORCID and a Google Scholar profile, both free.
+
+- University runs Interfolio, Watermark, Pure or Elements? Use it for what it requires, and keep your own record.
+
+- Reviewing a lot? Web of Science Reviewer Recognition.
+
+## How to choose
+
+- Find out what your university requires. Ask your department which system the tenure case and annual review go into, and what you can export.
+
+- Decide what has to be on a phone. If you need a record on a phone or on two computers, rule out any tool that is local to one Mac, Vitae and Manuscripts included.
+
+- Count how many things you track. Only papers: a tracker or a spreadsheet. Papers, grants and teaching: Vitae, a database or several sheets.
+
+- Check the exit. Before you enter five years of history, find the export. A file you can open elsewhere is worth more than a feature. Then test the tool on one real paper and one real grant.
+
+## Frequently asked
+
+### What is the best software for tracking journal submissions?
+
+On a Mac, Manuscripts ($49 once) or Vitae (free) track each attempt, round and decision; Vitae also covers grants and the CV. In a browser, Papertrek and Paperpin are free for now. A spreadsheet with one row per attempt also works.
+
+### Is there free software that tracks submissions, grants and a CV together?
+
+Vitae does, on macOS 15 or later. Its record-keeping is free with no limits; an optional paid add-on covers reports and Word templates. Elsewhere, a spreadsheet or Notion setup can hold all three if you build it, but nothing formats the CV for you.
+
+### Do I still need my own record if my university uses Interfolio or Watermark?
+
+Yes. The university's system holds what the institution asks for, in its categories, while you work there. A personal record keeps the rest, such as rejections and timings, and moves with you. At each deadline you copy from it into the required system.
+
+### Do ORCID or Google Scholar track papers under review?
+
+No. ORCID is a registry of works, funding, employment and similar items, and Google Scholar counts citations to published work. Neither has a place for a manuscript's status or decisions, and neither makes a CV.
+
+### Does Vitae work on Windows or iPhone, and does it sync?
+
+No. Vitae runs on macOS 15 or later only, and records live on your Mac with no sync between machines. Its page says iCloud sync is supported in the data model and may be enabled in a future version. For a phone or a second computer, use a web tool or Google Sheets.
+
+### Is a spreadsheet good enough?
+
+For submissions, usually yes, with one row per attempt and every decision date. It struggles once you add reviewer comments, grants and teaching, because the pieces end up in different files and nothing builds a CV from them. Purplelink sells ready-made trackers, so weigh that disclosure.
+
+### What should I log for each submission?
+
+The venue, manuscript number, date submitted, the version sent, each decision with its date and verdict, the reviewer comments and your responses, the resubmission date and the outcome. Save each decision letter whole. Then a paper's history and a venue's turnaround come from fact.
+
+## Related guides
+
+- How to track your academic CV and tenure case: sixteen options and how to build the case.
+
+- How to respond to Reviewer 2 and what to do after a desk reject.
+
+- What Vitae Plus adds, the Mac Suite, the spreadsheets and all guides.
+
+From the team behind these tools
+
+## Keeping your research record on a Mac?
+
+Vitae is a free Mac app for your submissions, review rounds, grants, projects and teaching, with a CV built from the record. Everything stays on your Mac, with no account. Vitae Plus, $3 a month or $24 a year, is optional.
+
+Get Vitae for Mac, free
+See what Plus adds
+
+Requires macOS 15 or later. Mac only, with no sync between machines. Version 1.0.1, labelled beta.
