@@ -185,7 +185,15 @@ def main():
         if now is not None and before is not None and now - before > 0:
             royalties += now - before
             parts.append(f"{plat.split('_')[0]} +${now - before:.2f}")
-    token = netlify_env("STATS_TOKEN")
+    # The dashboard's private env file is the reliable source; the Netlify
+    # variable stopped answering `env:get` on 2026-10-04.
+    token = ""
+    envf = Path.home() / ".config" / "purplelink" / "traffic.env"
+    if envf.exists():
+        for line in envf.read_text().splitlines():
+            if line.startswith("PURPLELINK_STATS_TOKEN="):
+                token = line.split("=", 1)[1].strip()
+    token = token or netlify_env("STATS_TOKEN")
     site = site_numbers(token)
     direct = site["direct_revenue"] or 0.0
     hours = sum(num(r["hours"]) or 0 for r in read_csv(AN / "owner-hours.csv") if r.get("date", "") >= since.isoformat())
