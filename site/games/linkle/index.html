@@ -44,6 +44,22 @@
           "mainEntity": [
             {
               "@type": "Question",
+              "name": "What are the weekday twists?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each day has its own rule. Monday is standard. Tuesday shows the first letter. Wednesday gives you a seventh guess. Thursday tells you how many vowels the word has. Friday's word never repeats a letter. Saturday's word always repeats one. Sunday is hard mode, where every hint you find must be used in your next guess."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What are ranks and the weekly tracker?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Your rank rises with the number of puzzles you have solved: Newcomer, Reader, Scribe, Wordsmith, Lexicographer and Sage. The tracker shows which days of the current Monday-to-Sunday week you solved, and counts the weeks where you solved all seven."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "Does the puzzle change every day?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -117,7 +133,7 @@
     <script src="/theme.js?v=e7bc0b7c72"></script>
     <link rel="stylesheet" href="/styles.css?v=be9f0a97b9">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/games/games.css?v=d5700f36c0">
+    <link rel="stylesheet" href="/games/games.css?v=75b0dbd689">
     <script src="/site.js?v=cefe20b388" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -143,10 +159,11 @@
           <h1>Linkle</h1>
           <span class="game-num" id="wg-number" aria-live="off"></span>
         </div>
-        <p class="game-lede">One five-letter word a day. Six guesses.</p>
+        <p class="game-lede">One five-letter word a day, with a new twist each weekday.</p>
         <p id="wg-loading" class="games-note">Loading today's puzzle.</p>
         <div id="wg-game" hidden>
           <div class="wg-status" id="wg-status" role="status" aria-live="polite"></div>
+          <p class="wg-twist" id="wg-twist" hidden><strong id="wg-twist-name"></strong> <span id="wg-twist-text"></span></p>
           <p class="wg-msg" id="wg-msg" aria-hidden="true"></p>
           <div class="wg-boards" id="wg-boards" data-boards="1"></div>
           <div class="wg-keys" id="wg-keys" aria-label="Keyboard"></div>
@@ -160,6 +177,10 @@
               <div><b id="wg-max">0</b><span>Best streak</span></div>
             </div>
             <div class="wg-dist" id="wg-dist"></div>
+            <p class="wg-rank" id="wg-rank"></p>
+            <div class="wg-week" id="wg-week" role="group" aria-label="This week"></div>
+            <p class="game-note" id="wg-week-note"></p>
+            <p class="game-note" id="wg-tomorrow"></p>
             <div class="game-actions">
               <button type="button" class="btn btn-primary" id="wg-share">Copy result</button>
               <span class="game-note" id="wg-share-note"></span>
@@ -177,7 +198,21 @@
           <span><span class="wg-tile" data-s="a">X</span> Not in the word</span>
         </div>
         <p>Type with your keyboard or tap the keys. Press Enter to submit and Backspace to delete. A new puzzle appears every day at midnight in your time zone.</p>
+        <h2>The weekday twists</h2>
+        <ul>
+          <li><strong>Monday:</strong> standard rules.</li>
+          <li><strong>Tuesday, head start:</strong> you are told the first letter.</li>
+          <li><strong>Wednesday, extra guess:</strong> seven guesses instead of six.</li>
+          <li><strong>Thursday, vowel count:</strong> you are told how many vowels the word has.</li>
+          <li><strong>Friday, no repeats:</strong> no letter appears twice.</li>
+          <li><strong>Saturday, double up:</strong> at least one letter appears twice.</li>
+          <li><strong>Sunday, hard mode:</strong> every hint you have found must be used in your next guess.</li>
+        </ul>
         <h2>Questions</h2>
+        <h3>What are the weekday twists?</h3>
+        <p>Each day has its own rule. Monday is standard. Tuesday shows the first letter. Wednesday gives you a seventh guess. Thursday tells you how many vowels the word has. Friday&#x27;s word never repeats a letter. Saturday&#x27;s word always repeats one. Sunday is hard mode, where every hint you find must be used in your next guess.</p>
+        <h3>What are ranks and the weekly tracker?</h3>
+        <p>Your rank rises with the number of puzzles you have solved: Newcomer, Reader, Scribe, Wordsmith, Lexicographer and Sage. The tracker shows which days of the current Monday-to-Sunday week you solved, and counts the weeks where you solved all seven.</p>
         <h3>Does the puzzle change every day?</h3>
         <p>Yes. A new word is ready at midnight your time, and everyone sees the same word on the same date.</p>
         <h3>Which words are accepted?</h3>
@@ -193,9 +228,9 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=dcf9be72f7" defer></script>
-    <script src="/games/config-linkle.js?v=93ec24f2b1" defer></script>
-    <script src="/games/wordgame.js?v=b7f584b554" defer></script>
+    <script src="/games/core.js?v=7aed645be4" defer></script>
+    <script src="/games/config-linkle.js?v=a746c82f0b" defer></script>
+    <script src="/games/wordgame.js?v=f20aba655b" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

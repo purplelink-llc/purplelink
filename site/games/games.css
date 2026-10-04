@@ -103,6 +103,15 @@
 .wg-marks i[data-s="a"] { background: var(--g-absent-ink); opacity: 0.55; }
 .wg-key:has(.wg-marks) { padding-bottom: 8px; }
 
+/* Linkle twist banner, rank and weekly tracker */
+.wg-twist { max-width: 520px; margin: 0 auto 10px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--purple-xlight); color: var(--ink); font-size: 0.92rem; text-align: center; }
+.wg-twist strong { color: var(--purple); }
+.wg-rank { margin: 6px 0 8px; font-weight: 600; }
+.wg-week { display: flex; gap: 6px; margin: 0 0 6px; }
+.wg-weekday { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; border: 1.5px solid var(--g-tile-line); font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+.wg-weekday[data-won] { background: var(--g-correct); border-color: transparent; color: var(--g-correct-ink); }
+.wg-weekday[data-today] { outline: 2px solid var(--purple); outline-offset: 2px; }
+
 /* result */
 .game-result { max-width: 520px; margin: 22px auto 0; padding: 20px 22px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
 .game-result h2 { font-family: var(--font-display); font-size: 1.4rem; margin: 0 0 4px; }

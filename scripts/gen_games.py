@@ -22,6 +22,7 @@ import base64
 import json
 import random
 import sys
+from datetime import date, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -65,24 +66,61 @@ def cycle_stream(pool: list[str], seed: str, need: int) -> list[str]:
     return out[:need]
 
 
+def weekday_of(day_index: int) -> int:
+    """Python weekday (Monday=0) of puzzle day `day_index`."""
+    y, m, d = map(int, EPOCH.split("-"))
+    return (date(y, m, d) + timedelta(days=day_index)).weekday()
+
+
+def twist_ok(word: str, weekday: int) -> bool:
+    """Linkle's weekday twists that constrain the answer: Friday has no repeated letter,
+    Saturday has at least one. The other days accept any word."""
+    if weekday == 4:
+        return len(set(word)) == len(word)
+    if weekday == 5:
+        return len(set(word)) < len(word)
+    return True
+
+
+# Puzzles that were already live before the answer pool was last changed. They are pinned so a
+# pool edit never changes a puzzle somebody may have played.
+FIXED_LINKLE = ["wires", "going", "lines"]
+FIXED_QUAD = [["point", "brand", "bound", "south"]]
+
+
 def linkle(pool: list[str]) -> dict:
-    return {"epoch": EPOCH, "answers": [enc(w) for w in cycle_stream(pool, "linkle", DAYS)]}
+    stream = [w for w in cycle_stream(pool, "linkle", len(pool)) if w not in FIXED_LINKLE]
+    answers = list(FIXED_LINKLE)
+    remaining = stream
+    for d in range(len(FIXED_LINKLE), DAYS):
+        wd = weekday_of(d)
+        for i, w in enumerate(remaining):
+            if twist_ok(w, wd):
+                answers.append(remaining.pop(i))
+                break
+        else:   # pool exhausted for this twist: start another seeded cycle
+            fresh = cycle_stream(pool, f"linkle-extra-{d}", len(pool))
+            remaining.extend(fresh)
+            answers.append(next(w for w in remaining if twist_ok(w, wd)))
+            remaining.remove(answers[-1])
+    return {"epoch": EPOCH, "answers": [enc(w) for w in answers]}
 
 
 def quadlink(pool: list[str]) -> dict:
-    stream = cycle_stream(pool, "quadlink", DAYS * 4)
-    days = []
-    for d in range(DAYS):
-        chunk = stream[d * 4:(d + 1) * 4]
-        # A cycle boundary can put one word twice in a day; swap in the next unused word.
-        seen: list[str] = []
-        spare = iter(stream[DAYS * 4:] + pool)
-        for w in chunk:
-            while w in seen:
-                w = next(spare)
-            seen.append(w)
-        days.append([enc(w) for w in seen])
-    return {"epoch": EPOCH, "days": days}
+    pinned = {w for day in FIXED_QUAD for w in day}
+    stream = cycle_stream([w for w in pool if w not in pinned], "quadlink", DAYS * 4)
+    days = [list(day) for day in FIXED_QUAD]
+    pos = 0
+    for d in range(len(FIXED_QUAD), DAYS):
+        chunk: list[str] = []
+        # A cycle boundary can put one word twice in a day; skip ahead to the next unused word.
+        while len(chunk) < 4:
+            w = stream[pos % len(stream)]
+            pos += 1
+            if w not in chunk:
+                chunk.append(w)
+        days.append(chunk)
+    return {"epoch": EPOCH, "days": [[enc(w) for w in day] for day in days]}
 
 
 def build() -> dict[str, str]:
