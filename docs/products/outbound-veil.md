@@ -10,7 +10,7 @@ private). Design: that repo's `docs/superpowers/specs/2026-10-03-outbound-veil-d
 | Item | Value |
 |---|---|
 | Product | created at launch (record the id here) |
-| Price | created at launch (record the id and amount here) |
+| Price | $29 USD one-time (decided 2026-10-03; Stripe price created at launch, record the id here) |
 | Env var | `STRIPE_PRICE_OUTBOUND_VEIL` (production context) |
 | Product key | `outbound-veil` in `netlify/functions/checkout.mjs` |
 | Success page | `/outbound-veil/success/?session_id=cs_...` |
@@ -53,5 +53,5 @@ and the repo's `NOTICE.md` must credit it and say what changed. Check all three 
 
 ## Open items at launch
 
-USPTO search for VEIL and OUTBOUND VEIL (classes 9, 42, 45); register outboundveil.com and .app; price;
+USPTO search for VEIL and OUTBOUND VEIL (classes 9, 42, 45); register outboundveil.com and .app; 
 Stripe product and price; `OUTBOUND_VEIL_UPDATE_TOKEN`.
