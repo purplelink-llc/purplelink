@@ -30,7 +30,7 @@
           "@type": "CollectionPage",
           "name": "Daily games",
           "url": "https://purplelink.llc/games/",
-          "description": "Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account, and there are no third-party ads.",
+          "description": "Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
           "speakable": {
             "@type": "SpeakableSpecification",
             "cssSelector": [
@@ -88,6 +88,24 @@
                 "position": 8,
                 "name": "Daily Stars",
                 "url": "https://purplelink.llc/games/daily-stars/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 9,
+                "name": "Chess Puzzles",
+                "url": "https://purplelink.llc/games/chess-puzzles/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 10,
+                "name": "Sudoku Unlimited",
+                "url": "https://purplelink.llc/games/sudoku-unlimited/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 11,
+                "name": "Leaderboards",
+                "url": "https://purplelink.llc/games/leaderboard/"
               }
             ]
           }
@@ -100,7 +118,15 @@
               "name": "Are the games free?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. You can play every game without signing in, and there are no third-party ads, only an occasional small notice about one of our own apps. An optional email-link sign-in keeps your streaks and achievements across devices."
+                "text": "Yes. You can play every game without signing in. The daily games have no third-party ads, only an occasional small notice about one of our own apps. The two unlimited pages, Chess Puzzles and Sudoku Unlimited, show Google ads. An optional email-link sign-in keeps your streaks, achievements and puzzle ratings across devices."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I play more than one chess puzzle or Sudoku a day?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Chess Puzzles and Sudoku Unlimited have no daily limit. Each keeps a rating, and signed-in players can choose to appear on the leaderboards."
               }
             },
             {
@@ -154,10 +180,11 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
+
     <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=1dddba703d">
+    <link rel="stylesheet" href="/games/games-ui.css?v=958c7df7e0">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -191,7 +218,7 @@
             <button type="button" class="dock-btn" data-fx-sound aria-pressed="true" aria-label="Sound on. Turn sound off"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sound-on"/></svg><span class="fx-label visually-hidden">Sound on</span></button>
           </div>
         </header>
-        <p class="game-lede">Purplelink&#x27;s daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account, and there are no third-party ads.</p>
+        <p class="game-lede">Purplelink&#x27;s daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.</p>
         <section class="run" aria-labelledby="run-h">
           <div class="run-ring" id="run-ring">
             <svg viewBox="0 0 168 168" aria-hidden="true" focusable="false" id="run-svg"></svg>
@@ -256,6 +283,27 @@
               <span class="tile-foot"><span class="tile-status" data-status>About 1 minute</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
         </div>
+        <section class="more" aria-labelledby="more-h">
+          <h2 id="more-h">Unlimited and rated</h2>
+          <p class="week-sub">No daily limit. Chess Puzzles and Sudoku Unlimited keep a rating that moves as you solve, and signed-in players can join the leaderboards.</p>
+          <div class="tiles">
+          <a class="tile" data-game="chess-puzzles" data-g="chess-puzzles" href="/games/chess-puzzles/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a2" x="0" y="0" width="25" height="28" opacity=".45"/><rect class="a2" x="50" y="0" width="25" height="28" opacity=".45"/><rect class="a2" x="100" y="0" width="25" height="28" opacity=".45"/><rect class="a2" x="150" y="0" width="25" height="28" opacity=".45"/><rect class="a2" x="25" y="28" width="25" height="28" opacity=".45"/><rect class="a2" x="75" y="28" width="25" height="28" opacity=".45"/><rect class="a2" x="125" y="28" width="25" height="28" opacity=".45"/><rect class="a2" x="175" y="28" width="25" height="28" opacity=".45"/><rect class="a2" x="0" y="56" width="25" height="28" opacity=".45"/><rect class="a2" x="50" y="56" width="25" height="28" opacity=".45"/><rect class="a2" x="100" y="56" width="25" height="28" opacity=".45"/><rect class="a2" x="150" y="56" width="25" height="28" opacity=".45"/><rect class="a2" x="25" y="84" width="25" height="28" opacity=".45"/><rect class="a2" x="75" y="84" width="25" height="28" opacity=".45"/><rect class="a2" x="125" y="84" width="25" height="28" opacity=".45"/><rect class="a2" x="175" y="84" width="25" height="28" opacity=".45"/><rect class="a2" x="0" y="112" width="25" height="28" opacity=".45"/><rect class="a2" x="50" y="112" width="25" height="28" opacity=".45"/><rect class="a2" x="100" y="112" width="25" height="28" opacity=".45"/><rect class="a2" x="150" y="112" width="25" height="28" opacity=".45"/><g class="mv"><path class="a4" d="M52 118h46v-8H52zM56 108h38l-4-26H60zM50 82h50V66h-9v6h-8v-6H67v6h-8v-6h-9z"/></g><g class="mv2"><path class="a5 ar" d="M146 112V52M126 74l20-22 20 22" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></g></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Chess Puzzles</h2><p>Unlimited rated tactics from the Lichess database.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 2 minutes</span><span class="tile-go" data-go>Play</span></span></span>
+          </a>
+          <a class="tile" data-game="sudoku-unlimited" data-g="sudoku-unlimited" href="/games/sudoku-unlimited/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a2" x="36" y="16" width="128" height="108" rx="10"/><rect class="a1" x="49.7" y="16" width="1" height="108"/><rect class="a1" x="63.9" y="16" width="1" height="108"/><rect class="a1" x="77.2" y="16" width="3" height="108"/><rect class="a1" x="92.4" y="16" width="1" height="108"/><rect class="a1" x="106.6" y="16" width="1" height="108"/><rect class="a1" x="119.8" y="16" width="3" height="108"/><rect class="a1" x="135.0" y="16" width="1" height="108"/><rect class="a1" x="149.3" y="16" width="1" height="108"/><rect class="a1" x="36" y="27.5" width="128" height="1"/><rect class="a1" x="36" y="39.5" width="128" height="1"/><rect class="a1" x="36" y="50.5" width="128" height="3"/><rect class="a1" x="36" y="63.5" width="128" height="1"/><rect class="a1" x="36" y="75.5" width="128" height="1"/><rect class="a1" x="36" y="86.5" width="128" height="3"/><rect class="a1" x="36" y="99.5" width="128" height="1"/><rect class="a1" x="36" y="111.5" width="128" height="1"/><g class="mv"><path class="a6" d="M70 70c0-9 6-14 13-14 13 0 17 28 30 28 7 0 13-5 13-14s-6-14-13-14c-13 0-17 28-30 28-7 0-13-5-13-14z"/></g></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Sudoku Unlimited</h2><p>Unlimited Sudoku in five levels, with a rating.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 10 minutes</span><span class="tile-go" data-go>Play</span></span></span>
+          </a>
+          <a class="tile" data-game="leaderboard" data-g="leaderboard" href="/games/leaderboard/">
+            <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="a1" x="70" y="56" width="30" height="66" rx="5"/><rect class="a2" x="104" y="34" width="32" height="88" rx="5"/><rect class="a1" x="140" y="72" width="30" height="50" rx="5"/><text class="a4" x="85" y="80" text-anchor="middle" font-size="20">2</text><text class="a4" x="120" y="62" text-anchor="middle" font-size="20">1</text><text class="a4" x="155" y="94" text-anchor="middle" font-size="20">3</text><g class="mv"><path class="a5" d="M120 7L123.08 14.92L131 18L123.08 21.08L120 29L116.92 21.08L109 18L116.92 14.92Z"/></g><g class="mv2"><circle class="a5" cx="44" cy="48" r="4"/><circle class="a5" cx="172" cy="40" r="3"/><circle class="a2" cx="30" cy="96" r="3"/></g></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
+            <span class="tile-body"><h2>Leaderboards</h2><p>The top ratings in chess and Sudoku, and this week&#x27;s climbers.</p>
+              <span class="tile-foot"><span class="tile-status" data-status>About 1 minute</span><span class="tile-go" data-go>Play</span></span></span>
+          </a>
+          </div>
+        </section>
         <section class="week" aria-labelledby="week-h">
           <h2 id="week-h">This week</h2>
           <p class="week-sub" id="week-sub">Finish two puzzles in a day to earn that day's stamp. Five stamps in a week is worth 50 XP.</p>
@@ -279,12 +327,17 @@
               <tr><th scope="row"><a href="/games/sudoku/">Sudoku</a></th><td>Daily Sudoku is a free daily Sudoku with exactly one solution.</td><td>About 12 min</td></tr>
               <tr><th scope="row"><a href="/games/crossword/">Daily Crossword</a></th><td>Daily Crossword is a free daily themeless crossword puzzle.</td><td>About 10 min</td></tr>
               <tr><th scope="row"><a href="/games/daily-stars/">Daily Stars</a></th><td>Daily Stars is a free daily horoscope with a short reading for each of the twelve zodiac signs.</td><td>About 1 min</td></tr>
+              <tr><th scope="row"><a href="/games/chess-puzzles/">Chess Puzzles</a></th><td>Chess Puzzles is a free, unlimited chess tactics trainer.</td><td>About 2 min</td></tr>
+              <tr><th scope="row"><a href="/games/sudoku-unlimited/">Sudoku Unlimited</a></th><td>Sudoku Unlimited is a free Sudoku with no daily limit.</td><td>About 10 min</td></tr>
+              <tr><th scope="row"><a href="/games/leaderboard/">Leaderboards</a></th><td>The Purplelink puzzle leaderboards list the highest ratings in Chess Puzzles and Sudoku Unlimited, plus the biggest rating gains this week.</td><td>About 1 min</td></tr>
             </tbody>
           </table>
           <p>Every puzzle changes at midnight in your own time zone, so everyone sees the same puzzle on the same calendar date. Difficulty rises through the week in Linkle, the crossword and Daily Chess, and rises by season in Sudoku.</p>
           <h2>Questions</h2>
           <h3>Are the games free?</h3>
-          <p>Yes. You can play every game without signing in, and there are no third-party ads, only an occasional small notice about one of our own apps. An optional email-link sign-in keeps your streaks and achievements across devices.</p>
+          <p>Yes. You can play every game without signing in. The daily games have no third-party ads, only an occasional small notice about one of our own apps. The two unlimited pages, Chess Puzzles and Sudoku Unlimited, show Google ads. An optional email-link sign-in keeps your streaks, achievements and puzzle ratings across devices.</p>
+          <h3>Can I play more than one chess puzzle or Sudoku a day?</h3>
+          <p>Yes. Chess Puzzles and Sudoku Unlimited have no daily limit. Each keeps a rating, and signed-in players can choose to appear on the leaderboards.</p>
           <h3>When does a new puzzle appear?</h3>
           <p>At midnight in your time zone, so everyone sees the same puzzle on the same calendar date.</p>
           <h3>Do you track my results?</h3>
@@ -298,11 +351,12 @@
     <script src="/games/core.js?v=4f38abed6e" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=3081555ef5" defer></script>
-    <script src="/games/goals.js?v=927ed68d73" defer></script>
+    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
+    <script src="/games/goals.js?v=207f440fce" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
-    <script src="/games/dock.js?v=f5894cf365" defer></script>
-    <script src="/games/hub.js?v=835eacfafc" defer></script>
+    <script src="/games/dock.js?v=a52b682b21" defer></script>
+    <script src="/games/ratings.js?v=db6e9898b5" defer></script>
+    <script src="/games/hub.js?v=c30371aad1" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

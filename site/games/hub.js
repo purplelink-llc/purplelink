@@ -51,6 +51,19 @@
     });
   }
 
+  // Rated pages: show the player's rating on their tiles.
+  function paintRated() {
+    var RT = window.PLRating; if (!RT) return;
+    [["chess-puzzles", "chess"], ["sudoku-unlimited", "sudoku"]].forEach(function (x) {
+      var card = document.querySelector('.tile[data-game="' + x[0] + '"]'); if (!card) return;
+      var rec = RT.get(x[1]), st = card.querySelector("[data-status]"), go = card.querySelector("[data-go]");
+      if (st) st.textContent = rec.n ? "Rating " + rec.r + ". " + rec.n + " played" : "Unlimited. Starts at 1000";
+      if (go) go.textContent = rec.n ? "Play on" : "Play";
+    });
+    var lb = document.querySelector('.tile[data-game="leaderboard"]');
+    if (lb) { lb.querySelector("[data-go]").textContent = "View"; lb.querySelector("[data-status]").textContent = "Top 100, weekly climbers"; }
+  }
+
   function paintQuests(sum) {
     var ul = $("quests"); if (!ul) return;
     ul.textContent = "";
@@ -125,7 +138,7 @@
     if (lv) lv.textContent = "Level " + sum.level.level + ", " + sum.level.title + ". " + sum.level.into + " of " + sum.level.need + " XP to the next.";
     var date = $("hub-date");
     if (date) date.textContent = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-    paintTiles(sum, all); paintQuests(sum); paintWeek(sum); paintReach();
+    paintTiles(sum, all); paintRated(); paintQuests(sum); paintWeek(sum); paintReach();
     if (window.PLDock) window.PLDock.paint();
   }
 

@@ -57,10 +57,11 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
+
     <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=1dddba703d">
+    <link rel="stylesheet" href="/games/games-ui.css?v=958c7df7e0">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -109,6 +110,8 @@
             <button type="submit" class="btn btn-ghost">Save name</button>
           </form>
           <label class="ac-check"><input type="checkbox" id="ac-remind"> Email me in the evening if my streak is about to end (at most one email a day)</label>
+          <label class="ac-check"><input type="checkbox" id="ac-public"> Show my display name and puzzle ratings on the <a href="/games/leaderboard/">leaderboards</a> (needs a display name)</label>
+          <p class="games-note" id="ac-ratings"></p>
           <div class="game-actions">
             <button type="button" class="btn btn-ghost" id="ac-sync">Sync now</button>
             <button type="button" class="btn btn-ghost" id="ac-logout">Sign out</button>
@@ -132,8 +135,9 @@
 
     <script src="/games/core.js?v=4f38abed6e" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=3081555ef5" defer></script>
-    <script src="/games/account.js?v=df69f152cc" defer></script>
+    <script src="/games/ratings.js?v=db6e9898b5" defer></script>
+    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
+    <script src="/games/account.js?v=ef89bc0fca" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

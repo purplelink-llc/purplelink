@@ -46,7 +46,7 @@ def seo_graph(path, m, faq_node, url, og):
     return {"@context": "https://schema.org", "@graph": [ORG, web, app, how, faq_node, crumb]}
 
 
-def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index, follow"):
+def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index, follow", ads=False):
     url = f"https://purplelink.llc/{path}"
     og_image, og_alt = "https://purplelink.llc/assets/og/brand.png", "Purplelink: Mac apps and manuscript tools for researchers"
     m = META.get(path)
@@ -71,6 +71,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     if slug:
         scripts = [x for x in scripts if x not in ("/games/achievements.js", "/games/confetti.js", "/games/sync.js")]
         scripts = ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js"] + [x for x in scripts if x != "/games/core.js"]
+    ads_tag = '    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>' if ads else ""
     ld = json.dumps(jsonld, indent=2)
     ld = "\n".join("    " + l for l in ld.splitlines())
     sc = "\n".join(f'    <script src="{s}"{" defer" if True else ""}></script>' for s in scripts)
@@ -109,6 +110,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js"></script>
+{ads_tag}
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
     <link rel="stylesheet" href="/games/games.css">
@@ -143,6 +145,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     p.write_text(out)
 
 
+EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
@@ -154,8 +157,11 @@ TAGLINE = {
     "sudoku": "One solution, and harder every week of a ten-week season.",
     "crossword": "A themeless crossword, easy Monday to hard Sunday.",
     "daily-stars": "A short horoscope for every sign, for entertainment.",
+    "chess-puzzles": "Unlimited rated tactics from the Lichess database.",
+    "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
+    "leaderboard": "The top ratings in chess and Sudoku, and this week's climbers.",
 }
-MINUTES = {"linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
@@ -166,8 +172,12 @@ def dock(current):
         cur = ' aria-current="page"' if slug == current else ""
         items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
                      f'<span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>')
+    extra = []
+    for slug, label in EXTRA:
+        cur = ' aria-current="page"' if slug == current else ""
+        extra.append(f'<li class="dock-more"><a class="dock-link" data-g="{slug}" data-x href="/games/{slug}/"{cur} title="{label}">{USE.format(slug)}<span class="dock-name">{label}</span></a></li>')
     return ('    <nav class="game-dock" aria-label="Daily games">\n'
-            f'      <ul class="dock-list">\n        <li><a class="dock-link dock-all" href="/games/" title="All games">{USE.format("grid")}<span class="dock-name">All games</span></a></li>\n        ' + "\n        ".join(items) + '\n      </ul>\n'
+            f'      <ul class="dock-list">\n        <li><a class="dock-link dock-all" href="/games/" title="All games">{USE.format("grid")}<span class="dock-name">All games</span></a></li>\n        ' + "\n        ".join(items + extra) + '\n      </ul>\n'
             '      <div class="dock-tools">\n'
             '        <span class="dock-chip" id="dock-streak" hidden></span>\n'
             '        <a class="dock-chip" id="dock-level" href="/games/account/" title="Your level and achievements"></a>\n'
@@ -653,6 +663,7 @@ CH_BODY = """      <div class="games-wrap">
             </div>
             <textarea class="wg-share-text" id="ch-share-text" hidden readonly aria-label="Result text"></textarea>
             <p class="game-next">Next puzzle in <span id="ch-next-in"></span>.</p>
+            <p class="game-more"><a class="gbtn" href="/games/chess-puzzles/" data-g="chess-puzzles">Play unlimited rated puzzles</a></p>
           </section>
         </div>
         <div class="games-prose">
@@ -732,6 +743,7 @@ SD_BODY = """      <div class="games-wrap">
             </div>
             <textarea class="wg-share-text" id="sd-share-text" hidden readonly aria-label="Result text"></textarea>
             <p class="game-next">Next puzzle in <span id="sd-next-in"></span>.</p>
+            <p class="game-more"><a class="gbtn" href="/games/sudoku-unlimited/" data-g="sudoku-unlimited">Play unlimited rated Sudoku</a></p>
           </section>
         </div>
         <div class="games-prose">
@@ -742,6 +754,209 @@ SD_BODY = """      <div class="games-wrap">
 page("games/sudoku/", "", "", SD_BODY,
      {"@context": "https://schema.org", "@graph": [faq(SD_FAQ)]},
      ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/sudoku.js"])
+
+
+# ---------------- Chess Puzzles (rated, unlimited) ----------------
+CP_FAQ = [
+    ("How is my puzzle rating worked out?", "It is an Elo rating, like a chess rating. Each puzzle has a rating from the Lichess database. If you solve a puzzle rated above you, you gain a lot; if you solve one well below you, you gain a little; a miss costs more the easier the puzzle was. Early on, ratings move faster, and they settle after about 20 puzzles."),
+    ("Is this the same as my Lichess puzzle rating?", "No. It is a separate rating that starts at 1000 here, so the numbers are not comparable with Lichess or any other site."),
+    ("What counts as a miss?", "The first wrong move ends the puzzle, as on Lichess, and the correct line is shown. Show solution also counts as a miss. A move that gives checkmate is always accepted."),
+    ("Is there a daily limit?", "No. Play as many puzzles as you like. Each new puzzle is picked near your current rating and avoids ones you saw recently."),
+    ("Do I need an account?", "No. Without one, your rating is kept on this device. Signing in with an email link keeps it across devices and lets you appear on the leaderboard if you choose."),
+    ("How do the leaderboards work?", "Signed-in players can opt in under a display name. The board shows the top 100 by rating and the top 100 by rating gained this week. The rating service checks that every report is for a real puzzle taken in a plausible time and works out the rating itself, so the browser cannot send a rating."),
+    ("Where do the puzzles come from?", "From the Lichess puzzle database, released under the CC0 licence. Move rules are handled by chess.js, used under its BSD licence."),
+    ("Are there ads?", "Yes. This page shows Google ads, which is how the unlimited puzzles stay free. The daily games have none."),
+]
+CP_PROSE = """        <h2>How it works</h2>
+        <p>Each puzzle starts right after your opponent moves. Find the best move for the side at the bottom of the board and keep going until the puzzle ends. A solve raises your rating and a miss lowers it. The next puzzle is picked near your rating, so the level follows you.</p>
+        <h2>Ratings at a glance</h2>
+        <table class="games-table">
+          <thead><tr><th scope="col">Rating</th><th scope="col">Title</th></tr></thead>
+          <tbody>
+            <tr><td>Under 800</td><td>Novice</td></tr><tr><td>800 to 1199</td><td>Learner</td></tr><tr><td>1200 to 1499</td><td>Club player</td></tr>
+            <tr><td>1500 to 1799</td><td>Strong</td></tr><tr><td>1800 to 2099</td><td>Expert</td></tr><tr><td>2100 to 2399</td><td>Master</td></tr><tr><td>2400 and up</td><td>Grandmaster</td></tr>
+          </tbody>
+        </table>
+        <h2>Questions</h2>
+""" + faq_html(CP_FAQ) + """
+        <p class="quiz-credit">Puzzles come from the <a href="https://database.lichess.org/#puzzles" rel="noopener">Lichess puzzle database</a>, released under CC0. Chess rules are handled by <a href="https://github.com/jhlywa/chess.js" rel="noopener">chess.js</a>, used under its BSD licence.</p>"""
+CP_BODY = """      <div class="games-wrap">
+        <div class="game-head">
+          <h1>Chess Puzzles</h1>
+          <span class="game-num" id="ch-number"></span>
+        </div>
+        <p class="game-lede">Chess Puzzles is a free, unlimited chess tactics trainer.</p>
+        <div class="rate-hud">
+          <div class="rate-stat"><span class="rate-n" id="cr-rating">1000</span><span class="rate-l" id="cr-tier-top">Learner</span></div>
+          <div class="rate-stat"><span class="rate-n rate-n--sm" id="cr-streak-top">0</span><span class="rate-l">Solved in a row</span></div>
+          <a class="gbtn gbtn--ghost" href="/games/leaderboard/?g=chess" data-g="leaderboard">Leaderboard</a>
+        </div>
+        <p id="ch-loading" class="games-note">Loading a puzzle.</p>
+        <div id="ch-game" hidden>
+          <p class="ch-turn" id="ch-turn"></p>
+          <p class="ch-msg" id="ch-msg" role="status" aria-live="polite"></p>
+          <div class="cb-board" id="ch-board" role="group" aria-label="Chess board"></div>
+          <div class="ch-promo" id="ch-promo" hidden role="group" aria-label="Promote the pawn to">
+            <span>Promote to</span>
+            <button type="button" class="btn btn-ghost" data-p="q">Queen</button>
+            <button type="button" class="btn btn-ghost" data-p="r">Rook</button>
+            <button type="button" class="btn btn-ghost" data-p="b">Bishop</button>
+            <button type="button" class="btn btn-ghost" data-p="n">Knight</button>
+          </div>
+          <div class="game-actions" id="ch-controls">
+            <button type="button" class="btn btn-ghost" id="ch-giveup">Show solution</button>
+          </div>
+          <details class="ch-fen"><summary>Position as text (FEN)</summary><code id="ch-fen"></code></details>
+          <section class="game-result rate-result" id="cr-result" hidden aria-labelledby="cr-head">
+            <h2 id="cr-head"></h2>
+            <p class="rate-delta" id="cr-delta" data-up="1" aria-live="polite"></p>
+            <p class="rate-line">Rating <b id="cr-new"></b> <span id="cr-tier"></span></p>
+            <div class="game-statline">
+              <div><b id="cr-streak">0</b><span>Solved in a row</span></div>
+              <div><b id="cr-peak">0</b><span>Peak rating</span></div>
+            </div>
+            <p class="game-reveal" id="cr-about"></p>
+            <div class="rate-join" id="cr-join"></div>
+            <div class="game-actions">
+              <a class="gbtn" id="cr-next" href="/games/chess-puzzles/" data-g="chess-puzzles">Next puzzle</a>
+              <a class="gbtn gbtn--ghost" id="ch-game-link" href="https://lichess.org/training" rel="noopener">See it on Lichess</a>
+            </div>
+          </section>
+        </div>
+        <p class="ad-note">This page shows Google ads. They are how the unlimited puzzles stay free.</p>
+        <div class="games-prose">
+""" + CP_PROSE + """
+        </div>
+        <p class="games-note"><a href="/games/">All daily games</a></p>
+      </div>"""
+page("games/chess-puzzles/", "", "", CP_BODY,
+     {"@context": "https://schema.org", "@graph": [faq(CP_FAQ)]},
+     ["/games/core.js", "/games/ratings.js", "/games/chess-puzzles.js"], ads=True)
+
+# ---------------- Sudoku Unlimited ----------------
+SU_FAQ = [
+    ("How does the rating work?", "It is an Elo rating. Each level has a rating: Beginner 900, Easy 1250, Medium 1600, Hard 1950 and Expert 2300. Solving a level above your rating gains more. Solving faster than the level's usual pace earns a bigger gain, a slow solve earns a smaller one, and a solve with checks or reveals counts for less."),
+    ("What are the five levels?", "Beginner needs only singles. Easy adds locked candidates, Medium adds pairs and triples, Hard needs X-Wing patterns, and Expert needs a forced guess to get started. Every puzzle has exactly one solution."),
+    ("Which level will I get?", "The level follows your rating, with some variety. As your rating climbs you see harder levels more often."),
+    ("What does New puzzle do?", "It gives up the current grid and counts as a miss, so start one only when you mean to leave it."),
+    ("Is there a daily limit?", "No. Puzzles come from a large pool, and each one is relabelled and reshuffled so repeats look different."),
+    ("Do I need an account?", "No. Without one your rating is kept on this device. Signing in with an email link keeps it across devices and lets you join the leaderboard if you choose."),
+    ("How do the leaderboards work?", "Signed-in players can opt in under a display name. The board shows the top 100 by rating and the top 100 by rating gained this week. The rating service works out the rating itself and refuses reports that are for unknown puzzles or too fast to be real."),
+    ("Are there ads?", "Yes. This page shows Google ads, which is how the unlimited puzzles stay free. The daily games have none."),
+]
+SU_PROSE = """        <h2>How it works</h2>
+        <p>Fill the grid so every row, column and 3 by 3 box contains the digits 1 to 9 once. Click a square and type a digit, or use the number pad. Duplicates turn red as you go. When you finish, your rating moves and the next puzzle is one click away.</p>
+        <h2>Levels and ratings</h2>
+        <table class="games-table">
+          <thead><tr><th scope="col">Level</th><th scope="col">Rating</th><th scope="col">What it needs</th></tr></thead>
+          <tbody>
+            <tr><td>Beginner</td><td>900</td><td>Only singles.</td></tr><tr><td>Easy</td><td>1250</td><td>Adds locked candidates.</td></tr>
+            <tr><td>Medium</td><td>1600</td><td>Adds pairs and triples.</td></tr><tr><td>Hard</td><td>1950</td><td>Adds X-Wing.</td></tr>
+            <tr><td>Expert</td><td>2300</td><td>Needs a forced guess to get started.</td></tr>
+          </tbody>
+        </table>
+        <h2>Questions</h2>
+""" + faq_html(SU_FAQ)
+SU_BODY = """      <div class="games-wrap">
+        <div class="game-head">
+          <h1>Sudoku Unlimited</h1>
+          <span class="game-num" id="sd-number"></span>
+        </div>
+        <p class="game-lede">Sudoku Unlimited is a free Sudoku with no daily limit.</p>
+        <span id="sd-rated" hidden></span>
+        <div class="rate-hud">
+          <div class="rate-stat"><span class="rate-n" id="sr-rating">1000</span><span class="rate-l" id="sr-tier-top">Learner</span></div>
+          <div class="rate-stat"><span class="rate-n rate-n--sm" id="sr-streak-top">0</span><span class="rate-l">Solved in a row</span></div>
+          <a class="gbtn gbtn--ghost" href="/games/leaderboard/?g=sudoku" data-g="leaderboard">Leaderboard</a>
+        </div>
+        <p id="sd-loading" class="games-note">Loading a puzzle.</p>
+        <div id="sd-game" hidden>
+          <div class="sd-layout">
+            <div class="sd-main">
+              <div class="cw-bar" role="group" aria-label="Notes and checking">
+                <button type="button" class="btn btn-ghost" id="sd-notes-btn" aria-pressed="false">Notes: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-check-cell">Check square</button>
+                <button type="button" class="btn btn-ghost" id="sd-check">Check puzzle</button>
+                <button type="button" class="btn btn-ghost" id="sd-auto" aria-pressed="false">Auto-check: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-reveal">Reveal square</button>
+                <button type="button" class="btn btn-ghost" id="sd-skip">New puzzle</button>
+                <span class="cw-timer" id="sd-timer" aria-label="Elapsed time">0:00</span>
+              </div>
+              <p class="sd-level">Level: <strong id="sd-level"></strong></p>
+              <div class="sd-grid" id="sd-grid" role="group" aria-label="Sudoku grid"></div>
+              <p class="cw-status" id="sd-status" role="status" aria-live="polite"></p>
+              <div class="sd-pad" id="sd-pad" aria-label="Number pad">
+                <button type="button" class="wg-key" data-d="1">1</button><button type="button" class="wg-key" data-d="2">2</button><button type="button" class="wg-key" data-d="3">3</button>
+                <button type="button" class="wg-key" data-d="4">4</button><button type="button" class="wg-key" data-d="5">5</button><button type="button" class="wg-key" data-d="6">6</button>
+                <button type="button" class="wg-key" data-d="7">7</button><button type="button" class="wg-key" data-d="8">8</button><button type="button" class="wg-key" data-d="9">9</button>
+                <button type="button" class="wg-key wg-wide" id="sd-erase">Erase</button>
+              </div>
+            </div>
+          </div>
+          <section class="game-result rate-result" id="sd-result" hidden aria-labelledby="sr-head">
+            <h2 id="sr-head"></h2>
+            <p class="rate-delta" id="sr-delta" data-up="1" aria-live="polite"></p>
+            <p class="rate-line">Rating <b id="sr-new"></b> <span id="sr-tier"></span></p>
+            <div class="game-statline">
+              <div><b id="sr-streak">0</b><span>Solved in a row</span></div>
+              <div><b id="sr-peak">0</b><span>Peak rating</span></div>
+            </div>
+            <p class="game-reveal" id="sr-note"></p>
+            <div class="rate-join" id="sr-join"></div>
+            <div class="game-actions">
+              <a class="gbtn" id="sr-next" href="/games/sudoku-unlimited/" data-g="sudoku-unlimited">Next puzzle</a>
+            </div>
+          </section>
+        </div>
+        <p class="ad-note">This page shows Google ads. They are how the unlimited puzzles stay free.</p>
+        <div class="games-prose">
+""" + SU_PROSE + """
+        </div>
+        <p class="games-note"><a href="/games/">All daily games</a></p>
+      </div>"""
+page("games/sudoku-unlimited/", "", "", SU_BODY,
+     {"@context": "https://schema.org", "@graph": [faq(SU_FAQ)]},
+     ["/games/core.js", "/games/ratings.js", "/games/sudoku.js"], ads=True)
+
+# ---------------- Leaderboards ----------------
+LB_FAQ = [
+    ("Who appears on the leaderboards?", "Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed."),
+    ("What is the weekly board?", "It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday."),
+    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, so treat the boards as friendly competition."),
+    ("How do I join?", "Play a few rated puzzles, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
+]
+LB_BODY = """      <div class="games-wrap">
+        <div class="game-head">
+          <h1>Leaderboards</h1>
+          <span class="game-num" id="lb-week"></span>
+        </div>
+        <p class="game-lede">The Purplelink puzzle leaderboards list the highest ratings in Chess Puzzles and Sudoku Unlimited, plus the biggest rating gains this week.</p>
+        <div class="lb-tabs" role="group" aria-label="Choose a board">
+          <button type="button" class="lb-tab" data-game="chess" aria-pressed="true">Chess Puzzles</button>
+          <button type="button" class="lb-tab" data-game="sudoku" aria-pressed="false">Sudoku Unlimited</button>
+          <span class="lb-gap"></span>
+          <button type="button" class="lb-tab" data-board="all" aria-pressed="true">Rating</button>
+          <button type="button" class="lb-tab" data-board="week" aria-pressed="false">This week</button>
+        </div>
+        <p class="games-note" id="lb-status" role="status" aria-live="polite">Loading the board.</p>
+        <div class="lb-you" id="lb-you" hidden></div>
+        <ol class="lb-list" id="lb-list" aria-label="Leaderboard"></ol>
+        <div class="rate-join" id="lb-join"></div>
+        <div class="game-actions">
+          <a class="gbtn" id="lb-play" href="/games/chess-puzzles/" data-g="chess-puzzles">Play rated puzzles</a>
+          <a class="gbtn gbtn--ghost" href="/games/account/">Your account</a>
+        </div>
+        <div class="games-prose">
+          <h2>How the boards work</h2>
+          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
+          <h2>Questions</h2>
+""" + faq_html(LB_FAQ) + """
+        </div>
+        <p class="games-note"><a href="/games/">All daily games</a></p>
+      </div>"""
+page("games/leaderboard/", "", "", LB_BODY,
+     {"@context": "https://schema.org", "@graph": [faq(LB_FAQ)]},
+     ["/games/core.js", "/games/ratings.js", "/games/leaderboard.js"])
 
 # ---------------- Account ----------------
 ACCT_BODY = """      <div class="games-wrap">
@@ -771,6 +986,8 @@ ACCT_BODY = """      <div class="games-wrap">
             <button type="submit" class="btn btn-ghost">Save name</button>
           </form>
           <label class="ac-check"><input type="checkbox" id="ac-remind"> Email me in the evening if my streak is about to end (at most one email a day)</label>
+          <label class="ac-check"><input type="checkbox" id="ac-public"> Show my display name and puzzle ratings on the <a href="/games/leaderboard/">leaderboards</a> (needs a display name)</label>
+          <p class="games-note" id="ac-ratings"></p>
           <div class="game-actions">
             <button type="button" class="btn btn-ghost" id="ac-sync">Sync now</button>
             <button type="button" class="btn btn-ghost" id="ac-logout">Sign out</button>
@@ -796,11 +1013,12 @@ page("games/account/",
      ACCT_BODY,
      {"@context": "https://schema.org", "@graph": [
          crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Your games", "https://purplelink.llc/games/account/"))]},
-     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/account.js"], robots="noindex, follow")
+     ["/games/core.js", "/games/sync.js", "/games/ratings.js", "/games/achievements.js", "/games/account.js"], robots="noindex, follow")
 
 # ---------------- Hub ----------------
 HUB_FAQ = [
-    ("Are the games free?", "Yes. You can play every game without signing in, and there are no third-party ads, only an occasional small notice about one of our own apps. An optional email-link sign-in keeps your streaks and achievements across devices."),
+    ("Are the games free?", "Yes. You can play every game without signing in. The daily games have no third-party ads, only an occasional small notice about one of our own apps. The two unlimited pages, Chess Puzzles and Sudoku Unlimited, show Google ads. An optional email-link sign-in keeps your streaks, achievements and puzzle ratings across devices."),
+    ("Can I play more than one chess puzzle or Sudoku a day?", "Yes. Chess Puzzles and Sudoku Unlimited have no daily limit. Each keeps a rating, and signed-in players can choose to appear on the leaderboards."),
     ("When does a new puzzle appear?", "At midnight in your time zone, so everyone sees the same puzzle on the same calendar date."),
     ("Do you track my results?", "Your streaks and results are saved in your own browser. We count anonymous plays and anonymous scores (so we can show how you did against other players) in our own statistics, with no cookies and no third party, and nothing in them identifies you. If you choose to sign in, we also keep your email address, a display name and your saved progress so they follow you between devices; you can delete all of it from the account page at any time."),
     ("Why does a research software site have games?", "Purplelink makes tools for researchers. These are small puzzles for a break between drafts, built by the same person."),
@@ -842,6 +1060,12 @@ HUB_BODY = """      <div class="games-wrap hub">
         </section>
         <div class="tiles">
 """ + "".join(tile(sl) for sl in ORDER) + """        </div>
+        <section class="more" aria-labelledby="more-h">
+          <h2 id="more-h">Unlimited and rated</h2>
+          <p class="week-sub">No daily limit. Chess Puzzles and Sudoku Unlimited keep a rating that moves as you solve, and signed-in players can join the leaderboards.</p>
+          <div class="tiles">
+""" + "".join(tile(sl) for sl in ("chess-puzzles", "sudoku-unlimited", "leaderboard")) + """          </div>
+        </section>
         <section class="week" aria-labelledby="week-h">
           <h2 id="week-h">This week</h2>
           <p class="week-sub" id="week-sub">Finish two puzzles in a day to earn that day's stamp. Five stamps in a week is worth 50 XP.</p>
@@ -875,4 +1099,4 @@ page("games/",
               {"@type": "ListItem", "position": i + 1, "name": m_["name"], "url": "https://purplelink.llc/" + p_} for i, (p_, m_) in enumerate(META.items())]}},
          faq(HUB_FAQ),
          crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"))]},
-     ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js", "/games/hub.js"])
+     ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js", "/games/ratings.js", "/games/hub.js"])

@@ -66,6 +66,22 @@ def main() -> int:
                     problems.append(f"{name}: day {i} is malformed")
                     break
 
+    # unlimited rated pools: every chess bucket from 500 up to the top that has puzzles, and some Sudoku at every level
+    pool = DATA / "chess-pool"
+    if not (pool / "1000.json").exists():
+        problems.append("chess-pool: missing")
+    else:
+        n = sum(len(json.loads(f.read_text(encoding="utf-8"))["p"]) for f in pool.glob("*.json"))
+        notes.append(f"chess-pool: {n} puzzles")
+        if n < 3000:
+            problems.append(f"chess-pool: only {n} puzzles")
+    for lv in range(1, 6):
+        f = DATA / "sudoku-pool" / f"level-{lv}.json"
+        have = len(json.loads(f.read_text(encoding="utf-8"))["p"]) if f.exists() else 0
+        if have < 40:
+            problems.append(f"sudoku-pool level {lv}: only {have} puzzles (run scripts/gen_sudoku_pool.py)")
+    notes.append("sudoku-pool: ok")
+
     sp = DATA / "stars.json"
     if not sp.exists():
         problems.append("stars.json: missing")

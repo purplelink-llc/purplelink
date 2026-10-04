@@ -29,7 +29,8 @@ h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 104px; line-he
 TAG = {"linkle": "Five letters. Six tries. A new twist every weekday.", "quadlink": "Four words at once, in nine guesses.",
        "daily-five": "Five trivia questions, every day.", "daily-photo": "Five photographs. Which country?",
        "daily-chess": "A new tactics puzzle from Lichess.", "sudoku": "Harder every week of the season.",
-       "crossword": "A new crossword daily. Easy Monday, hard Sunday.", "daily-stars": "A short horoscope for every sign."}
+       "crossword": "A new crossword daily. Easy Monday, hard Sunday.", "daily-stars": "A short horoscope for every sign.",
+       "chess-puzzles": "Unlimited puzzles. Climb the rating.", "sudoku-unlimited": "Unlimited Sudoku, five levels, rated.", "leaderboard": "Top ratings in chess and Sudoku."}
 
 def card(name, kind, tag, photo, site):
     return (f"<!doctype html><meta charset=utf-8><style>{CSS.replace('@SITE@', site)}</style><div class=card>"

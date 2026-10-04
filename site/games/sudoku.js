@@ -1,8 +1,11 @@
-/* Daily Sudoku. Puzzles get harder every week for ten weeks, then a new season starts. */
+/* Sudoku. The daily page: puzzles get harder every week for ten weeks, then a new season starts.
+   The Sudoku Unlimited page (it has #sd-rated) uses the same board with rated puzzles from a pool, one after another. */
 (function () {
   "use strict";
-  var G = window.PLGames, NAME = "sudoku", URL_ = "https://purplelink.llc/games/sudoku/";
-  if (!G) return;
+  var G = window.PLGames, R = window.PLRating, RATED = !!document.getElementById("sd-rated");
+  var NAME = RATED ? "sudoku-unlimited" : "sudoku", URL_ = "https://purplelink.llc/games/sudoku/";
+  if (!G || (RATED && !R)) return;
+  var LEVELS = ["", "Beginner", "Easy", "Medium", "Hard", "Expert"];
   var $ = function (id) { return document.getElementById(id); };
   function fmt(sec) { var m = Math.floor(sec / 60), s = sec % 60; return m + ":" + (s < 10 ? "0" : "") + s; }
 
@@ -68,6 +71,10 @@
   }
 
   function persist() {
+    if (RATED) {
+      if (!st.done && st.rid) R.current("sudoku", { id: st.rid, level: st.levelN, n: st.poolN, seed: st.seed, cells: st.cells.join("").replace(/0/g, "."), notes: st.notes.map(function (n) { return n || 0; }), elapsed: st.elapsed, checks: st.checks, hints: st.hints, t0: st.t0 });
+      return;
+    }
     var s = G.getGame(NAME);
     s.today = { idx: st.idx, cells: st.cells.join("").replace(/0/g, "."), notes: st.notes.map(function (n) { return n || 0; }), elapsed: st.elapsed, checks: st.checks, reveals: st.hints, done: st.done };
     G.setGame(NAME, s);
@@ -146,6 +153,7 @@
   }
 
   function finish(fresh) {
+    if (RATED) return finishRated();
     var saved = G.getGame(NAME), clean = !st.checks && !st.hints;
     if (fresh) {
       saved.stats = G.recordResult(saved.stats, st.idx, true, 1);
@@ -204,7 +212,12 @@
     $("sd-check").addEventListener("click", function () { check("puzzle"); });
     $("sd-auto").addEventListener("click", function () { setAuto(!st.auto); });
     $("sd-reveal").addEventListener("click", reveal);
-    $("sd-share").addEventListener("click", function () {
+    if ($("sd-skip")) $("sd-skip").addEventListener("click", function () {
+      var b = $("sd-skip");
+      if (!b.hasAttribute("data-armed")) { b.setAttribute("data-armed", "1"); b.textContent = "Press again: counts as a miss"; window.setTimeout(function () { b.removeAttribute("data-armed"); b.textContent = "New puzzle"; }, 4000); return; }
+      skipRated();
+    });
+    if ($("sd-share")) $("sd-share").addEventListener("click", function () {
       var text = shareText(); G.track("game_share", NAME);
       G.copyText(text).then(function (ok) { $("sd-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it."; var b = $("sd-share-text"); b.value = text; b.hidden = ok; });
     });
@@ -212,33 +225,145 @@
     document.addEventListener("visibilitychange", function () { st.last = Date.now(); persist(); });
   }
 
-  function start(data) {
-    st.idx = G.dayIndex(new Date(), data.epoch);
-    var raw = G.pick(data.days, st.idx);
-    st.pz = { level: raw.l, week: raw.w, clues: raw.n };
-    st.sol = G.decodeText(raw.s).split("").map(Number);
-    st.given = raw.p.split("").map(function (ch) { return ch !== "."; });
-    st.cells = raw.p.split("").map(function (ch) { return ch === "." ? 0 : Number(ch); });
+  // Common to both pages: set the board up from a puzzle string, its solution and an optional saved state.
+  function begin(p, sol, meta, saved) {
+    st.pz = { level: meta.level, week: meta.week };
+    st.sol = sol.split("").map(Number);
+    st.given = p.split("").map(function (ch) { return ch !== "."; });
+    st.cells = p.split("").map(function (ch) { return ch === "." ? 0 : Number(ch); });
     st.notes = new Array(81).fill(0);
-    var saved = G.getGame(NAME).today;
-    if (saved && saved.idx === st.idx) {
+    if (saved) {
       var c = saved.cells || ""; for (var i = 0; i < 81; i++) if (!st.given[i] && c[i] && c[i] !== ".") st.cells[i] = Number(c[i]);
       st.notes = (saved.notes || []).concat(new Array(81).fill(0)).slice(0, 81);
-      st.elapsed = saved.elapsed || 0; st.checks = saved.checks || 0; st.hints = saved.reveals || 0; st.done = !!saved.done;
+      st.elapsed = saved.elapsed || 0; st.checks = saved.checks || 0; st.hints = saved.reveals !== undefined ? saved.reveals : (saved.hints || 0); st.done = !!saved.done;
       if (st.elapsed > 0 && !st.done) { st.ticking = true; st.last = Date.now(); }
     }
-    $("sd-number").textContent = st.pz.level + ", week " + st.pz.week + " of 10";
+    $("sd-number").textContent = meta.label;
     $("sd-level").textContent = st.pz.level;
-    $("sd-week").textContent = String(st.pz.week);
+    if ($("sd-week")) $("sd-week").textContent = String(st.pz.week);
     st.sel = st.cells.findIndex(function (v, i) { return !v && !st.given[i]; }); if (st.sel < 0) st.sel = 0;
     build(); wire();
     if (G.getGame(NAME).auto) { st.auto = true; $("sd-auto").setAttribute("aria-pressed", "true"); $("sd-auto").textContent = "Auto-check: on"; for (var j = 0; j < 81; j++) if (st.cells[j] && !st.given[j] && st.cells[j] !== st.sol[j]) st.wrong[j] = 1; }
     $("sd-loading").hidden = true; $("sd-game").hidden = false; $("sd-timer").textContent = fmt(st.elapsed);
     paint();
-    if (st.done) finish(false);
+    if (st.done && !RATED) finish(false);
   }
 
-  fetch("/games/data/sudoku.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { return G.ready.then(function () { start(d); }); }, function () {
+  function start(data) {
+    st.idx = G.dayIndex(new Date(), data.epoch);
+    var raw = G.pick(data.days, st.idx), saved = G.getGame(NAME).today;
+    begin(raw.p, G.decodeText(raw.s), { level: raw.l, week: raw.w, label: raw.l + ", week " + raw.w + " of 10" }, saved && saved.idx === st.idx ? saved : null);
+  }
+
+  // ---- Sudoku Unlimited ----
+  // A pool puzzle is relabelled and reshuffled (digits, rows and columns within their bands, the bands themselves, and a
+  // transpose), which keeps it valid and as hard as it was but makes it a different-looking puzzle each time.
+  function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function shuffle(list, r) { for (var i = list.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)), t = list[i]; list[i] = list[j]; list[j] = t; } return list; }
+  function axis(r) { var bands = shuffle([0, 1, 2], r), out = []; bands.forEach(function (b) { shuffle([0, 1, 2], r).forEach(function (k) { out.push(b * 3 + k); }); }); return out; }
+  function transform(p, s, seed) {
+    var r = rng(seed), rows = axis(r), cols = axis(r), perm = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9], r), flip = r() < 0.5, np = "", ns = "";
+    for (var i = 0; i < 81; i++) {
+      var tr = Math.floor(i / 9), tc = i % 9, sr = rows[tr], sc = cols[tc], from = flip ? sc * 9 + sr : sr * 9 + sc;
+      np += p[from] === "." ? "." : String(perm[Number(p[from]) - 1]);
+      ns += String(perm[Number(s[from]) - 1]);
+    }
+    return { p: np, s: ns };
+  }
+
+  function loadLevel(n) { return fetch("/games/data/sudoku-pool/level-" + n + ".json").then(function (r) { if (!r.ok) throw 0; return r.json(); }); }
+
+  function levelFor(rating) {
+    var target = rating + (Math.random() - 0.5) * 300, best = 1;
+    for (var l = 1; l <= 5; l++) if (Math.abs(R.LEVEL_RATING[l] - target) < Math.abs(R.LEVEL_RATING[best] - target)) best = l;
+    return best;
+  }
+
+  function beginRated(level, n, entry, seed, saved) {
+    var t = transform(entry[0], G.decodeText(entry[1]), seed);
+    st.rid = level + "-" + n; st.levelN = level; st.poolN = n; st.seed = seed;
+    st.t0 = saved ? saved.t0 : Date.now();
+    var rating = R.LEVEL_RATING[level];
+    begin(t.p, t.s, { level: LEVELS[level], week: "", label: LEVELS[level] + ", rated " + rating }, saved);
+    persist();
+  }
+
+  function startRated() {
+    R.load("sudoku").then(function (info) {
+      st.rec = info.rec; st.isPublic = !!info.public;
+      $("sr-rating").textContent = String(info.rec.r); $("sr-tier-top").textContent = R.tierFor(info.rec.r); $("sr-streak-top").textContent = String(info.rec.streak);
+      var saved = R.current("sudoku");
+      if (saved && saved.id) {
+        return loadLevel(saved.level).then(function (d) {
+          var entry = d.p[saved.n];
+          if (entry) return beginRated(saved.level, saved.n, entry, saved.seed, saved);
+          R.current("sudoku", null); return freshRated(info.rec.r);
+        }, function () { R.current("sudoku", null); return freshRated(info.rec.r); });
+      }
+      return freshRated(info.rec.r);
+    });
+  }
+  function freshRated(rating) {
+    var level = levelFor(rating), seen = R.recentIds("sudoku");
+    return loadLevel(level).then(function (d) {
+      if (!d.p.length && level > 1) return freshRated(R.LEVEL_RATING[level - 1]);      // a level with no puzzles yet: step down
+      var open = []; d.p.forEach(function (e, i) { if (seen.indexOf(level + "-" + i) < 0) open.push(i); });
+      if (!open.length) open = d.p.map(function (_, i) { return i; });
+      var n = open[Math.floor(Math.random() * open.length)];
+      beginRated(level, n, d.p[n], Math.floor(Math.random() * 4294967295), null);
+    }).catch(function () { $("sd-loading").textContent = "The puzzles could not be loaded. Check your connection and reload the page."; });
+  }
+
+  function reportRated(result) {
+    var ms = result === "skip" ? 0 : Math.max(1000, st.elapsed * 1000);
+    return R.report("sudoku", { id: st.rid, puzzleRating: R.LEVEL_RATING[st.levelN], level: st.levelN, result: result, ms: ms });
+  }
+  function skipRated() {
+    if (st.done) return;
+    st.done = true;
+    reportRated("skip").then(function () { R.current("sudoku", null); R.recentIds("sudoku", st.rid); window.location.assign(window.location.pathname); });
+  }
+  function finishRated() {
+    var clean = !st.checks && !st.hints, result = clean ? "clean" : "help";
+    reportRated(result).then(function (out) {
+      var rec = out.rec, delta = out.delta, up = delta >= 0;
+      R.current("sudoku", null); R.recentIds("sudoku", st.rid);
+      $("sr-head").textContent = "Solved in " + fmt(st.elapsed) + (clean ? "" : " with help");
+      $("sr-delta").textContent = (up ? "+" : "\u2212") + Math.abs(delta); $("sr-delta").setAttribute("data-up", up ? "1" : "0");
+      $("sr-new").textContent = String(rec.r); $("sr-tier").textContent = R.tierFor(rec.r);
+      $("sr-streak").textContent = String(rec.streak); $("sr-streak-top").textContent = String(rec.streak); $("sr-peak").textContent = String(rec.peak);
+      $("sr-rating").textContent = String(rec.r); $("sr-tier-top").textContent = R.tierFor(rec.r);
+      $("sr-note").textContent = clean ? "" : "Checks and reveals count as help, so this solve moved your rating less.";
+      $("sd-result").hidden = false; $("sd-status").textContent = "";
+      var FX = window.PLFX;
+      if (FX) { FX.play(clean ? "big" : "win"); FX.vibrate([20, 40, 20]); FX.kick($("sr-delta"), "fx-pop", 300); }
+      if (window.PLConfetti && clean) window.PLConfetti.small();
+      joinPrompt(out);
+      if (window.PLAch) window.PLAch.check({ game: NAME, rated: true, idx: G.dayIndex(new Date(), "2026-10-04"), won: true, clean: clean, rating: rec.r, level: LEVELS[st.levelN], streak: rec.streak, n: rec.n, seconds: st.elapsed });
+      G.track("game_end", NAME + ":" + (clean ? "clean" : "assisted"));
+      $("sr-next").focus({ preventScroll: true });
+      $("sd-result").scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+  }
+  function joinPrompt(out) {
+    var box = $("sr-join"), s = G.session && G.session.get();
+    box.textContent = "";
+    function p(text) { var e = document.createElement("p"); e.textContent = text; box.appendChild(e); }
+    if (!s) {
+      p("Your rating is saved on this device. Sign in with an email link to keep it across devices and appear on the leaderboard.");
+      var a = document.createElement("a"); a.className = "gbtn gbtn--ghost"; a.href = "/games/account/"; a.textContent = "Sign in"; box.appendChild(a);
+    } else if (!out.public && !st.isPublic) {
+      p(s.name ? "You are not on the leaderboard. Show " + s.name + " there?" : "Pick a display name on your account page to appear on the leaderboard.");
+      if (s.name) { var b = document.createElement("button"); b.type = "button"; b.className = "gbtn gbtn--ghost"; b.textContent = "Show me on the leaderboard"; box.appendChild(b);
+        b.addEventListener("click", function () { R.setPublic(true).then(function (res) { box.textContent = ""; p(res.status === 200 ? "You are on the leaderboard." : "That name cannot be shown. Choose another on your account page."); if (res.status === 200) st.isPublic = true; }); }); }
+    } else p("You are on the leaderboard.");
+  }
+
+  if (RATED) {
+    G.ready.then(startRated);
+  } else {
+    fetch("/games/data/sudoku.json").then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { return G.ready.then(function () { start(d); }); }, function () {
     $("sd-loading").textContent = "Today's puzzle could not be loaded. Check your connection and reload the page.";
   });
+  }
 })();

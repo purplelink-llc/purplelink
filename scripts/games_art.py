@@ -119,7 +119,43 @@ def _star(cx, cy, r, cls):
             f'L{cx - k} {cy + k}L{cx - r} {cy}L{cx - k} {cy - k}Z"/>')
 
 
-ART = {"linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
+def chess_puzzles():
+    out = [OPEN]
+    for r in range(5):
+        for c in range(8):
+            if (r + c) % 2 == 0:
+                out.append(f'<rect class="a2" x="{c * 25}" y="{r * 28}" width="25" height="28" opacity=".45"/>')
+    out.append('<g class="mv"><path class="a4" d="M52 118h46v-8H52zM56 108h38l-4-26H60zM50 82h50V66h-9v6h-8v-6H67v6h-8v-6h-9z"/></g>')
+    out.append('<g class="mv2"><path class="a5" d="M146 112V52M126 74l20-22 20 22" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--gc-ink)"/></g>'.replace(' style="stroke:var(--gc-ink)"', '').replace('stroke="#fff"', 'stroke="currentColor"').replace('class="a5"', 'class="a5 ar"'))
+    out.append("</svg>")
+    return "".join(out)
+
+
+def sudoku_unlimited():
+    out = [OPEN, '<rect class="a2" x="36" y="16" width="128" height="108" rx="10"/>']
+    for i in range(1, 9):
+        w = 3 if i % 3 == 0 else 1
+        out.append(f'<rect class="a1" x="{36 + i * 14.22 - w / 2:.1f}" y="16" width="{w}" height="108"/>')
+    for i in range(1, 9):
+        w = 3 if i % 3 == 0 else 1
+        out.append(f'<rect class="a1" x="36" y="{16 + i * 12 - w / 2:.1f}" width="128" height="{w}"/>')
+    out.append('<g class="mv"><path class="a6" d="M70 70c0-9 6-14 13-14 13 0 17 28 30 28 7 0 13-5 13-14s-6-14-13-14c-13 0-17 28-30 28-7 0-13-5-13-14z" style="stroke-width:9"/></g>'.replace(' style="stroke-width:9"', ''))
+    out.append("</svg>")
+    return "".join(out)
+
+
+def leaderboard():
+    out = [OPEN]
+    out.append(_r(70, 56, 30, 66, "a1", 5)); out.append(_r(104, 34, 32, 88, "a2", 5)); out.append(_r(140, 72, 30, 50, "a1", 5))
+    for x, y, t in ((85, 80, "2"), (120, 62, "1"), (155, 94, "3")):
+        out.append(f'<text class="a4" x="{x}" y="{y}" text-anchor="middle" font-size="20">{t}</text>')
+    out.append('<g class="mv">' + _star(120, 18, 11, "a5") + "</g>")
+    out.append('<g class="mv2"><circle class="a5" cx="44" cy="48" r="4"/><circle class="a5" cx="172" cy="40" r="3"/><circle class="a2" cx="30" cy="96" r="3"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+ART = {"chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
        "daily-chess": daily_chess, "sudoku": sudoku, "crossword": crossword, "daily-stars": daily_stars}
 
 

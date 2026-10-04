@@ -13,6 +13,12 @@
  *   logout                       (session) Ends this session.
  *   delete_account               (session) Deletes the account, its progress and every session.
  *   score         {game,idx,score}   (anonymous) Adds one score to that day's histogram, returns the percentile.
+ *   leaderboard   {game,board}       (anonymous; a session adds your own rank) The top 100 for "chess" or "sudoku",
+ *                                    board "all" (rating) or "week" (rating gained this week). Only players who opted in appear.
+ *   ratings                          (session) Your chess and Sudoku ratings and whether you are on the leaderboards.
+ *   rating_report {game,id,result,ms,seed}  (session) One finished rated puzzle. The service checks it against the puzzle
+ *                                    list, recomputes the Elo itself and returns the new rating. The browser never sends a rating.
+ *   set_public    {on}               (session) Opt in or out of the leaderboards; needs a display name.
  *
  * A session is sent as `Authorization: Bearer <token>`. Tokens are 256-bit random values; only their SHA-256
  * is stored. The account key is the SHA-256 of the lowercased email. Progress is whitelisted and size-capped.
@@ -21,6 +27,8 @@
 
 import { createHash, randomBytes } from "node:crypto";
 import { cleanData, cleanName, mergeData, percentile, dayIndexUTC, MAX_DATA_BYTES, SCORE_LIMITS } from "../lib/games-logic.mjs";
+import { applyResult, boardRow, checkReport, DAILY_REPORT_CAP, emptyRecord, publicNameOk, upsertRow, weekOf } from "../lib/ratings.mjs";
+import CHESS_INDEX from "../lib/chess-index.json" with { type: "json" };
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const ALLOWED_ORIGINS = new Set([SITE_ORIGIN, "https://www.purplelink.llc"]);
@@ -72,11 +80,34 @@ async function sendLoginEmail(to, link, env, fetchFn) {
   }
 }
 
-export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), now = () => Date.now() }) {
+const RATED = ["chess", "sudoku"];
+
+export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), now = () => Date.now(), chessIndex = CHESS_INDEX }) {
   const accounts = () => getStore("games-accounts");
   const auth = () => getStore("games-auth");
   const scores = () => getStore("games-scores");
   const limits = () => getStore("rate-limits");
+  const ratings = () => getStore("games-ratings");
+  const boards = () => getStore("games-lb");
+  const weekNow = () => weekOf(dayIndexUTC(new Date(now())));
+
+  async function loadRatings(acct) { return (await ratings().get(`r:${acct}`, { type: "json" })) || {}; }
+
+  // Keep one account's rows on the public boards in step with its ratings, name and opt-in.
+  async function syncBoards(acct, account, recs) {
+    const wk = weekNow();
+    for (const game of RATED) {
+      for (const board of ["all", "week"]) {
+        const key = `lb:${game}:${board}`;
+        const cur = (await boards().get(key, { type: "json" })) || { rows: [] };
+        let rows = board === "week" && cur.week !== wk ? [] : cur.rows;
+        const rec = recs[game];
+        if (account.public && rec && publicNameOk(account.name)) rows = upsertRow(rows, boardRow(game, rec, account.name, acct, board), board);
+        else rows = rows.filter((x) => x.a !== acct);
+        await boards().setJSON(key, { week: wk, rows });
+      }
+    }
+  }
 
   async function overLimit(kind, value, limit) {
     const day = new Date(now()).toISOString().slice(0, 10);
@@ -141,7 +172,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         account.sessions = [...(account.sessions || []), sha(session)];
         while (account.sessions.length > MAX_SESSIONS) await auth().delete(`sess:${account.sessions.shift()}`);
         await accounts().setJSON(`acct:${acct}`, account);
-        return json(200, { session, email: account.email, name: account.name, data: account.data, remind: !!account.remind }, origin);
+        return json(200, { session, email: account.email, name: account.name, data: account.data, remind: !!account.remind, public: !!account.public }, origin);
       }
 
       if (action === "remind_off") {
@@ -172,6 +203,21 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         return json(200, percentile(rec.buckets, score), origin);
       }
 
+      if (action === "leaderboard") {
+        const game = String(b.game || ""), board = b.board === "week" ? "week" : "all";
+        if (!RATED.includes(game)) return json(400, { error: "unknown_game" }, origin);
+        const wk = weekNow();
+        const cur = (await boards().get(`lb:${game}:${board}`, { type: "json" })) || { rows: [] };
+        const rows = board === "week" && cur.week !== wk ? [] : cur.rows;
+        const out = { board, game, rows: rows.slice(0, 100).map((x, i) => ({ rank: i + 1, name: x.name, r: x.r, n: x.n, g: x.g })) };
+        const viewer = await sessionOf(request);
+        if (viewer) {
+          const at = rows.findIndex((x) => x.a === viewer.acct);
+          if (at >= 0) out.you = { rank: at + 1, r: rows[at].r, g: rows[at].g };
+        }
+        return json(200, out, origin);
+      }
+
       // everything below needs a session
       const sess = await sessionOf(request);
       if (!sess) return json(401, { error: "not_signed_in" }, origin);
@@ -185,20 +231,56 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         account.data = merged;
         account.updated = now();
         await accounts().setJSON(`acct:${sess.acct}`, account);
-        return json(200, { data: merged, name: account.name, email: account.email, remind: !!account.remind }, origin);
+        return json(200, { data: merged, name: account.name, email: account.email, remind: !!account.remind, public: !!account.public }, origin);
       }
       if (action === "set_name") {
         const name = cleanName(b.name);
         if (!name) return json(400, { error: "invalid_name" }, origin);
         account.name = name;
+        if (account.public && !publicNameOk(name)) account.public = false;
         await accounts().setJSON(`acct:${sess.acct}`, account);
-        return json(200, { ok: true, name }, origin);
+        const recs = await loadRatings(sess.acct);
+        if (account.public || recs.chess || recs.sudoku) await syncBoards(sess.acct, account, recs);
+        return json(200, { ok: true, name, public: !!account.public }, origin);
       }
       if (action === "set_reminder") {
         account.remind = !!b.on;
         if (!account.remindToken) account.remindToken = randomBytes(16).toString("hex");
         await accounts().setJSON(`acct:${sess.acct}`, account);
         return json(200, { ok: true, remind: account.remind }, origin);
+      }
+      if (action === "ratings") {
+        const recs = await loadRatings(sess.acct);
+        return json(200, { chess: recs.chess || null, sudoku: recs.sudoku || null, public: !!account.public, name: account.name || "" }, origin);
+      }
+      if (action === "rating_report") {
+        const game = String(b.game || "");
+        const checked = checkReport(game, b, chessIndex);
+        if (!checked.ok) return json(400, { error: checked.error }, origin);
+        const recs = await loadRatings(sess.acct);
+        let rec = recs[game];
+        if (!rec) {
+          rec = emptyRecord();
+          const seed = b.seed && typeof b.seed === "object" ? b.seed : null;
+          if (seed && Number.isFinite(seed.r)) { rec.r = rec.peak = rec.wr0 = Math.min(1500, Math.max(400, Math.round(seed.r))); rec.n = Math.min(40, Math.max(0, Math.trunc(Number(seed.n) || 0))); }
+        }
+        if (rec.lastId === String(b.id)) return json(200, { r: rec.r, delta: 0, n: rec.n, streak: rec.streak, peak: rec.peak, repeat: true }, origin);
+        const today = new Date(now()).toISOString().slice(0, 10);
+        if (rec.day === today && rec.dn >= DAILY_REPORT_CAP) return json(429, { error: "daily_limit" }, origin);
+        const out = applyResult(rec, { puzzleRating: checked.puzzleRating, score: checked.score, solved: checked.solved, dayIdx: dayIndexUTC(new Date(now())), dayKey: today });
+        out.rec.lastId = String(b.id);
+        recs[game] = out.rec;
+        await ratings().setJSON(`r:${sess.acct}`, recs);
+        if (account.public) await syncBoards(sess.acct, account, recs);
+        return json(200, { r: out.rec.r, delta: out.delta, n: out.rec.n, streak: out.rec.streak, peak: out.rec.peak, public: !!account.public }, origin);
+      }
+      if (action === "set_public") {
+        const on = !!b.on;
+        if (on && !publicNameOk(account.name)) return json(400, { error: "name_needed" }, origin);
+        account.public = on;
+        await accounts().setJSON(`acct:${sess.acct}`, account);
+        await syncBoards(sess.acct, account, await loadRatings(sess.acct));
+        return json(200, { ok: true, public: on }, origin);
       }
       if (action === "logout") {
         await auth().delete(`sess:${sess.hash}`);
@@ -209,6 +291,9 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       if (action === "delete_account") {
         for (const h of account.sessions || []) await auth().delete(`sess:${h}`);
         await auth().delete(`sess:${sess.hash}`);
+        account.public = false;
+        await syncBoards(sess.acct, account, {});
+        await ratings().delete(`r:${sess.acct}`);
         await accounts().delete(`acct:${sess.acct}`);
         return json(200, { ok: true }, origin);
       }

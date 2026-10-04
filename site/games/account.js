@@ -54,6 +54,16 @@
     $("ac-who").textContent = s ? (s.name || s.email) : "";
     if (s) { $("ac-email-shown").textContent = s.email; $("ac-name").value = s.name || ""; $("ac-remind").checked = !!s.remind; }
     renderStats(); renderAch();
+    if (s && window.PLRating && G.api) {
+      G.api({ action: "ratings" }, s.session).then(function (res) {
+        if (res.status !== 200) return;
+        $("ac-public").checked = !!res.body.public;
+        var bits = [];
+        if (res.body.chess) bits.push("Chess Puzzles " + res.body.chess.r + " (" + res.body.chess.n + " played)");
+        if (res.body.sudoku) bits.push("Sudoku Unlimited " + res.body.sudoku.r + " (" + res.body.sudoku.n + " played)");
+        $("ac-ratings").textContent = bits.length ? "Your ratings: " + bits.join(", ") + "." : "You have no puzzle ratings yet. Try Chess Puzzles or Sudoku Unlimited.";
+      }, function () {});
+    }
   }
 
   function verify(token) {
@@ -85,6 +95,14 @@
       G.api({ action: "set_name", name: $("ac-name").value }, s.session).then(function (res) {
         if (res.status === 200) { s.name = res.body.name; G.session.set(s); msg("Name saved."); renderAccount(); }
         else msg("Use 2 to 24 letters, numbers, spaces, dots, dashes or underscores.");
+      });
+    });
+    $("ac-public").addEventListener("change", function () {
+      var s = G.session.get(), on = $("ac-public").checked;
+      if (!s) return;
+      G.api({ action: "set_public", on: on }, s.session).then(function (res) {
+        if (res.status === 200) msg(on ? "You are on the leaderboards." : "You are off the leaderboards and your rows are removed.");
+        else { $("ac-public").checked = !on; msg(res.body && res.body.error === "name_needed" ? "Save a display name first. Names with blocked words cannot be shown." : "Could not change that right now."); }
       });
     });
     $("ac-remind").addEventListener("change", function () {

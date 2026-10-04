@@ -19,7 +19,7 @@
   // ---- the dock ----
   function paintDock() {
     var dock = document.querySelector(".game-dock"), sum = P.summary();
-    Array.prototype.forEach.call(dock ? dock.querySelectorAll("a[data-g]") : [], function (a) {
+    Array.prototype.forEach.call(dock ? dock.querySelectorAll("a[data-g]:not([data-x])") : [], function (a) {
       var id = a.getAttribute("data-g"), done = !!sum.done[id], spot = sum.spotlight.id === id && !done;
       a.toggleAttribute("data-done", done);
       a.toggleAttribute("data-spot", spot);

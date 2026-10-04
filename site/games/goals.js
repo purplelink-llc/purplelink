@@ -177,7 +177,7 @@
   var seen = {};
   // Called by the achievements module whenever a game ends. Safe to call twice per game.
   function afterResult(ctx) {
-    if (!ctx || !ctx.game || ctx.idx === undefined) return;
+    if (!ctx || !ctx.game || ctx.idx === undefined || ctx.rated) return;   // rated practice has its own rating
     if (ctx.fresh === false) { refresh(); return; }   // re-reading the horoscope: nothing new to celebrate
     var key = ctx.game + ":" + ctx.idx;
     if (seen[key]) return;
