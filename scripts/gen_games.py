@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "scripts" / "games-data"
 OUT = ROOT / "site" / "games" / "data"
 
-EPOCH = "2026-10-05"   # puzzle 1; never change after launch
+EPOCH = "2026-10-04"   # puzzle 1 (launch day); never change after launch
 DAYS = 730
 
 

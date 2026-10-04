@@ -64,6 +64,7 @@ FOOTER_COLUMNS = [
         ("Citation Generator", "/tools/citation-generator/"),
         ("LaTeX Diff", "/tools/latex-diff/"),
         ("Word Counter", "/tools/word-counter/"),
+        ("Daily games", "/games/"),
         ("All tools", "/tools/"),
     ]),
     ("Learn", [
