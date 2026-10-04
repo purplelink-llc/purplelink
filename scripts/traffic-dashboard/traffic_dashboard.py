@@ -4310,6 +4310,131 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
 
 
 
+
+# ---------------------------------------------------------------- every sale, every source
+#
+# One list for the Money tab: card sales (Stripe, both sites), Etsy/Gumroad/Payhip, App Store
+# proceeds and photo-licensing sales, newest first. The photo platforms that publish a
+# per-sale report (Getty, Adobe Stock, Dreamstime, Shutterstock's daily totals) are read from the
+# photo arm's CSVs; the rest report totals only, and a line under the table says so.
+
+REFUNDED_TAG = ' <span class="who">(refunded)</span>'
+PHOTO_AN = Path("/Volumes/Extreme SSD/Purplelink LLC/photo-licensing-workspace/analytics")
+
+
+def _cents(v) -> int:
+    try:
+        return int(round(float(v) * 100))
+    except (TypeError, ValueError):
+        return 0
+
+
+def photo_sale_rows() -> list[dict]:
+    import csv
+    rows: list[dict] = []
+
+    def read(name):
+        try:
+            with open(PHOTO_AN / name, newline="", encoding="utf-8") as f:
+                return list(csv.DictReader(f))
+        except OSError:
+            return []
+
+    for r in read("getty-sales.csv"):
+        try:
+            d = dt.datetime.strptime(r["sale_date"], "%d-%b-%Y").date().isoformat()
+        except (KeyError, ValueError):
+            continue
+        rows.append({"date": d, "source": "Photo licensing", "detail": "Getty / iStock",
+                     "item": (r.get("description") or "")[11:] or r.get("asset_id", ""), "gross": None,
+                     "net": _cents(r.get("gross_royalty"))})
+    for r in read("adobe-sales.csv"):
+        rows.append({"date": r.get("sale_date", ""), "source": "Photo licensing", "detail": "Adobe Stock",
+                     "item": r.get("title") or r.get("filename", ""), "gross": None, "net": _cents(r.get("amount"))})
+    for r in read("dreamstime-sales.csv"):
+        rows.append({"date": r.get("sale_date", ""), "source": "Photo licensing", "detail": "Dreamstime",
+                     "item": r.get("title") or r.get("filename", ""), "gross": None, "net": _cents(r.get("amount"))})
+    for r in read("shutterstock-days.csv"):
+        n = int(float(r.get("downloads") or 0))
+        rows.append({"date": r.get("date", ""), "source": "Photo licensing", "detail": "Shutterstock",
+                     "item": f"{n} download{'s' if n != 1 else ''} (daily total)", "gross": None,
+                     "net": _cents(r.get("earnings"))})
+    return [r for r in rows if re.match(r"^\d{4}-\d\d-\d\d$", r["date"])]
+
+
+def all_sales_rows(ledger_rows: list[dict], appstore: dict | None) -> list[dict]:
+    rows: list[dict] = []
+    for r in ledger_rows:
+        if r.get("kind") not in (None, "purchase", "renewal"):
+            continue
+        market = r.get("market")
+        if market:
+            source, detail = "Etsy, Gumroad, Payhip", MARKETPLACE_LABELS.get(market, market)
+        else:
+            source = "Card sales (Stripe)"
+            detail = "MuscleOnGLP" if r.get("site") == "muscleonglp" else "purplelink.llc"
+        rows.append({"date": dt.date.fromtimestamp(r["ts"]).isoformat(), "source": source, "detail": detail,
+                     "item": PRODUCT_LABELS.get(r.get("product", ""), r.get("product", "")),
+                     "gross": r.get("gross", 0), "net": _row_net(r),
+                     "refunded": bool(r.get("refunded"))})
+    for d, v in ((appstore or {}).get("days") or {}).items():
+        usd = (v.get("proceeds") or {}).get("USD", 0.0)
+        if usd:
+            rows.append({"date": d, "source": "App Store", "detail": "GlobePin",
+                         "item": f"Pro ({v.get('proUnits', 0)} unit(s))", "gross": None, "net": _cents(usd)})
+    rows += photo_sale_rows()
+    rows.sort(key=lambda r: (r["date"], r["source"]), reverse=True)
+    return rows
+
+
+def photo_totals_only_note(listed: list[dict]) -> str:
+    """Platforms that report a sales count and balance but no per-sale rows."""
+    try:
+        pd = _load_photo_dashboard_module()
+        data = pd.load()
+        dates = sorted(data)
+        _t, _s, money_rows = pd.platform_money_asof(data, dates, dates[-1])
+    except Exception:  # noqa: BLE001 - this note is a convenience
+        return ""
+    detail_labels = {r["detail"] for r in listed if r["source"] == "Photo licensing"}
+    bits = []
+    for label, bal, sales_n, *_rest in money_rows:
+        if (sales_n or 0) > 0 and not any(label.lower().startswith(d.lower().split(" ")[0]) for d in detail_labels):
+            bits.append(f"{label} ({int(sales_n)} sale{'s' if int(sales_n) != 1 else ''}, ${bal or 0:,.2f})")
+    return ("Photo platforms that report totals only, so their sales are not itemised above: " + "; ".join(bits) + "."
+            if bits else "")
+
+
+def all_sales_block(ledger_rows: list[dict], appstore: dict | None) -> str:
+    rows = all_sales_rows(ledger_rows, appstore)
+    sources = ["Card sales (Stripe)", "Etsy, Gumroad, Payhip", "App Store", "Photo licensing"]
+    chips = "".join(
+        f"<button type='button' class='src-chip' data-src=\"{html.escape(src)}\">{html.escape(src)} "
+        f"<b>{sum(1 for r in rows if r['source'] == src)}</b></button>" for src in sources)
+    body = "".join(
+        f"<tr data-src=\"{html.escape(r['source'])}\"><td class='who'>{r['date']}</td>"
+        f"<td>{html.escape(r['source'])}<span class='who'> &middot; {html.escape(r['detail'])}</span></td>"
+        f"<td>{html.escape(r['item'][:80])}{REFUNDED_TAG if r.get('refunded') else ''}</td>"
+        f"<td class='num'>{'' if r['gross'] is None else money(r['gross'])}</td>"
+        f"<td class='num'>{money(r['net'])}</td></tr>"
+        for r in rows) or "<tr><td colspan='5' class='who'>No sales on record yet.</td></tr>"
+    total_net = sum(r["net"] for r in rows)
+    note = photo_totals_only_note(rows)
+    return f"""
+<section class="sales all-sales">
+  <h2>All sales &middot; every source</h2>
+  <p class="sales-sub">{len(rows)} sale(s) on record, {money(total_net)} kept after fees or royalty split. Newest first. "Kept" is what reaches you:
+  Stripe and marketplace net of fees, photo royalties as the platform reports them.</p>
+  <div class="src-chips"><button type="button" class="src-chip on" data-src="">All <b>{len(rows)}</b></button>{chips}</div>
+  <div class="sales-scroll"><table class="sales-list">
+    <thead><tr><th>Date</th><th>Source</th><th>Item</th><th class="num">Gross</th><th class="num">Kept</th></tr></thead>
+    <tbody>{body}</tbody>
+    <tfoot><tr><td colspan="4">Total</td><td class="num">{money(total_net)}</td></tr></tfoot>
+  </table></div>
+  {f'<p class="sales-foot">{html.escape(note)}</p>' if note else ''}
+</section>"""
+
+
 # ---------------------------------------------------------------- navigation
 #
 # The page grew into one long scroll. render() now files each block under a tab
@@ -4346,6 +4471,19 @@ NAV_CSS = """
 .js .collapsed > :not(h2){display:none}
 .js .collapsed > h2{margin-bottom:0}
 .hidden-by-filter{display:none!important}
+.src-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.src-chip{font:inherit;font-size:13px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.src-chip b{color:var(--ink);font-weight:640;margin-left:4px}
+.src-chip:hover{border-color:var(--purple)}
+.src-chip.on{background:var(--purple);border-color:var(--purple);color:oklch(18% 0.06 310)}
+.src-chip.on b{color:inherit}
+.sales-scroll{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.sales-list{width:100%;border-collapse:collapse;font-size:.88rem}
+.sales-list th{position:sticky;top:0;background:var(--panel);text-align:left;font-size:.75rem;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line)}
+.sales-list td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.sales-list tfoot td{font-weight:640;border-bottom:0;position:sticky;bottom:0;background:var(--panel)}
+.sales-list .num,.sales-list th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sales-list .who{color:var(--muted)}
 .embed{width:100%;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);min-height:480px;display:block}
 .embed-meta{color:var(--muted);font-size:.85rem;margin:0 0 12px}
 .embed-meta code{font-size:.8rem}
@@ -4382,6 +4520,16 @@ NAV_JS = """
   tabs.forEach(function(t){t.addEventListener('click',function(e){e.preventDefault();clearFilter();show(t.dataset.tab);store(t.dataset.tab);window.scrollTo(0,0)})});
   var start=(location.hash||'').slice(1)||recall()||'overview';
   if(!tabs.some(function(t){return t.dataset.tab===start}))start='overview';
+  // Source chips on the all-sales list: show one source's rows, or all.
+  [].slice.call(document.querySelectorAll('.src-chips')).forEach(function(bar){
+    var table=bar.parentElement.querySelector('table.sales-list');
+    bar.addEventListener('click',function(e){
+      var b=e.target.closest('.src-chip'); if(!b)return;
+      [].slice.call(bar.children).forEach(function(c){c.classList.toggle('on',c===b)});
+      var src=b.dataset.src;
+      [].slice.call(table.tBodies[0].rows).forEach(function(r){r.style.display=(!src||r.dataset.src===src)?'':'none'});
+    });
+  });
   // Embedded dashboards (iframes): size each to its content whenever it is shown or resized.
   function fitFrames(){
     [].slice.call(document.querySelectorAll('iframe.embed')).forEach(function(f){
@@ -4534,7 +4682,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
            manual_ads: dict | None = None, chrome_web_store: dict | None = None,
            admob: dict | None = None, metrics: dict | None = None,
            profit: dict | None = None, channels: dict | None = None, tax: dict | None = None,
-           marketplaces: dict | None = None, market_rows: list[dict] | None = None) -> str:
+           marketplaces: dict | None = None, market_rows: list[dict] | None = None,
+           ledger_rows: list[dict] | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -4581,7 +4730,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
     overview = (f"{revenue_block(sales, appstore, market_rows=market_rows)}\n{metrics_block(metrics)}\n"
                 f"{profit_block(profit, channels, tax)}\n{glance_table(summaries)}\n"
                 f"{queue_block()}\n{general_html}")
-    money = f"{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
+    money = f"{all_sales_block(ledger_rows or [], appstore)}\n{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
     ads = f"{manual_ads_block(manual_ads or {}, admob)}\n{moderntex_ads_block(manual_ads or {}, sales)}"
     apps = f"{appstore_block(appstore)}\n{chrome_web_store_block(chrome_web_store)}"
     panels = [("overview", "Overview", overview), ("money", "Money", money), ("ads", "Ads", ads), ("apps", "Apps", apps)]
@@ -4885,7 +5034,8 @@ def main() -> int:
     DASHBOARD_PATH.write_text(
         render(summaries, obs, generated, min(firsts) if firsts else None,
                sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics,
-               profit, channels, tax, marketplaces, market_rows))
+               profit, channels, tax, marketplaces, market_rows,
+               list((history.get("ledger") or {}).values())))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
