@@ -43,13 +43,25 @@ def _otdb(src: Path) -> list[dict]:
             continue
         if re.search(r"\b(which of these|which of the following)\b.*\b(is not|isn't)\b", q, re.I) and False:
             continue
-        if q in seen:
+        if it.get("d") == "hard" or q in seen:
             continue
         seen.add(q)
         cat = it["c"].split(": ", 1)[-1]
         out.append({"c": cat, "q": q, "a": a, "w": w})
     out.sort(key=lambda x: x["q"])   # stable base order before the seeded shuffle
-    return out
+    # Keep the mix broad: the raw pool is a third video-game questions.
+    caps = {"Video Games": 70, "Music": 150, "Film": 150, "Television": 100, "General Knowledge": 300}
+    kept, count = [], {}
+    order = out[:]
+    random.Random("otdb-cap").shuffle(order)
+    for it in order:
+        n = count.get(it["c"], 0)
+        if n >= caps.get(it["c"], 10**9):
+            continue
+        count[it["c"]] = n + 1
+        kept.append(it)
+    kept.sort(key=lambda x: x["q"])
+    return kept
 
 
 def enc_text(s: str) -> str:

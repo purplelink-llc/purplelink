@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Linkle: a free daily five-letter word game | Purplelink</title>
-    <meta name="description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
-    <link rel="canonical" href="https://purplelink.llc/games/linkle/">
-    <meta property="og:title" content="Linkle: a free daily five-letter word game">
-    <meta property="og:description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
+    <title>Daily Five: a free daily trivia quiz | Purplelink</title>
+    <meta name="description" content="Five trivia questions a day on science, computing, research and more. Free, no account, no ads. Your streak stays on your device.">
+    <link rel="canonical" href="https://purplelink.llc/games/daily-five/">
+    <meta property="og:title" content="Daily Five: a free daily trivia quiz">
+    <meta property="og:description" content="Five trivia questions a day on science, computing, research and more. Free, no account, no ads. Your streak stays on your device.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://purplelink.llc/games/linkle/">
+    <meta property="og:url" content="https://purplelink.llc/games/daily-five/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Linkle: a free daily five-letter word game">
-    <meta name="twitter:description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
+    <meta name="twitter:title" content="Daily Five: a free daily trivia quiz">
+    <meta name="twitter:description" content="Five trivia questions a day on science, computing, research and more. Free, no account, no ads. Your streak stays on your device.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <script type="application/ld+json">
     {
@@ -22,12 +22,12 @@
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "Linkle",
-          "url": "https://purplelink.llc/games/linkle/",
+          "name": "Daily Five",
+          "url": "https://purplelink.llc/games/daily-five/",
           "applicationCategory": "GameApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free daily five-letter word guessing game with six tries.",
+          "description": "A free daily five-question trivia quiz.",
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -44,42 +44,34 @@
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "Does the puzzle change every day?",
+              "name": "How many questions are there?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. A new word is ready at midnight your time, and everyone sees the same word on the same date."
+                "text": "Five multiple-choice questions a day, with one correct answer each. Two come from a set we write about science, computing, research methods and Macs. Three come from a general trivia pool."
               }
             },
             {
               "@type": "Question",
-              "name": "Which words are accepted?",
+              "name": "When do the questions change?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Any five-letter word from a public-domain English word list of about 8,600 words. Answers are drawn from a smaller set of everyday words."
+                "text": "At midnight in your time zone. Everyone sees the same five on the same date."
               }
             },
             {
               "@type": "Question",
-              "name": "What happens with repeated letters?",
+              "name": "Where do the questions come from?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "A letter is marked only as many times as it appears in the answer. If you guess two Es and the word has one, only one E is marked."
+                "text": "Part of the pool is the Open Trivia Database, licensed CC BY-SA 4.0. The rest we write ourselves. We check our own questions, but a general trivia pool can contain mistakes. If you spot one, email ben@purplelink.llc."
               }
             },
             {
               "@type": "Question",
-              "name": "Where is my streak stored?",
+              "name": "What counts as my streak?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Only in your browser on this device. There are no accounts, so clearing site data or switching devices starts a new streak."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "How do I share my result?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Copy result puts the grid and your score on the clipboard as plain text, with no letters, so it does not give the word away."
+                "text": "Finishing the day's five questions, whatever your score. Your streak and scores stay in this browser only."
               }
             }
           ]
@@ -102,8 +94,8 @@
             {
               "@type": "ListItem",
               "position": 3,
-              "name": "Linkle",
-              "item": "https://purplelink.llc/games/linkle/"
+              "name": "Daily Five",
+              "item": "https://purplelink.llc/games/daily-five/"
             }
           ]
         }
@@ -140,62 +132,59 @@
     <main id="main-content" class="games">
       <div class="games-wrap">
         <div class="game-head">
-          <h1>Linkle</h1>
-          <span class="game-num" id="wg-number" aria-live="off"></span>
+          <h1>Daily Five</h1>
+          <span class="game-num" id="qz-number"></span>
         </div>
-        <p class="game-lede">One five-letter word a day. Six guesses.</p>
-        <p id="wg-loading" class="games-note">Loading today's puzzle.</p>
-        <div id="wg-game" hidden>
-          <div class="wg-status" id="wg-status" role="status" aria-live="polite"></div>
-          <p class="wg-msg" id="wg-msg" aria-hidden="true"></p>
-          <div class="wg-boards" id="wg-boards" data-boards="1"></div>
-          <div class="wg-keys" id="wg-keys" aria-label="Keyboard"></div>
-          <section class="game-result" id="wg-result" hidden aria-labelledby="wg-result-head">
-            <h2 id="wg-result-head"></h2>
-            <p class="game-reveal" id="wg-reveal"></p>
+        <p class="game-lede">Five trivia questions a day: science, computing, research and a little of everything else.</p>
+        <p id="qz-loading" class="games-note">Loading today's questions.</p>
+        <div id="qz-game" hidden>
+          <div class="quiz" id="qz-quiz" hidden>
+            <p class="quiz-progress" id="qz-progress"></p>
+            <div class="quiz-dots" id="qz-dots" aria-hidden="true"></div>
+            <p class="quiz-cat" id="qz-cat"></p>
+            <h2 class="quiz-q" id="qz-q"></h2>
+            <ul class="quiz-opts" id="qz-opts"></ul>
+            <p class="quiz-note" id="qz-note" role="status" aria-live="polite"></p>
+            <button type="button" class="btn btn-primary" id="qz-next" hidden>Next question</button>
+          </div>
+          <section class="game-result" id="qz-result" hidden aria-labelledby="qz-result-head">
+            <h2 id="qz-result-head"></h2>
             <div class="game-statline">
-              <div><b id="wg-played">0</b><span>Played</span></div>
-              <div><b id="wg-winpct">0%</b><span>Won</span></div>
-              <div><b id="wg-streak">0</b><span>Streak</span></div>
-              <div><b id="wg-max">0</b><span>Best streak</span></div>
+              <div><b id="qz-played">0</b><span>Days played</span></div>
+              <div><b id="qz-avg">0.0</b><span>Average score</span></div>
+              <div><b id="qz-streak">0</b><span>Streak</span></div>
+              <div><b id="qz-max">0</b><span>Best streak</span></div>
             </div>
-            <div class="wg-dist" id="wg-dist"></div>
+            <div class="wg-dist" id="qz-dist"></div>
+            <ul class="quiz-review" id="qz-review"></ul>
             <div class="game-actions">
-              <button type="button" class="btn btn-primary" id="wg-share">Copy result</button>
-              <span class="game-note" id="wg-share-note"></span>
+              <button type="button" class="btn btn-primary" id="qz-share">Copy result</button>
+              <span class="game-note" id="qz-share-note"></span>
             </div>
-            <textarea class="wg-share-text" id="wg-share-text" hidden readonly aria-label="Result text"></textarea>
-            <p class="game-next">Next puzzle in <span id="wg-next"></span>.</p>
+            <textarea class="wg-share-text" id="qz-share-text" hidden readonly aria-label="Result text"></textarea>
+            <p class="game-next">Next quiz in <span id="qz-next-in"></span>.</p>
           </section>
         </div>
         <div class="games-prose">
-        <h2>How to play</h2>
-        <p>Guess the five-letter word in six tries. After each guess the tiles show how close you were.</p>
-        <div class="game-legend">
-          <span><span class="wg-tile" data-s="c">C</span> Right letter, right place</span>
-          <span><span class="wg-tile" data-s="p">R</span> In the word, wrong place (striped)</span>
-          <span><span class="wg-tile" data-s="a">X</span> Not in the word</span>
-        </div>
-        <p>Type with your keyboard or tap the keys. Press Enter to submit and Backspace to delete. A new puzzle appears every day at midnight in your time zone.</p>
+        <h2>How it works</h2>
+        <p>Pick one answer for each question. You see right away whether you were correct, then move on. After the fifth question you get your score and a result you can copy and share. You cannot change an answer once you choose it.</p>
         <h2>Questions</h2>
-        <h3>Does the puzzle change every day?</h3>
-        <p>Yes. A new word is ready at midnight your time, and everyone sees the same word on the same date.</p>
-        <h3>Which words are accepted?</h3>
-        <p>Any five-letter word from a public-domain English word list of about 8,600 words. Answers are drawn from a smaller set of everyday words.</p>
-        <h3>What happens with repeated letters?</h3>
-        <p>A letter is marked only as many times as it appears in the answer. If you guess two Es and the word has one, only one E is marked.</p>
-        <h3>Where is my streak stored?</h3>
-        <p>Only in your browser on this device. There are no accounts, so clearing site data or switching devices starts a new streak.</p>
-        <h3>How do I share my result?</h3>
-        <p>Copy result puts the grid and your score on the clipboard as plain text, with no letters, so it does not give the word away.</p>
+        <h3>How many questions are there?</h3>
+        <p>Five multiple-choice questions a day, with one correct answer each. Two come from a set we write about science, computing, research methods and Macs. Three come from a general trivia pool.</p>
+        <h3>When do the questions change?</h3>
+        <p>At midnight in your time zone. Everyone sees the same five on the same date.</p>
+        <h3>Where do the questions come from?</h3>
+        <p>Part of the pool is the Open Trivia Database, licensed CC BY-SA 4.0. The rest we write ourselves. We check our own questions, but a general trivia pool can contain mistakes. If you spot one, email ben@purplelink.llc.</p>
+        <h3>What counts as my streak?</h3>
+        <p>Finishing the day&#x27;s five questions, whatever your score. Your streak and scores stay in this browser only.</p>
+        <p class="quiz-credit">Some questions come from the <a href="https://opentdb.com/" rel="noopener">Open Trivia Database</a>, used under <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a>. Questions we wrote ourselves are shared under the same licence.</p>
         </div>
         <p class="games-note"><a href="/games/">All daily games</a></p>
       </div>
     </main>
 
     <script src="/games/core.js?v=dcf9be72f7" defer></script>
-    <script src="/games/config-linkle.js?v=93ec24f2b1" defer></script>
-    <script src="/games/wordgame.js?v=b7f584b554" defer></script>
+    <script src="/games/daily-five.js?v=05baf3f47e" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

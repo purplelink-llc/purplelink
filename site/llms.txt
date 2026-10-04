@@ -118,6 +118,7 @@
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/
 - Free tools: https://purplelink.llc/tools/
+- Daily games (Linkle, Quadlink, Daily Five trivia, Daily Stars; free, no account): https://purplelink.llc/games/
 - Guides: https://purplelink.llc/guides/
 - GlobePin (iOS, free, shipping): https://purplelink.llc/globepin/
 - Haea (iOS, in development): https://purplelink.llc/haea/

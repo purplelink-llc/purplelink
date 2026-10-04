@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Linkle: a free daily five-letter word game | Purplelink</title>
-    <meta name="description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
-    <link rel="canonical" href="https://purplelink.llc/games/linkle/">
-    <meta property="og:title" content="Linkle: a free daily five-letter word game">
-    <meta property="og:description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
+    <title>Daily Stars: a short daily horoscope for every sign | Purplelink</title>
+    <meta name="description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, no account, no ads.">
+    <link rel="canonical" href="https://purplelink.llc/games/daily-stars/">
+    <meta property="og:title" content="Daily Stars: a short daily horoscope for every sign">
+    <meta property="og:description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, no account, no ads.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://purplelink.llc/games/linkle/">
+    <meta property="og:url" content="https://purplelink.llc/games/daily-stars/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Linkle: a free daily five-letter word game">
-    <meta name="twitter:description" content="Guess the five-letter word in six tries. A new puzzle every day, free, no account and no ads. Your streak stays on your device.">
+    <meta name="twitter:title" content="Daily Stars: a short daily horoscope for every sign">
+    <meta name="twitter:description" content="A short, plain daily reading for each of the twelve signs, written for entertainment. Free, no account, no ads.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <script type="application/ld+json">
     {
@@ -22,12 +22,12 @@
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "Linkle",
-          "url": "https://purplelink.llc/games/linkle/",
-          "applicationCategory": "GameApplication",
+          "name": "Daily Stars",
+          "url": "https://purplelink.llc/games/daily-stars/",
+          "applicationCategory": "EntertainmentApplication",
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
-          "description": "A free daily five-letter word guessing game with six tries.",
+          "description": "A short daily reading for each of the twelve signs, for entertainment only.",
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -44,42 +44,34 @@
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "Does the puzzle change every day?",
+              "name": "Are these real predictions?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. A new word is ready at midnight your time, and everyone sees the same word on the same date."
+                "text": "No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships."
               }
             },
             {
               "@type": "Question",
-              "name": "Which words are accepted?",
+              "name": "How are the readings made?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Any five-letter word from a public-domain English word list of about 8,600 words. Answers are drawn from a smaller set of everyday words."
+                "text": "They are written ahead of time in batches, one short reading per sign per day, and published on the date. The moon phase shown is calculated from the date and is accurate to about half a day."
               }
             },
             {
               "@type": "Question",
-              "name": "What happens with repeated letters?",
+              "name": "When do they change?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "A letter is marked only as many times as it appears in the answer. If you guess two Es and the word has one, only one E is marked."
+                "text": "At midnight in your time zone."
               }
             },
             {
               "@type": "Question",
-              "name": "Where is my streak stored?",
+              "name": "Is anything stored about me?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Only in your browser on this device. There are no accounts, so clearing site data or switching devices starts a new streak."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "How do I share my result?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Copy result puts the grid and your score on the clipboard as plain text, with no letters, so it does not give the word away."
+                "text": "Only your chosen sign, in this browser on this device."
               }
             }
           ]
@@ -102,8 +94,8 @@
             {
               "@type": "ListItem",
               "position": 3,
-              "name": "Linkle",
-              "item": "https://purplelink.llc/games/linkle/"
+              "name": "Daily Stars",
+              "item": "https://purplelink.llc/games/daily-stars/"
             }
           ]
         }
@@ -140,62 +132,44 @@
     <main id="main-content" class="games">
       <div class="games-wrap">
         <div class="game-head">
-          <h1>Linkle</h1>
-          <span class="game-num" id="wg-number" aria-live="off"></span>
+          <h1>Daily Stars</h1>
+          <span class="game-num" id="st-date"></span>
         </div>
-        <p class="game-lede">One five-letter word a day. Six guesses.</p>
-        <p id="wg-loading" class="games-note">Loading today's puzzle.</p>
-        <div id="wg-game" hidden>
-          <div class="wg-status" id="wg-status" role="status" aria-live="polite"></div>
-          <p class="wg-msg" id="wg-msg" aria-hidden="true"></p>
-          <div class="wg-boards" id="wg-boards" data-boards="1"></div>
-          <div class="wg-keys" id="wg-keys" aria-label="Keyboard"></div>
-          <section class="game-result" id="wg-result" hidden aria-labelledby="wg-result-head">
-            <h2 id="wg-result-head"></h2>
-            <p class="game-reveal" id="wg-reveal"></p>
-            <div class="game-statline">
-              <div><b id="wg-played">0</b><span>Played</span></div>
-              <div><b id="wg-winpct">0%</b><span>Won</span></div>
-              <div><b id="wg-streak">0</b><span>Streak</span></div>
-              <div><b id="wg-max">0</b><span>Best streak</span></div>
-            </div>
-            <div class="wg-dist" id="wg-dist"></div>
-            <div class="game-actions">
-              <button type="button" class="btn btn-primary" id="wg-share">Copy result</button>
-              <span class="game-note" id="wg-share-note"></span>
-            </div>
-            <textarea class="wg-share-text" id="wg-share-text" hidden readonly aria-label="Result text"></textarea>
-            <p class="game-next">Next puzzle in <span id="wg-next"></span>.</p>
+        <p class="game-lede">A short reading for each sign, new every day. For entertainment only.</p>
+        <p id="st-loading" class="games-note">Loading today's readings.</p>
+        <p id="st-missing" class="games-note" hidden>Today's readings are not ready yet. Please check back soon.</p>
+        <div id="st-game" hidden>
+          <p class="stars-sky" id="st-sky"></p>
+          <ul class="stars-signs" id="st-signs" aria-label="Choose your sign"></ul>
+          <section class="stars-card" id="st-card" hidden aria-live="polite">
+            <h2 id="st-name"></h2>
+            <p class="stars-sub" id="st-range"></p>
+            <p id="st-text"></p>
           </section>
+          <div class="stars-all">
+            <h2>All signs today</h2>
+            <div id="st-all"></div>
+          </div>
         </div>
         <div class="games-prose">
-        <h2>How to play</h2>
-        <p>Guess the five-letter word in six tries. After each guess the tiles show how close you were.</p>
-        <div class="game-legend">
-          <span><span class="wg-tile" data-s="c">C</span> Right letter, right place</span>
-          <span><span class="wg-tile" data-s="p">R</span> In the word, wrong place (striped)</span>
-          <span><span class="wg-tile" data-s="a">X</span> Not in the word</span>
-        </div>
-        <p>Type with your keyboard or tap the keys. Press Enter to submit and Backspace to delete. A new puzzle appears every day at midnight in your time zone.</p>
+        <h2>About these readings</h2>
+        <p>Daily Stars gives each sign a short suggestion for the day. They are meant to be read in a few seconds. Nothing here is a forecast, and no reading is advice about health, money or relationships.</p>
         <h2>Questions</h2>
-        <h3>Does the puzzle change every day?</h3>
-        <p>Yes. A new word is ready at midnight your time, and everyone sees the same word on the same date.</p>
-        <h3>Which words are accepted?</h3>
-        <p>Any five-letter word from a public-domain English word list of about 8,600 words. Answers are drawn from a smaller set of everyday words.</p>
-        <h3>What happens with repeated letters?</h3>
-        <p>A letter is marked only as many times as it appears in the answer. If you guess two Es and the word has one, only one E is marked.</p>
-        <h3>Where is my streak stored?</h3>
-        <p>Only in your browser on this device. There are no accounts, so clearing site data or switching devices starts a new streak.</p>
-        <h3>How do I share my result?</h3>
-        <p>Copy result puts the grid and your score on the clipboard as plain text, with no letters, so it does not give the word away.</p>
+        <h3>Are these real predictions?</h3>
+        <p>No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships.</p>
+        <h3>How are the readings made?</h3>
+        <p>They are written ahead of time in batches, one short reading per sign per day, and published on the date. The moon phase shown is calculated from the date and is accurate to about half a day.</p>
+        <h3>When do they change?</h3>
+        <p>At midnight in your time zone.</p>
+        <h3>Is anything stored about me?</h3>
+        <p>Only your chosen sign, in this browser on this device.</p>
         </div>
         <p class="games-note"><a href="/games/">All daily games</a></p>
       </div>
     </main>
 
     <script src="/games/core.js?v=dcf9be72f7" defer></script>
-    <script src="/games/config-linkle.js?v=93ec24f2b1" defer></script>
-    <script src="/games/wordgame.js?v=b7f584b554" defer></script>
+    <script src="/games/daily-stars.js?v=8bbc81b3f3" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

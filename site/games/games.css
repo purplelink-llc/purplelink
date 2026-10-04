@@ -147,7 +147,7 @@
 .quiz-review { margin: 4px 0 16px; padding-left: 1.2em; color: var(--muted); font-size: 0.9rem; display: grid; gap: 4px; }
 
 /* horoscope */
-.stars-signs { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
+.stars-signs { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
 .stars-signs button { width: 100%; padding: 10px 8px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--panel); color: var(--ink); font: 600 0.92rem/1.2 var(--font-body); cursor: pointer; text-align: center; }
 .stars-signs button span { display: block; font-weight: 500; font-size: 0.74rem; color: var(--muted); }
 .stars-signs button[aria-pressed="true"] { border-color: var(--purple); background: var(--purple-xlight); }

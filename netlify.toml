@@ -8,7 +8,7 @@
   # lastmod dates come from git history, which a shallow build clone lacks.
   # check_content reports problems without failing, so one bad page never
   # blocks the digest; check_og_images fails the build, as in deploy.sh.
-  command = "python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py && python3 scripts/gen_search_index.py && python3 scripts/gen_blog_feed.py && python3 scripts/gen_llms_full.py && python3 scripts/check_og_images.py && python3 scripts/check_content.py"
+  command = "python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py && python3 scripts/gen_search_index.py && python3 scripts/gen_blog_feed.py && python3 scripts/gen_llms_full.py && python3 scripts/check_og_images.py && python3 scripts/check_content.py && python3 scripts/check_games.py"
 
 [functions]
   directory = "netlify/functions"
@@ -128,6 +128,24 @@
   for = "/tools/*.js"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# /games/ scripts and styles carry ?v=<hash> stamps like the tools above. The puzzle data
+# files are not stamped (a new horoscope week replaces stars.json in place), so they get a
+# short cache.
+[[headers]]
+  for = "/games/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/games/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/games/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
 
 [[headers]]
   for = "/sitemap.xml"
