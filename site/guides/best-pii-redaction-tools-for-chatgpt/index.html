@@ -91,7 +91,7 @@
       "name": "Is there a free tool to redact personal information for AI chats?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Predact (Mac and Windows) and Clipmask (Apple silicon Macs) are free. RedactDesk is a free, open-source Mac app for PDFs. Rescriber is a free, open-source Chrome extension for ChatGPT. PrivacyScrubber and Caviard have free tiers with limits."
+        "text": "Yes. Predact (Mac and Windows) is free, and Clipmask (Apple silicon Macs) is free to download, with a 500-copy trial limit mentioned on its page. RedactDesk is a free, open-source Mac app for PDFs. Rescriber is a free, open-source Chrome extension for ChatGPT. PrivacyScrubber and Caviard have free tiers with limits."
       }
     },
     {
@@ -172,7 +172,7 @@
         <p>Those seven cover most situations. <a href="#more-tools">Seven more tools</a> and seven narrower ones follow.</p>
 
         <h2>Outbound Veil</h2>
-        <p><strong>Cost:</strong> $29, one-time, updates included, after a free 7-day trial with no account. <strong>Platform:</strong> macOS 14 or later, Apple silicon and Intel. Mac only. <strong>Status:</strong> version 1.0.0.</p>
+        <p><strong>Cost:</strong> $29, one-time, updates included, after a free 7-day trial with no account. <strong>Platform:</strong> macOS 14 or later, Apple silicon and Intel. Mac only. <strong>Status:</strong> version 1.0.1.</p>
         <p>Outbound Veil lives in the menu bar and reads the text field that has focus, through macOS Accessibility. When it finds something it shows a badge with the number of findings and highlights the matching text where the app allows it. You can ignore a finding, or press Redact all, which rewrites the field in place with labelled placeholders such as [SSN_1] or [EMAIL_1]. In apps you choose, it can also hold the send key until you have decided. It looks for names, addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth, medical record numbers and IBANs.</p>
         <p>A model that runs on your Mac does the checking. Nothing you type is stored or sent, and the app has no analytics. The model is <a href="https://github.com/nationaldesignstudio/rampart" rel="noopener">Rampart</a> by National Design Studio, released under CC BY 4.0, and I did not train it. Purplelink ported Rampart's processing code to Swift and added rules for dates of birth, medical record numbers and IBANs. The model file is unchanged.</p>
         <p><strong>What it's good at:</strong> sitting where the mistake happens, in any Mac app it can read rather than one website. I tested TextEdit, Notes, Microsoft Word, Messages and text areas in Chrome. In the ChatGPT and claude.ai prompt boxes in Chrome, Redact all works, but the whole box is outlined instead of each word highlighted.</p>
@@ -227,8 +227,8 @@
         <p>The closest Mac peer on price. ClipScrub redacts PDFs, Word files, screenshots, screen recordings, JSON, CSV, XML and clipboard text, on the Mac and with no internet needed, according to its page. A keyboard shortcut starts it. It does not watch your typing, and it says it is not a compliance service and does not guarantee complete de-identification. <strong>Pick ClipScrub over Outbound Veil if</strong> your material is files, screenshots or recordings rather than text typed into boxes.</p>
 
         <h3>Clipmask</h3>
-        <p><strong>Cost:</strong> Free, with no time limit. <strong>Platform:</strong> Apple silicon Macs only, macOS 14 or later.</p>
-        <p>Made by the Predact company. You copy text as usual, and a shortcut (Option+Space) offers a redacted version to paste. Its page says detection runs on the Mac, and that the only server contact is a check that the app is a licensed current version. <strong>Pick Clipmask if</strong> you want a free Mac tool that works on whatever you copy.</p>
+        <p><strong>Cost:</strong> Free to download, with no subscription and no time limit. Its page also mentions a 500-copy trial limit, after which you may decide to continue, and gives no price for that. <strong>Platform:</strong> Apple silicon Macs only, macOS 14 or later.</p>
+        <p>The clipboard-only sibling of Predact, made by QCG. You copy text as usual, and a shortcut (Option+Space) offers a redacted version to paste. Its page says detection runs on the Mac, and that the only server contact is a check that the app is a licensed current version. <strong>Pick Clipmask if</strong> you want a free Mac tool that works on whatever you copy.</p>
 
         <h3>RedactDesk</h3>
         <p><strong>Cost:</strong> Free, open source (MIT). <strong>Platform:</strong> macOS 14 or later.</p>
@@ -297,7 +297,7 @@
         <h3>Do these tools send my text to a server?</h3>
         <p>Most say detection runs on your device or in your browser. That is the vendor's claim, not something I tested. Enterprise DLP and the provider's own plans involve servers by design. A local model keeps text on your machine.</p>
         <h3>Is there a free tool to redact personal information for AI chats?</h3>
-        <p>Yes. Predact (Mac and Windows) and Clipmask (Apple silicon Macs) are free. RedactDesk is a free, open-source Mac app for PDFs. Rescriber is a free, open-source Chrome extension for ChatGPT. PrivacyScrubber and Caviard have free tiers with limits.</p>
+        <p>Yes. Predact (Mac and Windows) is free, and Clipmask (Apple silicon Macs) is free to download, with a 500-copy trial limit mentioned on its page. RedactDesk is a free, open-source Mac app for PDFs. Rescriber is a free, open-source Chrome extension for ChatGPT. PrivacyScrubber and Caviard have free tiers with limits.</p>
         <h3>Is there a Mac app that checks for personal information as I type?</h3>
         <p>Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things.</p>
         <h3>Should I run a local model instead of redacting?</h3>
