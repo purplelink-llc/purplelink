@@ -29,3 +29,11 @@ def test_checkout_rate_denominator_counts_its_page():
     purplelink = next(s for s in td.SITES if s["key"] == "purplelink")
     assert "/outbound-veil/" in purplelink["product_paths"]
     assert "ovTrialDownloads" in [k for k, _ in purplelink["secondaries"]]
+
+
+def test_legroom_is_its_own_line_under_either_name():
+    assert td.product_group(_row("legroom", 900, 871)) == "Legroom"
+    assert td.product_group(_row("freeboard", 900, 871)) == "Legroom"
+    assert "Legroom" in [g for g, _c in td.PRODUCT_GROUPS] and "Legroom" in td.PROFIT_LINES
+    pv = td.profit_view({"ledger": {"cs_x": _row("legroom", 900, 871)}}, {}, 7)
+    assert any(r["line"] == "Legroom" and r["orders"] == 1 for r in pv["rows"])
