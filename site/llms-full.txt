@@ -2884,7 +2884,7 @@ An on-device iOS health analytics platform. Advanced ML models for recovery, cir
 
 ### GlobePin
 
-An iOS travel tracking app for mapping everywhere you've been, every flight taken, and every destination on the list. 3D globe, stats, goals, and shareable postcards. Version 1.0 shipped in September 2026, free on the App Store.
+An iOS travel tracking app for mapping everywhere you've been, every flight taken, and every destination on the list. 3D globe, stats, goals, and shareable postcards. Version 1.0 shipped in September 2026, free on the App Store with ads; a one-time Pro purchase removes them.
 
 ## How we build
 
