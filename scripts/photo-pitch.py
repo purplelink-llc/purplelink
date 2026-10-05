@@ -102,14 +102,14 @@ def pitch_body(t, names):
     short = t["target"].split("(")[0].strip()
     descr = [names.get(f, f[:-5]) for f in files][:4]
     lines = ["Hello,", "",
-             f"I'm a photographer based in Atlanta. I photographed {short} and would like to offer the images to your marketing team.",
-             "", f"There are {n} images (previews attached):"]
+             f"I'm a photographer based in Atlanta. I photographed {short} and would like to offer {'the image' if n == 1 else 'the images'} to your marketing team.",
+             "", (f"There is 1 image (preview attached):" if n == 1 else f"There are {n} images (previews attached):")]
     lines += [f"- {d}" for d in descr]
     if n > len(descr):
         lines.append(f"- and {n - len(descr)} more")
     lines += ["",
-              f"A commercial license (web, social, newsletters, print marketing) is ${PRICE_ONE} per image, or ${bundle_price(n)} for all {n}, with no expiry. "
-              f"Single images can be licensed by card at {LICENSE_URL}; for the set, reply and I will send a payment link.",
+              f"A commercial license (web, social, newsletters, print marketing) is ${PRICE_ONE} per image{'' if n == 1 else f', or ${bundle_price(n)} for all {n}'}, with no expiry. "
+              f"{'It' if n == 1 else 'Single images'} can be licensed by card at {LICENSE_URL}{'.' if n == 1 else '; for the set, reply and I will send a payment link.'}",
               "", "Please forward this if someone else handles imagery.", "", SIGN]
     return "\n".join(lines)
 

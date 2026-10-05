@@ -373,7 +373,9 @@ def cmd_init(a):
 
 def next_id():
     today = dt.date.today().strftime("%Y%m%d")
-    n = sum(1 for i in all_items() if str(i["fm"].get("id", "")).startswith(f"q-{today}")) + 1
+    used = [int(m.group(1)) for i in all_items()
+            if (m := re.fullmatch(rf"q-{today}-(\d+)", str(i["fm"].get("id", ""))))]
+    n = max(used, default=0) + 1
     return f"q-{today}-{n:03d}"
 
 
