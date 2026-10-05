@@ -1317,7 +1317,9 @@ def sports_page(slug, title, lede, board, result_extra, prose, faq_items, script
     page(f"games/{slug}/", "", "", body, {"@context": "https://schema.org", "@graph": [faq(faq_items)]}, scripts)
 
 SP_NOTE = ("Players come from lists we curated of well-known stars in each league, with team histories checked against Wikipedia and Wikidata. "
-           "A player counts as a teammate when the two were on the same franchise in the same season; a team that moved or changed its name is one franchise.")
+           "A player counts as a teammate when the two were on the same franchise in the same season; a team that moved or changed its name is one franchise. "
+           'Baseball data comes from the <a href="https://sabr.org/lahman-database/" rel="noopener">Lahman Baseball Database</a>, copyright 1996-2025 SABR, via Sean Lahman, used under <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="noopener">CC BY-SA 3.0</a>. '
+           "We matched it to our own player list and combined it with other sources, so it is changed from the original.")
 
 TL_FAQ = [
     ("What counts as teammates?", "Two players are teammates if they were on the same franchise in at least one common season. A franchise that moved or changed its name counts as one team, so the Seattle SuperSonics and the Oklahoma City Thunder are the same club."),
