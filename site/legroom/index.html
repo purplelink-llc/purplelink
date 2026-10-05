@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Legroom - Free Disk Space and Cleanup for Mac | Purplelink LLC</title>
+    <meta name="description" content="A Mac menu-bar app that shows your free disk space, warns before the disk fills, and cleans the folders and caches you choose after you approve a preview. Try it free for 7 days.">
+    <link rel="canonical" href="https://purplelink.llc/legroom/">
+    <meta property="og:title" content="Legroom - Free Disk Space and Cleanup for Mac">
+    <meta property="og:description" content="A Mac menu-bar app that shows free disk space and cleans the folders you choose, with a preview you approve before anything is removed. $9 once after a 7-day trial.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/legroom.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/legroom/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Legroom - Free Disk Space and Cleanup for Mac">
+    <meta name="twitter:description" content="A Mac menu-bar app that shows free disk space and cleans the folders you choose, with a preview you approve before anything is removed. $9 once after a 7-day trial.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/legroom.png">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=19b47f5814">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/legroom/legroom.css?v=11fab66af8">
+    <script src="/site.js?v=eaf42deb7d" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Legroom",
+          "applicationCategory": "UtilitiesApplication",
+          "applicationSubCategory": "Disk space utility",
+          "operatingSystem": "macOS 14+",
+          "url": "https://purplelink.llc/legroom/",
+          "image": "https://purplelink.llc/assets/og/legroom.png",
+          "description": "Legroom is a Mac menu-bar app that shows your free disk space, warns before the disk fills, and cleans the folders and developer caches you choose after you approve a preview. It has no account and no analytics, and its measurements stay on your Mac.",
+          "screenshot": "https://purplelink.llc/legroom/img/what-grew.webp",
+          "softwareRequirements": "macOS 14 (Sonoma) or later, Apple silicon or Intel.",
+          "processorRequirements": "Apple silicon or Intel",
+          "featureList": [
+            "Free space in the menu bar, with a warning before the disk fills",
+            "Cleaning rules for folders and developer caches you choose, each with a preview you approve, moving items to the Trash or deleting them",
+            "Recommended rules for known caches, and a scan of code projects for old build folders",
+            "What Grew: daily measurements with 1, 7 and 30 day growth",
+            "Weekly or monthly suggestions for new rules",
+            "Space Map: a sunburst chart of where space goes, with Move to Trash",
+            "Find Files: large, old and duplicate files, always keeping one copy of each duplicate, Trash only"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "9.00",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": "https://purplelink.llc/legroom/",
+            "category": "One-time purchase",
+            "seller": { "@id": "https://purplelink.llc/#organization" },
+            "hasMerchantReturnPolicy": { "@type": "MerchantReturnPolicy", "applicableCountry": "US", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 14, "returnFees": "https://schema.org/FreeReturn", "refundType": "https://schema.org/FullRefund" }
+          },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does Legroom need to run?",
+              "acceptedAnswer": { "@type": "Answer", "text": "macOS 14 (Sonoma) or later, on Apple silicon or Intel." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it delete anything on its own?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map and Find Files only move items to the Trash, and only the ones you select." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it make my Mac faster?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Legroom frees disk space. It does not tune or speed up anything else." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it need Full Disk Access?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it send my files or measurements anywhere?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. There is no account and no analytics. Apart from the daily update check in the paid build and the Buy link, which opens this page in your browser, Legroom does not use the network." }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens when the trial ends?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you install the paid build. Buying gives you a separate download of the full app to install in place of the trial." }
+            },
+            {
+              "@type": "Question",
+              "name": "Are updates included?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Updates to the version you buy are included. The paid app checks for a new version once a day and asks before installing it. I have not decided whether a later major version would be a free update." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I get a refund?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Email ben@purplelink.llc within 14 days of purchase." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I get help?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Legroom", "item": "https://purplelink.llc/legroom/" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/products/">&larr; All products</a>
+
+    <div class="app-hero">
+      <img class="app-hero-icon" src="/assets/legroom-icon.webp" width="120" height="120" fetchpriority="high" alt="Legroom app icon">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS</span>
+          <span class="product-status product-status-live">Free 7-day trial &middot; <span id="price">$9</span> to keep</span>
+        </div>
+        <h1 class="app-hero-name">Legroom</h1>
+        <p class="app-hero-tagline">Legroom shows how much free space your Mac has, warns you before the disk fills, and cleans the folders and developer caches you choose. It runs in the menu bar. Nothing is removed until you have seen a preview and approved it.</p>
+        <div class="app-hero-actions" id="buy">
+          <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/legroom-download?trial=1">Try it free for 7 days</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="legroom">Buy Legroom</button>
+        </div>
+        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <p class="waitlist-fine-print">The trial runs for seven days from the first time you open it, with no account and nothing to enter. After it ends, the menu-bar readout and the low-space alerts keep working. Buying is a single $9 payment. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). Version 1.0.0 &middot; 6 MB disk image &middot; macOS 14 or later, Apple silicon and Intel &middot; signed and notarized.</p>
+        <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom and Vitae Plus for life, $49 once.</p>
+      </div>
+      <figure class="app-hero-window lg-hero-window">
+        <div class="frame-soft">
+          <img src="/legroom/img/menu-bar-dropdown.webp" alt="Legroom's menu-bar window on a sample Mac: 43 GB free, a bar for used space, figures for space available now, space macOS can clear, used and total space, and a low-space line of 20 GB, then a Clean Now button, a switch to pause automatic cleaning, and buttons for Space Map, Find Files, What Grew and Settings" width="600" height="1042" fetchpriority="high" decoding="async">
+        </div>
+        <figcaption>Sample data: a pretend home folder and invented numbers. The window title comes from the test build.</figcaption>
+      </figure>
+    </div>
+
+    <section class="features-section" aria-labelledby="how-h">
+      <div class="features-header">
+        <h2 id="how-h">What it does</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>It shows free space where you can see it</h3>
+          <p>The menu bar shows what is free on your startup disk. The window under it adds the space available now, the space macOS says it can clear, and your other volumes. You set a line, and Legroom warns you when free space drops below it.</p>
+        </div>
+        <div class="feature-item">
+          <h3>It cleans what you tell it to</h3>
+          <p>You make a rule for a folder or a cache. The rule shows a preview of exactly what it would remove, and you approve it. A rule can then run when you ask, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them, and says which.</p>
+        </div>
+        <div class="feature-item">
+          <h3>It shows what grew</h3>
+          <p>Once a day Legroom measures where your space goes. What Grew compares those measurements over 1, 7 or 30 days, so you can see which folder filled the disk and make a rule for it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screenshots-section lg-gallery" aria-labelledby="look-h">
+      <h2 id="look-h">A closer look</h2>
+      <p class="section-intro">Every screen below is a capture of the app running on sample data, not on a real Mac.</p>
+
+      <div class="lg-pair">
+        <figure class="lg-shot">
+          <div class="screenshot-callout" data-motion="reveal">
+            <h3>You approve every clean</h3>
+            <p>Clean Now lists each rule with the most it would remove and whether that goes to the Trash or is deleted for good. Permanent deletion is shown in red. A rule whose folders changed since you approved it is left out until you preview it again.</p>
+          </div>
+          <div class="frame-soft">
+            <img src="/legroom/img/clean-now.webp" alt="Legroom's Clean now confirmation listing six sample rules, each with the most it would remove and whether it moves items to the Trash or deletes them permanently, with one rule marked as not included because its folders changed since it was approved" width="600" height="762" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+      </div>
+
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>What grew since last week</h3>
+          <p>Each folder that grew is listed with its size and its growth, and a button for the next step: clean it now, add a rule, preview a rule or see a command. Items that come from macOS, such as swap and local Time Machine snapshots, are listed separately with what Legroom can and cannot tell you about them.</p>
+        </div>
+        <figure class="lg-shot">
+          <div class="frame-soft">
+            <img src="/legroom/img/what-grew.webp" alt="The What Grew window set to 7 days, listing sample folders by growth, such as Movies up 12 GB and Xcode DerivedData up 11 GB, each with a button for its next step, and a From macOS section with swap use and local Time Machine snapshots" width="1200" height="1289" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+      </div>
+
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>Suggested rules, weekly or monthly</h3>
+          <p>Legroom looks at what grew, at your rules and at its list of known caches, and suggests rules. A suggestion never creates, approves or runs a rule. You see the rule editor and the preview first.</p>
+        </div>
+        <figure class="lg-shot">
+          <div class="frame-soft">
+            <img src="/legroom/img/suggestions.webp" alt="The Suggestions window with four sample suggestions, such as clearing the npm cache every Monday and a note that Homebrew grew 12 GB, each with Create Rule or Edit Rule and Not Now buttons" width="1200" height="1118" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+      </div>
+
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>Space Map: where the space went</h3>
+          <p>A chart of a folder or a whole disk, as rings: the centre is the folder you are in, and each ring outward is the folders inside it. Click a section to select it and double-click to look inside. A selected folder can be revealed in Finder, moved to the Trash or turned into a rule. Folders Legroom could not read are drawn hatched, so a gap is never passed off as empty space.</p>
+        </div>
+        <figure class="lg-shot">
+          <div class="frame-soft">
+            <img src="/legroom/img/space-map.webp" alt="The Space Map window showing a sunburst chart of a small sample home folder, with Chart and List views, buttons to scan the startup disk, the home folder or a chosen folder, and a legend for hatched, dotted and gray areas" width="1200" height="1107" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data. Full Disk Access is off in this capture, so protected folders are skipped.</figcaption>
+        </figure>
+      </div>
+
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>Find Files: large, old and duplicate files</h3>
+          <p>Search your home folder, or folders you choose, for large files, files you have not opened in a long time, and duplicates. For duplicates you choose which copy stays, and at least one copy of every group always stays. Find Files only moves files to the Trash, and only the ones you select.</p>
+        </div>
+        <figure class="lg-shot">
+          <div class="frame-soft">
+            <img src="/legroom/img/find-files.webp" alt="The Find Files window on its Large tab, listing seven sample files of 10 MB or more with their size, date changed and folder, and Reveal in Finder and Move Selected to Trash buttons" width="1200" height="1109" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="inside-h">
+      <h2 id="inside-h">What is in it</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Menu bar</th><td>Free space on the startup disk, the space macOS can clear, your other volumes, and a low-space alert at a line you set.</td></tr>
+          <tr><th scope="row">Rules</th><td>Folders you choose, with an age limit, a preview and your approval. Run by hand, on a schedule, or when free space drops below your line. A log shows what each run did, and one switch pauses automatic cleaning.</td></tr>
+          <tr><th scope="row">Recommended</th><td>Caches Legroom knows, such as Xcode DerivedData, Homebrew downloads and the npm cache, and folders that look like caches, labelled when it is not sure.</td></tr>
+          <tr><th scope="row">Project scan</th><td>Looks through your code projects for old build folders and offers a rule for them.</td></tr>
+          <tr><th scope="row">What Grew</th><td>A daily measurement of where your space goes, compared over 1, 7 or 30 days.</td></tr>
+          <tr><th scope="row">Suggestions</th><td>Rule ideas based on what grew, weekly or monthly.</td></tr>
+          <tr><th scope="row">Space Map</th><td>A sunburst chart of a folder or disk, with Reveal in Finder, Move to Trash and Add as a Rule.</td></tr>
+          <tr><th scope="row">Find Files</th><td>Large, old and duplicate files. Trash only, and one copy of every duplicate always stays.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="specs-section" aria-labelledby="not-h">
+      <h2 id="not-h">What it does not do</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Speed</th><td>It does not make your Mac faster. It frees disk space and does nothing else to performance.</td></tr>
+          <tr><th scope="row">System files</th><td>It does not clean inside system folders and the folders that hold your documents and settings.</td></tr>
+          <tr><th scope="row">Commands</th><td>It does not run commands. Where a fix needs Terminal, such as removing local Time Machine snapshots, it shows the command as text and you decide whether to run it.</td></tr>
+          <tr><th scope="row">Hidden space</th><td>It does not scan as an administrator, so some space it cannot measure, such as local Time Machine snapshots. It lists those as size not reported rather than guessing.</td></tr>
+          <tr><th scope="row">Unseen deletions</th><td>It does not remove anything you have not previewed and approved, and it does not remove duplicates without leaving one copy.</td></tr>
+          <tr><th scope="row">The cloud</th><td>There is no cloud, no account and no sync. Your measurements, rules and log stay on your Mac.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="features-section bg-purple-xlight" aria-labelledby="privacy-h">
+      <div class="features-header">
+        <h2 id="privacy-h">Privacy</h2>
+      </div>
+      <p class="lg-note">Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And the paid build, once a day, asks this site for its update feed: that request carries the app's name and version and an update token that marks it as the paid build, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. The trial build has no update check. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the <a href="/privacy/">privacy page</a>.</p>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-list" data-motion="stagger">
+        <details class="faq-item">
+          <summary>What does it need to run?</summary>
+          <div class="faq-body">macOS 14 (Sonoma) or later, on Apple silicon or Intel.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it delete anything on its own?</summary>
+          <div class="faq-body">Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map and Find Files only move items to the Trash, and only the ones you select.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it make my Mac faster?</summary>
+          <div class="faq-body">No. Legroom frees disk space. It does not tune or speed up anything else.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it need Full Disk Access?</summary>
+          <div class="faq-body">No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it send my files or measurements anywhere?</summary>
+          <div class="faq-body">No. There is no account and no analytics. Apart from the daily update check in the paid build and the Buy link, which opens this page in your browser, Legroom does not use the network.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What happens when the trial ends?</summary>
+          <div class="faq-body">The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you install the paid build. Buying gives you a separate download of the full app to install in place of the trial.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Are updates included?</summary>
+          <div class="faq-body">Updates to the version you buy are included. The paid app checks for a new version once a day and asks before installing it, or you can check by hand from its menu. I have not decided whether a later major version would be a free update.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I get a refund?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href="/terms/">terms</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I get help?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
+      <h2 id="closing-cta-heading">Try it for a week.</h2>
+      <p>Seven days of the full app, with no account and nothing to enter. Then decide whether to keep it.</p>
+      <div class="closing-cta-actions">
+        <a class="btn btn-primary" href="/.netlify/functions/legroom-download?trial=1">Try it free for 7 days</a>
+        <a class="btn btn-ghost" href="#buy">Buy Legroom</a>
+      </div>
+      <p class="closing-cta-fine">macOS 14 or later &middot; Apple silicon and Intel &middot; Signed and notarized</p>
+    </section>
+    <div class="sticky-cta" data-sticky-cta data-hide-when="#buy, .closing-cta, .footer" hidden>
+      <span class="sticky-cta-text"><strong>Legroom</strong> free for 7 days</span>
+      <a class="btn btn-primary" href="#buy" data-track="sticky_cta" data-track-meta="legroom">Get Legroom</a>
+    </div>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=f687fd96c2" defer></script>
+</body>
+</html>

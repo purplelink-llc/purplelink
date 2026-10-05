@@ -18,7 +18,7 @@
 
 ## What Purplelink builds
 
-1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type) and Vitae (academic record keeping).
+1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner) and Vitae (academic record keeping).
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
 4. **iOS apps** — GlobePin (travel mapping, shipping) and Haea (on-device health analytics, in development).
@@ -49,6 +49,15 @@
 - **Credit:** The detection model is Rampart by National Design Studio (CC BY 4.0), https://github.com/nationaldesignstudio/rampart. Purplelink ported its processing code to Swift and added rules for dates of birth, medical record numbers and IBANs; the model file is unchanged.
 - **Trial and purchase:** https://purplelink.llc/outbound-veil/
 - **Setup guide:** https://purplelink.llc/outbound-veil/start/ (first ten minutes: install, Accessibility, a first check on a made-up note, redacting, choosing apps, trial and updates)
+
+### Legroom (macOS)
+- **Platform:** macOS 14 (Sonoma) or later, Apple silicon and Intel
+- **Category:** Disk space utility
+- **Description:** A Mac menu-bar app that shows free disk space, warns before the disk fills, and cleans the folders and developer caches you choose. Cleaning runs through rules; each rule shows a preview of what it would remove and needs your approval, and either moves items to the Trash or deletes them. It recommends known caches, scans code projects for old build folders, shows what grew over 1, 7 and 30 days from daily measurements, suggests rules weekly or monthly, and includes a Space Map (a sunburst chart of where space goes, with Move to Trash) and Find Files (large, old and duplicate files; duplicates always keep one copy; Trash only).
+- **Pricing:** Free 7-day trial, then $9 once to keep. After the trial the menu-bar readout and low-space alerts stay free.
+- **Privacy:** No account, no analytics. Measurements, rules and the trial clock stay on the Mac. The only network use is the daily update check in the paid build and the Buy link.
+- **Limits:** It does not speed up a Mac, does not run commands, does not clean inside system folders, and does not scan as an administrator. Full Disk Access is optional.
+- **Trial and purchase:** https://purplelink.llc/legroom/
 
 ### Vitae (macOS)
 - **Platform:** macOS 15 (Sequoia) or later
@@ -113,7 +122,8 @@
 - Guide, using AI to check your own manuscript (publisher and venue policies compared): https://purplelink.llc/guides/ai-policy-checking-your-own-manuscript/
 - ModernTex (macOS, free 7-day trial then $19.99, shipping): https://purplelink.llc/moderntex/
 - Outbound Veil (macOS, free 7-day trial then $29): https://purplelink.llc/outbound-veil/
-- Mac Suite (macOS, $39 once: ModernTex, Outbound Veil and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
+- Legroom (macOS, free 7-day trial then $9): https://purplelink.llc/legroom/
+- Mac Suite (macOS, $49 once: ModernTex, Outbound Veil, Legroom and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/
