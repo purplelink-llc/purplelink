@@ -5647,7 +5647,7 @@ By Benjamin Ampel · October 4, 2026
 
 What is using your Mac's disk, what is safe to remove, and which tool to trust with the deleting. Short version: Apple's own settings plus a free or $10 disk map cover most full disks, and the tools differ most in whether a delete goes to the Trash or is final.
 
-Disclosure up front: Purplelink, which publishes this site, is building one app on this list, Legroom. It is not out. It has no product page, no download and no checkout, and I am not recommending it to anyone today. I did not install or test any of the other tools either. Everything below is read from vendor pages, Mac App Store listings, privacy labels, project repositories, Apple support pages and the built-in Terminal help on my own Mac, all on October 4, 2026. Prices and versions change. Where a page did not say something, I write "not stated" rather than guess.
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Legroom, a menu-bar app sold as a 7-day trial and a $9 one-time purchase. It is new and unproven, and where another tool is the better choice I say so. I did not install or test any of the other tools either. Everything below is read from vendor pages, Mac App Store listings, privacy labels, project repositories, Apple support pages and the built-in Terminal help on my own Mac, all on October 4, 2026. Prices and versions change. Where a page did not say something, I write "not stated" rather than guess.
 
 ## Three jobs, and which tools do which
 
@@ -5681,7 +5681,7 @@ Deletion is where tools differ most, so each entry says how the tool deletes: to
 
 - du, ncdu or gdu: free, in Terminal.
 
-Legroom is not on the list because it does not exist yet. Eight more entries follow the full reviews, then a decision matrix, how to choose and the section on what is safe to delete.
+Legroom is not on the shortlist because it is new; it has its own section below. Eight more entries follow the full reviews, then a decision matrix, how to choose and the section on what is safe to delete.
 
 ## macOS Storage settings and Optimize Storage
 
@@ -5799,23 +5799,15 @@ This is the usual reason deleting files does not free space. Apple says Time Mac
 
 Pick this if you deleted a lot and the free number did not move. Most of the time, waiting or leaving it alone is right.
 
-## Legroom (Purplelink's, not yet available)
+## Legroom (Purplelink's)
 
-Status: In development, unreleased. There is no product page, no download, no checkout and no public listing. I recommend it to nobody today. Platform (planned): macOS 14 or later, direct download, no Mac App Store build. Price (planned): a 7-day trial, then $9 once, no subscription.
+Cost: A free 7-day trial, then $9 once, with no subscription; also part of the $49 Mac Suite. Platform: macOS 14 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.0.0, signed and notarized, which makes it the newest and least proven tool in this guide. I make it, and I have not compared it with the others on a test Mac.
 
-The plan can change. I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. Where it stands against the written plan:
+I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set. You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which. A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any. Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate.
 
-- Working in development builds, not released: a free-space readout in the menu bar with low-space alerts; folder rules that run on a schedule, when an app quits, or when free space drops below a line you set, with a preview to approve before a rule first runs; presets for developer caches such as Xcode DerivedData, npm and Homebrew; a "what grew" view that ranks what changed over 1, 7 and 30 days; and a space map.
+What it lacks: it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no uninstaller, widget or command-line tool. After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map and Find Files need the paid build. Its page says there is no account and no analytics; the paid build checks for updates once a day, and the trial build does not. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and this is the first release.
 
-- Planned, not merged or not started: a finder for large, old and duplicate files (written on a branch, not merged); an app uninstaller; a desktop widget; a command-line tool; the trial and license; and the website and checkout.
-
-- Planned after the trial: the readout, widget and alerts stay free; cleaning, maps, finding and uninstalling need the $9 license.
-
-- Planned safety design: Trash by default for your own files, a first-run preview, protected system locations, no administrator rights, and no analytics, with the only network traffic an update check.
-
-None of that is a promise of safety; it is a design I have not shipped.
-
-Where others are better today: DaisyDisk for a visual map, and for hidden space and snapshots, because it can scan as administrator, which Legroom's design rules out. In my current build the whole-disk map measures your home folder, and on my own Mac 163 GB of 203 GB used showed as hidden space. GrandPerspective if you want free. OmniDiskSweeper if you want simple. Hazel for general rules on any folder. For cleaning developer caches when space is low, free open-source apps such as Harbofly and Dustpan already exist, listed below. The gap Legroom is aimed at is folder rules with a free-space trigger, a readout and a "what grew" explanation in one app. When it ships I will read it against the same checklist and update this page.
+Where others are better today: DaisyDisk for a visual map, and for hidden space and snapshots, because it can scan as administrator, which Legroom does not. GrandPerspective if you want free. OmniDiskSweeper if you want simple. Hazel for general rules on any folder. For cleaning developer caches when space is low, free open-source apps such as Harbofly and Dustpan exist, listed below. The gap Legroom is aimed at is folder rules with a free-space trigger, a readout and a "what grew" explanation in one app. Pick Legroom if you want rules that clean on a free-space trigger with a preview you approve each time, and you accept a first release from a one-person studio. Pick another tool if you want a visual map of everything including system space.
 
 ## Eight more worth knowing
 
@@ -5881,7 +5873,7 @@ DevCleanerXcode cachesFreeNot stated
 
 ncdu, gdu, duaTerminal, remoteFreeConfirmed delete; gdu and dua can Trash
 
-Legroom (planned)Rules, readout, what grewPlanned $9 oncePlanned Trash default
+LegroomRules, readout, what grew$9 once, 7-day trialTrash or permanent per rule, shown in the preview; Find Files and Space Map Trash only
 
 - Want free? GrandPerspective, OmniDiskSweeper, or du with ncdu.
 
@@ -5951,15 +5943,17 @@ Often not for disk space. Apple's settings, a free map such as GrandPerspective 
 
 For some things, yes. Hazel runs rules on folders, though a free-space trigger needs a script. Harbofly and Dustpan, both free and open source, offer opt-in auto-clean for developer caches, including when space is low. None of them is a reason to skip reading what a rule will remove first, and I have audited none of them.
 
-### Is Legroom available yet?
+### Is Legroom available, and what does it cost?
 
-No. Legroom is Purplelink's planned Mac menu-bar app. It has no product page, download or checkout, and I do not recommend it to anyone today. Everything said about it here is planned or in development, and the plan can change. Its price is planned at $9 once after a 7-day trial.
+Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it is a first release, and this guide describes it from its own product page rather than from a test against the other tools.
 
 ## Related guides
 
 - Best LaTeX editor for Mac: MacTeX is about 5 GB and BasicTeX about 100 MB, a real choice if your disk is tight.
 
-- Outbound Veil: another Purplelink Mac menu-bar app, direct download, the model Legroom is planned to follow.
+- Legroom: the Purplelink Mac menu-bar app described above.
+
+- Outbound Veil: another Purplelink Mac menu-bar app, direct download.
 
 - Purplelink's privacy page, all products and all guides.
 
