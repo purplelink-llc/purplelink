@@ -145,7 +145,7 @@
   - Sports games hub: free daily NBA, NFL, MLB and NHL puzzles (Lockerlink, Gridlink, Under the Cap). https://purplelink.llc/games/sports/
   - Teammate chains between stars of different eras: https://purplelink.llc/games/sports/nba-teammate-chains/ , https://purplelink.llc/games/sports/nfl-teammate-chains/ , https://purplelink.llc/games/sports/mlb-teammate-chains/ , https://purplelink.llc/games/sports/nhl-teammate-chains/
 - Guides: https://purplelink.llc/guides/
-- GlobePin (iOS, free, shipping): https://purplelink.llc/globepin/
+- GlobePin (iOS, free with ads, Pro $14.99 once, shipping): https://purplelink.llc/globepin/
 - Haea (iOS, in development): https://purplelink.llc/haea/
 - Kits (downloadable automation systems): https://purplelink.llc/kits/
 - Daily Digest (curated reading on cybersecurity, AI, research and entrepreneurship): https://purplelink.llc/blog/digest/
@@ -164,7 +164,7 @@
 ## Frequently asked questions
 
 **When do Purplelink's apps ship?**
-ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $19.99 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/. GlobePin (iOS) came out on 2026-09-03 and is free at https://apps.apple.com/us/app/globepin/id6762313540. Haea is still in development, with a waitlist on its product page.
+ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $19.99 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/. GlobePin (iOS) came out on 2026-09-03 and is free with ads at https://apps.apple.com/us/app/globepin/id6762313540, and a one-time $14.99 Pro purchase removes the ads. Haea is still in development, with a waitlist on its product page.
 
 **What platforms do the apps support?**
 ModernTex is a macOS app (macOS 14+). Vitae is a macOS app (macOS 15+). GlobePin and Haea are iOS apps (iOS 17+).
