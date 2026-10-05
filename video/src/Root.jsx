@@ -5,6 +5,8 @@ import { PromoV2, HeroV2, PromoLong } from "./V2.jsx";
 import { StillPromo, StillHero } from "./Stills.jsx";
 import { PRODUCTS } from "./products/index.js";
 import { LatexFix } from "./LatexFix.jsx";
+import { ChainDay } from "./Chain.jsx";
+import { build as buildChain } from "./chain/plan.js";
 import { build as buildLatexFix } from "./latexfix/plan.js";
 import { bumperTotal, BUMPER } from "./Bumper.jsx";
 import { FORMATS, brand } from "./theme.js";
@@ -40,6 +42,9 @@ export const Root = () => (
     <Composition id="LatexFix" component={LatexFix} fps={brand.fps} width={1920} height={1080} durationInFrames={90}
       defaultProps={{ id: "undefined-control-sequence", format: "16x9", timing: { scenes: [] }, storyboard: { scenes: [] }, bumper: BUMPER }}
       calculateMetadata={({ props }) => { const fmt = FORMATS[props.format]; const total = props.timing.scenes.length ? bumperTotal(buildLatexFix(props.id, props.timing, props.storyboard).total, props.bumper || BUMPER) : 3; return { width: fmt.W, height: fmt.H, durationInFrames: Math.round(total * brand.fps) }; }} />
+    <Composition id="ChainDay" component={ChainDay} fps={brand.fps} width={1080} height={1920} durationInFrames={90}
+      defaultProps={{ chain: { players: [], hops: [] }, format: "9x16", timing: { scenes: [] }, bumper: BUMPER }}
+      calculateMetadata={({ props }) => { const fmt = FORMATS[props.format]; const total = props.timing.scenes.length ? bumperTotal(buildChain(props.chain, props.timing).total, props.bumper || BUMPER) : 3; return { width: fmt.W, height: fmt.H, durationInFrames: Math.round(total * brand.fps) }; }} />
     <Composition id="StillHero" component={StillHero} fps={brand.fps} width={1920} height={1080} durationInFrames={240}
       defaultProps={{ id: "vitae-promo", timing: { scenes: [] } }}
       calculateMetadata={({ props }) => ({ durationInFrames: Math.round((props.timing.scenes.length ? PRODUCTS[props.id].build(props.timing).hero.T : 8) * brand.fps) })} />
