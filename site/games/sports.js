@@ -26,7 +26,6 @@
       p.span = span(d, p.first, p.last);
       d.players.push(p); d.byName[p.n] = p;
     });
-    d.adj = null;
     return d;
   }
   function unique(a) { var o = [], seen = {}; a.forEach(function (x) { if (!seen[x]) { seen[x] = 1; o.push(x); } }); return o; }
@@ -66,43 +65,73 @@
     });
     return best;
   }
-  function adjacency(d) {
-    if (d.adj) return d.adj;
-    var P = d.players, adj = P.map(function () { return []; });
-    var byFr = {};
-    P.forEach(function (p) { p.teams.forEach(function (f) { (byFr[f] = byFr[f] || []).push(p); }); });
-    Object.keys(byFr).forEach(function (f) {
-      var L = byFr[f];
-      for (var i = 0; i < L.length; i++) for (var j = i + 1; j < L.length; j++) {
-        if (adj[L[i].i].indexOf(L[j].i) >= 0) continue;
-        var s = shared(L[i], L[j]);
-        if (s) { adj[L[i].i].push(L[j].i); adj[L[j].i].push(L[i].i); }
-      }
-    });
-    d.adj = adj;
-    return adj;
+  // Players are grouped by franchise and season; anyone in the same group is a teammate. This keeps the search fast even
+  // with tens of thousands of players, because a player only looks at the groups he belonged to.
+  function buckets(d) {
+    if (d.bk) return d.bk;
+    var bk = {};
+    d.players.forEach(function (p) { addToBuckets(bk, p); });
+    d.bk = bk;
+    return bk;
   }
-  function areTeammates(d, a, b) { return a !== b && adjacency(d)[a.i].indexOf(b.i) >= 0; }
+  function addToBuckets(bk, p) {
+    p.st.forEach(function (x) { for (var y = x[1]; y < x[2]; y++) { var k = x[0] + "|" + y; (bk[k] = bk[k] || []).push(p); } });
+  }
+  function neighbors(d, p) {
+    var bk = buckets(d), seen = {}, out = [];
+    p.st.forEach(function (x) {
+      for (var y = x[1]; y < x[2]; y++) (bk[x[0] + "|" + y] || []).forEach(function (q) { if (q !== p && !seen[q.i]) { seen[q.i] = 1; out.push(q); } });
+    });
+    return out;
+  }
+  function areTeammates(d, a, b) { return a !== b && shared(a, b) !== null; }
 
-  // Shortest chain of player indexes from a to b (inclusive), or null.
+  // Shortest chain from a to b (inclusive), or null.
   function path(d, a, b) {
-    var adj = adjacency(d), prev = {}, q = [a.i], k = 0;
-    prev[a.i] = -1;
+    var prev = {}, q = [a], k = 0;
+    prev[a.i] = null;
     while (k < q.length) {
       var u = q[k++];
-      if (u === b.i) break;
-      adj[u].forEach(function (v) { if (!(v in prev)) { prev[v] = u; q.push(v); } });
+      if (u === b) break;
+      neighbors(d, u).forEach(function (v) { if (!(v.i in prev)) { prev[v.i] = u; q.push(v); } });
     }
     if (!(b.i in prev)) return null;
-    var out = [], u2 = b.i;
-    while (u2 !== -1) { out.push(u2); u2 = prev[u2]; }
-    return out.reverse().map(function (i) { return d.players[i]; });
+    var out = [], u2 = b;
+    while (u2) { out.push(u2); u2 = prev[u2.i]; }
+    return out.reverse();
   }
   function distances(d, a) {
-    var adj = adjacency(d), dist = {}, q = [a.i], k = 0;
+    var dist = {}, q = [a], k = 0;
     dist[a.i] = 0;
-    while (k < q.length) { var u = q[k++]; adj[u].forEach(function (v) { if (!(v in dist)) { dist[v] = dist[u] + 1; q.push(v); } }); }
+    while (k < q.length) { var u = q[k++]; neighbors(d, u).forEach(function (v) { if (!(v.i in dist)) { dist[v.i] = dist[u.i] + 1; q.push(v); } }); }
     return dist;
+  }
+
+  // Add the wider database (everyone who ever played, not just the famous pool). Rows: [name, position, born, stints].
+  function extend(d, rows) {
+    if (d.extended) return d;
+    var bk = d.bk;
+    rows.forEach(function (r) {
+      var p = { i: d.players.length, n: r[0], pos: r[1] || "", tier: 0, ovr: 0, st: r[3], born: r[2] || 0, extra: true, key: fold(r[0]) };
+      p.g = (d.cfg.groupOf || {})[p.pos] || p.pos;
+      p.first = Math.min.apply(null, p.st.map(function (s) { return s[1]; }));
+      p.last = Math.max.apply(null, p.st.map(function (s) { return s[2]; })) - 1;
+      p.teams = unique(p.st.map(function (s) { return s[0]; }));
+      p.seasons = p.st.reduce(function (a, s) { return a + (s[2] - s[1]); }, 0);
+      p.span = span(d, p.first, p.last);
+      d.players.push(p); d.byName[p.n] = p;
+      if (bk) addToBuckets(bk, p);
+    });
+    d.extended = true;
+    return d;
+  }
+  function loadAll(sport) {
+    var key = sport + ":all";
+    if (cache[key]) return cache[key];
+    cache[key] = load(sport).then(function (d) {
+      return fetch("/games/data/sports-" + sport + "-all.json").then(function (r) { if (!r.ok) throw new Error("none"); return r.json(); }).then(function (raw) { return extend(d, raw.p); }, function () { return d; });
+    });
+    return cache[key];
   }
 
   // ---------- grid criteria ----------
@@ -182,7 +211,7 @@
         var li = document.createElement("li");
         li.setAttribute("role", "option"); li.id = list.id + "-" + i; li.setAttribute("aria-selected", i === active ? "true" : "false");
         var name = document.createElement("span"); name.className = "sp-opt-name"; name.textContent = p.n;
-        var meta = document.createElement("span"); meta.className = "sp-opt-meta"; meta.textContent = p.pos + ", " + career(p);
+        var meta = document.createElement("span"); meta.className = "sp-opt-meta"; meta.textContent = (p.pos ? p.pos + ", " : "") + career(p) + (p.born ? ", b. " + p.born : "");
         li.appendChild(name); li.appendChild(meta);
         li.addEventListener("mousedown", function (e) { e.preventDefault(); choose(p); });
         list.appendChild(li);
@@ -207,7 +236,7 @@
 
   return {
     EPOCH: EPOCH, fold: fold, prepare: prepare, load: load, index: index, GROUPS: GROUPS,
-    shared: shared, adjacency: adjacency, areTeammates: areTeammates, path: path, distances: distances,
+    shared: shared, neighbors: neighbors, extend: extend, loadAll: loadAll, areTeammates: areTeammates, path: path, distances: distances,
     crit: crit, cellAnswers: cellAnswers, shortName: shortName, fname: fname, hash: hash, rng: rng,
     dayIdx: dayIdx, dailySport: dailySport, dailySlot: dailySlot,
     span: span, stintText: stintText, teamsLine: teamsLine, career: career,

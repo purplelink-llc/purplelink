@@ -13,6 +13,7 @@ DATA = ROOT / "site" / "games" / "data"
 EPOCH_DOW = 0                       # the games epoch (2026-10-04) is a Sunday; JS getDay() = 0
 DAYS = 420                          # daily puzzles per sport kept ahead of today
 ORDER = ["nba", "nfl", "mlb", "nhl"]
+WANT = {s: {1: 2, 2: 3, 3: 3, 4: 4, 5: 4, 6: 5, 0: 6} for s in ORDER}     # target chain length (par) by weekday, JS getDay()
 SHORT = {"nhl": {"UTA": "Coyotes", "CLB": "Seals/Barons"}}
 FULL = {"nhl": {"UTA": "Winnipeg Jets / Arizona Coyotes / Utah Mammoth"}}
 
@@ -42,6 +43,56 @@ def load(sport):
         if not p["st"]: continue
         P.append({"n": p["name"], "p": p["pos"], "g": cfg["groups"].get(p["pos"], p["pos"]), "t": p["tier"], "o": ovr(p["name"], p["tier"]), "s": p["st"]})
     return d["franchises"], P
+
+
+ALL = ROOT / "scripts" / "sports" / "all"
+
+
+def load_extra(sport, P):
+    """Players outside the famous pool, from scripts/sports/all/<sport>.json. Returns rows [name, pos, born, stints]
+    with names made unique, plus the credit text."""
+    f = ALL / f"{sport}.json"
+    if not f.exists(): return [], ""
+    d = json.loads(f.read_text())
+    taken = {p["n"] for p in P}
+    famous = {p["famous"] for p in d["players"] if p.get("famous")}
+    rows = []
+    for p in sorted(d["players"], key=lambda x: (x["name"], x.get("born") or 0, x["id"])):
+        if p.get("famous") in taken or not p["st"]: continue
+        name = p["name"]
+        if name in taken:
+            tag = p.get("born") or p["st"][0][1]
+            name = f"{name} ({tag})"
+            n = 2
+            while name in taken: name = f"{p['name']} ({tag}-{n})"; n += 1
+        taken.add(name)
+        st = sorted([[a, b, c] for a, b, c in p["st"] if c > b])
+        rows.append([name, p.get("pos") or "", p.get("born") or 0, st])
+    return rows, d.get("source", "")
+
+
+def combined(P, extra):
+    """Everyone as stint lists, for distances over the whole database."""
+    return [p["s"] for p in P] + [r[3] for r in extra]
+
+
+def full_bfs(stints, buckets, src):
+    dist = {src: 0}; q = collections.deque([src])
+    while q:
+        u = q.popleft()
+        for f, s, e in stints[u]:
+            for y in range(s, e):
+                for v in buckets.get((f, y), ()):
+                    if v not in dist: dist[v] = dist[u] + 1; q.append(v)
+    return dist
+
+
+def make_buckets(stints):
+    bk = collections.defaultdict(list)
+    for i, st in enumerate(stints):
+        for f, s, e in st:
+            for y in range(s, e): bk[(f, y)].append(i)
+    return bk
 
 
 def adjacency(P):
@@ -76,14 +127,15 @@ def crit_ok(c, p):
     return False
 
 
-def pick_pairs(P, adj, sport, existing):
+def pick_pairs(P, extra, sport, existing):
     famous = [i for i, p in enumerate(P) if p["t"] >= 3]
-    dist = {i: bfs(adj, i) for i in famous}
+    stints = combined(P, extra); bk = make_buckets(stints)
+    dist = {i: full_bfs(stints, bk, i) for i in famous}
     pairs_by = collections.defaultdict(list)
     for a in famous:
         for b in famous:
             if a < b and b in dist[a]: pairs_by[dist[a][b]].append((a, b))
-    want = {1: 2, 2: 3, 3: 3, 4: 4, 5: 4, 6: 5, 0: 6}        # JS getDay(): Mon..Sun
+    want = WANT[sport]            # JS getDay(): Mon..Sun
     out = list(existing)
     rng = random.Random(f"tl-{sport}")
     for _ in range(len(existing)): rng.random()
@@ -141,13 +193,13 @@ def main():
     present = [s for s in ORDER if (OUT / f"{s}.json").exists()]
     for sport in present:
         F, P = load(sport)
-        adj = adjacency(P)
+        extra, credit = load_extra(sport, P)
         pin_f = PIN / f"{sport}.json"
         pin = json.loads(pin_f.read_text()) if pin_f.exists() else {"tl": [], "gr": []}
         names = {p["n"] for p in P}
         lost = [n for pr in pin["tl"] for n in pr if n not in names]
         if lost: print(sport, "WARNING pinned players missing from pool:", sorted(set(lost)))
-        pin["tl"] = pick_pairs(P, adj, sport, pin["tl"])
+        pin["tl"] = pick_pairs(P, extra, sport, pin["tl"])
         pin["gr"] = pick_grids(P, F, sport, pin["gr"])
         pin_f.write_text(json.dumps(pin, separators=(",", ":")))
         cfg = CFG[sport]
@@ -155,7 +207,9 @@ def main():
         data = {"sport": sport, "name": cfg["name"], "fr": F, "fs": SHORT.get(sport, {}), "cfg": {k: cfg[k] for k in ("slots", "bench", "cap", "games", "scale", "base", "gname", "plural", "teams", "rounds", "era") if k in cfg} | {"split": bool(cfg.get("split"))},
                 "p": [[p["n"], p["p"], p["t"], p["o"], p["s"]] for p in P], "tl": pin["tl"], "gr": pin["gr"]}
         (DATA / f"sports-{sport}.json").write_text(json.dumps(data, separators=(",", ":"), ensure_ascii=False))
-        print(sport, len(P), "players", len(pin["tl"]), "link days", len(pin["gr"]), "grids", (DATA / f"sports-{sport}.json").stat().st_size // 1024, "KB")
+        if extra:
+            (DATA / f"sports-{sport}-all.json").write_text(json.dumps({"credit": credit, "p": extra}, separators=(",", ":"), ensure_ascii=False))
+        print(sport, len(P), "famous +", len(extra), "others,", len(pin["tl"]), "link days", len(pin["gr"]), "grids", (DATA / f"sports-{sport}.json").stat().st_size // 1024, "KB")
     (DATA / "sports-index.json").write_text(json.dumps({"rotation": present}, separators=(",", ":")))
 
 

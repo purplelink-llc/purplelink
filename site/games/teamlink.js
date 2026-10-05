@@ -5,7 +5,7 @@
   var G = window.PLGames, S = window.PLSports, NAME = "teamlink";
   var $ = function (id) { return document.getElementById(id); };
   var root = $("sp-root"), FX = window.PLFX;
-  var DIFF = { easy: [2, 3], medium: [4], hard: [5, 6] };
+  var DIFF = { easy: [2], medium: [3], hard: [4, 5, 6] };
   var W = ["Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard"];
   var st = null, data = null, daily = null, mode = "daily", cmb = null, rotation = ["nba"];
 
@@ -35,7 +35,7 @@
     var li = document.createElement("li");
     li.className = "tl-node" + (role ? " tl-" + role : "");
     var n = document.createElement("span"); n.className = "tl-name"; n.textContent = p.n;
-    var m = document.createElement("span"); m.className = "tl-meta"; m.textContent = p.pos + ", " + S.career(p) + ". " + S.teamsLine(data, p);
+    var m = document.createElement("span"); m.className = "tl-meta"; m.textContent = (p.pos ? p.pos + ", " : "") + S.career(p) + (p.born ? ", b. " + p.born : "") + ". " + S.teamsLine(data, p);
     li.appendChild(n); li.appendChild(m);
     return li;
   }
@@ -196,7 +196,7 @@
     mode = "daily";
     var idx = S.dayIdx(), sport = S.dailySport(rotation, idx);
     document.body.setAttribute("data-mode", "daily");
-    return S.load(sport).then(function (d) {
+    return S.loadAll(sport).then(function (d) {
       var pair = d.tl[S.dailySlot(rotation, idx) % d.tl.length];
       daily = { idx: idx, sport: sport };
       $("sp-number").textContent = "Puzzle " + (idx + 1) + ", " + d.name;
@@ -212,13 +212,16 @@
     mode = "practice";
     document.body.setAttribute("data-mode", "practice");
     var sport = $("sp-sport").value, diff = DIFF[$("sp-diff").value];
-    return S.load(sport).then(function (d) {
+    return S.loadAll(sport).then(function (d) {
       var famous = d.players.filter(function (p) { return p.tier >= 3; });
-      var r = S.rng(Date.now()), tries = 0, a, b, dist;
-      do {
-        a = famous[Math.floor(r() * famous.length)]; b = famous[Math.floor(r() * famous.length)];
-        dist = a === b ? -1 : (S.path(d, a, b) || []).length - 1; tries++;
-      } while ((diff.indexOf(dist) < 0) && tries < 300);
+      var r = S.rng(Date.now()), a, b, tries = 0, pool = [];
+      while (!pool.length && tries++ < 12) {
+        a = famous[Math.floor(r() * famous.length)];
+        var dist = S.distances(d, a);
+        pool = famous.filter(function (p) { return diff.indexOf(dist[p.i]) >= 0; });
+        if (pool.length) b = pool[Math.floor(r() * pool.length)];
+      }
+      if (!b) { b = famous[Math.floor(r() * famous.length)]; }
       $("sp-number").textContent = "Practice, " + d.name;
       begin(d, a.n, b.n, null);
     });
@@ -255,7 +258,7 @@
   S.index().then(function (ix) {
     rotation = ix.rotation || ["nba"];
     var sel = $("sp-sport");
-    S.load(rotation[0]).then(function () {
+    S.loadAll(rotation[0]).then(function () {
       rotation.forEach(function (s) { var o = document.createElement("option"); o.value = s; o.textContent = s.toUpperCase(); sel.appendChild(o); });
       return G.ready;
     }).then(function () {
