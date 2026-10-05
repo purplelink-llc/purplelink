@@ -5,6 +5,7 @@ import * as sub from "./sub.js";
 import * as paperreview from "./paperreview.js";
 import * as sizzle from "./sizzle.js";
 import * as outboundveil from "./outboundveil.js";
+import * as legroom from "./legroom.js";
 
 export const PRODUCTS = {
   "vitae-promo": vitae,
@@ -14,4 +15,5 @@ export const PRODUCTS = {
   "paper-review-promo": paperreview,
   "purplelink-sizzle": sizzle,
   "outbound-veil-promo": outboundveil,
+  "legroom-promo": legroom,
 };

@@ -1,0 +1,37 @@
+{
+  "id": "legroom-promo",
+  "title": "Legroom promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-2%",
+  "scenes": [
+    {
+      "narration": "Legroom shows the free space on your Mac, right in the menu bar."
+    },
+    {
+      "narration": "Set a line, and it warns you before the disk fills."
+    },
+    {
+      "narration": "Each rule previews what it would remove. You approve it, and items can go to the Trash."
+    },
+    {
+      "narration": "Recommended lists caches Legroom knows, like npm and Playwright."
+    },
+    {
+      "narration": "What Grew shows which folders grew since last time."
+    },
+    {
+      "narration": "Space Map shows where the space went. Find Files lists large, old and duplicate files."
+    },
+    {
+      "narration": "Nine dollars, once, with a seven day free trial."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
