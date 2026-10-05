@@ -100,17 +100,17 @@ def pitch_body(t, names):
     files = [f.strip() for f in t["filenames"].split(";") if f.strip()]
     n = len(files)
     short = t["target"].split("(")[0].strip()
-    descr = [names.get(f, f[:-5]) for f in files][:6]
+    descr = [names.get(f, f[:-5]) for f in files][:4]
     lines = ["Hello,", "",
-             f"I'm a photographer based in Atlanta. I photographed {short} on a visit and would like to offer the images to your marketing team.",
+             f"I'm a photographer based in Atlanta. I photographed {short} and would like to offer the images to your marketing team.",
              "", f"There are {n} images (previews attached):"]
     lines += [f"- {d}" for d in descr]
     if n > len(descr):
         lines.append(f"- and {n - len(descr)} more")
     lines += ["",
-              f"A commercial license (your websites, social accounts, newsletters and printed marketing) is ${PRICE_ONE} per image, or ${bundle_price(n)} for all {n}. "
-              f"It never expires. You can license any single image by card at {LICENSE_URL} and get the clean file in a minute; for the set, reply and I will send a payment link.",
-              "", "If someone else handles imagery, I'd be grateful if you could forward this.", "", SIGN]
+              f"A commercial license (web, social, newsletters, print marketing) is ${PRICE_ONE} per image, or ${bundle_price(n)} for all {n}, with no expiry. "
+              f"Single images can be licensed by card at {LICENSE_URL}; for the set, reply and I will send a payment link.",
+              "", "Please forward this if someone else handles imagery.", "", SIGN]
     return "\n".join(lines)
 
 
