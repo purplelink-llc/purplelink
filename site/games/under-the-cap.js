@@ -173,7 +173,7 @@
     $("sp-statline").hidden = !d_;
     $("sp-played").textContent = s.played; $("sp-winpct").textContent = s.played ? Math.round(100 * s.won / s.played) + "%" : "0%";
     $("sp-streak").textContent = s.streak; $("sp-max").textContent = s.max;
-    var sv = $("sp-saver"); if (sv) sv.textContent = d_ ? G.saverNote(s, daily.idx) : "";
+    G.paintNote($("sp-saver"), s, daily.idx, !!d_, NAME);
     $("sp-next-line").hidden = !d_;
     $("sp-practice-again").hidden = false;
     $("sp-practice-again").textContent = d_ ? "Try a practice roster" : "Build another roster";

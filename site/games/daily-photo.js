@@ -117,7 +117,7 @@
       });
     }
     var s = saved.stats || G.emptyStats();
-    var sv = $("ph-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
+    G.paintNote($("ph-saver"), s, st.idx, true, NAME);
     $("ph-quiz").hidden = true;
     $("ph-result").hidden = false;
     $("ph-result-head").textContent = "You placed " + sc + " of " + st.rounds.length;

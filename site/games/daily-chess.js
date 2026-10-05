@@ -199,7 +199,7 @@
       });
     }
     var s = saved.stats || G.emptyStats();
-    var sv = $("ch-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
+    G.paintNote($("ch-saver"), s, st.idx, true, NAME);
     $("ch-controls").hidden = true;
     var box = $("ch-result"); box.hidden = false;
     if (window.PLPartners) window.PLPartners.show();

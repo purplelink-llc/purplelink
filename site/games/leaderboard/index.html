@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <title>Puzzle leaderboards: top Chess Puzzles and Sudoku ratings</title>
-    <meta name="description" content="The top players in Chess Puzzles and Sudoku Unlimited, by rating and by rating gained this week. Players join by choice, with a display name.">
+    <title>Game leaderboards: all-time wins, streaks and puzzle ratings</title>
+    <meta name="description" content="All-time boards for every daily game by wins, best streak and average percentile, plus rating boards for Chess Puzzles, Sudoku Unlimited and the daily sports games. Players join by choice.">
     <link rel="canonical" href="https://purplelink.llc/games/leaderboard/">
-    <meta property="og:title" content="Puzzle leaderboards: top Chess Puzzles and Sudoku ratings">
-    <meta property="og:description" content="The top players in Chess Puzzles and Sudoku Unlimited, by rating and by rating gained this week. Players join by choice, with a display name.">
+    <meta property="og:title" content="Game leaderboards: all-time wins, streaks and puzzle ratings">
+    <meta property="og:description" content="All-time boards for every daily game by wins, best streak and average percentile, plus rating boards for Chess Puzzles, Sudoku Unlimited and the daily sports games. Players join by choice.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/games/leaderboard/">
     <meta property="og:site_name" content="Purplelink">
@@ -18,8 +18,8 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Leaderboards, a free daily puzzle from Purplelink">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Puzzle leaderboards: top Chess Puzzles and Sudoku ratings">
-    <meta name="twitter:description" content="The top players in Chess Puzzles and Sudoku Unlimited, by rating and by rating gained this week. Players join by choice, with a display name.">
+    <meta name="twitter:title" content="Game leaderboards: all-time wins, streaks and puzzle ratings">
+    <meta name="twitter:description" content="All-time boards for every daily game by wins, best streak and average percentile, plus rating boards for Chess Puzzles, Sudoku Unlimited and the daily sports games. Players join by choice.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/games-leaderboard.png">
     <meta name="twitter:image:alt" content="Leaderboards, a free daily puzzle from Purplelink">
     <script type="application/ld+json">
@@ -40,8 +40,8 @@
           "@type": "WebPage",
           "@id": "https://purplelink.llc/games/leaderboard/#webpage",
           "url": "https://purplelink.llc/games/leaderboard/",
-          "name": "Puzzle leaderboards: top Chess Puzzles and Sudoku ratings",
-          "description": "The top players in Chess Puzzles and Sudoku Unlimited, by rating and by rating gained this week. Players join by choice, with a display name.",
+          "name": "Game leaderboards: all-time wins, streaks and puzzle ratings",
+          "description": "All-time boards for every daily game by wins, best streak and average percentile, plus rating boards for Chess Puzzles, Sudoku Unlimited and the daily sports games. Players join by choice.",
           "inLanguage": "en",
           "isPartOf": {
             "@type": "WebSite",
@@ -65,7 +65,7 @@
             "height": 630
           },
           "datePublished": "2026-10-04",
-          "dateModified": "2026-10-04",
+          "dateModified": "2026-10-05",
           "speakable": {
             "@type": "SpeakableSpecification",
             "cssSelector": [
@@ -79,7 +79,7 @@
           "@id": "https://purplelink.llc/games/leaderboard/#app",
           "name": "Leaderboards",
           "url": "https://purplelink.llc/games/leaderboard/",
-          "description": "The Purplelink puzzle leaderboards list the highest ratings in Chess Puzzles and Sudoku Unlimited, plus the biggest rating gains this week. Only signed-in players who choose to appear are listed, under their display name.",
+          "description": "The Purplelink leaderboards rank every daily game by wins, best streak and average percentile, and list the highest ratings in Chess Puzzles, Sudoku Unlimited and the daily sports games. Only signed-in players who choose to appear are listed, under their display name.",
           "applicationCategory": "GameApplication",
           "applicationSubCategory": "Ratings",
           "genre": "Ratings",
@@ -93,13 +93,14 @@
             "priceCurrency": "USD"
           },
           "featureList": [
-            "Top 100 by rating for chess and Sudoku",
-            "Weekly board for rating gained since Monday",
+            "All-time wins, best streak and average percentile for every daily game",
+            "Top 100 by rating for chess, Sudoku and the sports games",
+            "Your rank even when you are outside the top 100",
             "Opt-in, with a display name only"
           ],
           "image": "https://purplelink.llc/assets/og/games-leaderboard.png",
           "datePublished": "2026-10-04",
-          "dateModified": "2026-10-04",
+          "dateModified": "2026-10-05",
           "publisher": {
             "@id": "https://purplelink.llc/#organization"
           },
@@ -116,14 +117,14 @@
             {
               "@type": "HowToStep",
               "position": 1,
-              "name": "Play rated puzzles",
-              "text": "Solve puzzles in Chess Puzzles or Sudoku Unlimited."
+              "name": "Play",
+              "text": "Finish daily puzzles, or rated puzzles in Chess Puzzles or Sudoku Unlimited."
             },
             {
               "@type": "HowToStep",
               "position": 2,
               "name": "Sign in",
-              "text": "Use the email link on your account page so your rating is kept on the server."
+              "text": "Use the email link on your account page so your results are kept on the server."
             },
             {
               "@type": "HowToStep",
@@ -147,7 +148,7 @@
               "name": "Who appears on the leaderboards?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed."
+                "text": "Only signed-in players who turn the leaderboard on, under the display name they chose, on every board. Nothing else about them is shown. You can leave at any time and your row is removed."
               }
             },
             {
@@ -156,6 +157,14 @@
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can the daily boards be faked?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The daily boards use the results your browser saves and reports, and the service only checks that they are possible: nobody can have more wins or a longer streak than the number of days a game has existed. That is weaker than the rating boards, so treat them as friendly competition. Percentiles are counted once per person per puzzle."
               }
             },
             {
@@ -171,7 +180,7 @@
               "name": "How do I join?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."
+                "text": "Play any daily game or a few rated puzzles, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or on this page."
               }
             }
           ]
@@ -211,8 +220,8 @@
 
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=fb4f3df1c4">
+    <link rel="stylesheet" href="/games/games.css?v=573bab3dd8">
+    <link rel="stylesheet" href="/games/games-ui.css?v=3b468f8ba4">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -272,37 +281,36 @@
           <h1>Leaderboards</h1>
           <span class="game-num" id="lb-week"></span>
         </div>
-        <p class="game-lede">The Purplelink puzzle leaderboards list the highest ratings in Chess Puzzles and Sudoku Unlimited, plus the biggest rating gains this week. Only signed-in players who choose to appear are listed, under their display name.</p>
-        <div class="lb-tabs" role="group" aria-label="Choose a board">
-          <button type="button" class="lb-tab" data-game="chess" aria-pressed="true">Chess Puzzles</button>
-          <button type="button" class="lb-tab" data-game="sudoku" aria-pressed="false">Sudoku Unlimited</button>
-          <button type="button" class="lb-tab" data-game="lockerlink" aria-pressed="false">Lockerlink</button>
-          <button type="button" class="lb-tab" data-game="gridlink" aria-pressed="false">Gridlink</button>
-          <button type="button" class="lb-tab" data-game="under-the-cap" aria-pressed="false">Under the Cap</button>
-          <span class="lb-gap"></span>
-          <button type="button" class="lb-tab" data-board="all" aria-pressed="true">Rating</button>
-          <button type="button" class="lb-tab" data-board="week" aria-pressed="false">This week</button>
+        <p class="game-lede">The Purplelink leaderboards rank every daily game by wins, best streak and average percentile, and list the highest ratings in Chess Puzzles, Sudoku Unlimited and the daily sports games. Only signed-in players who choose to appear are listed, under their display name.</p>
+        <div class="lb-controls">
+          <label class="lb-label" for="lb-game">Game</label>
+          <select id="lb-game" class="lb-select"><optgroup label="Daily games, all time"><option value="daily:linkle">Linkle</option><option value="daily:quadlink">Quadlink</option><option value="daily:daily-five">Daily Five</option><option value="daily:daily-photo">Daily Photo</option><option value="daily:daily-chess">Daily Chess</option><option value="daily:sudoku">Daily Sudoku</option><option value="daily:crossword">Crossword</option><option value="daily:landlink">Landlink</option><option value="daily:atomlink">Atomlink</option><option value="daily:prizelink">Prizelink</option><option value="daily:citylink">Citylink</option><option value="daily:peaklink">Peaklink</option><option value="daily:codelink">Codelink</option><option value="daily:thinkerlink">Thinkerlink</option><option value="daily:riverlink">Riverlink</option><option value="daily:wildlink">Wildlink</option><option value="daily:lockerlink">Lockerlink</option><option value="daily:gridlink">Gridlink</option><option value="daily:under-the-cap">Under the Cap</option></optgroup><optgroup label="Rated puzzles"><option value="rated:chess">Chess Puzzles</option><option value="rated:sudoku">Sudoku Unlimited</option><option value="rated:lockerlink">Lockerlink</option><option value="rated:gridlink">Gridlink</option><option value="rated:under-the-cap">Under the Cap</option></optgroup></select>
+          <div class="lb-tabs" id="lb-boards" role="group" aria-label="Choose a board"></div>
         </div>
         <p class="games-note" id="lb-status" role="status" aria-live="polite">Loading the board.</p>
         <div class="lb-you" id="lb-you" hidden></div>
         <ol class="lb-list" id="lb-list" aria-label="Leaderboard"></ol>
+        <p class="games-note" id="lb-note" hidden></p>
         <div class="rate-join" id="lb-join"></div>
         <div class="game-actions">
-          <a class="gbtn" id="lb-play" href="/games/chess-puzzles/" data-g="chess-puzzles">Play rated puzzles</a>
+          <a class="gbtn" id="lb-play" href="/games/linkle/" data-g="linkle">Play today's puzzle</a>
           <a class="gbtn gbtn--ghost" href="/games/account/">Your account</a>
         </div>
         <div class="games-prose">
           <h2>How the boards work</h2>
-          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Under the Cap update once a day, from your first result on that day's puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Under the Cap counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
+          <p>Every daily game has three all-time boards. Wins counts the days you solved the puzzle. Best streak is your longest run of days in a row. Average percentile is how you ranked against everyone who played each day, and it counts after 20 days with a real crowd. Rank is worked out against every signed-in player, so you can see where you stand even when you are outside the top 100. Only players who opt in, under a display name, are listed.</p>
+          <p>The rating boards are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Under the Cap update once a day, from your first result on that day's puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Under the Cap counts your win share and title. Everyone starts at 1000.</p>
           <h2>Questions</h2>
         <h3>Who appears on the leaderboards?</h3>
-        <p>Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed.</p>
+        <p>Only signed-in players who turn the leaderboard on, under the display name they chose, on every board. Nothing else about them is shown. You can leave at any time and your row is removed.</p>
         <h3>What is the weekly board?</h3>
         <p>It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday.</p>
+        <h3>Can the daily boards be faked?</h3>
+        <p>The daily boards use the results your browser saves and reports, and the service only checks that they are possible: nobody can have more wins or a longer streak than the number of days a game has existed. That is weaker than the rating boards, so treat them as friendly competition. Percentiles are counted once per person per puzzle.</p>
         <h3>Can the ratings be faked?</h3>
         <p>The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Lockerlink and Gridlink results are checked for plausibility rather than replayed (Under the Cap seasons are replayed on the server from your roster), so treat the boards as friendly competition.</p>
         <h3>How do I join?</h3>
-        <p>Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle.</p>
+        <p>Play any daily game or a few rated puzzles, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or on this page.</p>
         </div>
         <div class="games-prose">
           <h2>Tips for Leaderboards</h2>
@@ -322,16 +330,16 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=dc815518df" defer></script>
+    <script src="/games/core.js?v=c2399f4f42" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
-    <script src="/games/sync.js?v=0269d4661c" defer></script>
+    <script src="/games/sync.js?v=fae3f8b64b" defer></script>
     <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
     <script src="/games/goals.js?v=ad780e951f" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=99d59c8de5" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/ratings.js?v=41c8088082" defer></script>
-    <script src="/games/leaderboard.js?v=ba27a2eeeb" defer></script>
+    <script src="/games/leaderboard.js?v=889ed8943d" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

@@ -14,7 +14,9 @@
     box.textContent = "";
     var head = document.createElement("div");
     head.className = "ac-row ac-head";
-    ["Game", "Finished", "Streak", "Best streak", "Avg. percentile"].forEach(function (h) { var c = document.createElement("span"); c.textContent = h; head.appendChild(c); });
+    var signed = !!G.session.get();
+    if (signed) box.setAttribute("data-ranked", ""); else box.removeAttribute("data-ranked");
+    ["Game", "Finished", "Streak", "Best streak", "Avg. percentile"].concat(signed ? ["All-time rank"] : []).forEach(function (h) { var c = document.createElement("span"); c.textContent = h; head.appendChild(c); });
     box.appendChild(head);
     GAMES.forEach(function (g) {
       var rec = all[g[0]] || {}, s = rec.stats || {}, p = rec.pct;
@@ -22,8 +24,23 @@
       row.className = "ac-row";
       var cells = [g[1], String(s.played || 0), String(s.streak || 0), String(s.max || 0), p && p.count ? Math.round(p.sum / p.count) + "%" : "none yet"];
       cells.forEach(function (t, i) { var c = document.createElement("span"); c.textContent = t; if (i === 0) c.className = "ac-name"; row.appendChild(c); });
+      if (signed) { var rc = document.createElement("span"); rc.setAttribute("data-rank", g[0]); rc.textContent = s.played ? "..." : "none yet"; row.appendChild(rc); }
       box.appendChild(row);
     });
+    if (signed) fillRanks();
+  }
+
+  // The server's all-time rank by wins for each game played, e.g. "#4 of 52". Other measures are on the leaderboards page.
+  function fillRanks() {
+    var s = G.session.get();
+    G.sync().then(function () { return G.api({ action: "rank" }, s.session); }).then(function (res) {
+      var games = res.status === 200 && res.body && res.body.games ? res.body.games : {};
+      Array.prototype.forEach.call(document.querySelectorAll("[data-rank]"), function (c) {
+        var r = games[c.getAttribute("data-rank")], w = r && r.w;
+        if (w) { c.textContent = "#" + w.rank + " of " + w.total; c.setAttribute("title", "By wins. Ahead of " + w.pct + "% of players."); }
+        else if (c.textContent === "...") c.textContent = "not counted yet";
+      });
+    }, function () { Array.prototype.forEach.call(document.querySelectorAll("[data-rank]"), function (c) { if (c.textContent === "...") c.textContent = ""; }); });
   }
 
   function renderAch() {

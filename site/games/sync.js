@@ -22,7 +22,15 @@
 
   // Send what this device has, adopt the merged result. If the player moved on while the request was in
   // flight, keep their newer local copy and let the next push carry it.
+  // One sync at a time in this tab. Two overlapping requests for the same account could each read the old copy and
+  // both count a result in the all-time ranks.
+  var chain = Promise.resolve();
   function sync() {
+    var run = function () { return syncNow(); };
+    chain = chain.then(run, run);
+    return chain;
+  }
+  function syncNow() {
     var s = getSession();
     if (!s) return Promise.resolve(null);
     var snapshot = JSON.stringify(G.all());
@@ -36,6 +44,15 @@
     }).catch(function () { return null; });
   }
   G.sync = sync;
+
+  // The signed-in player's all-time rank in one game: { w, s, p } each { v, rank, total, pct }, or null.
+  G.rankFor = function (game) {
+    var s = getSession();
+    if (!s) return Promise.resolve(null);
+    return api({ action: "rank", game: game }, s.session).then(function (res) {
+      return res.status === 200 && res.body && res.body.games ? res.body.games[game] || null : null;
+    }, function () { return null; });
+  };
 
   // Pages wait (briefly) for the first sync so they start from the merged copy.
   G.ready = getSession()

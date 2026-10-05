@@ -165,7 +165,7 @@
       });
     }
     if (fresh && sc === st.qs.length && window.PLConfetti) window.PLConfetti.big();
-    var sv = $("qz-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
+    G.paintNote($("qz-saver"), s, st.idx, true, NAME);
     $("qz-quiz").hidden = true;
     var box = $("qz-result");
     box.hidden = false;

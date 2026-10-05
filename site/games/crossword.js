@@ -148,6 +148,7 @@
     st.r = target[0]; st.c = target[1];
     paint(); focusCell();
   }
+  function focusGrid() { var el = cellEl(st.r, st.c); if (el) el.focus({ preventScroll: true }); }
   function focusCell() { var el = cellEl(st.r, st.c); if (el && document.activeElement && document.activeElement.closest && !document.activeElement.closest("#cw-keys")) el.focus({ preventScroll: true }); }
 
   function setCell(r, c) {
@@ -167,10 +168,17 @@
     var i = e.cells.findIndex(function (x) { return x[0] === st.r && x[1] === st.c; }) + delta;
     if (i >= 0 && i < e.cells.length) { st.r = e.cells[i][0]; st.c = e.cells[i][1]; }
   }
-  function cycleEntry(delta) {
-    var cur = currentEntry(), list = st.entries, i = list.indexOf(cur);
-    var nxt = list[(i + delta + list.length) % list.length];
-    goto(nxt);
+  function hasEmpty(e) { return e.cells.some(function (x) { return !st.cells[x[0]][x[1]]; }); }
+  // Next or previous clue (Tab, Shift+Tab and the arrow buttons). Clues that are completely filled are skipped
+  // while any clue still has an empty square, so the cursor always lands somewhere useful. `all` visits every clue.
+  function cycleEntry(delta, all) {
+    var cur = currentEntry(), list = st.entries, n = list.length, i = list.indexOf(cur);
+    if (i < 0) i = delta > 0 ? -1 : 0;
+    var open = !all && list.some(hasEmpty);
+    for (var k = 1; k <= n; k++) {
+      var cand = list[(i + delta * k + n * k) % n];
+      if (!open || hasEmpty(cand)) { goto(cand); return; }
+    }
   }
 
   // ---- input ----
@@ -185,13 +193,32 @@
       if (st.wrong[st.r + "," + st.c]) { FX.play("bad"); FX.vibrate(20); FX.kick(cellEl(st.r, st.c), "fx-shake", 400); }
       else { FX.play("key"); FX.kick(cellEl(st.r, st.c), "fx-pop", 180); }
     }
-    nextInEntry(1);
+    advance();
     afterEdit();
+  }
+  // After a letter: the next square in the clue; at the last square, the first empty square in this clue, or, when the
+  // clue is full, the next clue that still has an empty square. The puzzle being full leaves the cursor where it is.
+  function advance() {
+    var e = currentEntry();
+    if (!e) return;
+    var i = e.cells.findIndex(function (x) { return x[0] === st.r && x[1] === st.c; });
+    if (i < e.cells.length - 1) { st.r = e.cells[i + 1][0]; st.c = e.cells[i + 1][1]; return; }
+    var hole = e.cells.find(function (x) { return !st.cells[x[0]][x[1]]; });
+    if (hole) { st.r = hole[0]; st.c = hole[1]; return; }
+    if (st.entries.some(hasEmpty)) cycleEntry(1);
   }
   function backspace() {
     if (st.done) return;
-    if (st.cells[st.r][st.c]) { st.cells[st.r][st.c] = ""; delete st.wrong[st.r + "," + st.c]; }
-    else { nextInEntry(-1); st.cells[st.r][st.c] = ""; delete st.wrong[st.r + "," + st.c]; }
+    var key = st.r + "," + st.c;
+    if (st.cells[st.r][st.c]) { st.cells[st.r][st.c] = ""; delete st.wrong[key]; delete st.pencil[key]; }
+    else {
+      var e = currentEntry(), i = e ? e.cells.findIndex(function (x) { return x[0] === st.r && x[1] === st.c; }) : -1;
+      if (i === 0) {                              // at the start of a clue: step back into the end of the previous one
+        var list = st.entries, prev = list[(list.indexOf(e) - 1 + list.length) % list.length], last = prev.cells[prev.cells.length - 1];
+        st.dir = prev.dir; st.r = last[0]; st.c = last[1];
+      } else nextInEntry(-1);
+      st.cells[st.r][st.c] = ""; delete st.wrong[st.r + "," + st.c]; delete st.pencil[st.r + "," + st.c];
+    }
     afterEdit();
   }
   function afterEdit() {
@@ -322,7 +349,7 @@
       });
     }
     if (fresh && window.PLConfetti) window.PLConfetti.big();
-    var sv = $("cw-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
+    G.paintNote($("cw-saver"), s, st.idx, true, NAME);
     $("cw-result").hidden = false;
     $("cw-result-head").textContent = "Solved in " + fmt(st.elapsed) + (clean ? "" : " with help");
     $("cw-played").textContent = s.played;
@@ -369,6 +396,7 @@
       else if (k === "ArrowDown") { if (st.dir !== "down" && entryAt(st.r, st.c, "down")) st.dir = "down"; else step(1, 0); paint(); focusCell(); }
       else if (k === "ArrowUp") { if (st.dir !== "down" && entryAt(st.r, st.c, "down")) st.dir = "down"; else step(-1, 0); paint(); focusCell(); }
       else if (k === "Tab") { cycleEntry(e.shiftKey ? -1 : 1); }
+      else if (k === "[" || k === "]") { cycleEntry(k === "]" ? 1 : -1, true); }
       else if (k === " " || k === "Enter") { var o = st.dir === "across" ? "down" : "across"; if (entryAt(st.r, st.c, o)) st.dir = o; paint(); }
       else handled = false;
       if (handled) e.preventDefault();
@@ -383,6 +411,8 @@
     function bar(id, fn, keepFocus) {
       $(id).addEventListener("click", function (e) { fn(); if (!keepFocus && e.detail > 0) { var el = cellEl(st.r, st.c); if (el) el.focus({ preventScroll: true }); } });
     }
+    $("cw-prev-clue").addEventListener("click", function (e) { cycleEntry(-1); if (e.detail > 0) focusGrid(); });
+    $("cw-next-clue").addEventListener("click", function (e) { cycleEntry(1); if (e.detail > 0) focusGrid(); });
     bar("cw-check-letter", function () { check("letter"); });
     bar("cw-check-word", function () { check("word"); });
     bar("cw-check", function () { check("puzzle"); });

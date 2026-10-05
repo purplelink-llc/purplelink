@@ -228,7 +228,7 @@
     $("ag-reveal").textContent = st.won ? "" : "The answer was " + data.rows[st.ans].n + ".";
     $("ag-played").textContent = s.played; $("ag-winpct").textContent = s.played ? Math.round(100 * s.won / s.played) + "%" : "0%";
     $("ag-streak").textContent = s.streak; $("ag-max").textContent = s.max;
-    var sv = $("ag-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
+    G.paintNote($("ag-saver"), s, st.idx, true, NAME);
     if (!st.won && !$("ag-rows").querySelector(".ag-answer")) {
       var li = rowFor(st.ans, false); li.classList.add("ag-answer"); $("ag-rows").insertBefore(li, $("ag-rows").firstChild); $("ag-wrap").hidden = false;
     }

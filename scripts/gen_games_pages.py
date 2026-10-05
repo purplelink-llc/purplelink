@@ -562,7 +562,11 @@ CW_BODY = """      <div class="games-wrap">
                 <button type="button" class="btn btn-ghost" id="cw-reveal-word">Word</button>
                 <button type="button" class="btn btn-ghost" id="cw-reveal-puzzle">Reveal puzzle</button>
               </div>
-              <p class="cw-current" id="cw-current" aria-live="polite"></p>
+              <div class="cw-cluebar">
+                <button type="button" class="cw-arrow" id="cw-prev-clue" aria-label="Previous clue">&lsaquo;</button>
+                <p class="cw-current" id="cw-current" aria-live="polite"></p>
+                <button type="button" class="cw-arrow" id="cw-next-clue" aria-label="Next clue">&rsaquo;</button>
+              </div>
               <div class="cw-grid" id="cw-grid" role="grid" aria-label="Crossword grid"></div>
               <p class="cw-status" id="cw-status" role="status" aria-live="polite"></p>
               <div class="wg-keys cw-keys" id="cw-keys" aria-label="Keyboard"></div>
@@ -783,6 +787,7 @@ SD_BODY = """      <div class="games-wrap">
             <div class="sd-main">
               <div class="cw-bar" role="group" aria-label="Notes and checking">
                 <button type="button" class="btn btn-ghost" id="sd-notes-btn" aria-pressed="false">Notes: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-undo" aria-disabled="true">Undo</button>
                 <button type="button" class="btn btn-ghost" id="sd-digit" aria-pressed="false">Digit first: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-zen" aria-pressed="false">Zen: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-check-cell">Check square</button>
@@ -981,6 +986,7 @@ SU_BODY = """      <div class="games-wrap">
             <div class="sd-main">
               <div class="cw-bar" role="group" aria-label="Notes and checking">
                 <button type="button" class="btn btn-ghost" id="sd-notes-btn" aria-pressed="false">Notes: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-undo" aria-disabled="true">Undo</button>
                 <button type="button" class="btn btn-ghost" id="sd-digit" aria-pressed="false">Digit first: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-zen" aria-pressed="false">Zen: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-check-cell">Check square</button>
@@ -1031,38 +1037,42 @@ page("games/sudoku-unlimited/", "", "", SU_BODY,
 
 # ---------------- Leaderboards ----------------
 LB_FAQ = [
-    ("Who appears on the leaderboards?", "Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed."),
+    ("Who appears on the leaderboards?", "Only signed-in players who turn the leaderboard on, under the display name they chose, on every board. Nothing else about them is shown. You can leave at any time and your row is removed."),
     ("What is the weekly board?", "It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday."),
+    ("Can the daily boards be faked?", "The daily boards use the results your browser saves and reports, and the service only checks that they are possible: nobody can have more wins or a longer streak than the number of days a game has existed. That is weaker than the rating boards, so treat them as friendly competition. Percentiles are counted once per person per puzzle."),
     ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Lockerlink and Gridlink results are checked for plausibility rather than replayed (Under the Cap seasons are replayed on the server from your roster), so treat the boards as friendly competition."),
-    ("How do I join?", "Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
+    ("How do I join?", "Play any daily game or a few rated puzzles, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or on this page."),
 ]
+LB_RATED = [("chess", "Chess Puzzles"), ("sudoku", "Sudoku Unlimited"), ("lockerlink", "Lockerlink"), ("gridlink", "Gridlink"), ("under-the-cap", "Under the Cap")]
+LB_DAILY = [("linkle", "Linkle"), ("quadlink", "Quadlink"), ("daily-five", "Daily Five"), ("daily-photo", "Daily Photo"), ("daily-chess", "Daily Chess"), ("sudoku", "Daily Sudoku"), ("crossword", "Crossword"),
+            ("landlink", "Landlink"), ("atomlink", "Atomlink"), ("prizelink", "Prizelink"), ("citylink", "Citylink"), ("peaklink", "Peaklink"), ("codelink", "Codelink"), ("thinkerlink", "Thinkerlink"),
+            ("riverlink", "Riverlink"), ("wildlink", "Wildlink"), ("lockerlink", "Lockerlink"), ("gridlink", "Gridlink"), ("under-the-cap", "Under the Cap")]
+LB_OPTIONS = ('<optgroup label="Daily games, all time">' + "".join(f'<option value="daily:{k}">{n}</option>' for k, n in LB_DAILY) + '</optgroup>'
+              + '<optgroup label="Rated puzzles">' + "".join(f'<option value="rated:{k}">{n}</option>' for k, n in LB_RATED) + '</optgroup>')
 LB_BODY = """      <div class="games-wrap">
         <div class="game-head">
           <h1>Leaderboards</h1>
           <span class="game-num" id="lb-week"></span>
         </div>
-        <p class="game-lede">The Purplelink leaderboards list the highest ratings in Chess Puzzles, Sudoku Unlimited and the three daily sports games (Lockerlink, Gridlink and Under the Cap), plus the biggest rating gains this week.</p>
-        <div class="lb-tabs" role="group" aria-label="Choose a board">
-          <button type="button" class="lb-tab" data-game="chess" aria-pressed="true">Chess Puzzles</button>
-          <button type="button" class="lb-tab" data-game="sudoku" aria-pressed="false">Sudoku Unlimited</button>
-          <button type="button" class="lb-tab" data-game="lockerlink" aria-pressed="false">Lockerlink</button>
-          <button type="button" class="lb-tab" data-game="gridlink" aria-pressed="false">Gridlink</button>
-          <button type="button" class="lb-tab" data-game="under-the-cap" aria-pressed="false">Under the Cap</button>
-          <span class="lb-gap"></span>
-          <button type="button" class="lb-tab" data-board="all" aria-pressed="true">Rating</button>
-          <button type="button" class="lb-tab" data-board="week" aria-pressed="false">This week</button>
+        <p class="game-lede">All-time boards for every daily game, ranked by wins, best streak and average percentile, plus the rating boards for Chess Puzzles, Sudoku Unlimited and the three daily sports games.</p>
+        <div class="lb-controls">
+          <label class="lb-label" for="lb-game">Game</label>
+          <select id="lb-game" class="lb-select">""" + LB_OPTIONS + """</select>
+          <div class="lb-tabs" id="lb-boards" role="group" aria-label="Choose a board"></div>
         </div>
         <p class="games-note" id="lb-status" role="status" aria-live="polite">Loading the board.</p>
         <div class="lb-you" id="lb-you" hidden></div>
         <ol class="lb-list" id="lb-list" aria-label="Leaderboard"></ol>
+        <p class="games-note" id="lb-note" hidden></p>
         <div class="rate-join" id="lb-join"></div>
         <div class="game-actions">
-          <a class="gbtn" id="lb-play" href="/games/chess-puzzles/" data-g="chess-puzzles">Play rated puzzles</a>
+          <a class="gbtn" id="lb-play" href="/games/linkle/" data-g="linkle">Play today's puzzle</a>
           <a class="gbtn gbtn--ghost" href="/games/account/">Your account</a>
         </div>
         <div class="games-prose">
           <h2>How the boards work</h2>
-          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Under the Cap update once a day, from your first result on that day\'s puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Under the Cap counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
+          <p>Every daily game has three all-time boards. Wins counts the days you solved the puzzle. Best streak is your longest run of days in a row. Average percentile is how you ranked against everyone who played each day, and it counts after 20 days with a real crowd. Rank is worked out against every signed-in player, so you can see where you stand even when you are outside the top 100. Only players who opt in, under a display name, are listed.</p>
+          <p>The rating boards are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Under the Cap update once a day, from your first result on that day\'s puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Under the Cap counts your win share and title. Everyone starts at 1000.</p>
           <h2>Questions</h2>
 """ + faq_html(LB_FAQ) + """
         </div>

@@ -106,9 +106,25 @@
     if (st.ticking && st.elapsed % 5 === 0) persist();
   }
 
+  // Undo: a snapshot before each change, newest last. Cleared when a new puzzle starts.
+  function remember() {
+    st.undo = st.undo || [];
+    st.undo.push({ cells: st.cells.slice(), notes: st.notes.slice(), wrong: Object.assign({}, st.wrong), sel: st.sel });
+    if (st.undo.length > 150) st.undo.shift();
+  }
+  function undo() {
+    if (st.done || !st.undo || !st.undo.length) { $("sd-undo").setAttribute("aria-disabled", "true"); return; }
+    var u = st.undo.pop();
+    st.cells = u.cells; st.notes = u.notes; st.wrong = u.wrong; st.sel = u.sel;
+    persist(); paint();
+    var b = $("sd-undo"); if (b) b.setAttribute("aria-disabled", st.undo.length ? "false" : "true");
+  }
+
   function setValue(i, d) {
     if (st.done || st.given[i]) return;
     startClock();
+    if (!(st.noteMode && d && st.cells[i])) remember();
+    if ($("sd-undo")) $("sd-undo").setAttribute("aria-disabled", "false");
     if (st.noteMode && d) {
       if (st.cells[i]) return;
       st.notes[i] = (st.notes[i] || 0) ^ (1 << (d - 1));
@@ -189,7 +205,7 @@
       });
     }
     var s = saved.stats || G.emptyStats();
-    var sv = $("sd-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
+    G.paintNote($("sd-saver"), s, st.idx, true, NAME);
     $("sd-result").hidden = false;
     $("sd-result-head").textContent = "Solved in " + fmt(st.elapsed) + (clean ? "" : " with help");
     $("sd-played").textContent = s.played; $("sd-streak").textContent = s.streak; $("sd-max").textContent = s.max;
@@ -222,9 +238,11 @@
       if (st.digitMode && st.armed !== null) setValue(st.sel, st.armed);     // digit first: pick the digit, then tap squares
     });
     $("sd-grid").addEventListener("keydown", function (e) {
-      if (e.ctrlKey || e.metaKey || e.altKey) return;
       var k = e.key;
-      if (/^[1-9]$/.test(k)) setValue(st.sel, Number(k));
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && (k === "z" || k === "Z")) { undo(); e.preventDefault(); return; }
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (k === "u" || k === "U") undo();
+      else if (/^[1-9]$/.test(k)) setValue(st.sel, Number(k));
       else if (k === "Backspace" || k === "Delete" || k === "0") setValue(st.sel, 0);
       else if (k.indexOf("Arrow") === 0) move(k);
       else if (k === "n" || k === "N") { st.noteMode = !st.noteMode; paint(); }
@@ -241,6 +259,7 @@
     $("sd-digit").addEventListener("click", function () { setDigitMode(!st.digitMode); });
     $("sd-zen").addEventListener("click", function () { setZen(!st.zen); });
     $("sd-notes-btn").addEventListener("click", function () { st.noteMode = !st.noteMode; paint(); });
+    $("sd-undo").addEventListener("click", function (e) { undo(); if (e.detail > 0 && st.sel !== undefined) { var c = $("sd-grid").children[st.sel]; if (c) c.focus(); } });
     $("sd-check-cell").addEventListener("click", function () { check("cell"); });
     $("sd-check").addEventListener("click", function () { check("puzzle"); });
     $("sd-auto").addEventListener("click", function () { setAuto(!st.auto); });
@@ -260,6 +279,7 @@
     st.pz = { level: meta.level, week: meta.week };
     st.sol = sol.split("").map(Number);
     st.given = p.split("").map(function (ch) { return ch !== "."; });
+    st.undo = [];
     st.cells = p.split("").map(function (ch) { return ch === "." ? 0 : Number(ch); });
     st.notes = new Array(81).fill(0);
     if (saved) {

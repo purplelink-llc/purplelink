@@ -166,6 +166,86 @@
     return stats && (stats.freezes || []).indexOf(idx - 1) >= 0 ? "Your streak saver covered yesterday, so your streak is still alive. You get one a week." : "";
   }
 
+  // After a game ends, a signed-out player is offered a way to keep their score and streak. The line is
+  // the streak-saver message when there is one. Signing in uses the same email link as the account page;
+  // a session lasts 90 days, renews while it is used, and each device signs in on its own, so signing in
+  // on a phone never signs anyone out of a laptop. "Not now" silences the offer for a week.
+  var OFFER_KEY = "pl-games-offer-v1", OFFER_QUIET_MS = 7 * 86400000;
+  function offerText(stats) {
+    var t = "Save your score and streak? Sign in with an email link and your progress follows you to other devices. You stay signed in on this one.";
+    if (stats && stats.played === 1) t += " Right now your streak is kept in this browser only, so anything played in another browser or app is not included.";
+    return t;
+  }
+  function offerQuiet() {
+    try { var t = Number(localStorage.getItem(OFFER_KEY)); return !!t && Date.now() - t < OFFER_QUIET_MS; } catch (e) { return false; }
+  }
+  function offerSignedIn() {
+    try { return !!(window.PLGames && window.PLGames.session && window.PLGames.session.get()); } catch (e) { return false; }
+  }
+  function buildOffer(stats) {
+    var box = document.createElement("div"), p = document.createElement("p"), form = document.createElement("form"),
+      label = document.createElement("label"), input = document.createElement("input"), send = document.createElement("button"),
+      later = document.createElement("button"), status = document.createElement("p");
+    box.className = "game-offer"; box.setAttribute("role", "group"); box.setAttribute("aria-label", "Save your progress");
+    p.className = "game-offer-text"; p.textContent = offerText(stats);
+    form.className = "ac-form game-offer-form";
+    input.id = "game-offer-email"; input.type = "email"; input.name = "email"; input.required = true; input.maxLength = 254; input.autocomplete = "email";
+    label.htmlFor = input.id; label.textContent = "Email address";
+    send.type = "submit"; send.className = "btn btn-primary"; send.textContent = "Email me a link";
+    later.type = "button"; later.className = "btn btn-ghost"; later.textContent = "Not now";
+    status.className = "game-offer-status"; status.setAttribute("role", "status");
+    form.appendChild(label); form.appendChild(input); form.appendChild(send); form.appendChild(later);
+    box.appendChild(p); box.appendChild(form); box.appendChild(status);
+    later.addEventListener("click", function () {
+      try { localStorage.setItem(OFFER_KEY, String(Date.now())); } catch (e) { /* ignore */ }
+      box.remove();
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var api = window.PLGames && window.PLGames.api;
+      if (!api) { status.textContent = "Sign-in is not available right now. Try the Account page."; return; }
+      send.disabled = true; status.textContent = "Sending.";
+      api({ action: "login_request", email: input.value.trim() }).then(function (res) {
+        if (res.status === 200) { status.textContent = "Check your email and open the link on this device. You will stay signed in here, and you can sign in on any other device the same way."; form.hidden = true; }
+        else if (res.status === 429) status.textContent = "Too many requests for that address today. Try again tomorrow.";
+        else if (res.status === 400) status.textContent = "That does not look like an email address.";
+        else status.textContent = "The email could not be sent. Try again in a moment.";
+      }).catch(function () { status.textContent = "Could not reach the server. Try again in a moment."; })
+        .then(function () { send.disabled = false; });
+    });
+    return box;
+  }
+  function ordinalLine(label, r) { return label + " #" + r.rank + " of " + r.total + (r.total > 1 ? " (ahead of " + r.pct + "%)" : ""); }
+  // "All-time: wins #4 of 52 (ahead of 94%), best streak #2 of 52". Needs the account's latest results on the server,
+  // so it syncs first. Quietly absent when the player is signed out, offline or the server has nothing yet.
+  function paintRank(box, game) {
+    var gg = window.PLGames;
+    if (!gg || !gg.sync || !gg.rankFor) return;
+    gg.sync().then(function () { return gg.rankFor(game); }).then(function (r) {
+      if (!r || !box.parentNode) return;
+      var bits = [];
+      if (r.w) bits.push(ordinalLine("wins", r.w));
+      if (r.s && r.s.v > 1) bits.push(ordinalLine("best streak", r.s));
+      if (r.p) bits.push(ordinalLine("average percentile", r.p));
+      if (bits.length) box.textContent = "All-time: " + bits.join(", ") + ".";
+    }).catch(function () { /* the rank line is optional */ });
+  }
+  function paintNote(el, stats, idx, on, game) {
+    if (!el || typeof document === "undefined") return;
+    el.textContent = "";
+    var sib = el.nextElementSibling;
+    while (sib && (sib.classList.contains("game-offer") || sib.classList.contains("game-rank"))) { var nx = sib.nextElementSibling; sib.remove(); sib = nx; }
+    if (on === false) return;
+    el.textContent = saverNote(stats, idx);
+    if (!el.parentNode) return;
+    if (offerSignedIn()) {
+      if (game) { var line = document.createElement("p"); line.className = "game-rank"; line.setAttribute("role", "status"); el.parentNode.insertBefore(line, el.nextSibling); paintRank(line, game); }
+      return;
+    }
+    if (offerQuiet()) return;
+    el.parentNode.insertBefore(buildOffer(stats), el.nextSibling);
+  }
+
   // Progress lives in localStorage only. Any access can throw (private windows, blocked
   // storage), so every call is guarded and the games work without it.
   function load() {
@@ -187,15 +267,63 @@
     try { if (typeof window !== "undefined" && window.plTrack) window.plTrack(type, meta || ""); } catch (e) { /* ignore */ }
   }
 
+  // ---- per-day history ----
+  // Mirror of the helpers in netlify/lib/games-logic.mjs (a test keeps them in step): { s: first day, c: "..." } with
+  // two base-36 characters per day, the score (lower is better, 99 = lost) or "zz" for a day not played. 730 days kept.
+  var HIST_DAYS = 730, HIST_NONE = "zz";
+  function histEnc(n) { var t = Math.min(1295, Math.max(0, Math.trunc(n))).toString(36); return t.length < 2 ? "0" + t : t; }
+  function histSet(h, idx, score) {
+    if (typeof idx !== "number" || idx < 0 || idx !== Math.trunc(idx) || typeof score !== "number" || !isFinite(score)) return h || null;
+    var cell = histEnc(score), i;
+    if (!h) return { s: idx, c: cell };
+    var st = h.s, c = h.c, pad = "";
+    if (idx < st) { for (i = 0; i < st - idx; i++) pad += HIST_NONE; c = pad + c; st = idx; }
+    var at = (idx - st) * 2;
+    if (at >= c.length) { for (i = 0; i < (at - c.length) / 2; i++) pad += HIST_NONE; c = c + pad + cell; }
+    else if (c.slice(at, at + 2) === HIST_NONE) c = c.slice(0, at) + cell + c.slice(at + 2);
+    if (c.length > 2 * HIST_DAYS) { var drop = (c.length - 2 * HIST_DAYS) / 2; c = c.slice(drop * 2); st += drop; }
+    return { s: st, c: c };
+  }
+  function histGet(h, idx) {
+    if (!h) return null;
+    var at = (idx - h.s) * 2;
+    if (at < 0 || at + 2 > h.c.length) return null;
+    var t = h.c.slice(at, at + 2);
+    return t === HIST_NONE ? null : parseInt(t, 36);
+  }
+  // Called for every finished puzzle, before the percentile request, so the history is kept even offline.
+  function noteScore(game, idx, score) {
+    var g = getGame(game), h = histSet(g.hist, idx, score);
+    if (h && (!g.hist || h.c !== g.hist.c || h.s !== g.hist.s)) { g.hist = h; setGame(game, g); }
+  }
+
+  // A random id for this browser, used only so people who share a connection each count once in a day's percentile.
+  var VID_KEY = "pl-games-vid";
+  function vid() {
+    try {
+      var v = localStorage.getItem(VID_KEY);
+      if (v && /^[a-f0-9]{32}$/.test(v)) return v;
+      var out = "", i;
+      if (typeof crypto !== "undefined" && crypto.getRandomValues) { var a = new Uint8Array(16); crypto.getRandomValues(a); for (i = 0; i < 16; i++) out += (a[i] < 16 ? "0" : "") + a[i].toString(16); }
+      else for (i = 0; i < 32; i++) out += Math.floor(Math.random() * 16).toString(16);
+      localStorage.setItem(VID_KEY, out);
+      return out;
+    } catch (e) { return ""; }
+  }
+
   // Anonymous score for the day's percentile. Lower is better (guesses, misses, 20-second blocks); 99 = lost.
   // Sent once per puzzle; nothing identifying goes with it.
   function submitScore(game, idx, score) {
+    noteScore(game, idx, score);
     var g = getGame(game);
     if (g.scored && g.scored[idx]) return Promise.resolve(null);
     if (typeof fetch !== "function") return Promise.resolve(null);
+    var headers = { "Content-Type": "application/json" }, sess = null;
+    try { sess = window.PLGames && window.PLGames.session && window.PLGames.session.get(); } catch (e) { /* ignore */ }
+    if (sess && sess.session) headers.Authorization = "Bearer " + sess.session;
     return fetch("/.netlify/functions/games-api", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "score", game: game, idx: idx, score: score }),
+      method: "POST", headers: headers,
+      body: JSON.stringify({ action: "score", game: game, idx: idx, score: score, vid: vid() }),
     }).then(function (r) { return r.ok ? r.json() : null; }).then(function (res) {
       if (!res || typeof res.percentile !== "number") return null;
       var g2 = getGame(game);
@@ -237,7 +365,7 @@
   return {
     dayIndex: dayIndex, pick: pick, decode: decode, decodeText: decodeText, score: score, mergeKeys: mergeKeys,
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
-    rankFor: rankFor, xpOf: xpOf, goalXp: goalXp, titleFor: titleFor, TIER_XP: TIER_XP, QUEST_XP: QUEST_XP, WEEK_XP: WEEK_XP, saverNote: saverNote, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
+    rankFor: rankFor, xpOf: xpOf, goalXp: goalXp, titleFor: titleFor, TIER_XP: TIER_XP, QUEST_XP: QUEST_XP, WEEK_XP: WEEK_XP, saverNote: saverNote, paintNote: paintNote, offerText: offerText, histSet: histSet, histGet: histGet, noteScore: noteScore, vid: vid, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
     getGame: getGame, setGame: setGame, all: load, replaceAll: replaceAll, ready: Promise.resolve(),
     submitScore: submitScore, describePercentile: describePercentile, savedPercentile: savedPercentile, track: track, copyText: copyText,
   };

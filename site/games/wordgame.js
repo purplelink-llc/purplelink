@@ -333,7 +333,7 @@
     }
     if (C.twists) renderMeta(s);
     if (fresh) reward(saved);
-    var sv = $("wg-saver"); if (sv) sv.textContent = G.saverNote(s, state.idx);
+    G.paintNote($("wg-saver"), s, state.idx, true, C.name);
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }

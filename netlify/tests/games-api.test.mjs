@@ -14,6 +14,7 @@ function memoryStores() {
       set: async (k, v) => { data.set(`${name}/${k}`, String(v)); },
       setJSON: async (k, v) => { data.set(`${name}/${k}`, JSON.stringify(v)); },
       delete: async (k) => { data.delete(`${name}/${k}`); },
+      list: async ({ prefix = "" } = {}) => ({ blobs: [...data.keys()].filter((k) => k.startsWith(`${name}/${prefix}`)).map((k) => ({ key: k.slice(name.length + 1) })) }),
     }),
     data,
   };
@@ -228,4 +229,190 @@ test("goals sync: whitelisted, bounded, merged without losing XP", () => {
   assert.deepEqual(Object.keys(m.goals.w).sort(), ["0", "1"]);
   assert.equal(m.goals.banked, 30);
   assert.equal(cleanData({ goals: { d: { 1: { t: 99, q: 99 } } } }).goals.d["1"].t, 3);
+});
+
+test("a session in use renews itself, so an active device stays signed in past 90 days", async () => {
+  const s = await signIn();
+  const DAY = 86400000;
+  clock += 80 * DAY;                                   // 10 days left on the original session
+  assert.equal((await call({ action: "sync", data: {} }, bearer(s))).status, 200);   // use it: renews to 90 days
+  clock += 80 * DAY;                                   // 160 days after sign-in, past the original expiry
+  assert.equal((await call({ action: "sync", data: {} }, bearer(s))).status, 200);
+  clock += 91 * DAY;                                   // unused for more than 90 days: signed out
+  assert.equal((await call({ action: "sync", data: {} }, bearer(s))).status, 401);
+});
+
+test("signing in on a second device leaves the first one signed in", async () => {
+  const phone = await signIn("mom@example.com");
+  const laptop = await signIn("mom@example.com");
+  assert.notEqual(phone, laptop);
+  assert.equal((await call({ action: "sync", data: {} }, bearer(phone))).status, 200);
+  assert.equal((await call({ action: "sync", data: {} }, bearer(laptop))).status, 200);
+});
+
+// ---- per-day history, all-time ranks and the daily boards ----
+const statsOf = (wins, played = wins.length, extra = {}) => ({ played, won: wins.length, streak: 0, max: 0, last: wins.at(-1) ?? -1, dist: {}, wins, freezes: [], ...extra });
+const syncGame = async (s, game, rec) => (await call({ action: "sync", data: { [game]: rec } }, bearer(s))).json();
+const rankOfGame = async (s, game) => (await (await call({ action: "rank", game }, bearer(s))).json()).games[game];
+
+test("scores count once per account, once per browser id, and once per connection when neither is sent", async () => {
+  const idx = 2;
+  const post = async (extra, headers = {}) => (await call({ action: "score", game: "linkle", idx, score: 4, ...extra }, headers)).json();
+  assert.equal((await post({})).total, 1);                                  // anonymous, by connection
+  assert.equal((await post({})).total, 1);                                  // the same connection again: not counted twice
+  assert.equal((await post({ vid: "a".repeat(32) })).total, 2);             // a browser on the same connection: counted
+  assert.equal((await post({ vid: "b".repeat(32) })).total, 3);             // a second browser in the same home
+  assert.equal((await post({ vid: "b".repeat(32) })).total, 3);             // that browser again: once
+  const s = await signIn();
+  assert.equal((await post({}, bearer(s))).total, 4);                       // signed in: by account
+  assert.equal((await post({ vid: "c".repeat(32) }, bearer(s))).total, 4);  // same account, different browser: still once
+  assert.equal((await post({ vid: "not-hex" })).total, 4);                  // a malformed id falls back to the connection, already counted
+});
+
+test("sync stores a day-by-day history and merges it across devices", async () => {
+  const s = await signIn();
+  await syncGame(s, "linkle", { stats: statsOf([0, 1]), hist: { s: 0, c: "0300" + "04" } });       // days 0:3 1:0 2:4 (ignoring wins)
+  const out = await syncGame(s, "linkle", { stats: statsOf([5]), hist: { s: 4, c: "zz" + "05" } }); // another device: day 5 scored 5
+  const h = out.data.linkle.hist;
+  assert.equal(h.s, 0);
+  assert.equal(h.c, "030004zz" + "zz05");
+  const bad = await syncGame(s, "linkle", { hist: { s: 0, c: "ABC" } });                         // malformed: ignored, existing history kept
+  assert.equal(bad.data.linkle.hist.c, h.c);
+});
+
+test("all-time rank follows wins, moves when a player's numbers change, and never counts anyone twice", async () => {
+  const a = await signIn("a@example.com"), b = await signIn("b@example.com"), c = await signIn("c@example.com");
+  await syncGame(a, "quadlink", { stats: statsOf([0, 1, 2]) });
+  await syncGame(b, "quadlink", { stats: statsOf([0]) });
+  await syncGame(c, "quadlink", { stats: statsOf([0, 1]) });
+  let r = await rankOfGame(a, "quadlink");
+  assert.deepEqual([r.w.v, r.w.rank, r.w.total, r.w.pct], [3, 1, 3, 83]);
+  r = await rankOfGame(b, "quadlink");
+  assert.deepEqual([r.w.rank, r.w.total, r.w.pct], [3, 3, 17]);
+  await syncGame(a, "quadlink", { stats: statsOf([0, 1, 2]) });          // same data again: no double count
+  await syncGame(a, "quadlink", { stats: statsOf([0, 1, 2]) });
+  assert.equal((await rankOfGame(c, "quadlink")).w.total, 3);
+  await syncGame(b, "quadlink", { stats: statsOf([0, 1, 2], 3) });       // b catches up on wins (day 1 and 2 added)
+  r = await rankOfGame(c, "quadlink");
+  assert.deepEqual([r.w.rank, r.w.total], [3, 3]);                       // now behind both
+  assert.equal(r.s.v, 2);
+});
+
+test("wins and streaks cannot exceed the number of days since launch", async () => {
+  const s = await signIn();
+  const wins = Array.from({ length: 400 }, (_, i) => i);                 // 400 wins on day 2 of the site
+  await syncGame(s, "linkle", { stats: statsOf(wins, 400, { max: 9999, won: 9999 }) });
+  const r = await rankOfGame(s, "linkle");
+  assert.equal(r.w.v, 3);                                                // today is day 2, so at most 3 days exist (0, 1, 2)
+  assert.equal(r.s.v, 3);
+});
+
+test("average percentile is ranked only after 20 days with a real crowd", async () => {
+  const s = await signIn();
+  await syncGame(s, "linkle", { stats: statsOf([0]), pct: { sum: 1900, count: 19, best: 100, last: 90 } });
+  assert.equal((await rankOfGame(s, "linkle")).p, undefined);
+  await syncGame(s, "linkle", { stats: statsOf([0]), pct: { sum: 2000, count: 20, best: 100, last: 90 } });
+  assert.equal((await rankOfGame(s, "linkle")).p.v, 100);
+});
+
+test("daily boards list only players who opted in with a name, and removal is complete", async () => {
+  const a = await signIn("a@example.com"), b = await signIn("b@example.com");
+  await syncGame(a, "riverlink", { stats: statsOf([0, 1, 2]) });
+  await syncGame(b, "riverlink", { stats: statsOf([0]) });
+  const board = async (viewer) => (await call({ action: "leaderboard", game: "riverlink", board: "wins" }, viewer ? bearer(viewer) : {})).json();
+  assert.equal((await board()).rows.length, 0);                          // nobody has opted in
+  assert.equal((await call({ action: "set_public", on: true }, bearer(a))).status, 400);   // needs a name first
+  await call({ action: "set_name", name: "Ada" }, bearer(a));
+  await call({ action: "set_name", name: "Bo" }, bearer(b));
+  assert.equal((await call({ action: "set_public", on: true }, bearer(a))).status, 200);
+  assert.equal((await call({ action: "set_public", on: true }, bearer(b))).status, 200);
+  let out = await board(b);
+  assert.deepEqual(out.rows.map((x) => [x.rank, x.name, x.v]), [[1, "Ada", 3], [2, "Bo", 1]]);
+  assert.deepEqual([out.you.rank, out.you.total, out.you.listed], [2, 2, true]);
+  await syncGame(b, "riverlink", { stats: statsOf([0, 1, 2, 3], 4) });  // not possible by day 2, so capped: ties Ada at 3, fewer games first? same played count
+  out = await board();
+  assert.equal(out.rows.length, 2);
+  await call({ action: "set_public", on: false }, bearer(a));
+  out = await board(a);
+  assert.deepEqual(out.rows.map((x) => x.name), ["Bo"]);
+  assert.equal(out.you.listed, false);                                   // still ranked, not listed
+  assert.equal(out.you.rank, 1);                                         // b is capped at 3 wins and ties a: rank counts only players strictly ahead
+  await call({ action: "delete_account" }, bearer(a));
+  out = await board();
+  assert.equal(out.total, 1);                                            // a is out of the histogram too
+});
+
+test("a name change updates the daily boards, and a blocked name drops the player", async () => {
+  const a = await signIn("a@example.com");
+  await syncGame(a, "wildlink", { stats: statsOf([0, 1]) });
+  await call({ action: "set_name", name: "Ada" }, bearer(a));
+  await call({ action: "set_public", on: true }, bearer(a));
+  await call({ action: "set_name", name: "Ada L" }, bearer(a));
+  const out = await (await call({ action: "leaderboard", game: "wildlink", board: "streak" })).json();
+  assert.deepEqual(out.rows.map((x) => x.name), ["Ada L"]);
+});
+
+test("unknown games and boards are refused", async () => {
+  assert.equal((await call({ action: "leaderboard", game: "nope", board: "wins" })).status, 400);
+  assert.equal((await call({ action: "leaderboard", game: "linkle", board: "bogus" })).status, 400);   // falls through to the rated-board path, which refuses unrated games
+  const s = await signIn();
+  assert.deepEqual((await (await call({ action: "rank", game: "nope" }, bearer(s))).json()).games, {});
+});
+
+test("players tied on a daily board share a rank and only the viewer's own row is marked", async () => {
+  const a = await signIn("a@example.com"), b = await signIn("b@example.com"), c = await signIn("c@example.com");
+  for (const [s, name, wins] of [[a, "Ada", [0, 1, 2]], [b, "Bo", [0, 1, 2]], [c, "Cy", [0]]]) {
+    await syncGame(s, "citylink", { stats: statsOf(wins) });
+    await call({ action: "set_name", name }, bearer(s));
+    await call({ action: "set_public", on: true }, bearer(s));
+  }
+  const out = await (await call({ action: "leaderboard", game: "citylink", board: "wins" }, bearer(b))).json();
+  assert.deepEqual(out.rows.map((x) => [x.rank, x.name, !!x.me]), [[1, "Ada", false], [1, "Bo", true], [3, "Cy", false]]);
+  assert.deepEqual([out.you.rank, out.you.total], [1, 3]);
+});
+
+test("hostile or odd names cannot reach inherited properties or junk storage", async () => {
+  for (const game of ["constructor", "__proto__", "toString", "hasOwnProperty"]) {
+    assert.equal((await call({ action: "score", game, idx: 2, score: 3 })).status, 400);
+    assert.equal((await call({ action: "leaderboard", game: "linkle", board: game })).status, 400);
+    assert.equal((await call({ action: "leaderboard", game, board: "wins" })).status, 400);
+  }
+  assert.ok(![...stores.data.keys()].some((k) => k.includes("constructor") || k.includes("__proto__")));
+});
+
+test("a player with no wins is ranked but never listed on a wins or streak board", async () => {
+  const a = await signIn("a@example.com");
+  await syncGame(a, "codelink", { stats: statsOf([], 3, { last: 1 }) });
+  await call({ action: "set_name", name: "Ada" }, bearer(a));
+  await call({ action: "set_public", on: true }, bearer(a));
+  const out = await (await call({ action: "leaderboard", game: "codelink", board: "wins" }, bearer(a))).json();
+  assert.equal(out.rows.length, 0);
+  assert.deepEqual([out.you.v, out.you.rank, out.you.total, out.you.listed], [0, 1, 1, false]);
+});
+
+test("a hostile history span stays bounded and keeps the most recent days", async () => {
+  const s = await signIn();
+  await syncGame(s, "linkle", { stats: statsOf([2]), hist: { s: 100000, c: "05" } });
+  const t0 = Date.now();
+  const out = await syncGame(s, "linkle", { hist: { s: 0, c: "03" } });
+  assert.ok(Date.now() - t0 < 1500);
+  const h = out.data.linkle.hist;
+  assert.ok(h.c.length <= 1460);
+  assert.equal(h.s + h.c.length / 2, 100001);                 // ends on the latest day
+  assert.ok(h.c.endsWith("05"));                              // and keeps that day's score
+});
+
+test("a weekly rebuild repairs ranks that overlapping syncs left wrong, and changes nothing when they are right", async () => {
+  const a = await signIn("a@example.com"), b = await signIn("b@example.com");
+  await syncGame(a, "peaklink", { stats: statsOf([0, 1, 2]) });
+  await syncGame(b, "peaklink", { stats: statsOf([0]) });
+  for (const [s, name] of [[a, "Ada"], [b, "Bo"]]) { await call({ action: "set_name", name }, bearer(s)); await call({ action: "set_public", on: true }, bearer(s)); }
+  const before = JSON.stringify([...stores.data.entries()].filter(([k]) => k.startsWith("games-rank/") || k.startsWith("games-lb/lbd:")));
+  assert.deepEqual(await handler.rebuild(), { accounts: 2, repaired: 0 });
+  assert.equal(JSON.stringify([...stores.data.entries()].filter(([k]) => k.startsWith("games-rank/") || k.startsWith("games-lb/lbd:"))), before);
+  stores.data.set("games-rank/h:peaklink:w", JSON.stringify({ buckets: { 3: 2, 1: 5, 99: 1 } }));     // drift
+  stores.data.delete("games-lb/lbd:peaklink");
+  await handler.rebuild();
+  const out = await (await call({ action: "leaderboard", game: "peaklink", board: "wins" }, bearer(b))).json();
+  assert.deepEqual([out.total, out.you.rank, out.rows.map((x) => x.name)], [2, 2, ["Ada", "Bo"]]);
 });

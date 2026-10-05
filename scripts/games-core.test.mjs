@@ -199,3 +199,29 @@ test("achievements unlock once, from saved progress and the finishing context", 
   assert.deepEqual(ids(A.check({ game: "linkle", idx: 1, pct: 95, total: 5 })), []);
   assert.deepEqual(ids(A.check({ game: "linkle", idx: 1, pct: 95, total: 40 })), ["top-tenth"]);
 });
+
+test("offerText adds the browser-only reminder on the first recorded game", () => {
+  const first = G.recordResult(null, 10, true, 4);
+  assert.match(G.offerText(first), /Save your score and streak/);
+  assert.match(G.offerText(first), /this browser only/);
+  const second = G.recordResult(first, 11, true, 3);
+  assert.doesNotMatch(G.offerText(second), /this browser only/);
+});
+
+test("the browser's day-by-day history code matches the server's", async () => {
+  const L = await import("../netlify/lib/games-logic.mjs");
+  let seed = 12345;
+  const rnd = (n) => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed % n; };
+  for (let trial = 0; trial < 60; trial++) {
+    let a = null, b = null;
+    for (let i = 0; i < 40; i++) {
+      const idx = rnd(900), score = [0, 1, 2, 3, 5, 9, 20, 99, 400, 1500][rnd(10)];
+      a = G.histSet(a, idx, score); b = L.histSet(b, idx, score);
+      assert.deepEqual(a, b);
+    }
+    if (a) for (let d = a.s - 2; d < a.s + 20; d++) assert.equal(G.histGet(a, d), L.histGet(b, d));
+  }
+  assert.equal(G.histSet(null, -1, 3), null);
+  assert.equal(G.histSet(null, 3.5, 3), null);
+  assert.deepEqual(G.histSet({ s: 5, c: "03" }, 5, 7), { s: 5, c: "03" });   // an existing day is never overwritten
+});

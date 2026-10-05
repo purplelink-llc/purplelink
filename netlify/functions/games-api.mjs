@@ -13,6 +13,9 @@
  *   logout                       (session) Ends this session.
  *   delete_account               (session) Deletes the account, its progress and every session.
  *   score         {game,idx,score}   (anonymous) Adds one score to that day's histogram, returns the percentile.
+
+ *   rank          {game?}            (session) Your all-time rank and percentile for wins (w), best streak (s) and average
+ *                                    percentile (p) in one daily game, or in every game you have played.
  *   leaderboard   {game,board}       (anonymous; a session adds your own rank) The top 100 for "chess" or "sudoku",
  *                                    board "all" (rating) or "week" (rating gained this week). Only players who opted in appear.
  *   ratings                          (session) Your chess and Sudoku ratings and whether you are on the leaderboards.
@@ -26,7 +29,7 @@
  */
 
 import { createHash, randomBytes } from "node:crypto";
-import { cleanData, cleanName, mergeData, percentile, dayIndexUTC, MAX_DATA_BYTES, SCORE_LIMITS } from "../lib/games-logic.mjs";
+import { cleanData, cleanName, mergeData, percentile, dayIndexUTC, MAX_DATA_BYTES, SCORE_LIMITS, COMPLETION_GAMES, RANK_KEYS, BOARD_KEYS, boardKey, metricsOf, bucketMove, rankOf, upsertValueRow } from "../lib/games-logic.mjs";
 import { applyResult, boardRow, checkReport, DAILY_REPORT_CAP, SPORTS_GAMES, emptyRecord, publicNameOk, upsertRow, weekOf } from "../lib/ratings.mjs";
 import CHESS_INDEX from "../lib/chess-index.json" with { type: "json" };
 import SPORTS_DAYS from "../lib/sports-days.json" with { type: "json" };
@@ -40,10 +43,13 @@ const REPLY_TO = "ben@purplelink.llc";
 const EMAIL_PATTERN = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
 const LOGIN_TTL_MS = 15 * 60 * 1000;
 const SESSION_TTL_MS = 90 * 24 * 60 * 60 * 1000;
+const SESSION_RENEW_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_SESSIONS = 8;
 const PER_EMAIL_DAILY = 5;
 const PER_IP_DAILY = 30;
 const SCORE_SEEN_CAP = 4000;
+const PER_IP_SCORES_DAILY = 2000;
+const DAILY_BOARD_SIZE = 100;
 
 const sha = (s) => createHash("sha256").update(s).digest("hex");
 const clientIpOf = (r) => r.headers.get("x-nf-client-connection-ip") || r.headers.get("x-forwarded-for") || "unknown";
@@ -91,6 +97,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
   const limits = () => getStore("rate-limits");
   const ratings = () => getStore("games-ratings");
   const boards = () => getStore("games-lb");
+  const ranks = () => getStore("games-rank");
   const weekNow = () => weekOf(dayIndexUTC(new Date(now())));
 
   async function loadRatings(acct) {
@@ -115,6 +122,109 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
     }
   }
 
+  // ---- all-time ranking for the daily games ----
+  // `account.rk` holds the values this account is currently counted at in each game's histograms, so a sync moves
+  // it from the old bucket to the new one instead of recounting anyone.
+  const rkSame = (a, b) => !!a && !!b && RANK_KEYS.every((k) => (a[k] ?? null) === (b[k] ?? null));
+
+  async function updateRanks(acct, account, data) {
+    const today = dayIndexUTC(new Date(now()));
+    const prev = account.rk || {}, next = {}, changed = [];
+    for (const g of COMPLETION_GAMES) {
+      const m = metricsOf(data[g], today);
+      if (m) next[g] = m;
+      if (rkSame(prev[g], m) || (!prev[g] && !m)) continue;
+      changed.push(g);
+      for (const k of RANK_KEYS) {
+        const from = prev[g] ? (prev[g][k] ?? null) : null, to = m ? (m[k] ?? null) : null;
+        if (from === to) continue;
+        const key = `h:${g}:${k}`;
+        const cur = (await ranks().get(key, { type: "json" })) || { buckets: {} };
+        await ranks().setJSON(key, { buckets: bucketMove(cur.buckets, from, to) });
+      }
+    }
+    account.rk = next;
+    return changed;
+  }
+
+  // Keep this account's rows on the daily boards in step with its values, name and opt-in. `games` limits the work.
+  async function syncDailyBoards(acct, account, games) {
+    const listed = account.public && publicNameOk(account.name);
+    for (const g of games) {
+      const key = `lbd:${g}`;
+      const cur = (await boards().get(key, { type: "json" })) || {};
+      const m = account.rk && account.rk[g];
+      const n = (account.data && account.data[g] && account.data[g].stats && account.data[g].stats.played) || 0;
+      let touched = false;
+      for (const [board, k] of Object.entries(BOARD_KEYS)) {
+        const rows = cur[board] || [];
+        const had = rows.some((x) => x.a === acct);
+        if (listed && m && m[k] !== null && m[k] !== undefined && (m[k] > 0 || k === "p")) { cur[board] = upsertValueRow(rows, { a: acct, name: account.name, v: m[k], n }).slice(0, DAILY_BOARD_SIZE); touched = true; }
+        else if (had) { cur[board] = rows.filter((x) => x.a !== acct); touched = true; }
+      }
+      if (touched) await boards().setJSON(key, cur);
+    }
+  }
+
+  async function removeFromRanks(acct, account) {
+    for (const [g, m] of Object.entries(account.rk || {})) {
+      for (const k of RANK_KEYS) {
+        if (m[k] === null || m[k] === undefined) continue;
+        const key = `h:${g}:${k}`;
+        const cur = (await ranks().get(key, { type: "json" })) || { buckets: {} };
+        await ranks().setJSON(key, { buckets: bucketMove(cur.buckets, m[k], null) });
+      }
+    }
+  }
+
+  async function rankFor(account, g) {
+    const m = account.rk && account.rk[g];
+    if (!m) return null;
+    const out = {};
+    for (const [name, k] of [["w", "w"], ["s", "s"], ["p", "p"]]) {
+      if (m[k] === null || m[k] === undefined) continue;
+      const cur = (await ranks().get(`h:${g}:${k}`, { type: "json" })) || { buckets: {} };
+      out[name] = { v: m[k], ...rankOf(cur.buckets, m[k]) };
+    }
+    return out;
+  }
+
+
+  // Overlapping syncs (two devices at once) can make a histogram count one account twice or miss it. This recomputes
+  // every histogram and daily board from the accounts themselves, so drift never lasts longer than a week.
+  async function rebuildRanks() {
+    const today = dayIndexUTC(new Date(now()));
+    const hists = {}, rows = {};
+    let accountsSeen = 0, repaired = 0;
+    const { blobs } = await accounts().list({ prefix: "acct:" });
+    for (const { key } of blobs) {
+      const account = await accounts().get(key, { type: "json" });
+      if (!account) continue;
+      accountsSeen++;
+      const acct = key.slice(5), listed = account.public && publicNameOk(account.name), rk = {};
+      for (const g of COMPLETION_GAMES) {
+        const m = metricsOf((account.data || {})[g], today);
+        if (!m) continue;
+        rk[g] = m;
+        for (const k of RANK_KEYS) if (m[k] !== null) { const h = (hists[`${g}:${k}`] ||= {}); h[m[k]] = (h[m[k]] || 0) + 1; }
+        const n = account.data[g].stats.played;
+        for (const [board, k] of Object.entries(BOARD_KEYS)) {
+          if (listed && m[k] !== null && (m[k] > 0 || k === "p")) { const r = (rows[g] ||= {}); r[board] = upsertValueRow(r[board] || [], { a: acct, name: account.name, v: m[k], n }); }
+        }
+      }
+      if (JSON.stringify(rk) !== JSON.stringify(account.rk || {})) { account.rk = rk; await accounts().setJSON(key, account); repaired++; }
+    }
+    for (const g of COMPLETION_GAMES) {
+      for (const k of RANK_KEYS) {
+        const buckets = hists[`${g}:${k}`];
+        if (buckets) await ranks().setJSON(`h:${g}:${k}`, { buckets });
+        else await ranks().delete(`h:${g}:${k}`);
+      }
+      if (rows[g]) await boards().setJSON(`lbd:${g}`, rows[g]); else await boards().delete(`lbd:${g}`);
+    }
+    return { accounts: accountsSeen, repaired };
+  }
+
   async function overLimit(kind, value, limit) {
     const day = new Date(now()).toISOString().slice(0, 10);
     const key = `rl:games-${kind}:${day}:${sha(value).slice(0, 16)}`;
@@ -130,6 +240,10 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
     if (!m) return null;
     const rec = await auth().get(`sess:${sha(m[1])}`, { type: "json" });
     if (!rec || rec.exp < now()) return null;
+    // A session in use keeps renewing, so a player who comes back every few weeks stays signed in on that device.
+    if (rec.exp - now() < SESSION_TTL_MS - SESSION_RENEW_AFTER_MS) {
+      try { await auth().setJSON(`sess:${sha(m[1])}`, { acct: rec.acct, exp: now() + SESSION_TTL_MS }); } catch (_) { /* renew next time */ }
+    }
     return { hash: sha(m[1]), acct: rec.acct };
   }
 
@@ -195,19 +309,41 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       if (action === "score") {
         const game = String(b.game || "");
         const idx = Number(b.idx), score = Number(b.score);
-        if (!(game in SCORE_LIMITS) || !Number.isInteger(idx) || !Number.isInteger(score) || score < 0 || score > SCORE_LIMITS[game]) {
+        if (!Object.hasOwn(SCORE_LIMITS, game) || !Number.isInteger(idx) || !Number.isInteger(score) || score < 0 || score > SCORE_LIMITS[game]) {
           return json(400, { error: "bad_score" }, origin);
         }
         if (Math.abs(idx - dayIndexUTC(new Date(now()))) > 1) return json(400, { error: "not_today" }, origin);
+        if (await overLimit("score", clientIpOf(request), PER_IP_SCORES_DAILY)) return json(429, { error: "rate_limited" }, origin);
+        // One result per person per puzzle. A signed-in player counts once by account, anyone else once by the random
+        // id their browser made, so people sharing a connection are all counted. Without either, one per connection.
+        const viewer = await sessionOf(request);
+        const vid = /^[a-f0-9]{32}$/.test(String(b.vid || "")) ? String(b.vid) : "";
+        const who = viewer ? `a:${viewer.acct}` : vid ? `v:${vid}` : `i:${clientIpOf(request)}`;
         const key = `score:${game}:${idx}`;
         const rec = (await scores().get(key, { type: "json" })) || { buckets: {}, seen: [] };
-        const voter = sha(`${clientIpOf(request)}|${game}|${idx}`).slice(0, 12);
+        const voter = sha(`${who}|${game}|${idx}`).slice(0, 12);
         if (!rec.seen.includes(voter)) {
           rec.buckets[score] = (rec.buckets[score] || 0) + 1;
           if (rec.seen.length < SCORE_SEEN_CAP) rec.seen.push(voter);
           await scores().setJSON(key, rec);
         }
         return json(200, percentile(rec.buckets, score), origin);
+      }
+
+      if (action === "leaderboard" && boardKey(b.board) && COMPLETION_GAMES.includes(String(b.game || ""))) {
+        const game = String(b.game), board = String(b.board), k = boardKey(board);
+        const cur = (await boards().get(`lbd:${game}`, { type: "json" })) || {};
+        const hist = (await ranks().get(`h:${game}:${k}`, { type: "json" })) || { buckets: {} };
+        const viewer = await sessionOf(request);
+        // Players tied on a value share a rank ("1, 1, 3"), the same rule the histogram uses for "you".
+        const list = (cur[board] || []).slice(0, DAILY_BOARD_SIZE);
+        const out = { board, game, total: rankOf(hist.buckets, 0).total, rows: list.map((x) => ({ rank: list.findIndex((y) => y.v === x.v) + 1, name: x.name, v: x.v, n: x.n, ...(viewer && x.a === viewer.acct ? { me: true } : {}) })) };
+        if (viewer) {
+          const acc = await loadAccount(viewer.acct);
+          const v = acc && acc.rk && acc.rk[game] ? acc.rk[game][k] : null;
+          if (v !== null && v !== undefined) out.you = { v, ...rankOf(hist.buckets, v), listed: (cur[board] || []).some((x) => x.a === viewer.acct) };
+        }
+        return json(200, out, origin);
       }
 
       if (action === "leaderboard") {
@@ -238,18 +374,29 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         if (JSON.stringify(merged).length > MAX_DATA_BYTES) return json(413, { error: "too_large" }, origin);
         account.data = merged;
         account.updated = now();
+        const changed = await updateRanks(sess.acct, account, merged);
         await accounts().setJSON(`acct:${sess.acct}`, account);
-        return json(200, { data: merged, name: account.name, email: account.email, remind: !!account.remind, public: !!account.public }, origin);
+        if (changed.length && account.public) await syncDailyBoards(sess.acct, account, changed);
+        return json(200, { data: merged, rank: account.rk || {}, name: account.name, email: account.email, remind: !!account.remind, public: !!account.public }, origin);
       }
       if (action === "set_name") {
         const name = cleanName(b.name);
         if (!name) return json(400, { error: "invalid_name" }, origin);
+        const wasPublic = !!account.public;
         account.name = name;
         if (account.public && !publicNameOk(name)) account.public = false;
         await accounts().setJSON(`acct:${sess.acct}`, account);
         const recs = await loadRatings(sess.acct);
         if (account.public || RATED.some((g) => recs[g])) await syncBoards(sess.acct, account, recs);
+        if (wasPublic || account.public) await syncDailyBoards(sess.acct, account, Object.keys(account.rk || {}));
         return json(200, { ok: true, name, public: !!account.public }, origin);
+      }
+      if (action === "rank") {
+        const only = String(b.game || "");
+        const list = only ? [only] : Object.keys(account.rk || {});
+        const games = {};
+        for (const g of list) { if (!COMPLETION_GAMES.includes(g)) continue; const r = await rankFor(account, g); if (r) games[g] = r; }
+        return json(200, { games }, origin);
       }
       if (action === "set_reminder") {
         account.remind = !!b.on;
@@ -290,6 +437,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         account.public = on;
         await accounts().setJSON(`acct:${sess.acct}`, account);
         await syncBoards(sess.acct, account, await loadRatings(sess.acct));
+        await syncDailyBoards(sess.acct, account, Object.keys(account.rk || {}));
         return json(200, { ok: true, public: on }, origin);
       }
       if (action === "logout") {
@@ -302,6 +450,8 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         for (const h of account.sessions || []) await auth().delete(`sess:${h}`);
         await auth().delete(`sess:${sess.hash}`);
         account.public = false;
+        await syncDailyBoards(sess.acct, account, Object.keys(account.rk || {}));
+        await removeFromRanks(sess.acct, account);
         await syncBoards(sess.acct, account, {});
         await ratings().delete(`r:${sess.acct}`);
         await accounts().delete(`acct:${sess.acct}`);
@@ -312,6 +462,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       return json(500, { error: "server_error" }, origin);
     }
   }
+  handler.rebuild = rebuildRanks;
   return handler;
 }
 

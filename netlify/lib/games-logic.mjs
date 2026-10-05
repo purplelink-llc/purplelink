@@ -3,9 +3,9 @@
 // No I/O here so it can be tested without Netlify.
 
 export const GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink", "lockerlink", "gridlink", "under-the-cap"];
-const COMPLETION_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink", "lockerlink", "gridlink", "under-the-cap"];
+export const COMPLETION_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink", "lockerlink", "gridlink", "under-the-cap"];
 export const EPOCH = "2026-10-04";
-export const MAX_DATA_BYTES = 60000;
+export const MAX_DATA_BYTES = 200000;
 const MAX_WINS = 800;
 
 const isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
@@ -62,6 +62,8 @@ export function cleanData(data) {
     if (today) rec.today = today;
     const pct = cleanPct(src.pct);
     if (pct) rec.pct = pct;
+    const hist = cleanHist(src.hist);
+    if (hist && COMPLETION_GAMES.includes(g)) rec.hist = hist;
     if (isObj(src.best)) {
       rec.best = {};
       for (const [k, v] of Object.entries(src.best)) if (/^[A-Za-z]{3,9}$/.test(k)) rec.best[k] = int(v, 1, 1e6);
@@ -148,6 +150,8 @@ export function mergeData(a, b) {
       rec.best = { ...(x.best || {}) };
       for (const [k, v] of Object.entries(y.best || {})) rec.best[k] = rec.best[k] ? Math.min(rec.best[k], v) : v;
     }
+    const hist = mergeHist(x.hist, y.hist);
+    if (hist) rec.hist = hist;
     if (x.clean || y.clean) rec.clean = Math.max(x.clean || 0, y.clean || 0);
     if (x.scored || y.scored) rec.scored = { ...(x.scored || {}), ...(y.scored || {}) };
     if (g === "daily-stars") {
@@ -169,6 +173,112 @@ export function mergeData(a, b) {
     out.goals = { d, w: { ...x.w, ...y.w }, banked: Math.max(x.banked, y.banked) };
   }
   return out;
+}
+
+
+// ---- per-day history ----
+// One result per day per game, kept so players can see their results over time and so the all-time boards
+// have something to rank. A history is { s: first day index, c: "..." } with two base-36 characters per day:
+// the score the game reports (lower is better, 99 = lost) or "zz" for a day not played. The last 730 days are kept.
+export const HIST_DAYS = 730;
+const HIST_NONE = "zz";
+const encScore = (n) => Math.min(1295, Math.max(0, Math.trunc(n))).toString(36).padStart(2, "0");
+
+export function cleanHist(h) {
+  if (!isObj(h) || !Number.isFinite(h.s) || typeof h.c !== "string") return null;
+  if (!/^[0-9a-z]*$/.test(h.c) || h.c.length % 2 || h.c.length > 2 * HIST_DAYS || h.c.length === 0) return null;
+  return { s: int(h.s, 0, 100000), c: h.c };
+}
+
+export function histGet(h, idx) {
+  if (!h) return null;
+  const at = (idx - h.s) * 2;
+  if (at < 0 || at + 2 > h.c.length) return null;
+  const t = h.c.slice(at, at + 2);
+  return t === HIST_NONE ? null : parseInt(t, 36);
+}
+
+export function histDays(h) {
+  let n = 0;
+  if (h) for (let i = 0; i < h.c.length; i += 2) if (h.c.slice(i, i + 2) !== HIST_NONE) n++;
+  return n;
+}
+
+/** Record one day's score. An existing score for that day is kept. Returns the new history. */
+export function histSet(h, idx, score) {
+  if (!Number.isInteger(idx) || idx < 0 || !Number.isFinite(score)) return h || null;
+  const cell = encScore(score);
+  if (!h) return { s: idx, c: cell };
+  let s = h.s, c = h.c;
+  if (idx < s) { c = HIST_NONE.repeat(s - idx) + c; s = idx; }
+  const at = (idx - s) * 2;
+  if (at >= c.length) c = c + HIST_NONE.repeat((at - c.length) / 2) + cell;
+  else if (c.slice(at, at + 2) === HIST_NONE) c = c.slice(0, at) + cell + c.slice(at + 2);
+  if (c.length > 2 * HIST_DAYS) { const drop = (c.length - 2 * HIST_DAYS) / 2; c = c.slice(drop * 2); s += drop; }
+  return { s, c };
+}
+
+/** Union of two histories: each day keeps whichever copy has a score, the first one if both do. */
+export function mergeHist(a, b) {
+  if (!a) return b || undefined;
+  if (!b) return a;
+  // Only the latest HIST_DAYS days are kept, so a wildly early start (a corrupt or hostile copy) cannot make this slow.
+  const hi = Math.max(a.s + a.c.length / 2, b.s + b.c.length / 2), lo = Math.max(Math.min(a.s, b.s), hi - HIST_DAYS);
+  let out = { s: lo, c: HIST_NONE.repeat(hi - lo) };
+  for (let d = lo; d < hi; d++) {
+    const v = histGet(a, d) ?? histGet(b, d);
+    if (v !== null) out = histSet(out, d, v);
+  }
+  // a seeded history of all-"zz" would be empty; drop it
+  return histDays(out) ? out : undefined;
+}
+
+// ---- all-time ranking ----
+// For each game there are three measures: wins (w), best streak in days (s) and average percentile (p, from 20 days
+// with a real crowd). Each is bounded by what is possible: no more wins or streak than days since launch. A histogram
+// per game and measure answers "what rank am I" with one small read, so no list of every player is ever sorted.
+export const RANK_KEYS = ["w", "s", "p"];
+export const BOARD_KEYS = { wins: "w", streak: "s", pct: "p" };
+export const boardKey = (b) => (typeof b === "string" && Object.hasOwn(BOARD_KEYS, b) ? BOARD_KEYS[b] : null);
+export const MIN_PCT_GAMES = 20;
+
+export function metricsOf(rec, todayIdx) {
+  const st = rec && rec.stats;
+  if (!st || !st.played) return null;
+  const cap = todayIdx + 1;
+  const wins = (st.wins || []).filter((d) => d >= 0 && d <= cap);
+  const w = Math.min(Math.max(st.won || 0, wins.length), cap);
+  const s = Math.min(Math.max(longestRun(wins, st.freezes || []), st.max || 0), cap);
+  const pc = rec.pct;
+  const p = pc && pc.count >= MIN_PCT_GAMES ? Math.min(100, Math.round(pc.sum / pc.count)) : null;
+  return { w, s, p };
+}
+
+/** Move one account's value between buckets. Either side may be null (not counted). */
+export function bucketMove(buckets, from, to) {
+  const b = { ...(buckets || {}) };
+  if (from !== null && from !== undefined && b[from]) { b[from]--; if (b[from] <= 0) delete b[from]; }
+  if (to !== null && to !== undefined) b[to] = (b[to] || 0) + 1;
+  return b;
+}
+
+/** Rank 1 is the highest value. pct is the share of players this one is ahead of (ties count half). */
+export function rankOf(buckets, v) {
+  let total = 0, greater = 0, same = 0, lower = 0;
+  for (const [k, n] of Object.entries(buckets || {})) {
+    const x = Number(k);
+    total += n;
+    if (x > v) greater += n; else if (x === v) same += n; else lower += n;
+  }
+  return { rank: greater + 1, total, pct: total ? Math.round((100 * (lower + same / 2)) / total) : 0 };
+}
+
+/** Keep the best 100 rows for one measure: highest value first, fewer games played breaks a tie. */
+export function upsertValueRow(rows, row) {
+  const out = rows.filter((x) => x.a !== row.a);
+  out.push(row);
+  out.sort((x, y) => y.v - x.v || x.n - y.n || String(x.name).localeCompare(String(y.name)));
+  return out.slice(0, 100);
 }
 
 // ---- anonymous score histograms (percentiles) ----

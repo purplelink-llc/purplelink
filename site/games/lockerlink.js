@@ -177,7 +177,7 @@
     $("sp-statline").hidden = !daily_;
     $("sp-played").textContent = s.played; $("sp-winpct").textContent = s.played ? Math.round(100 * s.won / s.played) + "%" : "0%";
     $("sp-streak").textContent = s.streak; $("sp-max").textContent = s.max;
-    var sv = $("sp-saver"); if (sv) sv.textContent = daily_ ? G.saverNote(s, daily.idx) : "";
+    G.paintNote($("sp-saver"), s, daily.idx, !!daily_, NAME);
     $("sp-star").textContent = st.won ? "Rating: " + ["", "One star", "Two stars", "Three stars"][stars()] + "." : "";
     $("sp-next-line").hidden = !daily_;
     $("sp-practice-again").hidden = daily_;
