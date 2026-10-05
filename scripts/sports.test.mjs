@@ -77,7 +77,7 @@ for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
     dd.tl.forEach(([a, b]) => { assert.ok(dd.byName[a] && dd.byName[b] && a !== b); });
     dd.gr.slice(0, 80).forEach((g) => {
       const R = g.r.map((c) => S.crit(dd, c)), C = g.c.map((c) => S.crit(dd, c));
-      R.forEach((x) => C.forEach((y) => assert.ok(S.cellAnswers(dd, x, y).length >= 2)));
+      R.forEach((x) => C.forEach((y) => assert.ok(S.cellAnswers(dd, x, y).length >= 2, g.r + " x " + g.c)));
     });
   });
   test(`${sport}: a season runs and the budget leaves room for a full roster`, () => {

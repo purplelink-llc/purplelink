@@ -169,7 +169,7 @@ TAGLINE = {
     "atomlink": "Guess the element from its place on the periodic table.",
     "prizelink": "Guess the Nobel laureate from prize, year and birthplace.",
     "teamlink": "Link two players from any era through real teammates.",
-    "gridlink": "Fill a 3 by 3 grid of teams, decades and positions.",
+    "gridlink": "Fill a 3 by 3 grid of teams, decades, awards and teammates.",
     "unbeaten": "Build a roster from any era and play a perfect season.",
     "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
@@ -1351,7 +1351,7 @@ sports_page("teamlink", "Teamlink", "Link two players from any era through the t
 
 GL_FAQ = [
     ("How does scoring work?", "You have nine guesses for nine cells. Every correct cell is worth 1 to 5 points: the less famous the player you name, the more it is worth. A wrong name uses a guess without scoring."),
-    ("What do the clues mean?", "A team clue means the player played at least one game for that franchise. A decade clue means the player was active in any season of that decade. Position, career length and one-team clues are checked against the same list."),
+    ("What do the clues mean?", "A team clue means the player was on that franchise. A decade clue means the player was active in any season of that decade. Award clues are MVP winner, champion, five or more All-Star (or Pro Bowl) selections and Hall of Famer. A clue like Played with LeBron James means the player shared a team and a season with him. Position, career length and one-team clues are checked against the same list."),
     ("Can I use a player twice?", "No. Each player can fill one cell."),
     ("Is there always an answer for every cell?", "Yes. Every cell in every grid has at least two players in our list who fit it."),
     ("Which sport is it today?", "The daily grid rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick a sport and play unlimited grids."),

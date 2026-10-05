@@ -314,9 +314,9 @@ GAMES = {
     "games/gridlink/": dict(
         slug="gridlink", name="Gridlink", genre="Sports game", minutes=4,
         title="Gridlink: a free daily sports grid game",
-        desc="Fill a 3 by 3 grid with players who fit both the row and the column: a team, a decade or a position. NBA, NFL, MLB and NHL. Nine guesses, free, new every day.",
-        answer="Gridlink is a free daily sports grid. Each row and column is a clue, such as a team, a decade or a position, and each cell needs a player who fits both. You get nine guesses and can use each player once. The rarer the player you name, the more points the cell is worth. The sport changes each day across the NBA, NFL, MLB and NHL.",
-        features=["Nine guesses for nine cells", "Teams, decades, positions and career length as clues", "Rarity score for less obvious players", "Unlimited practice grids", "NBA, NFL, MLB and NHL"],
+        desc="Fill a 3 by 3 grid with players who fit both the row and the column: a team, a decade, an award or a teammate. NBA, NFL, MLB and NHL. Nine guesses, free, new every day.",
+        answer="Gridlink is a free daily sports grid. Each row and column is a clue, such as a team, a decade, an award or a famous teammate, and each cell needs a player who fits both. You get nine guesses and can use each player once. The rarer the player you name, the more points the cell is worth. The sport changes each day across the NBA, NFL, MLB and NHL.",
+        features=["Nine guesses for nine cells", "Teams, decades, positions, awards and famous teammates as clues", "Rarity score for less obvious players", "Unlimited practice grids", "NBA, NFL, MLB and NHL"],
         steps=[("Pick a cell", "Tap a cell to see which row and column clues it joins."),
                ("Name a player", "Type a name and pick it from the list. The player must fit both clues."),
                ("Watch your guesses", "A wrong name still uses one of your nine guesses."),

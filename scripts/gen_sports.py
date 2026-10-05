@@ -144,7 +144,21 @@ def crit_ok(c, p):
     if k == "n": return len({f for f, _, _ in p["s"]}) >= int(v)
     if k == "y": return sum(e - s for _, s, e in p["s"]) >= int(v)
     if k == "o": return len({f for f, _, _ in p["s"]}) == 1
+    if k == "a":
+        h = p["h"]
+        return {"mvp": h[1] >= 1, "title": h[2] >= 1, "sel5": h[0] >= 5, "hof": h[3] >= 1}[v]
+    if k == "m": return p["n"] in MATES.get(v, ())
     return False
+
+
+MATES = {}                 # star name -> names of everyone who shared a franchise and season with him
+
+
+def teammates_of(P, star):
+    out = set()
+    for p in P:
+        if p["n"] != star["n"] and any(fa == fb and sa < eb and sb < ea for fa, sa, ea in p["s"] for fb, sb, eb in star["s"]): out.add(p["n"])
+    return out
 
 
 def pick_pairs(P, extra, sport, existing):
@@ -178,12 +192,18 @@ def pick_pairs(P, extra, sport, existing):
     return out
 
 
+def kinds_m(cols): return len([c for c in cols if c[0] == 'm'])
+
+
 def pick_grids(P, F, sport, existing):
     cfg = CFG[sport]
     teams = [f for f in F if sum(1 for p in P if any(x[0] == f for x in p["s"])) >= 7]
     groups = sorted(set(cfg["groups"].values()))
     decades = [d for d in range(1950, 2030, 10) if sum(1 for p in P if crit_ok(f"d:{d}", p)) >= 12]
-    extra = [f"n:4", "y:15", "o:1"] + [f"p:{g}" for g in groups] + [f"d:{d}" for d in decades]
+    stars = sorted([p for p in P if p["t"] == 5], key=lambda p: -p["o"])[:14]
+    for st_ in stars: MATES[st_["n"]] = teammates_of(P, st_)
+    awards = [f"a:{a}" for a in ("mvp", "title", "sel5", "hof") if sum(1 for p in P if crit_ok(f"a:{a}", p)) >= 12]
+    extra = [f"n:4", "y:15", "o:1"] + [f"p:{g}" for g in groups] + [f"d:{d}" for d in decades] + awards * 2 + [f"m:{p['n']}" for p in stars if len(MATES[p['n']]) >= 12] * 3
     rng = random.Random(f"gr-{sport}")
     for _ in range(len(existing)): rng.random()
     out = list(existing)
@@ -198,9 +218,10 @@ def pick_grids(P, F, sport, existing):
         elif mix < .8: cols = rng.sample(extra, 3)
         else: cols = [f"t:{rng.choice([t for t in teams if f't:{t}' not in rows])}"] + rng.sample(extra, 2)
         if len(set(cols)) < 3: continue
+        if len({c for c in cols if c[0] == 'm'}) != kinds_m(cols): continue
         # no two columns of the same kind unless they are teams or decades (keeps cells meaningful)
         kinds = [c[0] for c in cols]
-        if kinds.count("p") > 1 or kinds.count("n") + kinds.count("y") + kinds.count("o") > 1: continue
+        if kinds.count("p") > 1 or kinds.count("n") + kinds.count("y") + kinds.count("o") > 1 or kinds.count("a") > 2 or kinds.count("m") > 1: continue
         if not all(ok_cell(r, c, 2) for r in rows for c in cols): continue
         key = rows + cols
         if any(key == g["r"] + g["c"] for g in out): continue

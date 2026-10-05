@@ -143,6 +143,16 @@
     if (k === "d") { var y = Number(v); return { code: code, label: "Played in the " + y + "s", short: y + "s", test: function (p) { return p.st.some(function (s) { return s[1] < y + 10 && s[2] > y; }); } }; }
     if (k === "n") return { code: code, label: "Played for " + v + "+ teams", short: v + "+ teams", test: function (p) { return p.teams.length >= Number(v); } };
     if (k === "y") return { code: code, label: "Played " + v + "+ seasons", short: v + "+ seasons", test: function (p) { return p.seasons >= Number(v); } };
+    if (k === "a") {
+      var sel = d.cfg.selname || "All-Star";
+      var A = { mvp: ["MVP winner", "MVP", function (p) { return p.hon[1] >= 1; }], title: ["Won a championship", "Champion", function (p) { return p.hon[2] >= 1; }],
+                sel5: ["5+ " + sel + " selections", "5+ " + sel, function (p) { return p.hon[0] >= 5; }], hof: ["Hall of Famer", "Hall of Fame", function (p) { return p.hon[3] >= 1; }] }[v];
+      return { code: code, label: A[0], short: A[1], test: A[2] };
+    }
+    if (k === "m") {
+      var star = d.byName[v], last = v.split(" ").slice(-1)[0];
+      return { code: code, label: "Played with " + v, short: "With " + last, test: function (p) { return p !== star && !!star && shared(p, star) !== null; } };
+    }
     if (k === "o") return { code: code, label: "One-team career", short: "One team", test: function (p) { return p.teams.length === 1; } };
     return { code: code, label: code, short: code, test: function () { return false; } };
   }
