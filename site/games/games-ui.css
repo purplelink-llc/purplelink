@@ -611,3 +611,15 @@
   .ub-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (prefers-reduced-motion: reduce) { .sp * { transition: none !important; } }
+
+.tl-week { margin: 22px 0 8px; max-width: 640px; }
+.tl-week h2 { font-size: 1.15rem; margin: 0 0 6px; }
+.tw-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 10px; }
+.tw-day { padding: 12px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel); }
+.tw-head, .tw-you { margin: 0 0 4px; font-size: 0.92rem; }
+.tw-you { color: var(--muted); font-weight: 600; }
+.tw-chain { margin: 6px 0 0; padding-left: 1.3em; font-weight: 700; font-size: 0.92rem; }
+.tw-chain li { margin: 2px 0; }
+.tw-hop { display: block; font-weight: 600; font-size: 0.8rem; color: var(--muted); }
+.tl-week details { margin-top: 12px; }
+.tl-week summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }

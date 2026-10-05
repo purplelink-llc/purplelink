@@ -177,6 +177,39 @@ def pars_for(P, extra, pairs):
     return out
 
 
+def overlap(a, b):
+    """Longest shared stretch of two stint lists: [franchise, first season, last season] or None."""
+    best = None
+    for fa, sa, ea in a:
+        for fb, sb, eb in b:
+            if fa == fb and sa < eb and sb < ea:
+                lo, hi = max(sa, sb), min(ea, eb)
+                if not best or hi - lo > best[2] - best[1] + 1: best = [fa, lo, hi - 1]
+    return best
+
+
+def chains_for(P, extra, pairs):
+    """One shortest chain per daily pair, preferring well-known players as the in-between links, with the team and seasons of every hop."""
+    stints = combined(P, extra); bk = make_buckets(stints)
+    names = [p["n"] for p in P] + [r[0] for r in extra]
+    rank = [(p["t"], p["o"]) for p in P] + [(0, 0)] * len(extra)
+    idx = {p["n"]: i for i, p in enumerate(P)}
+    out = []
+    for a, b in pairs:
+        dist = full_bfs(stints, bk, idx[b])
+        u, path = idx[a], [idx[a]]
+        while u != idx[b]:
+            d = dist[u]; cand = set()
+            for f, s_, e in stints[u]:
+                for y in range(s_, e):
+                    for v in bk.get((f, y), ()):
+                        if dist.get(v) == d - 1: cand.add(v)
+            u = max(cand, key=lambda v: (rank[v], names[v]))
+            path.append(u)
+        out.append({"c": [names[i] for i in path], "h": [overlap(stints[x], stints[y]) for x, y in zip(path, path[1:])]})
+    return out
+
+
 def pick_pairs(P, extra, sport, existing):
     famous = [i for i, p in enumerate(P) if p["t"] >= 3]
     stints = combined(P, extra); bk = make_buckets(stints)
@@ -266,10 +299,13 @@ def main():
         cfg = CFG[sport]
         F = {k: FULL.get(sport, {}).get(k, v) for k, v in F.items()}
         pars = pars_for(P, extra, pin["tl"])
+        chains = chains_for(P, extra, pin["tl"])
+        assert [len(c["c"]) - 1 for c in chains] == pars, "chains disagree with pars"
         DAYS_LIB[sport] = {"par": pars, "games": cfg["games"]}
         data = {"sport": sport, "name": cfg["name"], "fr": F, "fs": SHORT.get(sport, {}), "cfg": {k: cfg[k] for k in ("slots", "bench", "cap", "games", "scale", "base", "gname", "plural", "teams", "rounds", "era") if k in cfg} | {"split": bool(cfg.get("split")), "selname": SELNAME[sport]},
                 "p": [[p["n"], p["p"], p["t"], p["o"], p["s"], p["h"]] for p in P], "tl": pin["tl"], "tp": pars, "gr": pin["gr"]}
         (DATA / f"sports-{sport}.json").write_text(json.dumps(data, separators=(",", ":"), ensure_ascii=False))
+        (DATA / f"sports-{sport}-chains.json").write_text(json.dumps({"ts": chains}, separators=(",", ":"), ensure_ascii=False))
         if extra:
             (DATA / f"sports-{sport}-all.json").write_text(json.dumps({"credit": credit, "p": extra}, separators=(",", ":"), ensure_ascii=False))
         print(sport, len(P), "famous +", len(extra), "others,", len(pin["tl"]), "link days", len(pin["gr"]), "grids", (DATA / f"sports-{sport}.json").stat().st_size // 1024, "KB")

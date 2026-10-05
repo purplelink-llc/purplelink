@@ -167,6 +167,14 @@
             },
             {
               "@type": "Question",
+              "name": "Where can I see the shortest chain?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "On the result card right after you finish, and in the section under the puzzle called This week's shortest chains. It lists every puzzle so far this week with its shortest possible chain, the team and seasons that link each pair of players, and how you did. Last week is kept in a drop-down. Today's chain appears once you finish today's puzzle, or tomorrow."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "How do the two ends work?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -235,7 +243,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=ff45677168">
+    <link rel="stylesheet" href="/games/games-ui.css?v=b79afba160">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -327,6 +335,12 @@
             <button type="button" class="gbtn gbtn--ghost" id="tl-giveup">Give up</button>
           </div>
           <p class="sp-count"><span>Links <b id="sp-links">1</b></span> <span>Par <b id="sp-par">?</b></span> <span>Misses <b id="sp-misses">0</b></span> <span>Hints <b id="sp-hints">0</b></span></p>
+          <section class="tl-week" id="tl-week" hidden aria-labelledby="tl-week-h">
+            <h2 id="tl-week-h">This week's shortest chains</h2>
+            <p class="games-note">The shortest possible chain for each day's puzzle so far this week, with the team and seasons of every link. Today's appears once you finish it.</p>
+            <ul class="tw-list" id="tl-week-list"></ul>
+            <details id="tl-week-prev-wrap" hidden><summary>Last week</summary><ul class="tw-list" id="tl-week-prev"></ul></details>
+          </section>
           <section class="game-result" id="sp-result" hidden aria-labelledby="sp-result-head">
             <h2 id="sp-result-head"></h2>
             <p class="game-reveal" id="sp-reveal"></p>
@@ -362,6 +376,8 @@
         <p>Any player who ever appeared for a team in that league, from the first seasons to 2025: about 5,000 in the NBA, 27,000 in the NFL, 20,000 in MLB and 9,000 in the NHL. The two players you are asked to link are always well-known stars, but the players in between can be anyone. Coverage is not perfect: NBA and NHL rosters come from Wikipedia and miss some players, clubs that no longer exist are left out, and NFL rosters include some players who were on a roster without playing.</p>
         <h3>What is par?</h3>
         <p>Par is the fewest links needed to connect the two players, measured over every player in our database. The chain is solved when its two ends are teammates.</p>
+        <h3>Where can I see the shortest chain?</h3>
+        <p>On the result card right after you finish, and in the section under the puzzle called This week&#x27;s shortest chains. It lists every puzzle so far this week with its shortest possible chain, the team and seasons that link each pair of players, and how you did. Last week is kept in a drop-down. Today&#x27;s chain appears once you finish today&#x27;s puzzle, or tomorrow.</p>
         <h3>How do the two ends work?</h3>
         <p>You can add a player next to the first player or next to the last player. If a player is a teammate of both ends, the chain closes.</p>
         <h3>How are stars awarded?</h3>
@@ -399,7 +415,7 @@
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/ratings.js?v=5ae929a071" defer></script>
     <script src="/games/sports.js?v=dde98aebbe" defer></script>
-    <script src="/games/teamlink.js?v=b8f18c6344" defer></script>
+    <script src="/games/teamlink.js?v=4d563f480b" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

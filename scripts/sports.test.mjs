@@ -105,3 +105,16 @@ for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
     r.tl.slice(0, 40).forEach(([a, b], i) => assert.equal(S.path(dd, dd.byName[a], dd.byName[b]).length - 1, r.tp[i], a + " to " + b));
   });
 }
+
+for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
+  test(`${sport}: every daily pair has a shortest chain with the team and seasons of each hop`, () => {
+    const r = JSON.parse(readFileSync(`site/games/data/sports-${sport}.json`, "utf8"));
+    const ts = JSON.parse(readFileSync(`site/games/data/sports-${sport}-chains.json`, "utf8")).ts;
+    assert.equal(ts.length, r.tl.length);
+    ts.forEach((c, i) => {
+      assert.equal(c.c[0], r.tl[i][0]); assert.equal(c.c.at(-1), r.tl[i][1]);
+      assert.equal(c.c.length - 1, r.tp[i]); assert.equal(c.h.length, c.c.length - 1);
+      c.h.forEach(([f, a, b]) => assert.ok(r.fr[f] && a <= b));
+    });
+  });
+}

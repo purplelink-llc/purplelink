@@ -1330,6 +1330,7 @@ TL_FAQ = [
     ("What counts as teammates?", "Two players are teammates if they were on the same franchise in at least one common season. A franchise that moved or changed its name counts as one team, so the Seattle SuperSonics and the Oklahoma City Thunder are the same club."),
     ("Which players can I use?", "Any player who ever appeared for a team in that league, from the first seasons to 2025: about 5,000 in the NBA, 27,000 in the NFL, 20,000 in MLB and 9,000 in the NHL. The two players you are asked to link are always well-known stars, but the players in between can be anyone. Coverage is not perfect: NBA and NHL rosters come from Wikipedia and miss some players, clubs that no longer exist are left out, and NFL rosters include some players who were on a roster without playing."),
     ("What is par?", "Par is the fewest links needed to connect the two players, measured over every player in our database. The chain is solved when its two ends are teammates."),
+    ("Where can I see the shortest chain?", "On the result card right after you finish, and in the section under the puzzle called This week's shortest chains. It lists every puzzle so far this week with its shortest possible chain, the team and seasons that link each pair of players, and how you did. Last week is kept in a drop-down. Today's chain appears once you finish today's puzzle, or tomorrow."),
     ("How do the two ends work?", "You can add a player next to the first player or next to the last player. If a player is a teammate of both ends, the chain closes."),
     ("How are stars awarded?", "Three stars for matching par with no hints and at most two misses, two stars for par plus one, one star for anything longer."),
     ("Which sport is it today?", "The daily puzzle rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick any sport and a difficulty."),
@@ -1352,7 +1353,13 @@ TL_BOARD = """          <div class="tl-ends" aria-label="The two players to link
             <button type="button" class="gbtn gbtn--ghost" id="tl-hint">Hint</button>
             <button type="button" class="gbtn gbtn--ghost" id="tl-giveup">Give up</button>
           </div>
-          <p class="sp-count"><span>Links <b id="sp-links">1</b></span> <span>Par <b id="sp-par">?</b></span> <span>Misses <b id="sp-misses">0</b></span> <span>Hints <b id="sp-hints">0</b></span></p>"""
+          <p class="sp-count"><span>Links <b id="sp-links">1</b></span> <span>Par <b id="sp-par">?</b></span> <span>Misses <b id="sp-misses">0</b></span> <span>Hints <b id="sp-hints">0</b></span></p>
+          <section class="tl-week" id="tl-week" hidden aria-labelledby="tl-week-h">
+            <h2 id="tl-week-h">This week's shortest chains</h2>
+            <p class="games-note">The shortest possible chain for each day's puzzle so far this week, with the team and seasons of every link. Today's appears once you finish it.</p>
+            <ul class="tw-list" id="tl-week-list"></ul>
+            <details id="tl-week-prev-wrap" hidden><summary>Last week</summary><ul class="tw-list" id="tl-week-prev"></ul></details>
+          </section>"""
 sports_page("teamlink", "Teamlink", "Link two players from any era through the teammates they shared.", TL_BOARD,
             '            <p class="game-pct" id="sp-star"></p>', TL_PROSE, TL_FAQ,
             ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/teamlink.js"], diff=True)

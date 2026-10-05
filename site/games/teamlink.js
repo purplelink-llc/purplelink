@@ -149,6 +149,8 @@
     if (!won) st.moves = [];
     paint(); save();
     if (mode === "daily" && fresh) {
+      var hist = S.loadState(NAME + "-hist") || {}; hist[daily.idx] = { l: links(), p: par(), m: st.misses, h: st.hints, w: won ? 1 : 0 };
+      Object.keys(hist).sort(function (a, b) { return a - b; }).slice(0, -60).forEach(function (k) { delete hist[k]; }); S.saveState(NAME + "-hist", hist);
       var saved = G.getGame(NAME);
       saved.stats = G.recordResult(saved.stats, daily.idx, won, links());
       saved.today = { idx: daily.idx, done: true, won: won };
@@ -179,6 +181,7 @@
     $("sp-next-line").hidden = !daily_;
     $("sp-practice-again").hidden = daily_;
     if (!fresh && daily_) S.paintRating(NAME, null);
+    renderWeek();
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
@@ -240,6 +243,48 @@
     return m === "daily" ? startDaily() : startPractice();
   }
 
+  // ---- the week's shortest chains ----
+  var chainCache = {};
+  function chainsOf(sport) {
+    return chainCache[sport] || (chainCache[sport] = Promise.all([S.load(sport), fetch("/games/data/sports-" + sport + "-chains.json").then(function (r) { return r.json(); })]).then(function (x) { return { d: x[0], ts: x[1].ts }; }));
+  }
+  function dayLabel(i) { return new Date(2026, 9, 4 + i).toLocaleDateString("en-US", { weekday: "long" }); }
+  function weekRow(i, today, hist, todayDone) {
+    var li = document.createElement("li"); li.className = "tw-day";
+    var sport = rotation[((i % rotation.length) + rotation.length) % rotation.length], slot = S.dailySlot(rotation, i);
+    return chainsOf(sport).then(function (x) {
+      var d = x.d, k = slot % d.tl.length, pair = d.tl[k], ch = x.ts[k];
+      var head = document.createElement("p"); head.className = "tw-head";
+      var b = document.createElement("strong"); b.textContent = dayLabel(i) + ", " + d.name; head.appendChild(b);
+      head.appendChild(document.createTextNode(": " + pair[0] + " to " + pair[1] + ". Shortest chain: " + (ch.c.length - 1) + " links."));
+      li.appendChild(head);
+      var mine = hist[i], you = document.createElement("p"); you.className = "tw-you";
+      you.textContent = mine ? (mine.w ? "You linked them in " + mine.l + (mine.l === mine.p ? " (par)." : ".") : "You gave up on this one.") : "You did not play this day.";
+      if (i === today && !todayDone) { you.textContent = "Today's chain is shown here once you finish today's puzzle, or tomorrow."; li.appendChild(you); return li; }
+      li.appendChild(you);
+      var ol = document.createElement("ol"); ol.className = "tw-chain";
+      ch.c.forEach(function (n, j) {
+        var c = document.createElement("li"); c.textContent = n;
+        if (j < ch.h.length && ch.h[j]) { var m = document.createElement("span"); m.className = "tw-hop"; m.textContent = " (teammates: " + S.fname(d, ch.h[j][0]) + ", " + S.span(d, ch.h[j][1], ch.h[j][2]) + ")"; c.appendChild(m); }
+        ol.appendChild(c);
+      });
+      li.appendChild(ol);
+      return li;
+    });
+  }
+  function renderWeek() {
+    var box = $("tl-week-list"), prev = $("tl-week-prev"); if (!box || !rotation.length) return;
+    var today = S.dayIdx(), dow = new Date().getDay(), start = today - ((dow + 6) % 7);
+    var hist = S.loadState(NAME + "-hist") || {}, t = G.getGame(NAME).today, todayDone = !!(t && t.idx === today && t.done);
+    function fill(ul, from, to) {
+      ul.innerHTML = "";
+      var ids = []; for (var i = from; i <= to; i++) if (i >= 0) ids.push(i);
+      return Promise.all(ids.map(function (i) { return weekRow(i, today, hist, todayDone); })).then(function (rows) { rows.forEach(function (r) { ul.appendChild(r); }); return rows.length; });
+    }
+    fill(box, start, today).then(function (n) { $("tl-week").hidden = false; if (!n) $("tl-week").hidden = true; });
+    fill(prev, start - 7, start - 1).then(function (n) { $("tl-week-prev-wrap").hidden = !n; });
+  }
+
   function wire() {
     cmb = S.combo({
       input: $("sp-input"), list: $("sp-list"),
@@ -269,6 +314,7 @@
       return G.ready;
     }).then(function () {
       wire();
+      renderWeek();
       return startDaily();
     }).then(function () { $("sp-loading").hidden = true; $("sp-game").hidden = false; if (!st.done) $("sp-input").focus({ preventScroll: true }); }, function () {
       $("sp-loading").textContent = "Today's puzzle could not be loaded. Check your connection and reload the page.";
