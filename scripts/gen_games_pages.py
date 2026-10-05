@@ -6,7 +6,7 @@ from games_meta import GAMES as META, HUB as HUBMETA, FOUNDED
 from games_art import art
 SITE = Path(__file__).resolve().parent.parent / "site"
 TODAY = date.today().isoformat()
-ORG = {"@type": "Organization", "@id": "https://purplelink.llc/#organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/"}
+ORG = {"@type": "Organization", "@id": "https://purplelink.llc/#organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "sameAs": ["https://www.youtube.com/@PurplelinkPL", "https://github.com/purplelink-llc"]}
 CF = """<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->"""
 
 def first_sentence(text):
@@ -1519,7 +1519,11 @@ def degree_page(sp, d):
         </div>
       </div>"""
     page(f"games/sports/{sp}-teammate-chains/", title, desc, body,
-         {"@context": "https://schema.org", "@graph": [faq(faq_), crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Sports", "https://purplelink.llc/games/sports/"), (f"{name} teammate chains", f"https://purplelink.llc/games/sports/{sp}-teammate-chains/"))]},
+         {"@context": "https://schema.org", "@graph": [
+             {"@type": "Article", "@id": f"https://purplelink.llc/games/sports/{sp}-teammate-chains/#article", "headline": title, "description": desc, "inLanguage": "en",
+              "datePublished": "2026-10-05", "dateModified": TODAY, "author": {"@id": ORG["@id"]}, "publisher": ORG,
+              "mainEntityOfPage": f"https://purplelink.llc/games/sports/{sp}-teammate-chains/", "about": f"{name} teammate connections"},
+             faq(faq_), crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Sports", "https://purplelink.llc/games/sports/"), (f"{name} teammate chains", f"https://purplelink.llc/games/sports/{sp}-teammate-chains/"))]},
          [])
 
 
