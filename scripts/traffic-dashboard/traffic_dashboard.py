@@ -937,6 +937,36 @@ def fetch_admob(app_key: str) -> dict | None:
     except Exception as exc:  # noqa: BLE001 — never let an AdMob hiccup sink the run
         return {"error": str(exc)[:200]}
 
+    # Estimated earnings by calendar month, this month included (through today), for the all-sources revenue view.
+    # Best effort: a failure here leaves the 7-day figures intact.
+    monthly: dict[str, float] = {}
+    try:
+        today = dt.datetime.now(dt.timezone.utc).date()
+        y, m = today.year, today.month - 5
+        while m < 1:
+            m, y = m + 12, y - 1
+        first = dt.date(y, m, 1)
+        month_body = json.dumps({"reportSpec": {
+            "dateRange": {"startDate": {"year": first.year, "month": first.month, "day": 1},
+                          "endDate": {"year": today.year, "month": today.month, "day": today.day}},
+            "dimensions": ["MONTH"], "metrics": ["ESTIMATED_EARNINGS"],
+            "dimensionFilters": [{"dimension": "APP", "matchesAny": {"values": [app["appId"]]}}]}}).encode()
+        month_req = urllib.request.Request(
+            f"https://admob.googleapis.com/v1/accounts/{app['publisherId']}/networkReport:generate",
+            data=month_body, method="POST",
+            headers={"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"})
+        with urllib.request.urlopen(month_req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+            for item in json.loads(resp.read().decode()):
+                r = item.get("row")
+                if not r:
+                    continue
+                ym = str((r.get("dimensionValues") or {}).get("MONTH", {}).get("value", ""))
+                if len(ym) == 6 and ym.isdigit():
+                    micros = int((r.get("metricValues") or {}).get("ESTIMATED_EARNINGS", {}).get("microsValue", 0) or 0)
+                    monthly[f"{ym[:4]}-{ym[4:]}"] = round(micros / 1_000_000, 4)
+    except Exception:  # noqa: BLE001
+        monthly = {}
+
     earnings_micros = impressions = clicks = matched = 0
     for item in rows:
         r = item.get("row")
@@ -957,6 +987,7 @@ def fetch_admob(app_key: str) -> dict | None:
         "impressions": impressions,
         "clicks": clicks,
         "matchedRequests": matched,
+        "monthly": monthly,
         "fetchedAt": dt.datetime.now(dt.timezone.utc).isoformat(),
     }
 
@@ -4338,13 +4369,84 @@ def photo_revenue_by_month(months: list[str]) -> dict[str, float]:
     return out
 
 
+SRC_EXTENSION = "Chrome extension (ExtensionPay)"
 REVENUE_SOURCES = [
     ("sales", "Sales", "var(--purple)"),
     ("appstore", "App Store", "var(--good)"),
     ("photo", "Photo licensing", "oklch(75% 0.14 230)"),
     ("marketplaces", "Etsy, Gumroad, Payhip", "oklch(70% 0.12 280)"),
-    ("ads", "Ads", "var(--line)"),
+    ("extpay", SRC_EXTENSION, "oklch(72% 0.13 150)"),
+    ("ads", "Ad revenue (est.)", "oklch(80% 0.12 110)"),
+    ("tiktok", "TikTok Creator Rewards (est.)", "oklch(70% 0.16 10)"),
 ]
+# Money that is TikTok's or AdMob's own estimate and has not been paid out. Shown in the totals, never hidden inside them.
+ESTIMATED_SOURCES = ("ads", "tiktok")
+TIKTOK_REWARDS_CSV = Path("/Volumes/Extreme SSD/TikTokPipeline/analytics/tiktok_rewards.csv")
+
+
+def tiktok_rewards_by_month(months: list[str], path: Path | None = None) -> dict[str, float]:
+    """TikTok Creator Rewards estimates by the month each post went up.
+
+    The pipeline's own rule (analytics/build_dashboard.py build_rewards): a post's estimate only accrues, so the
+    largest figure ever recorded for it is the truthful one; the rolling 7-day account windows overlap and are never
+    summed. These are TikTok's estimates from Studio, not payouts. A missing file reads as zero, quietly."""
+    import csv
+    out = {m: 0.0 for m in months}
+    best: dict[tuple, float] = {}
+    try:
+        with open(path or TIKTOK_REWARDS_CSV, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r.get("level") != "post" or not (r.get("posted_at") or "")[:7]:
+                    continue
+                try:
+                    est = float(r.get("est_rewards") or 0)
+                except ValueError:
+                    continue
+                key = (r.get("pipeline"), r.get("caption"), r.get("posted_at"))
+                best[key] = max(best.get(key, 0.0), est)
+    except OSError:
+        return out
+    for (_pipe, _cap, posted), est in best.items():
+        if posted[:7] in out:
+            out[posted[:7]] += est
+    return {m: round(v, 2) for m, v in out.items()}
+
+
+def admob_revenue_by_month(admob: dict | None, months: list[str]) -> dict[str, float]:
+    """AdMob's estimated earnings by month, from the monthly report stored with the 7-day one."""
+    monthly = (((admob or {}).get("globepin") or {}).get("monthly")) or {}
+    return {m: float(monthly.get(m, 0.0) or 0.0) for m in months}
+
+
+def extension_revenue_by_month(rows: list[dict], months: list[str]) -> dict[str, float]:
+    return marketplace_revenue_by_month([r for r in rows if r.get("market") == "extensionpay"], months)
+
+
+def revenue_series(sales, appstore, market_rows, admob, months: list[str]) -> dict[str, dict[str, float]]:
+    rows = market_rows or []
+    return {
+        "sales": sales_revenue_by_month(sales, months),
+        "appstore": appstore_revenue_by_month(appstore, months),
+        "photo": photo_revenue_by_month(months),
+        "marketplaces": marketplace_revenue_by_month([r for r in rows if r.get("market") != "extensionpay"], months),
+        "extpay": extension_revenue_by_month(rows, months),
+        "ads": admob_revenue_by_month(admob, months),
+        "tiktok": tiktok_rewards_by_month(months),
+    }
+
+
+def print_revenue_sources(sales, appstore, market_rows, admob) -> None:
+    """This month's revenue across every source, with the estimated part named, for the daily report."""
+    months = recent_months(2)
+    series = revenue_series(sales, appstore, market_rows, admob, months)
+    now_m, prev = months[-1], months[0]
+    def total(m, only=None):
+        return sum(series[k].get(m, 0.0) for k, _l, _c in REVENUE_SOURCES if only is None or (k in ESTIMATED_SOURCES) == only)
+    est = total(now_m, True)
+    print(f"\n  Revenue, all sources, {dt.datetime.strptime(now_m, '%Y-%m').strftime('%B')} so far: ${total(now_m):,.2f} "
+          f"(${total(now_m, False):,.2f} received or sold, ${est:,.2f} estimated); last month ${total(prev):,.2f}")
+    bits = [f"{label} ${series[k].get(now_m, 0.0):,.2f}" for k, label, _c in REVENUE_SOURCES if series[k].get(now_m, 0.0) > 0]
+    print("   " + ("; ".join(bits) if bits else "nothing yet"))
 
 
 REVENUE_PROJ_HORIZON = 3     # months projected forward
@@ -4468,15 +4570,9 @@ def revenue_chart(months: list[str], series: dict[str, dict[str, float]],
 
 
 def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
-                  market_rows: list[dict] | None = None) -> str:
+                  market_rows: list[dict] | None = None, admob: dict | None = None) -> str:
     months = recent_months(n_months)
-    series = {
-        "sales": sales_revenue_by_month(sales, months),
-        "appstore": appstore_revenue_by_month(appstore, months),
-        "photo": photo_revenue_by_month(months),
-        "marketplaces": marketplace_revenue_by_month(market_rows or [], months),
-        "ads": {m: 0.0 for m in months},  # see the module docstring above
-    }
+    series = revenue_series(sales, appstore, market_rows, admob, months)
     this_month = months[-1]
     this_month_total = sum(series[k].get(this_month, 0.0) for k, _l, _c in REVENUE_SOURCES)
     chips = "".join(
@@ -4489,6 +4585,9 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
         prev = months[-2]
         last_month_fig = (f"<div><span class=\"sales-figure-label\">Last month ({dt.datetime.strptime(prev, '%Y-%m').strftime('%B')})</span>"
                           f"<span class=\"sales-secondary\">${monthly_totals[prev]:,.2f}</span></div>")
+    est_now = sum(series[k].get(this_month, 0.0) for k in ESTIMATED_SOURCES)
+    est_note = (f"This month includes ${est_now:,.2f} of estimates that have not been paid out: TikTok's own Creator "
+                f"Rewards estimate and AdMob's estimated earnings. The rest is money received or sold.")
     proj = project_revenue(monthly_totals, months)
     if proj.get("insufficient"):
         proj_note = (f"Not projecting future months yet: {proj['have']} real month(s) of revenue "
@@ -4512,6 +4611,7 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
     {last_month_fig}
   </div>
   <div class="sales-split">{chips}</div>
+  <p class="sales-foot">{html.escape(est_note)}</p>
   {revenue_chart(months, series, proj)}
   <p class="bound">{html.escape(proj_note)}</p>
   <p class="sales-foot">"Revenue," not "MRR": almost none of this is recurring
@@ -4582,10 +4682,13 @@ def photo_sale_rows() -> list[dict]:
 def all_sales_rows(ledger_rows: list[dict], appstore: dict | None) -> list[dict]:
     rows: list[dict] = []
     for r in ledger_rows:
-        if r.get("kind") not in (None, "purchase", "renewal"):
+        # Marketplace and ExtensionPay rows are kind "order"; leaving that out hid every one of them from this list.
+        if r.get("kind") not in (None, "purchase", "renewal", "order"):
             continue
         market = r.get("market")
-        if market:
+        if market == "extensionpay":
+            source, detail = SRC_EXTENSION, "Scholar Utility Belt Pro"
+        elif market:
             source, detail = "Etsy, Gumroad, Payhip", MARKETPLACE_LABELS.get(market, market)
         else:
             source = "Card sales (Stripe)"
@@ -4624,7 +4727,7 @@ def photo_totals_only_note(listed: list[dict]) -> str:
 
 def all_sales_block(ledger_rows: list[dict], appstore: dict | None) -> str:
     rows = all_sales_rows(ledger_rows, appstore)
-    sources = ["Card sales (Stripe)", "Etsy, Gumroad, Payhip", "App Store", "Photo licensing"]
+    sources = ["Card sales (Stripe)", "Etsy, Gumroad, Payhip", SRC_EXTENSION, "App Store", "Photo licensing"]
     chips = "".join(
         f"<button type='button' class='src-chip' data-src=\"{html.escape(src)}\">{html.escape(src)} "
         f"<b>{sum(1 for r in rows if r['source'] == src)}</b></button>" for src in sources)
@@ -4944,7 +5047,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
     per_site, general = split_notes(summaries, obs)
     general_html = ("<section class='site-notes'><h2>Other notes</h2><ul>"
                     + "".join(f"<li>{html.escape(g)}</li>" for g in general) + "</ul></section>") if general else ""
-    overview = (f"{revenue_block(sales, appstore, market_rows=market_rows)}\n{metrics_block(metrics)}\n"
+    overview = (f"{revenue_block(sales, appstore, market_rows=market_rows, admob=admob)}\n{metrics_block(metrics)}\n"
                 f"{profit_block(profit, channels, tax)}\n{glance_table(summaries)}\n"
                 f"{queue_block()}\n{general_html}")
     money = f"{all_sales_block(ledger_rows or [], appstore)}\n{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
@@ -5256,6 +5359,7 @@ def main() -> int:
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
+    print_revenue_sources(sales, appstore, market_rows, history.get("admob"))
     print_outbound_veil(outbound_veil_report(history))
     print_extensionpay(history)
     print_profit(profit, channels, tax)
