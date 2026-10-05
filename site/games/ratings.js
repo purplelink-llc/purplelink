@@ -23,7 +23,19 @@
     var p = PAR[level];
     return seconds <= p / 2 ? 0.95 : seconds <= p ? 0.8 : seconds <= 2 * p ? 0.6 : 0.5;
   }
-  function tierFor(r) { var t = TIERS[0][1]; TIERS.forEach(function (x) { if (r >= x[0]) t = x[1]; }); return t; }
+  var SPORTS = ["teamlink", "gridlink", "unbeaten"];
+  var SPORT_TIERS = [[0, "Rookie"], [900, "Role player"], [1050, "Starter"], [1200, "All-Star"], [1400, "MVP"], [1650, "Hall of Famer"], [1900, "Greatest of all time"]];
+  function tierFor(r, game) { var L = game && SPORTS.indexOf(game) >= 0 ? SPORT_TIERS : TIERS, t = L[0][1]; L.forEach(function (x) { if (r >= x[0]) t = x[1]; }); return t; }
+
+  // Daily sports games: the same formulas as netlify/lib/ratings.mjs.
+  function teamlinkPuzzleRating(par) { return 900 + 150 * par; }
+  function teamlinkScore(i) { return i.won ? Math.max(0.15, 1 - 0.15 * Math.max(0, i.links - i.par) - 0.05 * Math.min(i.misses, 10) - 0.08 * Math.min(i.hints, 5)) : 0; }
+  function unbeatenScore(i) { var share = Math.min(1, Math.max(0, (i.wins / i.games - 0.45) / 0.5)); return Math.min(1, 0.85 * share + (i.champion ? 0.15 : 0)); }
+  function sportsRating(game, i) {
+    if (game === "teamlink") return { puzzleRating: teamlinkPuzzleRating(i.par), score: teamlinkScore(i), solved: !!i.won };
+    if (game === "gridlink") return { puzzleRating: 1000, score: i.filled / 9, solved: i.filled >= 5 };
+    return { puzzleRating: 1100, score: unbeatenScore(i), solved: !!i.champion };
+  }
   function empty() { return { r: START, n: 0, w: 0, peak: START, streak: 0, best: 0 }; }
 
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
@@ -61,7 +73,36 @@
   }
 
   // One finished puzzle. info: { id, puzzleRating, result, ms, level? }. Resolves to { rec, delta, signedIn }.
+  // One finished daily sports puzzle. info: { idx, sport, ms, ... the fields each game reports }.
+  function reportDaily(game, info) {
+    var rec = get(game), s = session(), id = "d" + info.idx, r = sportsRating(game, info);
+    if ((rec.ids || []).indexOf(id) >= 0) return Promise.resolve({ rec: rec, delta: 0, signedIn: !!s, repeat: true });
+    function local() {
+      var out = nextRating(rec, r.puzzleRating, r.score), next = Object.assign({}, rec);
+      next.r = out.r; next.n += 1; next.peak = Math.max(next.peak, out.r);
+      if (r.solved) { next.w += 1; next.streak += 1; next.best = Math.max(next.best, next.streak); } else next.streak = 0;
+      next.ids = (rec.ids || []).concat([id]).slice(-40);
+      put(game, next);
+      return { rec: next, delta: out.delta, signedIn: !!s };
+    }
+    if (!s || !G.api) return Promise.resolve(local());
+    var body = { action: "rating_report", game: game, id: id, idx: info.idx, sport: info.sport, ms: Math.max(0, Math.min(21000000, Math.round(info.ms))) };
+    ["won", "links", "misses", "hints", "filled", "wins", "champion"].forEach(function (k) { if (info[k] !== undefined) body[k] = info[k]; });
+    if (rec.n > 0) body.seed = { r: rec.r, n: rec.n };
+    return G.api(body, s.session).then(function (res) {
+      if (res.status === 200 && typeof res.body.r === "number") {
+        var next = Object.assign({}, rec, { r: res.body.r, n: res.body.n, peak: res.body.peak, streak: res.body.streak, w: rec.w + (r.solved && !res.body.repeat ? 1 : 0) });
+        next.best = Math.max(next.best || 0, res.body.streak); next.ids = (rec.ids || []).concat([id]).slice(-40);
+        put(game, next);
+        return { rec: next, delta: res.body.delta, signedIn: true, public: !!res.body.public };
+      }
+      if (res.status === 401) G.session.set(null);
+      return local();
+    }, function () { return local(); });
+  }
+
   function report(game, info) {
+    if (SPORTS.indexOf(game) >= 0) return reportDaily(game, info);
     var rec = get(game), s = session();
     var score = game === "chess" ? (info.result === "solved" ? 1 : 0) : sudokuScore(info.result, info.ms / 1000, info.level);
     var solved = game === "chess" ? info.result === "solved" : info.result !== "skip";
@@ -100,6 +141,6 @@
 
   return {
     START: START, LEVEL_RATING: LEVEL_RATING, PAR: PAR, expected: expected, kFactor: kFactor, nextRating: nextRating, sudokuScore: sudokuScore, tierFor: tierFor,
-    get: get, load: load_, report: report, current: current, recentIds: recentIds, setPublic: setPublic, leaderboard: leaderboard
+    get: get, load: load_, report: report, SPORTS: SPORTS, sportsRating: sportsRating, current: current, recentIds: recentIds, setPublic: setPublic, leaderboard: leaderboard
   };
 });

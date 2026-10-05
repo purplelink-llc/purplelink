@@ -4,7 +4,7 @@ Writes site/games/data/sports-<sport>.json and site/games/data/sports-index.json
 
 Daily puzzles are pinned: scripts/sports-pinned/<sport>.json keeps every puzzle ever issued and this script only
 appends, so a day that is already live never changes when the player pool grows."""
-import collections, hashlib, json, math, pathlib, random, sys
+import collections, hashlib, json, math, os, pathlib, random, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "scripts" / "sports" / "out"
@@ -13,6 +13,7 @@ DATA = ROOT / "site" / "games" / "data"
 EPOCH_DOW = 0                       # the games epoch (2026-10-04) is a Sunday; JS getDay() = 0
 DAYS = 420                          # daily puzzles per sport kept ahead of today
 ORDER = ["nba", "nfl", "mlb", "nhl"]
+DAYS_LIB = {}
 WANT = {s: {1: 2, 2: 3, 3: 3, 4: 4, 5: 4, 6: 5, 0: 6} for s in ORDER}     # target chain length (par) by weekday, JS getDay()
 SHORT = {"nhl": {"UTA": "Coyotes", "CLB": "Seals/Barons"}}
 FULL = {"nhl": {"UTA": "Winnipeg Jets / Arizona Coyotes / Utah Mammoth"}}
@@ -69,6 +70,7 @@ ALL = ROOT / "scripts" / "sports" / "all"
 
 
 def load_extra(sport, P):
+    if not os.environ.get("SPORTS_EXTRAS"): return [], ""
     """Players outside the famous pool, from scripts/sports/all/<sport>.json. Returns rows [name, pos, born, stints]
     with names made unique, plus the credit text."""
     f = ALL / f"{sport}.json"
@@ -161,6 +163,15 @@ def teammates_of(P, star):
     return out
 
 
+def pars_for(P, extra, pairs):
+    """Shortest chain length for each daily pair over everyone in the database."""
+    stints = combined(P, extra); bk = make_buckets(stints); idx = {p["n"]: i for i, p in enumerate(P)}
+    out = []
+    for a, b in pairs:
+        out.append(full_bfs(stints, bk, idx[a]).get(idx[b], 0))
+    return out
+
+
 def pick_pairs(P, extra, sport, existing):
     famous = [i for i, p in enumerate(P) if p["t"] >= 3]
     stints = combined(P, extra); bk = make_buckets(stints)
@@ -245,13 +256,18 @@ def main():
         pin_f.write_text(json.dumps(pin, separators=(",", ":")))
         cfg = CFG[sport]
         F = {k: FULL.get(sport, {}).get(k, v) for k, v in F.items()}
+        pars = pars_for(P, extra, pin["tl"])
+        DAYS_LIB[sport] = {"par": pars, "games": cfg["games"]}
         data = {"sport": sport, "name": cfg["name"], "fr": F, "fs": SHORT.get(sport, {}), "cfg": {k: cfg[k] for k in ("slots", "bench", "cap", "games", "scale", "base", "gname", "plural", "teams", "rounds", "era") if k in cfg} | {"split": bool(cfg.get("split")), "selname": SELNAME[sport]},
-                "p": [[p["n"], p["p"], p["t"], p["o"], p["s"], p["h"]] for p in P], "tl": pin["tl"], "gr": pin["gr"]}
+                "p": [[p["n"], p["p"], p["t"], p["o"], p["s"], p["h"]] for p in P], "tl": pin["tl"], "tp": pars, "gr": pin["gr"]}
         (DATA / f"sports-{sport}.json").write_text(json.dumps(data, separators=(",", ":"), ensure_ascii=False))
         if extra:
             (DATA / f"sports-{sport}-all.json").write_text(json.dumps({"credit": credit, "p": extra}, separators=(",", ":"), ensure_ascii=False))
         print(sport, len(P), "famous +", len(extra), "others,", len(pin["tl"]), "link days", len(pin["gr"]), "grids", (DATA / f"sports-{sport}.json").stat().st_size // 1024, "KB")
     (DATA / "sports-index.json").write_text(json.dumps({"rotation": present}, separators=(",", ":")))
+    # the rating service needs the day's expected chain length and season length; it never sees the puzzles themselves
+    lib = ROOT / "netlify" / "lib" / "sports-days.json"
+    lib.write_text(json.dumps({"rotation": present, **DAYS_LIB}, separators=(",", ":")))
 
 
 if __name__ == "__main__":

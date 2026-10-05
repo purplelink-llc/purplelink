@@ -202,6 +202,19 @@
   }
   function career(p) { return p.span; }
 
+  // ---------- rating line on the result card ----------
+  // res: what PLRating.report resolved to (null when the result is only being shown again).
+  function paintRating(game, res) {
+    var R = typeof window !== "undefined" ? window.PLRating : null, el = document.getElementById("sp-rating"), lb = document.getElementById("sp-lb");
+    if (!R || !el) return;
+    var rec = res ? res.rec : R.get(game);
+    if (!rec || !rec.n) { el.textContent = ""; return; }
+    var d = res && res.delta ? " (" + (res.delta > 0 ? "+" : "\u2212") + Math.abs(res.delta) + ")" : "";
+    el.textContent = "Your rating: " + rec.r + d + ", " + R.tierFor(rec.r, game) + ". " + rec.n + " rated " + (rec.n === 1 ? "day" : "days") + ", best " + rec.peak + ".";
+    if (lb) { lb.hidden = false; lb.href = "/games/leaderboard/?g=" + game; }
+  }
+  function elapsed(t0) { return t0 ? Math.min(21000000, Date.now() - t0) : 120000; }
+
   // ---------- local state (kept apart from the synced progress) ----------
   function loadState(key) { try { return JSON.parse(localStorage.getItem("pl-sports-" + key)) || null; } catch (e) { return null; } }
   function saveState(key, v) { try { if (v === null) localStorage.removeItem("pl-sports-" + key); else localStorage.setItem("pl-sports-" + key, JSON.stringify(v)); } catch (e) { /* ignore */ } }
@@ -259,6 +272,6 @@
     crit: crit, cellAnswers: cellAnswers, shortName: shortName, fname: fname, honorsText: honorsText, hash: hash, rng: rng,
     dayIdx: dayIdx, dailySport: dailySport, dailySlot: dailySlot,
     span: span, stintText: stintText, teamsLine: teamsLine, career: career,
-    loadState: loadState, saveState: saveState, combo: combo
+    paintRating: paintRating, elapsed: elapsed, loadState: loadState, saveState: saveState, combo: combo
   };
 });

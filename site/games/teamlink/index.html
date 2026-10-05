@@ -89,6 +89,7 @@
             "priceCurrency": "USD"
           },
           "featureList": [
+            "A running rating and leaderboards",
             "A new pair of players every day",
             "Stars from every era, no bench players",
             "Add players at either end of the chain",
@@ -186,6 +187,14 @@
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "The daily puzzle rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick any sport and a difficulty."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is there a rating or a leaderboard?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Each day you finish counts once toward a running Elo rating for this game, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."
               }
             }
           ]
@@ -329,6 +338,8 @@
               <div><b id="sp-max">0</b><span>Best streak</span></div>
             </div>
             <p class="game-pct" id="sp-pct"></p>
+            <p class="game-pct" id="sp-rating"></p>
+            <p class="game-pct"><a id="sp-lb" href="/games/leaderboard/" hidden>See the leaderboard and join it</a></p>
             <p class="game-pct" id="sp-saver"></p>
             <div class="game-actions">
               <button type="button" class="btn btn-primary" id="sp-share">Copy result</button>
@@ -357,6 +368,8 @@
         <p>Three stars for matching par with no hints and at most two misses, two stars for par plus one, one star for anything longer.</p>
         <h3>Which sport is it today?</h3>
         <p>The daily puzzle rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick any sport and a difficulty.</p>
+        <h3>Is there a rating or a leaderboard?</h3>
+        <p>Yes. Each day you finish counts once toward a running Elo rating for this game, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day&#x27;s puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name.</p>
         </div>
         <div class="games-prose">
           <h2>Tips for Teamlink</h2>
@@ -384,8 +397,9 @@
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=99d59c8de5" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
-    <script src="/games/sports.js?v=55a9cf28ac" defer></script>
-    <script src="/games/teamlink.js?v=3a36518461" defer></script>
+    <script src="/games/ratings.js?v=5ae929a071" defer></script>
+    <script src="/games/sports.js?v=0590ad593c" defer></script>
+    <script src="/games/teamlink.js?v=83b2ce7253" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

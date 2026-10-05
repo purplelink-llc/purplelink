@@ -173,7 +173,7 @@ TAGLINE = {
     "unbeaten": "Build a roster from any era and play a perfect season.",
     "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
-    "leaderboard": "The top ratings in chess and Sudoku, and this week's climbers.",
+    "leaderboard": "The top ratings in chess, Sudoku and the sports games, and this week's climbers.",
 }
 MINUTES = {"teamlink": 4, "gridlink": 4, "unbeaten": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
@@ -1033,18 +1033,21 @@ page("games/sudoku-unlimited/", "", "", SU_BODY,
 LB_FAQ = [
     ("Who appears on the leaderboards?", "Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed."),
     ("What is the weekly board?", "It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday."),
-    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, so treat the boards as friendly competition."),
-    ("How do I join?", "Play a few rated puzzles, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
+    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily sports results are checked for plausibility rather than replayed, so treat the boards as friendly competition."),
+    ("How do I join?", "Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
 ]
 LB_BODY = """      <div class="games-wrap">
         <div class="game-head">
           <h1>Leaderboards</h1>
           <span class="game-num" id="lb-week"></span>
         </div>
-        <p class="game-lede">The Purplelink puzzle leaderboards list the highest ratings in Chess Puzzles and Sudoku Unlimited, plus the biggest rating gains this week.</p>
+        <p class="game-lede">The Purplelink leaderboards list the highest ratings in Chess Puzzles, Sudoku Unlimited and the three daily sports games (Teamlink, Gridlink and Unbeaten), plus the biggest rating gains this week.</p>
         <div class="lb-tabs" role="group" aria-label="Choose a board">
           <button type="button" class="lb-tab" data-game="chess" aria-pressed="true">Chess Puzzles</button>
           <button type="button" class="lb-tab" data-game="sudoku" aria-pressed="false">Sudoku Unlimited</button>
+          <button type="button" class="lb-tab" data-game="teamlink" aria-pressed="false">Teamlink</button>
+          <button type="button" class="lb-tab" data-game="gridlink" aria-pressed="false">Gridlink</button>
+          <button type="button" class="lb-tab" data-game="unbeaten" aria-pressed="false">Unbeaten</button>
           <span class="lb-gap"></span>
           <button type="button" class="lb-tab" data-board="all" aria-pressed="true">Rating</button>
           <button type="button" class="lb-tab" data-board="week" aria-pressed="false">This week</button>
@@ -1059,7 +1062,7 @@ LB_BODY = """      <div class="games-wrap">
         </div>
         <div class="games-prose">
           <h2>How the boards work</h2>
-          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
+          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Teamlink, Gridlink and Unbeaten update once a day, from your first result on that day\'s puzzle: a harder Teamlink chain counts for more, Gridlink counts the cells you filled, and Unbeaten counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
           <h2>Questions</h2>
 """ + faq_html(LB_FAQ) + """
         </div>
@@ -1299,6 +1302,8 @@ def sports_page(slug, title, lede, board, result_extra, prose, faq_items, script
               <div><b id="sp-max">0</b><span>Best streak</span></div>
             </div>
             <p class="game-pct" id="sp-pct"></p>
+            <p class="game-pct" id="sp-rating"></p>
+            <p class="game-pct"><a id="sp-lb" href="/games/leaderboard/" hidden>See the leaderboard and join it</a></p>
             <p class="game-pct" id="sp-saver"></p>
             <div class="game-actions">
               <button type="button" class="btn btn-primary" id="sp-share">Copy result</button>
@@ -1328,6 +1333,7 @@ TL_FAQ = [
     ("How do the two ends work?", "You can add a player next to the first player or next to the last player. If a player is a teammate of both ends, the chain closes."),
     ("How are stars awarded?", "Three stars for matching par with no hints and at most two misses, two stars for par plus one, one star for anything longer."),
     ("Which sport is it today?", "The daily puzzle rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick any sport and a difficulty."),
+    ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for this game, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
 ]
 TL_PROSE = f"""        <h2>How to play</h2>
         <p>You are given two players, often from different eras. Build a chain of teammates between them. Type a player who shared a team and a season with either end of your chain and pick the name from the list.</p>
@@ -1349,7 +1355,7 @@ TL_BOARD = """          <div class="tl-ends" aria-label="The two players to link
           <p class="sp-count"><span>Links <b id="sp-links">1</b></span> <span>Par <b id="sp-par">?</b></span> <span>Misses <b id="sp-misses">0</b></span> <span>Hints <b id="sp-hints">0</b></span></p>"""
 sports_page("teamlink", "Teamlink", "Link two players from any era through the teammates they shared.", TL_BOARD,
             '            <p class="game-pct" id="sp-star"></p>', TL_PROSE, TL_FAQ,
-            ["/games/core.js", "/games/sports.js", "/games/teamlink.js"], diff=True)
+            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/teamlink.js"], diff=True)
 
 GL_FAQ = [
     ("How does scoring work?", "You have nine guesses for nine cells. Every correct cell is worth 1 to 5 points: the less famous the player you name, the more it is worth. A wrong name uses a guess without scoring."),
@@ -1357,6 +1363,7 @@ GL_FAQ = [
     ("Can I use a player twice?", "No. Each player can fill one cell."),
     ("Is there always an answer for every cell?", "Yes. Every cell in every grid has at least two players in our list who fit it."),
     ("Which sport is it today?", "The daily grid rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick a sport and play unlimited grids."),
+    ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for this game, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
 ]
 GL_PROSE = f"""        <h2>How to play</h2>
         <p>Each row and each column is a clue. Tap a cell, then name a player who fits both its row clue and its column clue. You have nine guesses in all, so a wrong name costs one.</p>
@@ -1370,7 +1377,7 @@ GL_BOARD = """          <p class="sp-count"><span>Guesses left <b id="gl-left">9
 """ + SP_FORM + """
           <div class="sp-tools"><button type="button" class="gbtn gbtn--ghost" id="gl-giveup">End and show answers</button></div>"""
 sports_page("gridlink", "Gridlink", "Nine cells, nine guesses: name a player who fits each row and column.", GL_BOARD, "", GL_PROSE, GL_FAQ,
-            ["/games/core.js", "/games/sports.js", "/games/gridlink.js"])
+            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/gridlink.js"])
 
 UB_FAQ = [
     ("How is a season simulated?", "Your team's strength is the average rating of the starters, a smaller share from the bench, and a bonus for players who were really teammates. Each game is a weighted coin flip against the rest of the league. The same roster on the same day always gives the same record."),
@@ -1378,6 +1385,7 @@ UB_FAQ = [
     ("Can a team really go undefeated?", "It can, but it is very unlikely even for the best roster the budget allows. The result card shows the exact chance for your roster."),
     ("What are the weekday rules?", "Each weekday has a rule: a bigger budget on Sunday, an open draft on Monday, only players who started before 1990 on Tuesday, only players who started in 2000 or later on Wednesday, no all-time icons on Thursday, a smaller budget on Friday and stars only on Saturday. Other leagues use their own cut-off years."),
     ("Does a practice run count?", "No. Only your first daily roster counts toward your streak and stats. Practice rosters never do."),
+    ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for Unbeaten, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
 ]
 UB_PROSE = f"""        <h2>How to play</h2>
         <p>Fill every starting spot with a player of the right position, from any era. Each player has a cost and a rating, and your budget does not cover a roster of all-time greats. Pick a bench with anyone left over. When every starter is in, play the season.</p>
@@ -1406,7 +1414,7 @@ UB_RESULT = """            <p class="ub-record" id="ub-record" aria-hidden="true
             <ul class="ub-detail" id="ub-detail"></ul>
             <div id="ub-playoffs-wrap" hidden><h3>Playoffs</h3><ul class="ub-detail" id="ub-playoffs"></ul></div>"""
 sports_page("unbeaten", "Unbeaten", "Build a roster from any era under a budget, then play a full season.", UB_BOARD, UB_RESULT, UB_PROSE, UB_FAQ,
-            ["/games/core.js", "/games/sports.js", "/games/season.js", "/games/unbeaten.js"])
+            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/season.js", "/games/unbeaten.js"])
 
 HUB_FAQ = [
     ("Are the games free?", "Yes. You can play every game without signing in. The daily games have no third-party ads, only an occasional small notice about one of our own apps. The two unlimited pages, Chess Puzzles and Sudoku Unlimited, show Google ads. An optional email-link sign-in keeps your streaks, achievements and puzzle ratings across devices."),

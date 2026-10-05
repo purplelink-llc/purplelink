@@ -15,7 +15,7 @@
 
   function save() { if (mode === "daily" && daily) S.saveState(NAME, { idx: daily.idx, sport: daily.sport, st: st }); }
 
-  function newState() { return { cells: [null, null, null, null, null, null, null, null, null], used: 0, done: false, won: false }; }
+  function newState() { return { t0: Date.now(), cells: [null, null, null, null, null, null, null, null, null], used: 0, done: false, won: false }; }
 
   function build(g) {
     grid = { r: g.r.map(function (c) { return S.crit(data, c); }), c: g.c.map(function (c) { return S.crit(data, c); }) };
@@ -105,6 +105,7 @@
       G.track("game_end", NAME + ":" + (st.won ? "win" : "loss"));
       if (window.PLAch) window.PLAch.check({ game: NAME, idx: daily.idx, won: st.won, tries: 9 - filled() + 1 });
       G.submitScore(NAME, daily.idx, Math.min(98, 9 - filled())).then(function (res) { $("sp-pct").textContent = G.describePercentile(res); });
+      if (window.PLRating) window.PLRating.report(NAME, { idx: daily.idx, sport: daily.sport, ms: S.elapsed(st.t0), filled: filled() }).then(function (x) { S.paintRating(NAME, x); });
     }
     if (filled() === 9 && window.PLConfetti) window.PLConfetti.big(); else if (st.won && window.PLConfetti) window.PLConfetti.small();
     if (FX) FX.play(filled() === 9 ? "big" : st.won ? "win" : "lose");
@@ -122,6 +123,7 @@
     var sv = $("sp-saver"); if (sv) sv.textContent = d_ ? G.saverNote(s, daily.idx) : "";
     $("sp-next-line").hidden = !d_;
     $("sp-practice-again").hidden = d_;
+    if (!fresh && d_) S.paintRating(NAME, null);
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }

@@ -27,8 +27,9 @@
 
 import { createHash, randomBytes } from "node:crypto";
 import { cleanData, cleanName, mergeData, percentile, dayIndexUTC, MAX_DATA_BYTES, SCORE_LIMITS } from "../lib/games-logic.mjs";
-import { applyResult, boardRow, checkReport, DAILY_REPORT_CAP, emptyRecord, publicNameOk, upsertRow, weekOf } from "../lib/ratings.mjs";
+import { applyResult, boardRow, checkReport, DAILY_REPORT_CAP, SPORTS_GAMES, emptyRecord, publicNameOk, upsertRow, weekOf } from "../lib/ratings.mjs";
 import CHESS_INDEX from "../lib/chess-index.json" with { type: "json" };
+import SPORTS_DAYS from "../lib/sports-days.json" with { type: "json" };
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const ALLOWED_ORIGINS = new Set([SITE_ORIGIN, "https://www.purplelink.llc"]);
@@ -80,9 +81,9 @@ async function sendLoginEmail(to, link, env, fetchFn) {
   }
 }
 
-const RATED = ["chess", "sudoku"];
+const RATED = ["chess", "sudoku", ...SPORTS_GAMES];
 
-export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), now = () => Date.now(), chessIndex = CHESS_INDEX }) {
+export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), now = () => Date.now(), chessIndex = CHESS_INDEX, sportsDays = SPORTS_DAYS }) {
   const accounts = () => getStore("games-accounts");
   const auth = () => getStore("games-auth");
   const scores = () => getStore("games-scores");
@@ -241,7 +242,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         if (account.public && !publicNameOk(name)) account.public = false;
         await accounts().setJSON(`acct:${sess.acct}`, account);
         const recs = await loadRatings(sess.acct);
-        if (account.public || recs.chess || recs.sudoku) await syncBoards(sess.acct, account, recs);
+        if (account.public || RATED.some((g) => recs[g])) await syncBoards(sess.acct, account, recs);
         return json(200, { ok: true, name, public: !!account.public }, origin);
       }
       if (action === "set_reminder") {
@@ -252,11 +253,11 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       }
       if (action === "ratings") {
         const recs = await loadRatings(sess.acct);
-        return json(200, { chess: recs.chess || null, sudoku: recs.sudoku || null, public: !!account.public, name: account.name || "" }, origin);
+        return json(200, { chess: recs.chess || null, sudoku: recs.sudoku || null, teamlink: recs.teamlink || null, gridlink: recs.gridlink || null, unbeaten: recs.unbeaten || null, public: !!account.public, name: account.name || "" }, origin);
       }
       if (action === "rating_report") {
         const game = String(b.game || "");
-        const checked = checkReport(game, b, chessIndex);
+        const checked = checkReport(game, b, chessIndex, sportsDays, dayIndexUTC(new Date(now())));
         if (!checked.ok) return json(400, { error: checked.error }, origin);
         const recs = await loadRatings(sess.acct);
         let rec = recs[game];
@@ -265,11 +266,13 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
           const seed = b.seed && typeof b.seed === "object" ? b.seed : null;
           if (seed && Number.isFinite(seed.r)) { rec.r = rec.peak = rec.wr0 = Math.min(1500, Math.max(400, Math.round(seed.r))); rec.n = Math.min(40, Math.max(0, Math.trunc(Number(seed.n) || 0))); }
         }
-        if (rec.lastId === String(b.id)) return json(200, { r: rec.r, delta: 0, n: rec.n, streak: rec.streak, peak: rec.peak, repeat: true }, origin);
+        const rid = String(checked.id || b.id);
+        if (rec.lastId === rid || (rec.ids || []).includes(rid)) return json(200, { r: rec.r, delta: 0, n: rec.n, streak: rec.streak, peak: rec.peak, repeat: true }, origin);
         const today = new Date(now()).toISOString().slice(0, 10);
         if (rec.day === today && rec.dn >= DAILY_REPORT_CAP) return json(429, { error: "daily_limit" }, origin);
         const out = applyResult(rec, { puzzleRating: checked.puzzleRating, score: checked.score, solved: checked.solved, dayIdx: dayIndexUTC(new Date(now())), dayKey: today });
-        out.rec.lastId = String(b.id);
+        out.rec.lastId = rid;
+        if (SPORTS_GAMES.includes(game)) out.rec.ids = [...(rec.ids || []), rid].slice(-40);       // one rated result per daily puzzle
         recs[game] = out.rec;
         await ratings().setJSON(`r:${sess.acct}`, recs);
         if (account.public) await syncBoards(sess.acct, account, recs);

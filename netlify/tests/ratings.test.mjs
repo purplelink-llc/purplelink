@@ -153,3 +153,46 @@ test("the browser copy of the formulas matches the service", async () => {
   for (const res of ["clean", "help", "skip"]) for (const t of [10, 200, 500, 900, 5000]) for (const l of [1, 2, 3, 4, 5]) assert.equal(C.sudokuScore(res, t, l), sS(res, t, l));
   assert.equal(C.tierFor(1000), "Learner"); assert.equal(C.tierFor(2450), "Grandmaster");
 });
+
+// ---- daily sports games ----
+test("daily sports results: rated once a day, checked, and on the leaderboard", async () => {
+  const days = (await import("../lib/sports-days.json", { with: { type: "json" } })).default;
+  const idx = 10, sport = days.rotation[idx % days.rotation.length], par = days[sport].par[Math.floor(idx / days.rotation.length)];
+  const s = await signIn("sp@example.com");
+  const base = { action: "rating_report", game: "teamlink", id: "d" + idx, idx, sport };
+  assert.equal((await call({ ...base, won: true, links: par, misses: 0, hints: 0, ms: 60000 }, s)).status, 200);
+  const again = await call({ ...base, won: true, links: par, misses: 0, hints: 0, ms: 60000 }, s);
+  assert.equal(again.body.repeat, true);                                            // one rated result per day
+  const fresh = await signIn("sp2@example.com");
+  assert.equal((await call({ ...base, won: true, links: par, misses: 0, hints: 0, ms: 100 }, fresh)).body.error, "too_fast");
+  assert.equal((await call({ ...base, won: true, links: par - 1, misses: 0, hints: 0, ms: 60000 }, fresh)).body.error, "bad_result");   // shorter than the shortest chain
+  assert.equal((await call({ ...base, sport: "nope", won: true, links: par, misses: 0, hints: 0, ms: 60000 }, fresh)).body.error, "unknown_puzzle");
+  assert.equal((await call({ ...base, idx: 3, id: "d3", won: true, links: par, misses: 0, hints: 0, ms: 60000 }, fresh)).body.error, "not_today");
+  const ok = await call({ ...base, won: true, links: par, misses: 0, hints: 0, ms: 60000 }, s);
+  assert.equal(ok.body.repeat, true);
+  assert.equal((await call({ action: "rating_report", game: "gridlink", id: "d" + idx, idx, sport, filled: 9, ms: 5000 }, fresh)).body.error, "too_fast");
+  const g = await call({ action: "rating_report", game: "gridlink", id: "d" + idx, idx, sport, filled: 7, ms: 120000 }, fresh);
+  assert.equal(g.status, 200); assert.ok(g.body.delta > 0);
+  const u = await call({ action: "rating_report", game: "unbeaten", id: "d" + idx, idx, sport, wins: days[sport].games, champion: true, ms: 120000 }, fresh);
+  assert.ok(u.body.delta > 0);
+  assert.equal((await call({ action: "rating_report", game: "unbeaten", id: "d" + idx, idx, sport, wins: days[sport].games + 1, champion: true, ms: 120000 }, s)).body.error, "bad_result");
+  await call({ action: "set_name", name: "Sky" }, fresh); await call({ action: "set_public", on: true }, fresh);
+  const lb = (await call({ action: "leaderboard", game: "gridlink", board: "all" })).body.rows;
+  assert.equal(lb.length, 1); assert.equal(lb[0].name, "Sky");
+  const mine = (await call({ action: "ratings" }, fresh)).body;
+  assert.equal(mine.gridlink.n, 1); assert.equal(mine.unbeaten.n, 1); assert.equal(mine.teamlink, null);
+});
+
+test("the browser copy of the sports formulas matches the service", async () => {
+  const { readFileSync } = await import("node:fs"), vm = await import("node:vm");
+  const mod = { exports: {} };
+  vm.runInThisContext("(function (module) {" + readFileSync("site/games/ratings.js", "utf8") + "\n})")(mod);
+  const C = mod.exports, M = await import("../lib/ratings.mjs");
+  for (const par of [2, 3, 6]) for (const links of [par, par + 2]) for (const misses of [0, 4, 30]) for (const hints of [0, 2, 9]) for (const won of [true, false]) {
+    assert.equal(C.sportsRating("teamlink", { par, links, misses, hints, won }).score, M.teamlinkScore({ won, par, links, misses, hints }));
+    assert.equal(C.sportsRating("teamlink", { par, links, misses, hints, won }).puzzleRating, M.teamlinkPuzzleRating(par));
+  }
+  for (const wins of [0, 40, 60, 82]) for (const champion of [true, false]) assert.equal(C.sportsRating("unbeaten", { wins, games: 82, champion }).score, M.unbeatenScore({ wins, games: 82, champion }));
+  for (const filled of [0, 5, 9]) assert.equal(C.sportsRating("gridlink", { filled }).score, M.gridlinkScore({ filled }));
+  assert.equal(C.tierFor(1300, "gridlink"), "All-Star");
+});

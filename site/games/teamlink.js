@@ -13,7 +13,7 @@
   function P(n) { return data.byName[n]; }
   function side(arr) { return arr.map(P).filter(Boolean); }
 
-  function newState(a, b) { return { a: a, b: b, L: [a], R: [b], misses: 0, hints: 0, moves: [], done: false, won: false, gave: false, hint: { key: "", level: 0 } }; }
+  function newState(a, b) { return { t0: Date.now(), a: a, b: b, L: [a], R: [b], misses: 0, hints: 0, moves: [], done: false, won: false, gave: false, hint: { key: "", level: 0 } }; }
   function par() { var p = S.path(data, P(st.a), P(st.b)); return p ? p.length - 1 : 0; }
   function links() { return st.L.length + st.R.length - 1; }
   function inChain(p) { return st.L.indexOf(p.n) >= 0 || st.R.indexOf(p.n) >= 0; }
@@ -152,6 +152,7 @@
       G.track("game_end", NAME + ":" + (won ? "win" : "loss"));
       if (window.PLAch) window.PLAch.check({ game: NAME, idx: daily.idx, won: won, tries: links() });
       G.submitScore(NAME, daily.idx, score()).then(function (res) { $("sp-pct").textContent = G.describePercentile(res); });
+      if (window.PLRating) window.PLRating.report(NAME, { idx: daily.idx, sport: daily.sport, ms: S.elapsed(st.t0), won: won, par: par(), links: links(), misses: st.misses, hints: st.hints }).then(function (x) { S.paintRating(NAME, x); });
     }
     if (won && window.PLConfetti) window.PLConfetti[stars() === 3 ? "big" : "small"]();
     if (FX) FX.play(won ? (stars() === 3 ? "big" : "win") : "lose");
@@ -173,6 +174,7 @@
     $("sp-star").textContent = st.won ? "Rating: " + ["", "One star", "Two stars", "Three stars"][stars()] + "." : "";
     $("sp-next-line").hidden = !daily_;
     $("sp-practice-again").hidden = daily_;
+    if (!fresh && daily_) S.paintRating(NAME, null);
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }

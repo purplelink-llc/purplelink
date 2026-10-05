@@ -20,7 +20,7 @@
   }
   function ready() { return st.r.slice(0, data.cfg.slots.length).every(Boolean); }
   function save() { if (mode === "daily" && daily) S.saveState(NAME, { idx: daily.idx, sport: daily.sport, st: st }); }
-  function newState() { var r = []; for (var i = 0; i < slotCount(); i++) r.push(null); return { r: r, done: false, res: null }; }
+  function newState() { var r = []; for (var i = 0; i < slotCount(); i++) r.push(null); return { t0: Date.now(), r: r, done: false, res: null }; }
 
   function pct(x) { return x >= 0.1 ? (x * 100).toFixed(1) + "%" : x >= 0.0001 ? (x * 100).toFixed(2) + "%" : x > 0 ? "under 0.01%" : "0%"; }
 
@@ -122,6 +122,7 @@
       G.track("game_end", NAME + ":" + (res.champion ? "win" : "loss"));
       if (window.PLAch) window.PLAch.check({ game: NAME, idx: daily.idx, won: res.champion, tries: tries, losses: res.losses });
       G.submitScore(NAME, daily.idx, Math.min(98, res.losses)).then(function (r2) { $("sp-pct").textContent = G.describePercentile(r2); });
+      if (window.PLRating) window.PLRating.report(NAME, { idx: daily.idx, sport: daily.sport, ms: S.elapsed(st.t0), wins: res.wins, games: data.cfg.games, champion: res.champion }).then(function (x) { S.paintRating(NAME, x); });
     }
     paintSlots(); paintMeters();
     showResult(res, fresh);
@@ -167,6 +168,7 @@
     $("sp-next-line").hidden = !d_;
     $("sp-practice-again").hidden = false;
     $("sp-practice-again").textContent = d_ ? "Try a practice roster" : "Build another roster";
+    if (!fresh && d_) S.paintRating(NAME, null);
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
