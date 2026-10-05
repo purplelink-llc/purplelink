@@ -24,7 +24,7 @@ Nothing here posts anywhere on its own. To start a real stream:
 1. In YouTube Studio, create a live stream and copy its stream URL and key. Check YouTube's current rules for repetitive or automated
    content and for how to label generated music before you start; I have not verified them.
 2. Put `STREAM_URL=rtmp://a.rtmp.youtube.com/live2/<your key>` in `~/.config/purplelink/stream.env` (`chmod 600`). The key is never printed.
-3. Run `ops/run_stream.sh`, or install the launchd or systemd file so it starts at boot and restarts itself.
+3. Run `ops/run_stream.sh`, or install the launchd or systemd file so it starts at boot and restarts itself. On macOS, launchd agents are not allowed to run files on an external volume (the job fails with "Operation not permitted"), so run it from a copy in the home folder: `rsync -a --exclude out --exclude out2 tools/chiptune-radio/ ~/chiptune-radio/` and point the plist at `~/chiptune-radio/ops/run_stream.sh`. After changing code, rsync again and `launchctl kickstart -k gui/$(id -u)/com.purplelink.chiptune-radio`.
 4. In the video description, link purplelink.llc with campaign tags so the dashboard can attribute visits, for example `?utm_source=youtube&utm_medium=stream&utm_campaign=chiptune-radio`.
 
 ## What it costs to run (measured on this Mac, file mode)

@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- macOS: copy to ~/Library/LaunchAgents/, then: launchctl load ~/Library/LaunchAgents/com.purplelink.chiptune-radio.plist -->
+<!-- macOS: copy to ~/Library/LaunchAgents/, then: launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.purplelink.chiptune-radio.plist
+     Stop: launchctl bootout gui/$(id -u)/com.purplelink.chiptune-radio
+     caffeinate keeps the Mac awake while it runs (on power). The tool runs from a copy in the home folder: launchd agents are not allowed to run files on an external volume. -->
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
   <key>Label</key><string>com.purplelink.chiptune-radio</string>
-  <key>ProgramArguments</key><array><string>/Volumes/Extreme SSD/Purplelink LLC/tools/chiptune-radio/ops/run_stream.sh</string></array>
+  <key>ProgramArguments</key><array>
+    <string>/usr/bin/caffeinate</string><string>-is</string>
+    <string>/Users/benampel/chiptune-radio/ops/run_stream.sh</string>
+  </array>
+  <key>EnvironmentVariables</key><dict>
+    <key>PATH</key><string>/Library/Frameworks/Python.framework/Versions/3.12/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><true/>
-  <key>StandardErrorPath</key><string>/tmp/chiptune-radio.log</string>
+  <key>ThrottleInterval</key><integer>60</integer>
+  <key>StandardOutPath</key><string>/Users/benampel/Library/Logs/chiptune-radio.log</string>
+  <key>StandardErrorPath</key><string>/Users/benampel/Library/Logs/chiptune-radio.log</string>
 </dict></plist>
