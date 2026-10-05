@@ -1,5 +1,9 @@
 #!/usr/bin/env python3.12
-"""Procedural 8-bit study music, version 2. One seed gives one track, always the same track.
+"""Procedural study music in four sound worlds, version 3. One seed gives one track, always the same track.
+
+Each track picks an era: 8-bit (pulse, triangle, noise at 4 bits), 16-bit (FM keys, bells, flute, organ, strings, plucks, reverb and sampled-style drums),
+synth (detuned saws, filtered bass, risers, sidechain pumping) or a hybrid of the three. See voices.py for the instruments.
+
 
 Voices, as on a small console: pulse channels for the melody, its echo, a harmony line, an arpeggio and a pad,
 a triangle bass, and noise drums, with 4-bit amplitude steps. The music itself comes from composition rules:
@@ -23,6 +27,8 @@ from dataclasses import dataclass, field
 
 import numpy as np
 from scipy.signal import butter, resample_poly, sosfilt
+
+import voices as V
 
 SR = 44100            # output rate
 OS = 2                # oversampling while rendering, so square waves do not alias into hiss
@@ -106,6 +112,7 @@ class Track:
     swing: float
     groove: str
     sections: list = field(default_factory=list)
+    sound: dict = field(default_factory=dict)
 
     @property
     def bar_seconds(self) -> float:
@@ -178,6 +185,34 @@ def progression(r: random.Random, scale: list, dark: bool, kind: str) -> list:
 
 # ---------------------------------------------------------------- planning
 
+ERAS = {
+    "8bit": dict(lead=["pulse"], arp=["pulse_arp"], pad=["pulse_pad"], bass=["tri8"], kit=["8bit"], wet=0.0, cut=7500),
+    "16bit": dict(lead=["fm_ep", "flute", "fm_bell", "pulse_soft", "fm_brass"], arp=["pluck", "fm_ep", "fm_bell"], pad=["strings", "organ", "warm_pad"],
+                  bass=["fm_bass", "synth_bass", "sub_sine"], kit=["lofi", "808"], wet=0.24, cut=11500),
+    "synth": dict(lead=["saw_lead", "fm_brass", "pulse_soft"], arp=["saw_pluck", "pluck"], pad=["warm_pad", "strings"],
+                  bass=["synth_bass", "fm_bass"], kit=["electro", "808"], wet=0.18, cut=11500),
+    "hybrid": dict(lead=["pulse", "pulse_soft", "fm_ep", "saw_lead"], arp=["pulse_arp", "pluck", "saw_pluck"], pad=["strings", "organ", "pulse_pad"],
+                   bass=["tri8", "fm_bass", "synth_bass"], kit=["8bit", "lofi", "808"], wet=0.12, cut=9500),
+}
+
+
+def pick_sound(seed: int) -> dict:
+    """The instruments for a track, chosen on their own random stream so the notes do not change when the sound does."""
+    r = random.Random(seed * 31337 + 5)
+    era = r.choices(list(ERAS), weights=[2, 4, 3, 3])[0]
+    e = ERAS[era]
+
+    def two(pool):
+        a = r.choice(pool)
+        return [a, r.choice([x for x in pool if x != a] or pool)]
+
+    return dict(era=era, lead=two(e["lead"]), arp=two(e["arp"]), pad=r.choice(e["pad"]), bass=r.choice(e["bass"]), kit=r.choice(e["kit"]),
+                wet=e["wet"] * r.uniform(0.8, 1.25), rt60=r.uniform(1.1, 2.4), cut=e["cut"],
+                duck=era == "synth" or (era == "hybrid" and r.random() < 0.3), risers=era in ("16bit", "synth") or r.random() < 0.4,
+                spark=era != "8bit" and r.random() < 0.75, crackle=era in ("16bit", "hybrid") and r.random() < 0.5,
+                chorus=era != "8bit" and r.random() < 0.8)
+
+
 def plan(seed: int) -> Track:
     r = random.Random(seed * 7919 + 13)
     key = r.choice(list(KEYS))
@@ -211,6 +246,7 @@ def plan(seed: int) -> Track:
         s = dict(spec[name])
         chords = s.pop("chords")
         t.sections.append(Section(name, bars, chords, **s))
+    t.sound = pick_sound(seed)
     return t
 
 
@@ -297,7 +333,7 @@ def compose(t: Track):
     key = KEYS[t.key]
     beat = 60.0 / t.bpm
     s16 = beat / 4
-    ev = {c: [] for c in ("lead", "echo", "harm", "arp", "pad", "bass", "kick", "snare", "hat", "tom")}
+    ev = {c: [] for c in ("lead", "echo", "harm", "arp", "pad", "bass", "kick", "snare", "hat", "tom", "spark", "fx")}
     names = ["p1", "p2", "p3", "p4"]
     bass_a = r.choice(names)
     bass_b = r.choice([p for p in names if p != bass_a])
@@ -369,6 +405,14 @@ def compose(t: Track):
                         m = tonic + 12 + ch.root + (iv % 12)
                         m = m - 12 if m > 74 else m
                         ev["pad"].append((t0 + b * beat, ln * beat * 0.98, m, 0.5 * fade, None))
+
+            # a bell on the first beat of every second bar in the bigger sections, and a riser into them
+            if sec.name.startswith("B") and bar % 2 == 0:
+                b, ch, ln = chs[0]
+                ev["spark"].append((t0, 0.9, 72 + ((tonic + ch.root + ch.ivs[min(2, len(ch.ivs) - 1)]) % 12), 0.5 * fade, None))
+            if bar == 0 and sec.name in ("B", "B2", "A3"):
+                span = min(3.0, 2 * t.bar_seconds)
+                ev["fx"].append((t0 - span, span, 0, 0.6, None))
 
             # drums
             if sec.drums > 0:
@@ -574,76 +618,110 @@ def pan(sig: np.ndarray, p: float):
 
 def render(t: Track) -> np.ndarray:
     ev = compose(t)
+    snd = t.sound
     rng = np.random.default_rng(t.seed)
-    total = int((t.seconds + 1.5) * RATE)
-    left, right = np.zeros(total, np.float32), np.zeros(total, np.float32)       # float32: a track at 2x oversampling is large
+    total = int((t.seconds + 2.5) * SR)
+    groups = {g: np.zeros((2, total), np.float32) for g in ("lead", "arp", "pad", "bass", "drums", "fx")}
+    kit = snd["kit"]
+    kick_times = []
 
-    def put(sig: np.ndarray, start: float, p: float, gain: float):
-        i = int(max(0, start) * RATE)
-        if i >= total:
+    def put(group, sig88, start, p, gain):
+        i = int(start * SR)
+        if i >= total or i + 4 < 0:
             return
+        sig = resample_poly(sig88, 1, OS)
+        if i < 0:
+            sig, i = sig[-i:], 0
         sig = sig[: total - i]
         l, r_ = pan(sig * gain, p)
-        left[i:i + len(sig)] += l
-        right[i:i + len(sig)] += r_
+        groups[group][0, i:i + len(sig)] += l.astype(np.float32)
+        groups[group][1, i:i + len(sig)] += r_.astype(np.float32)
 
-    def voice(events, pan_pos, gain, default_duty=0.5, env=(0.006, 0.09, 0.75, 0.05)):
-        for start, dur, m, vol, ex in events:
-            n = max(8, int(dur * RATE))
-            ex = ex or {}
-            w = pulse(hz(m), n, ex.get("duty", default_duty), ex.get("vib", 0.0), ex.get("slide", 0.0)) * adsr(n, *env)
-            put(crush(w * vol), start, pan_pos, gain)
+    def inst(names, ts):
+        return names[1] if section_at(t, ts).name.startswith("B") else names[0]
 
-    voice(ev["lead"], -0.15, 0.17)
-    voice(ev["echo"], 0.45, 0.17)
-    voice(ev["harm"], 0.2, 0.17, env=(0.01, 0.1, 0.7, 0.06))
-    for i, (start, dur, m, vol, ex) in enumerate(ev["arp"]):
-        n = max(8, int(dur * RATE))
-        w = pulse(hz(m), n, (ex or {}).get("duty", 0.125)) * adsr(n, 0.002, 0.05, 0.5, 0.02)
-        put(crush(w * vol), start, -0.45 if i % 2 == 0 else 0.45, 0.07)
-    for start, dur, m, vol, ex in ev["pad"]:
-        n = max(8, int(dur * RATE))
-        w = pulse(hz(m), n, 0.5) * adsr(n, 0.12, 0.2, 0.8, 0.25)
-        put(crush(w * vol, 7), start, -0.7 if m % 2 else 0.7, 0.045)
-    for start, dur, m, vol, ex in ev["bass"]:
-        n = max(8, int(dur * RATE))
-        w = tri(hz(m), n) * adsr(n, 0.004, 0.0, 1.0, 0.04)
-        put(w * vol, start, 0.0, 0.30)
-    for start, dur, _, vol, _ in ev["kick"]:
-        n = int(dur * RATE)
+    def play(group, channel, names, p, gain, pad_alt=False):
+        for k, (start, dur, m, vol, ex) in enumerate(ev[channel]):
+            name = names if isinstance(names, str) else inst(names, start)
+            n = max(16, int(dur * RATE))
+            w = V.note(name, hz(m), n, ex, rng) * vol
+            if name in V.CRUSHED:
+                w = crush(w)
+            pp = p(k) if callable(p) else p
+            put(group, w, start, pp, gain)
+
+    play("lead", "lead", snd["lead"], -0.15, 0.24)
+    play("lead", "echo", snd["lead"], 0.45, 0.24)
+    play("lead", "harm", snd["lead"], 0.2, 0.24)
+    play("arp", "arp", snd["arp"], lambda k: -0.45 if k % 2 == 0 else 0.45, 0.09)
+    play("pad", "pad", snd["pad"], lambda k: -0.7 if k % 2 else 0.7, 0.06)
+    play("bass", "bass", snd["bass"], 0.0, 0.35)
+    if snd["spark"]:
+        play("lead", "spark", "fm_bell", 0.55, 0.10)
+
+    # drums: the 8-bit kit is the original noise and sine, the others are the sampled-style kits in voices.py
+    def drum(channel, fn8, fn, gain, p, rate=None):
+        for start, dur, _, vol, ex in ev[channel]:
+            if kit == "8bit":
+                w = fn8(int(dur * RATE), vol, ex)
+            else:
+                w = fn(dur, rng) * V.DRUM_TRIM[fn] * vol
+            put("drums", w, start, p, gain)
+            if channel == "kick":
+                kick_times.append(start)
+
+    def k8(n, vol, ex):
         f = np.linspace(130, 44, n)
-        w = np.sin(2 * np.pi * np.cumsum(f) / RATE) * np.linspace(1, 0, n) ** 1.5
-        put(crush(w, 7) * vol, start, 0.0, 0.36)
-    for start, dur, _, vol, ex in ev["tom"]:
-        n = int(dur * RATE)
-        f = np.linspace(ex["pitch"] * 1.4, ex["pitch"], n)
-        w = np.sin(2 * np.pi * np.cumsum(f) / RATE) * np.linspace(1, 0, n) ** 1.2
-        put(crush(w, 7) * vol, start, 0.0, 0.3)
-    for start, dur, _, vol, _ in ev["snare"]:
-        n = int(dur * RATE)
-        w = (noise(rng, n, 9000) * 0.8 + pulse(190, n, 0.5) * 0.25) * np.linspace(1, 0, n) ** 2
-        put(crush(w, 7) * vol, start, 0.15, 0.17)
-    for start, dur, _, vol, _ in ev["hat"]:
-        n = int(dur * RATE)
-        w = noise(rng, n, 24000) * np.linspace(1, 0, n) ** 2
-        put(crush(w, 5) * vol, start, 0.4, 0.055)
+        return crush(np.sin(2 * np.pi * np.cumsum(f) / RATE) * np.linspace(1, 0, n) ** 1.5, 7) * vol
 
-    lp = butter(2, 7500, "lowpass", fs=RATE, output="sos")
-    hp = butter(2, 35, "highpass", fs=RATE, output="sos")
-    out = None
-    for ch, arr in enumerate((left, right)):                                    # one channel at a time keeps the peak memory down
-        f = resample_poly(sosfilt(hp, sosfilt(lp, arr)), 1, OS).astype(np.float32)
-        if out is None:
-            out = np.empty((2, len(f)), np.float32)
-        out[ch] = f
-        del f
-    del left, right
+    def s8(n, vol, ex):
+        return crush((noise(rng, n, 9000) * 0.8 + pulse(190, n, 0.5) * 0.25) * np.linspace(1, 0, n) ** 2, 7) * vol
+
+    def h8(n, vol, ex):
+        return crush(noise(rng, n, 24000) * np.linspace(1, 0, n) ** 2, 5) * vol
+
+    def t8(n, vol, ex):
+        f = np.linspace(ex["pitch"] * 1.4, ex["pitch"], n)
+        return crush(np.sin(2 * np.pi * np.cumsum(f) / RATE) * np.linspace(1, 0, n) ** 1.2, 7) * vol
+
+    kits = V.KITS.get(kit)
+    drum("kick", k8, kits["kick"] if kits else None, 0.36, 0.0)
+    drum("snare", s8, kits["snare"] if kits else None, 0.20 if kit == "8bit" else 0.20, 0.15)
+    drum("hat", h8, kits["hat"] if kits else None, 0.055 if kit == "8bit" else 0.07, 0.4)
+    for start, dur, _, vol, ex in ev["tom"]:
+        w = t8(int(dur * RATE), vol, ex) if kit == "8bit" else V.tom_16(dur, rng, ex["pitch"]) * V.DRUM_TRIM[V.tom_16] * vol
+        put("drums", w, start, 0.0, 0.3)
+    if snd["risers"]:
+        for start, dur, _, vol, _ in ev["fx"]:
+            put("fx", V.riser(dur, rng), start, 0.0, 0.05 * vol)
+
+    # effects on the 44.1 kHz buses
+    if snd["duck"] and kick_times:
+        curve = V.duck_curve(total, sorted(kick_times))
+        for g in ("pad", "arp"):
+            groups[g] *= curve
+    if snd["chorus"]:
+        groups["pad"] = V.chorus(groups["pad"])
+    out = sum(groups.values())
+    if snd["wet"] > 0:
+        send = groups["lead"] * 0.8 + groups["arp"] * 0.6 + groups["pad"] * 1.0 + groups["drums"] * 0.12
+        out = out + V.reverb(send, V.make_ir(snd["rt60"], t.seed)) * snd["wet"]
+        del send
+    if snd["crackle"]:
+        r2 = np.random.default_rng(t.seed + 99)
+        n = out.shape[1]
+        hits = (r2.random(n) < 14 / SR).astype(np.float32) * r2.standard_normal(n).astype(np.float32)
+        bed = sosfilt(butter(1, 1200, "lowpass", fs=SR, output="sos"), r2.standard_normal(n).astype(np.float32)) * 0.002
+        out = out + (sosfilt(butter(2, 3500, "lowpass", fs=SR, output="sos"), hits) * 0.012 + bed)[None, :]
+    del groups
+    out = sosfilt(butter(2, snd["cut"], "lowpass", fs=SR, output="sos"), out, axis=1).astype(np.float32)
+    out = sosfilt(butter(2, 35, "highpass", fs=SR, output="sos"), out, axis=1).astype(np.float32)
     peak = float(np.max(np.abs(out)))
     return out * np.float32(0.89 / peak) if peak else out
 
 
 def describe(t: Track) -> dict:
-    return {"seed": t.seed, "key": f"{t.key} {t.mode}", "bpm": t.bpm, "swing": t.swing, "groove": t.groove, "bars": t.bars,
+    return {"seed": t.seed, "era": t.sound.get("era"), "instruments": [t.sound["lead"][0], t.sound["arp"][0], t.sound["pad"], t.sound["bass"], t.sound["kit"]], "key": f"{t.key} {t.mode}", "bpm": t.bpm, "swing": t.swing, "groove": t.groove, "bars": t.bars,
             "seconds": round(t.seconds, 1), "sections": [f"{s.name}x{s.bars}" + (f"+{s.lift}" if s.lift else "") for s in t.sections]}
 
 
