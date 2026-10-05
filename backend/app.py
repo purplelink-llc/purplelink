@@ -2369,7 +2369,7 @@ def web():
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{title} | Purplelink LLC</title>
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#19141d">
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>
   </head>

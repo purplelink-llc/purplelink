@@ -140,7 +140,7 @@ function page(title, bodyHtml, status = 200) {
     <meta name="robots" content="noindex">
     <title>${title} | Purplelink LLC</title>
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#19141d">
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>

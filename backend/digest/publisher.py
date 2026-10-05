@@ -168,7 +168,7 @@ def render_html(digest: DigestData) -> str:
     <meta name="twitter:title" content="{title}">
     <meta name="twitter:description" content="{desc}">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#19141d">
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -449,7 +449,7 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
     <meta property="og:type" content="website">
     <meta property="og:url" content="{canonical}">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#19141d">
     <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="/blog/digest/feed.xml">
     <script src="{theme_js_url}"></script>
     <link rel="stylesheet" href="{css_url}">
