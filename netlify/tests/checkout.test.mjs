@@ -101,7 +101,7 @@ test("falls back to the default when Origin header is absent", async () => {
   assert.ok(successUrl.startsWith("https://purplelink.llc/"), `expected default origin, got ${successUrl}`);
 });
 
-test("the Mac Suite is sold at $39 with its own success page and product metadata", async () => {
+test("the Mac Suite is sold at $49 with its own success page and product metadata", async () => {
   let captured = null;
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, opts) => {
@@ -121,10 +121,37 @@ test("the Mac Suite is sold at $39 with its own success page and product metadat
   } finally {
     globalThis.fetch = originalFetch;
   }
-  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "3900");
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "4900");
   assert.equal(paramFromBody(captured, "line_items[0][price_data][currency]"), "usd");
   assert.equal(paramFromBody(captured, "metadata[product]"), "app-suite");
   assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/suite/success/"));
   assert.equal(paramFromBody(captured, "mode"), "payment");
   assert.ok(!paramFromBody(captured, "line_items[0][price_data][recurring][interval]"), "one-time, not a subscription");
+});
+
+test("Legroom checks out with its Stripe price, its own success page and product metadata", async () => {
+  let captured = null;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {
+    if (String(url).includes("api.stripe.com")) {
+      captured = opts.body;
+      return new Response(JSON.stringify({ id: "cs_test_legroom", url: "https://checkout.stripe.com/pay/cs_test_legroom" }), { status: 200 });
+    }
+    throw new Error(`Unexpected fetch to ${url}`);
+  };
+  try {
+    const res = await handler(new Request("https://purplelink.llc/.netlify/functions/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.51" },
+      body: JSON.stringify({ product: "legroom" }),
+    }));
+    assert.equal(res.status, 200);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  assert.equal(paramFromBody(captured, "line_items[0][price]"), "price_dummy");
+  assert.equal(paramFromBody(captured, "metadata[product]"), "legroom");
+  assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/legroom/success/"));
+  assert.ok(paramFromBody(captured, "cancel_url").startsWith("https://purplelink.llc/legroom/?checkout=canceled"));
+  assert.equal(paramFromBody(captured, "mode"), "payment");
 });

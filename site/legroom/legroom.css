@@ -1,0 +1,33 @@
+/* /legroom/ page: sizing for the sample screenshots. They are real captures of the app
+   with sample data, at their own pixel size (600 or 1200 wide), so they are capped there
+   rather than stretched to the page width. */
+
+.lg-hero-window .frame-soft { max-width: 340px; margin-inline: auto; }
+
+.lg-gallery .section-intro { max-width: 64ch; }
+
+.lg-shot {
+  margin: 0;
+  max-width: 1000px;
+}
+.lg-shot .frame-soft { max-width: 100%; }
+.lg-shot figcaption {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.lg-pair {
+  display: grid;
+  gap: clamp(32px, 5vw, 56px);
+  grid-template-columns: 1fr;
+}
+.lg-pair .lg-shot { max-width: 440px; }
+@media (min-width: 900px) {
+  .lg-pair { grid-template-columns: repeat(2, minmax(0, 440px)); justify-content: start; }
+}
+
+.lg-gallery .screenshot-block + .screenshot-block,
+.lg-gallery .lg-pair + .screenshot-block { margin-top: clamp(48px, 6vw, 72px); }
+
+.lg-note { max-width: 64ch; }

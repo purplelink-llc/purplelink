@@ -40,7 +40,7 @@ function signed(event) {
 }
 const completed = (product, id = "evt_1") => ({
   id, type: "checkout.session.completed",
-  data: { object: { id: "cs_live_suite_abcdefghij", status: "complete", payment_status: "paid", amount_total: 3900,
+  data: { object: { id: "cs_live_suite_abcdefghij", status: "complete", payment_status: "paid", amount_total: 4900,
     customer_details: { email: "buyer@example.com" }, metadata: { product } } },
 });
 
@@ -60,7 +60,8 @@ test("a paid Suite order is acknowledged and emails the suite page link once", a
   assert.deepEqual(mail.to, ["buyer@example.com"]);
   assert.match(mail.subject, /Purplelink Mac Suite/);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_live_suite_abcdefghij/);
-  assert.match(mail.text, /ModernTex download, the Outbound Veil download, and your Vitae Plus key/);
+  assert.match(mail.text, /ModernTex, Outbound Veil and Legroom downloads, and your Vitae Plus key/);
+  assert.match(mail.html, /ModernTex, Outbound Veil and Legroom downloads/);
   assert.match(mail.html, /\/suite\/success\//);
 });
 
@@ -69,4 +70,30 @@ test("Stripe delivering the same event twice sends one email", async () => {
   const again = await handler(signed(completed("app-suite", "evt_dup")));
   assert.equal((await again.json()).status, "duplicate_event_ignored");
   assert.equal(calls.filter((c) => c.url.startsWith("https://api.resend.com/")).length, 1);
+});
+
+test("Legroom is a blob-delivered product with its own success page", () => {
+  assert.equal(BLOB_DELIVERED_PRODUCTS.get("legroom").successPath, "/legroom/success/");
+});
+
+test("a paid Legroom order emails the download page and the one-sentence review ask, with no license key", async () => {
+  const res = await handler(signed({ ...completed("legroom", "evt_lg"), data: { object: { ...completed("legroom").data.object, id: "cs_live_legroom_abcdefg1", amount_total: 900 } } }));
+  assert.equal((await res.json()).status, "delivered_by_blobs");
+  const sent = calls.filter((c) => c.url.startsWith("https://api.resend.com/"));
+  assert.equal(sent.length, 1);
+  const mail = JSON.parse(sent[0].opts.body);
+  assert.deepEqual(mail.to, ["buyer@example.com"]);
+  assert.match(mail.subject, /Legroom for macOS download/);
+  assert.match(mail.text, /https:\/\/purplelink\.llc\/legroom\/success\/\?session_id=cs_live_legroom_abcdefg1/);
+  assert.match(mail.text, /If Legroom is useful, reply to this email with one sentence/);
+  assert.doesNotMatch(mail.text, /license key|MTX1|Vitae/i);
+  assert.doesNotMatch(mail.text, /—|–/);
+  assert.match(mail.html, /legroom\/success\//);
+});
+
+test("the Suite email mentions Legroom but carries no Legroom review ask", async () => {
+  await handler(signed(completed("app-suite", "evt_s2")));
+  const suiteMail = JSON.parse(calls.find((c) => c.url.startsWith("https://api.resend.com/")).opts.body);
+  assert.doesNotMatch(suiteMail.text, /If Legroom is useful/);
+  assert.match(suiteMail.text, /Legroom/);
 });

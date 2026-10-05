@@ -113,9 +113,29 @@ test("the recovery email for the Suite links the one page and carries the Modern
   const mail = recoveryEmail([{ sessionId: "cs_suite", product: "app-suite", created: 5 }], "MTX1-AAAAA-BBBBB");
   assert.match(mail.text, /Purplelink Mac Suite/);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_suite/);
-  assert.match(mail.text, /lifetime Vitae Plus key/);
+  assert.match(mail.text, /ModernTex, Outbound Veil and Legroom downloads and your lifetime Vitae Plus key/);
+  assert.match(mail.html, /Legroom downloads/);
   assert.match(mail.text, /MTX1-AAAAA-BBBBB/);
   assert.match(mail.html, /MTX1-AAAAA-BBBBB/);
   // Without a signing key it does not invent one.
   assert.doesNotMatch(recoveryEmail([{ sessionId: "cs_suite", product: "app-suite", created: 5 }], null).text, /MTX1/);
+});
+
+// ---- Legroom ----
+
+test("finds a paid Legroom purchase and ignores an unpaid one", async () => {
+  sessions = [
+    { id: "cs_lg", payment_status: "paid", created: 7, metadata: { product: "legroom" } },
+    { id: "cs_lg_unpaid", payment_status: "unpaid", created: 8, metadata: { product: "legroom" } },
+  ];
+  const { purchases } = await purchasesForEmail("buyer@example.com", "sk_test_dummy");
+  assert.deepEqual(purchases.map((p) => [p.sessionId, p.product]), [["cs_lg", "legroom"]]);
+});
+
+test("the recovery email for Legroom links its success page and carries no ModernTex key", () => {
+  const mail = recoveryEmail([{ sessionId: "cs_lg", product: "legroom", created: 7 }], null);
+  assert.match(mail.text, /Legroom for macOS/);
+  assert.match(mail.text, /https:\/\/purplelink\.llc\/legroom\/success\/\?session_id=cs_lg/);
+  assert.doesNotMatch(mail.text, /MTX1|license key/i);
+  assert.match(mail.html, /legroom\/success\//);
 });

@@ -259,6 +259,7 @@ def render_html(digest: DigestData) -> str:
           <ul>
             <li><a href="/moderntex/">ModernTex</a></li>
             <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
             <li><a href="/tools/paper-review/">Paper Review</a></li>
             <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
             <li><a href="/globepin/">GlobePin</a></li>
@@ -505,6 +506,7 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
           <ul>
             <li><a href="/moderntex/">ModernTex</a></li>
             <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
             <li><a href="/tools/paper-review/">Paper Review</a></li>
             <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
             <li><a href="/globepin/">GlobePin</a></li>

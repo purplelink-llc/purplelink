@@ -78,8 +78,9 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["kit-clip",          { name: "The Clip Pipeline kit",             successPath: "/kits/success/" }],
   ["moderntex",         { name: "ModernTex for macOS",               successPath: "/moderntex/success/" }],
   ["outbound-veil",     { name: "Outbound Veil for macOS",           successPath: "/outbound-veil/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Vitae Plus for life. /suite/success/ lists all three
-  // downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  ["legroom",           { name: "Legroom for macOS",                 successPath: "/legroom/success/" }],
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Vitae Plus for life. /suite/success/ lists all
+  // three downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
   ["sheet-submission",  { name: "the Journal Submission & R&R Tracker", successPath: "/sheets/success/" }],
   ["sheet-tenure",      { name: "the Tenure & Promotion Dossier Tracker", successPath: "/sheets/success/" }],
@@ -271,19 +272,21 @@ async function emailDownloadLink(to, sessionId, productKey) {
       `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${license}</p>` +
       `<p>This unlocks the app permanently — no account, no further steps.</p>`
     : "";
-  // ModernTex only: one plain request for a one-line review. No link, no tracking.
-  const reviewAsk =
-    "If ModernTex is useful, reply to this email with one sentence about what you use it for. " +
-    "With your permission I may quote it on the product page, first name and field only.";
-  const reviewTextBlock = productKey === "moderntex" ? `${reviewAsk}\n\n` : "";
-  const reviewHtmlBlock = productKey === "moderntex" ? `<p>${reviewAsk}</p>` : "";
-  // Mac Suite: say what is on the page, since one link carries three things.
+  // ModernTex and Legroom: one plain request for a one-line review. No link, no tracking.
+  const reviewApp = productKey === "moderntex" ? "ModernTex" : productKey === "legroom" ? "Legroom" : null;
+  const reviewAsk = reviewApp
+    ? `If ${reviewApp} is useful, reply to this email with one sentence about what you use it for. ` +
+      "With your permission I may quote it on the product page, first name and field only."
+    : "";
+  const reviewTextBlock = reviewApp ? `${reviewAsk}\n\n` : "";
+  const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
+  // Mac Suite: say what is on the page, since one link carries four things.
   const suiteText = isSuite
-    ? `That page has three things: the ModernTex download, the Outbound Veil download, and your Vitae Plus key ` +
+    ? `That page has four things: the ModernTex, Outbound Veil and Legroom downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has three things: the ModernTex download, the Outbound Veil download, and your Vitae Plus key ` +
+    ? `<p>That page has four things: the ModernTex, Outbound Veil and Legroom downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Outbound Veil: the one step new users trip on is macOS Accessibility, so point at the setup guide.

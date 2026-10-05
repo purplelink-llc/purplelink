@@ -1023,6 +1023,8 @@
       text: 'A native LaTeX editor for Mac. Free for 7 days, then $19.99 once, with every update included.', own: ['/moderntex/', '/suite/'] },
     { id: 'outbound-veil', name: 'Outbound Veil', href: '/outbound-veil/', icon: '/assets/outbound-veil-icon.webp', cta: 'Try it free',
       text: 'Checks what you type for personal information before you send it. Free 7-day trial, then $29.', own: ['/outbound-veil/', '/suite/'] },
+    { id: 'legroom', name: 'Legroom', href: '/legroom/', icon: '/assets/legroom-icon.webp', cta: 'Try it free',
+      text: 'Shows your free disk space and cleans the folders you choose, after you approve a preview. Free 7-day trial, then $9.', own: ['/legroom/', '/suite/'] },
     { id: 'vitae', name: 'Vitae', href: '/vitae/', icon: '/assets/vitae-icon.webp', cta: 'Get it free',
       text: 'Track submissions, grants and your CV in one place. Free for Mac.', own: ['/vitae/'] },
     { id: 'paper-review', name: 'Paper Review', href: '/tools/paper-review/', icon: '/assets/purplelink-logo-64.png', cta: 'See how it works',
@@ -1030,7 +1032,7 @@
     { id: 'scholar-utility-belt', name: 'Scholar Utility Belt', href: '/scholar-utility-belt/', icon: '/assets/scholar-utility-belt-icon.webp', cta: 'Add to Chrome',
       text: 'Journal rankings, h-index and retraction alerts inside Google Scholar. A free Chrome extension.', own: ['/scholar-utility-belt/'] },
     { id: 'mac-suite', name: 'Mac Suite', href: '/suite/', icon: '/assets/moderntex-icon.webp', cta: 'See the bundle',
-      text: 'ModernTex, Outbound Veil and Vitae Plus together for $39, once.', own: ['/suite/', '/moderntex/', '/outbound-veil/', '/vitae/plus/'] },
+      text: 'ModernTex, Outbound Veil, Legroom and Vitae Plus together for $49, once.', own: ['/suite/', '/moderntex/', '/outbound-veil/', '/legroom/', '/vitae/plus/'] },
     { id: 'globepin', name: 'GlobePin', href: '/globepin/', icon: '/assets/globepin-icon.webp', cta: 'Get it free',
       text: 'Mark every place you have been on a map. Free for iPhone.', own: ['/globepin/'] },
   ];

@@ -11,7 +11,7 @@ Products
 
 # Tools for the paper, from first draft to accepted.
 
-Three Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
+Four Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
 
 Watch the overview
 
@@ -49,6 +49,10 @@ Sending something with names or numbers in it
 
 Outbound Veil checks what you type for personal information before you send it.
 
+A Mac that is running out of disk space
+
+Legroom shows free space in the menu bar and cleans the folders and caches you choose, after you approve a preview.
+
 Keeping track of where everything is
 
 Vitae, free.
@@ -77,11 +81,11 @@ Mac
 
 ## Keep your academic record in one place
 
-$39 once
+$49 once
 
 ### The Mac Suite
 
-ModernTex, Outbound Veil and Vitae Plus for life in one payment. Bought separately they come to $73 the first year, then $24 a year for Plus.
+ModernTex, Outbound Veil, Legroom and Vitae Plus for life in one payment. Bought separately they come to $82 the first year, then $24 a year for Plus.
 
 See the Suite →
 
@@ -108,6 +112,14 @@ Free 7-day trial, then $29
 A menu-bar app that checks what you type for names, numbers and addresses before you send it. It runs on your Mac and stores nothing. macOS 14 or later.
 
 See Outbound Veil →
+
+Free 7-day trial, then $9
+
+### Legroom
+
+A menu-bar app that shows your free disk space and cleans the folders and developer caches you choose, after you approve a preview. Its measurements stay on your Mac. macOS 14 or later.
+
+See Legroom →
 
 Before you submit
 
@@ -540,7 +552,7 @@ Try it free for 7 days
 
 The trial is the full app for seven days, with no account and nothing to enter. Buying is a single $29 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.1 · 36 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
-Also in the Mac Suite: Outbound Veil, ModernTex and Vitae Plus for life, $39 once.
+Also in the Mac Suite: Outbound Veil, ModernTex, Legroom and Vitae Plus for life, $49 once.
 
 Outbound Veil checking a fictional client note typed into a plain text field in Chrome. Every name and number on this page is invented.
 
@@ -677,6 +689,163 @@ macOS 14 or later · Apple silicon and Intel · Signed and notarized
 
 Outbound Veil free for 7 days
 Get Outbound Veil
+
+
+---
+
+Source: https://purplelink.llc/legroom/
+Title: Legroom - Free Disk Space and Cleanup for Mac | Purplelink LLC
+
+← All products
+
+macOS
+Free 7-day trial · $9 to keep
+
+# Legroom
+
+Legroom shows how much free space your Mac has, warns you before the disk fills, and cleans the folders and developer caches you choose. It runs in the menu bar. Nothing is removed until you have seen a preview and approved it.
+
+Try it free for 7 days
+
+The trial runs for seven days from the first time you open it, with no account and nothing to enter. After it ends, the menu-bar readout and the low-space alerts keep working. Buying is a single $9 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.0 · 6 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom and Vitae Plus for life, $49 once.
+
+Sample data: a pretend home folder and invented numbers. The window title comes from the test build.
+
+## What it does
+
+### It shows free space where you can see it
+
+The menu bar shows what is free on your startup disk. The window under it adds the space available now, the space macOS says it can clear, and your other volumes. You set a line, and Legroom warns you when free space drops below it.
+
+### It cleans what you tell it to
+
+You make a rule for a folder or a cache. The rule shows a preview of exactly what it would remove, and you approve it. A rule can then run when you ask, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them, and says which.
+
+### It shows what grew
+
+Once a day Legroom measures where your space goes. What Grew compares those measurements over 1, 7 or 30 days, so you can see which folder filled the disk and make a rule for it.
+
+## A closer look
+
+Every screen below is a capture of the app running on sample data, not on a real Mac.
+
+### You approve every clean
+
+Clean Now lists each rule with the most it would remove and whether that goes to the Trash or is deleted for good. Permanent deletion is shown in red. A rule whose folders changed since you approved it is left out until you preview it again.
+
+Sample data.
+
+### What grew since last week
+
+Each folder that grew is listed with its size and its growth, and a button for the next step: clean it now, add a rule, preview a rule or see a command. Items that come from macOS, such as swap and local Time Machine snapshots, are listed separately with what Legroom can and cannot tell you about them.
+
+Sample data.
+
+### Suggested rules, weekly or monthly
+
+Legroom looks at what grew, at your rules and at its list of known caches, and suggests rules. A suggestion never creates, approves or runs a rule. You see the rule editor and the preview first.
+
+Sample data.
+
+### Space Map: where the space went
+
+A chart of a folder or a whole disk, as rings: the centre is the folder you are in, and each ring outward is the folders inside it. Click a section to select it and double-click to look inside. A selected folder can be revealed in Finder, moved to the Trash or turned into a rule. Folders Legroom could not read are drawn hatched, so a gap is never passed off as empty space.
+
+Sample data. Full Disk Access is off in this capture, so protected folders are skipped.
+
+### Find Files: large, old and duplicate files
+
+Search your home folder, or folders you choose, for large files, files you have not opened in a long time, and duplicates. For duplicates you choose which copy stays, and at least one copy of every group always stays. Find Files only moves files to the Trash, and only the ones you select.
+
+Sample data.
+
+## What is in it
+
+Menu barFree space on the startup disk, the space macOS can clear, your other volumes, and a low-space alert at a line you set.
+
+RulesFolders you choose, with an age limit, a preview and your approval. Run by hand, on a schedule, or when free space drops below your line. A log shows what each run did, and one switch pauses automatic cleaning.
+
+RecommendedCaches Legroom knows, such as Xcode DerivedData, Homebrew downloads and the npm cache, and folders that look like caches, labelled when it is not sure.
+
+Project scanLooks through your code projects for old build folders and offers a rule for them.
+
+What GrewA daily measurement of where your space goes, compared over 1, 7 or 30 days.
+
+SuggestionsRule ideas based on what grew, weekly or monthly.
+
+Space MapA sunburst chart of a folder or disk, with Reveal in Finder, Move to Trash and Add as a Rule.
+
+Find FilesLarge, old and duplicate files. Trash only, and one copy of every duplicate always stays.
+
+## What it does not do
+
+SpeedIt does not make your Mac faster. It frees disk space and does nothing else to performance.
+
+System filesIt does not clean inside system folders and the folders that hold your documents and settings.
+
+CommandsIt does not run commands. Where a fix needs Terminal, such as removing local Time Machine snapshots, it shows the command as text and you decide whether to run it.
+
+Hidden spaceIt does not scan as an administrator, so some space it cannot measure, such as local Time Machine snapshots. It lists those as size not reported rather than guessing.
+
+Unseen deletionsIt does not remove anything you have not previewed and approved, and it does not remove duplicates without leaving one copy.
+
+The cloudThere is no cloud, no account and no sync. Your measurements, rules and log stay on your Mac.
+
+## Privacy
+
+Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And the paid build, once a day, asks this site for its update feed: that request carries the app's name and version and an update token that marks it as the paid build, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. The trial build has no update check. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the privacy page.
+
+## Frequently asked questions
+
+What does it need to run?
+
+macOS 14 (Sonoma) or later, on Apple silicon or Intel.
+
+Does it delete anything on its own?
+
+Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map and Find Files only move items to the Trash, and only the ones you select.
+
+Does it make my Mac faster?
+
+No. Legroom frees disk space. It does not tune or speed up anything else.
+
+Does it need Full Disk Access?
+
+No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read.
+
+Does it send my files or measurements anywhere?
+
+No. There is no account and no analytics. Apart from the daily update check in the paid build and the Buy link, which opens this page in your browser, Legroom does not use the network.
+
+What happens when the trial ends?
+
+The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you install the paid build. Buying gives you a separate download of the full app to install in place of the trial.
+
+Are updates included?
+
+Updates to the version you buy are included. The paid app checks for a new version once a day and asks before installing it, or you can check by hand from its menu. I have not decided whether a later major version would be a free update.
+
+Can I get a refund?
+
+Email ben@purplelink.llc within 14 days of purchase. See the terms.
+
+How do I get help?
+
+Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with.
+
+## Try it for a week.
+
+Seven days of the full app, with no account and nothing to enter. Then decide whether to keep it.
+
+Try it free for 7 days
+Buy Legroom
+
+macOS 14 or later · Apple silicon and Intel · Signed and notarized
+
+Legroom free for 7 days
+Get Legroom
 
 
 ---
@@ -837,7 +1006,7 @@ $24 a year
 
 Stripe handles the card; Purplelink never sees it. Stripe asks for a card to start the trial and charges nothing until the 7 days are up. Cancel before then and you pay nothing. Cancel anytime after that and Plus keeps working through the period you have paid for.
 
-Want Plus for life? It is included in the Mac Suite, $39 once, with ModernTex and Outbound Veil.
+Want Plus for life? It is included in the Mac Suite, $49 once, with ModernTex, Outbound Veil and Legroom.
 
 What Plus adds
 
@@ -4585,7 +4754,7 @@ Those eight cover most situations. More tools follow, then what to log whichever
 
 ## Vitae
 
-Cost: Free, no account, no limits on the record. Vitae Plus, an optional add-on, is $3 a month or $24 a year with a 7-day trial, and is included for life in the $39 Mac Suite. Platform: macOS 15 Sequoia or later, Mac only. Status: version 1.0.1, which its page labels beta.
+Cost: Free, no account, no limits on the record. Vitae Plus, an optional add-on, is $3 a month or $24 a year with a 7-day trial, and is included for life in the $49 Mac Suite. Platform: macOS 15 Sequoia or later, Mac only. Status: version 1.0.1, which its page labels beta.
 
 Vitae is a Mac app with structured records for submissions, grants, projects, collaborators, teaching, service and mentoring. A submission keeps its venue, dates, each review round, the decision, manuscript versions and a cover letter. When you pick a target venue it shows published acceptance rates for about 13,700 journals and conferences, and it forecasts publication timelines from your own history. A grant runs from planning to award with requested and awarded amounts, your share and reporting dates, and the app can search Grants.gov and fill an NSF or NIH award from its number. You can connect a mailbox read-only, and Vitae proposes updates from journal-system messages; you review each one. A tenure view counts your record against expectations you enter, such as articles, funding, h-index, talks and service.
 
