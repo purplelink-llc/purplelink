@@ -623,3 +623,7 @@
 .tw-hop { display: block; font-weight: 600; font-size: 0.8rem; color: var(--muted); }
 .tl-week details { margin-top: 12px; }
 .tl-week summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+.gw-grid { width: 100%; border-collapse: separate; border-spacing: 4px; margin: 8px 0 2px; table-layout: fixed; }
+.gw-grid th { font-size: 0.74rem; font-weight: 800; padding: 6px 4px; border-radius: 8px; background: color-mix(in oklch, var(--gc) 18%, var(--panel)); overflow-wrap: anywhere; }
+.gw-grid td { font-size: 0.78rem; font-weight: 700; padding: 8px 4px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); text-align: center; vertical-align: middle; overflow-wrap: anywhere; line-height: 1.2; }
+.gw-n { display: block; font-weight: 600; font-size: 0.7rem; color: var(--muted); }

@@ -1369,6 +1369,7 @@ GL_FAQ = [
     ("What do the clues mean?", "A team clue means the player was on that franchise. A decade clue means the player was active in any season of that decade. Award clues are MVP winner, champion, five or more All-Star (or Pro Bowl) selections and Hall of Famer. A clue like Played with LeBron James means the player shared a team and a season with him. Position, career length and one-team clues are checked against the same list."),
     ("Can I use a player twice?", "No. Each player can fill one cell."),
     ("Is there always an answer for every cell?", "Yes. Every cell in every grid has at least two players in our list who fit it."),
+    ("Where can I see the best possible grid?", "In the section under the puzzle called This week's best grids. For every grid so far this week it shows a highest-scoring way to fill all nine cells with nine different players, how many players fit each cell, and how you did. Last week is kept in a drop-down. Today's appears once you finish today's puzzle, or tomorrow."),
     ("Which sport is it today?", "The daily grid rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick a sport and play unlimited grids."),
     ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for this game, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
 ]
@@ -1382,7 +1383,13 @@ GL_BOARD = """          <p class="sp-count"><span>Guesses left <b id="gl-left">9
           <div class="gl-grid" id="gl-grid" role="group" aria-label="Gridlink grid"></div>
           <p class="gl-current" id="gl-current" aria-live="polite"></p>
 """ + SP_FORM + """
-          <div class="sp-tools"><button type="button" class="gbtn gbtn--ghost" id="gl-giveup">End and show answers</button></div>"""
+          <div class="sp-tools"><button type="button" class="gbtn gbtn--ghost" id="gl-giveup">End and show answers</button></div>
+          <section class="tl-week" id="gl-week" hidden aria-labelledby="gl-week-h">
+            <h2 id="gl-week-h">This week's best grids</h2>
+            <p class="games-note">For each day's grid so far this week, a highest-scoring way to fill all nine cells with nine different players, how many players fit each cell, and how you did. Today's appears once you finish it.</p>
+            <ul class="tw-list" id="gl-week-list"></ul>
+            <details id="gl-week-prev-wrap" hidden><summary>Last week</summary><ul class="tw-list" id="gl-week-prev"></ul></details>
+          </section>"""
 sports_page("gridlink", "Gridlink", "Nine cells, nine guesses: name a player who fits each row and column.", GL_BOARD, "", GL_PROSE, GL_FAQ,
             ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/gridlink.js"])
 

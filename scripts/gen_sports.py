@@ -210,6 +210,26 @@ def chains_for(P, extra, pairs):
     return out
 
 
+def best_grids(P, grids):
+    """For each daily grid: how many players fit every cell, and the highest-scoring way to fill all nine with nine different
+    players (a cell is worth 6 minus the player's tier, so less famous players score more)."""
+    import numpy as np
+    from scipy.optimize import linear_sum_assignment
+    out = []
+    for gr in grids:
+        cells = [[p for p in P if crit_ok(gr["r"][i // 3], p) and crit_ok(gr["c"][i % 3], p)] for i in range(9)]
+        pool = sorted({p["n"] for c in cells for p in c}); col = {n: j for j, n in enumerate(pool)}
+        cost = np.full((9, len(pool)), 1e6)
+        for i, c in enumerate(cells):
+            for p in c: cost[i, col[p["n"]]] = -(6 - p["t"])
+        ri, ci = linear_sum_assignment(cost)
+        names = [None] * 9; score = 0
+        for i, j in zip(ri, ci):
+            if cost[i, j] < 1e5: names[i] = pool[j]; score += -cost[i, j]
+        out.append({"a": names, "n": [len(c) for c in cells], "r": int(score)})
+    return out
+
+
 def pick_pairs(P, extra, sport, existing):
     famous = [i for i, p in enumerate(P) if p["t"] >= 3]
     stints = combined(P, extra); bk = make_buckets(stints)
@@ -305,6 +325,7 @@ def main():
         data = {"sport": sport, "name": cfg["name"], "fr": F, "fs": SHORT.get(sport, {}), "cfg": {k: cfg[k] for k in ("slots", "bench", "cap", "games", "scale", "base", "gname", "plural", "teams", "rounds", "era") if k in cfg} | {"split": bool(cfg.get("split")), "selname": SELNAME[sport]},
                 "p": [[p["n"], p["p"], p["t"], p["o"], p["s"], p["h"]] for p in P], "tl": pin["tl"], "tp": pars, "gr": pin["gr"]}
         (DATA / f"sports-{sport}.json").write_text(json.dumps(data, separators=(",", ":"), ensure_ascii=False))
+        (DATA / f"sports-{sport}-grids.json").write_text(json.dumps({"g": best_grids(P, pin["gr"])}, separators=(",", ":"), ensure_ascii=False))
         (DATA / f"sports-{sport}-chains.json").write_text(json.dumps({"ts": chains}, separators=(",", ":"), ensure_ascii=False))
         if extra:
             (DATA / f"sports-{sport}-all.json").write_text(json.dumps({"credit": credit, "p": extra}, separators=(",", ":"), ensure_ascii=False))

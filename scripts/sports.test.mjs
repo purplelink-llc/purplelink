@@ -118,3 +118,20 @@ for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
     });
   });
 }
+
+for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
+  test(`${sport}: each daily grid has a best fill that fits every cell with nine different players`, () => {
+    const r = JSON.parse(readFileSync(`site/games/data/sports-${sport}.json`, "utf8"));
+    const gs = JSON.parse(readFileSync(`site/games/data/sports-${sport}-grids.json`, "utf8")).g;
+    r.cfg.groupOf = S.GROUPS[sport];
+    const dd = S.prepare(r);
+    assert.equal(gs.length, r.gr.length);
+    gs.slice(0, 60).forEach((best, k) => {
+      const R = r.gr[k].r.map((c) => S.crit(dd, c)), C = r.gr[k].c.map((c) => S.crit(dd, c));
+      assert.equal(new Set(best.a).size, 9);
+      best.a.forEach((n, i) => { assert.ok(R[Math.floor(i / 3)].test(dd.byName[n]) && C[i % 3].test(dd.byName[n]), n); });
+      assert.equal(best.r, best.a.reduce((a, n) => a + 6 - dd.byName[n].tier, 0));
+      best.n.forEach((c, i) => assert.equal(c, S.cellAnswers(dd, R[Math.floor(i / 3)], C[i % 3]).length));
+    });
+  });
+}

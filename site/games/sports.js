@@ -184,6 +184,9 @@
     return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   }
   function dayIdx() { return G ? G.dayIndex(new Date(), EPOCH) : 0; }
+  // The Monday-to-Sunday week containing today, as puzzle-day indexes: { today, start }.
+  function weekRange() { var today = dayIdx(), dow = new Date().getDay(); return { today: today, start: today - ((dow + 6) % 7) }; }
+  function dayLabel(i) { return new Date(2026, 9, 4 + i).toLocaleDateString("en-US", { weekday: "long" }); }
   function dailySport(rotation, idx) { return rotation[((idx % rotation.length) + rotation.length) % rotation.length]; }
   function dailySlot(rotation, idx) { return Math.floor(idx / rotation.length); }
 
@@ -270,7 +273,7 @@
     EPOCH: EPOCH, fold: fold, prepare: prepare, load: load, index: index, GROUPS: GROUPS,
     shared: shared, neighbors: neighbors, extend: extend, loadAll: loadAll, areTeammates: areTeammates, path: path, distances: distances,
     crit: crit, cellAnswers: cellAnswers, shortName: shortName, fname: fname, honorsText: honorsText, hash: hash, rng: rng,
-    dayIdx: dayIdx, dailySport: dailySport, dailySlot: dailySlot,
+    dayIdx: dayIdx, weekRange: weekRange, dayLabel: dayLabel, dailySport: dailySport, dailySlot: dailySlot,
     span: span, stintText: stintText, teamsLine: teamsLine, career: career,
     paintRating: paintRating, elapsed: elapsed, loadState: loadState, saveState: saveState, combo: combo
   };
