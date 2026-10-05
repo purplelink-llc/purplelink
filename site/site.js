@@ -467,7 +467,7 @@
         return;
       }
       btn.disabled = true;
-      status.textContent = "Sending...";
+      status.textContent = "Sending…";
       try {
         const r = await fetch(API, {
           method: "POST",
@@ -515,7 +515,7 @@
       return;
     }
     btn.disabled = true;
-    say("Saving...");
+    say("Saving…");
     try {
       const r = await fetch(API, {
         method: "POST",

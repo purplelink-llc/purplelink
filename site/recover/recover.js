@@ -14,7 +14,7 @@
     }
     const btn = form.querySelector("button");
     btn.disabled = true;
-    status.textContent = "Looking...";
+    status.textContent = "Looking…";
     try {
       const r = await fetch("/.netlify/functions/purchases-recover", {
         method: "POST",

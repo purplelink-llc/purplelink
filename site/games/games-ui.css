@@ -641,3 +641,5 @@
 .tile-art svg .lg-ds { fill: none; stroke: var(--gc-d); stroke-linecap: round; stroke-linejoin: round; }
 .tile-art svg .lg-ws { fill: none; stroke: oklch(99% 0.01 var(--gh)); stroke-linecap: round; stroke-linejoin: round; }
 .game-logo { width: 44px; height: 44px; flex: none; border-radius: 11px; vertical-align: -0.3em; margin-right: 10px; }
+
+.wg-key, .sd-cell, .cw-cell, .gbtn, .lb-tab, .dock-chip, .btn { touch-action: manipulation; }

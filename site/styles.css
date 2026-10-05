@@ -5473,3 +5473,10 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 /* The footer stays dark in the light theme, so its theme button needs light text there. */
 :root[data-theme="light"] .footer .theme-toggle { color: oklch(84% 0.03 300); border-color: oklch(44% 0.04 300); }
 :root[data-theme="light"] .footer .theme-toggle:hover { color: #fff; }
+
+/* Tapping controls never waits to see whether it is a double-tap zoom. */
+a, button, summary, label, select, input, textarea, [role="button"], [role="tab"] { touch-action: manipulation; }
+/* A scrolling panel keeps its scroll to itself instead of passing it to the page behind. */
+dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavior: contain; }
+/* Containers that take focus from a script (results, status lines) show a ring when a keyboard puts it there. */
+.list-signup .list-signup-status:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }

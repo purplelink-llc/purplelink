@@ -22,7 +22,7 @@
       return;
     }
     btn.disabled = true;
-    status.textContent = "Sending...";
+    status.textContent = "Sending…";
     fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

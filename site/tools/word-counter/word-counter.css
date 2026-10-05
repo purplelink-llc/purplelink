@@ -91,3 +91,5 @@
 .wc-sec-total { margin-top:.9rem; padding:.7rem .9rem; background:color-mix(in oklch, var(--purple) 10%, var(--bg));
   border:1px solid color-mix(in oklch, var(--purple) 30%, transparent); border-radius:10px; color:var(--ink); }
 .wc-sec-total strong { font-size:1.1rem; color:var(--purple); }
+
+@media (prefers-reduced-motion: reduce) { .wc-card > summary::after { transition: none; } }

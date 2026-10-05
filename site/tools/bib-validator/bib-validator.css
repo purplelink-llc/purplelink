@@ -64,8 +64,8 @@
 /* Detail row — original vs corrected, side by side */
 .bib-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0.8rem 1rem; }
 .bib-detail-grid.single { grid-template-columns: 1fr; }
-.bib-detail-pane h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0 0 0.35rem; font-weight: 600; }
-.bib-detail-pane h4 .pane-label-corrected { color: oklch(80% 0.18 152); }
+.bib-detail-pane h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0 0 0.35rem; font-weight: 600; }
+.bib-detail-pane h3 .pane-label-corrected { color: oklch(80% 0.18 152); }
 .bib-detail-pane pre { background: oklch(14% 0.02 310); border: 1px solid var(--line); border-radius: 4px; padding: 0.5rem 0.65rem; font-size: 0.74rem; line-height: 1.45; color: oklch(88% 0.01 310); margin: 0; white-space: pre-wrap; overflow-x: auto; max-height: 14rem; overflow-y: auto; }
 @media (max-width: 740px) { .bib-detail-grid { grid-template-columns: 1fr; } }
 
@@ -73,3 +73,5 @@
 .bib-downloads { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
 .bib-total { font-size: 0.85rem; color: var(--muted); }
 .bib-next { margin: 1rem 0 0; padding: 0.75rem 1rem; border-left: 3px solid var(--purple); background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; }
+
+@media (prefers-reduced-motion: reduce) { .bib-row-expander { transition: none; } }

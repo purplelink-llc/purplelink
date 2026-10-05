@@ -83,7 +83,7 @@ def topic_hub_skeleton(section_label, slug):
     <meta property="og:type" content="website">
     <meta property="og:url" content="{canonical}">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#19141d">
     <link rel="alternate" type="application/rss+xml" title="Purplelink Daily Digest by Benjamin Ampel" href="/blog/digest/feed.xml">
     <link rel="stylesheet" href="/styles.css">
     <script src="/site.js" defer></script>

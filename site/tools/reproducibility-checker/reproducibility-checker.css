@@ -49,3 +49,5 @@
 .rp-sources .rp-src { display: block; color: var(--muted); font-size: 0.92rem; }
 .rp-sources a { color: var(--purple); }
 .rp-note { color: var(--muted); font-size: 0.95rem; }
+
+.rp-results:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }

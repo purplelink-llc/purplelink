@@ -9,9 +9,13 @@
   const root = document.documentElement;
   const read = () => { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
   const write = (v) => { try { localStorage.setItem(KEY, v); } catch (e) { /* ignore */ } };
+  // Browser chrome follows the page: the meta tag ships dark (the default) and is switched with the theme.
+  const chrome = { dark: '#19141d', light: '#fbf9fe' };
   const apply = (t) => {
     if (t === 'light') root.setAttribute('data-theme', 'light');
     else root.removeAttribute('data-theme');
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', t === 'light' ? chrome.light : chrome.dark);
   };
   apply(read());
 

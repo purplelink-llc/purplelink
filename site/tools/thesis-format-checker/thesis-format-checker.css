@@ -47,3 +47,5 @@
 .tf-download[hidden], .tf-results[hidden] { display: none; }
 .tf-request { padding: 32px clamp(24px, 6vw, 80px) 0; max-width: calc(760px + clamp(48px, 12vw, 160px)); }
 .tf-reqform { display: grid; gap: 14px; max-width: 520px; margin-top: 16px; }
+
+.tf-results:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }

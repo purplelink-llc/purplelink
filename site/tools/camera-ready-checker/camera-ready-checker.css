@@ -55,3 +55,5 @@
 .cr-sources li { overflow-wrap: anywhere; }
 .cr-sources .cr-src { display: block; color: var(--muted); font-size: 0.92rem; }
 .cr-sources a { color: var(--purple); }
+
+.cr-results:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }

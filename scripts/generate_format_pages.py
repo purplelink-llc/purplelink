@@ -133,7 +133,7 @@ def venue_page(v):
     {jsonld}
     </script>
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#19141d">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">
@@ -357,7 +357,7 @@ def hub_page():
     <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#19141d">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css">

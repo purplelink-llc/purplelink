@@ -32,7 +32,7 @@
     rating = value;
     pick.hidden = true;
     done.hidden = false;
-    doneHead.textContent = "Recording your answer...";
+    doneHead.textContent = "Recording your answer…";
     try {
       await send();
       doneHead.textContent = "Thank you. " + RATINGS[rating] + " is recorded.";
@@ -56,7 +56,7 @@
     if (!comment) { status.textContent = "Write a sentence or two first, or close this page: the rating is already saved."; form.comment.focus(); return; }
     const btn = form.querySelector("button[type=submit]");
     btn.disabled = true;
-    status.textContent = "Sending...";
+    status.textContent = "Sending…";
     try {
       await send({ comment, quote_ok: form.quote_ok.checked, name: form.name.value.trim(), field: form.field.value.trim() });
       form.hidden = true;
