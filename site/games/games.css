@@ -218,9 +218,10 @@
 .cw-clues { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
 @media (max-width: 899px) { .cw-clues { grid-template-columns: 1fr; } }
 .cw-clues h2 { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 6px; }
-.cw-clues ol { list-style: none; margin: 0; padding: 0; max-height: min(60vh, 560px); overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
+.cw-clues ol { position: relative; list-style: none; margin: 0; padding: 0; max-height: min(60vh, 560px); overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
 .cw-clue-btn { width: 100%; text-align: left; padding: 7px 10px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); font: 500 0.9rem/1.35 var(--font-body); cursor: pointer; }
 .cw-clue[data-current] .cw-clue-btn { background: var(--purple-light); font-weight: 700; }
+.cw-clue[data-cross] .cw-clue-btn { background: var(--purple-xlight); }
 .cw-clue[data-filled="1"] .cw-clue-btn { color: var(--muted); }
 .cw-clue-btn:focus-visible { outline: 3px solid var(--purple); outline-offset: -3px; }
 .cw-keys { margin-top: 10px; }

@@ -4451,7 +4451,7 @@ def photo_totals_only_note(listed: list[dict]) -> str:
         data = pd.load()
         dates = sorted(data)
         _t, _s, money_rows = pd.platform_money_asof(data, dates, dates[-1])
-    except Exception:  # noqa: BLE001 - this note is a convenience
+    except (Exception, SystemExit):  # noqa: BLE001 - this note is a convenience; pd.load() exits when photo tracking has no snapshots yet
         return ""
     detail_labels = {r["detail"] for r in listed if r["source"] == "Photo licensing"}
     bits = []

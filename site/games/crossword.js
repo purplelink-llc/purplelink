@@ -96,11 +96,25 @@
     if (window.innerWidth < 900) cellEl(st.r, st.c).scrollIntoView({ block: "nearest" });   // keep the active square clear of the sticky keyboard
     var cur = $("cw-current");
     cur.textContent = ent ? ent.n + " " + (ent.dir === "across" ? "Across" : "Down") + ": " + ent.clue : "";
+    var cross = entryAt(st.r, st.c, st.dir === "across" ? "down" : "across");
     document.querySelectorAll(".cw-clue").forEach(function (li) {
       var i = Number(li.getAttribute("data-i"));
       li.toggleAttribute("data-current", st.entries[i] === ent);
+      li.toggleAttribute("data-cross", !!cross && st.entries[i] === cross);
       li.setAttribute("data-filled", st.entries[i].cells.every(function (x) { return st.cells[x[0]][x[1]]; }) ? "1" : "0");
     });
+    keepVisible(document.querySelector(".cw-clue[data-current]"));
+    keepVisible(document.querySelector(".cw-clue[data-cross]"));
+  }
+
+  // The clue lists scroll on their own. Bring a clue into view inside its list (centred when it was out of sight) without
+  // moving the page, so the clue you jumped to is always on screen beside the grid.
+  function keepVisible(li) {
+    var ol = li && li.parentNode;
+    if (!ol || ol.clientHeight === 0) return;
+    var top = li.offsetTop, bottom = top + li.offsetHeight;
+    if (top >= ol.scrollTop && bottom <= ol.scrollTop + ol.clientHeight) return;
+    ol.scrollTop = Math.max(0, top - Math.round((ol.clientHeight - li.offsetHeight) / 2));
   }
 
   function drawClues() {
@@ -196,15 +210,16 @@
     advance();
     afterEdit();
   }
-  // After a letter: the next square in the clue; at the last square, the first empty square in this clue, or, when the
-  // clue is full, the next clue that still has an empty square. The puzzle being full leaves the cursor where it is.
+  // After a letter: the next blank square in the clue (filled squares are skipped). With none left ahead, the first
+  // blank square earlier in the clue; with the clue full, the next clue that still has a blank square. The puzzle being
+  // full leaves the cursor where it is.
   function advance() {
     var e = currentEntry();
     if (!e) return;
     var i = e.cells.findIndex(function (x) { return x[0] === st.r && x[1] === st.c; });
-    if (i < e.cells.length - 1) { st.r = e.cells[i + 1][0]; st.c = e.cells[i + 1][1]; return; }
-    var hole = e.cells.find(function (x) { return !st.cells[x[0]][x[1]]; });
-    if (hole) { st.r = hole[0]; st.c = hole[1]; return; }
+    var blank = function (x) { return !st.cells[x[0]][x[1]]; };
+    var next = e.cells.slice(i + 1).find(blank) || e.cells.find(blank);
+    if (next) { st.r = next[0]; st.c = next[1]; return; }
     if (st.entries.some(hasEmpty)) cycleEntry(1);
   }
   function backspace() {
