@@ -1276,7 +1276,7 @@ def sports_page(slug, title, lede, board, result_extra, prose, faq_items, script
     d = ('            <label class="sp-field">Difficulty <select id="sp-diff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label>\n' if diff else "")
     body = f"""      <div class="games-wrap sp" id="sp-root" data-ds="{slug}" data-url="https://purplelink.llc/games/{slug}/">
         <div class="game-head">
-          <h1>{title}</h1>
+          <h1><img class="game-logo" src="/assets/games/{slug}.svg" alt="" width="44" height="44">{title}</h1>
           <span class="game-num" id="sp-number"></span>
         </div>
         <p class="game-lede">{lede}</p>

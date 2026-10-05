@@ -627,3 +627,12 @@
 .gw-grid th { font-size: 0.74rem; font-weight: 800; padding: 6px 4px; border-radius: 8px; background: color-mix(in oklch, var(--gc) 18%, var(--panel)); overflow-wrap: anywhere; }
 .gw-grid td { font-size: 0.78rem; font-weight: 700; padding: 8px 4px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); text-align: center; vertical-align: middle; overflow-wrap: anywhere; line-height: 1.2; }
 .gw-n { display: block; font-weight: 600; font-size: 0.7rem; color: var(--muted); }
+
+/* ---------- logos of the sports games (shapes drawn in scripts/games_logos.py) ---------- */
+.tile-art svg .lg-d { fill: var(--gc-d); }
+.tile-art svg .lg-l { fill: var(--gc-l); }
+.tile-art svg .lg-w { fill: oklch(99% 0.01 var(--gh)); }
+.tile-art svg .lg-i { fill: var(--gc-ink); }
+.tile-art svg .lg-ds { fill: none; stroke: var(--gc-d); stroke-linecap: round; stroke-linejoin: round; }
+.tile-art svg .lg-ws { fill: none; stroke: oklch(99% 0.01 var(--gh)); stroke-linecap: round; stroke-linejoin: round; }
+.game-logo { width: 44px; height: 44px; flex: none; border-radius: 11px; vertical-align: -0.3em; margin-right: 10px; }

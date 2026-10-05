@@ -3,6 +3,10 @@ Classes (set in site/games/games-ui.css): a1 deep tint, a2 light tint, a3 outlin
 Parts that drift on hover carry .mv or .mv2. Each returns an <svg> string on a 200 x 140 canvas.
 """
 
+import sys as _sys, pathlib as _pl
+_sys.path.insert(0, str(_pl.Path(__file__).resolve().parent))
+import games_logos as logos
+
 OPEN = '<svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">'
 
 
@@ -247,36 +251,23 @@ def wildlink():
     return "".join(out)
 
 
+
+
+
+def _logo_art(slug, extra=""):
+    return OPEN + logos.art_mark(slug, 100, 70, 1.2) + extra + "</svg>"
+
+
 def lockerlink():
-    out = [OPEN]
-    out.append('<path class="a6" d="M44 98C70 52 130 52 156 98"/>')
-    out.append('<g class="mv"><circle class="a5" cx="44" cy="98" r="19"/><circle class="a2" cx="44" cy="98" r="12"/></g>')
-    out.append('<g class="mv"><circle class="a5" cx="156" cy="98" r="19"/><circle class="a2" cx="156" cy="98" r="12"/></g>')
-    out.append('<g class="mv2"><circle class="a5" cx="100" cy="50" r="19"/><circle class="a1" cx="100" cy="50" r="11"/></g>')
-    out.append("</svg>")
-    return "".join(out)
+    return _logo_art("lockerlink", '<g class="mv2"><circle class="a5" cx="26" cy="30" r="4"/><circle class="a2" cx="176" cy="112" r="5"/></g>')
 
 
 def gridlink():
-    out = [OPEN]
-    for r in range(3):
-        for c in range(3):
-            x, y = 48 + c * 36, 20 + r * 36
-            cls = "a5" if (r + c) % 2 == 0 else "a2"
-            out.append(_r(x, y, 32, 32, cls, 7))
-    out.append('<g class="mv"><circle class="a1" cx="84" cy="56" r="9"/></g>')
-    out.append('<g class="mv2"><circle class="a1" cx="120" cy="92" r="9"/><circle class="a1" cx="48" cy="38" r="0"/></g>')
-    out.append("</svg>")
-    return "".join(out)
+    return _logo_art("gridlink", '<g class="mv2"><circle class="a5" cx="24" cy="112" r="4"/><circle class="a2" cx="178" cy="28" r="5"/></g>')
 
 
 def unbeaten():
-    out = [OPEN]
-    out.append('<path class="a1" d="M60 118h80v-8c0-18-14-28-40-28s-40 10-40 28z"/>')
-    out.append('<g class="mv"><circle class="a5" cx="100" cy="46" r="26"/>' + _star(100, 46, 17, "a1") + '</g>')
-    out.append('<g class="mv2"><rect class="a2" x="28" y="76" width="30" height="8" rx="4"/><rect class="a2" x="144" y="62" width="30" height="8" rx="4"/><circle class="a5" cx="40" cy="36" r="4"/><circle class="a5" cx="166" cy="30" r="3"/></g>')
-    out.append("</svg>")
-    return "".join(out)
+    return _logo_art("unbeaten", '<g class="mv2"><circle class="a5" cx="28" cy="26" r="4"/><circle class="a2" cx="174" cy="114" r="5"/></g>')
 
 
 ART = {"lockerlink": lockerlink, "gridlink": gridlink, "unbeaten": unbeaten, "thinkerlink": thinkerlink, "riverlink": riverlink, "wildlink": wildlink, "citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
