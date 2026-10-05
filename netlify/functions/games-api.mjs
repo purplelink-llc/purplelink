@@ -30,6 +30,7 @@ import { cleanData, cleanName, mergeData, percentile, dayIndexUTC, MAX_DATA_BYTE
 import { applyResult, boardRow, checkReport, DAILY_REPORT_CAP, SPORTS_GAMES, emptyRecord, publicNameOk, upsertRow, weekOf } from "../lib/ratings.mjs";
 import CHESS_INDEX from "../lib/chess-index.json" with { type: "json" };
 import SPORTS_DAYS from "../lib/sports-days.json" with { type: "json" };
+import SPORTS_POOL from "../lib/sports-pool.json" with { type: "json" };
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const ALLOWED_ORIGINS = new Set([SITE_ORIGIN, "https://www.purplelink.llc"]);
@@ -83,7 +84,7 @@ async function sendLoginEmail(to, link, env, fetchFn) {
 
 const RATED = ["chess", "sudoku", ...SPORTS_GAMES];
 
-export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), now = () => Date.now(), chessIndex = CHESS_INDEX, sportsDays = SPORTS_DAYS }) {
+export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), now = () => Date.now(), chessIndex = CHESS_INDEX, sportsDays = SPORTS_DAYS, sportsPool = SPORTS_POOL }) {
   const accounts = () => getStore("games-accounts");
   const auth = () => getStore("games-auth");
   const scores = () => getStore("games-scores");
@@ -257,7 +258,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       }
       if (action === "rating_report") {
         const game = String(b.game || "");
-        const checked = checkReport(game, b, chessIndex, sportsDays, dayIndexUTC(new Date(now())));
+        const checked = checkReport(game, b, chessIndex, sportsDays, dayIndexUTC(new Date(now())), sportsPool);
         if (!checked.ok) return json(400, { error: checked.error }, origin);
         const recs = await loadRatings(sess.acct);
         let rec = recs[game];

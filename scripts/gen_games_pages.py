@@ -1033,7 +1033,7 @@ page("games/sudoku-unlimited/", "", "", SU_BODY,
 LB_FAQ = [
     ("Who appears on the leaderboards?", "Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed."),
     ("What is the weekly board?", "It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday."),
-    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily sports results are checked for plausibility rather than replayed, so treat the boards as friendly competition."),
+    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Teamlink and Gridlink results are checked for plausibility rather than replayed (Unbeaten seasons are replayed on the server from your roster), so treat the boards as friendly competition."),
     ("How do I join?", "Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
 ]
 LB_BODY = """      <div class="games-wrap">
@@ -1415,7 +1415,7 @@ UB_FAQ = [
     ("Can a team really go undefeated?", "It can, but it is very unlikely even for the best roster the budget allows. The result card shows the exact chance for your roster."),
     ("What are the weekday rules?", "Each weekday has a rule: a bigger budget on Sunday, an open draft on Monday, only players who started before 1990 on Tuesday, only players who started in 2000 or later on Wednesday, no all-time icons on Thursday, a smaller budget on Friday and stars only on Saturday. Other leagues use their own cut-off years."),
     ("Where can I see the best roster?", "In the section under the puzzle called This week's best rosters. For every day so far this week it shows the highest-rated roster the budget and that day's rule allow, the season that roster plays, and how you did. Last week is kept in a drop-down. Today's appears once you finish today's puzzle, or tomorrow. It is the best roster by team rating, which is not the same as the best result: the season still has luck in it."),
-    ("Does a practice run count?", "No. Only your first daily roster counts toward your streak and stats. Practice rosters never do."),
+    ("Does a practice run count?", "No. Only your first daily roster counts toward your streak and stats. Practice rosters never do. For a rated daily result the rating service replays your season from your roster, rule and budget, so the record is the one the roster earns."),
     ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for Unbeaten, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
 ]
 UB_PROSE = f"""        <h2>How to play</h2>

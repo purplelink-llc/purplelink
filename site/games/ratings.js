@@ -87,7 +87,7 @@
     }
     if (!s || !G.api) return Promise.resolve(local());
     var body = { action: "rating_report", game: game, id: id, idx: info.idx, sport: info.sport, ms: Math.max(0, Math.min(21000000, Math.round(info.ms))) };
-    ["won", "links", "misses", "hints", "filled", "wins", "champion"].forEach(function (k) { if (info[k] !== undefined) body[k] = info[k]; });
+    ["won", "links", "misses", "hints", "filled", "wins", "champion", "roster"].forEach(function (k) { if (info[k] !== undefined) body[k] = info[k]; });
     if (rec.n > 0) body.seed = { r: rec.r, n: rec.n };
     return G.api(body, s.session).then(function (res) {
       if (res.status === 200 && typeof res.body.r === "number") {

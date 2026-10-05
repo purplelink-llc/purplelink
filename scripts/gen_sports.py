@@ -16,6 +16,7 @@ EPOCH_DOW = 0                       # the games epoch (2026-10-04) is a Sunday; 
 DAYS = 420                          # daily puzzles per sport kept ahead of today
 ORDER = ["nba", "nfl", "mlb", "nhl"]
 DAYS_LIB = {}
+LOADED = {}
 # Target chain length (par) by weekday, JS getDay(). With every player in the graph most famous pairs are 2 or 3 apart,
 # so the long days ask for what the league actually has: the longest chains are 6 in the NBA, 5 in the NFL and MLB, 4 in the NHL.
 WANT = {"nba": {1: 2, 2: 2, 3: 3, 4: 3, 5: 4, 6: 5, 0: 6}, "nfl": {1: 2, 2: 2, 3: 3, 4: 3, 5: 4, 6: 4, 0: 5},
@@ -387,7 +388,7 @@ def main():
     DATA.mkdir(parents=True, exist_ok=True)
     present = [s for s in ORDER if (OUT / f"{s}.json").exists()]
     for sport in present:
-        F, P = load(sport)
+        F, P = load(sport); LOADED[sport] = P
         extra, credit = load_extra(sport, P)
         names = {fid: name for fid, name, _ in getattr(franchises, sport.upper())}
         for r in extra:
@@ -418,6 +419,9 @@ def main():
         print(sport, len(P), "famous +", len(extra), "others,", len(pin["tl"]), "link days", len(pin["gr"]), "grids", (DATA / f"sports-{sport}.json").stat().st_size // 1024, "KB")
     (DATA / "sports-index.json").write_text(json.dumps({"rotation": present}, separators=(",", ":")))
     # the rating service needs the day's expected chain length and season length; it never sees the puzzles themselves
+    pool = {sport: {"cfg": {k: CFG[sport][k] for k in ("slots", "bench", "cap", "games", "scale", "base", "teams", "rounds", "era")},
+                    "p": [[p["n"], p["g"], p["t"], p["o"], p["s"]] for p in LOADED[sport]]} for sport in present}
+    (ROOT / "netlify" / "lib" / "sports-pool.json").write_text(json.dumps(pool, separators=(",", ":"), ensure_ascii=False))
     lib = ROOT / "netlify" / "lib" / "sports-days.json"
     lib.write_text(json.dumps({"rotation": present, **DAYS_LIB}, separators=(",", ":")))
 

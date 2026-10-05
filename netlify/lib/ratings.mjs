@@ -30,6 +30,15 @@ export function sudokuScore(result, seconds, level) {
   return seconds <= p / 2 ? 0.95 : seconds <= p ? 0.8 : seconds <= 2 * p ? 0.6 : 0.5;
 }
 
+import { prepare, replay } from "./season.mjs";
+
+const prepared = new WeakMap();
+function replaySeason(pool, sport, idx, roster) {
+  if (!pool[sport]) return { ok: false, error: "unknown_puzzle" };
+  let d = prepared.get(pool[sport]); if (!d) { d = prepare(pool[sport]); prepared.set(pool[sport], d); }
+  return replay(d, sport, idx, roster);
+}
+
 // ---- the daily sports games: Teamlink, Gridlink and Unbeaten. One rated result per game per day. ----
 export const SPORTS_GAMES = ["teamlink", "gridlink", "unbeaten"];
 const GRID_PUZZLE = 1000, UNBEATEN_PUZZLE = 1100;
@@ -51,7 +60,7 @@ export function unbeatenScore({ wins, games, champion }) {
 function intIn(v, lo, hi) { const n = Number(v); return Number.isInteger(n) && n >= lo && n <= hi ? n : null; }
 
 /** Check one daily sports result. `days` is netlify/lib/sports-days.json, `nowIdx` today's puzzle-day index (UTC). */
-export function checkSportsReport(game, b, days, nowIdx) {
+export function checkSportsReport(game, b, days, nowIdx, pool = null) {
   const idx = intIn(b.idx, 0, 100000);
   if (idx === null || Math.abs(idx - nowIdx) > 1) return { ok: false, error: "not_today" };
   const rot = days.rotation, sport = rot[((idx % rot.length) + rot.length) % rot.length];
@@ -71,9 +80,16 @@ export function checkSportsReport(game, b, days, nowIdx) {
     return { ok: true, id: `d${idx}`, puzzleRating: GRID_PUZZLE, score: gridlinkScore({ filled }), solved: filled >= 5 };
   }
   if (game === "unbeaten") {
+    if (ms < 8000) return { ok: false, error: "too_fast" };
+    if (pool) {
+      // replay the season from the roster, so the record is ours and not the browser's
+      const played = replaySeason(pool, sport, idx, b.roster);
+      if (!played.ok) return played;
+      const { wins, champion } = played.res;
+      return { ok: true, id: `d${idx}`, puzzleRating: UNBEATEN_PUZZLE, score: unbeatenScore({ wins, games: days[sport].games, champion }), solved: champion };
+    }
     const games = days[sport].games, wins = intIn(b.wins, 0, games);
     if (wins === null || b.champion !== true && b.champion !== false) return { ok: false, error: "bad_result" };
-    if (ms < 8000) return { ok: false, error: "too_fast" };
     return { ok: true, id: `d${idx}`, puzzleRating: UNBEATEN_PUZZLE, score: unbeatenScore({ wins, games, champion: b.champion }), solved: b.champion };
   }
   return { ok: false, error: "unknown_game" };
@@ -100,10 +116,10 @@ export function applyResult(rec, { puzzleRating, score, solved, dayIdx, dayKey }
 }
 
 /** Validate a report. Returns { ok: true, puzzleRating, score, solved } or { ok: false, error }. */
-export function checkReport(game, b, chessIndex, sports = null, nowIdx = 0) {
+export function checkReport(game, b, chessIndex, sports = null, nowIdx = 0, pool = null) {
   const ms = Number(b.ms);
   if (!Number.isFinite(ms) || ms < 0 || ms > 6 * 3600 * 1000) return { ok: false, error: "bad_time" };
-  if (SPORTS_GAMES.includes(game)) return sports ? checkSportsReport(game, b, sports, nowIdx) : { ok: false, error: "unknown_game" };
+  if (SPORTS_GAMES.includes(game)) return sports ? checkSportsReport(game, b, sports, nowIdx, pool) : { ok: false, error: "unknown_game" };
   if (game === "chess") {
     const id = String(b.id || "");
     const meta = chessIndex[id];

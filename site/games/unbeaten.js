@@ -124,7 +124,7 @@
       G.track("game_end", NAME + ":" + (res.champion ? "win" : "loss"));
       if (window.PLAch) window.PLAch.check({ game: NAME, idx: daily.idx, won: res.champion, tries: tries, losses: res.losses });
       G.submitScore(NAME, daily.idx, Math.min(98, res.losses)).then(function (r2) { $("sp-pct").textContent = G.describePercentile(r2); });
-      if (window.PLRating) window.PLRating.report(NAME, { idx: daily.idx, sport: daily.sport, ms: S.elapsed(st.t0), wins: res.wins, games: data.cfg.games, champion: res.champion }).then(function (x) { S.paintRating(NAME, x); });
+      if (window.PLRating) window.PLRating.report(NAME, { idx: daily.idx, sport: daily.sport, ms: S.elapsed(st.t0), wins: res.wins, games: data.cfg.games, champion: res.champion, roster: st.r.map(function (n) { return n || ""; }) }).then(function (x) { S.paintRating(NAME, x); });
     }
     paintSlots(); paintMeters();
     showResult(res, fresh);
