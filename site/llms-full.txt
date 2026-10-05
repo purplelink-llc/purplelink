@@ -2511,7 +2511,7 @@ Features
 
 ### Place tracking
 
-Log every city, landmark, and destination you've visited. Pin them on an interactive 3D globe and a world map, and attach photo postcards, notes and a private journal entry to each place.
+Log every city, landmark, and destination you've visited. Pin them on an interactive 3D globe and a world map, and attach photo postcards and notes to each place, keep a private journal, and leave a Time Capsule at any pin.
 
 ### Flights, road trips, cruises and trains
 
@@ -2527,7 +2527,7 @@ Countries, continents, nights abroad, furthest point and total miles. The number
 
 ### Travel Reels and Year in Review
 
-Turn a trip, a year or all your travels into a short video with your top places, photos and animated routes, in 15, 30 or 60 seconds and three formats. Year in Review is the annual version, ready to share.
+Turn a trip, a year or all your travels into a short video with your top places, photos and animated routes, with an original soundtrack made on your device. Pick a look (Night, Satellite, Light or Film), a length of 15, 30 or 60 seconds, and a format for Stories, the feed or widescreen. Year in Review is the annual version, ready to share.
 
 ### Travel goals
 
@@ -2535,7 +2535,7 @@ Set goals for every continent, every country, or your own bucket list, and track
 
 ### Plan your next trip
 
-Give a dream destination dates, a day-by-day plan and saved spots, and turn it into a pin when you go. Discover Nearby lists sights, food and coffee from Apple Maps. On devices with Apple Intelligence, Suggest a Plan drafts day-by-day ideas on the device.
+Give a dream destination dates, a day-by-day plan and saved spots, and tap I Went! to turn it into a pin that keeps the plan. Group dream destinations into collections such as Japan 2027, and planned trips sit at the top of your wishlist with a countdown. Discover Nearby lists sights, food and coffee from Apple Maps. On devices with Apple Intelligence, Suggest a Plan drafts day-by-day ideas on the device.
 
 ### Look Around
 
@@ -2551,7 +2551,7 @@ Home-screen widgets show On This Day, Travel Stats and your Last Trip. Find any 
 
 ### iCloud sync
 
-Your travel data stays in sync across your devices through CloudKit, in your own iCloud account. No Purplelink account and no server of ours.
+Your travel data stays in sync across your devices through CloudKit, in your own iCloud account. No Purplelink account and no server of ours. You can also import and export your data as CSV.
 
 ### Anniversary reminders
 
@@ -2582,7 +2582,7 @@ Yes. GlobePin uses iCloud sync via CloudKit (Apple's own infrastructure), so you
 
 What does GlobePin cost?
 
-GlobePin is free to download. The free version shows ads served by Google AdMob, and GlobePin Pro, a one-time $14.99 purchase and not a subscription, removes them.
+GlobePin is free to download, and every feature is in the free version. The free version shows ads served by Google AdMob: a small banner on some screens, a short ad before Year in Review and Map Collage and when you export a Travel Reel, and a small Made with GlobePin mark on shared cards and reels. GlobePin Pro, a one-time $14.99 purchase and not a subscription, removes all of that.
 
 What's the difference between GlobePin and other travel trackers?
 
