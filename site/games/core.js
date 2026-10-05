@@ -196,6 +196,7 @@
       var g2 = getGame(game);
       g2.scored = g2.scored || {};
       g2.scored[idx] = true;
+      g2.last = { idx: idx, percentile: res.percentile, total: res.total };
       var keys = Object.keys(g2.scored);
       if (keys.length > 60) delete g2.scored[keys[0]];
       // a lone early player's 50% says nothing, so the running average only counts days with a real crowd
@@ -212,7 +213,13 @@
   function describePercentile(res) {
     if (!res) return "";
     if (res.total < 10) return res.total <= 1 ? "You are the first player today." : "You are one of " + res.total + " players so far today.";
-    return "Ahead of " + res.percentile + "% of " + res.total + " players today.";
+    return "You did better than " + res.percentile + "% of the " + res.total + " players who have finished today's puzzle.";
+  }
+
+  // The percentile saved when this puzzle was finished, so it still shows after a reload.
+  function savedPercentile(game, idx) {
+    var l = getGame(game).last;
+    return l && l.idx === idx ? { percentile: l.percentile, total: l.total } : null;
   }
 
   function copyText(text) {
@@ -227,6 +234,6 @@
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
     rankFor: rankFor, xpOf: xpOf, goalXp: goalXp, titleFor: titleFor, TIER_XP: TIER_XP, QUEST_XP: QUEST_XP, WEEK_XP: WEEK_XP, saverNote: saverNote, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
     getGame: getGame, setGame: setGame, all: load, replaceAll: replaceAll, ready: Promise.resolve(),
-    submitScore: submitScore, describePercentile: describePercentile, track: track, copyText: copyText,
+    submitScore: submitScore, describePercentile: describePercentile, savedPercentile: savedPercentile, track: track, copyText: copyText,
   };
 });
