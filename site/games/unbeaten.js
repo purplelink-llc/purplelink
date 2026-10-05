@@ -47,6 +47,7 @@
     var r = roster(), s = SE.strength(data, r), filled = r.starters.filter(Boolean).length;
     $("ub-rating").textContent = filled ? s.rating.toFixed(1) : "none yet";
     $("ub-chem").textContent = s.chem.pairs ? s.chem.pairs + (s.chem.pairs === 1 ? " pair" : " pairs") + " played together" : "none yet";
+    $("ub-picker").hidden = st.done;
     $("ub-play").disabled = st.done || !ready();
     $("ub-play").textContent = ready() ? "Play the season" : "Fill every starting spot";
   }
@@ -62,8 +63,9 @@
     $("ub-picker-title").textContent = "Choose: " + slotLabel(active);
     var q = S.fold($("ub-search").value), toks = q.split(" ").filter(Boolean);
     var list = data.players.filter(function (p) { return eligible(p, active) && toks.every(function (t) { return p.key.indexOf(t) >= 0; }); });
-    list.sort(function (a, b) { return b.ovr - a.ovr || (a.n < b.n ? -1 : 1); });
     var left = cap() - spent() + (st.r[active] ? SE.cost(P(st.r[active])) : 0);
+    list.sort(function (a, b) { return (SE.cost(b) <= left) - (SE.cost(a) <= left) || b.ovr - a.ovr || (a.n < b.n ? -1 : 1); });
+    $("ub-picker").hidden = st.done;
     list.slice(0, 40).forEach(function (p) {
       var li = document.createElement("li"), b = document.createElement("button");
       b.type = "button"; b.className = "ub-opt"; var c = SE.cost(p);

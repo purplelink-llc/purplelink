@@ -540,7 +540,7 @@
 .sp-mode[aria-pressed="true"] { background: var(--gc, var(--purple)); color: var(--gc-ink, #fff); }
 .sp-mode:focus-visible { outline: 3px solid var(--gc, var(--purple)); outline-offset: 2px; }
 .sp-practice { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0 0 14px; }
-.sp-practice[hidden], .sp-form[hidden], .sp-tools[hidden] { display: none; }
+.sp-practice[hidden], .sp-form[hidden], .sp-tools[hidden], .ub-picker[hidden] { display: none; }
 .sp-field { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.92rem; }
 .sp-field select { min-height: 44px; padding: 0 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: 700 0.95rem/1 var(--font-body); }
 .sp-form { max-width: 620px; }

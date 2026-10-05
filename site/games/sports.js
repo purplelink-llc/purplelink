@@ -15,7 +15,7 @@
 
   // Build the lookup tables for a data file once.
   function prepare(raw) {
-    var d = { sport: raw.sport, name: raw.name, fr: raw.fr, cfg: raw.cfg, tl: raw.tl || [], gr: raw.gr || [], players: [], byName: {} };
+    var d = { sport: raw.sport, name: raw.name, fr: raw.fr, fs: raw.fs || {}, cfg: raw.cfg, tl: raw.tl || [], gr: raw.gr || [], players: [], byName: {} };
     raw.p.forEach(function (r, i) {
       var p = { i: i, n: r[0], pos: r[1], tier: r[2], ovr: r[3], st: r[4], key: fold(r[0]) };
       p.g = (d.cfg.groupOf || {})[p.pos] || p.pos;
@@ -109,7 +109,7 @@
   function decadeOf(code) { return Number(code.split(":")[1]); }
   function crit(d, code) {
     var k = code.split(":")[0], v = code.split(":")[1];
-    if (k === "t") return { code: code, label: d.fr[v] || v, short: shortName(d.fr[v] || v), test: function (p) { return p.teams.indexOf(v) >= 0; } };
+    if (k === "t") return { code: code, label: d.fr[v] || v, short: fname(d, v), test: function (p) { return p.teams.indexOf(v) >= 0; } };
     if (k === "p") return { code: code, label: (d.cfg.gname || {})[v] || v, short: (d.cfg.gname || {})[v] || v, test: function (p) { return p.g === v; } };
     if (k === "d") { var y = Number(v); return { code: code, label: "Played in the " + y + "s", short: y + "s", test: function (p) { return p.st.some(function (s) { return s[1] < y + 10 && s[2] > y; }); } }; }
     if (k === "n") return { code: code, label: "Played for " + v + "+ teams", short: v + "+ teams", test: function (p) { return p.teams.length >= Number(v); } };
@@ -124,6 +124,7 @@
     var w = name.split(" ");
     return w.length > 1 ? w[w.length - 1] : name;
   }
+  function fname(d, f) { return d.fs[f] || shortName(d.fr[f] || f); }
   function cellAnswers(d, r, c) {
     return d.players.filter(function (p) { return r.test(p) && c.test(p); });
   }
@@ -146,10 +147,10 @@
     return f === t ? String(f) : f + "-" + two(t);
   }
   function stintText(d, p) {
-    return p.st.map(function (s) { return shortName(d.fr[s[0]] || s[0]) + " " + span(d, s[1], s[2] - 1); }).join(", ");
+    return p.st.map(function (s) { return fname(d, s[0]) + " " + span(d, s[1], s[2] - 1); }).join(", ");
   }
   function teamsLine(d, p) {
-    return p.teams.map(function (f) { return shortName(d.fr[f] || f); }).join(", ");
+    return p.teams.map(function (f) { return fname(d, f); }).join(", ");
   }
   function career(p) { return p.span; }
 
@@ -207,7 +208,7 @@
   return {
     EPOCH: EPOCH, fold: fold, prepare: prepare, load: load, index: index, GROUPS: GROUPS,
     shared: shared, adjacency: adjacency, areTeammates: areTeammates, path: path, distances: distances,
-    crit: crit, cellAnswers: cellAnswers, shortName: shortName, hash: hash, rng: rng,
+    crit: crit, cellAnswers: cellAnswers, shortName: shortName, fname: fname, hash: hash, rng: rng,
     dayIdx: dayIdx, dailySport: dailySport, dailySlot: dailySlot,
     span: span, stintText: stintText, teamsLine: teamsLine, career: career,
     loadState: loadState, saveState: saveState, combo: combo

@@ -1390,7 +1390,7 @@ UB_BOARD = """          <p class="ub-rule"><strong id="ub-rule-name"></strong> <
             <button type="button" class="gbtn" id="ub-play" disabled>Fill every starting spot</button>
             <button type="button" class="gbtn gbtn--ghost" id="ub-clear">Clear roster</button>
           </div>
-          <section class="ub-picker" aria-labelledby="ub-picker-title">
+          <section class="ub-picker" id="ub-picker" aria-labelledby="ub-picker-title">
             <h2 id="ub-picker-title">Choose a player</h2>
             <label for="ub-search" class="visually-hidden">Search players</label>
             <input id="ub-search" class="ub-search" type="search" placeholder="Search by name" autocomplete="off" autocapitalize="off" spellcheck="false">

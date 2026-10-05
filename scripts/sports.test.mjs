@@ -63,3 +63,27 @@ test("daily rules: the weekday rule filters players", () => {
   assert.ok(modern.ok(P("Stephen Curry")) && !modern.ok(P("Michael Jordan")));
   assert.ok(SE.constraint(d, 4).ok(P("Kobe Bryant")) === false);
 });
+
+for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
+  const r = JSON.parse(readFileSync(`site/games/data/sports-${sport}.json`, "utf8"));
+  r.cfg.groupOf = S.GROUPS[sport];
+  const dd = S.prepare(r);
+  test(`${sport}: pool is connected and every slot can be filled`, () => {
+    assert.equal(Object.keys(S.distances(dd, dd.players[0])).length, dd.players.length);
+    dd.cfg.slots.forEach((g) => assert.ok(dd.players.filter((p) => p.g === g).length >= 8, g));
+    dd.players.forEach((p) => assert.ok(p.st.length && p.tier >= 1 && p.tier <= 5, p.n));
+  });
+  test(`${sport}: daily puzzles are valid`, () => {
+    dd.tl.forEach(([a, b]) => { assert.ok(dd.byName[a] && dd.byName[b] && a !== b); });
+    dd.gr.slice(0, 80).forEach((g) => {
+      const R = g.r.map((c) => S.crit(dd, c)), C = g.c.map((c) => S.crit(dd, c));
+      R.forEach((x) => C.forEach((y) => assert.ok(S.cellAnswers(dd, x, y).length >= 2)));
+    });
+  });
+  test(`${sport}: a season runs and the budget leaves room for a full roster`, () => {
+    const cheap = dd.cfg.slots.map((g) => dd.players.filter((p) => p.g === g).sort((a, b) => SE.cost(a) - SE.cost(b))[0]);
+    assert.ok(cheap.reduce((a, p) => a + SE.cost(p), 0) <= dd.cfg.cap - 4);
+    const res = SE.simulate(dd, { starters: dd.cfg.slots.map((g, i) => dd.players.filter((p) => p.g === g)[i % 3]), bench: [] }, "t");
+    assert.equal(res.wins + res.losses, dd.cfg.games);
+  });
+}

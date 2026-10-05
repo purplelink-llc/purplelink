@@ -28,7 +28,7 @@
   function reasonText(a, b) {
     var s = S.shared(a, b);
     if (!s) return "";
-    return S.shortName(data.fr[s.f] || s.f) + ", " + S.span(data, s.from, s.to);
+    return S.fname(data, s.f) + ", " + S.span(data, s.from, s.to);
   }
 
   function card(p, role) {
@@ -108,7 +108,7 @@
     var next = p[1], key = e.l.n + ">" + e.r.n;
     if (st.hint.key !== key) st.hint = { key: key, level: 0 };
     st.hint.level++; st.hints++;
-    var s = S.shared(e.l, next), team = S.shortName(data.fr[s.f] || s.f);
+    var s = S.shared(e.l, next), team = S.fname(data, s.f);
     if (st.hint.level === 1) say("Hint: a good next player was " + e.l.n + "'s teammate with the " + team + ".");
     else {
       var w = next.n.split(" ");

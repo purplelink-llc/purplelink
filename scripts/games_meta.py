@@ -344,6 +344,6 @@ GAMES = {
 HUB = dict(
     title="Free daily games: Linkle, Sudoku, crossword, chess and more",
     desc="Free daily puzzles from Purplelink: a word game, a four-board word game, trivia, photo geography, chess, Sudoku, a crossword and a horoscope. New every midnight.",
-    answer="Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
+    answer="Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Teamlink, Gridlink and Unbeaten) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
     og_photo="dsc-3940",
 )
