@@ -55,11 +55,14 @@ def write(name, fields, rows):
 
 
 def adobe(t):
-    t.goto("https://contributor.stock.adobe.com/en/insights", settle=6)
-    if "auth" in t.url() or "signin" in t.url().lower():
-        raise RuntimeError("Adobe: not signed in")
+    for _ in range(3):
+        t.goto("https://contributor.stock.adobe.com/en/insights", settle=7)
+        if t.url().startswith("https://contributor.stock.adobe.com/"):
+            break
+    if not t.url().startswith("https://contributor.stock.adobe.com/") or "auth" in t.url() or "signin" in t.url().lower():
+        raise RuntimeError(f"Adobe: not signed in or page did not load ({t.url()[:60]})")
     today = datetime.date.today().isoformat()
-    q = lambda ep, a, b: (f"/en/insights/{ep}?start_date={a}&end_date={b}&time_range=day")
+    q = lambda ep, a, b: (f"https://contributor.stock.adobe.com/en/insights/{ep}?start_date={a}&end_date={b}&time_range=day")
     days = fetch_json(t, q("earnings", "2020-01-01", today))["insights"]["statistics"]["data"]
     rows = []
     for d in days:
