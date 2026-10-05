@@ -35,6 +35,7 @@ XFADE = 3.0
 TARGET_RMS = 0.13                          # about -16 LUFS once encoded, the usual level for background music streams
 VIDEO_FPS = 15
 LOG_EVERY = 300
+PAUSE_SECONDS = 600          # YouTube ended the old broadcast within 6 minutes of the encoder dropping; 10 leaves margin
 
 
 def log(msg: str) -> None:
@@ -135,7 +136,7 @@ def ffmpeg_cmd(out: str, live: bool, audio_fd: int, size=VIDEO_SIZE, kbps=VIDEO_
     return cmd + ["-movflags", "+faststart", out]
 
 
-def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop: threading.Event) -> int:
+def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop: threading.Event, rotate: float | None = None) -> int:
     r_fd, w_fd = os.pipe()
     proc = subprocess.Popen(ffmpeg_cmd(out, live, r_fd), stdin=subprocess.PIPE, pass_fds=(r_fd,))
     os.close(r_fd)
@@ -197,6 +198,10 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
         while proc.poll() is None and not stop.is_set():
             if seconds is not None and not (ta.is_alive() or tv.is_alive()):
                 break
+            if rotate is not None and time.time() - t0_wall >= rotate:
+                log(f"rotating after {rotate / 3600:.2f} h so YouTube archives this broadcast")
+                failed.set()
+                break
             time.sleep(0.5)
     finally:
         failed.set() if stop.is_set() else None
@@ -215,6 +220,8 @@ def main() -> None:
     ap.add_argument("--live", action="store_true", help="stream to the RTMP URL in STREAM_URL (or --url-file) and keep running")
     ap.add_argument("--url-file", help="a file whose first line is the full RTMP URL including the key")
     ap.add_argument("--seconds", type=float, help="stop after this many seconds of stream time (tests)")
+    ap.add_argument("--rotate-hours", type=float, default=11.0, help="live only: end the broadcast and start a new one this often (YouTube archives only broadcasts under 12 hours)")
+    ap.add_argument("--rotate-gap", type=float, default=PAUSE_SECONDS, help="seconds of silence between broadcasts so YouTube ends the old one")
     ap.add_argument("--start-seed", type=int, default=int(time.time() // 3600) % 100000)
     a = ap.parse_args()
 
@@ -234,10 +241,17 @@ def main() -> None:
     while not stop.is_set():
         started = time.time()
         log("starting the pipeline" + (" (live)" if a.live else f" -> {out}"))
-        code = run_once(out, a.live, seed, a.seconds, stop)
+        rotate = a.rotate_hours * 3600 if a.live and a.rotate_hours > 0 else None
+        code = run_once(out, a.live, seed, a.seconds, stop, rotate)
         if not a.live or stop.is_set():
             sys.exit(code)
         ran = time.time() - started
+        if rotate is not None and ran >= rotate:
+            seed += 1                                                  # a planned break, not a failure: short gap, no back-off
+            log(f"between broadcasts: pausing {a.rotate_gap:.0f}s")
+            stop.wait(a.rotate_gap)
+            delay = 5
+            continue
         delay = 5 if ran > 600 else min(120, delay * 2)          # a long healthy run resets the back-off
         seed += 1000
         log(f"the pipeline ended (exit {code}) after {ran:.0f}s; restarting in {delay}s")
