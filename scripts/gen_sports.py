@@ -94,6 +94,14 @@ def load_extra(sport, P):
             while name in taken: name = f"{p['name']} ({tag}-{n})"; n += 1
         taken.add(name)
         st = sorted([[a, b, c] for a, b, c in p["st"] if c > b])
+        born = p.get("born")
+        # Same-name players and coaching stints sneak in from list pages: drop stints at an age nobody plays at. A birth year that
+        # makes even the first stint start at 36 or older is itself wrong, so those players are left alone.
+        if born and min(a - born for _, a, _ in st) < 36:
+            lo, hi = AGE_LIMITS.get(sport, (46, 50))
+            st = [x for x in st if x[1] - born <= lo and x[2] - 1 - born <= hi and (p["name"], x[0]) not in BAD_STINTS]
+            DROPPED.append(p["name"]) if len(st) < len(p["st"]) else None
+            if not st: continue
         rows.append([name, p.get("pos") or "", p.get("born") or 0, st])
     return rows, d.get("source", "")
 
@@ -158,6 +166,10 @@ def crit_ok(c, p):
     return False
 
 
+DROPPED = []
+# oldest age at the start of a stint and in its last season, per league; baseball and hockey have real players who played into their fifties
+AGE_LIMITS = {"nba": (46, 50), "nfl": (46, 50), "mlb": (52, 56), "nhl": (50, 52)}
+BAD_STINTS = {("Jack Adams", "DET")}      # his Red Wings years were as coach and general manager
 MATES = {}                 # star name -> names of everyone who shared a franchise and season with him
 
 

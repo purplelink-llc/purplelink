@@ -1,0 +1,913 @@
+{
+"sport": "mlb",
+"name": "MLB",
+"players": 20151,
+"stars": 45,
+"avg": 2.51,
+"max": 5,
+"dist": [
+[
+1,
+54
+],
+[
+2,
+536
+],
+[
+3,
+262
+],
+[
+4,
+118
+],
+[
+5,
+20
+]
+],
+"first": 1939,
+"fr": {
+"ARI": "Arizona Diamondbacks",
+"ATL": "Atlanta Braves",
+"BAL": "Baltimore Orioles",
+"BOS": "Boston Red Sox",
+"CHC": "Chicago Cubs",
+"CWS": "Chicago White Sox",
+"CIN": "Cincinnati Reds",
+"CLE": "Cleveland Guardians",
+"COL": "Colorado Rockies",
+"DET": "Detroit Tigers",
+"HOU": "Houston Astros",
+"KC": "Kansas City Royals",
+"LAA": "Los Angeles Angels",
+"LAD": "Los Angeles Dodgers",
+"MIA": "Miami Marlins",
+"MIL": "Milwaukee Brewers",
+"MIN": "Minnesota Twins",
+"NYM": "New York Mets",
+"NYY": "New York Yankees",
+"ATH": "Athletics",
+"PHI": "Philadelphia Phillies",
+"PIT": "Pittsburgh Pirates",
+"SD": "San Diego Padres",
+"SF": "San Francisco Giants",
+"SEA": "Seattle Mariners",
+"STL": "St. Louis Cardinals",
+"TB": "Tampa Bay Rays",
+"TEX": "Texas Rangers",
+"TOR": "Toronto Blue Jays",
+"WSH": "Washington Nationals"
+},
+"fs": {},
+"split": false,
+"rows": [
+{
+"a": "Shohei Ohtani",
+"b": "Ted Williams",
+"links": 5,
+"gap": 79,
+"c": [
+"Shohei Ohtani",
+"Albert Pujols",
+"Mark McGwire",
+"Reggie Jackson",
+"Jim Pagliaroni",
+"Ted Williams"
+],
+"h": [
+[
+"LAA",
+2018,
+2021
+],
+[
+"STL",
+2001,
+2001
+],
+[
+"ATH",
+1987,
+1987
+],
+[
+"ATH",
+1968,
+1969
+],
+[
+"BOS",
+1955,
+1955
+]
+]
+},
+{
+"a": "Shohei Ohtani",
+"b": "Stan Musial",
+"links": 5,
+"gap": 77,
+"c": [
+"Shohei Ohtani",
+"Albert Pujols",
+"John Smoltz",
+"Ted Simmons",
+"Bob Gibson",
+"Stan Musial"
+],
+"h": [
+[
+"LAA",
+2018,
+2021
+],
+[
+"STL",
+2009,
+2009
+],
+[
+"ATL",
+1988,
+1988
+],
+[
+"STL",
+1968,
+1975
+],
+[
+"STL",
+1959,
+1963
+]
+]
+},
+{
+"a": "Aaron Judge",
+"b": "Ted Williams",
+"links": 5,
+"gap": 77,
+"c": [
+"Aaron Judge",
+"Alex Rodriguez",
+"Randy Johnson",
+"Graig Nettles",
+"Russ Nixon",
+"Ted Williams"
+],
+"h": [
+[
+"NYY",
+2016,
+2016
+],
+[
+"SEA",
+1994,
+1998
+],
+[
+"WSH",
+1988,
+1988
+],
+[
+"MIN",
+1967,
+1967
+],
+[
+"BOS",
+1960,
+1960
+]
+]
+},
+{
+"a": "Aaron Judge",
+"b": "Stan Musial",
+"links": 5,
+"gap": 75,
+"c": [
+"Aaron Judge",
+"Alex Rodriguez",
+"Roger Clemens",
+"Tom Seaver",
+"Ken Boyer",
+"Stan Musial"
+],
+"h": [
+[
+"NYY",
+2016,
+2016
+],
+[
+"NYY",
+2007,
+2007
+],
+[
+"BOS",
+1986,
+1986
+],
+[
+"NYM",
+1967,
+1967
+],
+[
+"STL",
+1955,
+1963
+]
+]
+},
+{
+"a": "Mookie Betts",
+"b": "Yogi Berra",
+"links": 4,
+"gap": 68,
+"c": [
+"Mookie Betts",
+"Shane Victorino",
+"Jesse Orosco",
+"Ed Kranepool",
+"Yogi Berra"
+],
+"h": [
+[
+"BOS",
+2014,
+2015
+],
+[
+"SD",
+2003,
+2003
+],
+[
+"NYM",
+1979,
+1979
+],
+[
+"NYM",
+1965,
+1965
+]
+]
+},
+{
+"a": "Mike Trout",
+"b": "Yogi Berra",
+"links": 4,
+"gap": 65,
+"c": [
+"Mike Trout",
+"Torii Hunter",
+"Jesse Orosco",
+"Ed Kranepool",
+"Yogi Berra"
+],
+"h": [
+[
+"LAA",
+2011,
+2012
+],
+[
+"MIN",
+2003,
+2003
+],
+[
+"NYM",
+1979,
+1979
+],
+[
+"NYM",
+1965,
+1965
+]
+]
+},
+{
+"a": "Mookie Betts",
+"b": "Roy Campanella",
+"links": 5,
+"gap": 66,
+"c": [
+"Mookie Betts",
+"Albert Pujols",
+"John Smoltz",
+"Darrell Evans",
+"Bob Aspromonte",
+"Roy Campanella"
+],
+"h": [
+[
+"LAD",
+2021,
+2021
+],
+[
+"STL",
+2009,
+2009
+],
+[
+"ATL",
+1989,
+1989
+],
+[
+"ATL",
+1969,
+1970
+],
+[
+"LAD",
+1956,
+1956
+]
+]
+},
+{
+"a": "Mike Trout",
+"b": "Roy Campanella",
+"links": 5,
+"gap": 63,
+"c": [
+"Mike Trout",
+"Albert Pujols",
+"John Smoltz",
+"Darrell Evans",
+"Bob Aspromonte",
+"Roy Campanella"
+],
+"h": [
+[
+"LAA",
+2012,
+2021
+],
+[
+"STL",
+2009,
+2009
+],
+[
+"ATL",
+1989,
+1989
+],
+[
+"ATL",
+1969,
+1970
+],
+[
+"LAD",
+1956,
+1956
+]
+]
+},
+{
+"a": "Clayton Kershaw",
+"b": "Mickey Mantle",
+"links": 4,
+"gap": 57,
+"c": [
+"Clayton Kershaw",
+"Greg Maddux",
+"Dennis Eckersley",
+"Fritz Peterson",
+"Mickey Mantle"
+],
+"h": [
+[
+"LAD",
+2008,
+2008
+],
+[
+"CHC",
+1986,
+1986
+],
+[
+"CLE",
+1975,
+1976
+],
+[
+"NYY",
+1966,
+1968
+]
+]
+},
+{
+"a": "Bryce Harper",
+"b": "Mickey Mantle",
+"links": 4,
+"gap": 61,
+"c": [
+"Bryce Harper",
+"Yunel Escobar",
+"Julio Franco",
+"Stan Bahnsen",
+"Mickey Mantle"
+],
+"h": [
+[
+"WSH",
+2015,
+2015
+],
+[
+"ATL",
+2007,
+2007
+],
+[
+"PHI",
+1982,
+1982
+],
+[
+"NYY",
+1966,
+1966
+]
+]
+},
+{
+"a": "Bryce Harper",
+"b": "Willie Mays",
+"links": 4,
+"gap": 61,
+"c": [
+"Bryce Harper",
+"Yunel Escobar",
+"Julio Franco",
+"Tug McGraw",
+"Willie Mays"
+],
+"h": [
+[
+"WSH",
+2015,
+2015
+],
+[
+"ATL",
+2007,
+2007
+],
+[
+"PHI",
+1982,
+1982
+],
+[
+"NYM",
+1972,
+1973
+]
+]
+},
+{
+"a": "Justin Verlander",
+"b": "Willie Mays",
+"links": 4,
+"gap": 54,
+"c": [
+"Justin Verlander",
+"Iván Rodríguez",
+"Nolan Ryan",
+"Tom Seaver",
+"Willie Mays"
+],
+"h": [
+[
+"DET",
+2005,
+2008
+],
+[
+"TEX",
+1991,
+1993
+],
+[
+"NYM",
+1968,
+1971
+],
+[
+"NYM",
+1972,
+1973
+]
+]
+},
+{
+"a": "Clayton Kershaw",
+"b": "Sandy Koufax",
+"links": 4,
+"gap": 53,
+"c": [
+"Clayton Kershaw",
+"Albert Pujols",
+"Chuck Finley",
+"Don Sutton",
+"Sandy Koufax"
+],
+"h": [
+[
+"LAD",
+2021,
+2021
+],
+[
+"STL",
+2002,
+2002
+],
+[
+"LAA",
+1986,
+1987
+],
+[
+"LAD",
+1966,
+1966
+]
+]
+},
+{
+"a": "Justin Verlander",
+"b": "Sandy Koufax",
+"links": 4,
+"gap": 50,
+"c": [
+"Justin Verlander",
+"Iván Rodríguez",
+"Nolan Ryan",
+"Don Sutton",
+"Sandy Koufax"
+],
+"h": [
+[
+"DET",
+2005,
+2008
+],
+[
+"TEX",
+1991,
+1993
+],
+[
+"HOU",
+1981,
+1982
+],
+[
+"LAD",
+1966,
+1966
+]
+]
+},
+{
+"a": "Ernie Banks",
+"b": "Max Scherzer",
+"links": 4,
+"gap": 55,
+"c": [
+"Ernie Banks",
+"Lou Brock",
+"Jim Dwyer",
+"Randy Johnson",
+"Max Scherzer"
+],
+"h": [
+[
+"CHC",
+1961,
+1964
+],
+[
+"STL",
+1973,
+1975
+],
+[
+"WSH",
+1989,
+1989
+],
+[
+"ARI",
+2008,
+2008
+]
+]
+},
+{
+"a": "Hank Aaron",
+"b": "Max Scherzer",
+"links": 4,
+"gap": 54,
+"c": [
+"Hank Aaron",
+"Robin Yount",
+"Paul Molitor",
+"Torii Hunter",
+"Max Scherzer"
+],
+"h": [
+[
+"MIL",
+1975,
+1976
+],
+[
+"MIL",
+1978,
+1992
+],
+[
+"MIN",
+1997,
+1998
+],
+[
+"DET",
+2013,
+2014
+]
+]
+},
+{
+"a": "Albert Pujols",
+"b": "Ernie Banks",
+"links": 4,
+"gap": 48,
+"c": [
+"Albert Pujols",
+"John Smoltz",
+"Bruce Sutter",
+"Randy Hundley",
+"Ernie Banks"
+],
+"h": [
+[
+"STL",
+2009,
+2009
+],
+[
+"ATL",
+1988,
+1988
+],
+[
+"CHC",
+1976,
+1977
+],
+[
+"CHC",
+1966,
+1971
+]
+]
+},
+{
+"a": "Albert Pujols",
+"b": "Roberto Clemente",
+"links": 4,
+"gap": 46,
+"c": [
+"Albert Pujols",
+"Max Scherzer",
+"Tom Gordon",
+"Gene Garber",
+"Roberto Clemente"
+],
+"h": [
+[
+"LAD",
+2021,
+2021
+],
+[
+"ARI",
+2009,
+2009
+],
+[
+"KC",
+1988,
+1988
+],
+[
+"PIT",
+1969,
+1970
+]
+]
+},
+{
+"a": "Miguel Cabrera",
+"b": "Roberto Clemente",
+"links": 4,
+"gap": 48,
+"c": [
+"Miguel Cabrera",
+"Max Scherzer",
+"Tom Gordon",
+"Gene Garber",
+"Roberto Clemente"
+],
+"h": [
+[
+"DET",
+2010,
+2014
+],
+[
+"ARI",
+2009,
+2009
+],
+[
+"KC",
+1988,
+1988
+],
+[
+"PIT",
+1969,
+1970
+]
+]
+},
+{
+"a": "Brooks Robinson",
+"b": "Miguel Cabrera",
+"links": 3,
+"gap": 48,
+"c": [
+"Brooks Robinson",
+"Eddie Murray",
+"Todd Hollandsworth",
+"Miguel Cabrera"
+],
+"h": [
+[
+"BAL",
+1977,
+1977
+],
+[
+"LAD",
+1997,
+1997
+],
+[
+"MIA",
+2003,
+2003
+]
+]
+},
+{
+"a": "Brooks Robinson",
+"b": "Ichiro Suzuki",
+"links": 3,
+"gap": 46,
+"c": [
+"Brooks Robinson",
+"Reggie Jackson",
+"Stan Javier",
+"Ichiro Suzuki"
+],
+"h": [
+[
+"BAL",
+1976,
+1976
+],
+[
+"ATH",
+1987,
+1987
+],
+[
+"SEA",
+2001,
+2001
+]
+]
+},
+{
+"a": "Frank Robinson",
+"b": "Ichiro Suzuki",
+"links": 3,
+"gap": 45,
+"c": [
+"Frank Robinson",
+"Nolan Ryan",
+"Ruben Sierra",
+"Ichiro Suzuki"
+],
+"h": [
+[
+"LAA",
+1973,
+1974
+],
+[
+"TEX",
+1989,
+1992
+],
+[
+"SEA",
+2002,
+2002
+]
+]
+},
+{
+"a": "Alex Rodriguez",
+"b": "Frank Robinson",
+"links": 3,
+"gap": 38,
+"c": [
+"Alex Rodriguez",
+"Roger Clemens",
+"Dennis Eckersley",
+"Frank Robinson"
+],
+"h": [
+[
+"NYY",
+2007,
+2007
+],
+[
+"BOS",
+1984,
+1984
+],
+[
+"CLE",
+1975,
+1976
+]
+]
+},
+{
+"a": "Alex Rodriguez",
+"b": "Hank Aaron",
+"links": 3,
+"gap": 40,
+"c": [
+"Alex Rodriguez",
+"Rickey Henderson",
+"Phil Niekro",
+"Hank Aaron"
+],
+"h": [
+[
+"SEA",
+2000,
+2000
+],
+[
+"NYY",
+1985,
+1985
+],
+[
+"ATL",
+1964,
+1974
+]
+]
+}
+]
+}

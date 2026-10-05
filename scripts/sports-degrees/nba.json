@@ -1,0 +1,967 @@
+{
+"sport": "nba",
+"name": "NBA",
+"players": 5087,
+"stars": 45,
+"avg": 2.7,
+"max": 5,
+"dist": [
+[
+1,
+56
+],
+[
+2,
+477
+],
+[
+3,
+240
+],
+[
+4,
+145
+],
+[
+5,
+72
+]
+],
+"first": 1947,
+"fr": {
+"ATL": "Atlanta Hawks",
+"BOS": "Boston Celtics",
+"BKN": "Brooklyn Nets",
+"CHA": "Charlotte Hornets",
+"CHI": "Chicago Bulls",
+"CLE": "Cleveland Cavaliers",
+"DAL": "Dallas Mavericks",
+"DEN": "Denver Nuggets",
+"DET": "Detroit Pistons",
+"GSW": "Golden State Warriors",
+"HOU": "Houston Rockets",
+"IND": "Indiana Pacers",
+"LAC": "Los Angeles Clippers",
+"LAL": "Los Angeles Lakers",
+"MEM": "Memphis Grizzlies",
+"MIA": "Miami Heat",
+"MIL": "Milwaukee Bucks",
+"MIN": "Minnesota Timberwolves",
+"NOP": "New Orleans Pelicans",
+"NYK": "New York Knicks",
+"OKC": "Oklahoma City Thunder",
+"ORL": "Orlando Magic",
+"PHI": "Philadelphia 76ers",
+"PHX": "Phoenix Suns",
+"POR": "Portland Trail Blazers",
+"SAC": "Sacramento Kings",
+"SAS": "San Antonio Spurs",
+"TOR": "Toronto Raptors",
+"UTA": "Utah Jazz",
+"WAS": "Washington Wizards",
+"ABA-VIR": "Virginia Squires",
+"ABA-UTS": "Utah Stars",
+"ABA-KEN": "Kentucky Colonels",
+"ABA-SSL": "Spirits of St. Louis",
+"ABA-CAR": "Carolina Cougars",
+"ABA-OAK": "Oakland Oaks / Washington Caps"
+},
+"fs": {},
+"split": true,
+"rows": [
+{
+"a": "Bob Cousy",
+"b": "Nikola Jokic",
+"links": 5,
+"gap": 65,
+"c": [
+"Bob Cousy",
+"Norm Van Lier",
+"Ernie Grunfeld",
+"Patrick Ewing",
+"Mike Miller",
+"Nikola Jokic"
+],
+"h": [
+[
+"SAC",
+1969,
+1969
+],
+[
+"MIL",
+1978,
+1978
+],
+[
+"NYK",
+1985,
+1985
+],
+[
+"ORL",
+2001,
+2001
+],
+[
+"DEN",
+2015,
+2016
+]
+]
+},
+{
+"a": "Bob Cousy",
+"b": "Giannis Antetokounmpo",
+"links": 5,
+"gap": 63,
+"c": [
+"Bob Cousy",
+"Herm Gilliam",
+"Johnny Davis",
+"Kevin Willis",
+"Zaza Pachulia",
+"Giannis Antetokounmpo"
+],
+"h": [
+[
+"SAC",
+1969,
+1969
+],
+[
+"POR",
+1976,
+1976
+],
+[
+"ATL",
+1985,
+1985
+],
+[
+"ATL",
+2006,
+2006
+],
+[
+"MIL",
+2013,
+2014
+]
+]
+},
+{
+"a": "Bill Russell",
+"b": "Nikola Jokic",
+"links": 5,
+"gap": 59,
+"c": [
+"Bill Russell",
+"Don Chaney",
+"Larry Bird",
+"Dee Brown",
+"Mike Miller",
+"Nikola Jokic"
+],
+"h": [
+[
+"BOS",
+1968,
+1968
+],
+[
+"BOS",
+1979,
+1979
+],
+[
+"BOS",
+1990,
+1991
+],
+[
+"ORL",
+2000,
+2001
+],
+[
+"DEN",
+2015,
+2016
+]
+]
+},
+{
+"a": "Bill Russell",
+"b": "Giannis Antetokounmpo",
+"links": 5,
+"gap": 57,
+"c": [
+"Bill Russell",
+"Jim Barnett",
+"Caldwell Jones",
+"Rod Strickland",
+"Zaza Pachulia",
+"Giannis Antetokounmpo"
+],
+"h": [
+[
+"BOS",
+1966,
+1966
+],
+[
+"PHI",
+1976,
+1976
+],
+[
+"SAS",
+1989,
+1989
+],
+[
+"ORL",
+2003,
+2003
+],
+[
+"MIL",
+2013,
+2014
+]
+]
+},
+{
+"a": "Stephen Curry",
+"b": "Wilt Chamberlain",
+"links": 5,
+"gap": 50,
+"c": [
+"Stephen Curry",
+"Jermaine O'Neal",
+"Scottie Pippen",
+"Dave Corzine",
+"Jim Cleamons",
+"Wilt Chamberlain"
+],
+"h": [
+[
+"GSW",
+2013,
+2013
+],
+[
+"POR",
+1999,
+1999
+],
+[
+"CHI",
+1987,
+1988
+],
+[
+"WAS",
+1979,
+1979
+],
+[
+"LAL",
+1971,
+1971
+]
+]
+},
+{
+"a": "Bob Pettit",
+"b": "Stephen Curry",
+"links": 5,
+"gap": 55,
+"c": [
+"Bob Pettit",
+"Zelmo Beaty",
+"Brian Winters",
+"Alton Lister",
+"Jermaine O'Neal",
+"Stephen Curry"
+],
+"h": [
+[
+"ATL",
+1962,
+1964
+],
+[
+"LAL",
+1974,
+1974
+],
+[
+"MIL",
+1981,
+1982
+],
+[
+"POR",
+1997,
+1997
+],
+[
+"GSW",
+2013,
+2013
+]
+]
+},
+{
+"a": "Kevin Durant",
+"b": "Wilt Chamberlain",
+"links": 5,
+"gap": 48,
+"c": [
+"Kevin Durant",
+"Zaza Pachulia",
+"Toni Kukoč",
+"Bill Cartwright",
+"Jim Cleamons",
+"Wilt Chamberlain"
+],
+"h": [
+[
+"GSW",
+2016,
+2017
+],
+[
+"MIL",
+2004,
+2004
+],
+[
+"CHI",
+1993,
+1993
+],
+[
+"NYK",
+1979,
+1979
+],
+[
+"LAL",
+1971,
+1971
+]
+]
+},
+{
+"a": "Bob Pettit",
+"b": "Kevin Durant",
+"links": 5,
+"gap": 53,
+"c": [
+"Bob Pettit",
+"Lenny Wilkens",
+"Bill Walton",
+"Tom Chambers",
+"Joe Smith",
+"Kevin Durant"
+],
+"h": [
+[
+"ATL",
+1960,
+1964
+],
+[
+"POR",
+1974,
+1974
+],
+[
+"LAC",
+1981,
+1982
+],
+[
+"PHI",
+1997,
+1997
+],
+[
+"OKC",
+2008,
+2008
+]
+]
+},
+{
+"a": "Jerry West",
+"b": "Kawhi Leonard",
+"links": 5,
+"gap": 51,
+"c": [
+"Jerry West",
+"Stan Love",
+"George Gervin",
+"Charles Oakley",
+"Tracy McGrady",
+"Kawhi Leonard"
+],
+"h": [
+[
+"LAL",
+1973,
+1973
+],
+[
+"SAS",
+1974,
+1974
+],
+[
+"CHI",
+1985,
+1985
+],
+[
+"TOR",
+1998,
+1999
+],
+[
+"SAS",
+2013,
+2013
+]
+]
+},
+{
+"a": "Kawhi Leonard",
+"b": "Oscar Robertson",
+"links": 5,
+"gap": 51,
+"c": [
+"Kawhi Leonard",
+"Tim Duncan",
+"David Robinson",
+"Moses Malone",
+"Zaid Abdul-Aziz",
+"Oscar Robertson"
+],
+"h": [
+[
+"SAS",
+2011,
+2015
+],
+[
+"SAS",
+1997,
+2002
+],
+[
+"SAS",
+1994,
+1994
+],
+[
+"LAC",
+1976,
+1976
+],
+[
+"SAC",
+1968,
+1968
+]
+]
+},
+{
+"a": "LeBron James",
+"b": "Oscar Robertson",
+"links": 4,
+"gap": 43,
+"c": [
+"LeBron James",
+"Shaquille O'Neal",
+"Byron Scott",
+"Kareem Abdul-Jabbar",
+"Oscar Robertson"
+],
+"h": [
+[
+"CLE",
+2009,
+2009
+],
+[
+"LAL",
+1996,
+1996
+],
+[
+"LAL",
+1983,
+1988
+],
+[
+"MIL",
+1970,
+1973
+]
+]
+},
+{
+"a": "Jerry West",
+"b": "LeBron James",
+"links": 4,
+"gap": 43,
+"c": [
+"Jerry West",
+"Kermit Washington",
+"Chris Mullin",
+"Larry Hughes",
+"LeBron James"
+],
+"h": [
+[
+"LAL",
+1973,
+1973
+],
+[
+"GSW",
+1987,
+1987
+],
+[
+"GSW",
+2000,
+2000
+],
+[
+"CLE",
+2005,
+2007
+]
+]
+},
+{
+"a": "Elgin Baylor",
+"b": "James Harden",
+"links": 5,
+"gap": 51,
+"c": [
+"Elgin Baylor",
+"Gail Goodrich",
+"Kareem Abdul-Jabbar",
+"Byron Scott",
+"Derek Fisher",
+"James Harden"
+],
+"h": [
+[
+"LAL",
+1965,
+1967
+],
+[
+"LAL",
+1975,
+1975
+],
+[
+"LAL",
+1983,
+1988
+],
+[
+"LAL",
+1996,
+1996
+],
+[
+"OKC",
+2011,
+2011
+]
+]
+},
+{
+"a": "Elgin Baylor",
+"b": "Russell Westbrook",
+"links": 5,
+"gap": 50,
+"c": [
+"Elgin Baylor",
+"Jerry West",
+"Kermit Washington",
+"Chris Mullin",
+"Joe Smith",
+"Russell Westbrook"
+],
+"h": [
+[
+"LAL",
+1960,
+1970
+],
+[
+"LAL",
+1973,
+1973
+],
+[
+"GSW",
+1987,
+1987
+],
+[
+"GSW",
+1995,
+1996
+],
+[
+"OKC",
+2008,
+2008
+]
+]
+},
+{
+"a": "James Harden",
+"b": "John Havlicek",
+"links": 4,
+"gap": 47,
+"c": [
+"James Harden",
+"Nazr Mohammed",
+"Benoit Benjamin",
+"Cedric Maxwell",
+"John Havlicek"
+],
+"h": [
+[
+"OKC",
+2010,
+2011
+],
+[
+"PHI",
+1998,
+1998
+],
+[
+"LAC",
+1985,
+1986
+],
+[
+"BOS",
+1977,
+1977
+]
+]
+},
+{
+"a": "John Havlicek",
+"b": "Russell Westbrook",
+"links": 4,
+"gap": 46,
+"c": [
+"John Havlicek",
+"Kermit Washington",
+"Chris Mullin",
+"Joe Smith",
+"Russell Westbrook"
+],
+"h": [
+[
+"BOS",
+1977,
+1977
+],
+[
+"GSW",
+1987,
+1987
+],
+[
+"GSW",
+1995,
+1996
+],
+[
+"OKC",
+2008,
+2008
+]
+]
+},
+{
+"a": "Chris Paul",
+"b": "Kareem Abdul-Jabbar",
+"links": 4,
+"gap": 36,
+"c": [
+"Chris Paul",
+"Stephen Curry",
+"Devean George",
+"A.C. Green",
+"Kareem Abdul-Jabbar"
+],
+"h": [
+[
+"GSW",
+2023,
+2023
+],
+[
+"GSW",
+2009,
+2009
+],
+[
+"LAL",
+1999,
+1999
+],
+[
+"LAL",
+1985,
+1988
+]
+]
+},
+{
+"a": "Chris Paul",
+"b": "Rick Barry",
+"links": 4,
+"gap": 40,
+"c": [
+"Chris Paul",
+"Paul Pierce",
+"Randy Brown",
+"Robert Parish",
+"Rick Barry"
+],
+"h": [
+[
+"LAC",
+2015,
+2016
+],
+[
+"BOS",
+2000,
+2001
+],
+[
+"CHI",
+1996,
+1996
+],
+[
+"GSW",
+1976,
+1977
+]
+]
+},
+{
+"a": "Dwight Howard",
+"b": "Rick Barry",
+"links": 4,
+"gap": 39,
+"c": [
+"Dwight Howard",
+"Kobe Bryant",
+"Karl Malone",
+"Rickey Green",
+"Rick Barry"
+],
+"h": [
+[
+"LAL",
+2012,
+2012
+],
+[
+"LAL",
+2003,
+2003
+],
+[
+"UTA",
+1985,
+1987
+],
+[
+"GSW",
+1977,
+1977
+]
+]
+},
+{
+"a": "Dwyane Wade",
+"b": "Kareem Abdul-Jabbar",
+"links": 3,
+"gap": 34,
+"c": [
+"Dwyane Wade",
+"Shaquille O'Neal",
+"Byron Scott",
+"Kareem Abdul-Jabbar"
+],
+"h": [
+[
+"MIA",
+2004,
+2007
+],
+[
+"LAL",
+1996,
+1996
+],
+[
+"LAL",
+1983,
+1988
+]
+]
+},
+{
+"a": "Dwyane Wade",
+"b": "Willis Reed",
+"links": 4,
+"gap": 39,
+"c": [
+"Dwyane Wade",
+"Gary Payton",
+"Bill Cartwright",
+"Earl Monroe",
+"Willis Reed"
+],
+"h": [
+[
+"MIA",
+2005,
+2006
+],
+[
+"OKC",
+1994,
+1994
+],
+[
+"NYK",
+1979,
+1979
+],
+[
+"NYK",
+1971,
+1973
+]
+]
+},
+{
+"a": "Dwight Howard",
+"b": "Willis Reed",
+"links": 4,
+"gap": 40,
+"c": [
+"Dwight Howard",
+"Stacey Augmon",
+"Maurice Cheeks",
+"Henry Bibby",
+"Willis Reed"
+],
+"h": [
+[
+"ORL",
+2004,
+2005
+],
+[
+"ATL",
+1991,
+1991
+],
+[
+"PHI",
+1978,
+1979
+],
+[
+"NYK",
+1972,
+1973
+]
+]
+},
+{
+"a": "Julius Erving",
+"b": "Tim Duncan",
+"links": 3,
+"gap": 26,
+"c": [
+"Julius Erving",
+"Moses Malone",
+"David Robinson",
+"Tim Duncan"
+],
+"h": [
+[
+"PHI",
+1982,
+1985
+],
+[
+"SAS",
+1994,
+1994
+],
+[
+"SAS",
+1997,
+2002
+]
+]
+},
+{
+"a": "Julius Erving",
+"b": "Kobe Bryant",
+"links": 3,
+"gap": 25,
+"c": [
+"Julius Erving",
+"Moses Malone",
+"Dennis Rodman",
+"Kobe Bryant"
+],
+"h": [
+[
+"PHI",
+1982,
+1985
+],
+[
+"SAS",
+1994,
+1994
+],
+[
+"LAL",
+1999,
+1999
+]
+]
+}
+]
+}

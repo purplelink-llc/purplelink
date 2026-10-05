@@ -1,0 +1,855 @@
+{
+"sport": "nhl",
+"name": "NHL",
+"players": 8986,
+"stars": 45,
+"avg": 2.41,
+"max": 4,
+"dist": [
+[
+1,
+84
+],
+[
+2,
+532
+],
+[
+3,
+258
+],
+[
+4,
+116
+]
+],
+"first": 1942,
+"fr": {
+"ANA": "Anaheim Ducks",
+"BOS": "Boston Bruins",
+"BUF": "Buffalo Sabres",
+"CGY": "Calgary Flames",
+"CAR": "Carolina Hurricanes",
+"CHI": "Chicago Blackhawks",
+"COL": "Colorado Avalanche",
+"CBJ": "Columbus Blue Jackets",
+"DAL": "Dallas Stars",
+"DET": "Detroit Red Wings",
+"EDM": "Edmonton Oilers",
+"FLA": "Florida Panthers",
+"LAK": "Los Angeles Kings",
+"MIN": "Minnesota Wild",
+"MTL": "Montreal Canadiens",
+"NSH": "Nashville Predators",
+"NJD": "New Jersey Devils",
+"NYI": "New York Islanders",
+"NYR": "New York Rangers",
+"OTT": "Ottawa Senators",
+"PHI": "Philadelphia Flyers",
+"PIT": "Pittsburgh Penguins",
+"SJS": "San Jose Sharks",
+"SEA": "Seattle Kraken",
+"STL": "St. Louis Blues",
+"TBL": "Tampa Bay Lightning",
+"TOR": "Toronto Maple Leafs",
+"UTA": "Utah Mammoth",
+"VAN": "Vancouver Canucks",
+"VGK": "Vegas Golden Knights",
+"WSH": "Washington Capitals",
+"WPG": "Winnipeg Jets",
+"CLB": "California Golden Seals / Cleveland Barons"
+},
+"fs": {
+"UTA": "Coyotes",
+"CLB": "Seals/Barons"
+},
+"split": true,
+"rows": [
+{
+"a": "Connor McDavid",
+"b": "Gordie Howe",
+"links": 4,
+"gap": 69,
+"c": [
+"Connor McDavid",
+"Duncan Keith",
+"Martin Lapointe",
+"Mark Howe",
+"Gordie Howe"
+],
+"h": [
+[
+"EDM",
+2021,
+2021
+],
+[
+"CHI",
+2005,
+2007
+],
+[
+"DET",
+1992,
+1994
+],
+[
+"CAR",
+1979,
+1979
+]
+]
+},
+{
+"a": "Connor McDavid",
+"b": "Maurice Richard",
+"links": 4,
+"gap": 73,
+"c": [
+"Connor McDavid",
+"Travis Dermott",
+"Left wing",
+"Hal Laycoe",
+"Maurice Richard"
+],
+"h": [
+[
+"EDM",
+2024,
+2024
+],
+[
+"MIN",
+2024,
+2024
+],
+[
+"VAN",
+1970,
+1971
+],
+[
+"MTL",
+1947,
+1950
+]
+]
+},
+{
+"a": "Cale Makar",
+"b": "Gordie Howe",
+"links": 4,
+"gap": 72,
+"c": [
+"Cale Makar",
+"Brent Burns",
+"Wes Walz",
+"Mark Howe",
+"Gordie Howe"
+],
+"h": [
+[
+"COL",
+2025,
+2025
+],
+[
+"MIN",
+2003,
+2007
+],
+[
+"PHI",
+1991,
+1991
+],
+[
+"CAR",
+1979,
+1979
+]
+]
+},
+{
+"a": "Cale Makar",
+"b": "Maurice Richard",
+"links": 4,
+"gap": 76,
+"c": [
+"Cale Makar",
+"Mikko Rantanen",
+"Left wing",
+"Hal Laycoe",
+"Maurice Richard"
+],
+"h": [
+[
+"COL",
+2018,
+2024
+],
+[
+"DAL",
+2025,
+2025
+],
+[
+"VAN",
+1970,
+1971
+],
+[
+"MTL",
+1947,
+1950
+]
+]
+},
+{
+"a": "Doug Harvey",
+"b": "Nikita Kucherov",
+"links": 4,
+"gap": 66,
+"c": [
+"Doug Harvey",
+"Wayne Connelly",
+"Left wing",
+"Martin St. Louis",
+"Nikita Kucherov"
+],
+"h": [
+[
+"MTL",
+1960,
+1960
+],
+[
+"VAN",
+1971,
+1971
+],
+[
+"TBL",
+2000,
+2000
+],
+[
+"TBL",
+2013,
+2013
+]
+]
+},
+{
+"a": "Nikita Kucherov",
+"b": "Terry Sawchuk",
+"links": 4,
+"gap": 64,
+"c": [
+"Nikita Kucherov",
+"Martin St. Louis",
+"Grant Fuhr",
+"Lee Fogolin",
+"Terry Sawchuk"
+],
+"h": [
+[
+"TBL",
+2013,
+2013
+],
+[
+"CGY",
+1999,
+1999
+],
+[
+"EDM",
+1981,
+1986
+],
+[
+"DET",
+1949,
+1950
+]
+]
+},
+{
+"a": "Auston Matthews",
+"b": "Doug Harvey",
+"links": 4,
+"gap": 69,
+"c": [
+"Auston Matthews",
+"Joe Thornton",
+"Ray Bourque",
+"Jean Ratelle",
+"Doug Harvey"
+],
+"h": [
+[
+"TOR",
+2020,
+2020
+],
+[
+"BOS",
+1997,
+1999
+],
+[
+"BOS",
+1979,
+1980
+],
+[
+"NYR",
+1961,
+1963
+]
+]
+},
+{
+"a": "Auston Matthews",
+"b": "Terry Sawchuk",
+"links": 4,
+"gap": 67,
+"c": [
+"Auston Matthews",
+"Joe Thornton",
+"Ray Bourque",
+"Brad Park",
+"Terry Sawchuk"
+],
+"h": [
+[
+"TOR",
+2020,
+2020
+],
+[
+"BOS",
+1997,
+1999
+],
+[
+"BOS",
+1979,
+1982
+],
+[
+"NYR",
+1969,
+1969
+]
+]
+},
+{
+"a": "Nathan MacKinnon",
+"b": "Red Kelly",
+"links": 4,
+"gap": 66,
+"c": [
+"Nathan MacKinnon",
+"Jarome Iginla",
+"Grant Fuhr",
+"Lee Fogolin",
+"Red Kelly"
+],
+"h": [
+[
+"COL",
+2014,
+2016
+],
+[
+"CGY",
+1999,
+1999
+],
+[
+"EDM",
+1981,
+1986
+],
+[
+"DET",
+1947,
+1950
+]
+]
+},
+{
+"a": "Jacques Plante",
+"b": "Nathan MacKinnon",
+"links": 4,
+"gap": 61,
+"c": [
+"Jacques Plante",
+"Phil Esposito",
+"Pat Conacher",
+"Jarome Iginla",
+"Nathan MacKinnon"
+],
+"h": [
+[
+"BOS",
+1972,
+1972
+],
+[
+"NYR",
+1979,
+1979
+],
+[
+"CGY",
+1995,
+1995
+],
+[
+"COL",
+2014,
+2016
+]
+]
+},
+{
+"a": "Red Kelly",
+"b": "Sidney Crosby",
+"links": 4,
+"gap": 58,
+"c": [
+"Red Kelly",
+"Gordie Howe",
+"Mark Howe",
+"Mark Recchi",
+"Sidney Crosby"
+],
+"h": [
+[
+"DET",
+1947,
+1959
+],
+[
+"CAR",
+1979,
+1979
+],
+[
+"PHI",
+1991,
+1991
+],
+[
+"PIT",
+2005,
+2007
+]
+]
+},
+{
+"a": "Jacques Plante",
+"b": "Sidney Crosby",
+"links": 3,
+"gap": 53,
+"c": [
+"Jacques Plante",
+"Rick Kehoe",
+"Mario Lemieux",
+"Sidney Crosby"
+],
+"h": [
+[
+"TOR",
+1971,
+1972
+],
+[
+"PIT",
+1984,
+1984
+],
+[
+"PIT",
+2005,
+2005
+]
+]
+},
+{
+"a": "Jean Béliveau",
+"b": "Patrick Kane",
+"links": 4,
+"gap": 57,
+"c": [
+"Jean Béliveau",
+"Tony Esposito",
+"Doug Crossman",
+"Martin Lapointe",
+"Patrick Kane"
+],
+"h": [
+[
+"MTL",
+1968,
+1968
+],
+[
+"CHI",
+1980,
+1982
+],
+[
+"DET",
+1991,
+1991
+],
+[
+"CHI",
+2007,
+2007
+]
+]
+},
+{
+"a": "Evgeni Malkin",
+"b": "Jean Béliveau",
+"links": 3,
+"gap": 56,
+"c": [
+"Evgeni Malkin",
+"Gary Roberts",
+"Guy Charron",
+"Jean Béliveau"
+],
+"h": [
+[
+"PIT",
+2006,
+2007
+],
+[
+"CGY",
+1990,
+1994
+],
+[
+"MTL",
+1969,
+1970
+]
+]
+},
+{
+"a": "Glenn Hall",
+"b": "Patrick Kane",
+"links": 4,
+"gap": 55,
+"c": [
+"Glenn Hall",
+"Gordie Howe",
+"Mark Howe",
+"Martin Lapointe",
+"Patrick Kane"
+],
+"h": [
+[
+"DET",
+1954,
+1956
+],
+[
+"CAR",
+1979,
+1979
+],
+[
+"DET",
+1992,
+1994
+],
+[
+"CHI",
+2007,
+2007
+]
+]
+},
+{
+"a": "Evgeni Malkin",
+"b": "Glenn Hall",
+"links": 4,
+"gap": 54,
+"c": [
+"Evgeni Malkin",
+"Jarome Iginla",
+"Grant Fuhr",
+"Garry Unger",
+"Glenn Hall"
+],
+"h": [
+[
+"PIT",
+2012,
+2012
+],
+[
+"CGY",
+1999,
+1999
+],
+[
+"EDM",
+1981,
+1982
+],
+[
+"STL",
+1970,
+1970
+]
+]
+},
+{
+"a": "Alex Ovechkin",
+"b": "Bernie Geoffrion",
+"links": 4,
+"gap": 55,
+"c": [
+"Alex Ovechkin",
+"Sergei Fedorov",
+"Rick Green (1956)",
+"Dennis Hextall",
+"Bernie Geoffrion"
+],
+"h": [
+[
+"WSH",
+2007,
+2008
+],
+[
+"DET",
+1990,
+1990
+],
+[
+"WSH",
+1978,
+1979
+],
+[
+"NYR",
+1967,
+1967
+]
+]
+},
+{
+"a": "Alex Ovechkin",
+"b": "Bobby Hull",
+"links": 3,
+"gap": 48,
+"c": [
+"Alex Ovechkin",
+"Sergei Fedorov",
+"Mark Howe",
+"Bobby Hull"
+],
+"h": [
+[
+"WSH",
+2007,
+2008
+],
+[
+"DET",
+1992,
+1994
+],
+[
+"CAR",
+1979,
+1979
+]
+]
+},
+{
+"a": "Bernie Geoffrion",
+"b": "Martin Brodeur",
+"links": 3,
+"gap": 41,
+"c": [
+"Bernie Geoffrion",
+"Walt Tkaczuk",
+"Pat Conacher",
+"Martin Brodeur"
+],
+"h": [
+[
+"NYR",
+1967,
+1967
+],
+[
+"NYR",
+1979,
+1979
+],
+[
+"NJD",
+1991,
+1991
+]
+]
+},
+{
+"a": "Bobby Hull",
+"b": "Martin Brodeur",
+"links": 3,
+"gap": 34,
+"c": [
+"Bobby Hull",
+"Phil Esposito",
+"Pat Conacher",
+"Martin Brodeur"
+],
+"h": [
+[
+"CHI",
+1963,
+1966
+],
+[
+"NYR",
+1979,
+1979
+],
+[
+"NJD",
+1991,
+1991
+]
+]
+},
+{
+"a": "Nicklas Lidström",
+"b": "Stan Mikita",
+"links": 3,
+"gap": 33,
+"c": [
+"Nicklas Lidström",
+"Paul Coffey",
+"Reg Kerr",
+"Stan Mikita"
+],
+"h": [
+[
+"DET",
+1992,
+1995
+],
+[
+"EDM",
+1983,
+1983
+],
+[
+"CHI",
+1977,
+1979
+]
+]
+},
+{
+"a": "Dominik Hašek",
+"b": "Phil Esposito",
+"links": 3,
+"gap": 27,
+"c": [
+"Dominik Hašek",
+"Chris Chelios",
+"Lucien DeBlois",
+"Phil Esposito"
+],
+"h": [
+[
+"CHI",
+1990,
+1991
+],
+[
+"MTL",
+1984,
+1985
+],
+[
+"NYR",
+1977,
+1979
+]
+]
+},
+{
+"a": "Dominik Hašek",
+"b": "Frank Mahovlich",
+"links": 3,
+"gap": 34,
+"c": [
+"Dominik Hašek",
+"Chris Chelios",
+"Guy Lafleur",
+"Frank Mahovlich"
+],
+"h": [
+[
+"CHI",
+1990,
+1991
+],
+[
+"MTL",
+1983,
+1984
+],
+[
+"MTL",
+1971,
+1973
+]
+]
+},
+{
+"a": "Jaromír Jágr",
+"b": "Stan Mikita",
+"links": 3,
+"gap": 32,
+"c": [
+"Jaromír Jágr",
+"Mario Lemieux",
+"Terry Ruskowski",
+"Stan Mikita"
+],
+"h": [
+[
+"PIT",
+1990,
+1993
+],
+[
+"PIT",
+1985,
+1986
+],
+[
+"CHI",
+1979,
+1979
+]
+]
+}
+]
+}

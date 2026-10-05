@@ -142,6 +142,8 @@
   - Teamlink: Teamlink is a free daily sports puzzle: link two players from any era through a chain of real teammates (NBA, NFL, MLB, NHL). https://purplelink.llc/games/teamlink/
   - Gridlink: Gridlink is a free daily sports grid: name a player who fits each row and column clue, in nine guesses. https://purplelink.llc/games/gridlink/
   - Unbeaten: Unbeaten is a free sports team builder: pick a roster from any era under a budget and play a full season. https://purplelink.llc/games/unbeaten/
+  - Sports games hub: free daily NBA, NFL, MLB and NHL puzzles (Teamlink, Gridlink, Unbeaten). https://purplelink.llc/games/sports/
+  - Teammate chains between stars of different eras: https://purplelink.llc/games/sports/nba-teammate-chains/ , https://purplelink.llc/games/sports/nfl-teammate-chains/ , https://purplelink.llc/games/sports/mlb-teammate-chains/ , https://purplelink.llc/games/sports/nhl-teammate-chains/
 - Guides: https://purplelink.llc/guides/
 - GlobePin (iOS, free, shipping): https://purplelink.llc/globepin/
 - Haea (iOS, in development): https://purplelink.llc/haea/

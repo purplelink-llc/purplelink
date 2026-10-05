@@ -161,3 +161,12 @@ for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
     }
   });
 }
+
+for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
+  test(`${sport}: the all-players file has no stint at an age nobody plays at`, () => {
+    // names whose birth year is known only through the source; the check is on the stints themselves
+    const all = JSON.parse(readFileSync(`site/games/data/sports-${sport}-all.json`, "utf8"));
+    assert.ok(!all.p.some((p) => p[0] === "Jack Adams" && p[3].some((s) => s[0] === "DET")));
+    assert.ok(!all.p.some((p) => p[0] === "Reggie Williams" && p[3].some((s) => s[0] === "NOP" && s[1] === 2016 && p[2] === 1964)));
+  });
+}

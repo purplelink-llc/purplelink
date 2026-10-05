@@ -1272,7 +1272,7 @@ SP_FORM = """          <form class="ag-form sp-form" id="sp-form" autocomplete="
           </form>
           <p class="sp-msg" id="sp-msg" role="status" aria-live="polite"></p>"""
 
-def sports_page(slug, title, lede, board, result_extra, prose, faq_items, scripts, diff=False, extra_modes="", under_lede=""):
+def sports_page(slug, title, lede, board, result_extra, prose, faq_items, scripts, diff=False, extra_modes="", under_lede="", extra_links=""):
     d = ('            <label class="sp-field">Difficulty <select id="sp-diff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label>\n' if diff else "")
     body = f"""      <div class="games-wrap sp" id="sp-root" data-ds="{slug}" data-url="https://purplelink.llc/games/{slug}/">
         <div class="game-head">
@@ -1318,7 +1318,7 @@ def sports_page(slug, title, lede, board, result_extra, prose, faq_items, script
         <div class="games-prose">
 {prose}
         </div>
-        <p class="games-note"><a href="/games/">All daily games</a></p>
+        <p class="games-note"><a href="/games/sports/">All sports games</a>{extra_links}<br><a href="/games/">All daily games</a></p>
       </div>"""
     page(f"games/{slug}/", "", "", body, {"@context": "https://schema.org", "@graph": [faq(faq_items)]}, scripts)
 
@@ -1377,7 +1377,8 @@ sports_page("teamlink", "Teamlink", "Link two players from any era through the t
             TL_RESULT, TL_PROSE, TL_FAQ,
             ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/teamlink.js"], diff=True,
             extra_modes='          <button type="button" class="sp-mode" id="sp-mode-rival" aria-pressed="false" hidden>Rival</button>\n',
-            under_lede='        <p class="wg-twist" id="tl-rival-banner" hidden></p>')
+            under_lede='        <p class="wg-twist" id="tl-rival-banner" hidden></p>',
+            extra_links=' &middot; Shortest chains between legends: <a href="/games/sports/nba-teammate-chains/">NBA</a>, <a href="/games/sports/nfl-teammate-chains/">NFL</a>, <a href="/games/sports/mlb-teammate-chains/">MLB</a>, <a href="/games/sports/nhl-teammate-chains/">NHL</a>')
 
 GL_FAQ = [
     ("How does scoring work?", "You have nine guesses for nine cells. Every correct cell is worth 1 to 5 points: the less famous the player you name, the more it is worth. A wrong name uses a guess without scoring."),
@@ -1452,6 +1453,113 @@ UB_RESULT = """            <p class="ub-record" id="ub-record" aria-hidden="true
 sports_page("unbeaten", "Unbeaten", "Build a roster from any era under a budget, then play a full season.", UB_BOARD, UB_RESULT, UB_PROSE, UB_FAQ,
             ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/season.js", "/games/unbeaten.js"])
 
+
+# ---------------- Sports hub and "how are they connected" pages ----------------
+TWO_WORD = ["Trail Blazers", "Red Sox", "White Sox", "Blue Jays", "Maple Leafs", "Golden Knights", "Blue Jackets", "Red Wings"]
+
+
+def short_team(d, f):
+    if f in d.get("fs", {}): return d["fs"][f]
+    name = d["fr"].get(f, f)
+    for t in TWO_WORD:
+        if name.endswith(t): return t
+    return name.split(" ")[-1]
+
+
+def seasons(d, a, b):
+    two = lambda n: f"{n % 100:02d}"
+    if d["split"]: return f"{a}-{two(b + 1)}"
+    return str(a) if a == b else f"{a}-{two(b)}"
+
+
+DEGREE_PAGES = {}
+for _sp in ("nba", "nfl", "mlb", "nhl"):
+    _f = Path(__file__).resolve().parent / "sports-degrees" / f"{_sp}.json"
+    if _f.exists(): DEGREE_PAGES[_sp] = json.loads(_f.read_text(encoding="utf-8"))
+SPORT_FULL = {"nba": ("NBA", "basketball", "Bill Russell"), "nfl": ("NFL", "football", "Johnny Unitas"), "mlb": ("MLB", "baseball", "Willie Mays"), "nhl": ("NHL", "hockey", "Gordie Howe")}
+
+
+def degree_page(sp, d):
+    name, game, _ = SPORT_FULL[sp]
+    top = d["rows"][0]
+    title = f"How are {name} stars connected? Teammate chains across eras"
+    desc = f"The shortest chains of real teammates between {name} legends from different eras, such as {top['a']} to {top['b']} in {top['links']} links. Based on {d['players']:,} {game} players."
+    far = [r for r in d["rows"]]
+    items = ""
+    for r in far:
+        hops = ""
+        for i, n in enumerate(r["c"]):
+            hop = ""
+            if i < len(r["h"]) and r["h"][i]:
+                f, a, b = r["h"][i]
+                hop = f'<span class="tw-hop">teammates: {html.escape(short_team(d, f))}, {seasons(d, a, b)}</span>'
+            hops += f"            <li>{html.escape(n)}{hop}</li>\n"
+        items += (f'          <li class="tw-day"><p class="tw-head"><strong>{html.escape(r["a"])} to {html.escape(r["b"])}</strong>: {r["links"]} links, '
+                  f'{r["gap"]} years apart at the start of their careers.</p>\n          <ol class="tw-chain">\n{hops}          </ol></li>\n')
+    dist = ", ".join(f"{n} pairs are {k} links apart" for k, n in d["dist"])
+    faq_ = [
+        (f"How many degrees of separation are there between {name} stars?", f"Among the {d['stars']} biggest {name} stars in our database, two players are on average {d['avg']} links apart through chains of teammates, and the longest shortest chain is {d['max']} links. Counting every pair: {dist}."),
+        ("What counts as a link?", "Two players are linked if they played for the same franchise in the same season. A team that moved or changed its name is one franchise."),
+        ("Is there always a shorter chain?", f"These are the shortest chains in our database of {d['players']:,} {name} players from {d['first']} to 2025. The database is not complete: some defunct clubs and some players are missing, so a shorter real chain can exist."),
+        ("Can I try one myself?", "Yes. Teamlink gives you two players every day and asks you to build the shortest chain. It rotates through the NBA, NFL, MLB and NHL, and practice mode lets you pick the sport and the difficulty."),
+    ]
+    body = f"""      <div class="games-wrap">
+        <div class="game-head"><h1>How are {name} stars connected?</h1></div>
+        <p class="game-lede">Two players are linked if they were teammates in the same season. These are the shortest chains between {name} legends from different eras, worked out over {d['players']:,} {game} players from {d['first']} to 2025.</p>
+        <p class="games-note"><a class="gbtn" href="/games/teamlink/">Play today's Teamlink</a> <a href="/games/sports/">All sports games</a></p>
+        <div class="games-prose">
+          <h2>The numbers</h2>
+          <p>Among the {d['stars']} biggest stars in our {name} data, any two are on average {d['avg']} links apart, and no pair is more than {d['max']} apart. The average hides a lot: stars who played for several teams and stayed long are the bridges, so the longest chains run between players from the very start of the league and the newest stars.</p>
+          <h2>Chains between stars from different eras</h2>
+          <ul class="tw-list">
+{items}          </ul>
+          <h2>Questions</h2>
+{faq_html(faq_)}
+          <p class="quiz-credit">Rosters and seasons come from public sources, mostly Wikipedia, nflverse and the Lahman Baseball Database, matched and merged by us; the credits are on the <a href="/games/teamlink/">Teamlink</a> page.</p>
+        </div>
+      </div>"""
+    page(f"games/sports/{sp}-teammate-chains/", title, desc, body,
+         {"@context": "https://schema.org", "@graph": [faq(faq_), crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Sports", "https://purplelink.llc/games/sports/"), (f"{name} teammate chains", f"https://purplelink.llc/games/sports/{sp}-teammate-chains/"))]},
+         [])
+
+
+for _sp, _d in DEGREE_PAGES.items():
+    degree_page(_sp, _d)
+
+SPORTS_FAQ = [
+    ("What are the Purplelink sports games?", "Three free daily puzzles about the NBA, NFL, MLB and NHL: Teamlink (link two players through a chain of real teammates), Gridlink (fill a 3 by 3 grid of teams, decades, awards and teammates) and Unbeaten (build a roster under a budget and play a full season). The sport changes every day."),
+    ("Which players are in them?", "Every player who ever appeared in the four leagues is available in Teamlink, about 61,000 in all. Gridlink and Unbeaten use a curated list of well-known stars. The players you are asked to link are always stars."),
+    ("Are they free? Do I need an account?", "They are free, with no third-party ads on the daily games, and you do not need an account. An optional email sign-in keeps your streaks and ratings across devices and lets you join the leaderboards."),
+    ("How are they different from other sports puzzle games?", "Teamlink lets you add players at either end of the chain and measures par over every player in the league, back to 1920 in the NFL and 1871 in MLB. Gridlink has award clues and a clue that asks for a teammate of a named star. Unbeaten gives you a budget and an open choice of any player from any era instead of a random spin, and shows the best roster for each day's rule afterwards."),
+    ("Is there a rating?", "Yes. Each game keeps a running Elo rating, updated once a day, with all-time and weekly leaderboards for players who opt in."),
+    ("Where do the player histories come from?", "Public sources: the Lahman Baseball Database for MLB, nflverse for the NFL, and Wikipedia for the NBA and NHL, matched and merged by us. The credits are on the game pages. The data is not complete, and the pages say where the gaps are."),
+]
+SP_HUB_BODY = """      <div class="games-wrap hub">
+        <header class="hub-top"><div><h1>Free daily sports puzzle games</h1></div></header>
+        <p class="game-lede">Three free daily puzzles for NBA, NFL, MLB and NHL fans, with players from every era: link two stars through the teammates they shared, fill a grid, or build a roster and see if it can go undefeated. A new puzzle every midnight, no account needed.</p>
+        <div class="tiles">
+""" + "".join(tile(sl) for sl in SPORTS_GAMES) + """        </div>
+        <div class="games-prose">
+          <h2>How are the stars connected?</h2>
+          <p>Every Teamlink puzzle has a shortest chain of teammates, and the stars of different eras are closer than you would think. These pages list the shortest chains between legends from different decades.</p>
+          <ul class="games-related">
+""" + "".join(f'            <li><a href="/games/sports/{sp}-teammate-chains/"><strong>{SPORT_FULL[sp][0]} teammate chains</strong></a>: {DEGREE_PAGES[sp]["rows"][0]["a"]} to {DEGREE_PAGES[sp]["rows"][0]["b"]} in {DEGREE_PAGES[sp]["rows"][0]["links"]} links, and 23 more.</li>\n' for sp in DEGREE_PAGES) + """          </ul>
+          <h2>What is in each game</h2>
+          <ul>
+            <li><strong>Teamlink</strong>: add players at either end of the chain until the two ends are teammates. Par is the shortest possible chain. Hints, undo, a Rival mode to challenge a friend, and a weekly recap of the shortest chains.</li>
+            <li><strong>Gridlink</strong>: nine cells, nine guesses. Clues are teams, decades, positions, awards and "played with" a named star. Rarer players score more.</li>
+            <li><strong>Unbeaten</strong>: a budget, a rule that changes each weekday, and any player from any era. The rating of each player comes from career honors. A weekly recap shows the best roster for each rule.</li>
+          </ul>
+          <h2>Questions</h2>
+""" + faq_html(SPORTS_FAQ) + """
+        </div>
+        <p class="games-note"><a href="/games/">All daily games</a></p>
+      </div>"""
+page("games/sports/", "Free daily sports puzzle games: NBA, NFL, MLB and NHL | Purplelink",
+     "Three free daily sports puzzles with players from every era: link two stars through teammates, fill a grid, or build a roster for a perfect season. NBA, NFL, MLB and NHL.",
+     SP_HUB_BODY, {"@context": "https://schema.org", "@graph": [faq(SPORTS_FAQ), crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Sports", "https://purplelink.llc/games/sports/"))]},
+     [])
+
 HUB_FAQ = [
     ("Are the games free?", "Yes. You can play every game without signing in. The daily games have no third-party ads, only an occasional small notice about one of our own apps. The two unlimited pages, Chess Puzzles and Sudoku Unlimited, show Google ads. An optional email-link sign-in keeps your streaks, achievements and puzzle ratings across devices."),
     ("Can I play more than one chess puzzle or Sudoku a day?", "Yes. Chess Puzzles and Sudoku Unlimited have no daily limit. Each keeps a rating, and signed-in players can choose to appear on the leaderboards."),
@@ -1504,7 +1612,7 @@ HUB_BODY = """      <div class="games-wrap hub">
         </section>
         <section class="more" aria-labelledby="sports-h">
           <h2 id="sports-h">Sports</h2>
-          <p class="week-sub">Famous players from every era in the NBA, NFL, MLB and NHL. Link two stars through their teammates, fill a grid, or build a roster and play a perfect season. The sport changes each day.</p>
+          <p class="week-sub">Famous players from every era in the NBA, NFL, MLB and NHL. Link two stars through their teammates, fill a grid, or build a roster and play a perfect season. The sport changes each day. <a href="/games/sports/">More about the sports games</a></p>
           <div class="tiles">
 """ + "".join(tile(sl) for sl in SPORTS_GAMES) + """          </div>
         </section>
