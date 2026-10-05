@@ -153,7 +153,7 @@
               "name": "Where do the ratings come from?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "They are our own estimates of each player at his best, in four bands from role player to all-time great. They are not official statistics and they do not adjust for era or the rules of the time."
+                "text": "About 60% of each rating comes from the player's career honors, counted from public records: All-Star or Pro Bowl selections, MVPs, league and playoff awards, all-league teams, titles and the Hall of Fame. The rest is our own judgement of how good he was at his best, in five tiers. Honors come from the Lahman baseball database for MLB, the player's Wikipedia page for the NBA and NFL, and Wikipedia award lists for the NHL. Stats like points or yards are not used, and eras are not adjusted."
               }
             },
             {
@@ -303,6 +303,7 @@
             <p class="sp-msg" id="ub-msg" role="status" aria-live="polite"></p>
             <ul class="ub-options" id="ub-options"></ul>
             <p class="games-note" id="ub-none" hidden>No player matches. Clear the search or check the weekday rule above.</p>
+            <p class="games-note" id="ub-reserve"></p>
             <p class="games-note" id="ub-more"></p>
           </section>
           <section class="game-result" id="sp-result" hidden aria-labelledby="sp-result-head">
@@ -332,12 +333,12 @@
         <h2>How to play</h2>
         <p>Fill every starting spot with a player of the right position, from any era. Each player has a cost and a rating, and your budget does not cover a roster of all-time greats. Pick a bench with anyone left over. When every starter is in, play the season.</p>
         <p>You get a record, your longest winning streak, a playoff run and the exact chance your roster had of going undefeated.</p>
-        <p class="quiz-credit">Players come from lists we curated of well-known stars in each league, with team histories checked against Wikipedia and Wikidata. A player counts as a teammate when the two were on the same franchise in the same season; a team that moved or changed its name is one franchise. Ratings are our own estimates and are not official statistics.</p>
+        <p class="quiz-credit">Players come from lists we curated of well-known stars in each league, with team histories checked against Wikipedia and Wikidata. A player counts as a teammate when the two were on the same franchise in the same season; a team that moved or changed its name is one franchise. Ratings blend career honors (Lahman database for MLB, Wikipedia for the other leagues) with our tier for each player. They are not official statistics.</p>
         <h2>Questions</h2>
         <h3>How is a season simulated?</h3>
         <p>Your team&#x27;s strength is the average rating of the starters, a smaller share from the bench, and a bonus for players who were really teammates. Each game is a weighted coin flip against the rest of the league. The same roster on the same day always gives the same record.</p>
         <h3>Where do the ratings come from?</h3>
-        <p>They are our own estimates of each player at his best, in four bands from role player to all-time great. They are not official statistics and they do not adjust for era or the rules of the time.</p>
+        <p>About 60% of each rating comes from the player&#x27;s career honors, counted from public records: All-Star or Pro Bowl selections, MVPs, league and playoff awards, all-league teams, titles and the Hall of Fame. The rest is our own judgement of how good he was at his best, in five tiers. Honors come from the Lahman baseball database for MLB, the player&#x27;s Wikipedia page for the NBA and NFL, and Wikipedia award lists for the NHL. Stats like points or yards are not used, and eras are not adjusted.</p>
         <h3>Can a team really go undefeated?</h3>
         <p>It can, but it is very unlikely even for the best roster the budget allows. The result card shows the exact chance for your roster.</p>
         <h3>What are the weekday rules?</h3>
@@ -350,7 +351,7 @@
           <ul>
           <li>A few stars with solid role players usually beats a lineup of mid-priced players.</li>
           <li>Old teammates add chemistry, so a pair from the same great team can beat two stronger strangers.</li>
-          <li>Ratings are our own estimates of each player at his best and do not adjust for era.</li>
+          <li>Ratings come mostly from career honors such as All-Star selections, MVPs and titles, and do not adjust for era.</li>
           </ul>
           <h2>More daily games</h2>
           <ul class="games-related">
@@ -371,9 +372,9 @@
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=99d59c8de5" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
-    <script src="/games/sports.js?v=9f72b839a5" defer></script>
+    <script src="/games/sports.js?v=45d535c11f" defer></script>
     <script src="/games/season.js?v=0c52f2bc15" defer></script>
-    <script src="/games/unbeaten.js?v=c383b4c79b" defer></script>
+    <script src="/games/unbeaten.js?v=c80c03ac54" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

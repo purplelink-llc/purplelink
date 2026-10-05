@@ -337,7 +337,7 @@ GAMES = {
                ("Play the season", "See your record, your playoff run and your chance of a perfect season.")],
         tips=["A few stars with solid role players usually beats a lineup of mid-priced players.",
               "Old teammates add chemistry, so a pair from the same great team can beat two stronger strangers.",
-              "Ratings are our own estimates of each player at his best and do not adjust for era."],
+              "Ratings come mostly from career honors such as All-Star selections, MVPs and titles, and do not adjust for era."],
         related=["teamlink", "gridlink", "daily-five"], og_photo="dsc-3940"),
 }
 

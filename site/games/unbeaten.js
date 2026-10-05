@@ -58,12 +58,26 @@
     return rule.ok(p);
   }
 
+  // Points that must stay free so every other empty starting spot can still be filled with its cheapest eligible player.
+  function reserve(skip) {
+    var total = 0;
+    for (var i = 0; i < data.cfg.slots.length; i++) {
+      if (i === skip || st.r[i]) continue;
+      var best = 99;
+      data.players.forEach(function (p) { if (eligible(p, i) && st.r.indexOf(p.n) < 0) best = Math.min(best, SE.cost(p)); });
+      total += best === 99 ? 0 : best;
+    }
+    return total;
+  }
+
   function paintOptions() {
     var ul = $("ub-options"); ul.innerHTML = "";
     $("ub-picker-title").textContent = "Choose: " + slotLabel(active);
     var q = S.fold($("ub-search").value), toks = q.split(" ").filter(Boolean);
     var list = data.players.filter(function (p) { return eligible(p, active) && toks.every(function (t) { return p.key.indexOf(t) >= 0; }); });
-    var left = cap() - spent() + (st.r[active] ? SE.cost(P(st.r[active])) : 0);
+    var held = reserve(active);
+    var left = cap() - spent() + (st.r[active] ? SE.cost(P(st.r[active])) : 0) - held;
+    $("ub-reserve").textContent = held ? "Keep " + held + " in budget for your other empty starting spots." : "";
     list.sort(function (a, b) { return (SE.cost(b) <= left) - (SE.cost(a) <= left) || b.ovr - a.ovr || (a.n < b.n ? -1 : 1); });
     $("ub-picker").hidden = st.done;
     list.slice(0, 40).forEach(function (p) {
@@ -72,10 +86,10 @@
       b.disabled = c > left;
       b.innerHTML = "";
       var n = document.createElement("span"); n.className = "ub-opt-name"; n.textContent = p.n;
-      var m = document.createElement("span"); m.className = "ub-opt-meta"; m.textContent = p.pos + ", " + S.career(p) + ". Rating " + p.ovr;
+      var m = document.createElement("span"); m.className = "ub-opt-meta"; m.textContent = p.pos + ", " + S.career(p) + ". Rating " + p.ovr + (S.honorsText(data, p) ? ". " + S.honorsText(data, p) : "");
       var k = document.createElement("span"); k.className = "ub-opt-cost"; k.textContent = "Cost " + c;
       b.appendChild(n); b.appendChild(m); b.appendChild(k);
-      if (c > left) b.setAttribute("aria-label", p.n + ", cost " + c + ", more than your remaining budget");
+      if (c > left) b.setAttribute("aria-label", p.n + ", cost " + c + ", more than you can spend and still fill every starting spot");
       b.addEventListener("click", function () { place(p); });
       li.appendChild(b); ul.appendChild(li);
     });

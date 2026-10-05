@@ -1372,7 +1372,7 @@ sports_page("gridlink", "Gridlink", "Nine cells, nine guesses: name a player who
 
 UB_FAQ = [
     ("How is a season simulated?", "Your team's strength is the average rating of the starters, a smaller share from the bench, and a bonus for players who were really teammates. Each game is a weighted coin flip against the rest of the league. The same roster on the same day always gives the same record."),
-    ("Where do the ratings come from?", "They are our own estimates of each player at his best, in four bands from role player to all-time great. They are not official statistics and they do not adjust for era or the rules of the time."),
+    ("Where do the ratings come from?", "About 60% of each rating comes from the player's career honors, counted from public records: All-Star or Pro Bowl selections, MVPs, league and playoff awards, all-league teams, titles and the Hall of Fame. The rest is our own judgement of how good he was at his best, in five tiers. Honors come from the Lahman baseball database for MLB, the player's Wikipedia page for the NBA and NFL, and Wikipedia award lists for the NHL. Stats like points or yards are not used, and eras are not adjusted."),
     ("Can a team really go undefeated?", "It can, but it is very unlikely even for the best roster the budget allows. The result card shows the exact chance for your roster."),
     ("What are the weekday rules?", "Each weekday has a rule: a bigger budget on Sunday, an open draft on Monday, only players who started before 1990 on Tuesday, only players who started in 2000 or later on Wednesday, no all-time icons on Thursday, a smaller budget on Friday and stars only on Saturday. Other leagues use their own cut-off years."),
     ("Does a practice run count?", "No. Only your first daily roster counts toward your streak and stats. Practice rosters never do."),
@@ -1380,7 +1380,7 @@ UB_FAQ = [
 UB_PROSE = f"""        <h2>How to play</h2>
         <p>Fill every starting spot with a player of the right position, from any era. Each player has a cost and a rating, and your budget does not cover a roster of all-time greats. Pick a bench with anyone left over. When every starter is in, play the season.</p>
         <p>You get a record, your longest winning streak, a playoff run and the exact chance your roster had of going undefeated.</p>
-        <p class="quiz-credit">{SP_NOTE} Ratings are our own estimates and are not official statistics.</p>
+        <p class="quiz-credit">{SP_NOTE} Ratings blend career honors (Lahman database for MLB, Wikipedia for the other leagues) with our tier for each player. They are not official statistics.</p>
         <h2>Questions</h2>
 """ + faq_html(UB_FAQ)
 UB_BOARD = """          <p class="ub-rule"><strong id="ub-rule-name"></strong> <span id="ub-rule-text"></span></p>
@@ -1397,6 +1397,7 @@ UB_BOARD = """          <p class="ub-rule"><strong id="ub-rule-name"></strong> <
             <p class="sp-msg" id="ub-msg" role="status" aria-live="polite"></p>
             <ul class="ub-options" id="ub-options"></ul>
             <p class="games-note" id="ub-none" hidden>No player matches. Clear the search or check the weekday rule above.</p>
+            <p class="games-note" id="ub-reserve"></p>
             <p class="games-note" id="ub-more"></p>
           </section>"""
 UB_RESULT = """            <p class="ub-record" id="ub-record" aria-hidden="true"></p>

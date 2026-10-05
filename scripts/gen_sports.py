@@ -4,7 +4,7 @@ Writes site/games/data/sports-<sport>.json and site/games/data/sports-index.json
 
 Daily puzzles are pinned: scripts/sports-pinned/<sport>.json keeps every puzzle ever issued and this script only
 appends, so a day that is already live never changes when the player pool grows."""
-import collections, hashlib, json, pathlib, random, sys
+import collections, hashlib, json, math, pathlib, random, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "scripts" / "sports" / "out"
@@ -18,7 +18,7 @@ SHORT = {"nhl": {"UTA": "Coyotes", "CLB": "Seals/Barons"}}
 FULL = {"nhl": {"UTA": "Winnipeg Jets / Arizona Coyotes / Utah Mammoth"}}
 
 CFG = {
-    "nba": dict(name="NBA", plural="basketball players", slots=["G", "G", "F", "F", "C"], bench=3, cap=32, games=82, scale=4.0, base=80, teams=30, rounds=[7, 7, 7, 7], era=1990, split=True,
+    "nba": dict(name="NBA", plural="basketball players", slots=["G", "G", "F", "F", "C"], bench=3, cap=28, games=82, scale=4.0, base=80, teams=30, rounds=[7, 7, 7, 7], era=1990, split=True,
                 groups={"PG": "G", "SG": "G", "SF": "F", "PF": "F", "C": "C"}, gname={"G": "Guard", "F": "Forward", "C": "Center"}),
     "nfl": dict(name="NFL", plural="football players", slots=["QB", "RB", "WR", "WR", "TE", "OL", "DL", "DL", "LB", "DB", "DB"], bench=2, cap=36, games=17, scale=5.0, base=80, teams=32, rounds=[1, 1, 1], era=1990,
                 groups={k: k for k in ["QB", "RB", "WR", "TE", "OL", "DL", "LB", "DB"]}, gname={"QB": "Quarterback", "RB": "Running back", "WR": "Receiver", "TE": "Tight end", "OL": "Lineman", "DL": "Defensive line", "LB": "Linebacker", "DB": "Defensive back"}),
@@ -30,18 +30,38 @@ CFG = {
 BASE_OVR = {5: 96, 4: 89, 3: 82, 2: 75, 1: 68}
 
 
-def ovr(name, tier):
-    h = int(hashlib.md5(name.encode()).hexdigest()[:4], 16)
-    return BASE_OVR[tier] + (h % 5) - 2
+HONORS = ROOT / "scripts" / "sports-honors"
+HK = {"nba": 40, "nfl": 30, "mlb": 25, "nhl": 32}     # honors points at which the honors rating reaches about two thirds of its range
+SELNAME = {"nba": "All-Star", "nfl": "Pro Bowl", "mlb": "All-Star", "nhl": "All-NHL team"}
+WEIGHT = 0.6                                           # share of the rating that comes from career honors, the rest from our tier
+
+
+def rating(sport, name, tier, hon):
+    """Half-and-more from career honors (counted from Lahman, Wikipedia and its award lists), the rest from our tier of
+    how good the player was at his best. With no honors on record the tier alone decides."""
+    base = BASE_OVR[tier]
+    if not hon or (hon["score"] == 0 and not hon["cat"]): return base
+    honors = 62 + 36 * (1 - math.exp(-hon["score"] / HK[sport]))
+    return round(WEIGHT * honors + (1 - WEIGHT) * base)
+
+
+def summary(sport, hon):
+    """[selections, MVPs, titles, hall of fame] shown beside each player in Unbeaten."""
+    if not hon: return [0, 0, 0, 0]
+    c = hon["cat"]
+    return [c.get("allstar") or c.get("first", 0), c.get("mvp", 0), c.get("title", 0), 1 if c.get("hof") else 0]
 
 
 def load(sport):
     d = json.loads((OUT / f"{sport}.json").read_text())
     cfg = CFG[sport]
+    hf = HONORS / f"{sport}.json"
+    honors = json.loads(hf.read_text()) if hf.exists() else {}
     P = []
     for p in sorted(d["players"], key=lambda x: x["name"]):
         if not p["st"]: continue
-        P.append({"n": p["name"], "p": p["pos"], "g": cfg["groups"].get(p["pos"], p["pos"]), "t": p["tier"], "o": ovr(p["name"], p["tier"]), "s": p["st"]})
+        hon = honors.get(p["name"])
+        P.append({"n": p["name"], "p": p["pos"], "g": cfg["groups"].get(p["pos"], p["pos"]), "t": p["tier"], "o": rating(sport, p["name"], p["tier"], hon), "s": p["st"], "h": summary(sport, hon)})
     return d["franchises"], P
 
 
@@ -204,8 +224,8 @@ def main():
         pin_f.write_text(json.dumps(pin, separators=(",", ":")))
         cfg = CFG[sport]
         F = {k: FULL.get(sport, {}).get(k, v) for k, v in F.items()}
-        data = {"sport": sport, "name": cfg["name"], "fr": F, "fs": SHORT.get(sport, {}), "cfg": {k: cfg[k] for k in ("slots", "bench", "cap", "games", "scale", "base", "gname", "plural", "teams", "rounds", "era") if k in cfg} | {"split": bool(cfg.get("split"))},
-                "p": [[p["n"], p["p"], p["t"], p["o"], p["s"]] for p in P], "tl": pin["tl"], "gr": pin["gr"]}
+        data = {"sport": sport, "name": cfg["name"], "fr": F, "fs": SHORT.get(sport, {}), "cfg": {k: cfg[k] for k in ("slots", "bench", "cap", "games", "scale", "base", "gname", "plural", "teams", "rounds", "era") if k in cfg} | {"split": bool(cfg.get("split")), "selname": SELNAME[sport]},
+                "p": [[p["n"], p["p"], p["t"], p["o"], p["s"], p["h"]] for p in P], "tl": pin["tl"], "gr": pin["gr"]}
         (DATA / f"sports-{sport}.json").write_text(json.dumps(data, separators=(",", ":"), ensure_ascii=False))
         if extra:
             (DATA / f"sports-{sport}-all.json").write_text(json.dumps({"credit": credit, "p": extra}, separators=(",", ":"), ensure_ascii=False))

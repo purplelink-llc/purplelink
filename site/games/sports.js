@@ -17,7 +17,7 @@
   function prepare(raw) {
     var d = { sport: raw.sport, name: raw.name, fr: raw.fr, fs: raw.fs || {}, cfg: raw.cfg, tl: raw.tl || [], gr: raw.gr || [], players: [], byName: {} };
     raw.p.forEach(function (r, i) {
-      var p = { i: i, n: r[0], pos: r[1], tier: r[2], ovr: r[3], st: r[4], key: fold(r[0]) };
+      var p = { i: i, n: r[0], pos: r[1], tier: r[2], ovr: r[3], st: r[4], hon: r[5] || [0, 0, 0, 0], key: fold(r[0]) };
       p.g = (d.cfg.groupOf || {})[p.pos] || p.pos;
       p.first = Math.min.apply(null, p.st.map(function (s) { return s[1]; }));
       p.last = Math.max.apply(null, p.st.map(function (s) { return s[2]; })) - 1;
@@ -153,6 +153,15 @@
     var w = name.split(" ");
     return w.length > 1 ? w[w.length - 1] : name;
   }
+  // "12x All-Star, 4x MVP, 3x champion, Hall of Fame" for the picker; empty for players with nothing on record.
+  function honorsText(d, p) {
+    var h = p.hon || [0, 0, 0, 0], out = [];
+    if (h[0]) out.push(h[0] + "x " + (d.cfg.selname || "All-Star"));
+    if (h[1]) out.push(h[1] + "x MVP");
+    if (h[2]) out.push(h[2] + "x champion");
+    if (h[3]) out.push("Hall of Fame");
+    return out.join(", ");
+  }
   function fname(d, f) { return d.fs[f] || shortName(d.fr[f] || f); }
   function cellAnswers(d, r, c) {
     return d.players.filter(function (p) { return r.test(p) && c.test(p); });
@@ -237,7 +246,7 @@
   return {
     EPOCH: EPOCH, fold: fold, prepare: prepare, load: load, index: index, GROUPS: GROUPS,
     shared: shared, neighbors: neighbors, extend: extend, loadAll: loadAll, areTeammates: areTeammates, path: path, distances: distances,
-    crit: crit, cellAnswers: cellAnswers, shortName: shortName, fname: fname, hash: hash, rng: rng,
+    crit: crit, cellAnswers: cellAnswers, shortName: shortName, fname: fname, honorsText: honorsText, hash: hash, rng: rng,
     dayIdx: dayIdx, dailySport: dailySport, dailySlot: dailySlot,
     span: span, stintText: stintText, teamsLine: teamsLine, career: career,
     loadState: loadState, saveState: saveState, combo: combo
