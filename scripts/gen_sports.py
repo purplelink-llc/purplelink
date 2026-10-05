@@ -26,7 +26,7 @@ FULL = {"nhl": {"UTA": "Winnipeg Jets / Arizona Coyotes / Utah Mammoth"}}
 CFG = {
     "nba": dict(name="NBA", plural="basketball players", slots=["G", "G", "F", "F", "C"], bench=3, cap=28, games=82, scale=4.0, base=80, teams=30, rounds=[7, 7, 7, 7], era=1990, split=True,
                 groups={"PG": "G", "SG": "G", "SF": "F", "PF": "F", "C": "C"}, gname={"G": "Guard", "F": "Forward", "C": "Center"}),
-    "nfl": dict(name="NFL", plural="football players", slots=["QB", "RB", "WR", "WR", "TE", "OL", "DL", "DL", "LB", "DB", "DB"], bench=2, cap=36, games=17, scale=5.0, base=80, teams=32, rounds=[1, 1, 1], era=1990,
+    "nfl": dict(name="NFL", plural="football players", slots=["QB", "RB", "WR", "WR", "TE", "OL", "DL", "DL", "LB", "DB", "DB"], bench=2, cap=36, games=17, scale=7.5, base=80, teams=32, rounds=[1, 1, 1], era=1990,
                 groups={k: k for k in ["QB", "RB", "WR", "TE", "OL", "DL", "LB", "DB"]}, gname={"QB": "Quarterback", "RB": "Running back", "WR": "Receiver", "TE": "Tight end", "OL": "Lineman", "DL": "Defensive line", "LB": "Linebacker", "DB": "Defensive back"}),
     "mlb": dict(name="MLB", plural="baseball players", slots=["C", "1B", "2B", "3B", "SS", "OF", "OF", "OF", "SP", "SP", "SP", "RP"], bench=2, cap=42, games=162, scale=7.0, base=80, teams=30, rounds=[5, 7, 7], era=1980,
                 groups={"C": "C", "1B": "1B", "2B": "2B", "3B": "3B", "SS": "SS", "LF": "OF", "CF": "OF", "RF": "OF", "SP": "SP", "RP": "RP"}, gname={"C": "Catcher", "1B": "First baseman", "2B": "Second baseman", "3B": "Third baseman", "SS": "Shortstop", "OF": "Outfielder", "SP": "Starting pitcher", "RP": "Reliever"}),
@@ -230,6 +230,79 @@ def best_grids(P, grids):
     return out
 
 
+COST = {1: 1, 2: 2, 3: 3, 4: 5, 5: 7}
+
+
+def rules(sport):
+    """The seven weekday rules of Unbeaten, indexed by JS getDay() (0 = Sunday); mirrors constraint() in site/games/season.js."""
+    era = CFG[sport]["era"]
+    return [(4, lambda p: True), (0, lambda p: True), (0, lambda p: p["s"][0][1] < era and min(x[1] for x in p["s"]) < era),
+            (0, lambda p: min(x[1] for x in p["s"]) >= era + 10), (0, lambda p: p["t"] < 5), (-4, lambda p: True), (0, lambda p: p["t"] >= 3)]
+
+
+def team_strength(cfg, starters, bench):
+    w = 0.82 if len(cfg["slots"]) > 8 else 0.72
+    mean = lambda L: sum(p["o"] for p in L) / len(L) if L else 0
+    nb = cfg["bench"]
+    base = w * mean(starters) + (1 - w) * (sum(p["o"] for p in bench) + max(0, nb - len(bench)) * 60) / nb if nb else mean(starters)
+    allp = starters + bench; pairs = 0
+    for i in range(len(allp)):
+        for j in range(i + 1, len(allp)):
+            if overlap(allp[i]["s"], allp[j]["s"]): pairs += 1
+    return base + min(4, pairs * 0.4)
+
+
+def best_rosters(P, sport):
+    """For each weekday rule, the highest-rated roster the budget allows: an exact optimum for the ratings alone, then swaps that
+    pick up the chemistry bonus. Returns {weekday: {"s": starters in slot order, "b": bench}}."""
+    import numpy as np
+    from scipy.optimize import milp, LinearConstraint, Bounds
+    cfg = CFG[sport]; slots = cfg["slots"]; nb = cfg["bench"]; w = 0.82 if len(slots) > 8 else 0.72
+    out = {}
+    for dow, (capd, ok) in enumerate(rules(sport)):
+        cap = cfg["cap"] + capd
+        pool = [p for p in P if ok(p)]
+        var = []                                    # (player index, slot) with slot = starter index or "b" for bench
+        for i, p in enumerate(pool):
+            for k, g in enumerate(slots):
+                if p["g"] == g: var.append((i, k))
+            var.append((i, "b"))
+        c = np.array([-(pool[i]["o"] * (w / len(slots)) if k != "b" else (pool[i]["o"] - 60) * ((1 - w) / max(1, nb))) for i, k in var])
+        A, lo, hi = [], [], []
+        def row(f): A.append([f(v) for v in var])
+        for k in range(len(slots)): row(lambda v, k=k: 1 if v[1] == k else 0); lo.append(1); hi.append(1)
+        for i in range(len(pool)): row(lambda v, i=i: 1 if v[0] == i else 0); lo.append(0); hi.append(1)
+        row(lambda v: 1 if v[1] == "b" else 0); lo.append(0); hi.append(nb)
+        row(lambda v: COST[pool[v[0]]["t"]]); lo.append(0); hi.append(cap)
+        res = milp(c, constraints=LinearConstraint(np.array(A), lo, hi), integrality=np.ones(len(var)), bounds=Bounds(0, 1))
+        if res.x is None: out[str(dow)] = None; continue
+        st = [None] * len(slots); bn = []
+        for x, (i, k) in zip(res.x, var):
+            if x > .5:
+                if k == "b": bn.append(pool[i])
+                else: st[k] = pool[i]
+        # swaps that raise the whole rating, chemistry included
+        def cost(L): return sum(COST[p["t"]] for p in L)
+        best = team_strength(cfg, st, bn); improved = True
+        while improved:
+            improved = False
+            for pos in range(len(st) + len(bn)):
+                inb = pos >= len(st); cur = bn[pos - len(st)] if inb else st[pos]
+                used = {p["n"] for p in st + bn}
+                for cand in pool:
+                    if cand["n"] in used: continue
+                    if not inb and cand["g"] != slots[pos]: continue
+                    nst, nbn = list(st), list(bn)
+                    if inb: nbn[pos - len(st)] = cand
+                    else: nst[pos] = cand
+                    if cost(nst + nbn) > cap: continue
+                    sc = team_strength(cfg, nst, nbn)
+                    if sc > best + 1e-9: st, bn, best, improved = nst, nbn, sc, True; break
+                if improved: break
+        out[str(dow)] = {"s": [p["n"] for p in st], "b": [p["n"] for p in bn]}
+    return out
+
+
 def pick_pairs(P, extra, sport, existing):
     famous = [i for i, p in enumerate(P) if p["t"] >= 3]
     stints = combined(P, extra); bk = make_buckets(stints)
@@ -326,6 +399,7 @@ def main():
                 "p": [[p["n"], p["p"], p["t"], p["o"], p["s"], p["h"]] for p in P], "tl": pin["tl"], "tp": pars, "gr": pin["gr"]}
         (DATA / f"sports-{sport}.json").write_text(json.dumps(data, separators=(",", ":"), ensure_ascii=False))
         (DATA / f"sports-{sport}-grids.json").write_text(json.dumps({"g": best_grids(P, pin["gr"])}, separators=(",", ":"), ensure_ascii=False))
+        (DATA / f"sports-{sport}-rosters.json").write_text(json.dumps({"b": best_rosters(P, sport)}, separators=(",", ":"), ensure_ascii=False))
         (DATA / f"sports-{sport}-chains.json").write_text(json.dumps({"ts": chains}, separators=(",", ":"), ensure_ascii=False))
         if extra:
             (DATA / f"sports-{sport}-all.json").write_text(json.dumps({"credit": credit, "p": extra}, separators=(",", ":"), ensure_ascii=False))

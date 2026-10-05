@@ -135,3 +135,29 @@ for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
     });
   });
 }
+
+for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
+  test(`${sport}: the best roster for each weekday rule fits the rule, the budget and the slots`, () => {
+    const r = JSON.parse(readFileSync(`site/games/data/sports-${sport}.json`, "utf8"));
+    const rs = JSON.parse(readFileSync(`site/games/data/sports-${sport}-rosters.json`, "utf8")).b;
+    r.cfg.groupOf = S.GROUPS[sport];
+    const dd = S.prepare(r);
+    for (let dow = 0; dow < 7; dow++) {
+      const rule = SE.constraint(dd, dow), pick = rs[String(dow)];
+      assert.ok(pick, "a roster exists for weekday " + dow);
+      const starters = pick.s.map((n) => dd.byName[n]), bench = pick.b.map((n) => dd.byName[n]);
+      assert.equal(starters.length, dd.cfg.slots.length);
+      starters.forEach((p, i) => assert.equal(p.g, dd.cfg.slots[i]));
+      const all = starters.concat(bench);
+      assert.equal(new Set(all.map((p) => p.n)).size, all.length);
+      all.forEach((p) => assert.ok(rule.ok(p), p.n + " breaks the " + rule.name + " rule"));
+      assert.ok(all.reduce((a, p) => a + SE.cost(p), 0) <= dd.cfg.cap + rule.cap);
+      // no random roster of the same rule beats it
+      const rating = SE.strength(dd, { starters, bench }).rating;
+      for (let t = 0; t < 200; t++) {
+        const used = new Set(), st = dd.cfg.slots.map((g) => { const L = dd.players.filter((p) => p.g === g && rule.ok(p) && !used.has(p.n)); const p = L[Math.floor(Math.random() * L.length)]; used.add(p.n); return p; });
+        if (st.reduce((a, p) => a + SE.cost(p), 0) <= dd.cfg.cap + rule.cap) assert.ok(SE.strength(dd, { starters: st, bench: [] }).rating <= rating + 1e-9);
+      }
+    }
+  });
+}

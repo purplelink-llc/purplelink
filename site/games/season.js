@@ -34,10 +34,13 @@
   }
 
   function mean(a) { return a.length ? a.reduce(function (x, p) { return x + p.ovr; }, 0) / a.length : 0; }
+  // An empty bench spot counts as a replacement-level player (rating 60), so leaving the bench empty is never a shortcut.
+  var REPLACEMENT = 60;
   function strength(d, roster) {
-    var st = roster.starters.filter(Boolean), bn = roster.bench.filter(Boolean);
+    var st = roster.starters.filter(Boolean), bn = roster.bench.filter(Boolean), nB = d.cfg.bench;
     var w = d.cfg.slots.length > 8 ? 0.82 : 0.72;
-    var base = bn.length ? w * mean(st) + (1 - w) * mean(bn) : mean(st);
+    var benchMean = nB ? (bn.reduce(function (a, p) { return a + p.ovr; }, 0) + Math.max(0, nB - bn.length) * REPLACEMENT) / nB : 0;
+    var base = nB ? w * mean(st) + (1 - w) * benchMean : mean(st);
     var chem = chemistry(d, roster);
     return { rating: base + chem.bonus, base: base, chem: chem };
   }

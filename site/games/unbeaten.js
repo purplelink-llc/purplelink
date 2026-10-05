@@ -115,6 +115,8 @@
     var fresh = mode === "daily" && !(G.getGame(NAME).today && G.getGame(NAME).today.idx === daily.idx && G.getGame(NAME).today.done);
     save();
     if (mode === "daily" && fresh) {
+      var hist = S.loadState(NAME + "-hist") || {}; hist[daily.idx] = { w: res.wins, l: res.losses, c: res.champion ? 1 : 0, r: Math.round(res.rating * 10) / 10, p: res.perfect, o: outcomeFor(res, data) };
+      Object.keys(hist).sort(function (a, b) { return a - b; }).slice(0, -60).forEach(function (k) { delete hist[k]; }); S.saveState(NAME + "-hist", hist);
       var saved = G.getGame(NAME), tries = Math.min(98, res.losses) + 1;
       saved.stats = G.recordResult(saved.stats, daily.idx, res.champion, tries);
       saved.today = { idx: daily.idx, done: true, won: res.champion };
@@ -131,6 +133,13 @@
   }
 
   function recordText(res) { return res.wins + "-" + res.losses; }
+  function outcomeFor(res, d) {
+    if (res.losses === 0) return "undefeated, and " + (res.champion ? "won the title" : "went out in the playoffs");
+    if (!res.made) return "missed the playoffs";
+    if (res.champion) return "won the title";
+    var lost = res.playoffs.filter(function (x) { return !x.won; })[0];
+    return "lost in playoff round " + (lost ? lost.round : "1") + " of " + d.cfg.rounds.length;
+  }
   function outcomeText(res) {
     if (res.losses === 0) return "Undefeated. A perfect season, and " + (res.champion ? "the title." : "an early playoff exit.");
     if (!res.made) return "Missed the playoffs.";
@@ -169,6 +178,7 @@
     $("sp-practice-again").hidden = false;
     $("sp-practice-again").textContent = d_ ? "Try a practice roster" : "Build another roster";
     if (!fresh && d_) S.paintRating(NAME, null);
+    renderWeek();
     tick();
     if (fresh) box.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
@@ -226,6 +236,56 @@
     return m === "daily" ? startDaily() : startPractice();
   }
 
+  // ---- the week's best rosters ----
+  var rosterCache = {};
+  function rostersOf(sport) {
+    return rosterCache[sport] || (rosterCache[sport] = Promise.all([S.load(sport), fetch("/games/data/sports-" + sport + "-rosters.json").then(function (r) { return r.json(); })]).then(function (x) { return { d: x[0], b: x[1].b }; }));
+  }
+  function weekRow(i, today, hist, todayDone) {
+    var li = document.createElement("li"); li.className = "tw-day";
+    var sport = rotation[((i % rotation.length) + rotation.length) % rotation.length], dow = i % 7;
+    return rostersOf(sport).then(function (x) {
+      var d = x.d, rule = SE.constraint(d, dow), pick = x.b[String(dow)], cap = d.cfg.cap + rule.cap;
+      var head = document.createElement("p"); head.className = "tw-head";
+      var b = document.createElement("strong"); b.textContent = S.dayLabel(i) + ", " + d.name + ": " + rule.name; head.appendChild(b);
+      head.appendChild(document.createTextNode(". " + rule.text + " Budget " + cap + "."));
+      li.appendChild(head);
+      var mine = hist[i], you = document.createElement("p"); you.className = "tw-you";
+      you.textContent = mine ? "Your season: " + mine.w + "-" + mine.l + ", " + mine.o + " (team rating " + mine.r + ")." : "You did not play this day.";
+      if (i === today && !todayDone) { you.textContent = "Today's best roster is shown here once you finish today's puzzle, or tomorrow."; li.appendChild(you); return li; }
+      li.appendChild(you);
+      if (!pick) return li;
+      var players = pick.s.concat(pick.b).map(function (n) { return d.byName[n]; });
+      var starters = players.slice(0, pick.s.length), bench = players.slice(pick.s.length);
+      var seed = "d" + i + d.sport + "|" + pick.s.concat(pick.b).concat(new Array(Math.max(0, d.cfg.slots.length + d.cfg.bench - pick.s.length - pick.b.length)).fill("")).join("|");
+      var res = SE.simulate(d, { starters: starters, bench: bench }, seed), spent = players.reduce(function (a, p) { return a + SE.cost(p); }, 0);
+      var sum = document.createElement("p"); sum.className = "tw-head";
+      sum.textContent = "Highest-rated roster we could build (cost " + spent + " of " + cap + "): team rating " + res.rating.toFixed(1) + ". Played out, it goes " + res.wins + "-" + res.losses + " and " + outcomeFor(res, d) + ". Chance of " + d.cfg.games + "-0: " + pct(res.perfect) + ".";
+      li.appendChild(sum);
+      var ol = document.createElement("ol"); ol.className = "tw-chain";
+      players.forEach(function (p, k) {
+        var c = document.createElement("li"), lab = k < d.cfg.slots.length ? ((d.cfg.gname || {})[d.cfg.slots[k]] || d.cfg.slots[k]) : "Bench";
+        c.textContent = lab + ": " + p.n;
+        var m = document.createElement("span"); m.className = "tw-hop"; m.textContent = "Rating " + p.ovr + ", cost " + SE.cost(p) + (S.honorsText(d, p) ? ". " + S.honorsText(d, p) : ""); c.appendChild(m);
+        ol.appendChild(c);
+      });
+      li.appendChild(ol);
+      return li;
+    });
+  }
+  function renderWeek() {
+    var box = $("ub-week-list"), prev = $("ub-week-prev"); if (!box || !rotation.length) return;
+    var w = S.weekRange(), today = w.today, start = w.start;
+    var hist = S.loadState(NAME + "-hist") || {}, t = G.getGame(NAME).today, todayDone = !!(t && t.idx === today && t.done);
+    function fill(ul, from, to) {
+      ul.innerHTML = "";
+      var ids = []; for (var i = from; i <= to; i++) if (i >= 0) ids.push(i);
+      return Promise.all(ids.map(function (i) { return weekRow(i, today, hist, todayDone); })).then(function (rows) { rows.forEach(function (r) { ul.appendChild(r); }); return rows.length; });
+    }
+    fill(box, start, today).then(function (n) { $("ub-week").hidden = !n; });
+    fill(prev, start - 7, start - 1).then(function (n) { $("ub-week-prev-wrap").hidden = !n; });
+  }
+
   function wire() {
     $("ub-search").addEventListener("input", paintOptions);
     $("ub-play").addEventListener("click", play);
@@ -245,7 +305,7 @@
     S.load(rotation[0]).then(function () {
       rotation.forEach(function (s) { var o = document.createElement("option"); o.value = s; o.textContent = s.toUpperCase(); sel.appendChild(o); });
       return G.ready;
-    }).then(function () { wire(); return startDaily(); }).then(function () { $("sp-loading").hidden = true; $("sp-game").hidden = false; }, function () {
+    }).then(function () { wire(); renderWeek(); return startDaily(); }).then(function () { $("sp-loading").hidden = true; $("sp-game").hidden = false; }, function () {
       $("sp-loading").textContent = "Today's puzzle could not be loaded. Check your connection and reload the page.";
     });
   });

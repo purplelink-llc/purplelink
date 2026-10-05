@@ -1394,10 +1394,11 @@ sports_page("gridlink", "Gridlink", "Nine cells, nine guesses: name a player who
             ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/gridlink.js"])
 
 UB_FAQ = [
-    ("How is a season simulated?", "Your team's strength is the average rating of the starters, a smaller share from the bench, and a bonus for players who were really teammates. Each game is a weighted coin flip against the rest of the league. The same roster on the same day always gives the same record."),
+    ("How is a season simulated?", "Your team's strength is the average rating of the starters, a smaller share from the bench (an empty bench spot counts as a replacement-level player, so leaving it empty is no shortcut), and a bonus for players who were really teammates. Each game is a weighted coin flip against the rest of the league. The same roster on the same day always gives the same record."),
     ("Where do the ratings come from?", "About 60% of each rating comes from the player's career honors, counted from public records: All-Star or Pro Bowl selections, MVPs, league and playoff awards, all-league teams, titles and the Hall of Fame. The rest is our own judgement of how good he was at his best, in five tiers. Honors come from the Lahman baseball database for MLB, the player's Wikipedia page for the NBA and NFL, and Wikipedia award lists for the NHL. Stats like points or yards are not used, and eras are not adjusted."),
     ("Can a team really go undefeated?", "It can, but it is very unlikely even for the best roster the budget allows. The result card shows the exact chance for your roster."),
     ("What are the weekday rules?", "Each weekday has a rule: a bigger budget on Sunday, an open draft on Monday, only players who started before 1990 on Tuesday, only players who started in 2000 or later on Wednesday, no all-time icons on Thursday, a smaller budget on Friday and stars only on Saturday. Other leagues use their own cut-off years."),
+    ("Where can I see the best roster?", "In the section under the puzzle called This week's best rosters. For every day so far this week it shows the highest-rated roster the budget and that day's rule allow, the season that roster plays, and how you did. Last week is kept in a drop-down. Today's appears once you finish today's puzzle, or tomorrow. It is the best roster by team rating, which is not the same as the best result: the season still has luck in it."),
     ("Does a practice run count?", "No. Only your first daily roster counts toward your streak and stats. Practice rosters never do."),
     ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for Unbeaten, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
 ]
@@ -1423,6 +1424,12 @@ UB_BOARD = """          <p class="ub-rule"><strong id="ub-rule-name"></strong> <
             <p class="games-note" id="ub-none" hidden>No player matches. Clear the search or check the weekday rule above.</p>
             <p class="games-note" id="ub-reserve"></p>
             <p class="games-note" id="ub-more"></p>
+          </section>
+          <section class="tl-week" id="ub-week" hidden aria-labelledby="ub-week-h">
+            <h2 id="ub-week-h">This week's best rosters</h2>
+            <p class="games-note">For each day's rule so far this week, the highest-rated roster the budget allows, what a season with it looks like, and how you did. Today's appears once you finish it.</p>
+            <ul class="tw-list" id="ub-week-list"></ul>
+            <details id="ub-week-prev-wrap" hidden><summary>Last week</summary><ul class="tw-list" id="ub-week-prev"></ul></details>
           </section>"""
 UB_RESULT = """            <p class="ub-record" id="ub-record" aria-hidden="true"></p>
             <ul class="ub-detail" id="ub-detail"></ul>
