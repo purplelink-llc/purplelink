@@ -139,9 +139,10 @@
     return G.api({ action: "set_public", on: !!on }, s.session);
   }
 
-  function leaderboard(game, board) {
-    var s = session();
-    return G.api({ action: "leaderboard", game: game, board: board }, s ? s.session : null).then(function (res) { return res.status === 200 ? res.body : null; }, function () { return null; });
+  function leaderboard(game, board, idx) {
+    var s = session(), body = { action: "leaderboard", game: game, board: board };
+    if (idx !== undefined) body.idx = idx;
+    return G.api(body, s ? s.session : null).then(function (res) { return res.status === 200 ? res.body : null; }, function () { return null; });
   }
 
   return {

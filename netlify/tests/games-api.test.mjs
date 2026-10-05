@@ -416,3 +416,79 @@ test("a weekly rebuild repairs ranks that overlapping syncs left wrong, and chan
   const out = await (await call({ action: "leaderboard", game: "peaklink", board: "wins" }, bearer(b))).json();
   assert.deepEqual([out.total, out.you.rank, out.rows.map((x) => x.name)], [2, 2, ["Ada", "Bo"]]);
 });
+
+// ---- the daily board ----
+const histOf = (s, v) => ({ s, c: v.map((x) => (x === null ? "zz" : x.toString(36).padStart(2, "0"))).join("") });
+const dayBoard = async (game, idx, viewer) => (await call({ action: "leaderboard", game, board: "day", idx }, viewer ? bearer(viewer) : {})).json();
+async function listed(email, name, game, hist, wins = [2]) {
+  const s = await signIn(email);
+  await call({ action: "set_name", name }, bearer(s));
+  await call({ action: "set_public", on: true }, bearer(s));
+  await syncGame(s, game, { stats: statsOf(wins), hist });
+  return s;
+}
+
+test("the daily board lists opted-in players by score, shares ranks on a tie, and marks only the viewer", async () => {
+  const today = 2;                                                    // the test clock is puzzle day 2
+  const a = await listed("a@example.com", "Ada", "linkle", histOf(today, [3]));
+  const b = await listed("b@example.com", "Bo", "linkle", histOf(today, [3]));
+  const c = await listed("c@example.com", "Cy", "linkle", histOf(today, [5]));
+  const d = await signIn("d@example.com");                             // plays, never opts in
+  await syncGame(d, "linkle", { stats: statsOf([2]), hist: histOf(today, [2]) });
+  const out = await dayBoard("linkle", today, b);
+  assert.deepEqual(out.rows.map((x) => [x.rank, x.name, x.v, !!x.me]), [[1, "Ada", 3, false], [1, "Bo", 3, true], [3, "Cy", 5, false]]);
+  assert.deepEqual([out.you.v, out.you.rank, out.you.listed], [3, 1, true]);
+  assert.equal((await dayBoard("linkle", today, d)).you.listed, false);   // d can see their own result, unlisted
+  assert.equal((await dayBoard("linkle", today - 1)).rows.length, 0);    // yesterday's board is separate
+  assert.equal((await dayBoard("wildlink", today)).rows.length, 0);      // and so is each game's
+});
+
+test("the daily board follows name changes and opting out, and the anonymous tally supplies the best score", async () => {
+  const today = 2;
+  await call({ action: "score", game: "citylink", idx: today, score: 2 }, { "x-nf-client-connection-ip": "9.9.9.9" });
+  const a = await listed("a@example.com", "Ada", "citylink", histOf(today, [4]));
+  await call({ action: "set_name", name: "Ada L" }, bearer(a));
+  let out = await dayBoard("citylink", today);
+  assert.deepEqual(out.rows.map((x) => x.name), ["Ada L"]);
+  assert.deepEqual([out.finishers, out.best], [1, { v: 2, n: 1 }]);
+  await call({ action: "set_public", on: false }, bearer(a));
+  assert.equal((await dayBoard("citylink", today)).rows.length, 0);
+});
+
+test("a result only appears once the player has opted in, including one finished earlier today", async () => {
+  const today = 2;
+  const s = await signIn("a@example.com");
+  await syncGame(s, "riverlink", { stats: statsOf([2]), hist: histOf(today, [1]) });     // finished before opting in
+  assert.equal((await dayBoard("riverlink", today)).rows.length, 0);
+  await call({ action: "set_name", name: "Ada" }, bearer(s));
+  await call({ action: "set_public", on: true }, bearer(s));
+  assert.deepEqual((await dayBoard("riverlink", today)).rows.map((x) => [x.name, x.v]), [["Ada", 1]]);
+});
+
+test("daily boards refuse puzzle numbers far from today, and a deleted account leaves nothing behind", async () => {
+  assert.equal((await call({ action: "leaderboard", game: "linkle", board: "day", idx: 99 })).status, 400);
+  assert.equal((await call({ action: "leaderboard", game: "linkle", board: "day", idx: "x" })).status, 400);
+  assert.equal((await call({ action: "leaderboard", game: "nope", board: "day", idx: 2 })).status, 400);
+  const a = await listed("a@example.com", "Ada", "peaklink", histOf(2, [3]));
+  assert.equal((await dayBoard("peaklink", 2)).rows.length, 1);
+  await call({ action: "delete_account" }, bearer(a));
+  assert.equal((await dayBoard("peaklink", 2)).rows.length, 0);
+});
+
+test("old daily boards are dropped when a newer day is written", async () => {
+  await listed("a@example.com", "Ada", "codelink", histOf(2, [3]));
+  stores.data.set("games-lb/lbday:codelink:-2", JSON.stringify({ rows: [{ a: "z", name: "Old", s: 1 }] }));
+  const s = await signIn("b@example.com");
+  await call({ action: "set_name", name: "Bo" }, bearer(s)); await call({ action: "set_public", on: true }, bearer(s));
+  await syncGame(s, "codelink", { stats: statsOf([2]), hist: histOf(2, [4]) });
+  assert.equal(stores.data.has("games-lb/lbday:codelink:-2"), false);      // 4 days before day 2 is day -2: removed by the write
+});
+
+test("daily ranks count everyone who finished ahead, named or not", async () => {
+  const today = 2;
+  for (const [ip, score] of [["1.1.1.1", 2], ["1.1.1.2", 2], ["1.1.1.3", 4]]) await call({ action: "score", game: "gridlink", idx: today, score }, { "x-nf-client-connection-ip": ip });
+  const a = await listed("a@example.com", "Ada", "gridlink", histOf(today, [4]));
+  await call({ action: "score", game: "gridlink", idx: today, score: 4 }, bearer(a));
+  const out = await dayBoard("gridlink", today, a);
+  assert.deepEqual([out.rows[0].rank, out.you.rank, out.finishers], [3, 3, 4]);          // two anonymous finishers did better
+});

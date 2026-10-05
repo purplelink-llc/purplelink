@@ -16,6 +16,7 @@
 
  *   rank          {game?}            (session) Your all-time rank and percentile for wins (w), best streak (s) and average
  *                                    percentile (p) in one daily game, or in every game you have played.
+ *   leaderboard   {game,board:"day",idx}  (anonymous; a session adds your own result) Who did best on one day's puzzle, among players who opted in.
  *   leaderboard   {game,board}       (anonymous; a session adds your own rank) The top 100 for "chess" or "sudoku",
  *                                    board "all" (rating) or "week" (rating gained this week). Only players who opted in appear.
  *   ratings                          (session) Your chess and Sudoku ratings and whether you are on the leaderboards.
@@ -29,7 +30,7 @@
  */
 
 import { createHash, randomBytes } from "node:crypto";
-import { cleanData, cleanName, mergeData, percentile, dayIndexUTC, MAX_DATA_BYTES, SCORE_LIMITS, COMPLETION_GAMES, RANK_KEYS, BOARD_KEYS, boardKey, metricsOf, bucketMove, rankOf, upsertValueRow } from "../lib/games-logic.mjs";
+import { cleanData, cleanName, mergeData, percentile, dayIndexUTC, MAX_DATA_BYTES, SCORE_LIMITS, COMPLETION_GAMES, RANK_KEYS, BOARD_KEYS, boardKey, metricsOf, bucketMove, rankOf, upsertValueRow, upsertDayRow, histGet, DAY_BOARD_SIZE } from "../lib/games-logic.mjs";
 import { applyResult, boardRow, checkReport, DAILY_REPORT_CAP, SPORTS_GAMES, emptyRecord, publicNameOk, upsertRow, weekOf } from "../lib/ratings.mjs";
 import CHESS_INDEX from "../lib/chess-index.json" with { type: "json" };
 import SPORTS_DAYS from "../lib/sports-days.json" with { type: "json" };
@@ -225,6 +226,31 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
     return { accounts: accountsSeen, repaired };
   }
 
+  // ---- the daily board: who did best on one day's puzzle ----
+  // Rows come from each opted-in account's own day-by-day history, so a result shows up when the player's browser syncs.
+  // A day's board lives under lbday:<game>:<puzzle number> and is dropped four days later.
+  const dayKey = (g, idx) => `lbday:${g}:${idx}`;
+  const lowerThan = (buckets, v) => Object.entries(buckets || {}).reduce((n, [k, c]) => n + (Number(k) < v ? c : 0), 0);
+  async function syncDayRows(acct, account, games) {
+    const today = dayIndexUTC(new Date(now()));
+    const listed = !!account.public && publicNameOk(account.name);
+    const days = listed ? [today - 1, today, today + 1] : [today - 3, today - 2, today - 1, today, today + 1];
+    for (const g of games) {
+      const hist = account.data && account.data[g] ? account.data[g].hist : null;
+      for (const idx of days) {
+        const v = listed ? histGet(hist, idx) : null;
+        if (listed && v === null) continue;
+        const cur = (await boards().get(dayKey(g, idx), { type: "json" })) || { rows: [] };
+        if (v !== null) {
+          await boards().setJSON(dayKey(g, idx), { rows: upsertDayRow(cur.rows || [], { a: acct, name: account.name, s: v }) });
+          try { await boards().delete(dayKey(g, idx - 4)); } catch (_) { /* old boards expire on a later write */ }
+        } else if ((cur.rows || []).some((x) => x.a === acct)) {
+          await boards().setJSON(dayKey(g, idx), { rows: cur.rows.filter((x) => x.a !== acct) });
+        }
+      }
+    }
+  }
+
   async function overLimit(kind, value, limit) {
     const day = new Date(now()).toISOString().slice(0, 10);
     const key = `rl:games-${kind}:${day}:${sha(value).slice(0, 16)}`;
@@ -330,6 +356,28 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         return json(200, percentile(rec.buckets, score), origin);
       }
 
+      if (action === "leaderboard" && b.board === "day" && COMPLETION_GAMES.includes(String(b.game || ""))) {
+        const game = String(b.game), idx = Number(b.idx), today = dayIndexUTC(new Date(now()));
+        if (!Number.isInteger(idx) || Math.abs(idx - today) > 2) return json(400, { error: "not_recent" }, origin);
+        const cur = (await boards().get(dayKey(game, idx), { type: "json" })) || { rows: [] };
+        const hist = (await scores().get(`score:${game}:${idx}`, { type: "json" })) || { buckets: {} };
+        const finishers = rankOf(hist.buckets, -1).total;
+        const live = Object.keys(hist.buckets).map(Number).filter((k) => k < 99).sort((x, y) => x - y);
+        const list = cur.rows || [];
+        const viewer = await sessionOf(request);
+        const out = {
+          board: "day", game, idx, finishers, best: live.length ? { v: live[0], n: hist.buckets[live[0]] } : null,
+          // A rank counts everyone who finished with a better result, named or not, so a row and the viewer's own line agree.
+          rows: list.map((x) => ({ rank: 1 + Math.max(lowerThan(hist.buckets, x.s), list.filter((y) => y.s < x.s).length), name: x.name, v: x.s, ...(viewer && x.a === viewer.acct ? { me: true } : {}) })),
+        };
+        if (viewer) {
+          const acc = await loadAccount(viewer.acct);
+          const mine = acc && acc.data && acc.data[game] ? histGet(acc.data[game].hist, idx) : null;
+          if (mine !== null && mine !== undefined) out.you = { v: mine, rank: 1 + Math.max(lowerThan(hist.buckets, mine), list.filter((y) => y.s < mine).length), total: finishers, listed: list.some((x) => x.a === viewer.acct) };
+        }
+        return json(200, out, origin);
+      }
+
       if (action === "leaderboard" && boardKey(b.board) && COMPLETION_GAMES.includes(String(b.game || ""))) {
         const game = String(b.game), board = String(b.board), k = boardKey(board);
         const cur = (await boards().get(`lbd:${game}`, { type: "json" })) || {};
@@ -370,13 +418,16 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       if (action === "sync") {
         const legacy = (o) => { for (const [old, now_] of [["teamlink", "lockerlink"], ["unbeaten", "under-the-cap"]]) if (o && o[old] && !o[now_]) { o[now_] = o[old]; delete o[old]; } return o; };   // renamed games
         const incoming = cleanData(legacy(b.data));
-        const merged = mergeData(legacy(account.data || {}), incoming);
+        const before = legacy(account.data || {});
+        const merged = mergeData(before, incoming);
         if (JSON.stringify(merged).length > MAX_DATA_BYTES) return json(413, { error: "too_large" }, origin);
+        const histChanged = COMPLETION_GAMES.filter((g) => JSON.stringify((merged[g] || {}).hist || null) !== JSON.stringify((before[g] || {}).hist || null));
         account.data = merged;
         account.updated = now();
         const changed = await updateRanks(sess.acct, account, merged);
         await accounts().setJSON(`acct:${sess.acct}`, account);
         if (changed.length && account.public) await syncDailyBoards(sess.acct, account, changed);
+        if (histChanged.length && account.public) await syncDayRows(sess.acct, account, histChanged);
         return json(200, { data: merged, rank: account.rk || {}, name: account.name, email: account.email, remind: !!account.remind, public: !!account.public }, origin);
       }
       if (action === "set_name") {
@@ -388,7 +439,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         await accounts().setJSON(`acct:${sess.acct}`, account);
         const recs = await loadRatings(sess.acct);
         if (account.public || RATED.some((g) => recs[g])) await syncBoards(sess.acct, account, recs);
-        if (wasPublic || account.public) await syncDailyBoards(sess.acct, account, Object.keys(account.rk || {}));
+        if (wasPublic || account.public) { await syncDailyBoards(sess.acct, account, Object.keys(account.rk || {})); await syncDayRows(sess.acct, account, COMPLETION_GAMES.filter((g) => account.data && account.data[g] && account.data[g].hist)); }
         return json(200, { ok: true, name, public: !!account.public }, origin);
       }
       if (action === "rank") {
@@ -438,6 +489,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         await accounts().setJSON(`acct:${sess.acct}`, account);
         await syncBoards(sess.acct, account, await loadRatings(sess.acct));
         await syncDailyBoards(sess.acct, account, Object.keys(account.rk || {}));
+        await syncDayRows(sess.acct, account, COMPLETION_GAMES.filter((g) => account.data && account.data[g] && account.data[g].hist));
         return json(200, { ok: true, public: on }, origin);
       }
       if (action === "logout") {
@@ -451,6 +503,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
         await auth().delete(`sess:${sess.hash}`);
         account.public = false;
         await syncDailyBoards(sess.acct, account, Object.keys(account.rk || {}));
+        await syncDayRows(sess.acct, account, COMPLETION_GAMES.filter((g) => account.data && account.data[g] && account.data[g].hist));
         await removeFromRanks(sess.acct, account);
         await syncBoards(sess.acct, account, {});
         await ratings().delete(`r:${sess.acct}`);

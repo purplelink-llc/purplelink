@@ -160,9 +160,9 @@ GAMES = {
     "games/leaderboard/": dict(
         slug="leaderboard", name="Leaderboards", genre="Ratings", minutes=1,
         title="Game leaderboards: all-time wins, streaks and puzzle ratings",
-        desc="All-time boards for every daily game by wins, best streak and average percentile, plus rating boards for Chess Puzzles, Sudoku Unlimited and the daily sports games. Players join by choice.",
+        desc="Who did best today on every daily game, plus all-time boards by wins, best streak and average percentile, plus rating boards for Chess Puzzles, Sudoku Unlimited and the daily sports games. Players join by choice.",
         answer="The Purplelink leaderboards rank every daily game by wins, best streak and average percentile, and list the highest ratings in Chess Puzzles, Sudoku Unlimited and the daily sports games. Only signed-in players who choose to appear are listed, under their display name.",
-        features=["All-time wins, best streak and average percentile for every daily game", "Top 100 by rating for chess, Sudoku and the sports games", "Your rank even when you are outside the top 100", "Opt-in, with a display name only"],
+        features=["Today and yesterday boards for every daily game", "All-time wins, best streak and average percentile for every daily game", "Top 100 by rating for chess, Sudoku and the sports games", "Your rank even when you are outside the top 100", "Opt-in, with a display name only"],
         steps=[("Play", "Finish daily puzzles, or rated puzzles in Chess Puzzles or Sudoku Unlimited."),
                ("Sign in", "Use the email link on your account page so your results are kept on the server."),
                ("Pick a display name", "Choose a name on the account page. It is the only thing shown."),

@@ -273,6 +273,15 @@ export function rankOf(buckets, v) {
   return { rank: greater + 1, total, pct: total ? Math.round((100 * (lower + same / 2)) / total) : 0 };
 }
 
+/** Today's board for one game: lowest score first (guesses, misses, time blocks), names break a tie. Best 50 are kept. */
+export const DAY_BOARD_SIZE = 50;
+export function upsertDayRow(rows, row) {
+  const out = rows.filter((x) => x.a !== row.a);
+  out.push(row);
+  out.sort((x, y) => x.s - y.s || String(x.name).localeCompare(String(y.name)));
+  return out.slice(0, DAY_BOARD_SIZE);
+}
+
 /** Keep the best 100 rows for one measure: highest value first, fewer games played breaks a tie. */
 export function upsertValueRow(rows, row) {
   const out = rows.filter((x) => x.a !== row.a);

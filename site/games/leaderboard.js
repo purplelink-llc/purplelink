@@ -8,7 +8,23 @@
   var q = new URLSearchParams(window.location.search);
   var RATED = { chess: ["/games/chess-puzzles/", "chess-puzzles", "Play rated chess puzzles"], sudoku: ["/games/sudoku-unlimited/", "sudoku-unlimited", "Play rated Sudoku"],
     lockerlink: ["/games/lockerlink/", "lockerlink", "Play today's Lockerlink"], gridlink: ["/games/gridlink/", "gridlink", "Play today's Gridlink"], "under-the-cap": ["/games/under-the-cap/", "under-the-cap", "Play today's Under the Cap"] };
-  var DAILY_BOARDS = [["wins", "Wins"], ["streak", "Best streak"], ["pct", "Average percentile"]];
+  var DAILY_BOARDS = [["day", "Today"], ["yday", "Yesterday"], ["wins", "All-time wins"], ["streak", "Best streak"], ["pct", "Average percentile"]];
+  var EPOCH = "2026-10-04";
+  // What a daily score means, for each game. Lower is better; 99 is a loss. Crossword and Sudoku keep time in blocks.
+  function two(n) { return (n < 10 ? "0" : "") + n; }
+  function clock(sec) { return Math.floor(sec / 60) + ":" + two(sec % 60); }
+  function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
+  var SCORE_TEXT = {
+    crossword: function (v) { return "about " + clock(v * 20); }, sudoku: function (v) { return "about " + clock(v * 30); },
+    "daily-five": function (v) { return v ? plural(v, "miss", "misses") : "perfect"; }, "daily-photo": function (v) { return v ? plural(v, "miss", "misses") : "perfect"; },
+    "daily-chess": function (v) { return v ? plural(v, "slip", "slips") : "clean"; }, lockerlink: function (v) { return v ? "par +" + v : "par"; },
+    gridlink: function (v) { return v ? plural(v, "empty cell", "empty cells") : "complete"; }, "under-the-cap": function (v) { return plural(v, "loss", "losses"); }
+  };
+  function dayScoreText(game, v) {
+    if (v >= 99) return "X";
+    return SCORE_TEXT[game] ? SCORE_TEXT[game](v) : plural(v, "guess", "guesses");
+  }
+  function puzzleIdx() { return G.dayIndex(new Date(), EPOCH) - (st.board === "yday" ? 1 : 0); }
   var RATED_BOARDS = [["all", "Rating"], ["week", "This week"]];
   var UNITS = { wins: "wins", streak: "days", pct: "%" };
 
@@ -21,8 +37,10 @@
   }
   var g0 = parseGame(q.get("g"));
   var st = { kind: g0.kind, key: g0.key, board: q.get("b") };
+  if (st.kind === "daily" && !st.board) st.board = "day";
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+  function isDay() { return st.board === "day" || st.board === "yday"; }
   function boards() { return st.kind === "daily" ? DAILY_BOARDS : RATED_BOARDS; }
   function validBoard() { if (!boards().some(function (b) { return b[0] === st.board; })) st.board = boards()[0][0]; }
   function label() { var o = $("lb-game").querySelector('option[value="' + st.kind + ":" + st.key + '"]'); return o ? o.textContent : st.key; }
@@ -46,10 +64,11 @@
     var wkEl = $("lb-week"); if (wkEl) wkEl.hidden = st.kind === "daily";
     var note = $("lb-note");
     note.hidden = st.kind !== "daily";
-    note.textContent = st.kind === "daily" ? "Daily boards rank the results each player's browser reports. They are checked for what is possible, not replayed, so treat them as friendly competition." : "";
+    note.textContent = st.kind === "daily" ? "Daily boards rank the results each player's browser reports. They are checked for what is possible, not replayed, so treat them as friendly competition." + (isDay() ? " Only players who turned the leaderboard on are named; everyone counts in the finisher total." : "") : "";
   }
 
   function scoreText(row) {
+    if (st.kind === "daily" && isDay()) return dayScoreText(st.key, row.v);
     if (st.kind === "daily") return st.board === "pct" ? row.v + "%" : String(row.v);
     return st.board === "week" ? (row.g >= 0 ? "+" : "−") + Math.abs(row.g) : String(row.r);
   }
@@ -59,21 +78,25 @@
     list.textContent = "";
     if (!data) { status.textContent = "The board could not be loaded. Try again in a moment."; return; }
     if (data.rows.length) status.textContent = "";
+    else if (st.kind === "daily" && isDay()) status.textContent = (data.finishers ? data.finishers + (data.finishers === 1 ? " player has" : " players have") + " finished this puzzle" + (data.best ? ", best result " + dayScoreText(st.key, data.best.v) : "") + ". " : "") + "No one has listed a result yet. Sign in, turn the leaderboard on and play to appear here.";
     else if (st.kind === "daily") status.textContent = "No one is listed on this board yet. Be the first." + (data.total ? " " + data.total + (data.total === 1 ? " player has" : " players have") + " results here so far." : "");
     else status.textContent = st.board === "week" ? "No one has three rated puzzles this week yet. Be the first." : "No one is on this board yet. Be the first.";
+    if (data.rows.length && isDay() && data.finishers) status.textContent = data.finishers + (data.finishers === 1 ? " player has" : " players have") + " finished this puzzle" + (data.best ? ", best result " + dayScoreText(st.key, data.best.v) : "") + ".";
     data.rows.forEach(function (row) {
       var li = el("li", "lb-row"); if (row.rank <= 3) li.setAttribute("data-top", String(row.rank));
       if (st.kind === "daily" ? row.me : data.you && data.you.rank === row.rank) li.setAttribute("data-you", "");
       li.appendChild(el("span", "lb-rank", String(row.rank)));
       li.appendChild(el("span", "lb-name", row.name));
-      li.appendChild(el("span", "lb-n", row.n + " played"));
+      li.appendChild(el("span", "lb-n", isDay() ? "" : row.n + " played"));
       li.appendChild(el("b", "lb-score", scoreText(row)));
       list.appendChild(li);
     });
     var you = $("lb-you");
     if (!data.you) { you.hidden = true; return; }
     you.hidden = false;
-    if (st.kind === "daily") {
+    if (st.kind === "daily" && isDay()) {
+      you.textContent = "Your result: " + dayScoreText(st.key, data.you.v) + ", number " + data.you.rank + " of " + data.you.total + " finishers" + (data.you.listed ? "." : ". You are not listed by name.");
+    } else if (st.kind === "daily") {
       var what = st.board === "wins" ? data.you.v + (data.you.v === 1 ? " win" : " wins") : st.board === "streak" ? "a best streak of " + data.you.v + (data.you.v === 1 ? " day" : " days") : "an average percentile of " + data.you.v;
       you.textContent = "You are number " + data.you.rank + " of " + data.you.total + " with " + what + (data.you.total > 1 ? ", ahead of " + data.you.pct + "% of players" : "") + ".";
     } else you.textContent = "You are number " + data.you.rank + (st.board === "week" ? " this week, " + (data.you.g >= 0 ? "up " : "down ") + Math.abs(data.you.g) : " with " + data.you.r) + ".";
@@ -84,7 +107,7 @@
     box.textContent = "";
     function p(text) { var e = document.createElement("p"); e.textContent = text; box.appendChild(e); }
     function btn(text, fn) { var b = el("button", "gbtn gbtn--ghost", text); b.type = "button"; b.addEventListener("click", fn); box.appendChild(b); }
-    var listed = !!(data && data.you && data.you.listed !== false);
+    var listed = !!(data && data.you && data.you.listed !== false && (!isDay() || data.you.listed === true));
     if (!s) { p("Sign in with an email link to keep your results on the server, see your rank and join the boards."); var a = el("a", "gbtn gbtn--ghost", "Sign in"); a.href = "/games/account/"; box.appendChild(a); return; }
     if (listed) { btn("Leave the leaderboards", function () { R.setPublic(false).then(function () { load(); }); }); return; }
     if (!s.name) { p("Choose a display name on your account page to appear here."); var a2 = el("a", "gbtn gbtn--ghost", "Choose a name"); a2.href = "/games/account/"; box.appendChild(a2); return; }
@@ -99,7 +122,7 @@
     tabs();
     var mine = ++token;
     $("lb-status").textContent = "Loading the board.";
-    R.leaderboard(st.key, st.board).then(function (data) {
+    R.leaderboard(st.key, isDay() ? "day" : st.board, isDay() ? puzzleIdx() : undefined).then(function (data) {
       if (mine !== token) return;                         // a newer choice has replaced this one
       render(data); join(data); if (window.PLDock) window.PLDock.paint();
     });
@@ -108,7 +131,7 @@
   $("lb-game").addEventListener("change", function () {
     var m = /^(daily|rated):(.+)$/.exec($("lb-game").value);
     if (!m) return;
-    st.kind = m[1]; st.key = m[2]; st.board = null; load();
+    st.kind = m[1]; st.key = m[2]; st.board = m[1] === "daily" ? "day" : null; load();
   });
   var wk = $("lb-week");
   if (wk) { var d = new Date(), off = (d.getDay() + 6) % 7, mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() - off); wk.textContent = "Week of " + mon.toLocaleDateString("en-US", { month: "long", day: "numeric" }); }

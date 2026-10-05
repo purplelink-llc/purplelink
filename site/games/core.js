@@ -227,7 +227,11 @@
       if (r.w) bits.push(ordinalLine("wins", r.w));
       if (r.s && r.s.v > 1) bits.push(ordinalLine("best streak", r.s));
       if (r.p) bits.push(ordinalLine("average percentile", r.p));
-      if (bits.length) box.textContent = "All-time: " + bits.join(", ") + ".";
+      if (bits.length) box.textContent = "All-time: " + bits.join(", ") + ". ";
+      var a = document.createElement("a");
+      a.href = "/games/leaderboard/?g=daily:" + game + "&b=day";
+      a.textContent = "See who did best today";
+      box.appendChild(a);
     }).catch(function () { /* the rank line is optional */ });
   }
   function paintNote(el, stats, idx, on, game) {

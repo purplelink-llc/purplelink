@@ -1054,7 +1054,7 @@ LB_BODY = """      <div class="games-wrap">
           <h1>Leaderboards</h1>
           <span class="game-num" id="lb-week"></span>
         </div>
-        <p class="game-lede">All-time boards for every daily game, ranked by wins, best streak and average percentile, plus the rating boards for Chess Puzzles, Sudoku Unlimited and the three daily sports games.</p>
+        <p class="game-lede">Who did best today on every daily game, plus all-time boards by wins, best streak and average percentile, and the rating boards for Chess Puzzles, Sudoku Unlimited and the daily sports games.</p>
         <div class="lb-controls">
           <label class="lb-label" for="lb-game">Game</label>
           <select id="lb-game" class="lb-select">""" + LB_OPTIONS + """</select>
@@ -1071,7 +1071,7 @@ LB_BODY = """      <div class="games-wrap">
         </div>
         <div class="games-prose">
           <h2>How the boards work</h2>
-          <p>Every daily game has three all-time boards. Wins counts the days you solved the puzzle. Best streak is your longest run of days in a row. Average percentile is how you ranked against everyone who played each day, and it counts after 20 days with a real crowd. Rank is worked out against every signed-in player, so you can see where you stand even when you are outside the top 100. Only players who opt in, under a display name, are listed.</p>
+          <p>Every daily game has a Today board, listing the best results on today\'s puzzle (and Yesterday\'s), plus three all-time boards. Wins counts the days you solved the puzzle. Best streak is your longest run of days in a row. Average percentile is how you ranked against everyone who played each day, and it counts after 20 days with a real crowd. Rank is worked out against every signed-in player, so you can see where you stand even when you are outside the top 100. Only players who opt in, under a display name, are listed.</p>
           <p>The rating boards are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Under the Cap update once a day, from your first result on that day\'s puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Under the Cap counts your win share and title. Everyone starts at 1000.</p>
           <h2>Questions</h2>
 """ + faq_html(LB_FAQ) + """
