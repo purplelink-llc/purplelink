@@ -3791,6 +3791,119 @@ Requires macOS 14 or later. Free 7-day trial, no account.
 
 ---
 
+Source: https://purplelink.llc/guides/overleaf-compile-timeout/
+Title: Overleaf compile timeout: fixes, and when to compile locally | Purplelink
+
+← All guides
+
+How-to
+
+# Overleaf compile timeout: fixes, and when to compile locally
+
+By Benjamin Ampel · October 5, 2026
+
+Overleaf stops a compile that runs past its limit, which its plan-limits page lists as 10 seconds on the free plan and 240 seconds on premium plans. Most timeouts come from a short list of causes you can fix inside the project. If yours is a heavy project that simply needs more time, a local build has no limit.
+
+Disclosure: Purplelink makes ModernTex, a Mac LaTeX editor, and it is mentioned near the end. The fixes below come from Overleaf's own documentation on compile timeouts, and the limits from its plan limits page. Both can change, so check them if a number matters to you.
+
+## First, check that it is a timeout and not an error
+
+A "Timed out" message does not always mean the project is too big. A fatal error can leave LaTeX waiting for input or looping until the clock runs out, and then Overleaf reports a timeout instead of the error.
+
+Open the Recompile menu and turn on Stop on first error. If the compile now fails quickly with a message, you have an error to fix, not a time limit to beat. Overleaf's documentation lists these as common causes of timeouts that are really errors:
+
+- A blank line inside \author{}, \date{} or \title{}.
+
+- \caption{} placed inside a tabular instead of outside it.
+
+- A missing ; or ] in a tikzpicture command.
+
+- Nested tabular environments.
+
+- \cmidrule{3-3} written without a column range.
+
+- Heavy use of the [H] float option. Overleaf suggests [hbt!] instead.
+
+- Babel shorthands. Overleaf suggests avoiding them or loading babel with shorthands=off.
+
+## Fixes to try, in order
+
+- Stop on first error. As above. It costs nothing and rules out a hidden error.
+
+- Compile in Fast [draft] mode. Draft mode skips rendering images. If the project builds in draft mode and times out otherwise, images are the cost. Save diagrams and plots as PDF, use JPEG only for photographs, and avoid EPS and SVG files.
+
+- Externalize TikZ and pgfplots figures. Without this, LaTeX redraws every figure on every compile. Externalizing makes it draw each one once and reuse the result.
+
+- Replace slow packages. Overleaf names a few: mhchem (use chemformula), version 3 of acro (go back to version 2), tabularray (use ordinary tables), and breqn (use align in place of dmath). With soul or changes, put \protect before \cite and \ref. Remove any leftover \tracingall.
+
+Work down the list and recompile after each step. Changing four things at once tells you nothing about which one mattered.
+
+## If it still times out: time it somewhere without a limit
+
+A local build tells you whether the project is slow or broken. Download the project from the Overleaf menu (Download, then Source), unzip it, and install a TeX distribution: MacTeX on a Mac, or TinyTeX if you want something smaller. In the project folder, run the compiler Overleaf was using:
+
+time latexmk -pdf -interaction=nonstopmode main.tex
+
+Use -xelatex or -lualatex in place of -pdf if the project's compiler setting is XeLaTeX or LuaLaTeX. Replace main.tex with the project's main file. The first build on a new install is slower than later ones, because fonts and package files are generated once, so time the second run.
+
+Then read the result:
+
+- It finishes in 30 or 40 seconds. The project is heavy and the free limit was too short. You can build it locally, or stay on Overleaf with a plan that allows more time.
+
+- It finishes in a few seconds locally. Overleaf's shared servers were the bottleneck, or one of the package or image causes above applies there more than here. Fix the project, and the timeout will go away.
+
+- It never finishes. Stop it with Ctrl-C and open main.log. A loop, a missing file prompt or a package conflict shows near the end of the log. No time limit would have rescued this one, so a paid plan would not either.
+
+## Your options when you hit the limit
+
+- Fix the project. Free, and often enough. The checklist above is the whole list.
+
+- Move to a premium plan. Overleaf lists 240 seconds on premium plans, and many universities provide it through a site licence. Check whether yours does before paying.
+
+- Compile locally. No limit and no account. You give up live co-editing for that copy, and you take on a TeX installation.
+
+- Do both. Keep the shared draft on Overleaf for co-authors and build the heavy version on your own machine. The guide to Overleaf alternatives for Mac covers moving a project over and syncing with Git.
+
+## If you are on a Mac
+
+ModernTex is a native Mac editor that compiles on your own machine, so there is no compile limit, and it explains LaTeX errors in plain language instead of leaving you with the raw log. It is a single-user app: two people cannot type in the same document, so keep Overleaf for that. It costs $19.99 once with all updates included, after a free 7-day trial with no account, and it needs macOS 14 or later plus MacTeX or TinyTeX (it offers a one-click TinyTeX install). The free editors in the comparison of Mac LaTeX editors do the same job for no cost if you prefer them.
+
+## Frequently asked questions
+
+What is the Overleaf compile timeout?
+
+Overleaf's plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 2026. Limits change, so check that page if the numbers matter for your decision.
+
+Why does my project compile in Fast [draft] mode but time out normally?
+
+Draft mode skips rendering images, so a project that compiles in draft mode and times out otherwise is spending its time on images. Convert diagrams and plots to PDF, keep JPEG for photographs, and avoid EPS and SVG, as Overleaf's documentation recommends.
+
+Is there a time limit when I compile LaTeX on my own computer?
+
+No. A local build runs until it finishes. The catch is that a document stuck in a loop never finishes either, so run it once with a timer and stop it with Ctrl-C if it passes a few minutes. The last lines of the .log file usually show where it stalled.
+
+Will upgrading to a paid Overleaf plan fix a timeout?
+
+If the project needs 30 seconds to build and you are on the free plan, yes. If a fatal error or a loop is behind the timeout, a longer limit only makes you wait longer for the same failure. Run Stop on first error before paying.
+
+Can I compile locally and still use Overleaf with co-authors?
+
+Yes. The project is ordinary .tex, .bib and image files. Download the source, build it locally when the compile is too heavy, and keep the shared draft on Overleaf. The Overleaf alternatives guide covers Git sync and the manual route.
+
+From the team behind these tools
+
+## Writing LaTeX on a Mac?
+
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
+
+Get ModernTex ($19.99)
+See what it does
+
+Requires macOS 14 or later. Free 7-day trial, no account.
+
+
+---
+
 Source: https://purplelink.llc/guides/best-mac-latex-editors/
 Title: Best LaTeX editor for Mac in 2026: 14 editors compared | Purplelink
 
