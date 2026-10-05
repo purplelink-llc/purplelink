@@ -39,14 +39,14 @@ function replaySeason(pool, sport, idx, roster) {
   return replay(d, sport, idx, roster);
 }
 
-// ---- the daily sports games: Teamlink, Gridlink and Unbeaten. One rated result per game per day. ----
-export const SPORTS_GAMES = ["teamlink", "gridlink", "unbeaten"];
+// ---- the daily sports games: Lockerlink, Gridlink and Unbeaten. One rated result per game per day. ----
+export const SPORTS_GAMES = ["lockerlink", "gridlink", "unbeaten"];
 const GRID_PUZZLE = 1000, UNBEATEN_PUZZLE = 1100;
 
 /** A chain of par links is harder the longer par is. */
-export function teamlinkPuzzleRating(par) { return 900 + 150 * par; }
+export function lockerlinkPuzzleRating(par) { return 900 + 150 * par; }
 /** 1 for a clean par chain, less for each extra link, miss and hint; 0 when the player gave up. */
-export function teamlinkScore({ won, par, links, misses, hints }) {
+export function lockerlinkScore({ won, par, links, misses, hints }) {
   if (!won) return 0;
   return Math.max(0.15, 1 - 0.15 * Math.max(0, links - par) - 0.05 * Math.min(misses, 10) - 0.08 * Math.min(hints, 5));
 }
@@ -66,12 +66,12 @@ export function checkSportsReport(game, b, days, nowIdx, pool = null) {
   const rot = days.rotation, sport = rot[((idx % rot.length) + rot.length) % rot.length];
   if (b.sport !== sport || String(b.id) !== `d${idx}`) return { ok: false, error: "unknown_puzzle" };
   const ms = Number(b.ms);
-  if (game === "teamlink") {
+  if (game === "lockerlink") {
     const par = days[sport].par[Math.floor(idx / rot.length) % days[sport].par.length];
     const won = b.won === true, links = intIn(b.links, 1, 60), misses = intIn(b.misses, 0, 500), hints = intIn(b.hints, 0, 500);
     if (links === null || misses === null || hints === null) return { ok: false, error: "bad_result" };
     if (won && (links < par || ms < 2000 * Math.max(1, links - 1))) return { ok: false, error: links < par ? "bad_result" : "too_fast" };
-    return { ok: true, id: `d${idx}`, puzzleRating: teamlinkPuzzleRating(par), score: teamlinkScore({ won, par, links, misses, hints }), solved: won };
+    return { ok: true, id: `d${idx}`, puzzleRating: lockerlinkPuzzleRating(par), score: lockerlinkScore({ won, par, links, misses, hints }), solved: won };
   }
   if (game === "gridlink") {
     const filled = intIn(b.filled, 0, 9);

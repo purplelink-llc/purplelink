@@ -1,4 +1,4 @@
-/* Shared engine for the sports games (Teamlink, Gridlink, Unbeaten). One data file per sport lists famous players and
+/* Shared engine for the sports games (Lockerlink, Gridlink, Unbeaten). One data file per sport lists famous players and
    the franchises they played for, season by season. A "stint" is [franchise, firstSeason, endSeason) so a player was on
    a team in every season s with first <= s < end. Two players are teammates when they have a franchise and a season in
    common. Also loads under Node for tests. */
@@ -219,7 +219,10 @@
   function elapsed(t0) { return t0 ? Math.min(21000000, Date.now() - t0) : 120000; }
 
   // ---------- local state (kept apart from the synced progress) ----------
-  function loadState(key) { try { return JSON.parse(localStorage.getItem("pl-sports-" + key)) || null; } catch (e) { return null; } }
+  // Lockerlink was launched as Teamlink: read its old saved state when the new key is empty
+  function loadState(key) {
+    try { return JSON.parse(localStorage.getItem("pl-sports-" + key)) || JSON.parse(localStorage.getItem("pl-sports-" + key.replace(/^lockerlink/, "teamlink"))) || null; } catch (e) { return null; }
+  }
   function saveState(key, v) { try { if (v === null) localStorage.removeItem("pl-sports-" + key); else localStorage.setItem("pl-sports-" + key, JSON.stringify(v)); } catch (e) { /* ignore */ } }
 
   // ---------- name picker (combobox) ----------

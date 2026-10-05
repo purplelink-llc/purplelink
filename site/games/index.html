@@ -30,7 +30,7 @@
           "@type": "CollectionPage",
           "name": "Daily games",
           "url": "https://purplelink.llc/games/",
-          "description": "Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Teamlink, Gridlink and Unbeaten) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
+          "description": "Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Lockerlink, Gridlink and Unbeaten) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
           "speakable": {
             "@type": "SpeakableSpecification",
             "cssSelector": [
@@ -164,8 +164,8 @@
               {
                 "@type": "ListItem",
                 "position": 21,
-                "name": "Teamlink",
-                "url": "https://purplelink.llc/games/teamlink/"
+                "name": "Lockerlink",
+                "url": "https://purplelink.llc/games/lockerlink/"
               },
               {
                 "@type": "ListItem",
@@ -256,7 +256,7 @@
     <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=68621c7665">
+    <link rel="stylesheet" href="/games/games-ui.css?v=8b8e22380c">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -290,7 +290,7 @@
             <button type="button" class="dock-btn" data-fx-sound aria-pressed="true" aria-label="Sound on. Turn sound off"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sound-on"/></svg><span class="fx-label visually-hidden">Sound on</span></button>
           </div>
         </header>
-        <p class="game-lede">Purplelink&#x27;s daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Teamlink, Gridlink and Unbeaten) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.</p>
+        <p class="game-lede">Purplelink&#x27;s daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Lockerlink, Gridlink and Unbeaten) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.</p>
         <section class="run" aria-labelledby="run-h">
           <div class="run-ring" id="run-ring">
             <svg viewBox="0 0 168 168" aria-hidden="true" focusable="false" id="run-svg"></svg>
@@ -410,9 +410,9 @@
           <h2 id="sports-h">Sports</h2>
           <p class="week-sub">Famous players from every era in the NBA, NFL, MLB and NHL. Link two stars through their teammates, fill a grid, or build a roster and play a perfect season. The sport changes each day. <a href="/games/sports/">More about the sports games</a></p>
           <div class="tiles">
-          <a class="tile" data-game="teamlink" data-g="teamlink" href="/games/teamlink/">
+          <a class="tile" data-game="lockerlink" data-g="lockerlink" href="/games/lockerlink/">
             <span class="tile-art"><svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><path class="a6" d="M44 98C70 52 130 52 156 98"/><g class="mv"><circle class="a5" cx="44" cy="98" r="19"/><circle class="a2" cx="44" cy="98" r="12"/></g><g class="mv"><circle class="a5" cx="156" cy="98" r="19"/><circle class="a2" cx="156" cy="98" r="12"/></g><g class="mv2"><circle class="a5" cx="100" cy="50" r="19"/><circle class="a1" cx="100" cy="50" r="11"/></g></svg><span class="tile-badge"><svg class="gl gl-sm" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#bolt"/></svg>Spotlight</span><span class="tile-check" aria-hidden="true"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#check"/></svg></span></span>
-            <span class="tile-body"><h2>Teamlink</h2><p>Link two players from any era through real teammates.</p>
+            <span class="tile-body"><h2>Lockerlink</h2><p>Link two players from any era through real teammates.</p>
               <span class="tile-foot"><span class="tile-status" data-status>About 4 minutes</span><span class="tile-go" data-go>Play</span></span></span>
           </a>
           <a class="tile" data-game="gridlink" data-g="gridlink" href="/games/gridlink/">
@@ -483,7 +483,7 @@
               <tr><th scope="row"><a href="/games/thinkerlink/">Thinkerlink</a></th><td>Thinkerlink is a free daily game about famous scientists.</td><td>About 3 min</td></tr>
               <tr><th scope="row"><a href="/games/riverlink/">Riverlink</a></th><td>Riverlink is a free daily geography game about rivers.</td><td>About 3 min</td></tr>
               <tr><th scope="row"><a href="/games/wildlink/">Wildlink</a></th><td>Wildlink is a free daily game about animals.</td><td>About 3 min</td></tr>
-              <tr><th scope="row"><a href="/games/teamlink/">Teamlink</a></th><td>Teamlink is a free daily sports puzzle.</td><td>About 4 min</td></tr>
+              <tr><th scope="row"><a href="/games/lockerlink/">Lockerlink</a></th><td>Lockerlink is a free daily sports puzzle.</td><td>About 4 min</td></tr>
               <tr><th scope="row"><a href="/games/gridlink/">Gridlink</a></th><td>Gridlink is a free daily sports grid.</td><td>About 4 min</td></tr>
               <tr><th scope="row"><a href="/games/unbeaten/">Unbeaten</a></th><td>Unbeaten is a free sports team builder.</td><td>About 5 min</td></tr>
             </tbody>
@@ -504,14 +504,14 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=898da4cde9" defer></script>
+    <script src="/games/core.js?v=a7e02d3552" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
     <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
-    <script src="/games/goals.js?v=682620ede1" defer></script>
+    <script src="/games/goals.js?v=e2f44e584b" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
     <script src="/games/dock.js?v=99d59c8de5" defer></script>
-    <script src="/games/ratings.js?v=986c714b0a" defer></script>
+    <script src="/games/ratings.js?v=4b3d7b800e" defer></script>
     <script src="/games/hub.js?v=fd6d7c57bc" defer></script>
     <footer class="footer">
       <div class="footer-grid">

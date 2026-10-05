@@ -1,8 +1,8 @@
-/* Teamlink: join two players, from any era, with a chain of real teammates. Add players at either end of the chain;
+/* Lockerlink: join two players, from any era, with a chain of real teammates. Add players at either end of the chain;
    the chain is solved when the two ends are teammates. Shortest possible chain is "par". */
 (function () {
   "use strict";
-  var G = window.PLGames, S = window.PLSports, NAME = "teamlink";
+  var G = window.PLGames, S = window.PLSports, NAME = "lockerlink";
   var $ = function (id) { return document.getElementById(id); };
   var root = $("sp-root"), FX = window.PLFX;
   var DIFF = { easy: [2], medium: [3], hard: [4, 5, 6] };
@@ -140,7 +140,7 @@
     var sq = "", n = par(), i;
     for (i = 0; i < links(); i++) sq += i < n ? "■" : "▣";
     var tag = mode === "daily" ? "#" + (daily.idx + 1) + " " : mode === "rival" ? "rival challenge " : "practice ";
-    return "Teamlink " + tag + data.name + "\n" + st.a + " to " + st.b + "\n" + (st.won ? sq + " " + links() + " links (par " + par() + ")" : "Gave up (par " + par() + ")") + (st.misses ? ", " + st.misses + " miss" + (st.misses === 1 ? "" : "es") : "") + (st.hints ? ", " + st.hints + " hint" + (st.hints === 1 ? "" : "s") : "") + "\n\n" + root.getAttribute("data-url");
+    return "Lockerlink " + tag + data.name + "\n" + st.a + " to " + st.b + "\n" + (st.won ? sq + " " + links() + " links (par " + par() + ")" : "Gave up (par " + par() + ")") + (st.misses ? ", " + st.misses + " miss" + (st.misses === 1 ? "" : "es") : "") + (st.hints ? ", " + st.hints + " hint" + (st.hints === 1 ? "" : "s") : "") + "\n\n" + root.getAttribute("data-url");
   }
 
   function finish(won) {
@@ -280,12 +280,12 @@
     return location.origin + location.pathname + "?rival=" + code + "&from=share-rival";
   }
   function challenge() {
-    var url = challengeLink(), text = "I linked " + st.a + " to " + st.b + " in " + links() + " links on Teamlink (" + data.name + "). Can you beat that?";
+    var url = challengeLink(), text = "I linked " + st.a + " to " + st.b + " in " + links() + " links on Lockerlink (" + data.name + "). Can you beat that?";
     var sent = S.loadState(NAME + "-sent") || []; sent.push(Date.now()); S.saveState(NAME + "-sent", sent.slice(-100));
     G.track("game_share", NAME + ":rival");
     var note = $("tl-challenge-note");
     if (typeof navigator.share === "function") {
-      navigator.share({ title: "Teamlink challenge", text: text + "\n\n" + url }).then(function () { note.textContent = "Challenge sent."; }, function (e) { if (e && e.name !== "AbortError") copyIt(); });
+      navigator.share({ title: "Lockerlink challenge", text: text + "\n\n" + url }).then(function () { note.textContent = "Challenge sent."; }, function (e) { if (e && e.name !== "AbortError") copyIt(); });
     } else copyIt();
     function copyIt() { G.copyText(text + "\n\n" + url).then(function (ok) { note.textContent = ok ? "Challenge copied. Paste it to a friend." : "Copy failed. Select this link: " + url; }); }
     renderRivals();

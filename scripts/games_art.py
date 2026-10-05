@@ -247,7 +247,7 @@ def wildlink():
     return "".join(out)
 
 
-def teamlink():
+def lockerlink():
     out = [OPEN]
     out.append('<path class="a6" d="M44 98C70 52 130 52 156 98"/>')
     out.append('<g class="mv"><circle class="a5" cx="44" cy="98" r="19"/><circle class="a2" cx="44" cy="98" r="12"/></g>')
@@ -279,7 +279,7 @@ def unbeaten():
     return "".join(out)
 
 
-ART = {"teamlink": teamlink, "gridlink": gridlink, "unbeaten": unbeaten, "thinkerlink": thinkerlink, "riverlink": riverlink, "wildlink": wildlink, "citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
+ART = {"lockerlink": lockerlink, "gridlink": gridlink, "unbeaten": unbeaten, "thinkerlink": thinkerlink, "riverlink": riverlink, "wildlink": wildlink, "citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
        "daily-chess": daily_chess, "sudoku": sudoku, "crossword": crossword, "daily-stars": daily_stars}
 
 

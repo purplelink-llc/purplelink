@@ -69,7 +69,7 @@
   <symbol id="wildlink" viewBox="0 0 24 24" fill="currentColor">
     <ellipse cx="12" cy="16.2" rx="4.6" ry="3.8"/><ellipse cx="5.6" cy="11.2" rx="2" ry="2.6" transform="rotate(-18 5.6 11.2)"/><ellipse cx="9.6" cy="6.4" rx="2" ry="2.8"/><ellipse cx="14.8" cy="6.4" rx="2" ry="2.8"/><ellipse cx="18.6" cy="11.2" rx="2" ry="2.6" transform="rotate(18 18.6 11.2)"/>
   </symbol>
-  <symbol id="teamlink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+  <symbol id="lockerlink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="5.2" cy="17" r="2.6"/><circle cx="18.8" cy="17" r="2.6"/><circle cx="12" cy="6.6" r="2.6"/><path d="M7 15.2l3.4-6.4M17 15.2l-3.4-6.4M7.9 17h8.2"/>
   </symbol>
   <symbol id="gridlink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">

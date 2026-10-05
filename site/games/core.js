@@ -134,7 +134,7 @@
   }
 
   // XP and level are derived from saved progress, so they never drift and need no storage of their own.
-  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink", "teamlink", "gridlink", "unbeaten"];
+  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink", "lockerlink", "gridlink", "unbeaten"];
   // Daily run bonuses: finishing 2, 4 and all 8 puzzles; each quest and the day's spotlight game add 15; a week with
   // five stamped days adds 50. Stored in all.goals = { d: { day: { t: tier, q: bitmask } }, w: { week: 1 }, banked: xp of pruned days }.
   var TIER_XP = [0, 20, 40, 100], QUEST_XP = 15, WEEK_XP = 50;
@@ -169,7 +169,11 @@
   // Progress lives in localStorage only. Any access can throw (private windows, blocked
   // storage), so every call is guarded and the games work without it.
   function load() {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+    var all;
+    try { all = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+    // Lockerlink was launched as Teamlink; carry the saved progress over to the new name
+    if (all.teamlink && !all.lockerlink) { all.lockerlink = all.teamlink; delete all.teamlink; try { localStorage.setItem(STORE_KEY, JSON.stringify(all)); } catch (e) { /* ignore */ } }
+    return all;
   }
   function save(all) {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(all)); } catch (e) { /* ignore */ }

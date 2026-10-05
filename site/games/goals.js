@@ -29,7 +29,7 @@
     { id: "thinkerlink", name: "Thinkerlink", path: "/games/thinkerlink/", min: 3, kind: "guess" },
     { id: "riverlink", name: "Riverlink", path: "/games/riverlink/", min: 3, kind: "guess" },
     { id: "wildlink", name: "Wildlink", path: "/games/wildlink/", min: 3, kind: "guess" },
-    { id: "teamlink", name: "Teamlink", path: "/games/teamlink/", min: 4, kind: "sports" },
+    { id: "lockerlink", name: "Lockerlink", path: "/games/lockerlink/", min: 4, kind: "sports" },
     { id: "gridlink", name: "Gridlink", path: "/games/gridlink/", min: 4, kind: "sports" },
     { id: "unbeaten", name: "Unbeaten", path: "/games/unbeaten/", min: 5, kind: "sports" }
   ];

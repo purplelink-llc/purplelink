@@ -170,6 +170,16 @@
 # would serve the existing file rather than apply this redirect.
 # Backend endpoint names that crawlers lifted from tool JS; send them to the tool pages.
 [[redirects]]
+  from = "/games/teamlink/*"
+  to = "/games/lockerlink/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/games/teamlink"
+  to = "/games/lockerlink/"
+  status = 301
+
+[[redirects]]
   from = "/diff"
   to = "/tools/latex-diff/"
   status = 301

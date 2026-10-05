@@ -297,11 +297,11 @@ GAMES = {
               "Group and diet split the list quickly; habitat then separates ocean animals from land animals.",
               "Weights and lifespans are typical adult values, not records."],
         related=["landlink", "peaklink", "daily-photo"], og_photo="dsc-3940"),
-    "games/teamlink/": dict(
-        slug="teamlink", name="Teamlink", genre="Sports game", minutes=4,
-        title="Teamlink: a free daily sports teammate-chain game",
+    "games/lockerlink/": dict(
+        slug="lockerlink", name="Lockerlink", genre="Sports game", minutes=4,
+        title="Lockerlink: a free daily sports teammate-chain game",
         desc="Link two players from any era through a chain of real teammates, such as LeBron James to Anthony Davis to Cooper Flagg. NBA, NFL, MLB and NHL. Free, new every day.",
-        answer="Teamlink is a free daily sports puzzle. You are given two well-known players, often from different eras, and you build the shortest chain of real teammates between them, for example LeBron James to Anthony Davis to Cooper Flagg. Add a player at either end of the chain. Each new player can be anyone who ever played in the league, but must have shared a team and a season with the player next to him. The sport changes each day across the NBA, NFL, MLB and NHL.",
+        answer="Lockerlink is a free daily sports puzzle. You are given two well-known players, often from different eras, and you build the shortest chain of real teammates between them, for example LeBron James to Anthony Davis to Cooper Flagg. Add a player at either end of the chain. Each new player can be anyone who ever played in the league, but must have shared a team and a season with the player next to him. The sport changes each day across the NBA, NFL, MLB and NHL.",
         features=["A running rating and leaderboards", "Rival mode: challenge a friend to the same pair", "A new pair of players every day", "Every player who ever played, from stars to bench players", "Add players at either end of the chain", "Hints, undo and unlimited practice", "NBA, NFL, MLB and NHL"],
         steps=[("Read the two players", "Each card shows the position, the years played and the teams."),
                ("Name a teammate", "Type a player who shared a team and a season with either end of your chain."),
@@ -324,7 +324,7 @@ GAMES = {
         tips=["Start with the cell that has two teams. Few players fit it, so the answer is easier to pin down.",
               "A player who fits several cells is worth saving for the hardest one.",
               "Decade clues count any season in that decade, so a career that spans two decades fits both."],
-        related=["teamlink", "unbeaten", "landlink"], og_photo="dsc-3940"),
+        related=["lockerlink", "unbeaten", "landlink"], og_photo="dsc-3940"),
     "games/unbeaten/": dict(
         slug="unbeaten", name="Unbeaten", genre="Sports game", minutes=5,
         title="Unbeaten: build a team from any era and play a perfect season",
@@ -338,12 +338,12 @@ GAMES = {
         tips=["A few stars with solid role players usually beats a lineup of mid-priced players.",
               "Old teammates add chemistry, so a pair from the same great team can beat two stronger strangers.",
               "Ratings come mostly from career honors such as All-Star selections, MVPs and titles, and do not adjust for era."],
-        related=["teamlink", "gridlink", "daily-five"], og_photo="dsc-3940"),
+        related=["lockerlink", "gridlink", "daily-five"], og_photo="dsc-3940"),
 }
 
 HUB = dict(
     title="Free daily games: Linkle, Sudoku, crossword, chess and more",
     desc="Free daily puzzles from Purplelink: a word game, a four-board word game, trivia, photo geography, chess, Sudoku, a crossword and a horoscope. New every midnight.",
-    answer="Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Teamlink, Gridlink and Unbeaten) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
+    answer="Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Lockerlink, Gridlink and Unbeaten) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
     og_photo="dsc-3940",
 )

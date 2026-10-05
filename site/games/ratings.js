@@ -23,22 +23,26 @@
     var p = PAR[level];
     return seconds <= p / 2 ? 0.95 : seconds <= p ? 0.8 : seconds <= 2 * p ? 0.6 : 0.5;
   }
-  var SPORTS = ["teamlink", "gridlink", "unbeaten"];
+  var SPORTS = ["lockerlink", "gridlink", "unbeaten"];
   var SPORT_TIERS = [[0, "Rookie"], [900, "Role player"], [1050, "Starter"], [1200, "All-Star"], [1400, "MVP"], [1650, "Hall of Famer"], [1900, "Greatest of all time"]];
   function tierFor(r, game) { var L = game && SPORTS.indexOf(game) >= 0 ? SPORT_TIERS : TIERS, t = L[0][1]; L.forEach(function (x) { if (r >= x[0]) t = x[1]; }); return t; }
 
   // Daily sports games: the same formulas as netlify/lib/ratings.mjs.
-  function teamlinkPuzzleRating(par) { return 900 + 150 * par; }
-  function teamlinkScore(i) { return i.won ? Math.max(0.15, 1 - 0.15 * Math.max(0, i.links - i.par) - 0.05 * Math.min(i.misses, 10) - 0.08 * Math.min(i.hints, 5)) : 0; }
+  function lockerlinkPuzzleRating(par) { return 900 + 150 * par; }
+  function lockerlinkScore(i) { return i.won ? Math.max(0.15, 1 - 0.15 * Math.max(0, i.links - i.par) - 0.05 * Math.min(i.misses, 10) - 0.08 * Math.min(i.hints, 5)) : 0; }
   function unbeatenScore(i) { var share = Math.min(1, Math.max(0, (i.wins / i.games - 0.45) / 0.5)); return Math.min(1, 0.85 * share + (i.champion ? 0.15 : 0)); }
   function sportsRating(game, i) {
-    if (game === "teamlink") return { puzzleRating: teamlinkPuzzleRating(i.par), score: teamlinkScore(i), solved: !!i.won };
+    if (game === "lockerlink") return { puzzleRating: lockerlinkPuzzleRating(i.par), score: lockerlinkScore(i), solved: !!i.won };
     if (game === "gridlink") return { puzzleRating: 1000, score: i.filled / 9, solved: i.filled >= 5 };
     return { puzzleRating: 1100, score: unbeatenScore(i), solved: !!i.champion };
   }
   function empty() { return { r: START, n: 0, w: 0, peak: START, streak: 0, best: 0 }; }
 
-  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function load() {
+    var all; try { all = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+    if (all.teamlink && !all.lockerlink) { all.lockerlink = all.teamlink; delete all.teamlink; try { localStorage.setItem(KEY, JSON.stringify(all)); } catch (e) { /* ignore */ } }   // Lockerlink was launched as Teamlink
+    return all;
+  }
   function save(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* ignore */ } }
   function get(game) { var all = load(); return Object.assign(empty(), all[game] || {}); }
   function put(game, rec) { var all = load(); all[game] = rec; save(all); }

@@ -93,7 +93,11 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
   const boards = () => getStore("games-lb");
   const weekNow = () => weekOf(dayIndexUTC(new Date(now())));
 
-  async function loadRatings(acct) { return (await ratings().get(`r:${acct}`, { type: "json" })) || {}; }
+  async function loadRatings(acct) {
+    const recs = (await ratings().get(`r:${acct}`, { type: "json" })) || {};
+    if (recs.teamlink && !recs.lockerlink) { recs.lockerlink = recs.teamlink; delete recs.teamlink; }       // Lockerlink was launched as Teamlink
+    return recs;
+  }
 
   // Keep one account's rows on the public boards in step with its ratings, name and opt-in.
   async function syncBoards(acct, account, recs) {
@@ -228,8 +232,9 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       if (!account) return json(401, { error: "not_signed_in" }, origin);
 
       if (action === "sync") {
-        const incoming = cleanData(b.data);
-        const merged = mergeData(account.data || {}, incoming);
+        const legacy = (o) => { if (o && o.teamlink && !o.lockerlink) { o.lockerlink = o.teamlink; delete o.teamlink; } return o; };   // Lockerlink was launched as Teamlink
+        const incoming = cleanData(legacy(b.data));
+        const merged = mergeData(legacy(account.data || {}), incoming);
         if (JSON.stringify(merged).length > MAX_DATA_BYTES) return json(413, { error: "too_large" }, origin);
         account.data = merged;
         account.updated = now();
@@ -254,7 +259,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       }
       if (action === "ratings") {
         const recs = await loadRatings(sess.acct);
-        return json(200, { chess: recs.chess || null, sudoku: recs.sudoku || null, teamlink: recs.teamlink || null, gridlink: recs.gridlink || null, unbeaten: recs.unbeaten || null, public: !!account.public, name: account.name || "" }, origin);
+        return json(200, { chess: recs.chess || null, sudoku: recs.sudoku || null, lockerlink: recs.lockerlink || null, gridlink: recs.gridlink || null, unbeaten: recs.unbeaten || null, public: !!account.public, name: account.name || "" }, origin);
       }
       if (action === "rating_report") {
         const game = String(b.game || "");

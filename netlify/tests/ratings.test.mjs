@@ -159,7 +159,7 @@ test("daily sports results: rated once a day, checked, and on the leaderboard", 
   const days = (await import("../lib/sports-days.json", { with: { type: "json" } })).default;
   const idx = 10, sport = days.rotation[idx % days.rotation.length], par = days[sport].par[Math.floor(idx / days.rotation.length)];
   const s = await signIn("sp@example.com");
-  const base = { action: "rating_report", game: "teamlink", id: "d" + idx, idx, sport };
+  const base = { action: "rating_report", game: "lockerlink", id: "d" + idx, idx, sport };
   assert.equal((await call({ ...base, won: true, links: par, misses: 0, hints: 0, ms: 60000 }, s)).status, 200);
   const again = await call({ ...base, won: true, links: par, misses: 0, hints: 0, ms: 60000 }, s);
   assert.equal(again.body.repeat, true);                                            // one rated result per day
@@ -193,7 +193,7 @@ test("daily sports results: rated once a day, checked, and on the leaderboard", 
   const lb = (await call({ action: "leaderboard", game: "gridlink", board: "all" })).body.rows;
   assert.equal(lb.length, 1); assert.equal(lb[0].name, "Sky");
   const mine = (await call({ action: "ratings" }, fresh)).body;
-  assert.equal(mine.gridlink.n, 1); assert.equal(mine.unbeaten.n, 1); assert.equal(mine.teamlink, null);
+  assert.equal(mine.gridlink.n, 1); assert.equal(mine.unbeaten.n, 1); assert.equal(mine.lockerlink, null);
 });
 
 test("the browser copy of the sports formulas matches the service", async () => {
@@ -202,8 +202,8 @@ test("the browser copy of the sports formulas matches the service", async () => 
   vm.runInThisContext("(function (module) {" + readFileSync("site/games/ratings.js", "utf8") + "\n})")(mod);
   const C = mod.exports, M = await import("../lib/ratings.mjs");
   for (const par of [2, 3, 6]) for (const links of [par, par + 2]) for (const misses of [0, 4, 30]) for (const hints of [0, 2, 9]) for (const won of [true, false]) {
-    assert.equal(C.sportsRating("teamlink", { par, links, misses, hints, won }).score, M.teamlinkScore({ won, par, links, misses, hints }));
-    assert.equal(C.sportsRating("teamlink", { par, links, misses, hints, won }).puzzleRating, M.teamlinkPuzzleRating(par));
+    assert.equal(C.sportsRating("lockerlink", { par, links, misses, hints, won }).score, M.lockerlinkScore({ won, par, links, misses, hints }));
+    assert.equal(C.sportsRating("lockerlink", { par, links, misses, hints, won }).puzzleRating, M.lockerlinkPuzzleRating(par));
   }
   for (const wins of [0, 40, 60, 82]) for (const champion of [true, false]) assert.equal(C.sportsRating("unbeaten", { wins, games: 82, champion }).score, M.unbeatenScore({ wins, games: 82, champion }));
   for (const filled of [0, 5, 9]) assert.equal(C.sportsRating("gridlink", { filled }).score, M.gridlinkScore({ filled }));

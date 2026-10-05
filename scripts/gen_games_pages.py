@@ -147,7 +147,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
 
 EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
 MORE_DAILY = ["landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"]
-SPORTS_GAMES = ["teamlink", "gridlink", "unbeaten"]
+SPORTS_GAMES = ["lockerlink", "gridlink", "unbeaten"]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
@@ -168,14 +168,14 @@ TAGLINE = {
     "codelink": "Guess the programming language from its design.",
     "atomlink": "Guess the element from its place on the periodic table.",
     "prizelink": "Guess the Nobel laureate from prize, year and birthplace.",
-    "teamlink": "Link two players from any era through real teammates.",
+    "lockerlink": "Link two players from any era through real teammates.",
     "gridlink": "Fill a 3 by 3 grid of teams, decades, awards and teammates.",
     "unbeaten": "Build a roster from any era and play a perfect season.",
     "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
     "leaderboard": "The top ratings in chess, Sudoku and the sports games, and this week's climbers.",
 }
-MINUTES = {"teamlink": 4, "gridlink": 4, "unbeaten": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"lockerlink": 4, "gridlink": 4, "unbeaten": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
@@ -1033,7 +1033,7 @@ page("games/sudoku-unlimited/", "", "", SU_BODY,
 LB_FAQ = [
     ("Who appears on the leaderboards?", "Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed."),
     ("What is the weekly board?", "It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday."),
-    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Teamlink and Gridlink results are checked for plausibility rather than replayed (Unbeaten seasons are replayed on the server from your roster), so treat the boards as friendly competition."),
+    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Lockerlink and Gridlink results are checked for plausibility rather than replayed (Unbeaten seasons are replayed on the server from your roster), so treat the boards as friendly competition."),
     ("How do I join?", "Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
 ]
 LB_BODY = """      <div class="games-wrap">
@@ -1041,11 +1041,11 @@ LB_BODY = """      <div class="games-wrap">
           <h1>Leaderboards</h1>
           <span class="game-num" id="lb-week"></span>
         </div>
-        <p class="game-lede">The Purplelink leaderboards list the highest ratings in Chess Puzzles, Sudoku Unlimited and the three daily sports games (Teamlink, Gridlink and Unbeaten), plus the biggest rating gains this week.</p>
+        <p class="game-lede">The Purplelink leaderboards list the highest ratings in Chess Puzzles, Sudoku Unlimited and the three daily sports games (Lockerlink, Gridlink and Unbeaten), plus the biggest rating gains this week.</p>
         <div class="lb-tabs" role="group" aria-label="Choose a board">
           <button type="button" class="lb-tab" data-game="chess" aria-pressed="true">Chess Puzzles</button>
           <button type="button" class="lb-tab" data-game="sudoku" aria-pressed="false">Sudoku Unlimited</button>
-          <button type="button" class="lb-tab" data-game="teamlink" aria-pressed="false">Teamlink</button>
+          <button type="button" class="lb-tab" data-game="lockerlink" aria-pressed="false">Lockerlink</button>
           <button type="button" class="lb-tab" data-game="gridlink" aria-pressed="false">Gridlink</button>
           <button type="button" class="lb-tab" data-game="unbeaten" aria-pressed="false">Unbeaten</button>
           <span class="lb-gap"></span>
@@ -1062,7 +1062,7 @@ LB_BODY = """      <div class="games-wrap">
         </div>
         <div class="games-prose">
           <h2>How the boards work</h2>
-          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Teamlink, Gridlink and Unbeaten update once a day, from your first result on that day\'s puzzle: a harder Teamlink chain counts for more, Gridlink counts the cells you filled, and Unbeaten counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
+          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Unbeaten update once a day, from your first result on that day\'s puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Unbeaten counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
           <h2>Questions</h2>
 """ + faq_html(LB_FAQ) + """
         </div>
@@ -1373,9 +1373,9 @@ TL_RESULT = """            <p class="game-pct" id="sp-star"></p>
               <button type="button" class="gbtn" id="tl-challenge" hidden>Challenge a friend</button>
               <span class="game-note" id="tl-challenge-note"></span>
             </div>"""
-sports_page("teamlink", "Teamlink", "Link two players from any era through the teammates they shared.", TL_BOARD,
+sports_page("lockerlink", "Lockerlink", "Link two players from any era through the teammates they shared.", TL_BOARD,
             TL_RESULT, TL_PROSE, TL_FAQ,
-            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/teamlink.js"], diff=True,
+            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/lockerlink.js"], diff=True,
             extra_modes='          <button type="button" class="sp-mode" id="sp-mode-rival" aria-pressed="false" hidden>Rival</button>\n',
             under_lede='        <p class="wg-twist" id="tl-rival-banner" hidden></p>',
             extra_links=' &middot; Shortest chains between legends: <a href="/games/sports/nba-teammate-chains/">NBA</a>, <a href="/games/sports/nfl-teammate-chains/">NFL</a>, <a href="/games/sports/mlb-teammate-chains/">MLB</a>, <a href="/games/sports/nhl-teammate-chains/">NHL</a>')
@@ -1501,12 +1501,12 @@ def degree_page(sp, d):
         (f"How many degrees of separation are there between {name} stars?", f"Among the {d['stars']} biggest {name} stars in our database, two players are on average {d['avg']} links apart through chains of teammates, and the longest shortest chain is {d['max']} links. Counting every pair: {dist}."),
         ("What counts as a link?", "Two players are linked if they played for the same franchise in the same season. A team that moved or changed its name is one franchise."),
         ("Is there always a shorter chain?", f"These are the shortest chains in our database of {d['players']:,} {name} players from {d['first']} to 2025. The database is not complete: some defunct clubs and some players are missing, so a shorter real chain can exist."),
-        ("Can I try one myself?", "Yes. Teamlink gives you two players every day and asks you to build the shortest chain. It rotates through the NBA, NFL, MLB and NHL, and practice mode lets you pick the sport and the difficulty."),
+        ("Can I try one myself?", "Yes. Lockerlink gives you two players every day and asks you to build the shortest chain. It rotates through the NBA, NFL, MLB and NHL, and practice mode lets you pick the sport and the difficulty."),
     ]
     body = f"""      <div class="games-wrap">
         <div class="game-head"><h1>How are {name} stars connected?</h1></div>
         <p class="game-lede">Two players are linked if they were teammates in the same season. These are the shortest chains between {name} legends from different eras, worked out over {d['players']:,} {game} players from {d['first']} to 2025.</p>
-        <p class="games-note"><a class="gbtn" href="/games/teamlink/">Play today's Teamlink</a> <a href="/games/sports/">All sports games</a></p>
+        <p class="games-note"><a class="gbtn" href="/games/lockerlink/">Play today's Lockerlink</a> <a href="/games/sports/">All sports games</a></p>
         <div class="games-prose">
           <h2>The numbers</h2>
           <p>Among the {d['stars']} biggest stars in our {name} data, any two are on average {d['avg']} links apart, and no pair is more than {d['max']} apart. The average hides a lot: stars who played for several teams and stayed long are the bridges, so the longest chains run between players from the very start of the league and the newest stars.</p>
@@ -1515,7 +1515,7 @@ def degree_page(sp, d):
 {items}          </ul>
           <h2>Questions</h2>
 {faq_html(faq_)}
-          <p class="quiz-credit">Rosters and seasons come from public sources, mostly Wikipedia, nflverse and the Lahman Baseball Database, matched and merged by us; the credits are on the <a href="/games/teamlink/">Teamlink</a> page.</p>
+          <p class="quiz-credit">Rosters and seasons come from public sources, mostly Wikipedia, nflverse and the Lahman Baseball Database, matched and merged by us; the credits are on the <a href="/games/lockerlink/">Lockerlink</a> page.</p>
         </div>
       </div>"""
     page(f"games/sports/{sp}-teammate-chains/", title, desc, body,
@@ -1527,10 +1527,10 @@ for _sp, _d in DEGREE_PAGES.items():
     degree_page(_sp, _d)
 
 SPORTS_FAQ = [
-    ("What are the Purplelink sports games?", "Three free daily puzzles about the NBA, NFL, MLB and NHL: Teamlink (link two players through a chain of real teammates), Gridlink (fill a 3 by 3 grid of teams, decades, awards and teammates) and Unbeaten (build a roster under a budget and play a full season). The sport changes every day."),
-    ("Which players are in them?", "Every player who ever appeared in the four leagues is available in Teamlink, about 61,000 in all. Gridlink and Unbeaten use a curated list of well-known stars. The players you are asked to link are always stars."),
+    ("What are the Purplelink sports games?", "Three free daily puzzles about the NBA, NFL, MLB and NHL: Lockerlink (link two players through a chain of real teammates), Gridlink (fill a 3 by 3 grid of teams, decades, awards and teammates) and Unbeaten (build a roster under a budget and play a full season). The sport changes every day."),
+    ("Which players are in them?", "Every player who ever appeared in the four leagues is available in Lockerlink, about 61,000 in all. Gridlink and Unbeaten use a curated list of well-known stars. The players you are asked to link are always stars."),
     ("Are they free? Do I need an account?", "They are free, with no third-party ads on the daily games, and you do not need an account. An optional email sign-in keeps your streaks and ratings across devices and lets you join the leaderboards."),
-    ("How are they different from other sports puzzle games?", "Teamlink lets you add players at either end of the chain and measures par over every player in the league, back to 1920 in the NFL and 1871 in MLB. Gridlink has award clues and a clue that asks for a teammate of a named star. Unbeaten gives you a budget and an open choice of any player from any era instead of a random spin, and shows the best roster for each day's rule afterwards."),
+    ("How are they different from other sports puzzle games?", "Lockerlink lets you add players at either end of the chain and measures par over every player in the league, back to 1920 in the NFL and 1871 in MLB. Gridlink has award clues and a clue that asks for a teammate of a named star. Unbeaten gives you a budget and an open choice of any player from any era instead of a random spin, and shows the best roster for each day's rule afterwards."),
     ("Is there a rating?", "Yes. Each game keeps a running Elo rating, updated once a day, with all-time and weekly leaderboards for players who opt in."),
     ("Where do the player histories come from?", "Public sources: the Lahman Baseball Database for MLB, nflverse for the NFL, and Wikipedia for the NBA and NHL, matched and merged by us. The credits are on the game pages. The data is not complete, and the pages say where the gaps are."),
 ]
@@ -1541,12 +1541,12 @@ SP_HUB_BODY = """      <div class="games-wrap hub">
 """ + "".join(tile(sl) for sl in SPORTS_GAMES) + """        </div>
         <div class="games-prose">
           <h2>How are the stars connected?</h2>
-          <p>Every Teamlink puzzle has a shortest chain of teammates, and the stars of different eras are closer than you would think. These pages list the shortest chains between legends from different decades.</p>
+          <p>Every Lockerlink puzzle has a shortest chain of teammates, and the stars of different eras are closer than you would think. These pages list the shortest chains between legends from different decades.</p>
           <ul class="games-related">
 """ + "".join(f'            <li><a href="/games/sports/{sp}-teammate-chains/"><strong>{SPORT_FULL[sp][0]} teammate chains</strong></a>: {DEGREE_PAGES[sp]["rows"][0]["a"]} to {DEGREE_PAGES[sp]["rows"][0]["b"]} in {DEGREE_PAGES[sp]["rows"][0]["links"]} links, and 23 more.</li>\n' for sp in DEGREE_PAGES) + """          </ul>
           <h2>What is in each game</h2>
           <ul>
-            <li><strong>Teamlink</strong>: add players at either end of the chain until the two ends are teammates. Par is the shortest possible chain. Hints, undo, a Rival mode to challenge a friend, and a weekly recap of the shortest chains.</li>
+            <li><strong>Lockerlink</strong>: add players at either end of the chain until the two ends are teammates. Par is the shortest possible chain. Hints, undo, a Rival mode to challenge a friend, and a weekly recap of the shortest chains.</li>
             <li><strong>Gridlink</strong>: nine cells, nine guesses. Clues are teams, decades, positions, awards and "played with" a named star. Rarer players score more.</li>
             <li><strong>Unbeaten</strong>: a budget, a rule that changes each weekday, and any player from any era. The rating of each player comes from career honors. A weekly recap shows the best roster for each rule.</li>
           </ul>
