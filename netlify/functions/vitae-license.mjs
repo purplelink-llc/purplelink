@@ -71,7 +71,7 @@ const STRIPE_API = "https://api.stripe.com/v1";
 const PAYLOAD_PRODUCT = "vitae-plus";
 const PRODUCT_PREFIX = "vitae-plus-";
 const MAPPING_STORE = "vitae-plus";
-// The Mac Suite bundle ($39: ModernTex, Outbound Veil, Vitae Plus for life) carries a Vitae Plus
+// The Mac Suite bundle ($49: ModernTex, Outbound Veil, Legroom, Vitae Plus for life) carries a Vitae Plus
 // entitlement with no subscription behind it. Its key is the same v2 format with plan "lifetime"
 // and an expiry 100 years out, so the shipped app verifies it as is and never asks to refresh it
 // (it refreshes only inside the last 10 days). The id comes from the Checkout session id.

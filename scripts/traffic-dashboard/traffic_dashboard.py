@@ -131,6 +131,7 @@ SITES = [
                         ("moderntexReleaseSignups", "ModernTex release-notes signups"),
                         ("trialDownloads", "trial downloads"),
                         ("ovTrialDownloads", "Outbound Veil trial downloads"),
+                        ("lgTrialDownloads", "Legroom trial downloads"),
                         ("vitaeDownloads", "Vitae downloads"),
                         ("checkoutClicks", "checkout clicks")],
         # Paths that actually show a buy button. The useful denominator for a
@@ -163,6 +164,8 @@ SITES = [
             "/moderntex/",
             # Outbound Veil: buy button (pr-checkout-btn, data-product="outbound-veil"), added 2026-10-04.
             "/outbound-veil/",
+            # Legroom: buy button (pr-checkout-btn, data-product="legroom").
+            "/legroom/",
         ),
         # Waitlists are Netlify Forms, so they never reach the analytics beacon.
         # Without this they read as zero while people are actually signing up.

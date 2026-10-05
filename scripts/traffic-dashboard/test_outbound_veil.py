@@ -31,6 +31,12 @@ def test_checkout_rate_denominator_counts_its_page():
     assert "ovTrialDownloads" in [k for k, _ in purplelink["secondaries"]]
 
 
+def test_legroom_page_and_trial_downloads_are_tracked():
+    purplelink = next(s for s in td.SITES if s["key"] == "purplelink")
+    assert "/legroom/" in purplelink["product_paths"]
+    assert "lgTrialDownloads" in [k for k, _ in purplelink["secondaries"]]
+
+
 def test_legroom_is_its_own_line_under_either_name():
     assert td.product_group(_row("legroom", 900, 871)) == "Legroom"
     assert td.product_group(_row("freeboard", 900, 871)) == "Legroom"

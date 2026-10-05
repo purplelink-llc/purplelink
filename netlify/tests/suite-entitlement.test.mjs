@@ -1,4 +1,4 @@
-// A Mac Suite session unlocks the ModernTex and Outbound Veil purchase downloads, and
+// A Mac Suite session unlocks the ModernTex, Outbound Veil and Legroom purchase downloads, and
 // nothing else does. Stripe and Netlify Blobs are stubbed.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/suite-entitlement.test.mjs
@@ -21,12 +21,14 @@ globalThis.Netlify = { env: { get: (k) => (k === "STRIPE_SECRET_KEY" ? "sk_test_
 
 const mtx = (await import("../functions/moderntex-download.mjs")).default;
 const ov = (await import("../functions/outbound-veil-download.mjs")).default;
+const lg = (await import("../functions/legroom-download.mjs")).default;
 
 let session;
 beforeEach(() => {
   stores.clear();
   stores.set("moderntex-files/ModernTex-1.3.0.dmg", "x");
   stores.set("outbound-veil-files/OutboundVeil-1.0.0.dmg", "x");
+  stores.set("legroom-files/Legroom-1.0.0.dmg", "x");
   session = { id: "cs_live_abcdefghij1234", payment_status: "paid", metadata: { product: "app-suite" } };
   globalThis.fetch = async (url) => {
     if (String(url).startsWith("https://api.stripe.com/v1/checkout/sessions/")) return new Response(JSON.stringify(session), { status: 200 });
@@ -40,6 +42,7 @@ const call = (fn, fnName, query) =>
 for (const [label, fn, fnName, file] of [
   ["ModernTex", mtx, "moderntex-download", "ModernTex-1.3.0.dmg"],
   ["Outbound Veil", ov, "outbound-veil-download", "OutboundVeil-1.0.0.dmg"],
+  ["Legroom", lg, "legroom-download", "Legroom-1.0.0.dmg"],
 ]) {
   test(`${label}: a paid Mac Suite session lists and downloads the app`, async () => {
     const list = await call(fn, fnName, "session_id=cs_live_abcdefghij1234");
@@ -50,7 +53,7 @@ for (const [label, fn, fnName, file] of [
   });
 
   test(`${label}: its own product session still works`, async () => {
-    session.metadata.product = label === "ModernTex" ? "moderntex" : "outbound-veil";
+    session.metadata.product = { ModernTex: "moderntex", "Outbound Veil": "outbound-veil", Legroom: "legroom" }[label];
     assert.equal((await call(fn, fnName, "session_id=cs_live_abcdefghij1234")).status, 200);
   });
 
@@ -65,9 +68,13 @@ for (const [label, fn, fnName, file] of [
   });
 }
 
-test("each app's own purchase does not unlock the other app", async () => {
-  session.metadata.product = "moderntex";
-  assert.equal((await call(ov, "outbound-veil-download", "session_id=cs_live_abcdefghij1234")).status, 403);
-  session.metadata.product = "outbound-veil";
-  assert.equal((await call(mtx, "moderntex-download", "session_id=cs_live_abcdefghij1234")).status, 403);
+test("each app's own purchase does not unlock the other apps", async () => {
+  const doors = [[mtx, "moderntex-download", "moderntex"], [ov, "outbound-veil-download", "outbound-veil"], [lg, "legroom-download", "legroom"]];
+  for (const [, , bought] of doors) {
+    session.metadata.product = bought;
+    for (const [fn, fnName, product] of doors) {
+      const status = (await call(fn, fnName, "session_id=cs_live_abcdefghij1234")).status;
+      assert.equal(status, product === bought ? 200 : 403, `${bought} session at ${fnName}`);
+    }
+  }
 });

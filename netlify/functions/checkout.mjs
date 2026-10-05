@@ -101,11 +101,14 @@ const PRODUCT_CATALOG = {
   // Outbound Veil for macOS: one-time. Delivery is the session-gated DMG from the
   // outbound-veil-files Blobs store; see outbound-veil-download.mjs.
   "outbound-veil":           { envKey: "STRIPE_PRICE_OUTBOUND_VEIL",           successPath: "/outbound-veil/success/" },
-  // Purplelink Mac Suite: ModernTex + Outbound Veil + Vitae Plus for life, $39 one-time.
-  // Priced inline (no Stripe Price to create). One session unlocks all three: the
-  // ModernTex and Outbound Veil download functions accept it, and vitae-license.mjs
-  // signs a 100-year Vitae Plus key from it. See docs/products/app-suite.md.
-  "app-suite":               { amount: 3900, name: "Purplelink Mac Suite: ModernTex, Outbound Veil and Vitae Plus for life", successPath: "/suite/success/" },
+  // Legroom for macOS: $9 one-time. Delivery is the session-gated DMG from the
+  // legroom-files Blobs store; see legroom-download.mjs.
+  "legroom":                 { envKey: "STRIPE_PRICE_LEGROOM",                 successPath: "/legroom/success/" },
+  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Vitae Plus for life, $49 one-time
+  // (was $39 before Legroom joined). Priced inline (no Stripe Price to create). One session
+  // unlocks all four: the ModernTex, Outbound Veil and Legroom download functions accept it, and
+  // vitae-license.mjs signs a 100-year Vitae Plus key from it. See docs/products/app-suite.md.
+  "app-suite":               { amount: 4900, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom and Vitae Plus for life", successPath: "/suite/success/" },
   // Vitae Plus: optional subscription for the free Vitae app ($3/month or
   // $24/year, 7-day trial). The success page asks vitae-license.mjs for a
   // signed key; the app refreshes it from the same function about monthly.
