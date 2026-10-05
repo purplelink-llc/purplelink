@@ -1,0 +1,7 @@
+stream.env
+out*
+__pycache__
+.pytest_cache
+*.mp4
+*.wav
+*.mp3

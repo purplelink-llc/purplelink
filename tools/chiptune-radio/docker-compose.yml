@@ -1,0 +1,9 @@
+services:
+  radio:
+    build: .
+    restart: always
+    env_file: stream.env          # one line: STREAM_URL=rtmp://a.rtmp.youtube.com/live2/<key>   (chmod 600, never committed)
+    mem_limit: 2g
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}

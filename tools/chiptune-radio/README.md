@@ -42,3 +42,11 @@ Nothing here posts anywhere on its own. To start a real stream:
 ## Not built
 
 A viewer chat, track requests, a second scene, sound effects from the rain, and a hook that tells the dashboard how many people are watching.
+
+## Running it off the Mac (VPS)
+
+The stream needs about one CPU core (ffmpeg at about 80% plus short render bursts) and under 1.5 GB of memory, so a 2 vCPU, 4 GB VPS
+is enough (Hetzner CX22 or CAX11, about 4 to 5 euro a month; any 2 vCPU Linux host works). `Dockerfile` and `docker-compose.yml` run it with
+`restart: always`, so Docker brings it back after a crash or a reboot. `ops/vps-setup.sh` has the one-time steps. The RTMP URL with the key
+goes in `stream.env` on the server only (git-ignored, chmod 600). Only one machine may stream to a key at a time: stop the Mac agent first
+(`launchctl bootout gui/$(id -u)/com.purplelink.chiptune-radio`) before starting the server.
