@@ -176,8 +176,16 @@
     if (stats && stats.played === 1) t += " Right now your streak is kept in this browser only, so anything played in another browser or app is not included.";
     return t;
   }
+  // Once this browser has been signed in, or the player has asked for a link, we know their email: leave them alone from then on.
+  var KNOWN_KEY = "pl-games-known";
+  function markKnown(on) {
+    try { if (on === false) localStorage.removeItem(KNOWN_KEY); else localStorage.setItem(KNOWN_KEY, "1"); } catch (e) { /* ignore */ }
+  }
   function offerQuiet() {
-    try { var t = Number(localStorage.getItem(OFFER_KEY)); return !!t && Date.now() - t < OFFER_QUIET_MS; } catch (e) { return false; }
+    try {
+      if (localStorage.getItem(KNOWN_KEY)) return true;
+      var t = Number(localStorage.getItem(OFFER_KEY)); return !!t && Date.now() - t < OFFER_QUIET_MS;
+    } catch (e) { return false; }
   }
   function offerSignedIn() {
     try { return !!(window.PLGames && window.PLGames.session && window.PLGames.session.get()); } catch (e) { return false; }
@@ -206,7 +214,7 @@
       if (!api) { status.textContent = "Sign-in is not available right now. Try the Account page."; return; }
       send.disabled = true; status.textContent = "Sending.";
       api({ action: "login_request", email: input.value.trim() }).then(function (res) {
-        if (res.status === 200) { status.textContent = "Check your email and open the link on this device. You will stay signed in here, and you can sign in on any other device the same way."; form.hidden = true; }
+        if (res.status === 200) { markKnown(true); status.textContent = "Check your email and open the link on this device. You will stay signed in here, and you can sign in on any other device the same way."; form.hidden = true; }
         else if (res.status === 429) status.textContent = "Too many requests for that address today. Try again tomorrow.";
         else if (res.status === 400) status.textContent = "That does not look like an email address.";
         else status.textContent = "The email could not be sent. Try again in a moment.";
@@ -369,7 +377,7 @@
   return {
     dayIndex: dayIndex, pick: pick, decode: decode, decodeText: decodeText, score: score, mergeKeys: mergeKeys,
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
-    rankFor: rankFor, xpOf: xpOf, goalXp: goalXp, titleFor: titleFor, TIER_XP: TIER_XP, QUEST_XP: QUEST_XP, WEEK_XP: WEEK_XP, saverNote: saverNote, paintNote: paintNote, offerText: offerText, histSet: histSet, histGet: histGet, noteScore: noteScore, vid: vid, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
+    rankFor: rankFor, xpOf: xpOf, goalXp: goalXp, titleFor: titleFor, TIER_XP: TIER_XP, QUEST_XP: QUEST_XP, WEEK_XP: WEEK_XP, saverNote: saverNote, paintNote: paintNote, offerText: offerText, histSet: histSet, histGet: histGet, noteScore: noteScore, vid: vid, markKnown: markKnown, offerQuiet: offerQuiet, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
     getGame: getGame, setGame: setGame, all: load, replaceAll: replaceAll, ready: Promise.resolve(),
     submitScore: submitScore, describePercentile: describePercentile, savedPercentile: savedPercentile, track: track, copyText: copyText,
   };

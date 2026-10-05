@@ -43,7 +43,7 @@ const FROM_ADDRESS = "Purplelink LLC <orders@purplelink.llc>";
 const REPLY_TO = "ben@purplelink.llc";
 const EMAIL_PATTERN = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
 const LOGIN_TTL_MS = 15 * 60 * 1000;
-const SESSION_TTL_MS = 90 * 24 * 60 * 60 * 1000;
+const SESSION_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 const SESSION_RENEW_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_SESSIONS = 8;
 const PER_EMAIL_DAILY = 5;
@@ -91,7 +91,10 @@ async function sendLoginEmail(to, link, env, fetchFn) {
 
 const RATED = ["chess", "sudoku", ...SPORTS_GAMES];
 
-export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), now = () => Date.now(), chessIndex = CHESS_INDEX, sportsDays = SPORTS_DAYS, sportsPool = SPORTS_POOL }) {
+export function createHandler({ getStore: rawGetStore, env, fetchFn = (...a) => fetch(...a), now = () => Date.now(), chessIndex = CHESS_INDEX, sportsDays = SPORTS_DAYS, sportsPool = SPORTS_POOL }) {
+  // Strong consistency everywhere: Netlify Blobs reads are otherwise allowed to be stale for up to a minute, and a session
+  // created at sign-in could read back as missing on the very next request, which signed the player straight back out.
+  const getStore = (name) => rawGetStore({ name, consistency: "strong" });
   const accounts = () => getStore("games-accounts");
   const auth = () => getStore("games-auth");
   const scores = () => getStore("games-scores");

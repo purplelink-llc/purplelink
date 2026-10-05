@@ -89,7 +89,7 @@
       if (res.status !== 200) { msg("That sign-in link has expired or was already used. Request a new one below."); return; }
       G.session.set({ session: res.body.session, email: res.body.email, name: res.body.name || "" });
       if (res.body.isNew && window.plTrack) window.plTrack("games_signup", window.plFirstTouch ? window.plFirstTouch() : "direct");
-      return G.sync().then(function () { msg("Signed in. Your progress is now saved to your account."); });
+      return G.sync().then(function () { msg("Signed in. You stay signed in on this browser, and your progress is saved to your account. If you also play in another browser or app, ask for a link there once too."); });
     }).catch(function () { msg("Could not reach the server. Try again in a moment."); });
   }
 
@@ -99,7 +99,7 @@
       var email = $("ac-email").value.trim();
       $("ac-send").disabled = true;
       G.api({ action: "login_request", email: email }).then(function (res) {
-        if (res.status === 200) msg("Check your email for a sign-in link. It works once and expires in 15 minutes.");
+        if (res.status === 200) { if (G.markKnown) G.markKnown(true); msg("Check your email for a sign-in link. It works once and expires in 15 minutes."); }
         else if (res.status === 429) msg("Too many requests for that address today. Try again tomorrow.");
         else if (res.status === 400) msg("That does not look like an email address.");
         else msg("The email could not be sent. Try again in a moment.");
@@ -138,7 +138,7 @@
     $("ac-logout").addEventListener("click", function () {
       var s = G.session.get();
       (s ? G.api({ action: "logout" }, s.session) : Promise.resolve()).catch(function () {}).then(function () {
-        G.session.set(null); msg("Signed out. Progress stays in this browser."); renderAccount();
+        G.session.set(null); if (G.markKnown) G.markKnown(false); msg("Signed out. Progress stays in this browser."); renderAccount();
       });
     });
     var armed = false;

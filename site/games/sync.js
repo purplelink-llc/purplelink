@@ -8,7 +8,7 @@
 
   function getSession() { try { return JSON.parse(localStorage.getItem(SKEY)); } catch (e) { return null; } }
   function setSession(s) {
-    try { if (s) localStorage.setItem(SKEY, JSON.stringify(s)); else localStorage.removeItem(SKEY); } catch (e) { /* ignore */ }
+    try { if (s) { if (!s.at) s.at = Date.now(); localStorage.setItem(SKEY, JSON.stringify(s)); if (G.markKnown) G.markKnown(true); } else localStorage.removeItem(SKEY); } catch (e) { /* ignore */ }
   }
   function api(body, session) {
     var headers = { "Content-Type": "application/json" };
@@ -19,6 +19,7 @@
   }
   G.api = api;
   G.session = { get: getSession, set: setSession };
+  if (getSession() && G.markKnown) G.markKnown(true);          // already signed in: never ask this browser again
 
   // Send what this device has, adopt the merged result. If the player moved on while the request was in
   // flight, keep their newer local copy and let the next push carry it.
@@ -34,8 +35,17 @@
     var s = getSession();
     if (!s) return Promise.resolve(null);
     var snapshot = JSON.stringify(G.all());
-    return api({ action: "sync", data: G.all() }, s.session).then(function (res) {
-      if (res.status === 401) { setSession(null); return null; }
+    // A 401 right after sign-in, or a single one at any time, is not proof the session is gone (a stale read on the
+    // server looks the same). Only a second 401 two seconds later, on a session older than two minutes, signs the player out.
+    var send = function () { return api({ action: "sync", data: G.all() }, s.session); };
+    return send().then(function (res) {
+      if (res.status !== 401) return res;
+      return new Promise(function (r) { window.setTimeout(r, 2000); }).then(send).then(function (again) {
+        if (again.status === 401) { if (Date.now() - (s.at || 0) > 120000) setSession(null); return null; }
+        return again;
+      });
+    }).then(function (res) {
+      if (!res) return null;
       if (res.status === 200) {
         if (JSON.stringify(G.all()) === snapshot) G.replaceAll(res.body.data);
         if (res.body.name !== s.name || !!res.body.remind !== !!s.remind) { s.name = res.body.name; s.remind = !!res.body.remind; setSession(s); }

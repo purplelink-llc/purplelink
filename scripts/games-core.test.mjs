@@ -225,3 +225,18 @@ test("the browser's day-by-day history code matches the server's", async () => {
   assert.equal(G.histSet(null, 3.5, 3), null);
   assert.deepEqual(G.histSet({ s: 5, c: "03" }, 5, 7), { s: 5, c: "03" });   // an existing day is never overwritten
 });
+
+test("a browser that has signed in, or asked for a link, is never offered the sign-in prompt again", () => {
+  const store = {};
+  globalThis.localStorage = { getItem: (k) => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: (k) => { delete store[k]; } };
+  assert.equal(G.offerQuiet(), false);                  // a new visitor is offered it
+  G.markKnown(true);
+  assert.equal(G.offerQuiet(), true);                   // known: left alone, with no expiry
+  store["pl-games-offer-v1"] = String(Date.now() - 400 * 86400000);
+  assert.equal(G.offerQuiet(), true);
+  G.markKnown(false);                                   // signing out on purpose
+  assert.equal(G.offerQuiet(), false);
+  store["pl-games-offer-v1"] = String(Date.now() - 86400000);
+  assert.equal(G.offerQuiet(), true);                   // "Not now" still silences it for a week
+  delete globalThis.localStorage;
+});

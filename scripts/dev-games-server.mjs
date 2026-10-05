@@ -9,12 +9,12 @@ import { createHandler } from "../netlify/functions/games-api.mjs";
 const port = Number(process.argv[2] || 8766);
 const root = join(import.meta.dirname, "..", "site");
 const mem = new Map();
-const getStore = (name) => ({
+const getStore = (opt) => { const name = typeof opt === "string" ? opt : opt.name; return {
   get: async (k, o) => { const v = mem.get(`${name}/${k}`); return v === undefined ? null : o?.type === "json" ? JSON.parse(v) : v; },
   set: async (k, v) => { mem.set(`${name}/${k}`, String(v)); },
   setJSON: async (k, v) => { mem.set(`${name}/${k}`, JSON.stringify(v)); },
   delete: async (k) => { mem.delete(`${name}/${k}`); },
-});
+}; };
 let lastMail = "";
 const fetchFn = async (url, opts) => { lastMail = JSON.parse(opts.body).text; console.log("[mail]", lastMail.split("\n")[2]); return new Response("{}"); };
 const env = (k) => ({ RESEND_API_KEY: "dev", GAMES_DEV_ORIGIN: `http://127.0.0.1:${port}` })[k];

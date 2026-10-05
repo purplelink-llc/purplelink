@@ -7,16 +7,16 @@ import { createHandler } from "../functions/games-api.mjs";
 import { mergeData, cleanData, percentile, cleanName, dayIndexUTC } from "../lib/games-logic.mjs";
 
 function memoryStores() {
-  const data = new Map();
+  const data = new Map(), calls = [];
   return {
-    getStore: (name) => ({
+    getStore: (opt) => { const name = typeof opt === "string" ? opt : opt.name; calls.push(opt); return {
       get: async (k, opts) => { const v = data.get(`${name}/${k}`); return v === undefined ? null : opts?.type === "json" ? JSON.parse(v) : v; },
       set: async (k, v) => { data.set(`${name}/${k}`, String(v)); },
       setJSON: async (k, v) => { data.set(`${name}/${k}`, JSON.stringify(v)); },
       delete: async (k) => { data.delete(`${name}/${k}`); },
       list: async ({ prefix = "" } = {}) => ({ blobs: [...data.keys()].filter((k) => k.startsWith(`${name}/${prefix}`)).map((k) => ({ key: k.slice(name.length + 1) })) }),
-    }),
-    data,
+    }; },
+    data, calls,
   };
 }
 
@@ -231,15 +231,23 @@ test("goals sync: whitelisted, bounded, merged without losing XP", () => {
   assert.equal(cleanData({ goals: { d: { 1: { t: 99, q: 99 } } } }).goals.d["1"].t, 3);
 });
 
-test("a session in use renews itself, so an active device stays signed in past 90 days", async () => {
+test("a session in use renews itself, so an active device stays signed in for years", async () => {
   const s = await signIn();
   const DAY = 86400000;
-  clock += 80 * DAY;                                   // 10 days left on the original session
-  assert.equal((await call({ action: "sync", data: {} }, bearer(s))).status, 200);   // use it: renews to 90 days
-  clock += 80 * DAY;                                   // 160 days after sign-in, past the original expiry
+  clock += 360 * DAY;                                  // 5 days left on the original year
+  assert.equal((await call({ action: "sync", data: {} }, bearer(s))).status, 200);   // use it: renews to a full year
+  clock += 360 * DAY;                                  // 720 days after sign-in, long past the original expiry
   assert.equal((await call({ action: "sync", data: {} }, bearer(s))).status, 200);
-  clock += 91 * DAY;                                   // unused for more than 90 days: signed out
+  clock += 366 * DAY;                                  // unused for more than a year: signed out
   assert.equal((await call({ action: "sync", data: {} }, bearer(s))).status, 401);
+});
+
+test("every store is opened with strong consistency, so a new session is readable at once", async () => {
+  await signIn("a@example.com");
+  const opened = stores.calls.filter((o) => typeof o === "object");
+  assert.ok(opened.length > 0 && opened.length === stores.calls.length);               // no store is opened by bare name
+  assert.ok(opened.every((o) => o.consistency === "strong"));
+  assert.ok(["games-auth", "games-accounts"].every((n) => opened.some((o) => o.name === n)));
 });
 
 test("signing in on a second device leaves the first one signed in", async () => {
