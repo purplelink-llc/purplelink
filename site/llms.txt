@@ -118,7 +118,7 @@
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/
 - Free tools: https://purplelink.llc/tools/
-- Daily games and unlimited rated puzzles (Linkle, Quadlink, Daily Five, Daily Photo, Daily Chess, Sudoku, crossword, Daily Stars, Chess Puzzles, Sudoku Unlimited, leaderboards, Landlink, Atomlink, Prizelink; free, no account needed): https://purplelink.llc/games/
+- Daily games and unlimited rated puzzles (Linkle, Quadlink, Daily Five, Daily Photo, Daily Chess, Sudoku, crossword, Daily Stars, Chess Puzzles, Sudoku Unlimited, leaderboards, Landlink, Atomlink, Prizelink, Citylink, Peaklink, Codelink, Thinkerlink, Riverlink, Wildlink, Lockerlink, Gridlink, Under the Cap; free, no account needed): https://purplelink.llc/games/
   - Linkle: Linkle is a free daily word game. https://purplelink.llc/games/linkle/
   - Quadlink: Quadlink is a free daily word game where you solve four hidden five-letter words at once in nine guesses. https://purplelink.llc/games/quadlink/
   - Daily Five: Daily Five is a free daily trivia quiz with five multiple-choice questions. https://purplelink.llc/games/daily-five/
@@ -133,6 +133,17 @@
   - Landlink: Landlink is a free daily geography game. https://purplelink.llc/games/landlink/
   - Atomlink: Atomlink is a free daily chemistry game. https://purplelink.llc/games/atomlink/
   - Prizelink: Prizelink is a free daily game about Nobel laureates. https://purplelink.llc/games/prizelink/
+  - Citylink: Citylink is a free daily geography game. https://purplelink.llc/games/citylink/
+  - Peaklink: Peaklink is a free daily geography game about mountains. https://purplelink.llc/games/peaklink/
+  - Codelink: Codelink is a free daily game about programming languages. https://purplelink.llc/games/codelink/
+  - Thinkerlink: Thinkerlink is a free daily game about famous scientists. https://purplelink.llc/games/thinkerlink/
+  - Riverlink: Riverlink is a free daily geography game about rivers. https://purplelink.llc/games/riverlink/
+  - Wildlink: Wildlink is a free daily game about animals. https://purplelink.llc/games/wildlink/
+  - Lockerlink: Lockerlink is a free daily sports puzzle: link two players from any era through a chain of real teammates (NBA, NFL, MLB, NHL). https://purplelink.llc/games/lockerlink/
+  - Gridlink: Gridlink is a free daily sports grid: name a player who fits each row and column clue, in nine guesses. https://purplelink.llc/games/gridlink/
+  - Under the Cap: Under the Cap is a free sports team builder: pick a roster from any era under a budget and play a full season. https://purplelink.llc/games/under-the-cap/
+  - Sports games hub: free daily NBA, NFL, MLB and NHL puzzles (Lockerlink, Gridlink, Under the Cap). https://purplelink.llc/games/sports/
+  - Teammate chains between stars of different eras: https://purplelink.llc/games/sports/nba-teammate-chains/ , https://purplelink.llc/games/sports/nfl-teammate-chains/ , https://purplelink.llc/games/sports/mlb-teammate-chains/ , https://purplelink.llc/games/sports/nhl-teammate-chains/
 - Guides: https://purplelink.llc/guides/
 - GlobePin (iOS, free, shipping): https://purplelink.llc/globepin/
 - Haea (iOS, in development): https://purplelink.llc/haea/

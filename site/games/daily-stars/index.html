@@ -30,7 +30,11 @@
           "@type": "Organization",
           "@id": "https://purplelink.llc/#organization",
           "name": "Purplelink LLC",
-          "url": "https://purplelink.llc/"
+          "url": "https://purplelink.llc/",
+          "sameAs": [
+            "https://www.youtube.com/@PurplelinkPL",
+            "https://github.com/purplelink-llc"
+          ]
         },
         {
           "@type": "WebPage",
@@ -134,6 +138,14 @@
           "mainEntity": [
             {
               "@type": "Question",
+              "name": "What are the lucky number, color, mood and best hour?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "They are picked from your sign and the date, so everyone with the same sign sees the same ones on the same day. Like the readings, they are for entertainment only."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "Are these real predictions?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -199,10 +211,10 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
 
-    <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
+    <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=22115b2e5d">
+    <link rel="stylesheet" href="/games/games-ui.css?v=fb4f3df1c4">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -238,6 +250,15 @@
         <li><a class="dock-link" data-g="landlink" href="/games/landlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#landlink"/></svg><span class="dock-name">Landlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="atomlink" href="/games/atomlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#atomlink"/></svg><span class="dock-name">Atomlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="prizelink" href="/games/prizelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#prizelink"/></svg><span class="dock-name">Prizelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="citylink" href="/games/citylink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#citylink"/></svg><span class="dock-name">Citylink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="peaklink" href="/games/peaklink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#peaklink"/></svg><span class="dock-name">Peaklink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="codelink" href="/games/codelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#codelink"/></svg><span class="dock-name">Codelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="thinkerlink" href="/games/thinkerlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#thinkerlink"/></svg><span class="dock-name">Thinkerlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="riverlink" href="/games/riverlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#riverlink"/></svg><span class="dock-name">Riverlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="wildlink" href="/games/wildlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#wildlink"/></svg><span class="dock-name">Wildlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="lockerlink" href="/games/lockerlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#lockerlink"/></svg><span class="dock-name">Lockerlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="gridlink" href="/games/gridlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#gridlink"/></svg><span class="dock-name">Gridlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="under-the-cap" href="/games/under-the-cap/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#under-the-cap"/></svg><span class="dock-name">Under the Cap</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="chess-puzzles" data-x href="/games/chess-puzzles/" title="Chess Puzzles"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#chess-puzzles"/></svg><span class="dock-name">Chess Puzzles</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="sudoku-unlimited" data-x href="/games/sudoku-unlimited/" title="Sudoku Unlimited"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sudoku-unlimited"/></svg><span class="dock-name">Sudoku Unlimited</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="leaderboard" data-x href="/games/leaderboard/" title="Leaderboards"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#leaderboard"/></svg><span class="dock-name">Leaderboards</span></a></li>
@@ -263,6 +284,17 @@
             <h2 id="st-name"></h2>
             <p class="stars-sub" id="st-range"></p>
             <p id="st-text"></p>
+            <dl class="stars-lucky" id="st-lucky"></dl>
+            <div class="stars-pair">
+              <label for="st-pair">See how your sign gets on with another</label>
+              <select id="st-pair"></select>
+              <p id="st-pair-out" role="status" aria-live="polite"></p>
+            </div>
+            <div class="game-actions">
+              <button type="button" class="btn btn-primary" id="st-share">Share my reading</button>
+              <span class="game-note" id="st-share-note"></span>
+            </div>
+            <textarea class="wg-share-text" id="st-share-text" hidden readonly aria-label="Reading text"></textarea>
           </section>
           <div class="stars-all">
             <h2>All signs today</h2>
@@ -273,6 +305,8 @@
         <h2>About these readings</h2>
         <p>Daily Stars gives each sign a short suggestion for the day. They are meant to be read in a few seconds. Nothing here is a forecast, and no reading is advice about health, money or relationships.</p>
         <h2>Questions</h2>
+        <h3>What are the lucky number, color, mood and best hour?</h3>
+        <p>They are picked from your sign and the date, so everyone with the same sign sees the same ones on the same day. Like the readings, they are for entertainment only.</p>
         <h3>Are these real predictions?</h3>
         <p>No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships.</p>
         <h3>How are the readings made?</h3>
@@ -299,14 +333,15 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=3a9dc8ccd1" defer></script>
+    <script src="/games/core.js?v=dc815518df" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
-    <script src="/games/goals.js?v=13a5b4cb05" defer></script>
+    <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
+    <script src="/games/goals.js?v=ad780e951f" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
-    <script src="/games/dock.js?v=a52b682b21" defer></script>
-    <script src="/games/daily-stars.js?v=65da282f5b" defer></script>
+    <script src="/games/dock.js?v=99d59c8de5" defer></script>
+    <script src="/games/share.js?v=ac6af8eddf" defer></script>
+    <script src="/games/daily-stars.js?v=dc08395809" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">
@@ -336,6 +371,7 @@
             <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
             <li><a href="/tools/word-counter/">Word Counter</a></li>
             <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
             <li><a href="/tools/">All tools</a></li>
           </ul>
         </nav>

@@ -30,7 +30,11 @@
           "@type": "Organization",
           "@id": "https://purplelink.llc/#organization",
           "name": "Purplelink LLC",
-          "url": "https://purplelink.llc/"
+          "url": "https://purplelink.llc/",
+          "sameAs": [
+            "https://www.youtube.com/@PurplelinkPL",
+            "https://github.com/purplelink-llc"
+          ]
         },
         {
           "@type": "WebPage",
@@ -140,6 +144,14 @@
           "mainEntity": [
             {
               "@type": "Question",
+              "name": "What is the theme of the day?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "From the second week on, each weekday leans toward one idea when the puzzle bank has a match: checkmates on Monday, forks on Tuesday, pins and skewers on Wednesday, endgames on Thursday, back-rank and loose pieces on Friday, sacrifices on Saturday and crushing wins on Sunday. The banner above the board names the theme, and it is a hint about what to look for."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "Where do the chess puzzles come from?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -229,10 +241,10 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
 
-    <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
+    <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=22115b2e5d">
+    <link rel="stylesheet" href="/games/games-ui.css?v=fb4f3df1c4">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -268,6 +280,15 @@
         <li><a class="dock-link" data-g="landlink" href="/games/landlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#landlink"/></svg><span class="dock-name">Landlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="atomlink" href="/games/atomlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#atomlink"/></svg><span class="dock-name">Atomlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="prizelink" href="/games/prizelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#prizelink"/></svg><span class="dock-name">Prizelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="citylink" href="/games/citylink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#citylink"/></svg><span class="dock-name">Citylink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="peaklink" href="/games/peaklink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#peaklink"/></svg><span class="dock-name">Peaklink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="codelink" href="/games/codelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#codelink"/></svg><span class="dock-name">Codelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="thinkerlink" href="/games/thinkerlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#thinkerlink"/></svg><span class="dock-name">Thinkerlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="riverlink" href="/games/riverlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#riverlink"/></svg><span class="dock-name">Riverlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="wildlink" href="/games/wildlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#wildlink"/></svg><span class="dock-name">Wildlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="lockerlink" href="/games/lockerlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#lockerlink"/></svg><span class="dock-name">Lockerlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="gridlink" href="/games/gridlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#gridlink"/></svg><span class="dock-name">Gridlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="under-the-cap" href="/games/under-the-cap/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#under-the-cap"/></svg><span class="dock-name">Under the Cap</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="chess-puzzles" data-x href="/games/chess-puzzles/" title="Chess Puzzles"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#chess-puzzles"/></svg><span class="dock-name">Chess Puzzles</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="sudoku-unlimited" data-x href="/games/sudoku-unlimited/" title="Sudoku Unlimited"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sudoku-unlimited"/></svg><span class="dock-name">Sudoku Unlimited</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="leaderboard" data-x href="/games/leaderboard/" title="Leaderboards"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#leaderboard"/></svg><span class="dock-name">Leaderboards</span></a></li>
@@ -286,6 +307,7 @@
         <p class="game-lede">Daily Chess is a free daily chess tactics puzzle drawn from the Lichess puzzle database. Find the best move, then the follow-up, to win material or deliver checkmate. Monday&#x27;s puzzle is the easiest and Sunday&#x27;s is the hardest.</p>
         <p id="ch-loading" class="games-note">Loading today's puzzle.</p>
         <div id="ch-game" hidden>
+          <p class="wg-twist" id="ch-twist" hidden><strong id="ch-twist-name"></strong> <span id="ch-twist-text"></span></p>
           <p class="ch-turn" id="ch-turn"></p>
           <p class="ch-msg" id="ch-msg" role="status" aria-live="polite"></p>
           <div class="cb-board" id="ch-board" role="group" aria-label="Chess board"></div>
@@ -320,12 +342,15 @@
             <textarea class="wg-share-text" id="ch-share-text" hidden readonly aria-label="Result text"></textarea>
             <p class="game-next">Next puzzle in <span id="ch-next-in"></span>.</p>
             <p class="game-more"><a class="gbtn" href="/games/chess-puzzles/" data-g="chess-puzzles">Play unlimited rated puzzles</a></p>
+            <aside class="partner" id="partner" hidden aria-label="Chess resources"></aside>
           </section>
         </div>
         <div class="games-prose">
         <h2>How to play</h2>
         <p>The position shows a game where the opponent has just moved. Find the best move for the side shown at the bottom of the board. Click a piece to see where it can go, then click the square. After a correct move the opponent replies and you continue until the puzzle is won.</p>
         <h2>Questions</h2>
+        <h3>What is the theme of the day?</h3>
+        <p>From the second week on, each weekday leans toward one idea when the puzzle bank has a match: checkmates on Monday, forks on Tuesday, pins and skewers on Wednesday, endgames on Thursday, back-rank and loose pieces on Friday, sacrifices on Saturday and crushing wins on Sunday. The banner above the board names the theme, and it is a hint about what to look for.</p>
         <h3>Where do the chess puzzles come from?</h3>
         <p>From the Lichess puzzle database, which is released under the Creative Commons CC0 licence. Each puzzle starts from a position in a real game, and Lichess rates its difficulty from how many players have solved it.</p>
         <h3>How does the difficulty change through the week?</h3>
@@ -361,14 +386,16 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=3a9dc8ccd1" defer></script>
+    <script src="/games/core.js?v=dc815518df" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
-    <script src="/games/goals.js?v=13a5b4cb05" defer></script>
+    <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
+    <script src="/games/goals.js?v=ad780e951f" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
-    <script src="/games/dock.js?v=a52b682b21" defer></script>
-    <script src="/games/daily-chess.js?v=98ac6903db" defer></script>
+    <script src="/games/dock.js?v=99d59c8de5" defer></script>
+    <script src="/games/share.js?v=ac6af8eddf" defer></script>
+    <script src="/games/partners.js?v=e83de79a74" defer></script>
+    <script src="/games/daily-chess.js?v=ea10997199" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">
@@ -398,6 +425,7 @@
             <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
             <li><a href="/tools/word-counter/">Word Counter</a></li>
             <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
             <li><a href="/tools/">All tools</a></li>
           </ul>
         </nav>

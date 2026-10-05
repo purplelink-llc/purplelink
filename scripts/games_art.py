@@ -3,6 +3,10 @@ Classes (set in site/games/games-ui.css): a1 deep tint, a2 light tint, a3 outlin
 Parts that drift on hover carry .mv or .mv2. Each returns an <svg> string on a 200 x 140 canvas.
 """
 
+import sys as _sys, pathlib as _pl
+_sys.path.insert(0, str(_pl.Path(__file__).resolve().parent))
+import games_logos as logos
+
 OPEN = '<svg class="art" viewBox="0 0 200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">'
 
 
@@ -186,7 +190,87 @@ def prizelink():
     return "".join(out)
 
 
-ART = {"landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
+def citylink():
+    out = [OPEN]
+    heights = [(18, 70), (42, 96), (66, 58), (90, 112), (114, 82), (138, 100), (160, 64)]
+    for x, h in heights:
+        out.append(_r(x, 124 - h, 20, h, "a1" if (x // 24) % 2 else "a2", 3))
+    for x, h in heights:
+        for y in range(124 - h + 10, 118, 16):
+            out.append(f'<rect class="a5" x="{x + 5}" y="{y}" width="4" height="6" rx="1" opacity=".75"/><rect class="a5" x="{x + 12}" y="{y}" width="4" height="6" rx="1" opacity=".75"/>')
+    out.append('<rect class="a4" x="8" y="124" width="184" height="6" rx="3"/>')
+    out.append('<g class="mv"><circle class="a5" cx="168" cy="26" r="13"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def peaklink():
+    out = [OPEN, '<g class="mv2"><circle class="a5" cx="158" cy="30" r="13"/></g>']
+    out.append('<path class="a2" d="M0 124L52 52l26 34 30-48 62 86z"/>')
+    out.append('<g class="mv"><path class="a1" d="M40 124L96 36l60 88z"/><path class="a5" d="M96 36l-15 23 9-5 6 8 7-8 9 5z"/></g>')
+    out.append('<path class="a4" opacity=".28" d="M96 36l60 88H96z"/>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def codelink():
+    out = [OPEN, _r(22, 18, 156, 104, "a1", 12), '<rect class="a4" x="22" y="18" width="156" height="22" rx="12"/><rect class="a4" x="22" y="30" width="156" height="10"/>']
+    for x in (36, 48, 60):
+        out.append(f'<circle class="a5" cx="{x}" cy="29" r="3.2"/>')
+    lines = [(38, 54, 36, "a2"), (58, 54, 70, "a5"), (38, 70, 58, "a2"), (50, 86, 46, "a5"), (38, 102, 30, "a2"), (74, 102, 40, "a5")]
+    for x, y, w, c in lines:
+        out.append(f'<rect class="{c}" x="{x}" y="{y}" width="{w}" height="8" rx="4"/>')
+    out.append('<g class="mv"><rect class="a5" x="130" y="98" width="8" height="16" rx="2"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def thinkerlink():
+    out = [OPEN]
+    out.append('<g class="mv"><path class="a2" d="M82 18h36v34l34 62a8 8 0 0 1-7 12H55a8 8 0 0 1-7-12l34-62z"/><path class="a1" d="M64 92h72l16 30a8 8 0 0 1-7 12H55a8 8 0 0 1-7-12z" opacity=".95"/><rect class="a5" x="78" y="12" width="44" height="10" rx="5"/></g>')
+    out.append('<g class="mv2"><circle class="a5" cx="96" cy="110" r="6"/><circle class="a5" cx="116" cy="100" r="4.5"/><circle class="a5" cx="108" cy="122" r="3.5"/></g>')
+    out.append('<g class="mv2"><circle class="a5" cx="150" cy="30" r="5" opacity=".8"/><circle class="a5" cx="168" cy="52" r="3.5" opacity=".7"/><circle class="a2" cx="34" cy="40" r="4"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def riverlink():
+    out = [OPEN, '<path class="a2" d="M0 120c30-20 50-6 74-24s30-40 60-48 50 6 66-6V140H0z"/>']
+    out.append('<path class="a6" d="M16 20c28 6 24 28 50 34s40-8 62 6 24 40 62 46" style="stroke-width:12"/>'.replace(' style="stroke-width:12"', ''))
+    out.append('<g class="mv"><path class="a5" d="M146 30l10 14-10 14-10-14z" opacity=".95"/></g>')
+    out.append('<g class="mv2"><circle class="a5" cx="44" cy="96" r="5" opacity=".8"/><circle class="a5" cx="168" cy="104" r="4" opacity=".7"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def wildlink():
+    out = [OPEN]
+    out.append('<g class="mv"><ellipse class="a1" cx="100" cy="92" rx="40" ry="32"/><ellipse class="a1" cx="44" cy="62" rx="16" ry="21" transform="rotate(-20 44 62)"/><ellipse class="a1" cx="80" cy="28" rx="16" ry="23"/><ellipse class="a1" cx="122" cy="28" rx="16" ry="23"/><ellipse class="a1" cx="158" cy="62" rx="16" ry="21" transform="rotate(20 158 62)"/></g>')
+    out.append('<g class="mv2"><circle class="a5" cx="30" cy="112" r="5"/><circle class="a5" cx="176" cy="108" r="4"/><circle class="a2" cx="170" cy="22" r="5"/></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+
+
+
+def _logo_art(slug, extra=""):
+    return OPEN + logos.art_mark(slug, 100, 70, 1.2) + extra + "</svg>"
+
+
+def lockerlink():
+    return _logo_art("lockerlink", '<g class="mv2"><circle class="a5" cx="26" cy="30" r="4"/><circle class="a2" cx="176" cy="112" r="5"/></g>')
+
+
+def gridlink():
+    return _logo_art("gridlink", '<g class="mv2"><circle class="a5" cx="24" cy="112" r="4"/><circle class="a2" cx="178" cy="28" r="5"/></g>')
+
+
+def under_the_cap():
+    return _logo_art("under-the-cap", '<g class="mv2"><circle class="a5" cx="28" cy="26" r="4"/><circle class="a2" cx="174" cy="114" r="5"/></g>')
+
+
+ART = {"lockerlink": lockerlink, "gridlink": gridlink, "under-the-cap": under_the_cap, "thinkerlink": thinkerlink, "riverlink": riverlink, "wildlink": wildlink, "citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
        "daily-chess": daily_chess, "sudoku": sudoku, "crossword": crossword, "daily-stars": daily_stars}
 
 

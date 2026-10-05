@@ -5,9 +5,19 @@
   "use strict";
   var G = window.PLGames, root = document.getElementById("ag-root");
   if (!G || !root) return;
-  var NAME = root.getAttribute("data-ds"), MAX = 8, EPOCH = "2026-10-04";
+  var NAME = root.getAttribute("data-ds"), EPOCH = "2026-10-04";
+  // Weekday twists, keyed by getDay() (Sunday = 0), the same days as Linkle's. `max` is the guess limit.
+  var TWISTS = {
+    0: { name: "Hard mode", hard: true, text: "Every guess must be a possible answer, given the clues you already have." },
+    1: { name: "Standard", text: "Standard rules today." },
+    2: { name: "Head start", head: true },
+    3: { name: "Extra guesses", max: 10, text: "You have ten guesses today." },
+    4: { name: "Fog", fog: true },
+    5: { name: "Compass off", noArrows: true, text: "No arrows today. Numbers show only the colors." },
+    6: { name: "Quick draw", max: 6, text: "You have six guesses today." }
+  };
   var $ = function (id) { return document.getElementById(id); };
-  var data = null, st = { idx: 0, ans: 0, guesses: [], done: false, won: false, busy: false, matches: [], active: -1 };
+  var data = null, st = { max: 8, twist: TWISTS[1], fogCol: -1, headCol: -1, idx: 0, ans: 0, guesses: [], done: false, won: false, busy: false, matches: [], active: -1 };
 
   // ---- formatting ----
   function compact(n) {
@@ -20,7 +30,15 @@
   }
   function fmt(col, v) {
     if (v === null || v === undefined) return "Unknown";
+    if (Array.isArray(v)) return v.join(", ");
     switch (col.f) {
+      case "lat": return Math.abs(v).toFixed(1) + "\u00b0" + (v >= 0 ? "N" : "S");
+      case "lon": return Math.abs(v).toFixed(1) + "\u00b0" + (v >= 0 ? "E" : "W");
+      case "life": return v === null ? "Living" : v + " yrs";
+      case "km": return Math.round(v).toLocaleString("en-US") + " km";
+      case "kg": return v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1).replace(/\.0$/, "") + " t" : v >= 1 ? (Math.round(v * 10) / 10) + " kg" : Math.round(v * 1000) + " g";
+      case "yrs": return v + " yrs";
+      case "m": return Math.round(v).toLocaleString("en-US") + " m";
       case "pop": return compact(v);
       case "area": return compact(v) + " km²";
       case "mass": return String(Math.round(v * 10) / 10);
@@ -91,17 +109,20 @@
     head.appendChild(el("span", "ag-name ag-h", "Guess"));
     data.cols.forEach(function (c) { head.appendChild(el("span", "ag-cell ag-h", c.l)); });
   }
-  function rowFor(i, reveal) {
+  function rowFor(i, reveal, pos) {
     var r = data.rows[i], ans = data.rows[st.ans], li = el("li", "ag-row");
     li.appendChild(el("span", "ag-name", r.n));
     var cells = [];
     data.cols.forEach(function (c, k) {
       var res = compare(c, r.v[k], ans.v[k]), cell = el("span", "ag-cell");
+      var fogged = st.twist.fog && k === st.fogCol && pos !== undefined && pos < 3 && !st.done;
+      if (st.twist.noArrows) res = { s: res.s, dir: "" };
+      if (fogged) res = { s: res.s, dir: "" };
       cell.setAttribute("data-s", reveal ? "" : res.s);
       if (res.dir) cell.setAttribute("data-dir", res.dir);
       var label = el("span", "visually-hidden", c.l + ": ");
       cell.appendChild(label);
-      cell.appendChild(document.createTextNode(fmt(c, r.v[k])));
+      cell.appendChild(document.createTextNode(fogged ? "?" : fmt(c, r.v[k])));
       if (res.dir) { var ar = el("span", "ag-arrow", res.dir === "up" ? "↑" : "↓"); ar.setAttribute("aria-hidden", "true"); cell.appendChild(ar); }
       var word = res.s === "c" ? "correct" : res.s === "p" ? (res.dir ? "close, answer is " + (res.dir === "up" ? "higher" : "lower") : "partly right") : (res.dir ? "answer is " + (res.dir === "up" ? "higher" : "lower") : "wrong");
       cell.appendChild(el("span", "visually-hidden", ", " + word));
@@ -113,8 +134,8 @@
   }
   function paintAll() {
     var rows = $("ag-rows"); rows.textContent = "";
-    st.guesses.slice().reverse().forEach(function (i) { rows.appendChild(rowFor(i, false)); });
-    $("ag-count").textContent = st.done ? "" : "Guess " + (st.guesses.length + 1) + " of " + MAX;
+    st.guesses.slice().reverse().forEach(function (i) { rows.appendChild(rowFor(i, false, st.guesses.indexOf(i))); });
+    $("ag-count").textContent = st.done ? "" : "Guess " + (st.guesses.length + 1) + " of " + st.max;
     $("ag-wrap").hidden = !st.guesses.length;
     hint();
   }
@@ -122,6 +143,19 @@
     var ans = data.rows[st.ans].n, n = st.guesses.length, t = "";
     if (!st.done && n >= 4) t = "Hint: the name starts with " + ans[0] + (n >= 6 ? " and has " + ans.length + " letters." : ".");
     $("ag-hint").textContent = t;
+  }
+
+  // Hard mode: could this name be the answer? It must give every earlier guess the same clues the real answer did.
+  function inconsistent(i) {
+    var cand = data.rows[i], ans = data.rows[st.ans];
+    for (var j = 0; j < st.guesses.length; j++) {
+      var g = data.rows[st.guesses[j]];
+      for (var k = 0; k < data.cols.length; k++) {
+        var want = compare(data.cols[k], g.v[k], ans.v[k]), got = compare(data.cols[k], g.v[k], cand.v[k]);
+        if (want.s !== got.s || want.dir !== got.dir) return data.cols[k].l.toLowerCase();
+      }
+    }
+    return "";
   }
 
   // ---- play ----
@@ -132,12 +166,16 @@
   }
   function submit(i) {
     if (st.done || st.busy || i === undefined || st.guesses.indexOf(i) >= 0) return;
+    if (st.twist.hard) {
+      var bad = inconsistent(i);
+      if (bad) { $("ag-msg").textContent = "Hard mode: " + data.rows[i].n + " cannot be the answer, because of the " + bad + " clue."; if (window.PLFX) { window.PLFX.play("bad"); window.PLFX.vibrate(30); window.PLFX.kick($("ag-form"), "fx-shake", 400); } return; }
+    }
     if (!st.guesses.length) G.track("game_start", NAME);
     st.guesses.push(i);
     st.won = i === st.ans;
-    st.done = st.won || st.guesses.length >= MAX;
+    st.done = st.won || st.guesses.length >= st.max;
     persist();
-    var rows = $("ag-rows"), li = rowFor(i, true), FX = window.PLFX;
+    var rows = $("ag-rows"), li = rowFor(i, true, st.guesses.length - 1), FX = window.PLFX;
     rows.insertBefore(li, rows.firstChild);
     $("ag-wrap").hidden = false;
     $("ag-input").value = ""; showList();
@@ -151,7 +189,7 @@
       window.setTimeout(function () { FX.play("flip", k); }, k * 120 + 220);
       wait = k * 120 + 520;
     });
-    $("ag-count").textContent = st.done ? "" : "Guess " + (st.guesses.length + 1) + " of " + MAX;
+    $("ag-count").textContent = st.done ? "" : "Guess " + (st.guesses.length + 1) + " of " + st.max;
     hint();
     st.busy = true;
     window.setTimeout(function () {
@@ -165,7 +203,7 @@
     var rows = st.guesses.map(function (i) {
       return data.cols.map(function (c, k) { var s = compare(c, data.rows[i].v[k], data.rows[st.ans].v[k]).s; return s === "c" ? "■" : s === "p" ? "▣" : "□"; }).join("");
     });
-    return $("ag-title").textContent + " " + (st.idx + 1) + " " + (st.won ? st.guesses.length : "X") + "/" + MAX + "\n\n" + rows.join("\n") + "\n\n" + root.getAttribute("data-url");
+    return $("ag-title").textContent + " " + (st.idx + 1) + (st.twist.name !== "Standard" ? " (" + st.twist.name + ")" : "") + " " + (st.won ? st.guesses.length : "X") + "/" + st.max + "\n\n" + rows.join("\n") + "\n\n" + root.getAttribute("data-url");
   }
 
   function finish(fresh) {
@@ -185,7 +223,8 @@
     var s = saved.stats || G.emptyStats();
     $("ag-form").hidden = true;
     var box = $("ag-result"); box.hidden = false;
-    $("ag-result-head").textContent = st.won ? "Solved in " + st.guesses.length + " of " + MAX : "Out of guesses";
+    $("ag-result-head").textContent = st.won ? "Solved in " + st.guesses.length + " of " + st.max : "Out of guesses";
+    var tm = $("ag-tomorrow"); if (tm) tm.textContent = "Tomorrow's twist: " + TWISTS[(new Date().getDay() + 1) % 7].name + ".";
     $("ag-reveal").textContent = st.won ? "" : "The answer was " + data.rows[st.ans].n + ".";
     $("ag-played").textContent = s.played; $("ag-winpct").textContent = s.played ? Math.round(100 * s.won / s.played) + "%" : "0%";
     $("ag-streak").textContent = s.streak; $("ag-max").textContent = s.max;
@@ -218,10 +257,7 @@
       e.preventDefault();
       if (st.matches.length) submit(st.matches[Math.max(0, st.active)]); else $("ag-msg").textContent = "Choose a name from the list.";
     });
-    $("ag-share").addEventListener("click", function () {
-      var text = shareText(); G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) { $("ag-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it."; var b = $("ag-share-text"); b.value = text; b.hidden = ok; });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tick, 30000);
   }
 
@@ -231,6 +267,15 @@
     var seq = G.decodeText(d.seq).split(",");
     st.ans = Number(seq[((st.idx % seq.length) + seq.length) % seq.length]);
     root.setAttribute("data-cols", String(d.cols.length));
+    st.twist = TWISTS[new Date().getDay()]; st.max = st.twist.max || 8;
+    st.fogCol = (st.idx * 3 + 1) % d.cols.length; st.headCol = st.idx % Math.min(3, d.cols.length);
+    var tw = $("ag-twist");
+    if (tw) {
+      var ans = data.rows[st.ans], text = st.twist.text;
+      if (st.twist.head) text = "The answer's " + d.cols[st.headCol].l.toLowerCase() + " is " + fmt(d.cols[st.headCol], ans.v[st.headCol]) + ".";
+      if (st.twist.fog) text = "The " + d.cols[st.fogCol].l.toLowerCase() + " column is hidden in your first three guesses.";
+      $("ag-twist-name").textContent = st.twist.name; $("ag-twist-text").textContent = text; tw.hidden = false;
+    }
     $("ag-number").textContent = "Puzzle " + (st.idx + 1);
     buildHead();
     var saved = G.getGame(NAME).today;

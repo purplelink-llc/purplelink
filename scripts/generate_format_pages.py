@@ -124,6 +124,8 @@ def venue_page(v):
     <meta property="og:description" content="{e(description)}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{canonical}">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{e(title)}">
     <meta name="twitter:description" content="{e(description)}">
@@ -352,6 +354,8 @@ def hub_page():
     <meta property="og:description" content="{e(description)}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{canonical}">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>

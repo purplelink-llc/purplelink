@@ -202,6 +202,7 @@
     var sv = $("ch-saver"); if (sv) sv.textContent = G.saverNote(s, st.idx);
     $("ch-controls").hidden = true;
     var box = $("ch-result"); box.hidden = false;
+    if (window.PLPartners) window.PLPartners.show();
     $("ch-result-head").textContent = st.won ? (st.mistakes + st.hints === 0 ? "Solved on the first try" : "Solved with " + (st.mistakes + st.hints) + " slip" + (st.mistakes + st.hints === 1 ? "" : "s")) : "Not solved today";
     $("ch-about").textContent = "Puzzle rated " + st.pz.rating + (themes().length ? ". Themes: " + themes().join(", ") + "." : ".");
     var link = $("ch-game-link"); link.href = "https://lichess.org/training/" + st.pz.id; link.textContent = "See this puzzle on Lichess";
@@ -240,13 +241,7 @@
       var p = st.pendingPromo; st.pendingPromo = null; $("ch-promo").hidden = true;
       attempt(p.from, p.to, b.getAttribute("data-p"));
     });
-    $("ch-share").addEventListener("click", function () {
-      var text = shareText(); G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) {
-        $("ch-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it.";
-        var box = $("ch-share-text"); box.value = text; box.hidden = ok;
-      });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tick, 30000);
   }
 
@@ -267,6 +262,13 @@
       if (st.done && !st.won) { for (; st.ply < st.pz.moves.length; st.ply++) st.game.move(parse(st.pz.moves[st.ply])); }
     }
     $("ch-number").textContent = "Puzzle " + (st.idx + 1) + ", rated " + st.pz.rating;
+    var tw = $("ch-twist");
+    if (tw) {
+      var th = raw.th || "";
+      $("ch-twist-name").textContent = th ? "Theme: " + th : "Mixed day";
+      $("ch-twist-text").textContent = th ? "Today's puzzle is one of these. The theme is a hint about the idea to look for." : "Today's puzzle has no single theme.";
+      tw.hidden = false;
+    }
     build(); wire();
     st.focus = st.orient === "w" ? "e2" : "e7";
     $("ch-loading").hidden = true;

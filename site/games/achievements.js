@@ -39,6 +39,8 @@
     { id: "cw-monday", name: "Quick Monday", desc: "Solve a Monday crossword with no help in under four minutes.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Monday" && c.seconds < 240; } },
     { id: "cw-sunday", name: "Sunday finisher", desc: "Solve a Sunday crossword with no help.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Sunday"; } },
     { id: "cw-clean-5", name: "Unaided", desc: "Solve five crosswords with no help.", test: function (a) { return ((a.crossword && a.crossword.clean) || 0) >= 5; } },
+    { id: "rush-10", name: "Rush ten", desc: "Solve ten puzzles in one Rush run.", test: function (a, c) { return c.game === "chess-puzzles" && c.rush >= 10; } },
+    { id: "rush-20", name: "Rush twenty", desc: "Solve twenty puzzles in one Rush run.", test: function (a, c) { return c.game === "chess-puzzles" && c.rush >= 20; } },
     { id: "rated-first", name: "Rated", desc: "Finish your first rated chess puzzle.", test: function (a, c) { return c.game === "chess-puzzles" && c.n >= 1; } },
     { id: "rated-1200", name: "Club tactics", desc: "Reach a chess puzzle rating of 1200.", test: function (a, c) { return c.game === "chess-puzzles" && c.rating >= 1200; } },
     { id: "rated-1500", name: "Strong tactics", desc: "Reach a chess puzzle rating of 1500.", test: function (a, c) { return c.game === "chess-puzzles" && c.rating >= 1500; } },

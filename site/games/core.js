@@ -134,7 +134,7 @@
   }
 
   // XP and level are derived from saved progress, so they never drift and need no storage of their own.
-  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink"];
+  var XP_GAMES = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink", "lockerlink", "gridlink", "under-the-cap"];
   // Daily run bonuses: finishing 2, 4 and all 8 puzzles; each quest and the day's spotlight game add 15; a week with
   // five stamped days adds 50. Stored in all.goals = { d: { day: { t: tier, q: bitmask } }, w: { week: 1 }, banked: xp of pruned days }.
   var TIER_XP = [0, 20, 40, 100], QUEST_XP = 15, WEEK_XP = 50;
@@ -169,7 +169,12 @@
   // Progress lives in localStorage only. Any access can throw (private windows, blocked
   // storage), so every call is guarded and the games work without it.
   function load() {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+    var all;
+    try { all = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; }
+    // Lockerlink was launched as Teamlink; carry the saved progress over to the new name
+    var moved = false; [["teamlink", "lockerlink"], ["unbeaten", "under-the-cap"]].forEach(function (m) { if (all[m[0]] && !all[m[1]]) { all[m[1]] = all[m[0]]; delete all[m[0]]; moved = true; } });
+    if (moved) { try { localStorage.setItem(STORE_KEY, JSON.stringify(all)); } catch (e) { /* ignore */ } }
+    return all;
   }
   function save(all) {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(all)); } catch (e) { /* ignore */ }
@@ -196,6 +201,7 @@
       var g2 = getGame(game);
       g2.scored = g2.scored || {};
       g2.scored[idx] = true;
+      g2.last = { idx: idx, percentile: res.percentile, total: res.total };
       var keys = Object.keys(g2.scored);
       if (keys.length > 60) delete g2.scored[keys[0]];
       // a lone early player's 50% says nothing, so the running average only counts days with a real crowd
@@ -212,7 +218,13 @@
   function describePercentile(res) {
     if (!res) return "";
     if (res.total < 10) return res.total <= 1 ? "You are the first player today." : "You are one of " + res.total + " players so far today.";
-    return "Ahead of " + res.percentile + "% of " + res.total + " players today.";
+    return "You did better than " + res.percentile + "% of the " + res.total + " players who have finished today's puzzle.";
+  }
+
+  // The percentile saved when this puzzle was finished, so it still shows after a reload.
+  function savedPercentile(game, idx) {
+    var l = getGame(game).last;
+    return l && l.idx === idx ? { percentile: l.percentile, total: l.total } : null;
   }
 
   function copyText(text) {
@@ -227,6 +239,6 @@
     shareRow: shareRow, emptyStats: emptyStats, recordResult: recordResult,
     rankFor: rankFor, xpOf: xpOf, goalXp: goalXp, titleFor: titleFor, TIER_XP: TIER_XP, QUEST_XP: QUEST_XP, WEEK_XP: WEEK_XP, saverNote: saverNote, weekNo: weekNo, weekProgress: weekProgress, hardModeError: hardModeError,
     getGame: getGame, setGame: setGame, all: load, replaceAll: replaceAll, ready: Promise.resolve(),
-    submitScore: submitScore, describePercentile: describePercentile, track: track, copyText: copyText,
+    submitScore: submitScore, describePercentile: describePercentile, savedPercentile: savedPercentile, track: track, copyText: copyText,
   };
 });

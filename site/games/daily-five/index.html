@@ -30,7 +30,11 @@
           "@type": "Organization",
           "@id": "https://purplelink.llc/#organization",
           "name": "Purplelink LLC",
-          "url": "https://purplelink.llc/"
+          "url": "https://purplelink.llc/",
+          "sameAs": [
+            "https://www.youtube.com/@PurplelinkPL",
+            "https://github.com/purplelink-llc"
+          ]
         },
         {
           "@type": "WebPage",
@@ -140,6 +144,14 @@
           "mainEntity": [
             {
               "@type": "Question",
+              "name": "How do the lifelines and Lightning day work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each set has one 50:50 lifeline, which removes two wrong answers from a question. Tuesday gives two, and Sunday gives none. On Friday, Lightning day, each question has fifteen seconds, and running out of time counts as a wrong answer."
+              }
+            },
+            {
+              "@type": "Question",
               "name": "How many questions are there?",
               "acceptedAnswer": {
                 "@type": "Answer",
@@ -205,10 +217,10 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
 
-    <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
+    <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=22115b2e5d">
+    <link rel="stylesheet" href="/games/games-ui.css?v=fb4f3df1c4">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -244,6 +256,15 @@
         <li><a class="dock-link" data-g="landlink" href="/games/landlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#landlink"/></svg><span class="dock-name">Landlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="atomlink" href="/games/atomlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#atomlink"/></svg><span class="dock-name">Atomlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="prizelink" href="/games/prizelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#prizelink"/></svg><span class="dock-name">Prizelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="citylink" href="/games/citylink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#citylink"/></svg><span class="dock-name">Citylink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="peaklink" href="/games/peaklink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#peaklink"/></svg><span class="dock-name">Peaklink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="codelink" href="/games/codelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#codelink"/></svg><span class="dock-name">Codelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="thinkerlink" href="/games/thinkerlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#thinkerlink"/></svg><span class="dock-name">Thinkerlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="riverlink" href="/games/riverlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#riverlink"/></svg><span class="dock-name">Riverlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="wildlink" href="/games/wildlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#wildlink"/></svg><span class="dock-name">Wildlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="lockerlink" href="/games/lockerlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#lockerlink"/></svg><span class="dock-name">Lockerlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="gridlink" href="/games/gridlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#gridlink"/></svg><span class="dock-name">Gridlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="under-the-cap" href="/games/under-the-cap/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#under-the-cap"/></svg><span class="dock-name">Under the Cap</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="chess-puzzles" data-x href="/games/chess-puzzles/" title="Chess Puzzles"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#chess-puzzles"/></svg><span class="dock-name">Chess Puzzles</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="sudoku-unlimited" data-x href="/games/sudoku-unlimited/" title="Sudoku Unlimited"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sudoku-unlimited"/></svg><span class="dock-name">Sudoku Unlimited</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="leaderboard" data-x href="/games/leaderboard/" title="Leaderboards"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#leaderboard"/></svg><span class="dock-name">Leaderboards</span></a></li>
@@ -263,13 +284,18 @@
         <p id="qz-loading" class="games-note">Loading today's questions.</p>
         <div id="qz-game" hidden>
           <div class="quiz" id="qz-quiz" hidden>
+            <p class="wg-twist" id="qz-twist" hidden><strong id="qz-twist-name"></strong> <span id="qz-twist-text"></span></p>
+            <div class="quiz-timer" id="qz-timer" hidden role="timer" aria-label="Time left for this question"><span class="quiz-timer-track"><i id="qz-timer-bar"></i></span><span id="qz-timer-text"></span></div>
             <p class="quiz-progress" id="qz-progress"></p>
             <div class="quiz-dots" id="qz-dots" aria-hidden="true"></div>
             <p class="quiz-cat" id="qz-cat"></p>
             <h2 class="quiz-q" id="qz-q"></h2>
             <ul class="quiz-opts" id="qz-opts"></ul>
             <p class="quiz-note" id="qz-note" role="status" aria-live="polite"></p>
-            <button type="button" class="btn btn-primary" id="qz-next" hidden>Next question</button>
+            <div class="game-actions">
+              <button type="button" class="btn btn-ghost" id="qz-fifty">50:50</button>
+              <button type="button" class="btn btn-primary" id="qz-next" hidden>Next question</button>
+            </div>
           </div>
           <section class="game-result" id="qz-result" hidden aria-labelledby="qz-result-head">
             <h2 id="qz-result-head"></h2>
@@ -295,6 +321,8 @@
         <h2>How it works</h2>
         <p>Pick one answer for each question. You see right away whether you were correct, then move on. After the fifth question you get your score and a result you can copy and share. You cannot change an answer once you choose it.</p>
         <h2>Questions</h2>
+        <h3>How do the lifelines and Lightning day work?</h3>
+        <p>Each set has one 50:50 lifeline, which removes two wrong answers from a question. Tuesday gives two, and Sunday gives none. On Friday, Lightning day, each question has fifteen seconds, and running out of time counts as a wrong answer.</p>
         <h3>How many questions are there?</h3>
         <p>Five multiple-choice questions a day, with one correct answer each. Two come from a set we write about science, computing, research methods and Macs. Three come from a general trivia pool.</p>
         <h3>When do the questions change?</h3>
@@ -323,14 +351,15 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=3a9dc8ccd1" defer></script>
+    <script src="/games/core.js?v=dc815518df" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
-    <script src="/games/goals.js?v=13a5b4cb05" defer></script>
+    <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
+    <script src="/games/goals.js?v=ad780e951f" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
-    <script src="/games/dock.js?v=a52b682b21" defer></script>
-    <script src="/games/daily-five.js?v=f7cc310600" defer></script>
+    <script src="/games/dock.js?v=99d59c8de5" defer></script>
+    <script src="/games/share.js?v=ac6af8eddf" defer></script>
+    <script src="/games/daily-five.js?v=3afec98c66" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">
@@ -360,6 +389,7 @@
             <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
             <li><a href="/tools/word-counter/">Word Counter</a></li>
             <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
             <li><a href="/tools/">All tools</a></li>
           </ul>
         </nav>

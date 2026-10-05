@@ -22,7 +22,16 @@
   var MORE = [
     { id: "landlink", name: "Landlink", path: "/games/landlink/", min: 3, kind: "guess" },
     { id: "atomlink", name: "Atomlink", path: "/games/atomlink/", min: 3, kind: "guess" },
-    { id: "prizelink", name: "Prizelink", path: "/games/prizelink/", min: 3, kind: "guess" }
+    { id: "prizelink", name: "Prizelink", path: "/games/prizelink/", min: 3, kind: "guess" },
+    { id: "citylink", name: "Citylink", path: "/games/citylink/", min: 3, kind: "guess" },
+    { id: "peaklink", name: "Peaklink", path: "/games/peaklink/", min: 3, kind: "guess" },
+    { id: "codelink", name: "Codelink", path: "/games/codelink/", min: 3, kind: "guess" },
+    { id: "thinkerlink", name: "Thinkerlink", path: "/games/thinkerlink/", min: 3, kind: "guess" },
+    { id: "riverlink", name: "Riverlink", path: "/games/riverlink/", min: 3, kind: "guess" },
+    { id: "wildlink", name: "Wildlink", path: "/games/wildlink/", min: 3, kind: "guess" },
+    { id: "lockerlink", name: "Lockerlink", path: "/games/lockerlink/", min: 4, kind: "sports" },
+    { id: "gridlink", name: "Gridlink", path: "/games/gridlink/", min: 4, kind: "sports" },
+    { id: "under-the-cap", name: "Under the Cap", path: "/games/under-the-cap/", min: 5, kind: "sports" }
   ];
   var BY = {}; GAMES.concat(MORE).forEach(function (g) { BY[g.id] = g; });
   var QUICK_FIRST = ["daily-stars", "daily-photo", "daily-five", "daily-chess", "linkle", "quadlink", "crossword", "sudoku"];

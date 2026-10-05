@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #100 — October 5, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-10-05.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-10-05.html</guid>
+      <pubDate>Mon, 05 Oct 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Google pauses its open-source bug bounty over AI-generated spam, Citrix NetScaler SAML zero-day exploitation, and the arrest of ShinyHunters suspect Rey. Also: agent budget caps and Okta&#x27;s re-rating.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #99 — October 4, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-10-04.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-10-04.html</guid>

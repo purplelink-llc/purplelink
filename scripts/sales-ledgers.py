@@ -19,6 +19,10 @@ the automation Chrome (port 9340). No render waits; a few seconds per platform.
                           export (exportFormat=tsv on Reports/Export). Getty
                           posts a statement around the 20th for the prior
                           month, so rows arrive monthly, not daily.
+  faa-sales.csv           one row per Fine Art America order (Sales page).
+                          The sweep reads only a balance, which says money
+                          moved but not what sold; every run names orders
+                          new since the last run as "NEW FAA order" lines.
   getty-downloads.csv     one row per asset from ESP's Stats page (last
                           download date, channel counts). Money lags a month
                           behind, downloads do not, so this is where a new
@@ -30,7 +34,7 @@ Sources verified 2026-09-30. Each ledger is rewritten from the source on every
 run (the sources are full histories), and a platform that fails to read is
 reported and left untouched rather than blanked.
 """
-import csv, datetime, json, sys, urllib.request
+import csv, datetime, json, re, sys, urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -55,11 +59,14 @@ def write(name, fields, rows):
 
 
 def adobe(t):
-    t.goto("https://contributor.stock.adobe.com/en/insights", settle=6)
-    if "auth" in t.url() or "signin" in t.url().lower():
-        raise RuntimeError("Adobe: not signed in")
+    for _ in range(3):
+        t.goto("https://contributor.stock.adobe.com/en/insights", settle=7)
+        if t.url().startswith("https://contributor.stock.adobe.com/"):
+            break
+    if not t.url().startswith("https://contributor.stock.adobe.com/") or "auth" in t.url() or "signin" in t.url().lower():
+        raise RuntimeError(f"Adobe: not signed in or page did not load ({t.url()[:60]})")
     today = datetime.date.today().isoformat()
-    q = lambda ep, a, b: (f"/en/insights/{ep}?start_date={a}&end_date={b}&time_range=day")
+    q = lambda ep, a, b: (f"https://contributor.stock.adobe.com/en/insights/{ep}?start_date={a}&end_date={b}&time_range=day")
     days = fetch_json(t, q("earnings", "2020-01-01", today))["insights"]["statistics"]["data"]
     rows = []
     for d in days:
@@ -208,12 +215,41 @@ def getty_names(t, ids):
     return out
 
 
+def faa_sales(t):
+    """Orders from FAA's control-panel Sales page, plus a diff against the last run."""
+    t.goto("https://fineartamerica.com/controlpanel/sales", settle=9)
+    if "login" in t.url().lower() or "controlpanel/sales" not in t.url():
+        raise RuntimeError(f"FAA: not signed in ({t.url()[:60]})")
+    raw = t.eval("[...document.querySelectorAll('.tableTopRowDiv')].map(r=>[...r.children].map(c=>c.innerText.trim().replace(/\\s+/g,' ')))") or []
+    rows = []
+    for c in raw:
+        if len(c) < 8 or not re.match(r"\d{2}/\d{2}/\d{4}$", c[0]):
+            continue
+        d = c[0]
+        money = lambda x: float(re.sub(r"[^\d.]", "", x) or 0) if re.search(r"\d", x) else None
+        rows.append({"sale_date": f"{d[6:]}-{d[:2]}-{d[3:5]}", "order_id": c[1], "product": c[3],
+                     "buyer": c[4].replace(" fineartamerica.com", ""), "price": money(c[5]), "qty": c[6],
+                     "total": money(c[7])})
+    if not rows:
+        raise RuntimeError("FAA: Sales page listed no orders (layout changed or empty)")
+    path = AN / "faa-sales.csv"
+    seen = {r["order_id"] for r in csv.DictReader(open(path, newline="", encoding="utf-8"))} if path.exists() else set()
+    new = [r for r in rows if r["order_id"] not in seen]
+    if seen:
+        for r in new:
+            amt = f"${r['total']:.2f}" if r["total"] is not None else "owner purchase, no earnings"
+            print(f"NEW FAA order: {r['sale_date']}  {amt}  {r['product'][:90]}  ({r['buyer']}, order {r['order_id']})", flush=True)
+    write("faa-sales.csv", ["sale_date", "order_id", "product", "buyer", "price", "qty", "total"], rows)
+    earned = sum(r["total"] or 0 for r in rows)
+    return f"{len(rows)} orders, ${earned:.2f} earned" + ("" if not seen else f", {len(new)} new")
+
+
 def main():
     pages = [x for x in json.load(urllib.request.urlopen(CDP + "/json")) if x["type"] == "page"]
     # The sweep closes its own tabs before this runs, so there may be none.
     t = Tab(pages[0]) if pages else Tab.new()
     t.front()
-    for name, fn in (("adobe", adobe), ("shutterstock", shutterstock), ("getty", getty), ("getty-downloads", getty_downloads)):
+    for name, fn in (("adobe", adobe), ("shutterstock", shutterstock), ("getty", getty), ("getty-downloads", getty_downloads), ("faa-sales", faa_sales)):
         try:
             print(f"{name}: {fn(t)}")
         except Exception as e:

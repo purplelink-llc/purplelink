@@ -1,0 +1,65 @@
+==============================================================================
+NHL | source: Wikipedia 'List of <franchise> players' articles and player career-statistics tables (en.wikipedia.org, CC BY-
+licence: CC BY-SA 4.0 (Wikipedia text); facts compiled by Purplelink; attribution to Wikipedia contributors required
+players: 8986 | with birth year: 8522 | with position: 8821 | stints/player: 2.56 | player-seasons: 58066
+by decade of first season: 1910s:44 1920s:232 1930s:303 1940s:415 1950s:311 1960s:440 1970s:1039 1980s:1223 1990s:1295 2000s:1400 2010s:1486 2020s:798
+duplicate ids: 0
+distinct player-rows per season (every 10th): 1917:25 1927:106 1937:146 1947:169 1957:173 1967:366 1977:574 1987:817 1997:958 2007:1025 2017:1092 last 2025:1147
+famous pool: 230, matched 230, unmatched []
+famous vs all-db: identical franchise sets 230/230; every famous (franchise,season) present in all-db 229/230; mean season-cell Jaccard 0.999; Jaccard<0.8: 0
+  lowest agreement: []
+
+-- 15 famous spot checks (famous | all-db), seasons inclusive --
+ Grant Fuhr             F: EDM:1981-1990 TOR:1991-1992 BUF:1992-1994 LAK:1994-1994 STL:1995-1998 CGY:1999-1999
+                        A: EDM:1981-1990 TOR:1991-1992 BUF:1992-1994 LAK:1994-1994 STL:1995-1998 CGY:1999-1999  [G, b.1962, id wp:Grant Fuhr]
+ Charlie McAvoy         F: BOS:2016-2025
+                        A: BOS:2016-2025  [D, b.1997, id wp:Charlie McAvoy]
+ Jaromír Jágr           F: PIT:1990-2000 WSH:2001-2003 NYR:2003-2007 PHI:2011-2011 BOS:2012-2012 DAL:2012-2012 NJD:2013-2014 FLA:2014-2016 CGY:2017-2017
+                        A: PIT:1990-2000 WSH:2001-2003 NYR:2003-2007 PHI:2011-2011 BOS:2012-2012 DAL:2012-2012 NJD:2013-2014 FLA:2014-2016 CGY:2017-2017  [RW, b.1972, id wp:Jaromír Jágr]
+ Pavel Bure             F: VAN:1991-1997 FLA:1998-2001 NYR:2001-2002
+                        A: VAN:1991-1997 FLA:1998-2001 NYR:2001-2002  [RW, b.1971, id wp:Pavel Bure]
+ Artemi Panarin         F: CHI:2015-2016 CBJ:2017-2018 NYR:2019-2025 LAK:2025-2025
+                        A: CHI:2015-2016 CBJ:2017-2018 NYR:2019-2025 LAK:2025-2025  [LW, b.1991, id wp:Artemi Panarin]
+ Bob Gainey             F: MTL:1973-1988
+                        A: MTL:1973-1988  [LW, b.1953, id wp:Bob Gainey]
+ Ted Lindsay            F: DET:1944-1956 CHI:1957-1959 DET:1964-1964
+                        A: DET:1944-1956 CHI:1957-1959 DET:1964-1964  [LW, b.1925, id wp:Ted Lindsay]
+ Martin Brodeur         F: NJD:1991-1991 NJD:1993-2013 STL:2014-2014
+                        A: NJD:1991-2013 STL:2014-2014  [G, b.1972, id wp:Martin Brodeur]
+ Brad Richards          F: TBL:2000-2007 DAL:2007-2010 NYR:2011-2013 CHI:2014-2014 DET:2015-2015
+                        A: TBL:2000-2007 DAL:2007-2010 NYR:2011-2013 CHI:2014-2014 DET:2015-2015  [C, b.1980, id wp:Brad Richards]
+ Jack Eichel            F: BUF:2015-2020 VGK:2021-2025
+                        A: BUF:2015-2020 VGK:2021-2025  [C, b.1996, id wp:Jack Eichel]
+ Miro Heiskanen         F: DAL:2018-2025
+                        A: DAL:2018-2025  [D, b.1999, id wp:Miro Heiskanen]
+ Bernie Geoffrion       F: MTL:1950-1963 NYR:1966-1967
+                        A: MTL:1950-1963 NYR:1966-1967  [RW, b.1931, id wp:Bernie Geoffrion]
+ Marcel Pronovost       F: DET:1949-1964 TOR:1965-1969 BUF:1977-1978
+                        A: DET:1949-1964 TOR:1965-1969 BUF:1977-1978  [D, b.1930, id wp:Marcel Pronovost]
+ Darryl Sittler         F: TOR:1970-1981 PHI:1981-1983 DET:1984-1984
+                        A: TOR:1970-1981 PHI:1981-1983 DET:1984-1984  [C, b.1950, id wp:Darryl Sittler]
+ Andy Bathgate          F: NYR:1952-1963 TOR:1963-1964 DET:1965-1966 PIT:1967-1967 PIT:1970-1970
+                        A: NYR:1952-1963 TOR:1963-1964 DET:1965-1966 PIT:1967-1967 PIT:1970-1970  [RW, b.1932, id wp:Andy Bathgate]
+
+-- 10 non-famous role players --
+ Kirk Maltby        EDM:1993-1995 DET:1995-2009  [LW, b.1972, famous=None]
+ Darren McCarty     DET:1993-2003 CGY:2005-2006 DET:2007-2008  [RW, b.1972, famous=None]
+ Bob Probert        DET:1985-1993 CHI:1995-2001  [LW, b.1965, famous=None]
+ Dave Andreychuk    BUF:1982-1992 TOR:1992-1995 NJD:1995-1998 BOS:1999-1999 COL:1999-1999 BUF:2000-2000 TBL:2001-2005  [LW, b.1963, famous=Dave Andreychuk]
+ Jere Lehtinen      DAL:1995-2009  [RW, b.1973, famous=None]
+ Kris Draper        UTA:1990-1992 DET:1993-2010  [C, b.1971, famous=None]
+ Brian Rolston      NJD:1994-1999 COL:1999-1999 BOS:1999-2003 MIN:2005-2007 NJD:2008-2010 BOS:2011-2011 NYI:2011-2011  [C, b.1973, famous=None]
+ Mike Sillinger     DET:1990-1994 ANA:1994-1995 VAN:1995-1997 PHI:1997-1998 TBL:1998-1999 FLA:1999-2000 OTT:2000-2000 CBJ:2001-2002 UTA:2003-2003 STL:2003-2005 NSH:2005-2005 NYI:2006-2008  [C, b.1971, famous=None]
+ Todd Marchant      NYR:1993-1993 EDM:1993-2002 CBJ:2003-2005 ANA:2005-2010  [C, b.1973, famous=None]
+ Sergei Gonchar     WSH:1994-2003 BOS:2003-2003 PIT:2005-2009 OTT:2010-2012 DAL:2013-2014 MTL:2014-2014  [D, b.1974, famous=Sergei Gonchar]
+
+-- shortest paths (links = shared franchise + overlapping season) --
+ Gordie Howe -> Connor McDavid: all-db 4 links | famous-pool-only 4 links
+      Gordie Howe -> Lee Fogolin [DET 1947] -> Bob Sauvé [BUF 1976] -> Dave Manson [CHI 1986] -> Connor McDavid [EDM 2022]
+ Bobby Orr -> Auston Matthews: all-db 4 links | famous-pool-only 4 links
+      Bobby Orr -> Ron Stewart [BOS 1966] -> Left wing [VAN 1971] -> Joe Thornton [BOS 2000] -> Auston Matthews [TOR 2020]
+ Wayne Gretzky -> Nathan MacKinnon: all-db 3 links | famous-pool-only 3 links
+      Wayne Gretzky -> Mark Messier [EDM 1979] -> Fedor Tyutin [NYR 2003] -> Nathan MacKinnon [COL 2016]
+ skip Maurice Richard Macklin Celebrini (not in pool/db)
+ Mario Lemieux -> Connor Bedard: all-db 3 links | famous-pool-only 4 links
+      Mario Lemieux -> Jaromír Jágr [PIT 1990] -> T. J. Brodie [CGY 2017] -> Connor Bedard [CHI 2024]

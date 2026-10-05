@@ -30,7 +30,11 @@
           "@type": "Organization",
           "@id": "https://purplelink.llc/#organization",
           "name": "Purplelink LLC",
-          "url": "https://purplelink.llc/"
+          "url": "https://purplelink.llc/",
+          "sameAs": [
+            "https://www.youtube.com/@PurplelinkPL",
+            "https://github.com/purplelink-llc"
+          ]
         },
         {
           "@type": "WebPage",
@@ -159,7 +163,7 @@
               "name": "Can the ratings be faked?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, so treat the boards as friendly competition."
+                "text": "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Lockerlink and Gridlink results are checked for plausibility rather than replayed (Under the Cap seasons are replayed on the server from your roster), so treat the boards as friendly competition."
               }
             },
             {
@@ -167,7 +171,7 @@
               "name": "How do I join?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Play a few rated puzzles, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."
+                "text": "Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."
               }
             }
           ]
@@ -205,10 +209,10 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=e7bc0b7c72"></script>
 
-    <link rel="stylesheet" href="/styles.css?v=dfb93fb01d">
+    <link rel="stylesheet" href="/styles.css?v=471ced757c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/games/games.css?v=737bab1292">
-    <link rel="stylesheet" href="/games/games-ui.css?v=22115b2e5d">
+    <link rel="stylesheet" href="/games/games-ui.css?v=fb4f3df1c4">
     <script src="/site.js?v=d290a3807f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
 </head>
@@ -244,6 +248,15 @@
         <li><a class="dock-link" data-g="landlink" href="/games/landlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#landlink"/></svg><span class="dock-name">Landlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="atomlink" href="/games/atomlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#atomlink"/></svg><span class="dock-name">Atomlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li><a class="dock-link" data-g="prizelink" href="/games/prizelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#prizelink"/></svg><span class="dock-name">Prizelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="citylink" href="/games/citylink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#citylink"/></svg><span class="dock-name">Citylink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="peaklink" href="/games/peaklink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#peaklink"/></svg><span class="dock-name">Peaklink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="codelink" href="/games/codelink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#codelink"/></svg><span class="dock-name">Codelink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="thinkerlink" href="/games/thinkerlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#thinkerlink"/></svg><span class="dock-name">Thinkerlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="riverlink" href="/games/riverlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#riverlink"/></svg><span class="dock-name">Riverlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="wildlink" href="/games/wildlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#wildlink"/></svg><span class="dock-name">Wildlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="lockerlink" href="/games/lockerlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#lockerlink"/></svg><span class="dock-name">Lockerlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="gridlink" href="/games/gridlink/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#gridlink"/></svg><span class="dock-name">Gridlink</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
+        <li><a class="dock-link" data-g="under-the-cap" href="/games/under-the-cap/"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#under-the-cap"/></svg><span class="dock-name">Under the Cap</span><span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="chess-puzzles" data-x href="/games/chess-puzzles/" title="Chess Puzzles"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#chess-puzzles"/></svg><span class="dock-name">Chess Puzzles</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="sudoku-unlimited" data-x href="/games/sudoku-unlimited/" title="Sudoku Unlimited"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#sudoku-unlimited"/></svg><span class="dock-name">Sudoku Unlimited</span></a></li>
         <li class="dock-more"><a class="dock-link" data-g="leaderboard" data-x href="/games/leaderboard/" aria-current="page" title="Leaderboards"><svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#leaderboard"/></svg><span class="dock-name">Leaderboards</span></a></li>
@@ -263,6 +276,9 @@
         <div class="lb-tabs" role="group" aria-label="Choose a board">
           <button type="button" class="lb-tab" data-game="chess" aria-pressed="true">Chess Puzzles</button>
           <button type="button" class="lb-tab" data-game="sudoku" aria-pressed="false">Sudoku Unlimited</button>
+          <button type="button" class="lb-tab" data-game="lockerlink" aria-pressed="false">Lockerlink</button>
+          <button type="button" class="lb-tab" data-game="gridlink" aria-pressed="false">Gridlink</button>
+          <button type="button" class="lb-tab" data-game="under-the-cap" aria-pressed="false">Under the Cap</button>
           <span class="lb-gap"></span>
           <button type="button" class="lb-tab" data-board="all" aria-pressed="true">Rating</button>
           <button type="button" class="lb-tab" data-board="week" aria-pressed="false">This week</button>
@@ -277,16 +293,16 @@
         </div>
         <div class="games-prose">
           <h2>How the boards work</h2>
-          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
+          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Under the Cap update once a day, from your first result on that day's puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Under the Cap counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
           <h2>Questions</h2>
         <h3>Who appears on the leaderboards?</h3>
         <p>Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed.</p>
         <h3>What is the weekly board?</h3>
         <p>It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday.</p>
         <h3>Can the ratings be faked?</h3>
-        <p>The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, so treat the boards as friendly competition.</p>
+        <p>The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Lockerlink and Gridlink results are checked for plausibility rather than replayed (Under the Cap seasons are replayed on the server from your roster), so treat the boards as friendly competition.</p>
         <h3>How do I join?</h3>
-        <p>Play a few rated puzzles, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle.</p>
+        <p>Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle.</p>
         </div>
         <div class="games-prose">
           <h2>Tips for Leaderboards</h2>
@@ -306,15 +322,16 @@
       </div>
     </main>
 
-    <script src="/games/core.js?v=3a9dc8ccd1" defer></script>
+    <script src="/games/core.js?v=dc815518df" defer></script>
     <script src="/games/fx.js?v=d58b1092b2" defer></script>
     <script src="/games/sync.js?v=0269d4661c" defer></script>
-    <script src="/games/achievements.js?v=0e2605a1ab" defer></script>
-    <script src="/games/goals.js?v=13a5b4cb05" defer></script>
+    <script src="/games/achievements.js?v=a2d81a9d7c" defer></script>
+    <script src="/games/goals.js?v=ad780e951f" defer></script>
     <script src="/games/confetti.js?v=c90899c137" defer></script>
-    <script src="/games/dock.js?v=a52b682b21" defer></script>
-    <script src="/games/ratings.js?v=db6e9898b5" defer></script>
-    <script src="/games/leaderboard.js?v=7edebd4bcf" defer></script>
+    <script src="/games/dock.js?v=99d59c8de5" defer></script>
+    <script src="/games/share.js?v=ac6af8eddf" defer></script>
+    <script src="/games/ratings.js?v=41c8088082" defer></script>
+    <script src="/games/leaderboard.js?v=ba27a2eeeb" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">
@@ -344,6 +361,7 @@
             <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
             <li><a href="/tools/word-counter/">Word Counter</a></li>
             <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
             <li><a href="/tools/">All tools</a></li>
           </ul>
         </nav>

@@ -159,6 +159,21 @@
   });
 
   G.ready.then(function () { try { P.refresh(); } catch (e) { /* ignore */ } paintDock(); });
+
+  // On a finished puzzle opened again, show the percentile saved when it was finished (the games themselves only
+  // write it at the moment of finishing).
+  function fillPercentile() {
+    var main = document.querySelector("main[data-g]"), slug = main && main.getAttribute("data-g");
+    if (!slug) return;
+    var today = (G.getGame(slug) || {}).today;
+    if (!today || !today.done) return;
+    var res = G.savedPercentile ? G.savedPercentile(slug, today.idx) : null;
+    if (!res) return;
+    Array.prototype.forEach.call(document.querySelectorAll('[id$="-pct"]'), function (el) {
+      if (!el.textContent.trim()) el.textContent = G.describePercentile(res);
+    });
+  }
+  G.ready.then(function () { [400, 1500, 4000].forEach(function (ms) { window.setTimeout(fillPercentile, ms); }); });
   // later in the page's life (for example after a game ends) the dock refreshes with the reward card
   window.PLDock = { paint: paintDock };
 })();

@@ -5469,3 +5469,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   .house-promo-body { flex-basis: calc(100% - 64px); }
   .house-promo-cta { margin-left: 64px; }
 }
+
+/* The footer stays dark in the light theme, so its theme button needs light text there. */
+:root[data-theme="light"] .footer .theme-toggle { color: oklch(84% 0.03 300); border-color: oklch(44% 0.04 300); }
+:root[data-theme="light"] .footer .theme-toggle:hover { color: #fff; }

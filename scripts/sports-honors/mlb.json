@@ -1,0 +1,3021 @@
+{
+"Yogi Berra": {
+"raw": {
+"lahman": "berrayo01"
+},
+"cat": {
+"mvp": 3,
+"allstar": 15,
+"title": 10,
+"hof": 1
+},
+"score": 43.9
+},
+"Roy Campanella": {
+"raw": {
+"lahman": "camparo01"
+},
+"cat": {
+"mvp": 3,
+"allstar": 11,
+"title": 1,
+"hof": 1
+},
+"score": 32.8
+},
+"Elston Howard": {
+"raw": {
+"lahman": "howarel01"
+},
+"cat": {
+"minor": 2,
+"mvp": 1,
+"allstar": 9,
+"title": 4
+},
+"score": 20.1
+},
+"Johnny Bench": {
+"raw": {
+"lahman": "benchjo01"
+},
+"cat": {
+"minor": 11,
+"mvp": 2,
+"finalsmvp": 1,
+"allstar": 14,
+"title": 2,
+"hof": 1
+},
+"score": 39.7
+},
+"Thurman Munson": {
+"raw": {
+"lahman": "munsoth01"
+},
+"cat": {
+"minor": 4,
+"mvp": 1,
+"allstar": 7,
+"title": 2
+},
+"score": 18.7
+},
+"Carlton Fisk": {
+"raw": {
+"lahman": "fiskca01"
+},
+"cat": {
+"minor": 5,
+"allstar": 11,
+"hof": 1
+},
+"score": 17.8
+},
+"Ted Simmons": {
+"raw": {
+"lahman": "simmote01"
+},
+"cat": {
+"minor": 1,
+"allstar": 8,
+"hof": 1
+},
+"score": 12.7
+},
+"Gary Carter": {
+"raw": {
+"lahman": "cartega01"
+},
+"cat": {
+"minor": 8,
+"allstar": 11,
+"title": 1,
+"hof": 1
+},
+"score": 20.4
+},
+"Iv\u00e1n Rodr\u00edguez": {
+"raw": {
+"lahman": "rodriiv01"
+},
+"cat": {
+"minor": 21,
+"mvp": 1,
+"allstar": 14,
+"title": 1,
+"hof": 1
+},
+"score": 35.0
+},
+"Mike Piazza": {
+"raw": {
+"lahman": "piazzmi01"
+},
+"cat": {
+"minor": 11,
+"allstar": 12,
+"hof": 1
+},
+"score": 21.1
+},
+"Jorge Posada": {
+"raw": {
+"lahman": "posadjo01"
+},
+"cat": {
+"minor": 5,
+"allstar": 5,
+"title": 5
+},
+"score": 15.0
+},
+"Yadier Molina": {
+"raw": {
+"lahman": "molinya01"
+},
+"cat": {
+"minor": 10,
+"allstar": 10,
+"title": 2
+},
+"score": 16.6
+},
+"Joe Mauer": {
+"raw": {
+"lahman": "mauerjo01"
+},
+"cat": {
+"minor": 8,
+"mvp": 1,
+"allstar": 6,
+"hof": 1
+},
+"score": 22.6
+},
+"Buster Posey": {
+"raw": {
+"lahman": "poseybu01"
+},
+"cat": {
+"second": 1,
+"minor": 10,
+"mvp": 1,
+"allstar": 7,
+"title": 3
+},
+"score": 26.6
+},
+"Salvador P\u00e9rez": {
+"raw": {
+"lahman": "perezsa02"
+},
+"cat": {
+"first": 2,
+"second": 1,
+"minor": 10,
+"finalsmvp": 1,
+"allstar": 9,
+"title": 1
+},
+"score": 23.8
+},
+"J. T. Realmuto": {
+"raw": {
+"lahman": "realmjt01"
+},
+"cat": {
+"first": 2,
+"second": 1,
+"minor": 5,
+"allstar": 3
+},
+"score": 11.5
+},
+"Cal Raleigh": {
+"raw": {
+"lahman": "raleica01"
+},
+"cat": {
+"first": 1,
+"minor": 2,
+"allstar": 1
+},
+"score": 4.4
+},
+"Gil Hodges": {
+"raw": {
+"lahman": "hodgegi01"
+},
+"cat": {
+"minor": 3,
+"allstar": 8,
+"title": 2,
+"hof": 1
+},
+"score": 16.7
+},
+"Willie McCovey": {
+"raw": {
+"lahman": "mccovwi01"
+},
+"cat": {
+"mvp": 1,
+"minor": 1,
+"allstar": 6,
+"hof": 1
+},
+"score": 18.5
+},
+"Orlando Cepeda": {
+"raw": {
+"lahman": "cepedor01"
+},
+"cat": {
+"mvp": 1,
+"minor": 1,
+"allstar": 7,
+"title": 2,
+"hof": 1
+},
+"score": 21.6
+},
+"Harmon Killebrew": {
+"raw": {
+"lahman": "killeha01"
+},
+"cat": {
+"mvp": 1,
+"allstar": 11,
+"hof": 1
+},
+"score": 19.5
+},
+"Pete Rose": {
+"raw": {
+"lahman": "rosepe01"
+},
+"cat": {
+"minor": 4,
+"mvp": 1,
+"finalsmvp": 1,
+"allstar": 17,
+"title": 3
+},
+"score": 28.0
+},
+"Steve Garvey": {
+"raw": {
+"lahman": "garvest01"
+},
+"cat": {
+"minor": 6,
+"mvp": 1,
+"allstar": 10,
+"title": 1
+},
+"score": 21.1
+},
+"Eddie Murray": {
+"raw": {
+"lahman": "murraed02"
+},
+"cat": {
+"minor": 7,
+"allstar": 8,
+"title": 1,
+"hof": 1
+},
+"score": 19.0
+},
+"Keith Hernandez": {
+"raw": {
+"lahman": "hernake01"
+},
+"cat": {
+"minor": 13,
+"mvp": 1,
+"allstar": 5,
+"title": 2
+},
+"score": 21.0
+},
+"Don Mattingly": {
+"raw": {
+"lahman": "mattido01"
+},
+"cat": {
+"minor": 12,
+"mvp": 1,
+"allstar": 6
+},
+"score": 19.4
+},
+"Mark McGwire": {
+"raw": {
+"lahman": "mcgwima01"
+},
+"cat": {
+"minor": 5,
+"allstar": 12,
+"title": 1
+},
+"score": 14.6
+},
+"Frank Thomas": {
+"raw": {
+"lahman": "thomafr04"
+},
+"cat": {
+"mvp": 2,
+"minor": 4,
+"allstar": 5,
+"title": 1,
+"hof": 1
+},
+"score": 26.1
+},
+"Jeff Bagwell": {
+"raw": {
+"lahman": "bagweje01"
+},
+"cat": {
+"minor": 5,
+"mvp": 1,
+"allstar": 4,
+"hof": 1
+},
+"score": 19.3
+},
+"Jim Thome": {
+"raw": {
+"lahman": "thomeji01"
+},
+"cat": {
+"minor": 1,
+"allstar": 5,
+"hof": 1
+},
+"score": 10.7
+},
+"Todd Helton": {
+"raw": {
+"lahman": "heltoto01"
+},
+"cat": {
+"minor": 8,
+"allstar": 5,
+"hof": 1
+},
+"score": 16.4
+},
+"Albert Pujols": {
+"raw": {
+"lahman": "pujolal01"
+},
+"cat": {
+"minor": 13,
+"mvp": 3,
+"allstar": 11,
+"title": 2
+},
+"score": 41.7
+},
+"Miguel Cabrera": {
+"raw": {
+"lahman": "cabremi01"
+},
+"cat": {
+"minor": 9,
+"mvp": 2,
+"major": 1,
+"allstar": 12,
+"title": 1
+},
+"score": 32.9
+},
+"Joey Votto": {
+"raw": {
+"lahman": "vottojo01"
+},
+"cat": {
+"minor": 2,
+"mvp": 1,
+"allstar": 6
+},
+"score": 14.2
+},
+"Paul Goldschmidt": {
+"raw": {
+"lahman": "goldspa01"
+},
+"cat": {
+"first": 1,
+"minor": 11,
+"mvp": 1,
+"allstar": 7
+},
+"score": 23.8
+},
+"Freddie Freeman": {
+"raw": {
+"lahman": "freemfr01"
+},
+"cat": {
+"first": 2,
+"second": 3,
+"minor": 5,
+"mvp": 1,
+"finalsmvp": 1,
+"allstar": 9,
+"title": 3
+},
+"score": 31.7
+},
+"Pete Alonso": {
+"raw": {
+"lahman": "alonspe01"
+},
+"cat": {
+"first": 1,
+"minor": 2,
+"allstar": 5
+},
+"score": 9.2
+},
+"Jackie Robinson": {
+"raw": {
+"lahman": "robinja02"
+},
+"cat": {
+"mvp": 1,
+"minor": 1,
+"allstar": 7,
+"title": 1,
+"hof": 1
+},
+"score": 20.3
+},
+"Nellie Fox": {
+"raw": {
+"lahman": "foxne01"
+},
+"cat": {
+"minor": 3,
+"mvp": 1,
+"allstar": 12,
+"hof": 1
+},
+"score": 22.1
+},
+"Red Schoendienst": {
+"raw": {
+"lahman": "schoere01"
+},
+"cat": {
+"allstar": 10,
+"title": 2,
+"hof": 1
+},
+"score": 15.6
+},
+"Bill Mazeroski": {
+"raw": {
+"lahman": "mazerbi01"
+},
+"cat": {
+"minor": 8,
+"allstar": 7,
+"title": 2,
+"hof": 1
+},
+"score": 19.0
+},
+"Joe Morgan": {
+"raw": {
+"lahman": "morgajo02"
+},
+"cat": {
+"minor": 6,
+"mvp": 2,
+"allstar": 10,
+"title": 2,
+"hof": 1
+},
+"score": 31.8
+},
+"Rod Carew": {
+"raw": {
+"lahman": "carewro01"
+},
+"cat": {
+"mvp": 1,
+"minor": 1,
+"allstar": 18,
+"hof": 1
+},
+"score": 24.5
+},
+"Willie Randolph": {
+"raw": {
+"lahman": "randowi01"
+},
+"cat": {
+"minor": 1,
+"allstar": 6,
+"title": 2
+},
+"score": 9.3
+},
+"Lou Whitaker": {
+"raw": {
+"lahman": "whitalo01"
+},
+"cat": {
+"minor": 8,
+"allstar": 5,
+"title": 1
+},
+"score": 12.7
+},
+"Ryne Sandberg": {
+"raw": {
+"lahman": "sandbry01"
+},
+"cat": {
+"minor": 16,
+"mvp": 1,
+"allstar": 10,
+"hof": 1
+},
+"score": 28.8
+},
+"Roberto Alomar": {
+"raw": {
+"lahman": "alomaro01"
+},
+"cat": {
+"minor": 15,
+"allstar": 12,
+"title": 2,
+"hof": 1
+},
+"score": 26.5
+},
+"Craig Biggio": {
+"raw": {
+"lahman": "biggicr01"
+},
+"cat": {
+"minor": 9,
+"allstar": 7,
+"hof": 1
+},
+"score": 17.8
+},
+"Jeff Kent": {
+"raw": {
+"lahman": "kentje01"
+},
+"cat": {
+"mvp": 1,
+"minor": 4,
+"allstar": 5,
+"title": 1,
+"hof": 1
+},
+"score": 20.1
+},
+"Chase Utley": {
+"raw": {
+"lahman": "utleych01"
+},
+"cat": {
+"minor": 4,
+"allstar": 6,
+"title": 1
+},
+"score": 10.1
+},
+"Dustin Pedroia": {
+"raw": {
+"lahman": "pedrodu01"
+},
+"cat": {
+"minor": 6,
+"mvp": 1,
+"allstar": 4,
+"title": 3
+},
+"score": 18.9
+},
+"Robinson Can\u00f3": {
+"raw": {
+"lahman": "canoro01"
+},
+"cat": {
+"minor": 7,
+"allstar": 8,
+"title": 1
+},
+"score": 13.2
+},
+"Ian Kinsler": {
+"raw": {
+"lahman": "kinslia01"
+},
+"cat": {
+"minor": 2,
+"allstar": 4,
+"title": 1
+},
+"score": 6.7
+},
+"Jos\u00e9 Altuve": {
+"raw": {
+"lahman": "altuvjo01"
+},
+"cat": {
+"minor": 10,
+"first": 1,
+"second": 2,
+"mvp": 1,
+"allstar": 9,
+"title": 2
+},
+"score": 28.4
+},
+"Marcus Semien": {
+"raw": {
+"lahman": "semiema01"
+},
+"cat": {
+"first": 2,
+"second": 1,
+"minor": 4,
+"allstar": 3,
+"title": 1
+},
+"score": 12.1
+},
+"Eddie Mathews": {
+"raw": {
+"lahman": "matheed01"
+},
+"cat": {
+"allstar": 9,
+"title": 2,
+"hof": 1
+},
+"score": 15.1
+},
+"Ken Boyer": {
+"raw": {
+"lahman": "boyerke01"
+},
+"cat": {
+"minor": 5,
+"mvp": 1,
+"allstar": 7,
+"title": 1
+},
+"score": 17.3
+},
+"Ron Santo": {
+"raw": {
+"lahman": "santoro01"
+},
+"cat": {
+"minor": 5,
+"allstar": 9,
+"hof": 1
+},
+"score": 16.0
+},
+"Brooks Robinson": {
+"raw": {
+"lahman": "robinbr01"
+},
+"cat": {
+"minor": 16,
+"mvp": 1,
+"finalsmvp": 1,
+"allstar": 15,
+"title": 2,
+"hof": 1
+},
+"score": 34.8
+},
+"Graig Nettles": {
+"raw": {
+"lahman": "nettlgr01"
+},
+"cat": {
+"minor": 3,
+"allstar": 6,
+"title": 2
+},
+"score": 11.5
+},
+"Mike Schmidt": {
+"raw": {
+"lahman": "schmimi01"
+},
+"cat": {
+"minor": 16,
+"mvp": 3,
+"finalsmvp": 1,
+"allstar": 12,
+"title": 1,
+"hof": 1
+},
+"score": 46.1
+},
+"George Brett": {
+"raw": {
+"lahman": "brettge01"
+},
+"cat": {
+"minor": 5,
+"mvp": 1,
+"allstar": 13,
+"title": 1,
+"hof": 1
+},
+"score": 26.1
+},
+"Wade Boggs": {
+"raw": {
+"lahman": "boggswa01"
+},
+"cat": {
+"minor": 10,
+"allstar": 12,
+"title": 1,
+"hof": 1
+},
+"score": 21.6
+},
+"Paul Molitor": {
+"raw": {
+"lahman": "molitpa01"
+},
+"cat": {
+"minor": 4,
+"finalsmvp": 1,
+"allstar": 7,
+"title": 1,
+"hof": 1
+},
+"score": 18.6
+},
+"Chipper Jones": {
+"raw": {
+"lahman": "jonesch06"
+},
+"cat": {
+"mvp": 1,
+"minor": 2,
+"allstar": 8,
+"title": 1,
+"hof": 1
+},
+"score": 20.7
+},
+"Scott Rolen": {
+"raw": {
+"lahman": "rolensc01"
+},
+"cat": {
+"minor": 10,
+"allstar": 7,
+"title": 1,
+"hof": 1
+},
+"score": 19.9
+},
+"Adri\u00e1n Beltr\u00e9": {
+"raw": {
+"lahman": "beltrad01"
+},
+"cat": {
+"minor": 9,
+"allstar": 4,
+"hof": 1
+},
+"score": 15.3
+},
+"David Wright": {
+"raw": {
+"lahman": "wrighda03"
+},
+"cat": {
+"minor": 4,
+"allstar": 7
+},
+"score": 9.3
+},
+"Evan Longoria": {
+"raw": {
+"lahman": "longoev01"
+},
+"cat": {
+"minor": 5,
+"allstar": 3
+},
+"score": 7.3
+},
+"Josh Donaldson": {
+"raw": {
+"lahman": "donaljo02"
+},
+"cat": {
+"minor": 4,
+"mvp": 1,
+"allstar": 3
+},
+"score": 12.9
+},
+"Nolan Arenado": {
+"raw": {
+"lahman": "arenano01"
+},
+"cat": {
+"second": 1,
+"minor": 15,
+"allstar": 8
+},
+"score": 17.1
+},
+"Manny Machado": {
+"raw": {
+"lahman": "machama01"
+},
+"cat": {
+"first": 2,
+"second": 1,
+"minor": 5,
+"allstar": 7
+},
+"score": 15.0
+},
+"Kris Bryant": {
+"raw": {
+"lahman": "bryankr01"
+},
+"cat": {
+"minor": 2,
+"mvp": 1,
+"allstar": 4,
+"title": 1
+},
+"score": 14.3
+},
+"Alex Bregman": {
+"raw": {
+"lahman": "bregmal01"
+},
+"cat": {
+"second": 1,
+"minor": 2,
+"allstar": 3,
+"title": 2
+},
+"score": 8.0
+},
+"Jos\u00e9 Ram\u00edrez": {
+"raw": {
+"lahman": "ramirjo01"
+},
+"cat": {
+"first": 2,
+"second": 2,
+"minor": 6,
+"allstar": 7
+},
+"score": 16.7
+},
+"Rafael Devers": {
+"raw": {
+"lahman": "deverra01"
+},
+"cat": {
+"second": 1,
+"minor": 2,
+"allstar": 3,
+"title": 1
+},
+"score": 6.7
+},
+"Pee Wee Reese": {
+"raw": {
+"lahman": "reesepe01"
+},
+"cat": {
+"allstar": 10,
+"title": 1,
+"hof": 1
+},
+"score": 14.3
+},
+"Ernie Banks": {
+"raw": {
+"lahman": "bankser01"
+},
+"cat": {
+"minor": 1,
+"mvp": 2,
+"allstar": 11,
+"hof": 1
+},
+"score": 26.2
+},
+"Luis Aparicio": {
+"raw": {
+"lahman": "aparilu01"
+},
+"cat": {
+"minor": 10,
+"allstar": 10,
+"title": 1,
+"hof": 1
+},
+"score": 21.1
+},
+"Maury Wills": {
+"raw": {
+"lahman": "willsma01"
+},
+"cat": {
+"minor": 2,
+"mvp": 1,
+"allstar": 5,
+"title": 3
+},
+"score": 16.3
+},
+"Dave Concepci\u00f3n": {
+"raw": {
+"lahman": "conceda01"
+},
+"cat": {
+"minor": 7,
+"allstar": 9,
+"title": 2
+},
+"score": 15.0
+},
+"Robin Yount": {
+"raw": {
+"lahman": "yountro01"
+},
+"cat": {
+"minor": 4,
+"mvp": 2,
+"allstar": 3,
+"hof": 1
+},
+"score": 22.8
+},
+"Ozzie Smith": {
+"raw": {
+"lahman": "smithoz01"
+},
+"cat": {
+"minor": 15,
+"allstar": 15,
+"title": 1,
+"hof": 1
+},
+"score": 25.6
+},
+"Cal Ripken Jr.": {
+"raw": {
+"lahman": "ripkeca01"
+},
+"cat": {
+"minor": 11,
+"mvp": 2,
+"allstar": 19,
+"title": 1,
+"hof": 1
+},
+"score": 38.6
+},
+"Alan Trammell": {
+"raw": {
+"lahman": "trammal01"
+},
+"cat": {
+"minor": 7,
+"finalsmvp": 1,
+"allstar": 6,
+"title": 1,
+"hof": 1
+},
+"score": 20.2
+},
+"Barry Larkin": {
+"raw": {
+"lahman": "larkiba01"
+},
+"cat": {
+"minor": 12,
+"mvp": 1,
+"allstar": 12,
+"title": 1,
+"hof": 1
+},
+"score": 28.7
+},
+"Omar Vizquel": {
+"raw": {
+"lahman": "vizquom01"
+},
+"cat": {
+"minor": 11,
+"allstar": 3
+},
+"score": 8.9
+},
+"Derek Jeter": {
+"raw": {
+"lahman": "jeterde01"
+},
+"cat": {
+"minor": 13,
+"finalsmvp": 1,
+"allstar": 14,
+"title": 5,
+"hof": 1
+},
+"score": 36.0
+},
+"Alex Rodriguez": {
+"raw": {
+"lahman": "rodrial01"
+},
+"cat": {
+"minor": 16,
+"mvp": 3,
+"allstar": 14,
+"title": 1
+},
+"score": 42.3
+},
+"Nomar Garciaparra": {
+"raw": {
+"lahman": "garcino01"
+},
+"cat": {
+"minor": 3,
+"allstar": 6,
+"title": 1
+},
+"score": 10.5
+},
+"Miguel Tejada": {
+"raw": {
+"lahman": "tejadmi01"
+},
+"cat": {
+"mvp": 1,
+"minor": 2,
+"allstar": 6
+},
+"score": 13.4
+},
+"Jimmy Rollins": {
+"raw": {
+"lahman": "rolliji01"
+},
+"cat": {
+"minor": 5,
+"mvp": 1,
+"allstar": 3,
+"title": 1
+},
+"score": 13.8
+},
+"Troy Tulowitzki": {
+"raw": {
+"lahman": "tulowtr01"
+},
+"cat": {
+"minor": 4,
+"allstar": 5
+},
+"score": 7.8
+},
+"Francisco Lindor": {
+"raw": {
+"lahman": "lindofr01"
+},
+"cat": {
+"second": 3,
+"minor": 6,
+"allstar": 5
+},
+"score": 12.2
+},
+"Carlos Correa": {
+"raw": {
+"lahman": "correca01"
+},
+"cat": {
+"minor": 2,
+"allstar": 3,
+"title": 1
+},
+"score": 6.5
+},
+"Corey Seager": {
+"raw": {
+"lahman": "seageco01"
+},
+"cat": {
+"first": 1,
+"second": 1,
+"minor": 5,
+"finalsmvp": 2,
+"allstar": 5,
+"title": 2
+},
+"score": 21.7
+},
+"Trea Turner": {
+"raw": {
+"lahman": "turnetr01"
+},
+"cat": {
+"first": 1,
+"second": 1,
+"minor": 1,
+"allstar": 3,
+"title": 1
+},
+"score": 8.0
+},
+"Xander Bogaerts": {
+"raw": {
+"lahman": "bogaexa01"
+},
+"cat": {
+"first": 1,
+"minor": 5,
+"allstar": 4,
+"title": 2
+},
+"score": 12.1
+},
+"Fernando Tatis Jr.": {
+"raw": {
+"lahman": "tatisfe02"
+},
+"cat": {
+"first": 2,
+"minor": 4,
+"allstar": 3
+},
+"score": 9.8
+},
+"Bobby Witt Jr.": {
+"raw": {
+"lahman": "wittbo02"
+},
+"cat": {
+"first": 2,
+"minor": 4,
+"allstar": 2
+},
+"score": 8.8
+},
+"Gunnar Henderson": {
+"raw": {
+"lahman": "hendegu01"
+},
+"cat": {
+"minor": 2,
+"allstar": 1
+},
+"score": 3.2
+},
+"Ted Williams": {
+"raw": {
+"lahman": "willite01"
+},
+"cat": {
+"mvp": 2,
+"major": 2,
+"allstar": 17,
+"hof": 1
+},
+"score": 34.5
+},
+"Stan Musial": {
+"raw": {
+"lahman": "musiast01"
+},
+"cat": {
+"mvp": 3,
+"allstar": 20,
+"title": 3,
+"hof": 1
+},
+"score": 39.9
+},
+"Ralph Kiner": {
+"raw": {
+"lahman": "kinerra01"
+},
+"cat": {
+"allstar": 6,
+"hof": 1
+},
+"score": 11.0
+},
+"Carl Yastrzemski": {
+"raw": {
+"lahman": "yastrca01"
+},
+"cat": {
+"minor": 7,
+"mvp": 1,
+"major": 1,
+"allstar": 18,
+"hof": 1
+},
+"score": 30.6
+},
+"Lou Brock": {
+"raw": {
+"lahman": "brocklo01"
+},
+"cat": {
+"allstar": 6,
+"title": 2,
+"hof": 1
+},
+"score": 13.6
+},
+"Billy Williams": {
+"raw": {
+"lahman": "willibi01"
+},
+"cat": {
+"minor": 1,
+"allstar": 6,
+"hof": 1
+},
+"score": 12.5
+},
+"Jim Rice": {
+"raw": {
+"lahman": "riceji01"
+},
+"cat": {
+"mvp": 1,
+"minor": 2,
+"allstar": 8,
+"hof": 1
+},
+"score": 19.4
+},
+"Rickey Henderson": {
+"raw": {
+"lahman": "henderi01"
+},
+"cat": {
+"minor": 5,
+"mvp": 1,
+"allstar": 10,
+"title": 2,
+"hof": 1
+},
+"score": 25.9
+},
+"Tim Raines": {
+"raw": {
+"lahman": "raineti01"
+},
+"cat": {
+"minor": 1,
+"allstar": 7,
+"title": 2,
+"hof": 1
+},
+"score": 14.8
+},
+"Barry Bonds": {
+"raw": {
+"lahman": "bondsba01"
+},
+"cat": {
+"minor": 23,
+"mvp": 7,
+"allstar": 14
+},
+"score": 64.7
+},
+"Albert Belle": {
+"raw": {
+"lahman": "belleal01"
+},
+"cat": {
+"minor": 5,
+"allstar": 5
+},
+"score": 8.5
+},
+"Manny Ramirez": {
+"raw": {
+"lahman": "ramirma02"
+},
+"cat": {
+"minor": 11,
+"finalsmvp": 1,
+"allstar": 12,
+"title": 2
+},
+"score": 22.9
+},
+"Carl Crawford": {
+"raw": {
+"lahman": "crawfca02"
+},
+"cat": {
+"minor": 2,
+"allstar": 4
+},
+"score": 5.4
+},
+"Matt Holliday": {
+"raw": {
+"lahman": "hollima01"
+},
+"cat": {
+"minor": 5,
+"allstar": 7,
+"title": 1
+},
+"score": 12.1
+},
+"Ryan Braun": {
+"raw": {
+"lahman": "braunry02"
+},
+"cat": {
+"mvp": 1,
+"minor": 6,
+"allstar": 5
+},
+"score": 16.0
+},
+"Christian Yelich": {
+"raw": {
+"lahman": "yelicch01"
+},
+"cat": {
+"first": 1,
+"minor": 6,
+"mvp": 1,
+"allstar": 3
+},
+"score": 16.8
+},
+"Yordan \u00c1lvarez": {
+"raw": {
+"lahman": "alvaryo01"
+},
+"cat": {
+"minor": 3,
+"first": 1,
+"second": 4,
+"allstar": 3,
+"title": 1
+},
+"score": 14.0
+},
+"Willie Mays": {
+"raw": {
+"lahman": "mayswi01"
+},
+"cat": {
+"minor": 13,
+"mvp": 2,
+"allstar": 20,
+"title": 1,
+"hof": 1
+},
+"score": 39.1
+},
+"Mickey Mantle": {
+"raw": {
+"lahman": "mantlmi01"
+},
+"cat": {
+"minor": 1,
+"mvp": 3,
+"major": 1,
+"allstar": 16,
+"title": 7,
+"hof": 1
+},
+"score": 46.2
+},
+"Duke Snider": {
+"raw": {
+"lahman": "snidedu01"
+},
+"cat": {
+"allstar": 8,
+"title": 2,
+"hof": 1
+},
+"score": 14.6
+},
+"Richie Ashburn": {
+"raw": {
+"lahman": "ashburi01"
+},
+"cat": {
+"allstar": 5,
+"hof": 1
+},
+"score": 10.0
+},
+"Fred Lynn": {
+"raw": {
+"lahman": "lynnfr01"
+},
+"cat": {
+"minor": 6,
+"mvp": 1,
+"allstar": 9
+},
+"score": 19.3
+},
+"Dale Murphy": {
+"raw": {
+"lahman": "murphda05"
+},
+"cat": {
+"minor": 9,
+"mvp": 2,
+"allstar": 7
+},
+"score": 24.8
+},
+"Kirby Puckett": {
+"raw": {
+"lahman": "puckeki01"
+},
+"cat": {
+"minor": 13,
+"allstar": 10,
+"title": 2,
+"hof": 1
+},
+"score": 25.5
+},
+"Kenny Lofton": {
+"raw": {
+"lahman": "loftoke01"
+},
+"cat": {
+"minor": 4,
+"allstar": 6
+},
+"score": 8.8
+},
+"Ken Griffey Jr.": {
+"raw": {
+"lahman": "griffke02"
+},
+"cat": {
+"minor": 18,
+"mvp": 1,
+"allstar": 13,
+"hof": 1
+},
+"score": 31.6
+},
+"Bernie Williams": {
+"raw": {
+"lahman": "willibe02"
+},
+"cat": {
+"minor": 6,
+"allstar": 5,
+"title": 4
+},
+"score": 15.2
+},
+"Jim Edmonds": {
+"raw": {
+"lahman": "edmonji01"
+},
+"cat": {
+"minor": 9,
+"allstar": 4,
+"title": 1
+},
+"score": 10.9
+},
+"Andruw Jones": {
+"raw": {
+"lahman": "jonesan01"
+},
+"cat": {
+"minor": 12,
+"allstar": 5
+},
+"score": 12.8
+},
+"Carlos Beltr\u00e1n": {
+"raw": {
+"lahman": "beltrca01"
+},
+"cat": {
+"minor": 6,
+"allstar": 9,
+"title": 1
+},
+"score": 13.8
+},
+"Mike Trout": {
+"raw": {
+"lahman": "troutmi01"
+},
+"cat": {
+"first": 3,
+"minor": 12,
+"mvp": 3,
+"allstar": 11
+},
+"score": 42.2
+},
+"Andrew McCutchen": {
+"raw": {
+"lahman": "mccutan01"
+},
+"cat": {
+"minor": 5,
+"mvp": 1,
+"allstar": 5
+},
+"score": 14.5
+},
+"Cody Bellinger": {
+"raw": {
+"lahman": "bellico01"
+},
+"cat": {
+"first": 1,
+"second": 1,
+"minor": 6,
+"mvp": 1,
+"allstar": 2,
+"title": 1
+},
+"score": 18.4
+},
+"Julio Rodr\u00edguez": {
+"raw": {
+"lahman": "rodriju01"
+},
+"cat": {
+"first": 1,
+"second": 1,
+"minor": 3,
+"allstar": 3
+},
+"score": 8.9
+},
+"Corbin Carroll": {
+"raw": {
+"lahman": "carroco02"
+},
+"cat": {
+"first": 1,
+"second": 1,
+"minor": 2,
+"allstar": 2
+},
+"score": 7.2
+},
+"Hank Aaron": {
+"raw": {
+"lahman": "aaronha01"
+},
+"cat": {
+"minor": 3,
+"mvp": 1,
+"allstar": 21,
+"title": 1,
+"hof": 1
+},
+"score": 27.9
+},
+"Roberto Clemente": {
+"raw": {
+"lahman": "clemero01"
+},
+"cat": {
+"minor": 12,
+"mvp": 1,
+"finalsmvp": 1,
+"allstar": 12,
+"title": 2,
+"hof": 1
+},
+"score": 31.9
+},
+"Frank Robinson": {
+"raw": {
+"lahman": "robinfr02"
+},
+"cat": {
+"minor": 2,
+"mvp": 2,
+"major": 1,
+"finalsmvp": 1,
+"allstar": 12,
+"title": 2,
+"hof": 1
+},
+"score": 36.8
+},
+"Al Kaline": {
+"raw": {
+"lahman": "kalinal01"
+},
+"cat": {
+"minor": 10,
+"allstar": 15,
+"title": 1,
+"hof": 1
+},
+"score": 22.4
+},
+"Rocky Colavito": {
+"raw": {
+"lahman": "colavro01"
+},
+"cat": {
+"allstar": 6
+},
+"score": 6.0
+},
+"Reggie Jackson": {
+"raw": {
+"lahman": "jacksre01"
+},
+"cat": {
+"mvp": 1,
+"minor": 2,
+"finalsmvp": 2,
+"allstar": 14,
+"title": 5,
+"hof": 1
+},
+"score": 34.9
+},
+"Dave Parker": {
+"raw": {
+"lahman": "parkeda01"
+},
+"cat": {
+"minor": 6,
+"mvp": 1,
+"allstar": 7,
+"title": 2,
+"hof": 1
+},
+"score": 24.3
+},
+"Dave Winfield": {
+"raw": {
+"lahman": "winfida01"
+},
+"cat": {
+"minor": 13,
+"allstar": 12,
+"title": 1,
+"hof": 1
+},
+"score": 24.1
+},
+"Andre Dawson": {
+"raw": {
+"lahman": "dawsoan01"
+},
+"cat": {
+"minor": 13,
+"mvp": 1,
+"allstar": 8,
+"hof": 1
+},
+"score": 27.2
+},
+"Tony Gwynn": {
+"raw": {
+"lahman": "gwynnto01"
+},
+"cat": {
+"minor": 12,
+"allstar": 15,
+"hof": 1
+},
+"score": 23.6
+},
+"Larry Walker": {
+"raw": {
+"lahman": "walkela01"
+},
+"cat": {
+"minor": 10,
+"mvp": 1,
+"allstar": 5,
+"hof": 1
+},
+"score": 22.6
+},
+"Sammy Sosa": {
+"raw": {
+"lahman": "sosasa01"
+},
+"cat": {
+"minor": 7,
+"mvp": 1,
+"allstar": 7
+},
+"score": 18.2
+},
+"Vladimir Guerrero": {
+"raw": {
+"lahman": "guerrvl01"
+},
+"cat": {
+"mvp": 1,
+"minor": 8,
+"allstar": 9,
+"hof": 1
+},
+"score": 23.4
+},
+"Gary Sheffield": {
+"raw": {
+"lahman": "sheffga01"
+},
+"cat": {
+"minor": 5,
+"allstar": 9,
+"title": 1
+},
+"score": 12.3
+},
+"Ichiro Suzuki": {
+"raw": {
+"lahman": "suzukic01"
+},
+"cat": {
+"minor": 14,
+"mvp": 1,
+"allstar": 10,
+"hof": 1
+},
+"score": 28.2
+},
+"Jos\u00e9 Bautista": {
+"raw": {
+"lahman": "bautijo02"
+},
+"cat": {
+"minor": 5,
+"allstar": 6
+},
+"score": 11.1
+},
+"Giancarlo Stanton": {
+"raw": {
+"lahman": "stantmi03"
+},
+"cat": {
+"minor": 5,
+"mvp": 1,
+"allstar": 5
+},
+"score": 16.9
+},
+"Bryce Harper": {
+"raw": {
+"lahman": "harpebr03"
+},
+"cat": {
+"first": 1,
+"second": 1,
+"minor": 8,
+"mvp": 2,
+"allstar": 8
+},
+"score": 30.8
+},
+"Mookie Betts": {
+"raw": {
+"lahman": "bettsmo01"
+},
+"cat": {
+"first": 4,
+"second": 1,
+"minor": 12,
+"mvp": 1,
+"allstar": 8,
+"title": 4
+},
+"score": 35.6
+},
+"Aaron Judge": {
+"raw": {
+"lahman": "judgeaa01"
+},
+"cat": {
+"first": 4,
+"second": 1,
+"minor": 9,
+"mvp": 3,
+"allstar": 7
+},
+"score": 43.0
+},
+"Ronald Acu\u00f1a Jr.": {
+"raw": {
+"lahman": "acunaro01"
+},
+"cat": {
+"first": 1,
+"second": 2,
+"minor": 6,
+"mvp": 1,
+"allstar": 5,
+"title": 1
+},
+"score": 22.4
+},
+"Juan Soto": {
+"raw": {
+"lahman": "sotoju01"
+},
+"cat": {
+"first": 4,
+"second": 1,
+"minor": 6,
+"allstar": 4,
+"title": 1
+},
+"score": 18.5
+},
+"Kyle Tucker": {
+"raw": {
+"lahman": "tuckeky01"
+},
+"cat": {
+"second": 3,
+"minor": 3,
+"allstar": 4,
+"title": 1
+},
+"score": 10.4
+},
+"Shohei Ohtani": {
+"raw": {
+"lahman": "ohtansh01"
+},
+"cat": {
+"first": 6,
+"second": 2,
+"minor": 9,
+"mvp": 4,
+"allstar": 5,
+"title": 2
+},
+"score": 55.9
+},
+"Warren Spahn": {
+"raw": {
+"lahman": "spahnwa01"
+},
+"cat": {
+"major": 1,
+"allstar": 14,
+"title": 1,
+"hof": 1
+},
+"score": 20.3
+},
+"Whitey Ford": {
+"raw": {
+"lahman": "fordwh01"
+},
+"cat": {
+"major": 1,
+"finalsmvp": 1,
+"allstar": 8,
+"title": 6,
+"hof": 1
+},
+"score": 26.8
+},
+"Robin Roberts": {
+"raw": {
+"lahman": "roberro01"
+},
+"cat": {
+"allstar": 7,
+"hof": 1
+},
+"score": 11.5
+},
+"Early Wynn": {
+"raw": {
+"lahman": "wynnea01"
+},
+"cat": {
+"major": 1,
+"allstar": 7,
+"hof": 1
+},
+"score": 15.5
+},
+"Don Drysdale": {
+"raw": {
+"lahman": "drysddo01"
+},
+"cat": {
+"major": 1,
+"allstar": 8,
+"title": 3,
+"hof": 1
+},
+"score": 19.9
+},
+"Sandy Koufax": {
+"raw": {
+"lahman": "koufasa01"
+},
+"cat": {
+"major": 6,
+"mvp": 1,
+"finalsmvp": 2,
+"allstar": 6,
+"title": 4,
+"hof": 1
+},
+"score": 49.2
+},
+"Bob Gibson": {
+"raw": {
+"lahman": "gibsobo01"
+},
+"cat": {
+"major": 2,
+"minor": 9,
+"mvp": 1,
+"finalsmvp": 2,
+"allstar": 8,
+"title": 2,
+"hof": 1
+},
+"score": 39.9
+},
+"Juan Marichal": {
+"raw": {
+"lahman": "maricju01"
+},
+"cat": {
+"allstar": 9,
+"hof": 1
+},
+"score": 12.5
+},
+"Jim Bunning": {
+"raw": {
+"lahman": "bunniji01"
+},
+"cat": {
+"allstar": 7,
+"hof": 1
+},
+"score": 11.5
+},
+"Denny McLain": {
+"raw": {
+"lahman": "mclaide01"
+},
+"cat": {
+"major": 2,
+"mvp": 1,
+"allstar": 3,
+"title": 2
+},
+"score": 19.6
+},
+"Jim Palmer": {
+"raw": {
+"lahman": "palmeji01"
+},
+"cat": {
+"major": 3,
+"minor": 4,
+"allstar": 6,
+"title": 3,
+"hof": 1
+},
+"score": 29.7
+},
+"Tom Seaver": {
+"raw": {
+"lahman": "seaveto01"
+},
+"cat": {
+"major": 3,
+"minor": 1,
+"allstar": 12,
+"title": 1,
+"hof": 1
+},
+"score": 28.8
+},
+"Steve Carlton": {
+"raw": {
+"lahman": "carltst01"
+},
+"cat": {
+"major": 5,
+"minor": 1,
+"allstar": 10,
+"title": 3,
+"hof": 1
+},
+"score": 36.6
+},
+"Gaylord Perry": {
+"raw": {
+"lahman": "perryga01"
+},
+"cat": {
+"major": 2,
+"allstar": 5,
+"hof": 1
+},
+"score": 18.0
+},
+"Catfish Hunter": {
+"raw": {
+"lahman": "hunteca01"
+},
+"cat": {
+"major": 1,
+"allstar": 8,
+"title": 5,
+"hof": 1
+},
+"score": 22.5
+},
+"Vida Blue": {
+"raw": {
+"lahman": "bluevi01"
+},
+"cat": {
+"major": 1,
+"mvp": 1,
+"allstar": 6,
+"title": 3
+},
+"score": 19.9
+},
+"Don Sutton": {
+"raw": {
+"lahman": "suttodo01"
+},
+"cat": {
+"allstar": 4,
+"title": 1,
+"hof": 1
+},
+"score": 10.3
+},
+"Phil Niekro": {
+"raw": {
+"lahman": "niekrph01"
+},
+"cat": {
+"minor": 5,
+"allstar": 5,
+"hof": 1
+},
+"score": 13.5
+},
+"Fergie Jenkins": {
+"raw": {
+"lahman": "jenkife01"
+},
+"cat": {
+"major": 1,
+"allstar": 3,
+"hof": 1
+},
+"score": 12.0
+},
+"Bert Blyleven": {
+"raw": {
+"lahman": "blylebe01"
+},
+"cat": {
+"allstar": 2,
+"title": 2,
+"hof": 1
+},
+"score": 9.6
+},
+"Nolan Ryan": {
+"raw": {
+"lahman": "ryanno01"
+},
+"cat": {
+"allstar": 8,
+"title": 1,
+"hof": 1
+},
+"score": 13.3
+},
+"Dwight Gooden": {
+"raw": {
+"lahman": "goodedw01"
+},
+"cat": {
+"major": 2,
+"minor": 2,
+"allstar": 4,
+"title": 3
+},
+"score": 17.1
+},
+"Orel Hershiser": {
+"raw": {
+"lahman": "hershor01"
+},
+"cat": {
+"minor": 4,
+"major": 1,
+"finalsmvp": 1,
+"allstar": 3,
+"title": 1
+},
+"score": 15.7
+},
+"Jack Morris": {
+"raw": {
+"lahman": "morrija02"
+},
+"cat": {
+"finalsmvp": 1,
+"allstar": 5,
+"title": 4,
+"hof": 1
+},
+"score": 18.2
+},
+"Bret Saberhagen": {
+"raw": {
+"lahman": "saberbr01"
+},
+"cat": {
+"major": 2,
+"minor": 1,
+"finalsmvp": 1,
+"allstar": 3,
+"title": 1
+},
+"score": 16.0
+},
+"Roger Clemens": {
+"raw": {
+"lahman": "clemero02"
+},
+"cat": {
+"major": 9,
+"mvp": 1,
+"allstar": 11,
+"title": 2
+},
+"score": 49.1
+},
+"Greg Maddux": {
+"raw": {
+"lahman": "maddugr01"
+},
+"cat": {
+"major": 4,
+"minor": 18,
+"allstar": 8,
+"title": 1,
+"hof": 1
+},
+"score": 37.7
+},
+"Tom Glavine": {
+"raw": {
+"lahman": "glavito02"
+},
+"cat": {
+"major": 2,
+"minor": 4,
+"finalsmvp": 1,
+"allstar": 10,
+"title": 1,
+"hof": 1
+},
+"score": 28.1
+},
+"John Smoltz": {
+"raw": {
+"lahman": "smoltjo01"
+},
+"cat": {
+"major": 1,
+"minor": 3,
+"allstar": 8,
+"title": 1,
+"hof": 1
+},
+"score": 21.0
+},
+"Randy Johnson": {
+"raw": {
+"lahman": "johnsra05"
+},
+"cat": {
+"major": 6,
+"finalsmvp": 1,
+"allstar": 10,
+"title": 1,
+"hof": 1
+},
+"score": 40.3
+},
+"Pedro Mart\u00ednez": {
+"raw": {
+"lahman": "martipe02"
+},
+"cat": {
+"major": 4,
+"allstar": 8,
+"title": 1,
+"hof": 1
+},
+"score": 28.3
+},
+"Curt Schilling": {
+"raw": {
+"lahman": "schilcu01"
+},
+"cat": {
+"minor": 1,
+"finalsmvp": 1,
+"allstar": 6,
+"title": 3
+},
+"score": 14.4
+},
+"Mike Mussina": {
+"raw": {
+"lahman": "mussimi01"
+},
+"cat": {
+"minor": 7,
+"allstar": 5,
+"hof": 1
+},
+"score": 14.6
+},
+"David Cone": {
+"raw": {
+"lahman": "coneda01"
+},
+"cat": {
+"major": 1,
+"allstar": 5,
+"title": 5
+},
+"score": 15.5
+},
+"Roy Halladay": {
+"raw": {
+"lahman": "hallaro01"
+},
+"cat": {
+"major": 2,
+"allstar": 8,
+"hof": 1
+},
+"score": 20.0
+},
+"Andy Pettitte": {
+"raw": {
+"lahman": "pettian01"
+},
+"cat": {
+"minor": 1,
+"allstar": 3,
+"title": 5
+},
+"score": 11.0
+},
+"Johan Santana": {
+"raw": {
+"lahman": "santajo01"
+},
+"cat": {
+"major": 3,
+"minor": 1,
+"allstar": 4
+},
+"score": 15.7
+},
+"CC Sabathia": {
+"raw": {
+"lahman": "sabatcc01"
+},
+"cat": {
+"minor": 1,
+"major": 1,
+"allstar": 6,
+"title": 1,
+"hof": 1
+},
+"score": 17.8
+},
+"Tim Lincecum": {
+"raw": {
+"lahman": "linceti01"
+},
+"cat": {
+"major": 2,
+"allstar": 4,
+"title": 3
+},
+"score": 15.9
+},
+"Justin Verlander": {
+"raw": {
+"lahman": "verlaju01"
+},
+"cat": {
+"minor": 3,
+"first": 2,
+"major": 4,
+"mvp": 1,
+"allstar": 9,
+"title": 2
+},
+"score": 39.1
+},
+"Max Scherzer": {
+"raw": {
+"lahman": "scherma01"
+},
+"cat": {
+"first": 2,
+"second": 1,
+"major": 3,
+"allstar": 8,
+"title": 2
+},
+"score": 26.6
+},
+"Clayton Kershaw": {
+"raw": {
+"lahman": "kershcl01"
+},
+"cat": {
+"second": 1,
+"major": 4,
+"minor": 1,
+"mvp": 1,
+"allstar": 11,
+"title": 3
+},
+"score": 35.1
+},
+"F\u00e9lix Hern\u00e1ndez": {
+"raw": {
+"lahman": "hernafe02"
+},
+"cat": {
+"major": 1,
+"allstar": 6
+},
+"score": 10.0
+},
+"Zack Greinke": {
+"raw": {
+"lahman": "greinza01"
+},
+"cat": {
+"second": 1,
+"major": 1,
+"minor": 8,
+"allstar": 4
+},
+"score": 14.6
+},
+"Adam Wainwright": {
+"raw": {
+"lahman": "wainwad01"
+},
+"cat": {
+"minor": 3,
+"allstar": 3,
+"title": 1
+},
+"score": 6.4
+},
+"Chris Carpenter": {
+"raw": {
+"lahman": "carpech01"
+},
+"cat": {
+"major": 1,
+"allstar": 3,
+"title": 2
+},
+"score": 9.6
+},
+"Cliff Lee": {
+"raw": {
+"lahman": "leecl02"
+},
+"cat": {
+"minor": 1,
+"major": 1,
+"allstar": 4
+},
+"score": 9.0
+},
+"Jon Lester": {
+"raw": {
+"lahman": "lestejo01"
+},
+"cat": {
+"minor": 1,
+"allstar": 5,
+"title": 3
+},
+"score": 10.4
+},
+"David Price": {
+"raw": {
+"lahman": "priceda01"
+},
+"cat": {
+"minor": 1,
+"major": 1,
+"allstar": 5,
+"title": 1
+},
+"score": 11.3
+},
+"Madison Bumgarner": {
+"raw": {
+"lahman": "bumgama01"
+},
+"cat": {
+"minor": 3,
+"finalsmvp": 1,
+"allstar": 4,
+"title": 3
+},
+"score": 13.8
+},
+"Chris Sale": {
+"raw": {
+"lahman": "salech01"
+},
+"cat": {
+"first": 1,
+"minor": 2,
+"major": 2,
+"allstar": 9,
+"title": 1
+},
+"score": 19.5
+},
+"Jacob deGrom": {
+"raw": {
+"lahman": "degroja01"
+},
+"cat": {
+"first": 2,
+"minor": 2,
+"major": 2,
+"allstar": 5,
+"title": 1
+},
+"score": 20.8
+},
+"Gerrit Cole": {
+"raw": {
+"lahman": "colege01"
+},
+"cat": {
+"first": 3,
+"second": 1,
+"major": 1,
+"allstar": 6
+},
+"score": 17.0
+},
+"Corey Kluber": {
+"raw": {
+"lahman": "klubeco01"
+},
+"cat": {
+"major": 2,
+"allstar": 3
+},
+"score": 11.0
+},
+"Stephen Strasburg": {
+"raw": {
+"lahman": "strasst01"
+},
+"cat": {
+"first": 1,
+"minor": 1,
+"finalsmvp": 1,
+"allstar": 3,
+"title": 1
+},
+"score": 10.0
+},
+"Blake Snell": {
+"raw": {
+"lahman": "snellbl01"
+},
+"cat": {
+"first": 1,
+"major": 2,
+"allstar": 1,
+"title": 1
+},
+"score": 12.3
+},
+"Zack Wheeler": {
+"raw": {
+"lahman": "wheelza01"
+},
+"cat": {
+"first": 1,
+"second": 2,
+"minor": 1,
+"allstar": 3
+},
+"score": 7.7
+},
+"Tarik Skubal": {
+"raw": {
+"lahman": "skubata01"
+},
+"cat": {
+"first": 2,
+"major": 3,
+"allstar": 2
+},
+"score": 17.0
+},
+"Paul Skenes": {
+"raw": {
+"lahman": "skenepa01"
+},
+"cat": {
+"first": 2,
+"major": 1,
+"minor": 1,
+"allstar": 2
+},
+"score": 11.5
+},
+"Yoshinobu Yamamoto": {
+"raw": {
+"lahman": "yamamyo01"
+},
+"cat": {
+"first": 1,
+"finalsmvp": 1,
+"allstar": 1,
+"title": 2
+},
+"score": 8.6
+},
+"Garrett Crochet": {
+"raw": {
+"lahman": "crochga01"
+},
+"cat": {
+"first": 1,
+"minor": 1,
+"allstar": 2
+},
+"score": 5.0
+},
+"Roy Face": {
+"raw": {
+"lahman": "facero01"
+},
+"cat": {
+"allstar": 3,
+"title": 2
+},
+"score": 5.6
+},
+"Hoyt Wilhelm": {
+"raw": {
+"lahman": "wilheho01"
+},
+"cat": {
+"allstar": 5,
+"title": 1,
+"hof": 1
+},
+"score": 11.3
+},
+"Rollie Fingers": {
+"raw": {
+"lahman": "fingero01"
+},
+"cat": {
+"major": 1,
+"mvp": 1,
+"minor": 4,
+"finalsmvp": 1,
+"allstar": 7,
+"title": 3,
+"hof": 1
+},
+"score": 34.4
+},
+"Goose Gossage": {
+"raw": {
+"lahman": "gossari01"
+},
+"cat": {
+"minor": 1,
+"allstar": 9,
+"title": 1,
+"hof": 1
+},
+"score": 15.3
+},
+"Bruce Sutter": {
+"raw": {
+"lahman": "suttebr01"
+},
+"cat": {
+"major": 1,
+"minor": 4,
+"allstar": 6,
+"title": 1,
+"hof": 1
+},
+"score": 22.3
+},
+"Lee Smith": {
+"raw": {
+"lahman": "smithle02"
+},
+"cat": {
+"minor": 3,
+"allstar": 7,
+"hof": 1
+},
+"score": 16.0
+},
+"Dennis Eckersley": {
+"raw": {
+"lahman": "eckerde01"
+},
+"cat": {
+"minor": 3,
+"major": 1,
+"mvp": 1,
+"allstar": 6,
+"title": 1,
+"hof": 1
+},
+"score": 26.8
+},
+"Trevor Hoffman": {
+"raw": {
+"lahman": "hoffmtr01"
+},
+"cat": {
+"minor": 2,
+"allstar": 7,
+"hof": 1
+},
+"score": 14.5
+},
+"Mariano Rivera": {
+"raw": {
+"lahman": "riverma01"
+},
+"cat": {
+"minor": 7,
+"finalsmvp": 1,
+"allstar": 13,
+"title": 5,
+"hof": 1
+},
+"score": 34.0
+},
+"Billy Wagner": {
+"raw": {
+"lahman": "wagnebi02"
+},
+"cat": {
+"minor": 1,
+"allstar": 6,
+"hof": 1
+},
+"score": 12.5
+},
+"Francisco Rodr\u00edguez": {
+"raw": {
+"lahman": "rodrifr03"
+},
+"cat": {
+"minor": 2,
+"allstar": 6,
+"title": 1
+},
+"score": 10.3
+},
+"Joe Nathan": {
+"raw": {
+"lahman": "nathajo01"
+},
+"cat": {
+"allstar": 6,
+"title": 1
+},
+"score": 7.3
+},
+"Craig Kimbrel": {
+"raw": {
+"lahman": "kimbrcr01"
+},
+"cat": {
+"minor": 4,
+"allstar": 9,
+"title": 1
+},
+"score": 14.8
+},
+"Aroldis Chapman": {
+"raw": {
+"lahman": "chapmar01"
+},
+"cat": {
+"first": 1,
+"second": 1,
+"minor": 2,
+"allstar": 8,
+"title": 2
+},
+"score": 15.6
+},
+"Kenley Jansen": {
+"raw": {
+"lahman": "janseke01"
+},
+"cat": {
+"second": 1,
+"minor": 2,
+"allstar": 4,
+"title": 1
+},
+"score": 9.3
+},
+"Edwin D\u00edaz": {
+"raw": {
+"lahman": "diazed04"
+},
+"cat": {
+"first": 1,
+"second": 1,
+"minor": 3,
+"allstar": 3
+},
+"score": 10.5
+},
+"Jackie Jensen": {
+"raw": {
+"lahman": "jenseja01"
+},
+"cat": {
+"minor": 1,
+"mvp": 1,
+"allstar": 3,
+"title": 3
+},
+"score": 13.6
+},
+"David Ortiz": {
+"raw": {
+"lahman": "ortizda01"
+},
+"cat": {
+"minor": 10,
+"finalsmvp": 1,
+"allstar": 10,
+"title": 3,
+"hof": 1
+},
+"score": 29.0
+},
+"Lance Berkman": {
+"raw": {
+"lahman": "berkmla01"
+},
+"cat": {
+"minor": 1,
+"allstar": 6,
+"title": 1
+},
+"score": 8.3
+},
+"Jason Giambi": {
+"raw": {
+"lahman": "giambja01"
+},
+"cat": {
+"minor": 3,
+"mvp": 1,
+"allstar": 5
+},
+"score": 13.4
+},
+"Ryan Howard": {
+"raw": {
+"lahman": "howarry01"
+},
+"cat": {
+"minor": 4,
+"mvp": 1,
+"allstar": 3,
+"title": 1
+},
+"score": 15.5
+},
+"Justin Morneau": {
+"raw": {
+"lahman": "morneju01"
+},
+"cat": {
+"mvp": 1,
+"minor": 2,
+"allstar": 4
+},
+"score": 11.4
+},
+"Hanley Ram\u00edrez": {
+"raw": {
+"lahman": "ramirha01"
+},
+"cat": {
+"minor": 3,
+"allstar": 3,
+"title": 1
+},
+"score": 7.2
+},
+"Jos\u00e9 Reyes": {
+"raw": {
+"lahman": "reyesjo01"
+},
+"cat": {
+"minor": 1,
+"allstar": 4
+},
+"score": 4.7
+},
+"Josh Hamilton": {
+"raw": {
+"lahman": "hamiljo03"
+},
+"cat": {
+"minor": 4,
+"mvp": 1,
+"allstar": 5
+},
+"score": 14.6
+},
+"Torii Hunter": {
+"raw": {
+"lahman": "hunteto01"
+},
+"cat": {
+"minor": 11,
+"allstar": 5
+},
+"score": 11.7
+},
+"Johnny Damon": {
+"raw": {
+"lahman": "damonjo01"
+},
+"cat": {
+"allstar": 2,
+"title": 2
+},
+"score": 4.6
+},
+"Roy Oswalt": {
+"raw": {
+"lahman": "oswalro01"
+},
+"cat": {
+"minor": 1,
+"allstar": 3
+},
+"score": 4.5
+},
+"Mark Buehrle": {
+"raw": {
+"lahman": "buehrma01"
+},
+"cat": {
+"minor": 4,
+"allstar": 5,
+"title": 1
+},
+"score": 9.1
+},
+"Josh Beckett": {
+"raw": {
+"lahman": "beckejo02"
+},
+"cat": {
+"minor": 1,
+"finalsmvp": 1,
+"allstar": 3,
+"title": 2
+},
+"score": 10.1
+},
+"Tim Hudson": {
+"raw": {
+"lahman": "hudsoti01"
+},
+"cat": {
+"minor": 1,
+"allstar": 4,
+"title": 1
+},
+"score": 6.3
+},
+"Barry Zito": {
+"raw": {
+"lahman": "zitoba01"
+},
+"cat": {
+"major": 1,
+"allstar": 3,
+"title": 2
+},
+"score": 9.6
+},
+"Robbie Ray": {
+"raw": {
+"lahman": "rayro02"
+},
+"cat": {
+"first": 1,
+"major": 1,
+"allstar": 2
+},
+"score": 8.0
+},
+"Corbin Burnes": {
+"raw": {
+"lahman": "burneco01"
+},
+"cat": {
+"first": 2,
+"major": 1,
+"allstar": 4
+},
+"score": 12.0
+}
+}

@@ -30,6 +30,71 @@ export function sudokuScore(result, seconds, level) {
   return seconds <= p / 2 ? 0.95 : seconds <= p ? 0.8 : seconds <= 2 * p ? 0.6 : 0.5;
 }
 
+import { prepare, replay } from "./season.mjs";
+
+const prepared = new WeakMap();
+function replaySeason(pool, sport, idx, roster) {
+  if (!pool[sport]) return { ok: false, error: "unknown_puzzle" };
+  let d = prepared.get(pool[sport]); if (!d) { d = prepare(pool[sport]); prepared.set(pool[sport], d); }
+  return replay(d, sport, idx, roster);
+}
+
+// ---- the daily sports games: Lockerlink, Gridlink and Under the Cap. One rated result per game per day. ----
+export const SPORTS_GAMES = ["lockerlink", "gridlink", "under-the-cap"];
+const GRID_PUZZLE = 1000, UNBEATEN_PUZZLE = 1100;
+
+/** A chain of par links is harder the longer par is. */
+export function lockerlinkPuzzleRating(par) { return 900 + 150 * par; }
+/** 1 for a clean par chain, less for each extra link, miss and hint; 0 when the player gave up. */
+export function lockerlinkScore({ won, par, links, misses, hints }) {
+  if (!won) return 0;
+  return Math.max(0.15, 1 - 0.15 * Math.max(0, links - par) - 0.05 * Math.min(misses, 10) - 0.08 * Math.min(hints, 5));
+}
+export function gridlinkScore({ filled }) { return filled / 9; }
+/** Win share above .450 counts, and the title is worth the last 15%. */
+export function unbeatenScore({ wins, games, champion }) {
+  const share = Math.min(1, Math.max(0, (wins / games - 0.45) / 0.5));
+  return Math.min(1, 0.85 * share + (champion ? 0.15 : 0));
+}
+
+function intIn(v, lo, hi) { const n = Number(v); return Number.isInteger(n) && n >= lo && n <= hi ? n : null; }
+
+/** Check one daily sports result. `days` is netlify/lib/sports-days.json, `nowIdx` today's puzzle-day index (UTC). */
+export function checkSportsReport(game, b, days, nowIdx, pool = null) {
+  const idx = intIn(b.idx, 0, 100000);
+  if (idx === null || Math.abs(idx - nowIdx) > 1) return { ok: false, error: "not_today" };
+  const rot = days.rotation, sport = rot[((idx % rot.length) + rot.length) % rot.length];
+  if (b.sport !== sport || String(b.id) !== `d${idx}`) return { ok: false, error: "unknown_puzzle" };
+  const ms = Number(b.ms);
+  if (game === "lockerlink") {
+    const par = days[sport].par[Math.floor(idx / rot.length) % days[sport].par.length];
+    const won = b.won === true, links = intIn(b.links, 1, 60), misses = intIn(b.misses, 0, 500), hints = intIn(b.hints, 0, 500);
+    if (links === null || misses === null || hints === null) return { ok: false, error: "bad_result" };
+    if (won && (links < par || ms < 2000 * Math.max(1, links - 1))) return { ok: false, error: links < par ? "bad_result" : "too_fast" };
+    return { ok: true, id: `d${idx}`, puzzleRating: lockerlinkPuzzleRating(par), score: lockerlinkScore({ won, par, links, misses, hints }), solved: won };
+  }
+  if (game === "gridlink") {
+    const filled = intIn(b.filled, 0, 9);
+    if (filled === null) return { ok: false, error: "bad_result" };
+    if (ms < 3000 * filled) return { ok: false, error: "too_fast" };
+    return { ok: true, id: `d${idx}`, puzzleRating: GRID_PUZZLE, score: gridlinkScore({ filled }), solved: filled >= 5 };
+  }
+  if (game === "under-the-cap") {
+    if (ms < 8000) return { ok: false, error: "too_fast" };
+    if (pool) {
+      // replay the season from the roster, so the record is ours and not the browser's
+      const played = replaySeason(pool, sport, idx, b.roster);
+      if (!played.ok) return played;
+      const { wins, champion } = played.res;
+      return { ok: true, id: `d${idx}`, puzzleRating: UNBEATEN_PUZZLE, score: unbeatenScore({ wins, games: days[sport].games, champion }), solved: champion };
+    }
+    const games = days[sport].games, wins = intIn(b.wins, 0, games);
+    if (wins === null || b.champion !== true && b.champion !== false) return { ok: false, error: "bad_result" };
+    return { ok: true, id: `d${idx}`, puzzleRating: UNBEATEN_PUZZLE, score: unbeatenScore({ wins, games, champion: b.champion }), solved: b.champion };
+  }
+  return { ok: false, error: "unknown_game" };
+}
+
 export function emptyRecord() {
   return { r: START_RATING, n: 0, w: 0, peak: START_RATING, streak: 0, best: 0, wk: -1, wr0: START_RATING, wn: 0, day: "", dn: 0 };
 }
@@ -51,9 +116,10 @@ export function applyResult(rec, { puzzleRating, score, solved, dayIdx, dayKey }
 }
 
 /** Validate a report. Returns { ok: true, puzzleRating, score, solved } or { ok: false, error }. */
-export function checkReport(game, b, chessIndex) {
+export function checkReport(game, b, chessIndex, sports = null, nowIdx = 0, pool = null) {
   const ms = Number(b.ms);
   if (!Number.isFinite(ms) || ms < 0 || ms > 6 * 3600 * 1000) return { ok: false, error: "bad_time" };
+  if (SPORTS_GAMES.includes(game)) return sports ? checkSportsReport(game, b, sports, nowIdx, pool) : { ok: false, error: "unknown_game" };
   if (game === "chess") {
     const id = String(b.id || "");
     const meta = chessIndex[id];

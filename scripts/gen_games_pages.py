@@ -6,7 +6,7 @@ from games_meta import GAMES as META, HUB as HUBMETA, FOUNDED
 from games_art import art
 SITE = Path(__file__).resolve().parent.parent / "site"
 TODAY = date.today().isoformat()
-ORG = {"@type": "Organization", "@id": "https://purplelink.llc/#organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/"}
+ORG = {"@type": "Organization", "@id": "https://purplelink.llc/#organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "sameAs": ["https://www.youtube.com/@PurplelinkPL", "https://github.com/purplelink-llc"]}
 CF = """<!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->"""
 
 def first_sentence(text):
@@ -70,7 +70,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     dock_html = dock(slug) if slug else ""
     if slug:
         scripts = [x for x in scripts if x not in ("/games/achievements.js", "/games/confetti.js", "/games/sync.js")]
-        scripts = ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js"] + [x for x in scripts if x != "/games/core.js"]
+        scripts = ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js", "/games/share.js"] + [x for x in scripts if x != "/games/core.js"]
     ads_tag = '    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>' if ads else ""
     ld = json.dumps(jsonld, indent=2)
     ld = "\n".join("    " + l for l in ld.splitlines())
@@ -146,26 +146,36 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
 
 
 EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
-MORE_DAILY = ["landlink", "atomlink", "prizelink"]
+MORE_DAILY = ["landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"]
+SPORTS_GAMES = ["lockerlink", "gridlink", "under-the-cap"]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
     "linkle": "Five letters, six tries, and a new twist every weekday.",
-    "quadlink": "Four hidden words at once, in nine guesses.",
-    "daily-five": "Five trivia questions, from research to geography.",
-    "daily-photo": "Five travel photographs. Which country is each?",
-    "daily-chess": "A Lichess tactics puzzle, easy on Monday and hard on Sunday.",
+    "quadlink": "Four hidden words at once, with a new twist every weekday.",
+    "daily-five": "Five trivia questions with a 50:50 lifeline and a Lightning day.",
+    "daily-photo": "Five travel photographs, with blur, zoom and black-and-white days.",
+    "daily-chess": "A Lichess tactics puzzle with a theme each day, easy Monday to hard Sunday.",
     "sudoku": "One solution, and harder every week of a ten-week season.",
     "crossword": "A themeless crossword, easy Monday to hard Sunday.",
-    "daily-stars": "A short horoscope for every sign, for entertainment.",
+    "daily-stars": "A short horoscope for every sign, with lucky numbers and sign matches.",
     "landlink": "Guess the country from seven comparable facts.",
+    "citylink": "Guess the city, with latitude and longitude arrows as a compass.",
+    "thinkerlink": "Guess the scientist from field, era and birthplace.",
+    "riverlink": "Guess the river from its length, countries and where it flows.",
+    "wildlink": "Guess the animal from its diet, home, weight and lifespan.",
+    "peaklink": "Guess the mountain from height, place and volcano clues.",
+    "codelink": "Guess the programming language from its design.",
     "atomlink": "Guess the element from its place on the periodic table.",
     "prizelink": "Guess the Nobel laureate from prize, year and birthplace.",
-    "chess-puzzles": "Unlimited rated tactics from the Lichess database.",
+    "lockerlink": "Link two players from any era through real teammates.",
+    "gridlink": "Fill a 3 by 3 grid of teams, decades, awards and teammates.",
+    "under-the-cap": "Build a roster from any era and play a perfect season.",
+    "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
-    "leaderboard": "The top ratings in chess and Sudoku, and this week's climbers.",
+    "leaderboard": "The top ratings in chess, Sudoku and the sports games, and this week's climbers.",
 }
-MINUTES = {"landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"lockerlink": 4, "gridlink": 4, "under-the-cap": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
@@ -177,6 +187,11 @@ def dock(current):
         items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
                      f'<span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>')
     for slug in MORE_DAILY:
+        m = BYSLUG[slug]
+        cur = ' aria-current="page"' if slug == current else ""
+        items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
+                     f'<span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>')
+    for slug in SPORTS_GAMES:
         m = BYSLUG[slug]
         cur = ' aria-current="page"' if slug == current else ""
         items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
@@ -249,10 +264,18 @@ WORD_UI = """      <div class="games-wrap">
 {meta}
             <div class="game-actions">
               <button type="button" class="btn btn-primary" id="wg-share">Copy result</button>
+              <button type="button" class="gbtn gbtn--ghost" id="wg-practice-btn">Play a practice word</button>
               <span class="game-note" id="wg-share-note"></span>
             </div>
             <textarea class="wg-share-text" id="wg-share-text" hidden readonly aria-label="Result text"></textarea>
             <p class="game-next">Next puzzle in <span id="wg-next"></span>.</p>
+          </section>
+          <section class="game-result" id="wg-practice" hidden aria-label="Practice result">
+            <p class="game-reveal" id="wg-practice-text" role="status"></p>
+            <div class="game-actions">
+              <button type="button" class="gbtn" id="wg-practice-again">Another word</button>
+              <a class="gbtn gbtn--ghost" href="/games/">More games</a>
+            </div>
           </section>
         </div>
         <div class="games-prose">
@@ -299,6 +322,8 @@ LINKLE_PROSE = """        <h2>How to play</h2>
           <li><strong>Saturday, double up:</strong> at least one letter appears twice.</li>
           <li><strong>Sunday, hard mode:</strong> every hint you have found must be used in your next guess.</li>
         </ul>
+        <h2>Practice words</h2>
+        <p>After you finish the daily puzzle you can play as many practice rounds as you like. They use random words and never count toward your streak, rank or stats.</p>
         <h2>Questions</h2>
 """ + faq_html(LINKLE_FAQ)
 
@@ -328,13 +353,25 @@ QUAD_PROSE = """        <h2>How to play</h2>
           <span><span class="wg-tile" data-s="a">X</span> Not in the word</span>
         </div>
         <p>The keyboard shows four small bars under each letter, one for each board, in order from the first board to the fourth.</p>
+        <h2>The weekday twists</h2>
+        <ul>
+          <li><strong>Monday:</strong> standard rules, nine guesses.</li>
+          <li><strong>Tuesday, head start:</strong> you are told the first letter of each word.</li>
+          <li><strong>Wednesday, extra guess:</strong> ten guesses.</li>
+          <li><strong>Thursday, vowel counts:</strong> you are told how many vowels each word has.</li>
+          <li><strong>Friday, last letters:</strong> you are told the last letter of each word.</li>
+          <li><strong>Saturday, tight squeeze:</strong> eight guesses.</li>
+          <li><strong>Sunday, hard mode:</strong> hints you find on the first board must be used in your next guess.</li>
+        </ul>
+        <h2>Practice words</h2>
+        <p>After you finish the daily puzzle you can play as many practice rounds as you like. They use random puzzles and never count toward your streak or stats.</p>
         <h2>Questions</h2>
 """ + faq_html(QUAD_FAQ)
 
 page("games/quadlink/",
      "Quadlink: a free daily four-board word game | Purplelink",
      "Solve four five-letter words at once in nine guesses. A new puzzle every day, free, with no third-party ads.",
-     WORD_UI.format(h1="Quadlink", boards=4, lede="Four five-letter words at once. Nine guesses.", prose=QUAD_PROSE, twist="", meta=""),
+     WORD_UI.format(h1="Quadlink", boards=4, lede="Four five-letter words at once, with a new twist each weekday.", prose=QUAD_PROSE, twist=TWIST_HTML, meta="""            <p class="game-note" id="wg-tomorrow"></p>"""),
      {"@context": "https://schema.org", "@graph": [
          game_app("Quadlink", "https://purplelink.llc/games/quadlink/", "A free daily word game where you solve four five-letter words at once in nine guesses."),
          faq(QUAD_FAQ),
@@ -342,11 +379,12 @@ page("games/quadlink/",
      ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/config-quadlink.js", "/games/wordgame.js"])
 
 (SITE / "games/config-linkle.js").write_text('window.PLWordGame = { name: "linkle", title: "Linkle", boards: 1, maxGuesses: 6, dataFile: "linkle.json", url: "https://purplelink.llc/games/linkle/", twists: true };\n')
-(SITE / "games/config-quadlink.js").write_text('window.PLWordGame = { name: "quadlink", title: "Quadlink", boards: 4, maxGuesses: 9, dataFile: "quadlink.json", url: "https://purplelink.llc/games/quadlink/" };\n')
+(SITE / "games/config-quadlink.js").write_text('window.PLWordGame = { name: "quadlink", title: "Quadlink", boards: 4, maxGuesses: 9, dataFile: "quadlink.json", url: "https://purplelink.llc/games/quadlink/", twists: "quad" };\n')
 
 
 # ---------------- Daily Five ----------------
 DF_FAQ = [
+    ('How do the lifelines and Lightning day work?', 'Each set has one 50:50 lifeline, which removes two wrong answers from a question. Tuesday gives two, and Sunday gives none. On Friday, Lightning day, each question has fifteen seconds, and running out of time counts as a wrong answer.'),
     ("How many questions are there?", "Five multiple-choice questions a day, with one correct answer each. Two come from a set we write about science, computing, research methods and Macs. Three come from a general trivia pool."),
     ("When do the questions change?", "At midnight in your time zone. Everyone sees the same five on the same date."),
     ("Where do the questions come from?", "Part of the pool is the Open Trivia Database, licensed CC BY-SA 4.0. The rest we write ourselves. We check our own questions, but a general trivia pool can contain mistakes. If you spot one, email ben@purplelink.llc."),
@@ -366,13 +404,18 @@ DF_BODY = """      <div class="games-wrap">
         <p id="qz-loading" class="games-note">Loading today's questions.</p>
         <div id="qz-game" hidden>
           <div class="quiz" id="qz-quiz" hidden>
+            <p class="wg-twist" id="qz-twist" hidden><strong id="qz-twist-name"></strong> <span id="qz-twist-text"></span></p>
+            <div class="quiz-timer" id="qz-timer" hidden role="timer" aria-label="Time left for this question"><span class="quiz-timer-track"><i id="qz-timer-bar"></i></span><span id="qz-timer-text"></span></div>
             <p class="quiz-progress" id="qz-progress"></p>
             <div class="quiz-dots" id="qz-dots" aria-hidden="true"></div>
             <p class="quiz-cat" id="qz-cat"></p>
             <h2 class="quiz-q" id="qz-q"></h2>
             <ul class="quiz-opts" id="qz-opts"></ul>
             <p class="quiz-note" id="qz-note" role="status" aria-live="polite"></p>
-            <button type="button" class="btn btn-primary" id="qz-next" hidden>Next question</button>
+            <div class="game-actions">
+              <button type="button" class="btn btn-ghost" id="qz-fifty">50:50</button>
+              <button type="button" class="btn btn-primary" id="qz-next" hidden>Next question</button>
+            </div>
           </div>
           <section class="game-result" id="qz-result" hidden aria-labelledby="qz-result-head">
             <h2 id="qz-result-head"></h2>
@@ -412,6 +455,7 @@ page("games/daily-five/",
 
 # ---------------- Daily Stars ----------------
 ST_FAQ = [
+    ('What are the lucky number, color, mood and best hour?', 'They are picked from your sign and the date, so everyone with the same sign sees the same ones on the same day. Like the readings, they are for entertainment only.'),
     ("Are these real predictions?", "No. Daily Stars is written for entertainment. It is a short, ordinary suggestion for the day with a nod to the moon and the weekday. It does not predict anything and it is not advice about health, money or relationships."),
     ("How are the readings made?", "They are written ahead of time in batches, one short reading per sign per day, and published on the date. The moon phase shown is calculated from the date and is accurate to about half a day."),
     ("When do they change?", "At midnight in your time zone."),
@@ -436,6 +480,17 @@ ST_BODY = """      <div class="games-wrap">
             <h2 id="st-name"></h2>
             <p class="stars-sub" id="st-range"></p>
             <p id="st-text"></p>
+            <dl class="stars-lucky" id="st-lucky"></dl>
+            <div class="stars-pair">
+              <label for="st-pair">See how your sign gets on with another</label>
+              <select id="st-pair"></select>
+              <p id="st-pair-out" role="status" aria-live="polite"></p>
+            </div>
+            <div class="game-actions">
+              <button type="button" class="btn btn-primary" id="st-share">Share my reading</button>
+              <span class="game-note" id="st-share-note"></span>
+            </div>
+            <textarea class="wg-share-text" id="st-share-text" hidden readonly aria-label="Reading text"></textarea>
           </section>
           <div class="stars-all">
             <h2>All signs today</h2>
@@ -464,6 +519,7 @@ page("games/daily-stars/",
 
 # ---------------- Crossword ----------------
 CW_FAQ = [
+    ('What does Pencil do?', 'Pencil mode marks the letters you type as tentative: they show lighter until you tap Ink all. They count exactly like any other letter when you check or finish.'),
     ("Is there a new crossword every day?", "Yes. A new themeless puzzle is ready at midnight your time. Monday is the easiest and Sunday the hardest, with bigger grids and trickier clues as the week goes on."),
     ("How is the crossword made?", "The grids are built by a program that fills a symmetric pattern from a word list, and the clues are written for each puzzle. The size of the grid, how rare the words are and how the clues are phrased all grow from Monday to Sunday."),
     ("What do Check and Reveal do?", "You can check one letter, one word or the whole puzzle, and wrong letters turn red. Auto-check marks a wrong letter as soon as you type it. Reveal fills in a letter, a word or the whole puzzle. Using any of them is shown as solving with help, and only unaided solves count toward your best time."),
@@ -496,6 +552,8 @@ CW_BODY = """      <div class="games-wrap">
                 <button type="button" class="btn btn-ghost" id="cw-check-word">Word</button>
                 <button type="button" class="btn btn-ghost" id="cw-check">Puzzle</button>
                 <button type="button" class="btn btn-ghost" id="cw-auto" aria-pressed="false">Auto-check: off</button>
+                <button type="button" class="btn btn-ghost" id="cw-pencil" aria-pressed="false">Pencil: off</button>
+                <button type="button" class="btn btn-ghost" id="cw-ink">Ink all</button>
                 <span class="cw-timer" id="cw-timer" aria-label="Elapsed time">0:00</span>
               </div>
               <div class="cw-bar" role="group" aria-label="Reveal answers">
@@ -551,6 +609,7 @@ page("games/crossword/",
 
 # ---------------- Daily Photo ----------------
 PH_FAQ = [
+    ('What are the weekday twists?', 'Tuesday is Blur reveal: each photo starts blurred and sharpens over ten seconds. Thursday is Zoom out: each photo starts zoomed in and pulls back. Saturday is Black and white: the photos are in grayscale until you answer. Other days show the photographs as they are. Answering at any time shows the full picture.'),
     ("What is Daily Photo?", "Five photographs a day, each taken by Ben Ampel on his travels. For each one you pick which of four countries it was taken in. After every answer you see the exact place, a short description and a link to more photographs from there."),
     ("Where do the photographs come from?", "They are Purplelink's own photographs from Iceland, Japan, Switzerland, the United Kingdom, Germany, Denmark, the Netherlands, Canada, Panama and the United States. They are also available to license through the photography pages."),
     ("When do the photographs change?", "At midnight in your time zone. Everyone sees the same five on the same date."),
@@ -569,9 +628,10 @@ PH_BODY = """      <div class="games-wrap">
         <p id="ph-loading" class="games-note">Loading today's photographs.</p>
         <div id="ph-game" hidden>
           <div class="quiz" id="ph-quiz" hidden>
+            <p class="wg-twist" id="ph-twist" hidden><strong id="ph-twist-name"></strong> <span id="ph-twist-text"></span></p>
             <p class="quiz-progress" id="ph-progress"></p>
             <div class="quiz-dots" id="ph-dots" aria-hidden="true"></div>
-            <img class="ph-photo" id="ph-img" alt="Today's photograph. Its description appears after you answer." width="1200" height="800" decoding="async">
+            <div class="ph-frame"><img class="ph-photo" id="ph-img" alt="Today's photograph. Its description appears after you answer." width="1200" height="800" decoding="async"></div>
             <p class="quiz-cat">Which country?</p>
             <ul class="quiz-opts" id="ph-opts"></ul>
             <div class="ph-reveal" id="ph-reveal" hidden>
@@ -618,6 +678,7 @@ page("games/daily-photo/",
 
 # ---------------- Daily Chess ----------------
 CH_FAQ = [
+    ('What is the theme of the day?', 'From the second week on, each weekday leans toward one idea when the puzzle bank has a match: checkmates on Monday, forks on Tuesday, pins and skewers on Wednesday, endgames on Thursday, back-rank and loose pieces on Friday, sacrifices on Saturday and crushing wins on Sunday. The banner above the board names the theme, and it is a hint about what to look for.'),
     ("Where do the chess puzzles come from?", "From the Lichess puzzle database, which is released under the Creative Commons CC0 licence. Each puzzle starts from a position in a real game, and Lichess rates its difficulty from how many players have solved it."),
     ("How does the difficulty change through the week?", "Monday's puzzle comes from the easiest rating band, roughly 800 to 1250, and each day is harder than the last. Sunday's comes from the 2150 to 2600 band."),
     ("What counts as a slip?", "A wrong move or a hint. You can keep trying after a wrong move, but your result shows the number of slips, and a clean solve has none."),
@@ -639,6 +700,7 @@ CH_BODY = """      <div class="games-wrap">
         <p class="game-lede">Daily Chess is a free daily chess tactics puzzle.</p>
         <p id="ch-loading" class="games-note">Loading today's puzzle.</p>
         <div id="ch-game" hidden>
+          <p class="wg-twist" id="ch-twist" hidden><strong id="ch-twist-name"></strong> <span id="ch-twist-text"></span></p>
           <p class="ch-turn" id="ch-turn"></p>
           <p class="ch-msg" id="ch-msg" role="status" aria-live="polite"></p>
           <div class="cb-board" id="ch-board" role="group" aria-label="Chess board"></div>
@@ -673,6 +735,7 @@ CH_BODY = """      <div class="games-wrap">
             <textarea class="wg-share-text" id="ch-share-text" hidden readonly aria-label="Result text"></textarea>
             <p class="game-next">Next puzzle in <span id="ch-next-in"></span>.</p>
             <p class="game-more"><a class="gbtn" href="/games/chess-puzzles/" data-g="chess-puzzles">Play unlimited rated puzzles</a></p>
+            <aside class="partner" id="partner" hidden aria-label="Chess resources"></aside>
           </section>
         </div>
         <div class="games-prose">
@@ -682,10 +745,11 @@ CH_BODY = """      <div class="games-wrap">
       </div>"""
 page("games/daily-chess/", "", "", CH_BODY,
      {"@context": "https://schema.org", "@graph": [faq(CH_FAQ)]},
-     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/daily-chess.js"])
+     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/partners.js", "/games/daily-chess.js"])
 
 # ---------------- Sudoku ----------------
 SD_FAQ = [
+    ('What do Digit first and Zen do?', 'Digit first lets you pick a digit on the pad and then tap squares to fill them, which is faster on a phone. Zen hides the clock so you can solve without watching the time. Both settings are remembered on this device.'),
     ("How hard is each week's Sudoku?", "Difficulty rises every week across a ten-week season. Weeks 1 and 2 are Beginner, weeks 3 and 4 Easy, weeks 5 and 6 Medium, weeks 7 and 8 Hard and weeks 9 and 10 Expert. After week 10 a new season starts again at Beginner."),
     ("Does every puzzle have exactly one solution?", "Yes. Each puzzle is generated by removing digits from a complete grid one pair at a time, and a solver confirms that exactly one solution remains."),
     ("How is the difficulty decided?", "By the techniques a person needs to solve the puzzle without guessing. Beginner needs only singles. Easy adds locked candidates, Medium adds pairs and triples, Hard needs X-Wing, and Expert needs a forced guess to get started."),
@@ -719,6 +783,8 @@ SD_BODY = """      <div class="games-wrap">
             <div class="sd-main">
               <div class="cw-bar" role="group" aria-label="Notes and checking">
                 <button type="button" class="btn btn-ghost" id="sd-notes-btn" aria-pressed="false">Notes: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-digit" aria-pressed="false">Digit first: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-zen" aria-pressed="false">Zen: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-check-cell">Check square</button>
                 <button type="button" class="btn btn-ghost" id="sd-check">Check puzzle</button>
                 <button type="button" class="btn btn-ghost" id="sd-auto" aria-pressed="false">Auto-check: off</button>
@@ -767,6 +833,7 @@ page("games/sudoku/", "", "", SD_BODY,
 
 # ---------------- Chess Puzzles (rated, unlimited) ----------------
 CP_FAQ = [
+    ('What is Rush?', 'Rush is a three-minute run mode on the same page. Puzzles start easy and get harder. A wrong move costs five seconds and a strike, three strikes end the run, and your score is the number of puzzles solved. Rush does not change your rating, and your best score is kept on this device.'),
     ("How is my puzzle rating worked out?", "It is an Elo rating, like a chess rating. Each puzzle has a rating from the Lichess database. If you solve a puzzle rated above you, you gain a lot; if you solve one well below you, you gain a little; a miss costs more the easier the puzzle was. Early on, ratings move faster, and they settle after about 20 puzzles."),
     ("Is this the same as my Lichess puzzle rating?", "No. It is a separate rating that starts at 1000 here, so the numbers are not comparable with Lichess or any other site."),
     ("What counts as a miss?", "The first wrong move ends the puzzle, as on Lichess, and the correct line is shown. Show solution also counts as a miss. A move that gives checkmate is always accepted."),
@@ -795,7 +862,32 @@ CP_BODY = """      <div class="games-wrap">
           <span class="game-num" id="ch-number"></span>
         </div>
         <p class="game-lede">Chess Puzzles is a free, unlimited chess tactics trainer.</p>
-        <div class="rate-hud">
+        <p class="mode-switch" role="group" aria-label="Choose a mode"><a class="mode-opt" id="mode-rated" href="/games/chess-puzzles/">Rated</a><a class="mode-opt" id="mode-rush" href="/games/chess-puzzles/?mode=rush">Rush, 3 minutes</a></p>
+        <section class="game-result" id="rush-start" hidden aria-labelledby="rush-start-h">
+          <h2 id="rush-start-h">Rush</h2>
+          <p class="game-reveal">Three minutes. Solve as many puzzles as you can, starting easy and getting harder. A wrong move costs five seconds and a strike, and three strikes end the run. Rush does not change your rating.</p>
+          <p class="game-note" id="rush-best-line"></p>
+          <div class="game-actions"><button type="button" class="gbtn" id="rush-go" data-g="chess-puzzles">Start the clock</button></div>
+        </section>
+        <div class="rush-hud" id="rush-hud" hidden>
+          <div class="rate-stat"><span class="rate-n" id="rush-time" role="timer">3:00</span><span class="rate-l">Time left</span></div>
+          <div class="rate-stat"><span class="rate-n rate-n--sm" id="rush-score">0</span><span class="rate-l">Solved</span></div>
+          <div class="rate-stat"><span class="rate-n rate-n--sm" id="rush-strikes">0 of 3</span><span class="rate-l">Strikes</span></div>
+        </div>
+        <section class="game-result rate-result" id="rush-result" hidden aria-labelledby="ru-head">
+          <h2 id="ru-head"></h2>
+          <p class="rate-delta" id="ru-score" data-up="1"></p>
+          <p class="rate-line">puzzles solved</p>
+          <p class="game-reveal" id="ru-best"></p>
+          <div class="game-actions">
+            <a class="gbtn" id="ru-again" href="/games/chess-puzzles/?mode=rush" data-g="chess-puzzles">Play again</a>
+            <button type="button" class="btn btn-primary" id="ru-share">Share</button>
+            <a class="gbtn gbtn--ghost" href="/games/chess-puzzles/">Back to rated</a>
+            <span class="game-note" id="ru-share-note"></span>
+          </div>
+          <textarea class="wg-share-text" id="ru-share-text" hidden readonly aria-label="Result text"></textarea>
+        </section>
+        <div class="rate-hud" id="rate-hud">
           <div class="rate-stat"><span class="rate-n" id="cr-rating">1000</span><span class="rate-l" id="cr-tier-top">Learner</span></div>
           <div class="rate-stat"><span class="rate-n rate-n--sm" id="cr-streak-top">0</span><span class="rate-l">Solved in a row</span></div>
           <a class="gbtn gbtn--ghost" href="/games/leaderboard/?g=chess" data-g="leaderboard">Leaderboard</a>
@@ -826,10 +918,14 @@ CP_BODY = """      <div class="games-wrap">
             </div>
             <p class="game-reveal" id="cr-about"></p>
             <div class="rate-join" id="cr-join"></div>
+            <aside class="partner" id="partner" hidden aria-label="Chess resources"></aside>
             <div class="game-actions">
               <a class="gbtn" id="cr-next" href="/games/chess-puzzles/" data-g="chess-puzzles">Next puzzle</a>
+              <button type="button" class="btn btn-primary" id="cr-share">Share</button>
               <a class="gbtn gbtn--ghost" id="ch-game-link" href="https://lichess.org/training" rel="noopener">See it on Lichess</a>
+              <span class="game-note" id="cr-share-note"></span>
             </div>
+            <textarea class="wg-share-text" id="cr-share-text" hidden readonly aria-label="Result text"></textarea>
           </section>
         </div>
         <p class="ad-note">This page shows Google ads. They are how the unlimited puzzles stay free.</p>
@@ -840,10 +936,11 @@ CP_BODY = """      <div class="games-wrap">
       </div>"""
 page("games/chess-puzzles/", "", "", CP_BODY,
      {"@context": "https://schema.org", "@graph": [faq(CP_FAQ)]},
-     ["/games/core.js", "/games/ratings.js", "/games/chess-puzzles.js"], ads=True)
+     ["/games/core.js", "/games/ratings.js", "/games/partners.js", "/games/chess-puzzles.js"], ads=True)
 
 # ---------------- Sudoku Unlimited ----------------
 SU_FAQ = [
+    ('What do Digit first and Zen do?', 'Digit first lets you pick a digit on the pad and then tap squares to fill them. Zen hides the clock, though the time is still used for your rating. Both settings are remembered on this device.'),
     ("How does the rating work?", "It is an Elo rating. Each level has a rating: Beginner 900, Easy 1250, Medium 1600, Hard 1950 and Expert 2300. Solving a level above your rating gains more. Solving faster than the level's usual pace earns a bigger gain, a slow solve earns a smaller one, and a solve with checks or reveals counts for less."),
     ("What are the five levels?", "Beginner needs only singles. Easy adds locked candidates, Medium adds pairs and triples, Hard needs X-Wing patterns, and Expert needs a forced guess to get started. Every puzzle has exactly one solution."),
     ("Which level will I get?", "The level follows your rating, with some variety. As your rating climbs you see harder levels more often."),
@@ -884,6 +981,8 @@ SU_BODY = """      <div class="games-wrap">
             <div class="sd-main">
               <div class="cw-bar" role="group" aria-label="Notes and checking">
                 <button type="button" class="btn btn-ghost" id="sd-notes-btn" aria-pressed="false">Notes: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-digit" aria-pressed="false">Digit first: off</button>
+                <button type="button" class="btn btn-ghost" id="sd-zen" aria-pressed="false">Zen: off</button>
                 <button type="button" class="btn btn-ghost" id="sd-check-cell">Check square</button>
                 <button type="button" class="btn btn-ghost" id="sd-check">Check puzzle</button>
                 <button type="button" class="btn btn-ghost" id="sd-auto" aria-pressed="false">Auto-check: off</button>
@@ -914,7 +1013,10 @@ SU_BODY = """      <div class="games-wrap">
             <div class="rate-join" id="sr-join"></div>
             <div class="game-actions">
               <a class="gbtn" id="sr-next" href="/games/sudoku-unlimited/" data-g="sudoku-unlimited">Next puzzle</a>
+              <button type="button" class="btn btn-primary" id="sr-share">Share</button>
+              <span class="game-note" id="sr-share-note"></span>
             </div>
+            <textarea class="wg-share-text" id="sr-share-text" hidden readonly aria-label="Result text"></textarea>
           </section>
         </div>
         <p class="ad-note">This page shows Google ads. They are how the unlimited puzzles stay free.</p>
@@ -931,18 +1033,21 @@ page("games/sudoku-unlimited/", "", "", SU_BODY,
 LB_FAQ = [
     ("Who appears on the leaderboards?", "Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed."),
     ("What is the weekly board?", "It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday."),
-    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, so treat the boards as friendly competition."),
-    ("How do I join?", "Play a few rated puzzles, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
+    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Lockerlink and Gridlink results are checked for plausibility rather than replayed (Under the Cap seasons are replayed on the server from your roster), so treat the boards as friendly competition."),
+    ("How do I join?", "Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
 ]
 LB_BODY = """      <div class="games-wrap">
         <div class="game-head">
           <h1>Leaderboards</h1>
           <span class="game-num" id="lb-week"></span>
         </div>
-        <p class="game-lede">The Purplelink puzzle leaderboards list the highest ratings in Chess Puzzles and Sudoku Unlimited, plus the biggest rating gains this week.</p>
+        <p class="game-lede">The Purplelink leaderboards list the highest ratings in Chess Puzzles, Sudoku Unlimited and the three daily sports games (Lockerlink, Gridlink and Under the Cap), plus the biggest rating gains this week.</p>
         <div class="lb-tabs" role="group" aria-label="Choose a board">
           <button type="button" class="lb-tab" data-game="chess" aria-pressed="true">Chess Puzzles</button>
           <button type="button" class="lb-tab" data-game="sudoku" aria-pressed="false">Sudoku Unlimited</button>
+          <button type="button" class="lb-tab" data-game="lockerlink" aria-pressed="false">Lockerlink</button>
+          <button type="button" class="lb-tab" data-game="gridlink" aria-pressed="false">Gridlink</button>
+          <button type="button" class="lb-tab" data-game="under-the-cap" aria-pressed="false">Under the Cap</button>
           <span class="lb-gap"></span>
           <button type="button" class="lb-tab" data-board="all" aria-pressed="true">Rating</button>
           <button type="button" class="lb-tab" data-board="week" aria-pressed="false">This week</button>
@@ -957,7 +1062,7 @@ LB_BODY = """      <div class="games-wrap">
         </div>
         <div class="games-prose">
           <h2>How the boards work</h2>
-          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
+          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Under the Cap update once a day, from your first result on that day\'s puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Under the Cap counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
           <h2>Questions</h2>
 """ + faq_html(LB_FAQ) + """
         </div>
@@ -972,7 +1077,8 @@ page("games/leaderboard/", "", "", LB_BODY,
 def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=None):
     faq_ = faq_items + [
         ("How do I read the colors?", "Purple means that column matches the answer. Striped yellow means close: a number within range, or related. Gray means no match. An arrow on a number points toward the answer: up if the answer is higher, down if it is lower."),
-        ("How many guesses do I get?", "Eight. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length."),
+        ("How many guesses do I get?", "Eight on most days. After four wrong guesses a hint shows the first letter of the answer, and after six it also shows the length."),
+        ("What are the weekday twists?", "Each day has its own rule. Monday is standard. Tuesday reveals one fact about the answer. Wednesday gives ten guesses. Thursday hides one column in your first three guesses. Friday turns the arrows off. Saturday gives only six guesses. Sunday is hard mode: every guess must be a possible answer given your clues."),
         ("When does a new puzzle appear?", "At midnight in your time zone, and everyone sees the same answer on the same date."),
         ("Do I need an account?", "No. Streaks and results are kept in your browser. Signing in with an email link keeps them on every device."),
     ]
@@ -997,6 +1103,7 @@ def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=Non
         <p class="game-lede">{title} is a free daily guessing game.</p>
         <p id="ag-loading" class="games-note">Loading today's puzzle.</p>
         <div id="ag-game" hidden>
+          <p class="wg-twist" id="ag-twist" hidden><strong id="ag-twist-name"></strong> <span id="ag-twist-text"></span></p>
           <form class="ag-form" id="ag-form" autocomplete="off">
             <label for="ag-input" class="visually-hidden">Your guess</label>
             <div class="ag-combo">
@@ -1007,7 +1114,7 @@ def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=Non
           </form>
           <p class="ag-meta"><span id="ag-count"></span> <span id="ag-msg" role="status" aria-live="polite"></span></p>
           <p class="ag-hint" id="ag-hint" role="status"></p>
-          <div class="ag-scroll" id="ag-wrap" hidden>
+          <div class="ag-scroll" id="ag-wrap" hidden tabindex="0" role="region" aria-label="Your guesses. Scroll sideways to see every column.">
             <div class="ag-grid">
               <div class="ag-row ag-headrow" id="ag-head" aria-hidden="true"></div>
               <ol class="ag-rows" id="ag-rows" aria-label="Your guesses, newest first"></ol>
@@ -1029,7 +1136,7 @@ def attr_page(slug, title, subject, faq_items, legend_extra, credit, art_key=Non
               <span class="game-note" id="ag-share-note"></span>
             </div>
             <textarea class="wg-share-text" id="ag-share-text" hidden readonly aria-label="Result text"></textarea>
-            <p class="game-next">Next puzzle in <span id="ag-next-in"></span>.</p>
+            <p class="game-next">Next puzzle in <span id="ag-next-in"></span>. <span id="ag-tomorrow"></span></p>
           </section>
         </div>
         <div class="games-prose">
@@ -1058,6 +1165,42 @@ attr_page("prizelink", "Prizelink", "a Nobel laureate", [
     ("Which laureates can be the answer?", "The 250 best-known individual laureates. Every individual laureate can be guessed, but organizations are not included."),
     ("What do the columns mean?", "The prize field, the year awarded, the birth year, the age when awarded, the continent and country of birth (as the place is named today) and gender, as recorded by the Nobel Prize organization."),
 ], "", "Laureate data: <a href=\"https://www.nobelprize.org/about/developer-zone-2/\" rel=\"noopener\">Nobel Prize API</a> (CC0) and <a href=\"https://www.wikidata.org/\" rel=\"noopener\">Wikidata</a> (CC0).")
+
+attr_page("citylink", "Citylink", "a city", [
+    ("Where does the data come from?", "City names, locations and populations come from Natural Earth's populated places, which is public domain. Populations are metropolitan estimates."),
+    ("Which cities can be the answer?", "The 250 largest cities. Any of 700 large cities can be guessed."),
+    ("How do the latitude and longitude arrows work?", "An up arrow on latitude means the answer is further north, a down arrow further south. On longitude, up means further east and down means further west."),
+], "", "City data: <a href=\"https://www.naturalearthdata.com/\" rel=\"noopener\">Natural Earth</a> (public domain).")
+
+attr_page("peaklink", "Peaklink", "a mountain", [
+    ("Where does the data come from?", "From Wikidata (CC0): height, location and the countries each mountain lies in, for well-documented mountains."),
+    ("Why do some mountains list two countries?", "Peaks on a border belong to both. Sharing one country shows as close."),
+    ("What counts as a volcano?", "Wikidata marks it as a volcano as well as a mountain, for example Mount Fuji and Vesuvius."),
+], "", "Mountain data: <a href=\"https://www.wikidata.org/\" rel=\"noopener\">Wikidata</a> (CC0). Continents from Natural Earth (public domain).")
+
+attr_page("codelink", "Codelink", "a programming language", [
+    ("Where does the data come from?", "From a table we wrote and checked by hand, using each language's official documentation for its first release and design."),
+    ("What do the columns mean?", "First release year, static or dynamic typing, whether it runs compiled, interpreted or on a virtual machine, how memory is managed, its main use, and its programming styles."),
+    ("Why can one language have several styles?", "Many languages mix object-oriented, functional and procedural styles. Sharing some but not all shows as close."),
+], "", "Language facts: compiled by Purplelink from official documentation.")
+
+attr_page("thinkerlink", "Thinkerlink", "a scientist", [
+    ("Where does the data come from?", "From a table we wrote and checked by hand: each scientist's field, birth and death years, birthplace and gender, using standard references."),
+    ("Which scientists can be the answer?", "All 131, from Andreas Vesalius to Geoffrey Hinton. Each is assigned to one main field, even though many worked across several."),
+    ("How is the country decided?", "It is the country that contains the birthplace today, so someone born in Breslau is listed as born in Poland."),
+], "", "Scientist data: compiled by Purplelink from standard references.")
+
+attr_page("riverlink", "Riverlink", "a river", [
+    ("Where does the data come from?", "From Wikidata (CC0): length, the countries a river runs through and what it flows into, for well-documented rivers. Continents come from Natural Earth (public domain)."),
+    ("What does 'Ends at' mean?", "Whether the river flows into a sea or ocean, a lake, or another river."),
+    ("Why do some rivers share countries?", "Many rivers cross borders. Sharing at least one country with the answer shows as close."),
+], "", "River data: <a href=\"https://www.wikidata.org/\" rel=\"noopener\">Wikidata</a> (CC0) and <a href=\"https://www.naturalearthdata.com/\" rel=\"noopener\">Natural Earth</a> (public domain).")
+
+attr_page("wildlink", "Wildlink", "an animal", [
+    ("Where does the data come from?", "From a table we wrote and checked by hand, using typical adult weights and lifespans from standard field guides."),
+    ("Why might a weight or lifespan look different from what I know?", "Both vary a lot within a species. The table uses typical adult values for the wild, not records."),
+    ("What does 'Lives in' mean?", "The main kind of place the animal lives: grassland, forest, mountains, desert, polar regions, ocean, fresh water or wetlands."),
+], "", "Animal data: compiled by Purplelink from standard field guides.")
 
 # ---------------- Account ----------------
 ACCT_BODY = """      <div class="games-wrap">
@@ -1099,7 +1242,7 @@ ACCT_BODY = """      <div class="games-wrap">
 
         <section class="ac-card" aria-labelledby="ac-stats-h">
           <h2 id="ac-stats-h">Stats</h2>
-          <div class="ac-table" id="ac-stats"></div>
+          <div class="ac-table" id="ac-stats" tabindex="0" role="region" aria-label="Your stats. Scroll sideways to see every column."></div>
         </section>
 
         <section class="ac-card" aria-labelledby="ac-ach-h">
@@ -1117,6 +1260,310 @@ page("games/account/",
      ["/games/core.js", "/games/sync.js", "/games/ratings.js", "/games/achievements.js", "/games/account.js"], robots="noindex, follow")
 
 # ---------------- Hub ----------------
+
+# ---------------- Sports games ----------------
+SP_FORM = """          <form class="ag-form sp-form" id="sp-form" autocomplete="off">
+            <label for="sp-input" class="visually-hidden">Player name</label>
+            <div class="ag-combo">
+              <input id="sp-input" type="text" role="combobox" aria-expanded="false" aria-controls="sp-list" aria-autocomplete="list" placeholder="Type a player's name" autocapitalize="off" spellcheck="false">
+              <ul id="sp-list" role="listbox" aria-label="Matches" hidden></ul>
+            </div>
+            <button type="submit" class="gbtn">Add</button>
+          </form>
+          <p class="sp-msg" id="sp-msg" role="status" aria-live="polite"></p>"""
+
+def sports_page(slug, title, lede, board, result_extra, prose, faq_items, scripts, diff=False, extra_modes="", under_lede="", extra_links=""):
+    d = ('            <label class="sp-field">Difficulty <select id="sp-diff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label>\n' if diff else "")
+    body = f"""      <div class="games-wrap sp" id="sp-root" data-ds="{slug}" data-url="https://purplelink.llc/games/{slug}/">
+        <div class="game-head">
+          <h1><img class="game-logo" src="/assets/games/{slug}.svg" alt="" width="44" height="44">{title}</h1>
+          <span class="game-num" id="sp-number"></span>
+        </div>
+        <p class="game-lede">{lede}</p>
+        <div class="sp-modes" role="group" aria-label="Mode">
+          <button type="button" class="sp-mode" id="sp-mode-daily" aria-pressed="true">Daily</button>
+          <button type="button" class="sp-mode" id="sp-mode-practice" aria-pressed="false">Practice</button>
+{extra_modes}        </div>
+{under_lede}
+        <div class="sp-practice" id="sp-practice-opts" hidden>
+            <label class="sp-field">Sport <select id="sp-sport"></select></label>
+{d}            <button type="button" class="gbtn gbtn--ghost" id="sp-new">New puzzle</button>
+        </div>
+        <p id="sp-loading" class="games-note">Loading today's puzzle.</p>
+        <div id="sp-game" hidden>
+{board}
+          <section class="game-result" id="sp-result" hidden aria-labelledby="sp-result-head">
+            <h2 id="sp-result-head"></h2>
+            <p class="game-reveal" id="sp-reveal"></p>
+{result_extra}
+            <div class="game-statline" id="sp-statline">
+              <div><b id="sp-played">0</b><span>Played</span></div>
+              <div><b id="sp-winpct">0%</b><span>Win rate</span></div>
+              <div><b id="sp-streak">0</b><span>Streak</span></div>
+              <div><b id="sp-max">0</b><span>Best streak</span></div>
+            </div>
+            <p class="game-pct" id="sp-pct"></p>
+            <p class="game-pct" id="sp-rating"></p>
+            <p class="game-pct"><a id="sp-lb" href="/games/leaderboard/" hidden>See the leaderboard and join it</a></p>
+            <p class="game-pct" id="sp-saver"></p>
+            <div class="game-actions">
+              <button type="button" class="btn btn-primary" id="sp-share">Copy result</button>
+              <button type="button" class="gbtn gbtn--ghost" id="sp-practice-again" hidden>Another puzzle</button>
+              <span class="game-note" id="sp-share-note"></span>
+            </div>
+            <textarea class="wg-share-text" id="sp-share-text" hidden readonly aria-label="Result text"></textarea>
+            <p class="game-next" id="sp-next-line">Next puzzle in <span id="sp-next-in"></span>.</p>
+          </section>
+        </div>
+        <div class="games-prose">
+{prose}
+        </div>
+        <p class="games-note"><a href="/games/sports/">All sports games</a>{extra_links}<br><a href="/games/">All daily games</a></p>
+      </div>"""
+    page(f"games/{slug}/", "", "", body, {"@context": "https://schema.org", "@graph": [faq(faq_items)]}, scripts)
+
+SP_NOTE = ("Players come from lists we curated of well-known stars in each league, with team histories checked against Wikipedia and Wikidata. "
+           "A player counts as a teammate when the two were on the same franchise in the same season; a team that moved or changed its name is one franchise. "
+           'Baseball data comes from the <a href="https://sabr.org/lahman-database/" rel="noopener">Lahman Baseball Database</a>, copyright 1996-2025 SABR, via Sean Lahman, used under <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="noopener">CC BY-SA 3.0</a>. '
+           "We matched it to our own player list and combined it with other sources, so it is changed from the original.")
+
+TL_FAQ = [
+    ("What counts as teammates?", "Two players are teammates if they were on the same franchise in at least one common season. A franchise that moved or changed its name counts as one team, so the Seattle SuperSonics and the Oklahoma City Thunder are the same club."),
+    ("Which players can I use?", "Any player who ever appeared for a team in that league, from the first seasons to 2025: about 5,000 in the NBA, 27,000 in the NFL, 20,000 in MLB and 9,000 in the NHL. The two players you are asked to link are always well-known stars, but the players in between can be anyone. Coverage is not perfect: NBA and NHL rosters come from Wikipedia and miss some players, clubs that no longer exist are left out, and NFL rosters include some players who were on a roster without playing."),
+    ("What is par?", "Par is the fewest links needed to connect the two players, measured over every player in our database. The chain is solved when its two ends are teammates."),
+    ("What is the Rival mode?", "Finish a puzzle and press Challenge a friend. It makes a link to the same two players with your result in it, and sends or copies it. When your friend opens the link they get that pair in Rival mode and see who linked it better: fewer links wins, and misses and hints break a tie. Rival games do not touch your streak, rating or stats. The section This week's rivals lists the challenges you answered this week and how many you sent. Everything stays on your device, and nothing is stored on our side."),
+    ("Where can I see the shortest chain?", "On the result card right after you finish, and in the section under the puzzle called This week's shortest chains. It lists every puzzle so far this week with its shortest possible chain, the team and seasons that link each pair of players, and how you did. Last week is kept in a drop-down. Today's chain appears once you finish today's puzzle, or tomorrow."),
+    ("How do the two ends work?", "You can add a player next to the first player or next to the last player. If a player is a teammate of both ends, the chain closes."),
+    ("How are stars awarded?", "Three stars for matching par with no hints and at most two misses, two stars for par plus one, one star for anything longer."),
+    ("Which sport is it today?", "The daily puzzle rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick any sport and a difficulty."),
+    ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for this game, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
+]
+TL_PROSE = f"""        <h2>How to play</h2>
+        <p>You are given two players, often from different eras. Build a chain of teammates between them. Type a player who shared a team and a season with either end of your chain and pick the name from the list.</p>
+        <p>A wrong name counts as a miss. Undo removes the last player you added, and a hint names the team of a good next link, then the player's initials. Par is the shortest chain possible.</p>
+        <p class="quiz-credit">{SP_NOTE} Football rosters come from <a href="https://github.com/nflverse/nflverse-data" rel="noopener">nflverse</a> (<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>). Basketball and hockey rosters come from Wikipedia and its players' pages (<a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a>). All of it was matched and merged by us.</p>
+        <h2>Questions</h2>
+""" + faq_html(TL_FAQ)
+TL_BOARD = """          <div class="tl-ends" aria-label="The two players to link">
+            <p><span class="tl-end-label">From</span> <strong id="tl-from"></strong></p>
+            <p><span class="tl-end-label">To</span> <strong id="tl-to"></strong></p>
+          </div>
+          <ol class="tl-chain" id="sp-chain" aria-label="Your chain"></ol>
+""" + SP_FORM + """
+          <div class="sp-tools">
+            <button type="button" class="gbtn gbtn--ghost" id="tl-undo">Undo</button>
+            <button type="button" class="gbtn gbtn--ghost" id="tl-hint">Hint</button>
+            <button type="button" class="gbtn gbtn--ghost" id="tl-giveup">Give up</button>
+          </div>
+          <p class="sp-count"><span>Links <b id="sp-links">1</b></span> <span>Par <b id="sp-par">?</b></span> <span>Misses <b id="sp-misses">0</b></span> <span>Hints <b id="sp-hints">0</b></span></p>
+          <section class="tl-week" id="tl-week" hidden aria-labelledby="tl-week-h">
+            <h2 id="tl-week-h">This week's shortest chains</h2>
+            <p class="games-note">The shortest possible chain for each day's puzzle so far this week, with the team and seasons of every link. Today's appears once you finish it.</p>
+            <ul class="tw-list" id="tl-week-list"></ul>
+            <details id="tl-week-prev-wrap" hidden><summary>Last week</summary><ul class="tw-list" id="tl-week-prev"></ul></details>
+          </section>
+          <section class="tl-week" id="tl-rivals" hidden aria-labelledby="tl-rivals-h">
+            <h2 id="tl-rivals-h">This week's rivals</h2>
+            <p class="games-note" id="tl-rivals-sum"></p>
+            <ul class="tw-list" id="tl-rivals-list"></ul>
+          </section>"""
+TL_RESULT = """            <p class="game-pct" id="sp-star"></p>
+            <p class="game-pct" id="tl-rival-result" hidden></p>
+            <div class="game-actions">
+              <button type="button" class="gbtn" id="tl-challenge" hidden>Challenge a friend</button>
+              <span class="game-note" id="tl-challenge-note"></span>
+            </div>"""
+sports_page("lockerlink", "Lockerlink", "Link two players from any era through the teammates they shared.", TL_BOARD,
+            TL_RESULT, TL_PROSE, TL_FAQ,
+            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/lockerlink.js"], diff=True,
+            extra_modes='          <button type="button" class="sp-mode" id="sp-mode-rival" aria-pressed="false" hidden>Rival</button>\n',
+            under_lede='        <p class="wg-twist" id="tl-rival-banner" hidden></p>',
+            extra_links=' &middot; Shortest chains between legends: <a href="/games/sports/nba-teammate-chains/">NBA</a>, <a href="/games/sports/nfl-teammate-chains/">NFL</a>, <a href="/games/sports/mlb-teammate-chains/">MLB</a>, <a href="/games/sports/nhl-teammate-chains/">NHL</a>')
+
+GL_FAQ = [
+    ("How does scoring work?", "You have nine guesses for nine cells. Every correct cell is worth 1 to 5 points: the less famous the player you name, the more it is worth. A wrong name uses a guess without scoring."),
+    ("What do the clues mean?", "A team clue means the player was on that franchise. A decade clue means the player was active in any season of that decade. Award clues are MVP winner, champion, five or more All-Star (or Pro Bowl) selections and Hall of Famer. A clue like Played with LeBron James means the player shared a team and a season with him. Position, career length and one-team clues are checked against the same list."),
+    ("Can I use a player twice?", "No. Each player can fill one cell."),
+    ("Is there always an answer for every cell?", "Yes. Every cell in every grid has at least two players in our list who fit it."),
+    ("Where can I see the best possible grid?", "In the section under the puzzle called This week's best grids. For every grid so far this week it shows a highest-scoring way to fill all nine cells with nine different players, how many players fit each cell, and how you did. Last week is kept in a drop-down. Today's appears once you finish today's puzzle, or tomorrow."),
+    ("Which sport is it today?", "The daily grid rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick a sport and play unlimited grids."),
+    ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for this game, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
+]
+GL_PROSE = f"""        <h2>How to play</h2>
+        <p>Each row and each column is a clue. Tap a cell, then name a player who fits both its row clue and its column clue. You have nine guesses in all, so a wrong name costs one.</p>
+        <p>When the grid is done, the cells you missed show two players who would have fit. Your rarity score adds up the points for each cell you filled.</p>
+        <p class="quiz-credit">{SP_NOTE}</p>
+        <h2>Questions</h2>
+""" + faq_html(GL_FAQ)
+GL_BOARD = """          <p class="sp-count"><span>Guesses left <b id="gl-left">9</b></span> <span>Filled <b id="gl-filled">0 of 9</b></span> <span>Rarity <b id="gl-rarity">0</b></span></p>
+          <div class="gl-grid" id="gl-grid" role="group" aria-label="Gridlink grid"></div>
+          <p class="gl-current" id="gl-current" aria-live="polite"></p>
+""" + SP_FORM + """
+          <div class="sp-tools"><button type="button" class="gbtn gbtn--ghost" id="gl-giveup">End and show answers</button></div>
+          <section class="tl-week" id="gl-week" hidden aria-labelledby="gl-week-h">
+            <h2 id="gl-week-h">This week's best grids</h2>
+            <p class="games-note">For each day's grid so far this week, a highest-scoring way to fill all nine cells with nine different players, how many players fit each cell, and how you did. Today's appears once you finish it.</p>
+            <ul class="tw-list" id="gl-week-list"></ul>
+            <details id="gl-week-prev-wrap" hidden><summary>Last week</summary><ul class="tw-list" id="gl-week-prev"></ul></details>
+          </section>"""
+sports_page("gridlink", "Gridlink", "Nine cells, nine guesses: name a player who fits each row and column.", GL_BOARD, "", GL_PROSE, GL_FAQ,
+            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/gridlink.js"])
+
+UB_FAQ = [
+    ("How is a season simulated?", "Your team's strength is the average rating of the starters, a smaller share from the bench (an empty bench spot counts as a replacement-level player, so leaving it empty is no shortcut), and a bonus for players who were really teammates. Each game is a weighted coin flip against the rest of the league. The same roster on the same day always gives the same record."),
+    ("Where do the ratings come from?", "About 60% of each rating comes from the player's career honors, counted from public records: All-Star or Pro Bowl selections, MVPs, league and playoff awards, all-league teams, titles and the Hall of Fame. The rest is our own judgement of how good he was at his best, in five tiers. Honors come from the Lahman baseball database for MLB, the player's Wikipedia page for the NBA and NFL, and Wikipedia award lists for the NHL. Stats like points or yards are not used, and eras are not adjusted."),
+    ("Can a team really go undefeated?", "It can, but it is very unlikely even for the best roster the budget allows. The result card shows the exact chance for your roster."),
+    ("What are the weekday rules?", "Each weekday has a rule: a bigger budget on Sunday, an open draft on Monday, only players who started before 1990 on Tuesday, only players who started in 2000 or later on Wednesday, no all-time icons on Thursday, a smaller budget on Friday and stars only on Saturday. Other leagues use their own cut-off years."),
+    ("Where can I see the best roster?", "In the section under the puzzle called This week's best rosters. For every day so far this week it shows the highest-rated roster the budget and that day's rule allow, the season that roster plays, and how you did. Last week is kept in a drop-down. Today's appears once you finish today's puzzle, or tomorrow. It is the best roster by team rating, which is not the same as the best result: the season still has luck in it."),
+    ("Does a practice run count?", "No. Only your first daily roster counts toward your streak and stats. Practice rosters never do. For a rated daily result the rating service replays your season from your roster, rule and budget, so the record is the one the roster earns."),
+    ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for Under the Cap, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
+]
+UB_PROSE = f"""        <h2>How to play</h2>
+        <p>Fill every starting spot with a player of the right position, from any era. Each player has a cost and a rating, and your budget does not cover a roster of all-time greats. Pick a bench with anyone left over. When every starter is in, play the season.</p>
+        <p>You get a record, your longest winning streak, a playoff run and the exact chance your roster had of going undefeated.</p>
+        <p class="quiz-credit">{SP_NOTE} Ratings blend career honors (Lahman database for MLB, Wikipedia for the other leagues) with our tier for each player. They are not official statistics.</p>
+        <h2>Questions</h2>
+""" + faq_html(UB_FAQ)
+UB_BOARD = """          <p class="ub-rule"><strong id="ub-rule-name"></strong> <span id="ub-rule-text"></span></p>
+          <p class="sp-count"><span>Budget left <b id="ub-budget"></b></span> <span>Team rating <b id="ub-rating">none yet</b></span> <span>Chemistry <b id="ub-chem">none yet</b></span></p>
+          <ol class="ub-slots" id="ub-slots" aria-label="Your roster"></ol>
+          <div class="sp-tools">
+            <button type="button" class="gbtn" id="ub-play" disabled>Fill every starting spot</button>
+            <button type="button" class="gbtn gbtn--ghost" id="ub-clear">Clear roster</button>
+          </div>
+          <section class="ub-picker" id="ub-picker" aria-labelledby="ub-picker-title">
+            <h2 id="ub-picker-title">Choose a player</h2>
+            <label for="ub-search" class="visually-hidden">Search players</label>
+            <input id="ub-search" class="ub-search" type="search" placeholder="Search by name" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <p class="sp-msg" id="ub-msg" role="status" aria-live="polite"></p>
+            <ul class="ub-options" id="ub-options"></ul>
+            <p class="games-note" id="ub-none" hidden>No player matches. Clear the search or check the weekday rule above.</p>
+            <p class="games-note" id="ub-reserve"></p>
+            <p class="games-note" id="ub-more"></p>
+          </section>
+          <section class="tl-week" id="ub-week" hidden aria-labelledby="ub-week-h">
+            <h2 id="ub-week-h">This week's best rosters</h2>
+            <p class="games-note">For each day's rule so far this week, the highest-rated roster the budget allows, what a season with it looks like, and how you did. Today's appears once you finish it.</p>
+            <ul class="tw-list" id="ub-week-list"></ul>
+            <details id="ub-week-prev-wrap" hidden><summary>Last week</summary><ul class="tw-list" id="ub-week-prev"></ul></details>
+          </section>"""
+UB_RESULT = """            <p class="ub-record" id="ub-record" aria-hidden="true"></p>
+            <ul class="ub-detail" id="ub-detail"></ul>
+            <div id="ub-playoffs-wrap" hidden><h3>Playoffs</h3><ul class="ub-detail" id="ub-playoffs"></ul></div>"""
+sports_page("under-the-cap", "Under the Cap", "Build a roster from any era under a budget, then play a full season.", UB_BOARD, UB_RESULT, UB_PROSE, UB_FAQ,
+            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/season.js", "/games/under-the-cap.js"])
+
+
+# ---------------- Sports hub and "how are they connected" pages ----------------
+TWO_WORD = ["Trail Blazers", "Red Sox", "White Sox", "Blue Jays", "Maple Leafs", "Golden Knights", "Blue Jackets", "Red Wings"]
+
+
+def short_team(d, f):
+    if f in d.get("fs", {}): return d["fs"][f]
+    name = d["fr"].get(f, f)
+    for t in TWO_WORD:
+        if name.endswith(t): return t
+    return name.split(" ")[-1]
+
+
+def seasons(d, a, b):
+    two = lambda n: f"{n % 100:02d}"
+    if d["split"]: return f"{a}-{two(b + 1)}"
+    return str(a) if a == b else f"{a}-{two(b)}"
+
+
+DEGREE_PAGES = {}
+for _sp in ("nba", "nfl", "mlb", "nhl"):
+    _f = Path(__file__).resolve().parent / "sports-degrees" / f"{_sp}.json"
+    if _f.exists(): DEGREE_PAGES[_sp] = json.loads(_f.read_text(encoding="utf-8"))
+SPORT_FULL = {"nba": ("NBA", "basketball", "Bill Russell"), "nfl": ("NFL", "football", "Johnny Unitas"), "mlb": ("MLB", "baseball", "Willie Mays"), "nhl": ("NHL", "hockey", "Gordie Howe")}
+
+
+def degree_page(sp, d):
+    name, game, _ = SPORT_FULL[sp]
+    top = d["rows"][0]
+    title = f"How are {name} stars connected? Teammate chains across eras"
+    desc = f"The shortest chains of real teammates between {name} legends from different eras, such as {top['a']} to {top['b']} in {top['links']} links. Based on {d['players']:,} {game} players."
+    far = [r for r in d["rows"]]
+    items = ""
+    for r in far:
+        hops = ""
+        for i, n in enumerate(r["c"]):
+            hop = ""
+            if i < len(r["h"]) and r["h"][i]:
+                f, a, b = r["h"][i]
+                hop = f'<span class="tw-hop">teammates: {html.escape(short_team(d, f))}, {seasons(d, a, b)}</span>'
+            hops += f"            <li>{html.escape(n)}{hop}</li>\n"
+        items += (f'          <li class="tw-day"><p class="tw-head"><strong>{html.escape(r["a"])} to {html.escape(r["b"])}</strong>: {r["links"]} links, '
+                  f'{r["gap"]} years apart at the start of their careers.</p>\n          <ol class="tw-chain">\n{hops}          </ol></li>\n')
+    dist = ", ".join(f"{n} pairs are {k} links apart" for k, n in d["dist"])
+    faq_ = [
+        (f"How many degrees of separation are there between {name} stars?", f"Among the {d['stars']} biggest {name} stars in our database, two players are on average {d['avg']} links apart through chains of teammates, and the longest shortest chain is {d['max']} links. Counting every pair: {dist}."),
+        ("What counts as a link?", "Two players are linked if they played for the same franchise in the same season. A team that moved or changed its name is one franchise."),
+        ("Is there always a shorter chain?", f"These are the shortest chains in our database of {d['players']:,} {name} players from {d['first']} to 2025. The database is not complete: some defunct clubs and some players are missing, so a shorter real chain can exist."),
+        ("Can I try one myself?", "Yes. Lockerlink gives you two players every day and asks you to build the shortest chain. It rotates through the NBA, NFL, MLB and NHL, and practice mode lets you pick the sport and the difficulty."),
+    ]
+    body = f"""      <div class="games-wrap">
+        <div class="game-head"><h1>How are {name} stars connected?</h1></div>
+        <p class="game-lede">Two players are linked if they were teammates in the same season. These are the shortest chains between {name} legends from different eras, worked out over {d['players']:,} {game} players from {d['first']} to 2025.</p>
+        <p class="games-note"><a class="gbtn" href="/games/lockerlink/">Play today's Lockerlink</a> <a href="/games/sports/">All sports games</a></p>
+        <div class="games-prose">
+          <h2>The numbers</h2>
+          <p>Among the {d['stars']} biggest stars in our {name} data, any two are on average {d['avg']} links apart, and no pair is more than {d['max']} apart. The average hides a lot: stars who played for several teams and stayed long are the bridges, so the longest chains run between players from the very start of the league and the newest stars.</p>
+          <h2>Chains between stars from different eras</h2>
+          <ul class="tw-list">
+{items}          </ul>
+          <h2>Questions</h2>
+{faq_html(faq_)}
+          <p class="quiz-credit">Rosters and seasons come from public sources, mostly Wikipedia, nflverse and the Lahman Baseball Database, matched and merged by us; the credits are on the <a href="/games/lockerlink/">Lockerlink</a> page.</p>
+        </div>
+      </div>"""
+    page(f"games/sports/{sp}-teammate-chains/", title, desc, body,
+         {"@context": "https://schema.org", "@graph": [
+             {"@type": "Article", "@id": f"https://purplelink.llc/games/sports/{sp}-teammate-chains/#article", "headline": title, "description": desc, "inLanguage": "en",
+              "datePublished": "2026-10-05", "dateModified": TODAY, "author": {"@id": ORG["@id"]}, "publisher": ORG,
+              "mainEntityOfPage": f"https://purplelink.llc/games/sports/{sp}-teammate-chains/", "about": f"{name} teammate connections"},
+             faq(faq_), crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Sports", "https://purplelink.llc/games/sports/"), (f"{name} teammate chains", f"https://purplelink.llc/games/sports/{sp}-teammate-chains/"))]},
+         [])
+
+
+for _sp, _d in DEGREE_PAGES.items():
+    degree_page(_sp, _d)
+
+SPORTS_FAQ = [
+    ("What are the Purplelink sports games?", "Three free daily puzzles about the NBA, NFL, MLB and NHL: Lockerlink (link two players through a chain of real teammates), Gridlink (fill a 3 by 3 grid of teams, decades, awards and teammates) and Under the Cap (build a roster under a budget and play a full season). The sport changes every day."),
+    ("Which players are in them?", "Every player who ever appeared in the four leagues is available in Lockerlink, about 61,000 in all. Gridlink and Under the Cap use a curated list of well-known stars. The players you are asked to link are always stars."),
+    ("Are they free? Do I need an account?", "They are free, with no third-party ads on the daily games, and you do not need an account. An optional email sign-in keeps your streaks and ratings across devices and lets you join the leaderboards."),
+    ("How are they different from other sports puzzle games?", "Lockerlink lets you add players at either end of the chain and measures par over every player in the league, back to 1920 in the NFL and 1871 in MLB. Gridlink has award clues and a clue that asks for a teammate of a named star. Under the Cap gives you a budget and an open choice of any player from any era instead of a random spin, and shows the best roster for each day's rule afterwards."),
+    ("Is there a rating?", "Yes. Each game keeps a running Elo rating, updated once a day, with all-time and weekly leaderboards for players who opt in."),
+    ("Where do the player histories come from?", "Public sources: the Lahman Baseball Database for MLB, nflverse for the NFL, and Wikipedia for the NBA and NHL, matched and merged by us. The credits are on the game pages. The data is not complete, and the pages say where the gaps are."),
+]
+SP_HUB_BODY = """      <div class="games-wrap hub">
+        <header class="hub-top"><div><h1>Free daily sports puzzle games</h1></div></header>
+        <p class="game-lede">Three free daily puzzles for NBA, NFL, MLB and NHL fans, with players from every era: link two stars through the teammates they shared, fill a grid, or build a roster and see if it can go undefeated. A new puzzle every midnight, no account needed.</p>
+        <div class="tiles">
+""" + "".join(tile(sl) for sl in SPORTS_GAMES) + """        </div>
+        <div class="games-prose">
+          <h2>How are the stars connected?</h2>
+          <p>Every Lockerlink puzzle has a shortest chain of teammates, and the stars of different eras are closer than you would think. These pages list the shortest chains between legends from different decades.</p>
+          <ul class="games-related">
+""" + "".join(f'            <li><a href="/games/sports/{sp}-teammate-chains/"><strong>{SPORT_FULL[sp][0]} teammate chains</strong></a>: {DEGREE_PAGES[sp]["rows"][0]["a"]} to {DEGREE_PAGES[sp]["rows"][0]["b"]} in {DEGREE_PAGES[sp]["rows"][0]["links"]} links, and 23 more.</li>\n' for sp in DEGREE_PAGES) + """          </ul>
+          <h2>What is in each game</h2>
+          <ul>
+            <li><strong>Lockerlink</strong>: add players at either end of the chain until the two ends are teammates. Par is the shortest possible chain. Hints, undo, a Rival mode to challenge a friend, and a weekly recap of the shortest chains.</li>
+            <li><strong>Gridlink</strong>: nine cells, nine guesses. Clues are teams, decades, positions, awards and "played with" a named star. Rarer players score more.</li>
+            <li><strong>Under the Cap</strong>: a budget, a rule that changes each weekday, and any player from any era. The rating of each player comes from career honors. A weekly recap shows the best roster for each rule.</li>
+          </ul>
+          <h2>Questions</h2>
+""" + faq_html(SPORTS_FAQ) + """
+        </div>
+        <p class="games-note"><a href="/games/">All daily games</a></p>
+      </div>"""
+page("games/sports/", "Free daily sports puzzle games: NBA, NFL, MLB and NHL | Purplelink",
+     "Three free daily sports puzzles with players from every era: link two stars through teammates, fill a grid, or build a roster for a perfect season. NBA, NFL, MLB and NHL.",
+     SP_HUB_BODY, {"@context": "https://schema.org", "@graph": [faq(SPORTS_FAQ), crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Sports", "https://purplelink.llc/games/sports/"))]},
+     [])
+
 HUB_FAQ = [
     ("Are the games free?", "Yes. You can play every game without signing in. The daily games have no third-party ads, only an occasional small notice about one of our own apps. The two unlimited pages, Chess Puzzles and Sudoku Unlimited, show Google ads. An optional email-link sign-in keeps your streaks, achievements and puzzle ratings across devices."),
     ("Can I play more than one chess puzzle or Sudoku a day?", "Yes. Chess Puzzles and Sudoku Unlimited have no daily limit. Each keeps a rating, and signed-in players can choose to appear on the leaderboards."),
@@ -1163,9 +1610,15 @@ HUB_BODY = """      <div class="games-wrap hub">
 """ + "".join(tile(sl) for sl in ORDER) + """        </div>
         <section class="more" aria-labelledby="more2-h">
           <h2 id="more2-h">More daily puzzles</h2>
-          <p class="week-sub">Guess the country, element or Nobel laureate from comparable facts. They keep streaks and XP but are not part of the daily run.</p>
+          <p class="week-sub">Guess a country, element, laureate, city, mountain, language, scientist, river or animal from comparable facts. They keep streaks and XP but are not part of the daily run.</p>
           <div class="tiles">
 """ + "".join(tile(sl) for sl in MORE_DAILY) + """          </div>
+        </section>
+        <section class="more" aria-labelledby="sports-h">
+          <h2 id="sports-h">Sports</h2>
+          <p class="week-sub">Famous players from every era in the NBA, NFL, MLB and NHL. Link two stars through their teammates, fill a grid, or build a roster and play a perfect season. The sport changes each day. <a href="/games/sports/">More about the sports games</a></p>
+          <div class="tiles">
+""" + "".join(tile(sl) for sl in SPORTS_GAMES) + """          </div>
         </section>
         <section class="more" aria-labelledby="more-h">
           <h2 id="more-h">Unlimited and rated</h2>

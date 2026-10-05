@@ -1,12 +1,14 @@
-/* Leaderboards: the top 100 by rating and by rating gained this week, for Chess Puzzles and Sudoku Unlimited. */
+/* Leaderboards: the top 100 by rating and by rating gained this week, for Chess Puzzles, Sudoku Unlimited, Lockerlink, Gridlink and Under the Cap. */
 (function () {
   "use strict";
   var G = window.PLGames, R = window.PLRating;
   if (!G || !R) return;
   var $ = function (id) { return document.getElementById(id); };
   var q = new URLSearchParams(window.location.search);
-  var st = { game: q.get("g") === "sudoku" ? "sudoku" : "chess", board: q.get("b") === "week" ? "week" : "all" };
-  var PAGES = { chess: ["/games/chess-puzzles/", "chess-puzzles", "Play rated chess puzzles"], sudoku: ["/games/sudoku-unlimited/", "sudoku-unlimited", "Play rated Sudoku"] };
+  var GAMES = ["chess", "sudoku", "lockerlink", "gridlink", "under-the-cap"];
+  var st = { game: GAMES.indexOf(q.get("g")) >= 0 ? q.get("g") : "chess", board: q.get("b") === "week" ? "week" : "all" };
+  var PAGES = { chess: ["/games/chess-puzzles/", "chess-puzzles", "Play rated chess puzzles"], sudoku: ["/games/sudoku-unlimited/", "sudoku-unlimited", "Play rated Sudoku"],
+    lockerlink: ["/games/lockerlink/", "lockerlink", "Play today's Lockerlink"], gridlink: ["/games/gridlink/", "gridlink", "Play today's Gridlink"], "under-the-cap": ["/games/under-the-cap/", "under-the-cap", "Play today's Under the Cap"] };
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
 

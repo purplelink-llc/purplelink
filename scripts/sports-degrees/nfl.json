@@ -1,0 +1,955 @@
+{
+"sport": "nfl",
+"name": "NFL",
+"players": 27253,
+"stars": 45,
+"avg": 2.7,
+"max": 6,
+"dist": [
+[
+1,
+34
+],
+[
+2,
+474
+],
+[
+3,
+289
+],
+[
+4,
+142
+],
+[
+5,
+46
+],
+[
+6,
+5
+]
+],
+"first": 1946,
+"fr": {
+"ARI": "Arizona Cardinals",
+"ATL": "Atlanta Falcons",
+"BAL": "Baltimore Ravens",
+"BUF": "Buffalo Bills",
+"CAR": "Carolina Panthers",
+"CHI": "Chicago Bears",
+"CIN": "Cincinnati Bengals",
+"CLE": "Cleveland Browns",
+"DAL": "Dallas Cowboys",
+"DEN": "Denver Broncos",
+"DET": "Detroit Lions",
+"GB": "Green Bay Packers",
+"HOU": "Houston Texans",
+"IND": "Indianapolis Colts",
+"JAX": "Jacksonville Jaguars",
+"KC": "Kansas City Chiefs",
+"LV": "Las Vegas Raiders",
+"LAC": "Los Angeles Chargers",
+"LAR": "Los Angeles Rams",
+"MIA": "Miami Dolphins",
+"MIN": "Minnesota Vikings",
+"NE": "New England Patriots",
+"NO": "New Orleans Saints",
+"NYG": "New York Giants",
+"NYJ": "New York Jets",
+"PHI": "Philadelphia Eagles",
+"PIT": "Pittsburgh Steelers",
+"SF": "San Francisco 49ers",
+"SEA": "Seattle Seahawks",
+"TB": "Tampa Bay Buccaneers",
+"TEN": "Tennessee Titans",
+"WAS": "Washington Commanders"
+},
+"fs": {},
+"split": false,
+"rows": [
+{
+"a": "Otto Graham",
+"b": "Patrick Mahomes",
+"links": 6,
+"gap": 71,
+"c": [
+"Otto Graham",
+"Doug Atkins",
+"Tony Baker",
+"John Reaves",
+"Vinny Testaverde",
+"Matt Moore",
+"Patrick Mahomes"
+],
+"h": [
+[
+"CLE",
+1953,
+1954
+],
+[
+"NO",
+1968,
+1969
+],
+[
+"PHI",
+1972,
+1972
+],
+[
+"TB",
+1987,
+1987
+],
+[
+"CAR",
+2007,
+2007
+],
+[
+"KC",
+2019,
+2020
+]
+]
+},
+{
+"a": "Aaron Donald",
+"b": "Otto Graham",
+"links": 6,
+"gap": 68,
+"c": [
+"Aaron Donald",
+"Wes Welker",
+"Kevin Carter",
+"Jackie Slater",
+"Winston Hill",
+"Walt Michaels",
+"Otto Graham"
+],
+"h": [
+[
+"LAR",
+2015,
+2015
+],
+[
+"MIA",
+2005,
+2006
+],
+[
+"LAR",
+1995,
+1995
+],
+[
+"LAR",
+1977,
+1977
+],
+[
+"NYJ",
+1963,
+1963
+],
+[
+"CLE",
+1952,
+1955
+]
+]
+},
+{
+"a": "Chuck Bednarik",
+"b": "Patrick Mahomes",
+"links": 6,
+"gap": 68,
+"c": [
+"Chuck Bednarik",
+"Tommy McDonald",
+"Merlin Olsen",
+"Jackie Slater",
+"Isaac Bruce",
+"Alex Smith (1984)",
+"Patrick Mahomes"
+],
+"h": [
+[
+"PHI",
+1957,
+1962
+],
+[
+"LAR",
+1965,
+1966
+],
+[
+"LAR",
+1976,
+1976
+],
+[
+"LAR",
+1994,
+1995
+],
+[
+"SF",
+2008,
+2009
+],
+[
+"KC",
+2017,
+2017
+]
+]
+},
+{
+"a": "Aaron Donald",
+"b": "Chuck Bednarik",
+"links": 5,
+"gap": 65,
+"c": [
+"Aaron Donald",
+"Wes Welker",
+"Doug Flutie",
+"Harold Jackson",
+"Maxie Baughan",
+"Chuck Bednarik"
+],
+"h": [
+[
+"LAR",
+2015,
+2015
+],
+[
+"LAC",
+2004,
+2004
+],
+[
+"NE",
+1987,
+1987
+],
+[
+"LAR",
+1968,
+1968
+],
+[
+"PHI",
+1960,
+1962
+]
+]
+},
+{
+"a": "Gino Marchetti",
+"b": "J. J. Watt",
+"links": 5,
+"gap": 59,
+"c": [
+"Gino Marchetti",
+"Johnny Unitas",
+"Dan Fouts",
+"Randy Kirk",
+"Jeff Garcia",
+"J. J. Watt"
+],
+"h": [
+[
+"IND",
+1956,
+1964
+],
+[
+"LAC",
+1973,
+1973
+],
+[
+"LAC",
+1987,
+1987
+],
+[
+"SF",
+1999,
+1999
+],
+[
+"HOU",
+2011,
+2011
+]
+]
+},
+{
+"a": "J. J. Watt",
+"b": "Jim Brown",
+"links": 5,
+"gap": 54,
+"c": [
+"J. J. Watt",
+"Vince Wilfork",
+"Vinny Testaverde",
+"John Reaves",
+"Walter Johnson",
+"Jim Brown"
+],
+"h": [
+[
+"HOU",
+2015,
+2016
+],
+[
+"NE",
+2006,
+2006
+],
+[
+"TB",
+1987,
+1987
+],
+[
+"CIN",
+1977,
+1977
+],
+[
+"CLE",
+1965,
+1965
+]
+]
+},
+{
+"a": "Aaron Rodgers",
+"b": "Jim Brown",
+"links": 5,
+"gap": 48,
+"c": [
+"Aaron Rodgers",
+"Brett Favre",
+"Tunch Ilkin",
+"Joe Greene",
+"Sid Williams",
+"Jim Brown"
+],
+"h": [
+[
+"GB",
+2005,
+2007
+],
+[
+"GB",
+1993,
+1993
+],
+[
+"PIT",
+1980,
+1981
+],
+[
+"PIT",
+1969,
+1969
+],
+[
+"CLE",
+1964,
+1965
+]
+]
+},
+{
+"a": "Aaron Rodgers",
+"b": "Gino Marchetti",
+"links": 5,
+"gap": 53,
+"c": [
+"Aaron Rodgers",
+"Brett Favre",
+"Reggie White",
+"Ron Baker",
+"David Lee",
+"Gino Marchetti"
+],
+"h": [
+[
+"GB",
+2005,
+2007
+],
+[
+"GB",
+1993,
+1998
+],
+[
+"PHI",
+1985,
+1988
+],
+[
+"IND",
+1978,
+1978
+],
+[
+"IND",
+1966,
+1966
+]
+]
+},
+{
+"a": "Ed Reed",
+"b": "Night Train Lane",
+"links": 5,
+"gap": 50,
+"c": [
+"Ed Reed",
+"Ray Lewis",
+"Vinny Testaverde",
+"John Reaves",
+"Wally Hilgenberg",
+"Night Train Lane"
+],
+"h": [
+[
+"BAL",
+2002,
+2012
+],
+[
+"BAL",
+1996,
+1997
+],
+[
+"TB",
+1987,
+1987
+],
+[
+"MIN",
+1979,
+1979
+],
+[
+"DET",
+1964,
+1965
+]
+]
+},
+{
+"a": "Johnny Unitas",
+"b": "Tom Brady",
+"links": 4,
+"gap": 44,
+"c": [
+"Johnny Unitas",
+"Deacon Jones",
+"Harold Jackson",
+"Doug Flutie",
+"Tom Brady"
+],
+"h": [
+[
+"LAC",
+1973,
+1973
+],
+[
+"LAR",
+1968,
+1968
+],
+[
+"NE",
+1987,
+1987
+],
+[
+"NE",
+2005,
+2005
+]
+]
+},
+{
+"a": "Ed Reed",
+"b": "Johnny Unitas",
+"links": 4,
+"gap": 46,
+"c": [
+"Ed Reed",
+"Deion Sanders",
+"Jerry Rice",
+"Ray Wersching",
+"Johnny Unitas"
+],
+"h": [
+[
+"BAL",
+2004,
+2005
+],
+[
+"SF",
+1994,
+1994
+],
+[
+"SF",
+1985,
+1987
+],
+[
+"LAC",
+1973,
+1973
+]
+]
+},
+{
+"a": "Night Train Lane",
+"b": "Tom Brady",
+"links": 4,
+"gap": 48,
+"c": [
+"Night Train Lane",
+"Earl Morrall",
+"Don Strock",
+"Lee Johnson (1961)",
+"Tom Brady"
+],
+"h": [
+[
+"DET",
+1960,
+1964
+],
+[
+"MIA",
+1974,
+1976
+],
+[
+"CLE",
+1988,
+1988
+],
+[
+"NE",
+2000,
+2001
+]
+]
+},
+{
+"a": "Bart Starr",
+"b": "Peyton Manning",
+"links": 4,
+"gap": 42,
+"c": [
+"Bart Starr",
+"Scott Hunter",
+"R.C. Thielemann",
+"Mark Rypien",
+"Peyton Manning"
+],
+"h": [
+[
+"GB",
+1971,
+1971
+],
+[
+"ATL",
+1977,
+1978
+],
+[
+"WAS",
+1987,
+1988
+],
+[
+"IND",
+2001,
+2001
+]
+]
+},
+{
+"a": "Bart Starr",
+"b": "LaDainian Tomlinson",
+"links": 4,
+"gap": 45,
+"c": [
+"Bart Starr",
+"Scott Hunter",
+"Mike Kenn",
+"Roman Fortin",
+"LaDainian Tomlinson"
+],
+"h": [
+[
+"GB",
+1971,
+1971
+],
+[
+"ATL",
+1978,
+1978
+],
+[
+"ATL",
+1992,
+1994
+],
+[
+"LAC",
+2001,
+2001
+]
+]
+},
+{
+"a": "Deacon Jones",
+"b": "Peyton Manning",
+"links": 4,
+"gap": 37,
+"c": [
+"Deacon Jones",
+"Merlin Olsen",
+"Jackie Slater",
+"Mark Rypien",
+"Peyton Manning"
+],
+"h": [
+[
+"LAR",
+1962,
+1971
+],
+[
+"LAR",
+1976,
+1976
+],
+[
+"LAR",
+1995,
+1995
+],
+[
+"IND",
+2001,
+2001
+]
+]
+},
+{
+"a": "Bob Lilly",
+"b": "LaDainian Tomlinson",
+"links": 4,
+"gap": 40,
+"c": [
+"Bob Lilly",
+"Drew Pearson",
+"Mark Tuinei",
+"Randall Godfrey",
+"LaDainian Tomlinson"
+],
+"h": [
+[
+"DAL",
+1973,
+1974
+],
+[
+"DAL",
+1983,
+1983
+],
+[
+"DAL",
+1996,
+1997
+],
+[
+"LAC",
+2004,
+2006
+]
+]
+},
+{
+"a": "Bob Lilly",
+"b": "Drew Brees",
+"links": 4,
+"gap": 40,
+"c": [
+"Bob Lilly",
+"Drew Pearson",
+"Mark Tuinei",
+"Randall Godfrey",
+"Drew Brees"
+],
+"h": [
+[
+"DAL",
+1973,
+1974
+],
+[
+"DAL",
+1983,
+1983
+],
+[
+"DAL",
+1996,
+1997
+],
+[
+"LAC",
+2004,
+2005
+]
+]
+},
+{
+"a": "Dick Butkus",
+"b": "Drew Brees",
+"links": 4,
+"gap": 36,
+"c": [
+"Dick Butkus",
+"Wayne Mass",
+"Julius Adams",
+"Doug Flutie",
+"Drew Brees"
+],
+"h": [
+[
+"CHI",
+1968,
+1970
+],
+[
+"NE",
+1972,
+1972
+],
+[
+"NE",
+1987,
+1987
+],
+[
+"LAC",
+2001,
+2004
+]
+]
+},
+{
+"a": "Dick Butkus",
+"b": "Ray Lewis",
+"links": 4,
+"gap": 31,
+"c": [
+"Dick Butkus",
+"Wayne Mass",
+"John Reaves",
+"Vinny Testaverde",
+"Ray Lewis"
+],
+"h": [
+[
+"CHI",
+1968,
+1970
+],
+[
+"PHI",
+1972,
+1972
+],
+[
+"TB",
+1987,
+1987
+],
+[
+"BAL",
+1996,
+1997
+]
+]
+},
+{
+"a": "Deacon Jones",
+"b": "Ray Lewis",
+"links": 3,
+"gap": 35,
+"c": [
+"Deacon Jones",
+"Mark Moseley",
+"Earnest Byner",
+"Ray Lewis"
+],
+"h": [
+[
+"WAS",
+1974,
+1974
+],
+[
+"CLE",
+1986,
+1986
+],
+[
+"BAL",
+1996,
+1997
+]
+]
+},
+{
+"a": "Charles Woodson",
+"b": "Joe Greene",
+"links": 3,
+"gap": 29,
+"c": [
+"Charles Woodson",
+"Brett Favre",
+"Tunch Ilkin",
+"Joe Greene"
+],
+"h": [
+[
+"GB",
+2006,
+2007
+],
+[
+"GB",
+1993,
+1993
+],
+[
+"PIT",
+1980,
+1981
+]
+]
+},
+{
+"a": "Joe Greene",
+"b": "Randy Moss",
+"links": 3,
+"gap": 29,
+"c": [
+"Joe Greene",
+"Jack Lambert",
+"Gary Anderson (1959)",
+"Randy Moss"
+],
+"h": [
+[
+"PIT",
+1974,
+1981
+],
+[
+"PIT",
+1982,
+1984
+],
+[
+"MIN",
+1998,
+2002
+]
+]
+},
+{
+"a": "Alan Page",
+"b": "Charles Woodson",
+"links": 3,
+"gap": 31,
+"c": [
+"Alan Page",
+"Mike Singletary",
+"Trace Armstrong",
+"Charles Woodson"
+],
+"h": [
+[
+"CHI",
+1981,
+1981
+],
+[
+"CHI",
+1989,
+1992
+],
+[
+"LV",
+2001,
+2003
+]
+]
+},
+{
+"a": "Alan Page",
+"b": "Randy Moss",
+"links": 3,
+"gap": 31,
+"c": [
+"Alan Page",
+"Vince Evans",
+"Rob Holmberg",
+"Randy Moss"
+],
+"h": [
+[
+"CHI",
+1978,
+1981
+],
+[
+"LV",
+1994,
+1995
+],
+[
+"MIN",
+1999,
+1999
+]
+]
+}
+]
+}

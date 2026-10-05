@@ -64,7 +64,100 @@ def _laureates(rows):
     return cols, out, ranked
 
 
-GAMES = {"landlink": ("countries", _countries), "atomlink": ("elements", _elements), "prizelink": ("laureates", _laureates)}
+def _cities(rows):
+    cols = [
+        {"k": "continent", "l": "Continent", "t": "enum"},
+        {"k": "country", "l": "Country", "t": "enum"},
+        {"k": "pop", "l": "Population", "t": "num", "f": "pop", "rel": 0.4},
+        {"k": "lat", "l": "Latitude", "t": "num", "f": "lat", "abs": 8},
+        {"k": "lon", "l": "Longitude", "t": "num", "f": "lon", "abs": 15},
+        {"k": "cap", "l": "Capital", "t": "enum"},
+    ]
+    out = [{"n": r["name"], "a": r["alt"], "v": [r["continent"], r["country"], r["pop"], r["lat"], r["lon"], "Capital" if r["capital"] else "Not a capital"]} for r in rows]
+    ranked = sorted(range(len(rows)), key=lambda i: -rows[i]["pop"])[:250]
+    return cols, out, ranked
+
+
+NOT_ANSWERS = {"Mount Rushmore", "Mount Bazardüzü", "Mount Athos", "Mount Sinai", "Mount Kailash", "Table Mountain"}
+
+
+def _peaks(rows):
+    cols = [
+        {"k": "continent", "l": "Continent", "t": "enum"},
+        {"k": "countries", "l": "Country", "t": "set"},
+        {"k": "elev", "l": "Height", "t": "num", "f": "m", "rel": 0.2},
+        {"k": "lat", "l": "Latitude", "t": "num", "f": "lat", "abs": 8},
+        {"k": "lon", "l": "Longitude", "t": "num", "f": "lon", "abs": 15},
+        {"k": "volcano", "l": "Volcano", "t": "enum"},
+    ]
+    out = [{"n": r["name"], "a": [], "v": [r["continent"], r["countries"], r["elev"], r["lat"], r["lon"], "Yes" if r["volcano"] else "No"]} for r in rows]
+    ranked = [i for i in sorted(range(len(rows)), key=lambda i: -rows[i]["fame"]) if rows[i]["name"] not in NOT_ANSWERS][:120]
+    return cols, out, ranked
+
+
+def _languages(rows):
+    cols = [
+        {"k": "year", "l": "First appeared", "t": "num", "f": "plain", "abs": 6},
+        {"k": "typing", "l": "Typing", "t": "enum"},
+        {"k": "runs", "l": "Runs as", "t": "enum"},
+        {"k": "memory", "l": "Memory", "t": "enum"},
+        {"k": "domain", "l": "Used for", "t": "enum"},
+        {"k": "paradigms", "l": "Style", "t": "set"},
+    ]
+    out = [{"n": r["name"], "a": [], "v": [r["year"], r["typing"], r["runs"], r["memory"], r["domain"], r["paradigms"]]} for r in rows]
+    return cols, out, [i for i, r in enumerate(rows) if r["well"]]
+
+
+def _scientists(rows):
+    cols = [
+        {"k": "field", "l": "Field", "t": "enum"},
+        {"k": "born", "l": "Born", "t": "num", "f": "plain", "abs": 25},
+        {"k": "life", "l": "Lived", "t": "num", "f": "life", "abs": 8},
+        {"k": "continent", "l": "Born in", "t": "enum"},
+        {"k": "country", "l": "Country", "t": "enum"},
+        {"k": "gender", "l": "Gender", "t": "enum"},
+    ]
+    out = [{"n": r["name"], "a": [], "v": [r["field"], r["born"], r["life"], r["continent"], r["country"], r["gender"]]} for r in rows]
+    return cols, out, list(range(len(out)))
+
+
+def _end_kind(mouth):
+    m = mouth.lower()
+    if any(w in m for w in ("sea", "ocean", "gulf", "bay", "strait", "channel")):
+        return "Sea or ocean"
+    if any(w in m for w in ("lake", "lago", "see")):
+        return "Lake"
+    return "Another river"
+
+
+def _rivers(rows):
+    cols = [
+        {"k": "continent", "l": "Continent", "t": "enum"},
+        {"k": "countries", "l": "Countries", "t": "set"},
+        {"k": "ncountries", "l": "How many", "t": "num", "f": "int", "abs": 1},
+        {"k": "len", "l": "Length", "t": "num", "f": "km", "rel": 0.25},
+        {"k": "mouth", "l": "Flows into", "t": "enum"},
+        {"k": "end", "l": "Ends at", "t": "enum"},
+    ]
+    out = [{"n": r["name"], "a": [], "v": [r["continent"], r["countries"], len(r["countries"]), r["len"], r["mouth"], _end_kind(r["mouth"])]} for r in rows]
+    ranked = sorted(range(len(rows)), key=lambda i: -rows[i]["fame"])[:130]
+    return cols, out, ranked
+
+
+def _animals(rows):
+    cols = [
+        {"k": "cls", "l": "Group", "t": "enum"},
+        {"k": "diet", "l": "Diet", "t": "enum"},
+        {"k": "home", "l": "Lives in", "t": "enum"},
+        {"k": "continents", "l": "Continents", "t": "set"},
+        {"k": "mass", "l": "Weight", "t": "num", "f": "kg", "rel": 0.6},
+        {"k": "life", "l": "Lifespan", "t": "num", "f": "yrs", "rel": 0.4},
+    ]
+    out = [{"n": r["name"], "a": [], "v": [r["cls"], r["diet"], r["home"], r["continents"], r["mass"], r["life"]]} for r in rows]
+    return cols, out, list(range(len(out)))
+
+
+GAMES = {"thinkerlink": ("scientists", _scientists), "riverlink": ("rivers", _rivers), "wildlink": ("animals", _animals), "citylink": ("cities", _cities), "peaklink": ("peaks", _peaks), "codelink": ("languages", _languages), "landlink": ("countries", _countries), "atomlink": ("elements", _elements), "prizelink": ("laureates", _laureates)}
 
 
 def build(src: Path, epoch: str, days: int, enc_text) -> dict[str, str]:

@@ -80,6 +80,25 @@
     G.setGame(NAME, s);
   }
 
+  // Digit first: tap a digit on the pad, then tap squares to fill them. Zen: hide the clock.
+  function paintArmed() {
+    Array.prototype.forEach.call($("sd-pad").querySelectorAll("[data-d]"), function (b) { b.toggleAttribute("data-armed", st.digitMode && st.armed === Number(b.getAttribute("data-d"))); });
+    $("sd-erase").toggleAttribute("data-armed", st.digitMode && st.armed === 0);
+    $("sd-status").textContent = st.digitMode ? (st.armed === null ? "Digit first: pick a digit, then tap squares." : st.armed === 0 ? "Erasing: tap squares to clear them." : "Placing " + st.armed + ": tap squares.") : "";
+  }
+  function setDigitMode(on) {
+    st.digitMode = on; st.armed = null;
+    var g = G.getGame(NAME); g.digit = on; G.setGame(NAME, g);
+    $("sd-digit").setAttribute("aria-pressed", on ? "true" : "false"); $("sd-digit").textContent = on ? "Digit first: on" : "Digit first: off";
+    paintArmed();
+  }
+  function setZen(on) {
+    st.zen = on;
+    var g = G.getGame(NAME); g.zen = on; G.setGame(NAME, g);
+    $("sd-zen").setAttribute("aria-pressed", on ? "true" : "false"); $("sd-zen").textContent = on ? "Zen: on" : "Zen: off";
+    $("sd-timer").hidden = on;
+  }
+
   function startClock() { if (st.ticking || st.done) return; st.ticking = true; st.last = Date.now(); G.track("game_start", NAME); }
   function tickClock() {
     if (st.ticking && !st.done && document.visibilityState === "visible") { var now = Date.now(); st.elapsed += Math.round((now - st.last) / 1000); st.last = now; } else st.last = Date.now();
@@ -185,7 +204,10 @@
     var now = new Date(), nx = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1), ms = nx - now, h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
     el.textContent = h + " h " + (m < 10 ? "0" : "") + m + " min";
   }
-  function shareText() { var clean = !st.checks && !st.hints; return "Sudoku " + (st.idx + 1) + " (" + st.pz.level + ") solved in " + fmt(st.elapsed) + (clean ? ", no help" : ", with help") + "\n\n" + URL_; }
+  function shareText() {
+    var clean = !st.checks && !st.hints;
+    if (RATED) { var d = st.delta || 0; return "Sudoku Unlimited: solved a " + st.pz.level + " puzzle in " + fmt(st.elapsed) + (clean ? ", no help" : ", with help") + ". My rating is " + (st.rec ? st.rec.r : "") + " (" + (d >= 0 ? "+" : "\u2212") + Math.abs(d) + ").\n\nhttps://purplelink.llc/games/sudoku-unlimited/"; }
+    return "Sudoku " + (st.idx + 1) + " (" + st.pz.level + ") solved in " + fmt(st.elapsed) + (clean ? ", no help" : ", with help") + "\n\n" + URL_; }
 
   function move(d) {
     var r = Math.floor(st.sel / 9), c = st.sel % 9;
@@ -194,7 +216,11 @@
   }
 
   function wire() {
-    $("sd-grid").addEventListener("click", function (e) { var b = e.target.closest(".sd-cell"); if (!b) return; st.sel = Number(b.getAttribute("data-i")); paint(); b.focus(); });
+    $("sd-grid").addEventListener("click", function (e) {
+      var b = e.target.closest(".sd-cell"); if (!b) return;
+      st.sel = Number(b.getAttribute("data-i")); paint(); b.focus();
+      if (st.digitMode && st.armed !== null) setValue(st.sel, st.armed);     // digit first: pick the digit, then tap squares
+    });
     $("sd-grid").addEventListener("keydown", function (e) {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       var k = e.key;
@@ -205,8 +231,15 @@
       else return;
       e.preventDefault();
     });
-    $("sd-pad").addEventListener("click", function (e) { var b = e.target.closest("[data-d]"); if (b) setValue(st.sel, Number(b.getAttribute("data-d"))); });
-    $("sd-erase").addEventListener("click", function () { setValue(st.sel, 0); });
+    $("sd-pad").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-d]"); if (!b) return;
+      var d = Number(b.getAttribute("data-d"));
+      if (st.digitMode) { st.armed = st.armed === d ? null : d; paintArmed(); return; }
+      setValue(st.sel, d);
+    });
+    $("sd-erase").addEventListener("click", function () { if (st.digitMode) { st.armed = st.armed === 0 ? null : 0; paintArmed(); } else setValue(st.sel, 0); });
+    $("sd-digit").addEventListener("click", function () { setDigitMode(!st.digitMode); });
+    $("sd-zen").addEventListener("click", function () { setZen(!st.zen); });
     $("sd-notes-btn").addEventListener("click", function () { st.noteMode = !st.noteMode; paint(); });
     $("sd-check-cell").addEventListener("click", function () { check("cell"); });
     $("sd-check").addEventListener("click", function () { check("puzzle"); });
@@ -217,10 +250,7 @@
       if (!b.hasAttribute("data-armed")) { b.setAttribute("data-armed", "1"); b.textContent = "Press again: counts as a miss"; window.setTimeout(function () { b.removeAttribute("data-armed"); b.textContent = "New puzzle"; }, 4000); return; }
       skipRated();
     });
-    if ($("sd-share")) $("sd-share").addEventListener("click", function () {
-      var text = shareText(); G.track("game_share", NAME);
-      G.copyText(text).then(function (ok) { $("sd-share-note").textContent = ok ? "Copied to the clipboard." : "Copy failed. Select the text below and copy it."; var b = $("sd-share-text"); b.value = text; b.hidden = ok; });
-    });
+    window.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     window.setInterval(tickClock, 1000); window.setInterval(tick, 30000);
     document.addEventListener("visibilitychange", function () { st.last = Date.now(); persist(); });
   }
@@ -245,6 +275,7 @@
     build(); wire();
     if (G.getGame(NAME).auto) { st.auto = true; $("sd-auto").setAttribute("aria-pressed", "true"); $("sd-auto").textContent = "Auto-check: on"; for (var j = 0; j < 81; j++) if (st.cells[j] && !st.given[j] && st.cells[j] !== st.sol[j]) st.wrong[j] = 1; }
     $("sd-loading").hidden = true; $("sd-game").hidden = false; $("sd-timer").textContent = fmt(st.elapsed);
+    st.armed = null; var pref = G.getGame(NAME); setDigitMode(!!pref.digit); setZen(!!pref.zen);
     paint();
     if (st.done && !RATED) finish(false);
   }
@@ -327,6 +358,7 @@
     var clean = !st.checks && !st.hints, result = clean ? "clean" : "help";
     reportRated(result).then(function (out) {
       var rec = out.rec, delta = out.delta, up = delta >= 0;
+      st.rec = rec; st.delta = delta;
       R.current("sudoku", null); R.recentIds("sudoku", st.rid);
       $("sr-head").textContent = "Solved in " + fmt(st.elapsed) + (clean ? "" : " with help");
       $("sr-delta").textContent = (up ? "+" : "\u2212") + Math.abs(delta); $("sr-delta").setAttribute("data-up", up ? "1" : "0");

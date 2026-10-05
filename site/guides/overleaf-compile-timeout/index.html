@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Overleaf compile timeout: fixes, and when to compile locally | Purplelink</title>
+    <meta name="description" content="Why Overleaf says Timed out, a checklist of fixes taken from Overleaf&#x27;s own documentation, and how to tell whether the project needs a local compile with no time limit.">
+    <link rel="canonical" href="https://purplelink.llc/guides/overleaf-compile-timeout/">
+    <meta property="og:title" content="Overleaf compile timeout: fixes, and when to compile locally">
+    <meta property="og:description" content="The limits by plan, the fixes worth trying in order, and how to time the same project on your own computer.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/overleaf-compile-timeout/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/overleaf-compile-timeout.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Overleaf compile timeout: fixes, and when to compile locally">
+    <meta name="twitter:description" content="The limits by plan, the fixes worth trying in order, and how to time the same project on your own computer.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/overleaf-compile-timeout.png">
+    <meta name="twitter:image:alt" content="Overleaf compile timeout guide">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Overleaf compile timeout: fixes, and when to compile locally",
+          "description": "Why Overleaf says Timed out, a checklist of fixes taken from Overleaf's own documentation, and how to tell whether the project needs a local compile with no time limit.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-10-05",
+          "dateModified": "2026-10-05",
+          "image": "https://purplelink.llc/assets/og/overleaf-compile-timeout.png",
+          "mainEntityOfPage": "https://purplelink.llc/guides/overleaf-compile-timeout/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "Overleaf compile timeout", "item": "https://purplelink.llc/guides/overleaf-compile-timeout/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the Overleaf compile timeout?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Overleaf's plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 2026. Limits change, so check that page if the numbers matter for your decision."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my project compile in Fast [draft] mode but time out normally?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Draft mode skips rendering images, so a project that compiles in draft mode and times out otherwise is spending its time on images. Convert diagrams and plots to PDF, keep JPEG for photographs, and avoid EPS and SVG, as Overleaf's documentation recommends."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a time limit when I compile LaTeX on my own computer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. A local build runs until it finishes. The catch is that a document stuck in a loop never finishes either, so run it once with a timer and stop it with Ctrl-C if it passes a few minutes. The last lines of the .log file usually show where it stalled."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will upgrading to a paid Overleaf plan fix a timeout?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If the project needs 30 seconds to build and you are on the free plan, yes. If a fatal error or a loop is behind the timeout, a longer limit only makes you wait longer for the same failure. Run Stop on first error before paying."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I compile locally and still use Overleaf with co-authors?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The project is ordinary .tex, .bib and image files. Download the source, build it locally when the compile is too heavy, and keep the shared draft on Overleaf. The Overleaf alternatives guide covers Git sync and the manual route."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=e7bc0b7c72"></script>
+<link rel="stylesheet" href="/styles.css?v=471ced757c">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=d290a3807f" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">Overleaf compile timeout: fixes, and when to compile locally</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-05">October 5, 2026</time></p>
+        <p class="post-lede">Overleaf stops a compile that runs past its limit, which its plan-limits page lists as 10 seconds on the free plan and 240 seconds on premium plans. Most timeouts come from a short list of causes you can fix inside the project. If yours is a heavy project that simply needs more time, a local build has no limit.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure:</strong> Purplelink makes ModernTex, a Mac LaTeX editor, and it is mentioned near the end. The fixes below come from <a href="https://docs.overleaf.com/troubleshooting-and-support/fixing-and-preventing-compile-timeouts" rel="noopener">Overleaf's own documentation on compile timeouts</a>, and the limits from its <a href="https://docs.overleaf.com/getting-started/free-and-premium-plans/plan-limits" rel="noopener">plan limits page</a>. Both can change, so check them if a number matters to you.</p>
+
+        <h2>First, check that it is a timeout and not an error</h2>
+        <p>A "Timed out" message does not always mean the project is too big. A fatal error can leave LaTeX waiting for input or looping until the clock runs out, and then Overleaf reports a timeout instead of the error.</p>
+        <p>Open the Recompile menu and turn on <strong>Stop on first error</strong>. If the compile now fails quickly with a message, you have an error to fix, not a time limit to beat. Overleaf's documentation lists these as common causes of timeouts that are really errors:</p>
+        <ul>
+          <li>A blank line inside <code>\author{}</code>, <code>\date{}</code> or <code>\title{}</code>.</li>
+          <li><code>\caption{}</code> placed inside a <code>tabular</code> instead of outside it.</li>
+          <li>A missing <code>;</code> or <code>]</code> in a <code>tikzpicture</code> command.</li>
+          <li>Nested <code>tabular</code> environments.</li>
+          <li><code>\cmidrule{3-3}</code> written without a column range.</li>
+          <li>Heavy use of the <code>[H]</code> float option. Overleaf suggests <code>[hbt!]</code> instead.</li>
+          <li>Babel shorthands. Overleaf suggests avoiding them or loading babel with <code>shorthands=off</code>.</li>
+        </ul>
+
+        <h2>Fixes to try, in order</h2>
+        <ol>
+          <li><strong>Stop on first error.</strong> As above. It costs nothing and rules out a hidden error.</li>
+          <li><strong>Compile in Fast [draft] mode.</strong> Draft mode skips rendering images. If the project builds in draft mode and times out otherwise, images are the cost. Save diagrams and plots as PDF, use JPEG only for photographs, and avoid EPS and SVG files.</li>
+          <li><strong>Externalize TikZ and pgfplots figures.</strong> Without this, LaTeX redraws every figure on every compile. Externalizing makes it draw each one once and reuse the result.</li>
+          <li><strong>Replace slow packages.</strong> Overleaf names a few: <code>mhchem</code> (use <code>chemformula</code>), version 3 of <code>acro</code> (go back to version 2), <code>tabularray</code> (use ordinary tables), and <code>breqn</code> (use <code>align</code> in place of <code>dmath</code>). With <code>soul</code> or <code>changes</code>, put <code>\protect</code> before <code>\cite</code> and <code>\ref</code>. Remove any leftover <code>\tracingall</code>.</li>
+        </ol>
+        <p>Work down the list and recompile after each step. Changing four things at once tells you nothing about which one mattered.</p>
+
+        <h2>If it still times out: time it somewhere without a limit</h2>
+        <p>A local build tells you whether the project is slow or broken. Download the project from the Overleaf menu (Download, then Source), unzip it, and install a TeX distribution: <a href="https://www.tug.org/mactex/" rel="noopener">MacTeX</a> on a Mac, or TinyTeX if you want something smaller. In the project folder, run the compiler Overleaf was using:</p>
+        <pre><code>time latexmk -pdf -interaction=nonstopmode main.tex</code></pre>
+        <p>Use <code>-xelatex</code> or <code>-lualatex</code> in place of <code>-pdf</code> if the project's compiler setting is XeLaTeX or LuaLaTeX. Replace <code>main.tex</code> with the project's main file. The first build on a new install is slower than later ones, because fonts and package files are generated once, so time the second run.</p>
+        <p>Then read the result:</p>
+        <ul>
+          <li><strong>It finishes in 30 or 40 seconds.</strong> The project is heavy and the free limit was too short. You can build it locally, or stay on Overleaf with a plan that allows more time.</li>
+          <li><strong>It finishes in a few seconds locally.</strong> Overleaf's shared servers were the bottleneck, or one of the package or image causes above applies there more than here. Fix the project, and the timeout will go away.</li>
+          <li><strong>It never finishes.</strong> Stop it with Ctrl-C and open <code>main.log</code>. A loop, a missing file prompt or a package conflict shows near the end of the log. No time limit would have rescued this one, so a paid plan would not either.</li>
+        </ul>
+
+        <h2>Your options when you hit the limit</h2>
+        <ul>
+          <li><strong>Fix the project.</strong> Free, and often enough. The checklist above is the whole list.</li>
+          <li><strong>Move to a premium plan.</strong> Overleaf lists 240 seconds on premium plans, and many universities provide it through a site licence. Check whether yours does before paying.</li>
+          <li><strong>Compile locally.</strong> No limit and no account. You give up live co-editing for that copy, and you take on a TeX installation.</li>
+          <li><strong>Do both.</strong> Keep the shared draft on Overleaf for co-authors and build the heavy version on your own machine. The guide to <a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a> covers moving a project over and syncing with Git.</li>
+        </ul>
+
+        <h2>If you are on a Mac</h2>
+        <p>ModernTex is a native Mac editor that compiles on your own machine, so there is no compile limit, and it explains LaTeX errors in plain language instead of leaving you with the raw log. It is a single-user app: two people cannot type in the same document, so keep Overleaf for that. It costs $19.99 once with all updates included, after a free 7-day trial with no account, and it needs macOS 14 or later plus MacTeX or TinyTeX (it offers a one-click TinyTeX install). The free editors in the <a href="/guides/best-mac-latex-editors/">comparison of Mac LaTeX editors</a> do the same job for no cost if you prefer them.</p>
+
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>What is the Overleaf compile timeout?</summary><div class="faq-body">Overleaf&#x27;s plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 2026. Limits change, so check that page if the numbers matter for your decision.</div></details>
+          <details><summary>Why does my project compile in Fast [draft] mode but time out normally?</summary><div class="faq-body">Draft mode skips rendering images, so a project that compiles in draft mode and times out otherwise is spending its time on images. Convert diagrams and plots to PDF, keep JPEG for photographs, and avoid EPS and SVG, as Overleaf&#x27;s documentation recommends.</div></details>
+          <details><summary>Is there a time limit when I compile LaTeX on my own computer?</summary><div class="faq-body">No. A local build runs until it finishes. The catch is that a document stuck in a loop never finishes either, so run it once with a timer and stop it with Ctrl-C if it passes a few minutes. The last lines of the .log file usually show where it stalled.</div></details>
+          <details><summary>Will upgrading to a paid Overleaf plan fix a timeout?</summary><div class="faq-body">If the project needs 30 seconds to build and you are on the free plan, yes. If a fatal error or a loop is behind the timeout, a longer limit only makes you wait longer for the same failure. Run Stop on first error before paying.</div></details>
+          <details><summary>Can I compile locally and still use Overleaf with co-authors?</summary><div class="faq-body">Yes. The project is ordinary .tex, .bib and image files. Download the source, build it locally when the compile is too heavy, and keep the shared draft on Overleaf. The Overleaf alternatives guide covers Git sync and the manual route.</div></details>
+          </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the team behind these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($19.99)</a>
+          <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/moderntex/">ModernTex, the native Mac LaTeX editor</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac</a></li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF</a></li>
+          <li><a href="/guides/compile-latex-project-to-pdf-online/">Compile a LaTeX project online</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=e45d54dc36" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

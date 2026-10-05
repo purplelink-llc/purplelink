@@ -30,19 +30,22 @@ TAG = {"linkle": "Five letters. Six tries. A new twist every weekday.", "quadlin
        "daily-five": "Five trivia questions, every day.", "daily-photo": "Five photographs. Which country?",
        "daily-chess": "A new tactics puzzle from Lichess.", "sudoku": "Harder every week of the season.",
        "crossword": "A new crossword daily. Easy Monday, hard Sunday.", "daily-stars": "A short horoscope for every sign.",
-       "landlink": "Guess the country from seven clues.", "atomlink": "Guess the element on the periodic table.", "prizelink": "Guess the Nobel laureate.",
-       "chess-puzzles": "Unlimited puzzles. Climb the rating.", "sudoku-unlimited": "Unlimited Sudoku, five levels, rated.", "leaderboard": "Top ratings in chess and Sudoku."}
+       "landlink": "Guess the country from seven clues.", "citylink": "Guess the city with a compass.", "peaklink": "Guess the mountain.", "codelink": "Guess the programming language.", "thinkerlink": "Guess the scientist.", "riverlink": "Guess the river.", "wildlink": "Guess the animal.", "atomlink": "Guess the element on the periodic table.", "prizelink": "Guess the Nobel laureate.",
+       "lockerlink": "Link two players through teammates.", "gridlink": "Fill the grid with players who fit.", "under-the-cap": "Build a team. Go undefeated.", "chess-puzzles": "Unlimited puzzles. Climb the rating.", "sudoku-unlimited": "Unlimited Sudoku, five levels, rated.", "leaderboard": "Top ratings in chess and Sudoku."}
 
 def card(name, kind, tag, photo, site):
+    logo = photo.startswith("logo:")
+    side = (f"<div class=photo style=\"display:flex;align-items:center;justify-content:center;padding-right:70px;\"><img src='{site}/assets/games/{photo[5:]}.svg' width='430' height='430' alt=''></div>" if logo else
+            f"<div class=photo style=\"background-image:url('{site}/assets/photography/hub/{photo}-1200.webp')\"></div><div class=fade></div>")
     return (f"<!doctype html><meta charset=utf-8><style>{CSS.replace('@SITE@', site)}</style><div class=card>"
-            f"<div class=photo style=\"background-image:url('{site}/assets/photography/hub/{photo}-1200.webp')\"></div><div class=fade></div>"
+            f"{side}"
             f"<div class=body><div class=top><img src='{site}/assets/purplelink-logo.png' alt=''><span class=brand>Purplelink</span></div>"
             f"<div><p class=kind>{html.escape(kind)}</p><h1>{html.escape(name)}</h1><p class=tag>{html.escape(tag)}</p></div>"
             f"<p class=url>purplelink.llc/games</p></div></div>")
 
 def main():
     site = SITE.as_uri()
-    jobs = [(m["slug"], m["name"], m["genre"] + ", free daily", TAG[m["slug"]], m["og_photo"]) for m in GAMES.values()]
+    jobs = [(m["slug"], m["name"], m["genre"] + ", free daily", TAG[m["slug"]], ("logo:" + m["slug"]) if m["slug"] in ("lockerlink", "gridlink", "under-the-cap") else m["og_photo"]) for m in GAMES.values()]
     jobs.append(("hub", "Daily games", "Free, every midnight", "Word games, trivia, chess, Sudoku and a crossword.", HUB["og_photo"]))
     tmp = Path(tempfile.mkdtemp()) / "card.html"
     with sync_playwright() as p:

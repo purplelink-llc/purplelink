@@ -1,0 +1,66 @@
+==============================================================================
+NBA | source: Wikipedia franchise all-time roster lists, player infoboxes and player categories (en.wikipedia.org, CC BY-SA 
+licence: CC BY-SA 4.0 (Wikipedia text); facts compiled by Purplelink; attribution to Wikipedia contributors required
+players: 5087 | with birth year: 4922 | with position: 4715 | stints/player: 2.82 | player-seasons: 29057
+by decade of first season: 1940s:210 1950s:291 1960s:416 1970s:624 1980s:664 1990s:670 2000s:691 2010s:901 2020s:620
+duplicate ids: 0
+distinct player-rows per season (every 10th): 1946:52 1956:106 1966:128 1976:331 1986:359 1996:512 2006:491 2016:552 last 2025:671
+famous pool: 203, matched 203, unmatched []
+famous vs all-db: identical franchise sets 186/203; every famous (franchise,season) present in all-db 138/203; mean season-cell Jaccard 0.910; Jaccard<0.8: 25
+  lowest agreement: [('Kemba Walker', 0.2), ('Peja Stojakovic', 0.41), ('Anthony Davis', 0.44), ('Baron Davis', 0.53), ('Isaiah Thomas', 0.55), ('Chris Paul', 0.56), ('Artis Gilmore', 0.58), ('Ben Simmons', 0.64), ('Bill Walton', 0.64), ('Bob McAdoo', 0.65), ('Tim Hardaway', 0.67), ('DeMarcus Cousins', 0.69)]
+
+-- 15 famous spot checks (famous | all-db), seasons inclusive --
+ Hal Greer              F: PHI:1958-1972
+                        A: PHI:1958-1972  [SG, b.1936, id greerha01]
+ Chris Mullin           F: GSW:1985-1996 IND:1997-1999 GSW:2000-2000
+                        A: GSW:1985-1996 IND:1997-1999 GSW:2000-2000  [SF, b.1963, id mullich01]
+ Joe Dumars             F: DET:1985-1998
+                        A: DET:1985-1998  [SG, b.1963, id dumarjo01]
+ Richard Hamilton       F: WAS:1999-2001 DET:2002-2010 CHI:2011-2012
+                        A: WAS:1999-2001 DET:2002-2010 CHI:2011-2012  [SG, b.1978, id hamilri01]
+ Baron Davis            F: NOP:1999-2001 BKN:2002-2004 GSW:2005-2007 LAC:2008-2010 CLE:2011-2011 NYK:2011-2011
+                        A: NOP:1999-2004 GSW:2004-2007 LAC:2008-2010 CLE:2010-2010 NYK:2011-2011  [PG, b.1979, id davisba01]
+ Bill Russell           F: BOS:1956-1968
+                        A: BOS:1956-1968  [C, b.1934, id russebi01]
+ Manu Ginobili          F: SAS:2002-2017
+                        A: SAS:2002-2017  [SG, b.1977, id ginobma01]
+ Bob Dandridge          F: MIL:1969-1976 WAS:1977-1980 MIL:1981-1981
+                        A: MIL:1969-1976 WAS:1977-1980 MIL:1981-1981  [SF, b.1947, id dandrbo01]
+ Jaylen Brown           F: BOS:2016-2025
+                        A: BOS:2016-2025  [SF, b.1996, id brownja02]
+ Nikola Vucevic         F: PHI:2011-2011 ORL:2012-2020 CHI:2021-2025
+                        A: PHI:2011-2011 ORL:2012-2020 CHI:2020-2025 BOS:2025-2025  [C, b.1990, id vucevni01]
+ Ben Wallace            F: WAS:1996-1998 ORL:1999-1999 DET:2000-2005 CHI:2006-2007 CLE:2008-2008 DET:2009-2011
+                        A: WAS:1996-1998 ORL:1999-1999 DET:2000-2005 CHI:2006-2007 CLE:2007-2008 DET:2009-2011  [C, b.1974, id wallabe01]
+ Lamar Odom             F: LAC:1999-2002 MIA:2003-2003 LAL:2004-2010 DAL:2011-2011 LAC:2012-2012
+                        A: LAC:1999-2002 MIA:2003-2003 LAL:2004-2010 DAL:2011-2011 LAC:2012-2012  [PF, b.1979, id odomla01]
+ Dennis Johnson         F: OKC:1976-1979 PHX:1980-1982 BOS:1983-1989
+                        A: OKC:1976-1979 PHX:1980-1982 BOS:1983-1989  [PG, b.1954, id johnsde01]
+ Anthony Edwards        F: MIN:2020-2025
+                        A: MIN:2020-2025  [SG, b.2001, id edwaran01]
+ Blake Griffin          F: LAC:2009-2017 DET:2018-2020 BKN:2021-2021 BOS:2022-2022
+                        A: LAC:2010-2017 DET:2017-2020 BKN:2020-2021 BOS:2022-2022  [PF, b.1989, id griffbl01]
+
+-- 10 non-famous role players --
+ Robert Horry       HOU:1992-1995 PHX:1996-1996 LAL:1996-2002 SAS:2003-2007  [PF, b.1970, famous=None]
+ Derek Fisher       LAL:1996-2003 GSW:2004-2005 UTA:2006-2006 LAL:2007-2011 OKC:2011-2013 DAL:2012-2012  [PG, b.1974, famous=None]
+ Steve Kerr         PHX:1988-1988 CLE:1989-1992 ORL:1992-1992 CHI:1993-1997 SAS:1998-2000 POR:2001-2001 SAS:2002-2002  [PG, b.1965, famous=None]
+ Udonis Haslem      MIA:2003-2022  [PF, b.1980, famous=None]
+ Brian Scalabrine   BKN:2001-2004 BOS:2005-2009 CHI:2010-2011  [PF, b.1978, famous=None]
+ Luc Longley        MIN:1991-1993 CHI:1993-1997 PHX:1998-1999 NYK:2000-2000  [C, b.1969, famous=None]
+ John Salley        DET:1986-1991 MIA:1992-1994 CHI:1995-1995 TOR:1995-1995 LAL:1999-1999  [PF, b.1964, famous=None]
+ Danny Green        CLE:2009-2009 SAS:2010-2017 TOR:2018-2018 LAL:2019-2019 PHI:2020-2021 CLE:2022-2022 MEM:2022-2022 PHI:2023-2023  [SG, b.1987, famous=None]
+ Shane Battier      MEM:2001-2005 HOU:2006-2010 MEM:2010-2010 MIA:2011-2013  [SF, b.1978, famous=None]
+ Boris Diaw         ATL:2003-2004 PHX:2005-2008 CHA:2008-2011 SAS:2011-2015 UTA:2016-2016  [PF, b.1982, famous=None]
+
+-- shortest paths (links = shared franchise + overlapping season) --
+ Bill Russell -> Jaylen Brown: all-db 5 links | famous-pool-only 7 links
+      Bill Russell -> Jim Barnett [BOS 1966] -> Caldwell Jones [PHI 1976] -> Reggie Williams [SAS 1989] -> Jrue Holiday [NOP 2016] -> Jaylen Brown [BOS 2023]
+ LeBron James -> Cooper Flagg: all-db 2 links | famous-pool-only 2 links
+      LeBron James -> Kyrie Irving [CLE 2014] -> Cooper Flagg [DAL 2025]
+ Bill Russell -> Cooper Flagg: all-db 5 links | famous-pool-only 7 links
+      Bill Russell -> Jim Barnett [BOS 1966] -> Caldwell Jones [PHI 1976] -> Jerome Kersey [POR 1985] -> Brandon Williams [SAS 1998] -> Cooper Flagg [DAL 2025]
+ George Mikan -> Victor Wembanyama: all-db 7 links | famous-pool-only 9 links
+      George Mikan -> Slater Martin [LAL 1949] -> Bob Ferry [ATL 1959] -> Wes Unseld [WAS 1968] -> Rick Mahorn [WAS 1980] -> P. J. Brown [BKN 1993] -> Chris Paul [NOP 2005] -> Victor Wembanyama [SAS 2024]
+ Michael Jordan -> Luka Doncic: all-db 3 links | famous-pool-only 3 links
+      Michael Jordan -> Will Perdue [CHI 1988] -> Brandon Williams [SAS 1998] -> Luka Dončić [DAL 2023]
