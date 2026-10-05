@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-05",
+  "number": 100,
+  "intro": "Google pauses its open-source bug bounty over AI-generated spam, Citrix NetScaler SAML zero-day exploitation, and the arrest of ShinyHunters suspect Rey. Also: agent budget caps and Okta's re-rating.",
+  "sections": {
+    "AI & Technology": [
+      {
+        "title": "We're going to need default hard budget caps on pretty much everything",
+        "url": "https://simonwillison.net/2026/Oct/3/default-hard-budget-caps",
+        "source_name": "Simon Willison",
+        "category": "ai_tech",
+        "editorial_note": "Willison argues usage-billed APIs need default hard caps that cut service off at $X per month and return errors. Autonomous agents make runaway spend a security issue as well as a billing nuisance, since a looping or hijacked agent can burn unbounded money at machine speed. Soft alerts do not solve this, and solo developers shipping agent-backed apps should build their own kill switch now."
+      },
+      {
+        "title": "The Agent Said It Was Done. The Database Disagreed.",
+        "url": "https://huggingface.co/blog/microsoft/thinkingbox",
+        "source_name": "HuggingFace Blog",
+        "category": "ai_tech",
+        "editorial_note": "The post targets the gap between an agent's claimed completion and actual system state. Verifying outcomes against ground truth such as the database, rather than trusting the agent's self-report, is the core reliability problem for production agents. The snippet is empty, so the actual method and measured error rates need checking before relying on it."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Google halts open-source bug bounty program amid AI spam surge",
+        "url": "https://www.bleepingcomputer.com/news/google/google-halts-open-source-bug-bounty-program-amid-ai-spam-surge",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "Google suspended submissions to its OSS VRP after AI-generated reports flooded the queue. Bounty economics assume human effort is a costly filter, and LLMs have removed that filter, so triage cost now scales with attacker spend rather than researcher skill. Expect other programs to add proof-of-exploit requirements, deposits, or reputation gating, and watch whether legitimate LLM-assisted findings get caught in the same net."
+      },
+      {
+        "title": "Citrix patches NetScaler SAML zero-day exploited in attacks",
+        "url": "https://www.bleepingcomputer.com/news/security/citrix-patches-netscaler-saml-zero-day-exploited-in-attacks",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "CVE-2026-88779 is a memory overflow in NetScaler used in targeted zero-day attacks, and it can knock SAML deployments offline. Researchers are still checking whether it escalates to remote code execution, which would move it from a denial-of-service nuisance to a perimeter takeover. Defenders should treat the SAML IdP role as the exposure to inventory first."
+      },
+      {
+        "title": "ShinyHunters hacker reportedly detained in Jordan, aiding FBI",
+        "url": "https://www.bleepingcomputer.com/news/security/shinyhunters-hacker-reportedly-detained-in-jordan-aiding-fbi",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "A suspected ShinyHunters member, alias Rey, is reportedly in custody in Jordan and cooperating with the FBI to identify other members. Cooperation by an insider is how loosely organized extortion collectives usually unravel, rather than through technical attribution. The open question is how fast the group's structure and leak-site operations degrade, and whether affiliates splinter into new brands."
+      },
+      {
+        "title": "China-Aligned TA419 Targets U.S. AI Policy Experts With Microsoft AitM Phishing",
+        "url": "https://thehackernews.com/2026/10/china-aligned-ta419-targets-us-ai.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "TA419 is running adversary-in-the-middle credential phishing against AI policy experts at U.S. think tanks, universities, and law firms, impersonating prominent economists and AI figures. The target set shows espionage interest has shifted toward people who shape AI regulation and export policy, not just labs. AitM kits defeat standard MFA, so phishing-resistant FIDO2 keys are the relevant control."
+      }
+    ],
+    "Finance & Business": [
+      {
+        "title": "Why Okta Tripled on \u2026 11% Growth. 5 Interesting Learnings From One of the Biggest Re-Ratings in B2B This Year: 14% cRPO Growth, 30% of Bookings From New Products, and ~50x Forward Earnings",
+        "url": "https://www.saastr.com/okta-tripled-on-11-growth-5-interesting-learnings-from-one-of-the-biggest-re-ratings-in-b2b-this-year-14-crpo-growth-30-of-bookings-from-new-products-and-50x-forward-earnings",
+        "source_name": "SaaStr",
+        "category": "finance",
+        "editorial_note": "Okta roughly tripled from its April lows on 11% revenue growth, with cRPO up 14% and 30% of bookings from new products, now near 50x forward earnings. The re-rating is a cybersecurity market signal: identity for AI agents appears to be priced as a new product cycle rather than legacy SSO. At 50x, the stock leaves little room if new-product attach slows."
+      }
+    ]
+  },
+  "sources_reviewed": 233,
+  "items_selected": 7
+}
