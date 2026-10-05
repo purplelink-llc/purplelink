@@ -3555,6 +3555,63 @@ def metrics_block(m: dict | None) -> str:
 </section>"""
 
 
+def outbound_veil_report(history: dict) -> dict | None:
+    """Outbound Veil in one place: page views, trial downloads, buy clicks, orders (added 2026-10-05).
+
+    Page views and buy clicks come from the beacon's 30-day window (topPaths, checkoutByProduct);
+    trial downloads are per day (ovTrialDownloads, counted since 2026-10-04); orders come from the
+    Stripe ledger. Search Console figures are the page's own row when it is in the top pages list.
+    In-app update downloads are not counted anywhere for this app yet, so none are reported.
+    """
+    site = (history.get("sites") or {}).get("purplelink") or {}
+    latest = site.get("latest") or {}
+    if not latest:
+        return None
+    by_day = site.get("byDay") or {}
+    today = dt.date.today()
+    day_keys = sorted(by_day)
+
+    def dl(d: str) -> int:
+        return int((by_day.get(d) or {}).get("ovTrialDownloads", 0) or 0)
+
+    last7 = [(today - dt.timedelta(days=i)).isoformat() for i in range(1, 8)]
+    views = {r["key"]: r.get("count", 0) for r in latest.get("topPaths", []) if str(r.get("key", "")).startswith("/outbound-veil")}
+    clicks = next((r.get("count", 0) for r in latest.get("checkoutByProduct", []) if r.get("key") == "outbound-veil"), 0)
+    now = dt.datetime.now().timestamp()
+    rows = [r for r in (history.get("ledger") or {}).values() if r.get("product") == "outbound-veil" and r.get("kind") == "purchase"]
+    rows30 = [r for r in rows if r.get("ts", 0) >= now - 30 * 86400]
+    gsc = next((r for r in (site.get("gsc") or {}).get("pages", []) if "purplelink.llc/outbound-veil/" in str(r.get("key", "")) and "start" not in r["key"] and "success" not in r["key"]), None)
+    return {
+        "views": views, "viewsTotal": sum(views.values()),
+        "dl7": sum(dl(d) for d in last7), "dlToday": dl(today.isoformat()),
+        "dlAll": sum(dl(d) for d in day_keys), "dlSince": "2026-10-04",
+        "clicks": clicks,
+        "orders30": len(rows30), "gross30": sum(r.get("gross", 0) for r in rows30) / 100, "net30": sum(r.get("net", 0) for r in rows30) / 100,
+        "ordersAll": len(rows), "grossAll": sum(r.get("gross", 0) for r in rows) / 100,
+        "gsc": gsc,
+    }
+
+
+def print_outbound_veil(o: dict | None) -> None:
+    if not o:
+        return
+    v = o["views"]
+    page = v.get("/outbound-veil/", 0)
+    print("\n  Outbound Veil (Mac app, $29, 7-day trial)")
+    print(f"   Page views, 30d: {page} product page, {v.get('/outbound-veil/start/', 0)} start page (after download), "
+          f"{v.get('/outbound-veil/success/', 0)} success page")
+    since = f" (counted since {o['dlSince']})" if o["dlSince"] else ""
+    print(f"   Trial downloads: {o['dl7']} in the last 7 complete days, {o['dlToday']} today, {o['dlAll']} total{since}")
+    print(f"   Buy clicks, 30d: {o['clicks']}; orders, 30d: {o['orders30']} (${o['gross30']:,.2f} gross, ${o['net30']:,.2f} net); "
+          f"all time {o['ordersAll']} (${o['grossAll']:,.2f} gross)")
+    g = o["gsc"]
+    if g:
+        print(f"   Search: {g.get('count', 0)} click(s), {g.get('impressions', 0)} impression(s), position {g.get('position', 0):.1f} on the product page")
+    else:
+        print("   Search: the product page is not in Search Console's top pages yet")
+    print("   Not measured: in-app update downloads (no counter for this app yet), trial-to-paid by email")
+
+
 def print_metrics(m: dict | None) -> None:
     if not m:
         return
@@ -5039,6 +5096,7 @@ def main() -> int:
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
+    print_outbound_veil(outbound_veil_report(history))
     print_profit(profit, channels, tax)
     print_marketplaces(marketplaces)
     print_queue(queue_summary())
