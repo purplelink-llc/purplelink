@@ -1,9 +1,9 @@
-/* Unbeaten: build a roster from any era under a budget, then play a full season and see whether it goes undefeated.
+/* Under the Cap: build a roster from any era under a budget, then play a full season and see whether it goes undefeated.
    The season is simulated from each player's rating (our own estimate of his best), a bonus for players who really were
    teammates, and a seeded random draw, so a daily roster always gives the same record. */
 (function () {
   "use strict";
-  var G = window.PLGames, S = window.PLSports, SE = window.PLSeason, NAME = "unbeaten";
+  var G = window.PLGames, S = window.PLSports, SE = window.PLSeason, NAME = "under-the-cap";
   var $ = function (id) { return document.getElementById(id); };
   var root = $("sp-root"), FX = window.PLFX;
   var st = null, data = null, daily = null, mode = "daily", rotation = ["nba"], rule = null, active = 0, lastRes = null;
@@ -191,7 +191,7 @@
   function shareText() {
     var res = st.res; if (!res) return "";
     var tag = mode === "daily" ? "#" + (daily.idx + 1) + " " : "practice ";
-    return "Unbeaten " + tag + data.name + "\n" + recordText(res) + ", " + outcomeText(res).toLowerCase() + "\nChance of " + data.cfg.games + "-0: " + pct(res.perfect) + "\n\n" + root.getAttribute("data-url");
+    return "Under the Cap " + tag + data.name + "\n" + recordText(res) + ", " + outcomeText(res).toLowerCase() + "\nChance of " + data.cfg.games + "-0: " + pct(res.perfect) + "\n\n" + root.getAttribute("data-url");
   }
 
   function begin(d, saved) {

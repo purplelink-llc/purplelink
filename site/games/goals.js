@@ -31,7 +31,7 @@
     { id: "wildlink", name: "Wildlink", path: "/games/wildlink/", min: 3, kind: "guess" },
     { id: "lockerlink", name: "Lockerlink", path: "/games/lockerlink/", min: 4, kind: "sports" },
     { id: "gridlink", name: "Gridlink", path: "/games/gridlink/", min: 4, kind: "sports" },
-    { id: "unbeaten", name: "Unbeaten", path: "/games/unbeaten/", min: 5, kind: "sports" }
+    { id: "under-the-cap", name: "Under the Cap", path: "/games/under-the-cap/", min: 5, kind: "sports" }
   ];
   var BY = {}; GAMES.concat(MORE).forEach(function (g) { BY[g.id] = g; });
   var QUICK_FIRST = ["daily-stars", "daily-photo", "daily-five", "daily-chess", "linkle", "quadlink", "crossword", "sudoku"];

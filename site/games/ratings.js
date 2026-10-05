@@ -23,7 +23,7 @@
     var p = PAR[level];
     return seconds <= p / 2 ? 0.95 : seconds <= p ? 0.8 : seconds <= 2 * p ? 0.6 : 0.5;
   }
-  var SPORTS = ["lockerlink", "gridlink", "unbeaten"];
+  var SPORTS = ["lockerlink", "gridlink", "under-the-cap"];
   var SPORT_TIERS = [[0, "Rookie"], [900, "Role player"], [1050, "Starter"], [1200, "All-Star"], [1400, "MVP"], [1650, "Hall of Famer"], [1900, "Greatest of all time"]];
   function tierFor(r, game) { var L = game && SPORTS.indexOf(game) >= 0 ? SPORT_TIERS : TIERS, t = L[0][1]; L.forEach(function (x) { if (r >= x[0]) t = x[1]; }); return t; }
 
@@ -40,7 +40,8 @@
 
   function load() {
     var all; try { all = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
-    if (all.teamlink && !all.lockerlink) { all.lockerlink = all.teamlink; delete all.teamlink; try { localStorage.setItem(KEY, JSON.stringify(all)); } catch (e) { /* ignore */ } }   // Lockerlink was launched as Teamlink
+    var moved = false; [["teamlink", "lockerlink"], ["unbeaten", "under-the-cap"]].forEach(function (m) { if (all[m[0]] && !all[m[1]]) { all[m[1]] = all[m[0]]; delete all[m[0]]; moved = true; } });   // the sports games were launched as Teamlink and Unbeaten
+    if (moved) { try { localStorage.setItem(KEY, JSON.stringify(all)); } catch (e) { /* ignore */ } }
     return all;
   }
   function save(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* ignore */ } }

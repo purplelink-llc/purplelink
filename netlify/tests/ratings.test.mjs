@@ -173,27 +173,27 @@ test("daily sports results: rated once a day, checked, and on the leaderboard", 
   assert.equal((await call({ action: "rating_report", game: "gridlink", id: "d" + idx, idx, sport, filled: 9, ms: 5000 }, fresh)).body.error, "too_fast");
   const g = await call({ action: "rating_report", game: "gridlink", id: "d" + idx, idx, sport, filled: 7, ms: 120000 }, fresh);
   assert.equal(g.status, 200); assert.ok(g.body.delta > 0);
-  // Unbeaten is replayed from the roster, so what the browser claims about the record does not matter
+  // Under the Cap is replayed from the roster, so what the browser claims about the record does not matter
   const pool = (await import("../lib/sports-pool.json", { with: { type: "json" } })).default;
   const { prepare, constraint, replay } = await import("../lib/season.mjs");
   const dpool = prepare(pool[sport]), rule = constraint(dpool.cfg, idx % 7);
   const used = new Set();
   const roster = dpool.cfg.slots.map((g) => { const p = dpool.players.filter((x) => x.g === g && rule.ok(x) && !used.has(x.n)).sort((a, b) => a.tier - b.tier)[0]; used.add(p.n); return p.n; }).concat(new Array(dpool.cfg.bench).fill(""));
-  const u = await call({ action: "rating_report", game: "unbeaten", id: "d" + idx, idx, sport, wins: 0, champion: true, roster, ms: 120000 }, fresh);
+  const u = await call({ action: "rating_report", game: "under-the-cap", id: "d" + idx, idx, sport, wins: 0, champion: true, roster, ms: 120000 }, fresh);
   assert.equal(u.status, 200);
   assert.equal(typeof u.body.r, "number");
-  assert.equal((await call({ action: "rating_report", game: "unbeaten", id: "d" + idx, idx, sport, roster: roster.slice(1), ms: 120000 }, s)).body.error, "bad_roster");               // wrong length
+  assert.equal((await call({ action: "rating_report", game: "under-the-cap", id: "d" + idx, idx, sport, roster: roster.slice(1), ms: 120000 }, s)).body.error, "bad_roster");               // wrong length
   const dup = roster.slice(); dup[1] = dup[0];
-  assert.equal((await call({ action: "rating_report", game: "unbeaten", id: "d" + idx, idx, sport, roster: dup, ms: 120000 }, s)).body.error, "bad_roster");                          // a player twice
+  assert.equal((await call({ action: "rating_report", game: "under-the-cap", id: "d" + idx, idx, sport, roster: dup, ms: 120000 }, s)).body.error, "bad_roster");                          // a player twice
   const rich = dpool.players.filter((x) => rule.ok(x)).sort((a, b) => b.tier - a.tier);
   const dupSafe = []; for (const g of dpool.cfg.slots) dupSafe.push(rich.find((x) => x.g === g && !dupSafe.includes(x.n)).n);
-  assert.equal((await call({ action: "rating_report", game: "unbeaten", id: "d" + idx, idx, sport, roster: dupSafe.concat(new Array(dpool.cfg.bench).fill("")), ms: 120000 }, s)).body.error, "over_budget");
-  assert.equal((await call({ action: "rating_report", game: "unbeaten", id: "d" + idx, idx, sport, roster: roster.map(() => "Nobody Real"), ms: 120000 }, s)).body.error, "bad_roster");
+  assert.equal((await call({ action: "rating_report", game: "under-the-cap", id: "d" + idx, idx, sport, roster: dupSafe.concat(new Array(dpool.cfg.bench).fill("")), ms: 120000 }, s)).body.error, "over_budget");
+  assert.equal((await call({ action: "rating_report", game: "under-the-cap", id: "d" + idx, idx, sport, roster: roster.map(() => "Nobody Real"), ms: 120000 }, s)).body.error, "bad_roster");
   await call({ action: "set_name", name: "Sky" }, fresh); await call({ action: "set_public", on: true }, fresh);
   const lb = (await call({ action: "leaderboard", game: "gridlink", board: "all" })).body.rows;
   assert.equal(lb.length, 1); assert.equal(lb[0].name, "Sky");
   const mine = (await call({ action: "ratings" }, fresh)).body;
-  assert.equal(mine.gridlink.n, 1); assert.equal(mine.unbeaten.n, 1); assert.equal(mine.lockerlink, null);
+  assert.equal(mine.gridlink.n, 1); assert.equal(mine["under-the-cap"].n, 1); assert.equal(mine.lockerlink, null);
 });
 
 test("the browser copy of the sports formulas matches the service", async () => {
@@ -205,7 +205,7 @@ test("the browser copy of the sports formulas matches the service", async () => 
     assert.equal(C.sportsRating("lockerlink", { par, links, misses, hints, won }).score, M.lockerlinkScore({ won, par, links, misses, hints }));
     assert.equal(C.sportsRating("lockerlink", { par, links, misses, hints, won }).puzzleRating, M.lockerlinkPuzzleRating(par));
   }
-  for (const wins of [0, 40, 60, 82]) for (const champion of [true, false]) assert.equal(C.sportsRating("unbeaten", { wins, games: 82, champion }).score, M.unbeatenScore({ wins, games: 82, champion }));
+  for (const wins of [0, 40, 60, 82]) for (const champion of [true, false]) assert.equal(C.sportsRating("under-the-cap", { wins, games: 82, champion }).score, M.unbeatenScore({ wins, games: 82, champion }));
   for (const filled of [0, 5, 9]) assert.equal(C.sportsRating("gridlink", { filled }).score, M.gridlinkScore({ filled }));
   assert.equal(C.tierFor(1300, "gridlink"), "All-Star");
 });

@@ -10,7 +10,7 @@ Do not claim "first" or "only". Roster Relay, Teammate Chain, Immaculate Grid, S
 
 - Lockerlink: add players at either end of the chain; par covers everyone back to 1920 (NFL) and 1871 (MLB); a Rival mode that works from a link with no account.
 - Gridlink: award clues and a "played with [star]" clue.
-- Unbeaten: a budget and an open pick from any era instead of a random spin; ratings from career honors; a weekly recap of the best roster per rule.
+- Under the Cap: a budget and an open pick from any era instead of a random spin; ratings from career honors; a weekly recap of the best roster per rule.
 - Facts that make good posts, all from our own data: among the 45 biggest NBA stars any two are 2.7 teammate-links apart on average; Bill Russell reaches Jaylen Brown in 5 (Russell, Don Chaney, James Edwards, Randy Brown, Joe Johnson, Brown); LeBron James reaches Cooper Flagg in 2 (through Anthony Davis); Otto Graham to Patrick Mahomes takes 6 in the NFL; Shohei Ohtani to Ted Williams takes 5 (through Albert Pujols, Mark McGwire, Reggie Jackson and Jim Pagliaroni).
 
 ## Timing (why now)
@@ -48,7 +48,7 @@ Lockerlink: you get two players, often from different eras, and chain real teamm
 
 Gridlink: a 3x3 grid. Clues are teams, decades, positions, awards, or "played with LeBron James". Nine guesses.
 
-Unbeaten: a budget, a rule that changes each weekday, and any player from any era. Ratings come from career honors. Then it plays the season and shows your exact chance of going undefeated.
+Under the Cap: a budget, a rule that changes each weekday, and any player from any era. Ratings come from career honors. Then it plays the season and shows your exact chance of going undefeated.
 
 Free, no account, no third-party ads on the daily games. https://purplelink.llc/games/sports/
 
@@ -78,7 +78,7 @@ Show HN: Daily sports puzzles built on a teammate graph of 61,000 players
 ```
 Body:
 ```
-I joined player histories for the NBA, NFL, MLB and NHL (Lahman, nflverse, Wikipedia) into one graph where two players are linked if they shared a franchise and a season. Lockerlink asks for the shortest chain between two players; Gridlink is a 3x3 clue grid; Unbeaten is a budgeted roster builder with a season simulator. Ratings in Unbeaten come from career honors. The interesting parts were matching same-name players across sources and removing coaching stints that looked like playing time. Free, no account. https://purplelink.llc/games/sports/
+I joined player histories for the NBA, NFL, MLB and NHL (Lahman, nflverse, Wikipedia) into one graph where two players are linked if they shared a franchise and a season. Lockerlink asks for the shortest chain between two players; Gridlink is a 3x3 clue grid; Under the Cap is a budgeted roster builder with a season simulator. Ratings in Under the Cap come from career honors. The interesting parts were matching same-name players across sources and removing coaching stints that looked like playing time. Free, no account. https://purplelink.llc/games/sports/
 ```
 
 ### X or Threads (weekly)
@@ -90,7 +90,7 @@ Lockerlink fact: Otto Graham to Patrick Mahomes is 6 teammate links in the NFL. 
 ### Listdle or AlternativeTo entry
 
 ```
-Name: Purplelink Sports Games (Lockerlink, Gridlink, Unbeaten)
+Name: Purplelink Sports Games (Lockerlink, Gridlink, Under the Cap)
 Short: Free daily NBA, NFL, MLB and NHL puzzles: link two players through teammates, fill a clue grid, or build a roster and play a perfect season. Players from every era, no account.
 Category: sports, daily puzzle
 URL: https://purplelink.llc/games/sports/

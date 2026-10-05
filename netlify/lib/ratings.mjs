@@ -39,8 +39,8 @@ function replaySeason(pool, sport, idx, roster) {
   return replay(d, sport, idx, roster);
 }
 
-// ---- the daily sports games: Lockerlink, Gridlink and Unbeaten. One rated result per game per day. ----
-export const SPORTS_GAMES = ["lockerlink", "gridlink", "unbeaten"];
+// ---- the daily sports games: Lockerlink, Gridlink and Under the Cap. One rated result per game per day. ----
+export const SPORTS_GAMES = ["lockerlink", "gridlink", "under-the-cap"];
 const GRID_PUZZLE = 1000, UNBEATEN_PUZZLE = 1100;
 
 /** A chain of par links is harder the longer par is. */
@@ -79,7 +79,7 @@ export function checkSportsReport(game, b, days, nowIdx, pool = null) {
     if (ms < 3000 * filled) return { ok: false, error: "too_fast" };
     return { ok: true, id: `d${idx}`, puzzleRating: GRID_PUZZLE, score: gridlinkScore({ filled }), solved: filled >= 5 };
   }
-  if (game === "unbeaten") {
+  if (game === "under-the-cap") {
     if (ms < 8000) return { ok: false, error: "too_fast" };
     if (pool) {
       // replay the season from the roster, so the record is ours and not the browser's

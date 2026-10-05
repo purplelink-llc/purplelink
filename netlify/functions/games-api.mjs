@@ -95,7 +95,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
 
   async function loadRatings(acct) {
     const recs = (await ratings().get(`r:${acct}`, { type: "json" })) || {};
-    if (recs.teamlink && !recs.lockerlink) { recs.lockerlink = recs.teamlink; delete recs.teamlink; }       // Lockerlink was launched as Teamlink
+    for (const [old, now_] of [["teamlink", "lockerlink"], ["unbeaten", "under-the-cap"]]) if (recs[old] && !recs[now_]) { recs[now_] = recs[old]; delete recs[old]; }       // the sports games were launched as Teamlink and Unbeaten
     return recs;
   }
 
@@ -232,7 +232,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       if (!account) return json(401, { error: "not_signed_in" }, origin);
 
       if (action === "sync") {
-        const legacy = (o) => { if (o && o.teamlink && !o.lockerlink) { o.lockerlink = o.teamlink; delete o.teamlink; } return o; };   // Lockerlink was launched as Teamlink
+        const legacy = (o) => { for (const [old, now_] of [["teamlink", "lockerlink"], ["unbeaten", "under-the-cap"]]) if (o && o[old] && !o[now_]) { o[now_] = o[old]; delete o[old]; } return o; };   // renamed games
         const incoming = cleanData(legacy(b.data));
         const merged = mergeData(legacy(account.data || {}), incoming);
         if (JSON.stringify(merged).length > MAX_DATA_BYTES) return json(413, { error: "too_large" }, origin);
@@ -259,7 +259,7 @@ export function createHandler({ getStore, env, fetchFn = (...a) => fetch(...a), 
       }
       if (action === "ratings") {
         const recs = await loadRatings(sess.acct);
-        return json(200, { chess: recs.chess || null, sudoku: recs.sudoku || null, lockerlink: recs.lockerlink || null, gridlink: recs.gridlink || null, unbeaten: recs.unbeaten || null, public: !!account.public, name: account.name || "" }, origin);
+        return json(200, { chess: recs.chess || null, sudoku: recs.sudoku || null, lockerlink: recs.lockerlink || null, gridlink: recs.gridlink || null, "under-the-cap": recs["under-the-cap"] || null, public: !!account.public, name: account.name || "" }, origin);
       }
       if (action === "rating_report") {
         const game = String(b.game || "");

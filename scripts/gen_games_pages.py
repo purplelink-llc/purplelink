@@ -147,7 +147,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
 
 EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
 MORE_DAILY = ["landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"]
-SPORTS_GAMES = ["lockerlink", "gridlink", "unbeaten"]
+SPORTS_GAMES = ["lockerlink", "gridlink", "under-the-cap"]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
@@ -170,12 +170,12 @@ TAGLINE = {
     "prizelink": "Guess the Nobel laureate from prize, year and birthplace.",
     "lockerlink": "Link two players from any era through real teammates.",
     "gridlink": "Fill a 3 by 3 grid of teams, decades, awards and teammates.",
-    "unbeaten": "Build a roster from any era and play a perfect season.",
+    "under-the-cap": "Build a roster from any era and play a perfect season.",
     "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
     "leaderboard": "The top ratings in chess, Sudoku and the sports games, and this week's climbers.",
 }
-MINUTES = {"lockerlink": 4, "gridlink": 4, "unbeaten": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"lockerlink": 4, "gridlink": 4, "under-the-cap": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
@@ -1033,7 +1033,7 @@ page("games/sudoku-unlimited/", "", "", SU_BODY,
 LB_FAQ = [
     ("Who appears on the leaderboards?", "Only signed-in players who turn the leaderboard on, under the display name they chose. Nothing else about them is shown. You can leave at any time and your row is removed."),
     ("What is the weekly board?", "It ranks players by how much their rating rose since Monday. A player needs at least three rated puzzles that week to appear, and the board starts fresh each Monday."),
-    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Lockerlink and Gridlink results are checked for plausibility rather than replayed (Unbeaten seasons are replayed on the server from your roster), so treat the boards as friendly competition."),
+    ("Can the ratings be faked?", "The rating service only accepts reports for real puzzles, in a plausible time, and works out each rating itself. A determined person could still use a chess engine or solver, and the daily Lockerlink and Gridlink results are checked for plausibility rather than replayed (Under the Cap seasons are replayed on the server from your roster), so treat the boards as friendly competition."),
     ("How do I join?", "Play a few rated puzzles or daily sports games, sign in with an email link on your account page, choose a display name, and turn on the leaderboard there or after any puzzle."),
 ]
 LB_BODY = """      <div class="games-wrap">
@@ -1041,13 +1041,13 @@ LB_BODY = """      <div class="games-wrap">
           <h1>Leaderboards</h1>
           <span class="game-num" id="lb-week"></span>
         </div>
-        <p class="game-lede">The Purplelink leaderboards list the highest ratings in Chess Puzzles, Sudoku Unlimited and the three daily sports games (Lockerlink, Gridlink and Unbeaten), plus the biggest rating gains this week.</p>
+        <p class="game-lede">The Purplelink leaderboards list the highest ratings in Chess Puzzles, Sudoku Unlimited and the three daily sports games (Lockerlink, Gridlink and Under the Cap), plus the biggest rating gains this week.</p>
         <div class="lb-tabs" role="group" aria-label="Choose a board">
           <button type="button" class="lb-tab" data-game="chess" aria-pressed="true">Chess Puzzles</button>
           <button type="button" class="lb-tab" data-game="sudoku" aria-pressed="false">Sudoku Unlimited</button>
           <button type="button" class="lb-tab" data-game="lockerlink" aria-pressed="false">Lockerlink</button>
           <button type="button" class="lb-tab" data-game="gridlink" aria-pressed="false">Gridlink</button>
-          <button type="button" class="lb-tab" data-game="unbeaten" aria-pressed="false">Unbeaten</button>
+          <button type="button" class="lb-tab" data-game="under-the-cap" aria-pressed="false">Under the Cap</button>
           <span class="lb-gap"></span>
           <button type="button" class="lb-tab" data-board="all" aria-pressed="true">Rating</button>
           <button type="button" class="lb-tab" data-board="week" aria-pressed="false">This week</button>
@@ -1062,7 +1062,7 @@ LB_BODY = """      <div class="games-wrap">
         </div>
         <div class="games-prose">
           <h2>How the boards work</h2>
-          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Unbeaten update once a day, from your first result on that day\'s puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Unbeaten counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
+          <p>Ratings are Elo ratings worked out by the rating service from the puzzles you finish. Chess Puzzles and Sudoku Unlimited update with every puzzle. Lockerlink, Gridlink and Under the Cap update once a day, from your first result on that day\'s puzzle: a harder Lockerlink chain counts for more, Gridlink counts the cells you filled, and Under the Cap counts your win share and title. Everyone starts at 1000. Only players who opt in, under a display name, are listed. The top 100 are shown.</p>
           <h2>Questions</h2>
 """ + faq_html(LB_FAQ) + """
         </div>
@@ -1416,7 +1416,7 @@ UB_FAQ = [
     ("What are the weekday rules?", "Each weekday has a rule: a bigger budget on Sunday, an open draft on Monday, only players who started before 1990 on Tuesday, only players who started in 2000 or later on Wednesday, no all-time icons on Thursday, a smaller budget on Friday and stars only on Saturday. Other leagues use their own cut-off years."),
     ("Where can I see the best roster?", "In the section under the puzzle called This week's best rosters. For every day so far this week it shows the highest-rated roster the budget and that day's rule allow, the season that roster plays, and how you did. Last week is kept in a drop-down. Today's appears once you finish today's puzzle, or tomorrow. It is the best roster by team rating, which is not the same as the best result: the season still has luck in it."),
     ("Does a practice run count?", "No. Only your first daily roster counts toward your streak and stats. Practice rosters never do. For a rated daily result the rating service replays your season from your roster, rule and budget, so the record is the one the roster earns."),
-    ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for Unbeaten, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
+    ("Is there a rating or a leaderboard?", "Yes. Each day you finish counts once toward a running Elo rating for Under the Cap, starting at 1000, and it is worked out by the rating service from your result and the difficulty of that day's puzzle. Without an account the rating stays on this device. Signed-in players can opt in to the all-time and weekly leaderboards under a display name."),
 ]
 UB_PROSE = f"""        <h2>How to play</h2>
         <p>Fill every starting spot with a player of the right position, from any era. Each player has a cost and a rating, and your budget does not cover a roster of all-time greats. Pick a bench with anyone left over. When every starter is in, play the season.</p>
@@ -1450,8 +1450,8 @@ UB_BOARD = """          <p class="ub-rule"><strong id="ub-rule-name"></strong> <
 UB_RESULT = """            <p class="ub-record" id="ub-record" aria-hidden="true"></p>
             <ul class="ub-detail" id="ub-detail"></ul>
             <div id="ub-playoffs-wrap" hidden><h3>Playoffs</h3><ul class="ub-detail" id="ub-playoffs"></ul></div>"""
-sports_page("unbeaten", "Unbeaten", "Build a roster from any era under a budget, then play a full season.", UB_BOARD, UB_RESULT, UB_PROSE, UB_FAQ,
-            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/season.js", "/games/unbeaten.js"])
+sports_page("under-the-cap", "Under the Cap", "Build a roster from any era under a budget, then play a full season.", UB_BOARD, UB_RESULT, UB_PROSE, UB_FAQ,
+            ["/games/core.js", "/games/ratings.js", "/games/sports.js", "/games/season.js", "/games/under-the-cap.js"])
 
 
 # ---------------- Sports hub and "how are they connected" pages ----------------
@@ -1527,10 +1527,10 @@ for _sp, _d in DEGREE_PAGES.items():
     degree_page(_sp, _d)
 
 SPORTS_FAQ = [
-    ("What are the Purplelink sports games?", "Three free daily puzzles about the NBA, NFL, MLB and NHL: Lockerlink (link two players through a chain of real teammates), Gridlink (fill a 3 by 3 grid of teams, decades, awards and teammates) and Unbeaten (build a roster under a budget and play a full season). The sport changes every day."),
-    ("Which players are in them?", "Every player who ever appeared in the four leagues is available in Lockerlink, about 61,000 in all. Gridlink and Unbeaten use a curated list of well-known stars. The players you are asked to link are always stars."),
+    ("What are the Purplelink sports games?", "Three free daily puzzles about the NBA, NFL, MLB and NHL: Lockerlink (link two players through a chain of real teammates), Gridlink (fill a 3 by 3 grid of teams, decades, awards and teammates) and Under the Cap (build a roster under a budget and play a full season). The sport changes every day."),
+    ("Which players are in them?", "Every player who ever appeared in the four leagues is available in Lockerlink, about 61,000 in all. Gridlink and Under the Cap use a curated list of well-known stars. The players you are asked to link are always stars."),
     ("Are they free? Do I need an account?", "They are free, with no third-party ads on the daily games, and you do not need an account. An optional email sign-in keeps your streaks and ratings across devices and lets you join the leaderboards."),
-    ("How are they different from other sports puzzle games?", "Lockerlink lets you add players at either end of the chain and measures par over every player in the league, back to 1920 in the NFL and 1871 in MLB. Gridlink has award clues and a clue that asks for a teammate of a named star. Unbeaten gives you a budget and an open choice of any player from any era instead of a random spin, and shows the best roster for each day's rule afterwards."),
+    ("How are they different from other sports puzzle games?", "Lockerlink lets you add players at either end of the chain and measures par over every player in the league, back to 1920 in the NFL and 1871 in MLB. Gridlink has award clues and a clue that asks for a teammate of a named star. Under the Cap gives you a budget and an open choice of any player from any era instead of a random spin, and shows the best roster for each day's rule afterwards."),
     ("Is there a rating?", "Yes. Each game keeps a running Elo rating, updated once a day, with all-time and weekly leaderboards for players who opt in."),
     ("Where do the player histories come from?", "Public sources: the Lahman Baseball Database for MLB, nflverse for the NFL, and Wikipedia for the NBA and NHL, matched and merged by us. The credits are on the game pages. The data is not complete, and the pages say where the gaps are."),
 ]
@@ -1548,7 +1548,7 @@ SP_HUB_BODY = """      <div class="games-wrap hub">
           <ul>
             <li><strong>Lockerlink</strong>: add players at either end of the chain until the two ends are teammates. Par is the shortest possible chain. Hints, undo, a Rival mode to challenge a friend, and a weekly recap of the shortest chains.</li>
             <li><strong>Gridlink</strong>: nine cells, nine guesses. Clues are teams, decades, positions, awards and "played with" a named star. Rarer players score more.</li>
-            <li><strong>Unbeaten</strong>: a budget, a rule that changes each weekday, and any player from any era. The rating of each player comes from career honors. A weekly recap shows the best roster for each rule.</li>
+            <li><strong>Under the Cap</strong>: a budget, a rule that changes each weekday, and any player from any era. The rating of each player comes from career honors. A weekly recap shows the best roster for each rule.</li>
           </ul>
           <h2>Questions</h2>
 """ + faq_html(SPORTS_FAQ) + """

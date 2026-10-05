@@ -36,7 +36,7 @@
 [data-g="wildlink"] { --gh: 40; }
 [data-g="lockerlink"] { --gh: 118; }
 [data-g="gridlink"] { --gh: 150; }
-[data-g="unbeaten"] { --gh: 20; }
+[data-g="under-the-cap"] { --gh: 20; }
 
 .gl { width: 1.5em; height: 1.5em; flex: none; }
 .gl-sm { width: 1em; height: 1em; }
@@ -534,7 +534,7 @@
 .cw-cell[data-pencil] .cw-letter { opacity: 0.6; font-style: italic; }
 .run-tier span { color: color-mix(in oklch, var(--ink) 78%, var(--panel)); }
 
-/* ---------- sports games: Lockerlink, Gridlink, Unbeaten ---------- */
+/* ---------- sports games: Lockerlink, Gridlink, Under the Cap ---------- */
 .sp-modes { display: inline-flex; gap: 4px; padding: 4px; margin: 0 0 12px; border: 2px solid var(--line); border-radius: 999px; background: var(--panel); }
 .sp-mode { min-height: 40px; padding: 0 20px; border: 0; border-radius: 999px; background: transparent; color: var(--ink); font: 700 0.95rem/1 var(--font-body); cursor: pointer; }
 .sp-mode[aria-pressed="true"] { background: var(--gc, var(--purple)); color: var(--gc-ink, #fff); }

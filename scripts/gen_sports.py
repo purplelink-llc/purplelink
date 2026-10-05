@@ -53,7 +53,7 @@ def rating(sport, name, tier, hon):
 
 
 def summary(sport, hon):
-    """[selections, MVPs, titles, hall of fame] shown beside each player in Unbeaten."""
+    """[selections, MVPs, titles, hall of fame] shown beside each player in Under the Cap."""
     if not hon: return [0, 0, 0, 0]
     c = hon["cat"]
     return [c.get("allstar") or c.get("first", 0), c.get("mvp", 0), c.get("title", 0), 1 if c.get("hof") else 0]
@@ -247,7 +247,7 @@ COST = {1: 1, 2: 2, 3: 3, 4: 5, 5: 7}
 
 
 def rules(sport):
-    """The seven weekday rules of Unbeaten, indexed by JS getDay() (0 = Sunday); mirrors constraint() in site/games/season.js."""
+    """The seven weekday rules of Under the Cap, indexed by JS getDay() (0 = Sunday); mirrors constraint() in site/games/season.js."""
     era = CFG[sport]["era"]
     return [(4, lambda p: True), (0, lambda p: True), (0, lambda p: p["s"][0][1] < era and min(x[1] for x in p["s"]) < era),
             (0, lambda p: min(x[1] for x in p["s"]) >= era + 10), (0, lambda p: p["t"] < 5), (-4, lambda p: True), (0, lambda p: p["t"] >= 3)]

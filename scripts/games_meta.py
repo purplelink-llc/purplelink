@@ -310,7 +310,7 @@ GAMES = {
         tips=["Work from both ends. A player who spent many years with one team is the easiest bridge.",
               "Players who changed teams often are the best connectors between eras.",
               "Teammates need overlapping seasons, not just the same team, so check the years on each card."],
-        related=["gridlink", "unbeaten", "daily-five"], og_photo="dsc-3940"),
+        related=["gridlink", "under-the-cap", "daily-five"], og_photo="dsc-3940"),
     "games/gridlink/": dict(
         slug="gridlink", name="Gridlink", genre="Sports game", minutes=4,
         title="Gridlink: a free daily sports grid game",
@@ -324,12 +324,12 @@ GAMES = {
         tips=["Start with the cell that has two teams. Few players fit it, so the answer is easier to pin down.",
               "A player who fits several cells is worth saving for the hardest one.",
               "Decade clues count any season in that decade, so a career that spans two decades fits both."],
-        related=["lockerlink", "unbeaten", "landlink"], og_photo="dsc-3940"),
-    "games/unbeaten/": dict(
-        slug="unbeaten", name="Unbeaten", genre="Sports game", minutes=5,
-        title="Unbeaten: build a team from any era and play a perfect season",
+        related=["lockerlink", "under-the-cap", "landlink"], og_photo="dsc-3940"),
+    "games/under-the-cap/": dict(
+        slug="under-the-cap", name="Under the Cap", genre="Sports game", minutes=5,
+        title="Under the Cap: build a team from any era and play a perfect season",
         desc="Build a roster from any era under a budget, then play a full season. Can your team go undefeated? NBA, NFL, MLB and NHL. Free, with a daily challenge.",
-        answer="Unbeaten is a free sports team builder. Pick a starting lineup and bench from players of any era under a budget, then play a full season and a playoff run. The result comes from each player's rating, a bonus for players who really were teammates, and a seeded random draw. Going undefeated is possible but very rare, and the game shows the exact chance for your roster. A daily challenge changes the rules each weekday.",
+        answer="Under the Cap is a free sports team builder. Pick a starting lineup and bench from players of any era under a budget, then play a full season and a playoff run. The result comes from each player's rating, a bonus for players who really were teammates, and a seeded random draw. Going undefeated is possible but very rare, and the game shows the exact chance for your roster. A daily challenge changes the rules each weekday.",
         features=["Players from every era under one budget", "A full regular season and playoffs", "The exact chance of going undefeated", "A new rule every weekday", "NBA, NFL, MLB and NHL"],
         steps=[("Fill every starting spot", "Each spot needs a player at that position. The bench takes anyone."),
                ("Watch the budget", "Better players cost more, and the budget does not cover a team of stars."),
@@ -344,6 +344,6 @@ GAMES = {
 HUB = dict(
     title="Free daily games: Linkle, Sudoku, crossword, chess and more",
     desc="Free daily puzzles from Purplelink: a word game, a four-board word game, trivia, photo geography, chess, Sudoku, a crossword and a horoscope. New every midnight.",
-    answer="Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Lockerlink, Gridlink and Unbeaten) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
+    answer="Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Daily Five trivia, Daily Photo, Daily Chess, Sudoku, a themeless crossword and Daily Stars, plus guessing games about countries, cities, animals and more, and three sports games (Lockerlink, Gridlink and Under the Cap) covering the NBA, NFL, MLB and NHL. You can play without an account. The daily games have no third-party ads. Chess Puzzles and Sudoku Unlimited add unlimited rated puzzles and leaderboards, and show Google ads.",
     og_photo="dsc-3940",
 )

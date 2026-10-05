@@ -1,4 +1,4 @@
-/* The season model behind Unbeaten. Pure functions, no page access, so it can be tested under Node.
+/* The season model behind Under the Cap. Pure functions, no page access, so it can be tested under Node.
    A roster is { starters: [player per slot], bench: [players] }. Strength is the starters' ratings, a smaller share from
    the bench, and a bonus for players who really did play together. Ratings are our own estimates of each player at his
    best; they are not official statistics and eras are not adjusted. */

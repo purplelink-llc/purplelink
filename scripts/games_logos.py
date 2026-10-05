@@ -3,10 +3,10 @@
   * inline tile art, using the page's per-game colour classes;
   * the 24 px nav glyphs are hand-drawn in site/games/glyphs.svg to match.
 Each mark has one idea: Lockerlink is a locker door whose handle is two chain links, Gridlink is a clue grid with a link in its
-corner, Unbeaten is a shield with a zero and a star. Colours follow site/games/games-ui.css (--gc and friends)."""
+corner, Under the Cap is a shield with a zero and a star. Colours follow site/games/games-ui.css (--gc and friends)."""
 import math
 
-HUE = {"lockerlink": 118, "gridlink": 150, "unbeaten": 20}
+HUE = {"lockerlink": 118, "gridlink": 150, "under-the-cap": 20}
 
 
 def oklch_hex(l, c, h):
@@ -81,14 +81,17 @@ def gridlink(P):
     return "".join(out)
 
 
-def unbeaten(P):
-    shield = "M50 9 L82 20.5 V47 C82 68 68.5 81.5 50 91 C31.5 81.5 18 68 18 47 V20.5 Z"
-    return (f'<path d="{shield}" {P.fill("white")}/>'
-            f'<ellipse cx="50" cy="49" rx="14" ry="21" {P.stroke("deep", 8.5)}/>'
-            f'<path d="{star(50, 49, 8.6)}" {P.fill("deep")}/>')
+def under_the_cap(P):
+    out = [f'<rect x="14" y="16" width="72" height="8.5" rx="4.2" {P.fill("deep")}/>']             # the cap
+    heights = (30, 41, 54, 44, 34)                                                                    # five players, the tallest just under the cap
+    for i, h in enumerate(heights):
+        x = 14.5 + i * 14.8
+        out.append(f'<rect x="{x:.1f}" y="{88 - h:.1f}" width="11.6" height="{h}" rx="4.2" {P.fill("white")}/>')
+    out.append(f'<path d="{star(14.5 + 2 * 14.8 + 5.8, 88 - 54 + 11, 4.8)}" {P.fill("deep")}/>')    # the star player
+    return "".join(out)
 
 
-MARKS = {"lockerlink": lockerlink, "gridlink": gridlink, "unbeaten": unbeaten}
+MARKS = {"lockerlink": lockerlink, "gridlink": gridlink, "under-the-cap": under_the_cap}
 
 
 def logo_svg(slug):
