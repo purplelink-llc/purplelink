@@ -75,7 +75,7 @@
           "@id": "https://purplelink.llc/games/teamlink/#app",
           "name": "Teamlink",
           "url": "https://purplelink.llc/games/teamlink/",
-          "description": "Teamlink is a free daily sports puzzle. You are given two well-known players, often from different eras, and you build the shortest chain of real teammates between them, for example LeBron James to Anthony Davis to Cooper Flagg. Add a player at either end of the chain. Each new player must have shared a team and a season with the player next to him. The sport changes each day across the NBA, NFL, MLB and NHL.",
+          "description": "Teamlink is a free daily sports puzzle. You are given two well-known players, often from different eras, and you build the shortest chain of real teammates between them, for example LeBron James to Anthony Davis to Cooper Flagg. Add a player at either end of the chain. Each new player can be anyone who ever played in the league, but must have shared a team and a season with the player next to him. The sport changes each day across the NBA, NFL, MLB and NHL.",
           "applicationCategory": "GameApplication",
           "applicationSubCategory": "Sports game",
           "genre": "Sports game",
@@ -91,7 +91,7 @@
           "featureList": [
             "A running rating and leaderboards",
             "A new pair of players every day",
-            "Stars from every era, no bench players",
+            "Every player who ever played, from stars to bench players",
             "Add players at either end of the chain",
             "Hints, undo and unlimited practice",
             "NBA, NFL, MLB and NHL"
@@ -154,7 +154,7 @@
               "name": "Which players can I use?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Only the well-known players in our list for that sport: multiple-time All-Stars, award winners, Hall of Famers and current stars, from every era. Role players are not in the list, so the shortest chain is measured within it."
+                "text": "Any player who ever appeared for a team in that league, from the first seasons to 2025: about 5,000 in the NBA, 27,000 in the NFL, 20,000 in MLB and 9,000 in the NHL. The two players you are asked to link are always well-known stars, but the players in between can be anyone. Coverage is not perfect: NBA and NHL rosters come from Wikipedia and miss some players, clubs that no longer exist are left out, and NFL rosters include some players who were on a roster without playing."
               }
             },
             {
@@ -162,7 +162,7 @@
               "name": "What is par?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Par is the fewest links needed to connect the two players using players in our list. The chain is solved when its two ends are teammates."
+                "text": "Par is the fewest links needed to connect the two players, measured over every player in our database. The chain is solved when its two ends are teammates."
               }
             },
             {
@@ -295,7 +295,7 @@
           <h1>Teamlink</h1>
           <span class="game-num" id="sp-number"></span>
         </div>
-        <p class="game-lede">Teamlink is a free daily sports puzzle. You are given two well-known players, often from different eras, and you build the shortest chain of real teammates between them, for example LeBron James to Anthony Davis to Cooper Flagg. Add a player at either end of the chain. Each new player must have shared a team and a season with the player next to him. The sport changes each day across the NBA, NFL, MLB and NHL.</p>
+        <p class="game-lede">Teamlink is a free daily sports puzzle. You are given two well-known players, often from different eras, and you build the shortest chain of real teammates between them, for example LeBron James to Anthony Davis to Cooper Flagg. Add a player at either end of the chain. Each new player can be anyone who ever played in the league, but must have shared a team and a season with the player next to him. The sport changes each day across the NBA, NFL, MLB and NHL.</p>
         <div class="sp-modes" role="group" aria-label="Mode">
           <button type="button" class="sp-mode" id="sp-mode-daily" aria-pressed="true">Daily</button>
           <button type="button" class="sp-mode" id="sp-mode-practice" aria-pressed="false">Practice</button>
@@ -354,14 +354,14 @@
         <h2>How to play</h2>
         <p>You are given two players, often from different eras. Build a chain of teammates between them. Type a player who shared a team and a season with either end of your chain and pick the name from the list.</p>
         <p>A wrong name counts as a miss. Undo removes the last player you added, and a hint names the team of a good next link, then the player's initials. Par is the shortest chain possible.</p>
-        <p class="quiz-credit">Players come from lists we curated of well-known stars in each league, with team histories checked against Wikipedia and Wikidata. A player counts as a teammate when the two were on the same franchise in the same season; a team that moved or changed its name is one franchise. Baseball data comes from the <a href="https://sabr.org/lahman-database/" rel="noopener">Lahman Baseball Database</a>, copyright 1996-2025 SABR, via Sean Lahman, used under <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="noopener">CC BY-SA 3.0</a>. We matched it to our own player list and combined it with other sources, so it is changed from the original.</p>
+        <p class="quiz-credit">Players come from lists we curated of well-known stars in each league, with team histories checked against Wikipedia and Wikidata. A player counts as a teammate when the two were on the same franchise in the same season; a team that moved or changed its name is one franchise. Baseball data comes from the <a href="https://sabr.org/lahman-database/" rel="noopener">Lahman Baseball Database</a>, copyright 1996-2025 SABR, via Sean Lahman, used under <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="noopener">CC BY-SA 3.0</a>. We matched it to our own player list and combined it with other sources, so it is changed from the original. Football rosters come from <a href="https://github.com/nflverse/nflverse-data" rel="noopener">nflverse</a> (<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>). Basketball and hockey rosters come from Wikipedia and its players' pages (<a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a>). All of it was matched and merged by us.</p>
         <h2>Questions</h2>
         <h3>What counts as teammates?</h3>
         <p>Two players are teammates if they were on the same franchise in at least one common season. A franchise that moved or changed its name counts as one team, so the Seattle SuperSonics and the Oklahoma City Thunder are the same club.</p>
         <h3>Which players can I use?</h3>
-        <p>Only the well-known players in our list for that sport: multiple-time All-Stars, award winners, Hall of Famers and current stars, from every era. Role players are not in the list, so the shortest chain is measured within it.</p>
+        <p>Any player who ever appeared for a team in that league, from the first seasons to 2025: about 5,000 in the NBA, 27,000 in the NFL, 20,000 in MLB and 9,000 in the NHL. The two players you are asked to link are always well-known stars, but the players in between can be anyone. Coverage is not perfect: NBA and NHL rosters come from Wikipedia and miss some players, clubs that no longer exist are left out, and NFL rosters include some players who were on a roster without playing.</p>
         <h3>What is par?</h3>
-        <p>Par is the fewest links needed to connect the two players using players in our list. The chain is solved when its two ends are teammates.</p>
+        <p>Par is the fewest links needed to connect the two players, measured over every player in our database. The chain is solved when its two ends are teammates.</p>
         <h3>How do the two ends work?</h3>
         <p>You can add a player next to the first player or next to the last player. If a player is a teammate of both ends, the chain closes.</p>
         <h3>How are stars awarded?</h3>
@@ -398,8 +398,8 @@
     <script src="/games/dock.js?v=99d59c8de5" defer></script>
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/ratings.js?v=5ae929a071" defer></script>
-    <script src="/games/sports.js?v=0590ad593c" defer></script>
-    <script src="/games/teamlink.js?v=83b2ce7253" defer></script>
+    <script src="/games/sports.js?v=dde98aebbe" defer></script>
+    <script src="/games/teamlink.js?v=b8f18c6344" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">

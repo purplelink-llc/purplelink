@@ -4,7 +4,7 @@ players who shared a locker room count as teammates whatever the city was called
 NBA = [
  ("ATL", "Atlanta Hawks", ["hawks", "tri-cities"]),
  ("BOS", "Boston Celtics", ["celtics"]),
- ("BKN", "Brooklyn Nets", ["nets", "new jersey americans"]),
+ ("BKN", "Brooklyn Nets", ["brooklyn nets", "new jersey nets", "new york nets", "nj nets", "new jersey americans"]),
  ("CHA", "Charlotte Hornets", ["bobcats"]),
  ("CHI", "Chicago Bulls", ["bulls"]),
  ("CLE", "Cleveland Cavaliers", ["cavaliers"]),

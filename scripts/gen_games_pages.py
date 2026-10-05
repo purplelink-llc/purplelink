@@ -1328,8 +1328,8 @@ SP_NOTE = ("Players come from lists we curated of well-known stars in each leagu
 
 TL_FAQ = [
     ("What counts as teammates?", "Two players are teammates if they were on the same franchise in at least one common season. A franchise that moved or changed its name counts as one team, so the Seattle SuperSonics and the Oklahoma City Thunder are the same club."),
-    ("Which players can I use?", "Only the well-known players in our list for that sport: multiple-time All-Stars, award winners, Hall of Famers and current stars, from every era. Role players are not in the list, so the shortest chain is measured within it."),
-    ("What is par?", "Par is the fewest links needed to connect the two players using players in our list. The chain is solved when its two ends are teammates."),
+    ("Which players can I use?", "Any player who ever appeared for a team in that league, from the first seasons to 2025: about 5,000 in the NBA, 27,000 in the NFL, 20,000 in MLB and 9,000 in the NHL. The two players you are asked to link are always well-known stars, but the players in between can be anyone. Coverage is not perfect: NBA and NHL rosters come from Wikipedia and miss some players, clubs that no longer exist are left out, and NFL rosters include some players who were on a roster without playing."),
+    ("What is par?", "Par is the fewest links needed to connect the two players, measured over every player in our database. The chain is solved when its two ends are teammates."),
     ("How do the two ends work?", "You can add a player next to the first player or next to the last player. If a player is a teammate of both ends, the chain closes."),
     ("How are stars awarded?", "Three stars for matching par with no hints and at most two misses, two stars for par plus one, one star for anything longer."),
     ("Which sport is it today?", "The daily puzzle rotates through the NBA, NFL, MLB and NHL. Practice mode lets you pick any sport and a difficulty."),
@@ -1338,7 +1338,7 @@ TL_FAQ = [
 TL_PROSE = f"""        <h2>How to play</h2>
         <p>You are given two players, often from different eras. Build a chain of teammates between them. Type a player who shared a team and a season with either end of your chain and pick the name from the list.</p>
         <p>A wrong name counts as a miss. Undo removes the last player you added, and a hint names the team of a good next link, then the player's initials. Par is the shortest chain possible.</p>
-        <p class="quiz-credit">{SP_NOTE}</p>
+        <p class="quiz-credit">{SP_NOTE} Football rosters come from <a href="https://github.com/nflverse/nflverse-data" rel="noopener">nflverse</a> (<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>). Basketball and hockey rosters come from Wikipedia and its players' pages (<a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a>). All of it was matched and merged by us.</p>
         <h2>Questions</h2>
 """ + faq_html(TL_FAQ)
 TL_BOARD = """          <div class="tl-ends" aria-label="The two players to link">

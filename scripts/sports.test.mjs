@@ -87,3 +87,21 @@ for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
     assert.equal(res.wins + res.losses, dd.cfg.games);
   });
 }
+
+for (const sport of ["nba", "nfl", "mlb", "nhl"]) {
+  test(`${sport}: the all-players file is well formed and joins the famous pool`, () => {
+    const r = JSON.parse(readFileSync(`site/games/data/sports-${sport}.json`, "utf8"));
+    const all = JSON.parse(readFileSync(`site/games/data/sports-${sport}-all.json`, "utf8"));
+    const names = new Set(r.p.map((x) => x[0]));
+    assert.ok(all.p.length > 4000);
+    for (const [name, pos, born, st] of all.p) {
+      assert.ok(!names.has(name), "duplicate name " + name); names.add(name);
+      assert.ok(st.length && st.every(([f, a, b]) => r.fr[f] && a < b && a >= 1870 && b <= 2026), name);
+    }
+    r.cfg.groupOf = S.GROUPS[sport];
+    const dd = S.prepare(r); S.extend(dd, all.p);
+    assert.equal(dd.players.length, r.p.length + all.p.length);
+    // pars in the data are measured over everyone: they must equal a fresh search
+    r.tl.slice(0, 40).forEach(([a, b], i) => assert.equal(S.path(dd, dd.byName[a], dd.byName[b]).length - 1, r.tp[i], a + " to " + b));
+  });
+}

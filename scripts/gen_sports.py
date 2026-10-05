@@ -7,6 +7,8 @@ appends, so a day that is already live never changes when the player pool grows.
 import collections, hashlib, json, math, os, pathlib, random, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts" / "sports"))
+import franchises
 OUT = ROOT / "scripts" / "sports" / "out"
 PIN = ROOT / "scripts" / "sports-pinned"
 DATA = ROOT / "site" / "games" / "data"
@@ -14,7 +16,10 @@ EPOCH_DOW = 0                       # the games epoch (2026-10-04) is a Sunday; 
 DAYS = 420                          # daily puzzles per sport kept ahead of today
 ORDER = ["nba", "nfl", "mlb", "nhl"]
 DAYS_LIB = {}
-WANT = {s: {1: 2, 2: 3, 3: 3, 4: 4, 5: 4, 6: 5, 0: 6} for s in ORDER}     # target chain length (par) by weekday, JS getDay()
+# Target chain length (par) by weekday, JS getDay(). With every player in the graph most famous pairs are 2 or 3 apart,
+# so the long days ask for what the league actually has: the longest chains are 6 in the NBA, 5 in the NFL and MLB, 4 in the NHL.
+WANT = {"nba": {1: 2, 2: 2, 3: 3, 4: 3, 5: 4, 6: 5, 0: 6}, "nfl": {1: 2, 2: 2, 3: 3, 4: 3, 5: 4, 6: 4, 0: 5},
+        "mlb": {1: 2, 2: 2, 3: 3, 4: 3, 5: 3, 6: 4, 0: 5}, "nhl": {1: 2, 2: 2, 3: 3, 4: 3, 5: 3, 6: 3, 0: 4}}
 SHORT = {"nhl": {"UTA": "Coyotes", "CLB": "Seals/Barons"}}
 FULL = {"nhl": {"UTA": "Winnipeg Jets / Arizona Coyotes / Utah Mammoth"}}
 
@@ -70,7 +75,7 @@ ALL = ROOT / "scripts" / "sports" / "all"
 
 
 def load_extra(sport, P):
-    if not os.environ.get("SPORTS_EXTRAS"): return [], ""
+    if os.environ.get("SPORTS_EXTRAS") == "0": return [], ""
     """Players outside the famous pool, from scripts/sports/all/<sport>.json. Returns rows [name, pos, born, stints]
     with names made unique, plus the credit text."""
     f = ALL / f"{sport}.json"
@@ -246,6 +251,10 @@ def main():
     for sport in present:
         F, P = load(sport)
         extra, credit = load_extra(sport, P)
+        names = {fid: name for fid, name, _ in getattr(franchises, sport.upper())}
+        for r in extra:
+            for f, _, _ in r[3]:
+                if f not in F: F[f] = names[f]
         pin_f = PIN / f"{sport}.json"
         pin = json.loads(pin_f.read_text()) if pin_f.exists() else {"tl": [], "gr": []}
         names = {p["n"] for p in P}

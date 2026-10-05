@@ -15,7 +15,7 @@
 
   // Build the lookup tables for a data file once.
   function prepare(raw) {
-    var d = { sport: raw.sport, name: raw.name, fr: raw.fr, fs: raw.fs || {}, cfg: raw.cfg, tl: raw.tl || [], gr: raw.gr || [], players: [], byName: {} };
+    var d = { sport: raw.sport, name: raw.name, fr: raw.fr, fs: raw.fs || {}, cfg: raw.cfg, tl: raw.tl || [], tp: raw.tp || [], gr: raw.gr || [], players: [], byName: {} };
     raw.p.forEach(function (r, i) {
       var p = { i: i, n: r[0], pos: r[1], tier: r[2], ovr: r[3], st: r[4], hon: r[5] || [0, 0, 0, 0], key: fold(r[0]) };
       p.g = (d.cfg.groupOf || {})[p.pos] || p.pos;

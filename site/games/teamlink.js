@@ -14,7 +14,11 @@
   function side(arr) { return arr.map(P).filter(Boolean); }
 
   function newState(a, b) { return { t0: Date.now(), a: a, b: b, L: [a], R: [b], misses: 0, hints: 0, moves: [], done: false, won: false, gave: false, hint: { key: "", level: 0 } }; }
-  function par() { var p = S.path(data, P(st.a), P(st.b)); return p ? p.length - 1 : 0; }
+  // The day's par comes with the puzzle data (measured over every player) so the page and the rating service agree.
+  function par() {
+    if (mode === "daily" && daily && data.tp && data.tp.length) return data.tp[S.dailySlot(rotation, daily.idx) % data.tp.length];
+    var p = S.path(data, P(st.a), P(st.b)); return p ? p.length - 1 : 0;
+  }
   function links() { return st.L.length + st.R.length - 1; }
   function inChain(p) { return st.L.indexOf(p.n) >= 0 || st.R.indexOf(p.n) >= 0; }
   function ends() { return { l: P(st.L[st.L.length - 1]), r: P(st.R[0]) }; }
