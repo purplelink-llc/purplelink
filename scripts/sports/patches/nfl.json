@@ -1,0 +1,41 @@
+{
+ "Terrell Owens": [
+  {
+   "team": "San Francisco 49ers",
+   "s": 1996,
+   "e": 2004
+  },
+  {
+   "team": "Philadelphia Eagles",
+   "s": 2004,
+   "e": 2006
+  },
+  {
+   "team": "Dallas Cowboys",
+   "s": 2006,
+   "e": 2009
+  },
+  {
+   "team": "Buffalo Bills",
+   "s": 2009,
+   "e": 2010
+  },
+  {
+   "team": "Cincinnati Bengals",
+   "s": 2010,
+   "e": 2011
+  }
+ ],
+ "Chad Johnson": [
+  {
+   "team": "Cincinnati Bengals",
+   "s": 2001,
+   "e": 2011
+  },
+  {
+   "team": "New England Patriots",
+   "s": 2011,
+   "e": 2012
+  }
+ ]
+}

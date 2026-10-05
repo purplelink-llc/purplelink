@@ -7,12 +7,21 @@ HERE = pathlib.Path(__file__).parent
 sys.path.insert(0, str(HERE))
 import franchises
 LAST_SEASON = 2025          # data is capped at the 2025-26 season; later moves are not trusted yet
-EXCLUDE = ["quad city", "borås", "great danes", "austin spurs", "texas legends", "→", "g league", "raptors 905"]
+SANITY = {
+  "nba": [("Bill Russell", "Jaylen Brown"), ("LeBron James", "Cooper Flagg"), ("Bill Russell", "Cooper Flagg"), ("George Mikan", "Victor Wembanyama")],
+  "nfl": [("Johnny Unitas", "Patrick Mahomes"), ("Jim Brown", "Josh Allen"), ("Joe Namath", "Justin Jefferson")],
+  "mlb": [("Willie Mays", "Shohei Ohtani"), ("Hank Aaron", "Aaron Judge"), ("Sandy Koufax", "Paul Skenes")],
+  "nhl": [("Gordie Howe", "Connor McDavid"), ("Bobby Orr", "Auston Matthews"), ("Wayne Gretzky", "Nathan MacKinnon")],
+}
+EXCLUDE = ["shreveport", "steamer", "quad city", "borås", "great danes", "austin spurs", "texas legends", "→", "g league", "raptors 905"]
 
 def franchise_of(sport, label, s):
     t = label.lower().strip()
     if any(x in t for x in EXCLUDE): return None
     if sport == "nba" and "charlotte hornets" in t and "bobcats" not in t: return "NOP" if s < 2003 else "CHA"
+    if sport == "nfl" and "dallas texans" in t and s < 1960: return "IND"      # the 1952 NFL Texans folded; the Colts replaced them
+    if sport == "mlb" and "washington senators" in t: return "MIN" if s <= 1960 else "TEX"
+    if sport == "nhl" and "winnipeg jets" in t: return "UTA" if s < 1996 else "WPG"
     for fid, _, pats in getattr(franchises, sport.upper()):
         if any(p in t for p in pats): return fid
     return None
@@ -90,8 +99,17 @@ def main():
         out = []; u = dst
         while u is not None: out.append(P[u]["name"]); u = prev[u]
         return out[::-1]
-    for a, b in [("Bill Russell", "Jaylen Brown"), ("LeBron James", "Cooper Flagg"), ("Bill Russell", "Cooper Flagg"), ("George Mikan", "Victor Wembanyama")]:
+    for a, b in SANITY.get(sport, []):
         if a in idx and b in idx: print(a, "->", b, path(a, b))
+        else: print("skip (not in list):", a, "->", b)
+    # tier / position / era counts and the least famous players (fame-rule check)
+    def era(p):
+        m = (p["st"][0][1] + p["st"][-1][2]) / 2 if p["st"] else 0
+        return "pre-1980" if m < 1980 else "1980-99" if m < 2000 else "2000-12" if m < 2013 else "2013+"
+    print("tiers", sorted(collections.Counter(p["tier"] for p in P).items()))
+    print("positions", sorted(collections.Counter(p["pos"] for p in P).items()))
+    print("eras", dict(collections.Counter(era(p) for p in P)))
+    print("lowest fame:", [(p["name"], p["tier"]) for p in sorted(P, key=lambda p: (p["tier"], -len(p["st"])))[:20]])
     out = HERE / "out"; out.mkdir(exist_ok=True)
     used = {f for p in P for f, _, _ in p["st"]}
     fr = {fid: name for fid, name, _ in getattr(franchises, sport.upper()) if fid in used}

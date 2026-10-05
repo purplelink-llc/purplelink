@@ -5,8 +5,8 @@ import json, subprocess, sys, time, urllib.parse, pathlib, re
 HERE = pathlib.Path(__file__).parent
 UA = "PurplelinkGames/1.0 (ben@purplelink.llc)"
 SPORT_WORDS = {
-  "nba": ["basketball"], "nfl": ["american football", "football player", "quarterback", "running back", "wide receiver", "linebacker", "lineman", "safety", "cornerback", "tight end", "kicker"],
-  "mlb": ["baseball"], "nhl": ["ice hockey", "hockey"],
+  "nba": ["basketball"], "nfl": ["american football", "national football league", "nfl", "gridiron"],
+  "mlb": ["baseball"], "nhl": ["ice hockey", "hockey player", "national hockey league", "nhl"],
 }
 def curl(args):
     for i in range(4):
@@ -23,9 +23,20 @@ def search(name, sport):
     words = SPORT_WORDS[sport]
     for c in d.get("search", []):
         desc = (c.get("description") or "").lower()
-        if desc.startswith(("college", "high school")) or "wheelchair" in desc or "women" in desc: continue
+        if desc.startswith(("college", "high school")) or "wheelchair" in desc or "women" in desc or "field hockey" in desc or "soccer" in desc or "association football" in desc: continue
         if any(w in desc for w in words):
             return {"qid": c["id"], "label": c.get("label"), "desc": c.get("description")}
+    return None
+def wp_fallback(name, sport):
+    """No Wikidata description matched: try the English Wikipedia article of that name (and sport-qualified variants)."""
+    suffix = {"nfl": "American football", "mlb": "baseball", "nhl": "ice hockey", "nba": "basketball"}[sport]
+    titles = [name, "%s (%s)" % (name, suffix)]
+    q = urllib.parse.urlencode({"action": "query", "prop": "pageprops", "ppprop": "wikibase_item", "titles": "|".join(titles), "redirects": 1, "format": "json"})
+    d = curl(["https://en.wikipedia.org/w/api.php?" + q])
+    if not d: return None
+    for p in d.get("query", {}).get("pages", {}).values():
+        qid = p.get("pageprops", {}).get("wikibase_item")
+        if qid: return {"qid": qid, "label": name, "desc": "FALLBACK " + p["title"]}
     return None
 def stints(qids):
     vals = " ".join("wd:" + q for q in qids)
@@ -52,7 +63,7 @@ def main():
         name = parts[0]
         qid_override = parts[4] if len(parts) > 4 and parts[4] else None
         if name in cache["players"] and cache["players"][name]: continue
-        r = {"qid": qid_override, "label": name} if qid_override else search(name, sport)
+        r = {"qid": qid_override, "label": name} if qid_override else (search(name, sport) or wp_fallback(name, sport))
         cache["players"][name] = r
         if not r: print("UNRESOLVED", name)
         time.sleep(0.15)

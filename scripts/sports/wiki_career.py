@@ -54,6 +54,110 @@ def parse(text):
         if "present" in yrs.lower() or re.search(r"[\u2013-]\s*$", yrs): e = 2027
         out.append({"team": d["team"], "s": s, "e": e})
     return out
+
+YEAR_TPL = re.compile(r"\{\{\s*(?:nfl year|nfly|mlby|baseball year|nhly|npby|kboy|cfl year|afly|aafcy)\s*\|([^{}]*)\}\}", re.I)
+def tpl_years(v):
+    """{{NFL Year|1956|1972}} -> 1956-1972 ; {{mlby|1951}} -> 1951 ; other templates are dropped."""
+    def sub(m):
+        ys = re.findall(r"\d{4}", m.group(1))
+        return "%s–%s" % (ys[0], ys[-1]) if len(ys) > 1 else (ys[0] if ys else "")
+    return YEAR_TPL.sub(sub, v)
+def param_block(text, names):
+    """Text of an infobox parameter (first of names found), through its following bullet lines."""
+    for nm in names:
+        m = re.search(r"^\s*\|\s*%s\s*=(.*)$" % nm, text, flags=re.M | re.I)
+        if not m: continue
+        start = m.end(); rest = text[start:]
+        lines = [m.group(1)]
+        for ln in rest.split("\n")[1:]:
+            if re.match(r"^\s*\|\s*[A-Za-z_0-9 ]+\s*=", ln) or ln.strip().startswith(("}}", "{{")): break
+            lines.append(ln)
+        return "\n".join(lines)
+    return None
+def parse_bullets(text, sport):
+    """NFL / MLB: bullet list '* [[Team]] ({{NFL Year|2000|2019}})' inside pastteams/currentteams/teams."""
+    names = ["pastteams", "currentteams", "teams"]
+    out = []
+    final = None
+    fy = [int(x) for x in re.findall(r"^\s*\|\s*final\d*year\s*=\s*(\d{4})", text, flags=re.M | re.I)]
+    if fy: final = max(fy)
+    for nm in names:
+        blk = param_block(text, [nm])
+        if blk is None: continue
+        started = False
+        for ln in blk.split("\n"):
+            ln = ln.strip()
+            if nm.endswith("teams") and not ln.strip("*").strip() and not started: continue
+            ln0 = ln
+            if "×" in ln or "x [[" in ln or re.search(r"\b(champion|all-star|pro bowl|mvp|award|hall of fame|retired|record|leader)\b", ln, re.I) and not re.search(r"\{\{(?:nfl year|mlby|nfly)", ln, re.I):
+                if started: break
+                continue
+            ln = tpl_years(ln)
+            ln = re.sub(r"<ref.*?(</ref>|/>)", "", ln, flags=re.S)
+            ln = re.sub(r"\[\[(?:[^\]|]*\|)?([^\]]*)\]\]", r"\1", ln)
+            mm = re.match(r"^\*?\s*(.*?)\s*\(([^()]*\d{4}[^()]*)\)(\s*\*)?", ln)
+            if mm and mm.group(3): continue          # trailing * = offseason / practice squad only, never played
+            if not mm:
+                if started and ln.startswith("*"): continue
+                continue
+            label = clean(mm.group(1))
+            yrs = mm.group(2)
+            if not label or re.search(r"champion|all-star|bowl|mvp", label, re.I): continue
+            started = True
+            # split multiple stints: '1951–1952, 1954–1972'
+            for part in re.split(r"[,;]|\band\b", yrs):
+                ys = [int(x) for x in re.findall(r"\d{4}", part)]
+                if not ys: continue
+                s = ys[0]; e = ys[-1] + 1 if len(ys) > 1 else s + 1
+                if "present" in part.lower() or (len(ys) == 1 and re.search(r"[–-]\s*$", part.strip())): e = 2027
+                out.append({"team": label, "s": s, "e": e})
+    if final:
+        out = [dict(x, e=min(x["e"], final + 1)) for x in out if x["s"] <= final]
+    return out
+def parse_nhl(text):
+    """NHL: infobox has no years, so read the career statistics table: rows whose league cell is NHL."""
+    i = text.find("areer statistics")
+    body = text[i:] if i >= 0 else text
+    rows = []
+    for chunk in re.split(r"\n\|-[^\n]*", body):
+        cells = []
+        for ln in chunk.split("\n"):
+            ln = ln.strip()
+            if not ln.startswith("|") or ln.startswith(("|}", "|+")): continue
+            ln = ln[1:]
+            for c in ln.split("||"): cells.append(c.strip())
+        if len(cells) < 3: continue
+        def cl(c):
+            c = re.sub(r"^[^|\[\]{}]*\|(?!\|)", "", c) if re.match(r"^\s*(style|colspan|rowspan|align|width)\b", c) else c
+            return clean(re.sub(r"<ref.*?(</ref>|/>)", "", c, flags=re.S))
+        season, team, league = cl(cells[0]), cl(cells[1]), cl(cells[2])
+        ms = re.search(r"(\d{4})\s*[–\-—/]\s*(\d{2,4})", season)
+        if not ms: continue
+        if league.strip().upper() != "NHL": continue
+        rows.append((int(ms.group(1)), team))
+    out = []
+    by = {}
+    for yr, team in sorted(set(rows)): by.setdefault(team, []).append(yr)
+    for team, yrs in by.items():
+        run = [yrs[0]]
+        for y in yrs[1:]:
+            if y == run[-1] + 1: run.append(y)
+            elif y == run[-1] + 2 and run[-1] == 2003 : run.append(y)   # 2004-05 lockout
+            else: out.append({"team": team, "s": run[0], "e": run[-1] + 1}); run = [y]
+        out.append({"team": team, "s": run[0], "e": run[-1] + 1})
+    # active player whose article table lags a season: extend the current club
+    cur = param_block(text, ["team"])
+    if out and cur and not re.search(r"^\s*\|\s*career_end\s*=\s*\d", text, flags=re.M):
+        cur = clean(cur).lower()
+        last = max(out, key=lambda x: x["e"])
+        if last["e"] == 2025 and last["team"].lower() in cur: last["e"] = 2026
+    return out
+def parse_sport(sport, text):
+    text = re.sub(r"<!--.*?-->", "", text, flags=re.S)
+    if sport == "nhl": return parse_nhl(text)
+    if sport in ("nfl", "mlb"): return parse_bullets(text, sport)
+    return parse(text)
+
 def accolades(text):
     """All-Star selections, titles and MVPs from the infobox highlights, when listed."""
     def count(pat):
@@ -77,7 +181,7 @@ def main():
         texts, redir = wikitext(list(title2name))
         for t, txt in texts.items():
             name = title2name.get(t) or title2name.get(redir.get(t))
-            if name: res[name] = parse(txt); acc[name] = accolades(txt)
+            if name: res[name] = parse_sport(sport, txt); acc[name] = accolades(txt)
         for t, n in title2name.items():
             res.setdefault(n, [])
         outf.write_text(json.dumps(res)); accf.write_text(json.dumps(acc))
