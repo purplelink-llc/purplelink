@@ -7,7 +7,7 @@
   var root = $("sp-root"), FX = window.PLFX;
   var DIFF = { easy: [2], medium: [3], hard: [4, 5, 6] };
   var W = ["Standard", "Standard", "Standard", "Standard", "Standard", "Standard", "Standard"];
-  var st = null, data = null, daily = null, mode = "daily", cmb = null, rotation = ["nba"];
+  var st = null, data = null, daily = null, mode = "daily", cmb = null, rotation = ["nba"], rival = null;
 
   function nameOf(p) { return p.n; }
   function P(n) { return data.byName[n]; }
@@ -139,7 +139,7 @@
   function shareText() {
     var sq = "", n = par(), i;
     for (i = 0; i < links(); i++) sq += i < n ? "■" : "▣";
-    var tag = mode === "daily" ? "#" + (daily.idx + 1) + " " : "practice ";
+    var tag = mode === "daily" ? "#" + (daily.idx + 1) + " " : mode === "rival" ? "rival challenge " : "practice ";
     return "Teamlink " + tag + data.name + "\n" + st.a + " to " + st.b + "\n" + (st.won ? sq + " " + links() + " links (par " + par() + ")" : "Gave up (par " + par() + ")") + (st.misses ? ", " + st.misses + " miss" + (st.misses === 1 ? "" : "es") : "") + (st.hints ? ", " + st.hints + " hint" + (st.hints === 1 ? "" : "s") : "") + "\n\n" + root.getAttribute("data-url");
   }
 
@@ -160,6 +160,7 @@
       G.submitScore(NAME, daily.idx, score()).then(function (res) { $("sp-pct").textContent = G.describePercentile(res); });
       if (window.PLRating) window.PLRating.report(NAME, { idx: daily.idx, sport: daily.sport, ms: S.elapsed(st.t0), won: won, par: par(), links: links(), misses: st.misses, hints: st.hints }).then(function (x) { S.paintRating(NAME, x); });
     }
+    if (mode === "rival") recordRival(won);
     if (won && window.PLConfetti) window.PLConfetti[stars() === 3 ? "big" : "small"]();
     if (FX) FX.play(won ? (stars() === 3 ? "big" : "win") : "lose");
     showResult(fresh);
@@ -180,6 +181,8 @@
     $("sp-star").textContent = st.won ? "Rating: " + ["", "One star", "Two stars", "Three stars"][stars()] + "." : "";
     $("sp-next-line").hidden = !daily_;
     $("sp-practice-again").hidden = daily_;
+    var rr = $("tl-rival-result"); rr.hidden = mode !== "rival"; if (mode === "rival") rr.textContent = rivalVerdict();
+    $("tl-challenge").hidden = !st.won;
     if (!fresh && daily_) S.paintRating(NAME, null);
     renderWeek();
     tick();
@@ -239,8 +242,80 @@
   function setMode(m) {
     $("sp-mode-daily").setAttribute("aria-pressed", m === "daily" ? "true" : "false");
     $("sp-mode-practice").setAttribute("aria-pressed", m === "practice" ? "true" : "false");
+    $("sp-mode-rival").setAttribute("aria-pressed", m === "rival" ? "true" : "false");
     $("sp-practice-opts").hidden = m !== "practice";
-    return m === "daily" ? startDaily() : startPractice();
+    if (m !== "rival") $("tl-rival-banner").hidden = true;
+    return m === "daily" ? startDaily() : m === "rival" ? startRival() : startPractice();
+  }
+
+  // ---- rival challenges: send a friend the same pair and your result, see who linked it better ----
+  function penalty(m, h) { return m + h * 2; }
+  function rivalBeaten() {
+    if (!rival || !st.won) return -1;                                  // -1 lost, 0 tied, 1 won
+    var mine = links() * 100 + penalty(st.misses, st.hints), theirs = rival.links * 100 + penalty(rival.misses, rival.hints);
+    return mine < theirs ? 1 : mine === theirs ? 0 : -1;
+  }
+  function rivalVerdict() {
+    var o = rivalBeaten(), line = "Your friend: " + rival.links + " links, " + rival.misses + " miss" + (rival.misses === 1 ? "" : "es") + ", " + rival.hints + " hint" + (rival.hints === 1 ? "" : "s") + ". ";
+    if (!st.won) return line + "You gave up, so your friend wins this one.";
+    return line + "You: " + links() + " links, " + st.misses + " miss" + (st.misses === 1 ? "" : "es") + ", " + st.hints + " hint" + (st.hints === 1 ? "" : "s") + ". " + (o === 1 ? "You win." : o === 0 ? "A tie." : "Your friend wins this one.");
+  }
+  function recordRival(won) {
+    var list = S.loadState(NAME + "-rivals") || [], key = [rival.sport, rival.a, rival.b, rival.links, rival.misses, rival.hints].join("~");
+    var out = rivalBeaten(), entry = { t: Date.now(), k: key, s: rival.sport, a: rival.a, b: rival.b, tl: rival.links, ml: won ? links() : 0, o: out };
+    var at = list.findIndex(function (x) { return x.k === key; });
+    if (at >= 0) { if (list[at].o >= out) return; list[at] = entry; } else list.push(entry);          // a replay only counts if it is better
+    S.saveState(NAME + "-rivals", list.slice(-60));
+    renderRivals();
+  }
+  function parseRival() {
+    var m = new URLSearchParams(window.location.search).get("rival");
+    if (!m) return null;
+    var p = m.split("~").map(function (x) { try { return decodeURIComponent(x); } catch (e) { return ""; } });
+    var info = { sport: p[0], a: p[1], b: p[2], links: Number(p[3]), misses: Number(p[4]) || 0, hints: Number(p[5]) || 0 };
+    return info.sport && info.a && info.b && info.links >= 1 && info.links <= 60 ? info : null;
+  }
+  function challengeLink() {
+    var code = [data.sport, st.a, st.b, links(), st.misses, st.hints].map(encodeURIComponent).join("~");
+    return location.origin + location.pathname + "?rival=" + code + "&from=share-rival";
+  }
+  function challenge() {
+    var url = challengeLink(), text = "I linked " + st.a + " to " + st.b + " in " + links() + " links on Teamlink (" + data.name + "). Can you beat that?";
+    var sent = S.loadState(NAME + "-sent") || []; sent.push(Date.now()); S.saveState(NAME + "-sent", sent.slice(-100));
+    G.track("game_share", NAME + ":rival");
+    var note = $("tl-challenge-note");
+    if (typeof navigator.share === "function") {
+      navigator.share({ title: "Teamlink challenge", text: text + "\n\n" + url }).then(function () { note.textContent = "Challenge sent."; }, function (e) { if (e && e.name !== "AbortError") copyIt(); });
+    } else copyIt();
+    function copyIt() { G.copyText(text + "\n\n" + url).then(function (ok) { note.textContent = ok ? "Challenge copied. Paste it to a friend." : "Copy failed. Select this link: " + url; }); }
+    renderRivals();
+  }
+  function startRival() {
+    mode = "rival";
+    document.body.setAttribute("data-mode", "rival");
+    return S.loadAll(rival.sport).then(function (d) {
+      if (!d.byName[rival.a] || !d.byName[rival.b]) throw new Error("rival");
+      $("sp-number").textContent = "Rival challenge, " + d.name;
+      var ban = $("tl-rival-banner"); ban.hidden = false;
+      ban.textContent = "A friend linked " + rival.a + " to " + rival.b + " in " + rival.links + " links" + (rival.misses ? " with " + rival.misses + " miss" + (rival.misses === 1 ? "" : "es") : "") + ". Can you do better?";
+      begin(d, rival.a, rival.b, null);
+    });
+  }
+  function renderRivals() {
+    var box = $("tl-rivals"); if (!box) return;
+    var w = S.weekRange(), list = (S.loadState(NAME + "-rivals") || []).filter(function (x) { return G.dayIndex(new Date(x.t), S.EPOCH) >= w.start; });
+    var sent = (S.loadState(NAME + "-sent") || []).filter(function (t) { return G.dayIndex(new Date(t), S.EPOCH) >= w.start; }).length;
+    if (!list.length && !sent) { box.hidden = true; return; }
+    box.hidden = false;
+    var won = list.filter(function (x) { return x.o === 1; }).length, tied = list.filter(function (x) { return x.o === 0; }).length, lost = list.length - won - tied;
+    $("tl-rivals-sum").textContent = "Challenges you answered this week: " + won + " won, " + tied + " tied, " + lost + " lost. Challenges you sent: " + sent + ".";
+    var ul = $("tl-rivals-list"); ul.innerHTML = "";
+    list.slice().reverse().forEach(function (x) {
+      var li = document.createElement("li"); li.className = "tw-day";
+      var p = document.createElement("p"); p.className = "tw-head"; p.textContent = x.a + " to " + x.b + " (" + x.s.toUpperCase() + ")"; li.appendChild(p);
+      var q = document.createElement("p"); q.className = "tw-you"; q.textContent = (x.o === 1 ? "You won: " : x.o === 0 ? "A tie: " : "Your friend won: ") + (x.ml ? x.ml + " links to their " + x.tl + "." : "you gave up against their " + x.tl + " links."); li.appendChild(q);
+      ul.appendChild(li);
+    });
   }
 
   // ---- the week's shortest chains ----
@@ -298,7 +373,9 @@
     $("tl-giveup").addEventListener("click", function () { if (window.confirm("Show the answer and end this puzzle?")) giveUp(); });
     $("sp-mode-daily").addEventListener("click", function () { setMode("daily"); });
     $("sp-mode-practice").addEventListener("click", function () { setMode("practice"); });
-    $("sp-practice-again").addEventListener("click", startPractice);
+    $("sp-mode-rival").addEventListener("click", function () { setMode("rival"); });
+    $("tl-challenge").addEventListener("click", challenge);
+    $("sp-practice-again").addEventListener("click", function () { setMode("practice"); });
     $("sp-new").addEventListener("click", startPractice);
     $("sp-sport").addEventListener("change", startPractice);
     $("sp-diff").addEventListener("change", startPractice);
@@ -314,7 +391,15 @@
       return G.ready;
     }).then(function () {
       wire();
-      renderWeek();
+      renderWeek(); renderRivals();
+      rival = parseRival();
+      if (rival) {
+        $("sp-mode-rival").hidden = false;
+        return setMode("rival").catch(function () {
+          rival = null; $("sp-mode-rival").hidden = true;
+          return setMode("daily").then(function () { $("tl-rival-banner").hidden = false; $("tl-rival-banner").textContent = "That challenge link could not be opened, so here is today's puzzle."; });
+        });
+      }
       return startDaily();
     }).then(function () { $("sp-loading").hidden = true; $("sp-game").hidden = false; if (!st.done) $("sp-input").focus({ preventScroll: true }); }, function () {
       $("sp-loading").textContent = "Today's puzzle could not be loaded. Check your connection and reload the page.";

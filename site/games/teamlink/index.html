@@ -90,6 +90,7 @@
           },
           "featureList": [
             "A running rating and leaderboards",
+            "Rival mode: challenge a friend to the same pair",
             "A new pair of players every day",
             "Every player who ever played, from stars to bench players",
             "Add players at either end of the chain",
@@ -163,6 +164,14 @@
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Par is the fewest links needed to connect the two players, measured over every player in our database. The chain is solved when its two ends are teammates."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the Rival mode?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Finish a puzzle and press Challenge a friend. It makes a link to the same two players with your result in it, and sends or copies it. When your friend opens the link they get that pair in Rival mode and see who linked it better: fewer links wins, and misses and hints break a tie. Rival games do not touch your streak, rating or stats. The section This week's rivals lists the challenges you answered this week and how many you sent. Everything stays on your device, and nothing is stored on our side."
               }
             },
             {
@@ -307,7 +316,9 @@
         <div class="sp-modes" role="group" aria-label="Mode">
           <button type="button" class="sp-mode" id="sp-mode-daily" aria-pressed="true">Daily</button>
           <button type="button" class="sp-mode" id="sp-mode-practice" aria-pressed="false">Practice</button>
+          <button type="button" class="sp-mode" id="sp-mode-rival" aria-pressed="false" hidden>Rival</button>
         </div>
+        <p class="wg-twist" id="tl-rival-banner" hidden></p>
         <div class="sp-practice" id="sp-practice-opts" hidden>
             <label class="sp-field">Sport <select id="sp-sport"></select></label>
             <label class="sp-field">Difficulty <select id="sp-diff"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label>
@@ -341,10 +352,20 @@
             <ul class="tw-list" id="tl-week-list"></ul>
             <details id="tl-week-prev-wrap" hidden><summary>Last week</summary><ul class="tw-list" id="tl-week-prev"></ul></details>
           </section>
+          <section class="tl-week" id="tl-rivals" hidden aria-labelledby="tl-rivals-h">
+            <h2 id="tl-rivals-h">This week's rivals</h2>
+            <p class="games-note" id="tl-rivals-sum"></p>
+            <ul class="tw-list" id="tl-rivals-list"></ul>
+          </section>
           <section class="game-result" id="sp-result" hidden aria-labelledby="sp-result-head">
             <h2 id="sp-result-head"></h2>
             <p class="game-reveal" id="sp-reveal"></p>
             <p class="game-pct" id="sp-star"></p>
+            <p class="game-pct" id="tl-rival-result" hidden></p>
+            <div class="game-actions">
+              <button type="button" class="gbtn" id="tl-challenge" hidden>Challenge a friend</button>
+              <span class="game-note" id="tl-challenge-note"></span>
+            </div>
             <div class="game-statline" id="sp-statline">
               <div><b id="sp-played">0</b><span>Played</span></div>
               <div><b id="sp-winpct">0%</b><span>Win rate</span></div>
@@ -376,6 +397,8 @@
         <p>Any player who ever appeared for a team in that league, from the first seasons to 2025: about 5,000 in the NBA, 27,000 in the NFL, 20,000 in MLB and 9,000 in the NHL. The two players you are asked to link are always well-known stars, but the players in between can be anyone. Coverage is not perfect: NBA and NHL rosters come from Wikipedia and miss some players, clubs that no longer exist are left out, and NFL rosters include some players who were on a roster without playing.</p>
         <h3>What is par?</h3>
         <p>Par is the fewest links needed to connect the two players, measured over every player in our database. The chain is solved when its two ends are teammates.</p>
+        <h3>What is the Rival mode?</h3>
+        <p>Finish a puzzle and press Challenge a friend. It makes a link to the same two players with your result in it, and sends or copies it. When your friend opens the link they get that pair in Rival mode and see who linked it better: fewer links wins, and misses and hints break a tie. Rival games do not touch your streak, rating or stats. The section This week&#x27;s rivals lists the challenges you answered this week and how many you sent. Everything stays on your device, and nothing is stored on our side.</p>
         <h3>Where can I see the shortest chain?</h3>
         <p>On the result card right after you finish, and in the section under the puzzle called This week&#x27;s shortest chains. It lists every puzzle so far this week with its shortest possible chain, the team and seasons that link each pair of players, and how you did. Last week is kept in a drop-down. Today&#x27;s chain appears once you finish today&#x27;s puzzle, or tomorrow.</p>
         <h3>How do the two ends work?</h3>
@@ -415,7 +438,7 @@
     <script src="/games/share.js?v=ac6af8eddf" defer></script>
     <script src="/games/ratings.js?v=5ae929a071" defer></script>
     <script src="/games/sports.js?v=58d11a3557" defer></script>
-    <script src="/games/teamlink.js?v=4d563f480b" defer></script>
+    <script src="/games/teamlink.js?v=cb7e3baed1" defer></script>
     <footer class="footer">
       <div class="footer-grid">
         <div class="footer-about">
