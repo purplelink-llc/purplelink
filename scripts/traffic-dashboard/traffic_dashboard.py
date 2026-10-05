@@ -21,6 +21,7 @@ Usage:
 Config (never in this repo, which is public) at ~/.config/purplelink/traffic.env:
     PURPLELINK_STATS_TOKEN=...
     MUSCLEONGLP_STATS_TOKEN=...
+    STRIPE_EXTPAY_KEY=rk_live_...   # optional: restricted read-only key (Charges, Subscriptions) for the Stripe account ExtensionPay charges through
 """
 from __future__ import annotations
 
@@ -2277,7 +2278,7 @@ def site_card(s: dict) -> str:
 
 
 PRODUCT_LABELS = {
-    "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "freeboard": "Legroom", "app-suite": "Mac Suite", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "freeboard": "Legroom", "app-suite": "Mac Suite", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
     "citation-gap": "Citation gap", "revision-review": "Revision review",
     "response-review": "Response review", "resume-review": "Resume review",
     "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
@@ -2820,6 +2821,7 @@ METRICS_DAYS = 28
 PRODUCT_GROUPS = [
     ("ModernTex", "var(--purple)"),
     ("Outbound Veil", "oklch(66% 0.2 300)"),
+    ("Scholar Utility Belt Pro", "oklch(72% 0.13 150)"),
     ("Legroom", "oklch(72% 0.14 215)"),
     ("Mac Suite", "oklch(70% 0.18 330)"),
     ("Paper Review & tools", "oklch(75% 0.14 230)"),
@@ -2842,6 +2844,8 @@ def product_group(row: dict) -> str:
         return "ModernTex"
     if product == "outbound-veil":
         return "Outbound Veil"
+    if product == "scholar-belt":
+        return "Scholar Utility Belt Pro"
     if product in ("legroom", "freeboard"):  # Freeboard was its working name; Stripe still says so
         return "Legroom"
     if product == "app-suite":  # all the Mac apps in one purchase; revenue is not split per app
@@ -2919,7 +2923,11 @@ def merge_ledger(history: dict, sales: dict) -> list[dict] | None:
 MARKETPLACES_PATH = OUT_DIR / "marketplaces.json"
 GUMROAD_TOKEN_ENV = "GUMROAD_TOKEN"
 GUMROAD_API = "https://api.gumroad.com/v2/sales"
-MARKETPLACE_LABELS = {"etsy": "Etsy", "gumroad": "Gumroad", "payhip": "Payhip"}
+MARKETPLACE_LABELS = {"etsy": "Etsy", "gumroad": "Gumroad", "payhip": "Payhip", "extensionpay": "ExtensionPay"}
+# ExtensionPay charges Scholar Utility Belt Pro through its own Stripe account (separate from the one sales.mjs reads),
+# so it is read here with a restricted read-only key for that account. No key means no line, never an error.
+EXTPAY_KEY_ENV = "STRIPE_EXTPAY_KEY"
+STRIPE_API_BASE = "https://api.stripe.com/v1"
 MARKETPLACE_STALE_DAYS = 2
 MARKETPLACE_DEDUPE_SECS = 900
 MARKETPLACE_EVENT_HOURS = 48
@@ -2942,6 +2950,8 @@ def marketplace_product(market: str, title: str) -> tuple[str, str]:
     """Listing title -> (product key, site). An unmatched Etsy title is taken to be
     a photo print (the shop's other stock); on Gumroad and Payhip everything for
     sale is a sheet, so an unmatched title stays in Spreadsheets."""
+    if market == "extensionpay":
+        return "scholar-belt", "purplelink"
     t = (title or "").lower()
     for kw, product, site in SHEET_KEYWORDS:
         if kw in t:
@@ -2957,6 +2967,8 @@ def estimate_fee(market: str, gross: int) -> int:
         return round(gross * 0.065 + gross * 0.03 + 25)
     if market == "gumroad":
         return round(gross * 0.10 + 50)
+    if market == "extensionpay":
+        return round(gross * 0.029 + 30)     # Stripe's card rate; the real fee (incl. ExtensionPay's cut) comes from the charge
     return round(gross * 0.05 + gross * 0.029 + 30)
 
 
@@ -3058,6 +3070,111 @@ def fetch_gumroad(cfg: dict[str, str], since_days: int | None = None) -> dict | 
     return {"orders": orders, "skipped": skipped, "asOf": dt.datetime.now(dt.timezone.utc).isoformat()}
 
 
+def _stripe_get(key: str, path: str, params: dict) -> dict:
+    """GET one Stripe list page with a restricted key. Raises RuntimeError with a short reason."""
+    import base64
+    url = f"{STRIPE_API_BASE}/{path}?" + urllib.parse.urlencode(params, doseq=True)
+    req = urllib.request.Request(url, headers={
+        "Authorization": "Basic " + base64.b64encode(f"{key}:".encode()).decode(),
+        "User-Agent": "purplelink-traffic-dashboard", "Stripe-Version": "2024-06-20"})
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                raise RuntimeError(f"HTTP {exc.code}" + (" (key rejected or missing a permission)" if exc.code in (401, 403) else ""))
+        except (OSError, http.client.HTTPException, json.JSONDecodeError):
+            pass
+    raise RuntimeError("unreachable")
+
+
+def parse_stripe_charge(c: dict) -> dict | None:
+    """One Stripe charge -> the stored order shape, or None for a charge that is not a paid USD sale.
+    The fee is the balance transaction's, which for a Connect charge includes ExtensionPay's cut."""
+    try:
+        gross = int(c["amount"])
+        if not c.get("paid") or c.get("status") != "succeeded" or gross <= 0 or str(c.get("currency", "usd")).lower() != "usd":
+            return None
+        bt = c.get("balance_transaction")
+        fee = bt.get("fee") if isinstance(bt, dict) else None
+        refunded = int(c.get("amount_refunded") or 0)
+        if c.get("refunded") and not refunded:
+            refunded = gross
+        return {"id": str(c["id"]), "ts": float(c["created"]), "gross": gross,
+                "fee": int(fee) if isinstance(fee, (int, float)) else None, "refunded": refunded,
+                "title": str(c.get("description") or "ExtensionPay")[:80]}
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _monthly_cents(sub: dict) -> float:
+    total = 0.0
+    for it in ((sub.get("items") or {}).get("data") or []):
+        price = it.get("price") or {}
+        rec = price.get("recurring") or {}
+        unit = price.get("unit_amount")
+        if unit is None or not rec:
+            continue
+        n = max(1, int(rec.get("interval_count") or 1))
+        per = {"month": 1 / n, "year": 1 / (12 * n), "week": 52 / 12 / n, "day": 30 / n}.get(rec.get("interval"), 0)
+        total += unit * int(it.get("quantity") or 1) * per
+    return total
+
+
+def fetch_extpay(cfg: dict[str, str]) -> dict | None:
+    """Scholar Utility Belt Pro sales from the Stripe account ExtensionPay charges through.
+
+    Needs STRIPE_EXTPAY_KEY, a restricted key with read access to Charges and Subscriptions (a customer
+    list is not needed). None when there is no key, {"error": ...} on failure. Buyer fields are never read.
+    Subscriptions are best effort: a key without that permission still yields the charges.
+    """
+    key = cfg.get(EXTPAY_KEY_ENV)
+    if not key:
+        return None
+    orders, skipped = [], 0
+    try:
+        params: dict = {"limit": 100, "expand[]": "data.balance_transaction"}
+        for _page in range(20):
+            payload = _stripe_get(key, "charges", params)
+            data = payload.get("data") or []
+            for c in data:
+                row = parse_stripe_charge(c)
+                if row:
+                    orders.append(row)
+                else:
+                    skipped += 1
+            if not payload.get("has_more") or not data:
+                break
+            params["starting_after"] = data[-1]["id"]
+    except Exception as exc:  # noqa: BLE001 -- never let this sink the run
+        return {"error": str(exc)[:80]}
+    subs = None
+    try:
+        active = trialing = 0
+        mrr = 0.0
+        for status in ("active", "trialing"):
+            sp = {"limit": 100, "status": status}
+            for _page in range(10):
+                payload = _stripe_get(key, "subscriptions", sp)
+                data = payload.get("data") or []
+                for sub in data:
+                    if status == "active":
+                        active += 1
+                        mrr += _monthly_cents(sub)
+                    else:
+                        trialing += 1
+                if not payload.get("has_more") or not data:
+                    break
+                sp["starting_after"] = data[-1]["id"]
+        subs = {"active": active, "trialing": trialing, "mrr": round(mrr)}      # cents, like every other money figure here
+    except Exception:  # noqa: BLE001
+        subs = None
+    return {"orders": orders, "skipped": skipped, "subs": subs, "asOf": dt.datetime.now(dt.timezone.utc).isoformat()}
+
+
 def marketplace_step(history: dict, cfg: dict[str, str], fetch: bool) -> tuple[list[dict], bool]:
     """Fold marketplaces.json and (when fetching) the Gumroad API into the ledger.
     Returns (feed events, whether the ledger or meta changed)."""
@@ -3092,6 +3209,21 @@ def marketplace_step(history: dict, cfg: dict[str, str], fetch: bool) -> tuple[l
             incoming["gumroad"] = g["orders"]
             meta["gumroad"] = {"asOf": g["asOf"], "status": "ok", "api": "ok"}
             print(f"  ok Gumroad API: {len(g['orders'])} paid sale(s) read")
+
+    if fetch:
+        try:
+            x = fetch_extpay(cfg)
+        except Exception as exc:  # noqa: BLE001
+            x = {"error": str(exc)[:80]}
+        if x is None:
+            meta["extensionpay"]["api"] = "no key"                       # optional source: quiet when not set up
+        elif x.get("error"):
+            print(f"  ! ExtensionPay (Stripe): {x['error']}", file=sys.stderr)
+            meta["extensionpay"]["api"] = x["error"]
+        else:
+            incoming["extensionpay"] = x["orders"]
+            meta["extensionpay"] = {"asOf": x["asOf"], "status": "ok", "api": "ok", "subs": x["subs"]}
+            print(f"  ok ExtensionPay (Stripe): {len(x['orders'])} paid charge(s) read")
 
     stripe_rows = [r for r in archive.values() if not r.get("market")]
     now = dt.datetime.now().timestamp()
@@ -3132,6 +3264,8 @@ def marketplace_summary(history: dict, days: int = 30) -> dict:
         mine = [r for r in rows if r["market"] == m]
         win = [r for r in mine if r["ts"] >= now - days * 86400]
         info = meta.get(m) or {}
+        if m == "extensionpay" and not mine and info.get("api") != "ok":
+            continue                                                   # optional source that is not set up: no row, no gap
         as_of = (info.get("asOf") or "")[:10]
         age = _days_since(as_of, today) if as_of else None
         status = info.get("status")
@@ -3144,6 +3278,8 @@ def marketplace_summary(history: dict, days: int = 30) -> dict:
             issues.append(status)
         if m == "gumroad" and info.get("api") == "no token":
             issues.append("no API token")
+        if m == "extensionpay" and info.get("api") not in (None, "ok", "no key"):
+            issues.append(f"Stripe: {info['api']}")
         out[m] = {"label": label, "orders": len(mine), "windowOrders": len(win),
                   "gross": sum(r["gross"] for r in mine), "windowGross": sum(r["gross"] for r in win),
                   "windowNet": sum(_row_net(r) for r in win), "windowRefunded": sum(r["refunded"] for r in win),
@@ -3217,6 +3353,30 @@ def queue_block() -> str:
             f"{q['pending']} pending ({q['soon']} expiring within 2 days), {q['needsWork']} in needs-work, "
             f"{q['approved']} approved awaiting action. 30-day acceptance {q['acceptance']}% over {q['decided']} decisions; "
             f"expired unread {q['expiredPct']}%. Index updated {html.escape(q['updated'][:16].replace('T', ' '))}.</p></section>")
+
+
+def print_extensionpay(history: dict) -> None:
+    """Scholar Utility Belt Pro in one line group; nothing at all until STRIPE_EXTPAY_KEY is set and has read once."""
+    meta = (history.get("marketplaceMeta") or {}).get("extensionpay") or {}
+    if meta.get("api") != "ok":
+        return
+    rows = [r for r in (history.get("ledger") or {}).values() if r.get("market") == "extensionpay"]
+    now = dt.datetime.now().timestamp()
+    win = [r for r in rows if r["ts"] >= now - 30 * 86400]
+    users = ((history.get("chromeWebStore") or {}).get("users") or "").replace(",", "")
+    installs = int(users) if users.isdigit() else None
+    paid_customers = len(rows)
+    conv = f" ({paid_customers / installs * 100:.1f}% of installs)" if installs and paid_customers else ""
+    print("\n  Scholar Utility Belt Pro (ExtensionPay)")
+    print(f"   Web Store users {installs:,} (rounded) -> {paid_customers} paid charge(s) all time{conv}" if installs
+          else f"   {paid_customers} paid charge(s) all time (Web Store count unavailable)")
+    print(f"   Last 30d: {len(win)} charge(s), {money(sum(r['gross'] for r in win))} gross, "
+          f"{money(sum(_row_net(r) for r in win))} net, {money(sum(r['refunded'] for r in win))} refunded")
+    subs = meta.get("subs")
+    if subs:
+        print(f"   Subscriptions: {subs['active']} active, {subs['trialing']} trialing, MRR {money(subs['mrr'])}")
+    else:
+        print("   Subscriptions: not read (the key may lack Subscriptions read access)")
 
 
 def print_marketplaces(summary: dict | None) -> None:
@@ -3651,7 +3811,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Outbound Veil", "Legroom", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 
@@ -5097,6 +5257,7 @@ def main() -> int:
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
     print_outbound_veil(outbound_veil_report(history))
+    print_extensionpay(history)
     print_profit(profit, channels, tax)
     print_marketplaces(marketplaces)
     print_queue(queue_summary())
