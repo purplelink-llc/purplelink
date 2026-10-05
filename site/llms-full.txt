@@ -2511,31 +2511,47 @@ Features
 
 ### Place tracking
 
-Log every city, landmark, and destination you've visited. Pin them to a map and build a visual record of everywhere you've been.
+Log every city, landmark, and destination you've visited. Pin them on an interactive 3D globe and a world map, and attach photo postcards, notes and a private journal entry to each place.
 
-### Flight tracking
+### Flights, road trips, cruises and trains
 
-Scan your boarding pass to log a flight in seconds. GlobePin builds a route map of every flight you've ever taken, with stats on total distance and airports visited.
+Scan a boarding pass to log a flight in seconds, or add the airports by hand. Routes animate on the map, with stats on total distance and airports visited. Road trips, cruises and train journeys can be logged the same way.
 
 ### Globe visualization
 
-See your travel history rendered on a 3D interactive globe. Spin it, zoom in, and see your pins as a spatial record of your life's movement.
+See your travel history on a 3D globe. Spin it, zoom in, and see your pins as a spatial record of your life's movement.
 
 ### Stats dashboard
 
-Countries visited, cities logged, total distance traveled, continents covered. The numbers that tell the story of where you've been.
+Countries, continents, nights abroad, furthest point and total miles. The numbers that tell the story of where you've been.
+
+### Travel Reels and Year in Review
+
+Turn a trip, a year or all your travels into a short video with your top places, photos and animated routes, in 15, 30 or 60 seconds and three formats. Year in Review is the annual version, ready to share.
 
 ### Travel goals
 
-Set goals for destinations you want to reach: countries, continents, bucket-list places. Track progress and watch the gap close.
+Set goals for every continent, every country, or your own bucket list, and track progress as the gap closes.
 
-### Shareable postcards
+### Plan your next trip
 
-Generate shareable travel postcards from your visit history. Share them on Instagram or keep them as personal mementos.
+Give a dream destination dates, a day-by-day plan and saved spots, and turn it into a pin when you go. Discover Nearby lists sights, food and coffee from Apple Maps. On devices with Apple Intelligence, Suggest a Plan drafts day-by-day ideas on the device.
+
+### Look Around
+
+Walk the streets of places you've visited, or preview ones you haven't, with Apple's street-level imagery. No extra account needed.
+
+### Share cards and postcards
+
+Make share cards and map collages for Instagram and Stories, or keep photo postcards as personal mementos.
+
+### Widgets and Spotlight
+
+Home-screen widgets show On This Day, Travel Stats and your Last Trip. Find any pin or dream destination from iPhone search; names, places and dates only, and you can turn it off in Settings.
 
 ### iCloud sync
 
-Your travel data stays in sync across all your devices via CloudKit. Syncs automatically. Stays private.
+Your travel data stays in sync across your devices through CloudKit, in your own iCloud account. No Purplelink account and no server of ours.
 
 ### Anniversary reminders
 
@@ -2661,7 +2677,7 @@ Biological age estimation, VO₂ max tracking, DFA-α1 heart rate variability an
 
 ### Private by design
 
-No cloud sync. No third-party SDKs. No ads. All analytics run on-device using GRDB.sqlite local storage. Your health data never leaves your phone.
+No cloud sync. No analytics or advertising SDKs. No ads. Your records are kept in a local GRDB.sqlite database and all analytics run on the phone. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.
 
 Early access
 
@@ -2683,7 +2699,7 @@ Yes. Haea has a free tier for core health logging and charts. Premium features (
 
 Does Haea sync to the cloud?
 
-No. All your health data stays on your device. Haea uses no cloud sync, no third-party analytics SDKs, and no advertising frameworks. Your data never leaves your iPhone.
+Your health records are stored and analyzed on your device. Haea has no cloud sync of its own, no ads, and no analytics or advertising SDKs. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.
 
 What health data sources does it support?
 
@@ -5620,9 +5636,9 @@ I searched the App Store on October 4, 2026 and found no listing named Haea from
 
 - Premium, planned at $1.99 a month or $14.99 a year: energy balance and TDEE, circadian analysis, running analytics, machine-learning models, and "biological metrics".
 
-- Privacy design: no cloud sync, no third-party SDKs, no ads, and local storage in a GRDB.sqlite database.
+- Privacy design: no cloud sync of its own, no analytics or advertising SDKs, no ads, and local storage in a GRDB.sqlite database. Food search and barcode lookup send the barcode or search text to Open Food Facts, and the optional Oura connection fetches data from Oura.
 
-The page's claims about biological age and causal models are the developer's description. It cites no validation, and I would treat them as unproven until there is an app to test. There is also a loose end in our own pages. The product page says no cloud sync. The blog post on building it on-device says cross-device sync would go through iCloud via HealthKit, Apple's infrastructure, not ours. Those are not the same statement, and I will only know which holds when it ships.
+The page's claims about biological age and causal models are the developer's description. It cites no validation, and I would treat them as unproven until there is an app to test. Where our own pages disagreed, I checked the app source: Haea has no sync of its own, and anything on several devices would come through Apple Health and your iCloud account. The page now says so, and also names the two network features above.
 
 Where others are better today: every app above that exists. If you need a tracker this month, use Apple Health as the store, Athlytic or Gentler Streak for Watch training data, AutoSleep for sleep and Daylio for mood. The gap Haea is aimed at is food, weight and mood in one app with no account, which nothing on this list fills. When it ships I will read its App Store label the same way as the others and update this page, whatever it says.
 
