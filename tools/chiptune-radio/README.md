@@ -50,3 +50,6 @@ is enough (Hetzner CX22 or CAX11, about 4 to 5 euro a month; any 2 vCPU Linux ho
 `restart: always`, so Docker brings it back after a crash or a reboot. `ops/vps-setup.sh` has the one-time steps. The RTMP URL with the key
 goes in `stream.env` on the server only (git-ignored, chmod 600). Only one machine may stream to a key at a time: stop the Mac agent first
 (`launchctl bootout gui/$(id -u)/com.purplelink.chiptune-radio`) before starting the server.
+
+Each broadcast is pinned to one era so its replay can carry an honest title: 16-bit, 8-bit, synth, then an all-era mix, repeating. The counter
+lives in `/state/era` (a Docker volume) so a deploy does not repeat an era. `--era mix` (or any single era) overrides the cycle.

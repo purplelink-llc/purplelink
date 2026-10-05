@@ -196,10 +196,11 @@ ERAS = {
 }
 
 
-def pick_sound(seed: int) -> dict:
+def pick_sound(seed: int, era: str | None = None) -> dict:
     """The instruments for a track, chosen on their own random stream so the notes do not change when the sound does."""
     r = random.Random(seed * 31337 + 5)
-    era = r.choices(list(ERAS), weights=[2, 4, 3, 3])[0]
+    picked = r.choices(list(ERAS), weights=[2, 4, 3, 3])[0]          # always drawn, so pinning an era leaves the other choices unchanged
+    era = era or picked
     e = ERAS[era]
 
     def two(pool):
@@ -213,7 +214,7 @@ def pick_sound(seed: int) -> dict:
                 chorus=era != "8bit" and r.random() < 0.8)
 
 
-def plan(seed: int) -> Track:
+def plan(seed: int, era: str | None = None) -> Track:
     r = random.Random(seed * 7919 + 13)
     key = r.choice(list(KEYS))
     mode = r.choices(list(MODES), weights=[4, 4, 3, 2, 1])[0]
@@ -246,7 +247,7 @@ def plan(seed: int) -> Track:
         s = dict(spec[name])
         chords = s.pop("chords")
         t.sections.append(Section(name, bars, chords, **s))
-    t.sound = pick_sound(seed)
+    t.sound = pick_sound(seed, era)
     return t
 
 

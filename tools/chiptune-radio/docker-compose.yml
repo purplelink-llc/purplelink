@@ -4,6 +4,13 @@ services:
     restart: always
     env_file: stream.env          # one line: STREAM_URL=rtmp://a.rtmp.youtube.com/live2/<key>   (chmod 600, never committed)
     mem_limit: 2g
+    environment:
+      CHIPTUNE_STATE: /state/era
+    volumes:
+      - state:/state
     logging:
       driver: json-file
       options: {max-size: "10m", max-file: "3"}
+
+volumes:
+  state:

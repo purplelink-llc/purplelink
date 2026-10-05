@@ -85,3 +85,20 @@ def test_timer_follows_the_clock():
     brk = s.frame(1.0, 12, False, 84, "x", sc.FOCUS + 10.0)
     assert focus.tobytes() != brk.tobytes()
     assert sc.hour_at(0) == 0 and 0 <= sc.hour_at(5000) < 24
+
+
+def test_pinned_era_changes_sound_not_notes():
+    import chiptune as c
+    for era in ("8bit", "16bit", "synth", "hybrid"):
+        t = c.plan(7, era)
+        assert t.sound["era"] == era
+    free, pinned = c.plan(7), c.plan(7, "synth")
+    assert (free.key, free.bpm, free.mode) == (pinned.key, pinned.bpm, pinned.mode)
+
+
+def test_era_cycle_persists_between_broadcasts(tmp_path, monkeypatch):
+    import stream
+    monkeypatch.setattr(stream, "STATE_FILE", str(tmp_path / "state"))
+    seen = [stream.next_era() for _ in range(5)]
+    assert seen == ["16bit", "8bit", "synth", None, "16bit"]
+    assert stream.next_era(advance=False) == "8bit"

@@ -35,18 +35,35 @@ XFADE = 3.0
 TARGET_RMS = 0.13                          # about -16 LUFS once encoded, the usual level for background music streams
 VIDEO_FPS = 15
 LOG_EVERY = 300
+ERA_CYCLE = ["16bit", "8bit", "synth", None]   # one era per broadcast so each replay can carry an honest title; None is the all-era mix
+STATE_FILE = os.environ.get("CHIPTUNE_STATE", os.path.expanduser("~/.chiptune-radio-state"))
 PAUSE_SECONDS = 600          # YouTube ended the old broadcast within 6 minutes of the encoder dropping; 10 leaves margin
+
+
+def next_era(advance: bool = True) -> str | None:
+    """The era for the next broadcast. The counter lives in a file so a restart or a deploy does not repeat the same era."""
+    try:
+        n = int(open(STATE_FILE).read().strip())
+    except (OSError, ValueError):
+        n = 0
+    if advance:
+        try:
+            with open(STATE_FILE, "w") as f:
+                f.write(str(n + 1))
+        except OSError:
+            pass
+    return ERA_CYCLE[n % len(ERA_CYCLE)]
 
 
 def log(msg: str) -> None:
     print(time.strftime("%H:%M:%S"), msg, file=sys.stderr, flush=True)
 
 
-def next_tracks(start_seed: int):
+def next_tracks(start_seed: int, era: str | None = None):
     """An endless run of seeds, skipping any whose key or tempo is too close to the previous track's."""
     seed, prev = start_seed, None
     while True:
-        t = c.plan(seed)
+        t = c.plan(seed, era)
         seed += 1
         if prev is None or (t.key != prev.key and abs(t.bpm - prev.bpm) >= 4):
             prev = t
@@ -62,24 +79,25 @@ def leveled(audio: np.ndarray) -> np.ndarray:
     return audio * gain
 
 
-def render_seed(seed: int):
+def render_seed(seed: int, era: str | None = None):
     """Runs in a short-lived worker process: a track needs several hundred MB while it renders, and a fresh process hands all of it back."""
-    t = c.plan(seed)
+    t = c.plan(seed, era)
     return seed, f"{t.key} {t.mode}, {t.bpm} BPM", t.bpm, leveled(c.render(t))
 
 
 class Audio:
     """Endless crossfaded PCM, with a timeline of (stream_seconds, title, bpm) for the overlay."""
 
-    def __init__(self, start_seed: int):
-        self.tracks = next_tracks(start_seed)
+    def __init__(self, start_seed: int, era: str | None = None):
+        self.era = era
+        self.tracks = next_tracks(start_seed, era)
         self.pool = ProcessPoolExecutor(max_workers=1, mp_context=multiprocessing.get_context("spawn"), max_tasks_per_child=1)
         self.timeline: list[tuple[float, str, int]] = []
         self.lock = threading.Lock()
         self.written = 0                      # samples handed to the encoder
 
     def _submit(self):
-        return self.pool.submit(render_seed, next(self.tracks).seed)
+        return self.pool.submit(render_seed, next(self.tracks).seed, self.era)
 
     def now(self, ts: float):
         with self.lock:
@@ -136,11 +154,11 @@ def ffmpeg_cmd(out: str, live: bool, audio_fd: int, size=VIDEO_SIZE, kbps=VIDEO_
     return cmd + ["-movflags", "+faststart", out]
 
 
-def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop: threading.Event, rotate: float | None = None) -> int:
+def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop: threading.Event, rotate: float | None = None, era: str | None = None) -> int:
     r_fd, w_fd = os.pipe()
     proc = subprocess.Popen(ffmpeg_cmd(out, live, r_fd), stdin=subprocess.PIPE, pass_fds=(r_fd,))
     os.close(r_fd)
-    audio = Audio(start_seed)
+    audio = Audio(start_seed, era)
     scene = sc.Scene(seed=start_seed)
     t0_wall = time.time()
     sim0 = (t0_wall % (2 * 3600.0))              # the scene's day cycle follows the real clock, so a restart does not jump
@@ -222,6 +240,7 @@ def main() -> None:
     ap.add_argument("--seconds", type=float, help="stop after this many seconds of stream time (tests)")
     ap.add_argument("--rotate-hours", type=float, default=11.0, help="live only: end the broadcast and start a new one this often (YouTube archives only broadcasts under 12 hours)")
     ap.add_argument("--rotate-gap", type=float, default=PAUSE_SECONDS, help="seconds of silence between broadcasts so YouTube ends the old one")
+    ap.add_argument("--era", choices=["8bit", "16bit", "synth", "hybrid", "mix", "cycle"], default="cycle", help="live: pin one era per broadcast (cycle rotates 16bit, 8bit, synth, mix); mix lets every track pick its own")
     ap.add_argument("--start-seed", type=int, default=int(time.time() // 3600) % 100000)
     a = ap.parse_args()
 
@@ -242,7 +261,10 @@ def main() -> None:
         started = time.time()
         log("starting the pipeline" + (" (live)" if a.live else f" -> {out}"))
         rotate = a.rotate_hours * 3600 if a.live and a.rotate_hours > 0 else None
-        code = run_once(out, a.live, seed, a.seconds, stop, rotate)
+        era = next_era() if a.era == "cycle" else (None if a.era == "mix" else a.era)
+        if a.live:
+            log(f"this broadcast: {era or 'mixed eras'}")
+        code = run_once(out, a.live, seed, a.seconds, stop, rotate, era)
         if not a.live or stop.is_set():
             sys.exit(code)
         ran = time.time() - started
