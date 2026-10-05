@@ -108,14 +108,23 @@ class Audio:
                 yield body[:, i:i + AUDIO_CHUNK]
 
 
-def ffmpeg_cmd(out: str, live: bool, audio_fd: int) -> list[str]:
+VIDEO_SIZE = (1920, 1080)     # 320x180 scales by exactly 6 (3840x2160 is exactly 12): every pixel stays a clean square. YouTube refused 4K on this stream.
+VIDEO_KBPS = 2500             # constant bitrate: pixel art is easy to compress, so this is far more than 4K of it needs
+PRESET = "veryfast"           # about 1.1 CPU cores at 4K30; "ultrafast" is about 0.8 cores with slightly softer edges
+THREADS = 4                   # at 4K the encoder's frame buffers dominate memory: 4 threads and a short lookahead cut ffmpeg from
+LOOKAHEAD = 10                # about 1.7 GB to under 1 GB with the same bitrate and no visible change
+
+
+def ffmpeg_cmd(out: str, live: bool, audio_fd: int, size=VIDEO_SIZE, kbps=VIDEO_KBPS, preset=PRESET) -> list[str]:
     pace = ["-re"] if live or out.startswith("hls:") else []
+    w, h = size
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "warning", "-y",
            *pace, "-f", "rawvideo", "-pix_fmt", "rgb24", "-video_size", f"{sc.W}x{sc.H}", "-framerate", str(VIDEO_FPS), "-i", "pipe:0",
            *pace, "-f", "s16le", "-ar", str(c.SR), "-ac", "2", "-i", f"pipe:{audio_fd}",
-           "-filter_complex", "[0:v]fps=30,scale=1280:720:flags=neighbor,format=yuv420p[v]", "-map", "[v]", "-map", "1:a",
-           "-c:v", "libx264", "-preset", "veryfast", "-tune", "animation", "-profile:v", "high", "-b:v", "2500k", "-maxrate", "2500k",
-           "-bufsize", "5000k", "-g", "60", "-keyint_min", "60", "-sc_threshold", "0",
+           "-filter_complex", f"[0:v]fps=30,scale={w}:{h}:flags=neighbor,format=yuv420p[v]", "-map", "[v]", "-map", "1:a",
+           "-c:v", "libx264", "-preset", preset, "-tune", "animation", "-profile:v", "high",
+           "-threads", str(THREADS), "-b:v", f"{kbps}k", "-minrate", f"{kbps}k", "-maxrate", f"{kbps}k", "-bufsize", f"{2 * kbps}k",
+           "-x264-params", f"nal-hrd=cbr:force-cfr=1:rc-lookahead={LOOKAHEAD}", "-g", "60", "-keyint_min", "60", "-sc_threshold", "0",
            "-c:a", "aac", "-b:a", "128k", "-ar", str(c.SR)]
     if live:
         return cmd + ["-f", "flv", out]

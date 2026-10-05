@@ -44,6 +44,12 @@ def test_ffmpeg_commands():
     f = st.ffmpeg_cmd("x.mp4", False, 5)
     assert "-re" not in f and f[-1] == "x.mp4"
     assert "-g" in live and live[live.index("-g") + 1] == "60"          # a keyframe every two seconds at 30 fps
+    assert "scale=1920:1080:flags=neighbor" in " ".join(live)           # 1080p, an exact 6x upscale of the 320x180 scene
+    for flag in ("-b:v", "-minrate", "-maxrate"):
+        assert live[live.index(flag) + 1] == "2500k"                    # constant bitrate, so the platform never sees it dip below the target
+    assert "nal-hrd=cbr:force-cfr=1:rc-lookahead=10" in live and live[live.index("-threads") + 1] == "4"
+    small = st.ffmpeg_cmd("x.mp4", False, 5, size=(1280, 720), kbps=1500, preset="ultrafast")
+    assert "scale=1280:720:flags=neighbor" in " ".join(small) and small[small.index("-b:v") + 1] == "1500k" and "ultrafast" in small
 
 
 def test_live_mode_refuses_a_missing_url(monkeypatch, capsys):
@@ -52,6 +58,10 @@ def test_live_mode_refuses_a_missing_url(monkeypatch, capsys):
     with pytest.raises(SystemExit) as e:
         st.main()
     assert "STREAM_URL" in str(e.value)
+
+
+def test_scene_scales_to_exact_squares():
+    assert all(w % sc.W == 0 and h % sc.H == 0 and w // sc.W == h // sc.H for w, h in ((1920, 1080), (3840, 2160), (1280, 720)))
 
 
 def test_scene_draws_every_state():

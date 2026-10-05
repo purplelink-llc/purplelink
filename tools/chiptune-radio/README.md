@@ -24,15 +24,20 @@ Nothing here posts anywhere on its own. To start a real stream:
 1. In YouTube Studio, create a live stream and copy its stream URL and key. Check YouTube's current rules for repetitive or automated
    content and for how to label generated music before you start; I have not verified them.
 2. Put `STREAM_URL=rtmp://a.rtmp.youtube.com/live2/<your key>` in `~/.config/purplelink/stream.env` (`chmod 600`). The key is never printed.
-3. Run `ops/run_stream.sh`, or install the launchd or systemd file so it starts at boot and restarts itself. On macOS, launchd agents are not allowed to run files on an external volume (the job fails with "Operation not permitted"), so run it from a copy in the home folder: `rsync -a --exclude out --exclude out2 tools/chiptune-radio/ ~/chiptune-radio/` and point the plist at `~/chiptune-radio/ops/run_stream.sh`. After changing code, rsync again and `launchctl kickstart -k gui/$(id -u)/com.purplelink.chiptune-radio`.
+3. Run `ops/run_stream.sh`, or install the launchd or systemd file so it starts at boot and restarts itself.
 4. In the video description, link purplelink.llc with campaign tags so the dashboard can attribute visits, for example `?utm_source=youtube&utm_medium=stream&utm_campaign=chiptune-radio`.
 
-## What it costs to run (measured on this Mac, file mode)
+## What it costs to run (measured on this Mac)
 
-- About a third of one CPU core on average over 12 minutes of stream, including rendering the next track. A 2 vCPU, 2 GB virtual server is enough.
-- Rendering a track peaks at a few hundred MB, so it runs in a short-lived worker process that returns the memory; the main process stays small.
-- Video averaged about 0.6 Mbps (pixel art compresses well), so roughly 270 MB an hour, about 200 GB a month, plus the audio.
+- Video is 1080p30 H.264 at a constant 2,500 kbps. The 320x180 scene scales by exactly 6, so every pixel is a clean square. At this bitrate the stream
+  compresses essentially without loss (SSIM above 0.999 against the exact upscale).
+- Encoder: about 0.65 of one CPU core and about 260 MB of memory at 1080p. The Python process adds about 6% of a core and 60 MB. Rendering a track
+  peaks at a few hundred MB in a short-lived worker process that returns the memory.
+- Upload: 2.5 Mbps video plus 128 kbps audio is about 1.2 GB an hour, about 29 GB a day, about 0.9 TB a month. Check a host's outbound bandwidth allowance.
 - Loudness about -15.7 LUFS integrated, true peak about -3 dBFS.
+- 4K: tried 3840x2160 (an exact 12x scale). YouTube refused it on this stream key ("expected resolution 1280x720" for this configuration), and
+  the encoder needed about 1.3 to 2 cores and 1 to 1.7 GB. A 4K ingest needs a stream key created for 2160p in YouTube Studio, and YouTube recommends
+  13 to 34 Mbps for 4K, so a warning about low bitrate is expected at 2,500 kbps. Set `VIDEO_SIZE` in `stream.py` to try it.
 
 ## Not built
 
