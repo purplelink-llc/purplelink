@@ -112,7 +112,7 @@
 
       <h2>What we gave up</h2>
 
-      <p>We want to be honest about the tradeoffs. Cross-device sync for Haea uses iCloud via HealthKit - Apple's own infrastructure, not ours - which means it's reliable but has the constraints Apple imposes. Some features that are easy with a server are genuinely hard without one.</p>
+      <p>We want to be honest about the tradeoffs. Haea has no sync of its own. Anything you want on several devices comes through Apple Health, which syncs through your iCloud account, Apple's infrastructure and not ours, with the constraints Apple imposes. Two features do use the network: food search and barcode lookup send the barcode or search text to Open Food Facts, and the optional Oura connection fetches your Oura data. Some features that are easy with a server are genuinely hard without one.</p>
 
       <p>We also can't build certain types of population-level intelligence. A server-side health app can tell you "users with your sleep pattern tend to have lower recovery scores on Tuesdays." We can't - we don't see any user data at all. That's a real limitation we accepted.</p>
 

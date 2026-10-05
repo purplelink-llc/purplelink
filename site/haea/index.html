@@ -8,7 +8,7 @@
     <meta name="description" content="Haea is an on-device iOS health analytics app tracking sleep, nutrition, exercise, and biometrics, surfacing patterns with ML. Data stays on your phone.">
     <link rel="canonical" href="https://purplelink.llc/haea/">
     <meta property="og:title" content="Haea - On-Device Health Analytics">
-    <meta property="og:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your data never leaves your phone.">
+    <meta property="og:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your health records stay on your phone.">
     <meta property="og:image" content="https://purplelink.llc/assets/og/haea.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -16,9 +16,9 @@
     <meta property="og:url" content="https://purplelink.llc/haea/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Haea - On-Device Health Analytics">
-    <meta name="twitter:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your data never leaves your phone.">
+    <meta name="twitter:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your health records stay on your phone.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/haea.png">
-    <meta name="twitter:image:alt" content="Haea — on-device iOS health analytics">
+    <meta name="twitter:image:alt" content="Haea, on-device iOS health analytics">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#7c3aed">
     <link rel="manifest" href="/manifest.json">
@@ -42,7 +42,7 @@
           "operatingSystem": "iOS 17+",
           "url": "https://purplelink.llc/haea/",
           "image": "https://purplelink.llc/assets/og/haea.png",
-          "description": "An on-device iOS health app for sleep, nutrition, activity, and biometrics. All analysis runs locally — no cloud sync, no third-party SDKs, no analytics.",
+          "description": "An on-device iOS health app for sleep, nutrition, activity, and biometrics. All analysis runs on the phone. No cloud sync, no analytics, no advertising SDKs.",
           "offers": [
             { "@type": "Offer", "price": "0",     "priceCurrency": "USD", "name": "Free tier",       "availability": "https://schema.org/PreOrder" },
             { "@type": "Offer", "price": "1.99",  "priceCurrency": "USD", "name": "Premium monthly", "availability": "https://schema.org/PreOrder" },
@@ -67,7 +67,7 @@
             {
               "@type": "Question",
               "name": "Does Haea sync to the cloud?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. All health data stays on your device. Haea uses no cloud sync, no third-party SDKs, and no analytics services. Your data never leaves your iPhone." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Your health records are stored and analyzed on your device. Haea has no cloud sync of its own, no ads, and no analytics or advertising SDKs. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization." }
             },
             {
               "@type": "Question",
@@ -115,7 +115,7 @@
     <a class="back-link" href="/">← All products</a>
 
     <div class="app-hero">
-      <img class="app-hero-icon" src="/assets/haea-icon.webp" width="120" height="120" fetchpriority="high" alt="Haea app icon — heart-rhythm waveform on a dark gradient">
+      <img class="app-hero-icon" src="/assets/haea-icon.webp" width="120" height="120" fetchpriority="high" alt="Haea app icon, heart-rhythm waveform on a dark gradient">
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-ios">iOS</span>
@@ -214,7 +214,7 @@
         </div>
         <div class="feature-item">
           <h3>Private by design</h3>
-          <p>No cloud sync. No third-party SDKs. No ads. All analytics run on-device using GRDB.sqlite local storage. Your health data never leaves your phone.</p>
+          <p>No cloud sync. No analytics or advertising SDKs. No ads. Your records are kept in a local GRDB.sqlite database and all analytics run on the phone. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.</p>
         </div>
       </div>
     </section>
@@ -245,7 +245,7 @@
         </details>
         <details class="faq-item">
           <summary>Does Haea sync to the cloud?</summary>
-          <div class="faq-body">No. All your health data stays on your device. Haea uses no cloud sync, no third-party analytics SDKs, and no advertising frameworks. Your data never leaves your iPhone.</div>
+          <div class="faq-body">Your health records are stored and analyzed on your device. Haea has no cloud sync of its own, no ads, and no analytics or advertising SDKs. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.</div>
         </details>
         <details class="faq-item">
           <summary>What health data sources does it support?</summary>
