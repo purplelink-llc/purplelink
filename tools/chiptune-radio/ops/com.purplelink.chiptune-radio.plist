@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- macOS: copy to ~/Library/LaunchAgents/, then: launchctl load ~/Library/LaunchAgents/com.purplelink.chiptune-radio.plist -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.purplelink.chiptune-radio</string>
+  <key>ProgramArguments</key><array><string>/Volumes/Extreme SSD/Purplelink LLC/tools/chiptune-radio/ops/run_stream.sh</string></array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardErrorPath</key><string>/tmp/chiptune-radio.log</string>
+</dict></plist>

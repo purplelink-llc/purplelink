@@ -1,0 +1,17 @@
+# Linux VPS: copy to /etc/systemd/system/, adjust User and WorkingDirectory, then: systemctl enable --now chiptune-radio
+[Unit]
+Description=Chiptune study radio stream
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=radio
+WorkingDirectory=/opt/chiptune-radio
+EnvironmentFile=/etc/chiptune-radio.env
+ExecStart=/usr/bin/python3.12 stream.py --live
+Restart=always
+RestartSec=10
+# The stream restarts itself with a back-off; this restarts the whole process if Python itself dies.
+
+[Install]
+WantedBy=multi-user.target
