@@ -1,0 +1,116 @@
+/* Frontlink: the board, action bar, log and legend. External file (strict CSP). Loads after games.css and games-ui.css.
+   Light tokens are the base; dark is the default theme and is gated on :root:not([data-theme="light"]). */
+
+.fl-layout {
+  --fl-plains: oklch(95% 0.03 125);
+  --fl-road: oklch(87% 0.03 85);
+  --fl-forest: oklch(80% 0.09 150);
+  --fl-mount: oklch(75% 0.03 60);
+  --fl-water: oklch(83% 0.08 235);
+  --fl-edge: color-mix(in oklch, var(--ink) 24%, transparent);
+  --fl-foe: oklch(46% 0.16 35);
+  --fl-foe-ink: oklch(98% 0.01 35);
+  --fl-hpbg: var(--panel);
+  --fl-sel: color-mix(in oklch, var(--g-correct) 35%, var(--panel));
+}
+:where(:root:not([data-theme="light"])) .fl-layout {
+  --fl-plains: oklch(33% 0.03 140);
+  --fl-road: oklch(41% 0.03 85);
+  --fl-forest: oklch(35% 0.08 150);
+  --fl-mount: oklch(45% 0.03 60);
+  --fl-water: oklch(36% 0.09 240);
+  --fl-foe: oklch(74% 0.14 40);
+  --fl-foe-ink: oklch(16% 0.04 40);
+}
+
+.games-wrap:has(.fl-layout) { max-width: 1040px; }
+.fl-layout { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .fl-layout { grid-template-columns: minmax(0, 540px) minmax(0, 1fr); gap: 32px; } }
+.fl-main, .fl-side { min-width: 0; }
+
+.fl-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 10px; }
+.fl-turn { margin: 0; font-weight: 700; font-size: 1.05rem; }
+.fl-top .btn { min-height: 44px; }
+.fl-top .btn:disabled { opacity: 0.5; }
+
+/* terrain: background and a small text glyph per tile */
+[data-terrain="p"] { --fl-t: var(--fl-plains); --fl-glyph: ""; }
+[data-terrain="r"] { --fl-t: var(--fl-road); --fl-glyph: "="; }
+[data-terrain="f"] { --fl-t: var(--fl-forest); --fl-glyph: "\3A8"; }
+[data-terrain="m"] { --fl-t: var(--fl-mount); --fl-glyph: "\25B2"; }
+[data-terrain="w"] { --fl-t: var(--fl-water); --fl-glyph: "\2248"; }
+
+.fl-board { display: grid; gap: 3px; max-width: 540px; }
+.fl-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.fl-tile {
+  position: relative; display: block; aspect-ratio: 1; min-width: 0; min-height: 44px; margin: 0; padding: 0;
+  border: 1px solid var(--fl-edge); border-radius: 6px; background: var(--fl-t, var(--fl-plains)); color: var(--ink);
+  font: inherit; cursor: pointer; overflow: hidden;
+}
+.fl-tile::after { content: var(--fl-glyph, ""); position: absolute; bottom: 3px; left: 4px; font-size: 0.72rem; font-weight: 700; line-height: 1; color: var(--ink); }
+.fl-tile[data-hq="p"]::before, .fl-tile[data-hq="e"]::before { content: "HQ"; position: absolute; left: 3px; bottom: 2px; font-size: 0.66rem; font-weight: 800; line-height: 1; color: var(--ink); }
+.fl-tile[data-hq="p"] { border: 3px double var(--g-correct); }
+.fl-tile[data-hq="e"] { border: 3px double var(--fl-foe); }
+
+.fl-unit { position: absolute; inset: 5% 26% 26% 5%; display: grid; place-items: center; font: 800 1.15rem/1 var(--font-body); }
+.fl-unit:empty { display: none; }
+.fl-unit[data-side="p"] { border-radius: 50%; background: var(--g-correct); color: var(--g-correct-ink); }
+.fl-unit[data-side="e"] { border-radius: 4px; background: var(--fl-foe); color: var(--fl-foe-ink); }
+.fl-unit[data-done="1"] { background: var(--fl-hpbg); color: var(--ink); box-shadow: inset 0 0 0 3px var(--g-correct); }
+.fl-hp {
+  position: absolute; right: 2px; bottom: 2px; min-width: 1.15rem; padding: 1px 3px; border: 1px solid var(--line); border-radius: 5px;
+  background: var(--fl-hpbg); color: var(--ink); font-size: 0.72rem; font-weight: 800; line-height: 1.15; text-align: center; font-variant-numeric: tabular-nums;
+}
+.fl-hp:empty { display: none; }
+.fl-flag { position: absolute; top: 1px; right: 4px; font-size: 1rem; font-weight: 800; line-height: 1; color: var(--ink); }
+
+/* what you can do: dashed = can move here, solid = chosen tile, heavy foe ring with a cross = can be attacked */
+.fl-tile[data-recent="1"] { border: 2px dotted var(--ink); }
+.fl-tile[data-mark="reach"] { border: 2px dashed var(--ink); box-shadow: inset 0 0 0 40px color-mix(in oklch, var(--ink) 12%, transparent); }
+.fl-tile[data-mark="dest"] { border: 3px solid var(--ink); }
+.fl-tile[data-mark="sel"] { border: 3px solid var(--g-correct); background: var(--fl-sel); }
+.fl-tile[data-mark="target"] { border: 3px solid var(--fl-foe); }
+.fl-tile[data-mark="target"] .fl-flag { top: 0; right: 3px; font-size: 1.25rem; color: var(--fl-foe); }
+.fl-tile[data-mark="target"] .fl-hp { border-color: var(--fl-foe); }
+.fl-tile:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; z-index: 2; }
+
+.fl-readout { margin: 10px 0 0; min-height: 3.2em; font-weight: 600; font-size: 0.95rem; }
+.fl-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.fl-actions[hidden] { display: none; }
+.fl-act { min-height: 44px; flex-direction: column; gap: 1px; border-radius: 16px; text-align: center; line-height: 1.2; }
+.fl-act .fl-pv { font-size: 0.78rem; font-weight: 600; }
+.fl-act:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+.fl-roster p { margin: 0 0 4px; font-size: 0.92rem; }
+.fl-roster b { font-weight: 700; }
+.fl-h { font-family: var(--font-display); font-size: 1.15rem; margin: 18px 0 8px; }
+.fl-log {
+  list-style: none; margin: 0; padding: 8px 12px; max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--panel); font-size: 0.9rem; line-height: 1.45;
+}
+.fl-log:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.fl-log li { padding: 3px 0 3px 10px; border-left: 3px solid transparent; }
+.fl-log li + li { margin-top: 2px; }
+.fl-log-p { border-left-color: var(--g-correct); }
+.fl-log-e { border-left-color: var(--fl-foe); }
+.fl-log-sys { font-weight: 700; }
+
+.fl-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 0.9rem; }
+.fl-legend li { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); }
+.fl-legend b { color: var(--ink); }
+.fl-key {
+  position: relative; flex: none; width: 30px; height: 30px; border: 1px solid var(--fl-edge); border-radius: 6px; background: var(--fl-t, var(--fl-plains));
+  display: grid; place-items: center; font: 800 0.95rem/1 var(--font-body);
+}
+.fl-key[data-terrain]::after { content: var(--fl-glyph, ""); font-size: 0.8rem; font-weight: 700; color: var(--ink); }
+.fl-key-unit { border-radius: 50%; background: var(--g-correct); color: var(--g-correct-ink); border: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .fl-tile { transition: background-color 0.15s, border-color 0.15s; }
+  .fl-tile[data-recent="1"] .fl-unit { animation: fl-flash 0.15s ease-out; }
+  @keyframes fl-flash { from { transform: scale(1.12); } to { transform: none; } }
+}
+@media (max-width: 420px) {
+  .fl-unit { font-size: 1.05rem; }
+  .fl-act { flex: 1 1 100%; }
+}
