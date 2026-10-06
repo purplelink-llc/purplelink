@@ -71,6 +71,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     if slug:
         scripts = [x for x in scripts if x not in ("/games/achievements.js", "/games/confetti.js", "/games/sync.js")]
         scripts = ["/games/core.js", "/games/fx.js", "/games/sync.js", "/games/achievements.js", "/games/goals.js", "/games/confetti.js", "/games/dock.js", "/games/share.js"] + [x for x in scripts if x != "/games/core.js"]
+    game_css = f'    <link rel="stylesheet" href="/games/{slug}.css">\n' if slug and (SITE / "games" / f"{slug}.css").exists() else ""
     ads_tag = '    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>' if ads else ""
     ld = json.dumps(jsonld, indent=2)
     ld = "\n".join("    " + l for l in ld.splitlines())
@@ -115,7 +116,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
     <link rel="stylesheet" href="/motion.css">
     <link rel="stylesheet" href="/games/games.css">
     <link rel="stylesheet" href="/games/games-ui.css">
-    <script src="/site.js" defer></script>
+{game_css}    <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
 </head>
   <body>
@@ -148,6 +149,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
 EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
 MORE_DAILY = ["landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"]
 SPORTS_GAMES = ["lockerlink", "gridlink", "under-the-cap"]
+STRATEGY_GAMES = ["tanklink", "frontlink"]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
@@ -171,11 +173,13 @@ TAGLINE = {
     "lockerlink": "Link two players from any era through real teammates.",
     "gridlink": "Fill a 3 by 3 grid of teams, decades, awards and teammates.",
     "under-the-cap": "Build a roster from any era and play a perfect season.",
+    "tanklink": "Aim, fire and outsmart the wind in a quick round of artillery.",
+    "frontlink": "Six days, three units. Take the hill in a very short tactics battle.",
     "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
     "leaderboard": "The top ratings in chess, Sudoku and the sports games, and this week's climbers.",
 }
-MINUTES = {"lockerlink": 4, "gridlink": 4, "under-the-cap": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"tanklink": 3, "frontlink": 3, "lockerlink": 4, "gridlink": 4, "under-the-cap": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
@@ -191,7 +195,7 @@ def dock(current):
         cur = ' aria-current="page"' if slug == current else ""
         items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
                      f'<span class="dock-state" aria-hidden="true"></span><span class="visually-hidden dock-sr"></span></a></li>')
-    for slug in SPORTS_GAMES:
+    for slug in SPORTS_GAMES + STRATEGY_GAMES:
         m = BYSLUG[slug]
         cur = ' aria-current="page"' if slug == current else ""
         items.append(f'<li><a class="dock-link" data-g="{slug}" href="/games/{slug}/"{cur}>{USE.format(slug)}<span class="dock-name">{html.escape(m["name"])}</span>'
@@ -1574,6 +1578,55 @@ page("games/sports/", "Free daily sports puzzle games: NBA, NFL, MLB and NHL | P
      SP_HUB_BODY, {"@context": "https://schema.org", "@graph": [faq(SPORTS_FAQ), crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Sports", "https://purplelink.llc/games/sports/"))]},
      [])
 
+def body_of(slug, prose, faq_items, title):
+    src = (Path(__file__).resolve().parent / "game_bodies" / f"{slug}.html").read_text(encoding="utf8").rstrip()
+    return (src + """
+        <div class="games-prose">
+""" + prose + """
+        </div>
+        <p class="games-note"><a href="/games/">All daily games</a></p>
+      </div>""")
+
+
+FL_FAQ = [
+    ("How do I win Frontlink?", "Destroy every enemy unit, or end a day with your infantry on the enemy base and still alive after the enemy has moved. You lose if all your units die, the enemy infantry holds your base through your next day, or the sixth day ends without a win."),
+    ("What do the units do?", "Infantry moves 3 and can capture the base. A tank moves 4 and hits hard up close. Artillery moves 2 and fires at range 2 to 3, but not on a day it moved. Forest costs 2 to enter and gives one cover star, a mountain costs 3 for infantry only and gives two, and water blocks every unit."),
+    ("How is damage worked out?", "Damage is the base value for that matchup, times the attacker's health out of 10, reduced by 10 percent for each cover star the defender has, scaled by the defender's health. A surviving defender hits back with its remaining health, but only from inside its own range. Artillery never answers an attack from the tile beside it. The game shows the expected damage and counterattack before you confirm."),
+    ("Is there any luck?", "No. The map comes from the date, the enemy follows fixed rules, and the same moves always give the same result. Everyone plays the same battle on the same day."),
+    ("What does the share result show?", "One square per day you played: a filled square if you destroyed an enemy unit that day, a dotted square if you only damaged one, and an empty square otherwise. The share link shows the result as a picture."),
+]
+FL_PROSE = """        <h2>How it works</h2>
+        <p>You have three units and six days. Each day, every unit can move and then act once: attack, wait, or capture. When you end the day, each enemy unit acts once by fixed rules. The enemy base is in the top right and yours is bottom left. A new map arrives at midnight, and each weekday changes the armies or the terrain.</p>
+        <h2>Questions</h2>
+""" + faq_html(FL_FAQ)
+page("games/frontlink/", "", "", body_of("frontlink", FL_PROSE, FL_FAQ, "Frontlink"),
+     {"@context": "https://schema.org", "@graph": [
+         game_app("Frontlink", "https://purplelink.llc/games/frontlink/", "A free daily tactics game: command three units and take the enemy base in six days."),
+         faq(FL_FAQ),
+         crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Frontlink", "https://purplelink.llc/games/frontlink/"))]},
+     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/frontlink.js"])
+
+
+TK_FAQ = [
+    ("How do I win Tanklink?", "Destroy every enemy tank in eight shots or fewer without running out of armor. You start with 100 armor. After each of your shots every surviving enemy fires back once, and a hit costs you 20 to 40."),
+    ("What are the three weapons?", "The shell is unlimited and digs a medium crater. The heavy shell digs a larger one and you get two per round. The cluster shell splits into three small bomblets near the top of its arc, and you get one per round."),
+    ("How much damage does a hit do?", "A blast hurts any tank inside its crater radius plus the tank's own size. A direct hit does 60 with a shell, 100 with a heavy shell and 40 per cluster bomblet. Damage falls off in a straight line with distance."),
+    ("What changes each day?", "The terrain, the wind and the enemy positions come from the date, so everyone plays the same map. Each weekday adds a twist: strong wind on Tuesday, moon gravity on Wednesday, two enemies on Thursday, a tailwind on Friday, three enemies on Saturday and a tall ridge on Sunday."),
+    ("Is there any luck?", "No. The physics and the enemy's aim are fixed for the day, so the same angle, power and weapon always give the same result. The enemy's aim error shrinks with every round, so a long fight gets more dangerous."),
+    ("What does the share result show?", "One square per shot: a filled square for a hit, a dotted square for a miss within about three tank widths, and an empty square for any other miss, with your remaining armor. The share link shows the result as a picture."),
+]
+TK_PROSE = """        <h2>How it works</h2>
+        <p>Set the angle and power of your shot, pick a weapon and fire. The wind pushes the shell sideways, and each shell carves a crater in the ground where it lands. Aim with the sliders or the arrow keys, and press Space or Enter to fire. A new map arrives at midnight.</p>
+        <h2>Questions</h2>
+""" + faq_html(TK_FAQ)
+page("games/tanklink/", "", "", body_of("tanklink", TK_PROSE, TK_FAQ, "Tanklink"),
+     {"@context": "https://schema.org", "@graph": [
+         game_app("Tanklink", "https://purplelink.llc/games/tanklink/", "A free daily artillery game: aim against the wind and destroy the enemy tanks in eight shots."),
+         faq(TK_FAQ),
+         crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Tanklink", "https://purplelink.llc/games/tanklink/"))]},
+     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/tanklink.js"])
+
+
 HUB_FAQ = [
     ("Are the games free?", "Yes. You can play every game without signing in. The daily games have no third-party ads, only an occasional small notice about one of our own apps. The two unlimited pages, Chess Puzzles and Sudoku Unlimited, show Google ads. An optional email-link sign-in keeps your streaks, achievements and puzzle ratings across devices."),
     ("Can I play more than one chess puzzle or Sudoku a day?", "Yes. Chess Puzzles and Sudoku Unlimited have no daily limit. Each keeps a rating, and signed-in players can choose to appear on the leaderboards."),
@@ -1629,6 +1682,12 @@ HUB_BODY = """      <div class="games-wrap hub">
           <p class="week-sub">Famous players from every era in the NBA, NFL, MLB and NHL. Link two stars through their teammates, fill a grid, or build a roster and play a perfect season. The sport changes each day. <a href="/games/sports/">More about the sports games</a></p>
           <div class="tiles">
 """ + "".join(tile(sl) for sl in SPORTS_GAMES) + """          </div>
+        </section>
+        <section class="more" aria-labelledby="strat-h">
+          <h2 id="strat-h">Strategy</h2>
+          <p class="week-sub">Two very short battles with a new map every day: aim an artillery shot against the wind, or command three units for six days.</p>
+          <div class="tiles">
+""" + "".join(tile(sl) for sl in STRATEGY_GAMES) + """          </div>
         </section>
         <section class="more" aria-labelledby="more-h">
           <h2 id="more-h">Unlimited and rated</h2>

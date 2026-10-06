@@ -3,10 +3,10 @@
   * inline tile art, using the page's per-game colour classes;
   * the 24 px nav glyphs are hand-drawn in site/games/glyphs.svg to match.
 Each mark has one idea: Lockerlink is a locker door whose handle is two chain links, Gridlink is a clue grid with a link in its
-corner, Under the Cap is a shield with a zero and a star. Colours follow site/games/games-ui.css (--gc and friends)."""
+corner, Under the Cap is a shield with a zero and a star. Tanklink is a tank with a shell in flight, Frontlink is a small map with your unit and the enemy flag. Colours follow site/games/games-ui.css (--gc and friends)."""
 import math
 
-HUE = {"lockerlink": 118, "gridlink": 150, "under-the-cap": 20}
+HUE = {"lockerlink": 118, "gridlink": 150, "under-the-cap": 20, "tanklink": 75, "frontlink": 255}
 
 
 def oklch_hex(l, c, h):
@@ -91,7 +91,35 @@ def under_the_cap(P):
     return "".join(out)
 
 
-MARKS = {"lockerlink": lockerlink, "gridlink": gridlink, "under-the-cap": under_the_cap}
+def tanklink(P):
+    out = [f'<rect x="10" y="78" width="80" height="9" rx="4.5" {P.fill("deep")}/>']                    # the ground
+    out.append(f'<rect x="20" y="62" width="46" height="13" rx="6.5" {P.fill("white")}/>')              # hull
+    out.append(f'<rect x="30" y="50" width="26" height="14" rx="6.5" {P.fill("white")}/>')              # turret
+    out.append(f'<path d="M50 54 L74 38" {P.stroke("white", 5.4)}/>')                                  # barrel
+    for cx in (28, 43, 58):
+        out.append(f'<circle cx="{cx}" cy="73" r="4" {P.fill("deep")}/>')                              # wheels
+    out.append(f'<path d="M80 33 Q88 24 92 36" {P.stroke("light", 3)} stroke-dasharray="1 6.5"/>')       # the shell in flight
+    out.append(f'<circle cx="82" cy="30" r="3.6" {P.fill("white")}/>')
+    return "".join(out)
+
+
+def frontlink(P):
+    s, g, o = 20, 4, 11
+    out = []
+    for r in range(3):
+        for c in range(3):
+            x, y = o + c * (s + g), o + r * (s + g)
+            out.append(f'<rect x="{x}" y="{y}" width="{s}" height="{s}" rx="5.5" {P.fill("white")} opacity="{0.36 if (r + c) % 2 else 0.2}"/>')
+    out.append(f'<rect x="{o}" y="{o + 2 * (s + g)}" width="{s}" height="{s}" rx="5.5" {P.fill("deep")}/>')       # your HQ
+    out.append(f'<circle cx="{o + s / 2}" cy="{o + 2 * (s + g) + s / 2}" r="5.2" {P.fill("white")}/>')           # your unit
+    x, y = o + 2 * (s + g), o
+    out.append(f'<rect x="{x}" y="{y}" width="{s}" height="{s}" rx="5.5" {P.fill("white")}/>')                   # the enemy HQ
+    out.append(f'<path d="M{x + 7} {y + 15} V{y + 5} L{x + 15} {y + 8.5} L{x + 7} {y + 12}" {P.stroke("deep", 2.4)}/>')  # a flag
+    out.append(f'<path d="M{o + 10} {o + 2 * (s + g) - 2.5} V{o + s + g + 12} H{o + 2 * (s + g) - 5}" {P.stroke("white", 3.2)} stroke-dasharray="1 6"/>')  # the advance
+    return "".join(out)
+
+
+MARKS = {"lockerlink": lockerlink, "gridlink": gridlink, "under-the-cap": under_the_cap, "tanklink": tanklink, "frontlink": frontlink}
 
 
 def logo_svg(slug):

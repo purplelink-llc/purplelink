@@ -1,9 +1,6 @@
 /* Tanklink: the field, the gauges and the controls. External stylesheet (strict CSP). Dark is the default theme; light is the
    opt-out, so dark overrides use :where(:root:not([data-theme="light"])). Load after games.css and games-ui.css. */
 
-/* the game's own colour, in case the shared list has no entry for it yet */
-[data-g="tanklink"] { --gh: 52; }
-
 /* ---------- the play area ---------- */
 .tk-play { max-width: 820px; margin: 0 auto; }
 

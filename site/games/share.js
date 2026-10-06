@@ -6,7 +6,7 @@
   "use strict";
   var G = window.PLGames;
   var slug = (location.pathname.match(/\/games\/([^/]+)\//) || [])[1] || "games";
-  var TITLES = { "daily-five": "Daily Five", "daily-photo": "Daily Photo", "daily-chess": "Daily Chess", "chess-puzzles": "Chess Puzzles", "sudoku-unlimited": "Sudoku Unlimited" };
+  var TITLES = { "daily-five": "Daily Five", "daily-photo": "Daily Photo", "daily-chess": "Daily Chess", "chess-puzzles": "Chess Puzzles", "sudoku-unlimited": "Sudoku Unlimited", tanklink: "Tanklink", frontlink: "Frontlink" };
 
   function parts() {
     var raw = typeof window.PLShareText === "function" ? window.PLShareText() : "";

@@ -152,6 +152,8 @@
   - Lockerlink: Lockerlink is a free daily sports puzzle: link two players from any era through a chain of real teammates (NBA, NFL, MLB, NHL). https://purplelink.llc/games/lockerlink/
   - Gridlink: Gridlink is a free daily sports grid: name a player who fits each row and column clue, in nine guesses. https://purplelink.llc/games/gridlink/
   - Under the Cap: Under the Cap is a free sports team builder: pick a roster from any era under a budget and play a full season. https://purplelink.llc/games/under-the-cap/
+  - Tanklink: Tanklink is a free daily artillery game: set angle and power, read the wind and destroy the enemy tanks in eight shots. https://purplelink.llc/games/tanklink/
+  - Frontlink: Frontlink is a free daily tactics game: command three units and take the enemy base in six days. https://purplelink.llc/games/frontlink/
   - Sports games hub: free daily NBA, NFL, MLB and NHL puzzles (Lockerlink, Gridlink, Under the Cap). https://purplelink.llc/games/sports/
   - Teammate chains between stars of different eras: https://purplelink.llc/games/sports/nba-teammate-chains/ , https://purplelink.llc/games/sports/nfl-teammate-chains/ , https://purplelink.llc/games/sports/mlb-teammate-chains/ , https://purplelink.llc/games/sports/nhl-teammate-chains/
 - Guides: https://purplelink.llc/guides/

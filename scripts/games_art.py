@@ -270,7 +270,15 @@ def under_the_cap():
     return _logo_art("under-the-cap", '<g class="mv2"><circle class="a5" cx="28" cy="26" r="4"/><circle class="a2" cx="174" cy="114" r="5"/></g>')
 
 
-ART = {"lockerlink": lockerlink, "gridlink": gridlink, "under-the-cap": under_the_cap, "thinkerlink": thinkerlink, "riverlink": riverlink, "wildlink": wildlink, "citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
+def tanklink():
+    return _logo_art("tanklink", '<g class="mv2"><circle class="a5" cx="26" cy="28" r="4"/><circle class="a2" cx="176" cy="112" r="5"/></g>')
+
+
+def frontlink():
+    return _logo_art("frontlink", '<g class="mv2"><circle class="a5" cx="28" cy="112" r="4"/><circle class="a2" cx="174" cy="30" r="5"/></g>')
+
+
+ART = {"tanklink": tanklink, "frontlink": frontlink, "lockerlink": lockerlink, "gridlink": gridlink, "under-the-cap": under_the_cap, "thinkerlink": thinkerlink, "riverlink": riverlink, "wildlink": wildlink, "citylink": citylink, "peaklink": peaklink, "codelink": codelink, "landlink": landlink, "atomlink": atomlink, "prizelink": prizelink, "chess-puzzles": chess_puzzles, "sudoku-unlimited": sudoku_unlimited, "leaderboard": leaderboard, "linkle": linkle, "quadlink": quadlink, "daily-five": daily_five, "daily-photo": daily_photo,
        "daily-chess": daily_chess, "sudoku": sudoku, "crossword": crossword, "daily-stars": daily_stars}
 
 

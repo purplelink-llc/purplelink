@@ -66,6 +66,10 @@
     { id: "top-tenth", name: "Top tenth", desc: "Finish ahead of 90% of the day's players (at least 20 played).", test: function (a, c) { return c.pct >= 90 && c.total >= 20; } },
     { id: "regular", name: "Regular", desc: "Finish 30 daily puzzles.", test: function (a) { return played(a) >= 30; } },
     { id: "centurion", name: "Centurion", desc: "Finish 100 daily puzzles.", test: function (a) { return played(a) >= 100; } },
+    { id: "tank-first", name: "First shot", desc: "Win your first Tanklink round.", test: function (a) { return stats(a, "tanklink").won >= 1; } },
+    { id: "tank-clean", name: "Untouched", desc: "Win Tanklink without taking a hit.", test: function (a, c) { return c.game === "tanklink" && c.won && c.clean; } },
+    { id: "front-first", name: "Hill taken", desc: "Win your first Frontlink battle.", test: function (a) { return stats(a, "frontlink").won >= 1; } },
+    { id: "front-clean", name: "No losses", desc: "Win Frontlink without losing a unit.", test: function (a, c) { return c.game === "frontlink" && c.won && c.clean; } },
     { id: "stargazer", name: "Stargazer", desc: "Read your sign on seven different days.", test: function (a) { return ((a["daily-stars"] && a["daily-stars"].viewed) || []).length >= 7; } }
   ];
 
