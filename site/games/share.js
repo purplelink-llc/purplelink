@@ -1,7 +1,7 @@
 /* Sharing a result, in one tap. Every game sets window.PLShareText to a function that returns the result text.
    This turns the page's share button (id ends in "-share") into a Share button that opens the phone's own share
    sheet where there is one, and adds a row of direct options: Message, WhatsApp, X, Facebook, Reddit, Email and Copy.
-   Every message is the result's headline and a link whose preview image is the result card (see compose); the link lands on the game tagged ?from=share-<channel> so we can count what sharing brings back. */
+   Every message is just a link whose preview image is the result card (see compose); the link lands on the game tagged ?from=share-<channel> so we can count what sharing brings back. */
 (function () {
   "use strict";
   var G = window.PLGames;
@@ -20,15 +20,15 @@
     for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
     return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   }
-  // The message is the headline and a link. The link's preview image (netlify/functions/games-share.mjs) shows the
-  // grid and score, so the squares no longer travel as text. A result with no text keeps the plain game link.
+  // The message is the link alone. Its preview image (netlify/functions/games-share.mjs) shows the
+  // headline, grid and score, so nothing else is sent as text (c.body stays for the Reddit title). A result with no text keeps the plain game link.
   function compose(channel) {
     var p = parts(), head = p.body.split("\n")[0].trim(), c = head ? code(p.body) : "", url;
     if (c && c.length <= 1700 && /^[a-z0-9-]+$/.test(slug)) url = location.origin + "/games/r/" + slug + "/" + c + "?f=" + channel;
     else url = p.base + "?from=share-" + channel;
     // the text keeps the headline and any detail lines; lines that are only squares are left to the image
     var short = p.body.split("\n").map(function (l) { return l.replace(/^[■▣□]+\s*/, "").trim(); }).filter(Boolean).join("\n") || head || p.body;
-    return { body: short, url: url, full: short + "\n" + url, title: (document.getElementById("ag-title") ? document.getElementById("ag-title").textContent : TITLES[slug] || document.title.split(":")[0]) };
+    return { body: short, url: url, full: url, title: (document.getElementById("ag-title") ? document.getElementById("ag-title").textContent : TITLES[slug] || document.title.split(":")[0]) };
   }
   function enc(s) { return encodeURIComponent(s); }
   function track(channel) { if (G && G.track) G.track("game_share", slug + ":" + channel); }
@@ -61,7 +61,7 @@
   var CHANNELS = [
     { id: "sms", label: "Message", go: function (c) { window.location.href = "sms:?&body=" + enc(c.full); } },
     { id: "whatsapp", label: "WhatsApp", go: function (c) { openWin("https://wa.me/?text=" + enc(c.full)); } },
-    { id: "x", label: "X", go: function (c) { openWin("https://x.com/intent/post?text=" + enc(c.body) + "&url=" + enc(c.url)); } },
+    { id: "x", label: "X", go: function (c) { openWin("https://x.com/intent/post?url=" + enc(c.url)); } },
     { id: "facebook", label: "Facebook", go: function (c) { openWin("https://www.facebook.com/sharer/sharer.php?u=" + enc(c.url)); } },
     { id: "reddit", label: "Reddit", go: function (c) { openWin("https://www.reddit.com/submit?url=" + enc(c.url) + "&title=" + enc(c.body.split("\n")[0])); } },
     { id: "email", label: "Email", go: function (c) { window.location.href = "mailto:?subject=" + enc(c.title + ": my result") + "&body=" + enc(c.full); } }
@@ -76,8 +76,7 @@
       if (!native) { copy(btn); return; }
       var c = compose("native");
       track("native");
-      // the link is inside the text, so every app that takes text keeps it
-      navigator.share({ title: c.title, text: c.full }).then(function () { note(btn, "Shared."); }, function (e) {
+            navigator.share({ url: c.url }).then(function () { note(btn, "Shared."); }, function (e) {
         if (e && e.name === "AbortError") return;       // the player closed the sheet
         copy(btn);
       });
