@@ -10,10 +10,21 @@
           <div class="fl-layout">
             <div class="fl-main">
               <div class="fl-top">
-                <p class="fl-turn" id="fl-turn"></p>
+                <div class="fl-status">
+                  <p class="fl-turn" id="fl-turn"></p>
+                  <ol class="fl-days" id="fl-days" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li><li></li></ol>
+                </div>
                 <button type="button" class="btn btn-ghost" id="fl-end">End day</button>
               </div>
-              <div class="fl-board" id="fl-board" role="grid" aria-label="Battlefield, 7 columns by 6 rows. Your headquarters is bottom left, the enemy headquarters top right." aria-describedby="fl-help"></div>
+              <div class="fl-frame">
+                <div class="fl-stage" id="fl-stage">
+                  <div class="fl-board" id="fl-board" role="grid" aria-label="Battlefield, 7 columns by 6 rows. Your headquarters is bottom left, the enemy headquarters top right." aria-describedby="fl-help"></div>
+                  <div class="fl-units" id="fl-units" aria-hidden="true"></div>
+                  <div class="fl-fx" id="fl-fx" aria-hidden="true"></div>
+                  <span class="fl-cursor" id="fl-cursor" aria-hidden="true"></span>
+                  <div class="fl-banner" id="fl-banner" aria-hidden="true"><span></span></div>
+                </div>
+              </div>
               <p class="fl-readout" id="fl-readout" role="status"></p>
               <div class="fl-actions" id="fl-actions" role="group" aria-label="Unit actions" hidden></div>
               <p class="games-note" id="fl-help">Keyboard: arrow keys move over the board, Enter selects your unit and then a tile, Escape goes back. Each unit acts once a day. Artillery cannot move and fire in the same turn.</p>
@@ -29,10 +40,10 @@
                 <li><span class="fl-key" data-terrain="f"></span><span><b>Forest.</b> Move 2, one cover star.</span></li>
                 <li><span class="fl-key" data-terrain="m"></span><span><b>Mountain.</b> Move 3 for Infantry, blocked for Tanks and Artillery, two cover stars.</span></li>
                 <li><span class="fl-key" data-terrain="w"></span><span><b>Water.</b> Blocked.</span></li>
-                <li><span class="fl-key fl-key-unit" data-side="p">I</span><span><b>Infantry.</b> Move 3, hits adjacent, can capture a headquarters.</span></li>
-                <li><span class="fl-key fl-key-unit" data-side="p">T</span><span><b>Tank.</b> Move 4, hits adjacent, strong against Infantry and Artillery.</span></li>
-                <li><span class="fl-key fl-key-unit" data-side="p">A</span><span><b>Artillery.</b> Move 2, hits tiles 2 to 3 away, never answers an adjacent attacker.</span></li>
-                <li><span class="fl-key fl-key-unit" data-side="p">I</span><span>A round disc is one of your units. A square is an enemy unit. A hollow disc has acted today. The number is HP.</span></li>
+                <li><span class="fl-key fl-key-unit" data-side="p" data-kind="I"></span><span><b>Infantry.</b> Move 3, hits adjacent, can capture a headquarters.</span></li>
+                <li><span class="fl-key fl-key-unit" data-side="p" data-kind="T"></span><span><b>Tank.</b> Move 4, hits adjacent, strong against Infantry and Artillery.</span></li>
+                <li><span class="fl-key fl-key-unit" data-side="p" data-kind="A"></span><span><b>Artillery.</b> Move 2, hits tiles 2 to 3 away, never answers an adjacent attacker.</span></li>
+                <li><span class="fl-key fl-key-unit" data-side="e" data-kind="I"></span><span>A round base is one of your units and faces right. A diamond base is an enemy unit and faces left. A pause mark means the unit has acted today. The bar and the number show HP.</span></li>
               </ul>
             </div>
           </div>

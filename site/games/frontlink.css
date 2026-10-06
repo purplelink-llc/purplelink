@@ -1,26 +1,50 @@
-/* Frontlink: the board, action bar, log and legend. External file (strict CSP). Loads after games.css and games-ui.css.
-   Light tokens are the base; dark is the default theme and is gated on :root:not([data-theme="light"]). */
+/* Frontlink: the board, its vector art, units, effects, action bar, log and legend. External file (strict CSP).
+   Loads after games.css and games-ui.css. Light tokens are the base; dark is the default theme and is gated on
+   :where(:root:not([data-theme="light"])). All art is inline SVG made by frontlink.js; every colour lives here.
+   Motion (waves, pulses, slides, effects) is only declared inside prefers-reduced-motion: no-preference. */
 
 .fl-layout {
-  --fl-plains: oklch(95% 0.03 125);
-  --fl-road: oklch(87% 0.03 85);
-  --fl-forest: oklch(80% 0.09 150);
-  --fl-mount: oklch(75% 0.03 60);
-  --fl-water: oklch(83% 0.08 235);
-  --fl-edge: color-mix(in oklch, var(--ink) 24%, transparent);
-  --fl-foe: oklch(46% 0.16 35);
-  --fl-foe-ink: oklch(98% 0.01 35);
-  --fl-hpbg: var(--panel);
+  --fl-gap: 3px;
+  /* teams: you are purple with a round base facing right, the enemy is orange with a diamond base facing left */
+  --fl-p1: oklch(50% 0.22 310); --fl-p2: oklch(33% 0.15 310); --fl-p3: oklch(80% 0.12 310);
+  --fl-e1: oklch(56% 0.2 38);   --fl-e2: oklch(38% 0.14 35);  --fl-e3: oklch(84% 0.11 55);
+  --fl-foe: oklch(46% 0.16 35); --fl-foe-ink: oklch(98% 0.01 35);
+  --fl-edge: color-mix(in oklch, var(--ink) 28%, transparent);
+  --fl-ol: oklch(16% 0.03 300);
+  /* terrain */
+  --fl-pl-a: oklch(85% 0.1 128); --fl-pl-b: oklch(82% 0.105 130); --fl-pl-patch: oklch(88% 0.09 126);
+  --fl-tuft: oklch(52% 0.13 142); --fl-flower: oklch(97% 0.03 95); --fl-flower-c: oklch(80% 0.15 85);
+  --fl-rd-edge: oklch(60% 0.06 62); --fl-rd-bed: oklch(81% 0.07 80); --fl-rd-rut: oklch(70% 0.07 70); --fl-stone: oklch(74% 0.02 80);
+  --fl-fo-a: oklch(66% 0.11 148); --fl-fo-b: oklch(63% 0.115 150); --fl-fo-patch: oklch(70% 0.1 146);
+  --fl-trunk: oklch(38% 0.06 55); --fl-tr-d: oklch(36% 0.1 155); --fl-tr-m: oklch(50% 0.14 150); --fl-tr-l: oklch(70% 0.16 140);
+  --fl-mt-a: oklch(78% 0.045 95); --fl-mt-b: oklch(75% 0.045 95);
+  --fl-mt-l: oklch(64% 0.035 275); --fl-mt-d: oklch(44% 0.04 285); --fl-snow: oklch(98% 0.01 240); --fl-snow-d: oklch(84% 0.035 255); --fl-rock: oklch(55% 0.02 80);
+  --fl-wa-a: oklch(64% 0.12 235); --fl-wa-b: oklch(61% 0.125 238); --fl-wave: oklch(86% 0.08 225); --fl-glint: oklch(98% 0.02 220);
+  --fl-fort-w: oklch(72% 0.025 60); --fl-fort-top: oklch(56% 0.025 60); --fl-fort-k: oklch(64% 0.025 60); --fl-fort-lit: oklch(80% 0.025 70);
+  --fl-fort-gate: oklch(28% 0.03 50); --fl-fort-joint: oklch(52% 0.025 60); --fl-pole: oklch(30% 0.02 50);
+  --fl-shadow: oklch(15% 0.05 150 / 0.34);
+  /* unit parts */
+  --fl-skin: oklch(82% 0.07 60); --fl-boot: oklch(28% 0.03 60); --fl-pack: oklch(46% 0.07 100); --fl-wood: oklch(48% 0.08 60);
+  --fl-steel: oklch(76% 0.015 260); --fl-steel-d: oklch(42% 0.02 260); --fl-gun-o: oklch(18% 0.02 280);
+  --fl-track: oklch(24% 0.02 280); --fl-wheel: oklch(50% 0.02 280); --fl-hub: oklch(80% 0.01 280);
   --fl-sel: color-mix(in oklch, var(--g-correct) 35%, var(--panel));
 }
 :where(:root:not([data-theme="light"])) .fl-layout {
-  --fl-plains: oklch(33% 0.03 140);
-  --fl-road: oklch(41% 0.03 85);
-  --fl-forest: oklch(35% 0.08 150);
-  --fl-mount: oklch(45% 0.03 60);
-  --fl-water: oklch(36% 0.09 240);
-  --fl-foe: oklch(74% 0.14 40);
-  --fl-foe-ink: oklch(16% 0.04 40);
+  --fl-p1: oklch(72% 0.17 310); --fl-p2: oklch(46% 0.16 310); --fl-p3: oklch(88% 0.09 310);
+  --fl-e1: oklch(72% 0.16 40);  --fl-e2: oklch(48% 0.14 35);  --fl-e3: oklch(90% 0.07 55);
+  --fl-foe: oklch(74% 0.14 40); --fl-foe-ink: oklch(16% 0.04 40);
+  --fl-pl-a: oklch(40% 0.07 135); --fl-pl-b: oklch(37% 0.07 137); --fl-pl-patch: oklch(45% 0.07 132);
+  --fl-tuft: oklch(62% 0.12 140); --fl-flower: oklch(86% 0.05 95); --fl-flower-c: oklch(78% 0.15 85);
+  --fl-rd-edge: oklch(30% 0.04 60); --fl-rd-bed: oklch(52% 0.05 78); --fl-rd-rut: oklch(43% 0.05 70); --fl-stone: oklch(64% 0.02 80);
+  --fl-fo-a: oklch(34% 0.08 150); --fl-fo-b: oklch(31% 0.08 152); --fl-fo-patch: oklch(38% 0.08 148);
+  --fl-trunk: oklch(30% 0.05 55); --fl-tr-d: oklch(30% 0.09 155); --fl-tr-m: oklch(43% 0.12 150); --fl-tr-l: oklch(60% 0.14 142);
+  --fl-mt-a: oklch(38% 0.035 95); --fl-mt-b: oklch(35% 0.035 95);
+  --fl-mt-l: oklch(60% 0.035 275); --fl-mt-d: oklch(38% 0.04 285); --fl-snow: oklch(97% 0.01 240); --fl-snow-d: oklch(76% 0.04 255); --fl-rock: oklch(48% 0.02 80);
+  --fl-wa-a: oklch(38% 0.1 240); --fl-wa-b: oklch(35% 0.105 242); --fl-wave: oklch(66% 0.09 225); --fl-glint: oklch(90% 0.04 220);
+  --fl-fort-w: oklch(58% 0.025 60); --fl-fort-top: oklch(44% 0.025 60); --fl-fort-k: oklch(52% 0.025 60); --fl-fort-lit: oklch(68% 0.025 70);
+  --fl-fort-gate: oklch(20% 0.03 50); --fl-fort-joint: oklch(42% 0.025 60); --fl-pole: oklch(86% 0.02 60);
+  --fl-shadow: oklch(8% 0.04 150 / 0.5);
+  --fl-wood: oklch(52% 0.08 60); --fl-steel: oklch(78% 0.015 260); --fl-wheel: oklch(56% 0.02 280);
 }
 
 .games-wrap:has(.fl-layout) { max-width: 1040px; }
@@ -28,53 +52,181 @@
 @media (min-width: 900px) { .fl-layout { grid-template-columns: minmax(0, 540px) minmax(0, 1fr); gap: 32px; } }
 .fl-main, .fl-side { min-width: 0; }
 
-.fl-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 10px; }
-.fl-turn { margin: 0; font-weight: 700; font-size: 1.05rem; }
-.fl-top .btn { min-height: 44px; }
+/* ---------- status strip: day, six pips, End day ---------- */
+.fl-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; padding: 10px 14px;
+  border: 1px solid var(--line); border-radius: 16px; background: var(--panel);
+}
+.fl-status { display: grid; gap: 7px; min-width: 0; }
+.fl-turn { margin: 0; font-weight: 700; font-size: 1.05rem; line-height: 1.25; }
+.fl-top .btn { min-height: 44px; flex: none; }
 .fl-top .btn:disabled { opacity: 0.5; }
+.fl-days { display: flex; align-items: center; gap: 7px; list-style: none; margin: 0; padding: 0; }
+.fl-days li { box-sizing: border-box; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--muted); background: transparent; }
+.fl-days li[data-s="past"] { border-color: var(--g-correct); background: var(--g-correct); }
+.fl-days li[data-s="now"], .fl-days li[data-s="end"] { width: 18px; height: 18px; border-color: var(--ink); background: var(--g-correct); box-shadow: inset 0 0 0 2.5px var(--panel); }
 
-/* terrain: background and a small text glyph per tile */
-[data-terrain="p"] { --fl-t: var(--fl-plains); --fl-glyph: ""; }
-[data-terrain="r"] { --fl-t: var(--fl-road); --fl-glyph: "="; }
-[data-terrain="f"] { --fl-t: var(--fl-forest); --fl-glyph: "\3A8"; }
-[data-terrain="m"] { --fl-t: var(--fl-mount); --fl-glyph: "\25B2"; }
-[data-terrain="w"] { --fl-t: var(--fl-water); --fl-glyph: "\2248"; }
+/* ---------- the board frame ---------- */
+.fl-frame {
+  position: relative; padding: 10px; border-radius: 18px; border: 2px solid color-mix(in oklch, var(--purple) 50%, var(--line));
+  background: color-mix(in oklch, var(--g-correct) 24%, var(--panel));
+  box-shadow: 0 4px 0 color-mix(in oklch, var(--purple) 32%, var(--line)), 0 14px 28px -18px oklch(10% 0.05 310 / 0.55);
+  transition: border-color 0.2s;
+}
+.fl-frame::before {
+  content: ""; position: absolute; inset: 5px; border-radius: 13px; pointer-events: none;
+  border: 1px solid color-mix(in oklch, var(--ink) 22%, transparent);
+}
+.fl-frame:has(.fl-stage[data-phase="e"]) { border-color: var(--fl-foe); }
+.fl-stage { position: relative; container-type: inline-size; --tile: calc((100cqw - 6 * var(--fl-gap)) / 7); border-radius: 8px; }
 
-.fl-board { display: grid; gap: 3px; max-width: 540px; }
-.fl-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+/* ---------- terrain tiles ---------- */
+.fl-board { display: grid; gap: var(--fl-gap); }
+.fl-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--fl-gap); }
 .fl-tile {
-  position: relative; display: block; aspect-ratio: 1; min-width: 0; min-height: 44px; margin: 0; padding: 0;
-  border: 1px solid var(--fl-edge); border-radius: 6px; background: var(--fl-t, var(--fl-plains)); color: var(--ink);
+  position: relative; display: block; aspect-ratio: 1; min-width: 0; margin: 0; padding: 0; appearance: none;
+  border: 1px solid var(--fl-edge); border-radius: 6px; background: var(--fl-pl-a); color: var(--ink);
   font: inherit; cursor: pointer; overflow: hidden;
 }
-.fl-tile::after { content: var(--fl-glyph, ""); position: absolute; bottom: 3px; left: 4px; font-size: 0.72rem; font-weight: 700; line-height: 1; color: var(--ink); }
-.fl-tile[data-hq="p"]::before, .fl-tile[data-hq="e"]::before { content: "HQ"; position: absolute; left: 3px; bottom: 2px; font-size: 0.66rem; font-weight: 800; line-height: 1; color: var(--ink); }
-.fl-tile[data-hq="p"] { border: 3px double var(--g-correct); }
-.fl-tile[data-hq="e"] { border: 3px double var(--fl-foe); }
-
-.fl-unit { position: absolute; inset: 5% 26% 26% 5%; display: grid; place-items: center; font: 800 1.15rem/1 var(--font-body); }
-.fl-unit:empty { display: none; }
-.fl-unit[data-side="p"] { border-radius: 50%; background: var(--g-correct); color: var(--g-correct-ink); }
-.fl-unit[data-side="e"] { border-radius: 4px; background: var(--fl-foe); color: var(--fl-foe-ink); }
-.fl-unit[data-done="1"] { background: var(--fl-hpbg); color: var(--ink); box-shadow: inset 0 0 0 3px var(--g-correct); }
-.fl-hp {
-  position: absolute; right: 2px; bottom: 2px; min-width: 1.15rem; padding: 1px 3px; border: 1px solid var(--line); border-radius: 5px;
-  background: var(--fl-hpbg); color: var(--ink); font-size: 0.72rem; font-weight: 800; line-height: 1.15; text-align: center; font-variant-numeric: tabular-nums;
+.fl-art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; pointer-events: none; }
+.fl-art.fl-has-img .fl-vec, .fl-fig.fl-has-img .fl-vec { display: none; }
+/* soft light from the top left */
+.fl-tile::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(135deg, oklch(100% 0 0 / 0.22), oklch(100% 0 0 / 0) 42%, oklch(0% 0 0 / 0) 56%, oklch(0% 0 0 / 0.22));
+  box-shadow: inset 1px 1px 0 oklch(100% 0 0 / 0.28), inset -1px -1px 0 oklch(0% 0 0 / 0.26);
 }
-.fl-hp:empty { display: none; }
-.fl-flag { position: absolute; top: 1px; right: 4px; font-size: 1rem; font-weight: 800; line-height: 1; color: var(--ink); }
+.fl-tile::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; }
+.fl-tile[data-hq="p"] { --fl-tc: var(--fl-p1); --fl-td: var(--fl-p2); --fl-tl: var(--fl-p3); }
+.fl-tile[data-hq="e"] { --fl-tc: var(--fl-e1); --fl-td: var(--fl-e2); --fl-tl: var(--fl-e3); }
 
-/* what you can do: dashed = can move here, solid = chosen tile, heavy foe ring with a cross = can be attacked */
-.fl-tile[data-recent="1"] { border: 2px dotted var(--ink); }
-.fl-tile[data-mark="reach"] { border: 2px dashed var(--ink); box-shadow: inset 0 0 0 40px color-mix(in oklch, var(--ink) 12%, transparent); }
-.fl-tile[data-mark="dest"] { border: 3px solid var(--ink); }
-.fl-tile[data-mark="sel"] { border: 3px solid var(--g-correct); background: var(--fl-sel); }
-.fl-tile[data-mark="target"] { border: 3px solid var(--fl-foe); }
-.fl-tile[data-mark="target"] .fl-flag { top: 0; right: 3px; font-size: 1.25rem; color: var(--fl-foe); }
-.fl-tile[data-mark="target"] .fl-hp { border-color: var(--fl-foe); }
+.fl-pl-a { fill: var(--fl-pl-a); } .fl-pl-b { fill: var(--fl-pl-b); } .fl-pl-patch { fill: var(--fl-pl-patch); opacity: 0.55; }
+.fl-tuft { fill: none; stroke: var(--fl-tuft); stroke-width: 1.9; stroke-linecap: round; }
+.fl-flower { fill: var(--fl-flower); } .fl-flower-c { fill: var(--fl-flower-c); }
+.fl-rd-edge { fill: var(--fl-rd-edge); } .fl-rd-bed { fill: var(--fl-rd-bed); }
+.fl-rd-arm { fill: none; stroke: var(--fl-rd-bed); stroke-width: 42; stroke-linecap: butt; }
+.fl-rd-arm.fl-rd-edge { stroke: var(--fl-rd-edge); }
+.fl-rd-arm.fl-rd-wide { stroke-width: 48; }
+.fl-rd-rut { stroke: var(--fl-rd-rut); fill: none; opacity: 0.8; }
+.fl-stone { fill: var(--fl-stone); stroke: var(--fl-rd-edge); stroke-width: 0.8; }
+.fl-fo-a { fill: var(--fl-fo-a); } .fl-fo-b { fill: var(--fl-fo-b); } .fl-fo-patch { fill: var(--fl-fo-patch); opacity: 0.6; }
+.fl-shadow { fill: var(--fl-shadow); }
+.fl-trunk { fill: var(--fl-trunk); }
+.fl-tr-d { fill: var(--fl-tr-d); } .fl-tr-m { fill: var(--fl-tr-m); } .fl-tr-l { fill: var(--fl-tr-l); opacity: 0.85; }
+.fl-mt-ground-a { fill: var(--fl-mt-a); } .fl-mt-ground-b { fill: var(--fl-mt-b); }
+.fl-mt-l { fill: var(--fl-mt-l); stroke: var(--fl-ol); stroke-width: 0.9; stroke-linejoin: round; }
+.fl-mt-d { fill: var(--fl-mt-d); stroke: var(--fl-ol); stroke-width: 0.9; stroke-linejoin: round; }
+.fl-snow { fill: var(--fl-snow); } .fl-snow-d { fill: var(--fl-snow-d); }
+.fl-rock { fill: var(--fl-rock); }
+.fl-wa-a { fill: var(--fl-wa-a); } .fl-wa-b { fill: var(--fl-wa-b); }
+.fl-wave { fill: none; stroke: var(--fl-wave); stroke-width: 3.2; stroke-linecap: round; opacity: 0.9; }
+.fl-glint { fill: var(--fl-glint); opacity: 0.75; }
+.fl-fort-w, .fl-fort-top, .fl-fort-k, .fl-fort-lit, .fl-fort-gate, .fl-fort-slit { stroke: var(--fl-ol); stroke-width: 0.9; stroke-linejoin: round; }
+.fl-fort-w { fill: var(--fl-fort-w); } .fl-fort-top { fill: var(--fl-fort-top); } .fl-fort-k { fill: var(--fl-fort-k); } .fl-fort-lit { fill: var(--fl-fort-lit); stroke: none; opacity: 0.75; }
+.fl-fort-gate { fill: var(--fl-fort-gate); } .fl-fort-slit { fill: var(--fl-fort-gate); }
+.fl-fort-joint { stroke: var(--fl-fort-joint); fill: none; }
+.fl-pole { stroke: var(--fl-pole); fill: none; }
+.fl-cloth { stroke: var(--fl-ol); stroke-width: 1; stroke-linejoin: round; }
+.fl-tc { fill: var(--fl-tc, var(--fl-p1)); } .fl-td { fill: var(--fl-td, var(--fl-p2)); } .fl-tl { fill: var(--fl-tl, var(--fl-p3)); }
+
+/* ---------- units: a layer above the board, so they can slide between tiles ---------- */
+.fl-units, .fl-fx { position: absolute; inset: 0; pointer-events: none; }
+.fl-units { z-index: 3; }
+.fl-fx { z-index: 4; }
+.fl-sprite, .fl-spark, .fl-boom, .fl-dmg, .fl-smokes, .fl-shell, .fl-cursor {
+  position: absolute; width: var(--tile); height: var(--tile);
+  left: calc(var(--c, 0) * (var(--tile) + var(--fl-gap))); top: calc(var(--r, 0) * (var(--tile) + var(--fl-gap)));
+}
+.fl-sprite { z-index: var(--z, 1); }
+.fl-sprite[data-side="p"] { --fl-tc: var(--fl-p1); --fl-td: var(--fl-p2); --fl-tl: var(--fl-p3); }
+.fl-sprite[data-side="e"] { --fl-tc: var(--fl-e1); --fl-td: var(--fl-e2); --fl-tl: var(--fl-e3); }
+.fl-fig { display: block; width: 100%; height: 100%; overflow: visible; }
+.fl-base { fill: color-mix(in oklch, var(--fl-tl) 82%, transparent); stroke: var(--fl-tc); stroke-width: 3.4; stroke-linejoin: round; }
+.fl-sprite[data-side="e"] .fl-base { stroke: var(--fl-e1); }
+.fl-baseg .fl-shadow { fill: var(--fl-shadow); }
+.fl-body :is(rect, circle, path, polygon, ellipse) { stroke: var(--fl-ol); stroke-width: 1.4; stroke-linejoin: round; }
+.fl-body .fl-tl { stroke-width: 0; }
+.fl-boot { fill: var(--fl-boot); } .fl-pack { fill: var(--fl-pack); } .fl-wood { fill: var(--fl-wood); } .fl-skin { fill: var(--fl-skin); }
+.fl-gun { stroke: var(--fl-steel); fill: none; } .fl-gun-o { stroke: var(--fl-gun-o); fill: none; }
+.fl-arm { stroke: var(--fl-tc); fill: none; }
+.fl-leg { stroke: var(--fl-steel-d); fill: none; }
+.fl-steel { fill: var(--fl-steel); stroke: var(--fl-ol); } line.fl-steel { stroke: var(--fl-steel); fill: none; }
+.fl-steel-d { fill: var(--fl-steel-d); } line.fl-steel-d { stroke: var(--fl-steel-d); fill: none; }
+.fl-track { fill: var(--fl-track); } .fl-wheel { fill: var(--fl-wheel); } .fl-hub { fill: var(--fl-hub); stroke-width: 0; }
+.fl-hp .fl-hpbg { fill: oklch(14% 0.03 300); stroke: oklch(98% 0.01 300); stroke-width: 1.3; }
+.fl-hp .fl-hpt { fill: oklch(14% 0.03 300); }
+.fl-hpf { fill: oklch(78% 0.17 150); }
+.fl-hpf[data-lvl="mid"] { fill: oklch(86% 0.16 92); }
+.fl-hpf[data-lvl="lo"] { fill: oklch(66% 0.21 25); }
+.fl-hpn {
+  position: absolute; right: 0; bottom: 0; min-width: 1.1em; padding: 0 3px; border: 1.5px solid var(--fl-tc); border-radius: 6px;
+  background: var(--panel); color: var(--ink); font: 800 0.7rem/1.25 var(--font-body); text-align: center; font-variant-numeric: tabular-nums;
+}
+.fl-dn { display: none; }
+.fl-dn-bg { fill: var(--panel); stroke: var(--ink); stroke-width: 2; }
+.fl-dn-bar { fill: var(--ink); }
+.fl-sprite[data-done="1"] .fl-dn { display: block; }
+.fl-sprite[data-done="1"] .fl-body { opacity: 0.55; filter: saturate(0.45); }
+.fl-sprite[data-done="1"] .fl-base { stroke-dasharray: 5 4; }
+.fl-body { transform: scale(1.1); transform-origin: 50px 84px; }
+.fl-sprite[data-sel="1"] .fl-body { transform: translateY(-6px) scale(1.1); }
+.fl-sprite[data-sel="1"] .fl-baseg { transform: scale(1.05); transform-origin: 50px 84px; }
+
+/* ---------- marks: what you can do ---------- */
+.fl-mk { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.fl-mk .fl-mk-dot, .fl-mk .fl-mk-ret, .fl-mk .fl-mk-dest { display: none; }
+.fl-mk-fill { fill: var(--ink); stroke: var(--panel); stroke-width: 2; opacity: 0.85; }
+.fl-mk-br, .fl-mk-tick { fill: none; stroke: var(--fl-foe); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.fl-mk-ret { filter: drop-shadow(0 0 1.5px var(--panel)); }
+.fl-mk-chev { fill: none; stroke: var(--ink); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.fl-mk-dest { filter: drop-shadow(0 0 1.5px var(--panel)); }
+.fl-tile[data-mark="reach"] .fl-mk-dot, .fl-tile[data-mark="dest"] .fl-mk-dest, .fl-tile[data-mark="target"] .fl-mk-ret { display: inline; }
+.fl-tile[data-recent="1"]::after { border: 2px dotted var(--ink); }
+.fl-tile[data-range="1"]::after { background: repeating-linear-gradient(135deg, color-mix(in oklch, var(--fl-foe) 34%, transparent) 0 2px, transparent 2px 8px); }
+.fl-tile[data-mark="reach"]::after { border: 2px dashed var(--ink); background: color-mix(in oklch, var(--g-correct) 16%, transparent); }
+.fl-tile[data-mark="dest"]::after { border: 3px solid var(--ink); background: color-mix(in oklch, var(--g-correct) 22%, transparent); }
+.fl-tile[data-mark="sel"]::after { border: 3px solid var(--g-correct); box-shadow: inset 0 0 0 2px var(--panel), inset 0 0 18px color-mix(in oklch, var(--g-correct) 55%, transparent); }
+.fl-tile[data-mark="target"]::after {
+  border: 3px solid var(--fl-foe);
+  background: repeating-linear-gradient(45deg, color-mix(in oklch, var(--fl-foe) 42%, transparent) 0 2.5px, transparent 2.5px 7px);
+}
 .fl-tile:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; z-index: 2; }
+.fl-cursor { display: none; z-index: 5; border: 3px solid var(--ink); border-radius: 6px; box-shadow: inset 0 0 0 1.5px var(--panel), 0 0 0 1.5px var(--panel); box-sizing: border-box; }
+.fl-stage:has(.fl-tile:focus-visible) .fl-cursor { display: block; }
 
-.fl-readout { margin: 10px 0 0; min-height: 3.2em; font-weight: 600; font-size: 0.95rem; }
+/* capture marker on a base: half ring and a raised flag in the colour of the side holding it */
+.fl-cap { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; display: none; }
+.fl-tile[data-cap="p"] .fl-cap, .fl-tile[data-cap="e"] .fl-cap { display: block; }
+.fl-tile[data-cap="p"] { --fl-capc: var(--fl-p1); }
+.fl-tile[data-cap="e"] { --fl-capc: var(--fl-e1); }
+.fl-capring { fill: none; stroke: var(--fl-capc); stroke-width: 5; stroke-dasharray: 135 135; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50px 50px; filter: drop-shadow(0 0 1.5px var(--panel)); }
+.fl-capcloth { fill: var(--fl-capc); stroke: var(--fl-ol); stroke-width: 1.2; stroke-linejoin: round; }
+
+/* ---------- effects ---------- */
+.fl-sparksvg, .fl-boomsvg, .fl-fxs { display: block; width: 100%; height: 100%; overflow: visible; }
+.fl-sp1 { fill: oklch(92% 0.17 95); stroke: oklch(60% 0.2 45); stroke-width: 2; stroke-linejoin: round; } .fl-sp2 { fill: oklch(99% 0.02 95); }
+.fl-bm1 { fill: oklch(66% 0.22 40); stroke: oklch(40% 0.15 30); stroke-width: 2; stroke-linejoin: round; } .fl-bm2 { fill: oklch(88% 0.17 90); } .fl-bm3 { fill: oklch(99% 0.02 95); }
+.fl-dmg { z-index: 3; }
+.fl-dmg span {
+  position: absolute; left: 50%; top: 4%; transform: translateX(-50%); padding: 1px 8px; border: 2px solid var(--fl-foe); border-radius: 100px;
+  background: var(--panel); color: var(--ink); font: 800 0.95rem/1.25 var(--font-body); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.fl-shard { position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px; border-radius: 1px; background: oklch(80% 0.17 70); }
+.fl-sh1 { --sx: -38px; --sy: -30px; } .fl-sh2 { --sx: 40px; --sy: -26px; } .fl-sh3 { --sx: -44px; --sy: 8px; }
+.fl-sh4 { --sx: 42px; --sy: 14px; } .fl-sh5 { --sx: -12px; --sy: 40px; } .fl-sh6 { --sx: 14px; --sy: -44px; }
+.fl-smoke { position: absolute; left: 31%; top: 34%; width: 38%; aspect-ratio: 1; border-radius: 50%; background: oklch(62% 0.01 280 / 0.72); }
+.fl-shell::before { content: ""; position: absolute; left: calc(50% - 5px); top: calc(50% - 5px); width: 10px; height: 10px; border-radius: 50%; background: oklch(22% 0.03 280); border: 2px solid oklch(86% 0.12 80); box-sizing: border-box; }
+.fl-shell-t::before { width: 7px; height: 7px; left: calc(50% - 3.5px); top: calc(50% - 3.5px); opacity: 0.5; }
+
+/* ---------- the day banner: briefly names the phase, never takes input ---------- */
+.fl-banner { position: absolute; left: 0; right: 0; top: 50%; z-index: 6; display: none; justify-content: center; pointer-events: none; transform: translateY(-50%); }
+.fl-banner span {
+  padding: 8px 24px; border: 2px solid var(--g-correct); border-radius: 100px; background: color-mix(in oklch, var(--panel) 90%, transparent);
+  color: var(--ink); font: 700 1.1rem/1.2 var(--font-display); box-shadow: 0 8px 24px -10px oklch(10% 0.05 310 / 0.6);
+}
+.fl-banner[data-side="e"] span { border-color: var(--fl-foe); }
+
+.fl-readout { margin: 12px 0 0; min-height: 3.2em; font-weight: 600; font-size: 0.95rem; }
 .fl-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
 .fl-actions[hidden] { display: none; }
 .fl-act { min-height: 44px; flex-direction: column; gap: 1px; border-radius: 16px; text-align: center; line-height: 1.2; }
@@ -83,6 +235,8 @@
 
 .fl-roster p { margin: 0 0 4px; font-size: 0.92rem; }
 .fl-roster b { font-weight: 700; }
+.fl-sw { display: inline-block; box-sizing: border-box; width: 12px; height: 12px; margin-right: 8px; vertical-align: -1px; border: 2px solid var(--fl-p2); background: var(--fl-p1); border-radius: 50%; }
+.fl-sw[data-side="e"] { border-color: var(--fl-e2); background: var(--fl-e1); border-radius: 2px; transform: rotate(45deg) scale(0.9); }
 .fl-h { font-family: var(--font-display); font-size: 1.15rem; margin: 18px 0 8px; }
 .fl-log {
   list-style: none; margin: 0; padding: 8px 12px; max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px;
@@ -98,19 +252,48 @@
 .fl-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 0.9rem; }
 .fl-legend li { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); }
 .fl-legend b { color: var(--ink); }
-.fl-key {
-  position: relative; flex: none; width: 30px; height: 30px; border: 1px solid var(--fl-edge); border-radius: 6px; background: var(--fl-t, var(--fl-plains));
-  display: grid; place-items: center; font: 800 0.95rem/1 var(--font-body);
-}
-.fl-key[data-terrain]::after { content: var(--fl-glyph, ""); font-size: 0.8rem; font-weight: 700; color: var(--ink); }
-.fl-key-unit { border-radius: 50%; background: var(--g-correct); color: var(--g-correct-ink); border: 0; }
+.fl-key { position: relative; flex: none; width: 40px; height: 40px; border: 1px solid var(--fl-edge); border-radius: 8px; background: var(--fl-pl-a); overflow: hidden; }
+.fl-key .fl-art { z-index: auto; }
+.fl-key .fl-sprite { position: relative; left: auto; top: auto; width: 100%; height: 100%; }
+.fl-key .fl-hp, .fl-key .fl-hpn, .fl-key .fl-dn { display: none; }
 
+/* ---------- motion: only when the visitor has not asked for less ---------- */
 @media (prefers-reduced-motion: no-preference) {
-  .fl-tile { transition: background-color 0.15s, border-color 0.15s; }
-  .fl-tile[data-recent="1"] .fl-unit { animation: fl-flash 0.15s ease-out; }
-  @keyframes fl-flash { from { transform: scale(1.12); } to { transform: none; } }
+  .fl-tile { transition: border-color 0.15s; }
+  .fl-sprite[data-sel="1"] .fl-body, .fl-sprite[data-sel="1"] .fl-baseg, .fl-sprite .fl-body, .fl-sprite .fl-baseg { transition: transform 0.16s ease-out, opacity 0.2s; }
+  .fl-tile[data-mark="reach"]::after { animation: fl-pulse 1.6s ease-in-out infinite; }
+  .fl-tile[data-mark="sel"]::after { animation: fl-pulse 1.8s ease-in-out infinite; }
+  @keyframes fl-pulse { 0%, 100% { opacity: 0.62; } 50% { opacity: 1; } }
+  .fl-wave { animation: fl-sway 5.4s ease-in-out infinite alternate; }
+  .fl-wv2 { animation-duration: 6.6s; animation-delay: -2.1s; animation-direction: alternate-reverse; }
+  .fl-wv3 { animation-duration: 4.8s; animation-delay: -3.4s; }
+  @keyframes fl-sway { from { transform: translateX(-9px); } to { transform: translateX(9px); } }
+  .fl-glint { animation: fl-glint 3.2s ease-in-out infinite; }
+  .fl-gl2 { animation-delay: -1.1s; } .fl-gl3 { animation-delay: -2.2s; }
+  @keyframes fl-glint { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.95; } }
+  .fl-cloth { transform-origin: 50px 10px; animation: fl-flag 2.6s ease-in-out infinite alternate; }
+  @keyframes fl-flag { from { transform: scaleX(0.9) skewY(-3deg); } to { transform: scaleX(1.04) skewY(3deg); } }
+  .fl-spark { animation: fl-spark 0.34s ease-out both; }
+  @keyframes fl-spark { 0% { transform: scale(0.3); opacity: 1; } 60% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1.3); opacity: 0; } }
+  .fl-boom { animation: fl-boom 0.6s ease-out both; }
+  @keyframes fl-boom { 0% { transform: scale(0.2); opacity: 1; } 35% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1.55); opacity: 0; } }
+  .fl-shard { animation: fl-shard 0.55s ease-out both; }
+  @keyframes fl-shard { from { transform: translate(0, 0) scale(1); opacity: 1; } to { transform: translate(var(--sx), var(--sy)) scale(0.3); opacity: 0; } }
+  .fl-smoke { animation: fl-smoke 1.4s ease-out both; }
+  .fl-sm2 { left: 22%; top: 42%; animation-delay: 0.12s; } .fl-sm3 { left: 42%; top: 38%; animation-delay: 0.24s; }
+  @keyframes fl-smoke { 0% { transform: translateY(0) scale(0.4); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-40px) scale(1.5); opacity: 0; } }
+  .fl-dmg span { animation: fl-dmg 1.05s ease-out both; }
+  @keyframes fl-dmg { 0% { transform: translate(-50%, 6px) scale(0.7); opacity: 0; } 18% { transform: translate(-50%, 0) scale(1.1); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(-50%, -30px) scale(1); opacity: 0; } }
+  .fl-banner[data-show] { display: flex; animation: fl-banner-box 1.15s linear both; }
+  .fl-banner[data-show] span { animation: fl-banner 1.15s ease both; }
+  @keyframes fl-banner-box { from { opacity: 1; } to { opacity: 1; } }
+  @keyframes fl-banner { 0% { opacity: 0; transform: translateX(-26px); } 20% { opacity: 1; transform: none; } 78% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateX(26px); } }
 }
-@media (max-width: 420px) {
-  .fl-unit { font-size: 1.05rem; }
+@media (max-width: 480px) {
+  .fl-layout { --fl-gap: 2px; }
+  .fl-frame { margin-inline: -8px; padding: 6px; border-radius: 14px; }
+  .fl-frame::before { inset: 3px; border-radius: 11px; }
+  .fl-hpn { font-size: 0.64rem; padding: 0 2px; }
   .fl-act { flex: 1 1 100%; }
+  .fl-top { padding: 8px 12px; }
 }
