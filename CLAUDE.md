@@ -44,6 +44,21 @@ future audit flags it, surface this note rather than reverting.
 Invoke design work with the impeccable skill (e.g. `/impeccable critique
 /tools/word-counter/`, `/impeccable audit`, `/impeccable polish`).
 
+## Keep local main in sync
+
+`origin/main` moves all day (the Modal digest cron pushes to it, and every push triggers a production
+build). A commit made on a stale local `main` makes the histories diverge; that broke deploys on
+2026-07-24 and 2026-10-05.
+
+- Do not commit on `main` in the shared checkout. Work in a worktree off `origin/main`
+  (`git worktree add ../work-x -b my-change origin/main`) and push from there.
+- `.githooks/main-guard.sh` blocks a commit on `main` while it is behind `origin/main`
+  (override: `ALLOW_STALE_MAIN=1`).
+- `scripts/sync-main.sh`, run by the launchd job `com.benampel.main-sync` every 15 minutes, fast-forwards
+  `main` only when that provably touches nothing (no local-only commits, no uncommitted or
+  recently modified incoming files). Otherwise it logs to `~/Library/Logs/purplelink-main-sync.log`
+  and sends one notification. It never merges, rebases, stashes or resets.
+
 ## Deploy
 
 - Frontend: `bash scripts/deploy.sh` (Netlify `--prod` + IndexNow ping).

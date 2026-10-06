@@ -1,4 +1,7 @@
 #!/bin/bash
+# 1) main-staleness guard (see main-guard.sh), 2) generated-digest guard below.
+"$(cd "$(dirname "$0")" && pwd)/main-guard.sh" "$@" || exit $?
+
 # Guard: the daily digest pages are generated and published by the Modal cron,
 # which commits them from its own throwaway clone. Committing them again from a
 # local working copy creates a second commit with the same content and a
