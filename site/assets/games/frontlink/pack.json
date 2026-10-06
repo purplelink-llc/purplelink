@@ -1,3 +1,13 @@
 {
-  "sprites": []
+  "sprites": [
+    "unit-infantry-player",
+    "unit-infantry-enemy",
+    "unit-tank-player",
+    "unit-tank-enemy",
+    "unit-artillery-player",
+    "unit-artillery-enemy",
+    "fx-hit",
+    "fx-explosion",
+    "fx-flag"
+  ]
 }

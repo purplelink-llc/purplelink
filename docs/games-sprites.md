@@ -5,6 +5,8 @@ Each game has its own section below.
 
 ## Frontlink
 
+Current art: the unit, effect and flag sprites are cut from `docs/art-source/frontlink-sheet.webp` by `python3 scripts/build_sprites.py frontlink`, which also writes `pack.json`. The isometric terrain tiles on that sheet do not fit the square board, so terrain stays vector.
+
 Frontlink draws every tile, unit and effect as inline SVG built by `site/games/frontlink.js`. The sprite layer lets
 WebP art replace any single piece of that drawing.
 
