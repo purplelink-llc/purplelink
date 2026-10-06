@@ -7,6 +7,11 @@
     "shell-heavy",
     "shell-cluster",
     "explosion",
-    "grass-strip"
+    "grass-strip",
+    "bg-far",
+    "bg-near",
+    "bg-far-day",
+    "bg-near-day",
+    "terrain-tile"
   ]
 }

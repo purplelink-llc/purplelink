@@ -404,7 +404,7 @@
   //   barrel                   pointing right, anchor on the pivot; drawn under the tank so the turret can cover its base.
   //   shell-normal / -heavy / -cluster  pointing right, anchor at the centre; the cluster art is also the bomblet (drawn small).
   //   explosion                6 frames side by side; the frame is centred on the blast and drawn 2.6 crater radii wide.
-  //   bg-far, bg-near          the whole field plus a 12 unit margin (824 by 424 units, 2 px per unit), far opaque, near
+  //   bg-far, bg-near          (dark theme; bg-far-day and bg-near-day are the light-theme pair) the whole field plus a 12 unit margin (824 by 424 units, 2 px per unit), far opaque, near
   //                            transparent above its hills.
   //   terrain-tile             seamless, tiled at 128 by 128 units, opaque; lighting and craters are still painted over it.
   //   grass-strip              seamless along x, 64 units long; the surface line sits at anchor y.
@@ -419,6 +419,8 @@
     "explosion":     { url: "explosion.webp",     w: 1536, h: 256, anchor: [128, 128], frames: 6 },
     "bg-far":        { url: "bg-far.webp",        w: 1648, h: 848, anchor: [0, 0],     frames: 1 },
     "bg-near":       { url: "bg-near.webp",       w: 1648, h: 848, anchor: [0, 0],     frames: 1 },
+    "bg-far-day":    { url: "bg-far-day.webp",    w: 1648, h: 848, anchor: [0, 0],     frames: 1 },
+    "bg-near-day":   { url: "bg-near-day.webp",   w: 1648, h: 848, anchor: [0, 0],     frames: 1 },
     "terrain-tile":  { url: "terrain-tile.webp",  w: 384,  h: 384, anchor: [0, 0],     frames: 1 },
     "grass-strip":   { url: "grass-strip.webp",   w: 192,  h: 36,  anchor: [0, 12],    frames: 1 }
   };
@@ -630,7 +632,7 @@
   }
   function renderBack(p) {
     layA = layerOf(layA); layB = layerOf(layB);
-    var c = layA.getContext("2d"), far = sprite("bg-far"), near = sprite("bg-near"), i;
+    var c = layA.getContext("2d"), far = sprite(p.night ? "bg-far" : "bg-far-day"), near = sprite(p.night ? "bg-near" : "bg-near-day"), i;
     if (far) c.drawImage(far.img, -OV, -OV, W + 2 * OV, H + 2 * OV);
     else {
       var g = c.createLinearGradient(0, -OV, 0, H + OV);
@@ -682,7 +684,7 @@
   }
   // a few stars near the top of the sky twinkle over the finished picture (kept above any hill)
   function drawTwinkle(c, p, T) {
-    if (!T || p.starA < 0.02 || sprite("bg-far")) return;
+    if (!T || p.starA < 0.02 || sprite("bg-far") || sprite("bg-far-day")) return;
     var i, st;
     c.fillStyle = p["--tk-sun"];
     for (i = 0; i < sc.stars.length; i++) {

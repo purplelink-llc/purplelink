@@ -105,6 +105,81 @@ def frontlink():
     print("frontlink:", len(names), "sprites,", sum(p.stat().st_size for p in out.glob("*.webp")) // 1024, "KB")
 
 
+def _smooth(a, sigma):
+    return np.dstack([ndi.gaussian_filter(a[..., i], sigma) for i in range(a.shape[2])])
+
+
+def full_background(strip, sky_extend=True, bottom_y=585):
+    """Turn a wide landscape strip into the 1648 x 848 picture the Tanklink field expects (opaque).
+    The strip is scaled to the full width and set low in the picture; the sky above it is its own top row stretched
+    upward (slightly darker toward the top), and the ground below it is its bottom row stretched down."""
+    W, H = 1648, 848
+    strip = strip.crop((4, 5, strip.width - 4, strip.height - 4))             # the sheet's cut lines leave a thin magenta edge
+    sc = W / strip.width
+    st = strip.convert("RGB").resize((W, round(strip.height * sc)), Image.LANCZOS)
+    a = np.array(st).astype(float); h = a.shape[0]
+    top = _smooth(a[:6].mean(axis=0, keepdims=True), (0, 40))[0]          # one colour per column, softened sideways
+    bot = _smooth(a[-6:].mean(axis=0, keepdims=True), (0, 60))[0]
+    y0 = bottom_y - h
+    canvas = np.zeros((H, W, 3))
+    # continue the strip's own sky gradient upward: the top 18 rows of the strip show how its colour changes with height
+    rows = a[:max(30, h // 4)].mean(axis=1)
+    slope = (rows[min(len(rows) - 1, 28)] - rows[0]) / 28.0                  # colour change per pixel going down
+    dist = (y0 - np.arange(y0))[:, None]                                    # pixels above the strip
+    offset = np.clip(-slope[None, :] * 220 * np.tanh(dist / 260.0), -38, 38)     # keep going the same way, but flatten out and stay gentle
+    canvas[:y0] = np.clip(top[None] + offset[:, None, :], 0, 255)
+    canvas[y0:bottom_y] = a
+    canvas[bottom_y:] = _smooth(bot[None], (0, 160))[0][None] * 0.8
+    # soften the seams where the stretched colour meets the picture
+    out = canvas.copy()
+    for yy, span in ((y0, 70), (bottom_y, 24)):
+        lo, hi = max(0, yy - span), min(H, yy + span)
+        blur = _smooth(canvas[lo:hi], (6, 0))
+        wgt = np.clip(1 - np.abs(np.arange(lo, hi) - yy) / span, 0, 1)[:, None, None]
+        out[lo:hi] = canvas[lo:hi] * (1 - wgt * 0.85) + blur * wgt * 0.85
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGB"), y0
+
+
+def near_layer(strip, bottom_y=655):
+    """The nearer hills as a 1648 x 848 layer: the strip's sky is keyed out (flood from the top), the ground below stays."""
+    W, H = 1648, 848
+    strip = strip.crop((4, 5, strip.width - 4, strip.height - 4))
+    sc = W / strip.width
+    st = strip.convert("RGB").resize((W, round(strip.height * sc)), Image.LANCZOS)
+    a = np.array(st).astype(float); h = a.shape[0]
+    model = np.median(a[:, :, :], axis=1)                                      # the typical colour on each row: the sky model
+    d = np.abs(a - model[:, None, :]).sum(axis=2)
+    skyish = d < 70
+    lab, n = ndi.label(skyish)
+    top_labels = set(np.unique(lab[0][lab[0] > 0]))
+    sky = np.isin(lab, list(top_labels))
+    sky = ndi.binary_opening(sky, iterations=2)
+    alpha = ndi.gaussian_filter((~sky).astype(float), 2.0)
+    y0 = bottom_y - h
+    out = np.zeros((H, W, 4), dtype=np.uint8)
+    out[y0:bottom_y, :, :3] = np.clip(a, 0, 255).astype(np.uint8); out[y0:bottom_y, :, 3] = (alpha * 255).astype(np.uint8)
+    bot = np.clip(_smooth(a[-6:].mean(axis=0, keepdims=True), (0, 60))[0] * 0.85, 0, 255).astype(np.uint8)
+    out[bottom_y:, :, :3] = bot[None]; out[bottom_y:, :, 3] = 255
+    return Image.fromarray(out, "RGBA")
+
+
+def seamless_tile(tex, size=384, patches=140, seed=7):
+    """A tile that repeats in both directions: soft-edged random patches of the source texture, pasted with wrap-around."""
+    rng = np.random.default_rng(seed)
+    src = np.array(tex.convert("RGB")).astype(float)
+    sh, sw = src.shape[:2]; ps = min(sh, 110)
+    acc = np.zeros((size, size, 3)); wsum = np.full((size, size, 1), 1e-6)
+    yy, xx = np.mgrid[0:ps, 0:ps]
+    r = np.sqrt(((yy - ps / 2) / (ps / 2)) ** 2 + ((xx - ps / 2) / (ps / 2)) ** 2)
+    mask = np.clip(1.25 - r * 1.15, 0, 1)[..., None] ** 1.5
+    for _ in range(patches):
+        sy = rng.integers(0, sh - ps + 1); sx = rng.integers(0, sw - ps + 1); patch = src[sy:sy + ps, sx:sx + ps]
+        py = rng.integers(0, size); px = rng.integers(0, size)
+        ys = (np.arange(ps) + py) % size; xs = (np.arange(ps) + px) % size
+        acc[np.ix_(ys, xs)] += patch * mask; wsum[np.ix_(ys, xs)] += mask
+    return Image.fromarray(np.clip(acc / wsum, 0, 255).astype(np.uint8), "RGB")
+
+
 def tanklink():
     raw = Image.open(SRC / "tanklink-sheet.webp").convert("RGB")
     solid, fx = key_solid(raw), key_fx(raw)
@@ -152,7 +227,12 @@ def tanklink():
     blend = Image.composite(head, tail, mask.transpose(Image.FLIP_LEFT_RIGHT))
     core.paste(blend, (0, 0)); core = core.crop((0, 0, 394, 74)).resize((384, 72), Image.LANCZOS)
     save(core, out, "grass-strip")
-    names = ["tank-player", "tank-enemy", "barrel", "shell-normal", "shell-heavy", "shell-cluster", "explosion", "grass-strip"]
+    # backgrounds: dusk pair for the dark theme and a daytime pair for the light theme
+    for tag, far_box, near_box in (("", (0, 450, 898, 598), (909, 450, 1774, 598)), ("-day", (0, 606, 899, 757), (909, 606, 1774, 757))):
+        far, y0 = full_background(raw.crop(far_box)); far.save(out / f"bg-far{tag}.webp", "WEBP", quality=82, method=6)
+        near_layer(raw.crop(near_box)).save(out / f"bg-near{tag}.webp", "WEBP", quality=82, method=6)
+    seamless_tile(raw.crop((37, 765, 389, 882))).save(out / "terrain-tile.webp", "WEBP", quality=85, method=6)
+    names = ["tank-player", "tank-enemy", "barrel", "shell-normal", "shell-heavy", "shell-cluster", "explosion", "grass-strip", "bg-far", "bg-near", "bg-far-day", "bg-near-day", "terrain-tile"]
     (out / "pack.json").write_text(json.dumps({"sprites": names}, indent=2) + "\n")
     print("tanklink:", len(names), "sprites,", sum(p.stat().st_size for p in out.glob("*.webp")) // 1024, "KB")
 

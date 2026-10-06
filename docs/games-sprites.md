@@ -65,7 +65,7 @@ Notes for the artist or the prompt:
 
 ## Tanklink
 
-Current art: tanks, barrel, shells, explosion and grass strip are cut from `docs/art-source/tanklink-sheet.webp` by `python3 scripts/build_sprites.py tanklink`, which also writes `pack.json`; the page reads that list and requests only the sprites it names. `bg-far`, `bg-near` and `terrain-tile` are not in the pack yet: the generated backgrounds are 6:1 strips, not the 1648 x 848 pictures the slots expect, and the dirt texture is not seamless. The barrel is one neutral steel sprite shared by both teams.
+Current art: tanks, barrel, shells, explosion and grass strip are cut from `docs/art-source/tanklink-sheet.webp` by `python3 scripts/build_sprites.py tanklink`, which also writes `pack.json`; the page reads that list and requests only the sprites it names. The backgrounds and the dirt tile are built from the sheet's strips: `build_sprites.py` scales each strip to the full width, continues its own sky gradient upward and its ground downward to reach the 1648 x 848 picture, keys the sky out of the nearer-hills strip, and makes the dirt tile seamless by pasting soft-edged patches with wrap-around. There is a dusk pair (`bg-far`, `bg-near`) for the dark theme and a daytime pair (`bg-far-day`, `bg-near-day`) for the light theme. The barrel is one neutral steel sprite shared by both teams.
 
 Code: `site/games/tanklink.js` (the `SPRITES` manifest and `drawSprite`). Files go in `site/assets/games/tanklink/` and are
 served from `/assets/games/tanklink/<name>.webp`. They load lazily, about 400 ms after the page is ready, and each one is
