@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.0.1.dmg",
-  "releaseNotes": "A Mac Suite license now shows as Lifetime (Mac Suite) in Vitae Plus settings, with no price, renewal date or subscription buttons."
+  "version": "1.0.2",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.0.2.dmg",
+  "releaseNotes": "A maintenance release that changes the key used to verify updates. Nothing else is different from 1.0.1, which showed a Mac Suite license as Lifetime (Mac Suite) in Vitae Plus settings."
 }
