@@ -27,6 +27,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
 
+import broadcast
 import chiptune as c
 import scene as sc
 
@@ -262,9 +263,17 @@ def main() -> None:
         log("starting the pipeline" + (" (live)" if a.live else f" -> {out}"))
         rotate = a.rotate_hours * 3600 if a.live and a.rotate_hours > 0 else None
         era = next_era() if a.era == "cycle" else (None if a.era == "mix" else a.era)
+        cancel = threading.Event()
         if a.live:
             log(f"this broadcast: {era or 'mixed eras'}")
+            # YouTube does not reliably open the next broadcast when the encoder returns (2026-10-06:
+            # key active and healthy for hours, no live video), so make sure one exists and stays bound.
+            if broadcast.configured():
+                threading.Thread(target=broadcast.keep, args=(era, cancel, log), daemon=True).start()
+            elif not a.seconds:
+                log("broadcast keeper off: YT_LIVE_TOKEN_JSON is not set, relying on YouTube to open the next broadcast")
         code = run_once(out, a.live, seed, a.seconds, stop, rotate, era)
+        cancel.set()
         if not a.live or stop.is_set():
             sys.exit(code)
         ran = time.time() - started

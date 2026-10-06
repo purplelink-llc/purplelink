@@ -53,3 +53,15 @@ goes in `stream.env` on the server only (git-ignored, chmod 600). Only one machi
 
 Each broadcast is pinned to one era so its replay can carry an honest title: 16-bit, 8-bit, synth, then an all-era mix, repeating. The counter
 lives in `/state/era` (a Docker volume) so a deploy does not repeat an era. `--era mix` (or any single era) overrides the cycle.
+
+## Keeping a broadcast open (`broadcast.py`)
+
+The stream goes silent for ten minutes every 11 hours so YouTube ends and archives the broadcast, then resumes.
+It used to rely on YouTube to open the next broadcast on its own. On 2026-10-06 YouTube did not: the key stayed `active`
+and `good` for hours with no live video. `broadcast.py` now makes sure one broadcast is open on the stream key: right after
+each broadcast starts, again at 2 and 10 minutes, then hourly, it creates and binds a new one (cloned from the newest finished
+broadcast, with the era in the title) if none is open.
+
+It needs a token for the channel that owns the stream, scope `youtube.force-ssl`, as the JSON text on one line in `stream.env`:
+`YT_LIVE_TOKEN_JSON={...}`. Without it the stream runs as before and the log says "broadcast keeper off". Both lines are secrets.
+`python3.12 -m pytest -q test_broadcast.py` checks the logic against a fake service.

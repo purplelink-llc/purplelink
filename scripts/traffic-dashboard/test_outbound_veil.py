@@ -1,5 +1,7 @@
 """Outbound Veil must be its own product line in the dashboard, not fall into "Paper Review & tools"."""
 import sys, time
+import os, tempfile
+os.environ.setdefault("PURPLELINK_TRAFFIC_DIR", tempfile.mkdtemp(prefix="traffic-test-"))   # never touch the real archive
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))

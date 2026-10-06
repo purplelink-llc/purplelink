@@ -23,6 +23,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import record_marketplaces as rm  # noqa: E402
 import traffic_dashboard as td  # noqa: E402
 
+# traffic_dashboard may already have been imported by another test module, with a different data folder.
+# Refuse to run rather than write invented orders into the real archive.
+assert str(td.MARKETPLACES_PATH).startswith(tempfile.gettempdir()) or "traffic-test-" in str(td.MARKETPLACES_PATH), \
+    f"test data folder is not a temp dir: {td.MARKETPLACES_PATH}"
+
 NOW = dt.datetime.now()
 TODAY = NOW.strftime("%b %d, %Y").replace(" 0", " ")
 
