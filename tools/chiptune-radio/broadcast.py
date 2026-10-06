@@ -21,6 +21,8 @@ import datetime
 import json
 import os
 import threading
+import time
+from pathlib import Path
 from typing import Callable
 
 CHECKS_AFTER_START = (0, 120, 600)          # seconds; then every `hourly` seconds
@@ -48,8 +50,9 @@ TAGS = [
 
 
 def title_for(era: str | None) -> str:
-    """Keywords first (study music, lofi chiptune, focus radio, pomodoro timer); the era makes each replay's title honest."""
-    return f"24/7 {ERA_LABEL.get(era, ERA_LABEL[None])} Study Music | Lofi Chiptune Focus Radio with Pomodoro Timer (25/5)"[:100]
+    """Keywords first (study music, lofi, beats to focus to, pomodoro timer) with the red-dot and book emoji the biggest study
+    streams use (checked 2026-10-06); the era makes each replay's title honest."""
+    return f"\U0001F534 24/7 {ERA_LABEL.get(era, ERA_LABEL[None])} Study Music \U0001F4DA Lofi Beats to Focus to | Pomodoro Timer (25/5)"[:100]
 
 
 def description_for(era: str | None) -> str:
@@ -128,7 +131,8 @@ def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
     open_now = [b for b in items if b["status"]["lifeCycleStatus"] in STILL_OPEN]
     if open_now:
         b = open_now[0]
-        return f"already open: {b['id']} ({b['status']['lifeCycleStatus']}), metadata {refresh_metadata(yt, b['id'], era, log)}"
+        meta = refresh_metadata(yt, b["id"], era, log)
+        return f"already open: {b['id']} ({b['status']['lifeCycleStatus']}), metadata {meta}, thumbnail {set_thumbnail(yt, b['id'], log)}"
 
     finished = [b for b in items if b["status"]["lifeCycleStatus"] == "complete"]
     tmpl = finished[0] if finished else (items[0] if items else None)
@@ -153,6 +157,7 @@ def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
             "monitorStream": {"enableMonitorStream": True},
         }}).execute()
     yt.liveBroadcasts().bind(id=created["id"], part="id,contentDetails", streamId=stream_id).execute()
+    thumb = set_thumbnail(yt, created["id"], log)
 
     # The broadcast's video starts with no category, tags or language. File it under Music and add the tags.
     # Search metadata is worth having but must never undo or hide the broadcast that now exists.
@@ -162,7 +167,67 @@ def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
             "tags": TAGS, "defaultLanguage": "en"}}).execute()
     except Exception as e:  # noqa: BLE001
         log(f"broadcast {created['id']}: tags and category not set ({type(e).__name__})")
-    return f"created {created['id']} \"{title_for(era)}\""
+    return f"created {created['id']} \"{title_for(era)}\", thumbnail {thumb}"
+
+
+THUMBNAIL = Path(__file__).with_name("thumbnail.png")
+_thumb_done: set[str] = set()                # broadcasts whose thumbnail this process has already set (it costs 50 quota units)
+
+
+def set_thumbnail(yt, video_id: str, log: Callable[[str], None] = print) -> str:
+    """Put the custom thumbnail on a broadcast, once per process. YouTube only allows custom thumbnails on channels
+    that have verified a phone number, so a refusal is logged and the stream carries on with its automatic one."""
+    if video_id in _thumb_done:
+        return "already set"
+    if not THUMBNAIL.exists():
+        return "no thumbnail file"
+    try:
+        from googleapiclient.http import MediaFileUpload
+        yt.thumbnails().set(videoId=video_id, media_body=MediaFileUpload(str(THUMBNAIL), mimetype="image/png")).execute()
+        _thumb_done.add(video_id)
+        return "set"
+    except Exception as e:  # noqa: BLE001
+        _thumb_done.add(video_id)                # do not retry every hour: a refusal will not change on its own
+        log(f"thumbnail for {video_id} not set ({type(e).__name__}: {str(e)[:120]})")
+        return "refused"
+
+
+CHAT_LINES = [
+    "\U0001F345 New focus block: 25 minutes. Phone away, music on. Enjoying the radio? Like \U0001F44D and subscribe \U0001F514 so it stays on the air.",
+    "\U0001F345 Focus time! 25 minutes of quiet work, then a 5-minute break. Share this with a friend who is studying \U0001F501",
+    "\U0001F345 Back to it: 25 minutes. Tell us in chat what you are working on today \U0001F4DD",
+    "\U0001F345 Focus block starting. Deep breath, one task. If this helps, a like \U0001F44D or a subscribe \U0001F514 means a lot.",
+]
+
+
+def post_chat(yt, text: str) -> str:
+    """Say something in the live chat of the broadcast that is open right now."""
+    items = yt.liveBroadcasts().list(part="snippet,status", mine=True, maxResults=10).execute().get("items", [])
+    live = [b for b in items if b["status"]["lifeCycleStatus"] == "live" and b["snippet"].get("liveChatId")]
+    if not live:
+        return "no live chat open"
+    yt.liveChatMessages().insert(part="snippet", body={"snippet": {
+        "liveChatId": live[0]["snippet"]["liveChatId"], "type": "textMessageEvent",
+        "textMessageDetails": {"messageText": text[:200]}}}).execute()
+    return "posted"
+
+
+def chat_loop(cancel: threading.Event, log: Callable[[str], None] = print, now: Callable[[], float] = time.time,
+              post_fn=None) -> None:
+    """One short message at the top of every hour, which is the start of a focus block (they begin at :00 and :30 UTC).
+    Hourly, not every block: a chat post costs 20 quota units and the API quota is shared with the upload pipelines.
+    The wording rotates so no two neighbouring messages are the same."""
+    n = int(now() // 3600)
+    while not cancel.is_set():
+        wait = 3600 - (now() % 3600) + 5                     # five seconds past the hour, when the new block has begun
+        if cancel.wait(wait):
+            return
+        n += 1
+        try:
+            result = (post_fn or (lambda t: post_chat(_service(), t)))(CHAT_LINES[n % len(CHAT_LINES)])
+            log(f"chat message: {result}")
+        except Exception as e:  # noqa: BLE001 - chat is a nicety; never let it touch the stream
+            log(f"chat message failed: {type(e).__name__}: {str(e)[:120]}")
 
 
 def keep(era: str | None, cancel: threading.Event, log: Callable[[str], None] = print,

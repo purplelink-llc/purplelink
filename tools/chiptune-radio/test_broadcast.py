@@ -13,6 +13,7 @@ class FakeYT:
     def __init__(self, broadcasts):
         self.items = broadcasts
         self.created, self.bound, self.updated = [], [], []
+        self.thumbs, self.chats, self.thumb_error = [], [], None
         self.snippet = {"description": "old", "categoryId": "10", "tags": ["a"], "title": "old"}
 
     def liveBroadcasts(self):
@@ -32,6 +33,20 @@ class FakeYT:
         class LS:
             def list(self, **kw): return _Call(lambda: {"items": [{"id": "STREAM"}]})
         return LS()
+
+    def thumbnails(self):
+        yt = self
+        class T:
+            def set(self, videoId, media_body):
+                if yt.thumb_error: raise RuntimeError(yt.thumb_error)
+                yt.thumbs.append(videoId); return _Call(lambda: {})
+        return T()
+
+    def liveChatMessages(self):
+        yt = self
+        class C:
+            def insert(self, part, body): yt.chats.append(body["snippet"]); return _Call(lambda: {})
+        return C()
 
     def videos(self):
         yt = self
@@ -113,3 +128,46 @@ def test_open_broadcast_gets_current_metadata_only_when_it_differs():
     n = len(yt.updated)
     assert "metadata current" in broadcast.ensure("8bit", yt=yt)
     assert len(yt.updated) == n and not yt.created
+
+
+def test_new_title_leads_with_the_red_dot_and_the_search_terms():
+    for era in ("16bit", "8bit", "synth", None):
+        title = broadcast.title_for(era)
+        assert title.startswith("\U0001F534 24/7 ") and "Study Music" in title and "Lofi Beats to Focus to" in title and len(title) <= 100
+
+
+def test_thumbnail_is_set_once_per_broadcast_and_a_refusal_never_raises():
+    broadcast._thumb_done.clear()
+    yt = FakeYT([_b("OLD", "complete")])
+    assert broadcast.ensure("8bit", yt=yt).endswith("thumbnail set")
+    assert yt.thumbs == ["NEW1"]
+    assert broadcast.set_thumbnail(yt, "NEW1") == "already set" and yt.thumbs == ["NEW1"]
+    yt2 = FakeYT([_b("CUR", "live")]); yt2.thumb_error = "channel not verified"
+    assert broadcast.set_thumbnail(yt2, "CUR", log=lambda m: None) == "refused"
+    assert broadcast.set_thumbnail(yt2, "CUR", log=lambda m: None) == "already set"      # no retry every hour
+
+
+def test_chat_posts_only_into_a_live_broadcasts_chat():
+    live = _b("CUR", "live"); live["snippet"]["liveChatId"] = "CHAT1"
+    yt = FakeYT([live])
+    assert broadcast.post_chat(yt, "hello") == "posted"
+    assert yt.chats == [{"liveChatId": "CHAT1", "type": "textMessageEvent", "textMessageDetails": {"messageText": "hello"}}]
+    assert broadcast.post_chat(FakeYT([_b("OLD", "complete")]), "hello") == "no live chat open"
+    assert all(len(line) <= 200 for line in broadcast.CHAT_LINES) and len(set(broadcast.CHAT_LINES)) == len(broadcast.CHAT_LINES)
+
+
+def test_chat_loop_fires_five_seconds_past_each_hour_and_survives_errors():
+    clock = {"t": 1_000_000 * 3600 + 1800.0}                     # half past an hour
+    waits, said = [], []
+    cancel = threading.Event()
+    def fake_wait(s):
+        waits.append(round(s)); clock["t"] += s
+        return len(waits) > 3                                    # let three hours go by, then cancel
+    cancel.wait = fake_wait
+    def post(text):
+        said.append(text)
+        if len(said) == 2: raise RuntimeError("quota")
+        return "posted"
+    broadcast.chat_loop(cancel, log=lambda m: None, now=lambda: clock["t"], post_fn=post)
+    assert waits[0] == 1805 and waits[1:3] == [3600, 3600]       # 25 min to the hour plus 5 s, then hourly
+    assert len(said) == 3 and len(set(said)) == 3                # errors do not stop it, and the wording rotates

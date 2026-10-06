@@ -282,6 +282,7 @@ def main() -> None:
             # key active and healthy for hours, no live video), so make sure one exists and stays bound.
             if broadcast.configured():
                 threading.Thread(target=broadcast.keep, args=(era, cancel, log), daemon=True).start()
+                threading.Thread(target=broadcast.chat_loop, args=(cancel, log), daemon=True).start()
             elif not a.seconds:
                 log("broadcast keeper off: YT_LIVE_TOKEN_JSON is not set, relying on YouTube to open the next broadcast")
         code = run_once(out, a.live, seed, a.seconds, stop, rotate, era)
