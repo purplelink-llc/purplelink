@@ -430,7 +430,7 @@
     sprStarted = true;
     var miss = {};
     try { miss = JSON.parse(host.sessionStorage.getItem("tk-sprite-miss") || "{}") || {}; } catch (e) { miss = {}; }
-    // pack.json lists the sprites that exist, so nothing else is requested (same as Frontlink)
+    // pack.json lists the sprites that exist, so nothing else is requested 
     if (typeof host.fetch !== "function") return;
     host.fetch(SPRITE_BASE + "pack.json").then(function (r) { return r.ok ? r.json() : { sprites: [] }; }).catch(function () { return { sprites: [] }; }).then(function (pack) {
     var have = {}; ((pack && pack.sprites) || []).forEach(function (n) { have[n] = 1; });

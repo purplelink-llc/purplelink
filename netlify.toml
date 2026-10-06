@@ -173,6 +173,17 @@
 # `force = true` because the file still exists on disk; without it Netlify
 # would serve the existing file rather than apply this redirect.
 # Backend endpoint names that crawlers lifted from tool JS; send them to the tool pages.
+# Frontlink was briefly a daily game here; it is now a standalone project, so its old address goes to the hub.
+[[redirects]]
+  from = "/games/frontlink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/frontlink"
+  to = "/games/"
+  status = 301
+
 [[redirects]]
   from = "/games/unbeaten/*"
   to = "/games/under-the-cap/:splat"

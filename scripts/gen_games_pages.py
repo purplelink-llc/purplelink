@@ -149,7 +149,7 @@ def page(path, title, desc, body, jsonld, scripts, og_title=None, robots="index,
 EXTRA = [("chess-puzzles", "Chess Puzzles"), ("sudoku-unlimited", "Sudoku Unlimited"), ("leaderboard", "Leaderboards")]
 MORE_DAILY = ["landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"]
 SPORTS_GAMES = ["lockerlink", "gridlink", "under-the-cap"]
-STRATEGY_GAMES = ["tanklink", "frontlink"]
+STRATEGY_GAMES = ["tanklink"]
 ORDER = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword", "daily-stars"]
 BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
@@ -174,12 +174,11 @@ TAGLINE = {
     "gridlink": "Fill a 3 by 3 grid of teams, decades, awards and teammates.",
     "under-the-cap": "Build a roster from any era and play a perfect season.",
     "tanklink": "Aim, fire and outsmart the wind in a quick round of artillery.",
-    "frontlink": "Six days, three units. Take the hill in a very short tactics battle.",
     "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
     "sudoku-unlimited": "Unlimited Sudoku in five levels, with a rating.",
     "leaderboard": "The top ratings in chess, Sudoku and the sports games, and this week's climbers.",
 }
-MINUTES = {"tanklink": 3, "frontlink": 3, "lockerlink": 4, "gridlink": 4, "under-the-cap": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
+MINUTES = {"tanklink": 3, "lockerlink": 4, "gridlink": 4, "under-the-cap": 5, "thinkerlink": 3, "riverlink": 3, "wildlink": 3, "citylink": 3, "peaklink": 3, "codelink": 3, "landlink": 3, "atomlink": 3, "prizelink": 3, "chess-puzzles": 2, "sudoku-unlimited": 10, "leaderboard": 1, "linkle": 3, "quadlink": 5, "daily-five": 2, "daily-photo": 2, "daily-chess": 3, "sudoku": 12, "crossword": 10, "daily-stars": 1}
 USE = '<svg class="gl" aria-hidden="true" focusable="false"><use href="/games/glyphs.svg#{}"/></svg>'
 
 
@@ -1588,23 +1587,6 @@ def body_of(slug, prose, faq_items, title):
       </div>""")
 
 
-FL_FAQ = [
-    ("How do I win Frontlink?", "Destroy every enemy unit, or end a day with your infantry on the enemy base and still alive after the enemy has moved. You lose if all your units die, the enemy infantry holds your base through your next day, or the sixth day ends without a win."),
-    ("What do the units do?", "Infantry moves 3 and can capture the base. A tank moves 4 and hits hard up close. Artillery moves 2 and fires at range 2 to 3, but not on a day it moved. Forest costs 2 to enter and gives one cover star, a mountain costs 3 for infantry only and gives two, and water blocks every unit."),
-    ("How is damage worked out?", "Damage is the base value for that matchup, times the attacker's health out of 10, reduced by 10 percent for each cover star the defender has, scaled by the defender's health. A surviving defender hits back with its remaining health, but only from inside its own range. Artillery never answers an attack from the tile beside it. The game shows the expected damage and counterattack before you confirm."),
-    ("Is there any luck?", "No. The map comes from the date, the enemy follows fixed rules, and the same moves always give the same result. Everyone plays the same battle on the same day."),
-    ("What does the share result show?", "One square per day you played: a filled square if you destroyed an enemy unit that day, a dotted square if you only damaged one, and an empty square otherwise. The share link shows the result as a picture."),
-]
-FL_PROSE = """        <h2>How it works</h2>
-        <p>You have three units and six days. Each day, every unit can move and then act once: attack, wait, or capture. When you end the day, each enemy unit acts once by fixed rules. The enemy base is in the top right and yours is bottom left. A new map arrives at midnight, and each weekday changes the armies or the terrain.</p>
-        <h2>Questions</h2>
-""" + faq_html(FL_FAQ)
-page("games/frontlink/", "", "", body_of("frontlink", FL_PROSE, FL_FAQ, "Frontlink"),
-     {"@context": "https://schema.org", "@graph": [
-         game_app("Frontlink", "https://purplelink.llc/games/frontlink/", "A free daily tactics game: command three units and take the enemy base in six days."),
-         faq(FL_FAQ),
-         crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Frontlink", "https://purplelink.llc/games/frontlink/"))]},
-     ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/frontlink.js"])
 
 
 TK_FAQ = [
@@ -1685,7 +1667,7 @@ HUB_BODY = """      <div class="games-wrap hub">
         </section>
         <section class="more" aria-labelledby="strat-h">
           <h2 id="strat-h">Strategy</h2>
-          <p class="week-sub">Two very short battles with a new map every day: aim an artillery shot against the wind, or command three units for six days.</p>
+          <p class="week-sub">A new artillery map every day: set your angle and power, read the wind and destroy the enemy tanks.</p>
           <div class="tiles">
 """ + "".join(tile(sl) for sl in STRATEGY_GAMES) + """          </div>
         </section>

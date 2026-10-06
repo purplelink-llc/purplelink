@@ -81,7 +81,4 @@
   <symbol id="tanklink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="13.6" width="14.4" height="4.6" rx="2.3"/><rect x="6.2" y="9.6" width="7.6" height="4.4" rx="2"/><path d="M12.6 10.6 19 6.4"/><circle cx="21" cy="5.4" r="1" fill="currentColor" stroke="none"/><path d="M2.6 20.6h18.8"/>
   </symbol>
-  <symbol id="frontlink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/><path d="M17.2 4.6v3.4l2-.9-2-.9" /><circle cx="6" cy="18" r="1.2" fill="currentColor" stroke="none"/>
-  </symbol>
 </svg>

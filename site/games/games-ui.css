@@ -38,7 +38,6 @@
 [data-g="gridlink"] { --gh: 150; }
 [data-g="under-the-cap"] { --gh: 20; }
 [data-g="tanklink"] { --gh: 75; }
-[data-g="frontlink"] { --gh: 255; }
 
 .gl { width: 1.5em; height: 1.5em; flex: none; }
 .gl-sm { width: 1em; height: 1em; }

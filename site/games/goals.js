@@ -32,8 +32,7 @@
     { id: "lockerlink", name: "Lockerlink", path: "/games/lockerlink/", min: 4, kind: "sports" },
     { id: "gridlink", name: "Gridlink", path: "/games/gridlink/", min: 4, kind: "sports" },
     { id: "under-the-cap", name: "Under the Cap", path: "/games/under-the-cap/", min: 5, kind: "sports" },
-    { id: "tanklink", name: "Tanklink", path: "/games/tanklink/", min: 3, kind: "strategy" },
-    { id: "frontlink", name: "Frontlink", path: "/games/frontlink/", min: 3, kind: "strategy" }
+    { id: "tanklink", name: "Tanklink", path: "/games/tanklink/", min: 3, kind: "strategy" }
   ];
   var BY = {}; GAMES.concat(MORE).forEach(function (g) { BY[g.id] = g; });
   var QUICK_FIRST = ["daily-stars", "daily-photo", "daily-five", "daily-chess", "linkle", "quadlink", "crossword", "sudoku"];

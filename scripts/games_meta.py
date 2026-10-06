@@ -339,21 +339,6 @@ GAMES = {
               "Old teammates add chemistry, so a pair from the same great team can beat two stronger strangers.",
               "Ratings come mostly from career honors such as All-Star selections, MVPs and titles, and do not adjust for era."],
         related=["lockerlink", "gridlink", "daily-five"], og_photo="dsc-3940"),
-    "games/frontlink/": dict(
-        slug="frontlink", name="Frontlink", genre="Strategy game", minutes=3,
-        title="Frontlink: a free daily tactics battle in six days",
-        desc="Command an infantry, a tank and an artillery unit on a small map and take the enemy base in six days. A very short turn-based tactics game, free, with a new map every day.",
-        answer="Frontlink is a free daily tactics game in the spirit of Advance Wars, shrunk to a few minutes. You command three units on a seven by six map and have six days to destroy the enemy or hold their base. The map is the same for everyone and changes at midnight, with a different twist each weekday.",
-        features=["Infantry, tank and artillery on a seven by six map", "Six days to win, with a predicted damage readout before every attack", "A new map and a weekday twist every day", "Playable with the keyboard alone", "Free, no account needed"],
-        steps=[("Select a unit", "Tap or press Enter on one of your units to see where it can move."),
-               ("Move and act", "Pick a tile, then attack, wait or cancel. Artillery cannot move and fire in the same day."),
-               ("Check the preview", "Before you attack, the game shows the damage you will deal and the counterattack you will take."),
-               ("End the day", "The enemy then acts once with fixed rules, with no luck involved. Take the enemy base or destroy every enemy unit within six days.")],
-        tips=["Forest and mountain cut the damage a unit takes, so fight from cover and let the enemy come to you.",
-              "Artillery never answers an attacker standing next to it, so keep infantry or a tank in front of it.",
-              "The enemy is predictable. Each unit goes for the target it can hurt most, so you can bait it onto open ground.",
-              "An infantry on the enemy base for a full turn wins the game, so a quiet flank can beat a head-on fight."],
-        related=["tanklink", "gridlink", "linkle"], og_photo="dsc-3940"),
     "games/tanklink/": dict(
         slug="tanklink", name="Tanklink", genre="Strategy game", minutes=3,
         title="Tanklink: a free daily artillery game, like Worms or Tanks",
@@ -368,7 +353,7 @@ GAMES = {
               "Terrain blocks shells, so a high angle can clear a ridge that a flat shot would hit.",
               "A crater next to an enemy can drop it off a ledge or expose it to the next shot.",
               "Spend the heavy shell when you are close, since its big blast forgives a small miss."],
-        related=["frontlink", "gridlink", "linkle"], og_photo="dsc-3940"),
+        related=["gridlink", "linkle", "daily-five"], og_photo="dsc-3940"),
 }
 
 HUB = dict(

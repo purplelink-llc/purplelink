@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Cut the generated art sheets in docs/art-source/ into the WebP sprites the games load.
 
-  python3 scripts/build_sprites.py frontlink      # writes site/assets/games/frontlink/*.webp and pack.json
   python3 scripts/build_sprites.py tanklink       # writes site/assets/games/tanklink/*.webp and pack.json
 
 The sheets are flat magenta (#FF00FF) backgrounds with one sprite per cell. Boxes below are pixel regions of those
@@ -67,42 +66,6 @@ def save(img, folder, name, q=88):
     folder.mkdir(parents=True, exist_ok=True)
     img.save(folder / f"{name}.webp", "WEBP", quality=q, method=6)
 
-
-def frontlink():
-    raw = Image.open(SRC / "frontlink-sheet.webp").convert("RGB")
-    solid, fx = key_solid(raw), key_fx(raw)
-    out = OUT / "frontlink"; names = []
-    units = {"infantry": ((363, 347, 527, 517), (590, 349, 753, 517)),
-             "tank": ((787, 337, 1065, 546), (1158, 320, 1439, 546)),
-             "artillery": ((30, 572, 281, 769), (325, 572, 575, 769))}
-    for kind, (p, e) in units.items():
-        # the sheet draws every unit facing right; the game does not mirror, so enemy units are flipped to face left
-        save(fit(solid.crop(p), 108, 92, bottom=118), out, f"unit-{kind}-player"); names.append(f"unit-{kind}-player")
-        save(fit(solid.crop(e), 108, 92, bottom=118, flip=True), out, f"unit-{kind}-enemy"); names.append(f"unit-{kind}-enemy")
-    def strip(boxes, scales):
-        sheet = Image.new("RGBA", (384, 128), (0, 0, 0, 0))
-        for i, (b, sc) in enumerate(zip(boxes, scales)):
-            sheet.alpha_composite(fit(fx.crop(b), 124, 124, scale=None if sc is None else sc), (i * 128, 0))
-        return sheet
-    # the hit spark is one drawing on the sheet: frames are it small, full size and faded
-    spark = fx.crop((580, 585, 780, 780)); hit = Image.new("RGBA", (384, 128), (0, 0, 0, 0))
-    for i, sc in enumerate((0.34, 0.56, 0.45)):
-        f = fit(spark, 124, 124, scale=sc)
-        if i == 2: f.putalpha(f.getchannel("A").point(lambda v: int(v * 0.55)))
-        hit.alpha_composite(f, (i * 128, 0))
-    save(hit, out, "fx-hit")
-    boxes = [(805, 606, 1011, 784), (1025, 566, 1284, 797), (1290, 575, 1510, 785)]
-    sheet = Image.new("RGBA", (384, 128), (0, 0, 0, 0))
-    for i, b in enumerate(boxes): sheet.alpha_composite(fit(fx.crop(b), 124, 124), (i * 128, 0))
-    save(sheet, out, "fx-explosion")
-    # flag: crop the pole and cloth, drop the ground patch, and put the pole's foot on the manifest anchor (30, 118)
-    flag = solid.crop((675 + 40, 779, 866, 779 + 150)); sc = 0.45
-    fp = flag.resize((round(flag.width * sc), round(flag.height * sc)), Image.LANCZOS)
-    frame = Image.new("RGBA", (128, 128), (0, 0, 0, 0)); frame.alpha_composite(fp, (30 - round(50 * sc), 118 - round(136 * sc)))
-    save(frame, out, "fx-flag")
-    names += ["fx-hit", "fx-explosion", "fx-flag"]
-    (out / "pack.json").write_text(json.dumps({"sprites": names}, indent=2) + "\n")
-    print("frontlink:", len(names), "sprites,", sum(p.stat().st_size for p in out.glob("*.webp")) // 1024, "KB")
 
 
 def _smooth(a, sigma):
@@ -238,4 +201,4 @@ def tanklink():
 
 
 if __name__ == "__main__":
-    {"frontlink": frontlink, "tanklink": tanklink}[sys.argv[1]]()
+    {"tanklink": tanklink}[sys.argv[1]]()
