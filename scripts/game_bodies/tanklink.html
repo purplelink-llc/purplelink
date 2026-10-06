@@ -1,0 +1,62 @@
+      <div class="games-wrap">
+        <div class="game-head">
+          <h1>Tanklink</h1>
+          <span class="game-num" id="tk-number"></span>
+        </div>
+        <p class="game-lede">One artillery duel a day. Everyone gets the same map. Set the angle, power and weapon, fire, and destroy every enemy tank in eight shots.</p>
+        <p id="tk-loading" class="games-note">Loading today's map.</p>
+        <div id="tk-game" hidden>
+          <p class="wg-twist" id="tk-twist" hidden><strong id="tk-twist-name"></strong> <span id="tk-twist-text"></span></p>
+          <div class="tk-play" id="tk-play">
+            <div class="tk-hud">
+              <span class="tk-chip" id="tk-shotn"></span>
+              <span class="tk-chip" id="tk-armor"></span>
+              <span class="tk-chip" id="tk-foes"></span>
+              <span class="tk-chip"><span class="tk-wind-arrow" id="tk-wind-arrow" aria-hidden="true"></span><span id="tk-wind"></span></span>
+              <span class="tk-chip" id="tk-grav" hidden>Gravity 0.6 of normal</span>
+            </div>
+            <div class="tk-field">
+              <canvas class="tk-canvas" id="tk-canvas" width="800" height="400" tabindex="0" role="img" aria-label="Artillery field. Loading."></canvas>
+            </div>
+            <p class="tk-status" id="tk-status" role="status" aria-live="polite"></p>
+            <div class="tk-controls" id="tk-controls">
+              <div class="tk-ctl">
+                <div class="tk-ctl-head"><label for="tk-angle">Angle</label><output id="tk-angle-out" for="tk-angle"></output></div>
+                <input class="tk-range" type="range" id="tk-angle" min="0" max="180" step="1" value="135">
+              </div>
+              <div class="tk-ctl">
+                <div class="tk-ctl-head"><label for="tk-power">Power</label><output id="tk-power-out" for="tk-power"></output></div>
+                <input class="tk-range" type="range" id="tk-power" min="10" max="100" step="1" value="60">
+              </div>
+              <div class="tk-weapons" role="group" aria-label="Weapon">
+                <button type="button" class="btn btn-ghost tk-weapon" id="tk-w-shell" aria-pressed="true" aria-keyshortcuts="1"><span class="tk-w-name">Shell</span><span class="tk-w-n"></span></button>
+                <button type="button" class="btn btn-ghost tk-weapon" id="tk-w-heavy" aria-pressed="false" aria-keyshortcuts="2"><span class="tk-w-name">Heavy</span><span class="tk-w-n"></span></button>
+                <button type="button" class="btn btn-ghost tk-weapon" id="tk-w-cluster" aria-pressed="false" aria-keyshortcuts="3"><span class="tk-w-name">Cluster</span><span class="tk-w-n"></span></button>
+              </div>
+              <button type="button" class="btn btn-primary tk-fire" id="tk-fire">Fire</button>
+              <p class="games-note tk-keys">Keys: Left and Right set the angle, Up and Down set the power, 1, 2 and 3 pick the weapon, Space or Enter fires. Hold Shift for bigger steps. With a mouse you can also drag from the canvas to aim.</p>
+            </div>
+          </div>
+          <section class="game-result" id="tk-result" hidden aria-labelledby="tk-result-head">
+            <h2 id="tk-result-head"></h2>
+            <p class="game-reveal" id="tk-reveal"></p>
+            <p class="tk-squares" id="tk-squares" role="img"></p>
+            <p class="games-note tk-legend">■ a hit, ▣ a miss within about three tank widths, □ a miss.</p>
+            <div class="game-statline">
+              <div><b id="tk-played">0</b><span>Days played</span></div>
+              <div><b id="tk-winpct">0%</b><span>Win rate</span></div>
+              <div><b id="tk-streak">0</b><span>Streak</span></div>
+              <div><b id="tk-max">0</b><span>Best streak</span></div>
+            </div>
+            <p class="game-pct" id="tk-avg"></p>
+            <p class="game-pct" id="tk-pct"></p>
+            <p class="game-pct" id="tk-saver"></p>
+            <ol class="quiz-review tk-review" id="tk-review"></ol>
+            <div class="game-actions">
+              <button type="button" class="btn btn-primary" id="tk-share">Copy result</button>
+              <span class="game-note" id="tk-share-note"></span>
+            </div>
+            <textarea class="wg-share-text" id="tk-share-text" hidden readonly aria-label="Result text"></textarea>
+            <p class="game-next">Next map in <span id="tk-next-in"></span>.</p>
+          </section>
+        </div>
