@@ -49,10 +49,14 @@ class TikTok(unittest.TestCase):
         self.assertEqual(td.tiktok_rewards_by_month([THIS], f), {THIS: 7.75})
 
     def test_account_windows_are_never_summed_and_other_months_stay_apart(self):
+        # Two snapshots of the same rolling 7-day total are one 7.86, not 15.72. The account total (7.86) is larger than
+        # the per-post sum (4.0) because the Monetization page lists only the newest posts, so it wins for this month.
+        # August has no account rows, so its per-post figure stands and the months never mix.
         f = self.csv("2026-10-03,2026-10-03T21:00:00,nl,tiktok,account,Total,Last 7 days,USD,,,7.86,\n"
+                     "2026-10-04,2026-10-04T21:00:00,nl,tiktok,account,Total,Last 7 days,USD,,,7.86,\n"
                      + post("2026-10-04", "old", "2026-08-30T10:00", 3.0) + post("2026-10-04", "new", f"{THIS}-01T10:00", 4.0))
         out = td.tiktok_rewards_by_month(["2026-08", THIS], f)
-        self.assertEqual(out, {"2026-08": 3.0, THIS: 4.0})
+        self.assertEqual(out, {"2026-08": 3.0, THIS: 7.86})
 
     def test_missing_or_garbled_file_reads_zero(self):
         self.assertEqual(td.tiktok_rewards_by_month([THIS], Path(TMP) / "nope.csv"), {THIS: 0.0})
