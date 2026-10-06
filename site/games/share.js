@@ -1,7 +1,7 @@
 /* Sharing a result, in one tap. Every game sets window.PLShareText to a function that returns the result text.
    This turns the page's share button (id ends in "-share") into a Share button that opens the phone's own share
    sheet where there is one, and adds a row of direct options: Message, WhatsApp, X, Facebook, Reddit, Email and Copy.
-   Every message ends with a link to the game, tagged ?from=share-<channel> so we can count what sharing brings back. */
+   Every message is the result's headline and a link whose preview image is the result card (see compose); the link lands on the game tagged ?from=share-<channel> so we can count what sharing brings back. */
 (function () {
   "use strict";
   var G = window.PLGames;
@@ -14,9 +14,21 @@
     var base = (m ? m[1] : location.origin + location.pathname).replace(/[?#].*$/, "");
     return { body: body, base: base };
   }
+  // URL-safe base64 of the UTF-8 text; the share link carries the whole result so the preview card can draw it
+  function code(text) {
+    var bytes = new TextEncoder().encode(text), bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  // The message is the headline and a link. The link's preview image (netlify/functions/games-share.mjs) shows the
+  // grid and score, so the squares no longer travel as text. A result with no text keeps the plain game link.
   function compose(channel) {
-    var p = parts(), url = p.base + "?from=share-" + channel;
-    return { body: p.body, url: url, full: p.body + "\n\n" + url, title: (document.getElementById("ag-title") ? document.getElementById("ag-title").textContent : TITLES[slug] || document.title.split(":")[0]) };
+    var p = parts(), head = p.body.split("\n")[0].trim(), c = head ? code(p.body) : "", url;
+    if (c && c.length <= 1700 && /^[a-z0-9-]+$/.test(slug)) url = location.origin + "/games/r/" + slug + "/" + c + "?f=" + channel;
+    else url = p.base + "?from=share-" + channel;
+    // the text keeps the headline and any detail lines; lines that are only squares are left to the image
+    var short = p.body.split("\n").map(function (l) { return l.replace(/^[■▣□]+\s*/, "").trim(); }).filter(Boolean).join("\n") || head || p.body;
+    return { body: short, url: url, full: short + "\n" + url, title: (document.getElementById("ag-title") ? document.getElementById("ag-title").textContent : TITLES[slug] || document.title.split(":")[0]) };
   }
   function enc(s) { return encodeURIComponent(s); }
   function track(channel) { if (G && G.track) G.track("game_share", slug + ":" + channel); }

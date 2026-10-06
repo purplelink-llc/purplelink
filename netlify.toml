@@ -13,6 +13,10 @@
 [functions]
   directory = "netlify/functions"
 
+[functions."games-share"]
+  included_files = ["netlify/functions/fonts/**"]
+  external_node_modules = ["@resvg/resvg-js"]
+
 [[headers]]
   for = "/*"
   [headers.values]
