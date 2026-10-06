@@ -109,7 +109,7 @@ def test_open_broadcast_gets_current_metadata_only_when_it_differs():
     assert sent["title"] == broadcast.title_for("8bit") and sent["tags"] == broadcast.TAGS and sent["categoryId"] == "10"
     # once YouTube shows the current text (trailing whitespace is ignored), nothing more is written
     yt.snippet = {"title": broadcast.title_for("8bit"), "description": broadcast.description_for("8bit") + "  \n",
-                  "tags": list(broadcast.TAGS), "categoryId": "10"}
+                  "tags": list(reversed(broadcast.TAGS)), "categoryId": "10"}     # YouTube hands tags back reordered
     n = len(yt.updated)
     assert "metadata current" in broadcast.ensure("8bit", yt=yt)
     assert len(yt.updated) == n and not yt.created

@@ -109,7 +109,7 @@ def refresh_metadata(yt, video_id: str, era: str | None, log: Callable[[str], No
         cur = items[0]["snippet"]
         want = {"title": title_for(era), "description": description_for(era), "tags": TAGS}
         same = (cur.get("title") == want["title"] and _norm(cur.get("description")) == _norm(want["description"])
-                and list(cur.get("tags", [])) == want["tags"])
+                and set(cur.get("tags", [])) == set(want["tags"]))      # YouTube returns tags in its own order
         if same:
             return "current"
         yt.videos().update(part="snippet", body={"id": video_id, "snippet": {
