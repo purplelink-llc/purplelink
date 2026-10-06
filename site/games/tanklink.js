@@ -379,118 +379,747 @@
   var idx = 0, twist = null;
   var aim = { angle: 45, power: 60, weapon: "shell" };
   var busy = false, skip = false, raf = 0;
-  var view = { h: [], armor: [], aim: [], proj: [], booms: [], trails: [], marks: [] };
+  var view = { h: [], armor: [], aim: [], proj: [], trails: [], marks: [], scars: [], ty: [], tv: [] };
+  var allBooms = [];                   // every blast of this round that has finished: {x, y, r}. Drives the scorch on the terrain.
   var lastText = "";
 
-  function reduced() { try { return host.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return true; } }
+  var mql = null;
+  try { mql = host.matchMedia("(prefers-reduced-motion: reduce)"); } catch (e) { mql = null; }
+  function reduced() { return mql ? mql.matches : true; }
   function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
   function wname(id) { return E.WEAPONS[id].name; }
   function angleText(a) { return a === 90 ? "90 up" : (a < 90 ? a : 180 - a) + (a < 90 ? " right" : " left"); }
   function windText(w) { return w === 0 ? "Calm" : Math.abs(w) + (w > 0 ? " toward the enemy" : " toward you"); }
 
-  // ---- canvas ----
+  // ================================================================ drawing
+  // Everything below only paints. Nothing here changes the round, and nothing here may call Math.random: scenery comes from
+  // the day's seed (so the backdrop is the same for everyone), and the particles use their own fixed-seed generator.
+  //
+  // Sprite slots. Every piece of art has a vector drawing; if /assets/games/tanklink/<url> loads, the sprite replaces that
+  // piece, and if it is missing or fails the vector drawing stays. Drop WebP files in the folder and nothing else changes.
+  // Sizes are in source pixels at PPU = 3 pixels per field unit (a tank is about 30 units wide); the real file may be any
+  // whole multiple of w by h. anchor is the point in the file that sits on the placed position. Full list and the
+  // cutout rules: docs/games-sprites.md.
+  //   tank-player, tank-enemy  whole tank without the barrel, facing right (the enemy is mirrored), anchor on the ground.
+  //   barrel                   pointing right, anchor on the pivot; drawn under the tank so the turret can cover its base.
+  //   shell-normal / -heavy / -cluster  pointing right, anchor at the centre; the cluster art is also the bomblet (drawn small).
+  //   explosion                6 frames side by side; the frame is centred on the blast and drawn 2.6 crater radii wide.
+  //   bg-far, bg-near          the whole field plus a 12 unit margin (824 by 424 units, 2 px per unit), far opaque, near
+  //                            transparent above its hills.
+  //   terrain-tile             seamless, tiled at 128 by 128 units, opaque; lighting and craters are still painted over it.
+  //   grass-strip              seamless along x, 64 units long; the surface line sits at anchor y.
+  var SPRITE_BASE = "/assets/games/tanklink/", PPU = 3;
+  var SPRITES = {
+    "tank-player":   { url: "tank-player.webp",   w: 108,  h: 72,  anchor: [54, 69],   frames: 1 },
+    "tank-enemy":    { url: "tank-enemy.webp",    w: 108,  h: 72,  anchor: [54, 69],   frames: 1 },
+    "barrel":        { url: "barrel.webp",        w: 72,   h: 24,  anchor: [12, 12],   frames: 1 },
+    "shell-normal":  { url: "shell-normal.webp",  w: 36,   h: 18,  anchor: [18, 9],    frames: 1 },
+    "shell-heavy":   { url: "shell-heavy.webp",   w: 54,   h: 27,  anchor: [27, 13.5], frames: 1 },
+    "shell-cluster": { url: "shell-cluster.webp", w: 45,   h: 30,  anchor: [22.5, 15], frames: 1 },
+    "explosion":     { url: "explosion.webp",     w: 1536, h: 256, anchor: [128, 128], frames: 6 },
+    "bg-far":        { url: "bg-far.webp",        w: 1648, h: 848, anchor: [0, 0],     frames: 1 },
+    "bg-near":       { url: "bg-near.webp",       w: 1648, h: 848, anchor: [0, 0],     frames: 1 },
+    "terrain-tile":  { url: "terrain-tile.webp",  w: 384,  h: 384, anchor: [0, 0],     frames: 1 },
+    "grass-strip":   { url: "grass-strip.webp",   w: 192,  h: 36,  anchor: [0, 12],    frames: 1 }
+  };
+  var spr = {}, sprStarted = false;
+  function loadSprites() {
+    if (sprStarted) return;
+    sprStarted = true;
+    var miss = {};
+    try { miss = JSON.parse(host.sessionStorage.getItem("tk-sprite-miss") || "{}") || {}; } catch (e) { miss = {}; }
+    Object.keys(SPRITES).forEach(function (name) {
+      if (miss[name]) return;
+      var img = new Image(), s = { img: img, ok: false };
+      spr[name] = s;
+      img.decoding = "async";
+      img.onload = function () { if (img.naturalWidth > 0 && img.naturalHeight > 0) { s.ok = true; terrainDirty = true; backDirty = true; texCv = null; redraw(); } };
+      img.onerror = function () {
+        s.ok = false; miss[name] = 1;
+        try { host.sessionStorage.setItem("tk-sprite-miss", JSON.stringify(miss)); } catch (e) { /* optional */ }
+      };
+      img.src = SPRITE_BASE + SPRITES[name].url;
+    });
+  }
+  function sprite(name) { var s = spr[name]; return s && s.ok ? s : null; }
+  // Draw one frame with its anchor on (x, y), turned by rot (canvas radians), mirrored when flip, scaled by k.
+  function drawSprite(c, name, x, y, rot, flip, frame, k) {
+    var s = sprite(name);
+    if (!s) return false;
+    var m = SPRITES[name], img = s.img, fw = img.naturalWidth / m.frames, fh = img.naturalHeight;
+    c.save();
+    c.translate(x, y);
+    if (rot) c.rotate(rot);
+    if (flip) c.scale(-1, 1);
+    if (k && k !== 1) c.scale(k, k);
+    c.drawImage(img, (frame || 0) * fw, 0, fw, fh, -m.anchor[0] / PPU, -m.anchor[1] / PPU, m.w / PPU / m.frames, m.h / PPU);
+    c.restore();
+    return true;
+  }
+
+  // ---- canvas and palette ----
   var SCALE = Math.min(2, Math.max(1, Math.ceil(host.devicePixelRatio || 1)));
   canvas.width = W * SCALE; canvas.height = H * SCALE;
-  var FALLBACK = { "--tk-sky": "#201830", "--tk-ground": "#4a3a2a", "--tk-edge": "#b08850", "--tk-you": "#c9a6ff", "--tk-foe": "#ff9d9d", "--tk-ink": "#f4eefa", "--tk-trail": "#d8c8f0", "--tk-mark": "#f4eefa" };
+  var OV = 12;                          // margin kept around the field so a shake never shows an edge
+  var FALLBACK = {
+    "--tk-sky": "#201830", "--tk-sky-hi": "#1a1530", "--tk-sky-lo": "#3a2650", "--tk-glow": "#9a7ac0", "--tk-sun": "#f2ecf8",
+    "--tk-far": "#3a2c58", "--tk-near": "#2c2448", "--tk-ground": "#4a3a2a", "--tk-ground-hi": "#6a5436", "--tk-ground-lo": "#2c2218",
+    "--tk-grass": "#6a8a3a", "--tk-grass-hi": "#9ab85a", "--tk-edge": "#b08850", "--tk-you": "#c9a6ff", "--tk-foe": "#ff9d9d",
+    "--tk-ink": "#f4eefa", "--tk-trail": "#d8c8f0", "--tk-mark": "#f4eefa", "--tk-cloud": "#d8c8f0", "--tk-pill": "#1a1428",
+    "--tk-night": "1", "--tk-star-a": "0.85", "--tk-cloud-a": "0.2"
+  };
+  var pal = null, tints = {}, terrainDirty = true, terr = null, sc = null;
   function palette() {
-    var cs = host.getComputedStyle(canvas), p = {}, k;
-    for (k in FALLBACK) p[k] = cs.getPropertyValue(k).trim() || FALLBACK[k];
-    p.font = cs.fontFamily || "sans-serif";
-    return p;
+    if (pal) return pal;
+    var cs = host.getComputedStyle(canvas), k;
+    pal = {};
+    for (k in FALLBACK) pal[k] = cs.getPropertyValue(k).trim() || FALLBACK[k];
+    pal.font = cs.fontFamily || "sans-serif";
+    pal.night = parseFloat(pal["--tk-night"]) > 0.5;
+    pal.starA = parseFloat(pal["--tk-star-a"]) || 0;
+    pal.cloudA = parseFloat(pal["--tk-cloud-a"]) || 0;
+    return pal;
   }
+  function repaint() { pal = null; tints = {}; tankParts = {}; terrainDirty = true; backDirty = true; }
   function fy(y) { return H - y; }
+  function rr(c, x, y, w, h, r) {
+    r = Math.max(0, Math.min(r, w / 2, h / 2));
+    c.beginPath(); c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.arc(x + w - r, y + r, r, -Math.PI / 2, 0);
+    c.lineTo(x + w, y + h - r); c.arc(x + w - r, y + h - r, r, 0, Math.PI / 2); c.lineTo(x + r, y + h);
+    c.arc(x + r, y + h - r, r, Math.PI / 2, Math.PI); c.lineTo(x, y + r); c.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5); c.closePath();
+  }
+  // A soft round blob in one colour, made once and stamped many times (cheaper than a gradient per particle).
+  function softBlob(color) {
+    var cv = document.createElement("canvas"), g, gr;
+    cv.width = cv.height = 96; g = cv.getContext("2d");
+    gr = g.createRadialGradient(48, 48, 0, 48, 48, 48);
+    gr.addColorStop(0, "#fff"); gr.addColorStop(0.45, "rgba(255,255,255,0.55)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = gr; g.fillRect(0, 0, 96, 96);
+    g.globalCompositeOperation = "source-in"; g.fillStyle = color; g.fillRect(0, 0, 96, 96);
+    return cv;
+  }
+  function blob(key, color) { return tints[key] || (tints[key] = softBlob(color)); }
+  var DUST = "rgb(196,164,122)", SMOKE = "rgb(80,74,90)", SMOKE_N = "rgb(138,130,152)", FIRE = "rgb(255,168,58)";
 
-  // On a narrow screen the whole field shrinks, so tanks, labels and marks are drawn a little larger to stay readable.
-  var ts = 1;
-  function drawTank(c, p, x, gy, armor, barrel, mine, label) {
-    var col = mine ? p["--tk-you"] : p["--tk-foe"], dead = armor <= 0;
-    c.save();
-    c.translate(x, fy(gy)); c.scale(ts, ts);
-    c.lineJoin = "round"; c.lineCap = "round";
-    if (dead) {
-      c.fillStyle = p["--tk-sky"]; c.strokeStyle = col; c.lineWidth = 2;
-      c.beginPath(); c.moveTo(-13, 0); c.lineTo(-9, -6); c.lineTo(7, -4); c.lineTo(13, 0); c.closePath(); c.fill(); c.stroke();
-      c.restore(); return;
+  // ---- scenery from the day's seed: the same backdrop for everyone ----
+  function buildScenery() {
+    var r = E.mulberry32((rs.seed ^ 0x2f6b9a37) >>> 0), i;
+    function layer(base, amps, lens) {
+      var o = { base: base, a: [], l: [], p: [], fill: null, line: null };
+      for (i = 0; i < amps.length; i++) { o.a.push(amps[i] * (0.75 + r() * 0.5)); o.l.push(lens[i] * (0.8 + r() * 0.4)); o.p.push(r() * 6.2832); }
+      return o;
     }
-    var rad = barrel * Math.PI / 180, bx = Math.cos(rad) * 20, by = -9 - Math.sin(rad) * 20;
-    c.strokeStyle = p["--tk-ink"]; c.lineWidth = 5;
-    c.beginPath(); c.moveTo(0, -9); c.lineTo(bx, by); c.stroke();
-    c.strokeStyle = col; c.lineWidth = 3;
-    c.beginPath(); c.moveTo(0, -9); c.lineTo(bx, by); c.stroke();
-    c.fillStyle = col; c.strokeStyle = p["--tk-ink"]; c.lineWidth = 2;
-    c.beginPath(); c.rect(-14, -9, 28, 9); c.fill(); c.stroke();
-    c.beginPath(); c.arc(0, -9, 7, Math.PI, 0); c.fill(); c.stroke();
-    c.fillStyle = p["--tk-sky"]; c.strokeStyle = p["--tk-ink"]; c.lineWidth = 1.5;
-    c.beginPath(); c.rect(-16, -34, 32, 6); c.fill(); c.stroke();
-    c.fillStyle = col; c.fillRect(-16, -34, 32 * Math.max(0, armor) / 100, 6);
-    c.fillStyle = p["--tk-ink"]; c.font = "700 11px " + p.font; c.textAlign = "center";
-    c.fillText(label, 0, -39);
+    function hillY(o, x) { var v = o.base, k; for (k = 0; k < o.a.length; k++) v += o.a[k] * Math.sin(6.2832 * x / o.l[k] + o.p[k]); return v; }
+    function paths(o) {
+      var x, f = new Path2D(), l = new Path2D();
+      f.moveTo(-OV - 6, H + OV); l.moveTo(-OV - 6, fy(hillY(o, -OV - 6)));
+      f.lineTo(-OV - 6, fy(hillY(o, -OV - 6)));
+      for (x = -OV; x <= W + OV + 6; x += 6) { f.lineTo(x, fy(hillY(o, x))); l.lineTo(x, fy(hillY(o, x))); }
+      f.lineTo(W + OV + 6, H + OV); f.closePath();
+      o.fill = f; o.line = l;
+    }
+    sc = { far: layer(236, [20, 11, 5], [430, 240, 120]), near: layer(190, [26, 13, 6], [340, 190, 90]), stars: [], clouds: [], strata: [], speck: [], rocks: [], tufts: [] };
+    paths(sc.far); paths(sc.near);
+    sc.mood = r();
+    sc.sunX = 90 + r() * 620; sc.sunY = 238 + r() * 56; sc.sunR = 16 + r() * 8;
+    for (i = 0; i < 70; i++) sc.stars.push({ x: r() * W, y: r() * 190, s: 0.7 + r() * 1.2, a: 0.35 + r() * 0.65, ph: r() * 6.28 });
+    for (i = 0; i < 5; i++) sc.clouds.push({ x: r() * (W + 300), y: 34 + r() * 120, s: 0.7 + r() * 0.9, v: 1.5 + r() * 2.5 });
+    for (i = 0; i < 9; i++) sc.strata.push({ y: 96 + i * 36 + r() * 16, amp: 2 + r() * 4, len: 70 + r() * 140, ph: r() * 6.28, w: 3 + r() * 5, light: r() < 0.4 });
+    for (i = 0; i < 320; i++) sc.speck.push({ x: r() * W, y: 60 + r() * 340, s: 0.7 + r() * 1.6, a: 0.1 + r() * 0.2, light: r() < 0.5 });
+    for (i = 0; i < 42; i++) sc.rocks.push({ x: r() * W, y: 90 + r() * 310, rx: 2 + r() * 3.4, ry: 1.3 + r() * 2.1, a: 0.14 + r() * 0.16 });
+    for (i = 0; i < 230; i++) sc.tufts.push({ x: 1 + r() * (W - 2), t: 2 + r() * 3.4, lean: (r() - 0.5) * 2.4, k: r() < 0.5 });
+    terrainDirty = true; backDirty = true; texCv = null;
+  }
+
+  // strata, speckle and stones: painted once per map (they do not change when a crater is cut) and laid over the ground fill
+  var texCv = null;
+  function renderTex() {
+    texCv = layerOf(texCv);
+    var c = texCv.getContext("2d");
+    // strata: wavy bands at fixed heights, so a crater cuts through them
+    c.lineJoin = "round";
+    sc.strata.forEach(function (s) {
+      var x;
+      c.beginPath();
+      for (x = -OV; x <= W + OV; x += 8) { var y = s.y + Math.sin(6.2832 * x / s.len + s.ph) * s.amp; if (x === -OV) c.moveTo(x, y); else c.lineTo(x, y); }
+      c.strokeStyle = s.light ? "rgba(255,240,210,0.07)" : "rgba(0,0,0,0.14)"; c.lineWidth = s.w; c.stroke();
+    });
+    sc.speck.forEach(function (s) { c.fillStyle = s.light ? "rgba(255,240,210," + s.a + ")" : "rgba(0,0,0," + s.a + ")"; c.fillRect(s.x, s.y, s.s, s.s); });
+    sc.rocks.forEach(function (s) { c.fillStyle = "rgba(20,12,8," + s.a + ")"; c.beginPath(); c.ellipse(s.x, s.y, s.rx, s.ry, 0, 0, 6.2832); c.fill(); c.fillStyle = "rgba(255,240,210," + (s.a * 0.5) + ")"; c.beginPath(); c.ellipse(s.x - 0.6, s.y - 0.6, s.rx * 0.6, s.ry * 0.5, 0, 0, 6.2832); c.fill(); });
+  }
+
+  // ---- terrain: lit gradient, strata, speckle, a soft shadow and a grass line under the surface, a scorched rim round craters ----
+  function renderTerrain(h, p) {
+    if (!terr) { terr = document.createElement("canvas"); terr.width = (W + 2 * OV) * SCALE; terr.height = (H + 2 * OV) * SCALE; }
+    var c = terr.getContext("2d"), i, k, maxH = 0, body = new Path2D(), line = new Path2D(), sTile = sprite("terrain-tile"), sGrass = sprite("grass-strip");
+    c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, terr.width, terr.height);
+    c.setTransform(SCALE, 0, 0, SCALE, OV * SCALE, OV * SCALE);
+    for (i = 0; i < W; i++) if (h[i] > maxH) maxH = h[i];
+    body.moveTo(-OV, H + OV); body.lineTo(-OV, fy(h[0])); line.moveTo(-OV, fy(h[0]));
+    for (i = 0; i < W; i++) { body.lineTo(i, fy(h[i])); line.lineTo(i, fy(h[i])); }
+    body.lineTo(W + OV, fy(h[W - 1])); line.lineTo(W + OV, fy(h[W - 1]));
+    body.lineTo(W + OV, H + OV); body.closePath();
+    var g = c.createLinearGradient(0, fy(maxH) - 4, 0, H + OV);
+    g.addColorStop(0, p["--tk-ground-hi"]); g.addColorStop(0.3, p["--tk-ground"]); g.addColorStop(1, p["--tk-ground-lo"]);
+    c.save(); c.clip(body);
+    if (sTile) {
+      try {
+        var pat = c.createPattern(sTile.img, "repeat");
+        pat.setTransform(new DOMMatrix().scale(128 / sTile.img.naturalWidth, 128 / sTile.img.naturalHeight));
+        c.fillStyle = pat; c.fillRect(-OV, -OV, W + 2 * OV, H + 2 * OV);
+        c.globalAlpha = 0.45; c.fillStyle = g; c.fillRect(-OV, -OV, W + 2 * OV, H + 2 * OV); c.globalAlpha = 1;
+      } catch (e) { c.fillStyle = g; c.fillRect(-OV, -OV, W + 2 * OV, H + 2 * OV); }
+    } else { c.fillStyle = g; c.fillRect(-OV, -OV, W + 2 * OV, H + 2 * OV); }
+    if (!texCv) renderTex();
+    c.drawImage(texCv, -OV, -OV, W + 2 * OV, H + 2 * OV);
+    // soft shadow just under the surface line
+    c.save(); c.translate(0, 2);
+    c.strokeStyle = "rgba(10,6,4,0.10)"; c.lineWidth = 20; c.stroke(line);
+    c.strokeStyle = "rgba(10,6,4,0.12)"; c.lineWidth = 12; c.stroke(line);
+    c.strokeStyle = "rgba(10,6,4,0.16)"; c.lineWidth = 6; c.stroke(line);
+    c.restore();
+    // the surface itself
+    if (sGrass) {
+      var m = SPRITES["grass-strip"], sw = m.w / PPU, sh = m.h / PPU, nw = sGrass.img.naturalWidth, nh = sGrass.img.naturalHeight, x0;
+      for (x0 = -OV; x0 < W + OV; x0 += 4) {
+        var hx = Math.max(0, Math.min(W - 1, Math.round(x0 + 2))), sx = ((x0 % sw) + sw) % sw;
+        c.drawImage(sGrass.img, sx / sw * nw, 0, 4 / sw * nw, nh, x0, fy(h[hx]) - m.anchor[1] / PPU, 4.4, sh);
+      }
+    } else {
+      c.lineCap = "round";
+      c.strokeStyle = p["--tk-grass"]; c.lineWidth = 6; c.stroke(line);
+      c.save(); c.translate(0, -1.4); c.strokeStyle = p["--tk-grass-hi"]; c.lineWidth = 1.8; c.globalAlpha = 0.9; c.stroke(line); c.restore();
+    }
+    // scorch around craters
+    view.scars.forEach(function (s) {
+      var R = s.r * 1.7, cg = c.createRadialGradient(s.x, fy(s.y), 0, s.x, fy(s.y), R);
+      cg.addColorStop(0, "rgba(6,3,4,0.78)"); cg.addColorStop(0.55, "rgba(6,3,4,0.7)"); cg.addColorStop(1, "rgba(6,3,4,0)");
+      c.fillStyle = cg; c.fillRect(s.x - R, fy(s.y) - R, 2 * R, 2 * R);
+    });
+    c.restore();
+    // blades of grass stand up from the surface, but not on steep or scorched ground
+    if (!sGrass) {
+      sc.tufts.forEach(function (t) {
+        var xi = Math.round(t.x), y = fy(h[xi]), a, burnt = false;
+        if (Math.abs(h[Math.min(W - 1, xi + 3)] - h[Math.max(0, xi - 3)]) > 7) return;
+        for (k = 0; k < view.scars.length; k++) { a = view.scars[k]; if ((xi - a.x) * (xi - a.x) + (h[xi] - a.y) * (h[xi] - a.y) < a.r * a.r * 2.4) { burnt = true; break; } }
+        if (burnt) return;
+        c.fillStyle = t.k ? p["--tk-grass"] : p["--tk-grass-hi"];
+        c.beginPath(); c.moveTo(xi - 1.2, y + 0.5); c.lineTo(xi + t.lean, y - t.t); c.lineTo(xi + 1.2, y + 0.5); c.closePath(); c.fill();
+      });
+    }
+    terrainDirty = false;
+  }
+
+  // ---- sky and the two hill layers ----
+  // Painted once into their own canvases (sky, sun or moon, stars, clouds and the far hills in one; the near hills in
+  // another) and joined with the terrain into one finished picture, so an ordinary frame is a single image copy. While the
+  // screen shakes the layers are copied separately, each moving by a different amount: that is the parallax.
+  var layA = null, layB = null, scene = null, backDirty = true, sceneDirty = true;
+  function layerOf(cv) {
+    if (!cv) { cv = document.createElement("canvas"); cv.width = (W + 2 * OV) * SCALE; cv.height = (H + 2 * OV) * SCALE; }
+    var c = cv.getContext("2d");
+    c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cv.width, cv.height);
+    c.setTransform(SCALE, 0, 0, SCALE, OV * SCALE, OV * SCALE);
+    return cv;
+  }
+  function renderBack(p) {
+    layA = layerOf(layA); layB = layerOf(layB);
+    var c = layA.getContext("2d"), far = sprite("bg-far"), near = sprite("bg-near"), i;
+    if (far) c.drawImage(far.img, -OV, -OV, W + 2 * OV, H + 2 * OV);
+    else {
+      var g = c.createLinearGradient(0, -OV, 0, H + OV);
+      g.addColorStop(0, p["--tk-sky-hi"]); g.addColorStop(1, p["--tk-sky-lo"]);
+      c.fillStyle = g; c.fillRect(-OV, -OV, W + 2 * OV, H + 2 * OV);
+      // sun or moon on a seeded spot, with a horizon glow that is stronger on some days
+      var sx = sc.sunX, sy = fy(sc.sunY);
+      c.globalAlpha = 0.35 + 0.5 * sc.mood; var gl = blob("glow", p["--tk-glow"]); c.drawImage(gl, sx - 230, sy - 230, 460, 460);
+      c.globalAlpha = 0.55; c.drawImage(gl, sx - 70, sy - 70, 140, 140);
+      c.globalAlpha = 1; c.fillStyle = p["--tk-sun"]; c.beginPath(); c.arc(sx, sy, sc.sunR, 0, 6.2832); c.fill();
+      if (p.night) {
+        c.fillStyle = "rgba(60,50,90,0.16)";
+        c.beginPath(); c.arc(sx - sc.sunR * 0.3, sy - sc.sunR * 0.2, sc.sunR * 0.28, 0, 6.2832); c.fill();
+        c.beginPath(); c.arc(sx + sc.sunR * 0.35, sy + sc.sunR * 0.3, sc.sunR * 0.2, 0, 6.2832); c.fill();
+      }
+      if (p.starA > 0.02) {
+        c.fillStyle = p["--tk-sun"];
+        for (i = 0; i < sc.stars.length; i++) { var st = sc.stars[i]; c.globalAlpha = p.starA * st.a; c.fillRect(st.x, st.y, st.s, st.s); }
+      }
+      c.globalAlpha = p.cloudA;
+      var cb = blob("cloud", p["--tk-cloud"]);
+      for (i = 0; i < sc.clouds.length; i++) {
+        var cl = sc.clouds[i], cx = cl.x % (W + 100) - 50, cy = cl.y, k = cl.s;
+        c.drawImage(cb, cx - 50 * k, cy - 22 * k, 100 * k, 44 * k);
+        c.drawImage(cb, cx - 16 * k, cy - 32 * k, 76 * k, 48 * k);
+        c.drawImage(cb, cx - 76 * k, cy - 10 * k, 70 * k, 34 * k);
+      }
+      c.globalAlpha = 1;
+      var hg = c.createLinearGradient(0, fy(sc.far.base + 40), 0, H + OV);
+      hg.addColorStop(0, p["--tk-far"]); hg.addColorStop(1, p["--tk-sky-lo"]);
+      c.fillStyle = hg; c.fill(sc.far.fill);
+      c.globalAlpha = 0.35; c.strokeStyle = p["--tk-glow"]; c.lineWidth = 1.2; c.stroke(sc.far.line); c.globalAlpha = 1;
+    }
+    c = layB.getContext("2d");
+    if (near) c.drawImage(near.img, -OV, -OV, W + 2 * OV, H + 2 * OV);
+    else {
+      var ng = c.createLinearGradient(0, fy(sc.near.base + 40), 0, H + OV);
+      ng.addColorStop(0, p["--tk-near"]); ng.addColorStop(1, p["--tk-ground-lo"]);
+      c.fillStyle = ng; c.fill(sc.near.fill);
+      c.globalAlpha = 0.28; c.strokeStyle = p["--tk-glow"]; c.lineWidth = 1.2; c.stroke(sc.near.line); c.globalAlpha = 1;
+    }
+    backDirty = false; sceneDirty = true;
+  }
+  function renderScene() {
+    scene = layerOf(scene);
+    var c = scene.getContext("2d"), w = W + 2 * OV, h = H + 2 * OV;
+    c.drawImage(layA, -OV, -OV, w, h); c.drawImage(layB, -OV, -OV, w, h); c.drawImage(terr, -OV, -OV, w, h);
+    sceneDirty = false;
+  }
+  // a few stars near the top of the sky twinkle over the finished picture (kept above any hill)
+  function drawTwinkle(c, p, T) {
+    if (!T || p.starA < 0.02 || sprite("bg-far")) return;
+    var i, st;
+    c.fillStyle = p["--tk-sun"];
+    for (i = 0; i < sc.stars.length; i++) {
+      st = sc.stars[i];
+      if (st.y > 62 || i % 3) continue;
+      c.globalAlpha = p.starA * st.a * (0.25 + 0.75 * (0.5 + 0.5 * Math.sin(T * 0.0021 + st.ph)));
+      c.fillRect(st.x - 0.4, st.y - 0.4, st.s + 0.8, st.s + 0.8);
+    }
+    c.globalAlpha = 1;
+  }
+
+  // ---- tanks ----
+  // On a narrow screen the whole field shrinks, so tanks, labels and marks are drawn a little larger to stay readable.
+  var ts = 1, cssScale = 1;
+  function tpx(base, minCss) { return Math.max(base * ts, minCss / cssScale); }   // text size in field units: never under minCss pixels on screen
+  var STEEL = "#8f8aa0", STEEL_HI = "#cfcade", STEEL_LO = "#474158", RUBBER = "#262031";
+  function hullPath(c) { c.beginPath(); c.moveTo(-14, -7); c.lineTo(14, -7); c.lineTo(15.5, -8.6); c.lineTo(10.5, -11.8); c.lineTo(-11, -11.8); c.lineTo(-14.5, -9.4); c.closePath(); }
+  function domePath(c) { c.beginPath(); c.moveTo(-8.6, -10.2); c.ellipse(0, -10.2, 8.6, 6.8, 0, Math.PI, 0); c.closePath(); }
+  function flame(c, x, y, h, w, ph, T) {
+    var fl = 0.82 + 0.18 * Math.sin(T * 0.017 + ph) + 0.1 * Math.sin(T * 0.031 + ph * 2.3), hh = h * fl, ww = w * (1.05 - 0.1 * Math.sin(T * 0.02 + ph)), sway = Math.sin(T * 0.012 + ph) * ww * 0.4;
+    c.fillStyle = "rgba(235,92,28,0.92)";
+    c.beginPath(); c.moveTo(x - ww, y); c.quadraticCurveTo(x - ww * 0.9, y - hh * 0.55, x + sway, y - hh); c.quadraticCurveTo(x + ww * 0.9, y - hh * 0.55, x + ww, y); c.closePath(); c.fill();
+    c.fillStyle = "rgba(255,206,92,0.95)"; hh *= 0.62; ww *= 0.55;
+    c.beginPath(); c.moveTo(x - ww, y); c.quadraticCurveTo(x - ww * 0.9, y - hh * 0.55, x + sway * 0.6, y - hh); c.quadraticCurveTo(x + ww * 0.9, y - hh * 0.55, x + ww, y); c.closePath(); c.fill();
+  }
+
+  // The tank's lower half (tracks, hull, marking) and its dome are painted once per team and palette, then stamped each frame.
+  var TP_W = 40, TP_H = 24, TP_X = 20, TP_Y = 20, tankParts = {};
+  function tankPart(p, mine, part) {
+    var key = (mine ? "y" : "f") + part;
+    if (tankParts[key]) return tankParts[key];
+    var S = SCALE * 1.5, cv = document.createElement("canvas"), c = cv.getContext("2d"), col = mine ? p["--tk-you"] : p["--tk-foe"];
+    cv.width = Math.ceil(TP_W * S); cv.height = Math.ceil(TP_H * S);
+    c.setTransform(S, 0, 0, S, TP_X * S, TP_Y * S); c.lineJoin = "round"; c.lineCap = "round";
+    if (part === 0) {
+      rr(c, -15.5, -7.4, 31, 7.4, 3.7); c.fillStyle = RUBBER; c.fill();
+      c.strokeStyle = "rgba(255,255,255,0.16)"; c.lineWidth = 1; c.setLineDash([1.4, 1.6]); c.beginPath(); c.moveTo(-13.5, -0.9); c.lineTo(13.5, -0.9); c.stroke(); c.setLineDash([]);
+      for (var w = 0; w < 5; w++) {
+        var wx = -11 + w * 5.5;
+        c.fillStyle = "#4b4458"; c.beginPath(); c.arc(wx, -3.7, 2.35, 0, 6.2832); c.fill();
+        c.fillStyle = "#9a93ab"; c.beginPath(); c.arc(wx, -3.7, 0.85, 0, 6.2832); c.fill();
+      }
+      c.strokeStyle = "rgba(10,6,18,0.85)"; c.lineWidth = 1; rr(c, -15.5, -7.4, 31, 7.4, 3.7); c.stroke();
+      hullPath(c); c.fillStyle = col; c.fill();
+      var hg = c.createLinearGradient(0, -12, 0, -7); hg.addColorStop(0, "rgba(255,255,255,0.32)"); hg.addColorStop(1, "rgba(0,0,0,0.3)");
+      hullPath(c); c.fillStyle = hg; c.fill();
+      c.strokeStyle = "rgba(10,6,18,0.85)"; c.lineWidth = 1.1; hullPath(c); c.stroke();
+      c.strokeStyle = "rgba(0,0,0,0.28)"; c.lineWidth = 0.8; c.beginPath(); c.moveTo(-13, -8.5); c.lineTo(13, -8.5); c.stroke();
+      // the marking: a diamond for you, a triangle for the enemy, so the sides differ in shape as well as colour
+      c.fillStyle = "#f7f1ff"; c.strokeStyle = "rgba(10,6,18,0.9)"; c.lineWidth = 0.8; c.beginPath();
+      if (mine) { c.moveTo(-7, -11.2); c.lineTo(-4.6, -9.6); c.lineTo(-7, -8); c.lineTo(-9.4, -9.6); } else { c.moveTo(-7, -11.2); c.lineTo(-4.6, -8); c.lineTo(-9.4, -8); }
+      c.closePath(); c.fill(); c.stroke();
+    } else {
+      domePath(c); c.fillStyle = col; c.fill();
+      var dg = c.createLinearGradient(-5, -18, 5, -8); dg.addColorStop(0, "rgba(255,255,255,0.4)"); dg.addColorStop(0.55, "rgba(255,255,255,0)"); dg.addColorStop(1, "rgba(0,0,0,0.3)");
+      domePath(c); c.fillStyle = dg; c.fill();
+      c.strokeStyle = "rgba(10,6,18,0.85)"; c.lineWidth = 1.1; domePath(c); c.stroke();
+      c.fillStyle = "rgba(10,6,18,0.55)"; c.beginPath(); c.ellipse(3, -15.4, 2.2, 0.95, 0, 0, 6.2832); c.fill();
+    }
+    tankParts[key] = cv;
+    return cv;
+  }
+
+  function drawTank(c, p, k, x, gy, armor, barrelDeg, mine, T, slope) {
+    var col = mine ? p["--tk-you"] : p["--tk-foe"], dead = armor <= 0, f = mine ? 1 : -1, tv = view.tv[k] || { recoil: 0, flash: 0, hit: 0 };
+    var rad = barrelDeg * Math.PI / 180, bodyS = sprite(mine ? "tank-player" : "tank-enemy"), barS = sprite("barrel");
+    c.save();
+    c.translate(x, fy(gy)); c.rotate(-slope); c.scale(ts, ts);
+    c.lineJoin = "round"; c.lineCap = "round";
+    // ground shadow
+    c.fillStyle = "rgba(0,0,0,0.3)"; c.beginPath(); c.ellipse(0, 0.6, 18.5, 3.4, 0, 0, 6.2832); c.fill();
+    if (dead) { drawWreck(c, p, col, f, T); c.restore(); return; }
+    var back = 3.2 * tv.recoil, a = -rad + slope, pivotY = -9.2;
+    if (bodyS) {
+      // sprite tank: barrel under, body on top
+      c.save(); c.translate(0, pivotY); c.rotate(a);
+      if (!drawSprite(c, "barrel", -back, 0, 0, false, 0, 1)) { barrelShape(c, col, back); }
+      muzzleFlash(c, tv, back);
+      c.restore();
+      drawSprite(c, mine ? "tank-player" : "tank-enemy", 0, 0, 0, f < 0, 0, 1);
+    } else {
+      var low = tankPart(p, mine, 0), dome = tankPart(p, mine, 1);
+      c.save(); c.scale(f, 1); c.drawImage(low, -TP_X, -TP_Y, TP_W, TP_H); c.restore();
+      // barrel (not mirrored: it turns by the world angle)
+      c.save(); c.translate(0, pivotY); c.rotate(a);
+      barrelShape(c, col, back);
+      muzzleFlash(c, tv, back);
+      c.restore();
+      // dome turret
+      c.save(); c.scale(f, 1); c.drawImage(dome, -TP_X, -TP_Y, TP_W, TP_H); c.restore();
+      // a flash of white when a blast lands on it
+      if (tv.hit > 0.02) {
+        c.save(); c.scale(f, 1); c.globalAlpha = Math.min(0.7, tv.hit * 0.7); c.fillStyle = "#fff"; hullPath(c); c.fill(); domePath(c); c.fill(); c.restore();
+      }
+    }
+    // antenna and a pennant that streams with the wind
+    var ax = -9 * f, ay = -15, tx = ax - 2 * f, ty = -27.5, wd = rs.wind, dir = wd >= 0 ? 1 : -1, len = wd === 0 ? 3.6 : 5 + Math.abs(wd) * 0.9;
+    var wave = T ? Math.sin(T * 0.012 + k * 1.7) * (0.8 + Math.abs(wd) * 0.12) : 0;
+    c.strokeStyle = "rgba(10,6,18,0.85)"; c.lineWidth = 0.9; c.beginPath(); c.moveTo(ax, ay); c.lineTo(tx, ty); c.stroke();
+    c.beginPath(); c.moveTo(tx, ty);
+    if (wd === 0) { c.lineTo(tx + 1.8, ty + 1.2); c.lineTo(tx + 0.2, ty + 4.4); c.lineTo(tx - 0.8, ty + 3.6); }
+    else { c.lineTo(tx + dir * len * 0.55, ty + 0.8 + wave * 0.5); c.lineTo(tx + dir * len, ty + 2 + wave); c.lineTo(tx + dir * len * 0.55, ty + 3.2 + wave * 0.4); c.lineTo(tx, ty + 4); }
+    c.closePath(); c.fillStyle = col; c.fill(); c.lineWidth = 0.7; c.stroke();
+    // smoke when armor is low (moving smoke is made by the particle system; reduced motion gets a still puff)
+    if (armor <= 35 && !T) {
+      c.fillStyle = "rgba(70,66,78,0.32)"; c.beginPath(); c.ellipse(-2, -22, 5, 3.6, 0, 0, 6.2832); c.fill();
+      c.fillStyle = "rgba(70,66,78,0.22)"; c.beginPath(); c.ellipse(1, -29, 6.5, 4.4, 0, 0, 6.2832); c.fill();
+    }
+    c.restore();
+  }
+  function barrelShape(c, col, back) {
+    var bg = c.createLinearGradient(0, -2, 0, 2); bg.addColorStop(0, STEEL_HI); bg.addColorStop(0.5, STEEL); bg.addColorStop(1, STEEL_LO);
+    c.fillStyle = bg; c.fillRect(2 - back, -1.8, 12.8, 3.6);
+    c.strokeStyle = "rgba(10,6,18,0.85)"; c.lineWidth = 1; c.strokeRect(2 - back, -1.8, 12.8, 3.6);
+    c.fillStyle = col; c.fillRect(4 - back, -2.4, 1.8, 4.8);                       // team band
+    c.fillStyle = STEEL_LO; c.fillRect(14.2 - back, -2.8, 4, 5.6);                 // muzzle brake
+    c.strokeStyle = "rgba(10,6,18,0.9)"; c.strokeRect(14.2 - back, -2.8, 4, 5.6);
+    c.beginPath(); c.moveTo(15.7 - back, -2.8); c.lineTo(15.7 - back, 2.8); c.moveTo(17.1 - back, -2.8); c.lineTo(17.1 - back, 2.8); c.stroke();
+  }
+  function muzzleFlash(c, tv, back) {
+    if (!(tv.flash > 0.02)) return;
+    var s = tv.flash, tipX = 19 - back, i, a, r;
+    var gl = blob("fire", FIRE); c.globalAlpha = Math.min(1, s * 1.2); c.drawImage(gl, tipX - 14 * s, -14 * s, 28 * s, 28 * s);
+    c.globalAlpha = Math.min(1, s * 1.5); c.fillStyle = "rgba(255,230,150,0.96)"; c.beginPath();
+    for (i = 0; i < 12; i++) { a = i * Math.PI / 6; r = (i % 2 ? 4 : 12) * s; c.lineTo(tipX + Math.cos(a) * r * (a > 1.6 && a < 4.7 ? 0.5 : 1), Math.sin(a) * r * 0.9); }
+    c.closePath(); c.fill();
+    c.fillStyle = "#fff"; c.beginPath(); c.arc(tipX, 0, 3.4 * s, 0, 6.2832); c.fill();
+    c.globalAlpha = 1;
+  }
+  // a charred hull with the turret blown off, the barrel drooping and a fire; the side accent stays so you can tell whose it was
+  function drawWreck(c, p, col, f, T) {
+    c.save(); c.scale(f, 1);
+    rr(c, -15.5, -6.4, 31, 6.4, 3.2); c.fillStyle = "#17131d"; c.fill();
+    c.strokeStyle = "rgba(255,255,255,0.1)"; c.lineWidth = 1; c.beginPath(); c.moveTo(-13, -5.8); c.lineTo(13, -5.8); c.stroke();
+    c.fillStyle = "#322c3b"; c.beginPath(); c.arc(-11, -3.2, 2.2, 0, 6.2832); c.arc(-5.5, -3.2, 2.2, 0, 6.2832); c.arc(5.5, -3.2, 2.2, 0, 6.2832); c.fill();
+    c.save(); c.translate(0, 1.2); c.rotate(0.03); hullPath(c); c.fillStyle = "#26212e"; c.fill();
+    var sg = c.createLinearGradient(0, -12, 0, -6); sg.addColorStop(0, "rgba(255,255,255,0.1)"); sg.addColorStop(1, "rgba(0,0,0,0.45)"); c.fillStyle = sg; hullPath(c); c.fill();
+    c.strokeStyle = col; c.lineWidth = 1.6; hullPath(c); c.stroke(); c.restore();
+    c.strokeStyle = "rgba(0,0,0,0.6)"; c.lineWidth = 0.9; c.beginPath(); c.moveTo(-4, -10.5); c.lineTo(-1, -8.5); c.lineTo(-3, -7); c.moveTo(6, -10); c.lineTo(8, -8); c.stroke();
+    c.fillStyle = col; c.beginPath(); c.moveTo(-7, -10.4); c.lineTo(-4.8, -8.9); c.lineTo(-7, -7.4); c.lineTo(-9.2, -8.9); c.closePath(); c.fill();
+    // the blown-off turret, on its side beside the hull
+    c.save(); c.translate(17, -3); c.rotate(0.55); domePath(c); c.fillStyle = "#1d1924"; c.fill(); c.strokeStyle = col; c.lineWidth = 1.3; c.stroke(); c.restore();
+    // the barrel, bent down over the front
+    c.strokeStyle = "#3a3446"; c.lineWidth = 3.4; c.beginPath(); c.moveTo(3, -9); c.lineTo(11, -5.5); c.stroke();
+    c.strokeStyle = "rgba(10,6,18,0.8)"; c.lineWidth = 1; c.beginPath(); c.moveTo(3, -10.7); c.lineTo(11, -7.2); c.stroke();
+    c.restore();
+    var t = T || 0;
+    flame(c, -5 * f, -10, 11, 3.6, 0.4, t); flame(c, 3 * f, -11, 15, 4.4, 2.1, t); flame(c, 9 * f, -8, 8, 3, 4.6, t);
+    if (!T) { c.fillStyle = "rgba(70,66,78,0.4)"; c.beginPath(); c.ellipse(0, -24, 6, 4, 0, 0, 6.2832); c.fill(); c.fillStyle = "rgba(70,66,78,0.26)"; c.beginPath(); c.ellipse(2, -32, 7.5, 5, 0, 0, 6.2832); c.fill(); }
+  }
+  // Names and armor sit above each tank. When tanks stand close together the labels would overlap, so they stack in rows,
+  // each tied to its tank by a thin line.
+  function labelText(armor, label) { return label + " " + (armor > 0 ? armor : "down"); }
+  function layoutLabels(c, p, items) {
+    var fs = tpx(11, 9.5), rows = [];
+    c.font = "700 " + fs + "px " + p.font;
+    items.forEach(function (it) { it.w = c.measureText(it.txt).width + 10 * ts; it.lx = Math.max(it.w / 2, Math.min(W - it.w / 2, it.x)); });
+    var rowH = fs + 12 * ts;
+    items.slice().sort(function (a, b) { return a.x - b.x; }).forEach(function (it) {
+      var r = 0, clash = function (o) { return Math.abs(o.lx - it.lx) < (o.w + it.w) / 2 && Math.abs((o.gy + o.row * rowH) - (it.gy + r * rowH)) < rowH - 2; };
+      while (r < 4 && rows.some(function (o) { return clash(o); })) r++;
+      it.row = r; rows.push(it);
+    });
+    return fs;
+  }
+  function drawLabel(c, p, it, fs) {
+    var col = it.mine ? p["--tk-you"] : p["--tk-foe"], frac = Math.max(0, it.armor) / 100, off = it.row * (fs + 12 * ts), ty = -(38 + 3.5) * ts - off;
+    c.save(); c.translate(it.lx, fy(it.gy));
+    if (it.row > 0) { c.strokeStyle = p["--tk-ink"]; c.globalAlpha = 0.55; c.lineWidth = 1; c.beginPath(); c.moveTo(it.x - it.lx, -30.4 * ts - off); c.lineTo(it.x - it.lx, -29 * ts); c.stroke(); c.globalAlpha = 1; }
+    c.save(); c.scale(ts, ts); c.translate(0, -off / ts);
+    c.fillStyle = "rgba(10,8,16,0.78)"; rr(c, -17.5, -38, 35, 7.6, 3.8); c.fill();
+    if (frac > 0) { c.fillStyle = col; rr(c, -16.5, -37, Math.max(2, 33 * frac), 5.6, 2.8); c.fill(); }
+    c.strokeStyle = "rgba(10,8,16,0.8)"; c.lineWidth = 1; c.beginPath(); [0.25, 0.5, 0.75].forEach(function (q) { c.moveTo(-16.5 + 33 * q, -37); c.lineTo(-16.5 + 33 * q, -31.4); }); c.stroke();
+    c.strokeStyle = p["--tk-ink"]; c.lineWidth = 1.2; c.globalAlpha = 0.9; rr(c, -17.5, -38, 35, 7.6, 3.8); c.stroke(); c.globalAlpha = 1;
+    c.restore();
+    c.font = "700 " + fs + "px " + p.font; c.textAlign = "center"; c.lineJoin = "round";
+    c.lineWidth = Math.max(3, fs * 0.3); c.strokeStyle = p["--tk-pill"]; c.strokeText(it.txt, 0, ty);
+    c.fillStyle = p["--tk-ink"]; c.fillText(it.txt, 0, ty);
     c.restore();
   }
 
-  function draw() {
-    var p = palette(), c = ctx2d, i;
-    ts = Math.min(1.45, Math.max(1, 520 / Math.max(1, canvas.clientWidth)));
+  // ---- effects: particles, fireballs, shock rings, shake, wind streaks ----
+  var CAP = 150;
+  var fx = { P: [], balls: [], rings: [], shake: 0, mag: 0, streaks: [], acc: [] };
+  var crand = E.mulberry32(0x7a11c0de);    // cosmetic only
+  function addP(o) { if (fx.P.length >= CAP) fx.P.splice(0, fx.P.length - CAP + 1); fx.P.push(o); }
+  function spawnBoom(b, kill) {
+    var R = b.r, n, i, ang, sp;
+    fx.balls.push({ x: b.x, y: b.y, r: R, age: 0, max: kill ? 0.7 : 0.5 });
+    fx.rings.push({ x: b.x, y: b.y, r: R, age: 0, max: 0.5 });
+    n = R >= 40 ? 14 : R >= 26 ? 10 : 6;
+    for (i = 0; i < n; i++) {
+      ang = (0.12 + crand() * 0.76) * Math.PI; sp = (70 + crand() * 150) * (0.7 + R / 60);
+      addP({ k: "deb", x: b.x, y: b.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, age: 0, max: 0.7 + crand() * 0.6, s: 1.6 + crand() * 2.4, rot: crand() * 6, vr: (crand() - 0.5) * 14, hi: crand() < 0.5 });
+    }
+    for (i = 0; i < 6; i++) { ang = crand() * 6.2832; sp = 90 + crand() * 160; addP({ k: "spark", x: b.x, y: b.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp + 40, age: 0, max: 0.25 + crand() * 0.25 }); }
+    n = R >= 40 ? 8 : 5;
+    for (i = 0; i < n; i++) addP({ k: "dust", x: b.x + (crand() - 0.5) * R * 1.4, y: b.y + crand() * 4, vx: (crand() - 0.5) * 36, vy: 10 + crand() * 26, age: 0, max: 0.9 + crand() * 0.6, s: R * (0.5 + crand() * 0.35), a: 0.55 });
+    n = R >= 40 ? 5 : 3;
+    for (i = 0; i < n; i++) addP({ k: "smoke", x: b.x + (crand() - 0.5) * R * 0.8, y: b.y + R * 0.2, vx: (crand() - 0.5) * 20, vy: 22 + crand() * 22, age: 0, max: 1.3 + crand() * 0.8, s: R * (0.35 + crand() * 0.25), a: 0.5 });
+  }
+  function spawnPop(pt) {
+    var i, ang, sp;
+    fx.rings.push({ x: pt[0], y: pt[1], r: 15, age: 0, max: 0.3 });
+    for (i = 0; i < 5; i++) { ang = crand() * 6.2832; sp = 50 + crand() * 90; addP({ k: "spark", x: pt[0], y: pt[1], vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, age: 0, max: 0.3 }); }
+  }
+  function killBoom(k) {
+    var t = rs.tanks[k], c = E.tankCenter(view.h, t);
+    spawnBoom({ x: c.x, y: c.y, r: 30 }, true);
+    startShake(5.5);
+  }
+  function startShake(mag) { if (reduced()) return; fx.mag = Math.max(fx.mag * (fx.shake > 0 ? 1 : 0), mag); fx.shake = 0.38; }
+  function fireFx(by, angle) {
+    var tv = view.tv[by], c = E.tankCenter(view.h, rs.tanks[by]), rad = angle * Math.PI / 180, i;
+    if (!tv) return;
+    tv.recoil = 1; tv.flash = 1;
+    for (i = 0; i < 3; i++) {
+      addP({ k: "smoke", x: c.x + Math.cos(rad) * 18 * ts, y: c.y + 2 + Math.sin(rad) * 18 * ts, vx: Math.cos(rad) * (14 + crand() * 22) + (crand() - 0.5) * 10, vy: Math.sin(rad) * (14 + crand() * 22) + 8, age: 0, max: 0.6 + crand() * 0.4, s: 5 + crand() * 3, a: 0.4 });
+    }
+  }
+  function buildStreaks() {
+    var n = rs.wind === 0 ? 0 : 6 + Math.abs(rs.wind) * 2, r = E.mulberry32((rs.seed ^ 0x1b873593) >>> 0), i;
+    fx.streaks = [];
+    for (i = 0; i < n; i++) fx.streaks.push({ x: r() * W, y: 26 + r() * 200, l: 0.7 + r() * 0.6, ph: r() * 6.28 });
+  }
+  function stepFx(dt) {
+    var i, q, wd = rs ? rs.wind : 0, keep = [];
+    for (i = 0; i < fx.P.length; i++) {
+      q = fx.P[i]; q.age += dt;
+      if (q.age >= q.max) continue;
+      q.x += q.vx * dt; q.y += q.vy * dt;
+      if (q.k === "deb") { q.vy -= 360 * dt; q.rot += q.vr * dt; }
+      else if (q.k === "spark") q.vy -= 260 * dt;
+      else { q.vx += wd * 3 * dt; q.vx *= Math.pow(0.35, dt); q.vy *= Math.pow(0.55, dt); }
+      keep.push(q);
+    }
+    fx.P = keep;
+    fx.balls = fx.balls.filter(function (b) { b.age += dt; return b.age < b.max; });
+    fx.rings = fx.rings.filter(function (b) { b.age += dt; return b.age < b.max; });
+    if (fx.shake > 0) fx.shake = Math.max(0, fx.shake - dt);
+    view.tv.forEach(function (tv) { tv.recoil = Math.max(0, tv.recoil - dt / 0.2); tv.flash = Math.max(0, tv.flash - dt / 0.1); tv.hit = Math.max(0, tv.hit - dt / 0.3); });
+    // wind streaks drift with the wind and wrap round the field
+    var sp = (14 + Math.abs(wd) * 9) * (wd >= 0 ? 1 : -1);
+    fx.streaks.forEach(function (s) { s.x += sp * dt * s.l; if (s.x > W + 40) s.x = -40; else if (s.x < -40) s.x = W + 40; });
+    // smoke rises from a tank that is badly hurt; a wreck smokes harder
+    if (rs && !reduced()) {
+      view.armor.forEach(function (a, k) {
+        if (a > 35 || fx.P.length > 110) return;
+        var rate = a <= 0 ? 7 : a <= 15 ? 4.5 : 2.2, t = rs.tanks[k], c = E.tankCenter(view.h, t);
+        fx.acc[k] = (fx.acc[k] || 0) + rate * dt;
+        while (fx.acc[k] >= 1) {
+          fx.acc[k] -= 1;
+          addP({ k: "smoke", x: c.x + (crand() - 0.5) * 8, y: c.y + 8 + crand() * 4, vx: (crand() - 0.5) * 8, vy: 24 + crand() * 14, age: 0, max: 1.4 + crand() * 0.9, s: 5 + crand() * 3.4, a: a <= 0 ? 0.62 : 0.42 });
+        }
+      });
+    }
+    // tanks settle into a new crater instead of jumping
+    for (i = 0; i < view.ty.length; i++) {
+      var tg = view.h[rs.tanks[i].x];
+      if (view.ty[i] === undefined || reduced()) view.ty[i] = tg;
+      else { view.ty[i] += (tg - view.ty[i]) * Math.min(1, dt / 0.09); if (Math.abs(tg - view.ty[i]) < 0.05) view.ty[i] = tg; }
+    }
+  }
+  function fxBusy() {
+    var i;
+    if (fx.P.length || fx.balls.length || fx.rings.length || fx.shake > 0) return true;
+    for (i = 0; i < view.tv.length; i++) if (view.tv[i].recoil > 0 || view.tv[i].flash > 0 || view.tv[i].hit > 0) return true;
+    for (i = 0; i < view.ty.length; i++) if (rs && view.ty[i] !== view.h[rs.tanks[i].x]) return true;
+    return false;
+  }
+
+  function pathPoint(path, t) {
+    var i = Math.min(path.length - 1, Math.floor(t)), j = Math.min(path.length - 1, i + 1), f = t - Math.floor(t), a = path[i], b = path[j];
+    return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+  }
+  // A shell: a tapered tail that fades behind it, then the head. Heavy and cluster shells and the bomblets each look different.
+  function drawProj(c, p, q) {
+    var kind = q.kind, head = pathPoint(q.path, q.t), pts = [head], cum = [0], i = Math.floor(q.t), acc = 0, prev = head, d, pt, s;
+    var big = kind === "heavy", tiny = kind === "bomblet", tailLen = big ? 66 : tiny ? 26 : 48, wmax = big ? 5.4 : tiny ? 2.2 : kind === "cluster" ? 3.6 : 3.2;
+    var warm = p.night ? "#ffb04a" : "#e0661e", tailCol = !q.mine ? p["--tk-foe"] : (kind === "shell" ? p["--tk-trail"] : warm);
+    while (i >= 0 && acc < tailLen) {
+      pt = q.path[i]; d = Math.hypot(pt[0] - prev[0], pt[1] - prev[1]);
+      if (d > 0.05) { acc += d; pts.push(pt); cum.push(acc); prev = pt; }
+      i--;
+    }
+    c.lineCap = "round";
+    for (s = 1; s < pts.length; s++) {
+      var u = Math.min(1, cum[s] / tailLen), w = wmax * Math.pow(1 - u, 0.9) + 0.4, al = Math.pow(1 - u, 1.3);
+      if (big || kind === "cluster") { c.globalAlpha = al * 0.28; c.strokeStyle = warm; c.lineWidth = w * 2.4; c.beginPath(); c.moveTo(pts[s - 1][0], fy(pts[s - 1][1])); c.lineTo(pts[s][0], fy(pts[s][1])); c.stroke(); }
+      c.globalAlpha = al * 0.95; c.strokeStyle = tailCol; c.lineWidth = w;
+      c.beginPath(); c.moveTo(pts[s - 1][0], fy(pts[s - 1][1])); c.lineTo(pts[s][0], fy(pts[s][1])); c.stroke();
+    }
+    c.globalAlpha = 1;
+    var ang = pts.length > 1 ? Math.atan2(fy(head[1]) - fy(pts[1][1]), head[0] - pts[1][0]) : 0, hx = head[0], hy = fy(head[1]);
+    if (big || kind === "cluster") { var gl = blob("fire", FIRE); c.globalAlpha = 0.55; c.drawImage(gl, hx - 12, hy - 12, 24, 24); c.globalAlpha = 1; }
+    var name = big ? "shell-heavy" : kind === "cluster" || tiny ? "shell-cluster" : "shell-normal";
+    if (drawSprite(c, name, hx, hy, ang, false, 0, tiny ? 0.6 : 1)) return;
+    c.save(); c.translate(hx, hy); c.rotate(ang); c.strokeStyle = "rgba(10,6,18,0.7)"; c.lineWidth = 1;
+    if (big) {
+      rr(c, -6.5, -2.7, 13, 5.4, 2.7); c.fillStyle = "#2f2a3a"; c.fill(); c.stroke();
+      c.fillStyle = warm; c.fillRect(1, -2.7, 2.4, 5.4);
+      c.fillStyle = p["--tk-ink"]; c.beginPath(); c.moveTo(6.5, -2.2); c.lineTo(9.5, 0); c.lineTo(6.5, 2.2); c.closePath(); c.fill();
+    } else if (kind === "cluster") {
+      c.fillStyle = p["--tk-ink"]; c.beginPath(); c.arc(0, 0, 3.8, 0, 6.2832); c.fill(); c.stroke();
+      c.strokeStyle = warm; c.lineWidth = 1.4; c.beginPath(); c.moveTo(-1.2, -3.5); c.lineTo(-1.2, 3.5); c.stroke();
+    } else if (tiny) {
+      c.fillStyle = p["--tk-ink"]; c.beginPath(); c.arc(0, 0, 2.1, 0, 6.2832); c.fill(); c.stroke();
+    } else {
+      rr(c, -4, -1.7, 8, 3.4, 1.7); c.fillStyle = p["--tk-ink"]; c.fill(); c.stroke();
+    }
+    c.restore();
+  }
+
+  function drawFireballs(c, p) {
+    var ex = sprite("explosion");
+    fx.balls.forEach(function (b) {
+      var u = b.age / b.max, e = 1 - (1 - u) * (1 - u), R = b.r * (0.5 + 0.75 * e), x = b.x, y = fy(b.y);
+      if (ex) {
+        var m = SPRITES.explosion, fw = ex.img.naturalWidth / m.frames, fh = ex.img.naturalHeight, fr = Math.min(m.frames - 1, Math.floor(u * m.frames)), D = 2.6 * b.r;
+        c.drawImage(ex.img, fr * fw, 0, fw, fh, x - D / 2, y - D / 2, D, D);
+        return;
+      }
+      var a = 1 - u, g = c.createRadialGradient(x, y, 0, x, y, R);
+      g.addColorStop(0, "rgba(255,250,222," + a + ")"); g.addColorStop(0.35, "rgba(255,196,80," + (0.95 * a) + ")");
+      g.addColorStop(0.72, "rgba(235,90,30," + (0.7 * a) + ")"); g.addColorStop(1, "rgba(120,30,20,0)");
+      c.fillStyle = g; c.beginPath(); c.arc(x, y, R, 0, 6.2832); c.fill();
+      if (u < 0.2) { c.globalAlpha = (1 - u / 0.2) * 0.85; c.fillStyle = "#fff"; c.beginPath(); c.arc(x, y, b.r * 0.85, 0, 6.2832); c.fill(); c.globalAlpha = 1; }
+    });
+    fx.rings.forEach(function (b) {
+      var u = b.age / b.max, e = 1 - (1 - u) * (1 - u);
+      c.globalAlpha = 0.6 * (1 - u); c.strokeStyle = p["--tk-ink"]; c.lineWidth = 3.2 * (1 - u) + 0.6;
+      c.beginPath(); c.arc(b.x, fy(b.y), b.r * (0.7 + 1.25 * e), 0, 6.2832); c.stroke();
+    });
+    c.globalAlpha = 1;
+  }
+  function drawParticles(c, p, front) {
+    var i, q, u, s, bl;
+    for (i = 0; i < fx.P.length; i++) {
+      q = fx.P[i];
+      if ((q.k === "deb" || q.k === "spark") !== front) continue;
+      u = q.age / q.max;
+      if (q.k === "dust" || q.k === "smoke") {
+        s = q.s * (1 + 1.4 * u); bl = q.k === "dust" ? blob("dust", DUST) : blob(p.night ? "smoke-n" : "smoke", p.night ? SMOKE_N : SMOKE);
+        c.globalAlpha = q.a * Math.pow(1 - u, 1.2); c.drawImage(bl, q.x - s, fy(q.y) - s, 2 * s, 2 * s);
+      } else if (q.k === "deb") {
+        c.globalAlpha = 1 - u * u * u; c.fillStyle = q.hi ? p["--tk-ground-hi"] : p["--tk-ground-lo"];
+        c.save(); c.translate(q.x, fy(q.y)); c.rotate(q.rot); c.fillRect(-q.s / 2, -q.s / 2, q.s, q.s * 0.7); c.restore();
+      } else {
+        c.globalAlpha = 1 - u; c.strokeStyle = "#ffd98a"; c.lineWidth = 1.4;
+        c.beginPath(); c.moveTo(q.x, fy(q.y)); c.lineTo(q.x - q.vx * 0.035, fy(q.y - q.vy * 0.035)); c.stroke();
+      }
+    }
+    c.globalAlpha = 1;
+  }
+  function drawStreaks(c, p, T) {
+    if (!fx.streaks.length) return;
+    var dir = rs.wind > 0 ? 1 : -1, L = 12 + Math.abs(rs.wind) * 3.2;
+    c.strokeStyle = p["--tk-ink"]; c.lineWidth = 1.2; c.lineCap = "round";
+    fx.streaks.forEach(function (s) {
+      var wob = T ? Math.sin(T * 0.002 + s.ph) * 3 : 0, l = L * s.l;
+      c.globalAlpha = 0.16 + 0.12 * s.l; c.beginPath(); c.moveTo(s.x - dir * l, s.y + wob); c.lineTo(s.x, s.y + wob); c.stroke();
+    });
+    c.globalAlpha = 1;
+  }
+  function drawWindHud(c, p) {
+    var wd = rs.wind, ax = W / 2, fs = Math.round(tpx(13, 10.5)), txt = "Wind " + Math.abs(wd), len = 14 + Math.abs(wd) * 5, ph = fs + 9 + (wd !== 0 ? 11 : 0), pw, wy;
+    c.font = "700 " + fs + "px " + p.font; c.textAlign = "center";
+    pw = Math.max(c.measureText(txt).width + 22, len + 30);
+    c.globalAlpha = 0.74; c.fillStyle = p["--tk-pill"]; rr(c, ax - pw / 2, 5, pw, ph, 9); c.fill(); c.globalAlpha = 1;
+    c.fillStyle = p["--tk-ink"]; c.fillText(txt, ax, 5 + fs + 1);
+    if (wd !== 0) {
+      var s = wd > 0 ? 1 : -1; wy = 5 + fs + 9;
+      c.strokeStyle = p["--tk-ink"]; c.lineWidth = 2; c.lineCap = "round"; c.lineJoin = "round";
+      c.beginPath(); c.moveTo(ax - s * len / 2, wy); c.lineTo(ax + s * len / 2, wy);
+      c.moveTo(ax + s * len / 2, wy); c.lineTo(ax + s * (len / 2 - 6), wy - 4.5); c.moveTo(ax + s * len / 2, wy); c.lineTo(ax + s * (len / 2 - 6), wy + 4.5); c.stroke();
+    }
+  }
+
+  var lastTs = 0;
+  function redraw() { draw(lastTs); }
+  function draw(now) {
+    var p = palette(), c = ctx2d, i, T = reduced() ? 0 : (now || 0);
+    if (!rs) return;
+    var h = view.h.length ? view.h : rs.h;
+    if (!h.length) return;
+    lastTs = now || 0;
+    if (!sc) buildScenery();
+    ts = Math.min(1.45, Math.max(1, 520 / Math.max(1, canvas.clientWidth))); cssScale = Math.max(0.2, canvas.clientWidth / W);
+    if (backDirty) renderBack(p);
+    if (terrainDirty) { renderTerrain(h, p); sceneDirty = true; }
+    if (sceneDirty) renderScene();
+    var sx = 0, sy = 0;
+    if (fx.shake > 0 && !reduced()) { var m = fx.mag * (fx.shake / 0.38); sx = Math.sin(T * 0.11) * m; sy = Math.cos(T * 0.17 + 1) * m * 0.7; }
     c.setTransform(SCALE, 0, 0, SCALE, 0, 0);
     c.clearRect(0, 0, W, H);
-    c.fillStyle = p["--tk-sky"]; c.fillRect(0, 0, W, H);
-    var h = view.h.length ? view.h : (rs ? rs.h : []);
-    if (!h.length) return;
-    // ground
-    c.beginPath(); c.moveTo(0, H);
-    for (i = 0; i < W; i++) c.lineTo(i, fy(h[i]));
-    c.lineTo(W - 1, H); c.closePath();
-    c.fillStyle = p["--tk-ground"]; c.fill();
-    c.beginPath();
-    for (i = 0; i < W; i++) { if (i === 0) c.moveTo(i, fy(h[i])); else c.lineTo(i, fy(h[i])); }
-    c.strokeStyle = p["--tk-edge"]; c.lineWidth = 2; c.stroke();
-    // wind
-    var wind = rs.wind, ax = W / 2;
-    c.fillStyle = p["--tk-ink"]; c.strokeStyle = p["--tk-ink"]; c.lineWidth = 2; c.font = "700 " + Math.round(14 * ts) + "px " + p.font; c.textAlign = "center";
-    c.fillText(wind === 0 ? "Wind 0" : "Wind " + Math.abs(wind), ax, 14 + 8 * ts);
-    if (wind !== 0) {
-      var s = wind > 0 ? 1 : -1, len = 14 + Math.abs(wind) * 5;
-      var wy = 20 + 12 * ts;
-      c.beginPath(); c.moveTo(ax - s * len / 2, wy); c.lineTo(ax + s * len / 2, wy);
-      c.moveTo(ax + s * len / 2, wy); c.lineTo(ax + s * (len / 2 - 6), wy - 5); c.moveTo(ax + s * len / 2, wy); c.lineTo(ax + s * (len / 2 - 6), wy + 5); c.stroke();
-    }
+    if (sx || sy) {
+      c.drawImage(layA, -OV + sx * 0.2, -OV + sy * 0.2, W + 2 * OV, H + 2 * OV);
+      c.drawImage(layB, -OV + sx * 0.55, -OV + sy * 0.55, W + 2 * OV, H + 2 * OV);
+      c.drawImage(terr, -OV + sx, -OV + sy, W + 2 * OV, H + 2 * OV);
+    } else c.drawImage(scene, -OV, -OV, W + 2 * OV, H + 2 * OV);
+    drawTwinkle(c, p, T);
+    c.save(); c.translate(sx, sy);
+    drawStreaks(c, p, T);
     // earlier landings
-    c.font = "600 " + Math.round(11 * ts) + "px " + p.font; c.textAlign = "left";
-    view.marks.forEach(function (m) {
-      var x = m[0], y = fy(m[1]);
-      c.strokeStyle = p["--tk-mark"]; c.lineWidth = 2;
-      c.beginPath(); c.moveTo(x - 4 * ts, y - 8 * ts); c.lineTo(x + 4 * ts, y); c.moveTo(x + 4 * ts, y - 8 * ts); c.lineTo(x - 4 * ts, y); c.stroke();
-      c.fillStyle = p["--tk-mark"]; c.fillText(String(m[2]), x + 7 * ts, y - 2);
+    c.font = "700 " + Math.round(tpx(11, 9.5)) + "px " + p.font; c.textAlign = "left"; c.lineJoin = "round";
+    view.marks.forEach(function (mk) {
+      var x = mk[0], y = fy(mk[1]);
+      c.strokeStyle = p["--tk-pill"]; c.lineWidth = 4.2; c.beginPath(); c.moveTo(x - 4 * ts, y - 8 * ts); c.lineTo(x + 4 * ts, y); c.moveTo(x + 4 * ts, y - 8 * ts); c.lineTo(x - 4 * ts, y); c.stroke();
+      c.lineWidth = 3.2; c.strokeText(String(mk[2]), x + 7 * ts, y - 2);
+      c.strokeStyle = p["--tk-mark"]; c.lineWidth = 2; c.beginPath(); c.moveTo(x - 4 * ts, y - 8 * ts); c.lineTo(x + 4 * ts, y); c.moveTo(x + 4 * ts, y - 8 * ts); c.lineTo(x - 4 * ts, y); c.stroke();
+      c.fillStyle = p["--tk-mark"]; c.fillText(String(mk[2]), x + 7 * ts, y - 2);
     });
-    // trails
+    // where earlier shells went: a dotted path
     view.trails.forEach(function (t) {
-      c.strokeStyle = t.mine ? p["--tk-trail"] : p["--tk-foe"]; c.globalAlpha = t.mine ? 0.9 : 0.55; c.lineWidth = 2; c.setLineDash([2, 6]); c.lineCap = "round";
+      c.strokeStyle = t.mine ? p["--tk-trail"] : p["--tk-foe"]; c.globalAlpha = t.mine ? 0.6 : 0.4; c.lineWidth = 1.8; c.setLineDash([2, 6]); c.lineCap = "round";
       c.beginPath();
       t.path.forEach(function (q, k) { if (k === 0) c.moveTo(q[0], fy(q[1])); else c.lineTo(q[0], fy(q[1])); });
       c.stroke();
     });
     c.setLineDash([]); c.globalAlpha = 1;
+    drawParticles(c, p, false);
     // tanks
     rs.tanks.forEach(function (t, k) {
-      var barrel = k === 0 ? (busy ? view.aim[0] : aim.angle) : view.aim[k];
-      drawTank(c, p, t.x, h[t.x], view.armor[k], barrel === undefined ? t.aim : barrel, k === 0, k === 0 ? "You" : (rs.tanks.length > 2 ? "Enemy " + k : "Enemy"));
+      var gy = view.ty[k] === undefined || reduced() ? h[t.x] : view.ty[k], barrel = k === 0 ? (busy ? view.aim[0] : aim.angle) : view.aim[k];
+      var slope = Math.max(-0.45, Math.min(0.45, Math.atan2(h[Math.min(W - 1, t.x + 13)] - h[Math.max(0, t.x - 13)], 26)));
+      drawTank(c, p, k, t.x, gy, view.armor[k], barrel === undefined ? t.aim : barrel, k === 0, T, slope);
     });
     // aim stub: a few dots at the start of the path, so the barrel's angle is easy to read
     if (!busy && rs.status === "playing") {
-      c.fillStyle = p["--tk-trail"]; c.globalAlpha = 0.7;
-      E.previewPoints(rs, aim.angle, aim.power, 4).forEach(function (q) { c.beginPath(); c.arc(q[0], fy(q[1]), 2.2, 0, Math.PI * 2); c.fill(); });
-      c.globalAlpha = 1;
+      c.fillStyle = p["--tk-trail"]; c.strokeStyle = "rgba(0,0,0,0.35)"; c.lineWidth = 1;
+      E.previewPoints(rs, aim.angle, aim.power, 4).forEach(function (q) { c.beginPath(); c.arc(q[0], fy(q[1]), 2.4, 0, 6.2832); c.fill(); c.stroke(); });
     }
-    // projectiles and blasts
-    c.fillStyle = p["--tk-ink"];
-    view.proj.forEach(function (q) { c.beginPath(); c.arc(q[0], fy(q[1]), 3.5, 0, Math.PI * 2); c.fill(); });
-    view.booms.forEach(function (b) {
-      var k = Math.min(1, b.age / 14);
-      c.globalAlpha = 1 - k * 0.8; c.fillStyle = p["--tk-edge"];
-      c.beginPath(); c.arc(b.x, fy(b.y), b.r * (0.4 + 0.6 * k), 0, Math.PI * 2); c.fill();
-      c.globalAlpha = 1; c.strokeStyle = p["--tk-ink"]; c.lineWidth = 2; c.stroke();
+    view.proj.forEach(function (q) { drawProj(c, p, q); });
+    drawFireballs(c, p);
+    drawParticles(c, p, true);
+    var items = rs.tanks.map(function (t, k) {
+      return { x: t.x, gy: view.ty[k] === undefined || reduced() ? h[t.x] : view.ty[k], armor: view.armor[k], mine: k === 0, txt: labelText(view.armor[k], k === 0 ? "You" : (rs.tanks.length > 2 ? "Enemy " + k : "Enemy")) };
     });
-    c.globalAlpha = 1;
+    var lfs = layoutLabels(c, p, items);
+    items.forEach(function (it) { drawLabel(c, p, it, lfs); });
+    c.restore();
+    drawWindHud(c, p);
   }
 
   // ---- text ----
@@ -512,6 +1141,9 @@
     $("tk-foes").textContent = rs.tanks.slice(1).map(function (t, k) { return (rs.tanks.length > 2 ? "Enemy " + (k + 1) + " " : "Enemy ") + (t.armor > 0 ? t.armor : "down"); }).join(", ");
     $("tk-wind").textContent = "Wind " + windText(rs.wind);
     $("tk-wind-arrow").textContent = rs.wind === 0 ? "" : (rs.wind > 0 ? "→" : "←");
+    var chip = $("tk-wind").parentNode, pips = $("tk-wind-pips");
+    if (!pips) { chip.classList.add("tk-chip-wind"); pips = document.createElement("span"); pips.id = "tk-wind-pips"; pips.className = "tk-pips"; pips.setAttribute("aria-hidden", "true"); chip.appendChild(pips); for (var q = 0; q < 5; q++) { var pp = document.createElement("span"); pp.className = "tk-pip"; pips.appendChild(pp); } }
+    Array.prototype.forEach.call(pips.children, function (pp, q) { pp.classList.toggle("on", q < Math.ceil(Math.abs(rs.wind) / 2)); });
     var g = $("tk-grav"); g.hidden = rs.grav === 0.1;
     canvas.setAttribute("aria-label", describeField());
   }
@@ -563,7 +1195,11 @@
     view.h = rs.h.slice();
     view.armor = rs.tanks.map(function (t) { return t.armor; });
     view.aim = rs.tanks.map(function (t, k) { return k === 0 ? aim.angle : t.aim; });
-    view.proj = []; view.booms = [];
+    view.proj = [];
+    view.scars = allBooms.slice();
+    view.ty = rs.tanks.map(function (t) { return view.h[t.x]; });
+    while (view.tv.length < rs.tanks.length) view.tv.push({ recoil: 0, flash: 0, hit: 0 });
+    terrainDirty = true;
   }
   function marks() {
     var m = [];
@@ -575,62 +1211,105 @@
     res.phases.forEach(function (ph) { ph.groups.forEach(function (g) { g.forEach(function (f) { t.push({ mine: ph.by === 0, path: f.path }); }); }); });
     return t;
   }
+  function commitBooms(res) {
+    res.phases.forEach(function (ph) { ph.booms.forEach(function (b) { allBooms.push({ x: b.x, y: b.y, r: b.r }); }); });
+  }
+
+  // ---- the loop ----
+  // One requestAnimationFrame loop drives the shot animation and the idle life of the field (flags, streaks, clouds, smoke).
+  // It runs at full rate while a shot is in the air, about 30 a second otherwise, and not at all when the tab is hidden,
+  // the canvas is off screen or the visitor prefers reduced motion (then the field is drawn only when something changes).
+  var anim = null, lastStep = 0, inView = true;
+  function needsLoop() { return busy || (!reduced() && inView && !(document.hidden)); }
+  function loop(ts) {
+    raf = 0;
+    if (!needsLoop()) { lastStep = 0; return; }
+    var el = lastStep ? ts - lastStep : 16.7;
+    if (!busy && el < 30) { raf = host.requestAnimationFrame(loop); return; }
+    lastStep = ts;
+    var dt = Math.min(50, el);
+    if (busy) animStep(dt);
+    stepFx(dt / 1000);
+    draw(ts);
+    if (needsLoop()) raf = host.requestAnimationFrame(loop); else lastStep = 0;
+  }
+  function kick() { if (!raf && rs && needsLoop()) raf = host.requestAnimationFrame(loop); }
 
   // ---- animation ----
+  // Frame counts below are at 60 frames a second; they are scaled by the real time between frames.
+  function startGroup() {
+    var a = anim, ph = a.phases[a.pi];
+    a.group = ph.groups[a.gi]; a.tick = 0; a.waiting = 0; a.applied = false; a.ended = a.group.map(function () { return false; });
+    if (a.gi === 0) { view.aim[ph.by] = ph.angle; fireFx(ph.by, ph.angle); }
+    a.mark = view.trails.length;
+    a.group.forEach(function () { view.trails.push({ mine: ph.by === 0, path: [] }); });
+  }
   function animate(res, pre, done) {
-    var phases = res.phases, pi = 0, gi = 0, tick = 0, waiting = 0, group = null, ended = [];
-    view.h = pre.h.slice(); view.armor = pre.armor.slice(); view.aim = pre.aim.slice(); view.proj = []; view.booms = []; view.trails = []; view.marks = marks().filter(function (m) { return m[2] < res.n; });
-    function finish() {
-      host.cancelAnimationFrame(raf);
-      syncView(); view.trails = trailsOf(res); view.marks = marks();
-      draw(); done();
-    }
-    function startGroup() {
-      group = phases[pi].groups[gi]; tick = 0; waiting = 0; ended = group.map(function () { return false; });
-      if (gi === 0) view.aim[phases[pi].by] = phases[pi].angle;
-    }
+    anim = { res: res, done: done, phases: res.phases, pi: 0, gi: 0, tick: 0, waiting: 0, group: null, ended: [], mark: 0, slow: res.kills.length > 0 || (res.status === "lost" && res.reason === "armor") };
+    view.h = pre.h.slice(); view.armor = pre.armor.slice(); view.aim = pre.aim.slice(); view.proj = []; view.trails = [];
+    view.marks = marks().filter(function (m) { return m[2] < res.n; });
+    view.scars = pre.scars.slice(); view.ty = rs.tanks.map(function (t) { return view.h[t.x]; });
+    terrainDirty = true;
+    fx.P = []; fx.balls = []; fx.rings = [];
     startGroup();
-    var showTrail = function (ph) { group.forEach(function (f) { view.trails.push({ mine: ph.by === 0, path: [] }); }); };
-    var mark = view.trails.length; showTrail(phases[0]);
-    function step() {
-      if (skip) { finish(); return; }
-      var ph = phases[pi], speed = ph.by === 0 ? 3 : 5, all = true;
-      tick += speed;
-      view.proj = [];
-      group.forEach(function (f, k) {
-        var at = Math.min(tick, f.path.length - 1), tr = view.trails[mark + k];
-        if (tr) tr.path = f.path.slice(0, at + 1);
-        if (!ended[k]) {
-          view.proj.push(f.path[at]);
-          if (at >= f.path.length - 1) {
-            ended[k] = true;
-            if (f.boom) {
-              var b = ph.booms.filter(function (bb) { return Math.abs(bb.x - f.boom.x) < 0.001 && Math.abs(bb.y - f.boom.y) < 0.001; })[0];
-              if (b) { E.carve(view.h, b.x, b.y, b.r); view.booms.push({ x: b.x, y: b.y, r: b.r, age: 0 }); }
-              if (FX) FX.play(b && b.hits.length ? "capture" : "place");
-            }
-          }
-        }
-        if (!ended[k]) all = false;
-      });
-      view.booms.forEach(function (b) { b.age += 1; });
-      view.booms = view.booms.filter(function (b) { return b.age < 16; });
-      if (all) {
-        waiting += 1;
-        if (waiting === 1) { view.proj = []; }
-        if (waiting >= 14) {
-          // this group has landed: show its armor result, then the next group or phase
-          if (gi === ph.groups.length - 1) { view.armor = ph.armor.slice(); }
-          if (gi < ph.groups.length - 1) { gi += 1; }
-          else if (pi < phases.length - 1) { pi += 1; gi = 0; }
-          else { finish(); return; }
-          startGroup(); mark = view.trails.length; showTrail(phases[pi]);
-        }
+    kick();
+  }
+  function landed(ph, b) {
+    E.carve(view.h, b.x, b.y, b.r);
+    view.scars.push({ x: b.x, y: b.y, r: b.r }); terrainDirty = true;
+    spawnBoom(b, false);
+    var close = b.hits.length > 0, i;
+    for (i = 0; i < b.near.length; i++) if (b.near[i].d <= b.r + 30) close = true;
+    if (close) startShake((b.hits.length ? 6 : 3.5) * (0.7 + b.r / 60));
+    b.hits.forEach(function (hh) { if (view.tv[hh.t]) view.tv[hh.t].hit = 1; });
+    if (FX) FX.play(b.hits.length ? "capture" : "place");
+  }
+  function kindOf(ph, gi) { return ph.weapon === "cluster" ? (gi === 0 ? "cluster" : "bomblet") : ph.weapon; }
+  function endAnim() {
+    var a = anim;
+    anim = null;
+    fx.P = []; fx.balls = []; fx.rings = []; fx.shake = 0;
+    commitBooms(a.res);
+    syncView(); view.trails = trailsOf(a.res); view.marks = marks();
+    draw(lastTs); a.done();
+  }
+  function animStep(dt) {
+    var a = anim;
+    if (!a) return;
+    if (skip) { endAnim(); return; }
+    var fe = dt / 16.667, ph = a.phases[a.pi], speed = ph.by === 0 ? 3 : 5, all = true, lastGroup = a.gi === ph.groups.length - 1, lastPhase = a.pi === a.phases.length - 1;
+    a.tick += speed * fe;
+    view.proj = [];
+    a.group.forEach(function (f, k) {
+      var last = f.path.length - 1, at = Math.min(a.tick, last), tr = view.trails[a.mark + k];
+      if (tr) tr.path = f.path.slice(0, Math.floor(at) + 1);
+      if (!a.ended[k] && at >= last) {
+        a.ended[k] = true;
+        if (f.boom) {
+          var b = ph.booms.filter(function (bb) { return Math.abs(bb.x - f.boom.x) < 0.001 && Math.abs(bb.y - f.boom.y) < 0.001; })[0];
+          if (b) landed(ph, b);
+        } else if (ph.weapon === "cluster" && a.gi === 0) spawnPop(f.path[last]);
       }
-      draw();
-      raf = host.requestAnimationFrame(step);
+      if (!a.ended[k]) { view.proj.push({ path: f.path, t: at, kind: kindOf(ph, a.gi), mine: ph.by === 0 }); all = false; }
+    });
+    if (all) {
+      a.waiting += fe;
+      if (a.waiting >= 14 && lastGroup && !a.applied) {
+        // this group has landed: show its armor result
+        a.applied = true;
+        ph.armor.forEach(function (ar, k) {
+          if (ar < view.armor[k]) { if (view.tv[k]) view.tv[k].hit = 1; if (ar <= 0 && view.armor[k] > 0) killBoom(k); }
+        });
+        view.armor = ph.armor.slice();
+      }
+      var need = !lastGroup && ph.weapon === "cluster" ? 5 : (lastGroup && lastPhase && a.slow ? 38 : 14);
+      if (a.waiting >= need) {
+        if (!lastGroup) a.gi += 1;
+        else if (!lastPhase) { a.pi += 1; a.gi = 0; }
+        else { endAnim(); return; }
+        startGroup();
+      }
     }
-    raf = host.requestAnimationFrame(step);
   }
 
   // ---- saving ----
@@ -644,7 +1323,7 @@
   function fire() {
     if (busy || rs.status !== "playing") return;
     if (rs.shots.length === 0) G.track("game_start", NAME);
-    var pre = { h: rs.h.slice(), armor: rs.tanks.map(function (t) { return t.armor; }), aim: rs.tanks.map(function (t, k) { return k === 0 ? aim.angle : t.aim; }) };
+    var pre = { h: rs.h.slice(), armor: rs.tanks.map(function (t) { return t.armor; }), aim: rs.tanks.map(function (t, k) { return k === 0 ? aim.angle : t.aim; }), scars: allBooms };
     var res = E.fire(rs, aim.angle, aim.power, aim.weapon);
     if (!res.ok) { say("That weapon has no ammunition left."); return; }
     persist(false);
@@ -661,12 +1340,12 @@
       $("tk-fire").focus({ preventScroll: true });
     }
     if (reduced()) {
-      syncView(); view.trails = trailsOf(res); view.marks = marks(); draw(); after();
+      commitBooms(res); syncView(); view.trails = trailsOf(res); view.marks = marks(); redraw(); after();
     } else animate(res, pre, after);
   }
 
-  function setAngle(a) { aim.angle = Math.max(0, Math.min(180, Math.round(a))); paintControls(); if (!busy) draw(); }
-  function setPower(p) { aim.power = Math.max(10, Math.min(100, Math.round(p))); paintControls(); if (!busy) draw(); }
+  function setAngle(a) { aim.angle = Math.max(0, Math.min(180, Math.round(a))); paintControls(); if (!busy) redraw(); }
+  function setPower(p) { aim.power = Math.max(10, Math.min(100, Math.round(p))); paintControls(); if (!busy) redraw(); }
   function setWeapon(w) {
     if (busy || rs.status !== "playing" || E.ammoLeft(rs, w) <= 0) return;
     aim.weapon = w; paintControls();
@@ -777,7 +1456,11 @@
     canvas.addEventListener("pointerup", function () { dragging = false; });
     canvas.addEventListener("pointercancel", function () { dragging = false; });
     // the footer's theme toggle changes the palette; repaint when it does
-    try { new MutationObserver(function () { if (!busy) draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }); } catch (e) { /* optional */ }
+    try { new MutationObserver(function () { repaint(); if (!busy) redraw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] }); } catch (e) { /* optional */ }
+    // motion preference, tab visibility and scrolling the canvas out of view all start or stop the idle animation
+    try { if (mql) mql.addEventListener("change", function () { if (!busy) redraw(); kick(); }); } catch (e) { /* optional */ }
+    document.addEventListener("visibilitychange", kick);
+    try { new IntersectionObserver(function (es) { inView = es[es.length - 1].isIntersecting; kick(); }).observe(canvas); } catch (e) { /* optional */ }
     host.PLShareText = shareText;   // the share row (share.js) reads this when the player taps a button
     host.setInterval(tick, 30000);
   }
@@ -797,15 +1480,19 @@
     if (rep) {
       rs = rep.state;
       var last = rep.results[rep.results.length - 1];
+      rep.results.forEach(commitBooms);
       wire(); syncView(); view.marks = marks();
       if (last) view.trails = trailsOf(last);
     } else {
       rs = E.createRound(idx, dow);
       wire(); syncView();
     }
+    buildScenery(); buildStreaks();
     $("tk-loading").hidden = true;
     $("tk-game").hidden = false;
-    paintHud(); paintControls(); draw();
+    paintHud(); paintControls(); draw(0);
+    kick();
+    host.setTimeout(loadSprites, 400);
     if (rep && rep.results.length) say("Restored: " + rs.shots.length + " of " + MAX + " shots fired. " + shotMessage(rep.results[rep.results.length - 1]));
     if (rs.status !== "playing") finish(!(today && today.done));
   }

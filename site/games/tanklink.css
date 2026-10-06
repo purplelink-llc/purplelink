@@ -11,30 +11,68 @@
   font-size: 0.88rem; font-weight: 600; font-variant-numeric: tabular-nums;
 }
 .tk-wind-arrow { font-size: 1.05rem; line-height: 1; color: var(--gc-text, var(--purple)); }
+/* the wind chip: a larger arrow and a row of pips, one per two points of wind */
+.tk-chip-wind { gap: 8px; padding-inline: 14px; }
+.tk-chip-wind .tk-wind-arrow { font-size: 1.4rem; font-weight: 700; }
+.tk-pips { display: inline-flex; gap: 3px; }
+.tk-pip { width: 7px; height: 14px; border-radius: 3px; border: 1.5px solid var(--muted); background: transparent; }
+.tk-pip.on { background: var(--gc-text, var(--purple)); border-color: var(--gc-text, var(--purple)); }
+.tk-pips:empty { display: none; }
 .tk-wind-arrow:empty { display: none; }
 .tk-chip[hidden] { display: none; }
 
-/* colours the canvas reads at draw time (getComputedStyle), so both themes work */
+/* colours the canvas reads at draw time (getComputedStyle), so both themes work. Sky, hills and ground are drawn from these;
+   --tk-night and the two alphas switch stars, moon and cloud strength per theme. */
 .tk-canvas {
-  --tk-sky: oklch(95% 0.03 250);
-  --tk-ground: oklch(68% 0.08 var(--gh, 52));
+  --tk-sky: oklch(88% 0.06 240);
+  --tk-sky-hi: oklch(78% 0.1 238);
+  --tk-sky-lo: oklch(95% 0.045 85);
+  --tk-glow: oklch(96% 0.12 85);
+  --tk-sun: oklch(98% 0.06 90);
+  --tk-far: oklch(80% 0.05 255);
+  --tk-near: oklch(68% 0.09 165);
+  --tk-ground-hi: oklch(60% 0.1 var(--gh, 75));
+  --tk-ground: oklch(50% 0.09 var(--gh, 75));
+  --tk-ground-lo: oklch(36% 0.07 var(--gh, 75));
+  --tk-grass: oklch(56% 0.17 140);
+  --tk-grass-hi: oklch(72% 0.18 135);
   --tk-edge: oklch(40% 0.1 var(--gh, 52));
   --tk-you: var(--purple);
   --tk-foe: oklch(50% 0.2 25);
   --tk-ink: oklch(20% 0.05 310);
   --tk-trail: oklch(32% 0.08 310);
   --tk-mark: oklch(20% 0.05 310);
+  --tk-pill: oklch(97% 0.02 310);
+  --tk-cloud: oklch(100% 0 0);
+  --tk-cloud-a: 0.8;
+  --tk-star-a: 0;
+  --tk-night: 0;
   display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; background: var(--tk-sky); cursor: crosshair;
 }
 :where(:root:not([data-theme="light"])) .tk-canvas {
   --tk-sky: oklch(24% 0.035 270);
-  --tk-ground: oklch(42% 0.07 var(--gh, 52));
+  --tk-sky-hi: oklch(15% 0.045 285);
+  --tk-sky-lo: oklch(34% 0.09 320);
+  --tk-glow: oklch(62% 0.14 330);
+  --tk-sun: oklch(94% 0.02 280);
+  --tk-far: oklch(30% 0.06 300);
+  --tk-near: oklch(23% 0.05 285);
+  --tk-ground-hi: oklch(40% 0.08 var(--gh, 75));
+  --tk-ground: oklch(31% 0.06 var(--gh, 75));
+  --tk-ground-lo: oklch(19% 0.04 var(--gh, 75));
+  --tk-grass: oklch(52% 0.13 140);
+  --tk-grass-hi: oklch(68% 0.15 138);
   --tk-edge: oklch(72% 0.11 var(--gh, 52));
   --tk-you: var(--purple);
   --tk-foe: oklch(76% 0.15 25);
   --tk-ink: oklch(96% 0.01 310);
   --tk-trail: oklch(88% 0.05 310);
   --tk-mark: oklch(96% 0.01 310);
+  --tk-pill: oklch(16% 0.03 290);
+  --tk-cloud: oklch(62% 0.05 300);
+  --tk-cloud-a: 0.2;
+  --tk-star-a: 0.85;
+  --tk-night: 1;
 }
 .tk-field { border: 2px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); box-shadow: 0 4px 0 var(--line); }
 .tk-canvas:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
@@ -46,8 +84,12 @@
 .tk-controls[hidden] { display: none; }
 .tk-ctl-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .tk-ctl-head label { font-weight: 700; }
-.tk-ctl-head output { font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 600; }
-.tk-range { display: block; width: 100%; height: 44px; margin: 0; padding: 0; background: transparent; accent-color: var(--gc, var(--purple)); cursor: pointer; }
+.tk-ctl-head output { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 700; font-size: 1.08rem; }
+.tk-range { display: block; width: 100%; height: 44px; margin: 0; padding: 0; background: transparent; accent-color: var(--gc, var(--purple)); cursor: pointer; -webkit-appearance: none; appearance: none; }
+.tk-range::-webkit-slider-runnable-track { height: 12px; border-radius: 100px; border: 1.5px solid var(--muted); background: linear-gradient(90deg, var(--panel), color-mix(in oklch, var(--gc) 55%, var(--panel))); }
+.tk-range::-moz-range-track { height: 9px; border-radius: 100px; border: 1.5px solid var(--muted); background: linear-gradient(90deg, var(--panel), color-mix(in oklch, var(--gc) 55%, var(--panel))); }
+.tk-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 30px; height: 30px; margin-top: -10px; border-radius: 50%; background: var(--gc); border: 3px solid var(--ink); box-shadow: 0 2px 0 var(--gc-d); }
+.tk-range::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--gc); border: 3px solid var(--ink); box-shadow: 0 2px 0 var(--gc-d); }
 .tk-range:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; border-radius: 8px; }
 
 .tk-weapons { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -56,7 +98,7 @@
 .games .btn.tk-weapon[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--gc), 0 4px 0 var(--gc-d); background: color-mix(in oklch, var(--gc) 18%, transparent); color: var(--ink); }
 .games .btn.tk-weapon:disabled { opacity: 0.45; cursor: default; }
 
-.games .btn.tk-fire { grid-column: 1 / -1; min-height: 52px; font-size: 1.05rem; }
+.games .btn.tk-fire { grid-column: 1 / -1; min-height: 64px; font-size: 1.3rem; font-weight: 800; letter-spacing: 0.04em; border-radius: 18px; }
 .games .btn.tk-fire:disabled { opacity: 0.55; cursor: default; }
 .tk-keys { grid-column: 1 / -1; margin: 2px 0 0; }
 
