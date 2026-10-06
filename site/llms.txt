@@ -32,7 +32,7 @@
 - **Target users:** PhD students, faculty, and technical coauthors writing serious LaTeX manuscripts
 - **Pricing:** Free 7-day trial (the complete app, no account), then $19.99 USD one-time to keep. No subscription. All updates are included, forever.
 - **Privacy:** No cloud sync, no data collection
-- **Status:** Shipping. Current version 1.3.2, a maintenance release that changes the key used to verify updates; 1.3.1 added a unified Settings window (editor font, line spacing, syntax colors, Zen mode); 1.3.0 added a visual Table Editor; 1.2.0 added the TikZ Designer. Version 1.0.0 released 2026-09-04; the free trial arrived in 1.0.2.
+- **Status:** Shipping. Current version 1.3.3, which fixed jumping between the editor and the PDF and added a PDF-only layout, a sidebar toggle and plain light and dark editor themes; 1.3.2 changed the key used to verify updates; 1.3.1 added a unified Settings window (editor font, line spacing, syntax colors, Zen mode); 1.3.0 added a visual Table Editor; 1.2.0 added the TikZ Designer. Version 1.0.0 released 2026-09-04; the free trial arrived in 1.0.2.
 - **Trial and purchase:** https://purplelink.llc/moderntex/
 - **Setup guide:** https://purplelink.llc/moderntex/start/ (first ten minutes: install, MacTeX or TinyTeX setup, first build, first error, venue templates, submission checks)
 - **Requirements:** macOS 14 (Sonoma) or later, Apple silicon or Intel, and a TeX distribution such as MacTeX or TinyTeX (ModernTex offers a one-click TinyTeX install if none is found). Signed, notarized disk image.
