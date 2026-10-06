@@ -13,6 +13,7 @@ class FakeYT:
     def __init__(self, broadcasts):
         self.items = broadcasts
         self.created, self.bound, self.updated = [], [], []
+        self.snippet = {"description": "old", "categoryId": "10", "tags": ["a"], "title": "old"}
 
     def liveBroadcasts(self):
         yt = self
@@ -36,7 +37,7 @@ class FakeYT:
         yt = self
         class V:
             def list(self, **kw):
-                return _Call(lambda: {"items": [{"snippet": {"description": "d", "categoryId": "10", "tags": ["a"]}}]})
+                return _Call(lambda: {"items": [{"snippet": yt.snippet}]})
             def update(self, part, body): yt.updated.append(body); return _Call(lambda: {})
         return V()
 
@@ -99,3 +100,16 @@ def test_search_metadata_fits_youtubes_limits_and_says_the_important_things():
         assert "Like" in head and "Subscribe" in head and "Share" in head        # the ask is above the fold
         assert "chiptune study music" in head.lower() and "utm_campaign=chiptune-radio" in desc
         assert desc.count("#") <= 15                                              # YouTube ignores all hashtags past 15
+
+
+def test_open_broadcast_gets_current_metadata_only_when_it_differs():
+    yt = FakeYT([_b("CUR", "live")])
+    assert "metadata refreshed" in broadcast.ensure("8bit", yt=yt)
+    sent = yt.updated[-1]["snippet"]
+    assert sent["title"] == broadcast.title_for("8bit") and sent["tags"] == broadcast.TAGS and sent["categoryId"] == "10"
+    # once YouTube shows the current text (trailing whitespace is ignored), nothing more is written
+    yt.snippet = {"title": broadcast.title_for("8bit"), "description": broadcast.description_for("8bit") + "  \n",
+                  "tags": list(broadcast.TAGS), "categoryId": "10"}
+    n = len(yt.updated)
+    assert "metadata current" in broadcast.ensure("8bit", yt=yt)
+    assert len(yt.updated) == n and not yt.created

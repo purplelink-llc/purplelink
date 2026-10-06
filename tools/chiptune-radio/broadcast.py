@@ -94,6 +94,32 @@ def _service():
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
 
+def _norm(text: str) -> str:
+    return "\n".join(line.rstrip() for line in (text or "").replace("\r\n", "\n").strip().splitlines())
+
+
+def refresh_metadata(yt, video_id: str, era: str | None, log: Callable[[str], None] = print) -> str:
+    """Bring an open broadcast's title, description and tags in line with the current ones (a restart reconnects to the
+    broadcast that is already live, so a change here would otherwise wait for the next 11-hour rotation).
+    Only writes when something differs, so the hourly check costs one cheap read."""
+    try:
+        items = yt.videos().list(part="snippet", id=video_id).execute().get("items", [])
+        if not items:
+            return "not readable yet"
+        cur = items[0]["snippet"]
+        want = {"title": title_for(era), "description": description_for(era), "tags": TAGS}
+        same = (cur.get("title") == want["title"] and _norm(cur.get("description")) == _norm(want["description"])
+                and list(cur.get("tags", [])) == want["tags"])
+        if same:
+            return "current"
+        yt.videos().update(part="snippet", body={"id": video_id, "snippet": {
+            **want, "categoryId": cur.get("categoryId") or "10", "defaultLanguage": "en"}}).execute()
+        return "refreshed"
+    except Exception as e:  # noqa: BLE001 - cosmetic; never let it break the stream
+        log(f"broadcast {video_id}: metadata refresh failed ({type(e).__name__})")
+        return "refresh failed"
+
+
 def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
     """Make sure one broadcast is open on the stream key. Returns what it did."""
     yt = yt or _service()
@@ -101,7 +127,8 @@ def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
                                      maxResults=25).execute().get("items", [])
     open_now = [b for b in items if b["status"]["lifeCycleStatus"] in STILL_OPEN]
     if open_now:
-        return f"already open: {open_now[0]['id']} ({open_now[0]['status']['lifeCycleStatus']})"
+        b = open_now[0]
+        return f"already open: {b['id']} ({b['status']['lifeCycleStatus']}), metadata {refresh_metadata(yt, b['id'], era, log)}"
 
     finished = [b for b in items if b["status"]["lifeCycleStatus"] == "complete"]
     tmpl = finished[0] if finished else (items[0] if items else None)
