@@ -113,6 +113,7 @@ class Track:
     groove: str
     sections: list = field(default_factory=list)
     sound: dict = field(default_factory=dict)
+    mood: float = 0.35               # 0 = lofi, calm and soft; 1 = boss music, driving and bright
 
     @property
     def bar_seconds(self) -> float:
@@ -214,11 +215,14 @@ def pick_sound(seed: int, era: str | None = None) -> dict:
                 chorus=era != "8bit" and r.random() < 0.8)
 
 
-def plan(seed: int, era: str | None = None) -> Track:
+def plan(seed: int, era: str | None = None, mood: float | None = None) -> Track:
     r = random.Random(seed * 7919 + 13)
     key = r.choice(list(KEYS))
     mode = r.choices(list(MODES), weights=[4, 4, 3, 2, 1])[0]
     bpm = r.randint(72, 94)
+    mood = 0.35 if mood is None else max(0.0, min(1.0, mood))
+    # lofi sits near 62 BPM and boss music near 94; the jitter comes from the seed, not from r, so the notes do not change
+    bpm = int(round(62 + 32 * mood + ((seed * 2654435761) % 1000) / 1000 * 4 - 2))
     swing = r.choice([0.0, 0.0, 0.12, 0.2, 0.28])
     groove = r.choice(["steady", "lofi", "broken"])
     dark = mode not in BRIGHT
@@ -232,7 +236,7 @@ def plan(seed: int, era: str | None = None) -> Track:
     arp_style = r.choice(["updown", "broken", "pedal"])
     arp_b = r.choice([a for a in ("updown", "broken", "pedal", "gated") if a != arp_style])
     lift = 2 if r.random() < 0.6 else 0
-    t = Track(seed, key, mode, bpm, swing, groove)
+    t = Track(seed, key, mode, bpm, swing, groove, mood=mood)
     spec = {
         "intro": dict(chords=p_half, energy=.25, lead="none", arp=arp_style, drums=0, hats=False, echo=False, harmony=False, pad=True, fill=False),
         "A": dict(chords=p_half, energy=.55, lead="motif", arp=arp_style if r.random() < .8 else "", drums=.65, hats=False, echo=False, harmony=False, pad=False),
@@ -359,7 +363,7 @@ def compose(t: Track):
             nxt = sec.chords[(bar + 1) % len(sec.chords)][0][1]
             fade = 1.0
             if sec.name == "outro":
-                fade = max(0.0, 1.0 - (bar + 1) / (sec.bars + 0.5))
+                fade = max(0.5, 1.0 - (bar + 1) / (sec.bars + 0.5))     # eases down, never to silence: the crossfade does the rest, and a faded-out tail under a fresh intro is an audible dip
             if sec.name == "intro":
                 fade = 0.4 + 0.6 * (bar / max(1, sec.bars - 1))
             block_end = bar % 4 == 3
@@ -387,17 +391,18 @@ def compose(t: Track):
             if sec.arp:
                 pattern = {"updown": [0, 1, 2, 3, 2, 1], "broken": [0, 2, 1, 3], "pedal": [0, 2, 0, 3, 0, 2, 0, 1],
                            "gated": [0, -1, 1, -1, 2, -1, 1, -1]}[sec.arp]
+                stride = 4 if t.mood < 0.5 else 2      # quarter notes for lofi, eighths toward boss; 16ths were a constant plink
                 for b, ch, ln in chs:
                     tones = sorted(tonic + 12 + ch.root + (iv % 12) for iv in ch.ivs)
                     tones.append(tones[0] + 12)
-                    for k in range(b * 4, (b + ln) * 4):
-                        pi = pattern[k % len(pattern)]
+                    for k in range(b * 4, (b + ln) * 4, stride):
+                        pi = pattern[(k // stride) % len(pattern)]
                         if pi < 0:
                             continue
                         m = tones[pi % len(tones)]
                         if block_end and k >= 12 and sec.fill:
                             m = tonic + 12 + scale[(k - 12) % 7] + (12 if k - 12 > 4 else 0)
-                        ev["arp"].append((place(t, t0, k), s16 * 0.7, m, 0.55 * fade * (0.6 + 0.4 * sec.energy), {"duty": 0.125 if bar % 2 == 0 else 0.25}))
+                        ev["arp"].append((place(t, t0, k), s16 * stride * 1.6, m, 0.5 * fade * (0.6 + 0.4 * sec.energy), {"duty": 0.125 if bar % 2 == 0 else 0.25}))
 
             # pad: two long notes from the chord (its third and its seventh or fifth)
             if sec.pad:
@@ -556,7 +561,7 @@ def melody(r, t, sec, sec_start, key, scale, motif_a, motif_b):
             notes.append([tstart, dur, m, 0.9 if sl % 4 == 0 else 0.78, ex, ln, sl])
         for i, (tstart, dur, m, vol, ex, ln, sl) in enumerate(notes):
             roll = r.random()
-            if ln >= 6 and roll < 0.13 and sec.energy >= 0.55:                   # a trill on a long note
+            if ln >= 6 and roll < 0.13 and sec.energy >= 0.55 and t.mood > 0.6:   # a trill on a long note, only toward boss music
                 up = step(m, 1)
                 tt, q = tstart + 0.5 * dur, 0
                 while tt + s16 < tstart + dur:
@@ -570,6 +575,13 @@ def melody(r, t, sec, sec_start, key, scale, motif_a, motif_b):
                 out.append((tstart - s16 * 0.9, s16 * 0.8, step(m, -1 if r.random() < 0.5 else 1), vol * 0.7, ex))
             out.append((tstart, dur, m, vol, ex))
         cur = m - ((m > centre) - (m < centre)) * 2
+    # legato: a note holds until the next one starts, so the line flows; a rest longer than 3/4 of a beat stays a rest
+    out.sort(key=lambda n: n[0])
+    for i in range(len(out) - 1):
+        st, du, m_, vol_, ex_ = out[i]
+        gap = out[i + 1][0] - (st + du)
+        if 0 < gap < 0.75 * beat:
+            out[i] = (st, du + gap + 0.03, m_, vol_, ex_)
     return out
 
 
@@ -617,6 +629,25 @@ def pan(sig: np.ndarray, p: float):
     return sig * math.cos(a), sig * math.sin(a)
 
 
+def ride_level(out: np.ndarray, seconds: float = 6.0, strength: float = 1.0) -> np.ndarray:
+    """Slow gain riding: nudges loud and quiet stretches toward the track's own typical level, so the loudness does not
+    lurch from second to second. Works on a 10 Hz envelope and ramps the gain between its points, so it never steps."""
+    hop = SR // 10
+    frames = out.shape[1] // hop
+    if frames < 8:
+        return out
+    pw = np.mean(out[:, :frames * hop].astype(np.float32) ** 2, axis=0).reshape(frames, hop).mean(axis=1)
+    k = max(3, int(seconds * 10)) | 1
+    pad = np.pad(pw, (k // 2, k // 2), mode="edge")
+    env = np.sqrt(np.convolve(pad, np.ones(k) / k, mode="valid")) + 1e-5
+    ref = float(np.median(env[env > 2e-3])) if np.any(env > 2e-3) else 1.0
+    g = np.clip((ref / env) ** strength, 0.5, 3.2)
+    for i in range(frames):
+        a, b = g[i], g[min(i + 1, frames - 1)]
+        out[:, i * hop:(i + 1) * hop] *= np.linspace(a, b, hop, endpoint=False, dtype=np.float32)[None, :]
+    return out
+
+
 def render(t: Track) -> np.ndarray:
     ev = compose(t)
     snd = t.sound
@@ -625,6 +656,8 @@ def render(t: Track) -> np.ndarray:
     groups = {g: np.zeros((2, total), np.float32) for g in ("lead", "arp", "pad", "bass", "drums", "fx")}
     kit = snd["kit"]
     kick_times = []
+    mood = t.mood
+    dm = 0.4 + 0.6 * mood            # drum weight: soft and sparse for lofi, driving for boss music
 
     def put(group, sig88, start, p, gain):
         i = int(start * SR)
@@ -686,15 +719,15 @@ def render(t: Track) -> np.ndarray:
         return crush(np.sin(2 * np.pi * np.cumsum(f) / RATE) * np.linspace(1, 0, n) ** 1.2, 7) * vol
 
     kits = V.KITS.get(kit)
-    drum("kick", k8, kits["kick"] if kits else None, 0.36, 0.0)
-    drum("snare", s8, kits["snare"] if kits else None, 0.20 if kit == "8bit" else 0.20, 0.15)
-    drum("hat", h8, kits["hat"] if kits else None, 0.055 if kit == "8bit" else 0.07, 0.4)
+    drum("kick", k8, kits["kick"] if kits else None, 0.36 * dm, 0.0)
+    drum("snare", s8, kits["snare"] if kits else None, 0.20 * dm, 0.15)
+    drum("hat", h8, kits["hat"] if kits else None, (0.055 if kit == "8bit" else 0.07) * dm * dm, 0.4)
     for start, dur, _, vol, ex in ev["tom"]:
         w = t8(int(dur * RATE), vol, ex) if kit == "8bit" else V.tom_16(dur, rng, ex["pitch"]) * V.DRUM_TRIM[V.tom_16] * vol
-        put("drums", w, start, 0.0, 0.3)
+        put("drums", w, start, 0.0, 0.3 * dm)
     if snd["risers"]:
         for start, dur, _, vol, _ in ev["fx"]:
-            put("fx", V.riser(dur, rng), start, 0.0, 0.05 * vol)
+            put("fx", V.riser(dur, rng), start, 0.0, 0.05 * vol * mood)    # noise sweeps only toward boss music
 
     # effects on the 44.1 kHz buses
     if snd["duck"] and kick_times:
@@ -704,9 +737,10 @@ def render(t: Track) -> np.ndarray:
     if snd["chorus"]:
         groups["pad"] = V.chorus(groups["pad"])
     out = sum(groups.values())
-    if snd["wet"] > 0:
+    wet = max(snd["wet"] * 1.35, 0.10)           # always some room: a dry chip tone is the choppiest-sounding thing there is
+    if wet > 0:
         send = groups["lead"] * 0.8 + groups["arp"] * 0.6 + groups["pad"] * 1.0 + groups["drums"] * 0.12
-        out = out + V.reverb(send, V.make_ir(snd["rt60"], t.seed)) * snd["wet"]
+        out = out + V.reverb(send, V.make_ir(snd["rt60"], t.seed)) * wet
         del send
     if snd["crackle"]:
         r2 = np.random.default_rng(t.seed + 99)
@@ -715,8 +749,10 @@ def render(t: Track) -> np.ndarray:
         bed = sosfilt(butter(1, 1200, "lowpass", fs=SR, output="sos"), r2.standard_normal(n).astype(np.float32)) * 0.002
         out = out + (sosfilt(butter(2, 3500, "lowpass", fs=SR, output="sos"), hits) * 0.012 + bed)[None, :]
     del groups
-    out = sosfilt(butter(2, snd["cut"], "lowpass", fs=SR, output="sos"), out, axis=1).astype(np.float32)
+    cut = snd["cut"] * (0.55 + 0.35 * mood)       # warm and soft for lofi, brighter toward boss music
+    out = sosfilt(butter(2, cut, "lowpass", fs=SR, output="sos"), out, axis=1).astype(np.float32)
     out = sosfilt(butter(2, 35, "highpass", fs=SR, output="sos"), out, axis=1).astype(np.float32)
+    out = ride_level(out)
     peak = float(np.max(np.abs(out)))
     return out * np.float32(0.89 / peak) if peak else out
 

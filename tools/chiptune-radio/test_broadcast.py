@@ -53,9 +53,10 @@ def test_creates_and_binds_when_the_last_broadcast_is_complete():
     assert yt.bound == [("NEW1", "STREAM")]
     body = yt.created[0]
     assert body["snippet"]["title"] == broadcast.title_for("synth")
-    assert body["snippet"]["description"] == "desc"
+    assert body["snippet"]["description"] == broadcast.description_for("synth")
     assert body["contentDetails"]["enableAutoStart"] is True and body["status"]["privacyStatus"] == "public"
-    assert yt.updated and yt.updated[0]["snippet"]["categoryId"] == "10"
+    sn = yt.updated[0]["snippet"]
+    assert sn["categoryId"] == "10" and sn["tags"] == broadcast.TAGS and sn["defaultLanguage"] == "en"
 
 
 def test_does_nothing_when_one_is_already_open():
@@ -85,3 +86,16 @@ def test_keep_survives_errors_and_stops_when_cancelled():
     broadcast.CHECKS_AFTER_START = (0, 0, 0)
     broadcast.keep("8bit", cancel, log=lambda m: None, hourly=0.01, ensure_fn=boom)
     assert seen == ["8bit", "8bit"]
+
+
+def test_search_metadata_fits_youtubes_limits_and_says_the_important_things():
+    assert broadcast.tags_total() <= 480                    # the limit is 500 characters for the whole list
+    assert len(set(broadcast.TAGS)) == len(broadcast.TAGS)
+    for era in ("16bit", "8bit", "synth", "hybrid", None):
+        title, desc = broadcast.title_for(era), broadcast.description_for(era)
+        assert len(title) <= 100 and "Study Music" in title and "Pomodoro" in title
+        assert len(desc) < 5000
+        head = "\n".join(desc.splitlines()[:2])
+        assert "Like" in head and "Subscribe" in head and "Share" in head        # the ask is above the fold
+        assert "chiptune study music" in head.lower() and "utm_campaign=chiptune-radio" in desc
+        assert desc.count("#") <= 15                                              # YouTube ignores all hashtags past 15

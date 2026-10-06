@@ -14,6 +14,7 @@ real time. In live mode the whole pipeline restarts with a growing delay if anyt
 from __future__ import annotations
 
 import argparse
+import math
 import os
 import queue
 import random
@@ -32,7 +33,9 @@ import chiptune as c
 import scene as sc
 
 AUDIO_CHUNK = int(0.5 * c.SR)
-XFADE = 3.0
+XFADE = 6.0                                # a longer crossfade, so one track melts into the next instead of cutting over
+MOOD_TRACKS = 40                           # one slow lofi -> boss -> lofi wave takes this many tracks (about 1 h 50 min)
+MAX_BPM_STEP = 8                           # neighbouring tracks never differ by more than this, so the tempo drifts
 TARGET_RMS = 0.13                          # about -16 LUFS once encoded, the usual level for background music streams
 VIDEO_FPS = 15
 LOG_EVERY = 300
@@ -60,14 +63,21 @@ def log(msg: str) -> None:
     print(time.strftime("%H:%M:%S"), msg, file=sys.stderr, flush=True)
 
 
+def mood_at(n: int) -> float:
+    """0 (lofi) .. 1 (boss music), a smooth cosine over MOOD_TRACKS tracks."""
+    return 0.5 - 0.5 * math.cos(2 * math.pi * (n % MOOD_TRACKS) / MOOD_TRACKS)
+
+
 def next_tracks(start_seed: int, era: str | None = None):
-    """An endless run of seeds, skipping any whose key or tempo is too close to the previous track's."""
-    seed, prev = start_seed, None
+    """An endless run of tracks whose mood drifts slowly from lofi to boss music and back. A seed is skipped if its
+    key repeats the previous track's or its tempo would jump by more than MAX_BPM_STEP."""
+    seed, prev, n = start_seed, None, start_seed % MOOD_TRACKS
     while True:
-        t = c.plan(seed, era)
+        t = c.plan(seed, era, mood_at(n))
         seed += 1
-        if prev is None or (t.key != prev.key and abs(t.bpm - prev.bpm) >= 4):
+        if prev is None or (t.key != prev.key and abs(t.bpm - prev.bpm) <= MAX_BPM_STEP):
             prev = t
+            n += 1
             yield t
 
 
@@ -80,10 +90,11 @@ def leveled(audio: np.ndarray) -> np.ndarray:
     return audio * gain
 
 
-def render_seed(seed: int, era: str | None = None):
+def render_seed(seed: int, era: str | None = None, mood: float | None = None):
     """Runs in a short-lived worker process: a track needs several hundred MB while it renders, and a fresh process hands all of it back."""
-    t = c.plan(seed, era)
-    return seed, f"{t.key} {t.mode}, {t.bpm} BPM", t.bpm, leveled(c.render(t))
+    t = c.plan(seed, era, mood)
+    audio = c.render(t)[:, : int(t.seconds * c.SR)]          # render() appends a reverb tail; under a crossfade it is a decaying dip, so drop it
+    return seed, f"{t.key} {t.mode}, {t.bpm} BPM", t.bpm, leveled(audio)
 
 
 class Audio:
@@ -98,7 +109,8 @@ class Audio:
         self.written = 0                      # samples handed to the encoder
 
     def _submit(self):
-        return self.pool.submit(render_seed, next(self.tracks).seed, self.era)
+        t = next(self.tracks)
+        return self.pool.submit(render_seed, t.seed, self.era, t.mood)
 
     def now(self, ts: float):
         with self.lock:

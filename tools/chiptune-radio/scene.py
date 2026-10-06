@@ -194,23 +194,21 @@ class Scene:
         d.arc([cx - 15, 70 + bob, cx + 15, 100 + bob], 180, 360, fill=C["phones"], width=2)
         d.rectangle([cx - 16, 84 + bob, cx - 13, 92 + bob], fill=C["phones"])
         d.rectangle([cx + 13, 84 + bob, cx + 16, 92 + bob], fill=C["phones"])
-        # the arm: writing while focusing, lifting the mug on a break
+        # the mug sits on the desktop, right of the notebook, and stays there
+        mx, my = 228, 110
+        # the arm: writing while focusing, resting on the desk on a break
         if focus:
             wx = 190 + int(4 * math.sin(t * 5.0))
             d.line([cx + 22, 108, wx, 114], fill=C["hoodie"], width=5)
             d.rectangle([wx - 1, 112, wx + 2, 115], fill=C["skin"])
             d.line([wx + 2, 113, wx + 6, 110], fill=C["ink"])
         else:
-            lift = 2 + int(3 * abs(math.sin(t * 0.8)))
-            d.line([cx + 22, 108, 176, 100 - lift], fill=C["hoodie"], width=5)
-        # the mug and its steam
-        mx, my = (176, 96 - (2 + int(3 * abs(math.sin(t * 0.8)))) + 12) if not focus else (170, 102)
+            d.line([cx + 22, 108, 188, 115], fill=C["hoodie"], width=5)
+            d.rectangle([186, 113, 189, 116], fill=C["skin"])
+        d.rectangle([mx, 121, mx + 10, 121], fill=C["desk_dark"])        # contact shadow, so it reads as resting on the desk
         d.rectangle([mx, my, mx + 9, my + 10], fill=C["mug"])
         d.rectangle([mx + 9, my + 2, mx + 11, my + 7], fill=C["mug"])
         d.rectangle([mx + 1, my + 1, mx + 8, my + 3], fill=C["coffee"])
-        for k in range(4):
-            sy = my - 3 - k * 4 - int((t * 6 + k * 3) % 4)
-            d.point((mx + 4 + int(2 * math.sin(t * 2 + k)), sy), fill=C["text_dim"])
 
         # the cat on the sill: asleep, breathing, with an occasional tail flick
         br = 1 if int(t * 1.2) % 2 else 0
@@ -222,6 +220,11 @@ class Scene:
         d.line([248, 99, 250, 99], fill=C["ink"])
         flick = 3 if int(t * 0.6) % 5 == 0 else 0
         d.line([214, 104, 208, 100 - flick], fill=C["cat_dk"], width=2)
+
+        # steam from the mug, drawn after the cat so it rises in front of it
+        for k in range(4):
+            sy = my - 3 - k * 4 - int((t * 6 + k * 3) % 4)
+            d.point((mx + 4 + int(2 * math.sin(t * 2 + k)), sy), fill=C["text_dim"])
 
         # lamp light: a warm cone, a little unsteady, stronger at night
         glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -253,7 +256,34 @@ class Scene:
         d.text((8, 167), f"now playing: {title}", font=self.font, fill=C["text_dim"])
         d.rectangle([226, 165, 316, 177], fill=C["panel"])
         d.text((230, 167), "purplelink.llc", font=self.font, fill=C["text_dim"])
+        self._nudge(d, wall)
         return im
+
+    # A polite nudge, not a permanent sticker: 15 s out of every 4 minutes it slides up between the timer and the
+    # site name and cycles like, subscribe, share. 1 is a lit pixel in the 7-wide icon.
+    NUDGE_EVERY, NUDGE_FOR = 240.0, 15.0
+    ICONS = {
+        "like": ((220, 70, 90), ["0110110", "1111111", "1111111", "0111110", "0011100", "0001000"]),
+        "sub": ((255, 210, 100), ["0001000", "0011100", "0111110", "0111110", "1111111", "0001000"]),
+        "share": ((110, 200, 255), ["0001100", "0000110", "1111111", "0000110", "0001100", "0000000"]),
+    }
+    NUDGES = [("like", "LIKE this stream"), ("sub", "SUBSCRIBE + bell"), ("share", "SHARE w/ a friend")]
+
+    def _nudge(self, d: ImageDraw.ImageDraw, wall: float) -> None:
+        cyc = wall % self.NUDGE_EVERY
+        if cyc >= self.NUDGE_FOR:
+            return
+        kind, text = self.NUDGES[min(len(self.NUDGES) - 1, int(cyc // (self.NUDGE_FOR / len(self.NUDGES))))]
+        rise = int(max(0.0, 0.6 - cyc) * 50)                       # slides up over the first 0.6 s
+        x0, y0 = 102, 143 + rise
+        d.rectangle([x0, y0, x0 + 117, y0 + 19], fill=C["panel"])
+        d.rectangle([x0, y0, x0 + 117, y0 + 1], fill=C["bar"])
+        colour, rows = self.ICONS[kind]
+        for ry, row in enumerate(rows):
+            for rx, on in enumerate(row):
+                if on == "1":
+                    d.point((x0 + 7 + rx, y0 + 7 + ry), fill=colour)
+        d.text((x0 + 19, y0 + 7), text, font=self.font, fill=C["text"])
 
 
 def hour_at(t: float, cycle_hours: float = 2.0) -> float:

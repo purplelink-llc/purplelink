@@ -22,7 +22,11 @@ def _t(n: int) -> np.ndarray:
     return np.arange(n) / RATE
 
 
+MIN_ATTACK, MIN_RELEASE = 0.010, 0.09      # seconds: a 2-4 ms edge is a click, and a 20-50 ms tail stops dead; both read as "choppy" on a study stream
+
+
 def env(n: int, a=0.004, d=0.07, s=0.7, rel=0.05) -> np.ndarray:
+    a, rel = max(a, MIN_ATTACK), max(rel, MIN_RELEASE)
     a_, d_, r_ = int(a * RATE), int(d * RATE), min(int(rel * RATE), max(1, n // 2))
     e = np.full(n, s, dtype=np.float64)
     a_ = min(a_, n)

@@ -29,13 +29,38 @@ def test_leveling_hits_the_target_without_clipping():
     assert abs(rms(st.leveled(loud)) - st.TARGET_RMS) < 0.02 or rms(st.leveled(loud)) <= st.TARGET_RMS * 1.25
 
 
-def test_playlist_never_repeats_a_key_or_a_close_tempo():
+def test_playlist_never_repeats_a_key_and_the_tempo_drifts_gently():
     gen = st.next_tracks(1)
     prev = next(gen)
     for _ in range(60):
         t = next(gen)
-        assert t.key != prev.key and abs(t.bpm - prev.bpm) >= 4
+        assert t.key != prev.key and abs(t.bpm - prev.bpm) <= st.MAX_BPM_STEP
         prev = t
+
+
+def test_mood_wave_is_smooth_and_covers_lofi_to_boss():
+    waves = [st.mood_at(n) for n in range(2 * st.MOOD_TRACKS)]
+    assert min(waves) < 0.05 and max(waves) > 0.95
+    assert all(abs(a - b) < 0.2 for a, b in zip(waves, waves[1:]))      # no sudden jump between neighbouring tracks
+
+
+def test_mood_sets_tempo_and_arpeggio_pace():
+    calm, boss = c.plan(7, "16bit", 0.0), c.plan(7, "16bit", 1.0)
+    assert calm.bpm < 66 < 90 < boss.bpm
+    beat = lambda tr: 60.0 / tr.bpm
+    arp = lambda tr: [d / beat(tr) for _, d, *_ in c.compose(tr)["arp"]]
+    assert min(arp(calm)) >= 1.0 and min(arp(boss)) >= 0.5               # sustained notes, not 16th-note plinks
+
+
+def test_melody_is_legato_and_instruments_do_not_click():
+    t = c.plan(7, "16bit", 0.2)
+    lead = sorted(c.compose(t)["lead"], key=lambda n: n[0])
+    beat = 60.0 / t.bpm
+    gaps = [lead[i + 1][0] - (lead[i][0] + lead[i][1]) for i in range(len(lead) - 1)]
+    assert sum(g > 0.03 for g in gaps) / len(gaps) < 0.35                # most notes run into the next
+    import voices as V
+    e = V.env(int(0.5 * V.RATE), a=0.001, d=0.0, s=1.0, rel=0.005)       # asks for a 1 ms attack and a 5 ms release
+    assert e[:int(V.MIN_ATTACK * V.RATE) // 2].max() < 0.6 and e[-int(V.MIN_RELEASE * V.RATE) // 2:].max() < 0.6
 
 
 def test_ffmpeg_commands():
