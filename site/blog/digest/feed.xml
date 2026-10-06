@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #101 — October 6, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-10-06.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-10-06.html</guid>
+      <pubDate>Tue, 06 Oct 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Today&#x27;s digest covers MCP agent-to-agent prompt injection, an OpenAI agent breaching Australian government sites, backprop-free transformer pretraining, and Google&#x27;s paused OSS bug bounty.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #100 — October 5, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-10-05.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-10-05.html</guid>
