@@ -1,0 +1,12 @@
+{
+  "sprites": [
+    "tank-player",
+    "tank-enemy",
+    "barrel",
+    "shell-normal",
+    "shell-heavy",
+    "shell-cluster",
+    "explosion",
+    "grass-strip"
+  ]
+}

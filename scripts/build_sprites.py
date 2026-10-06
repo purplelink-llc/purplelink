@@ -105,5 +105,57 @@ def frontlink():
     print("frontlink:", len(names), "sprites,", sum(p.stat().st_size for p in out.glob("*.webp")) // 1024, "KB")
 
 
+def tanklink():
+    raw = Image.open(SRC / "tanklink-sheet.webp").convert("RGB")
+    solid, fx = key_solid(raw), key_fx(raw)
+    out = OUT / "tanklink"; names = []
+    S = 2                                               # files are 2x the nominal sizes in docs/games-sprites.md
+    def place(sprite, w, h, ax, ay, flip=False, rot=0, fitw=None, fith=None):
+        """Scale to fit, put the sprite so its bottom-centre (or centre when ay is None) lands on the anchor."""
+        if rot: sprite = sprite.rotate(rot, expand=True, resample=Image.BICUBIC)
+        sc = min((fitw or w) * S / sprite.width, (fith or h) * S / sprite.height)
+        sp = sprite.resize((max(1, round(sprite.width * sc)), max(1, round(sprite.height * sc))), Image.LANCZOS)
+        frame = Image.new("RGBA", (w * S, h * S), (0, 0, 0, 0))
+        frame.alpha_composite(sp, (round(ax * S - sp.width / 2), round(ay * S - sp.height)))
+        return frame
+    # tanks: whole tank without the barrel, facing right; the game mirrors the enemy. Ground contact is at (54, 69)
+    save(place(solid.crop((48, 21, 458, 243)), 108, 72, 54, 69, fitw=104), out, "tank-player")
+    save(place(solid.crop((899, 21, 1314, 243)), 108, 72, 54, 69, fitw=104), out, "tank-enemy")
+    # barrel: one sprite for both teams, so it is desaturated to a neutral steel; pivot 12 px from the left, centred vertically
+    bar = solid.crop((530, 76, 840, 157)); r, g, b, a = bar.split()
+    gray = Image.merge("RGB", (r, g, b)).convert("L").point(lambda v: int(60 + v * 0.62)).convert("RGB")
+    bar = Image.merge("RGBA", (*gray.split(), a))
+    bf = Image.new("RGBA", (72 * S, 24 * S), (0, 0, 0, 0)); bs = bar.resize((72 * S, round(bar.height * 72 * S / bar.width)), Image.LANCZOS)
+    bf.alpha_composite(bs, (0, round(12 * S - bs.height / 2)))
+    save(bf, out, "barrel")
+    # shells point up on the sheet; the game wants them pointing right
+    for name, box, (w, h) in (("shell-normal", (1374, 78, 1455, 234), (36, 18)), ("shell-heavy", (1490, 48, 1610, 234), (54, 27)), ("shell-cluster", (1638, 104, 1727, 234), (45, 30))):
+        sp = solid.crop(box).rotate(-90, expand=True, resample=Image.BICUBIC)
+        sc = min((w - 2) * S / sp.width, (h - 2) * S / sp.height); sp = sp.resize((round(sp.width * sc), round(sp.height * sc)), Image.LANCZOS)
+        frame = Image.new("RGBA", (w * S, h * S), (0, 0, 0, 0)); frame.alpha_composite(sp, (round(w * S / 2 - sp.width / 2), round(h * S / 2 - sp.height / 2)))
+        save(frame, out, name)
+    # explosion: six 256 x 256 frames in one strip, all at the same scale so the blast grows and fades believably
+    ex = [(78, 315, 228, 440), (259, 261, 528, 440), (518, 238, 843, 440), (834, 240, 1148, 440), (1139, 240, 1442, 440), (1432, 262, 1700, 440)]
+    sc = 244 / max(b[2] - b[0] for b in ex)
+    strip = Image.new("RGBA", (1536, 256), (0, 0, 0, 0))
+    for i, b in enumerate(ex):
+        sp = fx.crop(b); sp = sp.resize((round(sp.width * sc), round(sp.height * sc)), Image.LANCZOS)
+        if i >= 4:                                      # the smoke frames are strongly purple; mute them so they sit on any sky
+            from PIL import ImageEnhance
+            r, g, bb, a = sp.split(); sp = Image.merge("RGBA", (*ImageEnhance.Color(Image.merge("RGB", (r, g, bb))).enhance(0.4).split(), a))
+        strip.alpha_composite(sp, (i * 256 + round(128 - sp.width / 2), round(150 - sp.height / 2)))   # blast sits a little below centre
+    save(strip, out, "explosion")
+    # grass strip: 192 x 36 at 2x, made seamless along x by cross-fading its two ends; the surface sits at y = 12 (24 at 2x)
+    gs = raw.convert("RGBA").crop((432, 790, 432 + 394 + 60, 864)); gh = round(74 * 72 / 74)
+    core = gs.crop((0, 0, 394, 74)); tail = gs.crop((394, 0, 454, 74)); head = core.crop((0, 0, 60, 74))
+    mask = Image.linear_gradient("L").rotate(90).resize((60, 74))          # 0 on the left .. 255 on the right after rotate
+    blend = Image.composite(head, tail, mask.transpose(Image.FLIP_LEFT_RIGHT))
+    core.paste(blend, (0, 0)); core = core.crop((0, 0, 394, 74)).resize((384, 72), Image.LANCZOS)
+    save(core, out, "grass-strip")
+    names = ["tank-player", "tank-enemy", "barrel", "shell-normal", "shell-heavy", "shell-cluster", "explosion", "grass-strip"]
+    (out / "pack.json").write_text(json.dumps({"sprites": names}, indent=2) + "\n")
+    print("tanklink:", len(names), "sprites,", sum(p.stat().st_size for p in out.glob("*.webp")) // 1024, "KB")
+
+
 if __name__ == "__main__":
-    {"frontlink": frontlink}[sys.argv[1]]()
+    {"frontlink": frontlink, "tanklink": tanklink}[sys.argv[1]]()

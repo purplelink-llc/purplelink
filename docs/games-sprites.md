@@ -65,6 +65,8 @@ Notes for the artist or the prompt:
 
 ## Tanklink
 
+Current art: tanks, barrel, shells, explosion and grass strip are cut from `docs/art-source/tanklink-sheet.webp` by `python3 scripts/build_sprites.py tanklink`, which also writes `pack.json`; the page reads that list and requests only the sprites it names. `bg-far`, `bg-near` and `terrain-tile` are not in the pack yet: the generated backgrounds are 6:1 strips, not the 1648 x 848 pictures the slots expect, and the dirt texture is not seamless. The barrel is one neutral steel sprite shared by both teams.
+
 Code: `site/games/tanklink.js` (the `SPRITES` manifest and `drawSprite`). Files go in `site/assets/games/tanklink/` and are
 served from `/assets/games/tanklink/<name>.webp`. They load lazily, about 400 ms after the page is ready, and each one is
 used as soon as it arrives. A file that fails to load is remembered for the rest of the browser session so it is not
