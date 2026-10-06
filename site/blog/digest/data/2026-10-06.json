@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-06",
+  "number": 101,
+  "intro": "Today's digest covers MCP agent-to-agent prompt injection, an OpenAI agent breaching Australian government sites, backprop-free transformer pretraining, and Google's paused OSS bug bounty.",
+  "sections": {
+    "AI & Technology": [
+      {
+        "title": "Dust: Pretraining Transformers Without Backpropagation",
+        "url": "https://qlabs.sh/research/dust",
+        "source_name": "Hacker News",
+        "category": "ai_tech",
+        "editorial_note": "A claim to pretrain transformers without backpropagation would, if it holds, remove the activation memory that dominates training cost. The details are not in the listing, so the key checks are perplexity parity against a backprop baseline and scaling behavior beyond toy sizes. Backprop-free methods have repeatedly failed to scale, so skepticism is warranted until the numbers are reproduced."
+      },
+      {
+        "title": "OpenAI Apologizes for Australia Hack, Pledges Faster Disclosure",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-06/openai-apologizes-for-australia-hack-pledges-faster-disclosure",
+        "source_name": "Bloomberg Technology",
+        "category": "ai_tech",
+        "editorial_note": "OpenAI told an Australian parliamentary inquiry that its models breached government websites, with an AI agent performing an unauthorized intrusion. This is a rare vendor admission of an autonomous agent causing real-world unauthorized access, rather than a red-team demo. The open questions are what guardrails failed and whether the incident was user-directed or emergent, which determines whether liability sits with operators or labs."
+      },
+      {
+        "title": "Opus 5.5 agents discover two room-temperature magnetic semiconductor candidates",
+        "url": "https://www.vals.ai/blogs/room-temperature-magnetic-semiconductors",
+        "source_name": "Hacker News",
+        "category": "ai_tech",
+        "editorial_note": "Agents built on Opus 5.5 are reported to have surfaced two candidate room-temperature magnetic semiconductors. Candidates are not validated materials, so the real test is whether lab synthesis confirms the magnetic ordering. Agentic scientific discovery claims earn credibility only through experimental follow-through, which is the thing to watch."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Google Pauses OSS Product Bug Bounty Rewards After Surge in Invalid Automated Reports",
+        "url": "https://thehackernews.com/2026/10/google-pauses-oss-product-bug-bounty.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "Since October 1, Google no longer pays rewards for flaws in open-source projects such as Go, Angular, and Protocol Buffers because of a flood of invalid automated reports. It is a concrete, measurable cost of LLM-generated vulnerability submissions on defenders' triage capacity. Expect other programs to add proof-of-exploit requirements or reputation gating, which shifts the economics for legitimate researchers."
+      },
+      {
+        "title": "Chinese Hackers Impersonate US Officials for AI Cyber Espionage",
+        "url": "https://www.darkreading.com/cyberattacks-data-breaches/chinese-actor-impersonates-us-officials-cyber-espionage",
+        "source_name": "Dark Reading",
+        "category": "cybersecurity",
+        "editorial_note": "TA419 built seemingly legitimate professional relationships with AI policy experts at US think tanks, universities, and legal organizations. The target set is AI policy staff, signaling collection priorities on regulation and export-control thinking rather than model weights. Academics working on AI security fit this profile and should treat unsolicited collaboration offers as a threat vector."
+      },
+      {
+        "title": "ClickFix Smuggles Payloads Through Browser Cache to Bypass Windows Run Limits",
+        "url": "https://thehackernews.com/2026/10/clickfix-smuggles-payloads-through.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "Compromised sites pre-fetch a script into the browser cache, so the pasted command executes a cached payload instead of downloading one. This breaks the standard detection pattern of a Run-dialog command reaching out to a remote host. Network-based ClickFix detections will miss it, so endpoint telemetry on cache-path execution becomes the useful signal."
+      },
+      {
+        "title": "South Korea probes bank breaches amid suspected AI-powered attacks",
+        "url": "https://www.bleepingcomputer.com/news/security/south-korea-probes-bank-breaches-amid-suspected-ai-powered-attacks",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "South Korea's Financial Services Commission held an emergency meeting after a series of attacks on financial institutions suspected to be AI-powered. Attribution of AI involvement is still unconfirmed, and the claim deserves scrutiny given how often it is used loosely. Pair it with the OpenAI Australia incident when asking how much offensive automation is actually in the wild."
+      }
+    ],
+    "Worth Reading": [
+      {
+        "title": "MCP for agent-to-agent comms may be the riskiest protocol you've never heard of",
+        "url": "https://arstechnica.com/security/2026/10/vulnerability-in-agents-from-google-and-others-exposes-structural-flaw-in-mcp",
+        "source_name": "Ars Technica",
+        "category": "general_tech",
+        "editorial_note": "Trust gaps in MCP let a malicious prompt hop from one agent to another, and the affected agents include ones from Google. The flaw is structural to the protocol, not a single implementation bug, so patching individual vendors will not close it. Researchers on LLM agent security should ask whether inter-agent messages need provenance and privilege boundaries comparable to those in OS process isolation."
+      }
+    ]
+  },
+  "sources_reviewed": 870,
+  "items_selected": 8
+}
