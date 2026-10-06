@@ -11,6 +11,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 TMP = tempfile.mkdtemp(prefix="traffic-test-")
 os.environ["PURPLELINK_TRAFFIC_DIR"] = TMP
@@ -65,6 +66,14 @@ class TikTok(unittest.TestCase):
 
 
 class Sources(unittest.TestCase):
+    def setUp(self):
+        # revenue_series reads one thing that is not passed in: real photo-licensing revenue, from the live
+        # photo-licensing-workspace snapshots. Pin it so every figure below comes from what the test supplies and the
+        # test cannot drift as that data changes. (TikTok is pointed at a temp CSV inside the test that needs it.)
+        patcher = mock.patch.object(td, "photo_revenue_by_month", lambda months: {m: 0.0 for m in months})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
     def test_extensionpay_is_its_own_source_not_a_marketplace(self):
         rows = [etsy_row(), ext_row()]
         s = td.revenue_series(None, None, rows, None, [THIS])
