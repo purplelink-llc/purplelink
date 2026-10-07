@@ -52,6 +52,7 @@ ECONOMICS = {
     "123rf":          {"royalty": "30-60% tiered",         "payout_min": 50},
     "depositphotos":  {"royalty": "30-38%; subs $0.25-0.33", "payout_min": 25},
     "etsy":           {"royalty": "price less 6.5% + 3% + $0.25", "payout_min": None},
+    "vecteezy":       {"royalty": "50% rev-share (Pro tier)", "payout_min": 50},
 }
 
 # Metrics that represent money, so the dashboard can total them.
@@ -698,21 +699,31 @@ def collect_123rf(page):
     if "upload-id" in page.url:
         return counts_from_manage_content()
     d = re.sub(r"[ \t]+", " ", page.inner_text("body"))
-    if "login" in page.url.lower() or "Contributor Level" not in d:
+    # 2026-10-05: 123RF's dashboard and earning-details pages answer with their
+    # own "An unexpected error has occurred." page even for a signed-in session.
+    # That page has no "Contributor Level", which used to be read as "not signed
+    # in" and discarded the whole row. A signed-out visit redirects to a login
+    # URL, so the error text alone is not a sign-in failure: report the counts and
+    # mark the money as unmeasured (a 0 balance here would be a lie).
+    dash_error = "unexpected error has occurred" in d.lower()
+    if "login" in page.url.lower() or ("Contributor Level" not in d and not dash_error):
         raise RuntimeError("not signed in")
     out = {}
-    # Label-then-value on separate lines, same shape as Shutterstock's
-    # earnings page; "Total Earnings" is lifetime, mapped to balance to match
-    # how the Shutterstock collector already reports its lifetime total.
-    m = re.search(r"Total Earnings\s*\n?\s*\$?([\d,]+\.?\d*)", d, re.I)
-    if m:
-        out["balance"] = num(m.group(1))
-    m = re.search(r"Total Downloads\s*\n?\s*([\d,]+)", d, re.I)
-    if m:
-        out["downloads"] = num(m.group(1))
-    m = re.search(r"Contributor Level (\d+)", d, re.I)
-    if m:
-        out["contributor_level"] = int(m.group(1))
+    if dash_error:
+        out["money_unavailable"] = 1
+    else:
+        # Label-then-value on separate lines, same shape as Shutterstock's
+        # earnings page; "Total Earnings" is lifetime, mapped to balance to match
+        # how the Shutterstock collector already reports its lifetime total.
+        m = re.search(r"Total Earnings\s*\n?\s*\$?([\d,]+\.?\d*)", d, re.I)
+        if m:
+            out["balance"] = num(m.group(1))
+        m = re.search(r"Total Downloads\s*\n?\s*([\d,]+)", d, re.I)
+        if m:
+            out["downloads"] = num(m.group(1))
+        m = re.search(r"Contributor Level (\d+)", d, re.I)
+        if m:
+            out["contributor_level"] = int(m.group(1))
 
     page.goto("https://www.123rf.com/contributor/upload-history", wait_until="domcontentloaded")
     page.wait_for_timeout(7000)
@@ -720,10 +731,88 @@ def collect_123rf(page):
         out.update(counts_from_manage_content())
         return out
     t = re.sub(r"[ \t]+", " ", page.inner_text("body"))
-    m = re.search(r"\bPhotos\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)", t)
+    # One row per content type: "Photos 0 286 0 0", "Editorial photos 0 291 0 0",
+    # Vectors, Videos, ... (draft pending rejected approved). Matching only the
+    # first "Photos" row reported 286 instead of the true 577 pending: the
+    # Editorial photos row (291) was dropped, which showed up as 291 images
+    # vanishing from the pipeline on 2026-09-26. Sum every row for the totals and
+    # keep the per-type pending counts so nothing hides inside the sum again.
+    rows = re.findall(r"^(Photos|Mobile uploads|Editorial photos|AI Images|AI Videos|Vectors|"
+                      r"Videos|Editorial videos|Audio)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s*$", t, re.M)
+    if rows:
+        tot = [0, 0, 0, 0]
+        for name, *vals in rows:
+            vals = [int(v) for v in vals]
+            tot = [a + b for a, b in zip(tot, vals)]
+            if vals[1]:
+                out[re.sub(r"\W+", "_", name.lower()) + "_pending"] = vals[1]
+        out.update(draft=tot[0], pending=tot[1], rejected=tot[2], approved=tot[3])
+    if "contributor_level" not in out:
+        m = re.search(r"Contributor Level (\d+)", t, re.I)
+        if m:
+            out["contributor_level"] = int(m.group(1))
+    return out
+
+
+def collect_vecteezy(page):
+    """Portfolio counts plus unpaid earnings from the Vecteezy contributor site.
+
+    Added 2026-10-05. contributors.vecteezy.com is a single-page app, so each page
+    needs a few seconds before its text lands. Two pages:
+
+      /portfolio  tab labels "Pending Review", "Approved (24)", "Not Approved (1)".
+                  The pending tab prints no number while it is empty, so a missing
+                  "(n)" on that tab reads as 0 only once the other two tabs have
+                  rendered (otherwise the page simply was not ready).
+      /earnings   "Unpaid Download & Referral Earnings", "Other Earnings",
+                  "Unconfirmed Earnings" and "Total Unpaid Earnings (After Tax)",
+                  all in dollars, plus "Total Downloads" for the selected period
+                  (the page defaults to Month To Date, so it is downloads_mtd).
+                  Amounts are estimates refreshed every 24 hours; confirmed money
+                  appears under Payments after month end (paid about the 15th).
+
+    Signed out, the site bounces to a login page and the "My Portfolio" menu item
+    is absent, which is the sign-in check. A profile-completion modal overlays the
+    pages for new accounts; it does not hide the text, so it needs no handling.
+    """
+    def read(url, ready, tries=8):
+        page.goto(url, wait_until="domcontentloaded")
+        t = ""
+        for _ in range(tries):
+            page.wait_for_timeout(2500)
+            t = re.sub(r"[ \t]+", " ", page.inner_text("body"))
+            if "My Portfolio" not in t and ("login" in page.url.lower() or "sign" in page.url.lower()):
+                raise RuntimeError("not signed in")
+            if re.search(ready, t):
+                return t
+        if "My Portfolio" not in t:
+            raise RuntimeError("not signed in")
+        raise RuntimeError(f"vecteezy page never showed {ready!r} (layout changed or slow)")
+
+    out = {}
+    t = read("https://contributors.vecteezy.com/portfolio", r"Approved\s*\((\d+)\)")
+    out["approved"] = int(re.search(r"Approved\s*\((\d+)\)", t).group(1))
+    m = re.search(r"Not Approved\s*\((\d+)\)", t)
+    out["not_approved"] = int(m.group(1)) if m else 0
+    m = re.search(r"Pending Review\s*\((\d+)\)", t)
+    out["pending"] = int(m.group(1)) if m else 0
+
+    t = read("https://contributors.vecteezy.com/earnings", r"Total Unpaid Earnings")
+    def amt(label):
+        m = re.search(label + r"\s*(?:\([^)]*\))?\s*\$\s*([\d,]+\.?\d*)", t, re.I)
+        return float(m.group(1).replace(",", "")) if m else None
+    bal = amt(r"Total Unpaid Earnings")
+    if bal is not None:
+        out["balance"] = bal
+    for key, label in (("unpaid_download_referral", r"Unpaid Download & Referral Earnings"),
+                       ("other_earnings", r"Other Earnings"),
+                       ("unconfirmed_earnings", r"Unconfirmed Earnings")):
+        v = amt(label)
+        if v is not None:
+            out[key] = v
+    m = re.search(r"Total Downloads\s*\n?\s*([\d,]+)", t)
     if m:
-        out.update(draft=int(m.group(1)), pending=int(m.group(2)),
-                   rejected=int(m.group(3)), approved=int(m.group(4)))
+        out["downloads_mtd"] = int(m.group(1).replace(",", ""))
     return out
 
 
@@ -833,7 +922,8 @@ PLATFORMS = [("fineartamerica", collect_faa), ("adobe_stock", collect_adobe),
              ("getty_stats", collect_getty_stats),
              ("123rf", collect_123rf),
              ("depositphotos", collect_depositphotos),
-             ("etsy", collect_etsy)]
+             ("etsy", collect_etsy),
+             ("vecteezy", collect_vecteezy)]
 
 # Dreamstime dropped from the daily crawl 2026-09-03: its anti-bot "Press &
 # Hold" challenge blocks the automation profile often enough that it stopped
@@ -927,7 +1017,13 @@ def launch_chrome(headless=True):
         _t.sleep(6)
     args = [CHROME, f"--remote-debugging-port={CDP_PORT}",
             f"--user-data-dir={PROFILE}", "--no-first-run",
-            "--no-default-browser-check", "about:blank"]
+            "--no-default-browser-check",
+            # The profile lives on the external SSD (moved 2026-10-05; ~/.photo-automation-chrome
+            # is a symlink to /Volumes/Extreme SSD/Chrome-Profiles/photo-automation-chrome).
+            # Chrome downloads a ~4 GB on-device AI model into the profile by default; the
+            # collector never uses it, so keep it out.
+            "--disable-features=OptimizationGuideOnDeviceModel,OnDeviceModelService",
+            "about:blank"]
     if headless:
         args.insert(1, "--headless=new")
     proc = subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -972,6 +1068,8 @@ LOGIN_URLS = {
     "123rf": "https://www.123rf.com/contributor/dashboard",
     "depositphotos": "https://depositphotos.com/files.html",
     "etsy": "https://www.etsy.com/signin",
+    # Added 2026-10-05; collector still to be written once the dashboard layout is known.
+    "vecteezy": "https://contributors.vecteezy.com/",
 }
 
 # Only these failure shapes get the interactive fallback. A dead session
@@ -1378,27 +1476,23 @@ def append_snapshots(entry):
 
 def login():
     from playwright.sync_api import sync_playwright
+    # One tab per platform, taken from LOGIN_URLS so this list can never drift from
+    # the collectors again (the old hard-coded list sent FAA to a dead login.html
+    # and never opened 123RF, Depositphotos or Etsy). getty_stats shares the
+    # getty ESP login, so it gets no tab of its own.
+    tabs = [(k, u) for k, u in LOGIN_URLS.items() if k != "getty_stats"]
     print("Opening a SEPARATE browser profile (~/.photo-automation-chrome), not your\n"
           "everyday Chrome. Signing in to your normal browser does NOT give the\n"
           "collector a session -- they keep different cookie stores.\n\n"
-          "Sign in to each tab:\n"
-          "  1. fineartamerica.com\n  2. contributor.stock.adobe.com\n  3. alamy.com\n"
-          "  4. dreamstime.com\n  5. submit.shutterstock.com\n  6. esp.gettyimages.com\n"
-          "Then press Enter here.")
+          "Sign in to each tab:")
+    for i, (k, u) in enumerate(tabs, 1):
+        print(f"  {i}. {k}  ({u})")
+    print("Then press Enter here.")
     proc = launch_chrome(headless=False)
     with sync_playwright() as p:
         browser = p.chromium.connect_over_cdp(f"http://127.0.0.1:{CDP_PORT}")
         ctx = browser.contexts[0]
-        for url in ("https://fineartamerica.com/login.html",
-                    "https://contributor.stock.adobe.com/en/uploads",
-                    "https://www.alamy.com/log-in/",
-                    "https://www.dreamstime.com/login",
-                    "https://submit.shutterstock.com/",
-                    # ESP, not contributors.gettyimages.com -- that one is public
-                    # marketing and renders "Contributor"/"Upload" whether or not
-                    # you are signed in, so signing in there leaves the collector
-                    # logged out and reports a healthy session for a dead one.
-                    "https://esp.gettyimages.com/contribute/batches"):
+        for _name, url in tabs:
             ctx.new_page().goto(url)
         input("\nPress Enter here once you've signed in to all of them...")
     # graceful quit so the cookies actually reach disk

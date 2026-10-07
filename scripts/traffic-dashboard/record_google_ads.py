@@ -45,6 +45,8 @@ def main() -> int:
 
     spend, impressions, clicks = num(m["Cost"]), int(num(m["Impr."])), int(num(m["Clicks"]))
     avg_cpc = num(m.get("Avg. CPC", "0"))
+    if not avg_cpc and clicks:  # a lifetime read can omit the column; derive it rather than store 0.0
+        avg_cpc = round(spend / clicks, 4)
     window = read.get("window", "Last 7 days")
 
     if window.strip().lower() in ("all time", "lifetime"):

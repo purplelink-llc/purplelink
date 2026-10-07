@@ -238,6 +238,7 @@ ADMOB_APPS = {
                  "appId": "ca-app-pub-6407975157274256~3074958691"},
 }
 ADMOB_DAYS = 7  # matches the Apple Search Ads manual reading, for a fair spend-vs-earnings comparison
+PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/vitae", "/suite"}
 GOOGLE_ADS_DAYS = 7  # matches the ModernTex Google Ads manual reading, for a fair spend-vs-revenue comparison
 
 
@@ -270,7 +271,7 @@ def _ssl_context() -> ssl.SSLContext:
         return ssl.create_default_context()
 
 
-def fetch_site(site: dict, token: str) -> dict:
+def fetch_site(site: dict, token: str, days: int | None = None) -> dict:
     """Fetch one site's stats, retrying transient failures.
 
     A single 502 used to drop the whole site to archived figures for the day,
@@ -281,7 +282,7 @@ def fetch_site(site: dict, token: str) -> dict:
     Only transient conditions are retried; a 401 means the token is wrong and
     retrying it would just be slower.
     """
-    url = f"{site['url']}?token={urllib.parse.quote(token)}&days={FETCH_DAYS}"
+    url = f"{site['url']}?token={urllib.parse.quote(token)}&days={days or FETCH_DAYS}"
     req = urllib.request.Request(url, headers={"User-Agent": "purplelink-traffic-dashboard"})
     last: Exception | None = None
     for attempt in range(RETRIES):
@@ -394,6 +395,52 @@ def fetch_sparkle_updates(token: str) -> dict | None:
 # purplelink byDay archive as the "vitaeDownloads" metric.
 VITAE_STATS_URL = "https://purplelink.llc/.netlify/functions/vitae-download"
 VITAE_STATS_TOKEN_ENV = "VITAE_STATS_TOKEN"
+PURPLELINK_SITE_ID = "b264591f-fbbe-4048-9d9d-7051cf497823"
+
+
+def blobs_read(store: str, prefix: str) -> dict[str, int]:
+    """{key minus prefix: integer value} for one prefix of a purplelink.llc site Blobs store,
+    read with the Netlify CLI's own token. Raises OSError-family or ValueError on failure.
+    Used where the matching *_TOKEN header is a write-only Netlify secret with no local
+    copy: reading the store directly needs no secret and nothing to rotate."""
+    token = _netlify_token()
+    if not token:
+        raise OSError("no Netlify CLI token")
+    base = f"https://api.netlify.com/api/v1/blobs/{PURPLELINK_SITE_ID}/site:{store}"
+    hdr = {"Authorization": f"Bearer {token}", "User-Agent": "purplelink-traffic-dashboard"}
+
+    def get(url: str) -> bytes:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=hdr),
+                                    timeout=TIMEOUT, context=_ssl_context()) as r:
+            return r.read()
+
+    out: dict[str, int] = {}
+    listing = json.loads(get(f"{base}?prefix={urllib.parse.quote(prefix, safe=':')}").decode("utf-8"))
+    for b in listing.get("blobs", []):
+        raw = get(f"{base}/{urllib.parse.quote(b['key'], safe=':')}").decode("utf-8").strip()
+        out[b["key"][len(prefix):]] = int(raw or 0)
+    return out
+
+
+def fetch_vitae_downloads_blobs() -> dict | None:
+    """Same shape as fetch_vitae_downloads, read from the vitae-stats store (downloads: and day: keys)
+    when VITAE_STATS_TOKEN is not set."""
+    try:
+        return {"downloads": blobs_read("vitae-stats", "downloads:"), "byDay": blobs_read("vitae-stats", "day:")}
+    except (OSError, http.client.HTTPException, ValueError) as exc:
+        print(f"  ! Vitae downloads (Blobs) unavailable: {str(exc)[:80]}", file=sys.stderr)
+        return None
+
+
+def fetch_sparkle_updates_blobs() -> dict | None:
+    """Same shape as fetch_sparkle_updates, read from the moderntex-stats store when
+    MODERNTEX_UPDATE_TOKEN is not set. That token is compiled into the shipped app, so it is read
+    around, never rotated."""
+    try:
+        return blobs_read("moderntex-stats", "downloads:")
+    except (OSError, http.client.HTTPException, ValueError) as exc:
+        print(f"  ! ModernTex in-app updates (Blobs) unavailable: {str(exc)[:80]}", file=sys.stderr)
+        return None
 
 
 def fetch_vitae_downloads(token: str) -> dict | None:
@@ -2812,7 +2859,7 @@ def moderntex_ads_block(data: dict, sales: dict | None = None) -> str:
                      f"${spend:,.2f} spent on Google Ads vs {money(rev['gross'])} in ModernTex "
                      f"purchases — {verdict} (net {'-' if net < 0 else '+'}${abs(net):,.2f}). "
                      f"This compares total ad spend against all ModernTex purchases in the window, "
-                     f"not just ones Google Ads attributes to a click, so it is not a strict ROAS.</p>")
+                     f"not just ones traced to an ad click, so it is not a strict ROAS; the click-attributed count is in the terminal summary.</p>")
 
     life = gads.get("allTime")
     life_html = ""
@@ -3395,6 +3442,64 @@ def queue_block() -> str:
             f"expired unread {q['expiredPct']}%. Index updated {html.escape(q['updated'][:16].replace('T', ' '))}.</p></section>")
 
 
+AD_FUNNEL_SINCE = "2026-10-07"  # first day analytics.js sends the first-touch channel (ft) on funnel events
+
+
+def google_ads_attributed(history: dict, days: int, product: str | None = None) -> dict:
+    """Orders whose first or last touch (analytics.js, via Stripe metadata) was a Google ad click, over the
+    trailing `days`. This is the number to divide Google Ads spend by; total ModernTex sales are not it."""
+    cutoff = dt.datetime.now().timestamp() - days * 86400
+    n, net = 0, 0.0
+    for r in (history.get("ledger") or {}).values():
+        if r.get("market") or r["ts"] < cutoff or (product and r.get("product") != product):
+            continue
+        a = r.get("attr") or {}
+        if "Google Ads" in (classify_touch(a.get("first")), classify_touch(a.get("last") or a.get("first"))):
+            n += 1
+            net += _row_net(r) / 100
+    return {"orders": n, "net": net}
+
+
+def print_ad_funnel(history: dict, manual_ads: dict) -> None:
+    """Paid and other channels through the funnel, from the site's own first-touch labels, next to what
+    Google Ads says it spent and got clicked. Checks that tracking sees the ad clicks, then gives cost per trial
+    and per attributed sale. Nothing is printed until the site has recorded any channel labels."""
+    af = history.get("adFunnel") or {}
+    ch = af.get("channels") or {}
+    if not ch:
+        return
+    days = af.get("days", GOOGLE_ADS_DAYS)
+    print(f"\n  Funnel by first-touch channel, last {days} days (tracking began {AD_FUNNEL_SINCE}; each visitor counted under how they first arrived)")
+    rows = []
+    for name, v in ch.items():
+        paths = v.get("pageviewsByPath") or {}
+        prod_views = sum(c for p, c in paths.items() if p.rstrip("/") in PRODUCT_PAGE_PATHS)
+        trials = sum((v.get("trial") or {}).values())
+        buys = sum((v.get("checkout") or {}).values())
+        rows.append((name, v.get("pageviews", 0), prod_views, trials, buys))
+    rows.sort(key=lambda r: (-r[3], -r[4], -r[1]))
+    for name, pv, ppv, tr, bu in rows[:8]:
+        print(f"   {name:<22} {pv:>4} page views ({ppv} on product pages)  {tr:>3} trial downloads  {bu:>3} buy clicks")
+    gads = (manual_ads or {}).get("googleAdsModerntex") or {}
+    paid = ch.get("paid:google") or {}
+    if gads:
+        clicks, spend = gads.get("clicks", 0), gads.get("spend", 0.0)
+        seen = paid.get("pageviews", 0)
+        trials = sum((paid.get("trial") or {}).values())
+        att = google_ads_attributed(history, GOOGLE_ADS_DAYS)
+        line = f"   Google Ads reports {clicks} clicks and ${spend:,.2f} ({gads.get('window', '?')}); our own tracking saw {seen} paid:google page views"
+        print(line)
+        if trials:
+            print(f"   -> ${spend / trials:,.2f} per trial download")
+        if att["orders"]:
+            print(f"   -> {att['orders']} attributed order(s), ${spend / att['orders']:,.2f} per attributed sale, ${att['net']:,.2f} net")
+        else:
+            print("   -> 0 orders attributed to a Google ad click so far (Stripe metadata g=1 or utm medium cpc)")
+        if clicks >= 10 and seen == 0:
+            print("   ! Google reports clicks but we saw none: check auto-tagging and that the ad URL lands on purplelink.llc")
+
+
+
 def print_extensionpay(history: dict) -> None:
     """Scholar Utility Belt Pro in one line group; nothing at all until STRIPE_EXTPAY_KEY is set and has read once."""
     meta = (history.get("marketplaceMeta") or {}).get("extensionpay") or {}
@@ -3593,9 +3698,13 @@ def revenue_metrics(history: dict, summaries: list[dict], manual_ads: dict) -> d
     gads = (manual_ads or {}).get("googleAdsModerntex") or {}
     if gads:
         spend = gads.get("spend", 0.0)
-        wk_rows = [r for r in ledger if r["product"] == "moderntex" and r["ts"] >= now - 7 * 86400]
+        # Only orders whose first or last touch was a Google ad click: the old version divided by every
+        # ModernTex sale in the week, which made the ads look 9x better than anything shows.
+        wk_rows = [r for r in ledger if r["product"] == "moderntex" and r["ts"] >= now - 7 * 86400
+                   and "Google Ads" in (classify_touch((r.get("attr") or {}).get("first")),
+                                        classify_touch((r.get("attr") or {}).get("last") or (r.get("attr") or {}).get("first")))]
         per_sale = [(_row_net(r) / 100) for r in mt_all]
-        acq.append({"channel": "Google Ads → ModernTex", "asOf": gads.get("asOf"),
+        acq.append({"channel": "Google Ads → ModernTex (click-attributed sales)", "asOf": gads.get("asOf"),
                     "spend": spend, "unit": "sale", "units": len(wk_rows),
                     "cost": (spend / len(wk_rows)) if wk_rows else None,
                     "worth": (sum(per_sale) / len(per_sale)) if per_sale else None})
@@ -3755,13 +3864,15 @@ def metrics_block(m: dict | None) -> str:
 </section>"""
 
 
-def outbound_veil_report(history: dict) -> dict | None:
-    """Outbound Veil in one place: page views, trial downloads, buy clicks, orders (added 2026-10-05).
+def app_funnel_report(history: dict, *, page: str, metric: str, since: str, checkout_keys: tuple,
+                      ledger_match) -> dict | None:
+    """One app's funnel in one place: page views, downloads, buy clicks, orders.
 
     Page views and buy clicks come from the beacon's 30-day window (topPaths, checkoutByProduct);
-    trial downloads are per day (ovTrialDownloads, counted since 2026-10-04); orders come from the
-    Stripe ledger. Search Console figures are the page's own row when it is in the top pages list.
-    In-app update downloads are not counted anywhere for this app yet, so none are reported.
+    downloads are per day under `metric` (counted since `since`); orders come from the Stripe
+    ledger rows `ledger_match` accepts. Search Console figures are the page's own row when it is
+    in the top pages list. Downloads and orders are not linked to each other, so the rate is
+    orders over downloads across the same days, never a per-person conversion.
     """
     site = (history.get("sites") or {}).get("purplelink") or {}
     latest = site.get("latest") or {}
@@ -3772,44 +3883,105 @@ def outbound_veil_report(history: dict) -> dict | None:
     day_keys = sorted(by_day)
 
     def dl(d: str) -> int:
-        return int((by_day.get(d) or {}).get("ovTrialDownloads", 0) or 0)
+        return int((by_day.get(d) or {}).get(metric, 0) or 0)
 
     last7 = [(today - dt.timedelta(days=i)).isoformat() for i in range(1, 8)]
-    views = {r["key"]: r.get("count", 0) for r in latest.get("topPaths", []) if str(r.get("key", "")).startswith("/outbound-veil")}
-    clicks = next((r.get("count", 0) for r in latest.get("checkoutByProduct", []) if r.get("key") == "outbound-veil"), 0)
+    views = {r["key"]: r.get("count", 0) for r in latest.get("topPaths", []) if str(r.get("key", "")).startswith(page)}
+    clicks = sum(r.get("count", 0) for r in latest.get("checkoutByProduct", []) if r.get("key") in checkout_keys)
     now = dt.datetime.now().timestamp()
-    rows = [r for r in (history.get("ledger") or {}).values() if r.get("product") == "outbound-veil" and r.get("kind") == "purchase"]
+    rows = [r for r in (history.get("ledger") or {}).values() if ledger_match(r) and r.get("kind") != "refund"]
     rows30 = [r for r in rows if r.get("ts", 0) >= now - 30 * 86400]
-    gsc = next((r for r in (site.get("gsc") or {}).get("pages", []) if "purplelink.llc/outbound-veil/" in str(r.get("key", "")) and "start" not in r["key"] and "success" not in r["key"]), None)
+    since_days = [d for d in day_keys if d >= since]
+    orders_since = [r for r in rows if r.get("ts", 0) >= dt.datetime.fromisoformat(since).timestamp()]
+    gsc = next((r for r in (site.get("gsc") or {}).get("pages", [])
+                if f"purplelink.llc{page}" in str(r.get("key", "")) and "start" not in r["key"] and "success" not in r["key"]), None)
     return {
         "views": views, "viewsTotal": sum(views.values()),
         "dl7": sum(dl(d) for d in last7), "dlToday": dl(today.isoformat()),
-        "dlAll": sum(dl(d) for d in day_keys), "dlSince": "2026-10-04",
+        "dlAll": sum(dl(d) for d in day_keys if d >= since), "dlSince": since,
+        "dlDays": len(since_days),
         "clicks": clicks,
         "orders30": len(rows30), "gross30": sum(r.get("gross", 0) for r in rows30) / 100, "net30": sum(r.get("net", 0) for r in rows30) / 100,
         "ordersAll": len(rows), "grossAll": sum(r.get("gross", 0) for r in rows) / 100,
+        "ordersSince": len(orders_since),
         "gsc": gsc,
     }
 
 
-def print_outbound_veil(o: dict | None) -> None:
+def outbound_veil_report(history: dict) -> dict | None:
+    """Outbound Veil: counted since 2026-10-04. In-app update downloads have no counter yet."""
+    return app_funnel_report(history, page="/outbound-veil", metric="ovTrialDownloads", since="2026-10-04",
+                             checkout_keys=("outbound-veil",),
+                             ledger_match=lambda r: r.get("product") == "outbound-veil" and r.get("kind") == "purchase")
+
+
+def legroom_report(history: dict) -> dict | None:
+    """Legroom ($9.99, 7-day trial), live 2026-10-05. Its own orders only: Mac Suite orders include
+    Legroom but are counted on the Suite line, so they are reported apart as `suiteOrders`."""
+    r = app_funnel_report(history, page="/legroom", metric="lgTrialDownloads", since="2026-10-05",
+                          checkout_keys=("legroom", "freeboard"),
+                          ledger_match=lambda x: x.get("product") in ("legroom", "freeboard") and x.get("kind") == "purchase")
+    if r is not None:
+        r["suiteOrders"] = sum(1 for x in (history.get("ledger") or {}).values()
+                               if x.get("product") == "app-suite" and x.get("kind") == "purchase")
+    return r
+
+
+def vitae_report(history: dict) -> dict | None:
+    """Vitae is free: the first step is a download, the conversion is a Vitae Plus subscription
+    ($2.99 a month or $23.99 a year, 7-day trial). Downloads are counted since 2026-09-22."""
+    return app_funnel_report(history, page="/vitae", metric="vitaeDownloads", since="2026-09-22",
+                             checkout_keys=("vitae-plus-monthly", "vitae-plus-annual"),
+                             ledger_match=lambda r: str(r.get("product", "")).startswith("vitae-plus"))
+
+
+def _dl_rate(o: dict, what: str) -> str:
+    n = o["dlAll"]
+    if not n:
+        return "no downloads yet"
+    return f"{o['ordersSince']} {what} against {n} download(s) since {o['dlSince']} ({_pct(o['ordersSince'], n)})"
+
+
+def print_app_funnel(o: dict | None, title: str, page: str, *, start_note: str = "", free_step: bool = False,
+                     conv_word: str = "order") -> None:
     if not o:
         return
     v = o["views"]
-    page = v.get("/outbound-veil/", 0)
-    print("\n  Outbound Veil (Mac app, $29, 7-day trial)")
-    print(f"   Page views, 30d: {page} product page, {v.get('/outbound-veil/start/', 0)} start page (after download), "
-          f"{v.get('/outbound-veil/success/', 0)} success page")
-    since = f" (counted since {o['dlSince']})" if o["dlSince"] else ""
-    print(f"   Trial downloads: {o['dl7']} in the last 7 complete days, {o['dlToday']} today, {o['dlAll']} total{since}")
-    print(f"   Buy clicks, 30d: {o['clicks']}; orders, 30d: {o['orders30']} (${o['gross30']:,.2f} gross, ${o['net30']:,.2f} net); "
+    print(f"\n  {title}")
+    extra = f", {v.get(page + 'start/', 0)} start page (after download), {v.get(page + 'success/', 0)} success page" if start_note else ""
+    print(f"   Page views, 30d: {v.get(page, 0)} product page{extra}")
+    print(f"   {'Downloads' if free_step else 'Trial downloads'}: {o['dl7']} in the last 7 complete days, {o['dlToday']} today, "
+          f"{o['dlAll']} total (counted since {o['dlSince']}, {o['dlDays']} day(s))")
+    print(f"   Buy clicks, 30d: {o['clicks']}; {conv_word}s, 30d: {o['orders30']} (${o['gross30']:,.2f} gross, ${o['net30']:,.2f} net); "
           f"all time {o['ordersAll']} (${o['grossAll']:,.2f} gross)")
+    print(f"   Download to {conv_word}: {_dl_rate(o, conv_word + '(s)')}"
+          + ("; too few to read as a rate" if o["ordersSince"] < 5 else ""))
+    if o.get("suiteOrders"):
+        print(f"   Mac Suite orders, all time: {o['suiteOrders']} (they include this app; counted on the Suite line)")
     g = o["gsc"]
     if g:
         print(f"   Search: {g.get('count', 0)} click(s), {g.get('impressions', 0)} impression(s), position {g.get('position', 0):.1f} on the product page")
     else:
         print("   Search: the product page is not in Search Console's top pages yet")
-    print("   Not measured: in-app update downloads (no counter for this app yet), trial-to-paid by email")
+
+
+def print_outbound_veil(o: dict | None) -> None:
+    print_app_funnel(o, "Outbound Veil (Mac app, $29.99, 7-day trial)", "/outbound-veil/", start_note="start")
+    if o:
+        print("   Not measured: in-app update downloads (no counter for this app yet), trial-to-paid by email")
+
+
+def print_legroom(o: dict | None) -> None:
+    print_app_funnel(o, "Legroom (Mac app, $9.99, 7-day trial)", "/legroom/")
+    if o:
+        print("   Not measured: in-app update downloads and trial-to-paid by email (the trial has no sign-up step)")
+
+
+def print_vitae(o: dict | None) -> None:
+    print_app_funnel(o, "Vitae (Mac app, free; Vitae Plus $2.99/month or $23.99/year, 7-day trial)", "/vitae/",
+                     free_step=True, conv_word="Plus subscription")
+    if o:
+        print("   Not measured: Plus trials that have not converted yet, and in-app update downloads")
 
 
 def print_metrics(m: dict | None) -> None:
@@ -5235,8 +5407,15 @@ def main() -> int:
                               file=sys.stderr)
 
                 if site["key"] == "purplelink":
+                    try:
+                        week = fetch_site(site, token, GOOGLE_ADS_DAYS)
+                        if week.get("funnelByChannel") is not None:
+                            history["adFunnel"] = {"asOf": dt.date.today().isoformat(), "days": GOOGLE_ADS_DAYS,
+                                                   "channels": week["funnelByChannel"]}
+                    except Exception as exc:
+                        print(f"  ! {site['label']}: channel funnel fetch failed ({str(exc)[:60]})", file=sys.stderr)
                     vt = cfg.get(VITAE_STATS_TOKEN_ENV)
-                    vd = fetch_vitae_downloads(vt) if vt else None
+                    vd = fetch_vitae_downloads(vt) if vt else fetch_vitae_downloads_blobs()
                     if vd is not None:
                         payload.setdefault("byDay", {})
                         for day, n in vd["byDay"].items():
@@ -5245,9 +5424,6 @@ def main() -> int:
                                    if sk == "purplelink" and m == "vitaeDownloads")
                         lifetime = max(0, sum(vd["downloads"].values()) - ours)
                         forms_note += f", {lifetime} Vitae download(s) lifetime"
-                    elif not vt:
-                        print(f"  ! Vitae downloads: {VITAE_STATS_TOKEN_ENV} not set in {CONFIG_PATH}",
-                              file=sys.stderr)
 
                 merge_history(history, site["key"], payload)
                 entry.pop("error", None)
@@ -5301,16 +5477,12 @@ def main() -> int:
         # ModernTex in-app updates (Sparkle): existing owners updating, not new
         # customers — kept separate from the sales/trial numbers above.
         sparkle_token = cfg.get(MODERNTEX_UPDATE_TOKEN_ENV)
-        if sparkle_token:
-            by_file = fetch_sparkle_updates(sparkle_token)
-            if by_file is not None:
-                sparkle_hist = merge_sparkle_updates(history, by_file)
-                today = sparkle_hist["today"]
-                delta_note = f", {today['delta']} today" if today["delta"] is not None else " (first snapshot)"
-                print(f"  ok ModernTex in-app updates: {today['total']} lifetime{delta_note}")
-        else:
-            print(f"  ! ModernTex in-app updates: {MODERNTEX_UPDATE_TOKEN_ENV} not set in {CONFIG_PATH}",
-                  file=sys.stderr)
+        by_file = fetch_sparkle_updates(sparkle_token) if sparkle_token else fetch_sparkle_updates_blobs()
+        if by_file is not None:
+            sparkle_hist = merge_sparkle_updates(history, by_file)
+            today = sparkle_hist["today"]
+            delta_note = f", {today['delta']} today" if today["delta"] is not None else " (first snapshot)"
+            print(f"  ok ModernTex in-app updates: {today['total']} lifetime{delta_note}")
 
         # App Store Connect (GlobePin): archived per day like everything else.
         if cfg.get("ASC_VENDOR_NUMBER"):
@@ -5433,8 +5605,11 @@ def main() -> int:
     print_metrics(metrics)
     print_revenue_sources(sales, appstore, market_rows, history.get("admob"))
     print_outbound_veil(outbound_veil_report(history))
+    print_legroom(legroom_report(history))
+    print_vitae(vitae_report(history))
     print_extensionpay(history)
     print_profit(profit, channels, tax)
+    print_ad_funnel(history, manual_ads)
     print_marketplaces(marketplaces)
     print_queue(queue_summary())
     if sales:

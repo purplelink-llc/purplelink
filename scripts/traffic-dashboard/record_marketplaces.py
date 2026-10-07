@@ -217,7 +217,7 @@ def classify_page(url: str, text: str, has_password: bool) -> str:
 EMPTY_PHRASES = {
     "etsy": r"take a tour|no orders|you don.t have any (open |completed )?orders|orders\s+easily manage",
     "payhip": r"no orders|no sales|nothing here yet|no orders have been made yet",
-    "gumroad": r"no sales|no customers|you haven.t (made|had) any",
+    "gumroad": r"no sales|no customers|you haven.t (made|had) any|details are added here",
 }
 
 
@@ -355,7 +355,7 @@ def read_table_site(market: str, pages: list[str]) -> tuple[str, list[dict], str
             if not rendered(market, meta["text"], len(t["rows"])):
                 last = "not rendered"
                 continue
-            if t["rows"] and not orders:
+            if t["rows"] and not orders and not re.search(EMPTY_PHRASES[market], meta["text"], re.I):
                 return "unrecognised table", [], url
             return "ok", orders, url
         finally:
