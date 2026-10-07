@@ -59,6 +59,7 @@ PAGES = [
     "guides/best-chrome-extensions-for-google-scholar/",
     "guides/best-travel-map-apps-for-iphone/",
     "guides/best-disk-space-analyzer-for-mac/",
+    "guides/best-keyboard-sound-apps-for-mac/",
     "guides/best-on-device-health-apps/",
 ]
 
