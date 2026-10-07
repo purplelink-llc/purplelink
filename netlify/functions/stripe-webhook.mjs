@@ -293,7 +293,7 @@ async function emailDownloadLink(to, sessionId, productKey) {
   // download email, so a missing key is simply left out and the buyer still gets the link.
   const isSuite = productKey === "app-suite";
   const keys = licenseKeysForSession(productKey, sessionId);
-  const keyHint = (k) => (k.slug === "moderntex" ? `"Have a license key?"` : `"Enter license key"`);
+  const keyHint = (k) => (k.slug === "moderntex" ? `"Enter license key" (older trial copies say "Have a license key?")` : `"Enter license key"`);
   const licenseTextBlock = keys.length
     ? `\n${keys.length > 1 ? "Your license keys" : "Your license key"} (each app runs free for 7 days, then asks for its key):\n` +
       keys.map((k) => `${k.label}: ${k.key}`).join("\n") +

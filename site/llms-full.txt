@@ -59,7 +59,7 @@ Keyfeel plays recorded keyboard-switch sounds as you type, with click sounds and
 
 Keeping track of where everything is
 
-Vitae, free.
+Vitae, a free app. Vitae Plus is an optional subscription from $2.99 a month.
 
 Reading the literature
 
@@ -85,31 +85,31 @@ Mac
 
 ## Keep your academic record in one place
 
-$54 once
+$54.99 once
 
 ### The Mac Suite
 
-ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life in one payment. Bought separately they come to $92 the first year, then $24 a year for Plus.
+ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life in one payment. Bought separately they come to $94 the first year, then $23.99 a year for Plus.
 
 See the Suite →
 
-Free · v1.0 Beta
+Free app, optional Plus from $2.99 a month
 
 ### Vitae
 
-Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later.
+Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later. Currently a beta, version 1.0.2.
 
 Download Vitae →
 
-$3 a month or $24 a year
+$2.99 a month or $23.99 a year
 
 ### Vitae Plus
 
-Optional. Adds reports, Word templates, a revision workspace and Shareables on top of the free app. Seven days free before the first charge.
+An optional subscription. Adds reports, Word templates, a revision workspace and Shareables on top of the free app, which keeps all core record-keeping free. Seven days free before the first charge, and included for life in the Mac Suite.
 
 See what Plus adds →
 
-Free 7-day trial, then $29
+Free 7-day trial, then $29.99
 
 ### Outbound Veil
 
@@ -117,7 +117,7 @@ A menu-bar app that checks what you type for names, numbers and addresses before
 
 See Outbound Veil →
 
-Free 7-day trial, then $9
+Free 7-day trial, then $9.99
 
 ### Legroom
 
@@ -283,7 +283,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $19.99 to keep · v1.3.5
+Free 7-day trial · $19.99 to keep · v1.4.0
 
 # ModernTex
 
@@ -291,7 +291,13 @@ A native macOS LaTeX editor for researchers, not a programmer's IDE with LaTeX b
 
 Download the free 7-day trial
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54 once. First ten minutes: install and first build.
+Refunded if you email within 14 days of purchase. Updates are included forever.
+
+From the studio behind Scholar Utility Belt, which 1,000 researchers use and the Chrome Web Store rates 4.5 out of 5.
+
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.4.0 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once. First ten minutes: install and first build.
+
+ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.
 
 Watch the tour
 
@@ -415,7 +421,7 @@ Price$19.99 once, after a free 7-day trial. All updates included, forever. No su
 
 TrialThe complete app for seven days from first launch. No account, nothing to enter.
 
-LicenseA permanent key in the receipt email. Paste it into the trial copy to unlock it straight away; install the paid download once to get updates.
+LicenseA permanent key in the receipt email. There is one download: it runs free for seven days, then asks for the key. Paste it in and the same copy unlocks, updates included.
 
 Runs onmacOS 14 Sonoma or later, Apple silicon and Intel. Signed and notarized disk image.
 
@@ -429,9 +435,13 @@ AI featuresOptional. Fix with AI proposes a repair for a build error and shows i
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
-Current version1.3.5, where the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
+Current version1.4.0, which makes ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
 
-### Ten updates since launch on September 4
+### Eleven updates since launch on September 4
+
+- Oct 71.4.0One download: free for seven days from first launch, then a license key. Copies you already bought keep working with no key.
+
+- Oct 71.3.6The free trial shows the right price; one dismissible note on days 5 and 6 of the trial.
 
 - Oct 71.3.5Light and Dark themes change the whole window; tooltips you can see; Reading width in editor-only mode.
 
@@ -455,7 +465,7 @@ Current version1.3.5, where the plain Light and Dark themes change the whole win
 
 Every update is included in the $19.99, forever, and the app installs it in place. Your work stays in ordinary .tex files, so you can open it in Overleaf or TeXShop whenever you like. Full changelog
 
-Coming from Overleaf? What changes when you write locally, or see how the Mac LaTeX editors compare.
+Coming from Overleaf? What changes when you write locally, or see how the Mac LaTeX editors compare, including ModernTex against TeXShop and TeXstudio.
 
 Submitting soon? Work through the free submission checklist, or see a sample Paper Review report ($9, back in minutes).
 
@@ -509,7 +519,7 @@ Enter the email address you used at checkout on the Find a purchase page. If tha
 
 Is there a free trial?
 
-Yes. The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. When it ends, the window shows a notice and a Buy button; your .tex files are ordinary files on disk and are not touched. When you buy, the receipt email includes a license key: paste it into the trial's "Have a license key?" and that same copy unlocks, with no reinstall. The trial copy does not update itself, so install the paid download from your receipt page once to get updates in place.
+Yes. The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. When it ends, the window shows a notice and a Buy button; your .tex files are ordinary files on disk and are not touched. When you buy, the receipt email includes a license key: choose Enter license key in the app and paste it, and that same copy unlocks, with no reinstall. There is only one download, and it updates itself. If you bought before version 1.4.0, your copy keeps working with no key.
 
 What does it cost?
 
@@ -562,7 +572,7 @@ Title: Outbound Veil - Personal Information Checker for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $29 to keep
+Free 7-day trial · $29.99 to keep
 
 # Outbound Veil
 
@@ -570,9 +580,11 @@ Outbound Veil checks what you type for personal information before you send it. 
 
 Try it free for 7 days
 
-The trial is the full app for seven days, with no account and nothing to enter. Buying is a single $29 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.1 · 36 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
+Refunded if you email within 14 days of purchase. Updates are included forever.
 
-Also in the Mac Suite: Outbound Veil, ModernTex, Legroom, Keyfeel and Vitae Plus for life, $54 once.
+The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0 · 38 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
+
+Also in the Mac Suite: Outbound Veil, ModernTex, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
 
 Outbound Veil checking a fictional client note typed into a plain text field in Chrome. Every name and number on this page is invented.
 
@@ -656,7 +668,7 @@ macOS asks you to allow Accessibility so Outbound Veil can read the text field y
 
 This second permission is requested only if you turn on send hold, so the app can notice the send key. If you never use send hold, you never grant it.
 
-The only network use is the check for a new version and, for buyers, the download. Details are on the privacy page.
+Apart from the download itself, the only network use is the check for a new version. Details are on the privacy page.
 
 ## Limits
 
@@ -680,15 +692,19 @@ macOS 14 (Sonoma) or later, on Apple silicon or Intel.
 
 Does it send what I type anywhere?
 
-No. What you type is checked on your Mac. Nothing you type is stored or sent, and the app has no analytics. The only network use is the check for a new version and, for buyers, the download.
+No. What you type is checked on your Mac. Nothing you type is stored or sent, and the app has no analytics. Apart from the download itself, the only network use is the check for a new version.
 
 Are updates included?
 
-Yes, all of them, forever, including future major versions. The app checks for a new version and offers to install it in place, or you can choose Check for Updates from its menu. Each download is signed by Purplelink LLC.
+Yes, all of them, forever, including future major versions. Every copy, trial or licensed, checks for a new version and offers to install it in place, or you can choose Check for updates from its menu. Each download is signed by Purplelink LLC.
 
 What happens when the trial ends?
 
-The trial is the complete app for seven days from the first time you open it, with no account. When it ends, Outbound Veil stops checking, shows one notice and offers a link to buy. Buying gives you a separate download of the full app to install in its place.
+The trial is the complete app for seven days from first launch, with no account. When it ends, Outbound Veil stops checking, shows one notice and asks for a license key. The key arrives in your receipt email and is shown on the success page, and the Find a purchase page sends it again. Choose Enter license key… from the menu-bar menu, or Settings, General, and paste it. It unlocks that copy for good, offline, with no account and no second download.
+
+I already bought Outbound Veil. Do I need a key?
+
+No. If you install this version over a copy you already paid for, it recognizes that copy and never asks for a key.
 
 Can I get a refund?
 
@@ -696,11 +712,11 @@ Email ben@purplelink.llc within 14 days of purchase. See the terms.
 
 How do I get help?
 
-Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with.
+Email ben@purplelink.llc. If you lose your download link or your license key, the Find a purchase page emails them again to the address you paid with.
 
 ## Try it for a week.
 
-Seven days of the full app, no account and nothing to enter. Then decide whether to keep it.
+Seven days of the full app, with no account. Then decide whether to keep it.
 
 Try it free for 7 days
 Buy Outbound Veil
@@ -719,7 +735,7 @@ Title: Legroom - Free Disk Space and Cleanup for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $9 to keep
+Free 7-day trial · $9.99 to keep
 
 # Legroom
 
@@ -727,9 +743,11 @@ Legroom shows how much free space your Mac has, warns you before the disk fills,
 
 Try it free for 7 days
 
-The trial runs for seven days from the first time you open it, with no account and nothing to enter. After it ends, the menu-bar readout and the low-space alerts keep working. Buying is a single $9 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.0 · 6 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+Refunded if you email within 14 days of purchase.
 
-Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54 once.
+The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0 · 6.6 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
 
 Sample data: a pretend home folder and invented numbers. The window title comes from the test build.
 
@@ -823,7 +841,7 @@ The cloudThere is no cloud, no account and no sync. Your measurements, rules and
 
 ## Privacy
 
-Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And the paid build, once a day, asks this site for its update feed: that request carries the app's name and version and an update token that marks it as the paid build, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. The trial build has no update check. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the privacy page.
+Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And every copy, trial or licensed, asks this site once a day for its update feed: that request carries the app's name and version and an update token that is the same in every copy, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the privacy page.
 
 ## Frequently asked questions
 
@@ -845,15 +863,19 @@ No. It asks only if you choose to give it. Without it, Legroom skips the folders
 
 Does it send my files or measurements anywhere?
 
-No. There is no account and no analytics. Apart from the daily update check in the paid build and the Buy link, which opens this page in your browser, Legroom does not use the network.
+No. There is no account and no analytics. Apart from the download itself, the daily update check that every copy makes and the Buy link, which opens this page in your browser, Legroom does not use the network.
 
 What happens when the trial ends?
 
-The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you install the paid build. Buying gives you a separate download of the full app to install in place of the trial.
+The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the Find a purchase page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download.
+
+I already bought Legroom. Do I need a key?
+
+No. If you install this version over a copy you already paid for, it recognizes that copy and never asks for a key.
 
 Are updates included?
 
-Updates to the version you buy are included. The paid app checks for a new version once a day and asks before installing it, or you can check by hand from its menu. I have not decided whether a later major version would be a free update.
+Updates to the version you buy are included. Every copy, trial or licensed, checks for a new version once a day and asks before installing it, or you can check by hand from its menu. I have not decided whether a later major version would be a free update.
 
 Can I get a refund?
 
@@ -861,11 +883,11 @@ Email ben@purplelink.llc within 14 days of purchase. See the terms.
 
 How do I get help?
 
-Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with.
+Email ben@purplelink.llc. If you lose your download link or your license key, the Find a purchase page emails them again to the address you paid with.
 
 ## Try it for a week.
 
-Seven days of the full app, with no account and nothing to enter. Then decide whether to keep it.
+Seven days of the full app, with no account. Then decide whether to keep it.
 
 Try it free for 7 days
 Buy Legroom
@@ -884,18 +906,19 @@ Title: Keyfeel - Keyboard and Mouse Click Sounds for Mac | Purplelink LLC
 ← All products
 
 macOS
-Not released yet
 Free 7-day trial · $9.99 to keep
 
 # Keyfeel
 
 Keyfeel plays real recorded keyboard-switch sounds when you press a key on your Mac, and adds mouse-click sounds, scroll ticks and optional trackpad haptics. It runs in the menu bar and works offline.
 
-Free trial opens at release
+Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version, size and release date are listed here when Keyfeel is released. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0, released October 7, 2026. 7 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
-Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54 once.
+Comparing options? See the keyboard sound apps for Mac compared.
+
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
 
 An illustration of the idea, not a screenshot of the app.
 
@@ -915,19 +938,23 @@ Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it
 
 ## What it does
 
-Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, plus synthesized extras. You can also import your own sound.
+Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), and synthesized extras. Every recording is licensed for use (CC0), with credits listed in the app.
 
-KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own.
+Your own soundsImport a Mechvibes sound pack (its folder, its zip or its config.json), including packs in .ogg, and each key keeps the sound the pack gave it. Or choose one short sound file of your own.
+
+KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own, and you can set the level of the space bar and modifier keys separately. Fast typing gets gently quieter so it does not wear on you.
 
 MousePress and release sounds for mouse clicks, and a ripple on screen where you click.
 
-ScrollingScroll ticks that follow how fast you scroll.
+ScrollingScroll ticks that follow how fast you scroll, in nine styles, including recorded brush, pencil on paper, salt and rice. When a hard flick keeps the page gliding, the ticks keep going and slow down with it.
+
+ShortcutsEach of eleven shortcuts, such as copy, paste, undo and save, can have its own sound. Copy and cut play a different, softer sound if nothing was copied, so the sound tells you the command took.
 
 TrackpadOptional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.
 
-QuietSilence in the apps you choose, and automatic silence while the microphone is in use.
+QuietSilence in the apps you choose, automatic silence while the microphone or a camera is in use, and an option to stay silent in full-screen apps. You can also keep sounds off the built-in speakers and play them only on headphones or external audio.
 
-ControlKeyfeel runs from the menu bar and is controlled there.
+ControlKeyfeel runs from the menu bar and is controlled there. Keyboard shortcuts turn it on and off and switch sounds, a keyfeel:// link works from Shortcuts and scripts, and you can hide the menu bar icon.
 
 ## How it feels
 
@@ -953,7 +980,7 @@ Choose apps where Keyfeel stays silent. It also goes quiet by itself while the m
 
 ### Works offline
 
-Keyfeel makes its sounds and haptics on your Mac and needs no network connection. There are no accounts. The only network use is the paid app's check for a new version and, for buyers, the download.
+Keyfeel makes its sounds and haptics on your Mac and needs no network connection. There are no accounts. The only network use is its check for a new version, which carries the app's name and version and nothing you type.
 
 ### Key codes, never characters
 
@@ -995,19 +1022,27 @@ No. When a password field has focus, macOS stops delivering keystrokes to apps l
 
 Can I make it quiet in some apps, or on calls?
 
-Yes. You can silence Keyfeel in the apps you choose, and it goes quiet by itself while the microphone is in use.
+Yes. You can silence Keyfeel in the apps you choose, and it goes quiet by itself while the microphone or a camera is in use. An option also keeps it silent in full-screen apps.
 
 Why do the haptics need a finger on the trackpad?
 
 Keyfeel produces trackpad haptics only while a finger is on the trackpad, which is when you can feel them. They are optional.
 
+Is there a delay between pressing a key and hearing it?
+
+A small one, about 8 to 25 milliseconds on a Mac's built-in speakers, depending on the Mac. Settings shows the estimate for your output. Bluetooth headphones add their own delay, often 100 milliseconds or more, which no app can remove; Settings tells you when the current output is Bluetooth.
+
+Can I use sound packs from other apps?
+
+Yes, packs in the Mechvibes format. Choose Import a sound pack in the menu or in Settings, then pick the pack's folder, its zip file or its config.json. Keyfeel converts it once and keeps a copy of its own.
+
 Are updates included?
 
-Yes, all of them. The price is a single payment, for life. The paid app checks for a new version and offers to install it in place.
+Yes, all of them. The price is a single payment, for life. Keyfeel checks for a new version and offers to install it in place.
 
 What happens when the trial ends?
 
-The trial is the complete app for seven days from the first time you open it, with no account. To keep using Keyfeel after that, buy it. Buying gives you a separate download of the full app to install in its place.
+The trial is the complete app for seven days from the first time you open it, with no account. To keep using Keyfeel after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key in Keyfeel and paste it. It works offline and needs no second download.
 
 Can I get a refund?
 
@@ -1021,7 +1056,7 @@ Email ben@purplelink.llc. If you lose your download link, the Find a purchase pa
 
 Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.
 
-Free trial opens at release
+Try it free for 7 days
 Buy Keyfeel
 
 macOS 13 or later · Apple silicon and Intel
@@ -1038,14 +1073,14 @@ Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
 ← All products
 
 macOS
-Free · v1.0.2 Beta
+Free app · optional Plus from $2.99 a month · v1.0.2 Beta
 
 # Vitae
 
-Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. Free, notarized, no App Store.
+Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. The app is free, with no limits on your record. Vitae Plus is an optional subscription for reports, Word templates and more: $2.99 a month or $23.99 a year, with a 7-day trial, or included for life in the Mac Suite. Notarized, no App Store.
 
 Download for Mac
-Vitae Plus, 7 days free
+Optional Vitae Plus, from $2.99 a month
 
 Requires macOS 15 Sequoia or later · Apple-notarized · Your data stays on your Mac
 
@@ -1109,16 +1144,16 @@ Free & open to support
 
 ## Vitae is free. If it saves you time, consider supporting it.
 
-All core record-keeping is free, with no limits, and nothing that was free before Plus becomes paid. No third-party ads, no data harvesting. Vitae Plus is an optional subscription, $3 a month or $24 a year, for newer tools such as reports, Word templates, the revision workspace and Shareables. Subscribing, or leaving a one-time tip, helps keep Vitae maintained and updated. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded.
+All core record-keeping is free, with no limits, and nothing that was free before Plus becomes paid. No third-party ads, no data harvesting. Vitae Plus is an optional subscription, $2.99 a month or $23.99 a year, for newer tools such as reports, Word templates, the revision workspace and Shareables, and it comes with a 7-day free trial. Subscribing, or leaving a one-time tip, helps keep Vitae maintained and updated. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded.
 
-Vitae Plus, from $3 a month
+Vitae Plus, from $2.99 a month
 Leave a one-time tip
 
 ## Frequently asked questions
 
 Is Vitae really free?
 
-Yes. Vitae is free to download and use, with all core record-keeping and no limits, and nothing that was free before Plus becomes paid. An optional subscription, Vitae Plus ($3 a month or $24 a year, with a 7-day free trial), adds newer tools: reports such as an NIH biosketch draft, Word export with your own templates, the revision workspace, Shareables, the collaboration map, batch DOI lookup and ORCID sync, Reminders and calendar sync, and themes. You do not need it to keep your record. A tip via Buy Me a Coffee is also appreciated but never required.
+Yes. Vitae is free to download and use, with all core record-keeping and no limits, and nothing that was free before Plus becomes paid. An optional subscription, Vitae Plus ($2.99 a month or $23.99 a year, with a 7-day free trial), adds newer tools: reports such as an NIH biosketch draft, Word export with your own templates, the revision workspace, Shareables, the collaboration map, batch DOI lookup and ORCID sync, Reminders and calendar sync, and themes. It is also included for life in the Mac Suite. You do not need it to keep your record. A tip via Buy Me a Coffee is also appreciated but never required.
 
 Does Vitae show ads?
 
@@ -1154,12 +1189,12 @@ Vitae is free. If it saves you time, you can get the optional Vitae Plus, leave 
 ---
 
 Source: https://purplelink.llc/vitae/plus/
-Title: Vitae Plus - Optional Subscription for Vitae, from $3 a Month | Purplelink LLC
+Title: Vitae Plus - Optional Subscription for Vitae, from $2.99 a Month | Purplelink LLC
 
 ← Vitae
 
 macOS
-Optional · from $3 a month
+Optional subscription · from $2.99 a month, 7 days free
 
 # Vitae Plus
 
@@ -1174,21 +1209,21 @@ Plans
 
 ### Monthly
 
-$3 a month
+$2.99 a month
 
-7 days free, then $3 each month.
+7 days free, then $2.99 each month.
 
 Best value
 
 ### Annual
 
-$24 a year
+$23.99 a year
 
-7 days free, then $24 each year. Saves a third compared with paying monthly.
+7 days free, then $23.99 each year. Saves a third compared with paying monthly.
 
 Stripe handles the card; Purplelink never sees it. Stripe asks for a card to start the trial and charges nothing until the 7 days are up. Cancel before then and you pay nothing. Cancel anytime after that and Plus keeps working through the period you have paid for.
 
-Want Plus for life? It is included in the Mac Suite, $54 once, with ModernTex, Outbound Veil, Legroom and Keyfeel.
+Want Plus for life? It is included in the Mac Suite, $54.99 once, with ModernTex, Outbound Veil, Legroom and Keyfeel.
 
 What Plus adds
 
@@ -3191,7 +3226,7 @@ Title: About Purplelink and Benjamin M. Ampel | Purplelink LLC
 
 Atlanta, Georgia · Founded 2026 · Georgia LLC
 
-Purplelink LLC is a one-person software studio building Mac apps and manuscript tools for academic researchers, plus iOS apps for travel and health. The mission is simple: make software that solves real problems and lasts, not software that ships fast and deteriorates.
+Purplelink LLC is a one-person software studio building Mac apps, iOS apps and web tools for writing, privacy, disk space, travel and health. The mission is simple: make software that solves real problems and lasts, not software that ships fast and deteriorates.
 
 The Matterhorn from Riffelsee, Switzerland. One of Ben's photographs; the collection is on this site and sold as prints.
 
@@ -3215,7 +3250,7 @@ A native macOS LaTeX studio for academic researchers. Multi-file editing, synchr
 
 ### Vitae
 
-A local-first Mac app for academics: submissions, grants, projects and your CV in one place. Free, with an optional Vitae Plus subscription from $3 a month.
+A local-first Mac app for academics: submissions, grants, projects and your CV in one place. Free, with an optional Vitae Plus subscription from $2.99 a month.
 
 PR
 
@@ -3928,7 +3963,7 @@ Disclosure up front: Purplelink makes ModernTex, one of the editors compared her
 
 People go looking for an Overleaf alternative after a slow compile, a timeout on the free tier, or a flight with no Wi-Fi. Before you switch, it is worth being clear about what Overleaf does better than anything you can install.
 
-- Real-time collaboration. Several people can type in the same document at once and see each other's cursors, with comments and tracked changes alongside. No desktop LaTeX editor does this as well. If your paper has four co-authors editing the methods section in the week before a deadline, that is Overleaf's job.
+- Real-time collaboration. Several people can type in the same document at once and see each other's cursors, with comments and tracked changes alongside. Desktop editors have not matched it: the closest, in TeXstudio and VS Code, are shared sessions. If your paper has four co-authors editing the methods section in the week before a deadline, that is Overleaf's job.
 
 - Zero install. Overleaf runs the TeX distribution on its own servers. Nothing to download, no 5 GB MacTeX package, nothing to update. It also means a co-author on Windows, a student on a Chromebook and you on a Mac all compile with the same setup.
 
@@ -3954,7 +3989,7 @@ You gain:
 
 You give up:
 
-- Live co-editing. Nothing on this list matches Overleaf for several people in one document at once.
+- Live co-editing. TeXstudio and VS Code can share an editing session, but nothing on this list matches Overleaf's comments and tracked changes for several people in one document.
 
 - The zero-setup start. You install a TeX distribution and keep it updated, roughly once a year when a new TeX Live ships.
 
@@ -3997,7 +4032,7 @@ TeXstudio
 macOS, Windows, Linux
 Free, open source
 Yes
-No
+Session-based, via teamtype (macOS and Linux)
 Yes
 Yes, by key
 Feature-rich. Cross-platform app that does not feel like a Mac app.
@@ -4143,6 +4178,175 @@ No. ModernTex is a single-user Mac app. Your files are ordinary files on disk, s
 Do I need the full 5 GB MacTeX install?
 
 No. BasicTeX and TinyTeX are much smaller and install missing packages on demand with tlmgr. Full MacTeX is the easiest option if you have the disk space, because every package a template might load is already there.
+
+From the team behind these tools
+
+## Writing LaTeX on a Mac?
+
+ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
+
+Get ModernTex ($19.99)
+See what it does
+
+Requires macOS 14 or later. Free 7-day trial, no account.
+
+
+---
+
+Source: https://purplelink.llc/guides/texshop-alternative-mac/
+Title: TeXShop alternative for Mac: ModernTex vs TeXShop vs TeXstudio | Purplelink
+
+← All guides
+
+Comparison
+
+# TeXShop alternative for Mac: ModernTex, TeXShop and TeXstudio compared
+
+By Benjamin Ampel · October 7, 2026
+
+TeXShop and TeXstudio are free. ModernTex costs $19.99 once. TeXShop is the Mac editor that comes with MacTeX, TeXstudio is the one of the three that also runs on Windows and Linux, and ModernTex is a paid, Mac-only editor built around writing and submitting a journal manuscript. If cost decides it, a free editor is a fair choice, and this page says when.
+
+Disclosure up front: Purplelink makes and sells ModernTex, one of the three editors compared here. TeXShop and TeXstudio cost nothing, and for many people either one is the better pick. I took the facts about them from each project's own website and manual, listed under Last checked, and left out anything I could not confirm there. The ModernTex facts are the ones on its product page.
+
+## The three, side by side
+
+None of the three includes TeX itself. Each calls a TeX distribution such as MacTeX. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back, which these editors do through SyncTeX.
+
+ModernTex, TeXShop and TeXstudio, checked October 7, 2026
+
+Editor
+Price and licence
+Runs on
+TeX distribution
+Synced PDF preview
+Multi-file projects
+Bibliography
+
+ModernTex
+$19.99 once, after a free 7-day trial. Updates included. Refund if you email within 14 days.
+macOS 14 or later, Apple silicon and Intel
+Uses MacTeX or TinyTeX. Offers a one-click TinyTeX install if neither is found.
+Yes, forward and inverse
+Root file detection and a structured sidebar
+BibTeX completion that searches by author, title or key. BibTeX or biblatex with Biber.
+
+TeXShop
+Free. GPL (version 2), source available.
+macOS only. The current release is for Intel and Apple silicon, and its site lists High Sierra through Tahoe.
+Separate. Installed with MacTeX, or get BasicTeX and TeXShop on their own.
+Yes, both directions, with a command-click or the contextual menu
+Yes. A root comment in each chapter file makes typesetting a chapter build the whole document.
+A BibTeX item in the Typeset menu. Typesetting engines, including latexmk-based ones, can run BibTeX for you.
+
+TeXstudio
+Free. Open source, GPL (version 2).
+macOS 13 or later (Intel and Apple silicon builds), Windows, Linux
+Separate. It detects TeX Live and MiKTeX.
+Yes, in the built-in viewer, forward and inverse
+Automatic root detection, a root comment, or an explicit root setting. It loads included files.
+Completion for references and bibliography entries. The compile command runs BibTeX when needed.
+
+## What each one is built around
+
+### TeXShop
+
+TeXShop is a Mac-only front end to TeX, written in Cocoa by Richard Koch with many contributors. It was first released on July 23, 2000, and it is free under the GPL. The MacTeX installer puts it in /Applications/TeX beside TeX Live Utility, BibDesk and LaTeXiT, so if you have installed MacTeX you already have it.
+
+It keeps to the basics of writing LaTeX. Source and PDF preview can share one window or sit in two. SyncTeX takes you from a spot in the source to the matching spot in the PDF and back. For a thesis or book with chapter files, you put a root comment at the top of each chapter, and typesetting a chapter typesets the whole document. It also has a Macros menu, command completion on the Escape or Tab key, a BibTeX item in the Typeset menu, latexmk-based engines, and a manual of about two hundred pages in the Help menu. Its site says the current release runs on macOS 26, Tahoe, and the MacTeX page describes an extra build for Tahoe.
+
+Choose it if you want a free editor made for the Mac, you have MacTeX already, or you have an older Mac: its site lists the current release for macOS 10.13 and later.
+
+### TeXstudio
+
+TeXstudio is free and open source under the GPL, written in C++ with Qt, and runs on Windows, Linux, macOS and BSD. It began in 2009 as a fork of Texmaker. Its site lists a structure view, code folding, a spell checker, grammar checker and reference checker, assistants that generate code for images and tables, more than 1000 math symbols, completion that covers references and bibliography entries, and an integrated PDF viewer with SyncTeX syncing. The build system supports several compilers, latexmk and bibliography tools, and it notices when LaTeX needs another run.
+
+Its manual describes three more things worth knowing. There is a Git panel (the site's news puts it in 4.9.6, July 2026). There is an optional AI chat assistant, which uses your own account with a provider such as Mistral AI or Claude, or a local model. And there is collaborative editing: a second person on another computer opens a shared folder with an access code and sees your cursor and changes as you type. That feature uses a separate program, teamtype, which the manual says is currently available on macOS and Linux.
+
+On a Mac, the download is a zip file. The site notes that the project has no Apple Developer account, so macOS may warn about an unidentified developer, and it gives the workaround of opening the app from its context menu.
+
+Choose it if you also work on Windows or Linux and want the same editor on each, or you want shared editing sessions, a Git panel and an AI assistant without paying for them.
+
+### ModernTex
+
+ModernTex is the native macOS editor we make, built for journal articles, conference papers and dissertation chapters. It handles multi-file manuscripts with root file detection and a sidebar, keeps the PDF in sync in both directions, completes citations by searching your .bib by author, title or key, and explains compile errors in plain language. It adds submission-readiness checks (anonymization, page limits, required sections, packaging), an anonymized export for double-blind review, version snapshots with diffs, and visual editors for TikZ figures and tables that write the LaTeX for you. An optional Fix with AI proposes a repair for a build error and shows it as a diff first; it runs on Apple Intelligence or on your own Claude or OpenAI account.
+
+What it does not do: real-time co-editing. Get Changes and Send Changes sync a project between your Macs or with a co-author, but two people cannot type in the same file at once. It runs only on macOS 14 or later, it is not on Windows, Linux or iPad, and it needs a TeX distribution. It was first released in September 2026, so it has far less of a track record than TeXShop or TeXstudio. Choose it if you write manuscripts on a Mac, mostly alone, and the submission-focused features are the ones you want. The trial is the full app for seven days with no account.
+
+## What each one costs
+
+TeXShop and TeXstudio cost nothing. ModernTex is $19.99 once, with all updates included and no subscription. The trial is the full app for seven days, and if you buy it and it is not useful, email within 14 days of purchase and it is refunded.
+
+All three compile a LaTeX project and show a synced PDF, so the money is not for the basics. It buys the manuscript-specific features described above. If those do not match how you work, you will not get $19.99 of use from them, and a free editor is the better choice.
+
+## Where they differ
+
+- Operating systems and Macs. TeXstudio is the only one of the three on Windows and Linux. On older Macs, TeXShop's site lists its current release for macOS 10.13 and later, TeXstudio's current build needs macOS 13, and ModernTex needs macOS 14.
+
+- Working with co-authors. TeXstudio offers collaborative editing through teamtype, as described above. ModernTex has no real-time co-editing. If several people edit one draft at the same time in a browser, that is Overleaf's job; the Overleaf guide covers how to use it alongside a local editor.
+
+- AI. TeXstudio's assistant and ModernTex's Fix with AI are both optional, and both can use your own provider account. TeXstudio's can also use a local model, and ModernTex's can run on Apple Intelligence on your Mac. Check what each one sends before you use it on unpublished work.
+
+- History and version control. TeXstudio has a Git panel and SVN support. ModernTex takes snapshots you can diff, which is separate from Git.
+
+- Installing. TeXShop arrives with MacTeX. TeXstudio is a zip, with the unidentified-developer note above. ModernTex is a signed and notarized disk image.
+
+## Who should pick which
+
+- You want the Mac default and a price of zero. TeXShop. If MacTeX is installed, it is already there.
+
+- You also use Windows or Linux. TeXstudio. It is the only one of the three that runs on all of them, and it is free.
+
+- You have a Mac older than macOS 14. TeXShop or TeXstudio. ModernTex will not run.
+
+- You want live shared editing without a browser. TeXstudio, within the limits of its teamtype requirement on macOS and Linux. ModernTex does not offer it.
+
+- You write papers alone on a Mac and want submission checks, an anonymized export, snapshots, or visual TikZ and table editors. ModernTex, $19.99 once. Use the free trial on a real manuscript first.
+
+- You are not sure. Start with TeXShop or TeXstudio. They cost nothing, and you can add ModernTex later.
+
+## Trying more than one
+
+A LaTeX project is a folder of ordinary files, so opening it in a second editor costs nothing but time. The setting most likely to differ is the root file. TeXShop and TeXstudio both read a root-file comment at the top of chapter files, and ModernTex detects the root file itself. Compile once in the new editor and compare the page count and reference list with your last PDF. For a longer look at fourteen Mac editors, including Texifier, Octree and VS Code, see the best LaTeX editors for Mac.
+
+## Last checked
+
+October 7, 2026. The TeXShop and TeXstudio facts above were checked against these pages on that date. Versions and requirements change, so check the project's own site before you rely on a detail.
+
+- TeXShop: home page (licence, release, supported systems), About TeXShop, Obtaining, Tahoe, and the changes page (sync, root comment, BibTeX, latexmk engines, completion).
+
+- MacTeX: home page and GUI applications (TeXShop installed with MacTeX, and the Tahoe build).
+
+- TeXstudio: home page (licence, platforms, macOS requirement, features, news) and its manual: getting started, PDF viewer, compiling, editing, advanced features and background (root documents, collaboration).
+
+- ModernTex: the product page.
+
+If something here is out of date or wrong, write to ben@purplelink.llc and I will fix it.
+
+## Frequently asked questions
+
+Is there a free TeXShop alternative for Mac?
+
+Yes. TeXstudio is free and open source under the GPL (version 2), and it runs on macOS 13 or later, Windows and Linux. TeXShop itself is also free. Both need a TeX distribution such as MacTeX installed separately; TeXShop comes with the MacTeX installer.
+
+Is ModernTex better than TeXShop or TeXstudio?
+
+Not in general. It is a different kind of editor. ModernTex is a paid, Mac-only app built around writing and submitting a journal manuscript, with submission checks, an anonymized export, version snapshots, and visual editors for TikZ and tables. TeXShop and TeXstudio are free, and TeXstudio also runs on Windows and Linux. If you do not need the manuscript features, a free editor is a reasonable choice.
+
+Do TeXShop, TeXstudio and ModernTex include LaTeX?
+
+No. TeXShop and TeXstudio are editors that call a TeX distribution you install separately; MacTeX installs TeXShop along with TeX Live. ModernTex also needs a TeX distribution, either MacTeX or TinyTeX, and offers a one-click TinyTeX install if it finds none when you compile.
+
+Which of the three runs on Windows or Linux?
+
+Only TeXstudio. TeXShop is macOS only, and ModernTex needs macOS 14 or later.
+
+What does ModernTex cost, and can I try it first?
+
+It is $19.99 once, with all updates included and no subscription. The free trial is the full app for seven days, with no account. If you buy it and it is not useful, email within 14 days of purchase for a refund.
+
+Can I open the same project in all three?
+
+Yes. A LaTeX project is a folder of ordinary .tex, .bib and image files, and each editor reads it in place. Check the root file setting when you switch. TeXShop and TeXstudio both read a root-file comment at the top of chapter files, and ModernTex detects the root file itself.
 
 From the team behind these tools
 
@@ -4390,7 +4594,7 @@ Pick Overleaf if you need real-time collaboration. Many academic teams use Overl
 
 ## ModernTex
 
-Cost: $19.99, one-time, all updates included, forever, after a free 7-day trial. Platform: macOS 14+. Status: shipping, shipping since September 2026; current version 1.3.0.
+Cost: $19.99, one-time, all updates included, forever, after a free 7-day trial. Platform: macOS 14+. Status: shipping, shipping since September 2026; current version 1.3.6.
 
 I built ModernTex specifically because the existing options miss a few things that matter for academic manuscript work: plain-language compile error explanations (BibTeX-style cryptic errors are the #1 frustration for new users), BibTeX autocomplete that searches by author or title across your entire .bib, revision snapshots tied to ideas not files, submission-readiness checks that catch journal-specific issues before you upload, and a live TikZ figure editor for building flowcharts and diagrams by dragging boxes instead of writing coordinates by hand.
 
@@ -4487,6 +4691,8 @@ Sublime Text with the LaTeXTools package and BBEdit with its TeX syntax highligh
 - Also work on Windows or Linux? TeXstudio.
 
 - Already live in Emacs or Vim? AUCTeX or VimTeX. You knew that.
+
+For a closer look at three of these side by side, see ModernTex, TeXShop and TeXstudio compared.
 
 ## Installing LaTeX on a Mac: MacTeX, BasicTeX, or Overleaf
 
@@ -4643,7 +4849,7 @@ All of them share two limits, covered in what redaction cannot do: detection mis
 
 ## The shortlist
 
-- Outbound Veil: $29 once, a Mac menu-bar app that checks the text field you are typing in.
+- Outbound Veil: $29.99 once, a Mac menu-bar app that checks the text field you are typing in.
 
 - Predact: free, Mac and Windows, drop in documents, images or text.
 
@@ -4661,7 +4867,7 @@ Those seven cover most situations. Seven more tools and seven narrower ones foll
 
 ## Outbound Veil
 
-Cost: $29, one-time, updates included, after a free 7-day trial with no account. Platform: macOS 14 or later, Apple silicon and Intel. Mac only. Status: version 1.0.1.
+Cost: $29.99, one-time, updates included, after a free 7-day trial with no account. Platform: macOS 14 or later, Apple silicon and Intel. Mac only. Status: version 1.0.1.
 
 Outbound Veil lives in the menu bar and reads the text field that has focus, through macOS Accessibility. When it finds something it shows a badge with the number of findings and highlights the matching text where the app allows it. You can ignore a finding, or press Redact all, which rewrites the field in place with labelled placeholders such as [SSN_1] or [EMAIL_1]. In apps you choose, it can also hold the send key until you have decided. It looks for names, addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth, medical record numbers and IBANs.
 
@@ -4671,7 +4877,7 @@ What it's good at: sitting where the mistake happens, in any Mac app it can read
 
 What it lacks: Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list. Some apps do not expose their text fields to macOS: in my testing the Apple Mail compose window could not be read, and Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list. It needs the Accessibility permission, plus Input Monitoring if you turn on send hold. After Redact all it does not put the original values back into the AI's answer; you swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.
 
-Pick Outbound Veil if you write or paste client, patient or student details into chat boxes on a Mac and want a check as you send. Pick something else if you are on Windows, mostly share files or screenshots, or your data has names in non-Latin scripts. The trial is free for seven days; keeping it is $29, once.
+Pick Outbound Veil if you write or paste client, patient or student details into chat boxes on a Mac and want a check as you send. Pick something else if you are on Windows, mostly share files or screenshots, or your data has names in non-Latin scripts. The trial is free for seven days; keeping it is $29.99, once.
 
 ## Predact
 
@@ -4805,7 +5011,7 @@ Client and participant confidentiality. Lawyers, therapists, consultants and res
 
 ## Decision matrix
 
-- Mac user typing or pasting client or patient text into chat boxes? Outbound Veil, $29.
+- Mac user typing or pasting client or patient text into chat boxes? Outbound Veil, $29.99.
 
 - Documents, scans or screenshots, or on Windows, or want it free? Predact. On a Mac, ClipScrub too.
 
@@ -4859,7 +5065,7 @@ Yes. Predact (Mac and Windows) is free, and Clipmask (Apple silicon Macs) is fre
 
 ### Is there a Mac app that checks for personal information as I type?
 
-Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things.
+Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29.99 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things.
 
 ### Should I run a local model instead of redacting?
 
@@ -4875,7 +5081,7 @@ From the team behind these tools
 
 ## Typing client notes into AI chats on a Mac?
 
-Outbound Veil is a Mac menu-bar app that checks the text field you are typing in for names, numbers and addresses, marks what it finds, and can redact it in one click. The checking runs on your Mac. $29 once, all updates included.
+Outbound Veil is a Mac menu-bar app that checks the text field you are typing in for names, numbers and addresses, marks what it finds, and can redact it in one click. The checking runs on your Mac. $29.99 once, all updates included.
 
 Try Outbound Veil free for 7 days
 See what it does
@@ -4936,7 +5142,7 @@ Those eight cover most situations. More tools follow, then what to log whichever
 
 ## Vitae
 
-Cost: Free, no account, no limits on the record. Vitae Plus, an optional add-on, is $3 a month or $24 a year with a 7-day trial, and is included for life in the $54 Mac Suite. Platform: macOS 15 Sequoia or later, Mac only. Status: version 1.0.1, which its page labels beta.
+Cost: Free, no account, no limits on the record. Vitae Plus, an optional add-on, is $2.99 a month or $23.99 a year with a 7-day trial, and is included for life in the $54.99 Mac Suite. Platform: macOS 15 Sequoia or later, Mac only. Status: version 1.0.1, which its page labels beta.
 
 Vitae is a Mac app with structured records for submissions, grants, projects, collaborators, teaching, service and mentoring. A submission keeps its venue, dates, each review round, the decision, manuscript versions and a cover letter. When you pick a target venue it shows published acceptance rates for about 13,700 journals and conferences, and it forecasts publication timelines from your own history. A grant runs from planning to award with requested and awarded amounts, your share and reporting dates, and the app can search Grants.gov and fill an NSF or NIH award from its number. You can connect a mailbox read-only, and Vitae proposes updates from journal-system messages; you review each one. A tenure view counts your record against expectations you enter, such as articles, funding, h-index, talks and service.
 
@@ -5174,7 +5380,7 @@ From the team behind these tools
 
 ## Keeping your research record on a Mac?
 
-Vitae is a free Mac app for your submissions, review rounds, grants, projects and teaching, with a CV built from the record. Everything stays on your Mac, with no account. Vitae Plus, $3 a month or $24 a year, is optional.
+Vitae is a free Mac app for your submissions, review rounds, grants, projects and teaching, with a CV built from the record. Everything stays on your Mac, with no account. Vitae Plus, $2.99 a month or $23.99 a year, is optional.
 
 Get Vitae for Mac, free
 See what Plus adds
@@ -5829,7 +6035,7 @@ By Benjamin Ampel · October 4, 2026
 
 What is using your Mac's disk, what is safe to remove, and which tool to trust with the deleting. Short version: Apple's own settings plus a free or $10 disk map cover most full disks, and the tools differ most in whether a delete goes to the Trash or is final.
 
-Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Legroom, a menu-bar app sold as a 7-day trial and a $9 one-time purchase. It is new and unproven, and where another tool is the better choice I say so. I did not install or test any of the other tools either. Everything below is read from vendor pages, Mac App Store listings, privacy labels, project repositories, Apple support pages and the built-in Terminal help on my own Mac, all on October 4, 2026. Prices and versions change. Where a page did not say something, I write "not stated" rather than guess.
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Legroom, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is new and unproven, and where another tool is the better choice I say so. I did not install or test any of the other tools either. Everything below is read from vendor pages, Mac App Store listings, privacy labels, project repositories, Apple support pages and the built-in Terminal help on my own Mac, all on October 4, 2026. Prices and versions change. Where a page did not say something, I write "not stated" rather than guess.
 
 ## Three jobs, and which tools do which
 
@@ -5983,11 +6189,11 @@ Pick this if you deleted a lot and the free number did not move. Most of the tim
 
 ## Legroom (Purplelink's)
 
-Cost: A free 7-day trial, then $9 once, with no subscription; also part of the $54 Mac Suite. Platform: macOS 14 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.0.0, signed and notarized, which makes it the newest and least proven tool in this guide. I make it, and I have not compared it with the others on a test Mac.
+Cost: A free 7-day trial, then $9.99 once, with no subscription; also part of the $54.99 Mac Suite. Platform: macOS 14 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.0.0, signed and notarized, which makes it the newest and least proven tool in this guide. I make it, and I have not compared it with the others on a test Mac.
 
 I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set. You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which. A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any. Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate.
 
-What it lacks: it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no uninstaller, widget or command-line tool. After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map and Find Files need the paid build. Its page says there is no account and no analytics; the paid build checks for updates once a day, and the trial build does not. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and this is the first release.
+What it lacks: it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no uninstaller, widget or command-line tool. After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map and Find Files need a license key, which unlocks the same download. Its page says there is no account and no analytics; every copy checks for updates once a day. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and this is the first release.
 
 Where others are better today: DaisyDisk for a visual map, and for hidden space and snapshots, because it can scan as administrator, which Legroom does not. GrandPerspective if you want free. OmniDiskSweeper if you want simple. Hazel for general rules on any folder. For cleaning developer caches when space is low, free open-source apps such as Harbofly and Dustpan exist, listed below. The gap Legroom is aimed at is folder rules with a free-space trigger, a readout and a "what grew" explanation in one app. Pick Legroom if you want rules that clean on a free-space trigger with a preview you approve each time, and you accept a first release from a one-person studio. Pick another tool if you want a visual map of everything including system space.
 
@@ -6055,7 +6261,7 @@ DevCleanerXcode cachesFreeNot stated
 
 ncdu, gdu, duaTerminal, remoteFreeConfirmed delete; gdu and dua can Trash
 
-LegroomRules, readout, what grew$9 once, 7-day trialTrash or permanent per rule, shown in the preview; Find Files and Space Map Trash only
+LegroomRules, readout, what grew$9.99 once, 7-day trialTrash or permanent per rule, shown in the preview; Find Files and Space Map Trash only
 
 - Want free? GrandPerspective, OmniDiskSweeper, or du with ncdu.
 
@@ -6127,7 +6333,7 @@ For some things, yes. Hazel runs rules on folders, though a free-space trigger n
 
 ### Is Legroom available, and what does it cost?
 
-Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it is a first release, and this guide describes it from its own product page rather than from a test against the other tools.
+Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it is a first release, and this guide describes it from its own product page rather than from a test against the other tools.
 
 ## Related guides
 
@@ -6136,6 +6342,212 @@ Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9 once 
 - Legroom: the Purplelink Mac menu-bar app described above.
 
 - Outbound Veil: another Purplelink Mac menu-bar app, direct download.
+
+- Purplelink's privacy page, all products and all guides.
+
+
+---
+
+Source: https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/
+Title: Best keyboard sound apps for Mac (2026) | Purplelink
+
+← All guides
+
+Comparison
+
+# Best keyboard sound apps for Mac (2026)
+
+By Benjamin Ampel · October 7, 2026
+
+Apps that make your Mac's keyboard, mouse and trackpad sound or feel like something else. Short version: Klack is the simple paid one, KeyOpera is the cheapest, Thock and Mechvibes are free, Snick and HapticPad do one narrow job, and the real differences are how much each plays beyond key presses and which macOS permission it asks for.
+
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Keyfeel, sold as a free 7-day trial and then $9.99 once. It is new, and where another app is the better choice I say so. I did not install or test any of the other apps. Everything below is read from vendor pages, Mac App Store listings, project repositories and launch pages, all on October 7, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
+
+## What these apps do, and what they do not
+
+A keyboard sound app plays a recorded sound when you press a key, so a quiet laptop keyboard or a membrane keyboard sounds like a mechanical one. They differ in four ways that matter more than the length of the sound list.
+
+- What plays. Key presses only, or also key releases, mouse clicks, scrolling and shortcuts.
+
+- Where the sounds come from. Recordings of real switches, community packs you can add, or your own files.
+
+- Feel beyond sound. Whether it can tap the trackpad's haptic motor. That works only on a Mac with a Force Touch trackpad, and only while a finger is on it.
+
+- What it needs from macOS. To be told which key was pressed, an app needs a permission, usually Input Monitoring. It needs the key, not the character you typed. Most of these say so on their pages, and you can check it in System Settings, Privacy & Security.
+
+One thing no app fixes: Bluetooth audio adds its own delay, often 100 milliseconds or more, so on Bluetooth headphones every one of these sounds late. Built-in speakers, wired headphones or a USB audio device keep the sound in step with your fingers.
+
+## The shortlist
+
+- Klack: $4.99, the polished keyboard-only app.
+
+- KeyOpera: $3, sound packs you can add, and spoken key names.
+
+- Thock: free, open source, with a command line and a Raycast extension.
+
+- Mechvibes: free, open source, community sound packs.
+
+- Klakk: about $3 to $5, with a 3-day trial.
+
+- Snick: $7, scrolling sounds and haptics only.
+
+- HapticPad: web-page haptics, no sound.
+
+Keyfeel is not on the shortlist because I make it; it has its own section below. A decision matrix, how to choose and a short FAQ follow.
+
+## Klack
+
+Cost: $4.99 on the Mac App Store, which is the price on that listing. The Klack site sells it too, but I could not read a price there. Platform: the listing says macOS 15.0 or later; by Henrik Ruscon.
+
+Klack is the one most people mean when they say "that Mac keyboard sound app". It lives in the menu bar and plays recorded switch sounds. The listing names Japanese Black, Cream, Oreo, Cardboard, Milky Yellow and Super Red, and the site lists switches from CherryMX, Gateron, Keychron, NovelKeys and Everglide. It randomizes pitch a little on each press, plays separate up and down sounds, supports spatial audio on AirPods, has a tone control, and has sleep automation. The listing's privacy label says no data is collected. The site says it is a native app.
+
+What it lacks: I found no mention of mouse or scroll sounds, or of adding your own sounds, on the pages I read. Pick it if you want one app that does keyboard sounds well and nothing else, and macOS 15 is not a problem.
+
+## KeyOpera
+
+Cost: $3, on the Mac App Store and on Gumroad, per the developer's page. Platform: the developer's site says Apple silicon and Intel on macOS 13 or later.
+
+A small menu-bar app. Version 2.0, which the developer's launch post puts around August 2026, added .keypak sound packs you can install with a click, a Homebrew command for creating and controlling packs, and Key Announcement, which speaks the name of each key you press, with better VoiceOver support. The page lists six packs: Cherry MX Black in PBT and ABS, EG Oreo, EG Crystal Purple, MX Black and a synthetic pack. The launch post describes keyboard and mouse sounds with separate volume controls; the product page I read did not mention mouse sounds, so check before you rely on them.
+
+What it lacks: a free trial, as far as I could see. Pick it if you want the lowest price, custom packs, or spoken key names for accessibility.
+
+## Thock
+
+Cost: Free, MIT-licensed, from its GitHub repository, also installable with brew install --cask kamillobinski/thock/thock. Platform: macOS 13.5 or later.
+
+A native menu-bar app with its own audio engine. The README lists switch profiles you can extend with JSON files, automatic muting while Spotify, Apple Music or VLC is playing, a command-line tool and a Raycast extension, and interface text in nine languages. It had about 955 stars when I read it. The README did not give a profile count or spell out the permission it needs; like the others, it has to be told when a key is pressed.
+
+What it lacks: mouse and scroll sounds and haptics, on the page I read. Pick it if you want free, open source and scriptable.
+
+## Mechvibes
+
+Cost: Free, MIT-licensed. The site says it is available on Windows, macOS and Linux, and that the sound packs are community made and free.
+
+The long-running original: it plays a sound pack when you type, with an editor for making and sharing packs. Its big strength is the pack library; installing one is described as two clicks. Its README says the original repository is transitioning to legacy status and that development has moved to MechvibesDX, a rewrite whose documentation lists keyboard and mouse button sounds. Because the same pack format is used by other apps, importing a Mechvibes pack is a feature in its own right, covered below under Keyfeel.
+
+What it lacks: a native Mac app feel, and a clear future for the original on the page I read. Pick it if the community packs are the point, or you also use Windows or Linux.
+
+## Klakk
+
+Cost: One-time, with a 3-day free trial. The Mac App Store listing shows $4.99 and also lists $2.99, so I cannot give you a single figure. Platform: macOS 14.0 or later; version 1.3.8, 28 MB; by Ting Dong.
+
+Not the same app as Klack, and the similar spelling is confusing. The listing claims 14 or more sound packs of switches such as Cherry MX and Gateron, response under 10 milliseconds, switching packs from the menu bar, and no data collection. One review says it did nothing at first, and the developer's reply is the useful part: turn on Input Monitoring in System Settings. That is true of every app here, and the first thing to check if any of them stays silent.
+
+Pick it if you want a trial before paying and the price is about right to you.
+
+## Snick
+
+Cost: One-time purchase, $7 per its AlternativeTo listing; the vendor page I read says one-time but gives no amount, and mentions no trial. Platform: macOS 14 or later; version 1.6.
+
+Snick does one thing: it makes scrolling click. Seven voices modeled on mechanical wheel detents, trackpad haptics in step with each click, and spacing that follows how fast you scroll, so a slow scroll is fine and a fling is smooth. Haptics need a Force Touch trackpad; the sounds work on any Mac. It asks for the Accessibility permission, and says it reads no content and sends nothing off the Mac. It updates itself through Sparkle.
+
+What it lacks: keyboard and click sounds. It is the only one here that is only about scrolling. Pick it if scrolling is what bores you and you already have a keyboard sound app.
+
+## HapticPad
+
+Cost: The sources disagree. The hapticpad.app page I read says free, with no trial and no in-app purchase. Other listings and write-ups say a 7-day trial and then $4.99 once on the Mac App Store. Check the listing you are buying from. Platform: macOS 13 or later and a Force Touch trackpad.
+
+Not a sound app at all. It uses the trackpad's haptic motor to tap when the pointer crosses a link, button or text field in the browser, with different patterns for different elements, through a Mac app plus Chrome, Firefox and Safari extensions. The page says it never reads page content or URLs. It plays no sound, and it is built as an accessibility aid.
+
+Pick it if you want something you can feel on web pages. It is a companion to the others, not a substitute.
+
+## Keyfeel (Purplelink's)
+
+Cost: Free for 7 days, then $9.99 once with a license key, no subscription; also part of the $54 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.1.0, signed and notarized, released October 7, 2026, which makes it the newest and least proven app in this guide. I make it, and I have not compared it with the others on a test Mac.
+
+I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It adds mouse click sounds, scroll ticks that follow how fast you scroll and keep going while a hard flick glides, optional trackpad haptics on scroll and click, and an optional ripple on screen where you click. Beyond keyboards it has a Fun set (cat, dog, duck and others) and a Calm set of soft sounds for all-day use, all recordings licensed for use and credited in the app. It can play its own sound for shortcuts such as copy and paste, with a different sound if a copy did not take. It imports Mechvibes packs, including .ogg ones, and keeps the different sound each pack gives each key.
+
+It goes quiet in the apps you choose, while the microphone or a camera is in use, and, if you want, in full-screen apps. It reads which key was pressed and not the character, works offline, and its only network use is checking for updates. Settings shows an estimate of the delay from key press to sound for your output, and warns when that output is Bluetooth.
+
+What it lacks: it is Mac only, it is new, and it has no Mac App Store build. It does not have the spoken key names KeyOpera offers or the command line Thock has. It does not claim the community pack library Mechvibes has; it imports those packs instead. Where others are better today: Klack for a keyboard-only app with years of polish, KeyOpera for the lowest price, Thock and Mechvibes for free, Snick if scrolling is all you want. Pick Keyfeel if you want keys, clicks, scrolling and haptics in one app and would rather pay once than collect several.
+
+## Also worth knowing
+
+I read only the AlternativeTo and launch-page descriptions of these, and nothing else about them.
+
+- Keeby says it uses sounds recorded from real switches, with 11 profiles including Gateron Red, Holy Panda, Alps Blue and Box Navy.
+
+- Haptyk says it uses the MacBook's hidden accelerometer to play sounds that match how hard you type, and is listed as free.
+
+- TypeLouder is listed as a paid app for mechanical click sounds with low latency and offline use.
+
+## Decision matrix
+
+US prices, October 7, 2026, as listed. "Not stated" means the pages I read did not say.
+
+AppPlaysPriceNeeds
+
+KlackKeys$4.99macOS 15
+
+KeyOperaKeys; mouse per launch post$3macOS 13
+
+ThockKeysFreemacOS 13.5
+
+MechvibesKeys; mouse in the rewriteFreemacOS, Windows, Linux
+
+KlakkKeys$2.99 to $4.99, 3-day trialmacOS 14
+
+SnickScrolling, with haptics$7macOS 14; Accessibility
+
+HapticPadWeb-page haptics onlyFree or $4.99; sources differmacOS 13; Force Touch trackpad
+
+KeyfeelKeys, clicks, scrolling, shortcuts; haptics$9.99, 7-day trialmacOS 13; Input Monitoring
+
+- Want free? Thock, or Mechvibes for the pack library.
+
+- Want cheapest paid? KeyOpera at $3.
+
+- Want the simplest keyboard app? Klack.
+
+- Want scrolling to feel like something? Snick, or Keyfeel if you also want key and click sounds.
+
+- Want to feel the web? HapticPad.
+
+## How to choose
+
+- Decide what should make a sound. If it is only keys, most of this list works and the price gap is a few dollars. If you want clicks, scrolling or shortcuts too, the list shortens quickly.
+
+- Check your macOS version. The requirements run from macOS 13 to macOS 15, and Klack's is the highest.
+
+- Look at the permission. Input Monitoring lets an app see which key was pressed. Accessibility is a broader permission. Either way, the app should say what it reads and sends, and a repository you can read is a real advantage for a tool that watches every key.
+
+- Try before you buy where you can. Thock and Mechvibes are free, Klakk offers 3 days and Keyfeel 7. Keystroke sounds are a taste thing, and a bad pick is annoying within a day.
+
+- Use real headphones. If the sound feels late on Bluetooth, the app is not the cause.
+
+- Download from the source. The vendor site, the Mac App Store or the project's own repository, not a search ad.
+
+## Frequently asked
+
+### What is the best keyboard sound app for Mac?
+
+For the simplest paid option, Klack at $4.99 on the Mac App Store. For the cheapest, KeyOpera at $3, or Thock and Mechvibes for free. For sounds on scrolling and clicks as well as keys, Keyfeel (which I make) or Snick for scrolling only. I tested none of the others, so this is a reading of vendor pages and listings, not a ranking by use.
+
+### Do keyboard sound apps record what I type?
+
+They all need a macOS permission to be told which key was pressed, usually Input Monitoring, and one of them (Snick) asks for Accessibility. A sound app needs the key, not the character. Keyfeel reads the key code and not the character, and the vendors of Klack, Klakk and KeyOpera state on their listings that they collect no data. I did not audit any of them, so read each privacy statement and check the permission yourself.
+
+### Is there a free keyboard sound app for Mac?
+
+Yes. Thock is free and MIT-licensed, and Mechvibes is free and open source with community sound packs. Mechvibes' original repository says it is moving to legacy status, with development continuing in MechvibesDX.
+
+### Can a keyboard sound app also make scrolling and clicks feel better?
+
+Some can. Snick plays click sounds and trackpad haptics as you scroll. Keyfeel plays key, mouse click and scroll sounds, with optional trackpad haptics. HapticPad gives haptics for links and buttons in the browser and plays no sound. Most of the others play keyboard sounds only.
+
+### Will Bluetooth headphones make the sound late?
+
+Yes, on any app. Bluetooth audio adds its own delay, often 100 milliseconds or more, which no keyboard sound app can remove. Built-in speakers, a wired headset or a USB audio device keep the sound in step with your keys.
+
+### Is Keyfeel available, and what does it cost?
+
+Yes. Keyfeel is Purplelink's Mac menu-bar app: free for 7 days, then $9.99 once with a license key, for macOS 13 or later on Apple silicon and Intel. I make it, it is new, and this guide describes it from its own product page rather than from a test against the others.
+
+## Related guides
+
+- Keyfeel: the Purplelink Mac menu-bar app described above.
+
+- Best disk space analyzer and cleaner for Mac: the same kind of comparison, for another Purplelink menu-bar app, Legroom.
 
 - Purplelink's privacy page, all products and all guides.
 

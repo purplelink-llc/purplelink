@@ -102,9 +102,9 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
     lines.push("ModernTex", `Download page: ${link}`);
     html.push(`<h3>ModernTex</h3><p><a href="${escapeHtml(link)}">Open your download page</a></p>`);
     if (license) {
-      lines.push(`License key (paste into ModernTex's "Have a license key?"): ${license}`,
+      lines.push(`License key (in ModernTex, choose Enter license key and paste it): ${license}`,
         "This is a new key; any key you had before keeps working too.");
-      html.push(`<p>License key (paste into ModernTex's "Have a license key?"):</p>` +
+      html.push(`<p>License key (in ModernTex, choose Enter license key and paste it):</p>` +
         `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(license)}</p>` +
         `<p>This is a new key; any key you had before keeps working too.</p>`);
     } else {
@@ -131,8 +131,8 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
       lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key.");
       html.push("<p>That page has the ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key.</p>");
       if (license) {
-        lines.splice(lines.length - 1, 0, `ModernTex license key (paste into ModernTex's "Have a license key?"): ${license}`);
-        html.push(`<p>ModernTex license key (paste into ModernTex's "Have a license key?"):</p>` +
+        lines.splice(lines.length - 1, 0, `ModernTex license key (in ModernTex, choose Enter license key and paste it): ${license}`);
+        html.push(`<p>ModernTex license key (in ModernTex, choose Enter license key and paste it):</p>` +
           `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(license)}</p>`);
       }
     }
