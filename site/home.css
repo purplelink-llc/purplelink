@@ -69,7 +69,7 @@
 .dock {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: clamp(10px, 1.6vw, 24px);
   margin-top: clamp(8px, 2vw, 24px);
 }
@@ -169,7 +169,7 @@
 .studio-col li a { color: var(--ink); text-decoration-color: var(--purple); text-underline-offset: 3px; }
 
 @media (max-width: 1100px) {
-  .dock { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dock { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
   .dock { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -226,6 +226,7 @@
   .dock > li:nth-child(4) { animation-delay: 1.27s; }
   .dock > li:nth-child(5) { animation-delay: 1.36s; }
   .dock > li:nth-child(6) { animation-delay: 1.45s; }
+  .dock > li:nth-child(7) { animation-delay: 1.54s; }
 
   /* A slow drift once the icons have landed, each out of step with the next. */
   .dock-art { animation: dock-float 6s ease-in-out infinite alternate; }
@@ -234,6 +235,7 @@
   .dock > li:nth-child(4) .dock-art { animation-delay: -3s; }
   .dock > li:nth-child(5) .dock-art { animation-delay: -4s; }
   .dock > li:nth-child(6) .dock-art { animation-delay: -5s; }
+  .dock > li:nth-child(7) .dock-art { animation-delay: -6s; }
   .dock-app:hover .dock-art,
   .dock-app:focus-visible .dock-art { animation-play-state: paused; }
 }
