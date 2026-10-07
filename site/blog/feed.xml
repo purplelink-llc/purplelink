@@ -5,8 +5,16 @@
   <link href="https://purplelink.llc/blog/feed.xml" rel="self"/>
   <link href="https://purplelink.llc/blog/"/>
   <id>https://purplelink.llc/blog/</id>
-  <updated>2026-09-30T12:00:00Z</updated>
+  <updated>2026-10-07T12:00:00Z</updated>
   <author><name>Benjamin Ampel</name></author>
+  <entry>
+    <title>Forward and inverse search aren't mirror images</title>
+    <link href="https://purplelink.llc/blog/forward-and-inverse-search-arent-mirror-images/"/>
+    <id>https://purplelink.llc/blog/forward-and-inverse-search-arent-mirror-images/</id>
+    <published>2026-10-07T12:00:00Z</published>
+    <updated>2026-10-07T12:00:00Z</updated>
+    <summary>A synced PDF preview needs two separate pieces of code, not one run backward. ModernTex shipped the harder direction wrong before getting it right, and the gap shows what counts as correct versus what counts as working.</summary>
+  </entry>
   <entry>
     <title>The co-author who writes in Word</title>
     <link href="https://purplelink.llc/blog/the-co-author-who-writes-in-word/"/>
@@ -44,7 +52,7 @@
     <link href="https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/"/>
     <id>https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/</id>
     <published>2026-09-13T12:00:00Z</published>
-    <updated>2026-09-13T12:00:00Z</updated>
+    <updated>2026-10-07T12:00:00Z</updated>
     <summary>ModernTex now has a visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel — both still write plain LaTeX underneath.</summary>
   </entry>
   <entry>
