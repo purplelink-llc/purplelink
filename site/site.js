@@ -1028,7 +1028,7 @@
     { id: 'keyfeel', name: 'Keyfeel', href: '/keyfeel/', icon: '/assets/keyfeel-icon-128.webp', cta: 'Try it free',
       text: 'Recorded keyboard, click and scroll sounds for your Mac, with optional trackpad haptics. Free 7-day trial, then $9.99.', own: ['/keyfeel/', '/suite/'] },
     { id: 'vitae', name: 'Vitae', href: '/vitae/', icon: '/assets/vitae-icon.webp', cta: 'Get it free',
-      text: 'Track submissions, grants and your CV in one place. Free for Mac, with an optional Plus subscription from $3 a month.', own: ['/vitae/'] },
+      text: 'Track submissions, grants and your CV in one place. Free for Mac, with an optional Plus subscription from $2.99 a month.', own: ['/vitae/'] },
     { id: 'paper-review', name: 'Paper Review', href: '/tools/paper-review/', icon: '/assets/purplelink-logo-64.png', cta: 'See how it works',
       text: 'AI reviewers read your manuscript the way a journal would, before you submit. From $9.', own: ['/tools/paper-review/'] },
     { id: 'scholar-utility-belt', name: 'Scholar Utility Belt', href: '/scholar-utility-belt/', icon: '/assets/scholar-utility-belt-icon.webp', cta: 'Add to Chrome',

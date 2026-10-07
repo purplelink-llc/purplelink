@@ -63,7 +63,7 @@
 - **Platform:** macOS 15 (Sequoia) or later
 - **Category:** Academic research management
 - **Description:** A local-first Mac app for academics: track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record.
-- **Pricing:** Free. Optional Vitae Plus subscription, $3/month or $24/year with a 7-day free trial, adds reports, Word templates, a revision workspace and Shareables. Core record-keeping stays free.
+- **Pricing:** Free. Optional Vitae Plus subscription, $2.99/month or $23.99/year with a 7-day free trial, adds reports, Word templates, a revision workspace and Shareables. Core record-keeping stays free.
 - **Status:** Shipping, version 0.4 (beta). Apple-notarized download, no App Store required.
 - **Product page:** https://purplelink.llc/vitae/
 - **Vitae Plus:** https://purplelink.llc/vitae/plus/
@@ -125,7 +125,7 @@
 - Legroom (macOS, free 7-day trial then $9.99): https://purplelink.llc/legroom/
 - Keyfeel (macOS, free 7-day trial then $9.99, recorded keyboard-switch sounds as you type): https://purplelink.llc/keyfeel/
 - Mac Suite (macOS, $54.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
-- Vitae (macOS, free app; optional Vitae Plus subscription from $3 a month, shipping): https://purplelink.llc/vitae/
+- Vitae (macOS, free app; optional Vitae Plus subscription from $2.99 a month, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/
 - Free tools: https://purplelink.llc/tools/
@@ -176,7 +176,7 @@
 ## Frequently asked questions
 
 **When do Purplelink's apps ship?**
-ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $19.99 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/, with an optional Vitae Plus subscription at $3 a month or $24 a year. GlobePin (iOS) came out on 2026-09-03 and is free with ads at https://apps.apple.com/us/app/globepin/id6762313540, and a one-time $14.99 Pro purchase removes the ads. Haea is still in development, with a waitlist on its product page.
+ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $19.99 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/, with an optional Vitae Plus subscription at $2.99 a month or $23.99 a year. GlobePin (iOS) came out on 2026-09-03 and is free with ads at https://apps.apple.com/us/app/globepin/id6762313540, and a one-time $14.99 Pro purchase removes the ads. Haea is still in development, with a waitlist on its product page.
 
 **What platforms do the apps support?**
 ModernTex is a macOS app (macOS 14+). Vitae is a macOS app (macOS 15+). GlobePin and Haea are iOS apps (iOS 17+).

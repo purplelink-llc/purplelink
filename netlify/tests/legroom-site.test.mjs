@@ -146,7 +146,7 @@ test("the Suite page sells five apps at $54.99 and no longer says $39 or $49", (
 test("the Suite's separate prices are the real ones, and the first-year total adds up", () => {
   const html = read("suite/index.html");
   for (const row of ["ModernTex</span><span class=\"suite-row-price\">$19.99 once", "Outbound Veil</span><span class=\"suite-row-price\">$29.99 once",
-                     "Legroom</span><span class=\"suite-row-price\">$9.99 once", "Keyfeel</span><span class=\"suite-row-price\">$9.99 once", "Vitae Plus</span><span class=\"suite-row-price\">$24 a year"]) {
+                     "Legroom</span><span class=\"suite-row-price\">$9.99 once", "Keyfeel</span><span class=\"suite-row-price\">$9.99 once", "Vitae Plus</span><span class=\"suite-row-price\">$23.99 a year"]) {
     assert.ok(html.includes(row), row);
   }
   assert.match(html, /suite-sum-amount">\$94</); // 19.99 + 29.99 + 9.99 + 9.99 + 24 = 93.96

@@ -52,8 +52,8 @@ link via Resend; set `ALERT_EMAIL_TO` so a failed send reaches you.
 
 Issues, refreshes and manages Vitae Plus subscription keys. Vitae Plus is a
 subscription sold through `checkout.mjs` as `vitae-plus-monthly`
-(`STRIPE_PRICE_VITAE_PLUS_MONTHLY`, $3/month) and `vitae-plus-annual`
-(`STRIPE_PRICE_VITAE_PLUS_ANNUAL`, $24/year), both with a 7-day trial
+(`STRIPE_PRICE_VITAE_PLUS_MONTHLY`, $2.99/month) and `vitae-plus-annual`
+(`STRIPE_PRICE_VITAE_PLUS_ANNUAL`, $23.99/year), both with a 7-day trial
 (`subscription_data[trial_period_days]=7`). Three GET modes:
 
 - **Issue** `?session_id=cs_…`, called by `/vitae/plus/success/`. Retrieves the

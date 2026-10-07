@@ -51,7 +51,7 @@ the JSON-LD offer in site/suite/index.html, the Terms section, llms.txt, site/pr
   and the Suite page repeats that for Legroom while keeping "forever" for ModernTex and Outbound Veil.
 
 ## Known gap
-Vitae's Settings tab labels any non-annual plan "$3 a month" (PlusSettingsTab.swift line 27), so a Suite key shows a
+Vitae's Settings tab labels any non-annual plan "$3 a month" (changing to $2.99 with the next Vitae release) (PlusSettingsTab.swift line 27), so a Suite key shows a
 price next to the plan until Vitae ships a small update that handles `plan == "lifetime"`. The success page says to
 ignore it. The key works regardless.
 

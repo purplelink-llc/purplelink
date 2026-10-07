@@ -28,8 +28,8 @@
  *   STRIPE_PRICE_REVISION_REVIEW           (revision-review, $2)
  *   STRIPE_PRICE_RESPONSE_REVIEW           (response-review, $6)
  *   STRIPE_PRICE_RESUME_REVIEW             (resume-review, $5) — first non-academic product
- *   STRIPE_PRICE_VITAE_PLUS_MONTHLY        (vitae-plus-monthly, $3/month subscription, 7-day trial)
- *   STRIPE_PRICE_VITAE_PLUS_ANNUAL         (vitae-plus-annual, $24/year subscription, 7-day trial)
+ *   STRIPE_PRICE_VITAE_PLUS_MONTHLY        (vitae-plus-monthly, $2.99/month subscription, 7-day trial)
+ *   STRIPE_PRICE_VITAE_PLUS_ANNUAL         (vitae-plus-annual, $23.99/year subscription, 7-day trial)
  *   STRIPE_SECRET_KEY (shared, sk_test_… or sk_live_…)
  */
 
@@ -117,8 +117,8 @@ const PRODUCT_CATALOG = {
   // download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it.
   // See docs/products/app-suite.md.
   "app-suite":               { amount: 5499, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life", successPath: "/suite/success/" },
-  // Vitae Plus: optional subscription for the free Vitae app ($3/month or
-  // $24/year, 7-day trial). The success page asks vitae-license.mjs for a
+  // Vitae Plus: optional subscription for the free Vitae app ($2.99/month or
+  // $23.99/year, 7-day trial). The success page asks vitae-license.mjs for a
   // signed key; the app refreshes it from the same function about monthly.
   // cancel_url below maps /vitae/plus/success/ back to /vitae/plus/.
   "vitae-plus-monthly": {
