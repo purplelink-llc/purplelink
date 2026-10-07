@@ -6,6 +6,7 @@ import * as paperreview from "./paperreview.js";
 import * as sizzle from "./sizzle.js";
 import * as outboundveil from "./outboundveil.js";
 import * as legroom from "./legroom.js";
+import * as keyfeel from "./keyfeel.js";
 
 export const PRODUCTS = {
   "vitae-promo": vitae,
@@ -16,4 +17,5 @@ export const PRODUCTS = {
   "purplelink-sizzle": sizzle,
   "outbound-veil-promo": outboundveil,
   "legroom-promo": legroom,
+  "keyfeel-promo": keyfeel,
 };

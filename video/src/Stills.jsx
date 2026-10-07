@@ -36,7 +36,7 @@ export function viewAt(plan, t) {
   if (i === 0) return cv;
   const prev = plan.stills[i - 1];
   const pv = prev.view || { w: prev.w, h: prev.h };
-  const p = expoOut(clamp01((t - cur.t0) / XF));
+  const p = expoOut(clamp01((t - cur.t0) / (cur.xf ?? XF)));
   return { w: lerp(pv.w, cv.w, p), h: lerp(pv.h, cv.h, p) };
 }
 
@@ -49,7 +49,7 @@ function StillLayer({ stills }) {
       {stills.map((s, j) => {
         if (j > i) return null;
         if (j < i - 1) return null;
-        const o = j === 0 ? 1 : expoOut(clamp01((t - s.t0) / XF));
+        const o = j === 0 ? 1 : expoOut(clamp01((t - s.t0) / (s.xf ?? XF)));
         const y = -scrollAt(s, t);
         if (s.video) {
           return (
@@ -163,6 +163,7 @@ function StillCut({ plan, format, timing }) {
           <Audio src={staticFile(timing.scenes[a.i].audio)} />
         </Sequence>
       ))}
+      {plan.sfx && <Audio src={staticFile("audio/bed.wav")} />}
     </AbsoluteFill>
   );
 }

@@ -1,0 +1,81 @@
+# Sound credits
+
+Keyfeel's recorded sounds come from these sources. Each is released under CC0 1.0 (a public domain dedication), which allows commercial use without credit. They are listed because the authors deserve it. License for each Freesound item was read from its own page on 2026-10-07.
+
+- **boing** by hajisounds. CC0 1.0. <https://freesound.org/s/614749/>
+- **game jump sound boing 2 of 2** by el_boss. CC0 1.0. <https://freesound.org/s/751699/>
+- **cartoon poing** by d4xx. CC0 1.0. <https://freesound.org/s/576056/>
+- **cute bounce jump** by hemplock. CC0 1.0. <https://freesound.org/s/618961/>
+- **bounce** by jofae. CC0 1.0. <https://freesound.org/s/383240/>
+- **keyboard press down** by foxfire. CC0 1.0. <https://freesound.org/s/570754/>
+- **keyboard key release** by foxfire. CC0 1.0. <https://freesound.org/s/570755/>
+- **single key stroke large key** by captjack. CC0 1.0. <https://freesound.org/s/813210/>
+- **the best bubble pop sound for game and ui** by el_boss. CC0 1.0. <https://freesound.org/s/669918/>
+- **bubble pop** by mafon2. CC0 1.0. <https://freesound.org/s/253956/>
+- **bubble pop out** by tsidilin. CC0 1.0. <https://freesound.org/s/254892/>
+- **bubble pop** by yehawsnail. CC0 1.0. <https://freesound.org/s/683587/>
+- **bubble pop** by thebuilder15. CC0 1.0. <https://freesound.org/s/411462/>
+- **cat meow** by qubodup. CC0 1.0. <https://freesound.org/s/813119/>
+- **meow 9** by puzzlingggg. CC0 1.0. <https://freesound.org/s/859734/>
+- **small cat meow** by polterkaist. CC0 1.0. <https://freesound.org/s/795848/>
+- **new cat meow 1** by steffcaffrey. CC0 1.0. <https://freesound.org/s/479272/>
+- **cat meow ii** by tuberatanka. CC0 1.0. <https://freesound.org/s/110010/>
+- **wind chimes single 04** by anthousai. CC0 1.0. <https://freesound.org/s/398496/>
+- **marimba f5 marimba hit outrigger g4 loud 01** by sgossner. CC0 1.0. <https://freesound.org/s/373586/>
+- **switch light 05** by tbrook. CC0 1.0. <https://freesound.org/s/348225/>
+- **switch 090** by moulaythami. CC0 1.0. <https://freesound.org/s/842480/>
+- **toggle switch on off** by cookiespolicy. CC0 1.0. <https://freesound.org/s/556636/>
+- **pen click4** by reitanna. CC0 1.0. <https://freesound.org/s/323744/>
+- **retractable pen click in out** by dslrguide. CC0 1.0. <https://freesound.org/s/321484/>
+- **single dog bark** by kwahmah_02. CC0 1.0. <https://freesound.org/s/277058/>
+- **dog shih tzu bark single 05** by glitchedtones. CC0 1.0. <https://freesound.org/s/372528/>
+- **single dog bark king charles spaniel** by joviansounds. CC0 1.0. <https://freesound.org/s/502655/>
+- **dog bark 2** by sadiquecat. CC0 1.0. <https://freesound.org/s/850823/>
+- **Keyboard Soundpack #1: Typing and Single Keystrokes** by unicaegames (Cherry KC 1000, Shure SM7B). CC0 1.0. <https://opengameart.org/content/keyboard-soundpack-1-typing-and-single-keystrokes>
+- **water drop 02** by lilmati. CC0 1.0. <https://freesound.org/s/349873/>
+- **water drop 01** by lilmati. CC0 1.0. <https://freesound.org/s/348022/>
+- **water drop sound** by metaepitome. CC0 1.0. <https://freesound.org/s/165206/>
+- **water drop 1** by beskhu. CC0 1.0. <https://freesound.org/s/273870/>
+- **fine water drop** by qubodup. CC0 1.0. <https://freesound.org/s/792927/>
+- **cartoon duck quack** by breviceps. CC0 1.0. <https://freesound.org/s/445960/>
+- **single quack from a duck** by mikes-multimedia. CC0 1.0. <https://freesound.org/s/418509/>
+- **quack** by mari0411. CC0 1.0. <https://freesound.org/s/791152/>
+- **rubber duck** by slothfully_so. CC0 1.0. <https://freesound.org/s/685067/>
+- **squeaky toy 7** by qubodup. CC0 1.0. <https://freesound.org/s/861825/>
+- **glass tap** by zembacraftworks. CC0 1.0. <https://freesound.org/s/427389/>
+- **small wine glass** by tairblenn. CC0 1.0. <https://freesound.org/s/549899/>
+- **ceramic tink** by owlstorm. CC0 1.0. <https://freesound.org/s/209014/>
+- **mug tap** by baggonotes. CC0 1.0. <https://freesound.org/s/704260/>
+- **g4 soft kalimba** by hollandm. CC0 1.0. <https://freesound.org/s/691805/>
+- **kalimba c1** by dvdfu. CC0 1.0. <https://freesound.org/s/536551/>
+- **kalimba g5** by nemaavla. CC0 1.0. <https://freesound.org/s/441143/>
+- **marble drop** by dsg. CC0 1.0. <https://freesound.org/s/240313/>
+- **marble** by jradcoolness. CC0 1.0. <https://freesound.org/s/334222/>
+- **lowimpact** by reitanna. CC0 1.0. <https://freesound.org/s/217764/>
+- **plastic bubble wrap multiple pops 10** by anthousai. CC0 1.0. <https://freesound.org/s/399344/>
+- **keyboard tactile 1** by stavsounds. CC0 1.0. <https://freesound.org/s/766625/>
+- **keyboard tactile 10** by stavsounds. CC0 1.0. <https://freesound.org/s/766626/>
+- **keyboard tactile 11** by stavsounds. CC0 1.0. <https://freesound.org/s/766627/>
+- **keyboard tactile 12** by stavsounds. CC0 1.0. <https://freesound.org/s/766628/>
+- **keyboard tactile 13** by stavsounds. CC0 1.0. <https://freesound.org/s/766629/>
+- **keyboard tactile 14** by stavsounds. CC0 1.0. <https://freesound.org/s/766630/>
+- **keyboard tactile 15** by stavsounds. CC0 1.0. <https://freesound.org/s/766631/>
+- **keyboard tactile 2** by stavsounds. CC0 1.0. <https://freesound.org/s/766632/>
+- **keyboard tactile 3** by stavsounds. CC0 1.0. <https://freesound.org/s/766633/>
+- **keyboard tactile 4** by stavsounds. CC0 1.0. <https://freesound.org/s/766634/>
+- **keyboard tactile 5** by stavsounds. CC0 1.0. <https://freesound.org/s/766635/>
+- **keyboard tactile 6** by stavsounds. CC0 1.0. <https://freesound.org/s/766637/>
+- **keyboard tactile 7** by stavsounds. CC0 1.0. <https://freesound.org/s/766638/>
+- **keyboard tactile 8** by stavsounds. CC0 1.0. <https://freesound.org/s/766639/>
+- **keyboard tactile 9** by stavsounds. CC0 1.0. <https://freesound.org/s/766640/>
+- **tiny soft lay down wood table 12** by joao_janz. CC0 1.0. <https://freesound.org/s/551921/>
+- **hit wooden 06** by anthousai. CC0 1.0. <https://freesound.org/s/406276/>
+- **hit wooden spoon dropped onto counter 02** by anthousai. CC0 1.0. <https://freesound.org/s/406279/>
+- **tap on wooden table** by zembacraftworks. CC0 1.0. <https://freesound.org/s/427393/>
+- **mouse click sound** by pixeliota. CC0 1.0. <https://freesound.org/s/678248/>
+- **paintbrush hairbrush soft brush** by vrymaa. CC0 1.0. <https://freesound.org/s/753283/>
+- **writing pencil on paper mono** by y_ltr27. CC0 1.0. <https://freesound.org/s/556400/>
+- **pouring rice on a clay pot** by kessir. CC0 1.0. <https://freesound.org/s/264123/>
+- **salt pour** by xenognosis. CC0 1.0. <https://freesound.org/s/137259/>
+
+Sounds were trimmed, split into single events, level-matched and in some cases pitch-shifted.

@@ -22,6 +22,8 @@ node build-stills.mjs <id> --stills 3,8  # PNG stills at those seconds (both for
 node build-v2.mjs --v3 ; node build-v2.mjs --long --v3   # ModernTex cuts with the bumper, written beside v2 as *-v3
 ```
 
+An optional sound bed (Keyfeel): a plan may return `sfx` (timed events from real sample files plus narration duck windows); `build-stills.mjs` mixes it with `mixbed.py` into `audio/bed.wav` and `Stills.jsx` plays it under the narration. Stills may set `xf` for a shorter crossfade.
+
 Every cut (ModernTex v3 included) opens and closes with the Purplelink LLC bumper (`src/Bumper.jsx`, timing in `src/bumper.js`, storyboard `bumper` field): 2.2 s open with `assets/sting-intro.wav` at frame 0, 2.5 s close with `assets/sting-outro.wav` and the product URL, fade to the background at the end. Narration is normalised to -16 LUFS at staging (`audio.mjs`); the stings peak near -1.4 dBFS and are left as delivered. Hero loops carry no bumper.
 
 ## Files

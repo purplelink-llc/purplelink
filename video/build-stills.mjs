@@ -50,13 +50,19 @@ fs.rmSync(pub, { recursive: true, force: true });
 for (const d of ["fonts", "brand", "media", "audio"]) fs.mkdirSync(path.join(pub, d), { recursive: true });
 for (const f of Object.values(brand.fonts)) fs.copyFileSync(path.resolve(ROOT, f.file), path.join(pub, "fonts", path.basename(f.file)));
 for (const n of ["vitae", "globepin", "haea", "moderntex", "outbound-veil"]) fs.copyFileSync(path.resolve(ROOT, `../site/assets/${n}-icon.png`), path.join(pub, "brand", `${n}-icon.png`));
-for (const n of ["sub-icon.png", "purplelink-tile.png"]) fs.copyFileSync(path.join(ROOT, ".cache/captures", n), path.join(pub, "brand", n));
+for (const n of ["sub-icon.png", "purplelink-tile.png"]) { const f = path.join(ROOT, ".cache/captures", n); if (fs.existsSync(f)) fs.copyFileSync(f, path.join(pub, "brand", n)); }
 for (const [name, src] of Object.entries(product.media)) {
   const abs = path.resolve(ROOT, src);
   if (!fs.existsSync(abs)) throw new Error(`missing media ${src}`);
   fs.copyFileSync(abs, path.join(pub, "media", name));
 }
 stageBrandAudio(path.join(ROOT, "assets"), path.join(pub, "brand"));
+// optional non-narration sound bed (plan.sfx: events + duck windows), mixed by mixbed.py into audio/bed.wav
+if (plan.sfx) {
+  const specFile = path.join(ROOT, ".cache", ID, "bed.json");
+  fs.writeFileSync(specFile, JSON.stringify({ ...plan.sfx, dur: plan.total }));
+  say(execFileSync("python3", [path.join(ROOT, "mixbed.py"), specFile, path.join(pub, "audio", "bed.wav")], { encoding: "utf8" }).trim());
+}
 say(`narration -16 LUFS: ${stageNarration(path.join(ROOT, ".cache", ID, "audio"), path.join(pub, "audio", ID)).join(", ")}`);
 
 let t = Date.now();

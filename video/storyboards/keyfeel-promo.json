@@ -1,0 +1,34 @@
+{
+  "id": "keyfeel-promo",
+  "title": "Keyfeel promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+4%",
+  "scenes": [
+    {
+      "narration": "Keyfeel plays real switch sounds as you type."
+    },
+    {
+      "narration": "Tactile, Cherry MX Brown, or Dome."
+    },
+    {
+      "narration": "Clicks, scrolling, and optional trackpad haptics."
+    },
+    {
+      "narration": "Silent in apps you choose, and while the microphone is on."
+    },
+    {
+      "narration": "It reads key codes, not characters, and works offline."
+    },
+    {
+      "narration": "Nine ninety-nine, once, with a seven day free trial."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
