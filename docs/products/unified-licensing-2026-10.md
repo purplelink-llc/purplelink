@@ -4,6 +4,11 @@ Decision (Ben, 2026-10-07): every paid Purplelink Mac app is ONE download that r
 trial from first launch, then needs a license key. No separate trial build. Applies to Outbound Veil,
 Legroom, Keyfeel and ModernTex. People who already bought keep working with no key.
 
+**Keyfeel is already done (separate session, live 2026-10-07, build 17).** It shipped with its own scheme:
+keys `KFL1-...`, domain `KeyfeelLicenseV1`, key derived from the buyer's email, code in
+`netlify/lib/keyfeel-license.mjs` and the Keyfeel repo. It is NOT part of PurplelinkLicenseV1 below. Outbound
+Veil and Legroom use PurplelinkLicenseV1; ModernTex keeps MTX1 until its own move to one download.
+
 Why: the Suite page showed a separate trial download and a separate "full" download per app, with no
 key (ModernTex was the only one with a key). One download per app removes "install this copy in its
 place" and makes the key the single paywall.
@@ -15,16 +20,17 @@ place" and makes the key the single paywall.
 | Key scheme and issuer (`netlify/lib/license.mjs`), test vectors | server | done |
 | Purchase email, success pages, recovery show the keys | server + site | in progress |
 | Download functions serve ONE DMG (trial door serves the same file) | server | in progress |
-| Outbound Veil, Legroom, Keyfeel apps | app agents | to build to this spec |
+| Outbound Veil, Legroom apps | app agents | built to this spec |
+| Keyfeel app | other session | live, own scheme (see above) |
 | ModernTex | after the three above are proven | later |
 
-## Key scheme: PurplelinkLicenseV1 (Outbound Veil, Legroom, Keyfeel)
+## Key scheme: PurplelinkLicenseV1 (Outbound Veil, Legroom)
 
 - Key text: `<PREFIX>-` + Crockford-Base32( nonce[4] ‖ Ed25519 signature[64] ) in groups of 5, joined by `-`.
   The body is 109 characters (21 groups of 5, then a group of 4).
-  Prefixes: Outbound Veil `OV1`, Legroom `LG1`, Keyfeel `KF1`.
+  Prefixes: Outbound Veil `OV1`, Legroom `LG1`.
 - Signed message: UTF-8 `PurplelinkLicenseV1|<slug>|` followed by the 4 nonce bytes.
-  Slugs: `outbound-veil`, `legroom`, `keyfeel`. A key for one product never verifies for another.
+  Slugs: `outbound-veil`, `legroom`. A key for one product never verifies for another.
 - One shared PUBLIC key, embedded in every app (raw 32 bytes, base64):
   `d8gyRHTJVAivaL2wx4m1dQTLxrfE2htFhxzNDF8dFs4=`
 - Verification is offline and must be exactly what `verifyLicense` in `netlify/lib/license.mjs` does:
@@ -83,7 +89,7 @@ place" and makes the key the single paywall.
 7. Release scripts: single edition, one DMG, one manifest, notarized, stapled; the publish script uploads
    only that DMG and regenerates the appcast. Remove trial-DMG upload, trial-only asserts and branches.
    Do NOT run any publish script. Staging a notarized build for verification is fine.
-8. Versions: Outbound Veil 1.1.0, Legroom 1.1.0, Keyfeel 1.1.0 (Keyfeel's staged 1.0.1 is discarded).
+8. Versions: Outbound Veil 1.1.0, Legroom 1.1.0.
    Write the release notes file each repo's pipeline expects, in plain voice, no em dashes.
 
 ## Server behaviour (this repo)
