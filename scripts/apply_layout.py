@@ -131,8 +131,8 @@ def footer_html(indent: str) -> str:
         f'{i}        <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">\n'
         f'{i}        <span>Purplelink LLC</span>\n'
         f'{i}      </a>\n'
-        f'{i}      <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, '
-        f'made by a one-person studio in Atlanta, Georgia.</p>\n'
+        f'{i}      <p class="footer-blurb">Apps and tools made by a one-person studio '
+        f'in Atlanta, Georgia.</p>\n'
         f'{i}      <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>\n'
         f'{i}    </div>\n'
         + "\n".join(cols) + "\n"
