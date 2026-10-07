@@ -100,7 +100,7 @@ test("the daily run sends due reminders, deletes their records, and leaves the r
   const result = await sendDueReminders();
   assert.equal(result.sent, 1);
   assert.deepEqual(mails().map((m) => m.to[0]), ["due@example.org"]);
-  assert.match(mails()[0].text, /\$29 once/);
+  assert.match(mails()[0].text, /\$29\.99 once/);
   assert.equal(store.has("ov-trial-reminders/due@example.org"), false);
   assert.equal(store.has(`ov-trial-reminder-tokens/${"d".repeat(48)}`), false);
   assert.equal(store.has("ov-trial-reminders/early@example.org"), true);

@@ -4,13 +4,13 @@ Built on branch `legroom` (worktree `../Purplelink-legroom`), not yet live. Rele
 Legroom repo (`/Volumes/Extreme SSD/Legroom`, branch `release`, `releases/staging/1.0.0/`: paid DMG 6.3 MB, trial DMG
 5.3 MB, both notarized). This page is the runbook; the go-live steps are at the bottom.
 
-Legroom is sold on purplelink.llc/legroom as a one-time $9 purchase with a 7-day trial edition, and is also in the
-Mac Suite ($49, see `app-suite.md`). It is a menu-bar app that shows free disk space, warns before the disk fills, and
+Legroom is sold on purplelink.llc/legroom as a one-time $9.99 purchase with a 7-day trial edition, and is also in the
+Mac Suite ($54.99, see `app-suite.md`). It is a menu-bar app that shows free disk space, warns before the disk fills, and
 cleans folders and developer caches through rules the user previews and approves (Trash or permanent delete), with
 What Grew (daily measurements, 1/7/30-day growth), Suggestions, Space Map and Find Files. After the trial the menu-bar
 readout and low-space alerts stay free; rules, What Grew, Suggestions, Space Map and Find Files lock.
 
-**Copy rule, decided 2026-10-05:** the pages say only "one-time $9, 7-day free trial". They do not promise future major
+**Copy rule, decided 2026-10-05:** the pages say only "one-time $9.99, 7-day free trial" (it was $9 until the 2026-10-07 .99 pricing decision). They do not promise future major
 versions, and they do not mention the Uninstaller, widget or command-line tool (planned, unreleased). Terms say
 "updates to the version you bought are included" and that no decision has been made about a later major version.
 
@@ -19,12 +19,12 @@ versions, and they do not mention the Uninstaller, widget or command-line tool (
 | Item | Value |
 |---|---|
 | Product | `prod_VMVa0tBaTReZTY` (account `acct_1TnewbJkzNxf3fKq`); still named after the working name Freeboard, **rename to "Legroom" before the first sale** (receipts and the dashboard read it; the dashboard maps both `legroom` and `freeboard`) |
-| Price | $9 USD one-time, `price_1ULmZ6JkzNxf3fKqAs4vIdMw` |
+| Price | $9.99 USD one-time (.99 pricing decision 2026-10-07). `price_1ULmZ6JkzNxf3fKqAs4vIdMw` was created at $9 and a Stripe Price amount cannot be edited: create a $9.99 Price on the product, set `STRIPE_PRICE_LEGROOM` to it and redeploy, before or with the site deploy that shows $9.99 |
 | Env vars | `STRIPE_PRICE_LEGROOM` (the price id above) and `LEGROOM_UPDATE_TOKEN` (secret, write-only; local copy `~/.config/purplelink/legroom-update-token`, which `build-release.sh` compiles into the app as `LGUpdateChannelToken`). Both are Netlify production context and take effect only after the next site deploy |
 | Product key | `legroom` in `netlify/functions/checkout.mjs` (`envKey: "STRIPE_PRICE_LEGROOM"`) |
 | Success page | `/legroom/success/?session_id=cs_...` |
 
-The Mac Suite is priced inline in `checkout.mjs` (`amount: 4900`); it needs no Stripe object.
+The Mac Suite is priced inline in `checkout.mjs` (`amount: 5499`, see `app-suite.md`); it needs no Stripe object.
 
 ## Delivery
 

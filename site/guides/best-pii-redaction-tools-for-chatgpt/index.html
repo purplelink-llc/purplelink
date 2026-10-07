@@ -99,7 +99,7 @@
       "name": "Is there a Mac app that checks for personal information as I type?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things."
+        "text": "Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29.99 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things."
       }
     },
     {
@@ -162,7 +162,7 @@
 
         <h2>The shortlist</h2>
         <ol>
-          <li><strong><a href="/outbound-veil/">Outbound Veil</a></strong>: $29 once, a Mac menu-bar app that checks the text field you are typing in.</li>
+          <li><strong><a href="/outbound-veil/">Outbound Veil</a></strong>: $29.99 once, a Mac menu-bar app that checks the text field you are typing in.</li>
           <li><strong>Predact</strong>: free, Mac and Windows, drop in documents, images or text.</li>
           <li><strong>PrivacyScrubber</strong>: browser-based, free tier, extension for 12 chat and work sites.</li>
           <li><strong>Microsoft Presidio</strong>: free open-source library for developers.</li>
@@ -173,12 +173,12 @@
         <p>Those seven cover most situations. <a href="#more-tools">Seven more tools</a> and seven narrower ones follow.</p>
 
         <h2>Outbound Veil</h2>
-        <p><strong>Cost:</strong> $29, one-time, updates included, after a free 7-day trial with no account. <strong>Platform:</strong> macOS 14 or later, Apple silicon and Intel. Mac only. <strong>Status:</strong> version 1.0.1.</p>
+        <p><strong>Cost:</strong> $29.99, one-time, updates included, after a free 7-day trial with no account. <strong>Platform:</strong> macOS 14 or later, Apple silicon and Intel. Mac only. <strong>Status:</strong> version 1.0.1.</p>
         <p>Outbound Veil lives in the menu bar and reads the text field that has focus, through macOS Accessibility. When it finds something it shows a badge with the number of findings and highlights the matching text where the app allows it. You can ignore a finding, or press Redact all, which rewrites the field in place with labelled placeholders such as [SSN_1] or [EMAIL_1]. In apps you choose, it can also hold the send key until you have decided. It looks for names, addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth, medical record numbers and IBANs.</p>
         <p>A model that runs on your Mac does the checking. Nothing you type is stored or sent, and the app has no analytics. The model is <a href="https://github.com/nationaldesignstudio/rampart" rel="noopener">Rampart</a> by National Design Studio, released under CC BY 4.0, and I did not train it. Purplelink ported Rampart's processing code to Swift and added rules for dates of birth, medical record numbers and IBANs. The model file is unchanged.</p>
         <p><strong>What it's good at:</strong> sitting where the mistake happens, in any Mac app it can read rather than one website. I tested TextEdit, Notes, Microsoft Word, Messages and text areas in Chrome. In the ChatGPT and claude.ai prompt boxes in Chrome, Redact all works, but the whole box is outlined instead of each word highlighted.</p>
         <p><strong>What it lacks:</strong> Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list. Some apps do not expose their text fields to macOS: in my testing the Apple Mail compose window could not be read, and Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list. It needs the Accessibility permission, plus Input Monitoring if you turn on send hold. After Redact all it does not put the original values back into the AI's answer; you swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.</p>
-        <p><strong>Pick Outbound Veil if</strong> you write or paste client, patient or student details into chat boxes on a Mac and want a check as you send. <strong>Pick something else if</strong> you are on Windows, mostly share files or screenshots, or your data has names in non-Latin scripts. <a href="/outbound-veil/">The trial is free for seven days; keeping it is $29, once</a>.</p>
+        <p><strong>Pick Outbound Veil if</strong> you write or paste client, patient or student details into chat boxes on a Mac and want a check as you send. <strong>Pick something else if</strong> you are on Windows, mostly share files or screenshots, or your data has names in non-Latin scripts. <a href="/outbound-veil/">The trial is free for seven days; keeping it is $29.99, once</a>.</p>
 
         <h2>Predact</h2>
         <p><strong>Cost:</strong> Free, no card; you enter an email address to get the download link. <strong>Platform:</strong> Mac (macOS 14 recommended, Apple silicon supported) and Windows.</p>
@@ -268,7 +268,7 @@
 
         <h2>Decision matrix</h2>
         <ul>
-          <li><strong>Mac user typing or pasting client or patient text into chat boxes?</strong> <a href="/outbound-veil/">Outbound Veil</a>, $29.</li>
+          <li><strong>Mac user typing or pasting client or patient text into chat boxes?</strong> <a href="/outbound-veil/">Outbound Veil</a>, $29.99.</li>
           <li><strong>Documents, scans or screenshots, or on Windows, or want it free?</strong> Predact. On a Mac, ClipScrub too.</li>
           <li><strong>Several AI sites in a browser, values restored in the reply?</strong> PrivacyScrubber.</li>
           <li><strong>Only ChatGPT in Chrome?</strong> Caviard, Privacy Shield or Rescriber.</li>
@@ -300,7 +300,7 @@
         <h3>Is there a free tool to redact personal information for AI chats?</h3>
         <p>Yes. Predact (Mac and Windows) is free, and Clipmask (Apple silicon Macs) is free to download, with a 500-copy trial limit mentioned on its page. RedactDesk is a free, open-source Mac app for PDFs. Rescriber is a free, open-source Chrome extension for ChatGPT. PrivacyScrubber and Caviard have free tiers with limits.</p>
         <h3>Is there a Mac app that checks for personal information as I type?</h3>
-        <p>Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things.</p>
+        <p>Outbound Veil, which Purplelink makes, checks the text field you are typing in, in the apps it can read. It costs $29.99 once with a 7-day trial. Other Mac tools work on what you copy or drop in: Clipmask, ClipScrub and Predact. I found no other that watches the typing itself, but I may have missed one. Outbound Veil is Mac only, recognizes names in Latin script only, and will miss some things.</p>
         <h3>Should I run a local model instead of redacting?</h3>
         <p>If the material must not leave your machine, yes. Ollama and LM Studio run open models on your computer. The cost is setup time and usually a less capable model. Ollama also offers cloud models that run on its servers, so choose a local one.</p>
 
@@ -314,7 +314,7 @@
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Typing client notes into AI chats on a Mac?</h2>
-        <p>Outbound Veil is a Mac menu-bar app that checks the text field you are typing in for names, numbers and addresses, marks what it finds, and can redact it in one click. The checking runs on your Mac. $29 once, all updates included.</p>
+        <p>Outbound Veil is a Mac menu-bar app that checks the text field you are typing in for names, numbers and addresses, marks what it finds, and can redact it in one click. The checking runs on your Mac. $29.99 once, all updates included.</p>
         <div class="waitlist-actions">
           <a class="btn btn-primary" href="/outbound-veil/">Try Outbound Veil free for 7 days</a>
           <a class="btn btn-ghost" href="/outbound-veil/">See what it does</a>

@@ -12,7 +12,7 @@ private). Design: that repo's `docs/superpowers/specs/2026-10-03-outbound-veil-d
 | Item | Value |
 |---|---|
 | Product | `prod_VNOyQCox4pCwN3` (account `acct_1TnewbJkzNxf3fKq`, created 2026-10-04) |
-| Price | $29 USD one-time (decided 2026-10-03; `price_1UMeAEJkzNxf3fKqTmF7jfE2`) |
+| Price | $29.99 USD one-time (.99 pricing decision 2026-10-07; was $29, decided 2026-10-03). `price_1UMeAEJkzNxf3fKqTmF7jfE2` was created at $29 and a Stripe Price amount cannot be edited: create a $29.99 Price on the product, set `STRIPE_PRICE_OUTBOUND_VEIL` to it and redeploy, before or with the site deploy that shows $29.99 |
 | Env var | `STRIPE_PRICE_OUTBOUND_VEIL` (production context, set 2026-10-04); `OUTBOUND_VEIL_UPDATE_TOKEN` (production, secret, write-only; local copy at `~/.config/purplelink/outbound-veil-update-token`, which the build reads) |
 | Product key | `outbound-veil` in `netlify/functions/checkout.mjs` |
 | Success page | `/outbound-veil/success/?session_id=cs_...` |

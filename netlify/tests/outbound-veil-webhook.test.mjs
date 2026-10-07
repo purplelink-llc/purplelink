@@ -40,7 +40,7 @@ function signed(event) {
 }
 const completed = (product, id) => ({
   id, type: "checkout.session.completed",
-  data: { object: { id: "cs_live_ov_abcdefghij12", status: "complete", payment_status: "paid", amount_total: 2900,
+  data: { object: { id: "cs_live_ov_abcdefghij12", status: "complete", payment_status: "paid", amount_total: 2999,
     customer_details: { email: "buyer@example.com" }, metadata: { product } } },
 });
 const sentMail = () => JSON.parse(calls.find((c) => c.url.startsWith("https://api.resend.com/")).opts.body);

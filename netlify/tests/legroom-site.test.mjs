@@ -21,10 +21,10 @@ const jsonLd = (html) =>
 
 // ---- product page --------------------------------------------------------------------
 
-test("the Legroom page offers the app at $9 once, with a 14-day refund, in valid JSON-LD", () => {
+test("the Legroom page offers the app at $9.99 once, with a 14-day refund, in valid JSON-LD", () => {
   const app = jsonLd(read("legroom/index.html")).find((n) => n["@type"] === "SoftwareApplication");
   assert.equal(app.name, "Legroom");
-  assert.equal(app.offers.price, "9.00");
+  assert.equal(app.offers.price, "9.99");
   assert.equal(app.offers.priceCurrency, "USD");
   assert.equal(app.offers.hasMerchantReturnPolicy.merchantReturnDays, 14);
   assert.equal(app.operatingSystem, "macOS 14+");
@@ -89,13 +89,13 @@ test("the sitemap, llms.txt and the search index list Legroom, and the success p
 
 // ---- suite page ----------------------------------------------------------------------
 
-test("the Suite page sells five apps at $54 and no longer says $39 or $49", () => {
+test("the Suite page sells five apps at $54.99 and no longer says $39 or $49", () => {
   const html = read("suite/index.html");
   const product = jsonLd(html).find((n) => n["@type"] === "Product");
-  assert.equal(product.offers.price, "54.00");
+  assert.equal(product.offers.price, "54.99");
   assert.deepEqual(product.hasPart.map((a) => a.name), ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Vitae Plus"]);
-  assert.match(html, /Buy the Suite, \$54/);
-  assert.match(html, /<span id="price">\$54<\/span>/);
+  assert.match(html, /Buy the Suite, \$54\.99/);
+  assert.match(html, /<span id="price">\$54\.99<\/span>/);
   assert.match(html, /data-product="app-suite"/);
   assert.doesNotMatch(html, /\$39|\$49/);
   assert.doesNotMatch(html, /[–—]/);
@@ -103,18 +103,18 @@ test("the Suite page sells five apps at $54 and no longer says $39 or $49", () =
 
 test("the Suite's separate prices are the real ones, and the first-year total adds up", () => {
   const html = read("suite/index.html");
-  for (const row of ["ModernTex</span><span class=\"suite-row-price\">$19.99 once", "Outbound Veil</span><span class=\"suite-row-price\">$29 once",
-                     "Legroom</span><span class=\"suite-row-price\">$9 once", "Keyfeel</span><span class=\"suite-row-price\">$9.99 once", "Vitae Plus</span><span class=\"suite-row-price\">$24 a year"]) {
+  for (const row of ["ModernTex</span><span class=\"suite-row-price\">$19.99 once", "Outbound Veil</span><span class=\"suite-row-price\">$29.99 once",
+                     "Legroom</span><span class=\"suite-row-price\">$9.99 once", "Keyfeel</span><span class=\"suite-row-price\">$9.99 once", "Vitae Plus</span><span class=\"suite-row-price\">$24 a year"]) {
     assert.ok(html.includes(row), row);
   }
-  assert.match(html, /suite-sum-amount">\$92</); // 19.99 + 29 + 9 + 9.99 + 24 = 91.98
+  assert.match(html, /suite-sum-amount">\$94</); // 19.99 + 29.99 + 9.99 + 9.99 + 24 = 93.96
 });
 
-test("the Terms, llms.txt and the products page carry the $54 Suite", () => {
-  assert.match(read("terms/index.html"), /Mac Suite is one payment of \$54 USD/);
+test("the Terms, llms.txt and the products page carry the $54.99 Suite", () => {
+  assert.match(read("terms/index.html"), /Mac Suite is one payment of \$54\.99 USD/);
   assert.match(read("terms/index.html"), /<h2>Legroom: additional terms<\/h2>/);
-  assert.match(read("llms.txt"), /Mac Suite \(macOS, \$54 once: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus/);
-  assert.match(read("products/index.html"), /<span class="catalog-card-price">\$54 once<\/span>/);
+  assert.match(read("llms.txt"), /Mac Suite \(macOS, \$54\.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus/);
+  assert.match(read("products/index.html"), /<span class="catalog-card-price">\$54\.99 once<\/span>/);
   for (const p of ["llms.txt", "products/index.html", "terms/index.html", "vitae/plus/index.html", "outbound-veil/index.html", "outbound-veil/start/index.html", "moderntex/index.html", "legroom/index.html", "keyfeel/index.html"]) {
     assert.doesNotMatch(read(p), /(Mac Suite[^.]{0,120}\$(39|49)\b|\$(39|49)\b[^.]{0,40}Mac Suite)/, `${p} still prices the Suite at the old price`);
   }

@@ -5,7 +5,7 @@ Launched 2026-10-07. The app lives in
 to use; no name clearance has been done (see Open items).
 
 Keyfeel is a macOS menu-bar utility, sold on purplelink.llc/keyfeel as a one-time **$9.99** purchase with a free
-7-day trial inside the same app (one DMG for everyone; a license key unlocks it, like ModernTex), and it is in the Mac Suite ($54, five apps,
+7-day trial inside the same app (one DMG for everyone; a license key unlocks it, like ModernTex), and it is in the Mac Suite ($54.99, five apps,
 see `app-suite.md`). It plays recorded keyboard-switch sounds on every key press, plus mouse-click sounds, speed-aware
 scroll ticks, optional trackpad haptics, a click ripple, per-app silence and automatic silence while the microphone is
 in use. It works offline, reads key codes and never the characters, and needs the macOS Input Monitoring permission.
@@ -31,7 +31,7 @@ As shipped, `live` is `false`. Until it is `true` **and** `version` (x.y.z), `si
 "PRE-LAUNCH GUARD" that asserts the shipped values; delete that test when you flip the switch.
 
 The gate covers the Keyfeel page only. It does **not** gate: the `keyfeel` and `app-suite` entries in `checkout.mjs`
-(the Suite is $54 and names Keyfeel the moment this branch deploys), the Suite page, the listings (products, pricing,
+(the Suite is $54.99 and names Keyfeel the moment this branch deploys), the Suite page, the listings (products, pricing,
 home, llms files, sitemap, footer), Terms and Privacy. So merge and deploy this branch on launch day, not before.
 
 ## Stripe

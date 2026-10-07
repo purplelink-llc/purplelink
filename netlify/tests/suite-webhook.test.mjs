@@ -40,7 +40,7 @@ function signed(event) {
 }
 const completed = (product, id = "evt_1") => ({
   id, type: "checkout.session.completed",
-  data: { object: { id: "cs_live_suite_abcdefghij", status: "complete", payment_status: "paid", amount_total: 5400,
+  data: { object: { id: "cs_live_suite_abcdefghij", status: "complete", payment_status: "paid", amount_total: 5499,
     customer_details: { email: "buyer@example.com" }, metadata: { product } } },
 });
 
@@ -77,7 +77,7 @@ test("Legroom is a blob-delivered product with its own success page", () => {
 });
 
 test("a paid Legroom order emails the download page and the one-sentence review ask, with no signing secret configured it still delivers, without a key", async () => {
-  const res = await handler(signed({ ...completed("legroom", "evt_lg"), data: { object: { ...completed("legroom").data.object, id: "cs_live_legroom_abcdefg1", amount_total: 900 } } }));
+  const res = await handler(signed({ ...completed("legroom", "evt_lg"), data: { object: { ...completed("legroom").data.object, id: "cs_live_legroom_abcdefg1", amount_total: 999 } } }));
   assert.equal((await res.json()).status, "delivered_by_blobs");
   const sent = calls.filter((c) => c.url.startsWith("https://api.resend.com/"));
   assert.equal(sent.length, 1);

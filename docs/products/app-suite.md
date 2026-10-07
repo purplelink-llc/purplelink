@@ -1,12 +1,19 @@
 # Purplelink Mac Suite
 
-$54 once: ModernTex + Outbound Veil + Legroom + Keyfeel + Vitae Plus for life. Added 2026-10-04 at $39 (three apps);
-Legroom joined and the price went to $49 on the Legroom launch branch (2026-10-05); Keyfeel joined and the price goes
-to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`; live only when that branch is deployed).
+$54.99 once: ModernTex + Outbound Veil + Legroom + Keyfeel + Vitae Plus for life. Added 2026-10-04 at $39 (three apps);
+Legroom joined and the price went to $49 on the Legroom launch branch (2026-10-05); Keyfeel joined and the price went
+to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`); on 2026-10-07 the owner decided every app price
+ends in .99, so the Suite became $54.99 (Outbound Veil $29.99, Legroom $9.99).
 
-## Why $54
-Keyfeel ($9.99 once) joined the Suite and the price rose by $5, so the parts now come to $91.98 for the first year
-(ModernTex $19.99, Outbound Veil $29, Legroom $9, Keyfeel $9.99, Vitae Plus $24; the page rounds to $92). Existing $39
+## Why $54.99
+The 2026-10-07 .99 pricing decision moved Outbound Veil from $29 to $29.99, Legroom from $9 to $9.99 and the Suite from
+$54 to $54.99. The parts now come to $93.96 for the first year (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99,
+Keyfeel $9.99, Vitae Plus $24; the page rounds to $94). The contents did not change, so $54 buyers keep everything and
+the Terms say only that the price changed. The history below is why it was $54, $49 and $39.
+
+### Why $54 (history)
+Keyfeel ($9.99 once) joined the Suite and the price rose by $5, so the parts came to $91.98 for the first year
+(ModernTex $19.99, Outbound Veil $29, Legroom $9, Keyfeel $9.99, Vitae Plus $24; the page rounded to $92). Existing $39
 and $49 buyers keep everything and get Keyfeel too: their `app-suite` sessions unlock `keyfeel-download`, and a refund
 is "the full amount you paid", so the pages do not name a price there. Why it was $49 with four apps:
 
@@ -25,7 +32,7 @@ the JSON-LD offer in site/suite/index.html, the Terms section, llms.txt, site/pr
 /guides/best-academic-record-tracking-software/, site/assets/og/mac-suite.png (render from _gen.html), and this file.
 
 ## How it works
-- Checkout: `app-suite` in `netlify/functions/checkout.mjs`, priced inline (`amount: 5400`), so there is no Stripe
+- Checkout: `app-suite` in `netlify/functions/checkout.mjs`, priced inline (`amount: 5499`), so there is no Stripe
   Price to create and no env var. Success path `/suite/success/`. Promotion codes are allowed like every product.
 - Delivery: the session id is the bearer token, as for every Blobs-delivered product.
   - `moderntex-download.mjs`, `outbound-veil-download.mjs`, `legroom-download.mjs` and `keyfeel-download.mjs` accept `metadata.product` of their own key or `app-suite`.

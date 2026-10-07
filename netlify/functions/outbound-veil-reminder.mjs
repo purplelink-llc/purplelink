@@ -123,10 +123,10 @@ export function reminderEmail(to, token) {
   return withFooter(
     to, token, "Your Outbound Veil trial",
     `The Outbound Veil trial runs seven days from the first time you open the app, so if you have been trying it this week it ends soon. When it ends it stops checking and shows one notice; nothing is charged.\n\n` +
-      `If it has been useful, keeping it is $29 once, with updates included, and there is a 14-day refund:\n${BUY_URL}\n\n` +
+      `If it has been useful, keeping it is $29.99 once, with updates included, and there is a 14-day refund:\n${BUY_URL}\n\n` +
       `If it has not, I would like to know why. Reply to this email with one line.\n\nBenjamin Ampel`,
     `<p>The Outbound Veil trial runs seven days from the first time you open the app, so if you have been trying it this week it ends soon. When it ends it stops checking and shows one notice; nothing is charged.</p>` +
-      `<p>If it has been useful, <a href="${BUY_URL}">keeping it is $29 once</a>, with updates included, and there is a 14-day refund.</p>` +
+      `<p>If it has been useful, <a href="${BUY_URL}">keeping it is $29.99 once</a>, with updates included, and there is a 14-day refund.</p>` +
       `<p>If it has not, I would like to know why. Reply to this email with one line.</p><p>Benjamin Ampel</p>`,
   );
 }
