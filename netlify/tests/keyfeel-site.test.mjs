@@ -45,28 +45,25 @@ test("the page is wired to the delivery and checkout functions and carries the s
 
 // ---- the release gate ------------------------------------------------------------------
 
-test("as shipped, the trial link has no href, the Buy button is disabled, and no live wording is visible", () => {
+test("after launch, the static page already shows the live wording and the trial link works", () => {
   const html = read("keyfeel/index.html");
   const trialTags = [...html.matchAll(/<a\b[^>]*data-kf-gated[^>]*>/g)].map((m) => m[0]);
   assert.ok(trialTags.length >= 2);
   for (const tag of trialTags) {
-    assert.doesNotMatch(tag, /\shref=/, `a gated link already has an href: ${tag}`);
-    assert.match(tag, /aria-disabled="true"/);
+    assert.match(tag, /\shref="\/\.netlify\/functions\/keyfeel-download\?trial=1"/);
+    assert.doesNotMatch(tag, /aria-disabled/);
   }
-  assert.match(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled>/);
-  assert.match(html, /data-kf-live-only hidden>Free 7-day trial/);
-  assert.match(html, /<div class="sticky-cta"[^>]*data-kf-sticky/);
-  // The download URL appears only as data on a gated element, never as a plain link.
-  assert.equal((html.match(/\shref="\/\.netlify\/functions\/keyfeel-download/g) || []).length, 0);
-  assert.doesNotMatch(html, /Signed and notarized|InStock/);
+  assert.doesNotMatch(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
+  assert.doesNotMatch(html, /Not released yet|opens at release/);
+  assert.match(html, /Version 1\.0\.0, released October 7, 2026\. 7 MB disk image\./);
 });
 
-test("PRE-LAUNCH GUARD: launch.js ships switched off with no facts (delete this test on launch day)", () => {
+test("launch.js ships switched on with valid facts", () => {
   const src = read("keyfeel/launch.js");
-  assert.match(src, /live: false,/);
-  assert.match(src, /version: "",/);
-  assert.match(src, /sizeMb: "",/);
-  assert.match(src, /released: ""/);
+  assert.match(src, /live: true,/);
+  assert.match(src, /version: "1\.0\.0",/);
+  assert.match(src, /sizeMb: "7",/);
+  assert.match(src, /released: "2026-10-07"/);
 });
 
 class FakeEl {

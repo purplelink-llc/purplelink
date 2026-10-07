@@ -1,6 +1,6 @@
 # Keyfeel: paid macOS app, launch runbook
 
-Built on branch `keyfeel-store` (off `origin/main`, 2026-10-07), **not live**. The app lives in
+Launched 2026-10-07. The app lives in
 `/Volumes/Extreme SSD/Keyfeel` (brand assets in `assets/brand/`). "Keyfeel" is a working name that Ben has decided
 to use; no name clearance has been done (see Open items).
 
@@ -75,14 +75,17 @@ Tests: `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs` (
 checkout, suite-entitlement, suite-webhook, purchases-recover, legroom-site cover this product), and
 `python3 -m pytest scripts/traffic-dashboard`.
 
-## Releasing a version (placeholder, to be written with the app's scripts)
+## Releasing a version
 
-The Keyfeel repo has no `build-release.sh` / `publish-release.sh` yet. Modelled on Legroom's, they need to:
+In the Keyfeel repo (`/Volumes/Extreme SSD/Keyfeel`): `KF_VERSION=x.y.z scripts/build-release.sh` (paid) and
+`KF_VERSION=x.y.z KF_EDITION=trial scripts/build-release.sh` build universal, Developer-ID-signed, notarized DMGs into
+`releases/staging/<ver>/`; the notary profile is `moderntex`. Notarization sometimes fails to staple on a CloudKit
+timeout (Error 68); rerun. `PURPLELINK_SITE=<site checkout>/site scripts/publish-release.sh x.y.z --yes` uploads to the
+`keyfeel-files` store and rebuilds the appcast, reading every upload back byte for byte. Sparkle uses the shared default
+EdDSA key (public `6yp5/7HTj/lA+mxplvbKsfksGLsSvpgXUUtsVhMfW8U=`). The channel token lives in
+`~/.config/purplelink/keyfeel-update-token`. The trial build has no feed and no updater.
 
-1. build and notarize the paid DMG as `Keyfeel-<ver>.dmg` and the trial edition as `Keyfeel-Trial-<ver>.dmg`;
-2. sign the paid DMG for Sparkle with a Keyfeel-specific EdDSA key and build `appcast.xml`;
-3. upload all three to the `keyfeel-files` store with the site repo as working directory
-   (`netlify blobs:set`), after the site deploy so the function exists, before announcing.
+Released: 1.0.0 (build 15), 2026-10-07.
 
 ## Launch checklist (owner)
 

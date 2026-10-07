@@ -1025,6 +1025,8 @@
       text: 'Checks what you type for personal information before you send it. Free 7-day trial, then $29.', own: ['/outbound-veil/', '/suite/'] },
     { id: 'legroom', name: 'Legroom', href: '/legroom/', icon: '/assets/legroom-icon.webp', cta: 'Try it free',
       text: 'Shows your free disk space and cleans the folders you choose, after you approve a preview. Free 7-day trial, then $9.', own: ['/legroom/', '/suite/'] },
+    { id: 'keyfeel', name: 'Keyfeel', href: '/keyfeel/', icon: '/assets/keyfeel-icon-128.webp', cta: 'Try it free',
+      text: 'Recorded keyboard, click and scroll sounds for your Mac, with optional trackpad haptics. Free 7-day trial, then $9.99.', own: ['/keyfeel/', '/suite/'] },
     { id: 'vitae', name: 'Vitae', href: '/vitae/', icon: '/assets/vitae-icon.webp', cta: 'Get it free',
       text: 'Track submissions, grants and your CV in one place. Free for Mac.', own: ['/vitae/'] },
     { id: 'paper-review', name: 'Paper Review', href: '/tools/paper-review/', icon: '/assets/purplelink-logo-64.png', cta: 'See how it works',
