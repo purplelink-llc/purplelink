@@ -78,6 +78,19 @@
     return (f && (f.s || f.r)) || (f && f.g ? "google ads" : "direct");
   };
 
+  // The first-touch channel as a short label for the funnel events below only (product-page views, trial
+  // downloads, buy clicks), so cost per trial and per sale can be worked out per channel. Paid clicks
+  // (a Google, Microsoft or other ad click id, or utm_medium=cpc/ppc/paid) read "paid:<source>"; otherwise the
+  // campaign source, the referring site, or "direct". Same stored arrival as above; no id leaves the browser.
+  function channel() {
+    var f = attr.first || attr.last;
+    if (!f) return "direct";
+    var med = String(f.m || "").toLowerCase();
+    if (f.g || med === "cpc" || med === "ppc" || med === "paid" || med === "paidsocial") return clip("paid:" + (f.s || "google"), 40);
+    return clip(f.s || f.r || "direct", 40);
+  }
+  var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download)$/;
+
   function send(payload) {
     try {
       var body = JSON.stringify(payload);
@@ -90,7 +103,9 @@
   }
 
   window.plTrack = function (type, meta) {
-    send({ t: type || "event", p: location.pathname, h: location.hostname, r: refHost(), u: utmSource(), m: meta || "" });
+    var ev = { t: type || "event", p: location.pathname, h: location.hostname, r: refHost(), u: utmSource(), m: meta || "" };
+    if (type === "pageview" || FUNNEL.test(type || "")) ev.ft = channel();
+    send(ev);
   };
 
   // Pageview on load (covers article reads and tool-page visits).

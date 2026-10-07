@@ -68,6 +68,7 @@ export default async function handler(request) {
     checkoutByProduct: {}, checkoutByPath: {},
     otherEvents: {}, otherEventDetail: {},
     byDay: {},
+    funnelByChannel: {},
   };
   const uniquesPerDay = {};
 
@@ -106,6 +107,15 @@ export default async function handler(request) {
       s.totals.events++;
       if (rec.vid) uniquesPerDay[day].add(rec.vid);
       if (rec.host) bump(s.byHost, rec.host);
+      // Funnel by first-touch channel (analytics.js sends ft on pageviews, trial downloads and buy clicks only).
+      // Product-page views are the denominator for a channel's trial and buy rates; the path is kept for pageviews
+      // so the dashboard can restrict them to product pages.
+      if (rec.ft && !String(rec.meta || "").startsWith("__")) {
+        const fc = s.funnelByChannel[rec.ft] || (s.funnelByChannel[rec.ft] = { pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {} });
+        if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); }
+        else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
+        else if (/_?trial_download$/.test(rec.type)) bump(fc.trial, rec.meta || rec.type);
+      }
 
       if (rec.type === "pageview") {
         s.totals.pageviews++; s.byDay[day].pageviews++;
@@ -173,5 +183,9 @@ export default async function handler(request) {
     otherEvents: topN(s.otherEvents, 50),
     otherEventDetail: topN(s.otherEventDetail, 60),
     byDay: Object.fromEntries(Object.entries(s.byDay).sort()),
+    funnelByChannel: Object.fromEntries(Object.entries(s.funnelByChannel).map(([ch, v]) => [ch, {
+      pageviews: v.pageviews, pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 40).map((x) => [x.key, x.count])),
+      trial: v.trial, checkout: v.checkout,
+    }])),
   });
 }

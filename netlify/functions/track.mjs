@@ -3,7 +3,8 @@
  *
  * POST /.netlify/functions/track
  *   body: { t: "pageview"|"tool_use"|..., p: path, h: host, r: referrer-host,
- *           u: utm_source, m: meta (e.g. the tool's API path) }
+ *           u: utm_source, m: meta (e.g. the tool's API path),
+ *           ft: first-touch channel label, funnel events only }
  *
  * Complements the existing Cloudflare Web Analytics (which gives sampled
  * pageviews but no custom events) by recording which LaTeX tools are actually
@@ -49,6 +50,8 @@ export default async function handler(request) {
   const refHost = clip(b.r, 120);   // host only, set client-side (no full URL, no query)
   const utm = clip(b.u, 60);
   const meta = clip(b.m, 120);
+  // First-touch channel label, sent only with pageviews, trial downloads and buy clicks (analytics.js).
+  const ft = clip(String(b.ft || "").replace(/[^\w.\-:\/ ]/g, ""), 40);
 
   const ip =
     request.headers.get("x-nf-client-connection-ip") ||
@@ -58,6 +61,7 @@ export default async function handler(request) {
   const vid = createHash("sha256").update(`${day}|pl|${ip}`).digest("hex").slice(0, 16);
 
   const rec = { type, path, host, refHost, utm, meta, vid, ts: Date.now() };
+  if (ft) rec.ft = ft;
 
   try {
     await getStore("analytics").setJSON(`ev/${day}/${Date.now()}-${randomUUID().slice(0, 8)}`, rec);
