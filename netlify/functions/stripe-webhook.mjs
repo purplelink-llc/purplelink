@@ -79,8 +79,9 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["moderntex",         { name: "ModernTex for macOS",               successPath: "/moderntex/success/" }],
   ["outbound-veil",     { name: "Outbound Veil for macOS",           successPath: "/outbound-veil/success/" }],
   ["legroom",           { name: "Legroom for macOS",                 successPath: "/legroom/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Legroom + Vitae Plus for life. /suite/success/ lists all
-  // three downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Vitae Plus for life. /suite/success/
+  // lists all four downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
   ["sheet-submission",  { name: "the Journal Submission & R&R Tracker", successPath: "/sheets/success/" }],
   ["sheet-tenure",      { name: "the Tenure & Promotion Dossier Tracker", successPath: "/sheets/success/" }],
@@ -280,13 +281,13 @@ async function emailDownloadLink(to, sessionId, productKey) {
     : "";
   const reviewTextBlock = reviewApp ? `${reviewAsk}\n\n` : "";
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
-  // Mac Suite: say what is on the page, since one link carries four things.
+  // Mac Suite: say what is on the page, since one link carries five things.
   const suiteText = isSuite
-    ? `That page has four things: the ModernTex, Outbound Veil and Legroom downloads, and your Vitae Plus key ` +
+    ? `That page has five things: the ModernTex, Outbound Veil, Legroom and Keyfeel downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has four things: the ModernTex, Outbound Veil and Legroom downloads, and your Vitae Plus key ` +
+    ? `<p>That page has five things: the ModernTex, Outbound Veil, Legroom and Keyfeel downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Outbound Veil: the one step new users trip on is macOS Accessibility, so point at the setup guide.
@@ -297,11 +298,24 @@ async function emailDownloadLink(to, sessionId, productKey) {
   const startHtml = productKey === "outbound-veil"
     ? `<p>New to it? <a href="${startUrl}">The first ten minutes</a>, including the macOS Accessibility permission.</p>`
     : "";
+  // Keyfeel: the one step new users trip on is the macOS Input Monitoring permission, so say what it is for
+  // (and what the app does not read) in the email too. Also sent to Suite buyers, who get the app with it.
+  const keyfeelText = productKey === "keyfeel" || isSuite
+    ? `Keyfeel needs the macOS Input Monitoring permission, which is how it hears that a key was pressed. ` +
+      `It reads which key, never the characters you type. macOS asks the first time you open it; ` +
+      `the permission is under System Settings, Privacy & Security, Input Monitoring.\n\n`
+    : "";
+  const keyfeelHtml = productKey === "keyfeel" || isSuite
+    ? `<p>Keyfeel needs the macOS Input Monitoring permission, which is how it hears that a key was pressed. ` +
+      `It reads which key, never the characters you type. macOS asks the first time you open it; ` +
+      `the permission is under System Settings, Privacy &amp; Security, Input Monitoring.</p>`
+    : "";
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
     startText +
     suiteText +
+    keyfeelText +
     licenseTextBlock +
     `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
     `Questions or trouble downloading: reply to this email.\n\n` +
@@ -312,6 +326,7 @@ async function emailDownloadLink(to, sessionId, productKey) {
     `<p><a href="${link}">Open your download page</a></p>` +
     startHtml +
     suiteHtml +
+    keyfeelHtml +
     licenseHtmlBlock +
     `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
     `<p>Questions or trouble downloading: reply to this email.</p>` +

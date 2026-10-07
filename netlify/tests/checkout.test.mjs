@@ -101,7 +101,7 @@ test("falls back to the default when Origin header is absent", async () => {
   assert.ok(successUrl.startsWith("https://purplelink.llc/"), `expected default origin, got ${successUrl}`);
 });
 
-test("the Mac Suite is sold at $49 with its own success page and product metadata", async () => {
+test("the Mac Suite is sold at $54 with its own success page and product metadata", async () => {
   let captured = null;
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, opts) => {
@@ -121,7 +121,7 @@ test("the Mac Suite is sold at $49 with its own success page and product metadat
   } finally {
     globalThis.fetch = originalFetch;
   }
-  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "4900");
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "5400");
   assert.equal(paramFromBody(captured, "line_items[0][price_data][currency]"), "usd");
   assert.equal(paramFromBody(captured, "metadata[product]"), "app-suite");
   assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/suite/success/"));
@@ -153,5 +153,59 @@ test("Legroom checks out with its Stripe price, its own success page and product
   assert.equal(paramFromBody(captured, "metadata[product]"), "legroom");
   assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/legroom/success/"));
   assert.ok(paramFromBody(captured, "cancel_url").startsWith("https://purplelink.llc/legroom/?checkout=canceled"));
+  assert.equal(paramFromBody(captured, "mode"), "payment");
+});
+
+test("the Mac Suite checkout line names all five apps", async () => {
+  let captured = null;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {
+    if (String(url).includes("api.stripe.com")) {
+      captured = opts.body;
+      return new Response(JSON.stringify({ id: "cs_test_suite5", url: "https://checkout.stripe.com/pay/cs_test_suite5" }), { status: 200 });
+    }
+    throw new Error(`Unexpected fetch to ${url}`);
+  };
+  try {
+    const res = await handler(new Request("https://purplelink.llc/.netlify/functions/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.52" },
+      body: JSON.stringify({ product: "app-suite" }),
+    }));
+    assert.equal(res.status, 200);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  const name = paramFromBody(captured, "line_items[0][price_data][product_data][name]");
+  for (const app of ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Vitae Plus"]) assert.ok(name.includes(app), `${app} missing from "${name}"`);
+});
+
+test("Keyfeel checks out at $9.99, priced inline, with its own success page and product metadata", async () => {
+  let captured = null;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {
+    if (String(url).includes("api.stripe.com")) {
+      captured = opts.body;
+      return new Response(JSON.stringify({ id: "cs_test_keyfeel", url: "https://checkout.stripe.com/pay/cs_test_keyfeel" }), { status: 200 });
+    }
+    throw new Error(`Unexpected fetch to ${url}`);
+  };
+  try {
+    const res = await handler(new Request("https://purplelink.llc/.netlify/functions/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.53" },
+      body: JSON.stringify({ product: "keyfeel" }),
+    }));
+    assert.equal(res.status, 200);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "999");
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][currency]"), "usd");
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][product_data][name]"), "Keyfeel for macOS");
+  assert.ok(!paramFromBody(captured, "line_items[0][price]"), "inline price, no Stripe Price id");
+  assert.equal(paramFromBody(captured, "metadata[product]"), "keyfeel");
+  assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/keyfeel/success/"));
+  assert.ok(paramFromBody(captured, "cancel_url").startsWith("https://purplelink.llc/keyfeel/?checkout=canceled"));
   assert.equal(paramFromBody(captured, "mode"), "payment");
 });

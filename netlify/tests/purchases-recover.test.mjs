@@ -113,8 +113,8 @@ test("the recovery email for the Suite links the one page and carries the Modern
   const mail = recoveryEmail([{ sessionId: "cs_suite", product: "app-suite", created: 5 }], "MTX1-AAAAA-BBBBB");
   assert.match(mail.text, /Purplelink Mac Suite/);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_suite/);
-  assert.match(mail.text, /ModernTex, Outbound Veil and Legroom downloads and your lifetime Vitae Plus key/);
-  assert.match(mail.html, /Legroom downloads/);
+  assert.match(mail.text, /ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key/);
+  assert.match(mail.html, /Keyfeel downloads/);
   assert.match(mail.text, /MTX1-AAAAA-BBBBB/);
   assert.match(mail.html, /MTX1-AAAAA-BBBBB/);
   // Without a signing key it does not invent one.
@@ -138,4 +138,23 @@ test("the recovery email for Legroom links its success page and carries no Moder
   assert.match(mail.text, /https:\/\/purplelink\.llc\/legroom\/success\/\?session_id=cs_lg/);
   assert.doesNotMatch(mail.text, /MTX1|license key/i);
   assert.match(mail.html, /legroom\/success\//);
+});
+
+// ---- Keyfeel ----
+
+test("finds a paid Keyfeel purchase and ignores an unpaid one", async () => {
+  sessions = [
+    { id: "cs_kf", payment_status: "paid", created: 9, metadata: { product: "keyfeel" } },
+    { id: "cs_kf_unpaid", payment_status: "unpaid", created: 10, metadata: { product: "keyfeel" } },
+  ];
+  const { purchases } = await purchasesForEmail("buyer@example.com", "sk_test_dummy");
+  assert.deepEqual(purchases.map((p) => [p.sessionId, p.product]), [["cs_kf", "keyfeel"]]);
+});
+
+test("the recovery email for Keyfeel links its success page and carries no ModernTex key", () => {
+  const mail = recoveryEmail([{ sessionId: "cs_kf", product: "keyfeel", created: 9 }], null);
+  assert.match(mail.text, /Keyfeel for macOS/);
+  assert.match(mail.text, /https:\/\/purplelink\.llc\/keyfeel\/success\/\?session_id=cs_kf/);
+  assert.doesNotMatch(mail.text, /MTX1|license key/i);
+  assert.match(mail.html, /keyfeel\/success\//);
 });

@@ -104,11 +104,15 @@ const PRODUCT_CATALOG = {
   // Legroom for macOS: $9 one-time. Delivery is the session-gated DMG from the
   // legroom-files Blobs store; see legroom-download.mjs.
   "legroom":                 { envKey: "STRIPE_PRICE_LEGROOM",                 successPath: "/legroom/success/" },
-  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Vitae Plus for life, $49 one-time
-  // (was $39 before Legroom joined). Priced inline (no Stripe Price to create). One session
-  // unlocks all four: the ModernTex, Outbound Veil and Legroom download functions accept it, and
-  // vitae-license.mjs signs a 100-year Vitae Plus key from it. See docs/products/app-suite.md.
-  "app-suite":               { amount: 4900, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom and Vitae Plus for life", successPath: "/suite/success/" },
+  // Keyfeel for macOS: $9.99 one-time, priced inline (no Stripe Price to create), like ModernTex.
+  // Delivery is the session-gated DMG from the keyfeel-files Blobs store; see keyfeel-download.mjs.
+  "keyfeel":                 { amount: 999, name: "Keyfeel for macOS", successPath: "/keyfeel/success/" },
+  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Vitae Plus for life, $54
+  // one-time (was $49 with four apps, $39 before Legroom). Priced inline (no Stripe Price to
+  // create). One session unlocks all five: the ModernTex, Outbound Veil, Legroom and Keyfeel
+  // download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it.
+  // See docs/products/app-suite.md.
+  "app-suite":               { amount: 5400, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life", successPath: "/suite/success/" },
   // Vitae Plus: optional subscription for the free Vitae app ($3/month or
   // $24/year, 7-day trial). The success page asks vitae-license.mjs for a
   // signed key; the app refreshes it from the same function about monthly.

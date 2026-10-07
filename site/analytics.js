@@ -150,6 +150,9 @@
       if (a && a.getAttribute("href").indexOf("legroom-download?trial=1") !== -1) {
         window.plTrack("lg_trial_download", "legroom");
       }
+      if (a && a.getAttribute("href").indexOf("keyfeel-download?trial=1") !== -1) {
+        window.plTrack("kf_trial_download", "keyfeel");
+      }
       // Anything else marked data-track="<event>" (optional data-track-meta):
       // template downloads, the phone sticky bar.
       var t = ev.target && ev.target.closest && ev.target.closest("[data-track]");

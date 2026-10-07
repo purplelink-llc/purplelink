@@ -122,8 +122,8 @@ export function recoveryEmail(purchases, license) {
     html.push(`<h3>${escapeHtml(entry.name.charAt(0).toUpperCase() + entry.name.slice(1))}</h3><p><a href="${escapeHtml(link)}">Open your ${live ? "setup" : "download"} page</a></p>`);
     if (suite) {
       // The page holds the downloads and the Vitae Plus key; the ModernTex key is only ever emailed.
-      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil and Legroom downloads and your lifetime Vitae Plus key.");
-      html.push("<p>That page has the ModernTex, Outbound Veil and Legroom downloads and your lifetime Vitae Plus key.</p>");
+      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key.");
+      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key.</p>");
       if (license) {
         lines.splice(lines.length - 1, 0, `ModernTex license key (paste into ModernTex's "Have a license key?"): ${license}`);
         html.push(`<p>ModernTex license key (paste into ModernTex's "Have a license key?"):</p>` +

@@ -39,6 +39,19 @@ def test_legroom_page_and_trial_downloads_are_tracked():
     assert "lgTrialDownloads" in [k for k, _ in purplelink["secondaries"]]
 
 
+def test_keyfeel_page_and_trial_downloads_are_tracked():
+    purplelink = next(s for s in td.SITES if s["key"] == "purplelink")
+    assert "/keyfeel/" in purplelink["product_paths"]
+    assert "kfTrialDownloads" in [k for k, _ in purplelink["secondaries"]]
+
+
+def test_keyfeel_is_its_own_profit_line():
+    assert td.product_group(_row("keyfeel", 999, 940)) == "Keyfeel"
+    assert "Keyfeel" in [g for g, _c in td.PRODUCT_GROUPS] and "Keyfeel" in td.PROFIT_LINES
+    pv = td.profit_view({"ledger": {"cs_x": _row("keyfeel", 999, 940)}}, {}, 7)
+    assert any(r["line"] == "Keyfeel" and r["orders"] == 1 for r in pv["rows"])
+
+
 def test_legroom_is_its_own_line_under_either_name():
     assert td.product_group(_row("legroom", 900, 871)) == "Legroom"
     assert td.product_group(_row("freeboard", 900, 871)) == "Legroom"

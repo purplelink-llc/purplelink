@@ -40,7 +40,7 @@ function signed(event) {
 }
 const completed = (product, id = "evt_1") => ({
   id, type: "checkout.session.completed",
-  data: { object: { id: "cs_live_suite_abcdefghij", status: "complete", payment_status: "paid", amount_total: 4900,
+  data: { object: { id: "cs_live_suite_abcdefghij", status: "complete", payment_status: "paid", amount_total: 5400,
     customer_details: { email: "buyer@example.com" }, metadata: { product } } },
 });
 
@@ -60,8 +60,8 @@ test("a paid Suite order is acknowledged and emails the suite page link once", a
   assert.deepEqual(mail.to, ["buyer@example.com"]);
   assert.match(mail.subject, /Purplelink Mac Suite/);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_live_suite_abcdefghij/);
-  assert.match(mail.text, /ModernTex, Outbound Veil and Legroom downloads, and your Vitae Plus key/);
-  assert.match(mail.html, /ModernTex, Outbound Veil and Legroom downloads/);
+  assert.match(mail.text, /That page has five things: the ModernTex, Outbound Veil, Legroom and Keyfeel downloads, and your Vitae Plus key/);
+  assert.match(mail.html, /ModernTex, Outbound Veil, Legroom and Keyfeel downloads/);
   assert.match(mail.html, /\/suite\/success\//);
 });
 
@@ -96,4 +96,31 @@ test("the Suite email mentions Legroom but carries no Legroom review ask", async
   const suiteMail = JSON.parse(calls.find((c) => c.url.startsWith("https://api.resend.com/")).opts.body);
   assert.doesNotMatch(suiteMail.text, /If Legroom is useful/);
   assert.match(suiteMail.text, /Legroom/);
+});
+
+test("Keyfeel is a blob-delivered product with its own success page", () => {
+  assert.equal(BLOB_DELIVERED_PRODUCTS.get("keyfeel").successPath, "/keyfeel/success/");
+  assert.equal(BLOB_DELIVERED_PRODUCTS.get("keyfeel").name, "Keyfeel for macOS");
+});
+
+test("a paid Keyfeel order emails the download page and the Input Monitoring note, with no license key", async () => {
+  const res = await handler(signed({ ...completed("keyfeel", "evt_kf"), data: { object: { ...completed("keyfeel").data.object, id: "cs_live_keyfeel_abcdefg1", amount_total: 999 } } }));
+  assert.equal((await res.json()).status, "delivered_by_blobs");
+  const sent = calls.filter((c) => c.url.startsWith("https://api.resend.com/"));
+  assert.equal(sent.length, 1);
+  const mail = JSON.parse(sent[0].opts.body);
+  assert.deepEqual(mail.to, ["buyer@example.com"]);
+  assert.match(mail.subject, /Keyfeel for macOS download/);
+  assert.match(mail.text, /https:\/\/purplelink\.llc\/keyfeel\/success\/\?session_id=cs_live_keyfeel_abcdefg1/);
+  assert.match(mail.text, /Input Monitoring/);
+  assert.match(mail.text, /never the characters/);
+  assert.doesNotMatch(mail.text, /license key|MTX1|Vitae|Outbound Veil/i);
+  assert.doesNotMatch(mail.text, /—|–/);
+  assert.match(mail.html, /keyfeel\/success\//);
+});
+
+test("other products' emails do not carry the Keyfeel permission note", async () => {
+  await handler(signed(completed("legroom", "evt_lg2")));
+  const mail = JSON.parse(calls.find((c) => c.url.startsWith("https://api.resend.com/")).opts.body);
+  assert.doesNotMatch(mail.text, /Input Monitoring/);
 });
