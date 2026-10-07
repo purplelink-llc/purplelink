@@ -11,3 +11,9 @@
 .bb-section p { margin: 0 0 14px; }
 .bb-mail { min-height: 52px; padding: 12px 28px; font-size: 1rem; }
 .bb-fine { font-size: 0.875rem; color: var(--muted); margin: 0; }
+
+/* Custom-simulation price list */
+.bb-prices { list-style: none; margin: 18px 0 14px; padding: 0; display: grid; gap: 10px; }
+.bb-prices li { display: flex; gap: 16px; align-items: baseline; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; }
+.bb-price { flex: 0 0 auto; min-width: 4.2ch; font-size: 1.4rem; font-weight: 700; color: var(--purple); }
+.bb-price-what { flex: 1 1 auto; line-height: 1.45; }
