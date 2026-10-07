@@ -133,6 +133,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="styles.css?v=19b47f5814">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/home.css?v=07885a91f6">
     <script src="/site.js?v=eaf42deb7d" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
@@ -158,46 +159,119 @@
 
     <main id="main-content" data-progress>
 
-      <!-- ── Hero ──────────────────────────────────────── -->
-      <section class="hero">
-        <div class="hero-meta">
-          <span>Mac apps and manuscript tools for researchers</span>
+      <!-- ── Stage: studio hero and app launchpad ──────── -->
+      <section class="stage" aria-labelledby="stage-h">
+        <div class="stage-brand">
+          <img class="stage-mark" src="/assets/purplelink-mark.svg" alt="" width="88" height="88" fetchpriority="high" decoding="async">
+          <p class="stage-meta">Purplelink LLC &middot; Atlanta, Georgia</p>
         </div>
 
-        <h1 class="hero-title flagship-title">
-          <span>A native LaTeX editor for Mac.</span>
-          <span>Free for 7 days,</span>
-          <span>$19.99 to keep.</span>
+        <h1 class="stage-title" id="stage-h">
+          <span class="sweep"><span>Software</span></span>
+          <span class="sweep"><span>that <em>lasts.</em></span></span>
         </h1>
 
-        <div class="hero-bottom">
-          <p class="flagship-lede">Making <em class="hero-italic">software</em> that lasts.</p>
-          <div class="hero-bottom-copy">
-            <div class="hero-actions">
-              <a class="btn btn-primary" href="/moderntex/#buy" data-track="home_cta" data-track-meta="moderntex-trial">Download the free trial</a>
-            </div>
-            <p class="hero-proof">Submitting a paper instead? <a href="/tools/paper-review/">See Paper Review, from $9.</a></p>
-          </div>
-          <div class="hero-bottom-copy">
-            <p class="hero-lede">Purplelink makes <a href="/moderntex/">ModernTex</a>; <a href="/outbound-veil/">Outbound Veil</a>, which checks what you type for personal information before you send it; <a href="/legroom/">Legroom</a>, which shows free disk space and cleans the folders you choose; <a href="/tools/paper-review/">Paper Review</a>, which reads your manuscript before a journal does; <a href="/vitae/">Vitae</a>, for your academic record; and <a href="/tools/">free LaTeX and BibTeX tools</a> that never store your files.</p>
-            <p class="hero-proof">Its free <a href="/scholar-utility-belt/">Scholar Utility Belt</a> extension is used by <strong>1,000 researchers</strong> and rated <strong>4.5&#9733;</strong> on the Chrome Web Store.</p>
-          </div>
-        </div>
+        <p class="stage-lede">One person making Mac apps and manuscript tools for researchers. Each page says plainly what happens to your data.</p>
 
-        <div class="hero-visual" aria-hidden="true">
-          <img class="hero-visual-shot" src="/assets/moderntex-screens/07-tikz-editor-1440.webp" alt="" width="1440" height="919" fetchpriority="high" decoding="async">
-          <div class="hero-visual-card">
-            <span class="hero-visual-kicker">Paper Review · Critical blind spot</span>
-            <strong>Hyperparameter search asymmetry favors the proposed method.</strong>
-            <span>Surfaced by: Methodology Critic, Statistical Skeptic</span>
+        <ul class="dock" aria-label="Purplelink apps">
+          <li>
+            <a class="dock-app" href="/moderntex/" data-track="home_cta" data-track-meta="dock-moderntex">
+              <span class="dock-art"><img src="/assets/moderntex-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">ModernTex</strong>
+              <span class="dock-desc">A native LaTeX editor for Mac.</span>
+              <span class="dock-price">Free for 7 days, $19.99</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app" href="/outbound-veil/" data-track="home_cta" data-track-meta="dock-outbound-veil">
+              <span class="dock-art"><img src="/assets/outbound-veil-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">Outbound Veil</strong>
+              <span class="dock-desc">Checks what you type for personal information before you send it.</span>
+              <span class="dock-price">Free for 7 days, $29</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app" href="/legroom/" data-track="home_cta" data-track-meta="dock-legroom">
+              <span class="dock-art"><img src="/assets/legroom-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">Legroom</strong>
+              <span class="dock-desc">Shows free disk space and cleans the folders you choose.</span>
+              <span class="dock-price">Free for 7 days, $9</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app" href="/vitae/" data-track="home_cta" data-track-meta="dock-vitae">
+              <span class="dock-art"><img src="/assets/vitae-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">Vitae</strong>
+              <span class="dock-desc">Tracks your submissions, grants and CV, locally.</span>
+              <span class="dock-price">Free</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app" href="/scholar-utility-belt/" data-track="home_cta" data-track-meta="dock-scholar">
+              <span class="dock-art"><img src="/assets/scholar-utility-belt-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">Scholar Utility Belt</strong>
+              <span class="dock-desc">Journal rankings and h-index inside Google Scholar.</span>
+              <span class="dock-price">Free Chrome extension</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app" href="/globepin/" data-track="home_cta" data-track-meta="dock-globepin">
+              <span class="dock-art"><img src="/assets/globepin-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">GlobePin</strong>
+              <span class="dock-desc">Places visited, flights taken and trips planned, on a 3D globe.</span>
+              <span class="dock-price">Free for iPhone and iPad</span>
+            </a>
+          </li>
+        </ul>
+
+        <p class="stage-suite">ModernTex, Outbound Veil, Legroom and Vitae Plus for life, together: <a href="/suite/">the Mac Suite, $49 once</a>.</p>
+      </section>
+
+      <!-- ── The rest of the studio ─────────────────────── -->
+      <section class="studio-links" aria-labelledby="studio-links-h">
+        <h2 id="studio-links-h">The rest of the studio</h2>
+        <div class="studio-cols">
+          <div class="studio-col">
+            <h3><a href="/tools/paper-review/">Paper Review</a></h3>
+            <p>Four AI reviewers read your manuscript before a journal does. From $9.</p>
+            <ul>
+              <li><a href="/tools/cover-letter/">Cover letter</a></li>
+              <li><a href="/tools/anonymity-check/">Anonymity check</a></li>
+              <li><a href="/tools/citation-gap/">Citation gap scan</a></li>
+              <li><a href="/tools/response-review/">Response review</a></li>
+              <li><a href="/tools/resume-review/">Resume review</a></li>
+            </ul>
           </div>
-          <div class="hero-visual-icons">
-            <img src="/assets/moderntex-icon.webp" alt="" width="56" height="56">
-            <img src="/assets/vitae-icon.webp" alt="" width="56" height="56">
-            <img src="/assets/globepin-icon.webp" alt="" width="56" height="56">
+          <div class="studio-col">
+            <h3><a href="/tools/">Free tools</a></h3>
+            <p>In your browser, no account.</p>
+            <ul>
+              <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+              <li><a href="/tools/bib-validator/">BibTeX validator</a></li>
+              <li><a href="/tools/citation-generator/">Citation generator</a></li>
+              <li><a href="/tools/latex-diff/">LaTeX diff</a></li>
+              <li><a href="/tools/word-counter/">Word counter</a></li>
+            </ul>
+          </div>
+          <div class="studio-col">
+            <h3><a href="/guides/">Guides</a></h3>
+            <p>How-tos for LaTeX and academic writing.</p>
+            <ul>
+              <li><a href="/guides/best-mac-latex-editors/">Best Mac LaTeX editors</a></li>
+              <li><a href="/guides/overleaf-alternative-mac/">An Overleaf alternative for Mac</a></li>
+              <li><a href="/blog/">The blog</a></li>
+            </ul>
+          </div>
+          <div class="studio-col">
+            <h3><a href="/games/">Games</a></h3>
+            <p>Free daily puzzles, new every midnight.</p>
+            <ul>
+              <li><a href="/games/">Play today's puzzles</a></li>
+            </ul>
           </div>
         </div>
       </section>
+
       <div class="recent-tools home-recent" data-recent-tools hidden></div>
 
       <!-- ── ModernTex (flagship) ───────────────────────── -->
@@ -329,38 +403,6 @@
       </section>
 
       <!-- ── Apps lineup ──────────────────────────────────── -->
-      <section id="apps" class="section-apps">
-        <div class="section-top">
-          <div class="section-top-left">
-            <p class="eyebrow">macOS</p>
-          </div>
-          <h2 class="section-title">More from the studio</h2>
-        </div>
-
-        <ul class="studio-grid" data-motion="stagger">
-          <li>
-            <a class="studio-card" href="/vitae/">
-              <div class="peek">
-                <figure class="frame-soft">
-                  <img src="/assets/vitae-screens/dashboard-800.webp" srcset="/assets/vitae-screens/dashboard-800.webp 800w, /assets/vitae-screens/dashboard-1440.webp 1440w" sizes="(max-width: 960px) 92vw, 30vw" alt="Vitae dashboard with sample data: papers under review, acceptance rate, funding and the next deadlines" width="800" height="415" loading="lazy" decoding="async">
-                </figure>
-              </div>
-              <div class="product-item">
-                <img class="product-icon" src="/assets/vitae-icon.webp" alt="" width="72" height="72" loading="lazy">
-                <div class="product-body">
-                  <div class="product-meta">
-                    <span class="platform-tag platform-macos">macOS</span>
-                    <span class="product-status product-status-live">Free · v1.0 Beta · Available now</span>
-                  </div>
-                  <strong class="product-name">Vitae</strong>
-                  <p class="product-desc">Academic research management for macOS: track submissions, grants, projects, and your CV in one local-first app. Free, notarized, no App Store required.</p>
-                </div>
-              </div>
-            </a>
-          </li>
-
-        </ul>
-      </section>
 
       <!-- ── Free tools (researcher front door) ──────────── -->
       <section id="tools" class="section-tools">

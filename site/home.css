@@ -1,0 +1,245 @@
+/* Home page: studio stage, app launchpad, links to the rest of the studio.
+   Loaded after styles.css. Colors come from the shared tokens so both
+   themes work. Every rule that moves anything sits inside
+   prefers-reduced-motion: no-preference; without it, or without animation
+   support, the page simply shows its final state. Only transform, opacity
+   and clip-path animate. */
+
+.stage {
+  position: relative;
+  display: grid;
+  gap: clamp(20px, 3vw, 36px);
+  padding: clamp(40px, 6vw, 80px) clamp(24px, 6vw, 80px) clamp(40px, 6vw, 72px);
+  border-bottom: 1px solid var(--line);
+  overflow: clip;
+}
+
+.stage-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stage-mark {
+  width: clamp(56px, 7vw, 88px);
+  height: auto;
+  flex: none;
+}
+
+.stage-meta {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.stage-title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.9rem, 12vw, 9.5rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.sweep { display: block; width: fit-content; max-width: 100%; }
+.sweep > span { position: relative; display: inline-block; }
+.sweep em { font-style: italic; color: var(--purple); }
+
+/* The leading edge that travels with the sweep. Hidden unless animated. */
+.sweep > span::after {
+  content: "";
+  position: absolute;
+  inset: 0.08em 0 0.06em 0;
+  border-right: 0.05em solid var(--purple);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.stage-lede {
+  max-width: 46ch;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ── Launchpad ─────────────────────────────────────────────────────────── */
+
+.dock {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(10px, 1.6vw, 24px);
+  margin-top: clamp(8px, 2vw, 24px);
+}
+
+.dock-app {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 14px 12px 16px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s, background-color 0.2s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-app:hover,
+.dock-app:focus-visible {
+  border-color: var(--line);
+  background: color-mix(in oklch, var(--purple) 8%, var(--bg));
+  transform: translateY(-3px);
+}
+
+.dock-art {
+  display: block;
+  width: clamp(72px, 7vw, 96px);
+  aspect-ratio: 1;
+  margin-bottom: 8px;
+}
+
+.dock-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 22%;
+  box-shadow: 0 16px 32px -14px color-mix(in oklch, var(--purple) 60%, transparent);
+}
+
+.dock-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dock-desc {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.dock-price {
+  margin-top: auto;
+  padding-top: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--purple);
+}
+
+.stage-suite {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.stage-suite a { color: var(--ink); text-decoration-color: var(--purple); text-underline-offset: 3px; }
+
+/* ── The rest of the studio ────────────────────────────────────────────── */
+
+.studio-links {
+  padding: clamp(40px, 6vw, 72px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+}
+
+.studio-links h2 {
+  margin-bottom: clamp(20px, 3vw, 32px);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+}
+
+.studio-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px clamp(24px, 4vw, 56px);
+}
+
+.studio-col h3 { font-family: var(--font-display); font-size: 1.25rem; }
+.studio-col h3 a { color: inherit; text-decoration: none; }
+.studio-col h3 a:hover { text-decoration: underline; text-decoration-color: var(--purple); text-underline-offset: 4px; }
+
+.studio-col p {
+  max-width: 32ch;
+  margin: 6px 0 14px;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.studio-col ul { list-style: none; display: grid; gap: 8px; }
+.studio-col li a { color: var(--ink); text-decoration-color: var(--purple); text-underline-offset: 3px; }
+
+@media (max-width: 1100px) {
+  .dock { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .dock { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── Load sequence and idle motion ─────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes stage-mark-in {
+    from { clip-path: inset(-4% 100% -4% 0); transform: translateX(-10px); }
+    to   { clip-path: inset(-4% -4% -4% -4%); transform: none; }
+  }
+  @keyframes stage-line-in {
+    from { clip-path: inset(-0.1em 100% -0.1em 0); transform: translateX(-0.06em); }
+    to   { clip-path: inset(-0.1em -0.25em -0.1em -0.1em); transform: none; }
+  }
+  @keyframes stage-edge {
+    0%   { transform: translateX(-100%); opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translateX(0); opacity: 0; }
+  }
+  @keyframes stage-fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes dock-land {
+    from { opacity: 0; transform: translateY(20px) scale(0.94); filter: blur(6px); }
+    to   { opacity: 1; transform: none; filter: blur(0); }
+  }
+  @keyframes dock-float {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-5px); }
+  }
+
+  .stage-mark { animation: stage-mark-in 0.95s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
+  .stage-meta { animation: stage-fade 0.7s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.5s backwards; }
+
+  .sweep > span {
+    animation: stage-line-in 1.15s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.2s backwards;
+  }
+  .sweep > span::after {
+    animation: stage-edge 1.15s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.2s both;
+  }
+  .sweep:nth-child(2) > span,
+  .sweep:nth-child(2) > span::after { animation-delay: 0.42s; }
+
+  .stage-lede { animation: stage-fade 0.8s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.85s backwards; }
+  .stage-suite { animation: stage-fade 0.8s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 1.7s backwards; }
+
+  .dock > li { animation: dock-land 0.85s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
+  .dock > li:nth-child(1) { animation-delay: 1.0s; }
+  .dock > li:nth-child(2) { animation-delay: 1.09s; }
+  .dock > li:nth-child(3) { animation-delay: 1.18s; }
+  .dock > li:nth-child(4) { animation-delay: 1.27s; }
+  .dock > li:nth-child(5) { animation-delay: 1.36s; }
+  .dock > li:nth-child(6) { animation-delay: 1.45s; }
+
+  /* A slow drift once the icons have landed, each out of step with the next. */
+  .dock-art { animation: dock-float 6s ease-in-out infinite alternate; }
+  .dock > li:nth-child(2) .dock-art { animation-delay: -1s; }
+  .dock > li:nth-child(3) .dock-art { animation-delay: -2s; }
+  .dock > li:nth-child(4) .dock-art { animation-delay: -3s; }
+  .dock > li:nth-child(5) .dock-art { animation-delay: -4s; }
+  .dock > li:nth-child(6) .dock-art { animation-delay: -5s; }
+  .dock-app:hover .dock-art,
+  .dock-app:focus-visible .dock-art { animation-play-state: paused; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-app { transition: none; }
+  .dock-app:hover,
+  .dock-app:focus-visible { transform: none; }
+}
