@@ -51,6 +51,7 @@ def sky_colors(hour: float):
 
 class Scene:
     WIN = (62, 16, 258, 100)        # the window: x0, y0, x1, y1
+    SCREEN = (78, 74, 130, 102)     # the laptop screen, inside its bezel: notifications are drawn here and clipped to it
 
     def __init__(self, seed: int = 1):
         self.font = ImageFont.load_default()
@@ -120,8 +121,10 @@ class Scene:
         d.rectangle([278, 96, 296, 112], fill=C["pot"])         # plant on the desk
         d.rectangle([274, 82, 300, 96], fill=C["plant"])
         d.rectangle([282, 72, 292, 82], fill=C["plant_dk"])
-        d.rectangle([90, 100, 130, 112], fill=C["laptop"])      # laptop
-        d.rectangle([92, 90, 128, 100], fill=C["panel"])
+        d.rectangle([73, 104, 135, 112], fill=C["laptop"])      # laptop: base,
+        d.rectangle([76, 72, 132, 104], fill=C["laptop"])       # bezel,
+        d.rectangle([self.SCREEN[0], self.SCREEN[1], self.SCREEN[2], self.SCREEN[3]], fill=C["panel"])   # and the screen
+        d.rectangle([98, 106, 110, 107], fill=C["desk_dark"])   # a trackpad
         return im
 
     # ---------------------------------------------------------------- the sky and what is moving in it
@@ -163,7 +166,10 @@ class Scene:
         return im
 
     # ---------------------------------------------------------------- one frame
-    def frame(self, t: float, hour: float, rain: bool, bpm: int, title: str, wall: float | None = None) -> Image.Image:
+    def frame(self, t: float, hour: float, rain: bool, bpm: int, title: str, wall: float | None = None,
+              fx: dict | None = None) -> Image.Image:
+        """`fx` is optional live engagement: {"toast": (kind, text, age_seconds) or None, "viewers": int or None}. Both are
+        drawn ON the laptop screen and clipped to it; with fx=None the frame is exactly what it always was."""
         t = math.floor(t * ANIM_FPS) / ANIM_FPS
         wall = time.time() if wall is None else wall
         sec = wall % (FOCUS + BREAK)
@@ -177,12 +183,15 @@ class Scene:
         night = hour < 6.5 or hour > 18.5
 
         # the laptop screen: a few lines of text scrolling past while working, a calm blank on a break
-        for i in range(5):
+        sx0, sy0, sx1, sy1 = self.SCREEN
+        for i in range(6):
             if focus:
-                ln = 8 + (int(t * 3 + i * 7) * 13) % 22
-                d.line([95, 93 + i * 2, 95 + ln, 93 + i * 2], fill=C["screen"])
-            else:
-                d.line([104, 95 + i * 2, 118, 95 + i * 2], fill=C["text_dim"]) if i == 2 else None
+                ln = 8 + (int(t * 3 + i * 7) * 13) % 34
+                d.line([sx0 + 3 + (i % 3) * 3, sy0 + 3 + i * 3, sx0 + 3 + (i % 3) * 3 + ln, sy0 + 3 + i * 3], fill=C["screen"])
+            elif i in (2, 3):
+                d.line([sx0 + 12, sy0 + 4 + i * 3, sx0 + 12 + 26 - i * 4, sy0 + 4 + i * 3], fill=C["text_dim"])
+        if fx:
+            self._screen_overlay(im, fx)
 
         # the person, from behind: hoodie, head, hair and headphones; the head nods on the beat
         bob = 1 if beat < 0.18 else 0
@@ -258,6 +267,60 @@ class Scene:
         d.text((230, 167), "purplelink.llc", font=self.font, fill=C["text_dim"])
         self._nudge(d, wall)
         return im
+
+    # ------------------------------------------------------------ notifications, drawn on the laptop's own screen
+    TOAST_SECONDS, TOAST_SLIDE = 5.5, 0.35
+    TINY = {   # a 3x5 pixel font: the screen is 52 px wide, so the 6 px-wide default font would fit only eight characters
+        "A": "010101111101101", "B": "110101110101110", "C": "011100100100011", "D": "110101101101110", "E": "111100110100111",
+        "F": "111100110100100", "G": "011100101101011", "H": "101101111101101", "I": "111010010010111", "J": "001001001101010",
+        "K": "101101110101101", "L": "100100100100111", "M": "101111111101101", "N": "110101101101101", "O": "010101101101010",
+        "P": "110101110100100", "Q": "010101101111011", "R": "110101110101101", "S": "011100010001110", "T": "111010010010010",
+        "U": "101101101101111", "V": "101101101101010", "W": "101101111111101", "X": "101101010101101", "Y": "101101010010010",
+        "Z": "111001010100111", "0": "111101101101111", "1": "010110010010111", "2": "110001010100111", "3": "110001010001110",
+        "4": "101101111001001", "5": "111100110001110", "6": "011100111101111", "7": "111001010100100", "8": "111101111101111",
+        "9": "111101111001110", "+": "000010111010000", "!": "010010010000010", " ": "000000000000000", ":": "000010000010000",
+        ".": "000000000000010", "-": "000000111000000",
+    }
+
+    @classmethod
+    def tiny_width(cls, text: str) -> int:
+        return 4 * len(text) - 1
+
+    @classmethod
+    def draw_tiny(cls, d: ImageDraw.ImageDraw, x: int, y: int, text: str, fill) -> None:
+        for n, ch in enumerate(text.upper()):
+            bits = cls.TINY.get(ch, cls.TINY[" "])
+            for i, b in enumerate(bits):
+                if b == "1":
+                    d.point((x + 4 * n + i % 3, y + i // 3), fill=fill)
+
+    def _screen_overlay(self, im: Image.Image, fx: dict) -> None:
+        """A macOS-style banner that slides down from the top of the laptop screen, plus a viewer count on its status line.
+        Everything is drawn on a screen-sized layer and pasted back, so nothing can spill outside the screen."""
+        sx0, sy0, sx1, sy1 = self.SCREEN
+        w, h = sx1 - sx0, sy1 - sy0
+        layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(layer)
+        viewers = fx.get("viewers")
+        if viewers:
+            d.rectangle([0, h - 8, w, h], fill=C["panel"])
+            d.rectangle([3, h - 5, 4, h - 4], fill=(120, 230, 150))                 # a small "online" dot
+            self.draw_tiny(d, 7, h - 6, f"{viewers} HERE", C["text_dim"])
+        toast = fx.get("toast")
+        if toast:
+            kind, text, age = toast
+            slide = min(1.0, age / self.TOAST_SLIDE, max(0.0, (self.TOAST_SECONDS - age) / self.TOAST_SLIDE))
+            top = round(-15 + 17 * slide)                                            # from just above the screen to 2 px below its top
+            bw = w - 4
+            d.rectangle([2, top, 2 + bw, top + 13], fill=C["text"])
+            d.rectangle([2, top, 2 + bw, top + 1], fill=C["bar"])
+            colour, rows = self.ICONS.get(kind, self.ICONS["like"])
+            for ry, row in enumerate(rows):
+                for rx, on in enumerate(row):
+                    if on == "1":
+                        d.point((5 + rx, top + 4 + ry), fill=colour)
+            self.draw_tiny(d, 14, top + 5, text, C["ink"])
+        im.paste(layer, (sx0, sy0), layer)
 
     # A polite nudge, not a permanent sticker: 15 s out of every 4 minutes it slides up between the timer and the
     # site name and cycles like, subscribe, share. 1 is a lit pixel in the 7-wide icon.

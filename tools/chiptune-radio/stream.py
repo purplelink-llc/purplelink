@@ -31,6 +31,7 @@ import numpy as np
 import broadcast
 import chime
 import chiptune as c
+import engage
 import scene as sc
 
 AUDIO_CHUNK = int(0.5 * c.SR)
@@ -178,6 +179,19 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
     chimer = chime.Chimer(t0_wall, enabled=os.environ.get("CHIPTUNE_CHIME", "1") != "0")    # a soft chime at :25 (break) and :00/:30 (focus), on the timer's clock
     sim0 = (t0_wall % (2 * 3600.0))              # the scene's day cycle follows the real clock, so a restart does not jump
     failed = threading.Event()
+    # "12 here" and a toast for new likes and subscribers, drawn on the laptop screen. Counts only, never names. It reads
+    # YouTube with the same login the broadcast keeper uses, so it is off whenever that login is not set (and in test renders,
+    # unless CHIPTUNE_ENGAGE_DEMO=1 feeds it made-up numbers so a short file can show the toasts).
+    eng, eng_stop = None, threading.Event()
+    if os.environ.get("CHIPTUNE_ENGAGE", "1") != "0":
+        if os.environ.get("CHIPTUNE_ENGAGE_DEMO") == "1":
+            eng = engage.Engagement(engage.demo_fetch(), log=log)
+        elif live and broadcast.configured():
+            eng = engage.Engagement(engage.youtube_fetch(broadcast._service), log=log)
+    if eng:
+        threading.Thread(target=eng.run, args=(eng_stop, engage.POLL_S), daemon=True).start()
+    if live:
+        log("engagement on the laptop screen: " + ("on" if eng else "off (no YouTube login set)"))
 
     def audio_loop():
         try:
@@ -207,7 +221,7 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
                 ts = n / VIDEO_FPS
                 _, title, bpm = audio.now(ts)
                 sim = sim0 + ts
-                im = scene.frame(ts, sc.hour_at(sim), sc.rain_at(sim), bpm, title, wall=t0_wall + ts)
+                im = scene.frame(ts, sc.hour_at(sim), sc.rain_at(sim), bpm, title, wall=t0_wall + ts, fx=eng.view() if eng else None)
                 proc.stdin.write(im.tobytes())
                 n += 1
                 if n % (VIDEO_FPS * LOG_EVERY) == 0:
@@ -243,6 +257,7 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
             proc.wait(timeout=60 if seconds is not None else 5)
         except subprocess.TimeoutExpired:
             proc.kill()
+    eng_stop.set()
     ta.join(timeout=5)
     tv.join(timeout=5)
     return proc.returncode or 0
