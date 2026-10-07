@@ -93,3 +93,4 @@ Not changed: the free-pilot offer (T2) needs a way to issue extended trial keys.
 ## How we will know
 
 Every link carries utm_source, utm_medium and utm_campaign. The dashboard now prints a funnel per first-touch channel (page views, trial downloads, buy clicks) and counts attributed orders, so each batch can be judged by trials it produced, not by opens.
+
