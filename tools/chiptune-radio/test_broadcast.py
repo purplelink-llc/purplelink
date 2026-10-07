@@ -14,6 +14,7 @@ class FakeYT:
         self.items = broadcasts
         self.created, self.bound, self.updated = [], [], []
         self.thumbs, self.chats, self.thumb_error = [], [], None
+        self.transitions = []
         self.snippet = {"description": "old", "categoryId": "10", "tags": ["a"], "title": "old"}
 
     def liveBroadcasts(self):
@@ -27,6 +28,8 @@ class FakeYT:
                 return _Call(go)
             def bind(self, id, part, streamId):
                 yt.bound.append((id, streamId)); return _Call(lambda: {})
+            def transition(self, broadcastStatus, id, part):
+                yt.transitions.append((id, broadcastStatus)); return _Call(lambda: {})
         return LB()
 
     def liveStreams(self):
@@ -171,3 +174,18 @@ def test_chat_loop_fires_five_seconds_past_each_hour_and_survives_errors():
     broadcast.chat_loop(cancel, log=lambda m: None, now=lambda: clock["t"], post_fn=post)
     assert waits[0] == 1805 and waits[1:3] == [3600, 3600]       # 25 min to the hour plus 5 s, then hourly
     assert len(said) == 3 and len(set(said)) == 3                # errors do not stop it, and the wording rotates
+
+
+def test_end_current_ends_only_the_live_broadcast():
+    yt = FakeYT([_b("OLD", "complete"), _b("CUR", "live"), _b("NEXT", "ready")])
+    assert broadcast.end_current(yt, log=lambda m: None) is True
+    assert yt.transitions == [("CUR", "complete")]
+
+
+def test_end_current_reports_false_when_nothing_is_live_or_the_api_fails():
+    yt = FakeYT([_b("OLD", "complete")])
+    assert broadcast.end_current(yt, log=lambda m: None) is False and yt.transitions == []
+    class Broken:
+        def liveBroadcasts(self): raise RuntimeError("quota")
+    said = []
+    assert broadcast.end_current(Broken(), log=said.append) is False and "falling back" in said[0]

@@ -43,7 +43,17 @@ VIDEO_FPS = 15
 LOG_EVERY = 300
 ERA_CYCLE = ["16bit", "8bit", "synth", None]   # one era per broadcast so each replay can carry an honest title; None is the all-era mix
 STATE_FILE = os.environ.get("CHIPTUNE_STATE", os.path.expanduser("~/.chiptune-radio-state"))
-PAUSE_SECONDS = 600          # YouTube ended the old broadcast within 6 minutes of the encoder dropping; 10 leaves margin
+PAUSE_SECONDS = 600          # the fallback wait if the broadcast could not be ended through the API: YouTube then ends it itself, within minutes
+QUICK_GAP = 5.0              # the wait when we ended it ourselves: just long enough for the old encoder to finish closing
+ROTATION = {"ended": False}  # set by run_once at rotation time, read by the main loop
+
+
+def rotation_gap(ended: bool, configured: float | None) -> float:
+    """Seconds of silence between two broadcasts. A gap given on the command line always wins; otherwise 5 s when the old
+    broadcast was ended through the API and the old 10 minutes when it was not."""
+    if configured is not None:
+        return configured
+    return QUICK_GAP if ended else PAUSE_SECONDS
 
 
 def next_era(advance: bool = True) -> str | None:
@@ -248,6 +258,7 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
                 break
             if rotate is not None and time.time() - t0_wall >= rotate:
                 log(f"rotating after {rotate / 3600:.2f} h so YouTube archives this broadcast")
+                ROTATION["ended"] = broadcast.end_current(log=log) if broadcast.configured() else False
                 failed.set()
                 break
             time.sleep(0.5)
@@ -270,7 +281,7 @@ def main() -> None:
     ap.add_argument("--url-file", help="a file whose first line is the full RTMP URL including the key")
     ap.add_argument("--seconds", type=float, help="stop after this many seconds of stream time (tests)")
     ap.add_argument("--rotate-hours", type=float, default=11.0, help="live only: end the broadcast and start a new one this often (YouTube archives only broadcasts under 12 hours)")
-    ap.add_argument("--rotate-gap", type=float, default=PAUSE_SECONDS, help="seconds of silence between broadcasts so YouTube ends the old one")
+    ap.add_argument("--rotate-gap", type=float, default=None, help="seconds of silence between broadcasts; by default 5 when the old broadcast was ended through the API, else 600")
     ap.add_argument("--era", choices=["8bit", "16bit", "synth", "hybrid", "mix", "cycle"], default="cycle", help="live: pin one era per broadcast (cycle rotates 16bit, 8bit, synth, mix); mix lets every track pick its own")
     ap.add_argument("--start-seed", type=int, default=int(time.time() // 3600) % 100000)
     a = ap.parse_args()
@@ -310,8 +321,10 @@ def main() -> None:
         ran = time.time() - started
         if rotate is not None and ran >= rotate:
             seed += 1                                                  # a planned break, not a failure: short gap, no back-off
-            log(f"between broadcasts: pausing {a.rotate_gap:.0f}s")
-            stop.wait(a.rotate_gap)
+            gap = rotation_gap(ROTATION["ended"], a.rotate_gap)
+            log(f"between broadcasts: pausing {gap:.0f}s ({'old broadcast already ended' if ROTATION['ended'] else 'waiting for YouTube to end it'})")
+            ROTATION["ended"] = False
+            stop.wait(gap)
             delay = 5
             continue
         delay = 5 if ran > 600 else min(120, delay * 2)          # a long healthy run resets the back-off

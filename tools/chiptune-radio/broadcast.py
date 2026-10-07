@@ -230,6 +230,24 @@ def chat_loop(cancel: threading.Event, log: Callable[[str], None] = print, now: 
             log(f"chat message failed: {type(e).__name__}: {str(e)[:120]}")
 
 
+def end_current(yt=None, log: Callable[[str], None] = print) -> bool:
+    """End whichever broadcast is live right now, at once, so the next one can open within seconds. Without this the old one
+    only ends when YouTube notices the encoder has stopped, which is why the rotation used to wait ten minutes. True if one
+    was ended; False on any failure, in which case the caller falls back to the long wait."""
+    try:
+        yt = yt or _service()
+        items = yt.liveBroadcasts().list(part="id,status", mine=True, maxResults=10).execute().get("items", [])
+        live = [b for b in items if b["status"]["lifeCycleStatus"] == "live"]
+        for b in live:
+            yt.liveBroadcasts().transition(broadcastStatus="complete", id=b["id"], part="id,status").execute()
+        if live:
+            log(f"ended broadcast {live[0]['id']} so the next one can open within seconds")
+        return bool(live)
+    except Exception as e:  # noqa: BLE001
+        log(f"could not end the broadcast ({type(e).__name__}: {str(e)[:120]}); falling back to the long wait")
+        return False
+
+
 def keep(era: str | None, cancel: threading.Event, log: Callable[[str], None] = print,
          hourly: float = 3600.0, ensure_fn=ensure) -> None:
     """Run in a thread for the lifetime of one broadcast; `cancel` ends it."""

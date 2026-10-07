@@ -127,3 +127,9 @@ def test_era_cycle_persists_between_broadcasts(tmp_path, monkeypatch):
     seen = [stream.next_era() for _ in range(5)]
     assert seen == ["16bit", "8bit", "synth", None, "16bit"]
     assert stream.next_era(advance=False) == "8bit"
+
+
+def test_rotation_gap_is_short_only_when_we_ended_the_broadcast_ourselves():
+    assert st.rotation_gap(True, None) == st.QUICK_GAP < 10
+    assert st.rotation_gap(False, None) == st.PAUSE_SECONDS == 600
+    assert st.rotation_gap(True, 30.0) == 30.0 and st.rotation_gap(False, 0.0) == 0.0     # a command-line gap always wins

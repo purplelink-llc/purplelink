@@ -65,3 +65,12 @@ broadcast, with the era in the title) if none is open.
 It needs a token for the channel that owns the stream, scope `youtube.force-ssl`, as the JSON text on one line in `stream.env`:
 `YT_LIVE_TOKEN_JSON={...}`. Without it the stream runs as before and the log says "broadcast keeper off". Both lines are secrets.
 `python3.12 -m pytest -q test_broadcast.py` checks the logic against a fake service.
+
+## Rotation: ending a broadcast every 11 hours, almost seamlessly
+
+YouTube only saves a replay of a live stream shorter than 12 hours (a stream can run longer, it just is not archived), so the
+stream rotates its broadcast every 11 hours and each one becomes a replay. The rotation used to go silent for ten minutes and
+wait for YouTube to notice. Now `broadcast.end_current` ends the live broadcast through the API at once, the pipeline restarts
+after 5 seconds, and the keeper opens the next broadcast, so the gap is about 20 seconds. If the API call fails the stream falls
+back to the old ten-minute wait. `--rotate-hours 0` turns rotation off entirely (one endless broadcast, no replays);
+`--rotate-gap N` forces a fixed gap.
