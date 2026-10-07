@@ -1,0 +1,106 @@
+{
+  "id": "moderntex-promo",
+  "title": "ModernTex promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "hero": {
+    "scene": 1,
+    "seconds": 6
+  },
+  "scenes": [
+    {
+      "type": "title",
+      "text": "LaTeX errors,\nin plain language.",
+      "narration": "LaTeX errors are hard to read. ModernTex explains them plainly.",
+      "seconds": 3.5
+    },
+    {
+      "type": "still",
+      "src": "../site/assets/moderntex-screens/01-editor-clean-1440.webp",
+      "layout": "side",
+      "text": "A native Mac editor.",
+      "narration": "A native Mac editor. It compiles locally and keeps the PDF preview in sync.",
+      "zoom": {
+        "from": 1.0,
+        "to": 1.1,
+        "x": 0.5,
+        "y": 0.45
+      },
+      "highlight": {
+        "x": 0.565,
+        "y": 0.09,
+        "w": 0.425,
+        "h": 0.87,
+        "cue": "PDF"
+      },
+      "vertical": {
+        "zoom": {
+          "from": 1.0,
+          "to": 1.06,
+          "x": 0.72,
+          "y": 0.5,
+          "x0": 0.72,
+          "y0": 0.5
+        }
+      },
+      "seconds": 5
+    },
+    {
+      "type": "still",
+      "src": "../site/assets/moderntex-screens/01-editor.webp",
+      "layout": "bleed",
+      "text": "Errors you can read.",
+      "narration": "When a build fails, the error comes with a plain explanation.",
+      "zoom": {
+        "from": 1.0,
+        "to": 2.3,
+        "x": 0.36,
+        "y": 0.9
+      },
+      "highlight": {
+        "x": 0.133,
+        "y": 0.868,
+        "w": 0.373,
+        "h": 0.105,
+        "cue": "error"
+      },
+      "seconds": 4
+    },
+    {
+      "type": "callout",
+      "text": "Before you send it",
+      "narration": "Submission checks, revision snapshots, and BibTeX completion.",
+      "items": [
+        {
+          "title": "Submission-readiness checks",
+          "detail": "Anonymization, page limits, required sections",
+          "cue": "Submission"
+        },
+        {
+          "title": "Revision snapshots",
+          "detail": "Take one before a revision or after review",
+          "cue": "revision"
+        },
+        {
+          "title": "BibTeX completion",
+          "detail": "Searches by author, title or key",
+          "cue": "BibTeX"
+        }
+      ],
+      "seconds": 5
+    },
+    {
+      "type": "endcard",
+      "text": "ModernTex",
+      "lines": [
+        "Free for 7 days, then $10 once.",
+        "macOS 14 or later. Apple silicon and Intel. Notarized."
+      ],
+      "url": "purplelink.llc/moderntex",
+      "narration": "Free for seven days, then ten dollars, once. macOS 14 or later.",
+      "seconds": 7,
+      "tail": 1.8,
+      "src": "../site/assets/moderntex-screens/01-editor-clean-1440.webp"
+    }
+  ]
+}

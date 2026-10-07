@@ -43,3 +43,8 @@ photo-licensing-workspace/
 /docs/reddit-notes-*.md
 /docs/directory-submissions.md
 /docs/vitae-reports/
+
+# video framework (Remotion)
+video/out/
+video/node_modules/
+video/.cache/

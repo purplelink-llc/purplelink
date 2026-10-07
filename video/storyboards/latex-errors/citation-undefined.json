@@ -1,0 +1,47 @@
+{
+  "id": "citation-undefined",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: Citation undefined",
+  "source": "https://purplelink.llc/latex-errors/citation-undefined/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Citation undefined, a warning.",
+      "tag": "The warning",
+      "caption": "Citation undefined"
+    },
+    {
+      "narration": "The next log line is the clue: there is no B B L file, so BibTeX has not been run.",
+      "tag": "The log",
+      "caption": "No .bbl file: BibTeX has not been run."
+    },
+    {
+      "narration": "Run LaTeX, BibTeX, then LaTeX twice more.",
+      "tag": "The fix",
+      "caption": "pdflatex, bibtex, then pdflatex twice."
+    },
+    {
+      "narration": "The citation now resolves.",
+      "tag": "Result",
+      "caption": "The citation resolves."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

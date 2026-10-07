@@ -1,0 +1,46 @@
+{
+  "id": "moderntex-promo-v2-long",
+  "title": "ModernTex promo v2 (long cut)",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Mistype a command and ModernTex flags it as you write."
+    },
+    {
+      "narration": "Fix it, then build."
+    },
+    {
+      "narration": "The PDF updates, and every citation resolves."
+    },
+    {
+      "narration": "Need a figure? Draw it in the TikZ designer. Drop boxes and decisions on the canvas, connect them, and the TikZ code is written for you."
+    },
+    {
+      "narration": "Insert it at the cursor, and the figure appears in the live preview."
+    },
+    {
+      "narration": "Tables work the same way. Add rows and columns, type in your results, and get clean booktabs LaTeX to insert."
+    },
+    {
+      "narration": "Can't remember a command? Search the symbol palette for Greek letters, operators and arrows, with the LaTeX shown under each."
+    },
+    {
+      "narration": "The sidebar keeps your outline, your bibliography entries, and your revision history at hand."
+    },
+    {
+      "narration": "Then check the whole paper against submission rules before you send it."
+    },
+    {
+      "narration": "One purchase. Nineteen ninety-nine, updates included."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

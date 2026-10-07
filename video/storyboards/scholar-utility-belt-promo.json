@@ -1,0 +1,37 @@
+{
+  "id": "scholar-utility-belt-promo",
+  "title": "Scholar Utility Belt promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Scholar Utility Belt adds journal quality badges beside each Google Scholar result."
+    },
+    {
+      "narration": "Citation velocity shows how quickly each paper is being cited."
+    },
+    {
+      "narration": "Retracted results carry a visible warning before you cite them."
+    },
+    {
+      "narration": "Author profiles get h-index and g-index."
+    },
+    {
+      "narration": "Lineage trees place an author among their advisors and students."
+    },
+    {
+      "narration": "Rankings ship inside the extension. No account, no analytics."
+    },
+    {
+      "narration": "Free core, open source. Add it to Chrome."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

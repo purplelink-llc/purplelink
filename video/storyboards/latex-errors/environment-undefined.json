@@ -1,0 +1,47 @@
+{
+  "id": "environment-undefined",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: Environment undefined",
+  "source": "https://purplelink.llc/latex-errors/environment-undefined/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Environment theorem undefined.",
+      "tag": "The error",
+      "caption": "Environment theorem undefined"
+    },
+    {
+      "narration": "The log names the environment, and line three shows the begin that failed. LaTeX does not predefine theorem.",
+      "tag": "The log",
+      "caption": "LaTeX does not predefine theorem."
+    },
+    {
+      "narration": "Declare it with newtheorem in the preamble.",
+      "tag": "The fix",
+      "caption": "Declare it with \\newtheorem in the preamble."
+    },
+    {
+      "narration": "Now it compiles.",
+      "tag": "Result",
+      "caption": "Now it compiles."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

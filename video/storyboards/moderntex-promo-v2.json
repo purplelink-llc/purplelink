@@ -1,0 +1,31 @@
+{
+  "id": "moderntex-promo-v2",
+  "title": "ModernTex promo v2",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Mistype a command and ModernTex flags it as you write."
+    },
+    {
+      "narration": "Fix it, then build."
+    },
+    {
+      "narration": "The PDF updates, and every citation resolves."
+    },
+    {
+      "narration": "Then check the whole paper against submission rules before you send it."
+    },
+    {
+      "narration": "One purchase. Nineteen ninety-nine, updates included."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

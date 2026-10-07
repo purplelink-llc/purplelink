@@ -1,0 +1,47 @@
+{
+  "id": "misplaced-alignment-tab",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: Misplaced alignment tab",
+  "source": "https://purplelink.llc/latex-errors/misplaced-alignment-tab/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Misplaced alignment tab character.",
+      "tag": "The error",
+      "caption": "Misplaced alignment tab character &"
+    },
+    {
+      "narration": "Line three breaks right after the ampersand. Outside a table, a bare ampersand is an error.",
+      "tag": "The log",
+      "caption": "A bare & outside a table."
+    },
+    {
+      "narration": "For an ampersand in text, type backslash ampersand.",
+      "tag": "The fix",
+      "caption": "Type \\& for an ampersand."
+    },
+    {
+      "narration": "Now it compiles.",
+      "tag": "Result",
+      "caption": "Now it compiles."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

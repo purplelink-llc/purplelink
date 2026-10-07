@@ -1,0 +1,34 @@
+{
+  "id": "haea-promo",
+  "title": "Haea promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Haea brings sleep, nutrition, activity and biometrics together on your iPhone."
+    },
+    {
+      "narration": "Connect Apple Health for an optional eight a.m. briefing of yesterday's key metrics."
+    },
+    {
+      "narration": "Log workouts, food, water, weight and mood."
+    },
+    {
+      "narration": "Track macros against targets, with seven and thirty day trends for every metric."
+    },
+    {
+      "narration": "Logging and charts are free; Premium is one ninety-nine a month or fourteen ninety-nine a year. Nothing leaves the phone."
+    },
+    {
+      "narration": "In development for 2026. Join the waitlist."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "undefined-control-sequence",
+  "series": "latex-errors",
+  "title": "Fix this LaTeX error: Undefined control sequence",
+  "source": "https://purplelink.llc/latex-errors/undefined-control-sequence/",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "-4%",
+  "scenes": [
+    {
+      "narration": "Undefined control sequence.",
+      "tag": "The error",
+      "caption": "Undefined control sequence"
+    },
+    {
+      "narration": "The log splits line three where TeX stopped reading. The command just before the break is unknown.",
+      "tag": "The log",
+      "caption": "The command before the break is unknown."
+    },
+    {
+      "narration": "It is a typo for emph. Fix the spelling.",
+      "tag": "The fix",
+      "caption": "\\emhp is a typo for \\emph."
+    },
+    {
+      "narration": "Now it compiles.",
+      "tag": "Result",
+      "caption": "Now it compiles."
+    },
+    {
+      "narration": "More causes at purplelink dot L L C."
+    }
+  ],
+  "end": {
+    "lines": [
+      "The full explanation: purplelink.llc/latex-errors",
+      "ModernTex flags this as you type. purplelink.llc/moderntex"
+    ]
+  },
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
