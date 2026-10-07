@@ -24,6 +24,8 @@ import sys
 import threading
 import time
 import multiprocessing
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
@@ -46,6 +48,28 @@ STATE_FILE = os.environ.get("CHIPTUNE_STATE", os.path.expanduser("~/.chiptune-ra
 PAUSE_SECONDS = 600          # the fallback wait if the broadcast could not be ended through the API: YouTube then ends it itself, within minutes
 QUICK_GAP = 5.0              # the wait when we ended it ourselves: just long enough for the old encoder to finish closing
 ROTATION = {"ended": False, "now": threading.Event()}   # "ended" is set by run_once at rotation time and read by the main loop; "now" is set by SIGUSR1 to rotate at once
+
+
+def seconds_until(hhmm: str, tz: str, now: datetime | None = None, min_s: float = 1800.0) -> float:
+    """Seconds from `now` to the next local `hhmm` in `tz`, correct across daylight-saving changes. If that is less than `min_s`
+    away (a restart a few minutes before the time) it takes the following day instead, so a restart never produces a stub broadcast."""
+    zone = ZoneInfo(tz)
+    now = (now or datetime.now(zone)).astimezone(zone)
+    h, m = (int(x) for x in hhmm.split(":"))
+    target = now.replace(hour=h, minute=m, second=0, microsecond=0)
+    if (target.astimezone(timezone.utc) - now.astimezone(timezone.utc)).total_seconds() < min_s:
+        target = target + timedelta(days=1)
+        target = target.replace(hour=h, minute=m, second=0, microsecond=0)     # re-resolve the wall time after the day step
+    return (target.astimezone(timezone.utc) - now.astimezone(timezone.utc)).total_seconds()
+
+
+def rotation_seconds(live: bool, rotate_at: str, tz: str, rotate_hours: float) -> float | None:
+    """When this broadcast should end, in seconds from now: a daily local time if one is set, else every `rotate_hours`, else never."""
+    if not live:
+        return None
+    if rotate_at:
+        return seconds_until(rotate_at, tz)
+    return rotate_hours * 3600 if rotate_hours > 0 else None
 
 
 def rotation_gap(ended: bool, configured: float | None) -> float:
@@ -189,6 +213,7 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
     chimer = chime.Chimer(t0_wall, enabled=os.environ.get("CHIPTUNE_CHIME", "1") != "0")    # a soft chime at :25 (break) and :00/:30 (focus), on the timer's clock
     sim0 = (t0_wall % (2 * 3600.0))              # the scene's day cycle follows the real clock, so a restart does not jump
     failed = threading.Event()
+    announced = False
     # "12 here" and a toast for new likes and subscribers, drawn on the laptop screen. Counts only, never names. It reads
     # YouTube with the same login the broadcast keeper uses, so it is off whenever that login is not set (and in test renders,
     # unless CHIPTUNE_ENGAGE_DEMO=1 feeds it made-up numbers so a short file can show the toasts).
@@ -262,6 +287,9 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
                 ROTATION["ended"] = broadcast.end_current(log=log) if broadcast.configured() else False
                 failed.set()
                 break
+            if rotate is not None and not announced and broadcast.configured() and rotate - (time.time() - t0_wall) <= 60:
+                announced = True                                  # one chat message a minute ahead, with the link that never changes
+                threading.Thread(target=broadcast.announce_rotation, args=(log,), daemon=True).start()
             time.sleep(0.5)
     finally:
         failed.set() if stop.is_set() else None
@@ -281,9 +309,11 @@ def main() -> None:
     ap.add_argument("--live", action="store_true", help="stream to the RTMP URL in STREAM_URL (or --url-file) and keep running")
     ap.add_argument("--url-file", help="a file whose first line is the full RTMP URL including the key")
     ap.add_argument("--seconds", type=float, help="stop after this many seconds of stream time (tests)")
-    ap.add_argument("--rotate-hours", type=float, default=11.0, help="live only: end the broadcast and start a new one this often (YouTube archives only broadcasts under 12 hours)")
+    ap.add_argument("--rotate-at", default=os.environ.get("STREAM_ROTATE_AT", "03:00"), help="live only: end the broadcast and start the next at this local time every day (HH:MM; empty to use --rotate-hours). A broadcast longer than 12 hours is not archived as a replay")
+    ap.add_argument("--tz", default=os.environ.get("STREAM_TZ", "America/New_York"), help="the time zone for --rotate-at")
+    ap.add_argument("--rotate-hours", type=float, default=11.0, help="live only, used when --rotate-at is empty: end the broadcast this often (YouTube archives only broadcasts under 12 hours; 0 = never)")
     ap.add_argument("--rotate-gap", type=float, default=None, help="seconds of silence between broadcasts; by default 5 when the old broadcast was ended through the API, else 600")
-    ap.add_argument("--era", choices=["8bit", "16bit", "synth", "hybrid", "mix", "cycle"], default="cycle", help="live: pin one era per broadcast (cycle rotates 16bit, 8bit, synth, mix); mix lets every track pick its own")
+    ap.add_argument("--era", choices=["8bit", "16bit", "synth", "hybrid", "mix", "cycle"], default="mix", help="live: mix lets every track pick its own era (the default, since a broadcast now lasts a day); cycle pins one era per broadcast and rotates 16bit, 8bit, synth, mix")
     ap.add_argument("--start-seed", type=int, default=int(time.time() // 3600) % 100000)
     a = ap.parse_args()
 
@@ -304,7 +334,9 @@ def main() -> None:
     while not stop.is_set():
         started = time.time()
         log("starting the pipeline" + (" (live)" if a.live else f" -> {out}"))
-        rotate = a.rotate_hours * 3600 if a.live and a.rotate_hours > 0 else None
+        rotate = rotation_seconds(a.live, a.rotate_at, a.tz, a.rotate_hours)
+        if rotate is not None:
+            log(f"this broadcast will end in {rotate / 3600:.1f} h, at {(datetime.now(ZoneInfo(a.tz)) + timedelta(seconds=rotate)):%a %H:%M} {a.tz}")
         era = next_era() if a.era == "cycle" else (None if a.era == "mix" else a.era)
         cancel = threading.Event()
         if a.live:

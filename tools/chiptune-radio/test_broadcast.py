@@ -190,3 +190,15 @@ def test_end_current_treats_nothing_live_as_done_and_an_api_failure_as_not():
         def liveBroadcasts(self): raise RuntimeError("quota")
     said = []
     assert broadcast.end_current(Broken(), log=said.append) is False and "falling back" in said[0]
+
+
+def test_the_rotation_notice_carries_the_permanent_link_and_fits_a_chat_message():
+    live = _b("CUR", "live"); live["snippet"]["liveChatId"] = "CHAT1"
+    yt = FakeYT([live]); said = []
+    assert broadcast.announce_rotation(said.append, yt=yt) == "posted"
+    text = yt.chats[0]["textMessageDetails"]["messageText"]
+    assert broadcast.LIVE_URL in text and len(text) <= 200 and "rejoin" in text
+    assert said == ["rotation notice: posted"]
+    class Broken:
+        def liveBroadcasts(self): raise RuntimeError("quota")
+    assert broadcast.announce_rotation(lambda m: None, yt=Broken()).startswith("failed")      # never raises into the stream

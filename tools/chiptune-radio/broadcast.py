@@ -170,6 +170,20 @@ def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
     return f"created {created['id']} \"{title_for(era)}\", thumbnail {thumb}"
 
 
+LIVE_URL = os.environ.get("STREAM_LIVE_URL", "https://www.youtube.com/channel/UCUv28P5SUzT4RLQOmi3EK8w/live")   # always the channel's current live stream
+
+
+def announce_rotation(log: Callable[[str], None] = print, yt=None) -> str:
+    """One chat message, about a minute before the daily rotation: the player will say the stream ended, and this is the way back."""
+    text = f"\U0001F501 Daily refresh in about a minute. If this stream ends, rejoin in under a minute: {LIVE_URL}"
+    try:
+        result = post_chat(yt or _service(), text)
+    except Exception as e:  # noqa: BLE001
+        result = f"failed ({type(e).__name__})"
+    log(f"rotation notice: {result}")
+    return result
+
+
 THUMBNAIL = Path(__file__).with_name("thumbnail.png")
 _thumb_done: set[str] = set()                # broadcasts whose thumbnail this process has already set (it costs 50 quota units)
 

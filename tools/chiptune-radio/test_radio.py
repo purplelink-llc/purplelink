@@ -140,3 +140,34 @@ def test_a_rotate_now_signal_is_wired_up():
     src = open(st.__file__).read()
     assert "signal.SIGUSR1" in src and st.ROTATION["now"].is_set() is False
     assert 'ROTATION["now"].is_set()' in src                     # the run loop watches for it
+
+
+def _et(y, mo, d, h, mi=0):
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    return datetime(y, mo, d, h, mi, tzinfo=ZoneInfo("America/New_York"))
+
+
+def test_daily_rotation_targets_3am_local_and_survives_daylight_saving():
+    tz = "America/New_York"
+    assert st.seconds_until("03:00", tz, _et(2026, 10, 7, 14)) == 13 * 3600                  # 2 pm to 3 am
+    assert st.seconds_until("03:00", tz, _et(2026, 10, 7, 2, 50)) == 24 * 3600 + 10 * 60       # 10 min away is too close: skip a day
+    assert st.seconds_until("03:00", tz, _et(2026, 10, 31, 20)) == 8 * 3600                   # the night the clocks go back: 8 real hours
+    assert st.seconds_until("03:00", tz, _et(2027, 3, 13, 20)) == 6 * 3600                    # the night they go forward: 6 real hours
+
+
+def test_rotation_seconds_prefers_the_daily_time_then_hours_then_never():
+    assert st.rotation_seconds(False, "03:00", "America/New_York", 11) is None             # test renders never rotate
+    assert st.rotation_seconds(True, "", "America/New_York", 11) == 11 * 3600
+    assert st.rotation_seconds(True, "", "America/New_York", 0) is None
+    assert 0 < st.rotation_seconds(True, "03:00", "America/New_York", 11) <= 24 * 3600 + 1800
+
+
+def test_the_default_is_a_daily_3am_rotation_with_a_mixed_era():
+    src = open(st.__file__).read()
+    assert 'default=os.environ.get("STREAM_ROTATE_AT", "03:00")' in src
+    assert 'default=os.environ.get("STREAM_TZ", "America/New_York")' in src
+    assert '"--era", choices=["8bit", "16bit", "synth", "hybrid", "mix", "cycle"], default="mix"' in src
+    import subprocess, sys
+    out = subprocess.run([sys.executable, st.__file__, "--help"], capture_output=True, text=True).stdout
+    assert "--rotate-at" in out and "--tz" in out                           # and the script still starts
