@@ -103,7 +103,8 @@ test("Keyfeel is a blob-delivered product with its own success page", () => {
   assert.equal(BLOB_DELIVERED_PRODUCTS.get("keyfeel").name, "Keyfeel for macOS");
 });
 
-test("a paid Keyfeel order emails the download page and the Input Monitoring note, with no license key", async () => {
+test("a paid Keyfeel order emails the download page, the Input Monitoring note and the Keyfeel license key", async () => {
+  env.KEYFEEL_LICENSE_PRIVATE_KEY = Buffer.alloc(32, 9).toString("base64");
   const res = await handler(signed({ ...completed("keyfeel", "evt_kf"), data: { object: { ...completed("keyfeel").data.object, id: "cs_live_keyfeel_abcdefg1", amount_total: 999 } } }));
   assert.equal((await res.json()).status, "delivered_by_blobs");
   const sent = calls.filter((c) => c.url.startsWith("https://api.resend.com/"));
@@ -114,9 +115,12 @@ test("a paid Keyfeel order emails the download page and the Input Monitoring not
   assert.match(mail.text, /https:\/\/purplelink\.llc\/keyfeel\/success\/\?session_id=cs_live_keyfeel_abcdefg1/);
   assert.match(mail.text, /Input Monitoring/);
   assert.match(mail.text, /never the characters/);
-  assert.doesNotMatch(mail.text, /license key|MTX1|Vitae|Outbound Veil/i);
+  assert.match(mail.text, /Your Keyfeel license key[^\n]*\nKFL1-/);
+  assert.doesNotMatch(mail.text, /MTX1|Vitae|Outbound Veil/i);
   assert.doesNotMatch(mail.text, /—|–/);
   assert.match(mail.html, /keyfeel\/success\//);
+  assert.match(mail.html, /KFL1-/);
+  delete env.KEYFEEL_LICENSE_PRIVATE_KEY;
 });
 
 test("other products' emails do not carry the Keyfeel permission note", async () => {

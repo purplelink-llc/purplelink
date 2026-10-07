@@ -5,7 +5,7 @@ Launched 2026-10-07. The app lives in
 to use; no name clearance has been done (see Open items).
 
 Keyfeel is a macOS menu-bar utility, sold on purplelink.llc/keyfeel as a one-time **$9.99** purchase with a free
-7-day trial edition (a separate trial DMG, like Outbound Veil and Legroom), and it is in the Mac Suite ($54, five apps,
+7-day trial inside the same app (one DMG for everyone; a license key unlocks it, like ModernTex), and it is in the Mac Suite ($54, five apps,
 see `app-suite.md`). It plays recorded keyboard-switch sounds on every key press, plus mouse-click sounds, speed-aware
 scroll ticks, optional trackpad haptics, a click ripple, per-app silence and automatic silence while the microphone is
 in use. It works offline, reads key codes and never the characters, and needs the macOS Input Monitoring permission.
@@ -45,9 +45,9 @@ The Suite is `amount: 5400`. Session metadata carries `product` = `keyfeel` or `
 | Item | Value |
 |---|---|
 | `KEYFEEL_UPDATE_TOKEN` | Netlify production env var, secret, write-only. Random string; the same value is compiled into the app and sent as header `X-Keyfeel-Channel` on every Sparkle request. Takes effect after the next site deploy. Suggested local copy `~/.config/purplelink/keyfeel-update-token` |
-| Blobs store `keyfeel-files` | Private. Holds `Keyfeel-<ver>.dmg`, `Keyfeel-Trial-<ver>.dmg` and `appcast.xml` |
+| Blobs store `keyfeel-files` | Private. Holds `Keyfeel-<ver>.dmg` and `appcast.xml` |
 | Blobs store `keyfeel-stats` | Created on first update download; per-file download counts |
-| Blobs store `rate-limits` | Existing; the trial door writes `rl:trial:<day>:<hash>` |
+| Blobs store `rate-limits` | Existing; the public download door writes `rl:trial:<day>:<hash>` |
 
 ## Delivery
 
@@ -56,12 +56,12 @@ The Suite is `amount: 5400`. Session metadata carries `product` = `keyfeel` or `
 - Buyers: `?session_id=cs_...` lists files; `&file=Keyfeel-x.y.z.dmg` streams one. The session must be paid and carry
   `metadata.product` of `keyfeel` **or `app-suite`**, so every Suite buyer, including those who paid $39 or $49, gets
   Keyfeel.
-- Trial (public): `?trial=1` streams the newest `Keyfeel-Trial-x.y.z.dmg`, 20 downloads per IP per day (429 after).
-  The trial build must not link Sparkle and must carry no feed, so it cannot update into the paid app.
+- Public download (the trial): `?download=1` (`?trial=1` kept for old links) streams the newest `Keyfeel-x.y.z.dmg`,
+  20 downloads per IP per day (429 after). It is the same app buyers and Sparkle get.
 - Updates (Sparkle, paid build only): `?feed=1`, `?update=<dmg>` and `?stats=1` require the header
   `X-Keyfeel-Channel: <KEYFEEL_UPDATE_TOKEN>`, compared in constant time; 403 otherwise, and 403 when the env var is
   unset. The token is never logged or echoed. The feed rewrites every enclosure URL to the update door.
-- File names are exact: `Keyfeel-1.0.0.dmg` and `Keyfeel-Trial-1.0.0.dmg` (capital K, lower-case "eel"). Anything else
+- File names are exact: `Keyfeel-1.0.0.dmg` (capital K, lower-case "eel"). Anything else
   is ignored by the buyer list and refused at the update door.
 - There is no licence key. The buyer email (webhook `BLOB_DELIVERED_PRODUCTS`) carries the success-page link and a short
   note on the Input Monitoring permission. The Suite email now says the page has five things and carries the same note.
@@ -78,19 +78,19 @@ checkout, suite-entitlement, suite-webhook, purchases-recover, legroom-site cove
 ## Releasing a version
 
 In the Keyfeel repo (`/Volumes/Extreme SSD/Keyfeel`): `KF_VERSION=x.y.z scripts/build-release.sh` (paid) and
-`KF_VERSION=x.y.z KF_EDITION=trial scripts/build-release.sh` build universal, Developer-ID-signed, notarized DMGs into
+builds a universal, Developer-ID-signed, notarized DMG into
 `releases/staging/<ver>/`; the notary profile is `moderntex`. Notarization sometimes fails to staple on a CloudKit
 timeout (Error 68); rerun. `PURPLELINK_SITE=<site checkout>/site scripts/publish-release.sh x.y.z --yes` uploads to the
 `keyfeel-files` store and rebuilds the appcast, reading every upload back byte for byte. Sparkle uses the shared default
 EdDSA key (public `6yp5/7HTj/lA+mxplvbKsfksGLsSvpgXUUtsVhMfW8U=`). The channel token lives in
-`~/.config/purplelink/keyfeel-update-token`. The trial build has no feed and no updater.
+`~/.config/purplelink/keyfeel-update-token`. There is no separate trial build.
 
 Released: 1.0.0 (build 15), 2026-10-07.
 
 ## Launch checklist (owner)
 
 1. Set `KEYFEEL_UPDATE_TOKEN` on Netlify (production), and build it into the app.
-2. Stage `Keyfeel-<ver>.dmg`, `Keyfeel-Trial-<ver>.dmg` and `appcast.xml` in `keyfeel-files`.
+2. Stage `Keyfeel-<ver>.dmg` and `appcast.xml` in `keyfeel-files`.
 3. Fill in `site/keyfeel/launch.js` (`live: true`, version, size in MB, release date), delete the PRE-LAUNCH GUARD
    test, commit, merge to main and deploy. The same deploy raises the Suite to $54.
 4. One real purchase and refund of each of `keyfeel` and `app-suite`: the success pages list the download, the email
@@ -114,3 +114,18 @@ Released: 1.0.0 (build 15), 2026-10-07.
   haptic trackpad is not stated on the page and should be checked.
 - No trial reminder-email signup, no `/keyfeel/start/` first-run page (the Input Monitoring steps are in the page, the
   success page and the buyer email instead).
+
+## License keys (from 1.1.0)
+
+One app, one DMG. Until a valid key is entered the app runs for 7 days from first launch (first-launch time kept in the
+Keychain and a file, earlier wins, clock set-back ignored), then stays silent. Keys are `KFL1-` + Crockford Base32 of a
+4-byte nonce and a 64-byte Ed25519 signature over `KeyfeelLicenseV1` + nonce, checked offline in the app
+(`KeyfeelCore/LicenseKey.swift`, public key `YX6tWGJbj3EL9u3BBIRWrWBlRV0ppO149FkUZbPK/XY=`). Issued by
+`netlify/lib/keyfeel-license.mjs` from `KEYFEEL_LICENSE_PRIVATE_KEY` (Netlify production secret; local copy
+`~/.config/purplelink/keyfeel-license-private-key`, mode 600; back it up with the Sparkle keys). The nonce is derived
+from the buyer's email address, so the receipt email, the success pages (the `license` field of `keyfeel-download`'s
+purchase door) and `/recover/` all show the same key. Keys are not tied to a machine and cannot be revoked remotely; the
+Terms ask a refunded buyer to stop using it. Suite buyers get a Keyfeel key too. To re-issue a key by hand:
+`issueKeyfeelLicense(email)`.
+
+The app also accepts `keyfeel://license/<key>`.

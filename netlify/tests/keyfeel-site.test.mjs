@@ -33,7 +33,7 @@ test("the Keyfeel page offers the app at $9.99 once, with a 14-day refund, for m
 
 test("the page is wired to the delivery and checkout functions and carries the shared head tags", () => {
   const html = read("keyfeel/index.html");
-  assert.match(html, /data-kf-href="\/\.netlify\/functions\/keyfeel-download\?trial=1"/);
+  assert.match(html, /data-kf-href="\/\.netlify\/functions\/keyfeel-download\?download=1"/);
   assert.match(html, /id="checkout-btn" data-product="keyfeel"/);
   assert.match(html, /paid-tool-landing\.js/);
   assert.match(html, /\/keyfeel\/launch\.js/);
@@ -50,18 +50,18 @@ test("after launch, the static page already shows the live wording and the trial
   const trialTags = [...html.matchAll(/<a\b[^>]*data-kf-gated[^>]*>/g)].map((m) => m[0]);
   assert.ok(trialTags.length >= 2);
   for (const tag of trialTags) {
-    assert.match(tag, /\shref="\/\.netlify\/functions\/keyfeel-download\?trial=1"/);
+    assert.match(tag, /\shref="\/\.netlify\/functions\/keyfeel-download\?download=1"/);
     assert.doesNotMatch(tag, /aria-disabled/);
   }
   assert.doesNotMatch(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
   assert.doesNotMatch(html, /Not released yet|opens at release/);
-  assert.match(html, /Version 1\.0\.0, released October 7, 2026\. 7 MB disk image\./);
+  assert.match(html, /Version 1\.1\.0, released October 7, 2026\. 7 MB disk image\./);
 });
 
 test("launch.js ships switched on with valid facts", () => {
   const src = read("keyfeel/launch.js");
   assert.match(src, /live: true,/);
-  assert.match(src, /version: "1\.0\.0",/);
+  assert.match(src, /version: "1\.1\.0",/);
   assert.match(src, /sizeMb: "7",/);
   assert.match(src, /released: "2026-10-07"/);
 });
@@ -83,7 +83,7 @@ function runLaunch(config) {
   const els = {
     pre: new FakeEl({ "data-kf-pre-only": "" }),
     live: new FakeEl({ "data-kf-live-only": "", hidden: "" }),
-    trial: new FakeEl({ "data-kf-gated": "", "data-kf-href": "/.netlify/functions/keyfeel-download?trial=1", "data-kf-live-text": "Try it free for 7 days", "aria-disabled": "true", __text: "Free trial opens at release" }),
+    trial: new FakeEl({ "data-kf-gated": "", "data-kf-href": "/.netlify/functions/keyfeel-download?download=1", "data-kf-live-text": "Try it free for 7 days", "aria-disabled": "true", __text: "Free trial opens at release" }),
     buy: new FakeEl({ "data-kf-gated": "", "data-kf-live-text": "Buy Keyfeel", disabled: "", __text: "Buying opens at release" }),
     facts: new FakeEl({ "data-kf-facts": "", __text: "placeholder" }),
     sticky: new FakeEl({ "data-kf-sticky": "" }),
@@ -113,7 +113,7 @@ test("with live false the gated controls stay dead and the sticky bar is removed
 
 test("live true with every fact valid enables the trial link and Buy button and fills in the facts", () => {
   const { els } = runLaunch({ live: true, version: "1.0.0", sizeMb: "14", released: "2026-10-20" });
-  assert.equal(els.trial.getAttribute("href"), "/.netlify/functions/keyfeel-download?trial=1");
+  assert.equal(els.trial.getAttribute("href"), "/.netlify/functions/keyfeel-download?download=1");
   assert.equal(els.trial.getAttribute("aria-disabled"), null);
   assert.equal(els.trial.textContent, "Try it free for 7 days");
   assert.equal(els.buy.disabled, false);
@@ -221,12 +221,15 @@ test("the Suite page lists Keyfeel with its own price and a card", () => {
 class FakeNode {
   constructor(tag = "div") { this.tagName = tag; this.children = []; this.attrs = {}; this.textContent = ""; this.className = ""; this.href = ""; }
   appendChild(c) { this.children.push(c); return c; }
+  setAttribute(k, v) { this.attrs[k] = v; }
+  addEventListener() {}
 }
 function runSuccess({ search, fetchImpl }) {
-  const nodes = { downloads: new FakeNode(), "dl-status": new FakeNode() };
+  const nodes = { downloads: new FakeNode(), "dl-status": new FakeNode(), license: new FakeNode() };
   const fetched = [];
   const ctx = {
-    document: { getElementById: (id) => nodes[id] || null },
+    document: { getElementById: (id) => nodes[id] || null, createElement: (t) => new FakeNode(t) },
+    navigator: {},
     window: { location: { search } },
     URLSearchParams, encodeURIComponent,
     fetch: (url) => { fetched.push(url); return fetchImpl(url); },
@@ -248,6 +251,18 @@ test("/keyfeel/success/ asks keyfeel-download for the session and shows a downlo
   assert.deepEqual(fetched, [`/.netlify/functions/keyfeel-download?session_id=${SID}`]);
   assert.match(nodes.downloads.innerHTML, /Download: Keyfeel 1\.0\.0 for macOS/);
   assert.match(nodes.downloads.innerHTML, /keyfeel-download\?session_id=x&amp;file=Keyfeel-1\.0\.0\.dmg/);
+});
+
+test("/keyfeel/success/ shows the license key from the server", async () => {
+  const KEY = "KFL1-ABCDE-FGHJK";
+  const { nodes } = runSuccess({
+    search: `?session_id=${SID}`,
+    fetchImpl: () => reply(200, { license: KEY, files: [{ key: "Keyfeel-1.0.0.dmg", label: "Keyfeel 1.0.0 for macOS (disk image)", url: "/x" }] }),
+  });
+  await tick();
+  const code = nodes.license.children.find((c) => c.tagName === "code");
+  assert.ok(code, "a code element holds the key");
+  assert.equal(code.textContent, KEY);
 });
 
 test("/keyfeel/success/ shows the server's reason when refused, and never fetches for a bad id", async () => {

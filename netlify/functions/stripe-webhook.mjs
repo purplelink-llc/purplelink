@@ -27,6 +27,7 @@
  *   subscribed to event: checkout.session.completed
  */
 
+import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivateKey } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 
@@ -300,16 +301,26 @@ async function emailDownloadLink(to, sessionId, productKey) {
     : "";
   // Keyfeel: the one step new users trip on is the macOS Input Monitoring permission, so say what it is for
   // (and what the app does not read) in the email too. Also sent to Suite buyers, who get the app with it.
-  const keyfeelText = productKey === "keyfeel" || isSuite
+  const keyfeelLicense = productKey === "keyfeel" || isSuite ? issueKeyfeelLicense(to) : null;
+  const keyfeelLicenseText = keyfeelLicense
+    ? `Your Keyfeel license key (in Keyfeel, choose Enter License Key and paste it):\n${keyfeelLicense}\n\n` +
+      `It unlocks Keyfeel for good. No account, and it works offline.\n\n`
+    : "";
+  const keyfeelLicenseHtml = keyfeelLicense
+    ? `<p>Your Keyfeel license key (in Keyfeel, choose Enter License Key and paste it):</p>` +
+      `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${keyfeelLicense}</p>` +
+      `<p>It unlocks Keyfeel for good. No account, and it works offline.</p>`
+    : "";
+  const keyfeelText = keyfeelLicenseText + (productKey === "keyfeel" || isSuite
     ? `Keyfeel needs the macOS Input Monitoring permission, which is how it hears that a key was pressed. ` +
       `It reads which key, never the characters you type. macOS asks the first time you open it; ` +
       `the permission is under System Settings, Privacy & Security, Input Monitoring.\n\n`
-    : "";
-  const keyfeelHtml = productKey === "keyfeel" || isSuite
+    : "");
+  const keyfeelHtml = keyfeelLicenseHtml + (productKey === "keyfeel" || isSuite
     ? `<p>Keyfeel needs the macOS Input Monitoring permission, which is how it hears that a key was pressed. ` +
       `It reads which key, never the characters you type. macOS asks the first time you open it; ` +
       `the permission is under System Settings, Privacy &amp; Security, Input Monitoring.</p>`
-    : "";
+    : "");
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +

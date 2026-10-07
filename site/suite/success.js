@@ -58,6 +58,16 @@
             a.textContent = "Download: " + f.label;
             box.appendChild(a);
           });
+          if (r.body.license) {
+            var holder = document.createElement("div");
+            holder.className = "license-holder";
+            var lead = document.createElement("p");
+            lead.className = "kit-buy-meta kit-center";
+            lead.textContent = "Your Keyfeel license key:";
+            box.appendChild(lead);
+            box.appendChild(holder);
+            showKey(holder, r.body.license, "Your Keyfeel license key");
+          }
         })
         .catch(function () { note(box, FALLBACK); retry(box, go); });
     }
@@ -97,12 +107,12 @@
     });
   }
 
-  function showKey(box, key) {
+  function showKey(box, key, label) {
     clear(box);
     var code = document.createElement("code");
     code.className = "license-key";
     code.tabIndex = 0;
-    code.setAttribute("aria-label", "Your Vitae Plus key");
+    code.setAttribute("aria-label", label || "Your Vitae Plus key");
     code.textContent = key;
     box.appendChild(code);
     var row = document.createElement("div");

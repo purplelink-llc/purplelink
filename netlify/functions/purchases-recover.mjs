@@ -17,6 +17,7 @@
 
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { issueModernTexLicense, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
@@ -92,7 +93,7 @@ function escapeHtml(s) {
 }
 
 /** The email body for a set of purchases; exported for tests. */
-export function recoveryEmail(purchases, license) {
+export function recoveryEmail(purchases, license, keyfeelLicense = null) {
   const lines = [];
   const html = [];
   const mtx = purchases.filter((p) => p.product === "moderntex");
@@ -120,6 +121,11 @@ export function recoveryEmail(purchases, license) {
     const what = live ? "Setup page (your formulas and billing)" : "Download page";
     lines.push(entry.name.charAt(0).toUpperCase() + entry.name.slice(1), `${what}: ${link}`, "");
     html.push(`<h3>${escapeHtml(entry.name.charAt(0).toUpperCase() + entry.name.slice(1))}</h3><p><a href="${escapeHtml(link)}">Open your ${live ? "setup" : "download"} page</a></p>`);
+    if (keyfeelLicense && (suite || p.product === "keyfeel")) {
+      lines.splice(lines.length - 1, 0, `Keyfeel license key (in Keyfeel, choose Enter License Key and paste it): ${keyfeelLicense}`);
+      html.push(`<p>Keyfeel license key (in Keyfeel, choose Enter License Key and paste it):</p>` +
+        `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(keyfeelLicense)}</p>`);
+    }
     if (suite) {
       // The page holds the downloads and the Vitae Plus key; the ModernTex key is only ever emailed.
       lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key.");
@@ -144,7 +150,8 @@ async function sendRecovery(to, purchases) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   if (!apiKey) return false;
   const license = purchases.some((p) => p.product === "moderntex" || p.product === "app-suite") ? issueModernTexLicense() : null;
-  const mail = recoveryEmail(purchases, license);
+  const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite") ? issueKeyfeelLicense(to) : null;
+  const mail = recoveryEmail(purchases, license, keyfeelLicense);
   try {
     const resp = await fetch(RESEND_API_URL, {
       method: "POST",

@@ -1,38 +1,34 @@
 /**
- * Netlify Function — Keyfeel delivery. One private Blobs store, three doors: purchase, trial, update channel.
+ * Netlify Function — Keyfeel delivery. One private Blobs store, three doors: public download, purchase, update channel.
+ *
+ * There is ONE app. It runs free for 7 days and a license key (KFL1-…, see netlify/lib/keyfeel-license.mjs) keeps
+ * it unlocked, the way ModernTex does. So the download is public and the same file serves trial users, buyers and
+ * Sparkle.
+ *
+ *   Public download (the trial; no session):
+ *     GET /.netlify/functions/keyfeel-download?download=1   -> newest Keyfeel-x.y.z.dmg   (?trial=1 is the same, kept for old links)
  *
  *   Purchase (browser, after Stripe Checkout):
- *     GET /.netlify/functions/keyfeel-download?session_id=cs_…            -> JSON {files:[…]}
+ *     GET /.netlify/functions/keyfeel-download?session_id=cs_…            -> JSON {license, files:[…]}
  *     GET /.netlify/functions/keyfeel-download?session_id=cs_…&file=<dmg> -> the DMG
- *
- *   Free trial (public, no session — the 7-day trial edition):
- *     GET /.netlify/functions/keyfeel-download?trial=1                      -> newest trial DMG
- *     The trial build carries no Sparkle feed and cannot update into the paid
- *     app; its filename (Keyfeel-Trial-x.y.z.dmg) matches neither DMG_NAME nor
- *     the appcast, so it never appears in the buyer list or the update channel.
+ *     `license` is the buyer's key, derived from their address, so it matches the receipt email.
  *
  *   Updates (Sparkle inside the app, never a browser):
  *     GET /.netlify/functions/keyfeel-download?feed=1                       -> appcast.xml
  *     GET /.netlify/functions/keyfeel-download?update=<dmg>                 -> the DMG
  *     GET /.netlify/functions/keyfeel-download?stats=1                      -> download counts (JSON)
- *     All three require the header  X-Keyfeel-Channel: <KEYFEEL_UPDATE_TOKEN>,
- *     which build.sh compiles into the app and UpdaterService sends on every
- *     Sparkle request. The token is a shared secret in a shipped binary, so it
- *     keeps the update channel off the open web rather than defeating a
- *     determined reverse-engineer; the purchase door is what the paywall rests on.
- *     `stats` piggybacks on the same guard purely because it's convenient, not
- *     because the counts are sensitive — it's for `curl -H` from a terminal, not
- *     anything the app itself calls.
+ *     All three require the header  X-Keyfeel-Channel: <KEYFEEL_UPDATE_TOKEN>, which make-app.sh compiles into
+ *     the app and UpdaterService sends on every Sparkle request. It keeps the update channel off the open web;
+ *     it is not a license check.
  *
- * The DMGs and appcast are NOT part of the published site. They live only in the
- * private `keyfeel-files` Blobs store (scripts/publish-release.sh in the Keyfeel repo
- * uploads them). Responses stream straight from Blobs, which keeps a 13 MB disk
- * image clear of the 6 MB buffered-response limit. Each served `update=<dmg>` also
- * increments a plain counter in the `keyfeel-stats` store (see `stats=1` above) —
- * counts requests, not confirmed completions or unique machines.
+ * The DMGs and appcast are NOT part of the published site. They live only in the private `keyfeel-files` Blobs
+ * store (scripts/publish-release.sh in the Keyfeel repo uploads them). Responses stream straight from Blobs,
+ * which keeps a 7 MB disk image clear of the 6 MB buffered-response limit. Each served `update=<dmg>` also
+ * increments a plain counter in the `keyfeel-stats` store — requests, not confirmed completions.
  */
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "keyfeel-files";
@@ -40,7 +36,6 @@ const STATS_STORE = "keyfeel-stats";
 const PRODUCT_KEY = "keyfeel";
 const SUITE_KEY = "app-suite";
 const DMG_NAME = /^Keyfeel-\d+\.\d+\.\d+\.dmg$/;
-const TRIAL_DMG_NAME = /^Keyfeel-Trial-\d+\.\d+\.\d+\.dmg$/;
 const TRIAL_DAILY_LIMIT = 20;
 
 /** Durable per-file download count, in the same Blobs-as-counter style already used
@@ -157,10 +152,10 @@ export default async function handler(request) {
   const url = new URL(request.url);
   const store = getStore(FILE_STORE);
 
-  // --- Free trial (public) --------------------------------------------------------
-  // No session, no token: anyone may take the trial. The only thing worth guarding
+  // --- Public download (the 7-day trial) --------------------------------------------
+  // No session, no token: anyone may take the app. The only thing worth guarding
   // is bandwidth, so one address gets a generous daily cap rather than none.
-  if (url.searchParams.get("trial") === "1") {
+  if (url.searchParams.get("download") === "1" || url.searchParams.get("trial") === "1") {
     const ip = request.headers.get("x-nf-client-connection-ip") || request.headers.get("x-forwarded-for") || "unknown";
     const day = new Date().toISOString().slice(0, 10);
     const rl = getStore("rate-limits");
@@ -168,8 +163,8 @@ export default async function handler(request) {
     const n = parseInt((await rl.get(key)) || "0", 10) || 0;
     if (n >= TRIAL_DAILY_LIMIT) return json(429, { error: "rate_limited", detail: "Too many downloads from this address today." });
     await rl.set(key, String(n + 1));
-    const name = await latestDmgName(store, TRIAL_DMG_NAME);
-    if (!name) return json(404, { error: "no_trial", detail: "No trial build is available right now." });
+    const name = await latestDmgName(store);
+    if (!name) return json(404, { error: "no_release", detail: "No download is available right now." });
     return streamBlob(store, name, "application/x-apple-diskimage", `attachment; filename="${name}"`);
   }
 
@@ -208,7 +203,7 @@ export default async function handler(request) {
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
     return json(400, { error: "bad_session_id", detail: "Missing or malformed session_id." });
   }
-  const { error } = await loadSession(sessionId);
+  const { error, session } = await loadSession(sessionId);
   if (error) return error;
 
   const latest = await latestDmgName(store);
@@ -218,6 +213,8 @@ export default async function handler(request) {
     const version = latest.match(/\d+\.\d+\.\d+/)[0];
     return json(200, {
       product: PRODUCT_KEY,
+      // The same key the receipt email carries; it comes from the buyer's address, so it never changes.
+      license: issueKeyfeelLicense(session.customer_details?.email || session.customer_email),
       files: [{
         key: latest,
         label: `Keyfeel ${version} for macOS (disk image)`,

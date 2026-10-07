@@ -99,12 +99,12 @@
             {
               "@type": "Question",
               "name": "Are updates included?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes, all of them. The price is a single payment, for life. The paid app checks for a new version and offers to install it in place." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, all of them. The price is a single payment, for life. Keyfeel checks for a new version and offers to install it in place." }
             },
             {
               "@type": "Question",
               "name": "What happens when the trial ends?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The trial is the complete app for seven days from first launch, with no account. To keep using Keyfeel after that, buy it. Buying gives you a separate download of the full app to install in its place." }
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial is the complete app for seven days from first launch, with no account. To keep using Keyfeel after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key in Keyfeel and paste it. It works offline and needs no second download." }
             },
             {
               "@type": "Question",
@@ -156,11 +156,11 @@
         <h1 class="app-hero-name">Keyfeel</h1>
         <p class="app-hero-tagline">Keyfeel plays real recorded keyboard-switch sounds when you press a key on your Mac, and adds mouse-click sounds, scroll ticks and optional trackpad haptics. It runs in the menu bar and works offline.</p>
         <div class="app-hero-actions" id="buy">
-          <a class="btn btn-primary" id="trial-download" data-kf-gated data-kf-href="/.netlify/functions/keyfeel-download?trial=1" data-kf-live-text="Try it free for 7 days" href="/.netlify/functions/keyfeel-download?trial=1">Try it free for 7 days</a>
+          <a class="btn btn-primary" id="trial-download" data-kf-gated data-kf-href="/.netlify/functions/keyfeel-download?download=1" data-kf-live-text="Try it free for 7 days" href="/.netlify/functions/keyfeel-download?download=1">Try it free for 7 days</a>
           <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="keyfeel" data-kf-gated data-kf-live-text="Buy Keyfeel">Buy Keyfeel</button>
         </div>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
-        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-kf-facts>Version 1.0.0, released October 7, 2026. 7 MB disk image.</span> Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.</p>
+        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-kf-facts>Version 1.1.0, released October 7, 2026. 7 MB disk image.</span> Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54 once.</p>
       </div>
       <figure class="app-hero-window kf-hero-window">
@@ -250,7 +250,7 @@
       <div class="features-grid">
         <div class="feature-item">
           <h3>Works offline</h3>
-          <p>Keyfeel makes its sounds and haptics on your Mac and needs no network connection. There are no accounts. The only network use is the paid app's check for a new version and, for buyers, the download.</p>
+          <p>Keyfeel makes its sounds and haptics on your Mac and needs no network connection. There are no accounts. The only network use is its check for a new version, which carries the app's name and version and nothing you type.</p>
         </div>
         <div class="feature-item">
           <h3>Key codes, never characters</h3>
@@ -314,11 +314,11 @@
         </details>
         <details class="faq-item">
           <summary>Are updates included?</summary>
-          <div class="faq-body">Yes, all of them. The price is a single payment, for life. The paid app checks for a new version and offers to install it in place.</div>
+          <div class="faq-body">Yes, all of them. The price is a single payment, for life. Keyfeel checks for a new version and offers to install it in place.</div>
         </details>
         <details class="faq-item">
           <summary>What happens when the trial ends?</summary>
-          <div class="faq-body">The trial is the complete app for seven days from the first time you open it, with no account. To keep using Keyfeel after that, buy it. Buying gives you a separate download of the full app to install in its place.</div>
+          <div class="faq-body">The trial is the complete app for seven days from the first time you open it, with no account. To keep using Keyfeel after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key in Keyfeel and paste it. It works offline and needs no second download.</div>
         </details>
         <details class="faq-item">
           <summary>Can I get a refund?</summary>
@@ -335,7 +335,7 @@
       <h2 id="closing-cta-heading">Try it for a week.</h2>
       <p>Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.</p>
       <div class="closing-cta-actions">
-        <a class="btn btn-primary" data-kf-gated data-kf-href="/.netlify/functions/keyfeel-download?trial=1" data-kf-live-text="Try it free for 7 days" href="/.netlify/functions/keyfeel-download?trial=1">Try it free for 7 days</a>
+        <a class="btn btn-primary" data-kf-gated data-kf-href="/.netlify/functions/keyfeel-download?download=1" data-kf-live-text="Try it free for 7 days" href="/.netlify/functions/keyfeel-download?download=1">Try it free for 7 days</a>
         <a class="btn btn-ghost" href="#buy" data-kf-live-only>Buy Keyfeel</a>
       </div>
       <p class="closing-cta-fine">macOS 13 or later · Apple silicon and Intel</p>

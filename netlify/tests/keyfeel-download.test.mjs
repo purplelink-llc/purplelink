@@ -34,8 +34,6 @@ beforeEach(() => {
   stores.set("keyfeel-files/Keyfeel-1.0.0.dmg", "x");
   stores.set("keyfeel-files/Keyfeel-1.1.0.dmg", "x");
   stores.set("keyfeel-files/Keyfeel-1.10.0.dmg", "x");
-  stores.set("keyfeel-files/Keyfeel-Trial-1.0.0.dmg", "x");
-  stores.set("keyfeel-files/Keyfeel-Trial-1.2.0.dmg", "x");
   stores.set("keyfeel-files/appcast.xml", APPCAST);
   env.KEYFEEL_UPDATE_TOKEN = TOKEN;
   session = { id: SESSION, payment_status: "paid", metadata: { product: "keyfeel" } };
@@ -140,29 +138,42 @@ test("methods other than GET and HEAD are refused", async () => {
 
 // --- trial door ---------------------------------------------------------------------
 
-test("the trial is public and streams the newest trial DMG", async () => {
-  const res = await call("trial=1");
-  assert.equal(res.status, 200);
-  assert.match(res.headers.get("content-disposition"), /filename="Keyfeel-Trial-1\.2\.0\.dmg"/);
-  assert.equal(await res.text(), "bytes:Keyfeel-Trial-1.2.0.dmg");
-  assert.equal(stripeCalls, 0, "the trial never asks Stripe anything");
+test("the public download streams the newest DMG without asking Stripe anything", async () => {
+  for (const q of ["download=1", "trial=1"]) {
+    const res = await call(q);
+    assert.equal(res.status, 200, q);
+    assert.match(res.headers.get("content-disposition"), /filename="Keyfeel-1\.10\.0\.dmg"/);
+    assert.equal(await res.text(), "bytes:Keyfeel-1.10.0.dmg");
+  }
+  assert.equal(stripeCalls, 0);
 });
 
-test("the trial is 404 when no trial build is staged", async () => {
-  stores.delete("keyfeel-files/Keyfeel-Trial-1.0.0.dmg");
-  stores.delete("keyfeel-files/Keyfeel-Trial-1.2.0.dmg");
-  const res = await call("trial=1");
+test("the public download is 404 when nothing is staged", async () => {
+  for (const k of [...stores.keys()]) if (/\.dmg$/.test(k)) stores.delete(k);
+  const res = await call("download=1");
   assert.equal(res.status, 404);
-  assert.equal((await res.json()).error, "no_trial");
+  assert.equal((await res.json()).error, "no_release");
 });
 
-test("the trial allows 20 downloads per address per day, then 429; another address is unaffected", async () => {
-  for (let i = 0; i < 20; i++) assert.equal((await call("trial=1")).status, 200, `download ${i + 1}`);
-  const blocked = await call("trial=1");
+test("the public download allows 20 per address per day, then 429; another address is unaffected", async () => {
+  for (let i = 0; i < 20; i++) assert.equal((await call("download=1")).status, 200, `download ${i + 1}`);
+  const blocked = await call("download=1");
   assert.equal(blocked.status, 429);
   assert.equal((await blocked.json()).error, "rate_limited");
-  const other = await call("trial=1", { "x-nf-client-connection-ip": "198.51.100.77" });
+  const other = await call("download=1", { "x-nf-client-connection-ip": "198.51.100.77" });
   assert.equal(other.status, 200);
+});
+
+test("a purchase returns the buyer's license key, the same every time, and null when signing is not configured", async () => {
+  session.customer_details = { email: "Buyer@Example.com" };
+  assert.equal((await (await call(`session_id=${SESSION}`)).json()).license, null);
+  env.KEYFEEL_LICENSE_PRIVATE_KEY = Buffer.alloc(32, 7).toString("base64");
+  const a = (await (await call(`session_id=${SESSION}`)).json()).license;
+  session.customer_details = { email: " buyer@example.com " };
+  const b = (await (await call(`session_id=${SESSION}`)).json()).license;
+  delete env.KEYFEEL_LICENSE_PRIVATE_KEY;
+  assert.match(a ?? "", /^KFL1-([0-9A-Z]{1,5}-)+[0-9A-Z]{1,5}$/);
+  assert.equal(a, b);
 });
 
 // --- update channel -----------------------------------------------------------------
