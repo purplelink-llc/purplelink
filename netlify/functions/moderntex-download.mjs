@@ -7,9 +7,9 @@
  *
  *   Free trial (public, no session — the 7-day trial edition):
  *     GET /.netlify/functions/moderntex-download?trial=1                      -> newest trial DMG
- *     The trial build carries no Sparkle feed and cannot update into the paid
- *     app; its filename (ModernTex-Trial-x.y.z.dmg) matches neither DMG_NAME nor
- *     the appcast, so it never appears in the buyer list or the update channel.
+ *     From 1.4.0 there is one DMG: the trial door serves the same newest build buyers get, and the key
+ *     is the paywall. Older Trial-named DMGs stay in the store for old links and are served only while
+ *     the newest build is older than 1.4.0.
  *
  *   Updates (Sparkle inside the app, never a browser):
  *     GET /.netlify/functions/moderntex-download?feed=1                       -> appcast.xml
@@ -100,6 +100,21 @@ async function latestDmgName(store, pattern = DMG_NAME) {
   return names[0] || null;
 }
 
+/** From 1.4.0 there is one DMG (a 7-day trial, then a license key), so the trial door serves the newest
+ *  build buyers get. Before that, the retired Trial-named DMGs are the only safe trial download. */
+const UNIFIED_FROM = [1, 4, 0];
+async function trialDmgName(store) {
+  const latest = await latestDmgName(store);
+  if (latest) {
+    const v = latest.match(/\d+/g).map(Number);
+    for (let i = 0; i < 3; i++) {
+      if (v[i] !== UNIFIED_FROM[i]) { if (v[i] > UNIFIED_FROM[i]) return latest; break; }
+      if (i === 2) return latest;
+    }
+  }
+  return latestDmgName(store, TRIAL_DMG_NAME);
+}
+
 async function streamBlob(store, key, type, disposition) {
   let stream, meta;
   try {
@@ -168,7 +183,7 @@ export default async function handler(request) {
     const n = parseInt((await rl.get(key)) || "0", 10) || 0;
     if (n >= TRIAL_DAILY_LIMIT) return json(429, { error: "rate_limited", detail: "Too many downloads from this address today." });
     await rl.set(key, String(n + 1));
-    const name = await latestDmgName(store, TRIAL_DMG_NAME);
+    const name = await trialDmgName(store);
     if (!name) return json(404, { error: "no_trial", detail: "No trial build is available right now." });
     return streamBlob(store, name, "application/x-apple-diskimage", `attachment; filename="${name}"`);
   }

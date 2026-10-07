@@ -100,7 +100,7 @@ See `docs/paper-review-runbook.md` and `docs/security-paper-review.md`.
 
 ## Outbound Veil (Mac app) status
 
-**LIVE since 2026-10-04**, $29 one-time, 7-day trial edition. Page: https://purplelink.llc/outbound-veil/.
+**LIVE since 2026-10-04**, $29.99 one-time. Since 1.1.0 (2026-10-07) there is one download: 7-day trial, then a license key (see docs/products/unified-licensing-2026-10.md). Page: https://purplelink.llc/outbound-veil/.
 Release 1.0.0 (build 41) is published in the `outbound-veil-files` Blobs store; the YouTube tour is
 `EWlyzL88-uo`. The whole purchase chain was tested end to end in live mode with a one-use 100%-off
 promotion code (Stripe coupon "Outbound Veil launch test", now redeemed): checkout, success page,
