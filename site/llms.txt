@@ -326,6 +326,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - How to get feedback on a paper before submitting: https://purplelink.llc/guides/get-feedback-on-a-paper-before-submitting/ — colleagues, editing services, general AI assistants, preprints and Paper Review compared.
 - AI paper review tools compared: https://purplelink.llc/guides/ai-paper-review-tools-compared/ — Paperpal Preflight, SciScore, Writefull, a general chatbot and Paper Review: what each checks, price, and what it misses.
 - Overleaf alternatives for Mac: https://purplelink.llc/guides/overleaf-alternative-mac/ — offline LaTeX editors compared, and how to move a project off Overleaf.
+- TeXShop alternative for Mac: https://purplelink.llc/guides/texshop-alternative-mac/ — ModernTex, TeXShop and TeXstudio compared on price, platforms, PDF sync, multi-file projects and bibliographies, with who should pick which.
 - Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
 - GlobePin vs Polarsteps vs Visited: https://purplelink.llc/guides/globepin-vs-polarsteps/ — comparison of three iOS travel-mapping approaches.
 - Best health tracking apps that keep your data on your phone (2026): https://purplelink.llc/guides/best-on-device-health-apps/ — about 30 iPhone health apps compared by App Store privacy label, account, where the data lives and price, with Haea (Purplelink's own, not yet released) disclosed.

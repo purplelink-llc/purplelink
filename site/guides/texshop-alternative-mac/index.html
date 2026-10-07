@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>TeXShop alternative for Mac: ModernTex vs TeXShop vs TeXstudio | Purplelink</title>
+    <meta name="description" content="ModernTex, TeXShop and TeXstudio compared on price, platforms, PDF sync, multi-file projects and bibliographies, with who should pick which. TeXShop and TeXstudio are free.">
+    <link rel="canonical" href="https://purplelink.llc/guides/texshop-alternative-mac/">
+    <meta property="og:title" content="TeXShop alternative for Mac: ModernTex, TeXShop and TeXstudio compared">
+    <meta property="og:description" content="TeXShop and TeXstudio are free and ModernTex is $19.99 once. What each is built around, where they differ, and who should pick which.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/texshop-alternative-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/texshop-alternative-mac.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TeXShop alternative for Mac: ModernTex, TeXShop and TeXstudio compared">
+    <meta name="twitter:description" content="TeXShop and TeXstudio are free and ModernTex is $19.99 once. What each is built around, where they differ, and who should pick which.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/texshop-alternative-mac.png">
+    <meta name="twitter:image:alt" content="TeXShop alternative for Mac, comparison guide">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "TeXShop alternative for Mac: ModernTex, TeXShop and TeXstudio compared",
+          "description": "A comparison of ModernTex, TeXShop and TeXstudio for Mac users: price and licence, platforms, PDF sync, multi-file projects, bibliographies, and an honest guide to who should pick which, including when a free editor is the better choice.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-10-07",
+          "dateModified": "2026-10-07",
+          "image": "https://purplelink.llc/assets/og/texshop-alternative-mac.png",
+          "mainEntityOfPage": "https://purplelink.llc/guides/texshop-alternative-mac/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "TeXShop alternative for Mac", "item": "https://purplelink.llc/guides/texshop-alternative-mac/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is there a free TeXShop alternative for Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. TeXstudio is free and open source under the GPL (version 2), and it runs on macOS 13 or later, Windows and Linux. TeXShop itself is also free. Both need a TeX distribution such as MacTeX installed separately; TeXShop comes with the MacTeX installer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is ModernTex better than TeXShop or TeXstudio?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not in general. It is a different kind of editor. ModernTex is a paid, Mac-only app built around writing and submitting a journal manuscript, with submission checks, an anonymized export, version snapshots, and visual editors for TikZ and tables. TeXShop and TeXstudio are free, and TeXstudio also runs on Windows and Linux. If you do not need the manuscript features, a free editor is a reasonable choice."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do TeXShop, TeXstudio and ModernTex include LaTeX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. TeXShop and TeXstudio are editors that call a TeX distribution you install separately; MacTeX installs TeXShop along with TeX Live. ModernTex also needs a TeX distribution, either MacTeX or TinyTeX, and offers a one-click TinyTeX install if it finds none when you compile."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which of the three runs on Windows or Linux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only TeXstudio. TeXShop is macOS only, and ModernTex needs macOS 14 or later."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does ModernTex cost, and can I try it first?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is $19.99 once, with all updates included and no subscription. The free trial is the full app for seven days, with no account. If you buy it and it is not useful, email within 14 days of purchase for a refund."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I open the same project in all three?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. A LaTeX project is a folder of ordinary .tex, .bib and image files, and each editor reads it in place. Check the root file setting when you switch. TeXShop and TeXstudio both read a root-file comment at the top of chapter files, and ModernTex detects the root file itself."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=19b47f5814">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=eaf42deb7d" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Comparison</p>
+        <h1 class="post-title">TeXShop alternative for Mac: ModernTex, TeXShop and TeXstudio compared</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-07">October 7, 2026</time></p>
+        <p class="post-lede">TeXShop and TeXstudio are free. ModernTex costs $19.99 once. TeXShop is the Mac editor that comes with MacTeX, TeXstudio is the one of the three that also runs on Windows and Linux, and ModernTex is a paid, Mac-only editor built around writing and submitting a journal manuscript. If cost decides it, a free editor is a fair choice, and this page says when.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink makes and sells ModernTex, one of the three editors compared here. TeXShop and TeXstudio cost nothing, and for many people either one is the better pick. I took the facts about them from each project's own website and manual, listed under <a href="#last-checked">Last checked</a>, and left out anything I could not confirm there. The ModernTex facts are the ones on its <a href="/moderntex/">product page</a>.</p>
+
+        <h2>The three, side by side</h2>
+        <p>None of the three includes TeX itself. Each calls a TeX distribution such as <a href="https://www.tug.org/mactex/" rel="noopener">MacTeX</a>. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back, which these editors do through SyncTeX.</p>
+
+        <table class="compare-table compare-stack">
+          <caption>ModernTex, TeXShop and TeXstudio, checked October 7, 2026</caption>
+          <thead>
+            <tr>
+              <th scope="col">Editor</th>
+              <th scope="col">Price and licence</th>
+              <th scope="col">Runs on</th>
+              <th scope="col">TeX distribution</th>
+              <th scope="col">Synced PDF preview</th>
+              <th scope="col">Multi-file projects</th>
+              <th scope="col">Bibliography</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">ModernTex</th>
+              <td data-label="Price and licence">$19.99 once, after a free 7-day trial. Updates included. Refund if you email within 14 days.</td>
+              <td data-label="Runs on">macOS 14 or later, Apple silicon and Intel</td>
+              <td data-label="TeX distribution">Uses MacTeX or TinyTeX. Offers a one-click TinyTeX install if neither is found.</td>
+              <td data-label="Synced PDF preview">Yes, forward and inverse</td>
+              <td data-label="Multi-file projects">Root file detection and a structured sidebar</td>
+              <td data-label="Bibliography">BibTeX completion that searches by author, title or key. BibTeX or biblatex with Biber.</td>
+            </tr>
+            <tr>
+              <th scope="row"><a href="https://pages.uoregon.edu/koch/texshop/" rel="noopener">TeXShop</a></th>
+              <td data-label="Price and licence">Free. GPL (version 2), source available.</td>
+              <td data-label="Runs on">macOS only. The current release is for Intel and Apple silicon, and its site lists High Sierra through Tahoe.</td>
+              <td data-label="TeX distribution">Separate. Installed with MacTeX, or get BasicTeX and TeXShop on their own.</td>
+              <td data-label="Synced PDF preview">Yes, both directions, with a command-click or the contextual menu</td>
+              <td data-label="Multi-file projects">Yes. A root comment in each chapter file makes typesetting a chapter build the whole document.</td>
+              <td data-label="Bibliography">A BibTeX item in the Typeset menu. Typesetting engines, including latexmk-based ones, can run BibTeX for you.</td>
+            </tr>
+            <tr>
+              <th scope="row"><a href="https://www.texstudio.org/" rel="noopener">TeXstudio</a></th>
+              <td data-label="Price and licence">Free. Open source, GPL (version 2).</td>
+              <td data-label="Runs on">macOS 13 or later (Intel and Apple silicon builds), Windows, Linux</td>
+              <td data-label="TeX distribution">Separate. It detects TeX Live and MiKTeX.</td>
+              <td data-label="Synced PDF preview">Yes, in the built-in viewer, forward and inverse</td>
+              <td data-label="Multi-file projects">Automatic root detection, a root comment, or an explicit root setting. It loads included files.</td>
+              <td data-label="Bibliography">Completion for references and bibliography entries. The compile command runs BibTeX when needed.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>What each one is built around</h2>
+
+        <h3>TeXShop</h3>
+        <p>TeXShop is a Mac-only front end to TeX, written in Cocoa by Richard Koch with many contributors. It was first released on July 23, 2000, and it is free under the GPL. The MacTeX installer puts it in <code>/Applications/TeX</code> beside TeX Live Utility, BibDesk and LaTeXiT, so if you have installed MacTeX you already have it.</p>
+        <p>It keeps to the basics of writing LaTeX. Source and PDF preview can share one window or sit in two. SyncTeX takes you from a spot in the source to the matching spot in the PDF and back. For a thesis or book with chapter files, you put a root comment at the top of each chapter, and typesetting a chapter typesets the whole document. It also has a Macros menu, command completion on the Escape or Tab key, a BibTeX item in the Typeset menu, latexmk-based engines, and a manual of about two hundred pages in the Help menu. Its site says the current release runs on macOS 26, Tahoe, and the MacTeX page describes an extra build for Tahoe.</p>
+        <p><strong>Choose it if</strong> you want a free editor made for the Mac, you have MacTeX already, or you have an older Mac: its site lists the current release for macOS 10.13 and later.</p>
+
+        <h3>TeXstudio</h3>
+        <p>TeXstudio is free and open source under the GPL, written in C++ with Qt, and runs on Windows, Linux, macOS and BSD. It began in 2009 as a fork of Texmaker. Its site lists a structure view, code folding, a spell checker, grammar checker and reference checker, assistants that generate code for images and tables, more than 1000 math symbols, completion that covers references and bibliography entries, and an integrated PDF viewer with SyncTeX syncing. The build system supports several compilers, latexmk and bibliography tools, and it notices when LaTeX needs another run.</p>
+        <p>Its manual describes three more things worth knowing. There is a Git panel (the site's news puts it in 4.9.6, July 2026). There is an optional AI chat assistant, which uses your own account with a provider such as Mistral AI or Claude, or a local model. And there is collaborative editing: a second person on another computer opens a shared folder with an access code and sees your cursor and changes as you type. That feature uses a separate program, teamtype, which the manual says is currently available on macOS and Linux.</p>
+        <p>On a Mac, the download is a zip file. The site notes that the project has no Apple Developer account, so macOS may warn about an unidentified developer, and it gives the workaround of opening the app from its context menu.</p>
+        <p><strong>Choose it if</strong> you also work on Windows or Linux and want the same editor on each, or you want shared editing sessions, a Git panel and an AI assistant without paying for them.</p>
+
+        <h3>ModernTex</h3>
+        <p>ModernTex is the native macOS editor we make, built for journal articles, conference papers and dissertation chapters. It handles multi-file manuscripts with root file detection and a sidebar, keeps the PDF in sync in both directions, completes citations by searching your <code>.bib</code> by author, title or key, and explains compile errors in plain language. It adds submission-readiness checks (anonymization, page limits, required sections, packaging), an anonymized export for double-blind review, version snapshots with diffs, and visual editors for TikZ figures and tables that write the LaTeX for you. An optional Fix with AI proposes a repair for a build error and shows it as a diff first; it runs on Apple Intelligence or on your own Claude or OpenAI account.</p>
+        <p>What it does not do: real-time co-editing. Get Changes and Send Changes sync a project between your Macs or with a co-author, but two people cannot type in the same file at once. It runs only on macOS 14 or later, it is not on Windows, Linux or iPad, and it needs a TeX distribution. It was first released in September 2026, so it has far less of a track record than TeXShop or TeXstudio. <strong>Choose it if</strong> you write manuscripts on a Mac, mostly alone, and the submission-focused features are the ones you want. The <a href="/moderntex/">trial is the full app for seven days</a> with no account.</p>
+
+        <h2>What each one costs</h2>
+        <p>TeXShop and TeXstudio cost nothing. ModernTex is $19.99 once, with all updates included and no subscription. The trial is the full app for seven days, and if you buy it and it is not useful, email within 14 days of purchase and it is refunded.</p>
+        <p>All three compile a LaTeX project and show a synced PDF, so the money is not for the basics. It buys the manuscript-specific features described above. If those do not match how you work, you will not get $19.99 of use from them, and a free editor is the better choice.</p>
+
+        <h2>Where they differ</h2>
+        <ul>
+          <li><strong>Operating systems and Macs.</strong> TeXstudio is the only one of the three on Windows and Linux. On older Macs, TeXShop's site lists its current release for macOS 10.13 and later, TeXstudio's current build needs macOS 13, and ModernTex needs macOS 14.</li>
+          <li><strong>Working with co-authors.</strong> TeXstudio offers collaborative editing through teamtype, as described above. ModernTex has no real-time co-editing. If several people edit one draft at the same time in a browser, that is Overleaf's job; <a href="/guides/overleaf-alternative-mac/">the Overleaf guide</a> covers how to use it alongside a local editor.</li>
+          <li><strong>AI.</strong> TeXstudio's assistant and ModernTex's Fix with AI are both optional, and both can use your own provider account. TeXstudio's can also use a local model, and ModernTex's can run on Apple Intelligence on your Mac. Check what each one sends before you use it on unpublished work.</li>
+          <li><strong>History and version control.</strong> TeXstudio has a Git panel and SVN support. ModernTex takes snapshots you can diff, which is separate from Git.</li>
+          <li><strong>Installing.</strong> TeXShop arrives with MacTeX. TeXstudio is a zip, with the unidentified-developer note above. ModernTex is a signed and notarized disk image.</li>
+        </ul>
+
+        <h2>Who should pick which</h2>
+        <ul>
+          <li><strong>You want the Mac default and a price of zero.</strong> TeXShop. If MacTeX is installed, it is already there.</li>
+          <li><strong>You also use Windows or Linux.</strong> TeXstudio. It is the only one of the three that runs on all of them, and it is free.</li>
+          <li><strong>You have a Mac older than macOS 14.</strong> TeXShop or TeXstudio. ModernTex will not run.</li>
+          <li><strong>You want live shared editing without a browser.</strong> TeXstudio, within the limits of its teamtype requirement on macOS and Linux. ModernTex does not offer it.</li>
+          <li><strong>You write papers alone on a Mac and want submission checks, an anonymized export, snapshots, or visual TikZ and table editors.</strong> ModernTex, $19.99 once. Use the free trial on a real manuscript first.</li>
+          <li><strong>You are not sure.</strong> Start with TeXShop or TeXstudio. They cost nothing, and you can add ModernTex later.</li>
+        </ul>
+
+        <h2>Trying more than one</h2>
+        <p>A LaTeX project is a folder of ordinary files, so opening it in a second editor costs nothing but time. The setting most likely to differ is the root file. TeXShop and TeXstudio both read a root-file comment at the top of chapter files, and ModernTex detects the root file itself. Compile once in the new editor and compare the page count and reference list with your last PDF. For a longer look at fourteen Mac editors, including Texifier, Octree and VS Code, see <a href="/guides/best-mac-latex-editors/">the best LaTeX editors for Mac</a>.</p>
+
+        <h2 id="last-checked">Last checked</h2>
+        <p>October 7, 2026. The TeXShop and TeXstudio facts above were checked against these pages on that date. Versions and requirements change, so check the project's own site before you rely on a detail.</p>
+        <ul>
+          <li>TeXShop: <a href="https://pages.uoregon.edu/koch/texshop/" rel="noopener">home page</a> (licence, release, supported systems), <a href="https://pages.uoregon.edu/koch/texshop/about.html" rel="noopener">About TeXShop</a>, <a href="https://pages.uoregon.edu/koch/texshop/obtaining.html" rel="noopener">Obtaining</a>, <a href="https://pages.uoregon.edu/koch/texshop/tahoe.html" rel="noopener">Tahoe</a>, and the <a href="https://pages.uoregon.edu/koch/texshop/changes_3.html" rel="noopener">changes page</a> (sync, root comment, BibTeX, latexmk engines, completion).</li>
+          <li>MacTeX: <a href="https://tug.org/mactex/" rel="noopener">home page</a> and <a href="https://tug.org/mactex/gui-link.html" rel="noopener">GUI applications</a> (TeXShop installed with MacTeX, and the Tahoe build).</li>
+          <li>TeXstudio: <a href="https://www.texstudio.org/" rel="noopener">home page</a> (licence, platforms, macOS requirement, features, news) and its manual: <a href="https://texstudio-org.github.io/getting_started.html" rel="noopener">getting started</a>, <a href="https://texstudio-org.github.io/viewing.html" rel="noopener">PDF viewer</a>, <a href="https://texstudio-org.github.io/compiling.html" rel="noopener">compiling</a>, <a href="https://texstudio-org.github.io/editing.html" rel="noopener">editing</a>, <a href="https://texstudio-org.github.io/advanced.html" rel="noopener">advanced features</a> and <a href="https://texstudio-org.github.io/background.html" rel="noopener">background</a> (root documents, collaboration).</li>
+          <li>ModernTex: <a href="/moderntex/">the product page</a>.</li>
+        </ul>
+        <p>If something here is out of date or wrong, write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will fix it.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Is there a free TeXShop alternative for Mac?</summary><div class="faq-body">Yes. TeXstudio is free and open source under the GPL (version 2), and it runs on macOS 13 or later, Windows and Linux. TeXShop itself is also free. Both need a TeX distribution such as MacTeX installed separately; TeXShop comes with the MacTeX installer.</div></details>
+        <details><summary>Is ModernTex better than TeXShop or TeXstudio?</summary><div class="faq-body">Not in general. It is a different kind of editor. ModernTex is a paid, Mac-only app built around writing and submitting a journal manuscript, with submission checks, an anonymized export, version snapshots, and visual editors for TikZ and tables. TeXShop and TeXstudio are free, and TeXstudio also runs on Windows and Linux. If you do not need the manuscript features, a free editor is a reasonable choice.</div></details>
+        <details><summary>Do TeXShop, TeXstudio and ModernTex include LaTeX?</summary><div class="faq-body">No. TeXShop and TeXstudio are editors that call a TeX distribution you install separately; MacTeX installs TeXShop along with TeX Live. ModernTex also needs a TeX distribution, either MacTeX or TinyTeX, and offers a one-click TinyTeX install if it finds none when you compile.</div></details>
+        <details><summary>Which of the three runs on Windows or Linux?</summary><div class="faq-body">Only TeXstudio. TeXShop is macOS only, and ModernTex needs macOS 14 or later.</div></details>
+        <details><summary>What does ModernTex cost, and can I try it first?</summary><div class="faq-body">It is $19.99 once, with all updates included and no subscription. The free trial is the full app for seven days, with no account. If you buy it and it is not useful, email within 14 days of purchase for a refund.</div></details>
+        <details><summary>Can I open the same project in all three?</summary><div class="faq-body">Yes. A LaTeX project is a folder of ordinary .tex, .bib and image files, and each editor reads it in place. Check the root file setting when you switch. TeXShop and TeXstudio both read a root-file comment at the top of chapter files, and ModernTex detects the root file itself.</div></details>
+      </section>
+
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the team behind these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($19.99)</a>
+          <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/moderntex/">ModernTex, the native Mac LaTeX editor</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac</a></li>
+          <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=f687fd96c2" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
