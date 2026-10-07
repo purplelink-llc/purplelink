@@ -1,0 +1,13 @@
+#!/bin/bash
+# The internal outreach and research paths are no longer tracked here (they live in the private repo
+# purplelink-llc/purplelink-private and are git-ignored). When a fast-forward removes them from the working tree,
+# put the on-disk copies back from the local clone of that repo so scheduled tasks that read them keep working.
+PRIV="/Volumes/Extreme SSD/purplelink-private"
+ROOT="$(git rev-parse --show-toplevel)"
+[ -f "$PRIV/paths.txt" ] || exit 0
+while read -r p; do
+  [ -e "$PRIV/$p" ] || continue
+  mkdir -p "$ROOT/$(dirname "$p")"
+  rsync -a --ignore-existing "$PRIV/$p" "$ROOT/$(dirname "$p")/"
+done < "$PRIV/paths.txt"
+exit 0
