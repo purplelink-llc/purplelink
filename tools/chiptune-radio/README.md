@@ -66,11 +66,23 @@ It needs a token for the channel that owns the stream, scope `youtube.force-ssl`
 `YT_LIVE_TOKEN_JSON={...}`. Without it the stream runs as before and the log says "broadcast keeper off". Both lines are secrets.
 `python3.12 -m pytest -q test_broadcast.py` checks the logic against a fake service.
 
-## Rotation: ending a broadcast every 11 hours, almost seamlessly
+## Rotation: off by default, one endless broadcast
 
-YouTube only saves a replay of a live stream shorter than 12 hours (a stream can run longer, it just is not archived), so the
-stream rotates its broadcast every 11 hours and each one becomes a replay. The rotation used to go silent for ten minutes and
-wait for YouTube to notice. Now `broadcast.end_current` ends the live broadcast through the API at once, the pipeline restarts
-after 5 seconds, and the keeper opens the next broadcast, so the gap is about 20 seconds. If the API call fails the stream falls
-back to the old ten-minute wait. `--rotate-hours 0` turns rotation off entirely (one endless broadcast, no replays);
-`--rotate-gap N` forces a fixed gap.
+The stream runs as a single YouTube broadcast with no scheduled end (decided 2026-10-07): one permanent video address, likes and
+chat that keep building, and nobody dropped mid-session. The cost is no replays: YouTube only saves a replay of a live stream shorter
+than 12 hours, and says a longer one "might not be captured at all". A restart (a deploy, a crash) that reconnects within about
+half a minute keeps the same broadcast; a longer gap makes YouTube end it, and `broadcast.py` opens a fresh one within seconds.
+
+Rotation is still built in and tested if you want it back, set in `stream.env` or on the command line:
+
+| Setting | What it does |
+|---|---|
+| `STREAM_ROTATE_AT=03:00` (`--rotate-at`), `STREAM_TZ=America/New_York` | end the broadcast every day at that local time (daylight saving handled); no replays |
+| `STREAM_ROTATE_HOURS=11` (`--rotate-hours`) | end it every 11 hours so each becomes a replay |
+| `docker compose kill -s USR1 radio` | rotate right now, once |
+
+A rotation ends the old broadcast through the API (`broadcast.end_current`), restarts the pipeline 5 seconds later and has the keeper
+open the next one, so the gap is about 40 seconds (a rehearsal on 2026-10-07 measured 42 s); if that API call fails it falls back to
+waiting 10 minutes for YouTube to end it. A minute before a scheduled rotation the stream posts one chat message with the channel's
+permanent link, `https://www.youtube.com/channel/UCUv28P5SUzT4RLQOmi3EK8w/live`, which is the address to share: it always opens
+whatever is live.

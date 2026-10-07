@@ -163,9 +163,13 @@ def test_rotation_seconds_prefers_the_daily_time_then_hours_then_never():
     assert 0 < st.rotation_seconds(True, "03:00", "America/New_York", 11) <= 24 * 3600 + 1800
 
 
-def test_the_default_is_a_daily_3am_rotation_with_a_mixed_era():
+def test_the_default_is_one_endless_broadcast_with_a_mixed_era():
+    # Decided 2026-10-07: never rotate (one permanent video, no viewer is ever dropped; the cost is no replays). Rotation is still
+    # available: STREAM_ROTATE_AT=03:00 for a daily one, STREAM_ROTATE_HOURS=11 to keep every replay.
     src = open(st.__file__).read()
-    assert 'default=os.environ.get("STREAM_ROTATE_AT", "03:00")' in src
+    assert 'default=os.environ.get("STREAM_ROTATE_AT", "")' in src
+    assert 'default=float(os.environ.get("STREAM_ROTATE_HOURS", "0"))' in src
+    assert st.rotation_seconds(True, "", "America/New_York", 0.0) is None
     assert 'default=os.environ.get("STREAM_TZ", "America/New_York")' in src
     assert '"--era", choices=["8bit", "16bit", "synth", "hybrid", "mix", "cycle"], default="mix"' in src
     import subprocess, sys

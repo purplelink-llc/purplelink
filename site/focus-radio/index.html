@@ -185,7 +185,7 @@
         <a class="btn btn-primary" href="https://www.youtube.com/channel/UCUv28P5SUzT4RLQOmi3EK8w?sub_confirmation=1" rel="noopener">Subscribe on YouTube</a>
         <a class="btn" href="https://www.youtube.com/channel/UCUv28P5SUzT4RLQOmi3EK8w/live" rel="noopener">Open the stream on YouTube</a>
       </div>
-      <p class="page-meta">If the player is blank the stream may be between broadcasts (it restarts once a day, around 3 am Eastern, and this page reloads the player right after); try again in a minute, or open it on YouTube.</p>
+      <p class="page-meta">If the player is blank, the stream may be restarting for maintenance; try again in a minute, or open it on YouTube.</p>
 
       <h2>How the timer works</h2>
       <p>The timer runs <strong>25 minutes of focus</strong> then a <strong>5-minute break</strong>, all day. A focus block starts at :00 and :30 past every hour (UTC), so everyone listening is on the same clock. The box above shows where you are right now in your own browser.</p>
@@ -298,21 +298,5 @@
       })();
     </script>
 
-    <script>
-      // The stream starts a new YouTube broadcast once a day, around 3 am Eastern. Reload the player a minute or two after, so
-      // anyone with this page open lands on the new one instead of an "ended" screen.
-      (function () {
-        var f = document.querySelector(".yt-embed iframe");
-        if (!f || !window.Intl) return;
-        var fmt = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour12: false, hour: "numeric", minute: "numeric" });
-        var done = "";
-        setInterval(function () {
-          var p = fmt.formatToParts(new Date()), h = 0, m = 0;
-          p.forEach(function (x) { if (x.type === "hour") h = +x.value % 24; if (x.type === "minute") m = +x.value; });
-          var mins = h * 60 + m, day = new Date().toDateString();
-          if (mins >= 3 * 60 + 1 && mins <= 3 * 60 + 4 && done !== day) { done = day; f.src = f.src; }
-        }, 20000);
-      })();
-    </script>
 </body>
 </html>
