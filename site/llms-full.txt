@@ -11,7 +11,7 @@ Products
 
 # Tools for the paper, from first draft to accepted.
 
-Four Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
+Five Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
 
 Watch the overview
 
@@ -53,6 +53,10 @@ A Mac that is running out of disk space
 
 Legroom shows free space in the menu bar and cleans the folders and caches you choose, after you approve a preview.
 
+A Mac keyboard that makes no sound
+
+Keyfeel plays recorded keyboard-switch sounds as you type, with click sounds and optional trackpad haptics.
+
 Keeping track of where everything is
 
 Vitae, free.
@@ -81,11 +85,11 @@ Mac
 
 ## Keep your academic record in one place
 
-$49 once
+$54 once
 
 ### The Mac Suite
 
-ModernTex, Outbound Veil, Legroom and Vitae Plus for life in one payment. Bought separately they come to $82 the first year, then $24 a year for Plus.
+ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life in one payment. Bought separately they come to $92 the first year, then $24 a year for Plus.
 
 See the Suite →
 
@@ -120,6 +124,14 @@ Free 7-day trial, then $9
 A menu-bar app that shows your free disk space and cleans the folders and developer caches you choose, after you approve a preview. Its measurements stay on your Mac. macOS 14 or later.
 
 See Legroom →
+
+Free 7-day trial, then $9.99
+
+### Keyfeel
+
+A menu-bar app that plays recorded keyboard-switch sounds as you type, with mouse-click sounds, scroll ticks and optional trackpad haptics. It works offline and reads key codes, never the characters you type. macOS 13 or later.
+
+See Keyfeel →
 
 Before you submit
 
@@ -279,7 +291,7 @@ A native macOS LaTeX editor for researchers, not a programmer's IDE with LaTeX b
 
 Download the free 7-day trial
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom and Vitae Plus for life, $49 once. First ten minutes: install and first build.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Paste that key into the app's "Have a license key?" and the copy you have unlocks straight away; install the paid download once to get updates. Version 1.3.0 · 15 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54 once. First ten minutes: install and first build.
 
 Watch the tour
 
@@ -560,7 +572,7 @@ Try it free for 7 days
 
 The trial is the full app for seven days, with no account and nothing to enter. Buying is a single $29 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.1 · 36 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
-Also in the Mac Suite: Outbound Veil, ModernTex, Legroom and Vitae Plus for life, $49 once.
+Also in the Mac Suite: Outbound Veil, ModernTex, Legroom, Keyfeel and Vitae Plus for life, $54 once.
 
 Outbound Veil checking a fictional client note typed into a plain text field in Chrome. Every name and number on this page is invented.
 
@@ -717,7 +729,7 @@ Try it free for 7 days
 
 The trial runs for seven days from the first time you open it, with no account and nothing to enter. After it ends, the menu-bar readout and the low-space alerts keep working. Buying is a single $9 payment. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.0 · 6 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 
-Also in the Mac Suite: ModernTex, Outbound Veil, Legroom and Vitae Plus for life, $49 once.
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54 once.
 
 Sample data: a pretend home folder and invented numbers. The window title comes from the test build.
 
@@ -862,6 +874,160 @@ macOS 14 or later · Apple silicon and Intel · Signed and notarized
 
 Legroom free for 7 days
 Get Legroom
+
+
+---
+
+Source: https://purplelink.llc/keyfeel/
+Title: Keyfeel - Keyboard and Mouse Click Sounds for Mac | Purplelink LLC
+
+← All products
+
+macOS
+Not released yet
+Free 7-day trial · $9.99 to keep
+
+# Keyfeel
+
+Keyfeel plays real recorded keyboard-switch sounds when you press a key on your Mac, and adds mouse-click sounds, scroll ticks and optional trackpad haptics. It runs in the menu bar and works offline.
+
+Free trial opens at release
+
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version, size and release date are listed here when Keyfeel is released. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
+
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54 once.
+
+An illustration of the idea, not a screenshot of the app.
+
+## How it works
+
+### It hears that a key was pressed
+
+Through the macOS Input Monitoring permission, Keyfeel is told when a key goes down and comes back up. It uses the key code, which says which key it was, and never the characters you typed.
+
+### It plays a recording of a real switch
+
+Each press plays a recording from the sound profile you chose, and picks a different recording each time, so a repeated key does not sound like one sample on a loop.
+
+### It stays out of the way
+
+Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it goes quiet by itself while the microphone is in use.
+
+## What it does
+
+Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, plus synthesized extras. You can also import your own sound.
+
+KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own.
+
+MousePress and release sounds for mouse clicks, and a ripple on screen where you click.
+
+ScrollingScroll ticks that follow how fast you scroll.
+
+TrackpadOptional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.
+
+QuietSilence in the apps you choose, and automatic silence while the microphone is in use.
+
+ControlKeyfeel runs from the menu bar and is controlled there.
+
+## How it feels
+
+Four parts of the app, drawn rather than photographed. These are illustrations, not screenshots of the app.
+
+### Typing
+
+Every key press plays a recording of a real switch, with its own pitch and a place in the stereo field. Releasing the key can make a sound too.
+
+### Clicking
+
+Mouse clicks have press and release sounds, and a ripple spreads on screen from the point you clicked. Scrolling ticks along at the speed you scroll.
+
+### Trackpad
+
+Optional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.
+
+### Quiet when it should be
+
+Choose apps where Keyfeel stays silent. It also goes quiet by itself while the microphone is in use, so key sounds are not played into a call or a recording.
+
+## Privacy
+
+### Works offline
+
+Keyfeel makes its sounds and haptics on your Mac and needs no network connection. There are no accounts. The only network use is the paid app's check for a new version and, for buyers, the download.
+
+### Key codes, never characters
+
+To choose a sound, Keyfeel needs to know which key was pressed. It reads the key code, not the character the key produced. A key code is still a record of which keys you press, which is why macOS puts it behind a permission you grant.
+
+### Password fields stay silent
+
+When a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel. It hears nothing while you type a password.
+
+Details are on the privacy page.
+
+## The Input Monitoring permission
+
+The first time you open Keyfeel, macOS asks you to allow it under System Settings, Privacy & Security, Input Monitoring. That is the permission an app needs to be told about key presses made in other apps. Without it Keyfeel cannot hear your keyboard and stays silent. You can switch it off again in the same place at any time.
+
+## What it is not
+
+A keyloggerIt works from key codes, not the characters you type, and it does not send your typing anywhere.
+
+A keyboard remapperIt listens. It does not change what a key types and does not block any key.
+
+New hardwareSounds play through your Mac's audio output. Haptic feedback is felt only on the trackpad, and only while a finger is on it. Nothing happens inside your keyboard or mouse.
+
+Cross-platformMac only. There is no Windows, iPhone or iPad version.
+
+## Frequently asked questions
+
+What does it need to run?
+
+macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission.
+
+Does it read what I type?
+
+No. It reads which key was pressed, as a key code, so it can choose a sound. It does not read the characters. It works offline and does not send your typing anywhere.
+
+Does it hear me type passwords?
+
+No. When a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel, so it hears nothing there.
+
+Can I make it quiet in some apps, or on calls?
+
+Yes. You can silence Keyfeel in the apps you choose, and it goes quiet by itself while the microphone is in use.
+
+Why do the haptics need a finger on the trackpad?
+
+Keyfeel produces trackpad haptics only while a finger is on the trackpad, which is when you can feel them. They are optional.
+
+Are updates included?
+
+Yes, all of them. The price is a single payment, for life. The paid app checks for a new version and offers to install it in place.
+
+What happens when the trial ends?
+
+The trial is the complete app for seven days from the first time you open it, with no account. To keep using Keyfeel after that, buy it. Buying gives you a separate download of the full app to install in its place.
+
+Can I get a refund?
+
+Email ben@purplelink.llc within 14 days of purchase. See the terms.
+
+How do I get help?
+
+Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with.
+
+## Try it for a week.
+
+Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.
+
+Free trial opens at release
+Buy Keyfeel
+
+macOS 13 or later · Apple silicon and Intel
+
+Keyfeel free for 7 days
+Get Keyfeel
 
 
 ---
@@ -1022,7 +1188,7 @@ $24 a year
 
 Stripe handles the card; Purplelink never sees it. Stripe asks for a card to start the trial and charges nothing until the 7 days are up. Cancel before then and you pay nothing. Cancel anytime after that and Plus keeps working through the period you have paid for.
 
-Want Plus for life? It is included in the Mac Suite, $49 once, with ModernTex, Outbound Veil and Legroom.
+Want Plus for life? It is included in the Mac Suite, $54 once, with ModernTex, Outbound Veil, Legroom and Keyfeel.
 
 What Plus adds
 
@@ -4770,7 +4936,7 @@ Those eight cover most situations. More tools follow, then what to log whichever
 
 ## Vitae
 
-Cost: Free, no account, no limits on the record. Vitae Plus, an optional add-on, is $3 a month or $24 a year with a 7-day trial, and is included for life in the $49 Mac Suite. Platform: macOS 15 Sequoia or later, Mac only. Status: version 1.0.1, which its page labels beta.
+Cost: Free, no account, no limits on the record. Vitae Plus, an optional add-on, is $3 a month or $24 a year with a 7-day trial, and is included for life in the $54 Mac Suite. Platform: macOS 15 Sequoia or later, Mac only. Status: version 1.0.1, which its page labels beta.
 
 Vitae is a Mac app with structured records for submissions, grants, projects, collaborators, teaching, service and mentoring. A submission keeps its venue, dates, each review round, the decision, manuscript versions and a cover letter. When you pick a target venue it shows published acceptance rates for about 13,700 journals and conferences, and it forecasts publication timelines from your own history. A grant runs from planning to award with requested and awarded amounts, your share and reporting dates, and the app can search Grants.gov and fill an NSF or NIH award from its number. You can connect a mailbox read-only, and Vitae proposes updates from journal-system messages; you review each one. A tenure view counts your record against expectations you enter, such as articles, funding, h-index, talks and service.
 
@@ -5817,7 +5983,7 @@ Pick this if you deleted a lot and the free number did not move. Most of the tim
 
 ## Legroom (Purplelink's)
 
-Cost: A free 7-day trial, then $9 once, with no subscription; also part of the $49 Mac Suite. Platform: macOS 14 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.0.0, signed and notarized, which makes it the newest and least proven tool in this guide. I make it, and I have not compared it with the others on a test Mac.
+Cost: A free 7-day trial, then $9 once, with no subscription; also part of the $54 Mac Suite. Platform: macOS 14 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.0.0, signed and notarized, which makes it the newest and least proven tool in this guide. I make it, and I have not compared it with the others on a test Mac.
 
 I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set. You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which. A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any. Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate.
 

@@ -123,7 +123,8 @@
 - ModernTex (macOS, free 7-day trial then $19.99, shipping): https://purplelink.llc/moderntex/
 - Outbound Veil (macOS, free 7-day trial then $29): https://purplelink.llc/outbound-veil/
 - Legroom (macOS, free 7-day trial then $9): https://purplelink.llc/legroom/
-- Mac Suite (macOS, $49 once: ModernTex, Outbound Veil, Legroom and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
+- Keyfeel (macOS, free 7-day trial then $9.99, recorded keyboard-switch sounds as you type): https://purplelink.llc/keyfeel/
+- Mac Suite (macOS, $54 once: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/

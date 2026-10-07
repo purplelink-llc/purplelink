@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Keyfeel - Keyboard and Mouse Click Sounds for Mac | Purplelink LLC</title>
+    <meta name="description" content="A Mac menu-bar app that plays recorded keyboard-switch sounds as you type, with mouse-click sounds, scroll ticks and optional trackpad haptics. Works offline. Free for 7 days.">
+    <link rel="canonical" href="https://purplelink.llc/keyfeel/">
+    <meta property="og:title" content="Keyfeel - Keyboard and Mouse Click Sounds for Mac">
+    <meta property="og:description" content="A Mac menu-bar app that plays recorded keyboard-switch sounds on every key press, plus click sounds, scroll ticks and optional trackpad haptics. It works offline and reads key codes, never the characters you type.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/keyfeel.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/keyfeel/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Keyfeel - Keyboard and Mouse Click Sounds for Mac">
+    <meta name="twitter:description" content="A Mac menu-bar app that plays recorded keyboard-switch sounds on every key press, plus click sounds, scroll ticks and optional trackpad haptics. It works offline and reads key codes, never the characters you type.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/keyfeel.png">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=19b47f5814">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/keyfeel/keyfeel.css?v=47557f39a8">
+    <script src="/site.js?v=08bec1fd4a" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/keyfeel/launch.js?v=ad7bf6e4bf" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Keyfeel",
+          "applicationCategory": "UtilitiesApplication",
+          "applicationSubCategory": "Typing sounds",
+          "operatingSystem": "macOS 13+",
+          "url": "https://purplelink.llc/keyfeel/",
+          "image": "https://purplelink.llc/assets/og/keyfeel.png",
+          "description": "Keyfeel is a Mac menu-bar app that plays recorded keyboard-switch sounds when you press a key, with mouse-click sounds, scroll ticks and optional trackpad haptics. It works offline and reads key codes, never the characters you type.",
+          "softwareRequirements": "macOS 13 (Ventura) or later, Apple silicon or Intel. Needs the macOS Input Monitoring permission.",
+          "processorRequirements": "Apple silicon or Intel",
+          "featureList": [
+            "Recorded sound profiles (Tactile, Cherry MX Brown, Dome) plus synthesized extras",
+            "A different recording on each key press, with per-key pitch and left-to-right stereo",
+            "Press and release sounds, with their own sounds for the space bar and Return",
+            "Mouse click press and release sounds",
+            "Scroll ticks that follow how fast you scroll",
+            "Trackpad haptics on scroll and click, felt only while a finger is on the trackpad",
+            "Click ripple",
+            "Per-app silence, and automatic silence while the microphone is in use",
+            "Import your own sound",
+            "Controlled from the menu bar"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "9.99",
+            "priceCurrency": "USD",
+            "url": "https://purplelink.llc/keyfeel/",
+            "category": "One-time purchase, updates included",
+            "seller": { "@id": "https://purplelink.llc/#organization" },
+            "hasMerchantReturnPolicy": { "@type": "MerchantReturnPolicy", "applicableCountry": "US", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 14, "returnFees": "https://schema.org/FreeReturn", "refundType": "https://schema.org/FullRefund" }
+          },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does Keyfeel need to run?",
+              "acceptedAnswer": { "@type": "Answer", "text": "macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Keyfeel read what I type?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. It reads which key was pressed, as a key code, so it can choose a sound. It does not read the characters. It works offline and does not send your typing anywhere." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it hear me type passwords?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. When a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel, so it hears nothing there." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I make it quiet in some apps, or on calls?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. You can silence Keyfeel in the apps you choose, and it goes quiet by itself while the microphone is in use." }
+            },
+            {
+              "@type": "Question",
+              "name": "Are updates included?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, all of them. The price is a single payment, for life. The paid app checks for a new version and offers to install it in place." }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens when the trial ends?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial is the complete app for seven days from first launch, with no account. To keep using Keyfeel after that, buy it. Buying gives you a separate download of the full app to install in its place." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I get help?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Keyfeel", "item": "https://purplelink.llc/keyfeel/" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/products/">&larr; All products</a>
+
+    <div class="app-hero">
+      <img class="app-hero-icon" src="/assets/keyfeel-icon.webp" width="120" height="120" fetchpriority="high" alt="Keyfeel app icon">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS</span>
+          <span class="product-status product-status-soon" data-kf-pre-only>Not released yet</span>
+          <span class="product-status product-status-live" data-kf-live-only hidden>Free 7-day trial &middot; <span id="price">$9.99</span> to keep</span>
+        </div>
+        <h1 class="app-hero-name">Keyfeel</h1>
+        <p class="app-hero-tagline">Keyfeel plays real recorded keyboard-switch sounds when you press a key on your Mac, and adds mouse-click sounds, scroll ticks and optional trackpad haptics. It runs in the menu bar and works offline.</p>
+        <div class="app-hero-actions" id="buy">
+          <a class="btn btn-primary" id="trial-download" data-kf-gated data-kf-href="/.netlify/functions/keyfeel-download?trial=1" data-kf-live-text="Try it free for 7 days" aria-disabled="true">Free trial opens at release</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="keyfeel" data-kf-gated data-kf-live-text="Buy Keyfeel" disabled>Buying opens at release</button>
+        </div>
+        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-kf-facts>Version, size and release date are listed here when Keyfeel is released.</span> Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.</p>
+        <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54 once.</p>
+      </div>
+      <figure class="app-hero-window kf-hero-window">
+        <div class="frame-soft">
+          <img src="/keyfeel/img/hero.webp" alt="An illustration of a keyboard with one key lit and rings spreading out from it, a laptop behind it, and a mouse on the right with its own rings" width="1600" height="900" fetchpriority="high" decoding="async">
+        </div>
+        <figcaption>An illustration of the idea, not a screenshot of the app.</figcaption>
+      </figure>
+    </div>
+
+    <section class="features-section" aria-labelledby="how-h">
+      <div class="features-header">
+        <h2 id="how-h">How it works</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>It hears that a key was pressed</h3>
+          <p>Through the macOS Input Monitoring permission, Keyfeel is told when a key goes down and comes back up. It uses the key code, which says which key it was, and never the characters you typed.</p>
+        </div>
+        <div class="feature-item">
+          <h3>It plays a recording of a real switch</h3>
+          <p>Each press plays a recording from the sound profile you chose, and picks a different recording each time, so a repeated key does not sound like one sample on a loop.</p>
+        </div>
+        <div class="feature-item">
+          <h3>It stays out of the way</h3>
+          <p>Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it goes quiet by itself while the microphone is in use.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="does-h">
+      <h2 id="does-h">What it does</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Sound profiles</th><td>Recorded Tactile, Cherry MX Brown and Dome profiles, plus synthesized extras. You can also import your own sound.</td></tr>
+          <tr><th scope="row">Keys</th><td>Press and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own.</td></tr>
+          <tr><th scope="row">Mouse</th><td>Press and release sounds for mouse clicks, and a ripple on screen where you click.</td></tr>
+          <tr><th scope="row">Scrolling</th><td>Scroll ticks that follow how fast you scroll.</td></tr>
+          <tr><th scope="row">Trackpad</th><td>Optional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.</td></tr>
+          <tr><th scope="row">Quiet</th><td>Silence in the apps you choose, and automatic silence while the microphone is in use.</td></tr>
+          <tr><th scope="row">Control</th><td>Keyfeel runs from the menu bar and is controlled there.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="screenshots-section" aria-labelledby="feel-h">
+      <h2 id="feel-h">How it feels</h2>
+      <p class="section-intro">Four parts of the app, drawn rather than photographed. These are illustrations, not screenshots of the app.</p>
+      <div class="kf-feel" data-motion="stagger">
+        <figure class="kf-feel-item">
+          <div class="kf-feel-art">
+            <img src="/keyfeel/img/keyboard-typing.webp" alt="An illustration of two hands typing on a laptop keyboard, with rings of sound rising from three of the keys" width="753" height="566" loading="lazy" decoding="async">
+          </div>
+          <h3>Typing</h3>
+          <p>Every key press plays a recording of a real switch, with its own pitch and a place in the stereo field. Releasing the key can make a sound too.</p>
+        </figure>
+        <figure class="kf-feel-item">
+          <div class="kf-feel-art">
+            <img src="/keyfeel/img/mouse-click.webp" alt="An illustration of a mouse and a pointer, with purple rings spreading from the point that was clicked" width="622" height="507" loading="lazy" decoding="async">
+          </div>
+          <h3>Clicking</h3>
+          <p>Mouse clicks have press and release sounds, and a ripple spreads on screen from the point you clicked. Scrolling ticks along at the speed you scroll.</p>
+        </figure>
+        <figure class="kf-feel-item">
+          <div class="kf-feel-art">
+            <img src="/keyfeel/img/trackpad-haptics.webp" alt="An illustration of a finger pressing a trackpad, with rings spreading from the fingertip" width="703" height="446" loading="lazy" decoding="async">
+          </div>
+          <h3>Trackpad</h3>
+          <p>Optional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.</p>
+        </figure>
+        <figure class="kf-feel-item">
+          <div class="kf-feel-art">
+            <img src="/keyfeel/img/silent-calls.webp" alt="An illustration of a speaker with a sound wave next to a microphone with a line through it" width="516" height="344" loading="lazy" decoding="async">
+          </div>
+          <h3>Quiet when it should be</h3>
+          <p>Choose apps where Keyfeel stays silent. It also goes quiet by itself while the microphone is in use, so key sounds are not played into a call or a recording.</p>
+        </figure>
+      </div>
+    </section>
+
+    <section class="features-section bg-purple-xlight" aria-labelledby="privacy-h">
+      <div class="features-header">
+        <h2 id="privacy-h">Privacy</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>Works offline</h3>
+          <p>Keyfeel makes its sounds and haptics on your Mac and needs no network connection. There are no accounts. The only network use is the paid app's check for a new version and, for buyers, the download.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Key codes, never characters</h3>
+          <p>To choose a sound, Keyfeel needs to know which key was pressed. It reads the key code, not the character the key produced. A key code is still a record of which keys you press, which is why macOS puts it behind a permission you grant.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Password fields stay silent</h3>
+          <p>When a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel. It hears nothing while you type a password.</p>
+        </div>
+      </div>
+      <p>Details are on the <a href="/privacy/">privacy page</a>.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="perm-h">
+      <h2 id="perm-h">The Input Monitoring permission</h2>
+      <p class="specs-more">The first time you open Keyfeel, macOS asks you to allow it under System Settings, Privacy &amp; Security, Input Monitoring. That is the permission an app needs to be told about key presses made in other apps. Without it Keyfeel cannot hear your keyboard and stays silent. You can switch it off again in the same place at any time.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="not-h">
+      <h2 id="not-h">What it is not</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">A keylogger</th><td>It works from key codes, not the characters you type, and it does not send your typing anywhere.</td></tr>
+          <tr><th scope="row">A keyboard remapper</th><td>It listens. It does not change what a key types and does not block any key.</td></tr>
+          <tr><th scope="row">New hardware</th><td>Sounds play through your Mac's audio output. Haptic feedback is felt only on the trackpad, and only while a finger is on it. Nothing happens inside your keyboard or mouse.</td></tr>
+          <tr><th scope="row">Cross-platform</th><td>Mac only. There is no Windows, iPhone or iPad version.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-list" data-motion="stagger">
+        <details class="faq-item">
+          <summary>What does it need to run?</summary>
+          <div class="faq-body">macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it read what I type?</summary>
+          <div class="faq-body">No. It reads which key was pressed, as a key code, so it can choose a sound. It does not read the characters. It works offline and does not send your typing anywhere.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it hear me type passwords?</summary>
+          <div class="faq-body">No. When a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel, so it hears nothing there.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I make it quiet in some apps, or on calls?</summary>
+          <div class="faq-body">Yes. You can silence Keyfeel in the apps you choose, and it goes quiet by itself while the microphone is in use.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Why do the haptics need a finger on the trackpad?</summary>
+          <div class="faq-body">Keyfeel produces trackpad haptics only while a finger is on the trackpad, which is when you can feel them. They are optional.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Are updates included?</summary>
+          <div class="faq-body">Yes, all of them. The price is a single payment, for life. The paid app checks for a new version and offers to install it in place.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What happens when the trial ends?</summary>
+          <div class="faq-body">The trial is the complete app for seven days from the first time you open it, with no account. To keep using Keyfeel after that, buy it. Buying gives you a separate download of the full app to install in its place.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I get a refund?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href="/terms/">terms</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I get help?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
+      <h2 id="closing-cta-heading">Try it for a week.</h2>
+      <p>Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.</p>
+      <div class="closing-cta-actions">
+        <a class="btn btn-primary" data-kf-gated data-kf-href="/.netlify/functions/keyfeel-download?trial=1" data-kf-live-text="Try it free for 7 days" aria-disabled="true">Free trial opens at release</a>
+        <a class="btn btn-ghost" href="#buy" data-kf-live-only hidden>Buy Keyfeel</a>
+      </div>
+      <p class="closing-cta-fine">macOS 13 or later · Apple silicon and Intel</p>
+    </section>
+    <div class="sticky-cta" data-sticky-cta data-kf-sticky data-hide-when="#buy, .closing-cta, .footer" hidden>
+      <span class="sticky-cta-text"><strong>Keyfeel</strong> free for 7 days</span>
+      <a class="btn btn-primary" href="#buy" data-track="sticky_cta" data-track-meta="keyfeel">Get Keyfeel</a>
+    </div>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=f514a62b99" defer></script>
+</body>
+</html>

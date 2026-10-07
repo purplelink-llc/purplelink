@@ -26,6 +26,7 @@ PAGES = [
     "moderntex/",
     "outbound-veil/",
     "legroom/",
+    "keyfeel/",
     "vitae/",
     "vitae/plus/",
     "tools/paper-review/",

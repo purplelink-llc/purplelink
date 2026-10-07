@@ -1,5 +1,5 @@
-// /suite/success/ — turn a paid Mac Suite session into four things: the ModernTex download,
-// the Outbound Veil download, the Legroom download, and a lifetime Vitae Plus key. Each is its own request, so one
+// /suite/success/ — turn a paid Mac Suite session into five things: the ModernTex download,
+// the Outbound Veil download, the Legroom download, the Keyfeel download, and a lifetime Vitae Plus key. Each is its own request, so one
 // slow or failed part never hides the others. Everything is built with textContent or an
 // escaped attribute; nothing from a response is parsed as HTML.
 (function () {
@@ -8,9 +8,10 @@
     mtx: document.getElementById("dl-moderntex"),
     ov: document.getElementById("dl-ov"),
     lg: document.getElementById("dl-lg"),
+    kf: document.getElementById("dl-kf"),
     key: document.getElementById("license"),
   };
-  if (!boxes.mtx || !boxes.ov || !boxes.lg || !boxes.key) return;
+  if (!boxes.mtx || !boxes.ov || !boxes.lg || !boxes.kf || !boxes.key) return;
 
   var FALLBACK = "We could not prepare this part. Email the address on your receipt and we will send it directly.";
 
@@ -33,7 +34,7 @@
 
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
     var msg = "If you just completed a purchase, use the link in your receipt email. If this looks wrong, email the address on your receipt and we will help.";
-    note(boxes.mtx, msg); note(boxes.ov, msg); note(boxes.lg, msg); note(boxes.key, msg);
+    note(boxes.mtx, msg); note(boxes.ov, msg); note(boxes.lg, msg); note(boxes.kf, msg); note(boxes.key, msg);
     return;
   }
 
@@ -134,5 +135,6 @@
   files(boxes.mtx, "moderntex-download");
   files(boxes.ov, "outbound-veil-download");
   files(boxes.lg, "legroom-download");
+  files(boxes.kf, "keyfeel-download");
   loadKey();
 })();

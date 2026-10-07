@@ -1,0 +1,35 @@
+/* /keyfeel/ page. External file so the strict CSP permits it. */
+
+/* Release gate: until launch.js switches Keyfeel on, the trial link and the Buy button
+   are present but dead. A link without an href is not focusable; the button carries the
+   disabled attribute. */
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+/* Class rules such as .btn set display, which would otherwise beat the hidden attribute. */
+[data-kf-live-only][hidden],
+[data-kf-pre-only][hidden] { display: none !important; }
+.product-status-soon { color: var(--muted); }
+
+.kf-hero-window .frame-soft { max-width: 640px; margin-inline: auto; }
+.kf-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+/* The four illustrations were drawn on white, so they sit on a light panel in both themes. */
+.kf-feel { display: grid; gap: clamp(20px, 3vw, 32px); grid-template-columns: 1fr; }
+@media (min-width: 760px) { .kf-feel { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.kf-feel-item { margin: 0; display: grid; gap: 12px; align-content: start; }
+.kf-feel-art {
+  background: oklch(97% 0.012 310);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: clamp(14px, 2vw, 24px);
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+}
+.kf-feel-art img { display: block; width: auto; max-width: 100%; height: auto; max-height: 260px; }
+.kf-feel-item h3 { margin: 4px 0 0; }
+.kf-feel-item p { margin: 0; color: var(--muted); max-width: 52ch; }
+.kf-note { max-width: 64ch; color: var(--muted); font-size: 0.9rem; }
