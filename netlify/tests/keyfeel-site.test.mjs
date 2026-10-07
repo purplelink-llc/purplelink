@@ -55,13 +55,13 @@ test("after launch, the static page already shows the live wording and the trial
   }
   assert.doesNotMatch(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
   assert.doesNotMatch(html, /Not released yet|opens at release/);
-  assert.match(html, /Version 1\.2\.0, released October 7, 2026\. 7 MB disk image\./);
+  assert.match(html, /Version 1\.3\.0, released October 7, 2026\. 7 MB disk image\./);
 });
 
 test("launch.js ships switched on with valid facts", () => {
   const src = read("keyfeel/launch.js");
   assert.match(src, /live: true,/);
-  assert.match(src, /version: "1\.2\.0",/);
+  assert.match(src, /version: "1\.3\.0",/);
   assert.match(src, /sizeMb: "7",/);
   assert.match(src, /released: "2026-10-07"/);
 });
