@@ -251,7 +251,7 @@ def render_html(digest: DigestData) -> str:
             <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
             <span>Purplelink LLC</span>
           </a>
-          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
           <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
         </div>
         <nav class="footer-col" aria-label="Products">
@@ -498,7 +498,7 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
             <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
             <span>Purplelink LLC</span>
           </a>
-          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
           <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
         </div>
         <nav class="footer-col" aria-label="Products">
