@@ -29,6 +29,7 @@ from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 
 import broadcast
+import chime
 import chiptune as c
 import scene as sc
 
@@ -173,7 +174,8 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
     os.close(r_fd)
     audio = Audio(start_seed, era)
     scene = sc.Scene(seed=start_seed)
-    t0_wall = time.time()
+    t0_wall = time.time() + float(os.environ.get("CHIPTUNE_CLOCK_OFFSET", "0"))   # the offset is for tests: it lets a short render cross a Pomodoro boundary
+    chimer = chime.Chimer(t0_wall, enabled=os.environ.get("CHIPTUNE_CHIME", "1") != "0")    # a soft chime at :25 (break) and :00/:30 (focus), on the timer's clock
     sim0 = (t0_wall % (2 * 3600.0))              # the scene's day cycle follows the real clock, so a restart does not jump
     failed = threading.Event()
 
@@ -184,6 +186,7 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
                 for chunk in audio.chunks():
                     if stop.is_set() or failed.is_set():
                         break
+                    chunk = chimer.mix(chunk, audio.written)
                     pcm = (np.clip(chunk.T, -1, 1) * 32767).astype("<i2")
                     if limit is not None and audio.written + len(pcm) > limit:
                         pcm = pcm[: max(0, limit - audio.written)]
