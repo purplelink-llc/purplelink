@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Ball Lab: a Free Ball-Physics Toy You Can Play in Your Browser | Purplelink</title>
+    <meta name="description" content="Drop balls, flip gravity, hold a magnet, set off a chain reaction, and make music from the bounces. A free, satisfying physics toy that works instantly on your phone. No download.">
+    <link rel="canonical" href="https://purplelink.llc/ball-lab/">
+    <meta property="og:title" content="Ball Lab: a free ball-physics toy">
+    <meta property="og:description" content="Drop balls, flip gravity, hold a magnet, set off a chain reaction, and make music from the bounces. A free, satisfying physics toy that works instantly on your phone. No download.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/ball-lab.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/ball-lab/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ball Lab: a free ball-physics toy">
+    <meta name="twitter:description" content="Drop balls, flip gravity, hold a magnet, set off a chain reaction, and make music from the bounces. A free, satisfying physics toy that works instantly on your phone. No download.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/ball-lab.png">
+    <meta name="twitter:image:alt" content="Glowing balls bouncing and trailing light in Ball Lab">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=19b47f5814">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=eaf42deb7d" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <style>
+      .bl-wrap { max-width: 640px; margin: 1.2rem auto 0; }
+      #bl-canvas { display: block; width: 100%; border-radius: 16px; border: 1px solid var(--line, #3a2f45); background: #07060c; touch-action: none; cursor: crosshair; }
+      .bl-stage { position: relative; }
+      #bl-hint { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; color: #fff; font: 600 .95rem/1.2 system-ui, sans-serif; text-shadow: 0 1px 6px #000; pointer-events: none; transition: opacity .6s; }
+      .bl-bar { display: flex; flex-wrap: wrap; gap: .5rem; margin: .8rem 0 0; }
+      .bl-bar[hidden] { display: none; }
+      .bl-bar .btn { min-height: 44px; padding: .55rem .95rem; }
+      .bl-bar .btn[aria-pressed="true"] { background: var(--purple, #8a5cf6); color: #fff; border-color: transparent; }
+      .bl-modes .btn { flex: 1 1 0; }
+      .bl-status { min-height: 1.2em; margin: .4rem 0 0; font-size: .9rem; opacity: .8; }
+    </style>
+    <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://purplelink.llc/ball-lab/#webpage",
+      "url": "https://purplelink.llc/ball-lab/",
+      "name": "Ball Lab: a Free Ball-Physics Toy You Can Play in Your Browser | Purplelink",
+      "description": "Drop balls, flip gravity, hold a magnet, set off a chain reaction, and make music from the bounces. A free, satisfying physics toy that works instantly on your phone. No download.",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Purplelink",
+        "url": "https://purplelink.llc/"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://purplelink.llc/assets/og/ball-lab.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Games",
+          "item": "https://purplelink.llc/games/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Ball Lab",
+          "item": "https://purplelink.llc/ball-lab/"
+        }
+      ]
+    },
+    {
+      "@type": "WebApplication",
+      "name": "Ball Lab",
+      "url": "https://purplelink.llc/ball-lab/",
+      "description": "Drop balls, flip gravity, hold a magnet, set off a chain reaction, and make music from the bounces. A free, satisfying physics toy that works instantly on your phone. No download.",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any (runs in the browser)",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "isAccessibleForFree": true,
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Ball Lab?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A free physics toy that runs in your browser. Tap to drop glowing balls, flip gravity, hold a magnet, shake or explode them, and every collision plays a note. There is also a polyrhythm mode where nine balls bounce at slightly different rates and all land together every 40 seconds."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to download anything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It runs in the page on a phone, tablet or computer, with no account and nothing to install."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Ball Lab is free to play."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where do the simulations in the videos come from?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "From Ball Bouncer, which posts a new procedurally generated ball-physics simulation every day on Instagram, TikTok and YouTube. Ball Lab lets you play with the same kind of physics yourself."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can you make a ball simulation for my brand?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Ball Bouncer makes custom clips built around a logo, colors and game theme, at a flat price per clip. See the Ball Bouncer page and send a short brief."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/" aria-current="page">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content" class="static-page ball-lab-page">
+      <h1>Ball Lab</h1>
+      <p class="page-meta">A free ball-physics toy &middot; plays in your browser &middot; nothing to install</p>
+      <p>Drop balls, flip gravity, hold a magnet, set them off. Every collision plays a note. The same kind of physics as the <a href="/ballbouncer/">Ball Bouncer</a> videos, in your hands.</p>
+
+      <div class="bl-wrap">
+        <div class="bl-bar bl-modes" role="group" aria-label="Mode">
+          <button class="btn" type="button" data-mode="sandbox" aria-pressed="true">Sandbox</button>
+          <button class="btn" type="button" data-mode="poly" aria-pressed="false">Polyrhythm</button>
+        </div>
+        <div class="bl-stage">
+          <canvas id="bl-canvas" role="img" aria-label="Glowing balls bouncing around. Tap or click to drop more."></canvas>
+          <div id="bl-hint">Tap to drop balls</div>
+        </div>
+        <div class="bl-bar" data-for="sandbox" role="group" aria-label="Sandbox controls">
+          <button class="btn" type="button" data-act="add">Drop 12</button>
+          <button class="btn" type="button" data-act="flip" aria-pressed="false">Flip gravity</button>
+          <button class="btn" type="button" data-act="magnet" aria-pressed="false">Magnet</button>
+          <button class="btn" type="button" data-act="shake">Shake</button>
+          <button class="btn" type="button" data-act="boom">Boom</button>
+          <button class="btn" type="button" data-act="slow" aria-pressed="false">Slow-mo</button>
+          <button class="btn" type="button" data-act="clear">Clear</button>
+        </div>
+        <div class="bl-bar" data-for="poly" role="group" aria-label="Polyrhythm controls" hidden>
+          <button class="btn" type="button" data-act="slow" aria-pressed="false">Slow</button>
+          <button class="btn" type="button" data-act="fast" aria-pressed="false">Fast</button>
+        </div>
+        <div class="bl-bar" role="group" aria-label="Sound and sharing">
+          <button class="btn" type="button" data-act="sound" aria-pressed="true">Sound</button>
+          <button class="btn" type="button" data-act="pause" aria-pressed="false">Pause</button>
+          <button class="btn btn-primary" type="button" data-act="share">Share</button>
+        </div>
+        <p class="bl-status" id="bl-status" role="status" aria-live="polite"></p>
+      </div>
+
+      <h2>How to play</h2>
+      <p><strong>Sandbox:</strong> tap or click the canvas to drop balls. <em>Flip gravity</em> sends everything to the ceiling. Turn on <em>Magnet</em> and drag to pull the balls toward your finger. <em>Boom</em> blasts them outward from the middle. Big balls play low notes and small ones play high notes.</p>
+      <p><strong>Polyrhythm:</strong> nine balls bounce at slightly different speeds, one more bounce each, and all land together once every 40 seconds. Watch the countdown, and listen for the chord when they realign.</p>
+
+      <h2>Questions</h2>
+      <h3>What is Ball Lab?</h3>
+      <p>A free physics toy that runs in your browser. Tap to drop glowing balls, flip gravity, hold a magnet, shake or explode them, and every collision plays a note. There is also a polyrhythm mode where nine balls bounce at slightly different rates and all land together every 40 seconds.</p>
+      <h3>Do I need to download anything?</h3>
+      <p>No. It runs in the page on a phone, tablet or computer, with no account and nothing to install.</p>
+      <h3>Is it free?</h3>
+      <p>Yes. Ball Lab is free to play.</p>
+      <h3>Where do the simulations in the videos come from?</h3>
+      <p>From Ball Bouncer, which posts a new procedurally generated ball-physics simulation every day on Instagram, TikTok and YouTube. Ball Lab lets you play with the same kind of physics yourself.</p>
+      <h3>Can you make a ball simulation for my brand?</h3>
+      <p>Yes. Ball Bouncer makes custom clips built around a logo, colors and game theme, at a flat price per clip. See the Ball Bouncer page and send a short brief.</p>
+      
+      <h2>More Ball Bouncer</h2>
+      <p>A new simulation goes up every day on <a href="https://www.instagram.com/ballbouncersim/" rel="noopener">Instagram</a>, <a href="https://www.tiktok.com/@ballbouncervideos" rel="noopener">TikTok</a> and <a href="https://www.youtube.com/@BallBouncerVideos" rel="noopener">YouTube</a>. Want a clip built around your brand? <a href="/ballbouncer/">See the custom simulations</a>.</p>
+    </main>
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Mac apps and manuscript tools for academic researchers, made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=f687fd96c2" defer></script>
+    <script src="/ball-lab/ball-lab.js?v=1" defer></script>
+</body>
+</html>
