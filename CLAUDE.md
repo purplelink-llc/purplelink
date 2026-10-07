@@ -112,3 +112,7 @@ fixed 2026-10-04). Runbook: `docs/products/outbound-veil.md`. App source: `/Volu
 **Name:** Ben reviewed the trademark note and decided "Outbound Veil is fine" (2026-10-04). Residual risk, for the
 record only: a pending USPTO application for VEIL (serial 79459516, data-security software, filed 2026-07-31).
 See that repo's `docs/name-clearance-2026-10-03.md`. Do not re-raise it unless a refusal or a letter arrives.
+
+## Public repo, private internals
+
+This repo is public (Netlify's free plan cannot deploy a private organization repo). Outreach logs and contact lists (`Outreach/`), growth research (`docs/growth-briefs/`), `docs/organic-traffic/`, `docs/photo-licensing/`, the paper-review runbook, the security notes and other internal docs are NOT tracked here. They stay on disk, git-ignored, and are backed up to the private repo `purplelink-llc/purplelink-private` (clone at `/Volumes/Extreme SSD/purplelink-private`; run its `sync.sh` to refresh, `paths.txt` lists the paths). A `.githooks/post-merge` hook restores them from that clone if a fast-forward removes them. Never `git add` those paths, and do not make this repo private without re-linking Netlify (see memory: repo-visibility-breaks-netlify).
