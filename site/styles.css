@@ -4821,6 +4821,11 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .scholar-demo-badges .sd-retracted { color: oklch(98% 0.01 25); background: oklch(44% 0.17 25); border-color: transparent; }
 .scholar-demo figcaption { margin-top: 14px; font-size: 0.78rem; color: oklch(46% 0.04 300); }
 .section-scholar .scholar-demo { max-width: 620px; }
+.scholar-shot { margin: 0; max-width: 620px; }
+.scholar-shot img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+.scholar-shot figcaption { margin-top: 12px; font-size: 0.8rem; color: var(--muted); }
+.catalog-hero-with-visual .scholar-shot.catalog-hero-visual { max-width: 680px; }
+
 .scholar-demo-light {
   background: var(--panel);
   color: var(--ink);
