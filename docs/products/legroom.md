@@ -4,11 +4,13 @@ Built on branch `legroom` (worktree `../Purplelink-legroom`), not yet live. Rele
 Legroom repo (`/Volumes/Extreme SSD/Legroom`, branch `release`, `releases/staging/1.0.0/`: paid DMG 6.3 MB, trial DMG
 5.3 MB, both notarized). This page is the runbook; the go-live steps are at the bottom.
 
-Legroom is sold on purplelink.llc/legroom as a one-time $9.99 purchase with a 7-day trial edition, and is also in the
+Legroom is sold on purplelink.llc/legroom as a one-time $9.99 purchase with a 7-day trial from first launch (one download for everyone from 1.1.0; the 1.0.x line had a separate trial build), and is also in the
 Mac Suite ($54.99, see `app-suite.md`). It is a menu-bar app that shows free disk space, warns before the disk fills, and
 cleans folders and developer caches through rules the user previews and approves (Trash or permanent delete), with
 What Grew (daily measurements, 1/7/30-day growth), Suggestions, Space Map and Find Files. After the trial the menu-bar
-readout and low-space alerts stay free; rules, What Grew, Suggestions, Space Map and Find Files lock.
+readout and low-space alerts stay free; rules, What Grew, Suggestions, Space Map and Find Files lock until a license key
+is entered. 1.1.0 (one download with a license key, 2026-10-07) is not published at the time of writing: see "One download, one key" below
+and `unified-licensing-2026-10.md`.
 
 **Copy rule, decided 2026-10-05:** the pages say only "one-time $9.99, 7-day free trial" (it was $9 until the 2026-10-07 .99 pricing decision). They do not promise future major
 versions, and they do not mention the Uninstaller, widget or command-line tool (planned, unreleased). Terms say
@@ -33,16 +35,29 @@ The Mac Suite is priced inline in `checkout.mjs` (`amount: 5499`, see `app-suite
 
 - Buyers: `?session_id=cs_...` lists files; `&file=Legroom-x.y.z.dmg` streams one. The session must be paid and carry
   `metadata.product` of `legroom` **or `app-suite`**, so every Suite buyer, including those who paid $39, gets Legroom.
-- Trial (public): `?trial=1` streams the newest `Legroom-Trial-x.y.z.dmg`, 20 downloads per IP per day. The trial
-  edition is the same source built with `LG_EDITION=trial`: 7 days from first launch (Keychain plus a file, earliest
-  wins). It does not link Sparkle and has no feed, so it cannot update into the paid app.
-- Updates (Sparkle, paid build only): `?feed=1` and `?update=<dmg>` (and `?stats=1` for download counts) require the
+- Trial (public): `?trial=1` streams the same newest `Legroom-x.y.z.dmg` the buyers get once a 1.1.0-or-later DMG is in
+  the store, 20 downloads per IP per day; until then it serves the legacy `Legroom-Trial-x.y.z.dmg` (1.0.x trial build,
+  7 days from first launch, no Sparkle). The 7-day clock is Keychain plus a file, earliest wins.
+- Updates (Sparkle, every copy from 1.1.0): `?feed=1` and `?update=<dmg>` (and `?stats=1` for download counts) require the
   header `X-Legroom-Channel: <LEGROOM_UPDATE_TOKEN>`, compared in constant time; 403 otherwise. The app checks once a
   day (`SUScheduledCheckInterval` 86400) and asks before installing (`SUAutomaticallyUpdate` false). The Sparkle key is
   Legroom's own (`--account legroom` in the login keychain), not ModernTex's.
-- There is no licence key. The buyer email (webhook `BLOB_DELIVERED_PRODUCTS`) carries the success-page link and the
-  one-sentence review ask. `purchases-recover.mjs` (`/recover/`) re-sends it; a Suite recovery now names Legroom.
+- From 1.1.0 there is a license key (see below). The buyer email (webhook `BLOB_DELIVERED_PRODUCTS`) carries the key,
+  the success-page link and the one-sentence review ask. `purchases-recover.mjs` (`/recover/`) re-sends the same key;
+  a Suite recovery names Legroom.
 - The app's Buy button opens `https://purplelink.llc/legroom/` (`LicenseText.buyURL`).
+
+## One download, one key (1.1.0 onward)
+
+- One DMG for everyone (`Legroom-x.y.z.dmg`, about 6.6 MB for 1.1.0; confirm against the staged DMG). The trial link and
+  the buyer's download are the same file. 7-day trial from first launch, then the app locks cleaning and the other paid
+  features and keeps the free-space readout and low-space alerts, with a way to enter a key.
+- Key scheme `PurplelinkLicenseV1`, prefix `LG1` (spec: `unified-licensing-2026-10.md`). Keys derive from the Stripe
+  session id, so the email, the success page (`purchase-license.mjs`) and `/recover/` show the same key. Offline check,
+  no account, no activation count.
+- Entry: "Enter license key…" in the menu-bar dropdown and in Settings, General.
+- Copies that ran as a paid build before 1.1.0 are recognized and never ask for a key; a trial copy keeps its start date.
+- Keyfeel is separate (its own `KFL1` scheme); ModernTex keeps `MTX1`.
 
 Tests: `node --experimental-test-module-mocks --test netlify/tests/{legroom-download,legroom-site,suite-entitlement,suite-webhook,checkout,purchases-recover}.test.mjs`
 (the one `purchases-recover` failure on Node 26 is the known JWK issue in `app-suite.md`).
@@ -50,8 +65,9 @@ Tests: `node --experimental-test-module-mocks --test netlify/tests/{legroom-down
 ## What the privacy page says the app sends
 
 No account, no analytics; measurements, rules, the log and the trial clock stay on the Mac. The only network use is the
-Buy link (opens a browser) and, in the paid build, the daily Sparkle request to the feed URL, which carries the app name
-and version (Sparkle's User-Agent) and the update token header, plus the IP address any request has. The site counts
+Buy link (opens a browser) and, in every copy from 1.1.0, the daily Sparkle request to the feed URL, which carries the app
+name and version (Sparkle's User-Agent) and the update token header, plus the IP address any request has. License keys are
+checked on the Mac and send nothing. The site counts
 downloads per version, not people. Before launch it is worth confirming this with a packet capture (Sparkle's
 User-Agent contents and that no system profile is sent: `SUEnableSystemProfiling` is not set).
 
@@ -60,18 +76,19 @@ User-Agent contents and that no system profile is sent: `SUEnableSystemProfiling
 From the Legroom repo, on a clean commit (the build reads the token from `~/.config/purplelink/legroom-update-token`):
 
 ```
-LG_VERSION=1.0.0 scripts/build-release.sh                      # stages the paid DMG, notarized
-LG_VERSION=1.0.0 LG_EDITION=trial scripts/build-release.sh     # then the trial
-scripts/publish-release.sh 1.0.0 --dry-run                     # shows what would go live
-scripts/publish-release.sh 1.0.0                               # asks you to type "publish"
-scripts/publish-release.sh 1.0.0 --rollback                    # pulls it back
+LG_VERSION=1.1.0 scripts/build-release.sh                      # stages the one DMG, notarized
+scripts/publish-release.sh 1.1.0 --dry-run                     # shows what would go live
+scripts/publish-release.sh 1.1.0                               # asks you to type "publish"
+scripts/publish-release.sh 1.1.0 --rollback                    # pulls it back
+
+# 1.0.x only (retired): LG_EDITION=trial built the separate trial DMG; there is no edition switch from 1.1.0.
 ```
 
 `publish-release.sh` refuses unless `$SITE_REPO/netlify/functions/legroom-download.mjs` and `$SITE/legroom/` exist, and
 runs `netlify blobs:set` with the site repo as the working directory, so run it from a checkout that has the
 `legroom` branch merged and the Netlify link (`.netlify/state.json`, site `b264591f-...`); by default that is
 `/Volumes/Extreme SSD/Purplelink LLC`. Publish the Blobs **after** the site deploy so the function exists, but before
-announcing. Then update the version text on `/legroom/` ("Version 1.0.0 · 6 MB disk image") and deploy again.
+announcing. Then update the version text on `/legroom/` ("Version 1.1.0 · 6.6 MB disk image") and deploy again.
 
 ## Dashboard
 

@@ -95,17 +95,22 @@
             {
               "@type": "Question",
               "name": "Does it send my files or measurements anywhere?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. There is no account and no analytics. Apart from the daily update check in the paid build and the Buy link, which opens this page in your browser, Legroom does not use the network." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. There is no account and no analytics. Apart from the download itself, the daily update check that every copy makes and the Buy link, which opens this page in your browser, Legroom does not use the network." }
             },
             {
               "@type": "Question",
               "name": "What happens when the trial ends?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you install the paid build. Buying gives you a separate download of the full app to install in place of the trial." }
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the Find a purchase page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download." }
+            },
+            {
+              "@type": "Question",
+              "name": "I already bought Legroom. Do I need a key?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. If you install this version over a copy you already paid for, it recognizes that copy and never asks for a key." }
             },
             {
               "@type": "Question",
               "name": "Are updates included?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Updates to the version you buy are included. The paid app checks for a new version once a day and asks before installing it. I have not decided whether a later major version would be a free update." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Updates to the version you buy are included. Every copy, trial or licensed, checks for a new version once a day and asks before installing it. I have not decided whether a later major version would be a free update." }
             },
             {
               "@type": "Question",
@@ -115,7 +120,7 @@
             {
               "@type": "Question",
               "name": "How do I get help?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link or your license key, the Find a purchase page emails them again to the address you paid with." }
             }
           ]
         },
@@ -167,7 +172,7 @@
         </div>
         <p class="buy-assurance">Refunded if you email within 14 days of purchase.</p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
-        <p class="waitlist-fine-print">The trial runs for seven days from the first time you open it, with no account and nothing to enter. After it ends, the menu-bar readout and the low-space alerts keep working. Buying is a single $9.99 payment. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). Version 1.0.0 &middot; 6 MB disk image &middot; macOS 14 or later, Apple silicon and Intel &middot; signed and notarized.</p>
+        <p class="waitlist-fine-print">The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). Version 1.1.0 &middot; 6.6 MB disk image &middot; macOS 14 or later, Apple silicon and Intel &middot; signed and notarized.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.</p>
       </div>
       <figure class="app-hero-window lg-hero-window">
@@ -312,7 +317,7 @@
       <div class="features-header">
         <h2 id="privacy-h">Privacy</h2>
       </div>
-      <p class="lg-note">Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And the paid build, once a day, asks this site for its update feed: that request carries the app's name and version and an update token that marks it as the paid build, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. The trial build has no update check. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the <a href="/privacy/">privacy page</a>.</p>
+      <p class="lg-note">Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And every copy, trial or licensed, asks this site once a day for its update feed: that request carries the app's name and version and an update token that is the same in every copy, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the <a href="/privacy/">privacy page</a>.</p>
     </section>
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">
@@ -336,15 +341,19 @@
         </details>
         <details class="faq-item">
           <summary>Does it send my files or measurements anywhere?</summary>
-          <div class="faq-body">No. There is no account and no analytics. Apart from the daily update check in the paid build and the Buy link, which opens this page in your browser, Legroom does not use the network.</div>
+          <div class="faq-body">No. There is no account and no analytics. Apart from the download itself, the daily update check that every copy makes and the Buy link, which opens this page in your browser, Legroom does not use the network.</div>
         </details>
         <details class="faq-item">
           <summary>What happens when the trial ends?</summary>
-          <div class="faq-body">The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you install the paid build. Buying gives you a separate download of the full app to install in place of the trial.</div>
+          <div class="faq-body">The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the <a href="/recover/">Find a purchase</a> page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download.</div>
+        </details>
+        <details class="faq-item">
+          <summary>I already bought Legroom. Do I need a key?</summary>
+          <div class="faq-body">No. If you install this version over a copy you already paid for, it recognizes that copy and never asks for a key.</div>
         </details>
         <details class="faq-item">
           <summary>Are updates included?</summary>
-          <div class="faq-body">Updates to the version you buy are included. The paid app checks for a new version once a day and asks before installing it, or you can check by hand from its menu. I have not decided whether a later major version would be a free update.</div>
+          <div class="faq-body">Updates to the version you buy are included. Every copy, trial or licensed, checks for a new version once a day and asks before installing it, or you can check by hand from its menu. I have not decided whether a later major version would be a free update.</div>
         </details>
         <details class="faq-item">
           <summary>Can I get a refund?</summary>
@@ -352,14 +361,14 @@
         </details>
         <details class="faq-item">
           <summary>How do I get help?</summary>
-          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link or your license key, the <a href="/recover/">Find a purchase</a> page emails them again to the address you paid with.</div>
         </details>
       </div>
     </section>
 
     <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
       <h2 id="closing-cta-heading">Try it for a week.</h2>
-      <p>Seven days of the full app, with no account and nothing to enter. Then decide whether to keep it.</p>
+      <p>Seven days of the full app, with no account. Then decide whether to keep it.</p>
       <div class="closing-cta-actions">
         <a class="btn btn-primary" href="/.netlify/functions/legroom-download?trial=1">Try it free for 7 days</a>
         <a class="btn btn-ghost" href="#buy">Buy Legroom</a>

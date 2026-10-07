@@ -62,6 +62,10 @@ test("a signup stores a record and sends the setup email with an unsubscribe lin
   assert.match(mail.text, /outbound-veil\/start\//);
   assert.match(mail.text, /outbound-veil-reminder\?u=[a-f0-9]{48}/);
   assert.match(mail.headers["List-Unsubscribe-Post"], /One-Click/);
+  // One download: the trial copy takes the key itself, so the email never sends anyone to a second download.
+  assert.match(mail.text, /asks for a license key/);
+  assert.match(mail.text, /no second download/);
+  assert.doesNotMatch(mail.text, /full (app|download)|separate|install it (over|in place)/i);
   const record = JSON.parse(store.get("ov-trial-reminders/reader@example.org"));
   assert.equal(Date.parse(record.remindAt) - Date.parse(record.createdAt), REMIND_AFTER_DAYS * DAY);
 });
@@ -101,6 +105,10 @@ test("the daily run sends due reminders, deletes their records, and leaves the r
   assert.equal(result.sent, 1);
   assert.deepEqual(mails().map((m) => m.to[0]), ["due@example.org"]);
   assert.match(mails()[0].text, /\$29\.99 once/);
+  assert.match(mails()[0].text, /Enter license key\u2026/);
+  assert.match(mails()[0].text, /purplelink\.llc\/recover\//);
+  assert.match(mails()[0].html, /Enter license key\u2026/);
+  assert.doesNotMatch(mails()[0].text, /full (app|download)|separate|install it (over|in place)/i);
   assert.equal(store.has("ov-trial-reminders/due@example.org"), false);
   assert.equal(store.has(`ov-trial-reminder-tokens/${"d".repeat(48)}`), false);
   assert.equal(store.has("ov-trial-reminders/early@example.org"), true);

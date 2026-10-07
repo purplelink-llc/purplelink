@@ -43,8 +43,8 @@
 - **Platform:** macOS 14 (Sonoma) or later, Apple silicon and Intel
 - **Category:** Privacy utility
 - **Description:** A Mac menu-bar app that checks what you type for personal information before you send it: names, street addresses, phone numbers, email addresses, Social Security numbers, card numbers, passport and driver's license numbers, tax and bank identifiers, dates of birth, medical record numbers and IBANs. It shows a badge when it finds something, and you redact, ignore, or in apps you choose have it hold the send key until you decide.
-- **Pricing:** Free 7-day trial (the complete app, no account), then $29.99 once to keep, updates included.
-- **Privacy:** The checking runs on the Mac. Nothing typed is stored or sent, there are no accounts and no analytics. The only network use is the update check and, for buyers, the download.
+- **Pricing:** Free 7-day trial (the complete app, no account), then $29.99 once to keep, updates included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email.
+- **Privacy:** The checking runs on the Mac. Nothing typed is stored or sent, there are no accounts and no analytics. Apart from the download, the only network use is the update check.
 - **Limits:** Latin-script names only; it also flags public figures' names; it will miss some things. It lowers the chance of a mistake and is not a compliance product.
 - **Credit:** The detection model is Rampart by National Design Studio (CC BY 4.0), https://github.com/nationaldesignstudio/rampart. Purplelink ported its processing code to Swift and added rules for dates of birth, medical record numbers and IBANs; the model file is unchanged.
 - **Trial and purchase:** https://purplelink.llc/outbound-veil/
@@ -54,8 +54,8 @@
 - **Platform:** macOS 14 (Sonoma) or later, Apple silicon and Intel
 - **Category:** Disk space utility
 - **Description:** A Mac menu-bar app that shows free disk space, warns before the disk fills, and cleans the folders and developer caches you choose. Cleaning runs through rules; each rule shows a preview of what it would remove and needs your approval, and either moves items to the Trash or deletes them. It recommends known caches, scans code projects for old build folders, shows what grew over 1, 7 and 30 days from daily measurements, suggests rules weekly or monthly, and includes a Space Map (a sunburst chart of where space goes, with Move to Trash) and Find Files (large, old and duplicate files; duplicates always keep one copy; Trash only).
-- **Pricing:** Free 7-day trial, then $9.99 once to keep. After the trial the menu-bar readout and low-space alerts stay free.
-- **Privacy:** No account, no analytics. Measurements, rules and the trial clock stay on the Mac. The only network use is the daily update check in the paid build and the Buy link.
+- **Pricing:** Free 7-day trial, then $9.99 once to keep. After the trial the menu-bar readout and low-space alerts stay free, and a license key (sent in the receipt email) unlocks the rest in the same download.
+- **Privacy:** No account, no analytics. Measurements, rules and the trial clock stay on the Mac. The only network use is the daily update check that every copy makes and the Buy link.
 - **Limits:** It does not speed up a Mac, does not run commands, does not clean inside system folders, and does not scan as an administrator. Full Disk Access is optional.
 - **Trial and purchase:** https://purplelink.llc/legroom/
 

@@ -87,6 +87,48 @@ test("the sitemap, llms.txt and the search index list Legroom, and the success p
   assert.ok(JSON.parse(read("search-index.json")).some((e) => e.u === "/legroom/"));
 });
 
+// ---- one download, one key (Outbound Veil and Legroom 1.1.0) ----------------------------
+
+const plain = (html) => html.replace(/<[^>]+>/g, "").replace(/&rsquo;/g, "\u2019").replace(/\s+/g, " ").trim();
+const faqPairs = (html) => {
+  const out = new Map();
+  for (const m of html.matchAll(/<summary>([^<]+)<\/summary>\s*<div class="faq-body">([\s\S]*?)<\/div>/g)) out.set(m[1], plain(m[2]));
+  return out;
+};
+
+for (const [page, app] of [["legroom/index.html", "Legroom"], ["outbound-veil/index.html", "Outbound Veil"]]) {
+  test(`${page} describes one download that a license key unlocks, not a separate full build`, () => {
+    const html = read(page);
+    assert.doesNotMatch(html, /separate download|install the paid build|paid build|trial build|install it over the trial|nothing to enter/i);
+    assert.match(html, /Version 1\.1\.0/);
+    assert.match(html, /Enter license key/);
+    assert.match(html, /no second download/);
+    assert.match(html, new RegExp(`I already bought ${app}\\. Do I need a key\\?`));
+  });
+
+  test(`${page} keeps its FAQ structured data in step with the visible answers`, () => {
+    const html = read(page);
+    const faq = jsonLd(html).find((n) => n["@type"] === "FAQPage");
+    const visible = faqPairs(html);
+    for (const q of ["What happens when the trial ends?", `I already bought ${app}. Do I need a key?`]) {
+      const ld = faq.mainEntity.find((e) => e.name === q);
+      assert.ok(ld, `${q} is missing from the structured data`);
+      assert.equal(ld.acceptedAnswer.text, visible.get(q), q);
+    }
+  });
+}
+
+test("the Outbound Veil start guide, the Suite page and the privacy page no longer describe a second download or a trial build without updates", () => {
+  const start = read("outbound-veil/start/index.html");
+  assert.doesNotMatch(start, /separate download|over the trial copy|no key to enter|nothing to enter/i);
+  assert.match(start, /written for version 1\.1\.0/);
+  assert.match(start, /Enter license key/);
+  const suite = read("suite/index.html");
+  assert.doesNotMatch(suite, /need no key|install the full copy|paid build/i);
+  const privacy = read("privacy/index.html");
+  assert.doesNotMatch(privacy, /trial build has no update check|from the paid build/i);
+});
+
 // ---- suite page ----------------------------------------------------------------------
 
 test("the Suite page sells five apps at $54.99 and no longer says $39 or $49", () => {

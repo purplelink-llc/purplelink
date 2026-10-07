@@ -7,9 +7,9 @@
  *
  *   Free trial (public, no session — the 7-day trial edition):
  *     GET /.netlify/functions/legroom-download?trial=1                      -> newest trial DMG
- *     The trial build carries no Sparkle feed and cannot update into the paid
- *     app; its filename (Legroom-Trial-x.y.z.dmg) matches neither DMG_NAME nor
- *     the appcast, so it never appears in the buyer list or the update channel.
+ *     From 1.1.0 there is one DMG: the trial door serves the same newest build buyers get, and the key
+ *     is the paywall. Older Trial-named DMGs stay in the store for old links and are served only while
+ *     the newest build is older than 1.1.0.
  *
  *   Updates (Sparkle inside the app, never a browser):
  *     GET /.netlify/functions/legroom-download?feed=1                       -> appcast.xml

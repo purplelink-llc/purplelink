@@ -46,6 +46,7 @@ const STORE = "ov-trial-reminders";
 const TOKEN_STORE = "ov-trial-reminder-tokens";
 const START_URL = `${SITE_ORIGIN}/outbound-veil/start/`;
 const BUY_URL = `${SITE_ORIGIN}/outbound-veil/#buy`;
+const RECOVER_URL = `${SITE_ORIGIN}/recover/`;
 
 function allowedOrigin(request) {
   const origin = request.headers.get("origin");
@@ -111,10 +112,10 @@ export function setupEmail(to, token) {
   return withFooter(
     to, token, "Outbound Veil: your setup guide",
     `Thanks for trying Outbound Veil. The part that trips people up is the macOS Accessibility permission, so here is the setup guide, about ten minutes from the disk image to your first redaction:\n${START_URL}\n\n` +
-      `The trial is the complete app for seven days from the first time you open it. I will send one more short note around day ${REMIND_AFTER_DAYS}, and then nothing.\n\n` +
+      `The trial is the complete app for seven days from the first time you open it, with no account. After that the app asks for a license key. If you buy, the key comes in your receipt email and goes into the same copy, so there is no second download. I will send one more short note around day ${REMIND_AFTER_DAYS}, and then nothing.\n\n` +
       `Questions: reply to this email and I will answer.\n\nBenjamin Ampel`,
     `<p>Thanks for trying Outbound Veil. The part that trips people up is the macOS Accessibility permission, so here is <a href="${START_URL}">the setup guide</a>, about ten minutes from the disk image to your first redaction.</p>` +
-      `<p>The trial is the complete app for seven days from the first time you open it. I will send one more short note around day ${REMIND_AFTER_DAYS}, and then nothing.</p>` +
+      `<p>The trial is the complete app for seven days from the first time you open it, with no account. After that the app asks for a license key. If you buy, the key comes in your receipt email and goes into the same copy, so there is no second download. I will send one more short note around day ${REMIND_AFTER_DAYS}, and then nothing.</p>` +
       `<p>Questions: reply to this email and I will answer.</p><p>Benjamin Ampel</p>`,
   );
 }
@@ -124,9 +125,11 @@ export function reminderEmail(to, token) {
     to, token, "Your Outbound Veil trial",
     `The Outbound Veil trial runs seven days from the first time you open the app, so if you have been trying it this week it ends soon. When it ends it stops checking and shows one notice; nothing is charged.\n\n` +
       `If it has been useful, keeping it is $29.99 once, with updates included, and there is a 14-day refund:\n${BUY_URL}\n\n` +
+      `Your license key arrives in the receipt email and is shown on the success page. Choose Enter license key\u2026 from the Outbound Veil menu-bar menu and paste it into the copy you already have. If you lose the key, the Find a purchase page sends it again:\n${RECOVER_URL}\n\n` +
       `If it has not, I would like to know why. Reply to this email with one line.\n\nBenjamin Ampel`,
     `<p>The Outbound Veil trial runs seven days from the first time you open the app, so if you have been trying it this week it ends soon. When it ends it stops checking and shows one notice; nothing is charged.</p>` +
       `<p>If it has been useful, <a href="${BUY_URL}">keeping it is $29.99 once</a>, with updates included, and there is a 14-day refund.</p>` +
+      `<p>Your license key arrives in the receipt email and is shown on the success page. Choose Enter license key\u2026 from the Outbound Veil menu-bar menu and paste it into the copy you already have. If you lose the key, <a href="${RECOVER_URL}">the Find a purchase page</a> sends it again.</p>` +
       `<p>If it has not, I would like to know why. Reply to this email with one line.</p><p>Benjamin Ampel</p>`,
   );
 }
