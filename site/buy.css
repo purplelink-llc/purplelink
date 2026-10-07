@@ -15,3 +15,53 @@
   line-height: 1.5;
   color: var(--muted);
 }
+
+/* License keys on the success pages (site/license-keys.js). */
+
+.key-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.key-row-label {
+  flex: 0 0 9rem;
+  font-weight: 600;
+}
+
+.key-row-value {
+  flex: 1 1 18rem;
+  min-width: 0;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.key-row .btn.key-row-copy {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 5.5rem;
+  margin-left: auto;
+  padding: 6px 18px;
+  font-size: 0.85rem;
+}
+
+/* Inside the shared bordered box the keys are just rows. */
+.kit-product-buy .key-row {
+  max-width: none;
+  margin: 0;
+  padding: 12px 4px;
+  border-width: 0 0 1px;
+  border-radius: 0;
+}
+.kit-product-buy .key-row:last-child { border-bottom-width: 0; }

@@ -30,6 +30,7 @@
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivateKey } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -225,7 +226,7 @@ function crockfordBase32Encode(buf) {
  * Signs one new, unique license key, or null if the private key isn't configured (never
  * throws — a signing failure must not break checkout delivery of the download itself).
  */
-export function issueModernTexLicense() {
+export function issueModernTexLicense(sessionId) {
   const privB64 = Netlify.env.get("MODERNTEX_LICENSE_PRIVATE_KEY");
   if (!privB64) return null;
   try {
@@ -234,7 +235,11 @@ export function issueModernTexLicense() {
              x: MTX_LICENSE_PUBLIC_KEY_B64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "") },
       format: "jwk",
     });
-    const nonce = randomBytes(4);
+    // With a session id the nonce is derived from it, so the same purchase always yields the same key
+    // (the success page, the email and recovery then all agree). Any nonce verifies in the app.
+    const nonce = sessionId
+      ? createHmac("sha256", Buffer.from(privB64, "base64")).update(`nonce|moderntex|${sessionId}`).digest().subarray(0, 4)
+      : randomBytes(4);
     const signature = edSign(null, Buffer.concat([MTX_LICENSE_DOMAIN, nonce]), privateKey);
     const body = crockfordBase32Encode(Buffer.concat([nonce, signature]));
     const groups = body.match(/.{1,5}/g) ?? [];
@@ -242,6 +247,29 @@ export function issueModernTexLicense() {
   } catch (err) {
     return null;
   }
+}
+
+
+/**
+ * Every license key a paid session is entitled to, as [{ slug, label, key }]. ModernTex has its own scheme
+ * (MTX1); Outbound Veil, Legroom and Keyfeel share PurplelinkLicenseV1 (netlify/lib/license.mjs). The Mac
+ * Suite entitles all four. Keys are derived from the session id, so every caller gets the same key.
+ * An entry is left out, never faked, when its signing secret is not configured.
+ */
+export function licenseKeysForSession(productKey, sessionId) {
+  const out = [];
+  if (productKey === "moderntex" || productKey === "app-suite") {
+    const key = issueModernTexLicense(sessionId);
+    if (key) out.push({ slug: "moderntex", label: "ModernTex", key });
+  }
+  const seedB64 = Netlify.env.get("PURPLELINK_LICENSE_PRIVATE_KEY");
+  // PURPLELINK_LICENSE_PUBLIC_KEY is only ever set by tests; production uses the key baked into license.mjs.
+  const publicB64 = Netlify.env.get("PURPLELINK_LICENSE_PUBLIC_KEY") || undefined;
+  for (const slug of licensedSlugsFor(productKey)) {
+    const key = issueLicense(slug, { sessionId, seedB64, publicB64 });
+    if (key) out.push({ slug, label: LICENSED_PRODUCTS[slug].label, key });
+  }
+  return out;
 }
 
 /**
@@ -260,19 +288,23 @@ async function emailDownloadLink(to, sessionId, productKey) {
   const entry = BLOB_DELIVERED_PRODUCTS.get(productKey);
   if (!apiKey || !to || !entry) return false;
   const link = `${SITE_ORIGIN}${entry.successPath}?session_id=${encodeURIComponent(sessionId)}`;
-  // ModernTex only: a license key that unlocks the app permanently, offline, no account.
-  // A signing failure here (misconfigured key, transient error) must not block the download
-  // email — the buyer still gets their download link either way.
+  // Every app that needs a key: each runs free for 7 days from first launch, then a license key unlocks it
+  // for good, offline, no account. A signing failure (missing secret, transient error) must not block the
+  // download email, so a missing key is simply left out and the buyer still gets the link.
   const isSuite = productKey === "app-suite";
-  const license = productKey === "moderntex" || isSuite ? issueModernTexLicense() : null;
-  const licenseTextBlock = license
-    ? `\nYour license key (paste into ModernTex's "Have a license key?"):\n${license}\n\n` +
-      `This unlocks the app permanently — no account, no further steps.\n`
+  const keys = licenseKeysForSession(productKey, sessionId);
+  const keyHint = (k) => (k.slug === "moderntex" ? `"Have a license key?"` : `"Enter license key"`);
+  const licenseTextBlock = keys.length
+    ? `\n${keys.length > 1 ? "Your license keys" : "Your license key"} (each app runs free for 7 days, then asks for its key):\n` +
+      keys.map((k) => `${k.label}: ${k.key}`).join("\n") +
+      `\n\nPaste a key into the matching app (${keys.map((k) => `${k.label}: ${keyHint(k)}`).join("; ")}). ` +
+      `It unlocks that app for good, with no account. The same keys are on your download page.\n\n`
     : "";
-  const licenseHtmlBlock = license
-    ? `<p>Your license key (paste into ModernTex's "Have a license key?"):</p>` +
-      `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${license}</p>` +
-      `<p>This unlocks the app permanently — no account, no further steps.</p>`
+  const licenseHtmlBlock = keys.length
+    ? `<p>${keys.length > 1 ? "Your license keys" : "Your license key"} (each app runs free for 7 days, then asks for its key):</p>` +
+      keys.map((k) => `<p>${k.label}<br><span style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${k.key}</span></p>`).join("") +
+      `<p>Paste a key into the matching app (${keys.map((k) => `${k.label}: ${keyHint(k).replace(/"/g, "&quot;")}`).join("; ")}). ` +
+      `It unlocks that app for good, with no account. The same keys are on your download page.</p>`
     : "";
   // ModernTex and Legroom: one plain request for a one-line review. No link, no tracking.
   const reviewApp = productKey === "moderntex" ? "ModernTex" : productKey === "legroom" ? "Legroom" : null;

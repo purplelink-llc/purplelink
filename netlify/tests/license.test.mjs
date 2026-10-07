@@ -29,10 +29,10 @@ test("the same session always yields the same key; different sessions differ", (
 });
 
 test("without a session id keys are random but still valid", () => {
-  const a = issueLicense("keyfeel", { ...pair });
-  const b = issueLicense("keyfeel", { ...pair });
+  const a = issueLicense("legroom", { ...pair });
+  const b = issueLicense("legroom", { ...pair });
   assert.notEqual(a, b);
-  assert.equal(verifyLicense("keyfeel", a, { publicB64: pair.publicB64 }), true);
+  assert.equal(verifyLicense("legroom", a, { publicB64: pair.publicB64 }), true);
 });
 
 test("tampering, a wrong public key, spelling variants and junk", () => {
@@ -47,9 +47,10 @@ test("tampering, a wrong public key, spelling variants and junk", () => {
   assert.equal(verifyLicense("nope", key), false);
 });
 
-test("a missing seed or unknown product returns null and never throws", () => {
+test("a missing seed or an unknown product (ModernTex and Keyfeel have their own schemes) returns null and never throws", () => {
   assert.equal(issueLicense("legroom", { sessionId: "cs_x" }), null);
   assert.equal(issueLicense("moderntex", { sessionId: "cs_x", ...pair }), null);
+  assert.equal(issueLicense("keyfeel", { sessionId: "cs_x", ...pair }), null);
 });
 
 test("crockford round trip", () => {
@@ -58,7 +59,7 @@ test("crockford round trip", () => {
 });
 
 test("the suite entitles all three licensed apps; a single app only itself", () => {
-  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["keyfeel", "legroom", "outbound-veil"]);
+  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "outbound-veil"]);
   assert.deepEqual(licensedSlugsFor("legroom"), ["legroom"]);
   assert.deepEqual(licensedSlugsFor("moderntex"), []);
 });

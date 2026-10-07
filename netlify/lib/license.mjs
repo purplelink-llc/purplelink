@@ -1,5 +1,6 @@
 /**
- * Purplelink license keys for Outbound Veil, Legroom and Keyfeel (scheme "PurplelinkLicenseV1").
+ * Purplelink license keys for Outbound Veil and Legroom (scheme "PurplelinkLicenseV1").
+ * Keyfeel has its own, older scheme (KFL1, netlify/lib/keyfeel-license.mjs) and ModernTex has MTX1.
  *
  * A key is  <PREFIX>-  +  Crockford-Base32( nonce[4] ‖ Ed25519 signature[64] ),  split into groups of 5.
  * The signature covers  UTF8("PurplelinkLicenseV1|<slug>|") ‖ nonce,  so a key for one product never
@@ -22,7 +23,6 @@ export const PURPLELINK_LICENSE_PUBLIC_KEY_B64 = "d8gyRHTJVAivaL2wx4m1dQTLxrfE2h
 export const LICENSED_PRODUCTS = {
   "outbound-veil": { prefix: "OV1", label: "Outbound Veil", appPath: "/outbound-veil/" },
   legroom: { prefix: "LG1", label: "Legroom", appPath: "/legroom/" },
-  keyfeel: { prefix: "KF1", label: "Keyfeel", appPath: "/keyfeel/" },
 };
 
 const ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
@@ -105,7 +105,7 @@ export function verifyLicense(slug, key, { publicB64 = PURPLELINK_LICENSE_PUBLIC
   }
 }
 
-/** The products whose key a paid session is entitled to. The Suite entitles all three (ModernTex's key is separate). */
+/** The products on this scheme whose key a paid session is entitled to. The Suite entitles both (ModernTex and Keyfeel keys are separate). */
 export function licensedSlugsFor(productKey) {
   if (productKey === "app-suite") return Object.keys(LICENSED_PRODUCTS);
   return LICENSED_PRODUCTS[productKey] ? [productKey] : [];

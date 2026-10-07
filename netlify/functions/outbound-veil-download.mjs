@@ -100,6 +100,25 @@ async function latestDmgName(store, pattern = DMG_NAME) {
   return names[0] || null;
 }
 
+/**
+ * The trial door. From 1.1.0 the app is ONE download: a 7-day trial that a license key unlocks, so
+ * the trial door hands out the same newest DMG the buyers get (the key, not the file, is the paywall).
+ * Until a 1.1.0-or-later DMG is in the store, keep serving the legacy separate trial build, so the
+ * order in which the release and this code go out can never give away an old full build.
+ */
+const UNIFIED_FROM = [1, 1, 0];
+async function trialDmgName(store) {
+  const latest = await latestDmgName(store);
+  if (latest) {
+    const v = latest.match(/\d+/g).map(Number);
+    for (let i = 0; i < 3; i++) {
+      if (v[i] !== UNIFIED_FROM[i]) { if (v[i] > UNIFIED_FROM[i]) return latest; break; }
+      if (i === 2) return latest;
+    }
+  }
+  return latestDmgName(store, TRIAL_DMG_NAME);
+}
+
 async function streamBlob(store, key, type, disposition) {
   let stream, meta;
   try {
@@ -168,7 +187,7 @@ export default async function handler(request) {
     const n = parseInt((await rl.get(key)) || "0", 10) || 0;
     if (n >= TRIAL_DAILY_LIMIT) return json(429, { error: "rate_limited", detail: "Too many downloads from this address today." });
     await rl.set(key, String(n + 1));
-    const name = await latestDmgName(store, TRIAL_DMG_NAME);
+    const name = await trialDmgName(store);
     if (!name) return json(404, { error: "no_trial", detail: "No trial build is available right now." });
     return streamBlob(store, name, "application/x-apple-diskimage", `attachment; filename="${name}"`);
   }

@@ -1,5 +1,5 @@
 {
-  "note": "TEST key only. Never matches production. Scheme PurplelinkLicenseV1; see netlify/lib/license.mjs.",
+  "note": "TEST key only. Never matches production. Scheme PurplelinkLicenseV1 (Outbound Veil, Legroom); see netlify/lib/license.mjs.",
   "testPublicKeyBase64": "6kpsY+KcUgq+9VB7Ey7F+ZVHdq6+vnuSQh7qaRRG0iw=",
   "domainFormat": "PurplelinkLicenseV1|<slug>|",
   "valid": [
@@ -10,10 +10,6 @@
     {
       "slug": "legroom",
       "key": "LG1-E1SPJ-N4YW9-PS228-Z87Z0-Q7JX6-936QB-0258W-CQ92T-FF2TM-ENZHX-K685N-G6VER-BSMAW-579K2-W3MZW-VPQDX-CV1N9-KDFNN-FMM2Z-4MHXA-YGBSR-090A"
-    },
-    {
-      "slug": "keyfeel",
-      "key": "KF1-BASSQ-8JEQY-314CE-PHYBG-2Z2J8-D78BH-YD1HC-PJDJF-C7HQK-H99TA-55YA5-3T7CA-NGHAV-2HDPF-NKEJ6-NWTCM-CAYS3-FG3M6-22M3N-XPWBB-GVRC7-9XGY"
     }
   ],
   "invalid": [

@@ -18,7 +18,7 @@
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
-import { issueModernTexLicense, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
+import { issueModernTexLicense, licenseKeysForSession, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const RESEND_API_URL = "https://api.resend.com/emails";
@@ -93,7 +93,7 @@ function escapeHtml(s) {
 }
 
 /** The email body for a set of purchases; exported for tests. */
-export function recoveryEmail(purchases, license, keyfeelLicense = null) {
+export function recoveryEmail(purchases, license, keyfeelLicense = null, keysBySession = new Map()) {
   const lines = [];
   const html = [];
   const mtx = purchases.filter((p) => p.product === "moderntex");
@@ -136,6 +136,15 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null) {
           `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(license)}</p>`);
       }
     }
+    // Outbound Veil, Legroom and Keyfeel keys are derived from the session, so these are the keys the
+    // original purchase email and the download page show.
+    const keys = keysBySession.get(p.sessionId) || [];
+    if (keys.length) {
+      const head = `${keys.length > 1 ? "License keys" : "License key"} (each app runs free for 7 days, then asks for its key; paste it into "Enter license key"):`;
+      lines.splice(lines.length - 1, 0, head, ...keys.map((k) => `${k.label}: ${k.key}`));
+      html.push(`<p>${escapeHtml(head)}</p>` + keys.map((k) => `<p>${escapeHtml(k.label)}<br>` +
+        `<span style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(k.key)}</span></p>`).join(""));
+    }
   }
   const intro = "Here are the purchases made with this address, as requested.";
   const outro = "If you did not ask for this, you can ignore it; nothing has changed.";
@@ -149,9 +158,13 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null) {
 async function sendRecovery(to, purchases) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   if (!apiKey) return false;
-  const license = purchases.some((p) => p.product === "moderntex" || p.product === "app-suite") ? issueModernTexLicense() : null;
+  // The ModernTex key is derived from the newest ModernTex or Suite purchase, so it matches what that
+  // purchase's own email and download page show. Keyfeel's key is derived from the address (its own scheme).
+  const mtxPurchase = purchases.find((p) => p.product === "moderntex" || p.product === "app-suite");
+  const license = mtxPurchase ? issueModernTexLicense(mtxPurchase.sessionId) : null;
   const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite") ? issueKeyfeelLicense(to) : null;
-  const mail = recoveryEmail(purchases, license, keyfeelLicense);
+  const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId).filter((k) => k.slug !== "moderntex")]));
+  const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession);
   try {
     const resp = await fetch(RESEND_API_URL, {
       method: "POST",

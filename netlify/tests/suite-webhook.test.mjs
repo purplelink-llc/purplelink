@@ -76,7 +76,7 @@ test("Legroom is a blob-delivered product with its own success page", () => {
   assert.equal(BLOB_DELIVERED_PRODUCTS.get("legroom").successPath, "/legroom/success/");
 });
 
-test("a paid Legroom order emails the download page and the one-sentence review ask, with no license key", async () => {
+test("a paid Legroom order emails the download page and the one-sentence review ask, with no signing secret configured it still delivers, without a key", async () => {
   const res = await handler(signed({ ...completed("legroom", "evt_lg"), data: { object: { ...completed("legroom").data.object, id: "cs_live_legroom_abcdefg1", amount_total: 900 } } }));
   assert.equal((await res.json()).status, "delivered_by_blobs");
   const sent = calls.filter((c) => c.url.startsWith("https://api.resend.com/"));
