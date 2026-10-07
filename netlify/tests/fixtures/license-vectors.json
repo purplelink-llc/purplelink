@@ -1,0 +1,42 @@
+{
+  "note": "TEST key only. Never matches production. Scheme PurplelinkLicenseV1; see netlify/lib/license.mjs.",
+  "testPublicKeyBase64": "6kpsY+KcUgq+9VB7Ey7F+ZVHdq6+vnuSQh7qaRRG0iw=",
+  "domainFormat": "PurplelinkLicenseV1|<slug>|",
+  "valid": [
+    {
+      "slug": "outbound-veil",
+      "key": "OV1-5VFCB-N7ZXE-RYFWQ-SMY71-2EBDX-XX4AA-7YEH3-FAHVJ-HKF9R-WA726-BTTSZ-9TND9-BHCMN-53F17-VYKME-Z1KPH-ZAC7P-QSMW3-Y5QHY-D66M3-A65CD-WN0E"
+    },
+    {
+      "slug": "legroom",
+      "key": "LG1-E1SPJ-N4YW9-PS228-Z87Z0-Q7JX6-936QB-0258W-CQ92T-FF2TM-ENZHX-K685N-G6VER-BSMAW-579K2-W3MZW-VPQDX-CV1N9-KDFNN-FMM2Z-4MHXA-YGBSR-090A"
+    },
+    {
+      "slug": "keyfeel",
+      "key": "KF1-BASSQ-8JEQY-314CE-PHYBG-2Z2J8-D78BH-YD1HC-PJDJF-C7HQK-H99TA-55YA5-3T7CA-NGHAV-2HDPF-NKEJ6-NWTCM-CAYS3-FG3M6-22M3N-XPWBB-GVRC7-9XGY"
+    }
+  ],
+  "invalid": [
+    {
+      "slug": "legroom",
+      "key": "OV1-5VFCB-N7ZXE-RYFWQ-SMY71-2EBDX-XX4AA-7YEH3-FAHVJ-HKF9R-WA726-BTTSZ-9TND9-BHCMN-53F17-VYKME-Z1KPH-ZAC7P-QSMW3-Y5QHY-D66M3-A65CD-WN0E",
+      "why": "an Outbound Veil key must not unlock Legroom"
+    },
+    {
+      "slug": "outbound-veil",
+      "key": "OV1-5VFCB-N7AXE-RYFWQ-SMY71-2EBDX-XX4AA-7YEH3-FAHVJ-HKF9R-WA726-BTTSZ-9TND9-BHCMN-53F17-VYKME-Z1KPH-ZAC7P-QSMW3-Y5QHY-D66M3-A65CD-WN0E",
+      "why": "one character changed"
+    },
+    {
+      "slug": "outbound-veil",
+      "key": "OV1-12345-12345",
+      "why": "too short"
+    }
+  ],
+  "spelling": [
+    "ov1-5vfcb-n7zxe-ryfwq-smy71-2ebdx-xx4aa-7yeh3-fahvj-hkf9r-wa726-bttsz-9tnd9-bhcmn-53f17-vykme-z1kph-zac7p-qsmw3-y5qhy-d66m3-a65cd-wn0e",
+    "OV15VFCBN7ZXERYFWQSMY712EBDXXX4AA7YEH3FAHVJHKF9RWA726BTTSZ9TND9BHCMN53F17VYKMEZ1KPHZAC7PQSMW3Y5QHYD66M3A65CDWN0E",
+    " OV1-5VFCB-N7ZXE-RYFWQ-SMY71-2EBDX-XX4AA-7YEH3-FAHVJ-HKF9R-WA726-BTTSZ-9TND9-BHCMN-53F17-VYKME-Z1KPH-ZAC7P-QSMW3-Y5QHY-D66M3-A65CD-WN0E ",
+    "5VFCB-N7ZXE-RYFWQ-SMY71-2EBDX-XX4AA-7YEH3-FAHVJ-HKF9R-WA726-BTTSZ-9TND9-BHCMN-53F17-VYKME-Z1KPH-ZAC7P-QSMW3-Y5QHY-D66M3-A65CD-WN0E"
+  ]
+}
