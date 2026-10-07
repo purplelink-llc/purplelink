@@ -1,0 +1,17 @@
+/* A visible refund line (and, on ModernTex, one line of real proof) directly
+   under the buy buttons. Loaded by the product pages that show them. */
+
+.buy-assurance {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.buy-proof {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
