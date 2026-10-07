@@ -45,7 +45,7 @@ ERA_CYCLE = ["16bit", "8bit", "synth", None]   # one era per broadcast so each r
 STATE_FILE = os.environ.get("CHIPTUNE_STATE", os.path.expanduser("~/.chiptune-radio-state"))
 PAUSE_SECONDS = 600          # the fallback wait if the broadcast could not be ended through the API: YouTube then ends it itself, within minutes
 QUICK_GAP = 5.0              # the wait when we ended it ourselves: just long enough for the old encoder to finish closing
-ROTATION = {"ended": False}  # set by run_once at rotation time, read by the main loop
+ROTATION = {"ended": False, "now": threading.Event()}   # "ended" is set by run_once at rotation time and read by the main loop; "now" is set by SIGUSR1 to rotate at once
 
 
 def rotation_gap(ended: bool, configured: float | None) -> float:
@@ -256,8 +256,9 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
         while proc.poll() is None and not stop.is_set():
             if seconds is not None and not (ta.is_alive() or tv.is_alive()):
                 break
-            if rotate is not None and time.time() - t0_wall >= rotate:
-                log(f"rotating after {rotate / 3600:.2f} h so YouTube archives this broadcast")
+            if rotate is not None and (time.time() - t0_wall >= rotate or ROTATION["now"].is_set()):
+                log(f"rotating after {(time.time() - t0_wall) / 3600:.2f} h so YouTube archives this broadcast" + (" (asked to rotate now)" if ROTATION["now"].is_set() else ""))
+                ROTATION["now"].clear()
                 ROTATION["ended"] = broadcast.end_current(log=log) if broadcast.configured() else False
                 failed.set()
                 break
@@ -297,6 +298,7 @@ def main() -> None:
     stop = threading.Event()
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, lambda *_: stop.set())
+    signal.signal(signal.SIGUSR1, lambda *_: ROTATION["now"].set())      # `docker compose kill -s USR1 radio`: end this broadcast and start the next now
 
     delay, seed = 5, a.start_seed
     while not stop.is_set():

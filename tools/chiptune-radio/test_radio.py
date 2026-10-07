@@ -133,3 +133,10 @@ def test_rotation_gap_is_short_only_when_we_ended_the_broadcast_ourselves():
     assert st.rotation_gap(True, None) == st.QUICK_GAP < 10
     assert st.rotation_gap(False, None) == st.PAUSE_SECONDS == 600
     assert st.rotation_gap(True, 30.0) == 30.0 and st.rotation_gap(False, 0.0) == 0.0     # a command-line gap always wins
+
+
+def test_a_rotate_now_signal_is_wired_up():
+    import signal
+    src = open(st.__file__).read()
+    assert "signal.SIGUSR1" in src and st.ROTATION["now"].is_set() is False
+    assert 'ROTATION["now"].is_set()' in src                     # the run loop watches for it

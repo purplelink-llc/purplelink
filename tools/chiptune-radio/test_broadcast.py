@@ -182,9 +182,10 @@ def test_end_current_ends_only_the_live_broadcast():
     assert yt.transitions == [("CUR", "complete")]
 
 
-def test_end_current_reports_false_when_nothing_is_live_or_the_api_fails():
+def test_end_current_treats_nothing_live_as_done_and_an_api_failure_as_not():
     yt = FakeYT([_b("OLD", "complete")])
-    assert broadcast.end_current(yt, log=lambda m: None) is False and yt.transitions == []
+    # nothing live is success: YouTube may already have ended it, and there is nothing to wait ten minutes for
+    assert broadcast.end_current(yt, log=lambda m: None) is True and yt.transitions == []
     class Broken:
         def liveBroadcasts(self): raise RuntimeError("quota")
     said = []

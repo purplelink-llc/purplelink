@@ -232,17 +232,18 @@ def chat_loop(cancel: threading.Event, log: Callable[[str], None] = print, now: 
 
 def end_current(yt=None, log: Callable[[str], None] = print) -> bool:
     """End whichever broadcast is live right now, at once, so the next one can open within seconds. Without this the old one
-    only ends when YouTube notices the encoder has stopped, which is why the rotation used to wait ten minutes. True if one
-    was ended; False on any failure, in which case the caller falls back to the long wait."""
+    only ends when YouTube notices the encoder has stopped, which is why the rotation used to wait ten minutes. True when no
+    broadcast is left open (one was just ended, or none was live: YouTube may already have ended it), so the next can open
+    straight away; False only if the API call failed, in which case the caller falls back to the long wait."""
     try:
         yt = yt or _service()
         items = yt.liveBroadcasts().list(part="id,status", mine=True, maxResults=10).execute().get("items", [])
         live = [b for b in items if b["status"]["lifeCycleStatus"] == "live"]
         for b in live:
             yt.liveBroadcasts().transition(broadcastStatus="complete", id=b["id"], part="id,status").execute()
-        if live:
-            log(f"ended broadcast {live[0]['id']} so the next one can open within seconds")
-        return bool(live)
+        log(f"ended broadcast {live[0]['id']} so the next one can open within seconds" if live
+            else "no broadcast was live (YouTube had already ended it)")
+        return True
     except Exception as e:  # noqa: BLE001
         log(f"could not end the broadcast ({type(e).__name__}: {str(e)[:120]}); falling back to the long wait")
         return False
