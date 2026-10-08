@@ -668,7 +668,7 @@ macOS asks you to allow Accessibility so Outbound Veil can read the text field y
 
 This second permission is requested only if you turn on send hold, so the app can notice the send key. If you never use send hold, you never grant it.
 
-Apart from the download itself, the only network use is the check for a new version. Details are on the privacy page.
+Apart from the download itself, the only network use is the check for a new version. Details are on the privacy page. For what Accessibility and Input Monitoring allow and how to review them, see the permissions guide.
 
 ## Limits
 
@@ -845,7 +845,7 @@ The cloudThere is no cloud, no account and no sync. Your measurements, rules and
 
 ## Privacy
 
-Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And every copy, trial or licensed, asks this site once a day for its update feed: that request carries the app's name and version and an update token that is the same in every copy, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the privacy page.
+Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And every copy, trial or licensed, asks this site once a day for its update feed: that request carries the app's name and version and an update token that is the same in every copy, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the privacy page. For what Full Disk Access allows and how to review it, see the permissions guide.
 
 ## Frequently asked questions
 
@@ -924,7 +924,7 @@ Try it free for 7 days
 
 The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.3.0, released October 7, 2026. 7 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
-Comparing options? See the keyboard sound apps for Mac compared.
+Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
 
 Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
 
@@ -956,7 +956,7 @@ Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it
 
 Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), and synthesized extras. Every recording is licensed for use (CC0), with credits listed in the app.
 
-Your own soundsImport a Mechvibes sound pack (its folder, its zip or its config.json), including packs in .ogg, and each key keeps the sound the pack gave it. Or choose one short sound file of your own.
+Your own soundsImport a Mechvibes sound pack in the original format (its folder, its zip or its config.json), including packs in .ogg, and each key keeps the sound the pack gave it. Packs in the newer MechvibesDX format are not read. Or choose one short sound file of your own.
 
 KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own, and you can set the level of the space bar and modifier keys separately. Fast typing gets gently quieter so it does not wear on you.
 
@@ -1010,7 +1010,7 @@ Details are on the privacy page.
 
 ## The Input Monitoring permission
 
-The first time you open Keyfeel, macOS asks you to allow it under System Settings, Privacy & Security, Input Monitoring. That is the permission an app needs to be told about key presses made in other apps. Without it Keyfeel cannot hear your keyboard and stays silent. You can switch it off again in the same place at any time. Two optional features ask for the Accessibility permission as well: stopping scroll sounds at the end of a page, which reads how far the page under the pointer is scrolled, and sounds for Mission Control, Application windows and Show Desktop, which listen for the Dock announcing them. They read nothing else, and Keyfeel works without them.
+The first time you open Keyfeel, macOS asks you to allow it under System Settings, Privacy & Security, Input Monitoring. That is the permission an app needs to be told about key presses made in other apps. Without it Keyfeel cannot hear your keyboard and stays silent. You can switch it off again in the same place at any time. Two optional features ask for the Accessibility permission as well: stopping scroll sounds at the end of a page, which reads how far the page under the pointer is scrolled, and sounds for Mission Control, Application windows and Show Desktop, which listen for the Dock announcing them. They read nothing else, and Keyfeel works without them. What each permission allows, and how to review them.
 
 ## What it is not
 
@@ -1050,7 +1050,7 @@ A small one, about 8 to 25 milliseconds on a Mac's built-in speakers, depending 
 
 Can I use sound packs from other apps?
 
-Yes, packs in the Mechvibes format. Choose Import a sound pack in the menu or in Settings, then pick the pack's folder, its zip file or its config.json. Keyfeel converts it once and keeps a copy of its own.
+Yes, packs in the original Mechvibes format, the ones whose config.json has a defines section. Choose Import a sound pack in the menu or in Settings, then pick the pack's folder, its zip file or its config.json. Keyfeel converts it once and keeps a copy of its own. Packs in the newer MechvibesDX format are not read; the Mechvibes guide shows how to tell them apart.
 
 Are updates included?
 
@@ -6346,6 +6346,8 @@ Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 on
 
 - Outbound Veil: another Purplelink Mac menu-bar app, direct download.
 
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what Full Disk Access allows, and what Apple said about it on October 2, 2026.
+
 - Purplelink's privacy page, all products and all guides.
 
 
@@ -6426,7 +6428,7 @@ What it lacks: mouse and scroll sounds and haptics, on the page I read. Pick it 
 
 Cost: Free, MIT-licensed. The site says it is available on Windows, macOS and Linux, and that the sound packs are community made and free.
 
-The long-running original: it plays a sound pack when you type, with an editor for making and sharing packs. Its big strength is the pack library; installing one is described as two clicks. Its README says the original repository is transitioning to legacy status and that development has moved to MechvibesDX, a rewrite whose documentation lists keyboard and mouse button sounds. Because the same pack format is used by other apps, importing a Mechvibes pack is a feature in its own right, covered below under Keyfeel.
+The long-running original: it plays a sound pack when you type, with an editor for making and sharing packs. Its big strength is the pack library; installing one is described as two clicks. Its README says the original repository is transitioning to legacy status and that development has moved to MechvibesDX, a rewrite whose documentation lists keyboard and mouse button sounds. Because the same pack format is used by other apps, importing a Mechvibes pack is a feature in its own right, covered below under Keyfeel. A separate guide covers using Mechvibes packs on a Mac.
 
 What it lacks: a native Mac app feel, and a clear future for the original on the page I read. Pick it if the community packs are the point, or you also use Windows or Linux.
 
@@ -6458,7 +6460,7 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 Cost: Free for 7 days, then $9.99 once with a license key, no subscription; also part of the $54 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.1.0, signed and notarized, released October 7, 2026, which makes it the newest and least proven app in this guide. I make it, and I have not compared it with the others on a test Mac.
 
-I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It adds mouse click sounds, scroll ticks that follow how fast you scroll and keep going while a hard flick glides, optional trackpad haptics on scroll and click, and an optional ripple on screen where you click. Beyond keyboards it has a Fun set (cat, dog, duck and others) and a Calm set of soft sounds for all-day use, all recordings licensed for use and credited in the app. It can play its own sound for shortcuts such as copy and paste, with a different sound if a copy did not take. It imports Mechvibes packs, including .ogg ones, and keeps the different sound each pack gives each key.
+I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It adds mouse click sounds, scroll ticks that follow how fast you scroll and keep going while a hard flick glides, optional trackpad haptics on scroll and click, and an optional ripple on screen where you click. Beyond keyboards it has a Fun set (cat, dog, duck and others) and a Calm set of soft sounds for all-day use, all recordings licensed for use and credited in the app. It can play its own sound for shortcuts such as copy and paste, with a different sound if a copy did not take. It imports Mechvibes packs in the original format, including .ogg ones, and keeps the different sound each pack gives each key; packs in the newer MechvibesDX format are not read (how to tell them apart).
 
 It goes quiet in the apps you choose, while the microphone or a camera is in use, and, if you want, in full-screen apps. It reads which key was pressed and not the character, works offline, and its only network use is checking for updates. Settings shows an estimate of the delay from key press to sound for your output, and warns when that output is Bluetooth.
 
@@ -6553,6 +6555,10 @@ Yes. Keyfeel is Purplelink's Mac menu-bar app: free for 7 days, then $9.99 once 
 - Keyfeel: the Purplelink Mac menu-bar app described above.
 
 - Best disk space analyzer and cleaner for Mac: the same kind of comparison, for another Purplelink menu-bar app, Legroom.
+
+- Use Mechvibes sound packs on a Mac: which packs import, how, and what does not carry over.
+
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what the permission a keyboard sound app asks for allows.
 
 - Purplelink's privacy page, all products and all guides.
 
@@ -6663,6 +6669,371 @@ Find what is big before deleting anything: start with Storage settings, then use
 - Legroom: the Purplelink menu-bar app described above.
 
 - Best keyboard sound apps for Mac (2026): another menu-bar utility category, compared the same way.
+
+- Purplelink's privacy page, all products and all guides.
+
+
+---
+
+Source: https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/
+Title: Use Mechvibes sound packs on a Mac | Purplelink
+
+← All guides
+
+How-to
+
+# Use Mechvibes sound packs on a Mac
+
+By Benjamin Ampel · October 8, 2026
+
+A Mechvibes sound pack is a folder with a config.json and some audio. Keyfeel, the Mac app I make, imports packs in the original Mechvibes format and does not read the newer MechvibesDX format. This guide shows how to tell which you have, how to import a pack, what does not carry over, and what else can play packs on a Mac.
+
+Disclosure up front: Purplelink, which publishes this site, makes Keyfeel, a Mac menu-bar app sold as a free 7-day trial and then $9.99 once. I wrote this guide because people who search for Mechvibes on a Mac often end up needing an alternative, and Keyfeel is one. Everything about the other apps comes from their own pages, repositories and release notes, read on October 8, 2026. I did not install them. For Keyfeel's importer I read the app's source code and ran its config parser on sample files. I have not yet imported a set of real packs from the Mechvibes library, so "what carries over" below is read from the code, not seen on screen.
+
+## The short answer
+
+- Classic Mechvibes packs import into Keyfeel. That is a config.json with a defines section and either one long sound file sliced by time or one audio file per key. Keyfeel takes the pack as a folder, a zip or the config.json itself, and each key keeps the sound the pack gave it.
+
+- MechvibesDX packs do not. Their config.json uses definitions and key names, a layout Keyfeel does not parse. From the code, such a folder is treated as a pile of sounds instead, not a keyboard. See what carries over.
+
+- If you want MechvibesDX packs on a Mac, use MechvibesDX itself. It reads both formats, is free, and its own notes say the Mac build is not notarized.
+
+## What Mechvibes is
+
+Mechvibes plays a recorded sound when you press a key, so any keyboard sounds like the one in the recording. Its site calls it free and says it is available on Windows, macOS and Linux, with community-made sound packs. It is MIT-licensed, and its repository says it will become legacy once MechvibesDX is stable. MechvibesDX is a rewrite in Rust by the same author, also MIT-licensed, with keyboard and mouse sounds. Its latest release when I read it was 0.8.3, on October 7, 2026.
+
+## What a pack contains, and the two formats
+
+A pack is a folder with a config.json and audio files, usually shared as a zip. There are two layouts of that file in use, and the difference decides where a pack will work.
+
+Classic, the original Mechvibes format. Keys are numbered, and each number maps to a slice of one long recording (a start and a length in milliseconds) or to its own file:
+
+{
+"id": "example-pack",
+"name": "Example pack",
+"key_define_type": "single",
+"sound": "sound.ogg",
+"defines": {
+"1": [0, 120],
+"30": [500, 140],
+"57": [900, 200]
+}
+}
+
+Here 1 is Escape, 30 is A and 57 is Space. A pack that gives each key its own file has "key_define_type": "multi" and lists a file name instead of a pair of numbers.
+
+MechvibesDX, called V2. Keys are named after the browser's key codes, each with a list of start and end times, and the audio file is named in audio_file. This is the layout in the MechvibesDX format document:
+
+{
+"config_version": "2",
+"name": "Example pack",
+"author": "Your Name",
+"definition_method": "single",
+"audio_file": "click.ogg",
+"definitions": {
+"KeyA": { "timing": [[0, 50]] }
+}
+}
+
+MechvibesDX converts a classic pack to V2 when you import it, keeps a backup of the original config.json, and can also export V2 packs from its editor. So a V2 pack comes from MechvibesDX, and a classic pack comes from the original Mechvibes or from anyone who made one before.
+
+The pack list on mechvibes.com labels packs "config-v1" or "config-v2". I could not find where that site defines those labels. Do not rely on them: open the config.json and look for defines (classic) or definitions (V2).
+
+## Why people look for another way on a Mac
+
+Searches such as "Mechvibes Mac not working" have no single cause, and I did not find a report that explains all of them. These are the facts on the Mac side that I could read.
+
+- The original app has not been updated recently. The newest release not marked as a pre-release on GitHub is 2.3.4, from December 8, 2023. A 2.3.6 hotfix from January 2025 is marked pre-release. The macOS downloads on mechvibes.com do not say whether they are built for Intel or Apple silicon.
+
+- The Homebrew cask is disabled. Homebrew's data for the Mechvibes 2.3.4 cask shows it disabled on September 1, 2026, with the reason "fails_gatekeeper_check". The cask is an Intel build, and Apple silicon Macs need Rosetta 2 to run it. If brew install --cask mechvibes fails, that is why.
+
+- MechvibesDX on a Mac is labeled rough by its own author. The README says macOS support is experimental, the build is ad-hoc signed and not notarized, and it targets Apple silicon only, with Intel builds on request. On first launch you right-click the app and choose Open. The macOS readme in release 0.8.3 still opens with "EXPERIMENTAL, UNTESTED" and says the build has never been run on a real Mac by the maintainer, while the release notes themselves drop that wording. Check the current release before you rely on either.
+
+- It needs two permissions. MechvibesDX documents Accessibility for key capture while its window is focused and Input Monitoring for when another app is in front. Without Input Monitoring it is silent unless its window has focus. Because the app is ad-hoc signed, its permissions can show as on and stop working after an update. Its fix is to remove and re-add the app in both lists.
+
+If a keyboard sound app is silent on your Mac, check these before anything else: the app is switched on under System Settings, Privacy & Security, Input Monitoring; the output device and volume are the ones you expect; and, for an app you installed from outside the Mac App Store, you opened it once with right-click and Open if macOS blocked it. Bluetooth headphones add delay, often 100 milliseconds or more, which no app can remove.
+
+## Where packs come from
+
+The pack list on mechvibes.com had dozens of packs when I read it, mostly switch sounds plus novelty and game sounds, each with a "Try Pack" link. I did not find a download link on that page. The MechvibesDX pack page listed 24 packs with Download buttons whose links were placeholders in the page I read, and its guide says you download a zip and import it into the app. Many packs also sit in repositories on GitHub and in forum threads.
+
+A pack is data, not a program, but a zip can hold anything. Open it first and look. A pack should contain one config.json and audio files such as .ogg or .wav, and little else. Get packs from the pack's author or a list you trust, not from a search ad. I did not download any pack for this guide.
+
+## Import a pack into Keyfeel
+
+These steps are for a classic pack.
+
+- Check the pack's format. Open the pack's folder, or unzip it, and open its config.json in any text editor. If it contains a defines section, it is a classic pack and Keyfeel can read it. If it contains definitions with key names such as KeyA, it is a MechvibesDX pack and Keyfeel cannot.
+
+- Open the import dialog. Click the Keyfeel icon in the menu bar and choose Import sound pack, or open Settings, Sounds, and click Import a sound pack.
+
+- Choose the pack. Pick the pack's folder, its zip file or its config.json, then click Import. Keyfeel converts the audio once.
+
+- Listen to the preview. When the import finishes, Keyfeel selects the pack and plays a short phrase of presses in it. If the dialog says it could not import the pack, the message says whether no sounds were found or the audio could not be read.
+
+- Allow Input Monitoring if macOS asks. The first time Keyfeel runs, macOS asks you to allow it under System Settings, Privacy & Security, Input Monitoring. Without that permission Keyfeel cannot hear your keyboard, and the pack stays silent.
+
+- Switch or remove the pack later. Imported packs are listed under Imported in Settings, Sounds. Click a pack to use it, or Remove to delete Keyfeel's converted copy. Your original files are never changed.
+
+What Keyfeel does behind the dialog: it unpacks a zip into a temporary folder and deletes that folder afterwards, looks for config.json in the folder you chose or one folder below it, decodes the audio (.ogg with its own decoder, .wav, .mp3 and .m4a with the system's), and writes small WAV files into a library of its own in your user Library folder, under Application Support, Keyfeel, Imported. If it finds no config.json with a defines section, it falls back to treating the audio files in the folder as a pool of sounds for every key.
+
+## What carries over, and what does not
+
+Read from Keyfeel's importer code on October 8, 2026, not from a test of real packs.
+
+Pack featureIn Keyfeel
+
+Classic, one sound file sliced by timeSupported. Each slice becomes its own sound, cut to at most 1.5 seconds.
+
+Classic, one audio file per keySupported.
+
+Audio formats.ogg, .wav, .mp3, .m4a. A folder import without a config also accepts .aif, .aiff, .caf and .flac.
+
+Which key plays which soundPack key numbers are matched to the same physical keys on a US keyboard. Keys the pack does not define, and some keys Keyfeel has no match for, such as the number pad digits, play a random sound from the whole pack.
+
+Key release soundsNone. An imported pack plays when a key goes down. The release is silent.
+
+Mouse clicksIf click sounds are on, they play a random sound from the pack.
+
+LoudnessEach sound is evened out to a common peak level, so a pack made deliberately quiet or loud plays at Keyfeel's level. Use the volume controls.
+
+Pack settings such as recommended volume or random pitchNot read.
+
+MechvibesDX V2 packsNot supported. The file has no defines section, so Keyfeel does not take the key mapping. From the code, a folder with one long recording would be cut to its first 1.2 seconds and used as the sound for every key. I have not run that case in the app.
+
+MechvibesDX mouse packsNot supported, for the same reason.
+
+My sample-file run behaved as the table says: a classic sliced config and a classic one-file-per-key config both parsed, a V2 config was rejected for having no definitions, and the number pad 7 key had no match. The importer's own tests cover the parsing and key mapping, not the audio conversion of real packs.
+
+## Other ways to play the same packs on a Mac
+
+Prices and requirements as listed on October 8, 2026. "Not stated" means the pages I read did not say.
+
+AppPriceMechvibes packsMac state, as documented
+
+Mechvibes 2.3.4Free, MITNative formatHomebrew cask is Intel and disabled; site lists .dmg files without saying which chip
+
+MechvibesDX 0.8.3Free, MITReads classic and V2Apple silicon .dmg, not notarized, Accessibility and Input Monitoring
+
+Keyfeel$9.99 once, 7-day trialClassic onlymacOS 13 or later, Apple silicon and Intel, notarized, Input Monitoring
+
+Klack$4.99, Mac App StoreNot statedmacOS 15 or later per the listing; macOS 27 support in 2.2.0
+
+ThockFree, MITNot stated; its own JSON profilesmacOS 13.5 or later
+
+KeyOpera$3Not stated; its own .keypak packsNot stated
+
+- Klack plays keys with up and down sounds and switch sets you choose. Its changelog lists mouse click sounds since version 1.7 (January 29, 2025) and, in version 2.2 (July 21, 2026), scroll sounds with haptic ticks and macOS 27 support. I found no mention of importing your own sounds or Mechvibes packs on its site, changelog or Mac App Store listing, which shows $4.99 and no data collected. Pick it for a polished keyboard app, not for packs.
+
+- Thock is open source with a command line and a Raycast extension. Its README describes custom switch profiles written in its own JSON structure and does not mention Mechvibes packs. Its latest release when I read it was 1.23.0, from March 28, 2026.
+
+- KeyOpera installs .keypak packs from its Sound Effects panel, per the developer's page, which does not mention Mechvibes packs.
+
+- Keyfeel is the paid one here that reads classic Mechvibes packs and also plays mouse click sounds, scroll ticks and optional trackpad haptics. It is new and costs the most of these. The full comparison says where each of the others is the better choice.
+
+I did not find another Mac app that advertises importing Mechvibes packs, but I did not search every app, so I will not say Keyfeel is the only one.
+
+## The permission, and what it can see
+
+Any app that plays a sound when you press a key in another app needs the macOS Input Monitoring permission. Apple describes it as letting an app see what you type on the keyboard and monitor input from your mouse or trackpad. Keyfeel uses it to get the key code, which says which key was pressed, and not the character. It works offline, and its only network use is checking for updates. The Keyfeel page says that when a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel, so it hears nothing there. Do not assume the same of every app. The permissions guide covers what each of the Full Disk Access, Input Monitoring and Accessibility permissions allows and how to review them.
+
+## Sound pack licenses
+
+"Free" on a pack list describes the price. It does not tell you what you may do with the sounds. The mechvibes.com list I read named a creator for only some packs and stated no license for any. A recording of a real keyboard is someone's work, and a pack made from a game or a film may contain material its maker did not own.
+
+- Keyfeel's import makes a converted copy on your Mac for your own use. It does not upload the pack.
+
+- Do not post a pack, or the converted WAV files in Keyfeel's library, to another site unless the pack's author says you may.
+
+- If you want to use a pack in a video, a stream or something you sell, ask its author first.
+
+- If a pack ships with a license file, that file decides. I am not a lawyer and this is not legal advice.
+
+Keyfeel's own recordings are different: every one is licensed CC0, with credits listed in the app.
+
+## Frequently asked
+
+### Do MechvibesDX packs work in Keyfeel?
+
+No. MechvibesDX packs use a V2 layout with definitions and key names, and Keyfeel reads only the original layout with defines. Read from the code, not tested in the app: a V2 folder would be treated as a pool of sounds, not a keyboard. Classic packs, including ones MechvibesDX has not converted, do import.
+
+### Is Mechvibes safe to install?
+
+Its code is open and MIT-licensed, so anyone can read it, and I have not audited it. It needs a permission that lets it see which keys you press, so install it only from the project's own GitHub releases. The MechvibesDX releases list a SHA256SUMS file you can check a download against. On a Mac the builds I read about are not notarized, so macOS will warn you the first time you open one.
+
+### Why is Mechvibes silent on my Mac?
+
+Check that the app is switched on under System Settings, Privacy & Security, Input Monitoring, and that the output device and volume are right. MechvibesDX also needs Accessibility, and its permissions can stop working after an update until you remove and re-add the app in both lists. The original app has had no stable release since December 2023, and I did not find a report that ties its silence to a macOS version.
+
+### Does Mechvibes work on macOS 27?
+
+I did not find a statement of macOS 27 support from Mechvibes or MechvibesDX. Klack's changelog says version 2.2.0 was updated for macOS 27. Keyfeel's stated requirement is macOS 13 or later, and I have not tested it on macOS 27.
+
+### Can Klack or Thock use Mechvibes packs?
+
+I found no statement that either does. Thock describes its own JSON switch profiles, and Klack's pages mention no way to add your own sounds.
+
+### Is Keyfeel free?
+
+It is free for 7 days, the full app with no account, then $9.99 once with a license key. I make it. Mechvibes and MechvibesDX are free, and so is Thock.
+
+## Related guides
+
+- Keyfeel: the Purplelink Mac menu-bar app described above.
+
+- Best keyboard sound apps for Mac (2026): Klack, KeyOpera, Thock, Mechvibes and others compared by price, sounds and permissions.
+
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what each permission allows and how to review it.
+
+- Purplelink's privacy page, all products and all guides.
+
+
+---
+
+Source: https://purplelink.llc/guides/mac-privacy-permissions-explained/
+Title: Full Disk Access, Input Monitoring and Accessibility on a Mac | Purplelink
+
+← All guides
+
+Explainer
+
+# Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?
+
+By Benjamin Ampel · October 8, 2026
+
+Full Disk Access, Input Monitoring and Accessibility are three of the broadest permissions macOS gives an app. Whether it is safe depends on the app, not the permission. This guide says what each one allows, what Apple said about Full Disk Access on October 2, 2026, how to review and remove them, and exactly what our three Mac apps ask for.
+
+Disclosure up front: Purplelink, which publishes this site, makes three of the apps used as examples: Legroom, Keyfeel and Outbound Veil. What this page says about them is my description of my own apps, taken from their product pages, not an audit or a certification by anyone else. What it says about Apple comes from Apple's pages, read on October 8, 2026. I did not test the menu paths on every macOS version, and Apple changes them, so if a name differs on your Mac, follow Apple's current Privacy & Security help.
+
+## The short answer
+
+- Granting one of these gives an app a standing ability that stays on until you turn it off.
+
+- A permission describes what an app is able to do. What it actually does is up to its maker, so trust rests on who made the app, where you got it, and what they say it does with the access.
+
+- Grant a permission when the app's job needs it, and say no when it does not. A disk cleaner can work without Full Disk Access. A keyboard sound app that listens to keys in other apps needs Input Monitoring.
+
+- You can review all three in one place, System Settings, Privacy & Security, and switch any of them off at any time.
+
+## What Apple said on October 2, 2026
+
+Apple published a developer news item called Updates to Full Disk Access in macOS on October 2, 2026. Paraphrased, it says:
+
+- Full Disk Access largely bypasses the controls that protect private data, and exists so backup apps can work properly.
+
+- Some developers use it in ways that could put users at risk, exposing files, mail, messages and browsing history without the user fully understanding. For communication apps, it can also expose the people the user talks to.
+
+- Apple will add controls so that granting this access takes "very explicit user action". It also names AI agents, saying the risk grows as they become more capable and autonomous.
+
+What the note does not say: when the controls will arrive, which macOS version will carry them, what they will look like, or whether grants you made earlier will be affected. It says only "going forward". Until Apple ships something, I do not know how existing apps will be affected, and neither does anyone outside Apple. The note is about Full Disk Access only. It says nothing about Input Monitoring or Accessibility.
+
+## What each permission lets an app do
+
+The first column follows Apple's own descriptions in its Privacy & Security help. The last two are general knowledge about how apps use them, not Apple's wording.
+
+PermissionWhat it allowsApps that legitimately askWhat to weigh
+
+Full Disk AccessAccess to all files on the Mac, including data from other apps such as Mail and Messages, Time Machine backups and some administrative settingsBackup tools, some cleaners and file managers, search indexersThe widest reach into your files. Ask whether a narrower grant (a folder you pick) would do.
+
+Input MonitoringWatching input from the mouse or trackpad and seeing what you type, including while you use other appsKeyboard sound apps, text expanders, keyboard and mouse remapping toolsIt sees keystrokes. A well-built app needs only which key was pressed, but the permission itself does not limit that.
+
+AccessibilityRunning scripts and system commands that control the MacWindow managers, automation tools, password managers, screen readers, text checkersIn practice, an app with it can read what is on screen in other apps, such as the text field in focus, and press buttons for you.
+
+They cover different things. Full Disk Access is about files stored on the Mac, Input Monitoring is about input as you make it, and Accessibility is about the interface in front of you. An app might need two of them for different features, and a good one asks for the second only when you turn that feature on.
+
+## Review and remove what you have granted
+
+- Open the Apple menu, choose System Settings, and click Privacy & Security in the sidebar. You may need to scroll down to find it.
+
+- Click Full Disk Access, Input Monitoring or Accessibility. Each shows a list of the apps you have allowed.
+
+- Read the list. Anything you do not recognize, or no longer use, should go.
+
+- Switch an app's toggle off to take the permission away. Apple's Input Monitoring help describes this step. For Full Disk Access and Accessibility, Apple's page describes adding an app with the Add button; on the versions I know, the list also lets you select an app and remove it with a minus button under the list.
+
+- Quit and reopen the app if it was running. Some apps do not notice a change until they restart.
+
+Turning a permission off stops future access. It does not undo anything the app did earlier. If you are worried about a specific app, remove its permission, then delete the app.
+
+## Five questions to ask before you grant any of them
+
+- What does the app need this for, in its maker's own words? The product page or help should say which feature uses the permission. If it does not, that is a reason to wait.
+
+- Does it work without it? Good apps degrade. A cleaner that skips protected folders, or a tool that loses one optional feature, is asking for the right amount.
+
+- What leaves the Mac? Look for a privacy statement that names the network requests. An app that watches your keys or your screen and also has an account, analytics or uploads deserves more scrutiny than one that works offline.
+
+- Where did it come from? The developer's own site, the Mac App Store, or a project repository you can read, not a search ad or a repackaged download. Apps notarized by Apple open without the unidentified-developer warning; one that is not will make you override a block, and that is a cue to slow down.
+
+- Can I turn it off later without losing my work? Check that removing the permission does not leave the app stuck or your files in a different state.
+
+## What Purplelink's apps ask for
+
+From each product page and the site's llms.txt, October 8, 2026. All three are direct downloads with a 7-day trial, no account and no analytics.
+
+AppPermissionRequired, and what it does with it
+
+LegroomFull Disk AccessOptional, never required. It asks only if you choose to give it. It lets Legroom read folders macOS protects, such as Desktop, Documents and Downloads. Without it, Legroom skips them and says which ones it could not read.
+
+KeyfeelInput MonitoringRequired. Without it Keyfeel cannot hear your keyboard and stays silent. It reads the key code, which says which key was pressed, never the characters, and works offline.
+
+KeyfeelAccessibilityOptional, for two features: stopping scroll sounds at the end of a page, and sounds for Mission Control, Application windows and Show Desktop.
+
+Outbound VeilAccessibilityRequired. Without it the app has nothing to check. It reads the text field you are typing in so it can check it for personal information. The check runs on the Mac, and nothing you type is stored or sent.
+
+Outbound VeilInput MonitoringOnly if you turn on send hold, so the app can notice the send key and hold it until you decide. If you never use send hold, you never grant it.
+
+- Legroom and the network: the readout, rules and measurements stay on the Mac. Apart from the Buy link, the only network use is the once-a-day update check, which carries the app's name and version and an update token, plus what any web request carries, such as an IP address. Its page says it does not clean inside system folders. The disk space guide has more on what to expect from a cleaner.
+
+- Keyfeel and passwords: the page says that when a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel, so it hears nothing there. Its only network use is the update check. The Mechvibes guide covers what it needs from sound packs.
+
+- Outbound Veil and its limits: it will miss some things, it is not a compliance product, and it lowers the chance of a mistake rather than removing it. Its setup guide walks through granting Accessibility.
+
+You do not have to take my word for these. You can check part of it yourself: the permission lists in System Settings show what each app has been given, and a network monitor shows what it connects to. The privacy page has the site-wide statement.
+
+## Limits of this page
+
+- No safety guarantee. A permission is a capability. A trustworthy developer can still ship a bug, and macOS does not report what an app does with the access it has.
+
+- Three apps described. I describe the three I make. For anyone else's, use the five questions above and read their own pages.
+
+- Apple's plans are unknown. Whether the Full Disk Access change affects any app on this page is unknown until Apple ships it. By their pages, Legroom works without Full Disk Access, and Keyfeel and Outbound Veil do not ask for it.
+
+## Frequently asked
+
+### Is it safe to allow Full Disk Access on a Mac?
+
+It depends on the app. Full Disk Access gives an app access to nearly everything on the Mac, including data from Mail and Messages, so grant it only to an app from a developer you trust whose job needs it, such as a backup tool. Apple said on October 2, 2026 that some developers use it in ways that could put users at risk, and that it will add controls requiring very explicit user action. It gave no date or macOS version.
+
+### Does Apple's October 2026 announcement change anything today?
+
+Not that Apple has said. The note says Apple will add controls going forward and gives no date, no macOS version and no details. Review the Full Disk Access list in System Settings, Privacy & Security now, since it is worth doing either way.
+
+### Why does a keyboard sound app need Input Monitoring?
+
+To play a sound when you press a key in another app, it has to be told when a key goes down, and macOS puts that behind Input Monitoring. Apple describes the permission as letting an app see what you type. Keyfeel reads the key code, which says which key was pressed, not the characters, and works offline. The permission itself does not enforce that, so check what any such app says it does.
+
+### Can an app with Accessibility read my passwords?
+
+Accessibility lets an app read parts of other apps' interfaces, and macOS protects password fields in its own ways. Keyfeel's page says macOS stops delivering keystrokes to apps like it when a password field has focus. I would not assume every app or every kind of field is protected the same way. Grant Accessibility only to apps you would trust with what is on your screen.
+
+### How do I see which apps have these permissions?
+
+Open System Settings, click Privacy & Security, then open Full Disk Access, Input Monitoring and Accessibility in turn. Each list shows the apps you have allowed, with a toggle to switch each off.
+
+### Do Legroom, Keyfeel and Outbound Veil need Full Disk Access?
+
+No. Legroom asks for it only if you choose to give it, and skips protected folders without it. Keyfeel needs Input Monitoring, and Outbound Veil needs Accessibility. Neither of those two asks for Full Disk Access, according to their product pages.
+
+## Related guides
+
+- Legroom, Keyfeel and Outbound Veil: the three Mac apps described above.
+
+- Best disk space analyzer and cleaner for Mac (2026): what to ask of a cleaner before it deletes anything.
+
+- Best keyboard sound apps for Mac (2026): which permission each one asks for.
+
+- Use Mechvibes sound packs on a Mac: importing packs into Keyfeel.
 
 - Purplelink's privacy page, all products and all guides.
 

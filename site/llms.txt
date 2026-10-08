@@ -50,6 +50,7 @@
 - **Trial and purchase:** https://purplelink.llc/outbound-veil/
 - **Setup guide:** https://purplelink.llc/outbound-veil/start/ (first ten minutes: install, Accessibility, a first check on a made-up note, redacting, choosing apps, trial and updates)
 - **Tested apps:** https://purplelink.llc/outbound-veil/works-in/ (each app and field it has been tried in, with a status of tested and works, tested and does not work, or not tested. Works in TextEdit, Notes, Messages, Microsoft Word and Chrome text areas including the ChatGPT and claude.ai prompt boxes; cannot read the body of a new message in Apple Mail; off by default in Terminal; Safari, Slack and VS Code not tested)
+- **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (what Accessibility and Input Monitoring allow, how to review them; Outbound Veil asks for Accessibility, and for Input Monitoring only if send hold is on)
 
 ### Legroom (macOS)
 - **Platform:** macOS 14 (Sonoma) or later, Apple silicon and Intel
@@ -60,6 +61,7 @@
 - **Limits:** It does not speed up a Mac, does not run commands, does not clean inside system folders, and does not scan as an administrator. Full Disk Access is optional.
 - **Trial and purchase:** https://purplelink.llc/legroom/
 - **Guide:** https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/ (how to see free space with Finder, Storage settings, Disk Utility and df, and the menu-bar apps compared)
+- **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (what Full Disk Access allows, what Apple said about it on 2026-10-02, how to review it; Legroom never requires it)
 
 ### Keyfeel (macOS)
 - **Platform:** macOS 13 or later, Apple silicon and Intel
@@ -70,6 +72,8 @@
 - **Status:** Shipping, version 1.2.0 (October 2026).
 - **Trial and purchase:** https://purplelink.llc/keyfeel/
 - **Comparison:** https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ (Klack, KeyOpera, Thock, Mechvibes and others, by price, sounds, permissions and limits)
+- **Mechvibes sound packs:** https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/ (Keyfeel imports Mechvibes packs in the original format, not the MechvibesDX V2 format; how to import, what does not carry over)
+- **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (Keyfeel needs Input Monitoring and reads key codes, never characters; Accessibility is optional for two features)
 
 ### Mac Suite (macOS bundle)
 - **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel and a lifetime Vitae Plus key.
@@ -344,6 +348,8 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - How to get feedback on a paper before submitting: https://purplelink.llc/guides/get-feedback-on-a-paper-before-submitting/ — colleagues, editing services, general AI assistants, preprints and Paper Review compared.
 - AI paper review tools compared: https://purplelink.llc/guides/ai-paper-review-tools-compared/ — Paperpal Preflight, SciScore, Writefull, a general chatbot and Paper Review: what each checks, price, and what it misses.
 - Best keyboard sound apps for Mac (2026): https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ — Klack, KeyOpera, Thock, Mechvibes, Klakk, Snick, HapticPad and Keyfeel compared by price, sounds, permissions and what each does not do.
+- Use Mechvibes sound packs on a Mac: https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/ — classic and MechvibesDX packs, importing into Keyfeel, what does not carry over, and the Mac state of Mechvibes, MechvibesDX, Klack, Thock and KeyOpera.
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: https://purplelink.llc/guides/mac-privacy-permissions-explained/ — what each permission allows, Apple's 2026-10-02 note on Full Disk Access, how to review and revoke them, and what Legroom, Keyfeel and Outbound Veil ask for.
 - Best disk space analyzer and cleaner for Mac (2026): https://purplelink.llc/guides/best-disk-space-analyzer-for-mac/ — macOS Storage, DaisyDisk, GrandPerspective, OmniDiskSweeper, CleanMyMac, Hazel, Mole and more, plus what is safe to delete.
 - Show free disk space in the Mac menu bar: https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/ — Finder, Storage settings, Disk Utility and df, then eight menu-bar apps (Legroom, Stats, iStat Menus, Mole, Mister Plimsoll and others) by price, low-space alerts, cleaning and macOS version.
 - Best PII redaction tools for ChatGPT and AI chats (2026): https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/ — Outbound Veil, Predact, PrivacyScrubber, Presidio, ChatGPT's own controls and local models compared.

@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Full Disk Access, Input Monitoring and Accessibility on a Mac | Purplelink</title>
+    <meta name="description" content="What Full Disk Access, Input Monitoring and Accessibility each let a Mac app do, what Apple said about Full Disk Access on October 2, 2026, how to review and revoke them, and what Legroom, Keyfeel and Outbound Veil ask for.">
+    <link rel="canonical" href="https://purplelink.llc/guides/mac-privacy-permissions-explained/">
+    <meta property="og:title" content="Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?">
+    <meta property="og:description" content="Three broad Mac permissions in plain words, what Apple announced on October 2, 2026, how to review and revoke them, and what Purplelink&#x27;s own apps ask for, with the limits stated.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/mac-privacy-permissions-explained/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/products.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?">
+    <meta name="twitter:description" content="Three broad Mac permissions in plain words, what Apple announced on October 2, 2026, how to review and revoke them, and what Purplelink&#x27;s own apps ask for, with the limits stated.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/products.png">
+    <meta name="twitter:image:alt" content="Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: guide">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "headline": "Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?",
+      "description": "What Full Disk Access, Input Monitoring and Accessibility each let a Mac app do, what Apple said about Full Disk Access on October 2, 2026, how to review and revoke them, and what Legroom, Keyfeel and Outbound Veil ask for.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-08",
+      "dateModified": "2026-10-08",
+      "image": "https://purplelink.llc/assets/og/products.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/mac-privacy-permissions-explained/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Mac privacy permissions explained",
+          "item": "https://purplelink.llc/guides/mac-privacy-permissions-explained/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is it safe to allow Full Disk Access on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on the app. Full Disk Access gives an app access to nearly everything on the Mac, including data from Mail and Messages, so grant it only to an app from a developer you trust whose job needs it, such as a backup tool. Apple said on October 2, 2026 that some developers use it in ways that could put users at risk, and that it will add controls requiring very explicit user action. It gave no date or macOS version."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Apple's October 2026 announcement change anything today?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not that Apple has said. The note says Apple will add controls going forward and gives no date, no macOS version and no details. Review the Full Disk Access list in System Settings, Privacy & Security now, since it is worth doing either way."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does a keyboard sound app need Input Monitoring?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To play a sound when you press a key in another app, it has to be told when a key goes down, and macOS puts that behind Input Monitoring. Apple describes the permission as letting an app see what you type. Keyfeel reads the key code, which says which key was pressed, not the characters, and works offline. The permission itself does not enforce that, so check what any such app says it does."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can an app with Accessibility read my passwords?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Accessibility lets an app read parts of other apps' interfaces, and macOS protects password fields in its own ways. Keyfeel's page says macOS stops delivering keystrokes to apps like it when a password field has focus. I would not assume every app or every kind of field is protected the same way. Grant Accessibility only to apps you would trust with what is on your screen."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I see which apps have these permissions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Open System Settings, click Privacy & Security, then open Full Disk Access, Input Monitoring and Accessibility in turn. Each list shows the apps you have allowed, with a toggle to switch each off."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do Legroom, Keyfeel and Outbound Veil need Full Disk Access?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Legroom asks for it only if you choose to give it, and skips protected folders without it. Keyfeel needs Input Monitoring, and Outbound Veil needs Accessibility. Neither of those two asks for Full Disk Access, according to their product pages."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=19b47f5814">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=eaf42deb7d" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Explainer</p>
+        <h1 class="post-title">Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time></p>
+        <p class="post-lede">Full Disk Access, Input Monitoring and Accessibility are three of the broadest permissions macOS gives an app. Whether it is safe depends on the app, not the permission. This guide says what each one allows, what Apple said about Full Disk Access on October 2, 2026, how to review and remove them, and exactly what our three Mac apps ask for.</p>
+      </div>
+
+      <article class="post-body">
+
+        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes three of the apps used as examples: <a href="/legroom/">Legroom</a>, <a href="/keyfeel/">Keyfeel</a> and <a href="/outbound-veil/">Outbound Veil</a>. What this page says about them is my description of my own apps, taken from their product pages, not an audit or a certification by anyone else. What it says about Apple comes from Apple's pages, read on October 8, 2026. I did not test the menu paths on every macOS version, and Apple changes them, so if a name differs on your Mac, follow Apple's current Privacy &amp; Security help.</p>
+
+        <h2>The short answer</h2>
+        <ul>
+          <li>Granting one of these gives an app a standing ability that stays on until you turn it off.</li>
+          <li>A permission describes what an app is able to do. What it actually does is up to its maker, so trust rests on who made the app, where you got it, and what they say it does with the access.</li>
+          <li>Grant a permission when the app's job needs it, and say no when it does not. A disk cleaner can work without Full Disk Access. A keyboard sound app that listens to keys in other apps needs Input Monitoring.</li>
+          <li>You can review all three in one place, System Settings, Privacy &amp; Security, and switch any of them off at any time.</li>
+        </ul>
+
+        <h2>What Apple said on October 2, 2026</h2>
+        <p>Apple published a developer news item called <a href="https://developer.apple.com/news/?id=p6zjojqw" rel="noopener">Updates to Full Disk Access in macOS</a> on October 2, 2026. Paraphrased, it says:</p>
+        <ul>
+          <li>Full Disk Access largely bypasses the controls that protect private data, and exists so backup apps can work properly.</li>
+          <li>Some developers use it in ways that could put users at risk, exposing files, mail, messages and browsing history without the user fully understanding. For communication apps, it can also expose the people the user talks to.</li>
+          <li>Apple will add controls so that granting this access takes "very explicit user action". It also names AI agents, saying the risk grows as they become more capable and autonomous.</li>
+        </ul>
+        <p><strong>What the note does not say:</strong> when the controls will arrive, which macOS version will carry them, what they will look like, or whether grants you made earlier will be affected. It says only "going forward". Until Apple ships something, I do not know how existing apps will be affected, and neither does anyone outside Apple. The note is about Full Disk Access only. It says nothing about Input Monitoring or Accessibility.</p>
+
+        <h2>What each permission lets an app do</h2>
+        <p>The first column follows Apple's own descriptions in its <a href="https://support.apple.com/guide/mac-help/mchl211c911f/mac" rel="noopener">Privacy &amp; Security help</a>. The last two are general knowledge about how apps use them, not Apple's wording.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th">Permission</th><th class="u-th">What it allows</th><th class="u-th">Apps that legitimately ask</th><th class="u-th">What to weigh</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell">Full Disk Access</td><td class="u-cell">Access to all files on the Mac, including data from other apps such as Mail and Messages, Time Machine backups and some administrative settings</td><td class="u-cell">Backup tools, some cleaners and file managers, search indexers</td><td class="u-cell">The widest reach into your files. Ask whether a narrower grant (a folder you pick) would do.</td></tr>
+              <tr><td class="u-cell">Input Monitoring</td><td class="u-cell">Watching input from the mouse or trackpad and seeing what you type, including while you use other apps</td><td class="u-cell">Keyboard sound apps, text expanders, keyboard and mouse remapping tools</td><td class="u-cell">It sees keystrokes. A well-built app needs only which key was pressed, but the permission itself does not limit that.</td></tr>
+              <tr><td class="u-cell">Accessibility</td><td class="u-cell">Running scripts and system commands that control the Mac</td><td class="u-cell">Window managers, automation tools, password managers, screen readers, text checkers</td><td class="u-cell">In practice, an app with it can read what is on screen in other apps, such as the text field in focus, and press buttons for you.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>They cover different things. Full Disk Access is about files stored on the Mac, Input Monitoring is about input as you make it, and Accessibility is about the interface in front of you. An app might need two of them for different features, and a good one asks for the second only when you turn that feature on.</p>
+
+        <h2 id="review">Review and remove what you have granted</h2>
+        <ol>
+          <li>Open the Apple menu, choose System Settings, and click Privacy &amp; Security in the sidebar. You may need to scroll down to find it.</li>
+          <li>Click Full Disk Access, Input Monitoring or Accessibility. Each shows a list of the apps you have allowed.</li>
+          <li>Read the list. Anything you do not recognize, or no longer use, should go.</li>
+          <li>Switch an app's toggle off to take the permission away. Apple's Input Monitoring help describes this step. For Full Disk Access and Accessibility, Apple's page describes adding an app with the Add button; on the versions I know, the list also lets you select an app and remove it with a minus button under the list.</li>
+          <li>Quit and reopen the app if it was running. Some apps do not notice a change until they restart.</li>
+        </ol>
+        <p>Turning a permission off stops future access. It does not undo anything the app did earlier. If you are worried about a specific app, remove its permission, then delete the app.</p>
+
+        <h2>Five questions to ask before you grant any of them</h2>
+        <ol>
+          <li><strong>What does the app need this for, in its maker's own words?</strong> The product page or help should say which feature uses the permission. If it does not, that is a reason to wait.</li>
+          <li><strong>Does it work without it?</strong> Good apps degrade. A cleaner that skips protected folders, or a tool that loses one optional feature, is asking for the right amount.</li>
+          <li><strong>What leaves the Mac?</strong> Look for a privacy statement that names the network requests. An app that watches your keys or your screen and also has an account, analytics or uploads deserves more scrutiny than one that works offline.</li>
+          <li><strong>Where did it come from?</strong> The developer's own site, the Mac App Store, or a project repository you can read, not a search ad or a repackaged download. Apps notarized by Apple open without the unidentified-developer warning; one that is not will make you override a block, and that is a cue to slow down.</li>
+          <li><strong>Can I turn it off later without losing my work?</strong> Check that removing the permission does not leave the app stuck or your files in a different state.</li>
+        </ol>
+
+        <h2 id="our-apps">What Purplelink's apps ask for</h2>
+        <p>From each product page and the site's <a href="/llms.txt">llms.txt</a>, October 8, 2026. All three are direct downloads with a 7-day trial, no account and no analytics.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th">App</th><th class="u-th">Permission</th><th class="u-th">Required, and what it does with it</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell">Legroom</td><td class="u-cell">Full Disk Access</td><td class="u-cell">Optional, never required. It asks only if you choose to give it. It lets Legroom read folders macOS protects, such as Desktop, Documents and Downloads. Without it, Legroom skips them and says which ones it could not read.</td></tr>
+              <tr><td class="u-cell">Keyfeel</td><td class="u-cell">Input Monitoring</td><td class="u-cell">Required. Without it Keyfeel cannot hear your keyboard and stays silent. It reads the key code, which says which key was pressed, never the characters, and works offline.</td></tr>
+              <tr><td class="u-cell">Keyfeel</td><td class="u-cell">Accessibility</td><td class="u-cell">Optional, for two features: stopping scroll sounds at the end of a page, and sounds for Mission Control, Application windows and Show Desktop.</td></tr>
+              <tr><td class="u-cell">Outbound Veil</td><td class="u-cell">Accessibility</td><td class="u-cell">Required. Without it the app has nothing to check. It reads the text field you are typing in so it can check it for personal information. The check runs on the Mac, and nothing you type is stored or sent.</td></tr>
+              <tr><td class="u-cell">Outbound Veil</td><td class="u-cell">Input Monitoring</td><td class="u-cell">Only if you turn on send hold, so the app can notice the send key and hold it until you decide. If you never use send hold, you never grant it.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li><strong><a href="/legroom/">Legroom</a></strong> and the network: the readout, rules and measurements stay on the Mac. Apart from the Buy link, the only network use is the once-a-day update check, which carries the app's name and version and an update token, plus what any web request carries, such as an IP address. Its page says it does not clean inside system folders. <a href="/guides/best-disk-space-analyzer-for-mac/">The disk space guide</a> has more on what to expect from a cleaner.</li>
+          <li><strong><a href="/keyfeel/">Keyfeel</a></strong> and passwords: the page says that when a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel, so it hears nothing there. Its only network use is the update check. <a href="/guides/mechvibes-sound-packs-on-mac/">The Mechvibes guide</a> covers what it needs from sound packs.</li>
+          <li><strong><a href="/outbound-veil/">Outbound Veil</a></strong> and its limits: it will miss some things, it is not a compliance product, and it lowers the chance of a mistake rather than removing it. Its <a href="/outbound-veil/start/">setup guide</a> walks through granting Accessibility.</li>
+        </ul>
+        <p>You do not have to take my word for these. You can check part of it yourself: the permission lists in System Settings show what each app has been given, and a network monitor shows what it connects to. The <a href="/privacy/">privacy page</a> has the site-wide statement.</p>
+
+        <h2>Limits of this page</h2>
+        <ul>
+          <li><strong>No safety guarantee.</strong> A permission is a capability. A trustworthy developer can still ship a bug, and macOS does not report what an app does with the access it has.</li>
+          <li><strong>Three apps described.</strong> I describe the three I make. For anyone else's, use the five questions above and read their own pages.</li>
+          <li><strong>Apple's plans are unknown.</strong> Whether the Full Disk Access change affects any app on this page is unknown until Apple ships it. By their pages, Legroom works without Full Disk Access, and Keyfeel and Outbound Veil do not ask for it.</li>
+        </ul>
+
+
+        <h2 id="faq">Frequently asked</h2>
+        <h3>Is it safe to allow Full Disk Access on a Mac?</h3>
+        <p>It depends on the app. Full Disk Access gives an app access to nearly everything on the Mac, including data from Mail and Messages, so grant it only to an app from a developer you trust whose job needs it, such as a backup tool. Apple said on October 2, 2026 that some developers use it in ways that could put users at risk, and that it will add controls requiring very explicit user action. It gave no date or macOS version.</p>
+        <h3>Does Apple's October 2026 announcement change anything today?</h3>
+        <p>Not that Apple has said. The note says Apple will add controls going forward and gives no date, no macOS version and no details. Review the Full Disk Access list in System Settings, Privacy &amp; Security now, since it is worth doing either way.</p>
+        <h3>Why does a keyboard sound app need Input Monitoring?</h3>
+        <p>To play a sound when you press a key in another app, it has to be told when a key goes down, and macOS puts that behind Input Monitoring. Apple describes the permission as letting an app see what you type. Keyfeel reads the key code, which says which key was pressed, not the characters, and works offline. The permission itself does not enforce that, so check what any such app says it does.</p>
+        <h3>Can an app with Accessibility read my passwords?</h3>
+        <p>Accessibility lets an app read parts of other apps' interfaces, and macOS protects password fields in its own ways. Keyfeel's page says macOS stops delivering keystrokes to apps like it when a password field has focus. I would not assume every app or every kind of field is protected the same way. Grant Accessibility only to apps you would trust with what is on your screen.</p>
+        <h3>How do I see which apps have these permissions?</h3>
+        <p>Open System Settings, click Privacy &amp; Security, then open Full Disk Access, Input Monitoring and Accessibility in turn. Each list shows the apps you have allowed, with a toggle to switch each off.</p>
+        <h3>Do Legroom, Keyfeel and Outbound Veil need Full Disk Access?</h3>
+        <p>No. Legroom asks for it only if you choose to give it, and skips protected folders without it. Keyfeel needs Input Monitoring, and Outbound Veil needs Accessibility. Neither of those two asks for Full Disk Access, according to their product pages.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/legroom/">Legroom</a>, <a href="/keyfeel/">Keyfeel</a> and <a href="/outbound-veil/">Outbound Veil</a>: the three Mac apps described above.</li>
+          <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer and cleaner for Mac (2026)</a>: what to ask of a cleaner before it deletes anything.</li>
+          <li><a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac (2026)</a>: which permission each one asks for.</li>
+          <li><a href="/guides/mechvibes-sound-packs-on-mac/">Use Mechvibes sound packs on a Mac</a>: importing packs into Keyfeel.</li>
+          <li><a href="/privacy/">Purplelink's privacy page</a>, <a href="/products/">all products</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+
+    </main>
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=f687fd96c2" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

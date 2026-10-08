@@ -61,6 +61,8 @@ PAGES = [
     "guides/best-disk-space-analyzer-for-mac/",
     "guides/best-keyboard-sound-apps-for-mac/",
     "guides/show-free-disk-space-mac-menu-bar/",
+    "guides/mechvibes-sound-packs-on-mac/",
+    "guides/mac-privacy-permissions-explained/",
     "guides/best-on-device-health-apps/",
 ]
 
