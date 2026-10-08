@@ -97,7 +97,7 @@ Free app, optional Plus from $2.99 a month
 
 ### Vitae
 
-Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later. Currently a beta, version 1.0.2.
+Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later. Currently a beta, version 1.0.3.
 
 Download Vitae →
 
@@ -650,7 +650,7 @@ MessagesBadge and Redact all. Send hold works here, as an example of an app you 
 
 Chrome text areasWord by word in a plain text area. In the ChatGPT and claude.ai prompts the whole field is outlined instead.
 
-Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens.
+Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens. Apple Mail’s compose window is one. Safari, Slack, VS Code and most other apps have not been tested yet. The full table of apps and fields says which are which, and how to check your own app during the free trial.
 
 Comparing it with other ways to keep personal details out of AI chats? See the comparison of redaction tools for ChatGPT and other AI chats, which says plainly where a competitor is the better choice.
 
@@ -689,6 +689,10 @@ The detection model is Rampart by National Design Studio, released under CC BY 4
 What does it need to run?
 
 macOS 14 (Sonoma) or later, on Apple silicon or Intel.
+
+Which apps does it work in?
+
+Tested and working: TextEdit, Notes, Messages, Microsoft Word, and text areas in Chrome, including the ChatGPT and claude.ai prompt boxes. Not readable: the body of a new message in Apple Mail. Terminal is switched off by default. Safari, Slack, VS Code, Pages, Google Docs and most other apps have not been tested. The table lists each app and field, and you can check your own app during the free trial.
 
 Does it send what I type anywhere?
 
@@ -1169,7 +1173,7 @@ Not from anyone else. The sidebar has one small card, labelled "From Purplelink"
 
 How does Vitae update?
 
-From version 0.3, Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1 cannot update itself; download the current version once from this page and it will keep itself up to date after that.
+Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself; if you still have it, download the current version (1.0.3) once from this page and it will keep itself up to date after that.
 
 Why isn't it on the Mac App Store?
 
@@ -4868,7 +4872,7 @@ A model that runs on your Mac does the checking. Nothing you type is stored or s
 
 What it's good at: sitting where the mistake happens, in any Mac app it can read rather than one website. I tested TextEdit, Notes, Microsoft Word, Messages and text areas in Chrome. In the ChatGPT and claude.ai prompt boxes in Chrome, Redact all works, but the whole box is outlined instead of each word highlighted.
 
-What it lacks: Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list. Some apps do not expose their text fields to macOS: in my testing the Apple Mail compose window could not be read, and Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list. It needs the Accessibility permission, plus Input Monitoring if you turn on send hold. After Redact all it does not put the original values back into the AI's answer; you swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.
+What it lacks: Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list. Some apps do not expose their text fields to macOS: in my testing the Apple Mail compose window could not be read, and Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list (the full table). It needs the Accessibility permission, plus Input Monitoring if you turn on send hold. After Redact all it does not put the original values back into the AI's answer; you swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.
 
 Pick Outbound Veil if you write or paste client, patient or student details into chat boxes on a Mac and want a check as you send. Pick something else if you are on Windows, mostly share files or screenshots, or your data has names in non-Latin scripts. The trial is free for seven days; keeping it is $29.99, once.
 
@@ -6372,7 +6376,7 @@ One thing no app fixes: Bluetooth audio adds its own delay, often 100 millisecon
 
 ## The shortlist
 
-- Klack: $4.99, the polished keyboard-only app.
+- Klack: $4.99, the polished, simple one. Keys and mouse clicks, and since version 2.2 (July 2026) scroll sounds with haptic ticks.
 
 - KeyOpera: $3, sound packs you can add, and spoken key names.
 
@@ -6394,7 +6398,7 @@ Cost: $4.99 on the Mac App Store, which is the price on that listing. The Klack 
 
 Klack is the one most people mean when they say "that Mac keyboard sound app". It lives in the menu bar and plays recorded switch sounds. The listing names Japanese Black, Cream, Oreo, Cardboard, Milky Yellow and Super Red, and the site lists switches from CherryMX, Gateron, Keychron, NovelKeys and Everglide. It randomizes pitch a little on each press, plays separate up and down sounds, supports spatial audio on AirPods, has a tone control, and has sleep automation. The listing's privacy label says no data is collected. The site says it is a native app.
 
-What it lacks: I found no mention of mouse or scroll sounds, or of adding your own sounds, on the pages I read. Pick it if you want one app that does keyboard sounds well and nothing else, and macOS 15 is not a problem.
+Mouse and scroll: its changelog lists mouse click sounds since version 1.7 (January 2025) and, in version 2.2 (21 July 2026), scroll sounds with haptic ticks and support for macOS 27. What I did not find: any mention of adding your own sounds on the pages I read. Pick it if you want a polished, simple app with the most established name, and macOS 15 is not a problem.
 
 ## KeyOpera
 
@@ -6468,9 +6472,11 @@ I read only the AlternativeTo and launch-page descriptions of these, and nothing
 
 US prices, October 7, 2026, as listed. "Not stated" means the pages I read did not say.
 
+Correction, October 8, 2026: an earlier version said Klack had no mouse or scroll sounds. Its changelog lists mouse click sounds since version 1.7 and scroll sounds with haptic ticks since version 2.2, so this page now says so.
+
 AppPlaysPriceNeeds
 
-KlackKeys$4.99macOS 15
+KlackKeys, clicks, scroll$4.99macOS 15
 
 KeyOperaKeys; mouse per launch post$3macOS 13
 
@@ -6514,7 +6520,7 @@ KeyfeelKeys, clicks, scrolling, shortcuts; haptics$9.99, 7-day trialmacOS 13; In
 
 ### What is the best keyboard sound app for Mac?
 
-For the simplest paid option, Klack at $4.99 on the Mac App Store. For the cheapest, KeyOpera at $3, or Thock and Mechvibes for free. For sounds on scrolling and clicks as well as keys, Keyfeel (which I make) or Snick for scrolling only. I tested none of the others, so this is a reading of vendor pages and listings, not a ranking by use.
+For the simplest paid option, Klack at $4.99 on the Mac App Store. For the cheapest, KeyOpera at $3, or Thock and Mechvibes for free. For sounds on scrolling and clicks as well as keys, Klack (since version 2.2), Keyfeel (which I make), or Snick for scrolling only. I tested none of the others, so this is a reading of vendor pages and listings, not a ranking by use.
 
 ### Do keyboard sound apps record what I type?
 

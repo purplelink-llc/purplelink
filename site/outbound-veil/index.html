@@ -86,6 +86,11 @@
             },
             {
               "@type": "Question",
+              "name": "Which apps does it work in?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Tested and working: TextEdit, Notes, Messages, Microsoft Word, and text areas in Chrome, including the ChatGPT and claude.ai prompt boxes. Not readable: the body of a new message in Apple Mail. Terminal is switched off by default. Safari, Slack, VS Code, Pages, Google Docs and most other apps have not been tested. The table lists each app and field, and you can check your own app during the free trial." }
+            },
+            {
+              "@type": "Question",
               "name": "Does it send what I type anywhere?",
               "acceptedAnswer": { "@type": "Answer", "text": "No. What you type is checked on your Mac. Nothing you type is stored or sent, and the app has no analytics. Apart from the download itself, the only network use is the check for a new version." }
             },
@@ -278,7 +283,7 @@
           <tr><th scope="row">Chrome text areas</th><td>Word by word in a plain text area. In the ChatGPT and claude.ai prompts the whole field is outlined instead.</td></tr>
         </tbody>
       </table>
-      <p class="specs-more">Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens.</p>
+      <p class="specs-more">Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens. Apple Mail&rsquo;s compose window is one. Safari, Slack, VS Code and most other apps have not been tested yet. The <a href="/outbound-veil/works-in/">full table of apps and fields</a> says which are which, and how to check your own app during the free trial.</p>
       <p class="specs-more">Comparing it with other ways to keep personal details out of AI chats? See <a href="/guides/best-pii-redaction-tools-for-chatgpt/">the comparison of redaction tools for ChatGPT and other AI chats</a>, which says plainly where a competitor is the better choice.</p>
     </section>
 
@@ -326,6 +331,10 @@
         <details class="faq-item">
           <summary>What does it need to run?</summary>
           <div class="faq-body">macOS 14 (Sonoma) or later, on Apple silicon or Intel.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Which apps does it work in?</summary>
+          <div class="faq-body">Tested and working: TextEdit, Notes, Messages, Microsoft Word, and text areas in Chrome, including the ChatGPT and claude.ai prompt boxes. Not readable: the body of a new message in Apple Mail. Terminal is switched off by default. Safari, Slack, VS Code, Pages, Google Docs and most other apps have not been tested. <a href="/outbound-veil/works-in/">The table</a> lists each app and field, and you can check your own app during the free trial.</div>
         </details>
         <details class="faq-item">
           <summary>Does it send what I type anywhere?</summary>
