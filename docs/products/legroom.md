@@ -108,4 +108,7 @@ column for it. There is no Legroom block like Outbound Veil's `outbound_veil_rep
 - The screenshots keep the QA harness window titles ("QA Dropdown" and so on) and are captioned "Sample data".
 - `/guides/best-disk-space-analyzer-for-mac/` still says Legroom is unreleased, has no page and costs a planned $9;
   update it on launch day (it was out of scope for this branch).
-- Not built: trial reminder emails, a "first ten minutes" page, a Legroom block in the daily dashboard, a video.
+- Optional trial emails (2026-10-08): `legroom-reminder.mjs` + `legroom-reminder-send.mjs` (daily 14:10 UTC), shared engine
+  `netlify/lib/trial-reminder.mjs`, form wired by `site/trial-reminder.js`. Blobs `lg-trial-reminders`, `lg-trial-reminder-tokens`.
+  The setup email links `/legroom/` because there is no `/legroom/start/` page.
+- Not built: a "first ten minutes" page, a Legroom block in the daily dashboard, a video.

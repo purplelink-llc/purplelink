@@ -112,8 +112,10 @@ Released: 1.0.0 (build 15), 2026-10-07.
 - Behaviour claims on the page that only the app can confirm: that the paid app's only network use is the update check
   and the trial has none; that Keyfeel only listens (does not alter or block keys); what the haptics do on a Mac without a
   haptic trackpad is not stated on the page and should be checked.
-- No trial reminder-email signup, no `/keyfeel/start/` first-run page (the Input Monitoring steps are in the page, the
-  success page and the buyer email instead).
+- Optional trial emails (2026-10-08): `keyfeel-reminder.mjs` + `keyfeel-reminder-send.mjs` (daily 14:20 UTC), shared engine
+  `netlify/lib/trial-reminder.mjs`, form wired by `site/trial-reminder.js`. Blobs `kf-trial-reminders`, `kf-trial-reminder-tokens`.
+  The setup email links `/keyfeel/` because there is no `/keyfeel/start/` first-run page (the Input Monitoring steps are in the
+  page, the success page and the buyer email too).
 
 ## License keys (from 1.1.0)
 
