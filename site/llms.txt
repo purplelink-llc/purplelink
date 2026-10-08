@@ -69,7 +69,7 @@
 - **Description:** A Mac menu-bar app that plays recorded keyboard-switch sounds when you press a key, with mouse-click sounds, speed-aware scroll ticks and optional trackpad haptics (only while a finger is on the trackpad). Recorded profiles Tactile, Cherry MX Brown and Dome, a different recording each press, per-key pitch and left-to-right stereo, sounds for the space bar and Return, a click ripple, per-app silence, silence while the microphone is in use, and import of your own sound.
 - **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once to keep, updates included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. 14-day refund.
 - **Privacy:** It reads key codes, never the characters you type. It works offline. It needs the macOS Input Monitoring permission. No account, no analytics.
-- **Status:** Shipping, version 1.3.0 (October 2026).
+- **Status:** Shipping, version 1.3.1 (October 2026).
 - **Trial and purchase:** https://purplelink.llc/keyfeel/
 - **Comparison:** https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ (Klack, KeyOpera, Thock, Mechvibes and others, by price, sounds, permissions and limits)
 - **Mechvibes sound packs:** https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/ (Keyfeel imports Mechvibes packs in the original format, not the MechvibesDX V2 format; how to import, what does not carry over)
