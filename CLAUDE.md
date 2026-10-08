@@ -116,3 +116,7 @@ See that repo's `docs/name-clearance-2026-10-03.md`. Do not re-raise it unless a
 ## Public repo, private internals
 
 This repo is public (Netlify's free plan cannot deploy a private organization repo). Outreach logs and contact lists (`Outreach/`), growth research (`docs/growth-briefs/`), `docs/organic-traffic/`, `docs/photo-licensing/`, the paper-review runbook, the security notes and other internal docs are NOT tracked here. They stay on disk, git-ignored, and are backed up to the private repo `purplelink-llc/purplelink-private` (clone at `/Volumes/Extreme SSD/purplelink-private`; run its `sync.sh` to refresh, `paths.txt` lists the paths). A `.githooks/post-merge` hook restores them from that clone if a fast-forward removes them. Never `git add` those paths, and do not make this repo private without re-linking Netlify (see memory: repo-visibility-breaks-netlify).
+
+## Marketing arm
+
+The 50 skills from coreyhaines31/marketingskills are installed in `~/.claude/skills/` (clone at `/Volumes/Extreme SSD/marketingskills`, refresh with `/Volumes/Extreme SSD/marketingskills-local/update.sh`). Read `.agents/product-marketing.md` (local, shared product and voice context) before marketing work. The scheduled task `daily-gap-analysis` writes its briefs under `docs/growth-briefs/gap-analysis/` (git-ignored, see the private repo note above). Nothing outward (posts, emails, spend, sign-ups) happens without an approved queue item or Ben's explicit yes.
