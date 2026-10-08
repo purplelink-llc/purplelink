@@ -60,6 +60,8 @@ PAGES = [
     "guides/best-travel-map-apps-for-iphone/",
     "guides/best-disk-space-analyzer-for-mac/",
     "guides/best-keyboard-sound-apps-for-mac/",
+    "guides/mechvibes-sound-packs-on-mac/",
+    "guides/mac-privacy-permissions-explained/",
     "guides/best-on-device-health-apps/",
 ]
 
