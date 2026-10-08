@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes tools for academic researchers: ModernTex (a $19.99 native macOS LaTeX editor), Paper Review (AI pre-submission manuscript review, $9-$15), Vitae (a free macOS app for tracking submissions, grants and your CV, with an optional Vitae Plus subscription), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), and free in-browser LaTeX and BibTeX tools. It also makes GlobePin, a free iOS travel-mapping app, and Haea, an on-device iOS health app in development.
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), and the Mac Suite ($54.99, all four plus a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -18,7 +18,7 @@
 
 ## What Purplelink builds
 
-1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner) and Vitae (academic record keeping).
+1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), the Mac Suite bundle, and Vitae (free academic record keeping).
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
 4. **iOS apps** — GlobePin (travel mapping, shipping) and Haea (on-device health analytics, in development).
@@ -59,12 +59,27 @@
 - **Limits:** It does not speed up a Mac, does not run commands, does not clean inside system folders, and does not scan as an administrator. Full Disk Access is optional.
 - **Trial and purchase:** https://purplelink.llc/legroom/
 
+### Keyfeel (macOS)
+- **Platform:** macOS 13 or later, Apple silicon and Intel
+- **Category:** Typing and sound utility, menu bar
+- **Description:** A Mac menu-bar app that plays recorded keyboard-switch sounds when you press a key, with mouse-click sounds, speed-aware scroll ticks and optional trackpad haptics (only while a finger is on the trackpad). Recorded profiles Tactile, Cherry MX Brown and Dome, a different recording each press, per-key pitch and left-to-right stereo, sounds for the space bar and Return, a click ripple, per-app silence, silence while the microphone is in use, and import of your own sound.
+- **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once to keep, updates included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. 14-day refund.
+- **Privacy:** It reads key codes, never the characters you type. It works offline. It needs the macOS Input Monitoring permission. No account, no analytics.
+- **Status:** Shipping, version 1.2.0 (October 2026).
+- **Trial and purchase:** https://purplelink.llc/keyfeel/
+- **Comparison:** https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ (Klack, KeyOpera, Thock, Mechvibes and others, by price, sounds, permissions and limits)
+
+### Mac Suite (macOS bundle)
+- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel and a lifetime Vitae Plus key.
+- **Pricing:** $54.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
+- **Page:** https://purplelink.llc/suite/
+
 ### Vitae (macOS)
 - **Platform:** macOS 15 (Sequoia) or later
 - **Category:** Academic research management
 - **Description:** A local-first Mac app for academics: track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record.
 - **Pricing:** Free. Optional Vitae Plus subscription, $2.99/month or $23.99/year with a 7-day free trial, adds reports, Word templates, a revision workspace and Shareables. Core record-keeping stays free.
-- **Status:** Shipping, version 0.4 (beta). Apple-notarized download, no App Store required.
+- **Status:** Shipping, version 1.0.3. Apple-notarized download, no App Store required.
 - **Product page:** https://purplelink.llc/vitae/
 - **Vitae Plus:** https://purplelink.llc/vitae/plus/
 
@@ -326,6 +341,12 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Methodology problems peer reviewers flag, and how to fix them: https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/ — fifteen failure modes (p-hacking, HARKing, underpowered samples, test-train contamination, LLM self-judging, fabricated citations and more), each with a definition, an example, the fix and primary references.
 - How to get feedback on a paper before submitting: https://purplelink.llc/guides/get-feedback-on-a-paper-before-submitting/ — colleagues, editing services, general AI assistants, preprints and Paper Review compared.
 - AI paper review tools compared: https://purplelink.llc/guides/ai-paper-review-tools-compared/ — Paperpal Preflight, SciScore, Writefull, a general chatbot and Paper Review: what each checks, price, and what it misses.
+- Best keyboard sound apps for Mac (2026): https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ — Klack, KeyOpera, Thock, Mechvibes, Klakk, Snick, HapticPad and Keyfeel compared by price, sounds, permissions and what each does not do.
+- Best disk space analyzer and cleaner for Mac (2026): https://purplelink.llc/guides/best-disk-space-analyzer-for-mac/ — macOS Storage, DaisyDisk, GrandPerspective, OmniDiskSweeper, CleanMyMac, Hazel, Mole and more, plus what is safe to delete.
+- Best PII redaction tools for ChatGPT and AI chats (2026): https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/ — Outbound Veil, Predact, PrivacyScrubber, Presidio, ChatGPT's own controls and local models compared.
+- Best software for tracking your research record (2026): https://purplelink.llc/guides/best-academic-record-tracking-software/ — Vitae, spreadsheets, Notion, Manuscripts, ORCID, Interfolio and more compared.
+- How to track your academic CV and tenure case (2026): https://purplelink.llc/guides/track-academic-cv-tenure-case/ — 16 tools compared on cost and data ownership.
+- Best Chrome extensions for Google Scholar (2026): https://purplelink.llc/guides/best-chrome-extensions-for-google-scholar/ — journal rankings, citation and author metrics, retraction warnings and what each cannot do.
 - Overleaf alternatives for Mac: https://purplelink.llc/guides/overleaf-alternative-mac/ — offline LaTeX editors compared, and how to move a project off Overleaf.
 - TeXShop alternative for Mac: https://purplelink.llc/guides/texshop-alternative-mac/ — ModernTex, TeXShop and TeXstudio compared on price, platforms, PDF sync, multi-file projects and bibliographies, with who should pick which.
 - Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
