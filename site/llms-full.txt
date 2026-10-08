@@ -885,6 +885,10 @@ Can I get a refund?
 
 Email ben@purplelink.llc within 14 days of purchase. See the terms.
 
+Can I see free space without an app, or with a free one?
+
+Yes. Finder's status bar, System Settings and Disk Utility show it on request, and the free app Stats can put it in the menu bar. The guide Show free disk space in the Mac menu bar walks through each and compares the menu-bar apps, including this one.
+
 How do I get help?
 
 Email ben@purplelink.llc. If you lose your download link or your license key, the Find a purchase page emails them again to the address you paid with.
@@ -6336,6 +6340,8 @@ Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 on
 
 - Best LaTeX editor for Mac: MacTeX is about 5 GB and BasicTeX about 100 MB, a real choice if your disk is tight.
 
+- Show free disk space in the Mac menu bar: the built-in views and the menu-bar apps that keep a free-space number in view.
+
 - Legroom: the Purplelink Mac menu-bar app described above.
 
 - Outbound Veil: another Purplelink Mac menu-bar app, direct download.
@@ -6547,6 +6553,116 @@ Yes. Keyfeel is Purplelink's Mac menu-bar app: free for 7 days, then $9.99 once 
 - Keyfeel: the Purplelink Mac menu-bar app described above.
 
 - Best disk space analyzer and cleaner for Mac: the same kind of comparison, for another Purplelink menu-bar app, Legroom.
+
+- Purplelink's privacy page, all products and all guides.
+
+
+---
+
+Source: https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/
+Title: Show free disk space in the Mac menu bar | Purplelink
+
+← All guides
+
+Comparison
+
+# Show free disk space in the Mac menu bar
+
+By Benjamin Ampel · October 8, 2026
+
+macOS has no setting that puts free disk space in the menu bar. Finder, Storage settings, Disk Utility and Terminal each show it on request. For a number that stays in view, you need a small app, and several are free.
+
+Disclosure up front: I make Legroom, a menu-bar app for free disk space, and it is in the table below. It is $9.99 once after a 7-day trial. I did not install or test any of the other apps. Their rows come from vendor pages, Mac App Store listings, project source code and Apple support pages that I read on October 8, 2026. Prices and versions change. Where a page did not say something, the table says "not stated" instead of guessing.
+
+## The short answer
+
+Open a Finder window and turn on the status bar (View, then Show Status Bar). It shows the available space for the disk you are looking at. That is the fastest built-in check, and it costs a window. To see free space without opening anything, install a menu-bar app. Stats and Activity Bar are free and can show the number. Mister Plimsoll is free and only warns you. Legroom shows the number and warns you, and both stay free after its trial.
+
+## See free space without an app
+
+Four built-in views, from quickest to most detailed. All four are in Apple's documentation, linked below.
+
+- Show the Finder status bar. Open a Finder window and choose View, then Show Status Bar, or press Command-Slash. Per Apple's page on file, folder and disk information, it shows the number of items and the available disk space. The path bar (Option-Command-P) shows the folder path, not space.
+
+- Open Storage settings. In macOS Ventura 13 or later, choose System Settings from the Apple menu, click General, then Storage. Apple describes what the categories mean, including System Data, which is a catch-all rather than a folder.
+
+- Check the volume in Disk Utility. Select the volume in the sidebar. Apple says the panel shows total capacity and the space available, which can include purgeable space that macOS frees when needed.
+
+- Ask Terminal with df. Run df -h /System/Volumes/Data and read the Avail column. On my Mac, running macOS 27.2, that printed 22Gi, and diskutil info / printed 23.1 GB of container free space: about the same space in binary and decimal units. Use df -H for decimal units.
+
+The numbers can differ between these views. Purgeable space is one reason: Finder counts it as available and some tools do not. Units are the other, as in the Terminal example. Apple's note on how capacity is measured explains the decimal and binary difference. Neither number is wrong.
+
+## Menu-bar apps that show free space
+
+US prices and requirements, October 8, 2026. "Not stated" means the page I read did not say. Apps on this list that are monitors only (Stats, iStat Menus, Activity Bar, System Monitor) show free space as one item among CPU, memory and network readings.
+
+AppPriceFree space in the menu barLow-space alertCleaningmacOS
+
+Legroom (mine)$9.99 once; 7-day trialYes: startup disk, space macOS can clear, other volumes. Stays free after the trialYes, at a line you set. Stays free after the trialYes: rules with a preview you approve. Needs a license key after the trial14+
+
+StatsFree, MIT licenseYes: the Disk module has a text widget that can show free spacePercent-used threshold, off until you turn it on. Not a free-GB lineNo12+
+
+iStat Menus 7$11.99 on the App Store; 14-day trial from the vendor; vendor price not readableYes: vendor says used and free space in the menu barVendor says rules can notify you if disk space is lowNo13+ per vendor; 14.0 per App Store
+
+Mole (app)$19 once, 2 Macs, 14-day refundNot stated: menu bar shows "your chosen metrics"; disk is among the live metricsNot statedYes: caches, app leftovers, disk analysis14+
+
+Mister PlimsollFree; optional tips $0.99 to $4.99Not stated in the listingYes: percent-used threshold per volume; notification, floating window, email, Pushover or webhookNo; shows how much Time Machine snapshots hold when a volume passes its line14.0
+
+Activity BarFree; Pro $1.99 a year or $8.99 onceYes: used, free or total space on diskNot statedNo13.0
+
+System Monitor$4.99"Storage space" is listed; free versus used not statedNot statedNo13.5
+
+Free Disk Space Monitor$1.99Yes: current free space, refreshed at an interval you setNot statedNo10.10; last updated September 20, 2020
+
+Sources, all read October 8, 2026. Legroom: its product page. Stats: the GitHub repository (version 3.0.20, released October 4, 2026), including the Disk module's settings and notification source files. iStat Menus: Bjango's page, which shows version 7.5 and a price field that did not load for me, and the App Store listing for iStat Menus 7 (version 7.30). Mole: mole.fit. Mister Plimsoll, Activity Bar, System Monitor and Free Disk Space Monitor: their Mac App Store listings, through Apple's public lookup service.
+
+Two things I could not settle. Mole's page lists disk among its live metrics and says the menu bar shows chosen metrics, but I found no statement that free space is one of them. And Mister Plimsoll's listing says it lives in the menu bar and warns you, without saying whether it shows a number there. Free Disk Space Monitor has not been updated since 2020, so check that it runs on your version of macOS before paying.
+
+Not menu-bar readouts. DaisyDisk draws a map of your disk and its home page does not mention the menu bar. Hazel runs rules on folders and has no free-space readout; its manual shows a free-space check only as a script example. DiskFox and StorageRadar, two newer disk apps, show free space inside their windows, and I found no menu-bar readout on their home pages. The disk space analyzer guide covers these in more detail.
+
+## What Legroom does here, and what it does not
+
+Legroom shows free space on the startup disk in the menu bar. The window under it adds the space available now, the space macOS says it can clear, and your other volumes. You set a line, and it warns you when free space drops below it. After the 7-day trial, those two parts keep working with no license key. Cleaning rules, What Grew, Suggestions, Space Map and Find Files need a key, which unlocks the same download. There is no account and no analytics. Every copy checks for updates once a day.
+
+It does not make your Mac faster. It does not clean inside system folders. It does not run commands, and it does not scan as an administrator, so some space, such as local Time Machine snapshots, is listed as "size not reported" instead of measured. It is a disk tool, not a system monitor: for CPU, memory or network readings, use Stats or iStat Menus. Full Disk Access is optional. I am the developer, so weigh this section accordingly; the product page has the full list of what it does and does not do, and a 7-day trial.
+
+## Choosing a warning line
+
+A readout tells you the number. An alert tells you before it matters, so the useful setting is the line. Set it above the largest thing you do regularly: a video export, a virtual machine, an Xcode build. Leave room for macOS updates, which need space to download and install. If you see the alert often, raise the line less and find the cause instead. A daily comparison of what grew, which Legroom keeps for 1, 7 and 30 days, or a disk map from the analyzer guide, will point at it.
+
+## Frequently asked
+
+### Can macOS show free disk space in the menu bar without an app?
+
+Not that I could find. Apple's guides describe the Finder status bar, the Storage pane in System Settings and Disk Utility, and none of them is a menu bar item. A small app is the way to keep the number in view.
+
+### Why do Finder, Storage settings and Terminal show different free space?
+
+Two reasons. Apple's Disk Utility help says available space can include purgeable space, which macOS clears when it needs room, and tools count it differently. And units differ: macOS reports decimal gigabytes (1 GB is 1 billion bytes), while df -h uses binary units. df -H uses decimal.
+
+### Is there a free app that shows free space in the menu bar?
+
+Yes. Stats is free and open source, and its Disk module can show free space as text. Activity Bar is free and can show used, free or total disk space, with its popups and widgets in a paid Pro tier. Mister Plimsoll is free and warns you when a volume passes a percentage you set. Legroom is mine: its menu-bar readout and low-space alerts stay free after the 7-day trial.
+
+### Does Legroom need Full Disk Access to show free space?
+
+Its page says Full Disk Access is optional, asked for only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read. I did not check what permissions the other apps ask for.
+
+### Will a free-space readout make my Mac faster?
+
+No. Showing the number does not change anything, and Legroom does not speed up a Mac either. It frees disk space and does nothing else to performance. A nearly full disk can cause its own problems, which is the reason to watch the number.
+
+### What should I do when the low-space warning appears?
+
+Find what is big before deleting anything: start with Storage settings, then use a disk map or a list of the largest items. Empty the Trash, and leave purgeable space and system folders alone. The disk space analyzer guide compares the tools and covers what is safe to delete.
+
+## Related guides
+
+- Best disk space analyzer and cleaner for Mac (2026): maps, cleaners and what is safe to delete.
+
+- Legroom: the Purplelink menu-bar app described above.
+
+- Best keyboard sound apps for Mac (2026): another menu-bar utility category, compared the same way.
 
 - Purplelink's privacy page, all products and all guides.
 

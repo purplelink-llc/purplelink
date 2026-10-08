@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Show free disk space in the Mac menu bar | Purplelink</title>
+    <meta name="description" content="How to see free disk space on a Mac: Finder, Storage settings, Disk Utility and Terminal, then the menu-bar apps that keep the number in view, compared by price, alerts and macOS version.">
+    <link rel="canonical" href="https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/">
+    <meta property="og:title" content="Show free disk space in the Mac menu bar">
+    <meta property="og:description" content="macOS has no menu bar item for free disk space. This guide covers the built-in views and compares eight menu-bar apps by price, low-space alerts, cleaning and macOS version, with a plain disclosure about Purplelink's own Legroom.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/legroom.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Show free disk space in the Mac menu bar">
+    <meta name="twitter:description" content="macOS has no menu bar item for free disk space. This guide covers the built-in views and compares eight menu-bar apps by price, low-space alerts, cleaning and macOS version, with a plain disclosure about Purplelink's own Legroom.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/legroom.png">
+    <meta name="twitter:image:alt" content="Show free disk space in the Mac menu bar: built-in views and menu-bar apps compared">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Show free disk space in the Mac menu bar",
+      "description": "macOS has no menu bar item for free disk space. This guide covers the built-in views and compares eight menu-bar apps by price, low-space alerts, cleaning and macOS version, with a plain disclosure about Purplelink's own Legroom.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-08",
+      "dateModified": "2026-10-08",
+      "image": "https://purplelink.llc/assets/og/legroom.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Show free disk space in the Mac menu bar",
+          "item": "https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to see free disk space on a Mac without installing an app",
+      "totalTime": "PT2M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Show the Finder status bar",
+          "text": "Open a Finder window and choose View, then Show Status Bar (Command-Slash). The bar shows the number of items and the available space on the disk or folder you are looking at."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Open Storage settings",
+          "text": "In macOS Ventura 13 or later, choose System Settings from the Apple menu, click General, then click Storage. The bar shows how much space each category of files uses."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Check the volume in Disk Utility",
+          "text": "Open Disk Utility and select the volume in the sidebar. The panel lists total capacity and the space available, which can include purgeable space."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Ask Terminal with df",
+          "text": "In Terminal, run df -h /System/Volumes/Data and read the Avail column. Add -H instead of -h to get decimal units that match Finder."
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can macOS show free disk space in the menu bar without an app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not that I could find. Apple's guides describe the Finder status bar, the Storage pane in System Settings and Disk Utility, and none of them is a menu bar item. A small app is the way to keep the number in view."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do Finder, Storage settings and Terminal show different free space?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Two reasons. Apple's Disk Utility help says available space can include purgeable space, which macOS clears when it needs room, and tools count it differently. And units differ: macOS reports decimal gigabytes (1 GB is 1 billion bytes), while df -h uses binary units. df -H uses decimal."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a free app that shows free space in the menu bar?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Stats is free and open source, and its Disk module can show free space as text. Activity Bar is free and can show used, free or total disk space, with its popups and widgets in a paid Pro tier. Mister Plimsoll is free and warns you when a volume passes a percentage you set. Legroom is mine: its menu-bar readout and low-space alerts stay free after the 7-day trial."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Legroom need Full Disk Access to show free space?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Its page says Full Disk Access is optional, asked for only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read. I did not check what permissions the other apps ask for."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will a free-space readout make my Mac faster?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Showing the number does not change anything, and Legroom does not speed up a Mac either. It frees disk space and does nothing else to performance. A nearly full disk can cause its own problems, which is the reason to watch the number."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I do when the low-space warning appears?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Find what is big before deleting anything: start with Storage settings, then use a disk map or a list of the largest items. Empty the Trash, and leave purgeable space and system folders alone. The disk space analyzer guide compares the tools and covers what is safe to delete."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=19b47f5814">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=eaf42deb7d" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Comparison</p>
+        <h1 class="post-title">Show free disk space in the Mac menu bar</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time></p>
+        <p class="post-lede">macOS has no setting that puts free disk space in the menu bar. Finder, Storage settings, Disk Utility and Terminal each show it on request. For a number that stays in view, you need a small app, and several are free.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I make <a href="/legroom/">Legroom</a>, a menu-bar app for free disk space, and it is in the table below. It is $9.99 once after a 7-day trial. I did not install or test any of the other apps. Their rows come from vendor pages, Mac App Store listings, project source code and Apple support pages that I read on October 8, 2026. Prices and versions change. Where a page did not say something, the table says "not stated" instead of guessing.</p>
+
+        <h2>The short answer</h2>
+        <p>Open a Finder window and turn on the status bar (View, then Show Status Bar). It shows the available space for the disk you are looking at. That is the fastest built-in check, and it costs a window. To see free space without opening anything, install a menu-bar app. Stats and Activity Bar are free and can show the number. Mister Plimsoll is free and only warns you. Legroom shows the number and warns you, and both stay free after its trial.</p>
+
+        <h2>See free space without an app</h2>
+        <p>Four built-in views, from quickest to most detailed. All four are in Apple's documentation, linked below.</p>
+        <ol>
+          <li><strong>Show the Finder status bar.</strong> Open a Finder window and choose View, then Show Status Bar, or press Command-Slash. Per <a href="https://support.apple.com/guide/mac-help/get-file-folder-and-disk-information-on-mac-mchlp1774/mac" rel="noopener">Apple's page on file, folder and disk information</a>, it shows the number of items and the available disk space. The path bar (Option-Command-P) shows the folder path, not space.</li>
+          <li><strong>Open Storage settings.</strong> In macOS Ventura 13 or later, choose System Settings from the Apple menu, click General, then Storage. Apple describes <a href="https://support.apple.com/en-us/102624" rel="noopener">what the categories mean</a>, including System Data, which is a catch-all rather than a folder.</li>
+          <li><strong>Check the volume in Disk Utility.</strong> Select the volume in the sidebar. <a href="https://support.apple.com/guide/disk-utility/get-detailed-information-about-a-disk-dskutl1005/mac" rel="noopener">Apple says</a> the panel shows total capacity and the space available, which can include purgeable space that macOS frees when needed.</li>
+          <li><strong>Ask Terminal with df.</strong> Run <code>df -h /System/Volumes/Data</code> and read the Avail column. On my Mac, running macOS 27.2, that printed 22Gi, and <code>diskutil info /</code> printed 23.1 GB of container free space: about the same space in binary and decimal units. Use <code>df -H</code> for decimal units.</li>
+        </ol>
+        <p>The numbers can differ between these views. Purgeable space is one reason: Finder counts it as available and some tools do not. Units are the other, as in the Terminal example. Apple's note on <a href="https://support.apple.com/en-us/102119" rel="noopener">how capacity is measured</a> explains the decimal and binary difference. Neither number is wrong.</p>
+
+        <h2>Menu-bar apps that show free space</h2>
+        <p>US prices and requirements, October 8, 2026. "Not stated" means the page I read did not say. Apps on this list that are monitors only (Stats, iStat Menus, Activity Bar, System Monitor) show free space as one item among CPU, memory and network readings.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">App</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">Free space in the menu bar</th><th class="u-th" scope="col">Low-space alert</th><th class="u-th" scope="col">Cleaning</th><th class="u-th" scope="col">macOS</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell"><strong>Legroom (mine)</strong></td><td class="u-cell">$9.99 once; 7-day trial</td><td class="u-cell">Yes: startup disk, space macOS can clear, other volumes. Stays free after the trial</td><td class="u-cell">Yes, at a line you set. Stays free after the trial</td><td class="u-cell">Yes: rules with a preview you approve. Needs a license key after the trial</td><td class="u-cell">14+</td></tr>
+              <tr><td class="u-cell"><strong>Stats</strong></td><td class="u-cell">Free, MIT license</td><td class="u-cell">Yes: the Disk module has a text widget that can show free space</td><td class="u-cell">Percent-used threshold, off until you turn it on. Not a free-GB line</td><td class="u-cell">No</td><td class="u-cell">12+</td></tr>
+              <tr><td class="u-cell"><strong>iStat Menus 7</strong></td><td class="u-cell">$11.99 on the App Store; 14-day trial from the vendor; vendor price not readable</td><td class="u-cell">Yes: vendor says used and free space in the menu bar</td><td class="u-cell">Vendor says rules can notify you if disk space is low</td><td class="u-cell">No</td><td class="u-cell">13+ per vendor; 14.0 per App Store</td></tr>
+              <tr><td class="u-cell"><strong>Mole (app)</strong></td><td class="u-cell">$19 once, 2 Macs, 14-day refund</td><td class="u-cell">Not stated: menu bar shows "your chosen metrics"; disk is among the live metrics</td><td class="u-cell">Not stated</td><td class="u-cell">Yes: caches, app leftovers, disk analysis</td><td class="u-cell">14+</td></tr>
+              <tr><td class="u-cell"><strong>Mister Plimsoll</strong></td><td class="u-cell">Free; optional tips $0.99 to $4.99</td><td class="u-cell">Not stated in the listing</td><td class="u-cell">Yes: percent-used threshold per volume; notification, floating window, email, Pushover or webhook</td><td class="u-cell">No; shows how much Time Machine snapshots hold when a volume passes its line</td><td class="u-cell">14.0</td></tr>
+              <tr><td class="u-cell"><strong>Activity Bar</strong></td><td class="u-cell">Free; Pro $1.99 a year or $8.99 once</td><td class="u-cell">Yes: used, free or total space on disk</td><td class="u-cell">Not stated</td><td class="u-cell">No</td><td class="u-cell">13.0</td></tr>
+              <tr><td class="u-cell"><strong>System Monitor</strong></td><td class="u-cell">$4.99</td><td class="u-cell">"Storage space" is listed; free versus used not stated</td><td class="u-cell">Not stated</td><td class="u-cell">No</td><td class="u-cell">13.5</td></tr>
+              <tr><td class="u-cell"><strong>Free Disk Space Monitor</strong></td><td class="u-cell">$1.99</td><td class="u-cell">Yes: current free space, refreshed at an interval you set</td><td class="u-cell">Not stated</td><td class="u-cell">No</td><td class="u-cell">10.10; last updated September 20, 2020</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Sources, all read October 8, 2026.</strong> Legroom: <a href="/legroom/">its product page</a>. Stats: the <a href="https://github.com/exelban/stats" rel="noopener">GitHub repository</a> (version 3.0.20, released October 4, 2026), including the Disk module's settings and notification source files. iStat Menus: <a href="https://bjango.com/mac/istatmenus/" rel="noopener">Bjango's page</a>, which shows version 7.5 and a price field that did not load for me, and the App Store listing for iStat Menus 7 (version 7.30). Mole: <a href="https://mole.fit/" rel="noopener">mole.fit</a>. Mister Plimsoll, Activity Bar, System Monitor and Free Disk Space Monitor: their Mac App Store listings, through Apple's public lookup service.</p>
+        <p>Two things I could not settle. Mole's page lists disk among its live metrics and says the menu bar shows chosen metrics, but I found no statement that free space is one of them. And Mister Plimsoll's listing says it lives in the menu bar and warns you, without saying whether it shows a number there. Free Disk Space Monitor has not been updated since 2020, so check that it runs on your version of macOS before paying.</p>
+        <p><strong>Not menu-bar readouts.</strong> DaisyDisk draws a map of your disk and its home page does not mention the menu bar. Hazel runs rules on folders and has no free-space readout; its manual shows a free-space check only as a script example. DiskFox and StorageRadar, two newer disk apps, show free space inside their windows, and I found no menu-bar readout on their home pages. The <a href="/guides/best-disk-space-analyzer-for-mac/">disk space analyzer guide</a> covers these in more detail.</p>
+
+        <h2>What Legroom does here, and what it does not</h2>
+        <p>Legroom shows free space on the startup disk in the menu bar. The window under it adds the space available now, the space macOS says it can clear, and your other volumes. You set a line, and it warns you when free space drops below it. After the 7-day trial, those two parts keep working with no license key. Cleaning rules, What Grew, Suggestions, Space Map and Find Files need a key, which unlocks the same download. There is no account and no analytics. Every copy checks for updates once a day.</p>
+        <p>It does not make your Mac faster. It does not clean inside system folders. It does not run commands, and it does not scan as an administrator, so some space, such as local Time Machine snapshots, is listed as "size not reported" instead of measured. It is a disk tool, not a system monitor: for CPU, memory or network readings, use Stats or iStat Menus. Full Disk Access is optional. I am the developer, so weigh this section accordingly; the <a href="/legroom/">product page</a> has the full list of what it does and does not do, and a 7-day trial.</p>
+
+        <h2>Choosing a warning line</h2>
+        <p>A readout tells you the number. An alert tells you before it matters, so the useful setting is the line. Set it above the largest thing you do regularly: a video export, a virtual machine, an Xcode build. Leave room for macOS updates, which need space to download and install. If you see the alert often, raise the line less and find the cause instead. A daily comparison of what grew, which Legroom keeps for 1, 7 and 30 days, or a disk map from the analyzer guide, will point at it.</p>
+
+        <h2>Frequently asked</h2>
+        <h3>Can macOS show free disk space in the menu bar without an app?</h3>
+        <p>Not that I could find. Apple's guides describe the Finder status bar, the Storage pane in System Settings and Disk Utility, and none of them is a menu bar item. A small app is the way to keep the number in view.</p>
+        <h3>Why do Finder, Storage settings and Terminal show different free space?</h3>
+        <p>Two reasons. Apple's Disk Utility help says available space can include purgeable space, which macOS clears when it needs room, and tools count it differently. And units differ: macOS reports decimal gigabytes (1 GB is 1 billion bytes), while <code>df -h</code> uses binary units. <code>df -H</code> uses decimal.</p>
+        <h3>Is there a free app that shows free space in the menu bar?</h3>
+        <p>Yes. Stats is free and open source, and its Disk module can show free space as text. Activity Bar is free and can show used, free or total disk space, with its popups and widgets in a paid Pro tier. Mister Plimsoll is free and warns you when a volume passes a percentage you set. Legroom is mine: its menu-bar readout and low-space alerts stay free after the 7-day trial.</p>
+        <h3>Does Legroom need Full Disk Access to show free space?</h3>
+        <p>Its page says Full Disk Access is optional, asked for only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read. I did not check what permissions the other apps ask for.</p>
+        <h3>Will a free-space readout make my Mac faster?</h3>
+        <p>No. Showing the number does not change anything, and Legroom does not speed up a Mac either. It frees disk space and does nothing else to performance. A nearly full disk can cause its own problems, which is the reason to watch the number.</p>
+        <h3>What should I do when the low-space warning appears?</h3>
+        <p>Find what is big before deleting anything: start with Storage settings, then use a disk map or a list of the largest items. Empty the Trash, and leave purgeable space and system folders alone. The <a href="/guides/best-disk-space-analyzer-for-mac/">disk space analyzer guide</a> compares the tools and covers what is safe to delete.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer and cleaner for Mac (2026)</a>: maps, cleaners and what is safe to delete.</li>
+          <li><a href="/legroom/">Legroom</a>: the Purplelink menu-bar app described above.</li>
+          <li><a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac (2026)</a>: another menu-bar utility category, compared the same way.</li>
+          <li><a href="/privacy/">Purplelink's privacy page</a>, <a href="/products/">all products</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=f687fd96c2" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

@@ -59,6 +59,7 @@
 - **Privacy:** No account, no analytics. Measurements, rules and the trial clock stay on the Mac. The only network use is the daily update check that every copy makes and the Buy link.
 - **Limits:** It does not speed up a Mac, does not run commands, does not clean inside system folders, and does not scan as an administrator. Full Disk Access is optional.
 - **Trial and purchase:** https://purplelink.llc/legroom/
+- **Guide:** https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/ (how to see free space with Finder, Storage settings, Disk Utility and df, and the menu-bar apps compared)
 
 ### Keyfeel (macOS)
 - **Platform:** macOS 13 or later, Apple silicon and Intel
@@ -344,6 +345,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - AI paper review tools compared: https://purplelink.llc/guides/ai-paper-review-tools-compared/ — Paperpal Preflight, SciScore, Writefull, a general chatbot and Paper Review: what each checks, price, and what it misses.
 - Best keyboard sound apps for Mac (2026): https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ — Klack, KeyOpera, Thock, Mechvibes, Klakk, Snick, HapticPad and Keyfeel compared by price, sounds, permissions and what each does not do.
 - Best disk space analyzer and cleaner for Mac (2026): https://purplelink.llc/guides/best-disk-space-analyzer-for-mac/ — macOS Storage, DaisyDisk, GrandPerspective, OmniDiskSweeper, CleanMyMac, Hazel, Mole and more, plus what is safe to delete.
+- Show free disk space in the Mac menu bar: https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/ — Finder, Storage settings, Disk Utility and df, then eight menu-bar apps (Legroom, Stats, iStat Menus, Mole, Mister Plimsoll and others) by price, low-space alerts, cleaning and macOS version.
 - Best PII redaction tools for ChatGPT and AI chats (2026): https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/ — Outbound Veil, Predact, PrivacyScrubber, Presidio, ChatGPT's own controls and local models compared.
 - Best software for tracking your research record (2026): https://purplelink.llc/guides/best-academic-record-tracking-software/ — Vitae, spreadsheets, Notion, Manuscripts, ORCID, Interfolio and more compared.
 - How to track your academic CV and tenure case (2026): https://purplelink.llc/guides/track-academic-cv-tenure-case/ — 16 tools compared on cost and data ownership.
