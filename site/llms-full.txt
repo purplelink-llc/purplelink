@@ -749,7 +749,7 @@ Try it free for 7 days
 
 Refunded if you email within 14 days of purchase.
 
-The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0 · 6.6 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.0 · 7.3 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 
 Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
 
@@ -768,6 +768,10 @@ You make a rule for a folder or a cache. The rule shows a preview of exactly wha
 ### It shows what grew
 
 Once a day Legroom measures where your space goes. What Grew compares those measurements over 1, 7 or 30 days, so you can see which folder filled the disk and make a rule for it.
+
+### It removes an app and what it left behind
+
+Choose an app and the Uninstaller lists the files it keeps in your Library folder, with their sizes. You tick what goes, confirm a sheet that measures everything again, and it all moves to the Trash. A second tab lists support files left by apps that are no longer installed.
 
 Watch it work
 
@@ -811,6 +815,22 @@ Search your home folder, or folders you choose, for large files, files you have 
 
 Sample data.
 
+## The Uninstaller, step by step
+
+Choose an appThe window lists the apps in Applications and in your own Applications folder. You can also choose an app with Choose App or drop one on the window. Look for Leftovers reads folders and file names; nothing moves yet.
+
+See what it leftEach leftover shows its place, its size, when it last changed and how its name matches the app. Items named exactly for the app start ticked. Folders that are only named like the app are never ticked for you. You can untick anything.
+
+ConfirmMove to Trash opens a sheet that measures each item again, lists any it left out with the reason, and moves only what still matches. Everything goes to the Trash and can be put back from there until the Trash is emptied. Nothing is deleted, and no space is freed until you empty the Trash.
+
+The app itselfThe app moves too only if you tick Also move the app to the Trash, and only after its leftovers. macOS may ask for your administrator password, which Legroom does not see.
+
+System LibraryLeftovers in the system Library are listed with a command to copy. Legroom does not remove them and does not run the command.
+
+Deleted appsThe Left by deleted apps tab lists support files named for apps that are not installed. Nothing in it is ticked. An identifier is left out when an installed app, a running app, a launch agent or Launch Services has a related identifier, including one from the same vendor, or when anything of it changed in the last 30 days. An app on a disk that is not connected looks like a deleted app, so connect your disks first.
+
+After the trialThe Uninstaller needs a license key, like cleaning. The menu-bar readout and the low-space alerts stay free.
+
 ## What is in it
 
 Menu barFree space on the startup disk, the space macOS can clear, your other volumes, and a low-space alert at a line you set.
@@ -829,13 +849,15 @@ Space MapA sunburst chart of a folder or disk, with Reveal in Finder, Move to Tr
 
 Find FilesLarge, old and duplicate files. Trash only, and one copy of every duplicate always stays.
 
+UninstallerThe files an app keeps in your Library folder, with sizes, and the support files of apps that are gone. Trash only, after you tick items and confirm.
+
 ## What it does not do
 
 SpeedIt does not make your Mac faster. It frees disk space and does nothing else to performance.
 
-System filesIt does not clean inside system folders and the folders that hold your documents and settings.
+System filesIt does not clean inside system folders and the folders that hold your documents and settings. The one exception is the Uninstaller, which moves items an app left in your Library folder, and only the ones you tick and confirm.
 
-CommandsIt does not run commands. Where a fix needs Terminal, such as removing local Time Machine snapshots, it shows the command as text and you decide whether to run it.
+CommandsIt does not run commands. Where a fix needs Terminal, such as removing local Time Machine snapshots or a leftover in the system Library, it shows the command as text and you decide whether to run it.
 
 Hidden spaceIt does not scan as an administrator, so some space it cannot measure, such as local Time Machine snapshots. It lists those as size not reported rather than guessing.
 
@@ -855,7 +877,15 @@ macOS 14 (Sonoma) or later, on Apple silicon or Intel.
 
 Does it delete anything on its own?
 
-Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map and Find Files only move items to the Trash, and only the ones you select.
+Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map, Find Files and the Uninstaller only move items to the Trash, and only the ones you select.
+
+How does the Uninstaller decide which files belong to an app?
+
+It reads the app's bundle identifier and looks in a fixed list of folders in your Library: Application Support, Caches, Preferences, Containers, Group Containers, Saved Application State, Logs, HTTPStorages, WebKit, Cookies and LaunchAgents. An item is listed when its name is exactly what macOS names the app's data in that folder, such as the identifier followed by .plist in Preferences, and those items start ticked. A folder in Application Support that is only named like the app is listed unticked, and cannot be ticked if another installed app has the same name. Group Containers are offered only when no other app from the same developer is installed. A launch agent is listed only when its file names the app. There is no fuzzy matching.
+
+What will the Uninstaller not touch?
+
+It does not offer Apple apps, apps in system folders, apps in the Trash, apps inside other apps, apps in another user's folder, or Legroom itself. It lists an item as one it cannot move, with the reason, when the item is a link, holds a photo, music or video library, a disk image or a backup, is stored only in iCloud, or changed in the last 10 minutes. Before anything moves it measures each item again and leaves alone any that changed since you looked. If the app is open, it asks you to quit it and never forces it to quit. Leftovers in the system Library are listed with a command you can copy and run yourself; Legroom does not run it.
 
 Does it make my Mac faster?
 
@@ -863,7 +893,7 @@ No. Legroom frees disk space. It does not tune or speed up anything else.
 
 Does it need Full Disk Access?
 
-No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read.
+No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read. The Uninstaller also skips the Containers, Group Containers and Cookies folders in your Library, and says so.
 
 Does it send my files or measurements anywhere?
 
@@ -871,7 +901,7 @@ No. There is no account and no analytics. Apart from the download itself, the da
 
 What happens when the trial ends?
 
-The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the Find a purchase page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download.
+The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the Find a purchase page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download.
 
 I already bought Legroom. Do I need a key?
 
@@ -6192,9 +6222,9 @@ Pick this if you deleted a lot and the free number did not move. Most of the tim
 
 Cost: A free 7-day trial, then $9.99 once, with no subscription; also part of the $54.99 Mac Suite. Platform: macOS 14 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.0.0, signed and notarized, which makes it the newest and least proven tool in this guide. I make it, and I have not compared it with the others on a test Mac.
 
-I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set. You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which. A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any. Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate.
+I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set. You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which. A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any. Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate. The Uninstaller lists the files an app keeps in the Library folder, with sizes, and moves only the ones you tick to the Trash after a confirmation sheet.
 
-What it lacks: it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no uninstaller, widget or command-line tool. After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map and Find Files need a license key, which unlocks the same download. Its page says there is no account and no analytics; every copy checks for updates once a day. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and this is the first release.
+What it lacks: it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no widget or command-line tool. After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller need a license key, which unlocks the same download. Its page says there is no account and no analytics; every copy checks for updates once a day. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and this is the first release.
 
 Where others are better today: DaisyDisk for a visual map, and for hidden space and snapshots, because it can scan as administrator, which Legroom does not. GrandPerspective if you want free. OmniDiskSweeper if you want simple. Hazel for general rules on any folder. For cleaning developer caches when space is low, free open-source apps such as Harbofly and Dustpan exist, listed below. The gap Legroom is aimed at is folder rules with a free-space trigger, a readout and a "what grew" explanation in one app. Pick Legroom if you want rules that clean on a free-space trigger with a preview you approve each time, and you accept a first release from a one-person studio. Pick another tool if you want a visual map of everything including system space.
 
@@ -6628,7 +6658,7 @@ Not menu-bar readouts. DaisyDisk draws a map of your disk and its home page does
 
 ## What Legroom does here, and what it does not
 
-Legroom shows free space on the startup disk in the menu bar. The window under it adds the space available now, the space macOS says it can clear, and your other volumes. You set a line, and it warns you when free space drops below it. After the 7-day trial, those two parts keep working with no license key. Cleaning rules, What Grew, Suggestions, Space Map and Find Files need a key, which unlocks the same download. There is no account and no analytics. Every copy checks for updates once a day.
+Legroom shows free space on the startup disk in the menu bar. The window under it adds the space available now, the space macOS says it can clear, and your other volumes. You set a line, and it warns you when free space drops below it. After the 7-day trial, those two parts keep working with no license key. Cleaning rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller need a key, which unlocks the same download. There is no account and no analytics. Every copy checks for updates once a day.
 
 It does not make your Mac faster. It does not clean inside system folders. It does not run commands, and it does not scan as an administrator, so some space, such as local Time Machine snapshots, is listed as "size not reported" instead of measured. It is a disk tool, not a system monitor: for CPU, memory or network readings, use Stats or iStat Menus. Full Disk Access is optional. I am the developer, so weigh this section accordingly; the product page has the full list of what it does and does not do, and a 7-day trial.
 

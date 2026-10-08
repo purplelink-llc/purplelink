@@ -55,7 +55,8 @@
             "What Grew: daily measurements with 1, 7 and 30 day growth",
             "Weekly or monthly suggestions for new rules",
             "Space Map: a sunburst chart of where space goes, with Move to Trash",
-            "Find Files: large, old and duplicate files, always keeping one copy of each duplicate, Trash only"
+            "Find Files: large, old and duplicate files, always keeping one copy of each duplicate, Trash only",
+            "Uninstaller: the files an app keeps in your Library folder, listed with sizes and moved to the Trash only after you tick them and confirm, and support files left by apps that are already gone"
           ],
           "offers": {
             "@type": "Offer",
@@ -81,7 +82,17 @@
             {
               "@type": "Question",
               "name": "Does it delete anything on its own?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map and Find Files only move items to the Trash, and only the ones you select." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map, Find Files and the Uninstaller only move items to the Trash, and only the ones you select." }
+            },
+            {
+              "@type": "Question",
+              "name": "How does the Uninstaller decide which files belong to an app?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It reads the app's bundle identifier and looks in a fixed list of folders in your Library: Application Support, Caches, Preferences, Containers, Group Containers, Saved Application State, Logs, HTTPStorages, WebKit, Cookies and LaunchAgents. An item is listed when its name is exactly what macOS names the app's data in that folder, such as the identifier followed by .plist in Preferences, and those items start ticked. A folder in Application Support that is only named like the app is listed unticked, and cannot be ticked if another installed app has the same name. Group Containers are offered only when no other app from the same developer is installed. A launch agent is listed only when its file names the app. There is no fuzzy matching." }
+            },
+            {
+              "@type": "Question",
+              "name": "What will the Uninstaller not touch?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It does not offer Apple apps, apps in system folders, apps in the Trash, apps inside other apps, apps in another user's folder, or Legroom itself. It lists an item as one it cannot move, with the reason, when the item is a link, holds a photo, music or video library, a disk image or a backup, is stored only in iCloud, or changed in the last 10 minutes. Before anything moves it measures each item again and leaves alone any that changed since you looked. If the app is open, it asks you to quit it and never forces it to quit. Leftovers in the system Library are listed with a command you can copy and run yourself; Legroom does not run it." }
             },
             {
               "@type": "Question",
@@ -91,7 +102,7 @@
             {
               "@type": "Question",
               "name": "Does it need Full Disk Access?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read. The Uninstaller also skips the Containers, Group Containers and Cookies folders in your Library, and says so." }
             },
             {
               "@type": "Question",
@@ -101,7 +112,7 @@
             {
               "@type": "Question",
               "name": "What happens when the trial ends?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the Find a purchase page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download." }
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the Find a purchase page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download." }
             },
             {
               "@type": "Question",
@@ -188,7 +199,7 @@
           </div>
           <p class="trial-remind-note" data-reminder-status aria-live="polite">Optional. Two emails, then nothing, each with an unsubscribe link. Your address is deleted once the second is sent.</p>
         </form>
-        <p class="waitlist-fine-print">The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). Version 1.1.0 &middot; 6.6 MB disk image &middot; macOS 14 or later, Apple silicon and Intel &middot; signed and notarized.</p>
+        <p class="waitlist-fine-print">The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). Version 1.2.0 &middot; 7.3 MB disk image &middot; macOS 14 or later, Apple silicon and Intel &middot; signed and notarized.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.</p>
       </div>
       <figure class="app-hero-window lg-hero-window">
@@ -215,6 +226,10 @@
         <div class="feature-item">
           <h3>It shows what grew</h3>
           <p>Once a day Legroom measures where your space goes. What Grew compares those measurements over 1, 7 or 30 days, so you can see which folder filled the disk and make a rule for it.</p>
+        </div>
+        <div class="feature-item">
+          <h3>It removes an app and what it left behind</h3>
+          <p>Choose an app and the Uninstaller lists the files it keeps in your Library folder, with their sizes. You tick what goes, confirm a sheet that measures everything again, and it all moves to the Trash. A second tab lists support files left by apps that are no longer installed.</p>
         </div>
       </div>
     </section>
@@ -299,6 +314,21 @@
       </div>
     </section>
 
+    <section class="specs-section" aria-labelledby="unin-h">
+      <h2 id="unin-h">The Uninstaller, step by step</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Choose an app</th><td>The window lists the apps in Applications and in your own Applications folder. You can also choose an app with Choose App or drop one on the window. Look for Leftovers reads folders and file names; nothing moves yet.</td></tr>
+          <tr><th scope="row">See what it left</th><td>Each leftover shows its place, its size, when it last changed and how its name matches the app. Items named exactly for the app start ticked. Folders that are only named like the app are never ticked for you. You can untick anything.</td></tr>
+          <tr><th scope="row">Confirm</th><td>Move to Trash opens a sheet that measures each item again, lists any it left out with the reason, and moves only what still matches. Everything goes to the Trash and can be put back from there until the Trash is emptied. Nothing is deleted, and no space is freed until you empty the Trash.</td></tr>
+          <tr><th scope="row">The app itself</th><td>The app moves too only if you tick Also move the app to the Trash, and only after its leftovers. macOS may ask for your administrator password, which Legroom does not see.</td></tr>
+          <tr><th scope="row">System Library</th><td>Leftovers in the system Library are listed with a command to copy. Legroom does not remove them and does not run the command.</td></tr>
+          <tr><th scope="row">Deleted apps</th><td>The Left by deleted apps tab lists support files named for apps that are not installed. Nothing in it is ticked. An identifier is left out when an installed app, a running app, a launch agent or Launch Services has a related identifier, including one from the same vendor, or when anything of it changed in the last 30 days. An app on a disk that is not connected looks like a deleted app, so connect your disks first.</td></tr>
+          <tr><th scope="row">After the trial</th><td>The Uninstaller needs a license key, like cleaning. The menu-bar readout and the low-space alerts stay free.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
     <section class="specs-section" aria-labelledby="inside-h">
       <h2 id="inside-h">What is in it</h2>
       <table class="compare-table specs-table" data-motion="rows">
@@ -311,6 +341,7 @@
           <tr><th scope="row">Suggestions</th><td>Rule ideas based on what grew, weekly or monthly.</td></tr>
           <tr><th scope="row">Space Map</th><td>A sunburst chart of a folder or disk, with Reveal in Finder, Move to Trash and Add as a Rule.</td></tr>
           <tr><th scope="row">Find Files</th><td>Large, old and duplicate files. Trash only, and one copy of every duplicate always stays.</td></tr>
+          <tr><th scope="row">Uninstaller</th><td>The files an app keeps in your Library folder, with sizes, and the support files of apps that are gone. Trash only, after you tick items and confirm.</td></tr>
         </tbody>
       </table>
     </section>
@@ -320,8 +351,8 @@
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
           <tr><th scope="row">Speed</th><td>It does not make your Mac faster. It frees disk space and does nothing else to performance.</td></tr>
-          <tr><th scope="row">System files</th><td>It does not clean inside system folders and the folders that hold your documents and settings.</td></tr>
-          <tr><th scope="row">Commands</th><td>It does not run commands. Where a fix needs Terminal, such as removing local Time Machine snapshots, it shows the command as text and you decide whether to run it.</td></tr>
+          <tr><th scope="row">System files</th><td>It does not clean inside system folders and the folders that hold your documents and settings. The one exception is the Uninstaller, which moves items an app left in your Library folder, and only the ones you tick and confirm.</td></tr>
+          <tr><th scope="row">Commands</th><td>It does not run commands. Where a fix needs Terminal, such as removing local Time Machine snapshots or a leftover in the system Library, it shows the command as text and you decide whether to run it.</td></tr>
           <tr><th scope="row">Hidden space</th><td>It does not scan as an administrator, so some space it cannot measure, such as local Time Machine snapshots. It lists those as size not reported rather than guessing.</td></tr>
           <tr><th scope="row">Unseen deletions</th><td>It does not remove anything you have not previewed and approved, and it does not remove duplicates without leaving one copy.</td></tr>
           <tr><th scope="row">The cloud</th><td>There is no cloud, no account and no sync. Your measurements, rules and log stay on your Mac.</td></tr>
@@ -345,7 +376,15 @@
         </details>
         <details class="faq-item">
           <summary>Does it delete anything on its own?</summary>
-          <div class="faq-body">Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map and Find Files only move items to the Trash, and only the ones you select.</div>
+          <div class="faq-body">Only through a rule you made, after you approved a preview of what the rule would remove. Each rule is set to move items to the Trash or to delete them permanently, and the preview says which. Space Map, Find Files and the Uninstaller only move items to the Trash, and only the ones you select.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How does the Uninstaller decide which files belong to an app?</summary>
+          <div class="faq-body">It reads the app's bundle identifier and looks in a fixed list of folders in your Library: Application Support, Caches, Preferences, Containers, Group Containers, Saved Application State, Logs, HTTPStorages, WebKit, Cookies and LaunchAgents. An item is listed when its name is exactly what macOS names the app's data in that folder, such as the identifier followed by .plist in Preferences, and those items start ticked. A folder in Application Support that is only named like the app is listed unticked, and cannot be ticked if another installed app has the same name. Group Containers are offered only when no other app from the same developer is installed. A launch agent is listed only when its file names the app. There is no fuzzy matching.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What will the Uninstaller not touch?</summary>
+          <div class="faq-body">It does not offer Apple apps, apps in system folders, apps in the Trash, apps inside other apps, apps in another user's folder, or Legroom itself. It lists an item as one it cannot move, with the reason, when the item is a link, holds a photo, music or video library, a disk image or a backup, is stored only in iCloud, or changed in the last 10 minutes. Before anything moves it measures each item again and leaves alone any that changed since you looked. If the app is open, it asks you to quit it and never forces it to quit. Leftovers in the system Library are listed with a command you can copy and run yourself; Legroom does not run it.</div>
         </details>
         <details class="faq-item">
           <summary>Does it make my Mac faster?</summary>
@@ -353,7 +392,7 @@
         </details>
         <details class="faq-item">
           <summary>Does it need Full Disk Access?</summary>
-          <div class="faq-body">No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read.</div>
+          <div class="faq-body">No. It asks only if you choose to give it. Without it, Legroom skips the folders macOS protects, such as Desktop, Documents and Downloads, and says which ones it could not read. The Uninstaller also skips the Containers, Group Containers and Cookies folders in your Library, and says so.</div>
         </details>
         <details class="faq-item">
           <summary>Does it send my files or measurements anywhere?</summary>
@@ -361,7 +400,7 @@
         </details>
         <details class="faq-item">
           <summary>What happens when the trial ends?</summary>
-          <div class="faq-body">The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map and Find Files stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the <a href="/recover/">Find a purchase</a> page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download.</div>
+          <div class="faq-body">The trial runs for seven days from the first time you open it, with no account. After that the menu-bar readout and the low-space alerts keep working. Cleaning rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller stop until you enter a license key. The key arrives in your receipt email and is shown on the success page, and the <a href="/recover/">Find a purchase</a> page sends it again. Choose Enter license key… from the menu-bar dropdown, or Settings, General, and paste it. It unlocks Legroom for good, offline, with no account and no second download.</div>
         </details>
         <details class="faq-item">
           <summary>I already bought Legroom. Do I need a key?</summary>
