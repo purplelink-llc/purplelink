@@ -11,6 +11,8 @@
   max-width: 1000px;
 }
 .lg-shot .frame-soft { max-width: 100%; }
+/* The Move to Trash sheet is 560 points wide against 940 for the window: shown at 600 so its text matches the window shots. */
+.lg-shot-sheet { max-width: 600px; }
 .lg-shot figcaption {
   margin-top: 10px;
   font-size: 0.85rem;

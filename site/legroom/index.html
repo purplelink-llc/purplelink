@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="/styles.css?v=cf35a6634a">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/buy.css?v=b1216dd259">
-    <link rel="stylesheet" href="/legroom/legroom.css?v=11fab66af8">
+    <link rel="stylesheet" href="/legroom/legroom.css?v=2b61b15abd">
     <script src="/site.js?v=95cfec31bc" defer></script>
     <script src="/trial-reminder.js?v=d43def6c9f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -204,9 +204,9 @@
       </div>
       <figure class="app-hero-window lg-hero-window">
         <div class="frame-soft">
-          <img src="/legroom/img/menu-bar-dropdown.webp" alt="Legroom's menu-bar window on a sample Mac: 43 GB free, a bar for used space, figures for space available now, space macOS can clear, used and total space, and a low-space line of 20 GB, then a Clean Now button, a switch to pause automatic cleaning, and buttons for Space Map, Find Files, What Grew and Settings" width="600" height="1042" fetchpriority="high" decoding="async">
+          <img src="/legroom/img/menu-bar-dropdown.webp" alt="Legroom's menu-bar window: the startup disk with 28 GB free in orange and the words Close to your line, a bar for used space, figures for space available now, space macOS can clear, used and total space, and a low-space line of 20 GB, one other volume with 431 GB free, then a Clean Now button, a switch to pause automatic cleaning, a line about the last clean, and buttons for Space Map, Find Files, Uninstaller, What Grew, Settings and Quit Legroom" width="600" height="1130" fetchpriority="high" decoding="async">
         </div>
-        <figcaption>Sample data: a pretend home folder and invented numbers. The window title comes from the test build.</figcaption>
+        <figcaption>Sample data for the last clean. The disk figures are read from the Mac it was captured on. The window title comes from the test build.</figcaption>
       </figure>
     </div>
 
@@ -310,6 +310,45 @@
             <img src="/legroom/img/find-files.webp" alt="The Find Files window on its Large tab, listing seven sample files of 10 MB or more with their size, date changed and folder, and Reveal in Finder and Move Selected to Trash buttons" width="1200" height="1109" loading="lazy" decoding="async">
           </div>
           <figcaption>Sample data.</figcaption>
+        </figure>
+      </div>
+
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>Uninstaller: what an app left behind</h3>
+          <p>Choose an app and Look for Leftovers lists the files it keeps in your Library folder, each with its size, when it last changed and how its name matches the app. Items named exactly for the app start ticked. Folders that are only named like the app are never ticked for you.</p>
+        </div>
+        <figure class="lg-shot">
+          <div class="frame-soft">
+            <img src="/legroom/img/uninstaller-apps.webp" alt="The Uninstaller window on its Apps tab, with five sample apps listed and Example Sketchbook selected. Its leftovers are listed: a folder in Application Support named like the app and not ticked, then three items marked Named for the app and ticked, in Application Support, Caches and Preferences, each with a size and a last-changed date. Below them are notes that Containers, Group Containers and Cookies were not opened without Full Disk Access, an unticked Also move the app to the Trash checkbox, a line reading 3 items selected, 103 MB, and a Move to Trash button" width="1200" height="960" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data: invented apps and files in a pretend home folder. Full Disk Access is off in this capture, so protected folders are skipped. The sample files were all written when this was captured, so they share one date.</figcaption>
+        </figure>
+      </div>
+
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>A sheet that measures everything again</h3>
+          <p>Move to Trash opens a sheet that measures each item again, lists any it left out with the reason, and moves only what still matches. Everything goes to the Trash and can be put back from there until the Trash is emptied.</p>
+        </div>
+        <figure class="lg-shot lg-shot-sheet">
+          <div class="frame-soft">
+            <img src="/legroom/img/uninstaller-confirm.webp" alt="A sheet titled Move leftovers of Example Sketchbook to the Trash, reading 3 items, 103 MB, measured now, with text saying the items go to the Trash and are checked again just before they move, a list of the three items with sizes and last-changed dates, and Cancel and Move to Trash buttons" width="1120" height="926" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+      </div>
+
+      <div class="screenshot-block">
+        <div class="screenshot-callout" data-motion="reveal">
+          <h3>Support files of apps that are gone</h3>
+          <p>The Left by deleted apps tab lists support files named for apps that are not installed. Nothing in it is ticked. An app on a disk that is not connected looks like a deleted app, so connect your disks first.</p>
+        </div>
+        <figure class="lg-shot">
+          <div class="frame-soft">
+            <img src="/legroom/img/uninstaller-deleted.webp" alt="The Uninstaller window on its Left by deleted apps tab after a look, listing three sample identifiers, each with two items showing a size, file count and last-changed date, and none ticked. Under the list is a note that Cookies was not opened without Full Disk Access, and the footer reads 0 items selected, 0 MB" width="1200" height="960" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data: three invented apps that are not installed.</figcaption>
         </figure>
       </div>
     </section>

@@ -753,7 +753,7 @@ The trial runs for seven days from the first time you open it, with no account. 
 
 Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
 
-Sample data: a pretend home folder and invented numbers. The window title comes from the test build.
+Sample data for the last clean. The disk figures are read from the Mac it was captured on. The window title comes from the test build.
 
 ## What it does
 
@@ -814,6 +814,24 @@ Sample data. Full Disk Access is off in this capture, so protected folders are s
 Search your home folder, or folders you choose, for large files, files you have not opened in a long time, and duplicates. For duplicates you choose which copy stays, and at least one copy of every group always stays. Find Files only moves files to the Trash, and only the ones you select.
 
 Sample data.
+
+### Uninstaller: what an app left behind
+
+Choose an app and Look for Leftovers lists the files it keeps in your Library folder, each with its size, when it last changed and how its name matches the app. Items named exactly for the app start ticked. Folders that are only named like the app are never ticked for you.
+
+Sample data: invented apps and files in a pretend home folder. Full Disk Access is off in this capture, so protected folders are skipped. The sample files were all written when this was captured, so they share one date.
+
+### A sheet that measures everything again
+
+Move to Trash opens a sheet that measures each item again, lists any it left out with the reason, and moves only what still matches. Everything goes to the Trash and can be put back from there until the Trash is emptied.
+
+Sample data.
+
+### Support files of apps that are gone
+
+The Left by deleted apps tab lists support files named for apps that are not installed. Nothing in it is ticked. An app on a disk that is not connected looks like a deleted app, so connect your disks first.
+
+Sample data: three invented apps that are not installed.
 
 ## The Uninstaller, step by step
 
