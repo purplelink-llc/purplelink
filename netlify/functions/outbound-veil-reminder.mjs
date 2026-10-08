@@ -102,8 +102,8 @@ function withFooter(to, token, subject, textBody, htmlBody) {
     reply_to: REPLY_TO,
     to: [to],
     subject,
-    text: `${textBody}\n\nUnsubscribe with one click:\n${unsub}\n\nPurplelink LLC, Atlanta, Georgia`,
-    html: `${htmlBody}<p><a href="${unsub}">Unsubscribe with one click</a></p><p>Purplelink LLC, Atlanta, Georgia</p>`,
+    text: `${textBody}\n\nUnsubscribe with one click:\n${unsub}\n\nPurplelink LLC, 8735 Dunwoody Place #12398, Atlanta, GA 30350`,
+    html: `${htmlBody}<p><a href="${unsub}">Unsubscribe with one click</a></p><p>Purplelink LLC, 8735 Dunwoody Place #12398, Atlanta, GA 30350</p>`,
     headers: { "List-Unsubscribe": `<${unsub}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
   };
 }
