@@ -26,7 +26,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=cf35a6634a">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/tapefolio/tapefolio.css?v=91be4750de">
+    <link rel="stylesheet" href="/tapefolio/tapefolio.css?v=7ba18f34bb">
     <script src="/site.js?v=258cd9c67e" defer></script>
     <script src="/trial-reminder.js?v=d43def6c9f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -69,6 +69,16 @@
           },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
+        {
+          "@type": "VideoObject",
+          "name": "Tapefolio: transcribe interviews and read scans on your Mac",
+          "description": "The review screen on an invented interview read by computer voices, replacing or keeping each identifier, the export sheet, Batch OCR and the model settings. Real footage of the app.",
+          "thumbnailUrl": "https://purplelink.llc/assets/video/tapefolio-poster.webp",
+          "uploadDate": "2026-10-09",
+          "duration": "PT45S",
+          "embedUrl": "https://www.youtube-nocookie.com/embed/b5iFfo1E_lY",
+          "contentUrl": "https://www.youtube.com/watch?v=b5iFfo1E_lY"
         },
         {
           "@type": "FAQPage",
@@ -185,7 +195,22 @@
         <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-tf-facts>Version 1.0.0, released October 9, 2026. 43 MB disk image.</span> Needs macOS 26 or later on a Mac with Apple silicon.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.</p>
       </div>
+      <figure class="app-hero-window tf-hero-window">
+        <div class="frame-soft">
+          <img src="/assets/tapefolio-screens/review-main.webp" alt="Tapefolio's review window on an interview transcript. The left panel lists two speakers with their share of the words and seven identifiers found, none reviewed yet. The transcript fills the right, with names, a street and a first name underlined, and an audio player along the bottom." width="1600" height="1130" fetchpriority="high" decoding="async">
+        </div>
+        <figcaption>The review screen on a demo recording: an invented interview read by two computer voices. The draft is not perfect, and the first pass did not mark every identifier.</figcaption>
+      </figure>
     </div>
+
+    <section class="screenshots-section tour-section" aria-labelledby="tour-h">
+      <h2 id="tour-h">Forty-five seconds in the app</h2>
+      <p class="section-intro">The review screen on a demo interview, replacing or keeping each identifier, the export sheet, Batch OCR and the model settings. The footage is the running app. The interview is invented and read by computer voices.</p>
+      <div class="yt-embed" data-motion="youtube" data-youtube-id="b5iFfo1E_lY" data-youtube-title="Tapefolio: transcribe interviews and read scans on your Mac">
+        <img class="yt-poster" src="/assets/video/tapefolio-poster.webp" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+        <a class="yt-play" href="https://www.youtube.com/watch?v=b5iFfo1E_lY" rel="noopener">Play the video on YouTube</a>
+      </div>
+    </section>
 
     <section class="features-section" aria-labelledby="how-h">
       <div class="features-header">
@@ -204,6 +229,37 @@
           <h3>You decide what is replaced</h3>
           <p>Identifier removal marks what it found. You replace or keep each one, or replace everything left, and then export. The key that maps the codes back is saved in a separate file.</p>
         </div>
+      </div>
+    </section>
+
+    <section class="screenshots-section" aria-labelledby="shots-h">
+      <h2 id="shots-h">What it looks like</h2>
+      <p class="section-intro">Captures of the running app. The recording in the first four is an invented interview read by two computer voices, and the letters in the OCR capture are generated test files, so every name and number is made up. The draft has transcription errors, and the first pass missed some identifiers.</p>
+      <div class="tf-shots" data-motion="stagger">
+        <figure class="tf-shot">
+          <img src="/assets/tapefolio-screens/review-main.webp" alt="The review window before any decisions. Speakers are named Speaker 1 and Speaker 2, with 46% and 54% of the words. Seven identifiers are listed on the left with their times and codes, and the progress line reads 0 to replace, 0 left in, 7 not reviewed." width="1600" height="1130" loading="lazy" decoding="async">
+          <figcaption>The review screen before any decisions. Seven identifiers are found and none is reviewed. The draft has errors: the clinic line reads &ldquo;Brightwater Clinic Indecator&rdquo;, and in this first pass the app did not mark &ldquo;Decatur&rdquo; (transcribed there as &ldquo;Indecator&rdquo;) or &ldquo;Brightwater Clinic&rdquo; as identifiers.</figcaption>
+        </figure>
+        <figure class="tf-shot">
+          <img src="/assets/tapefolio-screens/review-decisions.webp" alt="The same window after decisions. The speakers are renamed Interviewer and Participant. Five identifiers have a filled check mark, Elena is struck through and marked left in, and the progress line reads 5 to replace, 1 left in, 1 not reviewed. A Check these too list at the bottom offers Brightwater and Clinic." width="1600" height="1055" loading="lazy" decoding="async">
+          <figcaption>After deciding case by case: five identifiers to replace, one left in (Elena) and one not yet reviewed. The speakers have been renamed. A &ldquo;Check these too&rdquo; list at the bottom of the panel offers more words, here &ldquo;Brightwater&rdquo; and &ldquo;Clinic&rdquo;, that you can remove as an identifier type. Anything you do not review is replaced when you export.</figcaption>
+        </figure>
+        <figure class="tf-shot">
+          <img src="/assets/tapefolio-screens/review-preview.webp" alt="The transcript with the replacements shown. The text reads Dr. [PERSON 1], [PERSON 2], [ADDRESS 1], [PHONE 1], [EMAIL 1] and [PERSON 3] in place of the names, street, phone number and email address. Elena and the words Brightwater Clinic Indecator are still readable." width="1600" height="1055" loading="lazy" decoding="async">
+          <figcaption>The preview with codes in place of the identifiers marked to replace. Elena was kept, and &ldquo;Brightwater Clinic Indecator&rdquo; is still readable because it was never marked. Detection misses some identifiers, so you read the result.</figcaption>
+        </figure>
+        <figure class="tf-shot">
+          <img src="/assets/tapefolio-screens/export-sheet.webp" alt="The Export sheet over the review window. Rows for Format (Web page, HTML), Look (Paper, light, serif), Title, Show timestamps, Add the draft notice at the top, Use MAXQDA time markers and Replace identifiers with codes. A note says 5 replaced, 1 left in, 1 not yet reviewed, and that the key that undoes the replacement is saved next to the export." width="1600" height="1055" loading="lazy" decoding="async">
+          <figcaption>The export sheet. It offers a format and a look, timestamps, a draft notice, MAXQDA time markers and replacing identifiers with codes. It states how many were replaced, left in and not yet reviewed, and that the key that undoes the replacement is saved next to the export, to be kept apart from it.</figcaption>
+        </figure>
+        <figure class="tf-shot">
+          <img src="/assets/tapefolio-screens/ocr-results.webp" alt="The Batch OCR window. A left panel sets the workflow, what to read, how to read it and which outputs to make. In the middle a list of nine files shows each file's page count and confidence, with 97% for the receipt and 100% for the others. A page image and the recognized lines of a letter sit on the right." width="1600" height="1006" loading="lazy" decoding="async">
+          <figcaption>Batch OCR on nine generated test files, 11 pages. The panel on the left sets the outputs, the list shows each file's confidence (97% for the receipt, 100% for the rest), and the recognized lines of the selected letter are on the right. The names and numbers in the letter are invented.</figcaption>
+        </figure>
+        <figure class="tf-shot">
+          <img src="/assets/tapefolio-screens/settings-models.webp" alt="Settings, Models. Speech to text is set to Apple, built into macOS, many languages, and speaker separation to Standard. Under Models on this Mac, Whisper base English offers a 150 MB download, and NVIDIA Parakeet English and Whisper large v3 turbo are installed with a Delete button each." width="1200" height="1296" loading="lazy" decoding="async">
+          <figcaption>Settings, Models. Speech to text is Apple&rsquo;s recognition until you choose another. Whisper base is a 150 MB download here, and Parakeet and Whisper large v3 turbo are installed on this Mac, each with a Delete button.</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -470,6 +526,6 @@
       </div>
     </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js?v=bb3528dd7e" defer></script>
+      <script src="/analytics.js?v=4cbb1f9af4" defer></script>
 </body>
 </html>

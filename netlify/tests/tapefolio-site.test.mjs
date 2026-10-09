@@ -37,7 +37,7 @@ test("the Tapefolio page offers the app at $29.99 once, with a 14-day refund, fo
   assert.equal(app.offers.availability, undefined, "no availability is claimed in the markup");
   assert.ok(!("aggregateRating" in app) && !("review" in app), "no ratings or reviews are invented");
   const types = jsonLd(read("tapefolio/index.html")).map((n) => n["@type"]);
-  assert.deepEqual(types.sort(), ["BreadcrumbList", "FAQPage", "SoftwareApplication"]);
+  assert.deepEqual(types.sort(), ["BreadcrumbList", "FAQPage", "SoftwareApplication", "VideoObject"]);
 });
 
 test("the page is wired to the delivery and checkout functions and carries the shared head tags", () => {
@@ -224,8 +224,10 @@ test("the page never claims anonymization, guaranteed compliance, or anything th
   assert.doesNotMatch(text, /guarantee|HIPAA|GDPR|FERPA|certified|100% (private|accurate|secure)|fully (private|anonymous|compliant)|IRB[- ]approved|never (mishears|misses)/i);
   assert.doesNotMatch(text, /seamless|supercharge|streamline|world-class|cutting-edge|revolutionary|effortless|AI-powered|game-chang|magic|blazing|lightning/i);
   // Every percentage on the page is one the README states.
+  // (The captions under the screenshots quote what the captures show; they are checked in their own test.)
   const allowed = new Set(["21%", "29%", "39%", "87%", "94%", "1.5%"]);
-  for (const m of text.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(allowed.has(m[0]), `unexpected figure ${m[0]}`);
+  const withoutCaptions = visibleText(html.replace(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/, ""));
+  for (const m of withoutCaptions.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(allowed.has(m[0]), `unexpected figure ${m[0]}`);
   // Features that are not built are not named.
   for (const unbuilt of ["live captions", "real-time transcription", "cloud sync", "sync across", "team", "collaborat", "translation", "summar", "read-aloud", "ChatGPT", "OpenAI API"]) {
     assert.ok(!text.toLowerCase().includes(unbuilt.toLowerCase()), `the page mentions: ${unbuilt}`);
@@ -638,4 +640,100 @@ test("llms.txt does not say a model is built in, and states the measured error r
   assert.match(block, /sends its name, its version, the macOS version and its update token to purplelink\.llc/);
   assert.match(block, /from Hugging Face/);
   assert.doesNotMatch(block, /version (you|of Tapefolio you) (buy|bought)|major version/i);
+});
+
+// ---- screenshots and video ----------------------------------------------------------------------
+
+/** Width and height of a WebP file, from its header (lossy, lossless or extended). */
+function webpSize(file) {
+  const b = readFileSync(join(SITE, file));
+  assert.equal(b.subarray(0, 4).toString(), "RIFF", file);
+  assert.equal(b.subarray(8, 12).toString(), "WEBP", file);
+  const kind = b.subarray(12, 16).toString();
+  if (kind === "VP8X") return [b.readUIntLE(24, 3) + 1, b.readUIntLE(27, 3) + 1];
+  if (kind === "VP8 ") return [b.readUInt16LE(26) & 0x3fff, b.readUInt16LE(28) & 0x3fff];
+  if (kind === "VP8L") { const v = b.readUInt32LE(21); return [(v & 0x3fff) + 1, ((v >> 14) & 0x3fff) + 1]; }
+  throw new Error(`${file}: unknown WebP chunk ${kind}`);
+}
+
+const SHOTS = ["review-main", "review-decisions", "review-preview", "export-sheet", "ocr-results", "settings-models"];
+
+test("the six captures are on the page in order, with real dimensions, lazy loading, specific alt text and a caption each", () => {
+  const html = read("tapefolio/index.html");
+  const section = html.match(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/)[0];
+  const figures = [...section.matchAll(/<figure class="tf-shot">([\s\S]*?)<\/figure>/g)].map((m) => m[1]);
+  assert.equal(figures.length, 6);
+  figures.forEach((fig, i) => {
+    const img = fig.match(/<img src="(\/assets\/tapefolio-screens\/([a-z-]+)\.webp)" alt="([^"]*)" width="(\d+)" height="(\d+)" loading="lazy" decoding="async">/);
+    assert.ok(img, `figure ${i + 1} has a sized, lazy image`);
+    assert.equal(img[2], SHOTS[i]);
+    assert.ok(existsSync(join(SITE, img[1])));
+    assert.deepEqual(webpSize(img[1].slice(1)), [Number(img[4]), Number(img[5])], `${img[2]}: width and height match the file`);
+    assert.ok(img[3].length > 120, `${img[2]}: the alt text describes what is shown`);
+    assert.ok(statSync(join(SITE, img[1])).size < 250 * 1024);
+    assert.match(fig, /<figcaption>[^<]{80,}/, `${img[2]} has a real caption`);
+  });
+});
+
+test("the hero picture is the review screen, loads eagerly, and its caption says the interview is invented", () => {
+  const html = read("tapefolio/index.html");
+  const hero = html.match(/<figure class="app-hero-window tf-hero-window">([\s\S]*?)<\/figure>/)[1];
+  assert.match(hero, /<div class="frame-soft">\s*<img src="\/assets\/tapefolio-screens\/review-main\.webp" alt="[^"]{120,}" width="1600" height="1130" fetchpriority="high" decoding="async">/);
+  assert.doesNotMatch(hero, /loading="lazy"/);
+  assert.match(hero, /invented interview read by two computer voices/);
+  assert.match(hero, /did not mark every identifier/);
+  assert.ok(html.indexOf("tf-hero-window") > html.indexOf("app-hero-copy") && html.indexOf("tf-hero-window") < html.indexOf('id="tour-h"'));
+  assert.match(read("tapefolio/tapefolio.css"), /\.tf-hero:has\(\.tf-hero-window\) \.tf-hero-window \{ grid-column: 1 \/ -1; \}/);
+  const css = read("tapefolio/tapefolio.css");
+  assert.match(css, /@media \(min-width: 1100px\) \{[^}]*\.tf-hero:has\(\.tf-hero-window\) \{ grid-template-columns: auto minmax\(0, 5fr\) minmax\(0, 6fr\); \}/);
+});
+
+test("the captions say what the captures show: the invented demo, the errors, and what the first pass missed", () => {
+  const html = read("tapefolio/index.html");
+  const section = html.match(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/)[0];
+  const text = visibleText(section).replace(/&[lr]dquo;/g, '"').replace(/&rsquo;/g, "'");
+  assert.match(text, /invented interview read by two computer voices/);
+  assert.match(text, /the letters in the OCR capture are generated test files/);
+  assert.match(text, /the first pass missed some identifiers/);
+  assert.match(text, /in this first pass the app did not mark .Decatur. \(transcribed there as .Indecator.\) or .Brightwater Clinic. as identifiers/);
+  assert.match(text, /Brightwater Clinic Indecator. is still readable because it was never marked/);
+  assert.match(text, /Detection misses some identifiers, so you read the result/);
+  assert.match(text, /5 to replace|five identifiers to replace/);
+  assert.match(text, /97% for the receipt, 100% for the rest/);
+  // Only the figures the captures show.
+  for (const m of text.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(["97%", "100%"].includes(m[0]), `unexpected figure ${m[0]}`);
+  // No claim that detection is complete, anywhere on the page.
+  const page = visibleText(html);
+  assert.doesNotMatch(page, /finds (all|every)|catches (all|every)|complete detection|nothing (is |gets )?missed|never misses|detects everything|removes (all|every)/i);
+  // The Decatur and Brightwater Clinic detail is in the captured text, not cropped away: the uncropped sizes are kept.
+  assert.deepEqual(webpSize("assets/tapefolio-screens/review-main.webp"), [1600, 1130]);
+  assert.deepEqual(webpSize("assets/tapefolio-screens/review-preview.webp"), [1600, 1055]);
+});
+
+test("the promo video is a poster that loads the YouTube embed on click, the way Keyfeel's does, with a VideoObject", () => {
+  const html = read("tapefolio/index.html");
+  const box = html.match(/<div class="yt-embed" data-motion="youtube"[\s\S]*?<\/div>/)[0];
+  assert.match(box, /data-youtube-id="b5iFfo1E_lY" data-youtube-title="Tapefolio: transcribe interviews and read scans on your Mac"/);
+  assert.match(box, /<img class="yt-poster" src="\/assets\/video\/tapefolio-poster\.webp" alt="" width="1920" height="1080" loading="lazy" decoding="async">/);
+  assert.match(box, /<a class="yt-play" href="https:\/\/www\.youtube\.com\/watch\?v=b5iFfo1E_lY" rel="noopener">Play the video on YouTube<\/a>/);
+  assert.doesNotMatch(html, /<iframe/, "the embed is only created on click");
+  assert.deepEqual(webpSize("assets/video/tapefolio-poster.webp"), [1920, 1080]);
+  const video = jsonLd(html).find((n) => n["@type"] === "VideoObject");
+  assert.equal(video.name, "Tapefolio: transcribe interviews and read scans on your Mac");
+  assert.equal(video.duration, "PT45S");
+  assert.equal(video.embedUrl, "https://www.youtube-nocookie.com/embed/b5iFfo1E_lY");
+  assert.equal(video.contentUrl, "https://www.youtube.com/watch?v=b5iFfo1E_lY");
+  assert.equal(video.thumbnailUrl, "https://purplelink.llc/assets/video/tapefolio-poster.webp");
+  assert.match(video.uploadDate, /^\d{4}-\d{2}-\d{2}$/);
+  assert.match(video.description, /invented interview read by computer voices/);
+  // The same site machinery Keyfeel uses: motion.js builds the embed, and the CSP already allows the privacy-enhanced domain.
+  assert.match(read("motion.js"), /youtube-nocookie\.com\/embed\//);
+  const toml = readFileSync(join(SITE, "..", "netlify.toml"), "utf8");
+  assert.match(toml, /frame-src[^;]*https:\/\/www\.youtube-nocookie\.com/);
+  assert.match(visibleText(html), /The interview is invented and read by computer voices/);
+});
+
+test("the 8 second hero loop and its poster are in place for the page to use", () => {
+  for (const f of ["assets/video/tapefolio-hero.mp4", "assets/video/tapefolio-hero.webm"]) assert.ok(statSync(join(SITE, f)).size > 100 * 1024, f);
+  assert.deepEqual(webpSize("assets/video/tapefolio-hero-poster.webp"), [1280, 720]);
 });

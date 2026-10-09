@@ -219,14 +219,27 @@ Done (2026-10-09, from the real icon `Tapefolio/assets/brand/icon-1024.png`):
   redo one: serve `site/`, open `/assets/og/_gen.html?t=tapefolio` and screenshot it at 1200x630. The page's `og:image`,
   `twitter:image` and JSON-LD `image` point at `tapefolio.png`.
 
-Still needed, none of which exists, and no page references them:
+Screenshots and video (added after launch; sources in the `tapefolio-video` branch, storyboard `video/storyboards/tapefolio-promo.md`):
 
-- Screenshots of the review screen, identifier review, Batch OCR and Settings. Put each in `site/tapefolio/img/` (webp,
-  under 250 KB) and add to the page, after the "How it works" section:
-  `<section class="screenshots-section" aria-labelledby="shots-h"><h2 id="shots-h">What it looks like</h2><div class="tf-shots"><figure class="tf-shot"><img src="/tapefolio/img/review.webp" alt="..." width="W" height="H" loading="lazy" decoding="async"><figcaption>...</figcaption></figure></div></section>`.
-  For a hero picture add `<figure class="app-hero-window tf-hero-window"><div class="frame-soft"><img ... fetchpriority="high"></div><figcaption>...</figcaption></figure>`
-  after `.app-hero-copy`; it takes a row of its own under the icon and copy. Real captures only, with alt text and the app's real state.
-- Optional: a short video (poster `site/assets/video/tapefolio-poster.webp`), as `/keyfeel/` has.
+- `site/assets/tapefolio-screens/`: six real captures of the running app, 1600 px wide webp (the settings capture is 1200 wide):
+  `review-main`, `review-decisions`, `review-preview`, `export-sheet`, `ocr-results`, `settings-models`. `review-main` is also the
+  hero picture (`.tf-hero-window`, loads eagerly; the rest are lazy). The captions say what each capture shows and nothing more.
+  They are not cropped: the draft reads "Brightwater Clinic Indecator" and the first pass did not mark "Decatur" or "Brightwater
+  Clinic" as identifiers, and the captions and the page say so. The recording is an invented interview read by two computer
+  voices, and the OCR letters are generated test files; the page says that in the hero caption, the video section and the
+  "What it looks like" intro. To add a capture: webp under 250 KB, real width and height attributes, specific alt text, a caption
+  that does not claim more than the picture shows, and a line in the test's `SHOTS` list.
+- The promo video is public on YouTube, ID `b5iFfo1E_lY`, 45 seconds, https://youtu.be/b5iFfo1E_lY. The page uses the same
+  facade as `/keyfeel/` (`<div class="yt-embed" data-motion="youtube">` with `site/assets/video/tapefolio-poster.webp`, 1920x1080;
+  `motion.js` builds the `youtube-nocookie` iframe on click, and the CSP already allows that frame source, so `netlify.toml` did
+  not change) plus a `VideoObject` in the JSON-LD like Outbound Veil's. `uploadDate` there is 2026-10-09, the day it was added;
+  correct it if the upload date differs.
+- `tapefolio-hero.mp4`, `tapefolio-hero.webm` (8 second silent loop, 1280x720) and `tapefolio-hero-poster.webp` are committed but
+  not used: `/keyfeel/` does not use its hero loop either. To use them, copy Outbound Veil's `hero-media` markup
+  (`data-motion="video"` with `<source data-src>` for webm then mp4) into the hero figure in place of the static picture.
+- `llms.txt` has no video line for Keyfeel or Outbound Veil, so none was added for Tapefolio.
+
+Still not done: a hero loop on the page (see above).
 
 ## Open items
 
