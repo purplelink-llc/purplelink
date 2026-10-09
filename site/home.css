@@ -69,8 +69,8 @@
 .dock {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: clamp(10px, 1.6vw, 24px);
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: clamp(8px, 1.1vw, 20px);
   margin-top: clamp(8px, 2vw, 24px);
 }
 
@@ -168,8 +168,9 @@
 .studio-col ul { list-style: none; display: grid; gap: 8px; }
 .studio-col li a { color: var(--ink); text-decoration-color: var(--purple); text-underline-offset: 3px; }
 
-@media (max-width: 1100px) {
-  .dock { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* Eight tiles: eight across only where each keeps a readable column; below that, two rows of four, then two columns. */
+@media (max-width: 1599px) {
+  .dock { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 24px); }
 }
 @media (max-width: 560px) {
   .dock { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -227,6 +228,7 @@
   .dock > li:nth-child(5) { animation-delay: 1.36s; }
   .dock > li:nth-child(6) { animation-delay: 1.45s; }
   .dock > li:nth-child(7) { animation-delay: 1.54s; }
+  .dock > li:nth-child(8) { animation-delay: 1.63s; }
 
   /* A slow drift once the icons have landed, each out of step with the next. */
   .dock-art { animation: dock-float 6s ease-in-out infinite alternate; }
@@ -236,6 +238,7 @@
   .dock > li:nth-child(5) .dock-art { animation-delay: -4s; }
   .dock > li:nth-child(6) .dock-art { animation-delay: -5s; }
   .dock > li:nth-child(7) .dock-art { animation-delay: -6s; }
+  .dock > li:nth-child(8) .dock-art { animation-delay: -7s; }
   .dock-app:hover .dock-art,
   .dock-app:focus-visible .dock-art { animation-play-state: paused; }
 }

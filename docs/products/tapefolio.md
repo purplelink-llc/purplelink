@@ -29,7 +29,7 @@ feature to the page until it ships (the same test lists some it must not mention
 | `Tapefolio: product page, success page, release gate, Terms and Privacy` | `/tapefolio/` (noindex, buttons dead), `/tapefolio/success/`, Terms and Privacy sections | yes, the page is unlisted and switched off |
 | `Tapefolio: app icon assets ...` and `Tapefolio share card ...` | the two icon files, the hero icon, `tapefolio.png`, the page's `og:image` | yes, same page, same state |
 | `Mac Suite: Tapefolio joins ...` | Suite page, its success page, Terms contents, "Also in the Mac Suite" lines, llms.txt, home and products Suite sentences, promo text, `app-suite.md`, then `Mac Suite and site promo: Tapefolio icon` (icon row, card, the `site.js` promo entry) and `Mac Suite share card: six apps` | no: it changes the Suite page and the Suite email at once, and buyers would be sent to a download that is not staged. Merge on launch day |
-| `Link Tapefolio from home and products (do not merge until launch)` | footer (all pages, `apply_layout.py`, the digest publisher), home cost row, products card and chooser, pricing row, sitemap, search index, `llms.txt` block, `gen_llms_full.py` page list, changelog entry, and the flip of `/tapefolio/` to `index, follow` | no, launch day only |
+| `Link Tapefolio from home and products (do not merge until launch)` | footer (all pages, `apply_layout.py`, the digest publisher), home dock tile (eight tiles, `home.css`) and cost row, products card and chooser, pricing row, sitemap, search index, `llms.txt` block, `gen_llms_full.py` page list, changelog entry, and the flip of `/tapefolio/` to `index, follow` | no, launch day only |
 
 The Suite commit is not gated by `launch.js` (same as Keyfeel): the moment it deploys, `app-suite` buyers are told they get
 Tapefolio and the success page calls `tapefolio-download`, which answers 500 `file_unavailable` until a DMG is staged.
@@ -242,8 +242,10 @@ Still needed, none of which exists, and no page references them:
   includes all updates to Tapefolio"). Legroom is the only app that still limits updates to the version bought.
 - Name: Ben cleared TAPEFOLIO on 2026-10-09. The README still carries its own "run a USPTO search, register the domains"
   note from 2026-10-08.
-- The home page dock tile is not done on purpose: the dock is seven across (four on a tablet, two on a phone) and an eighth tile
-  wraps badly, so it needs a layout decision first. The icon is ready (`tapefolio-icon.webp`, use a 96px version).
+- The home page dock now has eight tiles (Tapefolio sits after Keyfeel, so the four paid Mac apps stay together). It is eight across
+  from 1600 px up, two rows of four from 561 to 1599 px, and two columns on a phone; the seven existing tiles are unchanged
+  (`site/home.css`, `.dock`). Eight across at 1440 px was too narrow ("Outbound Veil" and "Scholar Utility Belt" wrapped and the
+  descriptions ran to five lines), while four by two keeps every label on one or two lines. The change is in the link commit.
 - `site/llms-full.txt` is not regenerated here (the checked-in copy already lags the pages); the deploy script regenerates it, and
   `scripts/gen_llms_full.py` now includes `tapefolio/`.
 - Only English meeting audio and generated OCR files have been measured; the page says so. Real handwriting, phone photos,

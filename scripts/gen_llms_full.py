@@ -27,6 +27,7 @@ PAGES = [
     "outbound-veil/",
     "legroom/",
     "keyfeel/",
+    "tapefolio/",
     "vitae/",
     "vitae/plus/",
     "tools/paper-review/",

@@ -80,7 +80,11 @@ test("PRE-LAUNCH GUARD: the page ships switched off and says so (delete this tes
   }
   assert.match(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
   assert.match(html, /Not released yet/);
-  assert.match(html, /<meta name="robots" content="noindex, follow">/, "unlisted until the launch commit flips it");
+});
+
+test("the page is indexable and the success page is not", () => {
+  assert.match(read("tapefolio/index.html"), /<meta name="robots" content="index, follow">/);
+  assert.match(read("tapefolio/success/index.html"), /<meta name="robots" content="noindex, nofollow">/);
 });
 
 class FakeEl {
@@ -283,6 +287,66 @@ test("the success page is noindex, loads its script and has the download and key
   assert.match(html, /id="license"/);
   assert.match(html, /macOS 26/);
   assert.match(html, /Neural Engine/);
+});
+
+// ---- listings (the commit that links Tapefolio from the rest of the site) ----------------------
+
+test("the sitemap, llms.txt, the search index, the products and pricing pages, the home page and the changelog list Tapefolio", () => {
+  assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/tapefolio\/<\/loc>/);
+  assert.doesNotMatch(read("sitemap.xml"), /tapefolio\/success/);
+  const llms = read("llms.txt");
+  assert.match(llms, /### Tapefolio \(macOS\)/);
+  assert.match(llms, /https:\/\/purplelink\.llc\/tapefolio\//);
+  assert.match(llms, /It does not anonymize a transcript/);
+  assert.ok(JSON.parse(read("search-index.json")).some((e) => e.u === "/tapefolio/"));
+  assert.match(read("products/index.html"), /<a class="catalog-card" href="\/tapefolio\/">/);
+  assert.match(read("products/index.html"), /"name": "Tapefolio", "url": "https:\/\/purplelink\.llc\/tapefolio\/"/);
+  assert.match(read("products/index.html"), /Six Mac apps, a set of pay-per-use/);
+  assert.match(read("pricing/index.html"), /Tapefolio for Mac/);
+  assert.match(read("pricing/index.html"), /\$29\.99 once/);
+  assert.match(read("index.html"), /<a href="\/tapefolio\/">Tapefolio<\/a>, after a 7-day trial/);
+  const log = read("changelog/index.html");
+  assert.match(log, /<h2>Tapefolio 1\.0<\/h2>/);
+  assert.match(log, /It will mishear words and miss some identifiers/);
+});
+
+test("every shared footer that links Keyfeel also links Tapefolio, and the layout generator and the digest publisher agree", () => {
+  const missing = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(join(SITE, dir))) {
+      const rel = dir ? `${dir}/${name}` : name;
+      if (rel.startsWith("blog/digest") || rel.startsWith("assets") || rel === "node_modules") continue;
+      if (statSync(join(SITE, rel)).isDirectory()) walk(rel);
+      else if (rel.endsWith(".html")) {
+        const html = read(rel);
+        const footer = html.match(/<footer class="footer">[\s\S]*?<\/footer>/);
+        if (footer && footer[0].includes('<li><a href="/keyfeel/">Keyfeel</a></li>') && !footer[0].includes('<li><a href="/tapefolio/">Tapefolio</a></li>')) missing.push(rel);
+      }
+    }
+  };
+  walk("");
+  assert.deepEqual(missing, []);
+  const gen = readFileSync(join(SITE, "..", "scripts", "apply_layout.py"), "utf8");
+  assert.match(gen, /\("Tapefolio", "\/tapefolio\/"\)/);
+  assert.match(gen, /"keyfeel\/", "tapefolio\/"/);
+  const publisher = readFileSync(join(SITE, "..", "backend", "digest", "publisher.py"), "utf8");
+  assert.equal(publisher.split('<a href="/tapefolio/">Tapefolio</a>').length - 1, 2);
+  assert.match(readFileSync(join(SITE, "..", "scripts", "gen_llms_full.py"), "utf8"), /"tapefolio\/",/);
+});
+
+test("the home page dock has an eighth tile for Tapefolio with its icon, and the dock CSS lays eight out", () => {
+  const home = read("index.html");
+  const tiles = [...home.matchAll(/<a class="dock-app" href="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/vitae/", "/scholar-utility-belt/", "/globepin/"]);
+  assert.match(home, /<a class="dock-app" href="\/tapefolio\/" data-track="home_cta" data-track-meta="dock-tapefolio">\s*<span class="dock-art"><img src="\/assets\/tapefolio-icon\.webp" alt="" width="96" height="96" decoding="async"><\/span>\s*<strong class="dock-name">Tapefolio<\/strong>/);
+  assert.match(home, /Free for 7 days, \$29\.99/);
+  const css = read("home.css");
+  assert.match(css, /\.dock \{[^}]*grid-template-columns: repeat\(8, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 1599px\) \{\s*\.dock \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 560px\) \{\s*\.dock \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /\.dock > li:nth-child\(8\) \{ animation-delay/);
+  assert.match(css, /\.dock > li:nth-child\(8\) \.dock-art \{ animation-delay/);
+  assert.doesNotMatch(css, /repeat\(7,/);
 });
 
 // ---- Terms and Privacy ------------------------------------------------------------------
@@ -542,3 +606,17 @@ test("the Suite pages do not say a model is built in, and describe the network u
   assert.match(success, /Tapefolio uses Apple's on-device speech recognition/);
 });
 
+test("llms.txt does not say a model is built in, and states the measured error rates and the network use", () => {
+  const llms = read("llms.txt");
+  const block = llms.slice(llms.indexOf("### Tapefolio"), llms.indexOf("### Mac Suite"));
+  assert.doesNotMatch(block, /built in\b(?! to)|built-in|no download\b(?! from)|small speech model|One small/i);
+  assert.match(block, /No speech model is bundled \(the app is about 40 MB\)/);
+  assert.match(block, /Apple's on-device speech recognition, and macOS may download Apple's own model once/);
+  assert.match(block, /Whisper base \(English, about 150 MB\)/);
+  assert.match(block, /between 21% and 29% for Apple's recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for Whisper base/);
+  assert.match(block, /Nothing from your files is sent/);
+  assert.match(block, /then \$29\.99 once, every update included/);
+  assert.match(block, /sends its name, its version, the macOS version and its update token to purplelink\.llc/);
+  assert.match(block, /from Hugging Face/);
+  assert.doesNotMatch(block, /version (you|of Tapefolio you) (buy|bought)|major version/i);
+});

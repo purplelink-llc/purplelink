@@ -72,7 +72,8 @@ test("copy rules: no emoji, no em dash, none of the banned words, no mention of 
     const t = read(f);
     assert.doesNotMatch(t, /\p{Extended_Pictographic}/u, f + " has an emoji");
     assert.doesNotMatch(t, /—/, f + " has an em dash");
-    assert.doesNotMatch(t, /tapefolio/i, f + " mentions Tapefolio");
+    // The shared site footer lists every product; the page itself must not promote Tapefolio.
+    assert.doesNotMatch(t.replace(/<footer class="footer">[\s\S]*?<\/footer>/, ""), /tapefolio/i, f + " mentions Tapefolio");
   }
   assert.doesNotMatch(visibleText, /\b(streamline|supercharge|seamless|world-class|game-changer|AI-powered|revolutionary|effortless)\b/i);
 });

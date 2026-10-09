@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), and the Mac Suite ($54.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), and the Mac Suite ($54.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -18,7 +18,7 @@
 
 ## What Purplelink builds
 
-1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), the Mac Suite bundle, and Vitae (free academic record keeping).
+1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), Tapefolio (private on-device transcription and OCR for researchers), the Mac Suite bundle, and Vitae (free academic record keeping).
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
 4. **iOS apps** — GlobePin (travel mapping, shipping) and Haea (on-device health analytics, in development).
@@ -75,6 +75,16 @@
 - **Comparison:** https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ (Klack, KeyOpera, Thock, Mechvibes and others, by price, sounds, permissions and limits)
 - **Mechvibes sound packs:** https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/ (Keyfeel imports Mechvibes packs in the original format, not the MechvibesDX V2 format; how to import, what does not carry over)
 - **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (Keyfeel needs Input Monitoring and reads key codes, never characters; Accessibility is optional for two features)
+
+### Tapefolio (macOS)
+- **Platform:** macOS 26 or later, Apple silicon only
+- **Category:** Transcription and OCR for researchers
+- **Description:** A Mac app that transcribes audio on the Mac with word timing, labels speakers, and reads photos, scans and PDFs into searchable text. Identifier removal finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth and replaces them with codes, one case at a time, with the key file kept separately; it misses some, so every transcript needs a read. Optional speaker memory is off until turned on for a project, needs a recorded consent note, and is stored encrypted on the Mac. Review screen with an audio player and word highlighting. Exports to Word, HTML, Markdown, text, SRT, VTT and JSON, and a timestamped Word file for MAXQDA. Records from the microphone. Batch OCR with saved workflows, searchable PDF output and a provenance record with a SHA-256 for each input.
+- **Pricing:** Free 7-day trial (the complete app, no account), then $29.99 once, every update included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. One key works on two Macs. 14-day refund.
+- **Privacy:** Transcription, speaker labels, identifier removal and OCR run on the Mac and nothing is uploaded. No speech model is bundled (the app is about 40 MB): until you download one, Tapefolio uses Apple's on-device speech recognition, and macOS may download Apple's own model once. Optional downloads in Settings, from Hugging Face, each once and deletable: NVIDIA Parakeet (English, about 470 MB), Whisper base (English, about 150 MB), Whisper large-v3 turbo (many languages, about 650 MB) and NVIDIA Nemotron 3 speaker separation (about 190 MB). The app's update check sends its name, its version, the macOS version and its update token to purplelink.llc. Nothing from your files is sent. No analytics and no account.
+- **Limits:** It will mishear words and mislabel speakers; a person should check any quoted text against the recording. Word error rate on two AMI meetings was between 21% and 29% for Apple's recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for Whisper base. Measured only on English meeting audio and generated OCR files. It does not anonymize a transcript or make a study compliant.
+- **Status:** Not yet released; the page is at https://purplelink.llc/tapefolio/.
+- **Trial and purchase:** https://purplelink.llc/tapefolio/
 
 ### Mac Suite (macOS bundle)
 - **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and a lifetime Vitae Plus key.
