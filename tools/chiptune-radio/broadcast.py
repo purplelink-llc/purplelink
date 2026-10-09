@@ -123,6 +123,29 @@ def refresh_metadata(yt, video_id: str, era: str | None, log: Callable[[str], No
         return "refresh failed"
 
 
+READ_ONLY_DETAILS = ("boundStreamId", "boundStreamLastUpdateTimeMs", "closedCaptionsType", "enableLowLatency", "projection")
+
+
+def keep_alive_through_drops(yt, b: dict, log: Callable[[str], None] = print) -> str:
+    """Turn off enableAutoStop on an open broadcast. With it on, YouTube ends the broadcast by itself when the encoder goes quiet for
+    a while (2026-10-09: a network stall of about two minutes ended it, and the next broadcast got a new link). With it off the
+    broadcast stays open and carries on when the stream reconnects. Only writes when it is on; never raises."""
+    cd = b.get("contentDetails", {})
+    if cd.get("enableAutoStop") is False:
+        return "auto-stop off"
+    try:
+        body = {k: v for k, v in cd.items() if k not in READ_ONLY_DETAILS}
+        body["enableAutoStop"] = False
+        if isinstance(body.get("monitorStream"), dict):
+            body["monitorStream"] = {k: v for k, v in body["monitorStream"].items() if k != "embedHtml"}
+        yt.liveBroadcasts().update(part="id,contentDetails", body={"id": b["id"], "contentDetails": body}).execute()
+        log(f"broadcast {b['id']}: auto-stop turned off, so a dropped connection no longer ends it")
+        return "auto-stop turned off"
+    except Exception as e:  # noqa: BLE001 - a setting, never worth breaking the stream over
+        log(f"broadcast {b['id']}: could not turn auto-stop off ({type(e).__name__}: {str(e)[:120]})")
+        return "auto-stop still on"
+
+
 def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
     """Make sure one broadcast is open on the stream key. Returns what it did."""
     yt = yt or _service()
@@ -132,7 +155,8 @@ def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
     if open_now:
         b = open_now[0]
         meta = refresh_metadata(yt, b["id"], era, log)
-        return f"already open: {b['id']} ({b['status']['lifeCycleStatus']}), metadata {meta}, thumbnail {set_thumbnail(yt, b['id'], log)}"
+        return (f"already open: {b['id']} ({b['status']['lifeCycleStatus']}), metadata {meta}, "
+                f"thumbnail {set_thumbnail(yt, b['id'], log)}, {keep_alive_through_drops(yt, b, log)}")
 
     finished = [b for b in items if b["status"]["lifeCycleStatus"] == "complete"]
     tmpl = finished[0] if finished else (items[0] if items else None)
@@ -149,7 +173,7 @@ def ensure(era: str | None, yt=None, log: Callable[[str], None] = print) -> str:
         "snippet": {"title": title_for(era), "description": description_for(era), "scheduledStartTime": start},
         "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False},
         "contentDetails": {
-            "enableAutoStart": True, "enableAutoStop": True,
+            "enableAutoStart": True, "enableAutoStop": False,
             "enableDvr": cd.get("enableDvr", True), "recordFromStart": cd.get("recordFromStart", True),
             "enableEmbed": cd.get("enableEmbed", True),
             "latencyPreference": cd.get("latencyPreference", "low"),

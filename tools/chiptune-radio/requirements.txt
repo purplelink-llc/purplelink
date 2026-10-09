@@ -3,3 +3,4 @@ scipy>=1.14
 pillow>=10.3
 google-api-python-client>=2.100
 google-auth>=2.23
+tzdata

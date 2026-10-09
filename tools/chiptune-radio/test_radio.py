@@ -72,7 +72,7 @@ def test_ffmpeg_commands():
     assert "scale=1920:1080:flags=neighbor" in " ".join(live)           # 1080p, an exact 6x upscale of the 320x180 scene
     for flag in ("-b:v", "-minrate", "-maxrate"):
         assert live[live.index(flag) + 1] == "2500k"                    # constant bitrate, so the platform never sees it dip below the target
-    assert "nal-hrd=cbr:force-cfr=1:rc-lookahead=10" in live and live[live.index("-threads") + 1] == "4"
+    assert "nal-hrd=cbr:force-cfr=1:rc-lookahead=10:ref=1:bframes=0" in " ".join(live) and live[live.index("-threads") + 1] == "2"
     small = st.ffmpeg_cmd("x.mp4", False, 5, size=(1280, 720), kbps=1500, preset="ultrafast")
     assert "scale=1280:720:flags=neighbor" in " ".join(small) and small[small.index("-b:v") + 1] == "1500k" and "ultrafast" in small
 
@@ -175,3 +175,27 @@ def test_the_default_is_one_endless_broadcast_with_a_mixed_era():
     import subprocess, sys
     out = subprocess.run([sys.executable, st.__file__, "--help"], capture_output=True, text=True).stdout
     assert "--rotate-at" in out and "--tz" in out                           # and the script still starts
+
+
+def test_the_docker_image_contains_every_module_the_stream_imports():
+    """2026-10-09: netwatch.py was imported by stream.py but missing from the Dockerfile's COPY line, and the deployed container
+    crashed on start until it was added. Every local module reachable from stream.py must be copied into the image."""
+    import ast
+    import pathlib
+    import re
+    here = pathlib.Path(__file__).parent
+    copied = set()
+    for line in (here / "Dockerfile").read_text().splitlines():
+        if line.startswith("COPY ") and not line.startswith("COPY requirements"):
+            copied |= {p for p in line.split()[1:-1] if p.endswith(".py")}
+    seen, todo = set(), ["stream.py"]
+    while todo:
+        name = todo.pop()
+        if name in seen or not (here / name).exists():
+            continue
+        seen.add(name)
+        for node in ast.walk(ast.parse((here / name).read_text())):
+            mods = [a.name for a in node.names] if isinstance(node, ast.Import) else [node.module] if isinstance(node, ast.ImportFrom) and node.module else []
+            todo += [m.split(".")[0] + ".py" for m in mods if (here / (m.split(".")[0] + ".py")).exists()]
+    missing = sorted(seen - copied)
+    assert not missing, f"imported by the stream but not copied into the image: {missing}"

@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg tini && 
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY chiptune.py voices.py scene.py stream.py broadcast.py chime.py engage.py thumbnail.png ./
+COPY chiptune.py voices.py scene.py critters.py pixfont.py seasons.py netwatch.py stream.py broadcast.py chime.py engage.py thumbnail.png ./
 ENV PYTHONUNBUFFERED=1
 # STREAM_URL (the full rtmp URL with the key) comes from the environment, never from the image.
 ENTRYPOINT ["tini", "--"]

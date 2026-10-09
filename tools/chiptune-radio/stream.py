@@ -34,6 +34,7 @@ import broadcast
 import chime
 import chiptune as c
 import engage
+import netwatch
 import scene as sc
 
 AUDIO_CHUNK = int(0.5 * c.SR)
@@ -41,7 +42,7 @@ XFADE = 6.0                                # a longer crossfade, so one track me
 MOOD_TRACKS = 40                           # one slow lofi -> boss -> lofi wave takes this many tracks (about 1 h 50 min)
 MAX_BPM_STEP = 8                           # neighbouring tracks never differ by more than this, so the tempo drifts
 TARGET_RMS = 0.13                          # about -16 LUFS once encoded, the usual level for background music streams
-VIDEO_FPS = 15
+VIDEO_FPS = 12                # the art animates at 12 fps (scene.ANIM_FPS), so more frames only repeat pictures; each frame is 6 MB at 1080p, so this is the cheapest knob
 LOG_EVERY = 300
 ERA_CYCLE = ["16bit", "8bit", "synth", None]   # one era per broadcast so each replay can carry an honest title; None is the all-era mix
 STATE_FILE = os.environ.get("CHIPTUNE_STATE", os.path.expanduser("~/.chiptune-radio-state"))
@@ -176,23 +177,27 @@ class Audio:
                 yield body[:, i:i + AUDIO_CHUNK]
 
 
-VIDEO_SIZE = (1920, 1080)     # 320x180 scales by exactly 6 (3840x2160 is exactly 12): every pixel stays a clean square. YouTube refused 4K on this stream.
+VIDEO_SIZE = (1920, 1080)     # the scene is drawn 320x180 and enlarged exactly 6x in Python (Scene.frame_hd), so the clocks, timer and link are drawn sharp at this size. YouTube refused 4K on this stream.
 VIDEO_KBPS = 2500             # constant bitrate: pixel art is easy to compress, so this is far more than 4K of it needs
 PRESET = "veryfast"           # about 1.1 CPU cores at 4K30; "ultrafast" is about 0.8 cores with slightly softer edges
-THREADS = 4                   # at 4K the encoder's frame buffers dominate memory: 4 threads and a short lookahead cut ffmpeg from
-LOOKAHEAD = 10                # about 1.7 GB to under 1 GB with the same bitrate and no visible change
+THREADS = 2                   # one per core on the 2-core server; four threads cost more in hand-offs than they saved on this easy picture. (At 4K the frame buffers dominate memory: 4 threads and a short lookahead cut ffmpeg from
+LOOKAHEAD = 10                # about 1.7 GB to under 1 GB with the same bitrate and no visible change.)
+# Measured on 10 s of the real scene, busy moments included: these cheaper search settings take about 40% less encoder CPU than the
+# veryfast defaults, with an equal or slightly better SSIM (0.99922 vs 0.99905) and the same flat 2500 kbps. Pixel art has no fine
+# motion for the extra search to find.
+X264_FAST = "ref=1:bframes=0:subme=1:me=dia:trellis=0:weightp=0:mbtree=0"
 
 
 def ffmpeg_cmd(out: str, live: bool, audio_fd: int, size=VIDEO_SIZE, kbps=VIDEO_KBPS, preset=PRESET) -> list[str]:
     pace = ["-re"] if live or out.startswith("hls:") else []
     w, h = size
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "warning", "-y",
-           *pace, "-f", "rawvideo", "-pix_fmt", "rgb24", "-video_size", f"{sc.W}x{sc.H}", "-framerate", str(VIDEO_FPS), "-i", "pipe:0",
+           *pace, "-f", "rawvideo", "-pix_fmt", "rgb24", "-video_size", f"{sc.W * sc.Scene.HD_SCALE}x{sc.H * sc.Scene.HD_SCALE}", "-framerate", str(VIDEO_FPS), "-i", "pipe:0",
            *pace, "-f", "s16le", "-ar", str(c.SR), "-ac", "2", "-i", f"pipe:{audio_fd}",
-           "-filter_complex", f"[0:v]fps=30,scale={w}:{h}:flags=neighbor,format=yuv420p[v]", "-map", "[v]", "-map", "1:a",
+           "-filter_complex", f"[0:v]scale={w}:{h}:flags=neighbor,format=yuv420p,fps=30[v]", "-map", "[v]", "-map", "1:a",
            "-c:v", "libx264", "-preset", preset, "-tune", "animation", "-profile:v", "high",
            "-threads", str(THREADS), "-b:v", f"{kbps}k", "-minrate", f"{kbps}k", "-maxrate", f"{kbps}k", "-bufsize", f"{2 * kbps}k",
-           "-x264-params", f"nal-hrd=cbr:force-cfr=1:rc-lookahead={LOOKAHEAD}", "-g", "60", "-keyint_min", "60", "-sc_threshold", "0",
+           "-x264-params", f"nal-hrd=cbr:force-cfr=1:rc-lookahead={LOOKAHEAD}:{X264_FAST}", "-g", "60", "-keyint_min", "60", "-sc_threshold", "0",
            "-c:a", "aac", "-b:a", "128k", "-ar", str(c.SR)]
     if live:
         return cmd + ["-f", "flv", out]
@@ -256,7 +261,7 @@ def run_once(out: str, live: bool, start_seed: int, seconds: float | None, stop:
                 ts = n / VIDEO_FPS
                 _, title, bpm = audio.now(ts)
                 sim = sim0 + ts
-                im = scene.frame(ts, sc.hour_at(sim), sc.rain_at(sim), bpm, title, wall=t0_wall + ts, fx=eng.view() if eng else None)
+                im = scene.frame_hd(ts, sc.hour_at(sim), sc.rain_at(sim), bpm, title, wall=t0_wall + ts, fx=eng.view() if eng else None)
                 proc.stdin.write(im.tobytes())
                 n += 1
                 if n % (VIDEO_FPS * LOG_EVERY) == 0:
@@ -330,6 +335,11 @@ def main() -> None:
         signal.signal(sig, lambda *_: stop.set())
     signal.signal(signal.SIGUSR1, lambda *_: ROTATION["now"].set())      # `docker compose kill -s USR1 radio`: end this broadcast and start the next now
 
+    net = None
+    if a.live:                                                       # a record of the path to YouTube, so a drop can be explained afterwards
+        net = netwatch.NetWatch(*netwatch.ingest_endpoint(out), log=log)
+        threading.Thread(target=net.run, args=(stop,), daemon=True).start()
+
     delay, seed = 5, a.start_seed
     while not stop.is_set():
         started = time.time()
@@ -363,6 +373,8 @@ def main() -> None:
             continue
         delay = 5 if ran > 600 else min(120, delay * 2)          # a long healthy run resets the back-off
         seed += 1000
+        if net:
+            log("network before the stop: " + net.summary(300))
         log(f"the pipeline ended (exit {code}) after {ran:.0f}s; restarting in {delay}s")
         stop.wait(delay)
 

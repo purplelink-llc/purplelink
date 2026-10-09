@@ -12,8 +12,15 @@ import argparse
 import math
 import random
 import time
+from functools import lru_cache
+
+from datetime import datetime, timedelta, timezone
 
 from PIL import Image, ImageDraw, ImageFont
+
+import critters
+import pixfont
+import seasons
 
 W, H = 320, 180
 ANIM_FPS = 12                       # the animation steps at this rate, whatever rate the stream runs at
@@ -128,7 +135,7 @@ class Scene:
         return im
 
     # ---------------------------------------------------------------- the sky and what is moving in it
-    def sky(self, hour: float, t: float, rain: bool) -> Image.Image:
+    def sky(self, hour: float, t: float, rain: bool, ev=None, season: str | None = None) -> Image.Image:
         x0, y0, x1, y1 = self.WIN
         w, h = x1 - x0, y1 - y0
         top, bot = sky_colors(hour)
@@ -163,13 +170,16 @@ class Scene:
                 x = int((dx * w + t * 18 * sp) % w)
                 y = int((dy * h + t * 120 * sp) % h)
                 d.line([x, y, x - 1, y + 3], fill=C["rain"])
+        seasons.draw_sky(d, season, t, w, h, hour, rain)
+        critters.sky_visitor(im, d, ev, t, w, h, top, bot)
         return im
 
     # ---------------------------------------------------------------- one frame
     def frame(self, t: float, hour: float, rain: bool, bpm: int, title: str, wall: float | None = None,
-              fx: dict | None = None) -> Image.Image:
+              fx: dict | None = None, hud: bool = True, events: bool = True, lights_dy: int = 0, season: str | None = "auto") -> Image.Image:
         """`fx` is optional live engagement: {"toast": (kind, text, age_seconds) or None, "viewers": int or None}. Both are
-        drawn ON the laptop screen and clipped to it; with fx=None the frame is exactly what it always was."""
+        drawn ON the laptop screen and clipped to it. `hud=False` leaves out the timer, now-playing and link (frame_hd draws those
+        sharply at full size); `events=False` leaves out the cat's morning, the dog and the rest (see critters.py)."""
         t = math.floor(t * ANIM_FPS) / ANIM_FPS
         wall = time.time() if wall is None else wall
         sec = wall % (FOCUS + BREAK)
@@ -177,10 +187,13 @@ class Scene:
         left = int((FOCUS - sec) if focus else (FOCUS + BREAK - sec))
         beat = (t * bpm / 60.0) % 1.0
         im = Image.new("RGB", (W, H), C["wall"])
-        im.paste(self.sky(hour, t, rain), self.WIN[:2])
+        ev = critters.active(wall, hour, rain) if events else None
+        sn = (seasons.season(wall) if season == "auto" else season) if events else None        # seasonal decor follows the real date
+        im.paste(self.sky(hour, t, rain, ev, sn), self.WIN[:2])
         im.paste(self.static, (0, 0), self.static)
         d = ImageDraw.Draw(im)
         night = hour < 6.5 or hour > 18.5
+        critters.draw_goldfish(d, t)
 
         # the laptop screen: a few lines of text scrolling past while working, a calm blank on a break
         sx0, sy0, sx1, sy1 = self.SCREEN
@@ -193,45 +206,60 @@ class Scene:
         if fx:
             self._screen_overlay(im, fx)
 
-        # the person, from behind: hoodie, head, hair and headphones; the head nods on the beat
+        # the cat on the sill (on the back wall, so the person walking past is in front of it): asleep and breathing, until its moment to wake, stretch, wash and settle again (critters.py)
+        critters.draw_cat(d, t, ev)
+        if ev and ev[0] == "bird":
+            critters.draw_bird(im, t, ev[1], ev[2], self.WIN)
+
+        # the person, from behind: at the desk with headphones on while focusing; on a break they stretch, get up, walk out, and
+        # come back to sit down and put the headphones on again just before the next focus block
         bob = 1 if beat < 0.18 else 0
         cx = 160
-        d.rectangle([cx - 24, 100 + bob, cx + 24, 128], fill=C["hoodie"])
-        d.rectangle([cx - 24, 100 + bob, cx - 20, 128], fill=C["hoodie_dk"])
-        d.rectangle([cx - 8, 94 + bob, cx + 8, 100 + bob], fill=C["skin"])
-        d.ellipse([cx - 13, 70 + bob, cx + 13, 98 + bob], fill=C["hair"])
-        d.arc([cx - 15, 70 + bob, cx + 15, 100 + bob], 180, 360, fill=C["phones"], width=2)
-        d.rectangle([cx - 16, 84 + bob, cx - 13, 92 + bob], fill=C["phones"])
-        d.rectangle([cx + 13, 84 + bob, cx + 16, 92 + bob], fill=C["phones"])
-        # the mug sits on the desktop, right of the notebook, and stays there
+        st = self.person_state(None if focus else sec - FOCUS)
         mx, my = 228, 110
-        # the arm: writing while focusing, resting on the desk on a break
-        if focus:
-            wx = 190 + int(4 * math.sin(t * 5.0))
-            d.line([cx + 22, 108, wx, 114], fill=C["hoodie"], width=5)
-            d.rectangle([wx - 1, 112, wx + 2, 115], fill=C["skin"])
-            d.line([wx + 2, 113, wx + 6, 110], fill=C["ink"])
-        else:
-            d.line([cx + 22, 108, 188, 115], fill=C["hoodie"], width=5)
-            d.rectangle([186, 113, 189, 116], fill=C["skin"])
+        if st["desk_phones"]:                                            # the headphones left on the desk (drawn first, so the person can stand in front of them)
+            d.arc([148, 101, 172, 116], 180, 360, fill=C["phones"], width=2)
+            d.rectangle([147, 107, 150, 111], fill=C["phones"])
+            d.rectangle([170, 107, 173, 111], fill=C["phones"])
+        if st["mode"] != "away":
+            self._person(im, d, t, st, bob)
+        if st["mode"] == "sit":
+            if st["arms_up"]:
+                sway = int(2 * math.sin(t * 3))
+                for sgn in (-1, 1):
+                    d.line([cx + sgn * 22, 108, cx + sgn * 31, 82 + sway], fill=C["hoodie"], width=5)
+                    d.rectangle([cx + sgn * 31 - 2, 77 + sway, cx + sgn * 31 + 2, 82 + sway], fill=C["skin"])
+            elif st["putting_on"] is not None:                           # both hands raise the headphones from the desk to the head
+                p = st["putting_on"]
+                hx, hy = 160, round(110 - 38 * p) + bob
+                for sgn in (-1, 1):
+                    d.line([cx + sgn * 22, 108, cx + sgn * (13 + 10 * (1 - p)), hy + 14], fill=C["hoodie"], width=5)
+                    d.rectangle([cx + sgn * (13 + 10 * (1 - p)) - 2, hy + 10, cx + sgn * (13 + 10 * (1 - p)) + 2, hy + 14], fill=C["skin"])
+                d.arc([hx - 15, hy - 2, hx + 15, hy + 28], 180, 360, fill=C["phones"], width=2)
+                d.rectangle([hx - 16, hy + 12, hx - 13, hy + 20], fill=C["phones"])
+                d.rectangle([hx + 13, hy + 12, hx + 16, hy + 20], fill=C["phones"])
+            elif focus or st["writing"]:
+                wx = 190 + int(4 * math.sin(t * 5.0))
+                d.line([cx + 22, 108, wx, 114], fill=C["hoodie"], width=5)
+                d.rectangle([wx - 1, 112, wx + 2, 115], fill=C["skin"])
+                d.line([wx + 2, 113, wx + 6, 110], fill=C["ink"])
+            else:
+                d.line([cx + 22, 108, 188, 115], fill=C["hoodie"], width=5)
+                d.rectangle([186, 113, 189, 116], fill=C["skin"])
+        friend = ev if ev and ev[0] == "friend" else None
+        if friend:
+            critters.draw_friend(im, d, t, friend[1], friend[2])
+        if st["mode"] in ("stand", "walk") or (friend and critters.friend_state(friend[1], friend[2])[0] is not None):
+            for x0, y0, x1, y1 in ((0, 112, W, H), (272, 70, 302, 112)):       # the desk and its plant stay in front of them; the sill, books and cat are behind
+                im.paste(self.static.crop((x0, y0, x1, y1)), (x0, y0), self.static.crop((x0, y0, x1, y1)))
         d.rectangle([mx, 121, mx + 10, 121], fill=C["desk_dark"])        # contact shadow, so it reads as resting on the desk
         d.rectangle([mx, my, mx + 9, my + 10], fill=C["mug"])
         d.rectangle([mx + 9, my + 2, mx + 11, my + 7], fill=C["mug"])
         d.rectangle([mx + 1, my + 1, mx + 8, my + 3], fill=C["coffee"])
 
-        # the cat on the sill: asleep, breathing, with an occasional tail flick
-        br = 1 if int(t * 1.2) % 2 else 0
-        d.ellipse([214, 96 - br, 244, 108], fill=C["cat"])
-        d.ellipse([238, 92, 252, 106], fill=C["cat"])
-        d.polygon([(239, 92), (242, 86), (245, 92)], fill=C["cat"])
-        d.polygon([(246, 92), (249, 86), (252, 92)], fill=C["cat"])
-        d.line([241, 99, 244, 99], fill=C["ink"])
-        d.line([248, 99, 250, 99], fill=C["ink"])
-        flick = 3 if int(t * 0.6) % 5 == 0 else 0
-        d.line([214, 104, 208, 100 - flick], fill=C["cat_dk"], width=2)
-
         # steam from the mug, drawn after the cat so it rises in front of it
-        for k in range(4):
+        steamy = bool(friend and critters.friend_state(friend[1], friend[2])[2])
+        for k in range(7 if steamy else 4):
             sy = my - 3 - k * 4 - int((t * 6 + k * 3) % 4)
             d.point((mx + 4 + int(2 * math.sin(t * 2 + k)), sy), fill=C["text_dim"])
 
@@ -243,15 +271,24 @@ class Scene:
         im.paste(glow, (0, 0), glow)
         # string lights along the top
         for x in range(4, W, 14):
-            y = 4 + int(3 * math.sin(x / 22.0))
+            y = 4 + lights_dy + int(3 * math.sin(x / 22.0))
             on = int(t * 2 + x / 14) % 3
-            d.point((x, y), fill=(255, 210, 120) if on else (150, 110, 70))
-            d.point((x + 1, y), fill=(255, 210, 120) if on else (150, 110, 70))
+            col = seasons.light_colours(sn, x // 14, bool(on))
+            d.point((x, y), fill=col)
+            d.point((x + 1, y), fill=col)
         # radio LEDs bounce on the beat
         for i in range(4):
             lvl = 1 + int(4 * abs(math.sin(beat * math.pi + i * 1.3)))
             d.rectangle([279 + i * 3, 46 - lvl, 280 + i * 3, 46], fill=C["bar"])
 
+        seasons.draw_decor(d, sn, t)
+        if ev and ev[0] == "dog":
+            critters.draw_dog(im, t, ev[1])
+        elif ev and ev[0] == "vacuum":
+            critters.draw_vacuum(d, t, ev[1], ev[2])
+
+        if not hud:
+            return im
         # overlays: the timer, what is playing, and the site
         d.rectangle([4, 141, 94, 162], fill=C["panel"])
         d.rectangle([4, 141, 94, 142], fill=C["bar"])
@@ -267,6 +304,220 @@ class Scene:
         d.text((230, 167), "purplelink.llc", font=self.font, fill=C["text_dim"])
         self._nudge(d, wall)
         return im
+
+    # ---------------------------------------------------------------- the person and their break
+    # seconds into the 5 minute break: stretch, stand, walk out, away, walk back in, sit, put the headphones on
+    BREAK_STAND, BREAK_OUT, BREAK_AWAY, BREAK_IN, BREAK_SIT, BREAK_PHONES, BREAK_PHONES_END = 6.0, 7.5, 16.0, 282.0, 290.0, 291.5, 298.0
+    RISE = 20                                                            # how much taller the standing person's head is
+
+    @classmethod
+    def person_state(cls, bt: float | None) -> dict:
+        """Where the person is `bt` seconds into a break (None while focusing)."""
+        st = {"mode": "sit", "x": 160, "rise": 0, "arms_up": False, "putting_on": None, "phones_on": True, "desk_phones": False,
+              "writing": False, "walk": 0.0}
+        if bt is None:
+            return st
+        e = critters._ease
+        if bt < cls.BREAK_STAND:
+            st["arms_up"] = True
+        elif bt < cls.BREAK_OUT:
+            st.update(mode="stand", rise=round(cls.RISE * e((bt - cls.BREAK_STAND) / (cls.BREAK_OUT - cls.BREAK_STAND))), phones_on=False,
+                      desk_phones=True)
+        elif bt < cls.BREAK_AWAY:
+            f = (bt - cls.BREAK_OUT) / (cls.BREAK_AWAY - cls.BREAK_OUT)
+            st.update(mode="walk", x=round(160 + 190 * f), rise=cls.RISE, phones_on=False, desk_phones=True, walk=bt)
+        elif bt < cls.BREAK_IN:
+            st.update(mode="away", phones_on=False, desk_phones=True)
+        elif bt < cls.BREAK_SIT:
+            f = (bt - cls.BREAK_IN) / (cls.BREAK_SIT - cls.BREAK_IN)
+            st.update(mode="walk", x=round(350 - 190 * f), rise=cls.RISE, phones_on=False, desk_phones=True, walk=bt)
+        elif bt < cls.BREAK_PHONES:
+            f = (bt - cls.BREAK_SIT) / (cls.BREAK_PHONES - cls.BREAK_SIT)
+            st.update(mode="stand", rise=round(cls.RISE * (1 - e(f))), phones_on=False, desk_phones=True)
+            if f >= 1:
+                st["mode"] = "sit"
+        elif bt < cls.BREAK_PHONES_END:
+            p = (bt - cls.BREAK_PHONES) / (cls.BREAK_PHONES_END - cls.BREAK_PHONES)
+            lift = e(min(1.0, p / 0.55))                                   # the hands bring them up, then settle them on
+            st.update(mode="sit", putting_on=lift if p < 0.62 else None, phones_on=p >= 0.62, desk_phones=p < 0.02, writing=p >= 0.62)
+        else:
+            st.update(writing=False)
+        if st["mode"] == "stand" and st["rise"] == 0:
+            st["mode"] = "sit"
+        return st
+
+    def _person(self, im: Image.Image, d: ImageDraw.ImageDraw, t: float, st: dict, bob: int) -> None:
+        cx, r = st["x"], st["rise"]
+        step = math.sin(st["walk"] * 7.0) if st["mode"] == "walk" else 0.0
+        bob = int(abs(step) * 2) if st["mode"] == "walk" else bob
+        top = 100 + bob - r
+        d.rectangle([cx - 24, top, cx + 24, 128], fill=C["hoodie"])
+        d.rectangle([cx - 24, top, cx - 20, 128], fill=C["hoodie_dk"])
+        d.rectangle([cx - 8, top - 6, cx + 8, top], fill=C["skin"])
+        d.ellipse([cx - 13, top - 30, cx + 13, top - 2], fill=C["hair"])
+        if st["phones_on"]:
+            d.arc([cx - 15, top - 30, cx + 15, top], 180, 360, fill=C["phones"], width=2)
+            d.rectangle([cx - 16, top - 16, cx - 13, top - 8], fill=C["phones"])
+            d.rectangle([cx + 13, top - 16, cx + 16, top - 8], fill=C["phones"])
+        if st["mode"] in ("stand", "walk"):                                # arms hanging at the sides, swinging as they walk
+            for sgn in (-1, 1):
+                sw = round(sgn * step * 4)
+                d.line([cx + sgn * 25, top + 6, cx + sgn * 27, top + 24 + sw], fill=C["hoodie"], width=5)
+                d.rectangle([cx + sgn * 27 - 2, top + 24 + sw, cx + sgn * 27 + 2, top + 28 + sw], fill=C["skin"])
+
+    # ---------------------------------------------------------------- the full-size frame: the art, then sharp text on top
+    HD_SCALE = 6                                        # 320x180 -> 1920x1080, every art pixel an exact 6x6 square
+    # the world clocks along the top: label, IANA zone, and a UTC offset for the odd machine with no zone database
+    CLOCKS = [("LA", "America/Los_Angeles", -8), ("NYC", "America/New_York", -5), ("LON", "Europe/London", 0),
+              ("DEL", "Asia/Kolkata", 5.5), ("TYO", "Asia/Tokyo", 9), ("SYD", "Australia/Sydney", 10)]
+    SUN = ["0001000", "1001001", "0011100", "0111110", "0011100", "1001001", "0001000"]
+    MOON = ["0011100", "0111000", "1110000", "1110000", "1110000", "0111100", "0011110"]
+
+    @staticmethod
+    @lru_cache(maxsize=4)
+    def _zone(name: str):
+        try:
+            from zoneinfo import ZoneInfo
+            return ZoneInfo(name)
+        except Exception:                                # no tzdata installed: the caller falls back to a fixed offset
+            return None
+
+    def world_clocks(self, wall: float) -> list[tuple[str, str, bool]]:
+        """[(label, "HH:MM", is_daytime)] for each city, from the real clock. A fixed offset stands in if the zone is unknown."""
+        out = []
+        for label, zone, off in self.CLOCKS:
+            tz = self._zone(zone)
+            now = datetime.fromtimestamp(wall, tz) if tz else datetime.fromtimestamp(wall, timezone.utc) + timedelta(hours=off)
+            out.append((label, now.strftime("%H:%M"), 6 <= now.hour < 19))
+        return out
+
+    def frame_hd(self, t: float, hour: float, rain: bool, bpm: int, title: str, wall: float | None = None,
+                 fx: dict | None = None, season: str | None = "auto") -> Image.Image:
+        """The whole frame at 1920x1080: the pixel scene enlarged exactly 6x, with the clocks, timer, now-playing, link and
+        like/subscribe nudge drawn at full size in a pixel font so they stay sharp and readable on a phone."""
+        wall = time.time() if wall is None else wall
+        k = self.HD_SCALE
+        art = self.frame(t, hour, rain, bpm, title, wall, fx, hud=False, lights_dy=10, season=season)
+        im = art.resize((W * k, H * k), Image.NEAREST)
+        d = ImageDraw.Draw(im)
+        panel, bar, text, dim = C["panel"], C["bar"], C["text"], C["text_dim"]
+
+        # world clocks along the top: city, time, and a sun or moon for whether it is day there
+        d.rectangle([0, 0, W * k, 60], fill=panel)
+        d.rectangle([0, 60, W * k, 63], fill=bar)
+        cell = W * k // len(self.CLOCKS)
+        for i, (label, hhmm, day) in enumerate(self.world_clocks(wall)):
+            x = i * cell
+            if i:
+                d.rectangle([x - 1, 8, x, 52], fill=C["wall3"])
+            pixfont.draw(im, x + 18, 22, label, 3, dim)
+            tx = x + 18 + pixfont.width(label, 3) + 14
+            pixfont.draw(im, tx, 12, hhmm, 5, text if day else dim)
+            icon, col = (self.SUN, (255, 214, 110)) if day else (self.MOON, (214, 206, 250))
+            ix = tx + pixfont.width(hhmm, 5) + 14
+            for ry, row in enumerate(icon):
+                for rx, on in enumerate(row):
+                    if on == "1":
+                        d.rectangle([ix + rx * 4, 17 + ry * 4, ix + rx * 4 + 3, 17 + ry * 4 + 3], fill=col)
+
+        # the Pomodoro timer
+        sec = wall % (FOCUS + BREAK)
+        focus = sec < FOCUS
+        left = int((FOCUS - sec) if focus else (FOCUS + BREAK - sec))
+        total = FOCUS if focus else BREAK
+        colour = bar if focus else C["plant"]
+        d.rectangle([24, 796, 24 + 560, 970], fill=panel)
+        d.rectangle([24, 796, 24 + 560, 802], fill=colour)
+        pixfont.draw(im, 48, 820, "FOCUS" if focus else "BREAK", 5, colour)
+        pixfont.draw(im, 48, 868, f"{left // 60:02d}:{left % 60:02d}", 9, text)
+        d.rectangle([48, 942, 48 + 512, 954], fill=C["wall3"])
+        d.rectangle([48, 942, 48 + int(512 * (1 - left / total)), 954], fill=colour)
+
+        # what is playing, and the site
+        np_text = f"NOW PLAYING: {title}"
+        w = pixfont.width(np_text, 4)
+        d.rectangle([24, 984, 24 + w + 48, 1054], fill=panel)
+        pixfont.draw(im, 48, 1005, np_text, 4, dim)
+        link = "PURPLELINK.LLC"
+        lw = pixfont.width(link, 5)
+        d.rectangle([W * k - 24 - lw - 48, 984, W * k - 24, 1054], fill=panel)
+        pixfont.draw(im, W * k - 24 - lw - 24, 1001, link, 5, text)
+
+        # a polite nudge, not a permanent sticker (see NUDGE_EVERY): like, subscribe, share, 15 s every 4 minutes
+        cyc = wall % self.NUDGE_EVERY
+        if cyc < self.NUDGE_FOR:
+            kind, label = self.NUDGES[min(len(self.NUDGES) - 1, int(cyc // (self.NUDGE_FOR / len(self.NUDGES))))]
+            tw = pixfont.width(label, 5)
+            bw = tw + 48 + 66
+            x0, y0 = (W * k - bw) // 2, 896 + int(max(0.0, 0.6 - cyc) * 300)
+            d.rectangle([x0, y0, x0 + bw, y0 + 76], fill=panel)
+            d.rectangle([x0, y0, x0 + bw, y0 + 6], fill=bar)
+            icon_col, rows = self.ICONS[kind]
+            for ry, row in enumerate(rows):
+                for rx, on in enumerate(row):
+                    if on == "1":
+                        d.rectangle([x0 + 24 + rx * 6, y0 + 22 + ry * 6, x0 + 24 + rx * 6 + 5, y0 + 22 + ry * 6 + 5], fill=icon_col)
+            pixfont.draw(im, x0 + 24 + 66, y0 + 26, label, 5, text)
+
+        # the Pomodoro tally on a wall plaque: one tomato for every focus block finished today
+        done = self.pomodoros_today(wall)
+        pw, ph = 296, 112
+        px, py = W * k - 24 - pw, 130
+        d.rectangle([px - 6, py - 6, px + pw + 6, py + ph + 6], fill=C["desk_dark"])
+        d.rectangle([px, py, px + pw, py + ph], fill=panel)
+        pixfont.draw(im, px + 14, py + 12, "POMODOROS", 3, dim)
+        n_txt = f"{done}"
+        pixfont.draw(im, px + pw - 14 - pixfont.width(n_txt, 5), py + 8, n_txt, 5, text)
+        for i in range(min(done, 24)):
+            tx, ty = px + 14 + (i % 12) * 23, py + 50 + (i // 12) * 28
+            for ry, row in enumerate(self.TOMATO):
+                for rx, ch in enumerate(row):
+                    if ch != ".":
+                        d.rectangle([tx + rx * 3, ty + ry * 3, tx + rx * 3 + 2, ty + ry * 3 + 2], fill=self.TOMATO_COLOURS[ch])
+        if done == 0:
+            pixfont.draw(im, px + 14, py + 56, "FIRST ONE SOON", 3, dim)
+
+        # the subscriber goal, bottom right above the link, with a burst of confetti when the count goes up
+        subs = (fx or {}).get("subs")
+        if subs is not None:
+            goal = next((g for g in self.GOALS if g > subs), self.GOALS[-1])
+            label = f"SUBS {subs:,} / {goal:,}"
+            lw = pixfont.width(label, 4)
+            gx, gy = W * k - 24 - (lw + 48), 892
+            d.rectangle([gx, gy, W * k - 24, gy + 78], fill=panel)
+            d.rectangle([gx, gy, W * k - 24, gy + 5], fill=C["plant"])
+            pixfont.draw(im, gx + 24, gy + 16, label, 4, text)
+            d.rectangle([gx + 24, gy + 54, W * k - 48, gy + 64], fill=C["wall3"])
+            d.rectangle([gx + 24, gy + 54, gx + 24 + int((lw) * min(1.0, subs / goal)), gy + 64], fill=C["plant"])
+        toast = (fx or {}).get("toast")
+        if toast and toast[0] == "sub" and toast[2] < 4.5:
+            self._confetti(im, toast[2])
+        return im
+
+    GOALS = [50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 100000]
+    TOMATO = ["..gg...", ".rrrrr.", "rrrrrrr", "rrrrrrr", "rrrrrrr", ".rrrrr.", "..rrr.."]
+    TOMATO_COLOURS = {"g": (92, 176, 112), "r": (224, 72, 72)}
+
+    @staticmethod
+    def pomodoros_today(wall: float) -> int:
+        """Focus blocks finished since local midnight: each ends 25 minutes into a half hour, on the same clock as the timer."""
+        mid = seasons.local(wall).replace(hour=0, minute=0, second=0, microsecond=0).timestamp()
+        first = math.ceil((mid - FOCUS) / (FOCUS + BREAK))
+        last = math.floor((wall - FOCUS) / (FOCUS + BREAK))
+        return max(0, last - first + 1)
+
+    @staticmethod
+    def _confetti(im: Image.Image, age: float) -> None:
+        """A burst of paper squares falling from the top of the picture for a few seconds; the same every time."""
+        d = ImageDraw.Draw(im)
+        rr = random.Random(11)
+        for _ in range(90):
+            x0, vx, vy, size = rr.uniform(0.1, 0.9) * 1920, rr.uniform(-60, 60), rr.uniform(160, 420), rr.choice((8, 10, 12))
+            col = rr.choice([(255, 120, 120), (255, 226, 130), (130, 200, 255), (190, 140, 255), (140, 255, 190)])
+            y = 70 + vy * age - 25 * age * age * -1
+            x = x0 + vx * age + 20 * math.sin(age * 5 + x0)
+            if y < 1080 and age < 4.5:
+                d.rectangle([int(x), int(y), int(x) + size, int(y) + size], fill=col)
 
     # ------------------------------------------------------------ notifications, drawn on the laptop's own screen
     TOAST_SECONDS, TOAST_SLIDE = 5.5, 0.35

@@ -14,7 +14,7 @@ class FakeYT:
         self.items = broadcasts
         self.created, self.bound, self.updated = [], [], []
         self.thumbs, self.chats, self.thumb_error = [], [], None
-        self.transitions = []
+        self.transitions, self.lb_updates, self.update_error = [], [], None
         self.snippet = {"description": "old", "categoryId": "10", "tags": ["a"], "title": "old"}
 
     def liveBroadcasts(self):
@@ -28,6 +28,11 @@ class FakeYT:
                 return _Call(go)
             def bind(self, id, part, streamId):
                 yt.bound.append((id, streamId)); return _Call(lambda: {})
+            def update(self, part, body):
+                def go():
+                    if yt.update_error: raise RuntimeError(yt.update_error)
+                    yt.lb_updates.append((part, body)); return {}
+                return _Call(go)
             def transition(self, broadcastStatus, id, part):
                 yt.transitions.append((id, broadcastStatus)); return _Call(lambda: {})
         return LB()
@@ -60,9 +65,11 @@ class FakeYT:
         return V()
 
 
-def _b(i, state, stream="STREAM"):
+def _b(i, state, stream="STREAM", auto_stop=True):
     return {"id": i, "status": {"lifeCycleStatus": state}, "snippet": {"description": "desc"},
-            "contentDetails": {"boundStreamId": stream, "enableDvr": True, "latencyPreference": "low"}}
+            "contentDetails": {"boundStreamId": stream, "enableDvr": True, "latencyPreference": "low", "enableAutoStop": auto_stop,
+                               "boundStreamLastUpdateTimeMs": "1", "closedCaptionsType": "closedCaptionsDisabled",
+                               "monitorStream": {"enableMonitorStream": True, "embedHtml": "<iframe>", "broadcastStreamDelayMs": 0}}}
 
 
 def test_creates_and_binds_when_the_last_broadcast_is_complete():
@@ -74,6 +81,7 @@ def test_creates_and_binds_when_the_last_broadcast_is_complete():
     assert body["snippet"]["title"] == broadcast.title_for("synth")
     assert body["snippet"]["description"] == broadcast.description_for("synth")
     assert body["contentDetails"]["enableAutoStart"] is True and body["status"]["privacyStatus"] == "public"
+    assert body["contentDetails"]["enableAutoStop"] is False             # a dropped connection must never end the broadcast
     sn = yt.updated[0]["snippet"]
     assert sn["categoryId"] == "10" and sn["tags"] == broadcast.TAGS and sn["defaultLanguage"] == "en"
 
@@ -202,3 +210,26 @@ def test_the_rotation_notice_carries_the_permanent_link_and_fits_a_chat_message(
     class Broken:
         def liveBroadcasts(self): raise RuntimeError("quota")
     assert broadcast.announce_rotation(lambda m: None, yt=Broken()).startswith("failed")      # never raises into the stream
+
+
+def test_an_open_broadcast_has_auto_stop_turned_off_once_and_only_the_writable_settings_are_sent():
+    yt = FakeYT([_b("CUR", "live", auto_stop=True)])
+    out = broadcast.ensure(None, yt=yt)
+    assert "auto-stop turned off" in out
+    (part, body), = yt.lb_updates
+    assert part == "id,contentDetails" and body["id"] == "CUR" and body["contentDetails"]["enableAutoStop"] is False
+    cd = body["contentDetails"]
+    for read_only in ("boundStreamId", "boundStreamLastUpdateTimeMs", "closedCaptionsType"):
+        assert read_only not in cd
+    assert "embedHtml" not in cd["monitorStream"] and cd["enableDvr"] is True and cd["latencyPreference"] == "low"   # the rest is kept as it was
+    yt2 = FakeYT([_b("CUR", "live", auto_stop=False)])
+    assert "auto-stop off" in broadcast.ensure(None, yt=yt2) and not yt2.lb_updates                              # already off: no write
+
+
+def test_failing_to_turn_auto_stop_off_never_breaks_the_check():
+    yt = FakeYT([_b("CUR", "live", auto_stop=True)])
+    yt.update_error = "forbidden"
+    logs = []
+    out = broadcast.ensure(None, yt=yt, log=logs.append)
+    assert out.startswith("already open: CUR") and "auto-stop still on" in out
+    assert any("could not turn auto-stop off" in l for l in logs)

@@ -86,3 +86,27 @@ open the next one, so the gap is about 40 seconds (a rehearsal on 2026-10-07 mea
 waiting 10 minutes for YouTube to end it. A minute before a scheduled rotation the stream posts one chat message with the channel's
 permanent link, `https://www.youtube.com/channel/UCUv28P5SUzT4RLQOmi3EK8w/live`, which is the address to share: it always opens
 whatever is live.
+
+## The room: HUD and events
+
+- **Sharp text.** `Scene.frame_hd` enlarges the 320x180 scene exactly 6x in Python and draws the world clocks (LA, NYC, London,
+  Delhi, Tokyo, Sydney, with a sun or moon for day or night there), the Pomodoro timer, now-playing, the link and the like /
+  subscribe nudge at 1920x1080 with `pixfont.py`, a 5x7 pixel font made in code. The pipe to ffmpeg carries 1080p frames.
+- **Events.** `critters.py` cuts the wall clock into 4 minute slots and picks one event (or none) per slot from a seeded
+  generator, so the same minute shows the same event after any restart: the cat wakes, stretches, washes, yawns, watches the
+  window and goes back to sleep; a blonde English Labrador walks in, sits, lies down and leaves (about two minutes); a robin
+  lands on the sill by day; the robot vacuum crosses the floor; a shooting star at night; a hot-air balloon by day; lightning in
+  the rain. At the start of every break the person stretches their arms up. Weights and lengths are the `EVENTS` table.
+- Cost: about 11% more CPU than the old 320x180 pipe at the same bitrate (measured on a 30 s render).
+
+## Staying connected
+
+- **Auto-stop is off.** YouTube's `enableAutoStop` ends a broadcast by itself when the encoder goes quiet for a while; on 2026-10-09 a
+  network stall of about two minutes did that and the next broadcast got a new link. `broadcast.py` creates broadcasts with it off and
+  turns it off on any open broadcast it finds, so a dropped connection pauses the picture and nothing more. The broadcast still has
+  to be ended by hand, or by `end_current`.
+- **Network record.** `netwatch.py` probes YouTube's ingest host once a minute (DNS, TCP connect, and the container's TCP
+  retransmit counters), logs only failed or slow probes plus an hourly summary, and prints the last five minutes the moment the pipeline stops
+  ("network before the stop: ..."). That line is how to tell a network problem from YouTube closing the connection.
+- **Image contents.** Every module `stream.py` imports must be on the Dockerfile's COPY line; a test checks it, because a missing
+  file crash-loops the container.

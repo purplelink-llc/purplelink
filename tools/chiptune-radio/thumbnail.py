@@ -40,7 +40,7 @@ def fit(d: ImageDraw.ImageDraw, text: str, max_w: int, start: int) -> ImageFont.
 
 def make(w: int, h: int) -> Image.Image:
     s = sc.Scene()
-    frame = s.frame(12.0, 21.0, True, 80, "", wall=60.0).crop((0, 0, sc.W, CROP_H))   # night, rain, mid-focus
+    frame = s.frame(12.0, 21.0, True, 80, "", wall=60.0, events=False).crop((0, 0, sc.W, CROP_H))   # night, rain, mid-focus
     band = round(h * 0.235)
     art_h = h - band
     # scale to fill the width, then crop to the art area; the scene stays centred

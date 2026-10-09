@@ -1,5 +1,6 @@
 """Live engagement on the laptop screen: what gets queued, when it shows, that it stays on the screen, and what it costs."""
 import threading
+import types
 
 import numpy as np
 
@@ -132,3 +133,72 @@ def test_polling_costs_what_the_docstring_says():
     assert out["likes"] == 5 and out["viewers"] == 2 and out["subs"] == 30 and out["video_id"] == "V"
     per_day = 24 * 60 * (1 + 2 / 10 + 1 / 10)                # units a day at one poll a minute
     assert per_day < 2000
+
+
+# ------------------------------------------------------------------------- new subscribers: the list, and the rounded count
+def rs(subs=None, ids=None, likes=0):
+    return {"video_id": "v", "likes": likes, "viewers": 1, "subs": subs, "recent_ids": ids}
+
+
+def feed(*snaps):
+    it = iter(snaps)
+    return engage.Engagement(lambda: next(it), log=lambda *_: None, min_gap=0)
+
+
+def shown(e, now):
+    return (e.view(now) or {}).get("toast")
+
+
+def test_a_new_public_subscriber_is_announced_at_once_without_waiting_for_the_rounded_count():
+    e = feed(rs(1010, ["a", "b", "c"]), rs(None, ["d", "a", "b", "c"]))
+    e.poll_once()
+    assert shown(e, 0.0) is None                                        # the first reading is a baseline
+    e.poll_once()
+    assert shown(e, 1.0)[:2] == ("sub", "NEW SUB!")
+    assert e.view(1.0)["subs"] == 1011                                  # and the goal bar moves by one, ahead of YouTube's rounded 1010
+
+
+def test_private_subscribers_are_announced_when_the_rounded_count_steps_up():
+    e = feed(rs(1010, ["a"]), rs(None, ["b", "a"]), rs(1020, ["b", "a"]))
+    e.poll_once(); e.poll_once()
+    assert shown(e, 0.0)[1] == "NEW SUB!"                              # the one public subscriber
+    e.view(10.0)                                                       # that toast expires
+    e.poll_once()                                                      # the count moved by 10: nine more nobody could see
+    assert shown(e, 10.0)[1] == "+9 SUBS" and e.view(10.0)["subs"] == 1020
+
+
+def test_without_a_subscriber_list_the_rounded_count_is_used_alone():
+    e = feed(rs(1010), rs(1020))
+    e.poll_once(); e.poll_once()
+    assert shown(e, 0.0)[1] == "NEW SUBS"                                # ten at once reads as a crowd
+
+
+def test_the_same_subscribers_are_not_announced_twice():
+    e = feed(rs(1010, ["a", "b"]), rs(None, ["a", "b"]), rs(None, ["a", "b"]))
+    for _ in range(3):
+        e.poll_once()
+    assert shown(e, 0.0) is None
+
+
+def test_if_listing_subscribers_fails_the_stream_falls_back_and_stops_asking():
+    calls = {"list": 0}
+
+    class Req:
+        def __init__(self, fn): self.fn = fn
+        def execute(self): return self.fn()
+
+    class Svc:
+        def liveBroadcasts(self): return types.SimpleNamespace(list=lambda **k: Req(lambda: {"items": [{"id": "v", "status": {"lifeCycleStatus": "live"}}]}))
+        def videos(self): return types.SimpleNamespace(list=lambda **k: Req(lambda: {"items": [{"statistics": {"likeCount": "3"}, "liveStreamingDetails": {"concurrentViewers": "2"}}]}))
+        def channels(self): return types.SimpleNamespace(list=lambda **k: Req(lambda: {"items": [{"statistics": {"subscriberCount": "1010"}}]}))
+        def subscriptions(self):
+            def lst(**k):
+                calls["list"] += 1
+                def boom(): raise RuntimeError("insufficient scope")
+                return Req(boom)
+            return types.SimpleNamespace(list=lst)
+
+    fetch = engage.youtube_fetch(lambda: Svc())
+    outs = [fetch() for _ in range(6)]
+    assert calls["list"] == 1                                           # tried once, then left it alone
+    assert all(o["recent_ids"] is None and o["subs"] in (None, 1010) for o in outs) and outs[0]["subs"] == 1010
