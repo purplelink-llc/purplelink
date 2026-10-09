@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.1.0.dmg",
-  "releaseNotes": "New Ideas screen for research ideas that are not projects yet: capture a line, sort ideas on a board by stage, plot them by impact against feasibility, or link them on a map, then make one a project with its authors in order."
+  "version": "1.1.1",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.1.1.dmg",
+  "releaseNotes": "Search Everything (Command-K) now finds research ideas and opens them on the Ideas screen. Ideas also appear in Spotlight on this Mac, which you can turn off in Settings. Before you have any ideas, each view now says what it will show."
 }
