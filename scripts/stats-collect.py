@@ -78,6 +78,56 @@ def load_history():
     return []
 
 
+PENDING_DIR = Path.home() / ".purplelink-logs"
+
+
+def _merge_entry(hist, entry):
+    """Fold `entry` into `hist`. A platform that already has a good reading for
+    that date is never replaced by a failed one, so a bad second run cannot
+    erase a good first run (that happened on 2026-10-05)."""
+    old = next((h for h in hist if h["date"] == entry["date"]), None)
+    if old:
+        for name, new in list(entry["platforms"].items()):
+            prev = old["platforms"].get(name)
+            if prev and prev.get("ok") and not new.get("ok"):
+                entry["platforms"][name] = prev
+        for name, prev in old["platforms"].items():
+            entry["platforms"].setdefault(name, prev)
+    hist = [h for h in hist if h["date"] != entry["date"]] + [entry]
+    hist.sort(key=lambda h: h["date"])
+    return hist
+
+
+def save_entry(entry):
+    """Write today's entry into history.json atomically.
+
+    If the SSD is not there (it was not, at least once: FileNotFoundError on
+    history.json), keep retrying for a minute, then park the day in
+    ~/.purplelink-logs and import it on the next run instead of losing it."""
+    last = None
+    for _ in range(6):
+        try:
+            hist = load_history()
+            for f in sorted(PENDING_DIR.glob("photostats-pending-*.json")):
+                try:
+                    hist = _merge_entry(hist, json.loads(f.read_text()))
+                    f.unlink()
+                except Exception:
+                    pass
+            hist = _merge_entry(hist, entry)
+            OUT.mkdir(parents=True, exist_ok=True)
+            tmp = HISTORY.with_name(HISTORY.name + ".tmp")
+            tmp.write_text(json.dumps(hist, indent=2))
+            os.replace(tmp, HISTORY)
+            return hist
+        except OSError as e:
+            last = e
+            time.sleep(10)
+    PENDING_DIR.mkdir(parents=True, exist_ok=True)
+    (PENDING_DIR / f"photostats-pending-{entry['date']}.json").write_text(json.dumps(entry, indent=2))
+    raise last
+
+
 def money(s):
     m = re.search(r"\$\s*([\d,]+\.?\d*)", s or "")
     return float(m.group(1).replace(",", "")) if m else None
@@ -1029,8 +1079,14 @@ def launch_chrome(headless=True):
     proc = subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     for _ in range(40):
         if up():
-            return proc
+            # An open port is not a working browser: the HTTP endpoint can lag the
+            # socket by a second or two, and 2026-10-09's 07:00 run died on
+            # "Connection refused" from exactly that gap.
+            if wait_for_cdp(30):
+                return proc
+            break
         _t.sleep(0.5)
+    quit_chrome(proc)
     raise RuntimeError("Chrome did not open its debug port")
 
 
@@ -1046,6 +1102,56 @@ def quit_chrome(proc):
             return
         _t.sleep(0.5)
     proc.kill()
+
+
+def wait_for_cdp(max_s=60):
+    """True once Chrome's HTTP debug endpoint answers (not merely its port)."""
+    import urllib.request
+    t0 = time.time()
+    while True:
+        try:
+            urllib.request.urlopen(f"http://127.0.0.1:{CDP_PORT}/json/version", timeout=3).read()
+            return True
+        except Exception:
+            if time.time() - t0 >= max_s:
+                return False
+            time.sleep(1)
+
+
+def network_up(timeout=5):
+    """DNS plus a TCP connect to a host that is not ours (our own site can be down)."""
+    import socket
+    try:
+        socket.create_connection(("www.apple.com", 443), timeout=timeout).close()
+        return True
+    except OSError:
+        return False
+
+
+def wait_for_network(max_s=300):
+    """Block until the network works. Seconds waited, or -1 on timeout.
+
+    The 07:00 job often fires at wake, before Wi-Fi and DNS are back. Every page
+    then fails to load, and a page that did not load looks the same as a login
+    page, so a whole day was recorded as 'not signed in' (2026-10-07)."""
+    t0 = time.time()
+    while not network_up():
+        if time.time() - t0 >= max_s:
+            return -1
+        time.sleep(5)
+    return time.time() - t0
+
+
+# Failure shapes that are about the connection or the browser, not about a dead
+# session. These get one retry after the network is confirmed up.
+_TRANSIENT = ("failed to fetch", "timed out", "websocket", "connection", "broken pipe",
+              "net::", "err_", "didn't render", "did not render", "no numeric fields",
+              "target closed", "remote end closed", "http error 5")
+
+
+def _is_transient(msg):
+    m = msg.lower()
+    return any(t in m for t in _TRANSIENT)
 
 
 # Where to send the user for each platform when a collector reports a dead
@@ -1327,7 +1433,19 @@ class _CdpResponse:
         return self._text
 
 
-def run(headless=True, auto_login=True, login_budget_s=300, include_dreamstime=False, workers=6):
+PASS_DEADLINE_S = 900          # the parallel pass has run 25 and 42 minutes when sites hung
+
+
+def run(**kw):
+    """_run_inner, but Chrome is always closed afterwards, even on an error."""
+    state = {"proc": None}
+    try:
+        return _run_inner(state, **kw)
+    finally:
+        quit_chrome(state["proc"])
+
+
+def _run_inner(state, headless=True, auto_login=True, login_budget_s=300, include_dreamstime=False, workers=6):
     """Collect every platform in parallel, each in its own tab.
 
     Phase 1 runs all collectors at once with no login prompts. Any that
@@ -1336,21 +1454,29 @@ def run(headless=True, auto_login=True, login_budget_s=300, include_dreamstime=F
     flow, so signing in to several sites takes one pass instead of a wait per
     site."""
     from concurrent.futures import ThreadPoolExecutor
+    import concurrent.futures as _cf
     import threading
     OUT.mkdir(parents=True, exist_ok=True)
+    started = time.time()
     entry = {"date": datetime.date.today().isoformat(),
              "collected_at": datetime.datetime.now().isoformat(timespec="seconds"),
              "platforms": {}}
     lock = threading.Lock()
     platforms = PLATFORMS + [DREAMSTIME] if include_dreamstime else PLATFORMS
+    # Pages cannot load without a network, and an unloaded page reads as signed out.
+    net_wait = wait_for_network(300)
+    if 0 <= net_wait < 3:
+        net_wait = 0                 # a fast first check is not "the network was down"
+    if net_wait != 0:
+        print(f"  note: network {'came up after %.0fs' % net_wait if net_wait > 0 else 'still down after 300s; going on anyway'}", flush=True)
     # No Playwright client here, so an already-running Chrome is simply used as
     # is; launch_chrome's "another client attached" refusal doesn't apply.
-    import socket
-    with socket.socket() as _s:
-        _s.settimeout(0.4)
-        up = _s.connect_ex(("127.0.0.1", CDP_PORT)) == 0
-    proc = None if up else launch_chrome(headless=False if auto_login else headless)
+    up = wait_for_cdp(3)
+    state["proc"] = None if up else launch_chrome(headless=False if auto_login else headless)
+    chrome_launched = not up
+    chrome_lock = threading.Lock()
     pages, needs_login = {}, []
+    transient_fail = []
 
     def numeric_ok(got):
         nums = [v for v in got.values() if isinstance(v, (int, float)) and not isinstance(v, bool)]
@@ -1363,26 +1489,84 @@ def run(headless=True, auto_login=True, login_budget_s=300, include_dreamstime=F
             entry["platforms"][name] = {"ok": True, **got}
             print(f"  OK   {name}{note}", flush=True)
 
+    def open_tab():
+        """A new tab, riding out Chrome still starting up and relaunching it once if it died."""
+        last = None
+        for attempt in range(4):
+            try:
+                return CdpPage(background=True)
+            except Exception as e:
+                last = e
+                if attempt == 1 and not wait_for_cdp(3):
+                    with chrome_lock:
+                        if not wait_for_cdp(3):
+                            print("  note: Chrome stopped answering; relaunching it", flush=True)
+                            state["proc"] = launch_chrome(headless=False if auto_login else headless) or state["proc"]
+                time.sleep(3 * (attempt + 1))
+        raise last
+
     def work(item):
         name, fn = item
-        page = CdpPage(background=True)
-        pages[name] = page
-        try:
-            record(name, fn(page))
-            page.close()
-        except Exception as e:
-            url = LOGIN_URLS.get(name)
-            with lock:
-                if auto_login and url and _needs_human(str(e)):
-                    needs_login.append((name, fn, url))
-                    print(f"  ...  {name}: {str(e)[:60]} -- will need you to sign in", flush=True)
-                else:
-                    entry["platforms"][name] = {"ok": False, "error": f"{type(e).__name__}: {e}"[:160]}
-                    print(f"  WARN {name}: {type(e).__name__}: {str(e)[:80]}", flush=True)
+        err, offline = None, False
+        for attempt in (1, 2):
+            page = None
+            try:
+                page = open_tab()
+                pages[name] = page
+                record(name, fn(page))
+                page.close()
+                return
+            except Exception as e:
+                err = e
+                offline = not network_up()
+                # Retry once when the cause was the connection or a cold browser, not the account.
+                # On a freshly launched Chrome the first pass read 'not signed in' on pages that
+                # then loaded fine 15s later (2026-10-09: 9 of 13 platforms recovered on the retry),
+                # so a signed-out result is retried when this run started Chrome or the network was down.
+                retry = offline or _is_transient(str(e)) or ((net_wait != 0 or chrome_launched) and _needs_human(str(e)))
+                if attempt == 1 and retry:
+                    with lock:
+                        print(f"  ...  {name}: {type(e).__name__}: {str(e)[:60]} -- retrying", flush=True)
+                    if offline:
+                        wait_for_network(180)
+                    else:
+                        time.sleep(15)
+                    try:
+                        page and page.close()
+                    except Exception:
+                        pass
+                    continue
+                break
+        e = err
+        url = LOGIN_URLS.get(name)
+        with lock:
+            if auto_login and url and _needs_human(str(e)) and not offline:
+                needs_login.append((name, fn, url))
+                print(f"  ...  {name}: {str(e)[:60]} -- will need you to sign in", flush=True)
+            else:
+                entry["platforms"][name] = {"ok": False, "error": f"{type(e).__name__}: {e}"[:160]}
+                if offline or _is_transient(str(e)):
+                    transient_fail.append(name)
+                print(f"  WARN {name}: {type(e).__name__}: {str(e)[:80]}", flush=True)
 
     t0 = time.time()
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        list(ex.map(work, platforms))
+    ex = ThreadPoolExecutor(max_workers=workers)
+    futs = {ex.submit(work, item): item[0] for item in platforms}
+    done, not_done = _cf.wait(futs, timeout=PASS_DEADLINE_S)
+    for f in done:
+        if f.exception() is not None:
+            with lock:
+                entry["platforms"][futs[f]] = {"ok": False,
+                    "error": f"{type(f.exception()).__name__}: {f.exception()}"[:160]}
+                transient_fail.append(futs[f])
+                print(f"  WARN {futs[f]}: {type(f.exception()).__name__}: {str(f.exception())[:80]}", flush=True)
+    for f in not_done:
+        with lock:
+            entry["platforms"].setdefault(futs[f], {"ok": False, "error": f"TimeoutError: no answer after {PASS_DEADLINE_S}s"})
+            transient_fail.append(futs[f])
+            print(f"  WARN {futs[f]}: still running after {PASS_DEADLINE_S}s; moving on", flush=True)
+    ex.shutdown(wait=False, cancel_futures=True)
+    needs_login = [n for n in needs_login if n[0] not in entry["platforms"]]
     print(f"  ({time.time() - t0:.0f}s for the parallel pass)", flush=True)
 
     if needs_login:
@@ -1427,14 +1611,23 @@ def run(headless=True, auto_login=True, login_budget_s=300, include_dreamstime=F
             print(f"  ledger {line}", flush=True)
     except Exception as e:
         print(f"  WARN sales ledgers: {type(e).__name__}: {e}", flush=True)
-    if proc:
-        quit_chrome(proc)
-    hist = load_history()
-    hist = [h for h in hist if h["date"] != entry["date"]] + [entry]
-    hist.sort(key=lambda h: h["date"])
-    HISTORY.write_text(json.dumps(hist, indent=2))
+    quit_chrome(state["proc"])
+    hist = save_entry(entry)
+    entry = next(h for h in hist if h["date"] == entry["date"])      # the merged day
     append_snapshots(entry)
     print(f"\nwrote {HISTORY} ({len(hist)} day(s) of history); total {time.time() - t0:.0f}s")
+    plats = entry["platforms"]
+    summary = {"date": entry["date"], "started": datetime.datetime.fromtimestamp(started).isoformat(timespec="seconds"),
+               "seconds": round(time.time() - started), "network_wait_s": round(net_wait),
+               "chrome_launched": chrome_launched,
+               "ok": sorted(k for k, v in plats.items() if v.get("ok")),
+               "failed": {k: v.get("error", "")[:120] for k, v in plats.items() if not v.get("ok")},
+               "transient": sorted(set(transient_fail))}
+    try:
+        (OUT / "last-run.json").write_text(json.dumps(summary, indent=2))
+    except OSError:
+        pass
+    entry = dict(entry); entry["_summary"] = summary
     return entry
 
 
@@ -1526,9 +1719,20 @@ if __name__ == "__main__":
         h = load_history()
         print(json.dumps(h[-1] if h else {}, indent=2))
     else:
-        (run_sequential if a.sequential else run)(
-            headless=not a.headed, auto_login=not a.no_auto_login,
-            login_budget_s=a.login_wait, include_dreamstime=a.include_dreamstime)
+        rc = 0
+        try:
+            res = (run_sequential if a.sequential else run)(
+                headless=not a.headed, auto_login=not a.no_auto_login,
+                login_budget_s=a.login_wait, include_dreamstime=a.include_dreamstime)
+            sm = (res or {}).get("_summary")
+            if sm:
+                # 0 = done; 3 = some platforms failed for connection reasons, worth retrying
+                # later today; 4 = nothing collected at all.
+                rc = 4 if not sm["ok"] else 3 if sm["transient"] else 0
+        except BaseException as e:
+            import traceback
+            traceback.print_exc()
+            rc = 2
         import subprocess
         # Mail second: it survives when browser sessions don't, so it fills gaps
         # the scraper leaves. Failure here must not lose the browser results.
@@ -1539,3 +1743,5 @@ if __name__ == "__main__":
             print(f"  WARN mail-collect: {type(e).__name__}: {e}")
         # regenerate the HTML view
         subprocess.run([sys.executable, str(ROOT / "scripts" / "photo-dashboard.py")])
+        sys.stdout.flush(); sys.stderr.flush()
+        os._exit(rc)

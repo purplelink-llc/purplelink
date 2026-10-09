@@ -295,11 +295,22 @@ def open_page(url: str, settle: float = 5.0):
         tab.front()
         deadline = time.time() + 45
         while time.time() < deadline:
-            if tab.eval("document.readyState") == "complete":
+            # A new tab reports readyState "complete" while it is still on about:blank,
+            # before the navigation has started. Reading then gave Etsy "not rendered"
+            # (2026-10-08, 2026-10-09) on a page that was signed in and fine.
+            href = tab.eval("location.href") or ""
+            if href and not href.startswith("about:") and tab.eval("document.readyState") == "complete":
                 break
             time.sleep(1)
         time.sleep(settle)
-        return tab, tab.eval(JS_META)
+        meta = tab.eval(JS_META)
+        # A client-rendered page can still be blank after "complete"; give it up to 3 more looks.
+        for _ in range(3):
+            if len(meta.get("text") or "") > 300 and not meta["url"].startswith("about:"):
+                break
+            time.sleep(4)
+            meta = tab.eval(JS_META)
+        return tab, meta
     except Exception as exc:  # noqa: BLE001 - socket timeouts, CDP errors
         try:
             tab.close()
