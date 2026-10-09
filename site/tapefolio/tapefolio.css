@@ -13,13 +13,10 @@
 [data-tf-pre-only][hidden] { display: none !important; }
 .product-status-soon { color: var(--muted); }
 
-/* There is no app icon yet, so the hero is one column. When a picture is added it goes in
-   a <figure class="app-hero-window tf-hero-window"> after .app-hero-copy and the hero turns
-   into two columns by itself (see docs/products/tapefolio.md). */
-.tf-hero { grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 960px) {
-  .tf-hero:has(.tf-hero-window) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
-}
+/* The hero is the app icon beside the copy, like the other app pages (.app-hero is two columns, and one on a phone).
+   A picture goes in a <figure class="app-hero-window tf-hero-window"> after .app-hero-copy and takes a row of its own
+   (see docs/products/tapefolio.md). */
+.tf-hero:has(.tf-hero-window) .tf-hero-window { grid-column: 1 / -1; }
 .tf-hero-window { margin: 0; }
 .tf-hero-window .frame-soft { max-width: 760px; margin-inline: auto; }
 .tf-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }

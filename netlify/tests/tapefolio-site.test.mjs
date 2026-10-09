@@ -230,7 +230,23 @@ test("every image on the page exists, has a size and alt text, and none is an in
       assert.match(tag, /\salt="[^"]*"/);
     }
     assert.doesNotMatch(html, /\/tapefolio\/img\//, "no picture is referenced until it exists");
-    assert.doesNotMatch(html, /tapefolio-icon|og\/tapefolio\.png/, "no icon or share card is referenced until it exists");
+    assert.doesNotMatch(html, /og\/tapefolio\.png/, "no share card is referenced until it exists");
+  }
+});
+
+test("the hero shows the real app icon, sized, with alt text, and the icon files are square webp at 240 and 128", () => {
+  const html = read("tapefolio/index.html");
+  assert.match(html, /<img class="app-hero-icon" src="\/assets\/tapefolio-icon\.webp" width="120" height="120" fetchpriority="high" alt="Tapefolio app icon">/);
+  for (const [f, px] of [["assets/tapefolio-icon.webp", 240], ["assets/tapefolio-icon-128.webp", 128]]) {
+    const b = readFileSync(join(SITE, f));
+    assert.equal(b.subarray(0, 4).toString(), "RIFF");
+    assert.equal(b.subarray(8, 12).toString(), "WEBP");
+    assert.ok(b.length < 40 * 1024, `${f} is ${b.length} bytes`);
+    // Lossy VP8X files keep the canvas size in bytes 24 to 29 (width-1, height-1, 24-bit little endian).
+    if (b.subarray(12, 16).toString() === "VP8X") {
+      assert.equal(b.readUIntLE(24, 3) + 1, px);
+      assert.equal(b.readUIntLE(27, 3) + 1, px);
+    }
   }
 });
 
