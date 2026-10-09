@@ -5016,13 +5016,13 @@ Requires macOS 14 or later. Free 7-day trial, no account.
 ---
 
 Source: https://purplelink.llc/guides/best-mac-latex-editors/
-Title: Best LaTeX editor for Mac in 2026: 14 editors compared | Purplelink
+Title: Best LaTeX editor for Mac in 2026: 16 editors compared | Purplelink
 
 ← All guides
 
 Comparison
 
-# Best LaTeX editor for Mac in 2026: 14 editors compared
+# Best LaTeX editor for Mac in 2026: 16 editors compared
 
 By Benjamin Ampel · May 31, 2026, updated October 9, 2026
 
