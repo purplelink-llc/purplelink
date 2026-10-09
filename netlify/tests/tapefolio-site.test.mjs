@@ -230,7 +230,6 @@ test("every image on the page exists, has a size and alt text, and none is an in
       assert.match(tag, /\salt="[^"]*"/);
     }
     assert.doesNotMatch(html, /\/tapefolio\/img\//, "no picture is referenced until it exists");
-    assert.doesNotMatch(html, /og\/tapefolio\.png/, "no share card is referenced until it exists");
   }
 });
 
@@ -248,6 +247,21 @@ test("the hero shows the real app icon, sized, with alt text, and the icon files
       assert.equal(b.readUIntLE(27, 3) + 1, px);
     }
   }
+});
+
+test("the share card is 1200 by 630, is what the page's meta tags and JSON-LD point at, and the Suite card is current", () => {
+  const html = read("tapefolio/index.html");
+  assert.match(html, /<meta property="og:image" content="https:\/\/purplelink\.llc\/assets\/og\/tapefolio\.png">/);
+  assert.match(html, /<meta name="twitter:image" content="https:\/\/purplelink\.llc\/assets\/og\/tapefolio\.png">/);
+  assert.equal(jsonLd(html).find((n) => n["@type"] === "SoftwareApplication").image, "https://purplelink.llc/assets/og/tapefolio.png");
+  for (const f of ["tapefolio", "mac-suite"]) {
+    const png = readFileSync(join(SITE, `assets/og/${f}.png`));
+    assert.equal(png.readUInt32BE(16), 1200, f);
+    assert.equal(png.readUInt32BE(20), 630, f);
+    assert.ok(png.length > 20000, f);
+  }
+  const gen = read("assets/og/_gen.html");
+  assert.match(gen, /"tapefolio":\s+\{[^}]*title: "Tapefolio"/);
 });
 
 test("the stylesheets, scripts and fonts the pages load all exist", () => {
