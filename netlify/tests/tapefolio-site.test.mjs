@@ -225,7 +225,7 @@ test("the page never claims anonymization, guaranteed compliance, or anything th
   assert.doesNotMatch(text, /seamless|supercharge|streamline|world-class|cutting-edge|revolutionary|effortless|AI-powered|game-chang|magic|blazing|lightning/i);
   // Every percentage on the page is one the README states.
   // (The captions under the screenshots quote what the captures show; they are checked in their own test.)
-  const allowed = new Set(["21%", "29%", "39%", "87%", "94%", "1.5%"]);
+  const allowed = new Set(["21%", "29%", "39%", "83%", "84%", "11.3%", "1.9%", "8.5%", "1.7%", "1.1%", "1.4%", "0.5%", "0.0%", "1.5%"]);
   const withoutCaptions = visibleText(html.replace(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/, ""));
   for (const m of withoutCaptions.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(allowed.has(m[0]), `unexpected figure ${m[0]}`);
   // Features that are not built are not named.
@@ -736,4 +736,58 @@ test("the promo video is a poster that loads the YouTube embed on click, the way
 test("the 8 second hero loop and its poster are in place for the page to use", () => {
   for (const f of ["assets/video/tapefolio-hero.mp4", "assets/video/tapefolio-hero.webm"]) assert.ok(statSync(join(SITE, f)).size > 100 * 1024, f);
   assert.deepEqual(webpSize("assets/video/tapefolio-hero-poster.webp"), [1280, 720]);
+});
+
+// ---- speaker labels: what was measured ------------------------------------------------------------
+
+test("the speaker-label claims are the corrected ones: every word counted, the two-person recordings scored on speech time, the caveats stated", () => {
+  const html = read("tapefolio/index.html");
+  const page = visibleText(html);
+  const llms = read("llms.txt");
+  const block = llms.slice(llms.indexOf("### Tapefolio"), llms.indexOf("### Mac Suite"));
+  // The old claim, which counted only the words that had a label, is gone everywhere that is public.
+  for (const [name, text] of [["page", page + html], ["llms", block], ["suite", read("suite/index.html")]]) {
+    assert.doesNotMatch(text, /87%|94%|87 to 94|between 87/i, `${name} still has the old figure`);
+  }
+  // The meetings, counting every word.
+  assert.match(page, /On the two AMI meetings, counting every word, about 83% to 84% of words got the right speaker, with the standard speaker separation and with Nemotron 3 alike\. Some words get no label at all\./);
+  assert.match(page, /so they may flatter it/);
+  // The real two-person recordings, scored on speech time.
+  assert.match(page, /Five real two-person recordings from VoxConverse, 71 minutes in all, English, YouTube-quality audio, with labels checked by people\. They have no transcripts, so this is scored on speech time, not words\./);
+  assert.match(page, /Standard speaker separation missed 8\.5% of the speech, added 1\.7% that was not speech and mixed up the speakers for 1\.1%, a total error of 11\.3%\./);
+  assert.match(page, /NVIDIA Nemotron 3 missed 1\.4%, added 0\.5% and mixed up 0\.0%, a total of 1\.9%\./);
+  assert.match(page, /These files were not used to tune the setting\. Five files is a small sample, and the app's word accuracy on them was not measured\./);
+  assert.match(page, /five recordings from VoxConverse \(CC BY 4\.0\)/);
+  // The same numbers in the FAQ, its JSON-LD and llms.txt.
+  const faq = jsonLd(html).find((n) => n["@type"] === "FAQPage").mainEntity.find((q) => q.name === "How good are the speaker labels?").acceptedAnswer.text;
+  const faqHtml = visibleText(html.match(/<summary>How good are the speaker labels\?<\/summary>\s*<div class="faq-body">([\s\S]*?)<\/div>/)[1]);
+  assert.equal(faqHtml, faq.replace(/\s+/g, " "));
+  for (const text of [faq, block]) {
+    assert.match(text, /11\.3%/);
+    assert.match(text, /1\.9%/);
+    assert.match(text, /83% to 84%/);
+    assert.match(text, /71 minutes/);
+    assert.match(text, /five files is a small sample/i);
+    assert.match(text, /word accuracy on them was not measured/);
+  }
+  assert.match(block, /missed 8\.5%, added 1\.7%, mixed up 1\.1%/);
+  assert.match(block, /missed 1\.4%, added 0\.5%, mixed up 0\.0%/);
+  for (const m of block.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(["21%", "29%", "39%", "83%", "84%", "11.3%", "1.9%", "8.5%", "1.7%", "1.1%", "1.4%", "0.5%", "0.0%"].includes(m[0]), `llms: unexpected figure ${m[0]}`);
+});
+
+test("Nemotron 3 is recommended and used automatically once installed; the standard separation comes with the app; nothing calls it a second way or a match", () => {
+  const html = read("tapefolio/index.html");
+  const page = visibleText(html);
+  assert.match(page, /NVIDIA Nemotron 3 Diarization is recommended instead: it was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download\./);
+  assert.match(page, /standard speaker-separation models that come with the app/);
+  assert.match(page, /Separating speakers; recommended, and used automatically once installed/);
+  assert.match(page, /About 190 MB/);
+  const features = jsonLd(html).find((n) => n["@type"] === "SoftwareApplication").featureList.join(" ");
+  assert.match(features, /Nemotron 3 Diarization, which is recommended for speaker labels and used automatically once installed/);
+  assert.match(read("tapefolio/success/index.html"), /Nemotron 3 is the one we recommend for speaker labels, and Tapefolio uses it automatically once it is installed/);
+  const llms = read("llms.txt");
+  assert.match(llms.slice(llms.indexOf("### Tapefolio")), /recommended for speaker labels and used automatically once installed; standard speaker separation comes with the app/);
+  for (const [name, text] of [["page", page], ["success", read("tapefolio/success/index.html")], ["llms", llms.slice(llms.indexOf("### Tapefolio"), llms.indexOf("### Mac Suite"))]]) {
+    assert.doesNotMatch(text, /second way|separates speakers a second|matches the standard|as good as the standard|same as the standard/i, name);
+  }
 });

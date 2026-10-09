@@ -12,7 +12,8 @@ Batch OCR on photos, scans and PDFs. No speech model is bundled (decision 2026-1
 a Netlify function, so the app is about 40 MB and ships only the standard speaker-separation models). Until the user downloads a
 speech model, Tapefolio uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once. NVIDIA Parakeet
 (English, about 470 MB), Whisper base (English, about 150 MB), Whisper large-v3 turbo (many languages, about 650 MB) and NVIDIA
-Nemotron 3 speaker separation (about 190 MB) are optional, deletable downloads in Settings, from Hugging Face, each once. Sold at **$29.99 once**, USD, one DMG that runs free
+Nemotron 3 speaker separation (about 190 MB) are optional, deletable downloads in Settings, from Hugging Face, each once.
+Nemotron 3 is the recommended speaker model and is used automatically once installed; standard speaker separation comes with the app. Sold at **$29.99 once**, USD, one DMG that runs free
 for 7 days from first launch and then needs a license key. One key works on two Macs. 14-day refund like the other apps.
 It is the sixth part of the Mac Suite, whose price did not change (see `app-suite.md`).
 
@@ -240,6 +241,23 @@ Screenshots and video (added after launch; sources in the `tapefolio-video` bran
 - `llms.txt` has no video line for Keyfeel or Outbound Veil, so none was added for Tapefolio.
 
 Still not done: a hero loop on the page (see above).
+
+## Speaker-label measurements (corrected 2026-10-09)
+
+The earlier page claim "between 87% and 94% of words were given to the right speaker" counted only words that had a speaker
+label. The old default setting (20 s window) labelled only 51% and 54% of the words on the two AMI meetings, so it was
+overstated. With the fixed default (10 s window) 88% and 96% of words are labelled and Nemotron 3 labels 90% and 95%. Counting
+every word, about 83% to 84% of words on the two AMI meetings (four people each, headset mix) get the right speaker, with the
+standard setting and with Nemotron 3 alike, and some words get no label. That is what the page says now. The setting was tuned
+on the AMI meetings, so those numbers may flatter it.
+
+On five real two-person recordings (71 minutes, VoxConverse, CC BY 4.0, YouTube audio, human-checked labels; no transcripts, so
+this is scored on speech time, not words) standard speaker separation missed 8.5% of the speech, added 1.7% and mixed up
+speakers for 1.1% (total 11.3%); Nemotron 3 missed 1.4%, added 0.5% and mixed up 0.0% (total 1.9%). The old default scored
+50.5% on the same files, which the page does not mention. The VoxConverse files were not used for tuning. Caveats the page
+states: five files, English, YouTube-quality audio, two speakers, and word accuracy on them is not measured. Source: the
+Tapefolio repo README, section "Real two-person recordings: VoxConverse" (its scripts). `tapefolio-site.test.mjs` fails on any
+percentage on the page that is not in its allowed list, so a new figure needs a test change.
 
 ## Open items
 
