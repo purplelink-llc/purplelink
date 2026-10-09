@@ -83,7 +83,7 @@
 - **Pricing:** Free 7-day trial (the complete app, no account), then $29.99 once, every update included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. One key works on two Macs. 14-day refund.
 - **Privacy:** Transcription, speaker labels, identifier removal and OCR run on the Mac and nothing is uploaded. No speech model is bundled (the app is about 40 MB): until you download one, Tapefolio uses Apple's on-device speech recognition, and macOS may download Apple's own model once. Optional downloads in Settings, from Hugging Face, each once and deletable: NVIDIA Parakeet (English, about 470 MB), Whisper base (English, about 150 MB), Whisper large-v3 turbo (many languages, about 650 MB) and NVIDIA Nemotron 3 speaker separation (about 190 MB). The app's update check sends its name, its version, the macOS version and its update token to purplelink.llc. Nothing from your files is sent. No analytics and no account.
 - **Limits:** It will mishear words and mislabel speakers; a person should check any quoted text against the recording. Word error rate on two AMI meetings was between 21% and 29% for Apple's recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for Whisper base. Measured only on English meeting audio and generated OCR files. It does not anonymize a transcript or make a study compliant.
-- **Status:** Not yet released; the page is at https://purplelink.llc/tapefolio/.
+- **Status:** Shipping, version 1.0.0 (October 2026). Notarized download, no App Store required.
 - **Trial and purchase:** https://purplelink.llc/tapefolio/
 
 ### Mac Suite (macOS bundle)

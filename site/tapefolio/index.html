@@ -30,7 +30,7 @@
     <script src="/site.js?v=258cd9c67e" defer></script>
     <script src="/trial-reminder.js?v=d43def6c9f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
-    <script src="/tapefolio/launch.js?v=5f20b7c6e0" defer></script>
+    <script src="/tapefolio/launch.js?v=692a683b0a" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
     {
@@ -163,14 +163,13 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS 26 &middot; Apple silicon</span>
-          <span class="product-status product-status-soon" data-tf-pre-only>Not released yet</span>
-          <span class="product-status product-status-live" data-tf-live-only hidden>Free 7-day trial &middot; <span id="price">$29.99</span> to keep</span>
+          <span class="product-status product-status-live" data-tf-live-only>Free 7-day trial &middot; <span id="price">$29.99</span> to keep</span>
         </div>
         <h1 class="app-hero-name">Tapefolio</h1>
         <p class="app-hero-tagline">Tapefolio transcribes interview and meeting recordings on your Mac, labels the speakers, helps you replace names and other identifiers, and reads scanned pages and photos into searchable text. Your files are not uploaded.</p>
         <div class="app-hero-actions" id="buy">
-          <a class="btn btn-primary" id="trial-download" data-tf-gated data-tf-href="/.netlify/functions/tapefolio-download?download=1" data-tf-live-text="Try it free for 7 days" aria-disabled="true">Free trial opens at release</a>
-          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="tapefolio" data-tf-gated data-tf-live-text="Buy Tapefolio" disabled>Buying opens at release</button>
+          <a class="btn btn-primary" id="trial-download" data-tf-gated data-tf-href="/.netlify/functions/tapefolio-download?download=1" data-tf-live-text="Try it free for 7 days" href="/.netlify/functions/tapefolio-download?download=1">Try it free for 7 days</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="tapefolio" data-tf-gated data-tf-live-text="Buy Tapefolio">Buy Tapefolio</button>
         </div>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <form class="trial-remind" data-reminder-signup data-reminder-api="/.netlify/functions/tapefolio-reminder" data-reminder-link="tapefolio-download" hidden novalidate>
@@ -183,7 +182,7 @@
           </div>
           <p class="trial-remind-note" data-reminder-status aria-live="polite">Optional. Two emails, then nothing, each with an unsubscribe link. Your address is deleted once the second is sent.</p>
         </form>
-        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-tf-facts>Version, size and release date are listed here when Tapefolio is released.</span> Needs macOS 26 or later on a Mac with Apple silicon.</p>
+        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-tf-facts>Version 1.0.0, released October 9, 2026. 43 MB disk image.</span> Needs macOS 26 or later on a Mac with Apple silicon.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.</p>
       </div>
     </div>
@@ -380,8 +379,8 @@
       <h2 id="closing-cta-heading">Try it on one recording.</h2>
       <p>Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.</p>
       <div class="closing-cta-actions">
-        <a class="btn btn-primary" data-tf-gated data-tf-href="/.netlify/functions/tapefolio-download?download=1" data-tf-live-text="Try it free for 7 days" aria-disabled="true">Free trial opens at release</a>
-        <a class="btn btn-ghost" href="#buy" data-tf-live-only hidden>Buy Tapefolio</a>
+        <a class="btn btn-primary" data-tf-gated data-tf-href="/.netlify/functions/tapefolio-download?download=1" data-tf-live-text="Try it free for 7 days" href="/.netlify/functions/tapefolio-download?download=1">Try it free for 7 days</a>
+        <a class="btn btn-ghost" href="#buy" data-tf-live-only>Buy Tapefolio</a>
       </div>
       <form class="trial-remind" data-reminder-signup data-reminder-api="/.netlify/functions/tapefolio-reminder" data-reminder-link="tapefolio-download" hidden novalidate>
         <p class="trial-remind-head" id="tf-remind-head-2">Your download has started. Want setup tips by email, and one reminder before the trial ends?</p>

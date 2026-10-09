@@ -36,18 +36,24 @@ Tapefolio and the success page calls `tapefolio-download`, which answers 500 `fi
 
 ## Release gate (nothing can sell by accident)
 
-`site/tapefolio/launch.js` holds the only switch: `window.TAPEFOLIO_LAUNCH = { live, version, sizeMb, released }`. As
-shipped `live` is `false`. Until it is `true` **and** `version` (x.y.z), `sizeMb` (whole number) and `released`
-(YYYY-MM-DD) are all valid, the trial link has no `href` and is `aria-disabled`, the Buy button is `disabled`, the hero says
-"Not released yet", and the sticky bar is removed. `tapefolio-site.test.mjs` runs `launch.js` in a fake DOM for each state
-and has one test named "PRE-LAUNCH GUARD"; delete it (and flip the values) when you launch.
+`site/tapefolio/launch.js` holds the only switch: `window.TAPEFOLIO_LAUNCH = { live, version, sizeMb, released }`. Until
+`live` is `true` **and** `version` (x.y.z), `sizeMb` (whole number) and `released` (YYYY-MM-DD) are all valid, the trial link has
+no `href` and is `aria-disabled`, the Buy button is `disabled`, the hero says "Not released yet", and the sticky bar is
+removed. `tapefolio-site.test.mjs` runs `launch.js` in a fake DOM for each state.
 
-Two more things hold the page back until launch, both undone by the link commit:
+**Launched 2026-10-09** (the `Tapefolio 1.0.0 is live` commit, last on the branch): `live: true`, version `1.0.0`, `sizeMb`
+`43` (the DMG is 43,259,154 bytes, notarized, build 22), released `2026-10-09`. The static HTML already says the live wording
+(real `href`s, "Try it free for 7 days", "Buy Tapefolio", "Version 1.0.0, released October 9, 2026. 43 MB disk image.", the
+"Not released yet" label removed), so crawlers and `llms-full.txt` match what the script produces. The PRE-LAUNCH GUARD test
+is gone, replaced by a "LAUNCHED" test that checks the values and that wording. To change the version or size on a later
+release, edit `launch.js` and the `data-tf-facts` sentence together (the test checks they agree).
+
+Before launch, two more things held the page back, both undone by the link commit:
 
 - `<meta name="robots" content="noindex, follow">` on `/tapefolio/`. The deploy script regenerates the sitemap and the
   search index from the pages on disk and leaves out noindex pages, so the page is not listed anywhere until it flips to
   `index, follow`. The link commit does this (and adds the sitemap and search entries by hand, so they are in the branch
-  too). Before that commit the test "PRE-LAUNCH GUARD" does not look at robots, and after it a test asserts `index, follow`.
+  too). A test asserts `index, follow`.
 - No nav, footer, home, products or pricing link points at `/tapefolio/`. The Suite page does (the card and the "See
   Tapefolio" link), which is why that commit waits for launch.
 
@@ -188,17 +194,16 @@ Do this only after the DMG and appcast are in `tapefolio-files` and both env var
 1. Set `TAPEFOLIO_UPDATE_TOKEN` and `TAPEFOLIO_LICENSE_PRIVATE_KEY` on Netlify (production); run the key check above.
 2. Stage `Tapefolio-<ver>.dmg` and `appcast.xml` in `tapefolio-files`.
 3. Run the test checkout recipe against a deploy that has the first two commits (it works before the Suite and link commits).
-4. Fill in `site/tapefolio/launch.js` (`live: true`, version, size in MB, release date), delete the PRE-LAUNCH GUARD test, and
-   update the four static fallback strings in `site/tapefolio/index.html` ("Not released yet", "Free trial opens at
-   release", "Buying opens at release", the "Version, size and release date..." sentence) to their live wording if you want
-   crawlers and `llms-full.txt` to match, as `keyfeel.md` item 7 describes.
+4. (Done in the launch commit.) Fill in `site/tapefolio/launch.js`, delete the PRE-LAUNCH GUARD test, and update the four static
+   fallback strings in `site/tapefolio/index.html` to their live wording, as `keyfeel.md` item 7 describes.
 5. Merge the Suite commit and the link commit together, deploy, and rerun `python3 scripts/apply_layout.py --check`,
    `python3 scripts/fingerprint_assets.py` and `python3 scripts/check_content.py --strict`.
-6. Set the real release date on the Tapefolio changelog entry and its sitemap `lastmod` (the link commit has 2026-10-09 as a stand-in), and change the `Status:` line of the Tapefolio block in `site/llms.txt` from "Not yet released" to the shipping version.
+6. (Done.) The changelog entry and the sitemap `lastmod` already carry the real release date, 2026-10-09 (it is what the stand-in
+   guessed), and the `Status:` line of the Tapefolio block in `site/llms.txt` now says "Shipping, version 1.0.0".
 7. Confirm the Terms and Privacy wording against the shipped app: that the network use is only the optional model downloads, the
    update check and macOS fetching Apple's own speech model once; that the update request carries nothing from the user's files; that there is no analytics; that
    the trial clock and key check send nothing; that speaker memory stays on the Mac. The update request is described as: app name, app version, macOS version and the update token.
-8. Render the share cards (see Assets).
+8. (Done.) The share cards are rendered (see Assets).
 
 ## Assets
 

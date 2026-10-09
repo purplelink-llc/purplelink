@@ -65,21 +65,40 @@ test("the page has every section the brief asks for", () => {
 
 // ---- the release gate ------------------------------------------------------------------
 
-test("PRE-LAUNCH GUARD: the page ships switched off and says so (delete this test when launching)", () => {
+test("LAUNCHED: launch.js ships live with valid facts, and the static page already says the live wording", () => {
   const src = read("tapefolio/launch.js");
-  assert.match(src, /live: false,/);
-  assert.match(src, /version: "",/);
-  assert.match(src, /sizeMb: "",/);
-  assert.match(src, /released: ""/);
+  assert.match(src, /live: true,/);
+  assert.match(src, /version: "1\.0\.0",/);
+  assert.match(src, /sizeMb: "43",/);
+  assert.match(src, /released: "2026-10-09"/);
+  const cfg = JSON.parse(src.match(/window\.TAPEFOLIO_LAUNCH = (\{[\s\S]*?\});/)[1].replace(/(\w+):/g, '"$1":'));
+  assert.equal(cfg.live, true);
+  assert.match(cfg.version, /^\d+\.\d+\.\d+$/);
+  assert.match(cfg.sizeMb, /^\d{1,4}$/);
+  assert.match(cfg.released, /^\d{4}-\d{2}-\d{2}$/);
   const html = read("tapefolio/index.html");
-  const trialTags = [...html.matchAll(/<a\b[^>]*data-tf-gated[^>]*>/g)].map((m) => m[0]);
-  assert.ok(trialTags.length >= 2);
-  for (const tag of trialTags) {
-    assert.doesNotMatch(tag, /\shref=/, "no href until launch");
-    assert.match(tag, /aria-disabled="true"/);
+  const gated = [...html.matchAll(/<a\b[^>]*data-tf-gated[^>]*>/g)].map((m) => m[0]);
+  assert.ok(gated.length >= 2);
+  for (const tag of gated) {
+    assert.match(tag, /\shref="\/\.netlify\/functions\/tapefolio-download\?download=1"/);
+    assert.doesNotMatch(tag, /aria-disabled/);
   }
-  assert.match(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
-  assert.match(html, /Not released yet/);
+  assert.doesNotMatch(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
+  assert.match(html, /id="checkout-btn" data-product="tapefolio"[^>]*>Buy Tapefolio<\/button>/);
+  assert.doesNotMatch(html, /Not released yet|opens at release|are listed here when|data-tf-pre-only/);
+  assert.doesNotMatch(html, /data-tf-live-only hidden/);
+  assert.match(html, /<span data-tf-facts>Version 1\.0\.0, released October 9, 2026\. 43 MB disk image\.<\/span>/);
+  assert.equal([...html.matchAll(/>Try it free for 7 days<\/a>/g)].length, 2);
+  // What launch.js would write into the page is exactly what the static page already says.
+  assert.equal(`Version ${cfg.version}, released October 9, 2026. ${cfg.sizeMb} MB disk image.`, "Version 1.0.0, released October 9, 2026. 43 MB disk image.");
+  // The size is the published DMG's: 43,259,154 bytes is 43 MB to the nearest whole megabyte.
+  assert.equal(Math.round(43259154 / 1e6), Number(cfg.sizeMb));
+  const llms = read("llms.txt");
+  assert.match(llms.slice(llms.indexOf("### Tapefolio")), /\*\*Status:\*\* Shipping, version 1\.0\.0/);
+  assert.doesNotMatch(llms, /Not yet released/);
+  const log = read("changelog/index.html");
+  assert.match(log, /<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-launch">Launch<\/span>\s*<h2>Tapefolio 1\.0<\/h2>/);
+  assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/tapefolio\/<\/loc>\s*<lastmod>2026-10-09<\/lastmod>/);
 });
 
 test("the page is indexable and the success page is not", () => {

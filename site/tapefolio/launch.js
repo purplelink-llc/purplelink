@@ -16,10 +16,10 @@
 // If `live` is true but a fact is missing or malformed, the page stays switched off
 // and logs why to the console, so a half-filled launch cannot sell anything.
 window.TAPEFOLIO_LAUNCH = {
-  live: false,
-  version: "",
-  sizeMb: "",
-  released: ""
+  live: true,
+  version: "1.0.0",
+  sizeMb: "43",
+  released: "2026-10-09"
 };
 
 (function () {
