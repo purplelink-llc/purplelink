@@ -165,7 +165,8 @@
       if (a && a.getAttribute("href").indexOf("legroom-download?trial=1") !== -1) {
         window.plTrack("lg_trial_download", "legroom");
       }
-      if (a && a.getAttribute("href").indexOf("keyfeel-download?trial=1") !== -1) {
+      // Keyfeel's page links ?download=1 (since 1.1.0 there is one download); ?trial=1 is the old link, kept so cached pages still count.
+      if (a && /keyfeel-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
         window.plTrack("kf_trial_download", "keyfeel");
       }
       if (a && /tapefolio-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
