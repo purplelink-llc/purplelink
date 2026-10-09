@@ -218,7 +218,7 @@ MAX_BODY_CHARS = 80_000
 
 # Output token caps per persona — bound spend even on pathological inputs.
 PERSONA_MAX_OUTPUT_TOKENS = 4_000
-RECTIFY_MAX_OUTPUT_TOKENS = 6_000
+RECTIFY_MAX_OUTPUT_TOKENS = 7_500   # was 6_000 before the Claims and Evidence table
 L1_MAX_OUTPUT_TOKENS = 3_000
 
 # Imported lazily inside functions where needed to avoid circular imports
@@ -2064,7 +2064,8 @@ red-team report for the authors. You have access to:
 - Layer 2 citation cross-check (which references didn't verify).
 - Layer 3 seven-persona panel debate (merged findings, with consensus flags).
 
-Your job is to produce a single Markdown report with EXACTLY these sections:
+Your job is to produce a single Markdown report with EXACTLY these sections
+(Claims and Evidence follows What's Working):
 
 # Manuscript Review
 
@@ -2073,6 +2074,32 @@ A balanced 3-6 bullet list of the paper's genuine strengths. Be specific and
 quote when possible. This is not flattery — it's calibration. The authors
 need to know which parts to keep when revising. If a strength is also
 emphasised in your other sections, mention it here briefly anyway.
+
+## Claims and Evidence
+A Markdown table of the paper's 4-8 central claims, taken from the title,
+abstract, stated contributions and conclusion. Use exactly these four columns,
+in this order:
+
+| Claim | Where | Evidence in the paper | Assessment |
+
+- Claim: quoted exactly from the manuscript, under 25 words, with "..." for any
+  cut. Never paraphrase inside the quotation marks.
+- Where: the section, figure or table that makes the claim (for example
+  "Abstract" or "Section 5").
+- Evidence in the paper: the specific experiment, table, figure or result the
+  paper offers for the claim, named and described in under 25 words. If the
+  paper offers none, write "None located in the text."
+- Assessment: exactly one of Supported, Partly supported, Not supported,
+  Contradicted, Cannot assess. "Supported" means the evidence the paper presents
+  is the kind the claim needs, judged only from the text, figures and layers
+  above; it does not mean the claim is true. Use Contradicted only when the
+  paper's own numbers or figures conflict with the claim, and name the conflict
+  in the Evidence cell.
+List the weakest rows first (Contradicted, then Not supported). Keep every cell
+on one line and never use the pipe character inside a cell. A claim flagged
+elsewhere in this report must carry an Assessment that agrees with that
+finding. If the manuscript states no testable claims, write exactly: "No
+testable claims were found in the extracted text." instead of a table.
 
 ## Critical Blind Spots
 The 3-7 most important issues the authors must address. Each is a top-level
@@ -2201,6 +2228,79 @@ Constraints:
 """
 
 L4_SYSTEM = _safety.SAFETY_PREAMBLE + "\n\n" + _L4_SYSTEM_CORE
+
+
+_CLAIMS_HEADING_RE = re.compile(r"^##\s+Claims and Evidence\s*$", re.I | re.M)
+_QUOTED_RE = re.compile(r"[\u201c\"]([^\u201c\u201d\"]{6,}?)[\u201d\"]")
+_QUOTE_MARK = " (quote not found verbatim in the extracted text)"
+_QUOTE_NOTE = (
+    "_Claims marked above could not be matched word for word in the text extracted "
+    "from your PDF. Check them against the original before relying on the row._"
+)
+
+
+def _norm_for_match(text: str) -> str:
+    """Lowercase, undo PDF line-break hyphenation and ligatures, and keep only
+    letters, digits and single spaces, so a quote and the extracted body compare
+    on their words rather than on punctuation or layout."""
+    t = text.lower()
+    t = re.sub(r"-\s*\n\s*", "", t)
+    for a, b in (("\ufb01", "fi"), ("\ufb02", "fl"), ("\ufb00", "ff"), ("\ufb03", "ffi"), ("\ufb04", "ffl")):
+        t = t.replace(a, b)
+    t = re.sub(r"[^0-9a-z\u00c0-\uffff]+", " ", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def verify_claim_quotes(markdown: str, body: str) -> str:
+    """Mark claims whose quoted text is not in the manuscript.
+
+    The synthesis model writes the Claims and Evidence table from the paper, but
+    a model can paraphrase inside quotation marks or invent a sentence. Each quoted
+    claim is compared with the extracted body; a row whose quote cannot be found
+    verbatim (after normalising case, punctuation and PDF hyphenation) gets a
+    marker on its Assessment and the table gets one footnote. Rows are never
+    removed or rewritten, so a failed match cannot hide a real finding. Safe to
+    run twice. Any problem returns the report unchanged.
+    """
+    try:
+        m = _CLAIMS_HEADING_RE.search(markdown)
+        if not m or not body:
+            return markdown
+        start = m.end()
+        nxt = re.search(r"^##\s", markdown[start:], re.M)
+        end = start + nxt.start() if nxt else len(markdown)
+        section = markdown[start:end]
+        hay = _norm_for_match(body)
+        out_lines, flagged = [], 0
+        for line in section.split("\n"):
+            stripped = line.strip()
+            if not (stripped.startswith("|") and stripped.endswith("|")) or re.fullmatch(r"\|[\s:|\-]+\|", stripped):
+                out_lines.append(line)
+                continue
+            cells = [c.strip() for c in stripped.strip("|").split("|")]
+            if len(cells) != 4 or cells[0].lower() == "claim" or _QUOTE_MARK in cells[3]:
+                out_lines.append(line)
+                continue
+            spans = [q for q in _QUOTED_RE.findall(cells[0])]
+            missing = False
+            for span in spans:
+                for part in re.split(r"\.{3}|\u2026", span):
+                    n = _norm_for_match(part)
+                    if len(n.split()) >= 3 and n not in hay:
+                        missing = True
+            if missing:
+                cells[3] = cells[3] + _QUOTE_MARK
+                flagged += 1
+                out_lines.append("| " + " | ".join(cells) + " |")
+            else:
+                out_lines.append(line)
+        if not flagged or _QUOTE_NOTE in section:
+            return markdown[:start] + "\n".join(out_lines) + markdown[end:] if flagged else markdown
+        body_lines = "\n".join(out_lines).rstrip("\n")
+        return markdown[:start] + body_lines + "\n\n" + _QUOTE_NOTE + "\n\n" + markdown[end:].lstrip("\n")
+    except Exception:
+        logger.exception("claim quote verification failed (non-fatal)")
+        return markdown
 
 
 async def run_layer_4_rectify(
@@ -2332,7 +2432,7 @@ async def run_layer_4_rectify(
     except Exception:
         logger.exception("L4 rectify call failed")
         return {"status": "error", "markdown": ""}
-    return {"status": "ok", "markdown": markdown.strip()}
+    return {"status": "ok", "markdown": verify_claim_quotes(markdown.strip(), structure.body)}
 
 
 # ----------------------------------------------------------------------------
