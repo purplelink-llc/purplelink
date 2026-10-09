@@ -263,6 +263,7 @@ test("the share card is 1200 by 630, is what the page's meta tags and JSON-LD po
   }
   const gen = read("assets/og/_gen.html");
   assert.match(gen, /"tapefolio":\s+\{[^}]*title: "Tapefolio"/);
+  assert.match(gen, /"mac-suite":\s+\{[^}]*Six Mac apps/);
 });
 
 test("the stylesheets, scripts and fonts the pages load all exist", () => {
