@@ -238,10 +238,13 @@ export default async function handler(request) {
   try {
     body = await request.json();
   } catch (_) {
-    body = {};
+    return jsonResponse(400, { error: "invalid_request" });
   }
-  const product = (body && body.product) || "paper-review-standard";
-  const entry = PRODUCT_CATALOG[product];
+  if (!body || typeof body !== "object" || Array.isArray(body) || typeof body.product !== "string" || !body.product) {
+    return jsonResponse(400, { error: "invalid_request" });
+  }
+  const product = body.product;
+  const entry = Object.hasOwn(PRODUCT_CATALOG, product) ? PRODUCT_CATALOG[product] : undefined;
   if (!entry) {
     return jsonResponse(400, { error: "unknown_product", detail: product });
   }

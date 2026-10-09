@@ -246,3 +246,34 @@ test("the Suite price did not move when Tapefolio joined: still $54.99", async (
   const src = readFileSync(new URL("../functions/checkout.mjs", import.meta.url), "utf8");
   assert.match(src, /"app-suite":\s+\{ amount: 5499,/);
 });
+
+async function postRaw(body) {
+  const req = new Request("https://purplelink.llc/.netlify/functions/checkout", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.77" },
+    body,
+  });
+  return handler(req);
+}
+
+for (const [label, raw] of [
+  ["a body that is not JSON", "not json"],
+  ["an empty body", ""],
+  ["an empty object", "{}"],
+  ["a JSON array", "[]"],
+  ["a non-string product", JSON.stringify({ product: 5 })],
+  ["a prototype-key product", JSON.stringify({ product: "__proto__" })],
+]) {
+  test(`rejects ${label} with a 400 and no Stripe call`, async () => {
+    const originalFetch = globalThis.fetch;
+    let called = false;
+    globalThis.fetch = async () => { called = true; throw new Error("unexpected fetch"); };
+    try {
+      const res = await postRaw(raw);
+      assert.equal(res.status, 400);
+      assert.equal(called, false);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+}

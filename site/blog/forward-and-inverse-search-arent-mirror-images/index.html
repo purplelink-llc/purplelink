@@ -91,7 +91,7 @@
     <article class="post-body">
       <p>A synced PDF preview needs two separate pieces of code, not one run backward. Click your LaTeX source and the PDF scrolls to match; click the PDF and the cursor moves to match in the source. Those look like the same feature pointed in opposite directions. Building them turned out to be two different problems, and ModernTex shipped one of them wrong before getting it right.</p>
 
-      <p>ModernTex calls this forward and inverse search. Double-click a word in the editor and the PDF scrolls to the matching spot. Command-click a word in the PDF and the cursor lands on it in the source. The mechanism underneath, <a href="https://ctan.org/pkg/synctex" rel="noopener">SyncTeX</a>, is a convention most LaTeX tools share. A compile run writes a map between byte positions in your .tex files and rectangles on PDF pages. Reading that map in each direction is where the symmetry stops.</p>
+      <p>ModernTex calls this forward and inverse search. Double-click a word in the editor and the PDF scrolls to the matching spot. Command-click a word in the PDF and the cursor lands on it in the source. The mechanism underneath, <a href="https://en.wikipedia.org/wiki/SyncTeX" rel="noopener">SyncTeX</a>, is a convention most LaTeX tools share. A compile run writes a map between byte positions in your .tex files and rectangles on PDF pages. Reading that map in each direction is where the symmetry stops.</p>
 
       <p>Forward search, source to PDF, is a scrolling problem and nothing more. SyncTeX hands back a page and a rectangle on it, and the PDF view just has to bring that rectangle into frame. There's no second piece of state, because scrolling is the only thing a read-only preview does.</p>
 
