@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-09",
+  "number": 104,
+  "intro": "Dark web .onion key recovery in GoBalance, an AWS Bedrock AgentCore takeover bug, and Flax Typhoon infrastructure seizures, plus OpenAI's Daybreak SOC results and AI data center financing stress.",
+  "sections": {
+    "Papers & Research": [
+      {
+        "title": "Regulating the Frontier: Model-Level Evidence from the EU AI Act",
+        "url": "https://philpapers.org/rec/LIRTFO",
+        "source_name": "OpenAlex",
+        "category": "papers",
+        "editorial_note": "The paper asks empirically whether the EU AI Act's general-purpose model transparency regime changes development practice, rather than just producing paperwork. Model-level evidence is rare in a field dominated by legal analysis. The key question is whether measured changes are causal or reflect labs shipping common documentation across jurisdictions."
+      }
+    ],
+    "AI & Technology": [
+      {
+        "title": "Sophos cuts threat investigation time by 96% with OpenAI Daybreak",
+        "url": "https://openai.com/index/sophos",
+        "source_name": "OpenAI",
+        "category": "ai_tech",
+        "editorial_note": "Sophos reports a 96% drop in investigation time and 52% of MDR cases automated with OpenAI's Daybreak. It is a vendor case study, so the baseline and the case-mix definition behind 52% matter more than the headline. Still, it is one of the few production figures for LLM triage in a managed detection service, and the human-oversight design is worth examining."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "GoBalance Flaw Lets Attackers Hijack .onion Addresses by Recovering Tor-Format Keys",
+        "url": "https://thehackernews.com/2026/10/gobalance-flaw-lets-attackers-hijack.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "A flaw in GoBalance lets anyone derive the secret key behind a .onion address from public information alone, then take the address over. GoBalance exists to keep dark web sites reachable under attack, so the resilience tool becomes the hijack vector. Dark web intelligence researchers should ask how many tracked market and forum identities could be silently impersonated, which would corrupt longitudinal attribution datasets."
+      },
+      {
+        "title": "'AgentCorruption' Puts AWS Environments At Risk With Single Prompt",
+        "url": "https://www.darkreading.com/cloud-security/agentcorruption-aws-environments-at-risk-single-prompt",
+        "source_name": "Dark Reading",
+        "category": "cybersecurity",
+        "editorial_note": "A now-patched Bedrock AgentCore bug let one compromised chatbot take over an organization's entire agent fleet. The lateral movement runs through agent-to-agent trust rather than classic network paths, which is the cross-agent privilege escalation pattern adversarial ML researchers have predicted. Patched, but the design class remains open for other agent platforms."
+      },
+      {
+        "title": "FBI Seizes 7 Domains, Disrupts Flax Typhoon Tools Used in Critical Infrastructure Intrusions",
+        "url": "https://thehackernews.com/2026/10/fbi-seizes-7-domains-disrupts-flax.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "The FBI seized seven domains tied to Flax Typhoon's MicroScan and FishHub tooling, used against critical infrastructure worldwide. Tool-level takedowns historically give only short relief, since the group retains its access and can retool. Defenders should treat the seized domains as retrospective hunting indicators for past intrusions."
+      },
+      {
+        "title": "Reconstructing AI Agent Activity: Two New Scripts for Forensic Review, (Thu, Oct 8th)",
+        "url": "https://isc.sans.edu/diary/rss/33410",
+        "source_name": "SANS ISC",
+        "category": "cybersecurity",
+        "editorial_note": "SANS released scripts to reconstruct activity from eight popular AI coding assistants, drawn from new FOR577 material on investigating AI usage in incident response. Agent logs are a new forensic artifact class, and most IR teams have no playbook for them. This pairs with agent-fleet takeover bugs: the evidence trail is what responders will need afterward."
+      }
+    ],
+    "Finance & Business": [
+      {
+        "title": "Nvidia-Backed Firmus IPO Collapses as AI Valuation Concerns Grow",
+        "url": "https://www.bloomberg.com/news/videos/2026-10-09/nvidia-backed-firmus-ipo-collapses-as-ai-concerns-grow-video",
+        "source_name": "Bloomberg Technology",
+        "category": "finance",
+        "editorial_note": "Firmus shelved one of Australia's largest IPOs and is now exploring a private round of up to $3B. Public investors balked at a data center operator while OpenAI reportedly nears $70B annualized revenue, so demand is strong but capital markets are discounting the infrastructure layer. For AI infrastructure economics, the financing gap between model labs and the builders serving them is the signal to track."
+      }
+    ],
+    "Entrepreneurship": [
+      {
+        "title": "Cloudflare at $2.8 Billion in Revenue: 36% Growth, a 20% Layoff, and a Stock at 50x Revenue",
+        "url": "https://www.saastr.com/5-interesting-learnings-from-cloudflare-at-2-8-billion-in-revenue-36-growth-a-20-layoff-and-a-stock-at-50x-revenue",
+        "source_name": "SaaStr",
+        "category": "entrepreneurship",
+        "editorial_note": "Cloudflare cut about 1,100 roles (20%), then growth accelerated to 36% in Q2, with the stock around 50x revenue. Cutting headcount while accelerating contradicts the usual read that layoffs signal weakness. The market is paying for AI-era edge and security positioning, though a 50x multiple leaves little room for error."
+      }
+    ]
+  },
+  "sources_reviewed": 496,
+  "items_selected": 8
+}
