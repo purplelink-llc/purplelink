@@ -68,7 +68,7 @@ test("the page has every section the brief asks for", () => {
 test("LAUNCHED: launch.js ships live with valid facts, and the static page already says the live wording", () => {
   const src = read("tapefolio/launch.js");
   assert.match(src, /live: true,/);
-  assert.match(src, /version: "1\.0\.0",/);
+  assert.match(src, /version: "1\.0\.1",/);
   assert.match(src, /sizeMb: "43",/);
   assert.match(src, /released: "2026-10-09"/);
   const cfg = JSON.parse(src.match(/window\.TAPEFOLIO_LAUNCH = (\{[\s\S]*?\});/)[1].replace(/(\w+):/g, '"$1":'));
@@ -87,16 +87,17 @@ test("LAUNCHED: launch.js ships live with valid facts, and the static page alrea
   assert.match(html, /id="checkout-btn" data-product="tapefolio"[^>]*>Buy Tapefolio<\/button>/);
   assert.doesNotMatch(html, /Not released yet|opens at release|are listed here when|data-tf-pre-only/);
   assert.doesNotMatch(html, /data-tf-live-only hidden/);
-  assert.match(html, /<span data-tf-facts>Version 1\.0\.0, released October 9, 2026\. 43 MB disk image\.<\/span>/);
+  assert.match(html, /<span data-tf-facts>Version 1\.0\.1, released October 9, 2026\. 43 MB disk image\.<\/span>/);
   assert.equal([...html.matchAll(/>Try it free for 7 days<\/a>/g)].length, 2);
   // What launch.js would write into the page is exactly what the static page already says.
-  assert.equal(`Version ${cfg.version}, released October 9, 2026. ${cfg.sizeMb} MB disk image.`, "Version 1.0.0, released October 9, 2026. 43 MB disk image.");
-  // The size is the published DMG's: 43,259,154 bytes is 43 MB to the nearest whole megabyte.
-  assert.equal(Math.round(43259154 / 1e6), Number(cfg.sizeMb));
+  assert.equal(`Version ${cfg.version}, released October 9, 2026. ${cfg.sizeMb} MB disk image.`, "Version 1.0.1, released October 9, 2026. 43 MB disk image.");
+  // The size is the published DMG's: 1.0.1 is 43,259,420 bytes, 43 MB to the nearest whole megabyte.
+  assert.equal(Math.round(43259420 / 1e6), Number(cfg.sizeMb));
   const llms = read("llms.txt");
-  assert.match(llms.slice(llms.indexOf("### Tapefolio")), /\*\*Status:\*\* Shipping, version 1\.0\.0/);
+  assert.match(llms.slice(llms.indexOf("### Tapefolio")), /\*\*Status:\*\* Shipping, version 1\.0\.1/);
   assert.doesNotMatch(llms, /Not yet released/);
   const log = read("changelog/index.html");
+  assert.match(log, /<div class="changelog-list">\s*<div class="changelog-entry">\s*<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-update">Update<\/span>\s*<h2>Tapefolio 1\.0\.1<\/h2>\s*<p>Fixes speaker labels\. The standard speaker separation had been dropping about half of the speech in long recordings\. NVIDIA Nemotron 3 speaker separation, an optional download, is now used automatically when it is installed\./);
   assert.match(log, /<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-launch">Launch<\/span>\s*<h2>Tapefolio 1\.0<\/h2>/);
   assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/tapefolio\/<\/loc>\s*<lastmod>2026-10-09<\/lastmod>/);
 });

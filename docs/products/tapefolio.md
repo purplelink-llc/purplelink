@@ -42,6 +42,11 @@ Tapefolio and the success page calls `tapefolio-download`, which answers 500 `fi
 no `href` and is `aria-disabled`, the Buy button is `disabled`, the hero says "Not released yet", and the sticky bar is
 removed. `tapefolio-site.test.mjs` runs `launch.js` in a fake DOM for each state.
 
+**1.0.1 (2026-10-09):** `launch.js` says `1.0.1`, the static sentence reads "Version 1.0.1, released October 9, 2026. 43 MB disk image." (the DMG is
+43,259,420 bytes, notarized, published in `tapefolio-files`), the `llms.txt` Status says 1.0.1, and the changelog has a "Tapefolio 1.0.1"
+entry (fixes speaker labels; the standard speaker separation had been dropping about half of the speech in long recordings; Nemotron 3 is
+used automatically when installed).
+
 **Launched 2026-10-09** (the `Tapefolio 1.0.0 is live` commit, last on the branch): `live: true`, version `1.0.0`, `sizeMb`
 `43` (the DMG is 43,259,154 bytes, notarized, build 22), released `2026-10-09`. The static HTML already says the live wording
 (real `href`s, "Try it free for 7 days", "Buy Tapefolio", "Version 1.0.0, released October 9, 2026. 43 MB disk image.", the
