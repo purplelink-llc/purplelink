@@ -4978,7 +4978,7 @@ def all_sales_block(ledger_rows: list[dict], appstore: dict | None) -> str:
     body = "".join(
         f"<tr data-src=\"{html.escape(r['source'])}\"><td class='who'>{r['date']}</td>"
         f"<td>{html.escape(r['source'])}<span class='who'> &middot; {html.escape(r['detail'])}</span></td>"
-        f"<td>{html.escape(r['item'][:80])}{REFUNDED_TAG if r.get('refunded') else ''}</td>"
+        f"<td title=\"{html.escape(r['item'])}\">{html.escape(r['item'][:80])}{REFUNDED_TAG if r.get('refunded') else ''}</td>"
         f"<td class='num'>{'' if r['gross'] is None else money(r['gross'])}</td>"
         f"<td class='num'>{money(r['net'])}</td></tr>"
         for r in rows) or "<tr><td colspan='5' class='who'>No sales on record yet.</td></tr>"
@@ -5050,6 +5050,7 @@ NAV_CSS = """
 .sales-list .who{color:var(--muted)}
 .sales-list td,.sales-list th{white-space:nowrap}
 .sales-list td:first-child,.sales-list th:first-child{min-width:7.5em}
+.all-sales .sales-list td:nth-child(3){max-width:26em;overflow:hidden;text-overflow:ellipsis}
 .embed{width:100%;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);min-height:480px;display:block}
 .embed-meta{color:var(--muted);font-size:.85rem;margin:0 0 12px}
 .embed-meta code{font-size:.8rem}
