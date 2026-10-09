@@ -193,7 +193,7 @@ Do this only after the DMG and appcast are in `tapefolio-files` and both env var
 6. Set the real release date on the Tapefolio changelog entry and its sitemap `lastmod` (the link commit has 2026-10-09 as a stand-in), and change the `Status:` line of the Tapefolio block in `site/llms.txt` from "Not yet released" to the shipping version.
 7. Confirm the Terms and Privacy wording against the shipped app: that the only network use is the optional model downloads
    and the update check; that the update request carries nothing from the user's files; that there is no analytics; that
-   the trial clock and key check send nothing; that speaker memory stays on the Mac; the update policy (see below).
+   the trial clock and key check send nothing; that speaker memory stays on the Mac. The update request is described as: app name, app version, macOS version and the update token.
 8. Render the share cards (see Assets).
 
 ## Assets
@@ -224,13 +224,14 @@ Still needed, none of which exists, and no page references them:
 - The app itself: the license check, the 7-day trial clock, "Enter License Key", the Sparkle updater with the channel
   header, and the notarized release are all still to build in the Tapefolio repo. The server and pages assume the menu
   wording "Enter License Key" (as Keyfeel); change the emails, the FAQ and the success page if the app says something else.
-- Claims on the pages that only the app can confirm: that the update check is the only network use besides the model
-  downloads and carries only the app's name and version and the channel token; that there is no analytics; the download sizes
+- Claims on the pages that only the app can confirm: that the only network use is the model downloads from
+  Hugging Face (each once) and the update check, which sends the app's name, its version, the macOS version and the update token to
+  purplelink.llc and nothing from the user's files (Ben's description, 2026-10-09); that there is no analytics and no account; the download sizes
   (about 470 MB Parakeet, 650 MB Whisper, 190 MB Nemotron 3 fast128 come from the README, which also names a 95 MB variant);
   that a microphone prompt appears on first recording; that the first-run wait is "a few minutes".
-- Update policy: the Terms say "updates to the version you bought are included" and the Suite page repeats it (the Legroom
-  wording). Keyfeel and ModernTex promise all updates. Decide, then change `terms`, the page's "Price and trial" and the
-  Suite FAQ together.
+- Update policy (decided by Ben 2026-10-09): every future update is included for anyone who bought, with no version or time
+  limit. The page, FAQ, JSON-LD, Terms, Suite FAQ, `llms.txt` and the reminder email all say so in Keyfeel's words ("The purchase
+  includes all updates to Tapefolio"). Legroom is the only app that still limits updates to the version bought.
 - Name: Ben cleared TAPEFOLIO on 2026-10-09. The README still carries its own "run a USPTO search, register the domains"
   note from 2026-10-08.
 - The home page dock tile is not done on purpose: the dock is seven across (four on a tablet, two on a phone) and an eighth tile

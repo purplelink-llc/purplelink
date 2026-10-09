@@ -366,3 +366,40 @@ test("/tapefolio/success/ shows the server's reason when refused, and never fetc
   assert.equal(bad.fetched.length, 0);
   assert.match(bad.nodes.downloads.innerHTML, /receipt email/);
 });
+// ---- updates and the update check -------------------------------------------------------------
+
+test("every Tapefolio statement about updates is a plain promise of all updates, with no version or time limit", () => {
+  const page = visibleText(read("tapefolio/index.html"));
+  assert.match(page, /Every update is included\./);
+  assert.match(page, /with every update included/);
+  assert.match(page, /Are updates included\? Yes, all of them\. The price is a single payment\./);
+  const ld = jsonLd(read("tapefolio/index.html")).find((n) => n["@type"] === "FAQPage").mainEntity.find((q) => q.name === "Are updates included?");
+  assert.match(ld.acceptedAnswer.text, /^Yes, all of them\. The price is a single payment\./);
+  const terms = read("terms/index.html");
+  const section = terms.slice(terms.indexOf("<h2>Tapefolio: additional terms</h2>"), terms.indexOf("<h2>Mac Suite: additional terms</h2>"));
+  assert.match(section, /<strong>Updates\.<\/strong> The purchase includes all updates to Tapefolio\. The app checks for updates and asks before installing one\.<\/li>/);
+  const reminder = readFileSync(join(SITE, "..", "netlify", "functions", "tapefolio-reminder.mjs"), "utf8");
+  assert.match(reminder, /with every update included/);
+  for (const [name, text] of [["page", page], ["terms section", section], ["reminder", reminder]]) {
+    assert.doesNotMatch(text, /version (you|of Tapefolio you) (buy|bought)|later major version|has not decided|major version/i, `${name} still limits updates`);
+  }
+});
+
+test("the update check is described the same way everywhere: app name, version, macOS version and update token; models from Hugging Face; no analytics, no account", () => {
+  const page = read("tapefolio/index.html");
+  const text = visibleText(page);
+  assert.match(text, /the app's name, its version, the macOS version and the app's update token to purplelink\.llc/);
+  assert.match(text, /which come from Hugging Face/);
+  assert.match(text, /There is no analytics and no account/);
+  assert.doesNotMatch(text, /carries the app's name and version and nothing/);
+  const faq = jsonLd(page).find((n) => n["@type"] === "FAQPage").mainEntity.find((q) => q.name === "Do my recordings leave my Mac?");
+  assert.match(faq.acceptedAnswer.text, /app's name, its version, the macOS version and the app's update token/);
+  assert.match(faq.acceptedAnswer.text, /Hugging Face/);
+  const privacy = read("privacy/index.html");
+  const para = privacy.slice(privacy.indexOf("<strong>Tapefolio</strong> has no account"), privacy.indexOf("<strong>Find a purchase.</strong>"));
+  assert.match(para, /no account and no analytics/);
+  assert.match(para, /which come from Hugging Face/);
+  assert.match(para, /the app's name, its version, the macOS version and an update token/);
+  assert.match(para, /Nothing you open in the app is in either request/);
+  assert.match(read("terms/index.html"), /are downloaded from Hugging Face, come from their publishers/);
+});
