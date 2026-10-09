@@ -5048,6 +5048,8 @@ NAV_CSS = """
 .sales-list tfoot td{font-weight:640;border-bottom:0;position:sticky;bottom:0;background:var(--panel)}
 .sales-list .num,.sales-list th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .sales-list .who{color:var(--muted)}
+.sales-list td,.sales-list th{white-space:nowrap}
+.sales-list td:first-child,.sales-list th:first-child{min-width:7.5em}
 .embed{width:100%;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);min-height:480px;display:block}
 .embed-meta{color:var(--muted);font-size:.85rem;margin:0 0 12px}
 .embed-meta code{font-size:.8rem}

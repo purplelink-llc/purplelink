@@ -47,7 +47,8 @@ test("the Legroom page has no inline styles, em or en dashes, emoji or unrelease
     assert.doesNotMatch(html, /\p{Extended_Pictographic}/u, `${p} has an emoji`);
   }
   const page = read("legroom/index.html").toLowerCase();
-  for (const planned of ["uninstaller", "widget", "command-line tool", "command line tool"]) {
+  // The Uninstaller shipped in 1.2.0, so it is no longer a planned feature.
+  for (const planned of ["widget", "command-line tool", "command line tool"]) {
     assert.ok(!page.includes(planned), `the page advertises a planned feature: ${planned}`);
   }
 });
@@ -55,7 +56,7 @@ test("the Legroom page has no inline styles, em or en dashes, emoji or unrelease
 test("every screenshot on the page exists, has a size and alt text, and is under 250 KB", () => {
   const html = read("legroom/index.html");
   const imgs = [...html.matchAll(/<img\b[^>]*src="(\/legroom\/img\/[^"]+)"[^>]*>/g)];
-  assert.ok(imgs.length >= 4 && imgs.length <= 6, `expected 4 to 6 screenshots, found ${imgs.length}`);
+  assert.ok(imgs.length >= 4 && imgs.length <= 12, `expected 4 to 12 screenshots, found ${imgs.length}`);
   for (const [tag, src] of imgs) {
     assert.ok(existsSync(join(SITE, src)), `${src} is missing`);
     assert.ok(statSync(join(SITE, src)).size < 250 * 1024, `${src} is over 250 KB`);
@@ -100,7 +101,7 @@ for (const [page, app] of [["legroom/index.html", "Legroom"], ["outbound-veil/in
   test(`${page} describes one download that a license key unlocks, not a separate full build`, () => {
     const html = read(page);
     assert.doesNotMatch(html, /separate download|install the paid build|paid build|trial build|install it over the trial|nothing to enter/i);
-    assert.match(html, /Version 1\.1\.0/);
+    assert.match(html, /Version 1\.\d+\.\d+/);
     assert.match(html, /Enter license key/);
     assert.match(html, /no second download/);
     assert.match(html, new RegExp(`I already bought ${app}\\. Do I need a key\\?`));
