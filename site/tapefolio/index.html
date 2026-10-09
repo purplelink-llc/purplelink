@@ -86,7 +86,7 @@
             {
               "@type": "Question",
               "name": "How accurate is it?",
-              "acceptedAnswer": { "@type": "Answer", "text": "It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% depending on the speech model, so a person should check any text that will be quoted against the recording." }
+              "acceptedAnswer": { "@type": "Answer", "text": "It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for the larger speech models and between 29% and 39% for the small built-in one, so a person should check any text that will be quoted against the recording." }
             },
             {
               "@type": "Question",
@@ -237,7 +237,7 @@
       <p class="specs-more">These are small checks, run on an M4 MacBook with 16 GB, and your recordings will differ. Treat every transcript as a draft.</p>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">Words wrong</th><td>Two meetings from the AMI Meeting Corpus, four people each, headset mix. Across the three speech models the app can use, the word error rate was between 21% and 29%. Fillers are left out of the count, and many of the errors are dropped short replies and spelling conventions such as gonna and going.</td></tr>
+          <tr><th scope="row">Words wrong</th><td>Two meetings from the AMI Meeting Corpus, four people each, headset mix. The word error rate was between 21% and 29% for Apple's engine, Parakeet and Whisper large, and between 29% and 39% for the small built-in model. Fillers are left out of the count, and many of the errors are dropped short replies and spelling conventions such as gonna and going.</td></tr>
           <tr><th scope="row">Right speaker</th><td>On the same two meetings, between 87% and 94% of words were given to the right speaker. The speaker setting was tuned on those same two meetings, so a new recording may do worse.</td></tr>
           <tr><th scope="row">Names found</th><td>Against the corpus's human labels on those meetings, identifier removal found 13 of 15 personal names and 2 of 2 places, and flagged one false place. That is a very small sample.</td></tr>
           <tr><th scope="row">Scanned text</th><td>On 9 generated test files (11 pages), the OCR word error rate was 1.5%.</td></tr>
@@ -324,7 +324,7 @@
         </details>
         <details class="faq-item">
           <summary>How accurate is it?</summary>
-          <div class="faq-body">It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% depending on the speech model, so a person should check any text that will be quoted against the recording. The measured results are above.</div>
+          <div class="faq-body">It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for the larger speech models and between 29% and 39% for the small built-in one, so a person should check any text that will be quoted against the recording. The measured results are above.</div>
         </details>
         <details class="faq-item">
           <summary>Does it anonymize a transcript?</summary>

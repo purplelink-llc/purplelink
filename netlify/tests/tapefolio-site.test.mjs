@@ -201,7 +201,7 @@ test("the page never claims anonymization, guaranteed compliance, or anything th
   assert.doesNotMatch(text, /guarantee|HIPAA|GDPR|FERPA|certified|100% (private|accurate|secure)|fully (private|anonymous|compliant)|IRB[- ]approved|never (mishears|misses)/i);
   assert.doesNotMatch(text, /seamless|supercharge|streamline|world-class|cutting-edge|revolutionary|effortless|AI-powered|game-chang|magic|blazing|lightning/i);
   // Every percentage on the page is one the README states.
-  const allowed = new Set(["21%", "29%", "87%", "94%", "1.5%"]);
+  const allowed = new Set(["21%", "29%", "39%", "87%", "94%", "1.5%"]);
   for (const m of text.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(allowed.has(m[0]), `unexpected figure ${m[0]}`);
   // Features that are not built are not named.
   for (const unbuilt of ["live captions", "real-time transcription", "cloud sync", "sync across", "team", "collaborat", "translation", "summar", "read-aloud", "ChatGPT", "OpenAI API"]) {
