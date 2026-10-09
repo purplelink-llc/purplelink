@@ -1531,6 +1531,82 @@ async def _resolve_doi_redirects_safely(client, doi: str):
     raise ValueError("too many redirects resolving DOI")
 
 
+# CrossRef carries Retraction Watch data. A work that has been retracted lists
+# the notice under "updated-by" with a type such as "retraction". Only the
+# types below count: corrections and errata say nothing about the reliability
+# of the result.
+_RETRACTED_TYPES = frozenset({"retraction", "withdrawal", "removal"})
+_CONCERN_TYPES = frozenset({"expression_of_concern", "partial_retraction"})
+_RETRACTED_TITLE_RE = re.compile(r"^\s*(?:retracted|withdrawn)\s*[:\-\u2013\u2014]", re.I)
+
+
+def _update_date(update: dict) -> str:
+    """ISO date (YYYY, YYYY-MM or YYYY-MM-DD) from a CrossRef update record."""
+    try:
+        parts = ((update.get("updated") or {}).get("date-parts") or [[]])[0]
+        nums = [int(x) for x in parts[:3]]
+    except Exception:
+        return ""
+    if not nums or not (1000 <= nums[0] <= 9999):
+        return ""
+    return "-".join([f"{nums[0]:04d}"] + [f"{n:02d}" for n in nums[1:]])
+
+
+def crossref_retraction(message: dict) -> Optional[dict]:
+    """Retraction status of one CrossRef work record, or None.
+
+    Returns {"kind": "retracted" | "concern", "types": [...], "notice_doi": str,
+    "date": str}. "concern" covers an expression of concern or a partial
+    retraction. The title prefix "RETRACTED:" that publishers add is honoured
+    when CrossRef lists no update. Pure function over the record: no network.
+    """
+    if not isinstance(message, dict):
+        return None
+    updates = message.get("updated-by")
+    found: list[tuple[str, str, str]] = []
+    for u in updates if isinstance(updates, list) else []:
+        if not isinstance(u, dict):
+            continue
+        t = str(u.get("type") or "").strip().lower()
+        if t in _RETRACTED_TYPES or t in _CONCERN_TYPES:
+            found.append((t, str(u.get("DOI") or "")[:120], _update_date(u)))
+    if found:
+        hard = [f for f in found if f[0] in _RETRACTED_TYPES]
+        chosen = (hard or found)[0]
+        return {
+            "kind": "retracted" if hard else "concern",
+            "types": sorted({f[0] for f in found}),
+            "notice_doi": chosen[1],
+            "date": chosen[2],
+        }
+    titles = message.get("title")
+    title = titles[0] if isinstance(titles, list) and titles else ""
+    if isinstance(title, str) and _RETRACTED_TITLE_RE.match(title):
+        return {"kind": "retracted", "types": ["title_flag"], "notice_doi": "", "date": ""}
+    return None
+
+
+async def _crossref_work_retraction(client, doi: str) -> Optional[dict]:
+    """Retraction status for a DOI via the CrossRef works API. Best effort:
+    any failure is None, never an exception. Only api.crossref.org is
+    contacted, and redirects are not followed."""
+    from urllib.parse import quote as _q
+
+    try:
+        resp = await client.get(
+            "https://api.crossref.org/works/" + _q(doi, safe="/"),
+            params={"mailto": "ben@purplelink.llc"},
+            headers={"User-Agent": "purplelink-paper-review/1.0 (mailto:ben@purplelink.llc)"},
+            timeout=10.0,
+            follow_redirects=False,
+        )
+        if resp.status_code != 200:
+            return None
+        return crossref_retraction((resp.json() or {}).get("message") or {})
+    except Exception:
+        return None
+
+
 async def _crossref_lookup(client, ref: PaperReference) -> dict:
     """Best-effort CrossRef lookup. Returns a dict suitable for inclusion in
     the L2 report. Never raises."""
@@ -1541,7 +1617,11 @@ async def _crossref_lookup(client, ref: PaperReference) -> dict:
         try:
             resp = await _resolve_doi_redirects_safely(client, ref.doi)
             if resp.status_code < 400:
-                return {"raw": ref.raw, "doi": ref.doi, "status": "verified", "method": "doi"}
+                out = {"raw": ref.raw, "doi": ref.doi, "status": "verified", "method": "doi"}
+                retraction = await _crossref_work_retraction(client, ref.doi)
+                if retraction:
+                    out["retraction"] = retraction
+                return out
             return {
                 "raw": ref.raw, "doi": ref.doi,
                 "status": "dead_doi", "method": "doi",
@@ -1560,7 +1640,7 @@ async def _crossref_lookup(client, ref: PaperReference) -> dict:
             params={
                 "query.bibliographic": ref.title[:200],
                 "rows": "1",
-                "select": "title,DOI,author,issued",
+                "select": "title,DOI,author,issued,updated-by",
                 "mailto": "ben@purplelink.llc",
             },
             headers={
@@ -1576,7 +1656,7 @@ async def _crossref_lookup(client, ref: PaperReference) -> dict:
         item = items[0]
         found_title = ((item.get("title") or [""])[0]).lower()
         confidence = _string_overlap(ref.title.lower(), found_title)
-        return {
+        out = {
             "raw": ref.raw,
             "status": "matched" if confidence >= 0.7 else "weak_match",
             "method": "title",
@@ -1584,6 +1664,11 @@ async def _crossref_lookup(client, ref: PaperReference) -> dict:
             "found_title": (item.get("title") or [""])[0],
             "found_doi": item.get("DOI", ""),
         }
+        if out["status"] == "matched":
+            retraction = crossref_retraction(item)
+            if retraction:
+                out["retraction"] = retraction
+        return out
     except Exception:
         return {"raw": ref.raw, "status": "network_error", "method": "title"}
 
@@ -1607,11 +1692,13 @@ async def run_layer_2_citations(
 ) -> dict:
     """Verify every parsed reference against CrossRef.
 
-    Returns {"checked": N, "verified": K, "issues": [...]} where issues
-    enumerates references that did NOT cleanly verify.
+    Returns {"checked": N, "verified": K, "issues": [...], "retractions": [...]}
+    where issues enumerates references that did NOT cleanly verify and
+    retractions lists verified references that CrossRef marks as retracted or
+    under an expression of concern.
     """
     if not references:
-        return {"checked": 0, "verified": 0, "issues": []}
+        return {"checked": 0, "verified": 0, "issues": [], "retractions": []}
 
     results = await asyncio.gather(
         *[_crossref_lookup(client, r) for r in references],
@@ -1619,6 +1706,7 @@ async def run_layer_2_citations(
     )
 
     issues: list[dict] = []
+    retractions: list[dict] = []
     verified = 0
     for r in results:
         if isinstance(r, Exception):
@@ -1626,13 +1714,57 @@ async def run_layer_2_citations(
         status = r.get("status", "")
         if status in ("verified", "matched"):
             verified += 1
+            if r.get("retraction"):
+                retractions.append({
+                    "raw": r.get("raw", ""),
+                    "doi": r.get("doi") or r.get("found_doi", ""),
+                    **r["retraction"],
+                })
         else:
             issues.append(r)
     return {
         "checked": len(references),
         "verified": verified,
         "issues": issues,
+        "retractions": retractions,
     }
+
+
+def retraction_findings(l2: dict) -> list[dict]:
+    """Layer-2 retractions as deterministic findings for the report.
+
+    A retraction is a recorded fact, not a model opinion, so it joins the
+    "Verified Checks" section the synthesis pass already writes. `raw` is
+    manuscript text; the caller's sanitiser fences it like every other
+    manuscript-derived field.
+    """
+    out: list[dict] = []
+    for r in (l2.get("retractions") or []):
+        ref = (r.get("raw") or "")[:160]
+        notice = f" (notice DOI {r['notice_doi']})" if r.get("notice_doi") else ""
+        when = f" on {r['date']}" if r.get("date") else ""
+        if r.get("kind") == "retracted":
+            out.append({
+                "kind": "citation",
+                "severity": "error",
+                "summary": f"Cited paper has been retracted: {ref}",
+                "detail": (
+                    f"CrossRef, which carries Retraction Watch data, records this work as retracted{when}{notice}. "
+                    "Remove the citation, replace it with a source that was not retracted, or state in the text "
+                    "that the cited result has been retracted."
+                ),
+            })
+        else:
+            out.append({
+                "kind": "citation",
+                "severity": "warning",
+                "summary": f"Cited paper carries an expression of concern or partial retraction: {ref}",
+                "detail": (
+                    f"CrossRef records a notice against this work{when}{notice}. Read the notice and decide "
+                    "whether the claim you cite it for still stands."
+                ),
+            })
+    return out
 
 
 def attach_audit(l2: dict, audit: dict) -> dict:
@@ -1692,6 +1824,10 @@ def _build_persona_user_content(
         + _safety.wrap_user_content(
             _json.dumps(l2.get("issues", [])[:30], indent=2),
             "citation_issues_from_l2",
+        ) + "\n\n"
+        + _safety.wrap_user_content(
+            _json.dumps(l2.get("retractions", [])[:20], indent=2),
+            "retracted_references_from_l2",
         ) + "\n\n"
         + _safety.wrap_user_content(
             _json.dumps((l2.get("audit") or {}).get("findings", [])[:40], indent=2),
@@ -2362,6 +2498,10 @@ async def run_review_pipeline(
             ]
         except Exception:
             logger.exception("deterministic checks failed (non-fatal)")
+        try:
+            deterministic_findings += retraction_findings(l2)
+        except Exception:
+            logger.exception("retraction findings failed (non-fatal)")
 
         # L4 — synthesis
         l4 = await run_layer_4_rectify(
@@ -2402,6 +2542,7 @@ async def run_review_pipeline(
             "checked": l2.get("checked", 0),
             "verified": l2.get("verified", 0),
             "issues": len(l2.get("issues", [])),
+            "retractions": len(l2.get("retractions", [])),
         },
         "l3_summary": {
             "n_findings": l3.get("n_findings", 0),

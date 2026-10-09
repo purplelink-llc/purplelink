@@ -44,6 +44,8 @@ _SCORES = {
     "doi_mismatch": 100,
     "reference_not_found": 80,
     "dead_doi": 70,
+    "retracted": 110,
+    "concern": 75,
     "anonymity": 60,       # adjusted per kind below
     "weak_match": 40,
 }
@@ -153,15 +155,21 @@ async def _check_doi(client, ref: PaperReference) -> dict:
         return {"status": "unchecked"}
     if resp.status_code == 200:
         try:
-            titles = (resp.json().get("message") or {}).get("title") or []
+            message = resp.json().get("message") or {}
         except Exception:
-            titles = []
+            message = {}
+        titles = message.get("title") or []
+        # The same record says whether the work was retracted, so the check
+        # costs no extra request. It is reported only when the DOI matches
+        # the cited title: a mismatch means the DOI may name another paper.
+        retraction = papercheck.crossref_retraction(message)
+        extra = {"retraction": retraction} if retraction else {}
         found = titles[0] if titles else ""
         if not found:
-            return {"status": "verified"}
+            return {"status": "verified", **extra}
         score = title_in_reference(found, ref.raw)
         if score >= 0.6:
-            return {"status": "verified"}
+            return {"status": "verified", **extra}
         if score < 0.35 and len(_tokens(found)) >= 3:
             return {"status": "doi_mismatch", "found_title": found, "doi": doi}
         return {"status": "weak_match", "found_title": found, "doi": doi}
@@ -197,7 +205,7 @@ async def _check_title(client, ref: PaperReference) -> dict:
     res = await papercheck._crossref_lookup(client, query_ref)
     status = res.get("status")
     if status == "matched":
-        return {"status": "verified"}
+        return {"status": "verified", **({"retraction": res["retraction"]} if res.get("retraction") else {})}
     if status == "not_found":
         return {"status": "unchecked" if _looks_unindexed(raw, ref) else "reference_not_found"}
     if status != "weak_match":
@@ -356,6 +364,17 @@ def anonymity_scan(pages: list, metadata_author: str = "") -> list[dict]:
 # Assembly
 # ---------------------------------------------------------------------------
 
+_RETRACTION_COPY = {
+    "retracted": (
+        "Cites a retracted paper",
+        "CrossRef, which carries Retraction Watch data, records this work as retracted{when}. Remove it, replace it, or say in the text that the result was retracted.",
+    ),
+    "concern": (
+        "Cited paper has an expression of concern",
+        "CrossRef records a notice against this work{when}. Read the notice before relying on the result.",
+    ),
+}
+
 _REF_COPY = {
     "doi_mismatch": (
         "DOI points to a different title",
@@ -379,6 +398,17 @@ _REF_COPY = {
 def _reference_findings(results: list[dict]) -> list[dict]:
     out = []
     for r in results:
+        retraction = r.get("retraction")
+        if retraction:
+            kind = "retracted" if retraction.get("kind") == "retracted" else "concern"
+            label, detail = _RETRACTION_COPY[kind]
+            when = f" on {retraction['date']}" if retraction.get("date") else ""
+            out.append({
+                "type": kind, "label": label, "quote": _quote(r.get("raw", "")), "page": None,
+                "detail": detail.format(when=when),
+                "_score": _SCORES[kind],
+            })
+            continue
         status = r.get("status")
         if status not in _REF_COPY:
             continue
@@ -426,6 +456,8 @@ def build_response(structure, ref_results: list[dict], anonymity: list[dict]) ->
         "weak_matches": statuses.count("weak_match"),
         "not_found": statuses.count("reference_not_found") + statuses.count("dead_doi"),
         "doi_mismatches": statuses.count("doi_mismatch"),
+        "retracted": sum(1 for r in ref_results if (r.get("retraction") or {}).get("kind") == "retracted"),
+        "concerns": sum(1 for r in ref_results if (r.get("retraction") or {}).get("kind") == "concern"),
     }
     counts["unchecked"] = n_found - counts["checked"]
     counts["anonymity_leftovers"] = len(anonymity)
@@ -433,7 +465,8 @@ def build_response(structure, ref_results: list[dict], anonymity: list[dict]) ->
     all_findings = _reference_findings(ref_results) + anonymity
     shown = _pick(all_findings)
     shown_ids = {id(f) for f in shown}
-    more = {"reference_not_found": 0, "doi_mismatch": 0, "dead_doi": 0, "weak_match": 0, "anonymity": 0}
+    more = {"reference_not_found": 0, "doi_mismatch": 0, "dead_doi": 0, "weak_match": 0, "anonymity": 0,
+            "retracted": 0, "concern": 0}
     for f in all_findings:
         if id(f) not in shown_ids:
             more[f["type"]] += 1

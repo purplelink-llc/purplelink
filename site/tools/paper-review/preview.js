@@ -56,6 +56,8 @@
 
   function moreLine(more) {
     var parts = [];
+    if (more.retracted) parts.push(plural(more.retracted, "more retracted paper", "more retracted papers"));
+    if (more.concern) parts.push(plural(more.concern, "more paper with an expression of concern", "more papers with an expression of concern"));
     var unmatched = (more.reference_not_found || 0) + (more.dead_doi || 0);
     if (unmatched) parts.push(plural(unmatched, "more reference without a match", "more references without a match"));
     if (more.doi_mismatch) parts.push(plural(more.doi_mismatch, "more DOI that points to a different title", "more DOIs that point to a different title"));
@@ -79,6 +81,7 @@
     dl.appendChild(countCard("Confirmed by CrossRef", counts.verified || 0));
     dl.appendChild(countCard("Partial matches", counts.weak_matches || 0));
     dl.appendChild(countCard("No match", (counts.not_found || 0) + (counts.doi_mismatches || 0)));
+    if (counts.retracted) dl.appendChild(countCard("Retracted", counts.retracted));
     results.appendChild(dl);
 
     if (counts.unchecked) {

@@ -265,6 +265,17 @@ def annotate_pdf(
             "severity": "major" if f.get("verdict") == "Contradicted" else "minor",
         })
 
+    # L2 — retracted references; land them on the last page, stronger than an issue
+    for r in (l2.get("retractions") or [])[:10]:
+        _add(n_pages, "l2", {
+            "severity": "major" if r.get("kind") == "retracted" else "minor",
+            "issue": (
+                f"{'Retracted' if r.get('kind') == 'retracted' else 'Expression of concern'} reference: "
+                f"{(r.get('raw') or '')[:200]}"
+            ),
+            "where": "References",
+        })
+
     # L2 — references-section findings; land them on the last page
     for issue in (l2.get("issues") or [])[:10]:
         _add(n_pages, "l2", {

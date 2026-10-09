@@ -210,7 +210,7 @@ def test_preview_happy_path_counts_and_findings(client, crossref, monkeypatch):
     # More anonymity leftovers exist than the one shown.
     assert body["more"]["anonymity"] >= 3
     assert body["counts"]["anonymity_leftovers"] == body["more"]["anonymity"] + 1
-    assert set(body["more"]) == {"reference_not_found", "doi_mismatch", "dead_doi", "weak_match", "anonymity"}
+    assert set(body["more"]) == {"reference_not_found", "doi_mismatch", "dead_doi", "weak_match", "anonymity", "retracted", "concern"}
 
     # Only CrossRef and doi.org were contacted.
     assert set(crossref.hosts) <= {"api.crossref.org", "doi.org"}
