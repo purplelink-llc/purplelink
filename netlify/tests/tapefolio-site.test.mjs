@@ -467,6 +467,13 @@ test("the update check is described the same way everywhere: app name, version, 
   assert.match(read("terms/index.html"), /are downloaded from Hugging Face, come from their publishers/);
 });
 
+test("the Suite page, the Suite terms and llms.txt say the same about updates and the update check", () => {
+  const terms = read("terms/index.html");
+  assert.match(terms, /all updates to Keyfeel and Tapefolio, updates to the version of Legroom you receive/);
+  assert.match(read("suite/index.html"), /so is every Keyfeel and Tapefolio update\. Legroom updates to the version you buy are included/);
+  assert.match(read("suite/index.html"), /its check for a new version, which sends the app's name, its version and the macOS version, and macOS itself/);
+});
+
 // ---- no bundled speech model ------------------------------------------------------------------
 
 test("no Tapefolio text says a speech model is built in, works with no download, or that Hugging Face and the update check are the only network use", () => {
@@ -507,5 +514,16 @@ test("no Tapefolio text says a speech model is built in, works with no download,
   // The speaker models that ship with the app are named as such; Nemotron stays optional.
   assert.match(text, /standard speaker-separation models that come with the app/);
   assert.match(text, /The app is about 40 MB/);
+});
+
+test("the Suite pages do not say a model is built in, and describe the network use as three things", () => {
+  const suite = read("suite/index.html");
+  const success = read("suite/success/index.html");
+  const faq = suite.match(/Does Tapefolio send my recordings anywhere\?[\s\S]{0,900}/g).join(" ");
+  assert.doesNotMatch(faq, /built in\b(?! to)|built-in|no download\b(?! from)|small speech model|One small|only the optional model downloads/i);
+  assert.doesNotMatch(success, /built in\b(?! to)|built-in|small speech model|One small/i);
+  assert.equal((suite.match(/macOS itself, which may download Apple's own speech model once\. Nothing from your files is sent\./g) || []).length, 2, "HTML and JSON-LD");
+  assert.match(success, /The first time each model runs on a Mac, it can take a few minutes while macOS prepares it for the Neural Engine/);
+  assert.match(success, /Tapefolio uses Apple's on-device speech recognition/);
 });
 

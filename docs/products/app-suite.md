@@ -65,8 +65,8 @@ the JSON-LD offer in site/suite/index.html, the Terms section, llms.txt, site/pr
 - Dashboard: origin/main already maps `app-suite` to its own "Mac Suite" line (sales.mjs, traffic_dashboard.py); nothing to add here.
 - Pages: `/suite/` (product), `/suite/success/` (noindex; the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads and the Vitae
   key, fetched independently so one failure never hides the others), Terms section, cross-links from Outbound Veil,
-  Vitae Plus, Legroom and /products/. Legroom's and Tapefolio's Terms say "updates to the version you bought" (no major-version promise),
-  and the Suite page repeats that for Legroom and Tapefolio while keeping "forever" for ModernTex and Outbound Veil.
+  Vitae Plus, Legroom and /products/. Legroom's Terms say "updates to the version you bought" (no major-version promise),
+  and the Suite page repeats that for Legroom while keeping "forever" for ModernTex and Outbound Veil and "all updates" for Keyfeel and Tapefolio.
 
 ## Known gap
 Vitae's Settings tab labels any non-annual plan "$3 a month" (changing to $2.99 with the next Vitae release) (PlusSettingsTab.swift line 27), so a Suite key shows a
