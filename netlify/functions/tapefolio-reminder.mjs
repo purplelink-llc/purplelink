@@ -32,20 +32,20 @@ const { handler, sendDueReminders, setupEmail, reminderEmail } = createTrialRemi
   setup: (link) => ({
     subject: "Tapefolio: getting started",
     text:
-      `Thanks for trying Tapefolio. Your files stay on your Mac: transcription, speaker labels, identifier removal and OCR all run on the Mac. The only use of the internet is the optional model downloads inside the app, each once.\n\n` +
+      `Thanks for trying Tapefolio. Your files stay on your Mac: transcription, speaker labels, identifier removal and OCR all run on the Mac. The internet is used only for the optional model downloads in Settings (from Hugging Face, each once), the app's check for a new version, and macOS itself if it fetches Apple's own speech model once. None of them carries your files.\n\n` +
       `Three things worth knowing in the first few minutes:\n` +
-      `1. The first run on a new Mac can take a few minutes while macOS prepares its models for the Neural Engine. That wait is normal and happens once.\n` +
-      `2. One small speech model is built in, so you can start with no download. Better models are optional downloads in the app, and Settings can delete them again.\n` +
+      `1. The first time each model runs on a Mac, it can take a few minutes while macOS prepares it for the Neural Engine. That wait is normal and happens once for each model.\n` +
+      `2. Until you download a speech model, Tapefolio uses Apple's on-device speech recognition, so you can start with no download from us. Better models are optional downloads in Settings, and Settings can delete them again.\n` +
       `3. Tapefolio will mishear some words and mislabel some speakers. The review screen plays the audio beside the text with the current word highlighted, so check anything you plan to quote against the recording.\n\n` +
       `Identifier removal finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth and replaces them with codes. It misses some. Read each one in the review step and decide whether to replace it or keep it. The key file that maps the codes back is saved in its own file, apart from the transcript, so keep it somewhere safe.\n\n` +
       `Each part is described on the Tapefolio page:\n${link(PAGE)}\n\n` +
       `The trial is the complete app for seven days from the first time you open it, with no account. After that you need a license key. If you buy, the key comes in your receipt email and goes into the same copy, so there is no second download. I will send one more short note around day ${REMIND_AFTER_DAYS}, and then nothing.\n\n` +
       `Questions: reply to this email and I will answer.\n\nBenjamin Ampel`,
     html:
-      `<p>Thanks for trying Tapefolio. Your files stay on your Mac: transcription, speaker labels, identifier removal and OCR all run on the Mac. The only use of the internet is the optional model downloads inside the app, each once.</p>` +
+      `<p>Thanks for trying Tapefolio. Your files stay on your Mac: transcription, speaker labels, identifier removal and OCR all run on the Mac. The internet is used only for the optional model downloads in Settings (from Hugging Face, each once), the app's check for a new version, and macOS itself if it fetches Apple's own speech model once. None of them carries your files.</p>` +
       `<p>Three things worth knowing in the first few minutes:</p>` +
-      `<ol><li>The first run on a new Mac can take a few minutes while macOS prepares its models for the Neural Engine. That wait is normal and happens once.</li>` +
-      `<li>One small speech model is built in, so you can start with no download. Better models are optional downloads in the app, and Settings can delete them again.</li>` +
+      `<ol><li>The first time each model runs on a Mac, it can take a few minutes while macOS prepares it for the Neural Engine. That wait is normal and happens once for each model.</li>` +
+      `<li>Until you download a speech model, Tapefolio uses Apple's on-device speech recognition, so you can start with no download from us. Better models are optional downloads in Settings, and Settings can delete them again.</li>` +
       `<li>Tapefolio will mishear some words and mislabel some speakers. The review screen plays the audio beside the text with the current word highlighted, so check anything you plan to quote against the recording.</li></ol>` +
       `<p>Identifier removal finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth and replaces them with codes. It misses some. Read each one in the review step and decide whether to replace it or keep it. The key file that maps the codes back is saved in its own file, apart from the transcript, so keep it somewhere safe.</p>` +
       `<p>Each part is described on <a href="${link(PAGE)}">the Tapefolio page</a>.</p>` +

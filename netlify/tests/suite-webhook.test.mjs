@@ -158,7 +158,8 @@ test("a paid Tapefolio order emails the download page, the first-run note and th
   assert.match(mail.text, /Your Tapefolio license key[^\n]*\nTFL1-/);
   assert.match(mail.text, /two of your Macs/);
   assert.match(mail.text, /macOS 26 or later on an Apple silicon Mac/);
-  assert.match(mail.text, /a few minutes while macOS prepares its models for the Neural Engine/);
+  assert.match(mail.text, /The first time each model runs on a Mac, it can take a few minutes while macOS prepares it for the Neural Engine/);
+  assert.doesNotMatch(mail.text, /built in|no download/i);
   assert.match(mail.text, /mishear some words and mislabel some speakers/);
   assert.doesNotMatch(mail.text, /MTX1|KFL1|Vitae|Outbound Veil|Keyfeel|Input Monitoring/i);
   assert.doesNotMatch(mail.text, /—|–/);

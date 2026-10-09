@@ -369,13 +369,13 @@ async function emailDownloadLink(to, sessionId, productKey) {
       `<p>It unlocks Tapefolio on up to two of your Macs. No account, and it works offline.</p>`
     : "";
   const tapefolioText = tapefolioLicenseText + (productKey === "tapefolio" || isSuite
-    ? `Tapefolio needs macOS 26 or later on an Apple silicon Mac. The first run on a new Mac can take a few minutes while macOS ` +
-      `prepares its models for the Neural Engine; that wait happens once. Your files stay on your Mac. Tapefolio will mishear ` +
+    ? `Tapefolio needs macOS 26 or later on an Apple silicon Mac. The first time each model runs on a Mac, it can take a few minutes ` +
+      `while macOS prepares it for the Neural Engine; that wait happens once for each model. Your files stay on your Mac. Tapefolio will mishear ` +
       `some words and mislabel some speakers, so check any quoted text against the recording.\n\n`
     : "");
   const tapefolioHtml = tapefolioLicenseHtml + (productKey === "tapefolio" || isSuite
-    ? `<p>Tapefolio needs macOS 26 or later on an Apple silicon Mac. The first run on a new Mac can take a few minutes while macOS ` +
-      `prepares its models for the Neural Engine; that wait happens once. Your files stay on your Mac. Tapefolio will mishear ` +
+    ? `<p>Tapefolio needs macOS 26 or later on an Apple silicon Mac. The first time each model runs on a Mac, it can take a few minutes ` +
+      `while macOS prepares it for the Neural Engine; that wait happens once for each model. Your files stay on your Mac. Tapefolio will mishear ` +
       `some words and mislabel some speakers, so check any quoted text against the recording.</p>`
     : "");
   const text =

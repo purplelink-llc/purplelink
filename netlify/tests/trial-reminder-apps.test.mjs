@@ -249,12 +249,14 @@ test("the three apps keep separate records and run on different minutes", async 
 test("Tapefolio setup email says what the page says: first-run wait, mishearing, identifiers it misses, and no claim of anonymization", () => {
   const mail = tapefolio.setupEmail("a@example.org", "b".repeat(48));
   for (const body of [mail.text, mail.html]) {
-    assert.match(body, /a few minutes while macOS prepares its models for the Neural Engine/);
+    assert.match(body, /The first time each model runs on a Mac, it can take a few minutes while macOS prepares it for the Neural Engine/);
     assert.match(body, /mishear some words and mislabel some speakers/);
     assert.match(body, /It misses some/);
     assert.match(body, /replace it or keep it/);
-    assert.match(body, /built in/);
-    assert.match(body, /optional model downloads/);
+    assert.match(body, /Apple's on-device speech recognition/);
+    assert.match(body, /optional model downloads in Settings \(from Hugging Face, each once\)/);
+    assert.match(body, /macOS itself if it fetches Apple's own speech model once/);
+    assert.doesNotMatch(body, /built in|only use of the internet|small speech model/i);
     assert.doesNotMatch(body, /anonymi[sz]|guarantee|complian/i);
   }
   const reminder = tapefolio.reminderEmail("a@example.org", "b".repeat(48));

@@ -7,7 +7,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import vm from "node:vm";
@@ -65,7 +65,7 @@ test("the page has every section the brief asks for", () => {
 
 // ---- the release gate ------------------------------------------------------------------
 
-test("PRE-LAUNCH GUARD: the page ships switched off, unlisted, and says so (delete this test when launching)", () => {
+test("PRE-LAUNCH GUARD: the page ships switched off and says so (delete this test when launching)", () => {
   const src = read("tapefolio/launch.js");
   assert.match(src, /live: false,/);
   assert.match(src, /version: "",/);
@@ -209,10 +209,11 @@ test("the page never claims anonymization, guaranteed compliance, or anything th
   }
 });
 
-test("the models table matches the README: built in, Parakeet, Whisper large-v3 turbo, Nemotron 3 Diarization", () => {
+test("the models table: Apple's recognition by default, then Parakeet, Whisper base, Whisper large-v3 turbo and Nemotron 3 Diarization as downloads", () => {
   const text = visibleText(read("tapefolio/index.html"));
-  for (const name of ["NVIDIA Parakeet", "Whisper large-v3 turbo", "NVIDIA Nemotron 3 Diarization", "Small speech model"]) assert.ok(text.includes(name), name);
+  for (const name of ["Apple's speech recognition", "NVIDIA Parakeet", "Whisper base", "Whisper large-v3 turbo", "NVIDIA Nemotron 3 Diarization"]) assert.ok(text.includes(name), name);
   assert.match(text, /About 470 MB/);
+  assert.match(text, /About 150 MB/);
   assert.match(text, /About 650 MB/);
   assert.match(text, /About 190 MB/);
   assert.match(text, /Parakeet TDT 0\.6B v2 \(CC BY 4\.0\)/, "the CC BY credit is on the page");
@@ -366,6 +367,7 @@ test("/tapefolio/success/ shows the server's reason when refused, and never fetc
   assert.equal(bad.fetched.length, 0);
   assert.match(bad.nodes.downloads.innerHTML, /receipt email/);
 });
+
 // ---- updates and the update check -------------------------------------------------------------
 
 test("every Tapefolio statement about updates is a plain promise of all updates, with no version or time limit", () => {
@@ -389,17 +391,65 @@ test("the update check is described the same way everywhere: app name, version, 
   const page = read("tapefolio/index.html");
   const text = visibleText(page);
   assert.match(text, /the app's name, its version, the macOS version and the app's update token to purplelink\.llc/);
-  assert.match(text, /which come from Hugging Face/);
+  assert.match(text, /come from Hugging Face, once each/);
+  assert.match(text, /macOS itself may download Apple's own speech model once if you use Apple's speech recognition/);
   assert.match(text, /There is no analytics and no account/);
   assert.doesNotMatch(text, /carries the app's name and version and nothing/);
   const faq = jsonLd(page).find((n) => n["@type"] === "FAQPage").mainEntity.find((q) => q.name === "Do my recordings leave my Mac?");
   assert.match(faq.acceptedAnswer.text, /app's name, its version, the macOS version and the app's update token/);
   assert.match(faq.acceptedAnswer.text, /Hugging Face/);
+  assert.match(faq.acceptedAnswer.text, /macOS itself, which may download Apple's own speech model once/);
+  assert.match(faq.acceptedAnswer.text, /nothing from your files is sent anywhere/);
   const privacy = read("privacy/index.html");
   const para = privacy.slice(privacy.indexOf("<strong>Tapefolio</strong> has no account"), privacy.indexOf("<strong>Find a purchase.</strong>"));
   assert.match(para, /no account and no analytics/);
   assert.match(para, /which come from Hugging Face/);
+  assert.match(para, /Apart from three things it does not use the network/);
+  assert.match(para, /macOS may download Apple's own speech model once/);
+  assert.match(para, /Nothing you open in the app is in any of these requests/);
   assert.match(para, /the app's name, its version, the macOS version and an update token/);
-  assert.match(para, /Nothing you open in the app is in either request/);
   assert.match(read("terms/index.html"), /are downloaded from Hugging Face, come from their publishers/);
 });
+
+// ---- no bundled speech model ------------------------------------------------------------------
+
+test("no Tapefolio text says a speech model is built in, works with no download, or that Hugging Face and the update check are the only network use", () => {
+  const page = read("tapefolio/index.html");
+  const terms = read("terms/index.html");
+  const privacy = read("privacy/index.html");
+  const tapefolioTerms = terms.slice(terms.indexOf("<h2>Tapefolio: additional terms</h2>"), terms.indexOf("<h2>Mac Suite: additional terms</h2>"));
+  const tapefolioPrivacy = privacy.slice(privacy.indexOf("<strong>Tapefolio</strong> has no account"), privacy.indexOf("<strong>Find a purchase.</strong>"));
+  const reminder = readFileSync(join(SITE, "..", "netlify", "functions", "tapefolio-reminder.mjs"), "utf8");
+  const webhook = readFileSync(join(SITE, "..", "netlify", "functions", "stripe-webhook.mjs"), "utf8");
+  const tapefolioMail = webhook.slice(webhook.indexOf("const tapefolioText"), webhook.indexOf("const text =\n"));
+  const sources = {
+    page: page.replace(/<script[^>]*src=[^>]*><\/script>/g, ""),
+    success: read("tapefolio/success/index.html"),
+    terms: tapefolioTerms, privacy: tapefolioPrivacy, reminder, mail: tapefolioMail,
+  };
+  for (const [name, text] of Object.entries(sources)) {
+    assert.doesNotMatch(text, /built in\b(?! to)|built-in|works? with no download|so you can start with no download\b(?! from)|no download\b(?! from)|the moment it is installed|small speech model|One small/i, `${name} says a model is built in`);
+    assert.doesNotMatch(text, /only (other )?(use|things)[^.]{0,40}(internet|network)|only network use/i, `${name} says the network use is only the downloads and the update check`);
+  }
+  // The default engine and its one-time fetch by macOS are stated where the network use is.
+  for (const [name, text] of Object.entries({ page: visibleText(page), privacy: tapefolioPrivacy })) {
+    assert.match(text, /Apple's (own )?(on-device )?speech (model|recognition)/, name);
+    assert.match(text, /macOS (itself )?may (download|fetch) Apple's own (speech )?model once|macOS may download Apple's own speech model once/, name);
+  }
+  // Measured error rates, exactly as measured: Apple, Parakeet and Whisper large 21% to 29%; Whisper base 29% to 39%.
+  const text = visibleText(page);
+  assert.match(text, /between 21% and 29% for Apple's engine, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for Whisper base, the small optional download/);
+  const faq = jsonLd(page).find((n) => n["@type"] === "FAQPage").mainEntity.find((q) => q.name === "How accurate is it?");
+  assert.match(faq.acceptedAnswer.text, /between 21% and 29% for Apple's speech recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for the small Whisper base model/);
+  const features = jsonLd(page).find((n) => n["@type"] === "SoftwareApplication").featureList.join(" ");
+  assert.match(features, /Apple's on-device speech recognition until you download a speech model/);
+  assert.doesNotMatch(features, /built in|no download/i);
+  // The first-run wait is per model.
+  assert.match(text, /The first time each model runs on a Mac, it can take a few minutes while macOS prepares the model for the Neural Engine/);
+  assert.match(text, /macOS prepares a speech model for the Neural Engine the first time that model runs on a Mac/);
+  assert.match(read("tapefolio/success/index.html"), /The first time each model runs on a Mac, it can take a few minutes while macOS prepares it for the Neural Engine/);
+  // The speaker models that ship with the app are named as such; Nemotron stays optional.
+  assert.match(text, /standard speaker-separation models that come with the app/);
+  assert.match(text, /The app is about 40 MB/);
+});
+

@@ -8,8 +8,11 @@ Tapefolio is a macOS 26+, Apple silicon app for private, on-device transcription
 audio with word timing, labels speakers, has an opt-in speaker memory, finds identifiers and replaces them with codes
 case by case (the key file kept apart), has a review screen with an audio player and word highlighting, exports to Word,
 HTML, Markdown, text, SRT, VTT, JSON and a MAXQDA-friendly timestamped Word file, records from the microphone, and runs
-Batch OCR on photos, scans and PDFs. One small speech model is built in; NVIDIA Parakeet, Whisper large-v3 turbo and
-NVIDIA Nemotron 3 Diarization are optional downloads inside the app. Sold at **$29.99 once**, USD, one DMG that runs free
+Batch OCR on photos, scans and PDFs. No speech model is bundled (decision 2026-10-09: a 182 MB DMG truncated at 129 MB through
+a Netlify function, so the app is about 40 MB and ships only the standard speaker-separation models). Until the user downloads a
+speech model, Tapefolio uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once. NVIDIA Parakeet
+(English, about 470 MB), Whisper base (English, about 150 MB), Whisper large-v3 turbo (many languages, about 650 MB) and NVIDIA
+Nemotron 3 speaker separation (about 190 MB) are optional, deletable downloads in Settings, from Hugging Face, each once. Sold at **$29.99 once**, USD, one DMG that runs free
 for 7 days from first launch and then needs a license key. One key works on two Macs. 14-day refund like the other apps.
 It is the sixth part of the Mac Suite, whose price did not change (see `app-suite.md`).
 
@@ -94,9 +97,10 @@ leave the key out (they never invent one). Without `TAPEFOLIO_UPDATE_TOKEN` the 
   be paid and carry `metadata.product` of `tapefolio` **or `app-suite`**, so every Suite buyer, whatever they paid, gets
   Tapefolio.
 - Public download (the trial): `?download=1` (`?trial=1` also works) streams the newest `Tapefolio-x.y.z.dmg`, 20 downloads
-  per IP per day (429 after). It is the same app buyers and Sparkle get. The bundled speech model makes this DMG much larger
-  than Keyfeel's; it streams from Blobs, so the 6 MB function limit does not apply, but check the real file's size and
-  download time once.
+  per IP per day (429 after). It is the same app buyers and Sparkle get. With no bundled speech model the DMG is about 40 MB,
+  still larger than Keyfeel's. A function response has a 30 second limit, and a 182 MB DMG truncated at 129 MB, so keep the
+  DMG well under that: stream it from Blobs as the code does, and time a full download of the real file from a slow connection
+  before launch.
 - Updates (Sparkle): `?feed=1`, `?update=<dmg>` and `?stats=1` require the header `X-Tapefolio-Channel:
   <TAPEFOLIO_UPDATE_TOKEN>`, compared in constant time; 403 otherwise and 403 when the variable is unset. The feed rewrites
   every enclosure URL to the update door.
@@ -191,8 +195,8 @@ Do this only after the DMG and appcast are in `tapefolio-files` and both env var
 5. Merge the Suite commit and the link commit together, deploy, and rerun `python3 scripts/apply_layout.py --check`,
    `python3 scripts/fingerprint_assets.py` and `python3 scripts/check_content.py --strict`.
 6. Set the real release date on the Tapefolio changelog entry and its sitemap `lastmod` (the link commit has 2026-10-09 as a stand-in), and change the `Status:` line of the Tapefolio block in `site/llms.txt` from "Not yet released" to the shipping version.
-7. Confirm the Terms and Privacy wording against the shipped app: that the only network use is the optional model downloads
-   and the update check; that the update request carries nothing from the user's files; that there is no analytics; that
+7. Confirm the Terms and Privacy wording against the shipped app: that the network use is only the optional model downloads, the
+   update check and macOS fetching Apple's own speech model once; that the update request carries nothing from the user's files; that there is no analytics; that
    the trial clock and key check send nothing; that speaker memory stays on the Mac. The update request is described as: app name, app version, macOS version and the update token.
 8. Render the share cards (see Assets).
 
@@ -224,11 +228,15 @@ Still needed, none of which exists, and no page references them:
 - The app itself: the license check, the 7-day trial clock, "Enter License Key", the Sparkle updater with the channel
   header, and the notarized release are all still to build in the Tapefolio repo. The server and pages assume the menu
   wording "Enter License Key" (as Keyfeel); change the emails, the FAQ and the success page if the app says something else.
-- Claims on the pages that only the app can confirm: that the only network use is the model downloads from
-  Hugging Face (each once) and the update check, which sends the app's name, its version, the macOS version and the update token to
-  purplelink.llc and nothing from the user's files (Ben's description, 2026-10-09); that there is no analytics and no account; the download sizes
-  (about 470 MB Parakeet, 650 MB Whisper, 190 MB Nemotron 3 fast128 come from the README, which also names a 95 MB variant);
-  that a microphone prompt appears on first recording; that the first-run wait is "a few minutes".
+- Claims on the pages that only the app can confirm: that the network use is exactly three things: the model
+  downloads from Hugging Face (each once), the update check, which sends the app's name, its version, the macOS version and the update
+  token to purplelink.llc, and macOS itself fetching Apple's own speech model once if Apple's recognition is used (Ben's description,
+  2026-10-09); that nothing from the user's files is sent; that there is no analytics and no account; the download sizes (about 470 MB
+  Parakeet, 150 MB Whisper base, 650 MB Whisper large-v3 turbo, 190 MB Nemotron 3, as given by the coordinator 2026-10-09; the README
+  also names a 95 MB Nemotron variant); that the app is about 40 MB; that Apple's recognition is the default until a model is
+  downloaded; that a microphone prompt appears on first recording; that the first-run wait applies to each model the first time it
+  runs and is "a few minutes". The measured error rates on the page are Apple 28.5% and 23.0%, Parakeet 26.3% and 21.4%, Whisper
+  large 27.0% and 21.4% (shown as 21% to 29%), Whisper base 39.4% and 29.1% (shown as 29% to 39%), on the two AMI meetings.
 - Update policy (decided by Ben 2026-10-09): every future update is included for anyone who bought, with no version or time
   limit. The page, FAQ, JSON-LD, Terms, Suite FAQ, `llms.txt` and the reminder email all say so in Keyfeel's words ("The purchase
   includes all updates to Tapefolio"). Legroom is the only app that still limits updates to the version bought.

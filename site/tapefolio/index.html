@@ -49,7 +49,7 @@
           "processorRequirements": "Apple silicon",
           "featureList": [
             "Transcribes audio on the Mac, with the time of every word",
-            "One small speech model built in, so it works with no download; better models are optional downloads that can be deleted from Settings",
+            "Transcribes with Apple's on-device speech recognition until you download a speech model; optional models from Hugging Face (NVIDIA Parakeet, Whisper base, Whisper large-v3 turbo, NVIDIA Nemotron 3 Diarization) can be deleted from Settings",
             "Speaker labels, with speaker naming and merging in the review screen",
             "Optional speaker memory, off until you turn it on for a project, with a recorded consent note, stored encrypted on the Mac, suggestions only, and deletable",
             "Identifier removal that finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth and replaces them with codes, one case at a time, with the key file kept separately",
@@ -81,12 +81,12 @@
             {
               "@type": "Question",
               "name": "Do my recordings leave my Mac?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Transcription, speaker labels, identifier removal and OCR all run on the Mac. The only things that use the internet are the optional model downloads inside the app, which come from Hugging Face and happen once each, and the app's check for a new version, which sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. There is no analytics and no account, and nothing from your files is sent." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things: the optional model downloads inside the app, which come from Hugging Face and happen once each; the app's check for a new version, which sends the app's name, its version, the macOS version and the app's update token to purplelink.llc; and macOS itself, which may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account." }
             },
             {
               "@type": "Question",
               "name": "How accurate is it?",
-              "acceptedAnswer": { "@type": "Answer", "text": "It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for the larger speech models and between 29% and 39% for the small built-in one, so a person should check any text that will be quoted against the recording." }
+              "acceptedAnswer": { "@type": "Answer", "text": "It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for Apple's speech recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for the small Whisper base model, so a person should check any text that will be quoted against the recording." }
             },
             {
               "@type": "Question",
@@ -101,7 +101,7 @@
             {
               "@type": "Question",
               "name": "Why is the first run slow?",
-              "acceptedAnswer": { "@type": "Answer", "text": "On a new Mac, macOS prepares its models for the Neural Engine the first time they are used. That can take a few minutes, and happens once." }
+              "acceptedAnswer": { "@type": "Answer", "text": "macOS prepares a speech model for the Neural Engine the first time that model runs on a Mac. That can take a few minutes for each model, and it happens once for each." }
             },
             {
               "@type": "Question",
@@ -212,8 +212,8 @@
       <h2 id="does-h">What it does</h2>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">Transcription</th><td>Transcribes audio on your Mac, with word timing. One small speech model is built in, so it works the moment it is installed. Better models are optional downloads inside the app: NVIDIA Parakeet for English and Whisper large-v3 turbo. Settings can delete any of them.</td></tr>
-          <tr><th scope="row">Speakers</th><td>Labels who is speaking. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is an optional download that separates speakers a second way.</td></tr>
+          <tr><th scope="row">Transcription</th><td>Transcribes audio on your Mac, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet for English, Whisper base for English and Whisper large-v3 turbo for many languages. Settings can delete any of them.</td></tr>
+          <tr><th scope="row">Speakers</th><td>Labels who is speaking, using the standard speaker-separation models that come with the app. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is an optional download that separates speakers a second way.</td></tr>
           <tr><th scope="row">Speaker memory</th><td>Optional, and opt-in for each project. Tapefolio requires a recorded consent note before it saves a voice. Voices are stored encrypted on your Mac, the app only suggests matches for you to confirm, and you can delete them.</td></tr>
           <tr><th scope="row">Identifier removal</th><td>Finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth, and replaces them with consistent codes. You review case by case: replace or keep each one, or replace all that remain. The key file that maps the codes back is kept separately. It misses some, so you read the result.</td></tr>
           <tr><th scope="row">Review screen</th><td>An audio player next to the transcript, with the current word highlighted. Turns are editable, and you can rename or merge speakers and go through the identifier review without leaving the screen.</td></tr>
@@ -243,7 +243,7 @@
       <p class="specs-more">These are small checks, run on an M4 MacBook with 16 GB, and your recordings will differ. Treat every transcript as a draft.</p>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">Words wrong</th><td>Two meetings from the AMI Meeting Corpus, four people each, headset mix. The word error rate was between 21% and 29% for Apple's engine, Parakeet and Whisper large, and between 29% and 39% for the small built-in model. Fillers are left out of the count, and many of the errors are dropped short replies and spelling conventions such as gonna and going.</td></tr>
+          <tr><th scope="row">Words wrong</th><td>Two meetings from the AMI Meeting Corpus, four people each, headset mix. The word error rate was between 21% and 29% for Apple's engine, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for Whisper base, the small optional download. Fillers are left out of the count, and many of the errors are dropped short replies and spelling conventions such as gonna and going.</td></tr>
           <tr><th scope="row">Right speaker</th><td>On the same two meetings, between 87% and 94% of words were given to the right speaker. The speaker setting was tuned on those same two meetings, so a new recording may do worse.</td></tr>
           <tr><th scope="row">Names found</th><td>Against the corpus's human labels on those meetings, identifier removal found 13 of 15 personal names and 2 of 2 places, and flagged one false place. That is a very small sample.</td></tr>
           <tr><th scope="row">Scanned text</th><td>On 9 generated test files (11 pages), the OCR word error rate was 1.5%.</td></tr>
@@ -262,7 +262,7 @@
         </div>
         <div class="feature-item">
           <h3>Downloads, each once</h3>
-          <p>The only other use of the internet is the optional model downloads inside the app, which come from Hugging Face, and the app's check for a new version. That check sends the app's name, its version, the macOS version and the app's update token to purplelink.llc, and nothing from your files. There is no analytics and no account. Details are on the <a href="/privacy/">privacy page</a>.</p>
+          <p>The internet is used for three things, and none of them carries your files. The optional model downloads inside the app come from Hugging Face, once each. The app's check for a new version sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. And macOS itself may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account. Details are on the <a href="/privacy/">privacy page</a>.</p>
         </div>
         <div class="feature-item">
           <h3>Voices are opt-in</h3>
@@ -275,13 +275,14 @@
           <tr><th scope="col">Model</th><th scope="col">For</th><th scope="col">Size</th></tr>
         </thead>
         <tbody>
-          <tr><th scope="row">Small speech model</th><td>Transcription, built in</td><td class="tf-num">No download</td></tr>
+          <tr><th scope="row">Apple's speech recognition</th><td>Transcription, used until you download a model</td><td>None from Tapefolio; macOS may fetch Apple's model once</td></tr>
           <tr><th scope="row">NVIDIA Parakeet</th><td>English transcription</td><td class="tf-num">About 470 MB</td></tr>
+          <tr><th scope="row">Whisper base</th><td>English transcription, a small download</td><td class="tf-num">About 150 MB</td></tr>
           <tr><th scope="row">Whisper large-v3 turbo</th><td>Transcription in many languages</td><td class="tf-num">About 650 MB</td></tr>
           <tr><th scope="row">NVIDIA Nemotron 3 Diarization</th><td>Separating speakers</td><td class="tf-num">About 190 MB</td></tr>
         </tbody>
       </table>
-      <p class="tf-note">Optional models can be deleted from Settings. The first run on a new Mac can take a few minutes while macOS prepares its models for the Neural Engine, and the Whisper model can take about ten minutes the first time it runs on a given chip.</p>
+      <p class="tf-note">Optional models can be deleted from Settings. The first time each model runs on a Mac, it can take a few minutes while macOS prepares the model for the Neural Engine, and Whisper large-v3 turbo can take about ten minutes the first time it runs on a given chip.</p>
       <p class="tf-note">Credits: the speech models are NVIDIA Parakeet TDT 0.6B v2 (CC BY 4.0), run through FluidAudio and FluidInference (Apache-2.0), and OpenAI Whisper (MIT), run through WhisperKit (MIT, Argmax). The speaker models are from pyannote and WeSpeaker, via FluidInference. The measurements above use the AMI Meeting Corpus (CC BY 4.0).</p>
     </section>
 
@@ -311,7 +312,7 @@
         <tbody>
           <tr><th scope="row">macOS</th><td>26 or later.</td></tr>
           <tr><th scope="row">Mac</th><td>Apple silicon. There is no Intel version.</td></tr>
-          <tr><th scope="row">Disk space</th><td>The app, plus the optional models you choose to download (see the sizes above).</td></tr>
+          <tr><th scope="row">Disk space</th><td>The app is about 40 MB, plus the optional models you choose to download (see the sizes above).</td></tr>
           <tr><th scope="row">Permissions</th><td>macOS asks for microphone access the first time you record in the app.</td></tr>
         </tbody>
       </table>
@@ -326,11 +327,11 @@
         </details>
         <details class="faq-item">
           <summary>Do my recordings leave my Mac?</summary>
-          <div class="faq-body">No. Transcription, speaker labels, identifier removal and OCR all run on the Mac. The only things that use the internet are the optional model downloads inside the app, which come from Hugging Face and happen once each, and the app's check for a new version, which sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. There is no analytics and no account, and nothing from your files is sent.</div>
+          <div class="faq-body">No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things: the optional model downloads inside the app, which come from Hugging Face and happen once each; the app's check for a new version, which sends the app's name, its version, the macOS version and the app's update token to purplelink.llc; and macOS itself, which may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account.</div>
         </details>
         <details class="faq-item">
           <summary>How accurate is it?</summary>
-          <div class="faq-body">It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for the larger speech models and between 29% and 39% for the small built-in one, so a person should check any text that will be quoted against the recording. The measured results are above.</div>
+          <div class="faq-body">It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for Apple's speech recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for the small Whisper base model, so a person should check any text that will be quoted against the recording. The measured results are above.</div>
         </details>
         <details class="faq-item">
           <summary>Does it anonymize a transcript?</summary>
@@ -346,11 +347,11 @@
         </details>
         <details class="faq-item">
           <summary>Which speech model should I use?</summary>
-          <div class="faq-body">Start with the built-in one, which needs no download. On the two meetings measured, the three models were within about two points of each other, so none is proven better. Parakeet was the fastest and is English only; Whisper covers many languages but was the slowest.</div>
+          <div class="faq-body">Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only; Whisper large-v3 turbo covers many languages but was the slowest.</div>
         </details>
         <details class="faq-item">
           <summary>Why is the first run slow?</summary>
-          <div class="faq-body">On a new Mac, macOS prepares its models for the Neural Engine the first time they are used. That can take a few minutes, and it happens once. Later runs start at once.</div>
+          <div class="faq-body">macOS prepares a speech model for the Neural Engine the first time that model runs on a Mac. That can take a few minutes for each model, and it happens once for each. Later runs of the same model start at once.</div>
         </details>
         <details class="faq-item">
           <summary>Does one license work on more than one Mac?</summary>
