@@ -2594,6 +2594,7 @@ async def run_review_pipeline(
                 f.to_dict() for f in manuscript_checks.all_findings(
                     structure.body, structure.references,
                     current_year=_dt.date.today().year,
+                    n_references_total=structure.n_references_total,
                 )
             ]
         except Exception:

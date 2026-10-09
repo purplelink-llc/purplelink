@@ -595,6 +595,289 @@ def reference_integrity_from_extracted(references, current_year: int) -> list[De
 
 
 # ===========================================================================
+# In-text citations against the reference list, and figure/table numbering
+#
+# These run on text extracted from a PDF, which is lossy: columns interleave,
+# a reference can be split or merged, an appendix after the bibliography sits
+# outside the body. So every check here (a) stays silent when the extraction
+# looks unreliable, (b) reports what the EXTRACTED text shows rather than what
+# the paper contains, and (c) is capped to a handful of items per finding.
+# ===========================================================================
+
+_TRUNCATION_MARK = "[... section omitted to keep within model context ..."
+_MIN_MARKERS = 5            # citation markers needed before the style is trusted
+_MAX_LISTED = 8
+_EXTRACTION_NOTE = (
+    " This is based on the text extracted from the PDF, which can miss or merge items; "
+    "check the original before changing anything."
+)
+
+_NUM_CITE_RE = re.compile(
+    r"(?:^|(?<=[\s.,;:(]))\[(\d{1,3}(?:\s*[,;\u2013\u2014-]\s*\d{1,3})*)\]", re.M)
+
+
+def _numeric_citations(body: str) -> tuple[set[int], int]:
+    """Numbers cited by bracketed markers such as [3], [1, 4] and [5-8], and the
+    number of markers found. Brackets glued to a word (x[1]) are not citations."""
+    cited: set[int] = set()
+    markers = 0
+    for m in _NUM_CITE_RE.finditer(body):
+        markers += 1
+        for part in re.split(r"\s*[,;]\s*", m.group(1)):
+            rng = re.fullmatch(r"(\d{1,3})\s*[\u2013\u2014-]\s*(\d{1,3})", part.strip())
+            if rng:
+                a, b = int(rng.group(1)), int(rng.group(2))
+                if a < b and b - a <= 40:
+                    cited.update(range(a, b + 1))
+                else:
+                    cited.update((a, b))
+            elif part.strip().isdigit():
+                cited.add(int(part.strip()))
+    return cited, markers
+
+
+_AY_PARTICLES = r"(?:(?:van|von|de|der|den|del|della|di|da|dos|du|la|le|ter|ten)\s+)*"
+_AY_NAME = _AY_PARTICLES + r"[A-Z][A-Za-z\u00C0-\u024F'\u2019\-]{1,30}"
+_AY_NOT_NAMES = frozenset({
+    "figure", "fig", "table", "section", "eq", "equation", "appendix", "chapter", "page", "pages",
+    "see", "also", "in", "since", "after", "before", "and", "the", "for", "with", "from", "that",
+    "this", "e.g", "i.e", "cf", "vs", "p", "pp", "n", "ie", "eg",
+})
+_AY_PAREN_RE = re.compile(r"\(([^()]{3,300})\)")
+_AY_PART_RE = re.compile(
+    r"^\s*(?:(?:e\.g\.|i\.e\.|see|also|cf\.|for example)[,\s]+)*"
+    r"(?P<name>" + _AY_NAME + r")"
+    r"(?:\s+et\s+al\.?|\s+(?:and|&)\s+" + _AY_NAME + r"(?:\s+et\s+al\.?)?)?"
+    r"[,\s]+(?P<years>(?:19|20)\d{2}[a-z]?(?:\s*,\s*(?:19|20)\d{2}[a-z]?)*)\s*$"
+)
+_AY_NARRATIVE_RE = re.compile(
+    r"(?P<name>" + _AY_NAME + r")(?:\s+et\s+al\.?|\s+(?:and|&)\s+" + _AY_NAME + r")?"
+    r"\s*\(\s*(?P<years>(?:19|20)\d{2}[a-z]?(?:\s*[,;]\s*(?:19|20)\d{2}[a-z]?)*)\s*\)"
+)
+
+
+def _author_year_citations(body: str) -> list[tuple[str, str]]:
+    """(first-author surname, year) for each author-year citation, in order."""
+    out: list[tuple[str, str]] = []
+
+    def add(name: str, years: str):
+        name = re.sub(r"['\u2019]s$", "", name)       # possessive: Hardin's (1968)
+        if name.lower().rstrip(".") in _AY_NOT_NAMES:
+            return
+        for y in re.findall(r"(?:19|20)\d{2}", years):
+            out.append((name, y))
+
+    for m in _AY_PAREN_RE.finditer(body):
+        for part in m.group(1).split(";"):
+            pm = _AY_PART_RE.match(part)
+            if pm:
+                add(pm.group("name"), pm.group("years"))
+    for m in _AY_NARRATIVE_RE.finditer(body):
+        add(m.group("name"), m.group("years"))
+    return out
+
+
+def _cite_list(items: list[str]) -> str:
+    shown = items[:_MAX_LISTED]
+    more = len(items) - len(shown)
+    return ", ".join(shown) + (f" (and {more} more)" if more > 0 else "")
+
+
+def citation_matching_checks(body: str, references, n_references_total: Optional[int] = None) -> list[DeterministicFinding]:
+    """Compare in-text citations with the reference list.
+
+    Numeric style ([3], [1, 4], [5-8]): a citation number above the length of
+    the list, and listed references that no marker cites. Author-year style
+    (Smith, 2020; Smith and Lee (2019)): citations with no matching reference and
+    references the text never cites. Silent when there are too few markers to
+    trust the style, when the list is too short, or, for the "never cited" checks,
+    when the body was truncated or more references exist than were parsed.
+    """
+    out: list[DeterministicFinding] = []
+    refs = list(references or [])
+    if not body or len(refs) < 3:
+        return out
+    total = max(n_references_total or 0, len(refs))
+    truncated = _TRUNCATION_MARK in body
+    fully_parsed = total == len(refs)
+
+    cited, n_markers = _numeric_citations(body)
+    ay = _author_year_citations(body)
+    numeric = n_markers >= _MIN_MARKERS and len(cited) >= 3 and n_markers >= 2 * len(ay)
+    author_year = (not numeric) and len(ay) >= _MIN_MARKERS and len(ay) >= 2 * n_markers
+
+    if numeric:
+        beyond = sorted(n for n in cited if n > total)
+        if beyond:
+            out.append(DeterministicFinding(
+                "citation", "warning",
+                f"In-text citations reach [{max(cited)}] but the reference list we extracted has {total} entries",
+                f"Citation numbers above the end of the list: {_cite_list([f'[{n}]' for n in beyond])}. "
+                "Either the list was cut off during extraction, or some cited sources are missing from it."
+                + _EXTRACTION_NOTE))
+        if not truncated and fully_parsed and n_markers >= 8:
+            covered = [i for i in range(1, len(refs) + 1) if i in cited]
+            if len(covered) >= 0.6 * len(refs):
+                uncited = [f"[{i}]" for i in range(1, len(refs) + 1) if i not in cited]
+                if uncited:
+                    out.append(DeterministicFinding(
+                        "citation", "info",
+                        f"{len(uncited)} listed reference(s) are not cited in the extracted text: {_cite_list(uncited)}",
+                        "A reference cited only in an appendix, table, figure or footnote that the PDF text "
+                        "did not carry would appear here too. If one is genuinely uncited, cite it or remove it."
+                        + _EXTRACTION_NOTE))
+    elif author_year and fully_parsed and len(refs) >= 5:
+        raws = [(r.raw if hasattr(r, "raw") else (r.get("raw") if isinstance(r, dict) else "")) or "" for r in refs]
+        heads = [re.sub(r"\s+", " ", raw[:160]).lower() for raw in raws]
+
+        def matches(name: str, year: str) -> bool:
+            pat = re.compile(r"\b" + re.escape(name.lower()) + r"\b")
+            return any(pat.search(h) and year in raw[:300] for h, raw in zip(heads, raws))
+
+        distinct = list(dict.fromkeys(ay))
+        unmatched = [(n, y) for n, y in distinct if not matches(n, y)]
+        # A high miss rate means the reference list was not read properly: say nothing at all.
+        if len(unmatched) > 0.4 * len(distinct):
+            return out
+        if unmatched:
+            labels = [f"{n} ({y})" for n, y in unmatched]
+            out.append(DeterministicFinding(
+                "citation", "info",
+                f"{len(unmatched)} in-text citation(s) could not be matched to the reference list: {_cite_list(labels)}",
+                "Each is a surname and year in the text with no listed reference carrying both. "
+                "Names with particles, spelling differences or a reference the extraction merged can cause this."
+                + _EXTRACTION_NOTE))
+        if not truncated:
+            flat = re.sub(r"\s+", " ", body)
+            uncited = []
+            for raw in raws:
+                nm = re.match(r"\s*(" + _AY_NAME + r")\s*,", raw)
+                ym = re.search(r"\b((?:19|20)\d{2})[a-z]?\b", raw[:300])
+                if not nm or not ym:
+                    continue
+                surname = nm.group(1)
+                if not re.search(r"\b" + re.escape(surname) + r"\b.{0,100}?\b" + ym.group(1), flat, re.I):
+                    uncited.append(f"{surname} ({ym.group(1)})")
+            covered = len(refs) - len(uncited)
+            if uncited and covered >= 0.6 * len(refs):
+                out.append(DeterministicFinding(
+                    "citation", "info",
+                    f"{len(uncited)} listed reference(s) have no matching citation in the extracted text: {_cite_list(uncited)}",
+                    "A reference cited only in an appendix, table or figure that the PDF text did not carry "
+                    "would appear here too." + _EXTRACTION_NOTE))
+    return out
+
+
+_FIG_CAPTION_RE = re.compile(
+    r"(?m)^[ \t]*(Figure|Fig\.|Table)[ \t]+(\d{1,2})[ \t]*[:.|\u2013\u2014\-][ \t]*\S")
+_FIG_MENTION_RE = re.compile(
+    r"\b(Figures?|Figs?\.?|Tables?)\s+"
+    r"(?P<list>\d{1,2}[a-z]?(?:\([a-z]\))?"
+    r"(?:\s*(?:,|and|&|or|to|\u2013|\u2014|-)\s*\d{1,2}[a-z]?(?:\([a-z]\))?)*)")
+_FIG_EXTERNAL_RE = re.compile(
+    r"^\s*(?:in|of|from)\s+(?:\[|ref\b|(?:[A-Z][A-Za-z\u00C0-\u024F'\u2019\-]+)(?:\s+et\s+al\.?|\s+and\s+[A-Z]|\s*\(\s*(?:19|20)\d{2}))",
+    re.I)
+
+
+def _fig_kind(word: str) -> str:
+    return "Table" if word.lower().startswith("tab") else "Figure"
+
+
+def _expand_numbers(text: str) -> list[int]:
+    nums: list[int] = []
+    pieces = re.split(r"\s*(?:,|and|&|or)\s*", text)
+    for piece in pieces:
+        rng = re.fullmatch(r"(\d{1,2})[a-z]?(?:\([a-z]\))?\s*(?:to|\u2013|\u2014|-)\s*(\d{1,2})[a-z]?(?:\([a-z]\))?", piece.strip())
+        if rng:
+            a, b = int(rng.group(1)), int(rng.group(2))
+            nums += list(range(a, b + 1)) if a < b and b - a <= 20 else [a, b]
+            continue
+        m = re.match(r"(\d{1,2})", piece.strip())
+        if m:
+            nums.append(int(m.group(1)))
+    return nums
+
+
+def figure_table_checks(body: str) -> list[DeterministicFinding]:
+    """Check figure and table captions against how the text refers to them.
+
+    Reports: numbers cited in the text with no caption, captions the text never
+    refers to, numbers skipped in the sequence, and figures or tables first cited
+    out of order. Supplementary labels (S1, A2) are not numeric and are ignored,
+    as are mentions that point into another paper ("Figure 3 in [12]").
+    """
+    out: list[DeterministicFinding] = []
+    if not body or _TRUNCATION_MARK in body:
+        return out
+
+    captions: dict[str, dict[int, int]] = {"Figure": {}, "Table": {}}
+    caption_starts: set[int] = set()
+    for m in _FIG_CAPTION_RE.finditer(body):
+        captions[_fig_kind(m.group(1))].setdefault(int(m.group(2)), m.start(1))
+        caption_starts.add(m.start(1))
+
+    first_mention: dict[str, dict[int, int]] = {"Figure": {}, "Table": {}}
+    mentioned: dict[str, set[int]] = {"Figure": set(), "Table": set()}
+    n_mentions = 0
+    for m in _FIG_MENTION_RE.finditer(body):
+        if m.start(1) in caption_starts:
+            continue
+        if _FIG_EXTERNAL_RE.match(body[m.end("list"):m.end("list") + 60]):
+            continue
+        kind = _fig_kind(m.group(1))
+        nums = _expand_numbers(m.group("list"))
+        if not nums:
+            continue
+        n_mentions += 1
+        for n in nums:
+            mentioned[kind].add(n)
+            first_mention[kind].setdefault(n, m.start())
+    if n_mentions < 3:
+        return out
+
+    for kind in ("Figure", "Table"):
+        cap = set(captions[kind])
+        men = mentioned[kind]
+        plural = kind + "s"
+        if len(cap) >= 2:
+            missing = sorted(men - cap)
+            if missing:
+                out.append(DeterministicFinding(
+                    "structure", "info",
+                    f"{plural} cited in the text with no caption found: {_cite_list([f'{kind} {n}' for n in missing])}",
+                    f"The text refers to these, but no line starting \"{kind} N:\" or \"{kind} N.\" was found for them. "
+                    "The caption may sit inside an image or an appendix, or the number may be a typo."
+                    + _EXTRACTION_NOTE))
+            lo, hi = min(cap), max(cap)
+            skipped = [n for n in range(lo, hi + 1) if n not in cap and n not in men]
+            if skipped:
+                out.append(DeterministicFinding(
+                    "structure", "info",
+                    f"{kind} numbers skip: {_cite_list([str(n) for n in skipped])} (captions run {lo} to {hi})",
+                    f"No caption and no in-text reference was found for these numbers, which can follow deleting "
+                    f"a {kind.lower()} without renumbering." + _EXTRACTION_NOTE))
+        if men:
+            unreferenced = sorted(cap - men)
+            if unreferenced:
+                out.append(DeterministicFinding(
+                    "structure", "info",
+                    f"{plural} with a caption that the text never refers to: {_cite_list([f'{kind} {n}' for n in unreferenced])}",
+                    f"Readers and reviewers expect every {kind.lower()} to be cited in the text where its point is made."
+                    + _EXTRACTION_NOTE))
+        fm = first_mention[kind]
+        if len(fm) >= 3:
+            by_pos = sorted(fm, key=fm.get)
+            out_of_order = [(a, b) for a, b in zip(by_pos, by_pos[1:]) if b < a]
+            if out_of_order:
+                pairs = ", ".join(f"{kind} {b} before {kind} {a}" for a, b in out_of_order[:3])
+                out.append(DeterministicFinding(
+                    "structure", "info",
+                    f"{plural} are first cited out of numerical order ({pairs})",
+                    f"Most venues want {kind.lower()}s numbered in the order they are first mentioned." + _EXTRACTION_NOTE))
+    return out
+
+
+# ===========================================================================
 # Aggregators
 # ===========================================================================
 
@@ -617,7 +900,8 @@ def _statcheck_findings(body: str) -> list[DeterministicFinding]:
 
 
 def all_findings(body: str, references=None, *, current_year: int = 2026,
-                 latex_source: bool = False) -> list[DeterministicFinding]:
+                 latex_source: bool = False,
+                 n_references_total: Optional[int] = None) -> list[DeterministicFinding]:
     """Every deterministic check applicable to the available inputs.
 
     *body* is the manuscript text (extracted PDF body or .tex source).
@@ -634,4 +918,8 @@ def all_findings(body: str, references=None, *, current_year: int = 2026,
         out += structure_checks(body)
     if references:
         out += reference_integrity_from_extracted(references, current_year)
+    if not latex_source:
+        # PDF-extracted text only: raw LaTeX has its own \ref and \cite checks above.
+        out += citation_matching_checks(body, references, n_references_total)
+        out += figure_table_checks(body)
     return out
