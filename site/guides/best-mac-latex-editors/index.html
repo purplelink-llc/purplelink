@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-05-31",
-          "dateModified": "2026-09-11",
+          "dateModified": "2026-10-09",
           "image": "https://purplelink.llc/assets/og/moderntex.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/best-mac-latex-editors/"
         },
@@ -116,7 +116,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
 <link rel="stylesheet" href="/styles.css?v=cf35a6634a">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <script src="/site.js?v=95cfec31bc" defer></script>
+    <script src="/site.js?v=258cd9c67e" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -142,12 +142,44 @@
       <div class="post-hero">
         <p class="post-date">Comparison</p>
         <h1 class="post-title">Best LaTeX editor for Mac in 2026: 14 editors compared</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time>, updated <time datetime="2026-09-11">September 11, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time>, updated <time datetime="2026-10-09">October 9, 2026</time></p>
         <p class="post-lede">A direct comparison of the LaTeX editors that actually work on Mac in 2026, covering what each one is good at, what it costs, and which workflow it suits. No affiliate links, no rankings padding.</p>
       </div>
 
       <article class="post-body">
         <p><strong>Disclosure up front:</strong> I make one of the editors on this list (ModernTex). I've tried to write the comparison honestly. <a href="https://pages.uoregon.edu/koch/texshop/" rel="noopener">TeXShop</a> is the right call for most academics today, and <a href="https://www.texifier.com/" rel="noopener">Texifier</a> is the right call for most people who want a polished modern editor. ModernTex shipped its 1.0 in September 2026; I've kept its entry to what the app actually does today.</p>
+
+        <h2>The short answer</h2>
+        <p>TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 9, 2026.</p>
+
+        <h2>The editors side by side</h2>
+        <p>"Not stated" means the guide, or the source page it cites, does not say. Offline means the editor compiles on your machine without a server.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">Editor</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">Runs on</th><th class="u-th" scope="col">Works offline</th><th class="u-th" scope="col">PDF preview and SyncTeX</th><th class="u-th" scope="col">Notable limit</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell"><strong>TeXShop</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS only</td><td class="u-cell">Yes: compiles locally with MacTeX; no cloud</td><td class="u-cell">Side-by-side PDF preview; SyncTeX click-to-source</td><td class="u-cell">Dated interface; no inline BibTeX autocomplete or plain-language errors</td></tr>
+              <tr><td class="u-cell"><strong>Texifier</strong></td><td class="u-cell">$29.99 (occasional discount)</td><td class="u-cell">macOS and iOS</td><td class="u-cell">Yes: bundles its own TeX distribution</td><td class="u-cell">PDF updates as you type; SyncTeX not stated</td><td class="u-cell">Tracked changes via latexdiff need external tools</td></tr>
+              <tr><td class="u-cell"><strong>Octree</strong></td><td class="u-cell">Free tier with limits; paid plan about $10/mo</td><td class="u-cell">Web, with a Mac wrapper</td><td class="u-cell">Not stated; the project lives on Octree's servers by default</td><td class="u-cell">Not stated</td><td class="u-cell">Manuscript is on Octree's servers by default</td></tr>
+              <tr><td class="u-cell"><strong>VS Code + LaTeX Workshop</strong></td><td class="u-cell">Free</td><td class="u-cell">Cross-platform</td><td class="u-cell">Not stated</td><td class="u-cell">SyncTeX preview</td><td class="u-cell">Feels like a code file, not a paper</td></tr>
+              <tr><td class="u-cell"><strong>Overleaf</strong></td><td class="u-cell">Free tier (limited compile time, no Git sync); paid plans $15&ndash;$25/mo</td><td class="u-cell">Browser</td><td class="u-cell">No offline access on the free tier; paid tiers not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Free tier has limited compile time and no Git sync</td></tr>
+              <tr><td class="u-cell"><strong>ModernTex (mine)</strong></td><td class="u-cell">$19.99 once, after a free 7-day trial</td><td class="u-cell">macOS 14+</td><td class="u-cell">Yes: compiles with local MacTeX or TinyTeX</td><td class="u-cell">PDF preview that stays in sync; SyncTeX not stated</td><td class="u-cell">Version 1.0 shipped in September 2026, so no track record; no iPad app</td></tr>
+              <tr><td class="u-cell"><strong>TeXstudio</strong></td><td class="u-cell">Free, open source</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">Integrated PDF viewer with SyncTeX</td><td class="u-cell">Qt application; does not feel like a Mac app</td></tr>
+              <tr><td class="u-cell"><strong>Texmaker</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">Built-in PDF viewer; SyncTeX</td><td class="u-cell">Simpler than TeXstudio, with fewer features</td></tr>
+              <tr><td class="u-cell"><strong>TeXworks</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated; ships inside MacTeX and TeX Live</td><td class="u-cell">PDF window; SyncTeX</td><td class="u-cell">Minimal: source window, PDF window, a typeset button</td></tr>
+              <tr><td class="u-cell"><strong>LyX</strong></td><td class="u-cell">Free, open source</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated; needs a TeX distribution installed</td><td class="u-cell">Not stated</td><td class="u-cell">Generates LaTeX rather than editing it; awkward when you must share source</td></tr>
+              <tr><td class="u-cell"><strong>Archimedes</strong></td><td class="u-cell">Paid, one-time</td><td class="u-cell">macOS, with an iOS version</td><td class="u-cell">Not stated</td><td class="u-cell">Live preview; SyncTeX not stated</td><td class="u-cell">Built for Markdown with LaTeX math, not full journal manuscripts</td></tr>
+              <tr><td class="u-cell"><strong>TeX64</strong></td><td class="u-cell">Paid</td><td class="u-cell">macOS</td><td class="u-cell">Yes: compiles locally through your MacTeX or TeX Live</td><td class="u-cell">Not stated</td><td class="u-cell">Recent, with no track record</td></tr>
+              <tr><td class="u-cell"><strong>Emacs with AUCTeX</strong></td><td class="u-cell">Free</td><td class="u-cell">Anything</td><td class="u-cell">Not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Learning curve is the whole Emacs learning curve</td></tr>
+              <tr><td class="u-cell"><strong>Neovim or Vim with VimTeX</strong></td><td class="u-cell">Free</td><td class="u-cell">Anything</td><td class="u-cell">Not stated</td><td class="u-cell">Forward and inverse search with a PDF viewer such as Skim</td><td class="u-cell">Rewards people who already use Vim</td></tr>
+              <tr><td class="u-cell"><strong>texspark</strong></td><td class="u-cell">$39.99 one-time; free 14-day trial</td><td class="u-cell">macOS 14+</td><td class="u-cell">Not stated</td><td class="u-cell">SyncTeX across multiple files (&#8984;-click in the PDF); preview details not stated</td><td class="u-cell">Updates cover releases before 1.0 per its page; license activates on up to 3 Macs; not tested</td></tr>
+              <tr><td class="u-cell"><strong>Oleafly</strong></td><td class="u-cell">Free, open source (AGPL-3.0)</td><td class="u-cell">macOS (Apple Silicon), Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">PDF pane; SyncTeX not stated on the pages read</td><td class="u-cell">Parts of the app are labeled beta on its page; not tested</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Sources for the added rows, read October 9, 2026.</strong> texspark: <a href="https://texspark.io/" rel="noopener">texspark.io</a>. Oleafly: <a href="https://oleafly.com/" rel="noopener">oleafly.com</a> and its <a href="https://oleafly.com/docs/editor/" rel="noopener">editor documentation</a>. I did not install or test either one, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.</p>
 
         <h2>What you actually need to run LaTeX on a Mac</h2>
         <p>A LaTeX editor is only half of the setup, and this trips up most people
@@ -318,7 +350,8 @@
         that it is not a Mac question. MacTeX ships all three engines you would ever
         choose between, and every editor above lets you pick. <strong>pdfLaTeX</strong>
         is the default, the fastest, and what nearly every journal template assumes;
-        start there. <strong>XeLaTeX</strong> adds system fonts and proper Unicode,
+        start there.</p>
+        <p><strong>XeLaTeX</strong> adds system fonts and proper Unicode,
         which matters for non-Latin scripts or a document that must use a specific
         typeface. <strong>LuaLaTeX</strong> does what XeLaTeX does and is where newer
         packages are heading. Switch engines only when a package or a font forces
@@ -458,7 +491,7 @@
       </div>
     </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js?v=3355638b88" defer></script>
+      <script src="/analytics.js?v=4cbb1f9af4" defer></script>
   <script src="/ethicalads.js?v=c8d9be094c" defer></script>
 </body>
 </html>

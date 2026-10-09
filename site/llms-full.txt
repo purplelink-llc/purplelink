@@ -11,7 +11,7 @@ Products
 
 # Tools for the paper, from first draft to accepted.
 
-Five Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
+Six Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
 
 Watch the overview
 
@@ -57,6 +57,10 @@ A Mac keyboard that makes no sound
 
 Keyfeel plays recorded keyboard-switch sounds as you type, with click sounds and optional trackpad haptics.
 
+Interviews or scanned pages to turn into text
+
+Tapefolio transcribes recordings and reads scans on your Mac, labels speakers and helps you replace identifiers. You check every transcript against the audio.
+
 Keeping track of where everything is
 
 Vitae, a free app. Vitae Plus is an optional subscription from $2.99 a month.
@@ -89,7 +93,7 @@ $54.99 once
 
 ### The Mac Suite
 
-ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life in one payment. Bought separately they come to $94 the first year, then $23.99 a year for Plus.
+ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life in one payment. Bought separately they come to $124 the first year, then $23.99 a year for Plus.
 
 See the Suite →
 
@@ -97,7 +101,7 @@ Free app, optional Plus from $2.99 a month
 
 ### Vitae
 
-Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later. Currently a beta, version 1.0.3.
+Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later. Currently a beta, version 1.0.4.
 
 Download Vitae →
 
@@ -132,6 +136,14 @@ Free 7-day trial, then $9.99
 A menu-bar app that plays recorded keyboard-switch sounds as you type, with mouse-click sounds, scroll ticks and optional trackpad haptics. It works offline and reads key codes, never the characters you type. macOS 13 or later.
 
 See Keyfeel →
+
+Free 7-day trial, then $29.99
+
+### Tapefolio
+
+A Mac app that transcribes interviews and meetings on your Mac, labels the speakers, helps you replace names and other identifiers case by case, and reads scanned pages and photos into text. Your files are not uploaded. It will mishear words, so you check the text against the audio. macOS 26 or later, Apple silicon.
+
+See Tapefolio →
 
 Before you submit
 
@@ -283,7 +295,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $19.99 to keep · v1.4.0
+Free 7-day trial · $19.99 to keep · v1.5.0
 
 # ModernTex
 
@@ -295,7 +307,7 @@ Refunded if you email within 14 days of purchase. Updates are included forever.
 
 From the studio behind Scholar Utility Belt, which 1,000 researchers use and the Chrome Web Store rates 4.5 out of 5.
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.4.0 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once. First ten minutes: install and first build.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.4.0 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once. First ten minutes: install and first build.
 
 ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.
 
@@ -435,9 +447,11 @@ AI featuresOptional. Fix with AI proposes a repair for a build error and shows i
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
-Current version1.4.0, which makes ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
+Current version1.5.0, which builds projects kept in iCloud Drive and OneDrive, flags a Figure that points at a table, suggests the label you meant, shows a checks summary in the status bar and saves automatic checkpoints. 1.4.0 made ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
 
-### Eleven updates since launch on September 4
+### Twelve updates since launch on September 4
+
+- Oct 91.5.0Builds projects in iCloud Drive and OneDrive; catches a Figure that points at a table; checks summary in the status bar; automatic checkpoints.
 
 - Oct 71.4.0One download: free for seven days from first launch, then a license key. Copies you already bought keep working with no key.
 
@@ -584,7 +598,7 @@ Refunded if you email within 14 days of purchase. Updates are included forever.
 
 The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0 · 38 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
-Also in the Mac Suite: Outbound Veil, ModernTex, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
+Also in the Mac Suite: Outbound Veil, ModernTex, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
 
 Outbound Veil checking a fictional client note typed into a plain text field in Chrome. Every name and number on this page is invented.
 
@@ -751,7 +765,7 @@ Refunded if you email within 14 days of purchase.
 
 The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.0 · 7.3 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 
-Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
 
 Sample data for the last clean. The disk figures are read from the Mac it was captured on. The window title comes from the test build.
 
@@ -970,11 +984,11 @@ Keyfeel plays real recorded keyboard-switch sounds when you press a key on your 
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.3.1, released October 8, 2026. 7 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.4.0, released October 8, 2026. 7 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
 Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
 
-Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, $54.99 once.
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
 
 An illustration of the idea, not a screenshot of the app.
 
@@ -1002,7 +1016,7 @@ Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it
 
 ## What it does
 
-Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), and synthesized extras. Every recording is licensed for use (CC0), with credits listed in the app.
+Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), and synthesized extras. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
 
 Your own soundsImport a Mechvibes sound pack in the original format (its folder, its zip or its config.json), including packs in .ogg, and each key keeps the sound the pack gave it. Packs in the newer MechvibesDX format are not read. Or choose one short sound file of your own.
 
@@ -1016,9 +1030,11 @@ ShortcutsEach of eleven shortcuts, such as copy, paste, undo and save, can have 
 
 TrackpadOptional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.
 
-QuietSilence in the apps you choose, automatic silence on the speakers while the microphone or a camera is in use, and an option to stay silent in full-screen apps. Headphones, wired or Bluetooth, play by default, have their own switch and keep their own volume, which Keyfeel switches to when the output changes; you can also keep sounds off the built-in speakers and play them only on headphones or external audio.
+QuietSilence in the apps you choose, automatic silence on the speakers while the microphone or a camera is in use, and an option to stay silent in full-screen apps. Headphones, wired or Bluetooth, play by default, have their own switch and keep their own volume, which Keyfeel switches to when the output changes; you can also keep sounds off the built-in speakers and play them only on headphones or external audio. A separate setting keeps the sounds on the MacBook's own speakers and moves them to AirPods, or any device you tick, only when the Mac sends its sound there, so casting to a TV leaves your clicks on the laptop without the delay a cast adds.
 
-ControlKeyfeel runs from the menu bar and is controlled there, including a volume slider. Keyboard shortcuts turn it on and off and switch sounds, a keyfeel:// link works from Shortcuts and scripts, and you can hide the menu bar icon.
+Per appPick a different sound for each app. Add the app you are in, choose its sound, and Keyfeel plays that sound whenever the app is in front and your usual one everywhere else.
+
+ControlKeyfeel runs from the menu bar and is controlled there, including a volume slider. Settings has separate levels for keys, the space bar, modifier keys, mouse clicks and scrolling, and headphones and speakers keep their own volumes. Keyboard shortcuts turn it on and off and switch sounds, a keyfeel:// link works from Shortcuts and scripts, and you can hide the menu bar icon.
 
 ## How it feels
 
@@ -1100,6 +1116,10 @@ Can I use sound packs from other apps?
 
 Yes, packs in the original Mechvibes format, the ones whose config.json has a defines section. Choose Import a sound pack in the menu or in Settings, then pick the pack's folder, its zip file or its config.json. Keyfeel converts it once and keeps a copy of its own. Packs in the newer MechvibesDX format are not read; the Mechvibes guide shows how to tell them apart.
 
+Does one license work on more than one Mac?
+
+One license key works on two of your Macs. Paste the same key into Keyfeel on each one.
+
 Are updates included?
 
 Yes, all of them. The price is a single payment, for life. Keyfeel checks for a new version and offers to install it in place.
@@ -1131,13 +1151,244 @@ Get Keyfeel
 
 ---
 
+Source: https://purplelink.llc/tapefolio/
+Title: Tapefolio - Private Transcription and OCR for Researchers on Mac | Purplelink LLC
+
+← All products
+
+macOS 26 · Apple silicon
+Free 7-day trial · $29.99 to keep
+
+# Tapefolio
+
+Tapefolio transcribes interview and meeting recordings on your Mac, labels the speakers, helps you replace names and other identifiers, and reads scanned pages and photos into searchable text. Your files are not uploaded.
+
+Try it free for 7 days
+
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.1, released October 9, 2026. 43 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
+
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
+
+The review screen on a demo recording: an invented interview read by two computer voices. The draft is not perfect, and the first pass did not mark every identifier.
+
+## Forty-five seconds in the app
+
+The review screen on a demo interview, replacing or keeping each identifier, the export sheet, Batch OCR and the model settings. The footage is the running app. The interview is invented and read by computer voices.
+
+Play the video on YouTube
+
+## How it works
+
+### You add a recording
+
+Open audio files, or record from the microphone inside the app. Tapefolio transcribes on your Mac and keeps the time of every word.
+
+### You check it against the audio
+
+The review screen plays the recording beside the text and highlights the word being spoken. You correct words, name the speakers and merge two labels that are one person.
+
+### You decide what is replaced
+
+Identifier removal marks what it found. You replace or keep each one, or replace everything left, and then export. The key that maps the codes back is saved in a separate file.
+
+## What it looks like
+
+Captures of the running app. The recording in the first four is an invented interview read by two computer voices, and the letters in the OCR capture are generated test files, so every name and number is made up. The draft has transcription errors, and the first pass missed some identifiers.
+
+The review screen before any decisions. Seven identifiers are found and none is reviewed. The draft has errors: the clinic line reads “Brightwater Clinic Indecator”, and in this first pass the app did not mark “Decatur” (transcribed there as “Indecator”) or “Brightwater Clinic” as identifiers.
+
+After deciding case by case: five identifiers to replace, one left in (Elena) and one not yet reviewed. The speakers have been renamed. A “Check these too” list at the bottom of the panel offers more words, here “Brightwater” and “Clinic”, that you can remove as an identifier type. Anything you do not review is replaced when you export.
+
+The preview with codes in place of the identifiers marked to replace. Elena was kept, and “Brightwater Clinic Indecator” is still readable because it was never marked. Detection misses some identifiers, so you read the result.
+
+The export sheet. It offers a format and a look, timestamps, a draft notice, MAXQDA time markers and replacing identifiers with codes. It states how many were replaced, left in and not yet reviewed, and that the key that undoes the replacement is saved next to the export, to be kept apart from it.
+
+Batch OCR on nine generated test files, 11 pages. The panel on the left sets the outputs, the list shows each file's confidence (97% for the receipt, 100% for the rest), and the recognized lines of the selected letter are on the right. The names and numbers in the letter are invented.
+
+Settings, Models. Speech to text is Apple’s recognition until you choose another. Whisper base is a 150 MB download here, and Parakeet and Whisper large v3 turbo are installed on this Mac, each with a Delete button.
+
+## What it does
+
+TranscriptionTranscribes audio on your Mac, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet for English, Whisper base for English and Whisper large-v3 turbo for many languages. Settings can delete any of them.
+
+SpeakersLabels who is speaking, using the standard speaker-separation models that come with the app. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is recommended instead: it was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download.
+
+Speaker memoryOptional, and opt-in for each project. Tapefolio requires a recorded consent note before it saves a voice. Voices are stored encrypted on your Mac, the app only suggests matches for you to confirm, and you can delete them.
+
+Identifier removalFinds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth, and replaces them with consistent codes. You review case by case: replace or keep each one, or replace all that remain. The key file that maps the codes back is kept separately. It misses some, so you read the result.
+
+Review screenAn audio player next to the transcript, with the current word highlighted. Turns are editable, and you can rename or merge speakers and go through the identifier review without leaving the screen.
+
+ExportWord, HTML, Markdown, plain text, SRT, VTT and JSON, and a timestamped Word file made to import into MAXQDA.
+
+RecordingRecord from the microphone in the app, then transcribe straight into the review screen.
+
+Batch OCRReads photos, scans and PDFs, one file or a whole folder, and keeps two-column pages in reading order. Output is a searchable PDF with an invisible text layer, or text, Markdown, Word, JSON or CSV. You can save a workflow and run it again, and replace identifiers in the text with a separate key file. Each run writes a provenance record with a SHA-256 for every input file.
+
+## What it will not do
+
+Get every word rightIt will mishear words and mislabel speakers. Overlapping voices, quiet speech and short replies such as okay and yep are where it loses the most. Check any text you plan to quote against the recording.
+
+Anonymize a transcriptIdentifier removal finds many identifiers and misses some, and it cannot tell when a detail identifies someone only in context. It does not make a study compliant; that is for you and your ethics board. Read every transcript before you share it.
+
+Read handwriting or phone photos reliablyOCR has been measured only on generated test files. Real handwriting and real phone photos of pages have not been tested.
+
+Promise results in other languagesWhat has been measured is English meeting audio. Other languages, accents and a quiet two-person interview have not been measured, and Whisper is the model to try for languages other than English.
+
+Run on an Intel Mac or an older macOSIt needs macOS 26 or later and Apple silicon. There is no Windows, iPhone or iPad version.
+
+Send your files anywhereThere is no cloud transcription and there are no accounts. Nothing you open in Tapefolio is uploaded.
+
+## How well it works
+
+These are small checks, run on an M4 MacBook with 16 GB, and your recordings will differ. Treat every transcript as a draft.
+
+Words wrongTwo meetings from the AMI Meeting Corpus, four people each, headset mix. The word error rate was between 21% and 29% for Apple's engine, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for Whisper base, the small optional download. Fillers are left out of the count, and many of the errors are dropped short replies and spelling conventions such as gonna and going.
+
+Speaker labels, meetingsOn the two AMI meetings, counting every word, about 83% to 84% of words got the right speaker, with the standard speaker separation and with Nemotron 3 alike. Some words get no label at all. The speaker setting was tuned on these two meetings, so they may flatter it.
+
+Speaker labels, two-person recordingsFive real two-person recordings from VoxConverse, 71 minutes in all, English, YouTube-quality audio, with labels checked by people. They have no transcripts, so this is scored on speech time, not words. Standard speaker separation missed 8.5% of the speech, added 1.7% that was not speech and mixed up the speakers for 1.1%, a total error of 11.3%. NVIDIA Nemotron 3 missed 1.4%, added 0.5% and mixed up 0.0%, a total of 1.9%. These files were not used to tune the setting. Five files is a small sample, and the app's word accuracy on them was not measured.
+
+Names foundAgainst the corpus's human labels on those meetings, identifier removal found 13 of 15 personal names and 2 of 2 places, and flagged one false place. That is a very small sample.
+
+Scanned textOn 9 generated test files (11 pages), the OCR word error rate was 1.5%.
+
+## Privacy and what downloads
+
+### Your files stay on your Mac
+
+Transcription, speaker labels, identifier removal and OCR run on your Mac. There are no accounts. If your ethics board requires that recordings stay on your own computer, Tapefolio does its work there; whether that meets the board's rules is for you and the board to decide.
+
+### Downloads, each once
+
+The internet is used for three things, and none of them carries your files. The optional model downloads inside the app come from Hugging Face, once each. The app's check for a new version sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. And macOS itself may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account. Details are on the privacy page.
+
+### Voices are opt-in
+
+Speaker memory is off until you turn it on for a project and record a consent note. What it saves is stored encrypted on your Mac, and you can delete it.
+
+Models
+
+ModelForSize
+
+Apple's speech recognitionTranscription, used until you download a modelNone from Tapefolio; macOS may fetch Apple's model once
+
+NVIDIA ParakeetEnglish transcriptionAbout 470 MB
+
+Whisper baseEnglish transcription, a small downloadAbout 150 MB
+
+Whisper large-v3 turboTranscription in many languagesAbout 650 MB
+
+NVIDIA Nemotron 3 DiarizationSeparating speakers; recommended, and used automatically once installedAbout 190 MB
+
+Optional models can be deleted from Settings. The first time each model runs on a Mac, it can take a few minutes while macOS prepares the model for the Neural Engine, and Whisper large-v3 turbo can take about ten minutes the first time it runs on a given chip.
+
+Credits: the speech models are NVIDIA Parakeet TDT 0.6B v2 (CC BY 4.0), run through FluidAudio and FluidInference (Apache-2.0), and OpenAI Whisper (MIT), run through WhisperKit (MIT, Argmax). The speaker models are from pyannote and WeSpeaker, via FluidInference. The measurements above use the AMI Meeting Corpus (CC BY 4.0) and five recordings from VoxConverse (CC BY 4.0).
+
+## Price and trial
+
+### Seven days free
+
+The trial is the complete app, counted from the first time you open it. No account and nothing to enter.
+
+### $29.99, once
+
+One payment in US dollars, through Stripe. After the trial the app asks for a license key, which arrives in the receipt email and on the page after you pay. Every update is included.
+
+### One key, two Macs
+
+The key unlocks Tapefolio on up to two of your own Macs, works offline and needs no second download. Refunds within 14 days: email ben@purplelink.llc.
+
+## System requirements
+
+macOS26 or later.
+
+MacApple silicon. There is no Intel version.
+
+Disk spaceThe app is about 40 MB, plus the optional models you choose to download (see the sizes above).
+
+PermissionsmacOS asks for microphone access the first time you record in the app.
+
+## Frequently asked questions
+
+What does it need to run?
+
+macOS 26 or later on a Mac with Apple silicon. There is no Intel version.
+
+Do my recordings leave my Mac?
+
+No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things: the optional model downloads inside the app, which come from Hugging Face and happen once each; the app's check for a new version, which sends the app's name, its version, the macOS version and the app's update token to purplelink.llc; and macOS itself, which may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account.
+
+How accurate is it?
+
+It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for Apple's speech recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for the small Whisper base model, so a person should check any text that will be quoted against the recording. The measured results are above.
+
+Does it anonymize a transcript?
+
+No. Identifier removal finds many identifiers and replaces them with codes, and it misses some. You review each one, and you should read the result before you share it. It does not make a study compliant; that is for you and your ethics board to decide.
+
+What happens to the key file?
+
+When Tapefolio replaces an identifier it writes a separate key file that maps each code back to the original. Anyone who has both the transcript and the key file can reverse the replacement, so store the key file somewhere other than where you share the transcript.
+
+How good are the speaker labels?
+
+Good on clear two-person recordings once Nemotron 3 is installed, and weaker without it. On five real two-person recordings (71 minutes, English, YouTube-quality audio) standard speaker separation had a total error of 11.3% of the speech time and Nemotron 3 had 1.9%. On the two AMI meetings, with four people each, about 83% to 84% of all words got the right speaker, and some got none. Five files is a small sample, those files have no transcripts, so word accuracy on them was not measured, and you can rename and merge speakers in the review screen.
+
+Does it remember people's voices?
+
+Only if you turn speaker memory on for a project, and the app asks for a recorded consent note first. Voices are stored encrypted on your Mac, Tapefolio only suggests matches for you to confirm, and you can delete them. It has been tested only on recordings made the same day with the same microphone, so treat a suggestion as a suggestion.
+
+Which speech model should I use?
+
+Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only; Whisper large-v3 turbo covers many languages but was the slowest.
+
+Why is the first run slow?
+
+macOS prepares a speech model for the Neural Engine the first time that model runs on a Mac. That can take a few minutes for each model, and it happens once for each. Later runs of the same model start at once.
+
+Does one license work on more than one Mac?
+
+One license key works on two of your Macs. Paste the same key into Tapefolio on each one.
+
+Are updates included?
+
+Yes, all of them. The price is a single payment. Tapefolio checks for a new version and offers to install it in place.
+
+What happens when the trial ends?
+
+The trial is the complete app for seven days from the first time you open it, with no account. To keep using Tapefolio after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key in Tapefolio and paste it. It works offline and needs no second download.
+
+Can I get a refund?
+
+Email ben@purplelink.llc within 14 days of purchase. See the terms.
+
+How do I get help?
+
+Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with.
+
+## Try it on one recording.
+
+Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.
+
+Try it free for 7 days
+Buy Tapefolio
+
+macOS 26 or later · Apple silicon
+
+Tapefolio free for 7 days
+Get Tapefolio
+
+
+---
+
 Source: https://purplelink.llc/vitae/
 Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
 
 ← All products
 
 macOS
-Free app · optional Plus from $2.99 a month · v1.0.3 Beta
+Free app · optional Plus from $2.99 a month · v1.0.4 Beta
 
 # Vitae
 
@@ -1225,7 +1476,7 @@ Not from anyone else. The sidebar has one small card, labelled "From Purplelink"
 
 How does Vitae update?
 
-Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself; if you still have it, download the current version (1.0.3) once from this page and it will keep itself up to date after that.
+Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself; if you still have it, download the current version (1.0.4) once from this page and it will keep itself up to date after that.
 
 Why isn't it on the Mac App Store?
 
@@ -1287,7 +1538,7 @@ $23.99 a year
 
 Stripe handles the card; Purplelink never sees it. Stripe asks for a card to start the trial and charges nothing until the 7 days are up. Cancel before then and you pay nothing. Cancel anytime after that and Plus keeps working through the period you have paid for.
 
-Want Plus for life? It is included in the Mac Suite, $54.99 once, with ModernTex, Outbound Veil, Legroom and Keyfeel.
+Want Plus for life? It is included in the Mac Suite, $54.99 once, with ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio.
 
 What Plus adds
 
@@ -2142,6 +2393,8 @@ Illustrative example on a fictional manuscript; your result follows the same for
 - Named software or datasets that trivially identify the authors.
 
 - "In our previous work [12]" self-citation patterns.
+
+It reads the manuscript text, not the file properties. Author names often sit in a PDF or Word file's metadata too: remove PDF metadata for blind review, free and in your browser.
 
 ## FAQ
 
@@ -4771,11 +5024,55 @@ Comparison
 
 # Best LaTeX editor for Mac in 2026: 14 editors compared
 
-By Benjamin Ampel · May 31, 2026, updated September 11, 2026
+By Benjamin Ampel · May 31, 2026, updated October 9, 2026
 
 A direct comparison of the LaTeX editors that actually work on Mac in 2026, covering what each one is good at, what it costs, and which workflow it suits. No affiliate links, no rankings padding.
 
 Disclosure up front: I make one of the editors on this list (ModernTex). I've tried to write the comparison honestly. TeXShop is the right call for most academics today, and Texifier is the right call for most people who want a polished modern editor. ModernTex shipped its 1.0 in September 2026; I've kept its entry to what the app actually does today.
+
+## The short answer
+
+TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 9, 2026.
+
+## The editors side by side
+
+"Not stated" means the guide, or the source page it cites, does not say. Offline means the editor compiles on your machine without a server.
+
+EditorPriceRuns onWorks offlinePDF preview and SyncTeXNotable limit
+
+TeXShopFreemacOS onlyYes: compiles locally with MacTeX; no cloudSide-by-side PDF preview; SyncTeX click-to-sourceDated interface; no inline BibTeX autocomplete or plain-language errors
+
+Texifier$29.99 (occasional discount)macOS and iOSYes: bundles its own TeX distributionPDF updates as you type; SyncTeX not statedTracked changes via latexdiff need external tools
+
+OctreeFree tier with limits; paid plan about $10/moWeb, with a Mac wrapperNot stated; the project lives on Octree's servers by defaultNot statedManuscript is on Octree's servers by default
+
+VS Code + LaTeX WorkshopFreeCross-platformNot statedSyncTeX previewFeels like a code file, not a paper
+
+OverleafFree tier (limited compile time, no Git sync); paid plans $15–$25/moBrowserNo offline access on the free tier; paid tiers not statedNot statedFree tier has limited compile time and no Git sync
+
+ModernTex (mine)$19.99 once, after a free 7-day trialmacOS 14+Yes: compiles with local MacTeX or TinyTeXPDF preview that stays in sync; SyncTeX not statedVersion 1.0 shipped in September 2026, so no track record; no iPad app
+
+TeXstudioFree, open sourcemacOS, Windows, LinuxNot statedIntegrated PDF viewer with SyncTeXQt application; does not feel like a Mac app
+
+TexmakerFreemacOS, Windows, LinuxNot statedBuilt-in PDF viewer; SyncTeXSimpler than TeXstudio, with fewer features
+
+TeXworksFreemacOS, Windows, LinuxNot stated; ships inside MacTeX and TeX LivePDF window; SyncTeXMinimal: source window, PDF window, a typeset button
+
+LyXFree, open sourcemacOS, Windows, LinuxNot stated; needs a TeX distribution installedNot statedGenerates LaTeX rather than editing it; awkward when you must share source
+
+ArchimedesPaid, one-timemacOS, with an iOS versionNot statedLive preview; SyncTeX not statedBuilt for Markdown with LaTeX math, not full journal manuscripts
+
+TeX64PaidmacOSYes: compiles locally through your MacTeX or TeX LiveNot statedRecent, with no track record
+
+Emacs with AUCTeXFreeAnythingNot statedNot statedLearning curve is the whole Emacs learning curve
+
+Neovim or Vim with VimTeXFreeAnythingNot statedForward and inverse search with a PDF viewer such as SkimRewards people who already use Vim
+
+texspark$39.99 one-time; free 14-day trialmacOS 14+Not statedSyncTeX across multiple files (⌘-click in the PDF); preview details not statedUpdates cover releases before 1.0 per its page; license activates on up to 3 Macs; not tested
+
+OleaflyFree, open source (AGPL-3.0)macOS (Apple Silicon), Windows, LinuxNot statedPDF pane; SyncTeX not stated on the pages readParts of the app are labeled beta on its page; not tested
+
+Sources for the added rows, read October 9, 2026. texspark: texspark.io. Oleafly: oleafly.com and its editor documentation. I did not install or test either one, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.
 
 ## What you actually need to run LaTeX on a Mac
 
@@ -5012,6 +5309,8 @@ answer, and you can move to a local setup later without changing your source
 files. Our LaTeX to PDF compiler will also
 build a document without any local install if you just need one PDF.
 
+For the steps, sizes and a check that it worked, see how to install LaTeX on a Mac.
+
 Apple Silicon no longer needs any special handling. MacTeX has shipped native
 arm64 binaries for years, and every editor on this page runs natively on M
 series hardware.
@@ -5022,7 +5321,9 @@ People search for the best LaTeX compiler for Mac, and the honest answer is
 that it is not a Mac question. MacTeX ships all three engines you would ever
 choose between, and every editor above lets you pick. pdfLaTeX
 is the default, the fastest, and what nearly every journal template assumes;
-start there. XeLaTeX adds system fonts and proper Unicode,
+start there.
+
+XeLaTeX adds system fonts and proper Unicode,
 which matters for non-Latin scripts or a document that must use a specific
 typeface. LuaLaTeX does what XeLaTeX does and is where newer
 packages are heading. Switch engines only when a package or a font forces
@@ -5112,11 +5413,71 @@ Comparison
 
 # Best tools to redact personal information before you use ChatGPT and other AI chats (2026)
 
-By Benjamin Ampel · October 4, 2026, updated October 4, 2026
+By Benjamin Ampel · October 4, 2026, updated October 9, 2026
 
 What each option does, what it costs, where the checking happens and what it misses, for anyone who keeps pasting client, patient, student or personal details into an AI chat. Three of the options are not software you install: provider settings, a local model and find-and-replace.
 
-Disclosure up front: I make one of the tools on this list (Outbound Veil, a Mac menu-bar app). I have tried to write the comparison honestly, and in several cases a competitor is the better choice. Predact is free and handles files, which Outbound Veil does not. PrivacyScrubber works on Windows and Linux, which Outbound Veil does not. If your data cannot leave your machine at all, a local model beats every redaction tool here. Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. Where a vendor says its software runs on your device, I write "says": I have not audited that.
+Disclosure up front: I make one of the tools on this list (Outbound Veil, a Mac menu-bar app). I have tried to write the comparison honestly, and in several cases a competitor is the better choice. Predact is free and handles files, which Outbound Veil does not. PrivacyScrubber works on Windows and Linux, which Outbound Veil does not. If your data cannot leave your machine at all, a local model beats every redaction tool here.
+
+Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. MetaVeils was added on October 9, 2026, and I read its page that day. Where a vendor says its software runs on your device, I write "says": I have not audited that.
+
+## The short answer
+
+Start with your chatbot's own account controls, which decide whether chats are used for training. A developer scrubbing transcripts can use Presidio, a free library. A browser extension such as PrivacyScrubber suits several AI sites in Chrome. A Mac menu-bar checker such as Outbound Veil, which I make, flags details as you type. Prices read October 4, 2026.
+
+If the data must never leave your machine, a local model beats every redaction tool here. No tool listed makes a workflow compliant, and all of them miss some things.
+
+## The tools side by side
+
+"Not stated" means the guide and the vendor pages it cites do not say. Where detection happens is the vendor's claim unless the row says otherwise.
+
+ToolPriceRuns whereWhere detection happensWhat it coversNotable limit
+
+Outbound Veil (mine)$29.99 once, after a free 7-day trialmacOS 14 or later, Apple silicon and IntelOn your Mac: a model that runs locally does the checking, and nothing you type is stored or sentText in the field you are typing in: names, addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth, medical record numbers, IBANsMac only; names in Latin script only; checks text, not files; will miss some things; not a compliance product
+
+PredactFree; you enter an email address to get the download linkMac (macOS 14 recommended) and WindowsIts page says processing is local; Safe Mode goes online only when you export to an AI service, and Fully Offline Mode blocks all network usePDFs, Word files, text files, images, email clippings, pasted text and screenshotsDoes not check what you type in other apps; the local-processing statement is the vendor's claim
+
+PrivacyScrubberFree up to 15,000 characters per scrub; Pro $15 a month or $110 once; Teams $99 a month; developer SDK $299 a monthWeb app, Chrome extension, MCP server and Node.js SDKIts page says in the browser tab with no server contact; I have not tested thatChat boxes on 12 listed sites, including ChatGPT, Claude, Gemini, Copilot and Perplexity, with the original values restored in the replyBrowser only; you press the button; larger inputs, PDF OCR and custom rules need a paid plan
+
+Microsoft PresidioFree, MIT licensePython library, with Docker and Kubernetes optionsWherever you run it, with no external servicePersonal data in text, images and structured dataNo interface and no guarantee it finds everything; you write the code that calls it
+
+The provider's own controlsSettings free; business plans priced by OpenAIAnyNot detection: your text still reaches the provider's serversWhether chats are used for training; nothing is redactedText is kept for some period; Temporary Chat may keep a copy for up to 30 days for safety
+
+A local model (Ollama, LM Studio)Free to downloadmacOS, Windows and LinuxOn your computer; Ollama's :cloud models run on Ollama's servers insteadWhatever you paste; no redaction is neededSetup time and memory; open models that fit on a laptop are generally less capable than the largest hosted ones (my judgment)
+
+Find and replace by handFreeAny text editorNowhere; you do it yourselfWhatever you read and replaceUnreliable on long text: a misspelled surname, a nickname or an employer slips through
+
+CaviardFree for up to 10 protected values per document; lifetime plan $9, listed as an early discount from $15.30Chrome extension for ChatGPT and DeepSeekIn the browser, before a prompt is sentPattern-based detection, which suits emails and card numbersTends to be weaker for names; I have not tested it on names
+
+ClipScrub$29 once; 14-day free trialmacOS 15 or later; AI-enhanced detection needs Apple siliconOn the Mac with no internet needed, according to its pagePDFs, Word files, screenshots, screen recordings, JSON, CSV, XML and clipboard textDoes not watch your typing; says it is not a compliance service and does not guarantee complete de-identification
+
+ClipmaskFree to download; its page also mentions a 500-copy trial limit and gives no price for continuingApple silicon Macs only, macOS 14 or laterIts page says on the Mac; the only server contact is a check that the app is a licensed current versionText you copy; Option+Space offers a redacted version to pasteClipboard only; Apple silicon only
+
+RedactDeskFree, open source (MIT)macOS 14 or laterLocally, with OpenAI's open-source privacy-filter modelPDFs, scanned ones included; it deletes the text rather than covering itPDFs only
+
+BlurData$79 a year or $149 once for one person; team plans listed; no free tier shownmacOS 13 or later, with an iOS versionOn the deviceJPG and PNG screenshots and PDFs, in batchesScreenshots and PDFs, not typed text
+
+MetaVeilsFree edition; Pro Lifetime License $39.99 oncemacOS, as a .dmg; minimum macOS version not statedIts page says 100% offline, with scanning on your Mac; not testedTXT, PDF, DOCX and images; names, emails, phone numbers, addresses, card and bank numbers, Social Security numbers, GPS coordinates; metadataFree edition limits not stated; image OCR and metadata stripping need Pro; whether it checks clipboard text or typing is not stated
+
+NightfallBy quote, per user per year, in two editionsBrowser, endpoint, SaaS and AI-app coverage, run by an administratorNot statedPolicies that block or flag sensitive data going into AI apps, email and other servicesBuilt for organizations; a security team has to set the policies
+
+Microsoft PurviewDepends on your Microsoft licensing, which I did not confirmManaged devices, Edge and other browsersNot statedEndpoint DLP policies that block pasting and uploading sensitive information to AI app websites; Edge policies that inspect prompts in consumer AI appsNeeds IT to turn it on for managed devices
+
+ChatGPT Privacy ShieldFree Chrome extension; Pro ($9 a month) and Team ($49 a month) listed as a waitlistChrome extension, ChatGPT onlyNot statedNot statedChatGPT only; a young project
+
+RescriberFree, open sourceChatGPT extension from Northeastern University researchersNot statedNot statedChatGPT only; a young project
+
+PII ScrubberFree for 5 uses a day; Pro $7 a monthExtension for ChatGPTNot statedNot statedSmall extension with paid tiers
+
+Paste RedactorFree for 100 redactions a month, then $1 a monthExtension for four browsersNot statedNot statedSmall extension with paid tiers
+
+PIIGuardAIOpen source; price not statedMac menu-bar proxyNot statedBlocks AI requests containing patterns such as emails and card numbersUses regular expressions only
+
+MaskbaseOpen source; price not statedMac appNot statedDocumentsA young project
+
+Veil (helloveil.com)$8 a monthNot statedNot statedA meeting recorder with a privacy engineA different company's product; its changelog lists nothing that checks what you type in other apps
+
+Sources. Rows come from the sections below and the vendor pages they cite, read October 4, 2026. MetaVeils: metaveils.com, read October 9, 2026; not tested. The last seven rows are the narrower options described near the end of the tool sections.
 
 ## What you actually need to stop leaking data into AI chats
 
@@ -5150,19 +5511,25 @@ All of them share two limits, covered in what redaction cannot do: detection mis
 
 - Find and replace by hand: free, slow, and still useful.
 
-Those seven cover most situations. Seven more tools and seven narrower ones follow.
+Those seven cover most situations. Eight more tools and seven narrower ones follow.
 
 ## Outbound Veil
 
 Cost: $29.99, one-time, updates included, after a free 7-day trial with no account. Platform: macOS 14 or later, Apple silicon and Intel. Mac only. Status: version 1.0.1.
 
-Outbound Veil lives in the menu bar and reads the text field that has focus, through macOS Accessibility. When it finds something it shows a badge with the number of findings and highlights the matching text where the app allows it. You can ignore a finding, or press Redact all, which rewrites the field in place with labelled placeholders such as [SSN_1] or [EMAIL_1]. In apps you choose, it can also hold the send key until you have decided. It looks for names, addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth, medical record numbers and IBANs.
+Outbound Veil lives in the menu bar and reads the text field that has focus, through macOS Accessibility. When it finds something it shows a badge with the number of findings and highlights the matching text where the app allows it. You can ignore a finding, or press Redact all, which rewrites the field in place with labelled placeholders such as [SSN_1] or [EMAIL_1]. In apps you choose, it can also hold the send key until you have decided.
+
+It looks for names, addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth, medical record numbers and IBANs.
 
 A model that runs on your Mac does the checking. Nothing you type is stored or sent, and the app has no analytics. The model is Rampart by National Design Studio, released under CC BY 4.0, and I did not train it. Purplelink ported Rampart's processing code to Swift and added rules for dates of birth, medical record numbers and IBANs. The model file is unchanged.
 
 What it's good at: sitting where the mistake happens, in any Mac app it can read rather than one website. I tested TextEdit, Notes, Microsoft Word, Messages and text areas in Chrome. In the ChatGPT and claude.ai prompt boxes in Chrome, Redact all works, but the whole box is outlined instead of each word highlighted.
 
-What it lacks: Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list. Some apps do not expose their text fields to macOS: in my testing the Apple Mail compose window could not be read, and Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list (the full table). It needs the Accessibility permission, plus Input Monitoring if you turn on send hold. After Redact all it does not put the original values back into the AI's answer; you swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.
+What it lacks: Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list.
+
+Some apps do not expose their text fields to macOS: in my testing the Apple Mail compose window could not be read, and Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list (the full table). It needs the Accessibility permission, plus Input Monitoring if you turn on send hold.
+
+After Redact all it does not put the original values back into the AI's answer; you swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.
 
 Pick Outbound Veil if you write or paste client, patient or student details into chat boxes on a Mac and want a check as you send. Pick something else if you are on Windows, mostly share files or screenshots, or your data has names in non-Latin scripts. The trial is free for seven days; keeping it is $29.99, once.
 
@@ -5170,7 +5537,9 @@ Pick Outbound Veil if you write or paste client, patient or student details into
 
 Cost: Free, no card; you enter an email address to get the download link. Platform: Mac (macOS 14 recommended, Apple silicon supported) and Windows.
 
-Predact is a desktop app where you drop in PDFs, Word files, text files, images and email clippings, or paste text and screenshots. It shows what it found, lets you select more words to redact, and you copy the result out or open a built-in browser linked to ChatGPT, Claude, Gemini or Perplexity. Its page says processing is local, with a Safe Mode that goes online only when you export to an AI service and a Fully Offline Mode that blocks all network use. "Persona filtering" swaps in consistent made-up details instead of tags.
+Predact is a desktop app where you drop in PDFs, Word files, text files, images and email clippings, or paste text and screenshots. It shows what it found, lets you select more words to redact, and you copy the result out or open a built-in browser linked to ChatGPT, Claude, Gemini or Perplexity.
+
+Its page says processing is local, with a Safe Mode that goes online only when you export to an AI service and a Fully Offline Mode that blocks all network use. "Persona filtering" swaps in consistent made-up details instead of tags.
 
 What it's good at: being free, handling files and images, and running on Mac and Windows. What it lacks: it does not check what you type in other apps, so using it is a step you have to remember. The local-processing statement is the vendor's claim.
 
@@ -5200,9 +5569,15 @@ Pick Presidio if you write code and need to scrub a dataset or a set of transcri
 
 Cost: The settings are free; business plans are priced by OpenAI. Platform: any.
 
-This is not redaction, and it is the first thing to fix. OpenAI's help pages describe three things worth knowing. Under Settings, Data Controls, "Improve the model for everyone" decides whether chats on a personal account can be used to train its models. Temporary Chat is documented as not appearing in your history, not creating or updating memories and not being used to improve models while it stays temporary, though OpenAI may keep a copy for up to 30 days for safety. And for ChatGPT Business, Enterprise and Edu and for the API platform, OpenAI says business data is not used for training by default unless the customer opts in. For regulated health data there is a further contract, the Business Associate Agreement; the addendum OpenAI publishes names parts of its API as eligible, and which ChatGPT plans qualify is a question for OpenAI and your counsel. Claude, Gemini and the others have their own settings.
+This is not redaction, and it is the first thing to fix. OpenAI's help pages describe three things worth knowing. Under Settings, Data Controls, "Improve the model for everyone" decides whether chats on a personal account can be used to train its models.
 
-What it's good at: it covers everything you type, costs nothing at the free end and settles the training question. What it lacks: your text still reaches the provider's servers and is kept for some period. A setting is a promise, not a physical barrier: in 2025 a US court order in a newspaper lawsuit reportedly required OpenAI to preserve chats that users had deleted, for a period that reportedly ended in September 2025, with some of what was preserved still held. And a business plan does not change what you are allowed to share. Your duties to a client, patient or student are the same either way.
+Temporary Chat is documented as not appearing in your history, not creating or updating memories and not being used to improve models while it stays temporary, though OpenAI may keep a copy for up to 30 days for safety. And for ChatGPT Business, Enterprise and Edu and for the API platform, OpenAI says business data is not used for training by default unless the customer opts in.
+
+For regulated health data there is a further contract, the Business Associate Agreement; the addendum OpenAI publishes names parts of its API as eligible, and which ChatGPT plans qualify is a question for OpenAI and your counsel. Claude, Gemini and the others have their own settings.
+
+What it's good at: it covers everything you type, costs nothing at the free end and settles the training question. What it lacks: your text still reaches the provider's servers and is kept for some period.
+
+A setting is a promise, not a physical barrier: in 2025 a US court order in a newspaper lawsuit reportedly required OpenAI to preserve chats that users had deleted, for a period that reportedly ended in September 2025, with some of what was preserved still held. And a business plan does not change what you are allowed to share. Your duties to a client, patient or student are the same either way.
 
 Fix this layer first. For a team, a business plan with a signed agreement matters more than any redaction tool.
 
@@ -5210,7 +5585,9 @@ Fix this layer first. For a team, a business plan with a signed agreement matter
 
 Cost: Free to download. Platform: macOS, Windows and Linux for both Ollama and LM Studio.
 
-Ollama and LM Studio run open models on your own computer. LM Studio's documentation says it can operate entirely offline once a model is downloaded, and its privacy policy says messages, chat histories and documents are not transmitted from your system when you run models locally; update checks and model downloads do use the network. Ollama has a catch: it also offers cloud models, whose names end in :cloud, that run on Ollama's servers. Its documentation says prompts to those are processed there, and that cloud features can be turned off. Choose a local model if the point is that nothing leaves the machine.
+Ollama and LM Studio run open models on your own computer. LM Studio's documentation says it can operate entirely offline once a model is downloaded, and its privacy policy says messages, chat histories and documents are not transmitted from your system when you run models locally; update checks and model downloads do use the network.
+
+Ollama has a catch: it also offers cloud models, whose names end in :cloud, that run on Ollama's servers. Its documentation says prompts to those are processed there, and that cloud features can be turned off. Choose a local model if the point is that nothing leaves the machine.
 
 What it's good at: it is the only option here where redaction is not needed, because there is no recipient. You can paste the whole note. What it lacks: setup time, memory and capability. Open models that fit on a laptop are generally less capable than the largest hosted ones, which matters for hard reasoning and less for summarizing or drafting. That is my judgment, not a benchmark.
 
@@ -5220,9 +5597,11 @@ Pick a local model if the material must stay on your machine and a smaller model
 
 Cost: Free. Platform: any text editor.
 
-Copy the text into a plain-text editor, replace each name with "Person A", "Person B" and each date with "Date 1", and keep a small key in a separate note. Ask your question, then reverse the replacements in the answer. It works with any AI service, no vendor sees anything, and it forces you to read every line, which a tool does not. The cost is reliability on long text: a misspelled surname, a nickname or an employer slips through. Use it for short, occasional documents, or as the read-through after a detector's first pass.
+Copy the text into a plain-text editor, replace each name with "Person A", "Person B" and each date with "Date 1", and keep a small key in a separate note. Ask your question, then reverse the replacements in the answer.
 
-## Seven more tools
+It works with any AI service, no vendor sees anything, and it forces you to read every line, which a tool does not. The cost is reliability on long text: a misspelled surname, a nickname or an employer slips through. Use it for short, occasional documents, or as the read-through after a detector's first pass.
+
+## Eight more tools
 
 Each is real and useful to someone. None is on the shortlist because one of the seven above covers the same ground for most people, or the tool addresses a different problem.
 
@@ -5256,6 +5635,14 @@ Cost: $79 a year or $149 once for one person; team plans are listed. No free tie
 
 It finds and blacks out personal details in JPG and PNG screenshots and in PDFs, on the device, in batches. Pick BlurData if your leaks are screenshots.
 
+### MetaVeils
+
+Cost: A free edition, and a Pro Lifetime License at $39.99 one time. Pro adds image OCR, deep metadata extraction and metadata stripping. Its page lists no limits for the free edition. Platform: macOS, as a .dmg download; the minimum macOS version and Apple silicon or Intel support are not stated.
+
+A Mac app from PholidLabs (version 1.1.3) for cleaning documents before you paste them into an AI chatbot. Its page lists TXT, PDF, DOCX and images, and describes finding names, email addresses, phone numbers, addresses, card and bank numbers, Social Security numbers and GPS coordinates, and removing metadata such as EXIF, GPS and author fields.
+
+The page calls it 100% offline, with scanning done on your Mac. I read that page on October 9, 2026 and have not installed the app, so that is the vendor's claim and I have not tested it. The page does not say whether it checks clipboard text or what you type. Pick MetaVeils if your material is documents and file metadata rather than text typed into boxes.
+
 ### Nightfall
 
 Cost: By quote, per user per year, in two editions. Directories quote conflicting figures, so I give none. Platform: browser, endpoint, SaaS and AI-app coverage, run by an administrator.
@@ -5268,7 +5655,9 @@ Cost: Depends on your Microsoft licensing, which I did not confirm. Platform: ma
 
 Microsoft's documentation describes Endpoint DLP policies that block pasting and uploading sensitive information to AI app websites on managed devices, and Edge policies that inspect prompts typed or pasted into consumer AI apps including ChatGPT, Copilot, DeepSeek and Gemini. Pick Purview if your organization already runs Microsoft 365 security and IT can turn it on.
 
-Seven narrower options, most of them young, with a handful of installs or stars as of this writing. ChatGPT Privacy Shield is a free Chrome extension for ChatGPT only, with Pro ($9 a month) and Team ($49 a month) plans listed as a waitlist. Rescriber is a free, open-source ChatGPT extension from Northeastern University researchers. PII Scrubber (ChatGPT, free for 5 uses a day, Pro $7 a month) and Paste Redactor (four browsers, free for 100 redactions a month, then $1 a month) are small extensions with paid tiers. PIIGuardAI is an open-source Mac menu-bar proxy that blocks AI requests containing patterns such as emails and card numbers but uses regular expressions only. Maskbase is an open-source Mac app for documents. Veil (helloveil.com, $8 a month) is a different company's meeting recorder with a privacy engine; its changelog lists nothing that checks what you type in other apps.
+Seven narrower options, most of them young, with a handful of installs or stars as of this writing. ChatGPT Privacy Shield is a free Chrome extension for ChatGPT only, with Pro ($9 a month) and Team ($49 a month) plans listed as a waitlist. Rescriber is a free, open-source ChatGPT extension from Northeastern University researchers. PII Scrubber (ChatGPT, free for 5 uses a day, Pro $7 a month) and Paste Redactor (four browsers, free for 100 redactions a month, then $1 a month) are small extensions with paid tiers.
+
+PIIGuardAI is an open-source Mac menu-bar proxy that blocks AI requests containing patterns such as emails and card numbers but uses regular expressions only. Maskbase is an open-source Mac app for documents. Veil (helloveil.com, $8 a month) is a different company's meeting recorder with a privacy engine; its changelog lists nothing that checks what you type in other apps.
 
 ## What redaction cannot do
 
@@ -5290,11 +5679,15 @@ Some vendors above say this plainly, and everyone should assume it. Rampart, the
 
 This is not legal advice, and the answer depends on who you are and what you hold.
 
-HIPAA. The rule that defines de-identified health information (45 CFR 164.514) offers two routes: an expert's documented determination that the risk of identifying a person is very small, or removal of a listed set of about 18 identifier types, including names, geographic detail, dates tied to a person, contact numbers and record and account numbers, with no actual knowledge that what is left could identify someone. A detector that catches names and numbers is neither route, so text it has cleaned can still be protected health information. Whether you may send data to an AI service at all usually turns on a Business Associate Agreement and your organization's policy, so ask your compliance officer.
+HIPAA. The rule that defines de-identified health information (45 CFR 164.514) offers two routes: an expert's documented determination that the risk of identifying a person is very small, or removal of a listed set of about 18 identifier types, including names, geographic detail, dates tied to a person, contact numbers and record and account numbers, with no actual knowledge that what is left could identify someone.
+
+A detector that catches names and numbers is neither route, so text it has cleaned can still be protected health information. Whether you may send data to an AI service at all usually turns on a Business Associate Agreement and your organization's policy, so ask your compliance officer.
 
 FERPA. The law gives parents, and students once they are 18 or in postsecondary school, rights over personally identifiable information in education records. If you grade, advise or write recommendations, check your institution's AI policy before pasting anything that names a student. Removing the name is a habit, not a rule.
 
-Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools, and that tools which train on inputs call for the client's informed consent. For research, your IRB protocol and data management plan probably already say who may see participant data, and an AI service is a new recipient. For manuscripts, see what publishers allow when you run your own manuscript through AI.
+Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools, and that tools which train on inputs call for the client's informed consent.
+
+For research, your IRB protocol and data management plan probably already say who may see participant data, and an AI service is a new recipient. For manuscripts, see what publishers allow when you run your own manuscript through AI.
 
 ## Decision matrix
 
@@ -6322,7 +6715,81 @@ By Benjamin Ampel · October 4, 2026
 
 What is using your Mac's disk, what is safe to remove, and which tool to trust with the deleting. Short version: Apple's own settings plus a free or $10 disk map cover most full disks, and the tools differ most in whether a delete goes to the Trash or is final.
 
-Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Legroom, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is new and unproven, and where another tool is the better choice I say so. I did not install or test any of the other tools either. Everything below is read from vendor pages, Mac App Store listings, privacy labels, project repositories, Apple support pages and the built-in Terminal help on my own Mac, all on October 4, 2026. Prices and versions change. Where a page did not say something, I write "not stated" rather than guess.
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Legroom, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is new and unproven, and where another tool is the better choice I say so. I did not install or test any of the other tools either.
+
+Everything below is read from vendor pages, Mac App Store listings, privacy labels, project repositories, Apple support pages and the built-in Terminal help on my own Mac, all on October 4, 2026. Prices and versions change. Where a page did not say something, I write "not stated" rather than guess.
+
+## The short answer
+
+To see where space went on a Mac, start with macOS Storage settings, free, built in. For a folder map, use DaisyDisk ($9.99 once) or the free GrandPerspective. To clear what regrows, use a cleaner like Mole or CleanMyMac. For a menu-bar readout with cleaning you approve first, use Legroom, which I make. Data as of October 4, 2026.
+
+Tools differ most in how they delete. DaisyDisk deletes permanently after a 5-second cancel window, OmniDiskSweeper moves items to the Trash, and several pages do not say.
+
+## The tools side by side
+
+"Cleans or removes files" says how each tool removes things, as stated on the pages I read; "Not stated" means they did not say. US prices, October 4, 2026, except the last two rows, which I read on October 9, 2026 and did not test.
+
+ToolPriceWhat it doesShows a map of spaceCleans or removes filesNotable limit
+
+macOS Storage settingsFree, built inShows storage by category; Optimize Storage and Empty Trash automaticallyNo: categories onlyThrough Apple's own flowsNo map of your own folders, and no view inside System Data
+
+iCloud Drive, Optimize Mac StorageUses your iCloud plan; 50 GB from $0.99 a month in the USKeeps older documents in iCloud when space is neededNoRemove Download drops the local copy and keeps the file in iCloud; Delete removes it from every device on the accountMoves space around and does not show what is big
+
+DaisyDisk$9.99 onceRing-shaped disk map with a Collector area; shows hidden spaceYesPermanently, with a 5-second cancelNo automation or rules, and no Trash step; the Mac App Store edition has no snapshot size estimates
+
+GrandPerspectiveFree, or $2.99 on the Mac App StoreTreemap with filters, saved scans and Quick LookYesCan delete from the view; Trash or permanent not statedA map, not a cleaner; nothing read says it explains purgeable space or snapshots
+
+OmniDiskSweeperFreeLists files largest to smallestNo: a sorted listTrash, per the vendorNo map, rules or explanation
+
+Disk Inventory XFree, GPLTreemap appYesNot statedPage lists version 1.3 from 2019, for macOS 10.13 to 10.15
+
+Nektony Disk Space AnalyzerFree; Pro $4.99 monthly, $9.99 annual or $19.99 lifetimeSunburst diagram with a purgeable-space readoutYesPro adds removing big files; how not statedThe free tier lists only the 8 biggest items and cannot remove
+
+CleanMyMac7-day trial; App Store Basic $39.99 a year, Plus $65.99 a year; sources disagree on a lifetime priceAll-in-one cleaner with malware scan, uninstaller and Space LensYes: Space LensYes; says it "deletes", Trash or permanent not statedNo clear Trash versus permanent statement on the page read, and a price that is hard to state
+
+Hazel$42 once; free trialRules on folders you name, such as deleting old DownloadsNoPer rule actionNo free-space trigger without a script, no analyzer, no dry-run list
+
+MoleCLI free; app $19 once for 2 MacsCleans caches, logs and leftovers; uninstalls apps; disk explorer (mo analyze)Disk explorer in Terminal; map not statedAnalyze moves items to the Trash after confirmation; clean commands can delete; --dry-run previewsClean commands can delete, so the dry run is the safeguard
+
+AppCleanerFreeFinds an app's related files when you drop the app on itNoRemoves the files you select; Trash or permanent not statedOne job only
+
+PearcleanerFree, source-availableApp leftovers cleaner that adds orphaned file searchNot statedNot statedREADME marks the project "On Hold"; last release 5.4.3 in November 2025
+
+DevCleaner for XcodeFree; optional tipsInspects and cleans Xcode's generated filesNot statedYes; Trash or permanent not statedXcode only, relies on undocumented folder structures and may break with newer Xcode
+
+du, ncdu, gdu, duaFreeFolder sizes in TerminalNo: text outputncdu confirms before deleting; gdu and dua can TrashTerminal only
+
+Legroom (mine)$9.99 once; 7-day trial; part of the $54.99 Mac SuiteMenu-bar free-space readout, low-space alerts, folder rules, what grew, UninstallerYes: Space MapRules: Trash or permanent per rule, shown in the preview. Find Files, Space Map and the Uninstaller: Trash onlyDoes not scan as an administrator; a new tool I have not compared on a test Mac
+
+Disk DiagFree; unlimited cleaning $16.99 yearly or $44.99 onceScanner-style cleanerNot statedYes; how not statedFree tier caps removal at 1 GB a month
+
+Gemini 2Free to download; Yearly Access and Smart Cleanup each $19.99Finds duplicate and similar files and photosNot statedNot statedCheck which copy it keeps before accepting an auto-selection
+
+Stats, iStat MenusStats free, MIT; iStat Menus 7 $11.99 on the App StoreMenu-bar system monitorsNoNoMonitors, not cleaners
+
+OnyXFree, supported by donationsMaintenance and settings utilityNot statedNot statedA separate build for each macOS version
+
+Lemon CleanerNot stated; open sourceTencent's Mac cleaner with duplicate detection and disk space analysisNot statedNot statedChinese-language description; I read only the repository
+
+Harbofly, Dustpan, ClearDiskFree, open sourceMenu-bar apps for developer cachesNoHarbofly: Trash by default. Dustpan: permanent after confirmation. ClearDisk: Trash firstDustpan is at version 0.1.3; I have audited none of them
+
+Rulewright$14.99Hazel-style folder rules with a preview of each ruleNoA Trash actionWorks only inside folders you grant; macOS 14 or later
+
+SpacieNot statedNative Apple-silicon disk analyzer with a duplicate finderYes: sunburst and treemapNot statedAbout 86 stars on its repository; nothing more read
+
+mac-cleaner-cli, cleanmymac-climac-cleaner-cli free, MIT; cleanmymac-cli not statedCommand-line cleaners; cleanmymac-cli, from MacPaw, targets developer cachesNot statedNot statedcleanmymac-cli was released in July 2026; analytics can be disabled
+
+FreeSpace$2.99Menu-bar free space for local, external and network drives, with low-space alertsNo: free space as numbersNo: it only ejects drivesVersion 1.4.3, last updated September 3, 2023; macOS 10.13 or later; not tested
+
+Disk Space Monitor & Analyzer$0.99Menu-bar free space, with available, purgeable-inclusive and used spaceNot statedNot statedVersion 1.1, updated February 20, 2026; macOS 11 or later; not tested
+
+- Want free? GrandPerspective, OmniDiskSweeper, or du with ncdu.
+
+- Want deletes you can undo? OmniDiskSweeper, or Mole's analyze mode, which use the Trash.
+
+- Want it to stay empty? Hazel for age rules; Harbofly or Dustpan for developer caches.
+
+- Xcode ate the disk? DevCleaner and the simctl commands.
 
 ## Three jobs, and which tools do which
 
@@ -6356,13 +6823,15 @@ Deletion is where tools differ most, so each entry says how the tool deletes: to
 
 - du, ncdu or gdu: free, in Terminal.
 
-Legroom is not on the shortlist because it is new; it has its own section below. Eight more entries follow the full reviews, then a decision matrix, how to choose and the section on what is safe to delete.
+Legroom is not on the shortlist because it is new; it has its own section below. Nine more entries follow the full reviews, then how to choose and the section on what is safe to delete. The table of all the tools side by side is near the top of this page.
 
 ## macOS Storage settings and Optimize Storage
 
 Cost: Free, built in. Platform: macOS. In macOS Ventura 13 or later it is System Settings, General, Storage, per Apple's page on freeing up storage.
 
-The bar shows categories, and a More Info button next to some of them (Applications, Documents, Messages, Trash and others) opens options for that category. System Data is, in Apple's words, a general category covering all Apple and third-party files that do not belong to a more specific one. It is not a single thing you can delete. Apple's Optimize Storage page lists three recommendations: Store in iCloud, Optimize Storage (removes Apple TV movies you have watched and keeps only recent mail attachments), and Empty Trash automatically, which erases items that have been in the Trash more than 30 days. The same page says that when space is needed, macOS also clears caches and logs that are safe to delete, including interrupted downloads, staged updates and Safari website data.
+The bar shows categories, and a More Info button next to some of them (Applications, Documents, Messages, Trash and others) opens options for that category. System Data is, in Apple's words, a general category covering all Apple and third-party files that do not belong to a more specific one. It is not a single thing you can delete.
+
+Apple's Optimize Storage page lists three recommendations: Store in iCloud, Optimize Storage (removes Apple TV movies you have watched and keeps only recent mail attachments), and Empty Trash automatically, which erases items that have been in the Trash more than 30 days. The same page says that when space is needed, macOS also clears caches and logs that are safe to delete, including interrupted downloads, staged updates and Safari website data.
 
 What it lacks: a map of your own folders, and any view inside System Data. Pick it if you want the free first step with no new software to trust. Turn on Empty Trash automatically only if you never keep things in the Trash on purpose.
 
@@ -6378,7 +6847,9 @@ What it lacks: it moves space around and does not show what is big. Pick it if y
 
 Cost: $9.99, one-time, on the vendor site and the Mac App Store. The site says minor updates are included, covers up to 5 personal Macs, offers a 30-day money-back guarantee and a free trial. Platform: macOS 10.13 or newer, Apple silicon supported; version 4.34.
 
-A ring-shaped disk map. The vendor says it scans in seconds. You tear items off the map into a Collector area at the bottom, where they wait until you delete. It shows hidden space, which includes purgeable space and local snapshots, and can scan as administrator to reach restricted folders. The deletion model is stated plainly in its guide: files stay put until you click Delete, you then get 5 seconds to cancel, and DaisyDisk "permanently removes files and folders instead of moving them to the system Trash". It will not accept /System, /Library or your home folder into the Collector, and the site says it "doesn't collect or transmit anything".
+A ring-shaped disk map. The vendor says it scans in seconds. You tear items off the map into a Collector area at the bottom, where they wait until you delete. It shows hidden space, which includes purgeable space and local snapshots, and can scan as administrator to reach restricted folders.
+
+The deletion model is stated plainly in its guide: files stay put until you click Delete, you then get 5 seconds to cancel, and DaisyDisk "permanently removes files and folders instead of moving them to the system Trash". It will not accept /System, /Library or your home folder into the Collector, and the site says it "doesn't collect or transmit anything".
 
 The Mac App Store edition is partly limited, according to the guide's snapshots page: no snapshot size estimates, and deleting snapshots means using Terminal. The guide does not describe the direct edition as limited.
 
@@ -6418,7 +6889,9 @@ What it lacks: removal in the free tier, which lists only the 8 biggest items. P
 
 Cost: Free to download from the vendor or App Store, with a 7-day trial, after which the listing says you are charged automatically. The App Store in-app list shows a Basic yearly plan at $39.99, Plus yearly at $65.99 and a monthly plan at $9.99. The vendor page says "from $3.33/month" and mentions a one-time option; I give no lifetime figure because the sources disagree. Platform: macOS 11 or later; version 5.6.
 
-An all-in-one cleaner; the listing claims over 29 million downloads. It describes junk and cache cleaning, a malware scan, an uninstaller, duplicates, large and old files, and performance tools. For disk space the relevant part is Space Lens, a storage map. MacPaw's help page describes a Review and Remove list where you can deselect items, then says CleanMyMac "deletes the items from your Mac". It does not say Trash or permanent. The app is notarized by Apple per the listing, and its label is "Data Not Linked to You", covering contact info, identifiers, usage data and diagnostics.
+An all-in-one cleaner; the listing claims over 29 million downloads. It describes junk and cache cleaning, a malware scan, an uninstaller, duplicates, large and old files, and performance tools.
+
+For disk space the relevant part is Space Lens, a storage map. MacPaw's help page describes a Review and Remove list where you can deselect items, then says CleanMyMac "deletes the items from your Mac". It does not say Trash or permanent. The app is notarized by Apple per the listing, and its label is "Data Not Linked to You", covering contact info, identifiers, usage data and diagnostics.
 
 What it lacks: a clear statement of Trash versus permanent deletion on the page I read, and a price that is easy to state. Pick it if you want the extras, especially the uninstaller and malware scan, in one app. For disk space alone, in my reading, a map and Apple's own settings cover most of the same ground for less.
 
@@ -6426,7 +6899,9 @@ What it lacks: a clear statement of Trash versus permanent deletion on the page 
 
 Cost: Hazel 6 is $42, a family pack for up to 5 household members is $65, and an upgrade from an earlier version is $20, per the Noodlesoft store. There is a free trial. Platform: macOS; I did not find the requirement on the pages I read.
 
-Hazel is not a disk tool. It watches the folders you name and applies rules: by name, date, type or source, move, rename, tag, or delete files that are too old. Its manual describes selectively deleting items from the Trash so the space is recovered, and App Sweep, which notices when you trash an app and offers to remove its support files. For keeping a disk from filling, a typical rule is deleting items in Downloads older than 30 days. What I did not find is a built-in free-space condition. The manual's scripting page lists "the amount of free space on my disk is less than 10 GB" as the kind of thing a script can check, so a threshold trigger means writing one.
+Hazel is not a disk tool. It watches the folders you name and applies rules: by name, date, type or source, move, rename, tag, or delete files that are too old. Its manual describes selectively deleting items from the Trash so the space is recovered, and App Sweep, which notices when you trash an app and offers to remove its support files.
+
+For keeping a disk from filling, a typical rule is deleting items in Downloads older than 30 days. What I did not find is a built-in free-space condition. The manual's scripting page lists "the amount of free space on my disk is less than 10 GB" as the kind of thing a script can check, so a threshold trigger means writing one.
 
 The manual's Preview a Rule shows live match indicators for a selected item, plus a rule status view for a folder. That checks a rule; it is not a list of everything the rule would delete.
 
@@ -6462,7 +6937,9 @@ Pick it if Xcode is where your space went. Keep Archives you may need for crash 
 
 Cost: Free. Platform: macOS, installed with Homebrew (brew install ncdu, gdu or dua-cli); du is already there.
 
-The built-in answer is du -hxd 1 ~ | sort -h: the size of each folder one level below your home folder, smallest last, staying on one file system. The interactive versions are friendlier. ncdu (MIT) has a built-in delete that asks for confirmation by default and a -r flag that makes it read-only. gdu (MIT) uses d to delete and D to move to the Trash, with --no-delete to turn deleting off. dua (MIT) has an interactive mode with multi-stage deletion, a config option to disable permanent deletion, and a dua clean command that says nothing is deleted automatically.
+The built-in answer is du -hxd 1 ~ | sort -h: the size of each folder one level below your home folder, smallest last, staying on one file system. The interactive versions are friendlier.
+
+ncdu (MIT) has a built-in delete that asks for confirmation by default and a -r flag that makes it read-only. gdu (MIT) uses d to delete and D to move to the Trash, with --no-delete to turn deleting off. dua (MIT) has an interactive mode with multi-stage deletion, a config option to disable permanent deletion, and a dua clean command that says nothing is deleted automatically.
 
 Pick one if you work over SSH, on a server, or simply like Terminal. Use read-only mode until you trust your own typing.
 
@@ -6470,21 +6947,33 @@ Pick one if you work over SSH, on a server, or simply like Terminal. Use read-on
 
 Cost: Free, built in. Platform: macOS.
 
-This is the usual reason deleting files does not free space. Apple says Time Machine saves a snapshot about every hour and keeps it for 24 hours, keeps an extra snapshot of your last successful backup until space is needed, and saves one before a macOS update. Your Mac counts the space as available, and Time Machine deletes snapshots as they age or as space is needed. Apple's documented way to remove them by hand is to set Time Machine backups to manual for a few minutes, then turn them back on. The tmutil man page on my Mac also lists listlocalsnapshots, deletelocalsnapshots and thinlocalsnapshots, and says several verbs need root and Full Disk Access. I ran only the listing (none on this Mac), not a deletion verb.
+This is the usual reason deleting files does not free space. Apple says Time Machine saves a snapshot about every hour and keeps it for 24 hours, keeps an extra snapshot of your last successful backup until space is needed, and saves one before a macOS update. Your Mac counts the space as available, and Time Machine deletes snapshots as they age or as space is needed.
+
+Apple's documented way to remove them by hand is to set Time Machine backups to manual for a few minutes, then turn them back on. The tmutil man page on my Mac also lists listlocalsnapshots, deletelocalsnapshots and thinlocalsnapshots, and says several verbs need root and Full Disk Access. I ran only the listing (none on this Mac), not a deletion verb.
 
 Pick this if you deleted a lot and the free number did not move. Most of the time, waiting or leaving it alone is right.
 
 ## Legroom (Purplelink's)
 
-Cost: A free 7-day trial, then $9.99 once, with no subscription; also part of the $54.99 Mac Suite. Platform: macOS 14 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.0.0, signed and notarized, which makes it the newest and least proven tool in this guide. I make it, and I have not compared it with the others on a test Mac.
+Cost: A free 7-day trial, then $9.99 once, with no subscription; also part of the $54.99 Mac Suite. Platform: macOS 14 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.2.0 (first released October 5, 2026), signed and notarized, which makes it among the newest and least proven tools in this guide. I make it, and I have not compared it with the others on a test Mac.
 
-I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set. You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which. A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any. Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate. The Uninstaller lists the files an app keeps in the Library folder, with sizes, and moves only the ones you tick to the Trash after a confirmation sheet.
+I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set.
 
-What it lacks: it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no widget or command-line tool. After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller need a license key, which unlocks the same download. Its page says there is no account and no analytics; every copy checks for updates once a day. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and this is the first release.
+You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which.
 
-Where others are better today: DaisyDisk for a visual map, and for hidden space and snapshots, because it can scan as administrator, which Legroom does not. GrandPerspective if you want free. OmniDiskSweeper if you want simple. Hazel for general rules on any folder. For cleaning developer caches when space is low, free open-source apps such as Harbofly and Dustpan exist, listed below. The gap Legroom is aimed at is folder rules with a free-space trigger, a readout and a "what grew" explanation in one app. Pick Legroom if you want rules that clean on a free-space trigger with a preview you approve each time, and you accept a first release from a one-person studio. Pick another tool if you want a visual map of everything including system space.
+A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any.
 
-## Eight more worth knowing
+Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate. The Uninstaller lists the files an app keeps in the Library folder, with sizes, and moves only the ones you tick to the Trash after a confirmation sheet.
+
+What it lacks: it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no widget or command-line tool.
+
+After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller need a license key, which unlocks the same download. Its page says there is no account and no analytics; every copy checks for updates once a day. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and the app has been out only since October 5, 2026.
+
+Where others are better today: DaisyDisk for a visual map, and for hidden space and snapshots, because it can scan as administrator, which Legroom does not. GrandPerspective if you want free. OmniDiskSweeper if you want simple. Hazel for general rules on any folder. For cleaning developer caches when space is low, free open-source apps such as Harbofly and Dustpan exist, listed below.
+
+The gap Legroom is aimed at is folder rules with a free-space trigger, a readout and a "what grew" explanation in one app. Pick Legroom if you want rules that clean on a free-space trigger with a preview you approve each time, and you accept a young product from a one-person studio. Pick another tool if you want a visual map of everything including system space.
+
+## Nine more worth knowing
 
 Each is useful to someone. I searched for PrunePanda, SpaceSift and Funter and found no live product page or store listing for a disk tool by those names, so they are not covered.
 
@@ -6499,6 +6988,12 @@ MacPaw's duplicate finder. Free to download, with Yearly Access and Smart Cleanu
 ### Stats and iStat Menus
 
 System monitors for the menu bar. Stats is free and MIT-licensed, for macOS 12 or later, and lists disk utilization among its modules. iStat Menus 7 is $11.99 on the App Store for macOS 14 or later. Both are monitors, not cleaners.
+
+### FreeSpace, and Disk Space Monitor & Analyzer
+
+Two paid free-space monitors for the menu bar, read from their Mac App Store listings on October 9, 2026 and not tested. FreeSpace (developer listed as Luma Fung) is $2.99 for macOS 10.13 or later, version 1.4.3, last updated September 3, 2023. It shows free space for local, external and network drives, lets you pin a drive to the menu bar, and alerts you when a drive falls below a percentage you set. It can also eject drives, and its label is "Data Not Collected".
+
+Disk Space Monitor & Analyzer (developer Harshad Jadav) is $0.99 for macOS 11 or later, version 1.1, updated February 20, 2026. It shows free space in the menu bar, with available space, total available space including purgeable space, used space and capacity, refreshed about every 30 seconds. Its label is also "Data Not Collected". Neither listing describes a map of folders. The menu-bar guide covers this kind of app.
 
 ### OnyX
 
@@ -6519,44 +7014,6 @@ A Hazel-style folder rules app on the App Store: $14.99, macOS 14 or later. Its 
 ### Spacie, mac-cleaner-cli and cleanmymac-cli
 
 Spacie is a native Apple-silicon disk analyzer with sunburst and treemap views and a duplicate finder (about 86 stars on its repository). mac-cleaner-cli is a free MIT command-line cleaner, not MacPaw's. MacPaw's own cleanmymac-cli, released July 2026, targets developer caches, and its README says analytics can be disabled.
-
-## Decision matrix
-
-"Deletes" is how each tool removes things, as stated on the pages I read; "not stated" means they did not say. US prices, October 4, 2026.
-
-ToolBest forPriceDeletes
-
-macOS StorageFirst step, caches, TrashFreeApple's own flows
-
-DaisyDiskVisual map, hidden space$9.99 oncePermanently, 5-second cancel
-
-GrandPerspectiveFree treemapFree or $2.99Not stated
-
-OmniDiskSweeperSimple sorted listFreeTrash, per vendor
-
-Nektony AnalyzerSunburst mapFree; Pro $19.99Not stated
-
-CleanMyMacAll-in-one extrasFrom $39.99 a yearNot stated (says "deletes")
-
-HazelRules on any folder$42 oncePer rule action
-
-MoleTerminal cleaning, dry runCLI free; app $19Trash for analyze; clean can delete
-
-AppCleanerApp leftoversFreeNot stated
-
-DevCleanerXcode cachesFreeNot stated
-
-ncdu, gdu, duaTerminal, remoteFreeConfirmed delete; gdu and dua can Trash
-
-LegroomRules, readout, what grew$9.99 once, 7-day trialTrash or permanent per rule, shown in the preview; Find Files and Space Map Trash only
-
-- Want free? GrandPerspective, OmniDiskSweeper, or du with ncdu.
-
-- Want deletes you can undo? OmniDiskSweeper, or Mole's analyze mode, which use the Trash.
-
-- Want it to stay empty? Hazel for age rules; Harbofly or Dustpan for developer caches.
-
-- Xcode ate the disk? DevCleaner and the simctl commands.
 
 ## How to choose
 
@@ -6620,7 +7077,7 @@ For some things, yes. Hazel runs rules on folders, though a free-space trigger n
 
 ### Is Legroom available, and what does it cost?
 
-Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it is a first release, and this guide describes it from its own product page rather than from a test against the other tools.
+Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it has been out only since October 5, 2026, and this guide describes it from its own product page rather than from a test against the other tools.
 
 ## Related guides
 
@@ -6652,7 +7109,43 @@ By Benjamin Ampel · October 7, 2026
 
 Apps that make your Mac's keyboard, mouse and trackpad sound or feel like something else. Short version: Klack is the simple paid one, KeyOpera is the cheapest, Thock and Mechvibes are free, Snick and HapticPad do one narrow job, and the real differences are how much each plays beyond key presses and which macOS permission it asks for.
 
-Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Keyfeel, sold as a free 7-day trial and then $9.99 once. It is new, and where another app is the better choice I say so. I did not install or test any of the other apps. Everything below is read from vendor pages, Mac App Store listings, project repositories and launch pages, all on October 7, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Keyfeel, sold as a free 7-day trial and then $9.99 once. It is new, and where another app is the better choice I say so.
+
+I did not install or test any of the other apps. Everything below is read from vendor pages, Mac App Store listings, project repositories and launch pages, all on October 7, 2026, except Tacque and Typemac, which I read on October 9, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
+
+## The short answer
+
+Free open source apps such as Mechvibes or Thock suit anyone who wants no cost. Low-priced Mac apps such as Klack ($4.99) suit a simple setup. Snick adds scroll haptics. Keyfeel, which I make, adds scroll ticks, haptics and silence in the apps you choose. Data as of October 7, 2026.
+
+The table below compares every app in this guide by price, macOS version, permission, sounds and main limit.
+
+## The apps side by side
+
+US prices, October 7, 2026, as listed; Tacque and Typemac were read on October 9, 2026 and not tested. "Not stated" means the pages I read did not say.
+
+Correction, October 8, 2026: an earlier version said Klack had no mouse or scroll sounds. Its changelog lists mouse click sounds since version 1.7 and scroll sounds with haptic ticks since version 2.2, so this page now says so.
+
+AppPricemacOSPermissionSoundsNotable limit
+
+Klack$4.99 on the Mac App Store15.0 or laterNot statedKeys; mouse clicks since 1.7; scroll sounds with haptic ticks since 2.2No custom sounds mentioned on the pages I read; macOS 15.0 is the highest requirement here, shared with Tacque
+
+KeyOpera$313 or laterNot statedKeys, .keypak packs, spoken key names; mouse per launch postNo free trial that I could see
+
+ThockFree, MIT license13.5 or laterNot statedKeysNo mouse or scroll sounds or haptics on the page I read
+
+MechvibesFree, MIT licenseNot stated; also Windows and LinuxNot statedKeys, from community packs; mouse in the MechvibesDX rewriteOriginal repository is moving to legacy status
+
+Klakk$2.99 to $4.99 on one listing; 3-day trial14.0 or laterInput Monitoring, per the developer's reply to a reviewKeys; 14 or more packs per the listingListing shows two prices; mouse and scroll not stated
+
+Snick$7 per AlternativeTo; vendor gives no amount14 or laterAccessibilityScrolling, with hapticsNo keyboard or click sounds
+
+HapticPadFree per hapticpad.app; $4.99 per other listings13 or laterNot statedNone; web-page haptics onlyNeeds a Force Touch trackpad and browser extensions
+
+Keyfeel (mine)$9.99 once; 7-day trial13 or laterInput MonitoringKeys, mouse clicks, scrolling, shortcuts; optional hapticsNew, Mac only, no Mac App Store build; reads Mechvibes packs in the original format only
+
+TacqueFrom $4.99 for the app alone, per Setapp's page; also on Setapp, 7-day trial15.0 or laterNot statedKeys; mouse and scroll not statedNot tested; Setapp's page does not name the developer
+
+Typemac$7 once13.0 or laterInput MonitoringKeys; mouse and scroll not statedNot tested; no trial or Mac App Store build mentioned on its page
 
 ## What these apps do, and what they do not
 
@@ -6684,13 +7177,15 @@ One thing no app fixes: Bluetooth audio adds its own delay, often 100 millisecon
 
 - HapticPad: web-page haptics, no sound.
 
-Keyfeel is not on the shortlist because I make it; it has its own section below. A decision matrix, how to choose and a short FAQ follow.
+Keyfeel is not on the shortlist because I make it; it has its own section below. The side-by-side table is above, and how to choose and a short FAQ follow.
 
 ## Klack
 
 Cost: $4.99 on the Mac App Store, which is the price on that listing. The Klack site sells it too, but I could not read a price there. Platform: the listing says macOS 15.0 or later; by Henrik Ruscon.
 
-Klack is the one most people mean when they say "that Mac keyboard sound app". It lives in the menu bar and plays recorded switch sounds. The listing names Japanese Black, Cream, Oreo, Cardboard, Milky Yellow and Super Red, and the site lists switches from CherryMX, Gateron, Keychron, NovelKeys and Everglide. It randomizes pitch a little on each press, plays separate up and down sounds, supports spatial audio on AirPods, has a tone control, and has sleep automation. The listing's privacy label says no data is collected. The site says it is a native app.
+Klack is the one most people mean when they say "that Mac keyboard sound app". It lives in the menu bar and plays recorded switch sounds. The listing names Japanese Black, Cream, Oreo, Cardboard, Milky Yellow and Super Red, and the site lists switches from CherryMX, Gateron, Keychron, NovelKeys and Everglide. It randomizes pitch a little on each press, plays separate up and down sounds, supports spatial audio on AirPods, has a tone control, and has sleep automation.
+
+The listing's privacy label says no data is collected. The site says it is a native app.
 
 Mouse and scroll: its changelog lists mouse click sounds since version 1.7 (January 2025) and, in version 2.2 (21 July 2026), scroll sounds with haptic ticks and support for macOS 27. What I did not find: any mention of adding your own sounds on the pages I read. Pick it if you want a polished, simple app with the most established name, and macOS 15 is not a problem.
 
@@ -6698,7 +7193,9 @@ Mouse and scroll: its changelog lists mouse click sounds since version 1.7 (Janu
 
 Cost: $3, on the Mac App Store and on Gumroad, per the developer's page. Platform: the developer's site says Apple silicon and Intel on macOS 13 or later.
 
-A small menu-bar app. Version 2.0, which the developer's launch post puts around August 2026, added .keypak sound packs you can install with a click, a Homebrew command for creating and controlling packs, and Key Announcement, which speaks the name of each key you press, with better VoiceOver support. The page lists six packs: Cherry MX Black in PBT and ABS, EG Oreo, EG Crystal Purple, MX Black and a synthetic pack. The launch post describes keyboard and mouse sounds with separate volume controls; the product page I read did not mention mouse sounds, so check before you rely on them.
+A small menu-bar app. Version 2.0, which the developer's launch post puts around August 2026, added .keypak sound packs you can install with a click, a Homebrew command for creating and controlling packs, and Key Announcement, which speaks the name of each key you press, with better VoiceOver support.
+
+The page lists six packs: Cherry MX Black in PBT and ABS, EG Oreo, EG Crystal Purple, MX Black and a synthetic pack. The launch post describes keyboard and mouse sounds with separate volume controls; the product page I read did not mention mouse sounds, so check before you rely on them.
 
 What it lacks: a free trial, as far as I could see. Pick it if you want the lowest price, custom packs, or spoken key names for accessibility.
 
@@ -6714,7 +7211,9 @@ What it lacks: mouse and scroll sounds and haptics, on the page I read. Pick it 
 
 Cost: Free, MIT-licensed. The site says it is available on Windows, macOS and Linux, and that the sound packs are community made and free.
 
-The long-running original: it plays a sound pack when you type, with an editor for making and sharing packs. Its big strength is the pack library; installing one is described as two clicks. Its README says the original repository is transitioning to legacy status and that development has moved to MechvibesDX, a rewrite whose documentation lists keyboard and mouse button sounds. Because the same pack format is used by other apps, importing a Mechvibes pack is a feature in its own right, covered below under Keyfeel. A separate guide covers using Mechvibes packs on a Mac.
+The long-running original: it plays a sound pack when you type, with an editor for making and sharing packs. Its big strength is the pack library; installing one is described as two clicks. Its README says the original repository is transitioning to legacy status and that development has moved to MechvibesDX, a rewrite whose documentation lists keyboard and mouse button sounds.
+
+Because the same pack format is used by other apps, importing a Mechvibes pack is a feature in its own right, covered below under Keyfeel. A separate guide covers using Mechvibes packs on a Mac.
 
 What it lacks: a native Mac app feel, and a clear future for the original on the page I read. Pick it if the community packs are the point, or you also use Windows or Linux.
 
@@ -6744,17 +7243,23 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 ## Keyfeel (Purplelink's)
 
-Cost: Free for 7 days, then $9.99 once with a license key, no subscription; also part of the $54 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.1.0, signed and notarized, released October 7, 2026, which makes it the newest and least proven app in this guide. I make it, and I have not compared it with the others on a test Mac.
+Cost: Free for 7 days, then $9.99 once with a license key, no subscription; also part of the $54.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.4.0, signed and notarized, released October 8, 2026, which makes it the newest and least proven app in this guide. I make it, and I have not compared it with the others on a test Mac.
 
-I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It adds mouse click sounds, scroll ticks that follow how fast you scroll and keep going while a hard flick glides, optional trackpad haptics on scroll and click, and an optional ripple on screen where you click. Beyond keyboards it has a Fun set (cat, dog, duck and others) and a Calm set of soft sounds for all-day use, all recordings licensed for use and credited in the app. It can play its own sound for shortcuts such as copy and paste, with a different sound if a copy did not take. It imports Mechvibes packs in the original format, including .ogg ones, and keeps the different sound each pack gives each key; packs in the newer MechvibesDX format are not read (how to tell them apart).
+I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return.
+
+It adds mouse click sounds, scroll ticks that follow how fast you scroll and keep going while a hard flick glides, optional trackpad haptics on scroll and click, and an optional ripple on screen where you click. Beyond keyboards it has a Fun set (cat, dog, duck and others) and a Calm set of soft sounds for all-day use, all recordings licensed for use and credited in the app.
+
+It can play its own sound for shortcuts such as copy and paste, with a different sound if a copy did not take. It imports Mechvibes packs in the original format, including .ogg ones, and keeps the different sound each pack gives each key; packs in the newer MechvibesDX format are not read (how to tell them apart).
 
 It goes quiet in the apps you choose, while the microphone or a camera is in use, and, if you want, in full-screen apps. It reads which key was pressed and not the character, works offline, and its only network use is checking for updates. Settings shows an estimate of the delay from key press to sound for your output, and warns when that output is Bluetooth.
 
-What it lacks: it is Mac only, it is new, and it has no Mac App Store build. It does not have the spoken key names KeyOpera offers or the command line Thock has. It does not claim the community pack library Mechvibes has; it imports those packs instead. Where others are better today: Klack for a keyboard-only app with years of polish, KeyOpera for the lowest price, Thock and Mechvibes for free, Snick if scrolling is all you want. Pick Keyfeel if you want keys, clicks, scrolling and haptics in one app and would rather pay once than collect several.
+What it lacks: it is Mac only, it is new, and it has no Mac App Store build. It does not have the spoken key names KeyOpera offers or the command line Thock has. It does not claim the community pack library Mechvibes has; it imports those packs instead.
+
+Where others are better today: Klack for a keyboard-only app with years of polish, KeyOpera for the lowest price, Thock and Mechvibes for free, Snick if scrolling is all you want. Pick Keyfeel if you want keys, clicks, scrolling and haptics in one app and would rather pay once than collect several.
 
 ## Also worth knowing
 
-I read only the AlternativeTo and launch-page descriptions of these, and nothing else about them.
+I read only the AlternativeTo and launch-page descriptions of the first three, and nothing else about them. The last two I read on October 9, 2026 and did not test.
 
 - Keeby says it uses sounds recorded from real switches, with 11 profiles including Gateron Red, Holy Panda, Alps Blue and Box Navy.
 
@@ -6762,29 +7267,11 @@ I read only the AlternativeTo and launch-page descriptions of these, and nothing
 
 - TypeLouder is listed as a paid app for mechanical click sounds with low latency and offline use.
 
-## Decision matrix
+- Tacque, on Setapp's page, plays mechanical switch sounds on keystrokes, with selectable sound packs and volume control. The page says from $4.99 for the app alone, a 7-day free trial on Setapp, and macOS 15.0 or later. It states no permission and no mouse or scroll sounds.
 
-US prices, October 7, 2026, as listed. "Not stated" means the pages I read did not say.
+- Typemac, at typemac.app, adds mechanical switch sounds to keystrokes. The page says $7 once with no subscription, macOS 13.0 or later on Apple silicon and Intel, and Input Monitoring as its only permission. It mentions no mouse or scroll sounds, no trial and no Mac App Store build.
 
-Correction, October 8, 2026: an earlier version said Klack had no mouse or scroll sounds. Its changelog lists mouse click sounds since version 1.7 and scroll sounds with haptic ticks since version 2.2, so this page now says so.
-
-AppPlaysPriceNeeds
-
-KlackKeys, clicks, scroll$4.99macOS 15
-
-KeyOperaKeys; mouse per launch post$3macOS 13
-
-ThockKeysFreemacOS 13.5
-
-MechvibesKeys; mouse in the rewriteFreemacOS, Windows, Linux
-
-KlakkKeys$2.99 to $4.99, 3-day trialmacOS 14
-
-SnickScrolling, with haptics$7macOS 14; Accessibility
-
-HapticPadWeb-page haptics onlyFree or $4.99; sources differmacOS 13; Force Touch trackpad
-
-KeyfeelKeys, clicks, scrolling, shortcuts; haptics$9.99, 7-day trialmacOS 13; Input Monitoring
+## Quick picks
 
 - Want free? Thock, or Mechvibes for the pack library.
 

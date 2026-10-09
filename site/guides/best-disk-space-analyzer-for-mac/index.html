@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-10-04",
-          "dateModified": "2026-10-08",
+          "dateModified": "2026-10-09",
           "image": "https://purplelink.llc/assets/og/products.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/best-disk-space-analyzer-for-mac/"
         },
@@ -107,7 +107,7 @@
       "name": "Is Legroom available, and what does it cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it is a first release, and this guide describes it from its own product page rather than from a test against the other tools."
+        "text": "Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it has been out only since October 5, 2026, and this guide describes it from its own product page rather than from a test against the other tools."
       }
     }
   ]
@@ -116,7 +116,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
 <link rel="stylesheet" href="/styles.css?v=cf35a6634a">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <script src="/site.js?v=95cfec31bc" defer></script>
+    <script src="/site.js?v=258cd9c67e" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -147,7 +147,57 @@
       </div>
 
       <article class="post-body">
-        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes one app on this list, <a href="/legroom/">Legroom</a>, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is new and unproven, and where another tool is the better choice I say so. I did not install or test any of the other tools either. Everything below is read from vendor pages, Mac App Store listings, privacy labels, project repositories, Apple support pages and the built-in Terminal help on my own Mac, all on October 4, 2026. Prices and versions change. Where a page did not say something, I write "not stated" rather than guess.</p>
+        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes one app on this list, <a href="/legroom/">Legroom</a>, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is new and unproven, and where another tool is the better choice I say so. I did not install or test any of the other tools either.</p>
+        <p>Everything below is read from vendor pages, Mac App Store listings, privacy labels, project repositories, Apple support pages and the built-in Terminal help on my own Mac, all on October 4, 2026. Prices and versions change. Where a page did not say something, I write "not stated" rather than guess.</p>
+
+        <h2>The short answer</h2>
+        <p>To see where space went on a Mac, start with macOS Storage settings, free, built in. For a folder map, use DaisyDisk ($9.99 once) or the free GrandPerspective. To clear what regrows, use a cleaner like Mole or CleanMyMac. For a menu-bar readout with cleaning you approve first, use Legroom, which I make. Data as of October 4, 2026.</p>
+        <p>Tools differ most in how they delete. DaisyDisk deletes permanently after a 5-second cancel window, OmniDiskSweeper moves items to the Trash, and several pages do not say.</p>
+
+        <h2 id="decision-matrix">The tools side by side</h2>
+        <p>"Cleans or removes files" says how each tool removes things, as stated on the pages I read; "Not stated" means they did not say. US prices, October 4, 2026, except the last two rows, which I read on October 9, 2026 and did not test.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">Tool</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">What it does</th><th class="u-th" scope="col">Shows a map of space</th><th class="u-th" scope="col">Cleans or removes files</th><th class="u-th" scope="col">Notable limit</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell">macOS Storage settings</td><td class="u-cell">Free, built in</td><td class="u-cell">Shows storage by category; Optimize Storage and Empty Trash automatically</td><td class="u-cell">No: categories only</td><td class="u-cell">Through Apple's own flows</td><td class="u-cell">No map of your own folders, and no view inside System Data</td></tr>
+              <tr><td class="u-cell">iCloud Drive, Optimize Mac Storage</td><td class="u-cell">Uses your iCloud plan; 50 GB from $0.99 a month in the US</td><td class="u-cell">Keeps older documents in iCloud when space is needed</td><td class="u-cell">No</td><td class="u-cell">Remove Download drops the local copy and keeps the file in iCloud; Delete removes it from every device on the account</td><td class="u-cell">Moves space around and does not show what is big</td></tr>
+              <tr><td class="u-cell">DaisyDisk</td><td class="u-cell">$9.99 once</td><td class="u-cell">Ring-shaped disk map with a Collector area; shows hidden space</td><td class="u-cell">Yes</td><td class="u-cell">Permanently, with a 5-second cancel</td><td class="u-cell">No automation or rules, and no Trash step; the Mac App Store edition has no snapshot size estimates</td></tr>
+              <tr><td class="u-cell">GrandPerspective</td><td class="u-cell">Free, or $2.99 on the Mac App Store</td><td class="u-cell">Treemap with filters, saved scans and Quick Look</td><td class="u-cell">Yes</td><td class="u-cell">Can delete from the view; Trash or permanent not stated</td><td class="u-cell">A map, not a cleaner; nothing read says it explains purgeable space or snapshots</td></tr>
+              <tr><td class="u-cell">OmniDiskSweeper</td><td class="u-cell">Free</td><td class="u-cell">Lists files largest to smallest</td><td class="u-cell">No: a sorted list</td><td class="u-cell">Trash, per the vendor</td><td class="u-cell">No map, rules or explanation</td></tr>
+              <tr><td class="u-cell">Disk Inventory X</td><td class="u-cell">Free, GPL</td><td class="u-cell">Treemap app</td><td class="u-cell">Yes</td><td class="u-cell">Not stated</td><td class="u-cell">Page lists version 1.3 from 2019, for macOS 10.13 to 10.15</td></tr>
+              <tr><td class="u-cell">Nektony Disk Space Analyzer</td><td class="u-cell">Free; Pro $4.99 monthly, $9.99 annual or $19.99 lifetime</td><td class="u-cell">Sunburst diagram with a purgeable-space readout</td><td class="u-cell">Yes</td><td class="u-cell">Pro adds removing big files; how not stated</td><td class="u-cell">The free tier lists only the 8 biggest items and cannot remove</td></tr>
+              <tr><td class="u-cell">CleanMyMac</td><td class="u-cell">7-day trial; App Store Basic $39.99 a year, Plus $65.99 a year; sources disagree on a lifetime price</td><td class="u-cell">All-in-one cleaner with malware scan, uninstaller and Space Lens</td><td class="u-cell">Yes: Space Lens</td><td class="u-cell">Yes; says it "deletes", Trash or permanent not stated</td><td class="u-cell">No clear Trash versus permanent statement on the page read, and a price that is hard to state</td></tr>
+              <tr><td class="u-cell">Hazel</td><td class="u-cell">$42 once; free trial</td><td class="u-cell">Rules on folders you name, such as deleting old Downloads</td><td class="u-cell">No</td><td class="u-cell">Per rule action</td><td class="u-cell">No free-space trigger without a script, no analyzer, no dry-run list</td></tr>
+              <tr><td class="u-cell">Mole</td><td class="u-cell">CLI free; app $19 once for 2 Macs</td><td class="u-cell">Cleans caches, logs and leftovers; uninstalls apps; disk explorer (mo analyze)</td><td class="u-cell">Disk explorer in Terminal; map not stated</td><td class="u-cell">Analyze moves items to the Trash after confirmation; clean commands can delete; --dry-run previews</td><td class="u-cell">Clean commands can delete, so the dry run is the safeguard</td></tr>
+              <tr><td class="u-cell">AppCleaner</td><td class="u-cell">Free</td><td class="u-cell">Finds an app's related files when you drop the app on it</td><td class="u-cell">No</td><td class="u-cell">Removes the files you select; Trash or permanent not stated</td><td class="u-cell">One job only</td></tr>
+              <tr><td class="u-cell">Pearcleaner</td><td class="u-cell">Free, source-available</td><td class="u-cell">App leftovers cleaner that adds orphaned file search</td><td class="u-cell">Not stated</td><td class="u-cell">Not stated</td><td class="u-cell">README marks the project "On Hold"; last release 5.4.3 in November 2025</td></tr>
+              <tr><td class="u-cell">DevCleaner for Xcode</td><td class="u-cell">Free; optional tips</td><td class="u-cell">Inspects and cleans Xcode's generated files</td><td class="u-cell">Not stated</td><td class="u-cell">Yes; Trash or permanent not stated</td><td class="u-cell">Xcode only, relies on undocumented folder structures and may break with newer Xcode</td></tr>
+              <tr><td class="u-cell">du, ncdu, gdu, dua</td><td class="u-cell">Free</td><td class="u-cell">Folder sizes in Terminal</td><td class="u-cell">No: text output</td><td class="u-cell">ncdu confirms before deleting; gdu and dua can Trash</td><td class="u-cell">Terminal only</td></tr>
+              <tr><td class="u-cell"><strong>Legroom (mine)</strong></td><td class="u-cell">$9.99 once; 7-day trial; part of the $54.99 Mac Suite</td><td class="u-cell">Menu-bar free-space readout, low-space alerts, folder rules, what grew, Uninstaller</td><td class="u-cell">Yes: Space Map</td><td class="u-cell">Rules: Trash or permanent per rule, shown in the preview. Find Files, Space Map and the Uninstaller: Trash only</td><td class="u-cell">Does not scan as an administrator; a new tool I have not compared on a test Mac</td></tr>
+              <tr><td class="u-cell">Disk Diag</td><td class="u-cell">Free; unlimited cleaning $16.99 yearly or $44.99 once</td><td class="u-cell">Scanner-style cleaner</td><td class="u-cell">Not stated</td><td class="u-cell">Yes; how not stated</td><td class="u-cell">Free tier caps removal at 1 GB a month</td></tr>
+              <tr><td class="u-cell">Gemini 2</td><td class="u-cell">Free to download; Yearly Access and Smart Cleanup each $19.99</td><td class="u-cell">Finds duplicate and similar files and photos</td><td class="u-cell">Not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Check which copy it keeps before accepting an auto-selection</td></tr>
+              <tr><td class="u-cell">Stats, iStat Menus</td><td class="u-cell">Stats free, MIT; iStat Menus 7 $11.99 on the App Store</td><td class="u-cell">Menu-bar system monitors</td><td class="u-cell">No</td><td class="u-cell">No</td><td class="u-cell">Monitors, not cleaners</td></tr>
+              <tr><td class="u-cell">OnyX</td><td class="u-cell">Free, supported by donations</td><td class="u-cell">Maintenance and settings utility</td><td class="u-cell">Not stated</td><td class="u-cell">Not stated</td><td class="u-cell">A separate build for each macOS version</td></tr>
+              <tr><td class="u-cell">Lemon Cleaner</td><td class="u-cell">Not stated; open source</td><td class="u-cell">Tencent's Mac cleaner with duplicate detection and disk space analysis</td><td class="u-cell">Not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Chinese-language description; I read only the repository</td></tr>
+              <tr><td class="u-cell">Harbofly, Dustpan, ClearDisk</td><td class="u-cell">Free, open source</td><td class="u-cell">Menu-bar apps for developer caches</td><td class="u-cell">No</td><td class="u-cell">Harbofly: Trash by default. Dustpan: permanent after confirmation. ClearDisk: Trash first</td><td class="u-cell">Dustpan is at version 0.1.3; I have audited none of them</td></tr>
+              <tr><td class="u-cell">Rulewright</td><td class="u-cell">$14.99</td><td class="u-cell">Hazel-style folder rules with a preview of each rule</td><td class="u-cell">No</td><td class="u-cell">A Trash action</td><td class="u-cell">Works only inside folders you grant; macOS 14 or later</td></tr>
+              <tr><td class="u-cell">Spacie</td><td class="u-cell">Not stated</td><td class="u-cell">Native Apple-silicon disk analyzer with a duplicate finder</td><td class="u-cell">Yes: sunburst and treemap</td><td class="u-cell">Not stated</td><td class="u-cell">About 86 stars on its repository; nothing more read</td></tr>
+              <tr><td class="u-cell">mac-cleaner-cli, cleanmymac-cli</td><td class="u-cell">mac-cleaner-cli free, MIT; cleanmymac-cli not stated</td><td class="u-cell">Command-line cleaners; cleanmymac-cli, from MacPaw, targets developer caches</td><td class="u-cell">Not stated</td><td class="u-cell">Not stated</td><td class="u-cell">cleanmymac-cli was released in July 2026; analytics can be disabled</td></tr>
+              <tr><td class="u-cell">FreeSpace</td><td class="u-cell">$2.99</td><td class="u-cell">Menu-bar free space for local, external and network drives, with low-space alerts</td><td class="u-cell">No: free space as numbers</td><td class="u-cell">No: it only ejects drives</td><td class="u-cell">Version 1.4.3, last updated September 3, 2023; macOS 10.13 or later; not tested</td></tr>
+              <tr><td class="u-cell">Disk Space Monitor &amp; Analyzer</td><td class="u-cell">$0.99</td><td class="u-cell">Menu-bar free space, with available, purgeable-inclusive and used space</td><td class="u-cell">Not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Version 1.1, updated February 20, 2026; macOS 11 or later; not tested</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li><strong>Want free?</strong> GrandPerspective, OmniDiskSweeper, or du with ncdu.</li>
+          <li><strong>Want deletes you can undo?</strong> OmniDiskSweeper, or Mole's analyze mode, which use the Trash.</li>
+          <li><strong>Want it to stay empty?</strong> Hazel for age rules; Harbofly or Dustpan for developer caches.</li>
+          <li><strong>Xcode ate the disk?</strong> DevCleaner and the simctl commands.</li>
+        </ul>
+
 
         <h2>Three jobs, and which tools do which</h2>
         <p>"Disk space tool" covers three different jobs.</p>
@@ -170,11 +220,12 @@
           <li><strong>DevCleaner for Xcode</strong>: free, Xcode's caches only.</li>
           <li><strong>du, ncdu or gdu</strong>: free, in Terminal.</li>
         </ol>
-        <p>Legroom is not on the shortlist because it is new; it has its own section below. <a href="#more-tools">Eight more entries</a> follow the full reviews, then a <a href="#decision-matrix">decision matrix</a>, <a href="#how-to-choose">how to choose</a> and the section on <a href="#safe-to-delete">what is safe to delete</a>.</p>
+        <p>Legroom is not on the shortlist because it is new; it has its own section below. <a href="#more-tools">Nine more entries</a> follow the full reviews, then <a href="#how-to-choose">how to choose</a> and the section on <a href="#safe-to-delete">what is safe to delete</a>. The <a href="#decision-matrix">table of all the tools side by side</a> is near the top of this page.</p>
 
         <h2>macOS Storage settings and Optimize Storage</h2>
         <p><strong>Cost:</strong> Free, built in. <strong>Platform:</strong> macOS. In macOS Ventura 13 or later it is System Settings, General, Storage, per <a href="https://support.apple.com/en-us/102624" rel="noopener">Apple's page on freeing up storage</a>.</p>
-        <p>The bar shows categories, and a More Info button next to some of them (Applications, Documents, Messages, Trash and others) opens options for that category. System Data is, in Apple's words, a general category covering all Apple and third-party files that do not belong to a more specific one. It is not a single thing you can delete. Apple's <a href="https://support.apple.com/guide/mac-help/optimize-storage-space-sysp4ee93ca4/mac" rel="noopener">Optimize Storage page</a> lists three recommendations: Store in iCloud, Optimize Storage (removes Apple TV movies you have watched and keeps only recent mail attachments), and Empty Trash automatically, which erases items that have been in the Trash more than 30 days. The same page says that when space is needed, macOS also clears caches and logs that are safe to delete, including interrupted downloads, staged updates and Safari website data.</p>
+        <p>The bar shows categories, and a More Info button next to some of them (Applications, Documents, Messages, Trash and others) opens options for that category. System Data is, in Apple's words, a general category covering all Apple and third-party files that do not belong to a more specific one. It is not a single thing you can delete.</p>
+        <p>Apple's <a href="https://support.apple.com/guide/mac-help/optimize-storage-space-sysp4ee93ca4/mac" rel="noopener">Optimize Storage page</a> lists three recommendations: Store in iCloud, Optimize Storage (removes Apple TV movies you have watched and keeps only recent mail attachments), and Empty Trash automatically, which erases items that have been in the Trash more than 30 days. The same page says that when space is needed, macOS also clears caches and logs that are safe to delete, including interrupted downloads, staged updates and Safari website data.</p>
         <p><strong>What it lacks:</strong> a map of your own folders, and any view inside System Data. <strong>Pick it if</strong> you want the free first step with no new software to trust. Turn on Empty Trash automatically only if you never keep things in the Trash on purpose.</p>
 
         <h2>iCloud Drive and Optimize Mac Storage</h2>
@@ -184,7 +235,8 @@
 
         <h2>DaisyDisk</h2>
         <p><strong>Cost:</strong> $9.99, one-time, on the <a href="https://daisydiskapp.com/" rel="noopener">vendor site</a> and the Mac App Store. The site says minor updates are included, covers up to 5 personal Macs, offers a 30-day money-back guarantee and a free trial. <strong>Platform:</strong> macOS 10.13 or newer, Apple silicon supported; version 4.34.</p>
-        <p>A ring-shaped disk map. The vendor says it scans in seconds. You tear items off the map into a Collector area at the bottom, where they wait until you delete. It shows hidden space, which includes purgeable space and local snapshots, and can scan as administrator to reach restricted folders. The deletion model is stated plainly in <a href="https://daisydiskapp.com/guide/4/en/DeletingFiles/" rel="noopener">its guide</a>: files stay put until you click Delete, you then get 5 seconds to cancel, and DaisyDisk "permanently removes files and folders instead of moving them to the system Trash". It will not accept /System, /Library or your home folder into the Collector, and the site says it "doesn't collect or transmit anything".</p>
+        <p>A ring-shaped disk map. The vendor says it scans in seconds. You tear items off the map into a Collector area at the bottom, where they wait until you delete. It shows hidden space, which includes purgeable space and local snapshots, and can scan as administrator to reach restricted folders.</p>
+        <p>The deletion model is stated plainly in <a href="https://daisydiskapp.com/guide/4/en/DeletingFiles/" rel="noopener">its guide</a>: files stay put until you click Delete, you then get 5 seconds to cancel, and DaisyDisk "permanently removes files and folders instead of moving them to the system Trash". It will not accept /System, /Library or your home folder into the Collector, and the site says it "doesn't collect or transmit anything".</p>
         <p>The Mac App Store edition is partly limited, according to the <a href="https://daisydiskapp.com/guide/4/en/Snapshots/" rel="noopener">guide's snapshots page</a>: no snapshot size estimates, and deleting snapshots means using Terminal. The guide does not describe the direct edition as limited.</p>
         <p><strong>What it's good at:</strong> the clearest picture of where space went, including the hidden part. <strong>What it lacks:</strong> any automation or rules, and a Trash step. <strong>Pick it if</strong> you want to look at a map and delete by hand, and you accept that deletes are final.</p>
 
@@ -209,12 +261,14 @@
 
         <h2>CleanMyMac</h2>
         <p><strong>Cost:</strong> Free to download from the <a href="https://macpaw.com/cleanmymac" rel="noopener">vendor</a> or App Store, with a 7-day trial, after which the listing says you are charged automatically. The App Store in-app list shows a Basic yearly plan at $39.99, Plus yearly at $65.99 and a monthly plan at $9.99. The vendor page says "from $3.33/month" and mentions a one-time option; I give no lifetime figure because the sources disagree. <strong>Platform:</strong> macOS 11 or later; version 5.6.</p>
-        <p>An all-in-one cleaner; the listing claims over 29 million downloads. It describes junk and cache cleaning, a malware scan, an uninstaller, duplicates, large and old files, and performance tools. For disk space the relevant part is Space Lens, a storage map. MacPaw's <a href="https://macpaw.com/support/cleanmymac/knowledgebase/space-lens-cleanup" rel="noopener">help page</a> describes a Review and Remove list where you can deselect items, then says CleanMyMac "deletes the items from your Mac". It does not say Trash or permanent. The app is notarized by Apple per the listing, and its label is "Data Not Linked to You", covering contact info, identifiers, usage data and diagnostics.</p>
+        <p>An all-in-one cleaner; the listing claims over 29 million downloads. It describes junk and cache cleaning, a malware scan, an uninstaller, duplicates, large and old files, and performance tools.</p>
+        <p>For disk space the relevant part is Space Lens, a storage map. MacPaw's <a href="https://macpaw.com/support/cleanmymac/knowledgebase/space-lens-cleanup" rel="noopener">help page</a> describes a Review and Remove list where you can deselect items, then says CleanMyMac "deletes the items from your Mac". It does not say Trash or permanent. The app is notarized by Apple per the listing, and its label is "Data Not Linked to You", covering contact info, identifiers, usage data and diagnostics.</p>
         <p><strong>What it lacks:</strong> a clear statement of Trash versus permanent deletion on the page I read, and a price that is easy to state. <strong>Pick it if</strong> you want the extras, especially the uninstaller and malware scan, in one app. For disk space alone, in my reading, a map and Apple's own settings cover most of the same ground for less.</p>
 
         <h2>Hazel</h2>
         <p><strong>Cost:</strong> Hazel 6 is $42, a family pack for up to 5 household members is $65, and an upgrade from an earlier version is $20, per the <a href="https://www.noodlesoft.com/store/" rel="noopener">Noodlesoft store</a>. There is a free trial. <strong>Platform:</strong> macOS; I did not find the requirement on the pages I read.</p>
-        <p>Hazel is not a disk tool. It watches the folders you name and applies rules: by name, date, type or source, move, rename, tag, or delete files that are too old. Its manual describes selectively deleting items from the Trash so the space is recovered, and App Sweep, which notices when you trash an app and offers to remove its support files. For keeping a disk from filling, a typical rule is deleting items in Downloads older than 30 days. What I did not find is a built-in free-space condition. The <a href="https://www.noodlesoft.com/manual/hazel/attributes-actions/using-applescript-or-javascript/" rel="noopener">manual's scripting page</a> lists "the amount of free space on my disk is less than 10 GB" as the kind of thing a script can check, so a threshold trigger means writing one.</p>
+        <p>Hazel is not a disk tool. It watches the folders you name and applies rules: by name, date, type or source, move, rename, tag, or delete files that are too old. Its manual describes selectively deleting items from the Trash so the space is recovered, and App Sweep, which notices when you trash an app and offers to remove its support files.</p>
+        <p>For keeping a disk from filling, a typical rule is deleting items in Downloads older than 30 days. What I did not find is a built-in free-space condition. The <a href="https://www.noodlesoft.com/manual/hazel/attributes-actions/using-applescript-or-javascript/" rel="noopener">manual's scripting page</a> lists "the amount of free space on my disk is less than 10 GB" as the kind of thing a script can check, so a threshold trigger means writing one.</p>
         <p>The manual's <a href="https://www.noodlesoft.com/manual/hazel/work-with-folders-rules/create-edit-rules/preview-a-rule/" rel="noopener">Preview a Rule</a> shows live match indicators for a selected item, plus a rule status view for a folder. That checks a rule; it is not a list of everything the rule would delete.</p>
         <p><strong>What it lacks:</strong> a free-space trigger, an analyzer, and a dry-run list. <strong>Pick it if</strong> you want general file rules on any folder. This is the right tool for that, today.</p>
 
@@ -236,20 +290,27 @@
 
         <h2>du, ncdu, gdu and dua</h2>
         <p><strong>Cost:</strong> Free. <strong>Platform:</strong> macOS, installed with Homebrew (<code>brew install ncdu</code>, <code>gdu</code> or <code>dua-cli</code>); <code>du</code> is already there.</p>
-        <p>The built-in answer is <code>du -hxd 1 ~ | sort -h</code>: the size of each folder one level below your home folder, smallest last, staying on one file system. The interactive versions are friendlier. <a href="https://dev.yorhel.nl/ncdu" rel="noopener">ncdu</a> (MIT) has a built-in delete that asks for confirmation by default and a <code>-r</code> flag that makes it read-only. <a href="https://github.com/dundee/gdu" rel="noopener">gdu</a> (MIT) uses <code>d</code> to delete and <code>D</code> to move to the Trash, with <code>--no-delete</code> to turn deleting off. <a href="https://github.com/Byron/dua-cli" rel="noopener">dua</a> (MIT) has an interactive mode with multi-stage deletion, a config option to disable permanent deletion, and a <code>dua clean</code> command that says nothing is deleted automatically.</p>
+        <p>The built-in answer is <code>du -hxd 1 ~ | sort -h</code>: the size of each folder one level below your home folder, smallest last, staying on one file system. The interactive versions are friendlier.</p>
+        <p><a href="https://dev.yorhel.nl/ncdu" rel="noopener">ncdu</a> (MIT) has a built-in delete that asks for confirmation by default and a <code>-r</code> flag that makes it read-only. <a href="https://github.com/dundee/gdu" rel="noopener">gdu</a> (MIT) uses <code>d</code> to delete and <code>D</code> to move to the Trash, with <code>--no-delete</code> to turn deleting off. <a href="https://github.com/Byron/dua-cli" rel="noopener">dua</a> (MIT) has an interactive mode with multi-stage deletion, a config option to disable permanent deletion, and a <code>dua clean</code> command that says nothing is deleted automatically.</p>
         <p><strong>Pick one if</strong> you work over SSH, on a server, or simply like Terminal. Use read-only mode until you trust your own typing.</p>
 
         <h2>Time Machine local snapshots and tmutil</h2>
         <p><strong>Cost:</strong> Free, built in. <strong>Platform:</strong> macOS.</p>
-        <p>This is the usual reason deleting files does not free space. <a href="https://support.apple.com/en-us/102154" rel="noopener">Apple says</a> Time Machine saves a snapshot about every hour and keeps it for 24 hours, keeps an extra snapshot of your last successful backup until space is needed, and saves one before a macOS update. Your Mac counts the space as available, and Time Machine deletes snapshots as they age or as space is needed. Apple's documented way to remove them by hand is to set Time Machine backups to manual for a few minutes, then turn them back on. The <code>tmutil</code> man page on my Mac also lists <code>listlocalsnapshots</code>, <code>deletelocalsnapshots</code> and <code>thinlocalsnapshots</code>, and says several verbs need root and Full Disk Access. I ran only the listing (none on this Mac), not a deletion verb.</p>
+        <p>This is the usual reason deleting files does not free space. <a href="https://support.apple.com/en-us/102154" rel="noopener">Apple says</a> Time Machine saves a snapshot about every hour and keeps it for 24 hours, keeps an extra snapshot of your last successful backup until space is needed, and saves one before a macOS update. Your Mac counts the space as available, and Time Machine deletes snapshots as they age or as space is needed.</p>
+        <p>Apple's documented way to remove them by hand is to set Time Machine backups to manual for a few minutes, then turn them back on. The <code>tmutil</code> man page on my Mac also lists <code>listlocalsnapshots</code>, <code>deletelocalsnapshots</code> and <code>thinlocalsnapshots</code>, and says several verbs need root and Full Disk Access. I ran only the listing (none on this Mac), not a deletion verb.</p>
         <p><strong>Pick this if</strong> you deleted a lot and the free number did not move. Most of the time, waiting or leaving it alone is right.</p>
 
         <h2>Legroom (Purplelink's)</h2>
-        <p><strong>Cost:</strong> A free 7-day trial, then $9.99 once, with no subscription; also part of the $54.99 Mac Suite. <strong>Platform:</strong> macOS 14 or later, Apple silicon and Intel, direct download from <a href="/legroom/">its page</a>, no Mac App Store build. <strong>Status:</strong> version 1.0.0, signed and notarized, which makes it the newest and least proven tool in this guide. I make it, and I have not compared it with the others on a test Mac.</p>
-        <p>I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set. You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which. A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any. Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate. The Uninstaller lists the files an app keeps in the Library folder, with sizes, and moves only the ones you tick to the Trash after a confirmation sheet.</p>
-        <p><strong>What it lacks:</strong> it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no widget or command-line tool. After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller need a license key, which unlocks the same download. Its page says there is no account and no analytics; every copy checks for updates once a day. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and this is the first release.</p>
-        <p><strong>Where others are better today:</strong> DaisyDisk for a visual map, and for hidden space and snapshots, because it can scan as administrator, which Legroom does not. GrandPerspective if you want free. OmniDiskSweeper if you want simple. Hazel for general rules on any folder. For cleaning developer caches when space is low, free open-source apps such as Harbofly and Dustpan exist, listed below. The gap Legroom is aimed at is folder rules with a free-space trigger, a readout and a "what grew" explanation in one app. <strong>Pick Legroom if</strong> you want rules that clean on a free-space trigger with a preview you approve each time, and you accept a first release from a one-person studio. Pick another tool if you want a visual map of everything including system space.</p>
-        <h2 id="more-tools">Eight more worth knowing</h2>
+        <p><strong>Cost:</strong> A free 7-day trial, then $9.99 once, with no subscription; also part of the $54.99 Mac Suite. <strong>Platform:</strong> macOS 14 or later, Apple silicon and Intel, direct download from <a href="/legroom/">its page</a>, no Mac App Store build. <strong>Status:</strong> version 1.2.0 (first released October 5, 2026), signed and notarized, which makes it among the newest and least proven tools in this guide. I make it, and I have not compared it with the others on a test Mac.</p>
+        <p>I designed it after my own disk emergency, which came from system-level items such as staged updates and swap that no folder sweeper can touch. It lives in the menu bar and shows free space on the startup disk, the space macOS says it can clear, and your other volumes, and it warns you when free space drops below a line you set.</p>
+        <p>You make rules for folders and caches; each rule shows a preview of what it would remove, you approve it, and then it can run by hand, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them for good, and the preview says which.</p>
+        <p>A daily "what grew" comparison over 1, 7 or 30 days names the folders that filled the disk, and Suggestions proposes rules without creating or running any.</p>
+        <p>Space Map draws a folder or disk as rings, with folders it could not read shown hatched. Find Files looks for large, old and duplicate files and only moves the ones you select to the Trash, always leaving one copy of every duplicate. The Uninstaller lists the files an app keeps in the Library folder, with sizes, and moves only the ones you tick to the Trash after a confirmation sheet.</p>
+        <p><strong>What it lacks:</strong> it does not scan as an administrator, so space such as local Time Machine snapshots is listed as "size not reported" rather than measured, and where a fix needs Terminal it shows the command as text and does not run it. It does not clean inside system folders and it does not make your Mac faster. Its page lists no widget or command-line tool.</p>
+        <p>After the trial ends, the menu-bar readout and low-space alerts keep working, while rules, What Grew, Suggestions, Space Map, Find Files and the Uninstaller need a license key, which unlocks the same download. Its page says there is no account and no analytics; every copy checks for updates once a day. Full Disk Access is optional. Legroom's own page says it does not run commands or remove anything you have not previewed and approved, but that is the vendor describing itself, and the app has been out only since October 5, 2026.</p>
+        <p><strong>Where others are better today:</strong> DaisyDisk for a visual map, and for hidden space and snapshots, because it can scan as administrator, which Legroom does not. GrandPerspective if you want free. OmniDiskSweeper if you want simple. Hazel for general rules on any folder. For cleaning developer caches when space is low, free open-source apps such as Harbofly and Dustpan exist, listed below.</p>
+        <p>The gap Legroom is aimed at is folder rules with a free-space trigger, a readout and a "what grew" explanation in one app. <strong>Pick Legroom if</strong> you want rules that clean on a free-space trigger with a preview you approve each time, and you accept a young product from a one-person studio. Pick another tool if you want a visual map of everything including system space.</p>
+        <h2 id="more-tools">Nine more worth knowing</h2>
         <p>Each is useful to someone. I searched for PrunePanda, SpaceSift and Funter and found no live product page or store listing for a disk tool by those names, so they are not covered.</p>
         <h3>Disk Diag</h3>
         <p>A scanner-style cleaner for macOS 12 or later, last updated October 2025. Free to download, but removing scan results is capped at 1 GB a month; Unlimited Cleaning is $16.99 yearly or $44.99 once. The listing does not say how removal works, and its label lists email address and product interaction, with developer advertising or marketing among the purposes.</p>
@@ -257,6 +318,9 @@
         <p>MacPaw's duplicate finder. Free to download, with Yearly Access and Smart Cleanup each listed at $19.99, for macOS 10.13 or later. It finds duplicate and similar files and photos. Check which copy it keeps before accepting an auto-selection.</p>
         <h3>Stats and iStat Menus</h3>
         <p>System monitors for the menu bar. Stats is free and MIT-licensed, for macOS 12 or later, and lists disk utilization among its modules. iStat Menus 7 is $11.99 on the App Store for macOS 14 or later. Both are monitors, not cleaners.</p>
+        <h3>FreeSpace, and Disk Space Monitor &amp; Analyzer</h3>
+        <p>Two paid free-space monitors for the menu bar, read from their Mac App Store listings on October 9, 2026 and not tested. FreeSpace (developer listed as Luma Fung) is $2.99 for macOS 10.13 or later, version 1.4.3, last updated September 3, 2023. It shows free space for local, external and network drives, lets you pin a drive to the menu bar, and alerts you when a drive falls below a percentage you set. It can also eject drives, and its label is "Data Not Collected".</p>
+        <p>Disk Space Monitor &amp; Analyzer (developer Harshad Jadav) is $0.99 for macOS 11 or later, version 1.1, updated February 20, 2026. It shows free space in the menu bar, with available space, total available space including purgeable space, used space and capacity, refreshed about every 30 seconds. Its label is also "Data Not Collected". Neither listing describes a map of folders. The <a href="/guides/show-free-disk-space-mac-menu-bar/">menu-bar guide</a> covers this kind of app.</p>
         <h3>OnyX</h3>
         <p>A free utility from Titanium Software, supported by donations, for maintenance and settings that would otherwise need Terminal commands. There is a separate build for each macOS version, and the page says to use the right one. For disk space alone, I would start elsewhere.</p>
         <h3>Lemon Cleaner</h3>
@@ -268,35 +332,6 @@
         <h3>Spacie, mac-cleaner-cli and cleanmymac-cli</h3>
         <p>Spacie is a native Apple-silicon disk analyzer with sunburst and treemap views and a duplicate finder (about 86 stars on its repository). mac-cleaner-cli is a free MIT command-line cleaner, not MacPaw's. MacPaw's own cleanmymac-cli, released July 2026, targets developer caches, and its README says analytics can be disabled.</p>
 
-        <h2 id="decision-matrix">Decision matrix</h2>
-        <p>"Deletes" is how each tool removes things, as stated on the pages I read; "not stated" means they did not say. US prices, October 4, 2026.</p>
-        <div class="u-scroll-x">
-          <table class="u-table-wide">
-            <thead>
-              <tr><th class="u-th">Tool</th><th class="u-th">Best for</th><th class="u-th">Price</th><th class="u-th">Deletes</th></tr>
-            </thead>
-            <tbody>
-              <tr><td class="u-cell">macOS Storage</td><td class="u-cell">First step, caches, Trash</td><td class="u-cell">Free</td><td class="u-cell">Apple's own flows</td></tr>
-              <tr><td class="u-cell">DaisyDisk</td><td class="u-cell">Visual map, hidden space</td><td class="u-cell">$9.99 once</td><td class="u-cell">Permanently, 5-second cancel</td></tr>
-              <tr><td class="u-cell">GrandPerspective</td><td class="u-cell">Free treemap</td><td class="u-cell">Free or $2.99</td><td class="u-cell">Not stated</td></tr>
-              <tr><td class="u-cell">OmniDiskSweeper</td><td class="u-cell">Simple sorted list</td><td class="u-cell">Free</td><td class="u-cell">Trash, per vendor</td></tr>
-              <tr><td class="u-cell">Nektony Analyzer</td><td class="u-cell">Sunburst map</td><td class="u-cell">Free; Pro $19.99</td><td class="u-cell">Not stated</td></tr>
-              <tr><td class="u-cell">CleanMyMac</td><td class="u-cell">All-in-one extras</td><td class="u-cell">From $39.99 a year</td><td class="u-cell">Not stated (says "deletes")</td></tr>
-              <tr><td class="u-cell">Hazel</td><td class="u-cell">Rules on any folder</td><td class="u-cell">$42 once</td><td class="u-cell">Per rule action</td></tr>
-              <tr><td class="u-cell">Mole</td><td class="u-cell">Terminal cleaning, dry run</td><td class="u-cell">CLI free; app $19</td><td class="u-cell">Trash for analyze; clean can delete</td></tr>
-              <tr><td class="u-cell">AppCleaner</td><td class="u-cell">App leftovers</td><td class="u-cell">Free</td><td class="u-cell">Not stated</td></tr>
-              <tr><td class="u-cell">DevCleaner</td><td class="u-cell">Xcode caches</td><td class="u-cell">Free</td><td class="u-cell">Not stated</td></tr>
-              <tr><td class="u-cell">ncdu, gdu, dua</td><td class="u-cell">Terminal, remote</td><td class="u-cell">Free</td><td class="u-cell">Confirmed delete; gdu and dua can Trash</td></tr>
-              <tr><td class="u-cell">Legroom</td><td class="u-cell">Rules, readout, what grew</td><td class="u-cell">$9.99 once, 7-day trial</td><td class="u-cell">Trash or permanent per rule, shown in the preview; Find Files and Space Map Trash only</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <ul>
-          <li><strong>Want free?</strong> GrandPerspective, OmniDiskSweeper, or du with ncdu.</li>
-          <li><strong>Want deletes you can undo?</strong> OmniDiskSweeper, or Mole's analyze mode, which use the Trash.</li>
-          <li><strong>Want it to stay empty?</strong> Hazel for age rules; Harbofly or Dustpan for developer caches.</li>
-          <li><strong>Xcode ate the disk?</strong> DevCleaner and the simctl commands.</li>
-        </ul>
 
         <h2 id="how-to-choose">How to choose</h2>
         <ol>
@@ -335,7 +370,7 @@
         <h3>Can anything clean my Mac automatically when space runs low?</h3>
         <p>For some things, yes. Hazel runs rules on folders, though a free-space trigger needs a script. Harbofly and Dustpan, both free and open source, offer opt-in auto-clean for developer caches, including when space is low. None of them is a reason to skip reading what a rule will remove first, and I have audited none of them.</p>
         <h3>Is Legroom available, and what does it cost?</h3>
-        <p>Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it is a first release, and this guide describes it from its <a href="/legroom/">own product page</a> rather than from a test against the other tools.</p>
+        <p>Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it, it has been out only since October 5, 2026, and this guide describes it from its <a href="/legroom/">own product page</a> rather than from a test against the other tools.</p>
 
         <h2>Related guides</h2>
         <ul>
@@ -422,7 +457,7 @@
           </div>
         </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js?v=3355638b88" defer></script>
+      <script src="/analytics.js?v=4cbb1f9af4" defer></script>
   <script src="/ethicalads.js?v=c8d9be094c" defer></script>
 </body>
 </html>
