@@ -1,0 +1,38 @@
+/* /tapefolio/ page. External file so the strict CSP permits it. */
+
+/* Release gate: until launch.js switches Tapefolio on, the trial link and the Buy button
+   are present but dead. A link without an href is not focusable; the button carries the
+   disabled attribute. */
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+/* Class rules such as .btn set display, which would otherwise beat the hidden attribute. */
+[data-tf-live-only][hidden],
+[data-tf-pre-only][hidden] { display: none !important; }
+.product-status-soon { color: var(--muted); }
+
+/* There is no app icon yet, so the hero is one column. When a picture is added it goes in
+   a <figure class="app-hero-window tf-hero-window"> after .app-hero-copy and the hero turns
+   into two columns by itself (see docs/products/tapefolio.md). */
+.tf-hero { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 960px) {
+  .tf-hero:has(.tf-hero-window) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+}
+.tf-hero-window { margin: 0; }
+.tf-hero-window .frame-soft { max-width: 760px; margin-inline: auto; }
+.tf-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+/* Screenshots, when there are some: <section class="screenshots-section"> with a .tf-shots grid of
+   <figure class="tf-shot"> holding an <img> with width, height and alt text, and a <figcaption>. */
+.tf-shots { display: grid; gap: clamp(20px, 3vw, 32px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.tf-shot { margin: 0; display: grid; gap: 10px; align-content: start; }
+.tf-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
+.tf-shot figcaption { color: var(--muted); font-size: 0.9rem; max-width: 56ch; }
+
+/* Measured results and download sizes: plain tables, numbers aligned. */
+.tf-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tf-note { max-width: 64ch; color: var(--muted); font-size: 0.9rem; }
+.tf-list { margin: 10px 0 0; padding-left: 1.2em; color: var(--muted); max-width: 64ch; }
+.tf-list li + li { margin-top: 6px; }

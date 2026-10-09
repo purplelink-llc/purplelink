@@ -1,6 +1,6 @@
-// Legroom and Keyfeel trial emails: the signup, the one-click unsubscribe, the daily reminder run (due, not yet due,
+// Legroom, Keyfeel and Tapefolio trial emails: the signup, the one-click unsubscribe, the daily reminder run (due, not yet due,
 // already bought, buyer check unavailable, too old), the wording of both emails, and the page forms. Blobs, Resend
-// and Stripe are stubbed. The same checks run for both apps because they share netlify/lib/trial-reminder.mjs.
+// and Stripe are stubbed. The same checks run for all three apps because they share netlify/lib/trial-reminder.mjs.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/trial-reminder-apps.test.mjs
 
@@ -29,10 +29,13 @@ const legroom = await import("../functions/legroom-reminder.mjs");
 const keyfeel = await import("../functions/keyfeel-reminder.mjs");
 const legroomSend = await import("../functions/legroom-reminder-send.mjs");
 const keyfeelSend = await import("../functions/keyfeel-reminder-send.mjs");
+const tapefolio = await import("../functions/tapefolio-reminder.mjs");
+const tapefolioSend = await import("../functions/tapefolio-reminder-send.mjs");
 
 const APPS = [
   { name: "Legroom", slug: "legroom", mod: legroom, send: legroomSend, records: "lg-trial-reminders", tokens: "lg-trial-reminder-tokens", own: "legroom", other: "keyfeel", price: /\$9\.99/ },
   { name: "Keyfeel", slug: "keyfeel", mod: keyfeel, send: keyfeelSend, records: "kf-trial-reminders", tokens: "kf-trial-reminder-tokens", own: "keyfeel", other: "legroom", price: /\$9\.99/ },
+  { name: "Tapefolio", slug: "tapefolio", mod: tapefolio, send: tapefolioSend, records: "tf-trial-reminders", tokens: "tf-trial-reminder-tokens", own: "tapefolio", other: "keyfeel", price: /\$29\.99/ },
 ];
 
 let calls, stripeSessions, stripeStatus, resendStatus;
@@ -234,11 +237,30 @@ for (const app of APPS) {
   });
 }
 
-test("the two apps keep separate records and run on different minutes", async () => {
+test("the three apps keep separate records and run on different minutes", async () => {
   await legroom.default(postTo(APPS[0])({ email: "same@example.org" }));
   await keyfeel.default(postTo(APPS[1])({ email: "same@example.org" }));
-  assert.equal(kept().length, 4);
-  assert.notEqual(legroomSend.config.schedule, keyfeelSend.config.schedule);
+  await tapefolio.default(postTo(APPS[2])({ email: "same@example.org" }));
+  assert.equal(kept().length, 6);
+  const schedules = [legroomSend, keyfeelSend, tapefolioSend].map((m) => m.config.schedule);
+  assert.equal(new Set(schedules).size, 3);
+});
+
+test("Tapefolio setup email says what the page says: first-run wait, mishearing, identifiers it misses, and no claim of anonymization", () => {
+  const mail = tapefolio.setupEmail("a@example.org", "b".repeat(48));
+  for (const body of [mail.text, mail.html]) {
+    assert.match(body, /a few minutes while macOS prepares its models for the Neural Engine/);
+    assert.match(body, /mishear some words and mislabel some speakers/);
+    assert.match(body, /It misses some/);
+    assert.match(body, /replace it or keep it/);
+    assert.match(body, /built in/);
+    assert.match(body, /optional model downloads/);
+    assert.doesNotMatch(body, /anonymi[sz]|guarantee|complian/i);
+  }
+  const reminder = tapefolio.reminderEmail("a@example.org", "b".repeat(48));
+  assert.match(reminder.text, /\$29\.99/);
+  assert.match(reminder.text, /two of your Macs/);
+  assert.doesNotMatch(reminder.text, /\$9\.99|for life/);
 });
 
 // ---- the forms on the pages ------------------------------------------------------------
@@ -275,12 +297,12 @@ test("trial-reminder.js reveals the nearest form on a download click and posts o
   assert.doesNotMatch(src, /[–—]/);
 });
 
-test("the privacy page names the trial emails of all four apps and their retention", () => {
+test("the privacy page names the trial emails of all five apps and their retention", () => {
   const html = read("privacy/index.html");
-  for (const label of ["ModernTex trial emails", "Outbound Veil trial emails", "Legroom trial emails", "Keyfeel trial emails"]) {
+  for (const label of ["ModernTex trial emails", "Outbound Veil trial emails", "Legroom trial emails", "Keyfeel trial emails", "Tapefolio trial emails"]) {
     assert.ok(html.includes(label), `missing: ${label}`);
   }
-  assert.match(html, /Outbound Veil, Legroom or Keyfeel trial emails is deleted when its one reminder is sent, and in any case within 14 days/);
+  assert.match(html, /Outbound Veil, Legroom, Keyfeel or Tapefolio trial emails is deleted when its one reminder is sent, and in any case within 14 days/);
 });
 
 // The page script, run against a small fake DOM: a download click reveals the nearest form, and a submit posts

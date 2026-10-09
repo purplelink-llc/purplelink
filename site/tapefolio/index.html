@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, follow">
+    <title>Tapefolio - Private Transcription and OCR for Researchers on Mac | Purplelink LLC</title>
+    <meta name="description" content="Transcribe interviews and read scanned pages on your Mac. Speaker labels, case-by-case identifier removal, MAXQDA export. Nothing is uploaded. Free for 7 days.">
+    <link rel="canonical" href="https://purplelink.llc/tapefolio/">
+    <meta property="og:title" content="Tapefolio - Private Transcription and OCR for Researchers on Mac">
+    <meta property="og:description" content="Transcribe interviews, label speakers, replace names and other identifiers you choose, and read scanned pages, all on your Mac. Your files are not uploaded.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/brand.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tapefolio/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tapefolio - Private Transcription and OCR for Researchers on Mac">
+    <meta name="twitter:description" content="Transcribe interviews, label speakers, replace names and other identifiers you choose, and read scanned pages, all on your Mac. Your files are not uploaded.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/brand.png">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=cf35a6634a">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/tapefolio/tapefolio.css?v=cce57f6ed2">
+    <script src="/site.js?v=95cfec31bc" defer></script>
+    <script src="/trial-reminder.js?v=d43def6c9f" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/tapefolio/launch.js?v=5f20b7c6e0" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Tapefolio",
+          "applicationCategory": "UtilitiesApplication",
+          "applicationSubCategory": "Transcription and OCR for researchers",
+          "operatingSystem": "macOS 26+",
+          "url": "https://purplelink.llc/tapefolio/",
+          "image": "https://purplelink.llc/assets/og/brand.png",
+          "description": "Tapefolio is a Mac app that transcribes audio on the Mac with word timing and speaker labels, helps you replace names and other identifiers case by case, and reads photos, scans and PDFs into searchable text. Your files are not uploaded.",
+          "softwareRequirements": "macOS 26 or later on a Mac with Apple silicon.",
+          "processorRequirements": "Apple silicon",
+          "featureList": [
+            "Transcribes audio on the Mac, with the time of every word",
+            "One small speech model built in, so it works with no download; better models are optional downloads that can be deleted from Settings",
+            "Speaker labels, with speaker naming and merging in the review screen",
+            "Optional speaker memory, off until you turn it on for a project, with a recorded consent note, stored encrypted on the Mac, suggestions only, and deletable",
+            "Identifier removal that finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth and replaces them with codes, one case at a time, with the key file kept separately",
+            "Review screen with an audio player and word highlighting",
+            "Exports to Word, HTML, Markdown, text, SRT, VTT and JSON, and a timestamped Word file for MAXQDA",
+            "Record from the microphone",
+            "Batch OCR for photos, scans and PDFs, with saved workflows, searchable PDF output, optional identifier replacement and a provenance record with a SHA-256 for each input"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "29.99",
+            "priceCurrency": "USD",
+            "url": "https://purplelink.llc/tapefolio/",
+            "category": "One-time purchase, free 7-day trial",
+            "seller": { "@id": "https://purplelink.llc/#organization" },
+            "hasMerchantReturnPolicy": { "@type": "MerchantReturnPolicy", "applicableCountry": "US", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 14, "returnFees": "https://schema.org/FreeReturn", "refundType": "https://schema.org/FullRefund" }
+          },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does Tapefolio need to run?",
+              "acceptedAnswer": { "@type": "Answer", "text": "macOS 26 or later on a Mac with Apple silicon. There is no Intel version." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do my recordings leave my Mac?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Transcription, speaker labels, identifier removal and OCR all run on the Mac. The only things that use the internet are the optional model downloads inside the app, each once, and the app's check for a new version." }
+            },
+            {
+              "@type": "Question",
+              "name": "How accurate is it?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% depending on the speech model, so a person should check any text that will be quoted against the recording." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it anonymize a transcript?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Identifier removal finds many identifiers and replaces them with codes, and it misses some. You review each one, and you should read the result before you share it. It does not make a study compliant; that is for you and your ethics board to decide." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it remember people's voices?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only if you turn speaker memory on for a project, and the app asks for a recorded consent note first. Voices are stored encrypted on your Mac, Tapefolio only suggests matches for you to confirm, and you can delete them." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is the first run slow?",
+              "acceptedAnswer": { "@type": "Answer", "text": "On a new Mac, macOS prepares its models for the Neural Engine the first time they are used. That can take a few minutes, and happens once." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does one license work on more than one Mac?",
+              "acceptedAnswer": { "@type": "Answer", "text": "One license key works on two of your Macs. Paste the same key into Tapefolio on each one." }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens when the trial ends?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial is the complete app for seven days from the first time you open it, with no account. To keep using Tapefolio after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key in Tapefolio and paste it. It works offline and needs no second download." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I get help?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tapefolio", "item": "https://purplelink.llc/tapefolio/" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/products/">&larr; All products</a>
+
+    <div class="app-hero tf-hero">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS 26 &middot; Apple silicon</span>
+          <span class="product-status product-status-soon" data-tf-pre-only>Not released yet</span>
+          <span class="product-status product-status-live" data-tf-live-only hidden>Free 7-day trial &middot; <span id="price">$29.99</span> to keep</span>
+        </div>
+        <h1 class="app-hero-name">Tapefolio</h1>
+        <p class="app-hero-tagline">Tapefolio transcribes interview and meeting recordings on your Mac, labels the speakers, helps you replace names and other identifiers, and reads scanned pages and photos into searchable text. Your files are not uploaded.</p>
+        <div class="app-hero-actions" id="buy">
+          <a class="btn btn-primary" id="trial-download" data-tf-gated data-tf-href="/.netlify/functions/tapefolio-download?download=1" data-tf-live-text="Try it free for 7 days" aria-disabled="true">Free trial opens at release</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="tapefolio" data-tf-gated data-tf-live-text="Buy Tapefolio" disabled>Buying opens at release</button>
+        </div>
+        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <form class="trial-remind" data-reminder-signup data-reminder-api="/.netlify/functions/tapefolio-reminder" data-reminder-link="tapefolio-download" hidden novalidate>
+          <p class="trial-remind-head" id="tf-remind-head-1">Your download has started. Want setup tips by email, and one reminder before the trial ends?</p>
+          <div class="trial-remind-row">
+            <label class="visually-hidden" for="tf-trial-email-1">Email address</label>
+            <input type="email" id="tf-trial-email-1" name="email" autocomplete="email" placeholder="you@example.com" aria-describedby="tf-remind-head-1" required>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-secondary">Email me</button>
+          </div>
+          <p class="trial-remind-note" data-reminder-status aria-live="polite">Optional. Two emails, then nothing, each with an unsubscribe link. Your address is deleted once the second is sent.</p>
+        </form>
+        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-tf-facts>Version, size and release date are listed here when Tapefolio is released.</span> Needs macOS 26 or later on a Mac with Apple silicon.</p>
+        <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.</p>
+      </div>
+    </div>
+
+    <section class="features-section" aria-labelledby="how-h">
+      <div class="features-header">
+        <h2 id="how-h">How it works</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>You add a recording</h3>
+          <p>Open audio files, or record from the microphone inside the app. Tapefolio transcribes on your Mac and keeps the time of every word.</p>
+        </div>
+        <div class="feature-item">
+          <h3>You check it against the audio</h3>
+          <p>The review screen plays the recording beside the text and highlights the word being spoken. You correct words, name the speakers and merge two labels that are one person.</p>
+        </div>
+        <div class="feature-item">
+          <h3>You decide what is replaced</h3>
+          <p>Identifier removal marks what it found. You replace or keep each one, or replace everything left, and then export. The key that maps the codes back is saved in a separate file.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="does-h">
+      <h2 id="does-h">What it does</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Transcription</th><td>Transcribes audio on your Mac, with word timing. One small speech model is built in, so it works the moment it is installed. Better models are optional downloads inside the app: NVIDIA Parakeet for English and Whisper large-v3 turbo. Settings can delete any of them.</td></tr>
+          <tr><th scope="row">Speakers</th><td>Labels who is speaking. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is an optional download that separates speakers a second way.</td></tr>
+          <tr><th scope="row">Speaker memory</th><td>Optional, and opt-in for each project. Tapefolio requires a recorded consent note before it saves a voice. Voices are stored encrypted on your Mac, the app only suggests matches for you to confirm, and you can delete them.</td></tr>
+          <tr><th scope="row">Identifier removal</th><td>Finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth, and replaces them with consistent codes. You review case by case: replace or keep each one, or replace all that remain. The key file that maps the codes back is kept separately. It misses some, so you read the result.</td></tr>
+          <tr><th scope="row">Review screen</th><td>An audio player next to the transcript, with the current word highlighted. Turns are editable, and you can rename or merge speakers and go through the identifier review without leaving the screen.</td></tr>
+          <tr><th scope="row">Export</th><td>Word, HTML, Markdown, plain text, SRT, VTT and JSON, and a timestamped Word file made to import into MAXQDA.</td></tr>
+          <tr><th scope="row">Recording</th><td>Record from the microphone in the app, then transcribe straight into the review screen.</td></tr>
+          <tr><th scope="row">Batch OCR</th><td>Reads photos, scans and PDFs, one file or a whole folder, and keeps two-column pages in reading order. Output is a searchable PDF with an invisible text layer, or text, Markdown, Word, JSON or CSV. You can save a workflow and run it again, and replace identifiers in the text with a separate key file. Each run writes a provenance record with a SHA-256 for every input file.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="specs-section" aria-labelledby="not-h">
+      <h2 id="not-h">What it will not do</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Get every word right</th><td>It will mishear words and mislabel speakers. Overlapping voices, quiet speech and short replies such as okay and yep are where it loses the most. Check any text you plan to quote against the recording.</td></tr>
+          <tr><th scope="row">Anonymize a transcript</th><td>Identifier removal finds many identifiers and misses some, and it cannot tell when a detail identifies someone only in context. It does not make a study compliant; that is for you and your ethics board. Read every transcript before you share it.</td></tr>
+          <tr><th scope="row">Read handwriting or phone photos reliably</th><td>OCR has been measured only on generated test files. Real handwriting and real phone photos of pages have not been tested.</td></tr>
+          <tr><th scope="row">Promise results in other languages</th><td>What has been measured is English meeting audio. Other languages, accents and a quiet two-person interview have not been measured, and Whisper is the model to try for languages other than English.</td></tr>
+          <tr><th scope="row">Run on an Intel Mac or an older macOS</th><td>It needs macOS 26 or later and Apple silicon. There is no Windows, iPhone or iPad version.</td></tr>
+          <tr><th scope="row">Send your files anywhere</th><td>There is no cloud transcription and there are no accounts. Nothing you open in Tapefolio is uploaded.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="specs-section" aria-labelledby="measured-h">
+      <h2 id="measured-h">How well it works</h2>
+      <p class="specs-more">These are small checks, run on an M4 MacBook with 16 GB, and your recordings will differ. Treat every transcript as a draft.</p>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Words wrong</th><td>Two meetings from the AMI Meeting Corpus, four people each, headset mix. Across the three speech models the app can use, the word error rate was between 21% and 29%. Fillers are left out of the count, and many of the errors are dropped short replies and spelling conventions such as gonna and going.</td></tr>
+          <tr><th scope="row">Right speaker</th><td>On the same two meetings, between 87% and 94% of words were given to the right speaker. The speaker setting was tuned on those same two meetings, so a new recording may do worse.</td></tr>
+          <tr><th scope="row">Names found</th><td>Against the corpus's human labels on those meetings, identifier removal found 13 of 15 personal names and 2 of 2 places, and flagged one false place. That is a very small sample.</td></tr>
+          <tr><th scope="row">Scanned text</th><td>On 9 generated test files (11 pages), the OCR word error rate was 1.5%.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="features-section bg-purple-xlight" aria-labelledby="privacy-h">
+      <div class="features-header">
+        <h2 id="privacy-h">Privacy and what downloads</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>Your files stay on your Mac</h3>
+          <p>Transcription, speaker labels, identifier removal and OCR run on your Mac. There are no accounts. If your ethics board requires that recordings stay on your own computer, Tapefolio does its work there; whether that meets the board's rules is for you and the board to decide.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Downloads, each once</h3>
+          <p>The only other use of the internet is the optional model downloads inside the app, plus the app's check for a new version, which carries the app's name and version and nothing from your files. Details are on the <a href="/privacy/">privacy page</a>.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Voices are opt-in</h3>
+          <p>Speaker memory is off until you turn it on for a project and record a consent note. What it saves is stored encrypted on your Mac, and you can delete it.</p>
+        </div>
+      </div>
+      <table class="compare-table specs-table" data-motion="rows">
+        <caption>Models</caption>
+        <thead>
+          <tr><th scope="col">Model</th><th scope="col">For</th><th scope="col">Size</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Small speech model</th><td>Transcription, built in</td><td class="tf-num">No download</td></tr>
+          <tr><th scope="row">NVIDIA Parakeet</th><td>English transcription</td><td class="tf-num">About 470 MB</td></tr>
+          <tr><th scope="row">Whisper large-v3 turbo</th><td>Transcription in many languages</td><td class="tf-num">About 650 MB</td></tr>
+          <tr><th scope="row">NVIDIA Nemotron 3 Diarization</th><td>Separating speakers</td><td class="tf-num">About 190 MB</td></tr>
+        </tbody>
+      </table>
+      <p class="tf-note">Optional models can be deleted from Settings. The first run on a new Mac can take a few minutes while macOS prepares its models for the Neural Engine, and the Whisper model can take about ten minutes the first time it runs on a given chip.</p>
+      <p class="tf-note">Credits: the speech models are NVIDIA Parakeet TDT 0.6B v2 (CC BY 4.0), run through FluidAudio and FluidInference (Apache-2.0), and OpenAI Whisper (MIT), run through WhisperKit (MIT, Argmax). The speaker models are from pyannote and WeSpeaker, via FluidInference. The measurements above use the AMI Meeting Corpus (CC BY 4.0).</p>
+    </section>
+
+    <section class="features-section" aria-labelledby="price-h">
+      <div class="features-header">
+        <h2 id="price-h">Price and trial</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>Seven days free</h3>
+          <p>The trial is the complete app, counted from the first time you open it. No account and nothing to enter.</p>
+        </div>
+        <div class="feature-item">
+          <h3>$29.99, once</h3>
+          <p>One payment in US dollars, through Stripe. After the trial the app asks for a license key, which arrives in the receipt email and on the page after you pay. Updates to the version you buy are included.</p>
+        </div>
+        <div class="feature-item">
+          <h3>One key, two Macs</h3>
+          <p>The key unlocks Tapefolio on up to two of your own Macs, works offline and needs no second download. Refunds within 14 days: email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="req-h">
+      <h2 id="req-h">System requirements</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">macOS</th><td>26 or later.</td></tr>
+          <tr><th scope="row">Mac</th><td>Apple silicon. There is no Intel version.</td></tr>
+          <tr><th scope="row">Disk space</th><td>The app, plus the optional models you choose to download (see the sizes above).</td></tr>
+          <tr><th scope="row">Permissions</th><td>macOS asks for microphone access the first time you record in the app.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-list" data-motion="stagger">
+        <details class="faq-item">
+          <summary>What does it need to run?</summary>
+          <div class="faq-body">macOS 26 or later on a Mac with Apple silicon. There is no Intel version.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Do my recordings leave my Mac?</summary>
+          <div class="faq-body">No. Transcription, speaker labels, identifier removal and OCR all run on the Mac. The only things that use the internet are the optional model downloads inside the app, each once, and the app's check for a new version.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How accurate is it?</summary>
+          <div class="faq-body">It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% depending on the speech model, so a person should check any text that will be quoted against the recording. The measured results are above.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it anonymize a transcript?</summary>
+          <div class="faq-body">No. Identifier removal finds many identifiers and replaces them with codes, and it misses some. You review each one, and you should read the result before you share it. It does not make a study compliant; that is for you and your ethics board to decide.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What happens to the key file?</summary>
+          <div class="faq-body">When Tapefolio replaces an identifier it writes a separate key file that maps each code back to the original. Anyone who has both the transcript and the key file can reverse the replacement, so store the key file somewhere other than where you share the transcript.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it remember people's voices?</summary>
+          <div class="faq-body">Only if you turn speaker memory on for a project, and the app asks for a recorded consent note first. Voices are stored encrypted on your Mac, Tapefolio only suggests matches for you to confirm, and you can delete them. It has been tested only on recordings made the same day with the same microphone, so treat a suggestion as a suggestion.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Which speech model should I use?</summary>
+          <div class="faq-body">Start with the built-in one, which needs no download. On the two meetings measured, the three models were within about two points of each other, so none is proven better. Parakeet was the fastest and is English only; Whisper covers many languages but was the slowest.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Why is the first run slow?</summary>
+          <div class="faq-body">On a new Mac, macOS prepares its models for the Neural Engine the first time they are used. That can take a few minutes, and it happens once. Later runs start at once.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does one license work on more than one Mac?</summary>
+          <div class="faq-body">One license key works on two of your Macs. Paste the same key into Tapefolio on each one.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What happens when the trial ends?</summary>
+          <div class="faq-body">The trial is the complete app for seven days from the first time you open it, with no account. To keep using Tapefolio after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key in Tapefolio and paste it. It works offline and needs no second download.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I get a refund?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href="/terms/">terms</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I get help?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
+      <h2 id="closing-cta-heading">Try it on one recording.</h2>
+      <p>Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.</p>
+      <div class="closing-cta-actions">
+        <a class="btn btn-primary" data-tf-gated data-tf-href="/.netlify/functions/tapefolio-download?download=1" data-tf-live-text="Try it free for 7 days" aria-disabled="true">Free trial opens at release</a>
+        <a class="btn btn-ghost" href="#buy" data-tf-live-only hidden>Buy Tapefolio</a>
+      </div>
+      <form class="trial-remind" data-reminder-signup data-reminder-api="/.netlify/functions/tapefolio-reminder" data-reminder-link="tapefolio-download" hidden novalidate>
+        <p class="trial-remind-head" id="tf-remind-head-2">Your download has started. Want setup tips by email, and one reminder before the trial ends?</p>
+        <div class="trial-remind-row">
+          <label class="visually-hidden" for="tf-trial-email-2">Email address</label>
+          <input type="email" id="tf-trial-email-2" name="email" autocomplete="email" placeholder="you@example.com" aria-describedby="tf-remind-head-2" required>
+          <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit" class="btn btn-secondary">Email me</button>
+        </div>
+        <p class="trial-remind-note" data-reminder-status aria-live="polite">Optional. Two emails, then nothing, each with an unsubscribe link. Your address is deleted once the second is sent.</p>
+      </form>
+      <p class="closing-cta-fine">macOS 26 or later &middot; Apple silicon</p>
+    </section>
+    <div class="sticky-cta" data-sticky-cta data-tf-sticky data-hide-when="#buy, .closing-cta, .footer" hidden>
+      <span class="sticky-cta-text"><strong>Tapefolio</strong> free for 7 days</span>
+      <a class="btn btn-primary" href="#buy" data-track="sticky_cta" data-track-meta="tapefolio">Get Tapefolio</a>
+    </div>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=bb3528dd7e" defer></script>
+</body>
+</html>
