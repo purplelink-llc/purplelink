@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.0.3.dmg",
-  "releaseNotes": "Vitae Plus is now $2.99 a month or $23.99 a year, and the prices shown in the app match the website."
+  "version": "1.0.4",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.0.4.dmg",
+  "releaseNotes": "Vitae can now take commands from scripts through an optional automation inbox. It is off by default, takes a snapshot before every change, and never deletes anything."
 }

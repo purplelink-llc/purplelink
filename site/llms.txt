@@ -86,7 +86,7 @@
 - **Category:** Academic research management
 - **Description:** A local-first Mac app for academics: track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record.
 - **Pricing:** Free. Optional Vitae Plus subscription, $2.99/month or $23.99/year with a 7-day free trial, adds reports, Word templates, a revision workspace and Shareables. Core record-keeping stays free.
-- **Status:** Shipping, version 1.0.3. Apple-notarized download, no App Store required.
+- **Status:** Shipping, version 1.0.4. Apple-notarized download, no App Store required.
 - **Product page:** https://purplelink.llc/vitae/
 - **Vitae Plus:** https://purplelink.llc/vitae/plus/
 
