@@ -17,7 +17,7 @@ pass --public only after Ben has approved that specific video in chat.
 Prints the video URL on success. Exit 2 means the channel was not reachable
 (wrong account in the automation Chrome).
 """
-import argparse, os, subprocess, sys, time, urllib.request
+import argparse, os, re, subprocess, sys, time, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cdp_tab import Tab  # noqa: E402
@@ -86,6 +86,23 @@ def choose_visibility(tab, name):
         else:
             time.sleep(1.5)
     raise RuntimeError(f"could not select the {name} visibility option in Studio")
+
+
+def studio_state(vid):
+    """What Studio itself says the video's visibility is: Public, Unlisted, Private, or Draft/Scheduled.
+
+    oEmbed cannot tell public from unlisted (it answers 200 for both), and the link shown in the upload dialog
+    exists before anything is published, so neither proves the upload finished. Studio's own visibility text does.
+    """
+    t = Tab.new(f"https://studio.youtube.com/video/{vid}/edit")
+    try:
+        urllib.request.urlopen(f"http://127.0.0.1:9340/json/activate/{t.info['id']}").read()
+        t.wait_idle(10); time.sleep(4)
+        return t.eval("""(()=>{const all=[];(function walk(r){for(const e of r.querySelectorAll('*')){all.push(e);if(e.shadowRoot)walk(e.shadowRoot);}})(document);
+            const e=all.find(x=>x.id==='visibility-text'); const d=all.some(x=>/^ytcp-video-metadata-editor$/i.test(x.tagName)&&/draft/i.test(x.getAttribute('draft')||''));
+            return (e&&e.innerText.trim())||''})()""") or ""
+    finally:
+        t.close()
 
 
 def wait_for_checks(tab, timeout=1500):
@@ -169,38 +186,52 @@ def main():
         wait_for(tab, """(()=>{const b=[...document.querySelectorAll('ytcp-button, button')]
             .find(e=>/^(Publish|Save|Done)$/.test((e.innerText||'').trim()));
             return !!b && !b.hasAttribute('disabled') && b.getAttribute('aria-disabled')!=='true'})()""", 900, 2)
-        if a.public:
-            wait_for_checks(tab)
+        # Always wait, whatever the visibility: Save/Publish pressed while the content check is still running raises
+        # "We're still checking your content" (Publish anyway / Go back) and leaves the video a draft. That is what
+        # left an unlisted upload as a draft on 2026-10-09; only --public used to wait.
+        wait_for_checks(tab)
+        clicked = None
         for name in ("Publish", "Save", "Done"):
             try:
                 tab.click_text(name)
+                clicked = name
                 break
             except LookupError:
                 continue
+        if not clicked:
+            raise RuntimeError("found no Publish, Save or Done button in the upload dialog; the video is still a draft")
+        time.sleep(2)
+        if tab.eval("""(()=>{const all=[];(function walk(r){for(const e of r.querySelectorAll('*')){all.push(e);if(e.shadowRoot)walk(e.shadowRoot);}})(document);
+            return all.some(x=>/still checking your content/i.test(x.innerText||'')&&x.offsetParent!==null&&(x.innerText||'').length<400)})()"""):
+            try:
+                tab.click_text("Go back")      # never "Publish anyway": that risks a strike while checks are running
+            except LookupError:
+                pass
+            raise RuntimeError("Studio said it is still checking the content; the video is a draft. Wait for the check, then save it in Studio")
         link = wait_for(tab, """(()=>{const a=[...document.querySelectorAll('a')]
             .find(x=>/youtu\\.be\\//.test(x.href)); return a? a.href : null})()""", 120)
+        m = re.search(r"youtu\.be/([\w-]+)", link)
+        if not m:
+            raise RuntimeError("could not read the video id from " + link)
+        vid = m.group(1)
+        time.sleep(5)
+        # The link shows in the dialog before publishing, so it proves nothing, and oEmbed answers 200 for public AND
+        # unlisted. Ask Studio what it thinks the visibility is, and refuse to report success unless it is what was
+        # asked for. (2026-10-01: three uploads printed a link and stayed drafts; 2026-10-09: one that was asked to be
+        # unlisted came out Public while the script said Unlisted.)
+        want = "Public" if a.public else "Unlisted"
+        got = ""
+        for _ in range(8):
+            got = studio_state(vid)
+            if got.lower() == want.lower():
+                break
+            time.sleep(10)
+        if got.lower() != want.lower():
+            print(f"WRONG STATE: Studio says {got!r} for {link}, wanted {want!r}. Fix it with: "
+                  f"python3 scripts/yt-visibility.py {want.lower()} {vid}", file=sys.stderr)
+            sys.exit(3)
         print(link)
-        # The link shows in the dialog before publishing, so it proves nothing.
-        # On 2026-10-01 three uploads printed a link and stayed drafts because
-        # the visibility radio never took. oEmbed answers 200 only once public.
-        if a.public:
-            # oEmbed can lag the publish by half a minute; retry before calling it a failure.
-            ok = False
-            for _ in range(8):
-                time.sleep(8)
-                # curl, not urllib: this Mac's python.org build has no CA bundle, so
-                # urllib raised CERTIFICATE_VERIFY_FAILED and every check failed.
-                r = subprocess.run(
-                    ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "--max-time", "20",
-                     "https://www.youtube.com/oembed?format=json&url=" + link],
-                    capture_output=True, text=True)
-                if r.stdout.strip() == "200":
-                    ok = True
-                    break
-            if not ok:
-                print("NOT PUBLIC: the video is still a draft or private; finish it in Studio "
-                      "(Edit draft, Visibility, Public, Publish)", file=sys.stderr)
-                sys.exit(3)
+        print(f"verified in Studio: {got}")
     except Exception:
         print(f"left the Studio tab open for manual recovery: {tab.url()}", file=sys.stderr)
         raise

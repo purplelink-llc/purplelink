@@ -3,8 +3,8 @@
 
   python3 scripts/yt-visibility.py unlisted VIDEO_ID [VIDEO_ID ...]
 
-Only run for videos Ben has said to change. Confirms with the public oEmbed
-endpoint (200 = public, 401/403/404 = not public).
+Only run for videos Ben has said to change. Confirms by reading the visibility back from Studio (oEmbed answers 200 for public
+AND unlisted videos, so it cannot tell them apart).
 """
 import os, subprocess, sys, time, urllib.request, importlib.util
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
