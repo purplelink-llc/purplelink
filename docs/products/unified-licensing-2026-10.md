@@ -9,6 +9,10 @@ keys `KFL1-...`, domain `KeyfeelLicenseV1`, key derived from the buyer's email, 
 `netlify/lib/keyfeel-license.mjs` and the Keyfeel repo. It is NOT part of PurplelinkLicenseV1 below. Outbound
 Veil and Legroom use PurplelinkLicenseV1; ModernTex keeps MTX1 until its own move to one download.
 
+**Tapefolio (store side built 2026-10-09)** follows the Keyfeel pattern: one download, 7-day trial, its own scheme (keys `TFL1-...`,
+domain `TapefolioLicenseV1`, key derived from the buyer's email, `netlify/lib/tapefolio-license.mjs`, public key
+`5qmJMOr4uux0LZrWGs/V6nc6VKXsogioMgiJ3pBlSvI=`), also not part of PurplelinkLicenseV1. See `tapefolio.md`.
+
 Why: the Suite page showed a separate trial download and a separate "full" download per app, with no
 key (ModernTex was the only one with a key). One download per app removes "install this copy in its
 place" and makes the key the single paywall.

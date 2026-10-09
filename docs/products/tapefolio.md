@@ -1,0 +1,241 @@
+# Tapefolio: paid macOS app, store runbook
+
+Store side built 2026-10-09 on the `tapefolio-store` branch (worktree `/Volumes/Extreme SSD/work-tapefolio`), modelled on
+`keyfeel.md`. The app lives in `/Volumes/Extreme SSD/Tapefolio` (its README is the source of every claim on the page).
+Name decided and cleared by Ben 2026-10-09.
+
+Tapefolio is a macOS 26+, Apple silicon app for private, on-device transcription and OCR for researchers. It transcribes
+audio with word timing, labels speakers, has an opt-in speaker memory, finds identifiers and replaces them with codes
+case by case (the key file kept apart), has a review screen with an audio player and word highlighting, exports to Word,
+HTML, Markdown, text, SRT, VTT, JSON and a MAXQDA-friendly timestamped Word file, records from the microphone, and runs
+Batch OCR on photos, scans and PDFs. One small speech model is built in; NVIDIA Parakeet, Whisper large-v3 turbo and
+NVIDIA Nemotron 3 Diarization are optional downloads inside the app. Sold at **$29.99 once**, USD, one DMG that runs free
+for 7 days from first launch and then needs a license key. One key works on two Macs. 14-day refund like the other apps.
+It is the sixth part of the Mac Suite, whose price did not change (see `app-suite.md`).
+
+**Copy rule:** the page says only what the app README says. No accuracy figure appears beyond the ones the README states
+(the test `netlify/tests/tapefolio-site.test.mjs` fails on any other percentage), it never says the app anonymizes or makes
+anything compliant, and it says plainly that the app mishears words, mislabels speakers and misses identifiers. Do not add a
+feature to the page until it ships (the same test lists some it must not mention).
+
+## What is in the branch, and what is held back
+
+| Commit | What | Safe to merge early? |
+|---|---|---|
+| `Tapefolio: license keys, delivery, ...` | key module, delivery function, trial emails, checkout entry, webhook and recovery emails, stats, dashboard | yes, nothing public changes |
+| `Tapefolio: product page, success page, release gate, Terms and Privacy` | `/tapefolio/` (noindex, buttons dead), `/tapefolio/success/`, Terms and Privacy sections | yes, the page is unlisted and switched off |
+| `Tapefolio: app icon assets ...` and `Tapefolio share card ...` | the two icon files, the hero icon, `tapefolio.png`, the page's `og:image` | yes, same page, same state |
+| `Mac Suite: Tapefolio joins ...` | Suite page, its success page, Terms contents, "Also in the Mac Suite" lines, llms.txt, home and products Suite sentences, promo text, `app-suite.md`, then `Mac Suite and site promo: Tapefolio icon` (icon row, card, the `site.js` promo entry) and `Mac Suite share card: six apps` | no: it changes the Suite page and the Suite email at once, and buyers would be sent to a download that is not staged. Merge on launch day |
+| `Link Tapefolio from home and products (do not merge until launch)` | footer (all pages, `apply_layout.py`, the digest publisher), home cost row, products card and chooser, pricing row, sitemap, search index, `llms.txt` block, `gen_llms_full.py` page list, changelog entry, and the flip of `/tapefolio/` to `index, follow` | no, launch day only |
+
+The Suite commit is not gated by `launch.js` (same as Keyfeel): the moment it deploys, `app-suite` buyers are told they get
+Tapefolio and the success page calls `tapefolio-download`, which answers 500 `file_unavailable` until a DMG is staged.
+
+## Release gate (nothing can sell by accident)
+
+`site/tapefolio/launch.js` holds the only switch: `window.TAPEFOLIO_LAUNCH = { live, version, sizeMb, released }`. As
+shipped `live` is `false`. Until it is `true` **and** `version` (x.y.z), `sizeMb` (whole number) and `released`
+(YYYY-MM-DD) are all valid, the trial link has no `href` and is `aria-disabled`, the Buy button is `disabled`, the hero says
+"Not released yet", and the sticky bar is removed. `tapefolio-site.test.mjs` runs `launch.js` in a fake DOM for each state
+and has one test named "PRE-LAUNCH GUARD"; delete it (and flip the values) when you launch.
+
+Two more things hold the page back until launch, both undone by the link commit:
+
+- `<meta name="robots" content="noindex, follow">` on `/tapefolio/`. The deploy script regenerates the sitemap and the
+  search index from the pages on disk and leaves out noindex pages, so the page is not listed anywhere until it flips to
+  `index, follow`. The link commit does this (and adds the sitemap and search entries by hand, so they are in the branch
+  too). Before that commit the test "PRE-LAUNCH GUARD" does not look at robots, and after it a test asserts `index, follow`.
+- No nav, footer, home, products or pricing link points at `/tapefolio/`. The Suite page does (the card and the "See
+  Tapefolio" link), which is why that commit waits for launch.
+
+The checkout itself is not gated: `POST /.netlify/functions/checkout {"product":"tapefolio"}` returns a real Stripe session
+as soon as the first commit deploys. Nothing on the site calls it while the buttons are dead.
+
+## Stripe
+
+Nothing to create. `tapefolio` is priced inline in `netlify/functions/checkout.mjs` (`amount: 2999`, name "Tapefolio for
+macOS", success path `/tapefolio/success/`), like Keyfeel, so there is no Stripe Price and no `STRIPE_PRICE_*` variable.
+`app-suite` stays `amount: 5499`. Session metadata carries `product` = `tapefolio` or `app-suite`. Promotion codes are
+allowed (`allow_promotion_codes`), which is what the test recipe below uses. The existing Stripe webhook endpoint already
+handles `checkout.session.completed` for every product; no change there.
+
+## Env vars and Blobs
+
+| Item | Value |
+|---|---|
+| `TAPEFOLIO_UPDATE_TOKEN` | Netlify production env var, secret, write-only. Random string; the same value is built into the app and sent as header `X-Tapefolio-Channel` on every Sparkle request. Takes effect after the next site deploy. Suggested local copy `~/.config/purplelink/tapefolio-update-token` |
+| `TAPEFOLIO_LICENSE_PRIVATE_KEY` | Netlify production env var, secret, write-only. The raw 32-byte Ed25519 seed, base64 (the same format as `KEYFEEL_LICENSE_PRIVATE_KEY`). The local copy is `~/.config/purplelink/tapefolio-license-private-key` (mode 600; back it up with the Sparkle keys). Its public half is compiled into `netlify/lib/tapefolio-license.mjs` and must be the one built into the app: `5qmJMOr4uux0LZrWGs/V6nc6VKXsogioMgiJ3pBlSvI=` |
+| Blobs store `tapefolio-files` | Private. Holds `Tapefolio-<ver>.dmg` and `appcast.xml` |
+| Blobs store `tapefolio-stats` | Created on the first update download; per-file download counts |
+| Blobs stores `tf-trial-reminders`, `tf-trial-reminder-tokens` | Created on first use by the optional trial emails (see below) |
+| Blobs store `rate-limits` | Existing; the public download door writes `rl:trial:<day>:<hash>` |
+
+To check that the key on disk matches the public key in the module without printing the seed, run this once (it prints
+only `match` or `MISMATCH`):
+
+```
+node -e '
+const { createPrivateKey, createPublicKey } = require("node:crypto");
+const seed = require("fs").readFileSync(process.env.HOME + "/.config/purplelink/tapefolio-license-private-key", "utf8").trim();
+const pkcs8 = Buffer.concat([Buffer.from("302e020100300506032b657004220420", "hex"), Buffer.from(seed, "base64")]);
+const pub = createPublicKey(createPrivateKey({ key: pkcs8, format: "der", type: "pkcs8" })).export({ format: "der", type: "spki" }).subarray(-32).toString("base64");
+console.log(pub === "5qmJMOr4uux0LZrWGs/V6nc6VKXsogioMgiJ3pBlSvI=" ? "match" : "MISMATCH");
+'
+```
+
+Without `TAPEFOLIO_LICENSE_PRIVATE_KEY` everything still delivers, but `license` is `null` and the emails and success pages
+leave the key out (they never invent one). Without `TAPEFOLIO_UPDATE_TOKEN` the update channel stays closed (403).
+
+## Delivery
+
+`netlify/functions/tapefolio-download.mjs`, a copy of `keyfeel-download.mjs`:
+
+- Buyers: `?session_id=cs_...` lists files and returns `license`; `&file=Tapefolio-x.y.z.dmg` streams one. The session must
+  be paid and carry `metadata.product` of `tapefolio` **or `app-suite`**, so every Suite buyer, whatever they paid, gets
+  Tapefolio.
+- Public download (the trial): `?download=1` (`?trial=1` also works) streams the newest `Tapefolio-x.y.z.dmg`, 20 downloads
+  per IP per day (429 after). It is the same app buyers and Sparkle get. The bundled speech model makes this DMG much larger
+  than Keyfeel's; it streams from Blobs, so the 6 MB function limit does not apply, but check the real file's size and
+  download time once.
+- Updates (Sparkle): `?feed=1`, `?update=<dmg>` and `?stats=1` require the header `X-Tapefolio-Channel:
+  <TAPEFOLIO_UPDATE_TOKEN>`, compared in constant time; 403 otherwise and 403 when the variable is unset. The feed rewrites
+  every enclosure URL to the update door.
+- File names are exact: `Tapefolio-1.0.0.dmg` (capital T). Anything else is ignored by the buyer list and refused at the
+  update door.
+
+Emails: the receipt email (`stripe-webhook.mjs`) carries the success-page link, the `TFL1` key, "up to two of your Macs", the
+macOS 26 and Apple silicon requirement, the first-run wait and the mishearing note. The Suite email says the page has six
+things and carries the Tapefolio key too. `/recover/` (`purchases-recover.mjs`) re-sends the link and the key.
+
+Analytics: the trial-link click fires `tf_trial_download` (`site/analytics.js`, which matches both `?download=1` and
+`?trial=1`), counted as `tfTrialDownloads` in `stats.mjs` and shown in the traffic dashboard. `tapefolio` is its own
+"Tapefolio" line in the dashboard (`sales.mjs` maps it to the purplelink site; `/tapefolio/` is in the checkout-rate
+denominator). Note the Keyfeel page links `?download=1` while `analytics.js` only counts `keyfeel-download?trial=1`, so
+`kfTrialDownloads` is probably undercounting; not changed here.
+
+Optional trial emails: `tapefolio-reminder.mjs` + `tapefolio-reminder-send.mjs` (daily 14:30 UTC), the shared engine
+`netlify/lib/trial-reminder.mjs`, form wired by `site/trial-reminder.js`. A setup email at download and one reminder five
+days later, nothing else, each record deleted when the reminder is sent. The setup email links `/tapefolio/` because there
+is no `/tapefolio/start/` page.
+
+Tests: `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs` (tapefolio-license, tapefolio-download,
+tapefolio-site, trial-reminder-apps, checkout, suite-entitlement, suite-webhook, purchases-recover, legroom-site cover this
+product) and `python3 -m pytest scripts/traffic-dashboard`. Tests that sign a key through the handlers use a seed Node
+accepts beside the production public key (Node 24 does) and skip themselves on a Node that checks the pair; the signing
+itself is tested with a throwaway key pair.
+
+## License keys
+
+One app, one DMG. Until a valid key is entered the app runs for 7 days from first launch, then locks (the app owns the
+exact behaviour). Keys are `TFL1-` + Crockford Base32 of a 4-byte nonce and a 64-byte Ed25519 signature over
+`TapefolioLicenseV1` + nonce, 109 characters in groups of five, checked offline in the app against the public key above.
+Issued by `netlify/lib/tapefolio-license.mjs` from `TAPEFOLIO_LICENSE_PRIVATE_KEY`. The nonce is the first 4 bytes of
+`sha256("tapefolio-license:" + lower-cased, trimmed email)`, so the receipt email, the success page (the `license` field
+of the purchase door) and `/recover/` all show the same key, and a Suite buyer gets the same key as a Tapefolio-only buyer
+with that address. Keys are not tied to a machine and cannot be revoked remotely; the Terms ask a refunded buyer to stop
+using the key. To re-issue a key by hand: `issueTapefolioLicense(email)`.
+
+For the app's own tests there is a vector file, `netlify/tests/fixtures/tapefolio-license-vectors.json`: a throwaway test
+public key (not production), valid keys for three addresses, invalid keys (one character changed, wrong domain string,
+wrong signer, wrong prefix, too short, empty) and spelling variants (case, no dashes, spaces). The app should verify
+all of them. The scheme is separate from `KFL1`, `PurplelinkLicenseV1` and `MTX1`; those were not touched.
+
+## Releasing a version
+
+The Tapefolio repo has no release script yet (its README lists "Trial edition, notarised release, product page" as open).
+What the store needs from it, in the same shape as Keyfeel:
+
+1. A universal-or-arm64, Developer-ID-signed, notarized DMG named exactly `Tapefolio-x.y.z.dmg`, with Sparkle built in,
+   `SUFeedURL` set to `https://purplelink.llc/.netlify/functions/tapefolio-download?feed=1`, the `TAPEFOLIO_UPDATE_TOKEN`
+   value compiled in and sent as `X-Tapefolio-Channel` on every Sparkle request, and the `TFL1` public key above built in.
+   Bundle id `llc.purplelink.tapefolio`. The key text is also accepted by a `tapefolio://license/<key>` link if the app
+   wants one (Keyfeel has the same).
+2. A publish script that uploads `Tapefolio-<ver>.dmg` and `appcast.xml` to the `tapefolio-files` Blobs store, rebuilds the
+   appcast with the right EdDSA signature and reads every upload back byte for byte (copy Keyfeel's
+   `scripts/publish-release.sh`). The appcast must be signed with the Sparkle EdDSA key whose public half the app's
+   `SUPublicEDKey` holds; check which key that is before the first publish.
+3. No separate trial build. The public download door serves the same newest DMG.
+
+## Test checkout recipe (one real purchase with a 100%-off code)
+
+Do this only after the DMG and appcast are in `tapefolio-files` and both env vars are set and deployed. No money moves.
+
+1. In the Stripe dashboard (live mode), create a coupon: percent off 100, duration once. Create a promotion code on it
+   with a maximum of 1 redemption (for example `TFTEST`). Do the same again for the Suite test in step 7 if you want both.
+2. Start the session from the page (after flipping `launch.js`) or by hand:
+   `curl -s -X POST https://purplelink.llc/.netlify/functions/checkout -H 'content-type: application/json' -d '{"product":"tapefolio"}'`
+   and open the `url` it returns.
+3. In Stripe Checkout enter the promotion code and an address you can read. Complete it.
+4. Expected: redirect to `/tapefolio/success/?session_id=cs_live_...` with a download button and a `TFL1-...` key; a receipt
+   email ("Your Tapefolio for macOS download") with the same key, "up to two of your Macs", the macOS 26 note and the
+   first-run note; the Netlify function log shows `delivered_by_blobs` for the webhook.
+5. Download the DMG from the success page and compare its SHA-256 with the file you uploaded. Open it on a Mac, enter the key,
+   confirm it unlocks, confirm a wrong key is refused.
+6. Check Sparkle: `curl -s -H "X-Tapefolio-Channel: $(cat ~/.config/purplelink/tapefolio-update-token)" "https://purplelink.llc/.netlify/functions/tapefolio-download?feed=1"`
+   returns the appcast with the enclosure pointed at `?update=Tapefolio-x.y.z.dmg`; without the header it returns 403.
+7. Repeat steps 2 to 5 with `{"product":"app-suite"}` and a second code: `/suite/success/` shows five downloads, the keys
+   and the Vitae Plus key, and the Tapefolio key equals the one a Tapefolio purchase with the same address shows.
+8. Open `/recover/` with the test address: the email lists both purchases and the keys.
+9. Refund both test sessions in the Stripe dashboard (they are already $0, so this is only housekeeping) and leave the
+   promotion codes used up.
+
+## Launch checklist (owner)
+
+1. Set `TAPEFOLIO_UPDATE_TOKEN` and `TAPEFOLIO_LICENSE_PRIVATE_KEY` on Netlify (production); run the key check above.
+2. Stage `Tapefolio-<ver>.dmg` and `appcast.xml` in `tapefolio-files`.
+3. Run the test checkout recipe against a deploy that has the first two commits (it works before the Suite and link commits).
+4. Fill in `site/tapefolio/launch.js` (`live: true`, version, size in MB, release date), delete the PRE-LAUNCH GUARD test, and
+   update the four static fallback strings in `site/tapefolio/index.html` ("Not released yet", "Free trial opens at
+   release", "Buying opens at release", the "Version, size and release date..." sentence) to their live wording if you want
+   crawlers and `llms-full.txt` to match, as `keyfeel.md` item 7 describes.
+5. Merge the Suite commit and the link commit together, deploy, and rerun `python3 scripts/apply_layout.py --check`,
+   `python3 scripts/fingerprint_assets.py` and `python3 scripts/check_content.py --strict`.
+6. Set the real release date on the Tapefolio changelog entry and its sitemap `lastmod` (the link commit has 2026-10-09 as a stand-in), and change the `Status:` line of the Tapefolio block in `site/llms.txt` from "Not yet released" to the shipping version.
+7. Confirm the Terms and Privacy wording against the shipped app: that the only network use is the optional model downloads
+   and the update check; that the update request carries nothing from the user's files; that there is no analytics; that
+   the trial clock and key check send nothing; that speaker memory stays on the Mac; the update policy (see below).
+8. Render the share cards (see Assets).
+
+## Assets
+
+Done (2026-10-09, from the real icon `Tapefolio/assets/brand/icon-1024.png`):
+
+- `site/assets/tapefolio-icon.webp` (240x240) and `tapefolio-icon-128.webp`, made with Pillow (Lanczos, quality 92, alpha kept;
+  the 1024 PNG is a squircle with transparent corners and a baked shadow). Used for the hero (`.app-hero-icon`, 120x120), the
+  Suite icon row (72px) and Suite card (56px), and the site promo entry. The home dock tile is not done (below).
+- `site/assets/og/tapefolio.png` and a re-rendered `site/assets/og/mac-suite.png` (six apps), 1200x630. There is no script for
+  these: `_gen.html?t=<key>` is a page that draws a card, and the cards are screenshots of it. I rendered both with headless
+  Chromium through Playwright (`viewport 1200x630`, device scale 1, wait for the fonts, `clip` to the viewport, save, then
+  Pillow `optimize`), and the same renderer reproduced the old `mac-suite.png` pixel for pixel before the text changed. To
+  redo one: serve `site/`, open `/assets/og/_gen.html?t=tapefolio` and screenshot it at 1200x630. The page's `og:image`,
+  `twitter:image` and JSON-LD `image` point at `tapefolio.png`.
+
+Still needed, none of which exists, and no page references them:
+
+- Screenshots of the review screen, identifier review, Batch OCR and Settings. Put each in `site/tapefolio/img/` (webp,
+  under 250 KB) and add to the page, after the "How it works" section:
+  `<section class="screenshots-section" aria-labelledby="shots-h"><h2 id="shots-h">What it looks like</h2><div class="tf-shots"><figure class="tf-shot"><img src="/tapefolio/img/review.webp" alt="..." width="W" height="H" loading="lazy" decoding="async"><figcaption>...</figcaption></figure></div></section>`.
+  For a hero picture add `<figure class="app-hero-window tf-hero-window"><div class="frame-soft"><img ... fetchpriority="high"></div><figcaption>...</figcaption></figure>`
+  after `.app-hero-copy`; it takes a row of its own under the icon and copy. Real captures only, with alt text and the app's real state.
+- Optional: a short video (poster `site/assets/video/tapefolio-poster.webp`), as `/keyfeel/` has.
+
+## Open items
+
+- The app itself: the license check, the 7-day trial clock, "Enter License Key", the Sparkle updater with the channel
+  header, and the notarized release are all still to build in the Tapefolio repo. The server and pages assume the menu
+  wording "Enter License Key" (as Keyfeel); change the emails, the FAQ and the success page if the app says something else.
+- Claims on the pages that only the app can confirm: that the update check is the only network use besides the model
+  downloads and carries only the app's name and version and the channel token; that there is no analytics; the download sizes
+  (about 470 MB Parakeet, 650 MB Whisper, 190 MB Nemotron 3 fast128 come from the README, which also names a 95 MB variant);
+  that a microphone prompt appears on first recording; that the first-run wait is "a few minutes".
+- Update policy: the Terms say "updates to the version you bought are included" and the Suite page repeats it (the Legroom
+  wording). Keyfeel and ModernTex promise all updates. Decide, then change `terms`, the page's "Price and trial" and the
+  Suite FAQ together.
+- Name: Ben cleared TAPEFOLIO on 2026-10-09. The README still carries its own "run a USPTO search, register the domains"
+  note from 2026-10-08.
+- The home page dock tile is not done on purpose: the dock is seven across (four on a tablet, two on a phone) and an eighth tile
+  wraps badly, so it needs a layout decision first. The icon is ready (`tapefolio-icon.webp`, use a 96px version).
+- `site/llms-full.txt` is not regenerated here (the checked-in copy already lags the pages); the deploy script regenerates it, and
+  `scripts/gen_llms_full.py` now includes `tapefolio/`.
+- Only English meeting audio and generated OCR files have been measured; the page says so. Real handwriting, phone photos,
+  other languages and different microphones for speaker memory are untested.
