@@ -4411,6 +4411,240 @@ Requires macOS 14 or later. Free 7-day trial, no account.
 
 ---
 
+Source: https://purplelink.llc/guides/install-latex-on-mac/
+Title: How to install LaTeX on a Mac: MacTeX, BasicTeX or TinyTeX | Purplelink
+
+← All guides
+
+How-to
+
+# How to install LaTeX on a Mac: MacTeX, BasicTeX or TinyTeX
+
+By Benjamin Ampel · October 9, 2026
+
+Install MacTeX if you have the disk space and want everything to work the first time. Install BasicTeX or TinyTeX if you want a small download and will add packages by name. Then pick an editor. The TeX Users Group (TUG) lists the MacTeX installer at 6.4 GB and BasicTeX at 134 MB.
+
+A LaTeX install has two parts. The first is a TeX distribution (the programs that turn a .tex file into a PDF, plus the packages and fonts they load). The second is an editor (the app where you type and preview). Installing an editor does not install LaTeX, so the distribution comes first. MacTeX, BasicTeX and TinyTeX are all distributions, and all three are built on TeX Live (the standard distribution, produced by TeX user groups around the world).
+
+## MacTeX, BasicTeX or TinyTeX
+
+The choice is mostly about size and about who adds the missing pieces. MacTeX includes nearly everything, so you add nothing. BasicTeX and TinyTeX are small, so you add packages by name when a document asks for one. The sizes below are download files, read from the TUG package page and the TinyTeX release page on October 9, 2026.
+
+MacTeX, BasicTeX and TinyTeX, read October 9, 2026
+
+Distribution
+Download
+What you get
+Choose it if
+
+MacTeX
+6.4 GB installer (24 March 2026)
+The full TeX Live 2026, the apps TeXShop, TeX Live Utility, LaTeXiT and BibDesk, and Ghostscript.
+You have the disk space and want any example to compile without adding parts.
+
+BasicTeX
+134 MB installer (2 March 2026)
+The standard tools: TeX, LaTeX, pdfTeX, MetaFont, dvips, MetaPost, XeTeX and LuaTeX. No apps and no Ghostscript.
+You want a small download and will install packages by name as documents need them.
+
+TinyTeX
+About 67 MB on macOS (release v2026.10)
+A small starter set of packages. You install anything else with tlmgr.
+You are comfortable in Terminal, or you want an install that needs no administrator rights and is one folder to delete.
+
+TUG recommends the full MacTeX for most people, beginners included. Its reason is that any example in a book works on a full install, so no time goes to finding missing components. If the 6.4 GB does not fit, BasicTeX and TinyTeX run the same engines. They differ in how many packages are present on day one.
+
+Apple silicon and Intel need no separate choice. TUG says MacTeX-2026 and BasicTeX-2026 need macOS 11 (Big Sur) or later and run natively on both Intel and Arm processors, and that the MacTeX package contains native code for both. TinyTeX's installer script has a single macOS build and does not ask which chip you have.
+
+Check free space before you start, because the installer file and the installed copy sit on the disk together. How to see free disk space on a Mac covers Finder, Storage settings, Disk Utility and df.
+
+## Option A: install MacTeX
+
+There are two routes, and both give the same distribution. Homebrew (the Mac package manager at brew.sh) is quicker to repeat on a second Mac. The installer package from TUG needs no other software.
+
+### With Homebrew
+
+Run this in Terminal. Homebrew's page for the cask lists version 2026.0324 and installs the file mactex-20260324.pkg.
+
+brew install --cask mactex
+
+The cask mactex-no-gui is the same TeX Live without the GUI applications (TeXShop and the others), which suits you if you already have an editor. Homebrew's notes say you must restart your terminal window for the command-line tools to take effect. Bash and zsh users can instead run this line in the open window.
+
+eval "$(/usr/libexec/path_helper)"
+
+### With the installer package
+
+- Open the MacTeX download page and download MacTeX.pkg (6.4 GB).
+
+- Double-click the file and follow the installer. TUG says installation on a recent Mac takes about ten minutes. The last screen has a Customize button, which lets you skip Ghostscript, Ghostscript-Extras or the GUI Applications. Most people leave it alone.
+
+- Open /Applications/TeX. It holds TeXShop, TeX Live Utility, LaTeXiT, BibDesk and a short document named READ ME FIRST.
+
+MacTeX puts TeX Live in /usr/local/texlive/2026 and keeps a link at /Library/TeX/texbin that points to the TeX programs. Any editor you install later should look there, and the apps TUG supplies configure themselves. TUG also notes that the 24 March 2026 version of the installer leaves out ConTeXt (a separate typesetting system). LaTeX users can ignore this, and TeX Live Utility can restore ConTeXt if you want it.
+
+## Option B: install BasicTeX
+
+BasicTeX is the same TeX Live trimmed to the standard tools, and it installs to /usr/local/texlive/2026basic without overwriting the full distribution. TUG describes it as fully capable of typesetting standard TeX and LaTeX documents, and says that to use TeX on a Mac it suffices to install BasicTeX and an editor.
+
+brew install --cask basictex
+
+Without Homebrew, download BasicTeX.pkg (134 MB) from TUG's More Packages page and open it. The same page links separate downloads of TeXShop, TeX Live Utility, LaTeXiT and BibDesk, because BasicTeX contains none of them. Restart Terminal afterward so the new commands are found.
+
+Then update the package manager and the installed packages once. The sudo is needed because TeX Live's folder is owned by the root user.
+
+sudo tlmgr update --self --all
+
+A document that loads a package BasicTeX lacks stops with a "file not found" error. The tlmgr section below shows the fix.
+
+## Option C: install TinyTeX
+
+TinyTeX is a custom distribution based on TeX Live, made by Yihui Xie. His page says it works best for R users, that other people can use it by installing missing packages by hand, and that it assumes you are not afraid of the command line. Installing and running it does not require administrator privileges. On a Mac, this command installs it to ~/Library/TinyTeX.
+
+curl -sL "https://tinytex.yihui.org/install-bin-unix.sh" | sh
+
+That command runs a script from the internet, so open the address in a browser first if you want to read it. If you cannot write to /usr/local/bin, the script asks for sudo permission to create /etc/paths.d/TinyTeX, which puts the TinyTeX programs on your PATH (the list of folders Terminal searches for commands). You may refuse, and TinyTeX still works, but you will need full paths to run its programs. To skip the PATH change on purpose, add --no-path.
+
+curl -sL "https://tinytex.yihui.org/install-bin-unix.sh" | sh -s --no-path
+
+The script installs the TinyTeX-1 bundle by default, and its macOS download is about 67 MB in the current release. The TinyTeX FAQ says a larger bundle, about 2 GB of packages, is available if you set TINYTEX_INSTALLER=TinyTeX-2 before you run the script. Whichever you pick, the folder grows as you add packages. To remove TinyTeX later, see Remove it later.
+
+## Check that it works
+
+Open a new Terminal window and run two commands. The first prints the pdfTeX version, and its first line names the TeX Live year. On the TinyTeX install I tested, it read pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Your version numbers may differ. The second prints the package manager's version and which installation it belongs to.
+
+pdflatex --version
+tlmgr --version
+
+If both print version text, Terminal can find the distribution. Next, compile a small file. This writes a five-line document to your Desktop, builds it and opens the PDF. It loads amsmath (a standard math package) to confirm that package loading works.
+
+cd ~/Desktop
+cat > hello.tex <<'EOF'
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+Hello, LaTeX. The mean is $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$.
+\end{document}
+EOF
+pdflatex hello.tex
+open hello.pdf
+
+A one-page PDF with a sentence and a formula means the engine, the packages and the fonts all work. The Desktop will also hold hello.log and hello.aux, which are safe to delete.
+
+## Add missing packages with tlmgr
+
+A package your document needs but your install lacks shows up as an error like this one, from the TinyTeX documentation.
+
+! LaTeX Error: File `times.sty' not found.
+
+The fix has three steps. tlmgr is TeX Live's package manager, and its commands are the same on all three distributions apart from the sudo.
+
+- Find the package that contains the file. Search the TeX Live database for the exact file name, with a leading slash so that only exact matches appear. For times.sty the answer is the package psnfss.
+
+tlmgr search --global --file "/times.sty"
+
+- Install it. With MacTeX or BasicTeX, use sudo, because the TeX Live folder is owned by root. With TinyTeX, leave it off.
+
+sudo tlmgr install psnfss
+
+- Compile again. If a package ships a program (for example dvisvgm), TinyTeX users also run tlmgr path add.
+
+Two more commands are worth knowing. tlmgr update --list shows what an update would change without changing anything, and sudo tlmgr update --self --all applies it. Separately, tlmgr groups packages into collections. The collection collection-latexrecommended is described by tlmgr as recommended add-on packages for LaTeX which have widespread use, and it installs them in one step.
+
+sudo tlmgr install collection-latexrecommended
+
+Our page on the LaTeX "file not found" error goes through the error itself.
+
+## Pick an editor
+
+With a distribution installed, any editor below can compile your files, provided it knows where the TeX programs are. For MacTeX that is /Library/TeX/texbin, and for TinyTeX it is a folder under ~/Library/TinyTeX/bin. This list says what each editor is and what it costs, and it is not a ranking. For longer reviews, see the best LaTeX editors for Mac.
+
+- TeXShop. Free (GPL version 2) and Mac only. It installs with MacTeX in /Applications/TeX, and BasicTeX users can download it separately from TUG. The TeXShop site lists the current release as universal for Intel and Arm.
+
+- TeXstudio. Free and open source (GPL version 2), for macOS 13 or later, Windows and Linux. Its site notes that it has no Apple Developer account, so macOS may warn about an unidentified developer when you first open it.
+
+- VS Code with LaTeX Workshop. Free, and cross-platform. LaTeX Workshop is an extension under the MIT licence, and its documentation says the only requirement is a compatible distribution on your PATH. It lists TinyTeX as an alternative to TeX Live. The extension's default recipe uses latexmk, so install that package if a build reports it missing.
+
+- Texifier. Paid, with a free demo. It runs on macOS and iOS, and its site lists Windows as coming soon. It has live typesetting and a built-in PDF viewer.
+
+- Overleaf. Nothing to install, because it runs in a browser. It suits a draft that several co-authors edit at once. The Overleaf alternatives guide covers using it beside a local setup.
+
+- ModernTex. Disclosure: I make ModernTex at Purplelink, so weigh this line accordingly. It is a paid ($19.99 once) Mac editor for journal manuscripts that works with MacTeX or TinyTeX, and if it finds no distribution when you compile, it offers a one-click TinyTeX install. ModernTex product page.
+
+For a side-by-side of the free Mac options, TeXShop and TeXstudio compared goes further than this list.
+
+## If you only need one PDF
+
+You do not have to install anything to compile a single document. Overleaf runs in the browser, and Purplelink's free LaTeX to PDF tool compiles a .tex file you upload. A local install is worth it when you want to work offline or keep your files on your own Mac. Your .tex files do not change when you move from one route to the other.
+
+## Common problems after install
+
+- pdflatex: command not found. Close Terminal and open a new window, because a window opened before the install does not see the new commands. If that fails, run ls /Library/TeX/texbin to see whether MacTeX or BasicTeX put its link there. With Homebrew, the eval "$(/usr/libexec/path_helper)" line from above also works. With TinyTeX, run tlmgr path add or reinstall without --no-path.
+
+- Your editor cannot find pdflatex. Set the editor's TeX path to /Library/TeX/texbin for MacTeX or BasicTeX. For TinyTeX, use the folder inside ~/Library/TinyTeX/bin (on the Mac I tested it is universal-darwin).
+
+- The installer reports that the installation failed. TUG says a faulty download causes almost every case. In Terminal, type md5 and a space, drag MacTeX.pkg onto the window and press Return. Compare the result with the MD5 sum printed on the download page. If they differ, download again, with Safari if another browser keeps failing. If the installer hangs on "Verifying...", TUG says restarting the Mac and installing again fixes every known case.
+
+- The installer stops near the end. Apple ends an install whose final setup script runs longer than ten minutes. TUG's download page lists four sudo commands that finish the setup by hand, and says the error might recur in unusual circumstances.
+
+- File ... not found for a .sty file. A package is missing. Use the three steps in the tlmgr section.
+
+- More than one distribution is installed. Run which pdflatex to see which one answers. MacTeX does not overwrite the previous year's TeX Live, and TeX Live Utility has a Configure menu item named "Change Default TeX Live Version". TUG says BasicTeX and MacTeX can coexist. Homebrew lists its mactex and basictex casks as conflicting, so uninstall one before you install the other with brew.
+
+- You cannot find the TeX folder in Finder. Finder hides /usr/local. Choose Go, then Go to Folder, and type /usr/local/texlive.
+
+## Remove it later
+
+TinyTeX is one folder. Run tlmgr path remove and then rm -r ~/Library/TinyTeX. For MacTeX, TUG's instructions are to drag the folder for the year you want gone from /usr/local/texlive to the Trash (it asks for an administrator password), and to drag the apps in /Applications/TeX to the Trash. The Apple installer cannot uninstall files, so the Trash is the method.
+
+## Last checked
+
+October 9, 2026. Sizes, dates, commands and requirements were read from these pages on that day. I installed nothing new for this page. I ran pdflatex --version, tlmgr --version, the tlmgr search command and the sample document on a Mac that already had TinyTeX, so the MacTeX and BasicTeX steps come from TUG's and Homebrew's pages and not from my own run. Versions change, so check the source before you rely on a detail.
+
+- TUG: MacTeX home (requirements, Intel and Arm, coexistence, GUI applications), available packages (6.4 GB and 134 MB), download page (install steps, ten minutes, /Library/TeX/texbin, installation errors, ConTeXt), More Packages (BasicTeX contents), Mac-specific complications and uninstalling.
+
+- TeX Live: package installation and updates and the tlmgr manual (search, install, update).
+
+- Homebrew: the mactex, mactex-no-gui and basictex cask pages (commands, versions, the restart note, the conflict).
+
+- TinyTeX: home page and FAQ, the install script (default bundle, macOS folder), and the release page (about 67 MB for TinyTeX-1-darwin, release v2026.10).
+
+- Editors: TeXShop, TeXstudio, LaTeX Workshop install notes, its licence and Texifier.
+
+If something here is out of date or wrong, write to ben@purplelink.llc and I will fix it.
+
+## Frequently asked questions
+
+How big is MacTeX?
+
+TUG lists the MacTeX.pkg installer at 6.4 GB (24 March 2026) and describes TeX Live 2026 as over 6 gigabytes of material. BasicTeX is listed at 134 MB. The installer file and the installed copy sit on the disk together, so check free space first.
+
+Should I install MacTeX or BasicTeX?
+
+TUG recommends the full MacTeX for most people, including beginners, because examples from books work without adding missing parts. If space is tight, BasicTeX or TinyTeX run the same engines. You then install packages with tlmgr when a document reports a missing file.
+
+Does LaTeX work on Apple silicon Macs?
+
+Yes. TUG says MacTeX-2026 and BasicTeX-2026 need macOS 11 (Big Sur) or later and run natively on both Intel and Arm processors. TinyTeX's installer script has one macOS build and does not ask which chip you have.
+
+Can I use LaTeX on a Mac without installing anything?
+
+Yes. Overleaf runs in a browser, and Purplelink's free LaTeX to PDF tool compiles a .tex file you upload. A local install lets you work offline and keep your files on your own Mac.
+
+Why does Terminal say pdflatex: command not found after I install?
+
+A Terminal window opened before the install does not see the new commands, so open a new window. With Homebrew you can also run eval "$(/usr/libexec/path_helper)" in the open window. For MacTeX, check that /Library/TeX/texbin exists. For TinyTeX, run tlmgr path add.
+
+Can I have MacTeX and BasicTeX installed together?
+
+With the installer packages, yes. TUG says they can coexist, and BasicTeX installs to /usr/local/texlive/2026basic. Homebrew lists its mactex and basictex casks as conflicting, so uninstall one before you install the other with brew.
+
+How do I uninstall LaTeX from a Mac?
+
+For TinyTeX, run tlmgr path remove and then delete the ~/Library/TinyTeX folder. For MacTeX, drag the year's folder in /usr/local/texlive and the apps in /Applications/TeX to the Trash. TUG notes that TeX Live is owned by root, so macOS asks for an administrator password.
+
+
+---
+
 Source: https://purplelink.llc/guides/overleaf-compile-timeout/
 Title: Overleaf compile timeout: fixes, and when to compile locally | Purplelink
 

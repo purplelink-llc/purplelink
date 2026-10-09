@@ -52,6 +52,7 @@ PAGES = [
     "guides/ai-policy-checking-your-own-manuscript/",
     "guides/overleaf-alternative-mac/",
     "guides/texshop-alternative-mac/",
+    "guides/install-latex-on-mac/",
     "guides/overleaf-compile-timeout/",
     "guides/best-mac-latex-editors/",
     "guides/best-pii-redaction-tools-for-chatgpt/",
