@@ -1034,7 +1034,7 @@
     { id: 'scholar-utility-belt', name: 'Scholar Utility Belt', href: '/scholar-utility-belt/', icon: '/assets/scholar-utility-belt-icon.webp', cta: 'Add to Chrome',
       text: 'Journal rankings, h-index and retraction alerts inside Google Scholar. A free Chrome extension.', own: ['/scholar-utility-belt/'] },
     { id: 'mac-suite', name: 'Mac Suite', href: '/suite/', icon: '/assets/moderntex-icon.webp', cta: 'See the bundle',
-      text: 'ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus together for $54.99, once.', own: ['/suite/', '/moderntex/', '/outbound-veil/', '/legroom/', '/keyfeel/', '/vitae/plus/'] },
+      text: 'ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus together for $54.99, once.', own: ['/suite/', '/moderntex/', '/outbound-veil/', '/legroom/', '/keyfeel/', '/tapefolio/', '/vitae/plus/'] },
     { id: 'globepin', name: 'GlobePin', href: '/globepin/', icon: '/assets/globepin-icon.webp', cta: 'Get it free',
       text: 'Mark every place you have been on a map. Free for iPhone.', own: ['/globepin/'] },
   ];

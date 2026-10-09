@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), and the Mac Suite ($54.99, all four plus a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), and the Mac Suite ($54.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -77,7 +77,7 @@
 - **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (Keyfeel needs Input Monitoring and reads key codes, never characters; Accessibility is optional for two features)
 
 ### Mac Suite (macOS bundle)
-- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel and a lifetime Vitae Plus key.
+- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and a lifetime Vitae Plus key.
 - **Pricing:** $54.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
 - **Page:** https://purplelink.llc/suite/
 
@@ -146,7 +146,7 @@
 - Outbound Veil (macOS, free 7-day trial then $29.99): https://purplelink.llc/outbound-veil/
 - Legroom (macOS, free 7-day trial then $9.99): https://purplelink.llc/legroom/
 - Keyfeel (macOS, free 7-day trial then $9.99, recorded keyboard-switch sounds as you type): https://purplelink.llc/keyfeel/
-- Mac Suite (macOS, $54.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
+- Mac Suite (macOS, $54.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free app; optional Vitae Plus subscription from $2.99 a month, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/

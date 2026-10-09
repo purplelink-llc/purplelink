@@ -64,9 +64,10 @@
   .suite-rows li:nth-child(3) { animation-delay: 0.45s; }
   .suite-rows li:nth-child(4) { animation-delay: 0.55s; }
   .suite-rows li:nth-child(5) { animation-delay: 0.65s; }
-  .suite-sum { animation: suite-row 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both; }
-  .suite-sum-amount { animation: suite-strike 0.5s ease-out 1.2s both; }
-  .suite-deal { animation: suite-deal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.5s both; }
+  .suite-rows li:nth-child(6) { animation-delay: 0.75s; }
+  .suite-sum { animation: suite-row 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both; }
+  .suite-sum-amount { animation: suite-strike 0.5s ease-out 1.3s both; }
+  .suite-deal { animation: suite-deal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.6s both; }
 }
 @keyframes suite-pop { from { opacity: 0; transform: translateY(10px) scale(0.92); } to { opacity: 1; transform: none; } }
 @keyframes suite-row { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }

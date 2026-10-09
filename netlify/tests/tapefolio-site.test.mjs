@@ -368,6 +368,62 @@ test("/tapefolio/success/ shows the server's reason when refused, and never fetc
   assert.match(bad.nodes.downloads.innerHTML, /receipt email/);
 });
 
+// ---- the Mac Suite --------------------------------------------------------------------------
+
+test("the Suite page lists Tapefolio with its own price and card, keeps the $54.99 price, and warns about macOS 26", () => {
+  const html = read("suite/index.html");
+  assert.match(html, /<h3>Tapefolio<\/h3>/);
+  assert.match(html, /href="\/tapefolio\/">See Tapefolio/);
+  assert.match(html, /<span class="suite-row-name">Tapefolio<\/span><span class="suite-row-price">\$29\.99 once<\/span>/);
+  assert.match(html, /Tapefolio needs macOS 26 or later and Apple silicon, with no Intel version/);
+  assert.match(html, /Six Mac apps, one \$54\.99 payment/);
+  assert.doesNotMatch(html, /\bfive Mac apps\b|Five Mac apps/i);
+  const app = jsonLd(html).find((n) => n["@type"] === "Product").hasPart.find((a) => a.name === "Tapefolio");
+  assert.equal(app.operatingSystem, "macOS 26+");
+  assert.equal(app.url, "https://purplelink.llc/tapefolio/");
+});
+
+test("every page that names the Suite's contents names Tapefolio, and none still says the old total or app count", () => {
+  for (const p of ["suite/index.html", "terms/index.html", "llms.txt", "index.html", "products/index.html", "site.js", "vitae/plus/index.html", "outbound-veil/index.html", "outbound-veil/start/index.html", "moderntex/index.html", "legroom/index.html", "keyfeel/index.html", "tapefolio/index.html"]) {
+    const src = read(p);
+    for (const m of src.matchAll(/[^.<>]{0,120}Keyfeel[^.<>]{0,40}Vitae Plus[^.<>]{0,40}/g)) {
+      assert.match(m[0], /Tapefolio/, `${p}: ${m[0].trim()}`);
+    }
+  }
+  assert.match(read("products/index.html"), /Bought separately they come to \$124 the first year/);
+  assert.doesNotMatch(read("products/index.html"), /come to \$94 the first year/);
+  assert.match(read("suite/index.html"), /\$124/);
+});
+
+test("the Suite success page has a Tapefolio section and the script shows its key with the right label", async () => {
+  const html = read("suite/success/index.html");
+  assert.match(html, /id="dl-tf"/);
+  assert.match(html, /Tapefolio&rsquo;s keys are with their downloads below/);
+  const nodes = Object.fromEntries(["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license"].map((id) => [id, new FakeNode()]));
+  const ctx = {
+    document: { getElementById: (id) => nodes[id] || null, createElement: (t) => new FakeNode(t), createRange: () => ({}), body: new FakeNode("body") },
+    window: { location: { search: `?session_id=${SID}` }, getSelection: () => ({}) },
+    navigator: {}, URLSearchParams, encodeURIComponent, setTimeout: () => 0, Promise,
+    fetch: (url) => {
+      if (String(url).includes("tapefolio-download")) return reply(200, { license: "TFL1-ABCDE-FGHJK", files: [{ url: "/x", label: "Tapefolio 1.0.0 for macOS (disk image)" }] });
+      if (String(url).includes("vitae-license")) return reply(200, { key: "VITAE-KEY" });
+      return reply(200, { files: [{ url: "/x", label: "App" }] });
+    },
+  };
+  // FakeNode in this file has no removeChild or firstChild; the Suite script clears boxes with them.
+  FakeNode.prototype.removeChild = function (c) { this.children = this.children.filter((x) => x !== c); return c; };
+  Object.defineProperty(FakeNode.prototype, "firstChild", { get() { return this.children[0] || null; }, configurable: true });
+  vm.runInNewContext(readFileSync(join(SITE, "suite/success.js"), "utf8"), ctx);
+  await tick();
+  const box = nodes["dl-tf"];
+  assert.equal(box.children[0].textContent, "Download: Tapefolio 1.0.0 for macOS (disk image)");
+  assert.equal(box.children[1].textContent, "Your Tapefolio license key:");
+  const holder = box.children[2];
+  const code = holder.children.find((c) => c.tagName === "code");
+  assert.equal(code.textContent, "TFL1-ABCDE-FGHJK");
+  assert.equal(code.attrs["aria-label"], "Your Tapefolio license key");
+});
+
 // ---- updates and the update check -------------------------------------------------------------
 
 test("every Tapefolio statement about updates is a plain promise of all updates, with no version or time limit", () => {

@@ -1,12 +1,30 @@
 # Purplelink Mac Suite
 
-$54.99 once: ModernTex + Outbound Veil + Legroom + Keyfeel + Vitae Plus for life. Added 2026-10-04 at $39 (three apps);
-Legroom joined and the price went to $49 on the Legroom launch branch (2026-10-05); Keyfeel joined and the price went
-to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`); on 2026-10-07 the owner decided every app price
-ends in .99, so the Suite became $54.99 (Outbound Veil $29.99, Legroom $9.99).
+$54.99 once: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life. Added 2026-10-04 at $39
+(three apps); Legroom joined and the price went to $49 on the Legroom launch branch (2026-10-05); Keyfeel joined and the
+price went to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`); on 2026-10-07 the owner decided every app
+price ends in .99, so the Suite became $54.99 (Outbound Veil $29.99, Legroom $9.99); Tapefolio joined on 2026-10-09 with
+the price left at $54.99 by the owner's decision (see "Tapefolio joined" below and `tapefolio.md`).
+
+## Tapefolio joined (2026-10-09), price unchanged
+Tapefolio ($29.99 once, `tapefolio.md`) is the sixth part and the Suite stays $54.99; `amount: 5499` in `checkout.mjs`
+was not touched. The first-year parts now come to $123.95 (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99,
+Keyfeel $9.99, Tapefolio $29.99, Vitae Plus counted at a round $24, as every earlier version of this note did). At the
+$23.99 the Suite page lists beside Vitae Plus the exact sum is $123.94; both round to $124, which is what the page shows
+(`netlify/tests/legroom-site.test.mjs` checks the rows against the shown total). The earlier $93.96 / $94 figures in the
+history below were the five-app totals. Nobody who already bought the Suite at $39, $49, $54 or $54.99 pays more:
+their `app-suite` session unlocks `tapefolio-download` and gets a Tapefolio key (the key comes from the buyer's address,
+so a Suite buyer and a Tapefolio-only buyer with the same address get the same key). The Terms say so without naming a
+price, and a refund is still "the full amount you paid". Everything that names the contents changed in the same branch:
+`checkout.mjs` (line name), `stripe-webhook.mjs` and `purchases-recover.mjs` (the page "has six things", plus the
+Tapefolio key and first-run note), `site/suite/*` (rows, card, FAQ, JSON-LD, success page and script), Terms, `llms.txt`,
+the "Also in the Mac Suite" lines on the five app pages, the Vitae Plus page, the home and products Suite sentences
+(now $124), `site/site.js` (promo text) and `site/assets/og/_gen.html`. Tapefolio is the only app that needs macOS 26 and
+Apple silicon, so the Suite FAQ says so. **To do by hand:** re-render `site/assets/og/mac-suite.png` from `_gen.html`
+(`?t=mac-suite`, 1200x630); it still says five apps. The Suite page also shows no Tapefolio icon (none exists yet).
 
 ## Why $54.99
-The 2026-10-07 .99 pricing decision moved Outbound Veil from $29 to $29.99, Legroom from $9 to $9.99 and the Suite from
+(Written before Tapefolio joined: the parts then came to $93.96.) The 2026-10-07 .99 pricing decision moved Outbound Veil from $29 to $29.99, Legroom from $9 to $9.99 and the Suite from
 $54 to $54.99. The parts now come to $93.96 for the first year (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99,
 Keyfeel $9.99, Vitae Plus $24; the page rounds to $94). The contents did not change, so $54 buyers keep everything and
 the Terms say only that the price changed. The history below is why it was $54, $49 and $39.
@@ -35,20 +53,20 @@ the JSON-LD offer in site/suite/index.html, the Terms section, llms.txt, site/pr
 - Checkout: `app-suite` in `netlify/functions/checkout.mjs`, priced inline (`amount: 5499`), so there is no Stripe
   Price to create and no env var. Success path `/suite/success/`. Promotion codes are allowed like every product.
 - Delivery: the session id is the bearer token, as for every Blobs-delivered product.
-  - `moderntex-download.mjs`, `outbound-veil-download.mjs`, `legroom-download.mjs` and `keyfeel-download.mjs` accept `metadata.product` of their own key or `app-suite`.
+  - `moderntex-download.mjs`, `outbound-veil-download.mjs`, `legroom-download.mjs`, `keyfeel-download.mjs` and `tapefolio-download.mjs` accept `metadata.product` of their own key or `app-suite`.
   - `vitae-license.mjs ?session_id=` signs a Vitae Plus key for an `app-suite` session: the same v2 format, plan
     `lifetime`, exp 100 years out, id = sha256(session id)[0:16]. The shipped Vitae app verifies any plan string and
     refreshes only inside the last 10 days of a key, so it never calls refresh for these. No app change was needed.
     `manage` and `refresh` return 404 for these keys (no subscription behind them).
 - Email: `stripe-webhook.mjs` lists `app-suite` in BLOB_DELIVERED_PRODUCTS, so the buyer gets the suite page link and
-  a fresh ModernTex license key (MTX1-...); the email says the page has five things (four downloads and the Vitae key) and carries the Keyfeel Input Monitoring note. Duplicate Stripe deliveries are deduped as for the other products.
+  a fresh ModernTex license key (MTX1-...); the email says the page has six things (five downloads and the Vitae key), carries the Keyfeel and Tapefolio keys and the Keyfeel Input Monitoring note and the Tapefolio first-run note. Duplicate Stripe deliveries are deduped as for the other products.
 - Recovery: `/recover/` (purchases-recover.mjs) re-sends the suite page link and a new ModernTex key;
   `/vitae/plus/recover/` (vitae-license.mjs recover) also includes lifetime keys found by the email on the session.
 - Dashboard: origin/main already maps `app-suite` to its own "Mac Suite" line (sales.mjs, traffic_dashboard.py); nothing to add here.
-- Pages: `/suite/` (product), `/suite/success/` (noindex; the ModernTex, Outbound Veil, Legroom and Keyfeel downloads and the Vitae
+- Pages: `/suite/` (product), `/suite/success/` (noindex; the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads and the Vitae
   key, fetched independently so one failure never hides the others), Terms section, cross-links from Outbound Veil,
-  Vitae Plus, Legroom and /products/. Legroom's Terms say "updates to the version you bought" (no major-version promise),
-  and the Suite page repeats that for Legroom while keeping "forever" for ModernTex and Outbound Veil.
+  Vitae Plus, Legroom and /products/. Legroom's and Tapefolio's Terms say "updates to the version you bought" (no major-version promise),
+  and the Suite page repeats that for Legroom and Tapefolio while keeping "forever" for ModernTex and Outbound Veil.
 
 ## Known gap
 Vitae's Settings tab labels any non-annual plan "$3 a month" (changing to $2.99 with the next Vitae release) (PlusSettingsTab.swift line 27), so a Suite key shows a
@@ -56,15 +74,15 @@ price next to the plan until Vitae ships a small update that handles `plan == "l
 ignore it. The key works regardless.
 
 ## Tests
-`node --experimental-test-module-mocks --test netlify/tests/{checkout,vitae-license,purchases-recover,suite-entitlement,suite-webhook,legroom-download,legroom-site,keyfeel-download,keyfeel-site}.test.mjs`.
+`node --experimental-test-module-mocks --test netlify/tests/{checkout,vitae-license,purchases-recover,suite-entitlement,suite-webhook,legroom-download,legroom-site,keyfeel-download,keyfeel-site,tapefolio-download,tapefolio-license,tapefolio-site}.test.mjs`.
 One test in purchases-recover.test.mjs ("answers the same whether or not anything matched") fails on Node 26 before and
 after this change: the test signs ModernTex keys with a random private key paired to the real public key, and Node 26
 rejects that JWK. It passes on Node 22.
 
 ## Go-live checklist (owner)
 1. Push to main (a push deploys). The Suite itself needs no env var or Stripe object; Legroom's are in `legroom.md` and
-   Keyfeel's in `keyfeel.md`. Do not deploy the Keyfeel branch before Keyfeel is ready to release: it changes the Suite
-   price and copy at once.
-2. One real purchase on the live site, then a refund: check the success page shows the four downloads and the key, the
+   Keyfeel's in `keyfeel.md`, Tapefolio's in `tapefolio.md`. Do not deploy the Tapefolio branch before Tapefolio is ready
+   to release: it changes the Suite copy and its success page at once.
+2. One real purchase on the live site, then a refund: check the success page shows the five downloads and the keys, the
    email arrives with a working ModernTex key, and the Vitae key activates in Vitae.
 3. Optional: a Vitae update labeling the lifetime plan.
