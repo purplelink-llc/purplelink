@@ -378,6 +378,10 @@ test("the Suite page lists Tapefolio with its own price and card, keeps the $54.
   assert.match(html, /Tapefolio needs macOS 26 or later and Apple silicon, with no Intel version/);
   assert.match(html, /Six Mac apps, one \$54\.99 payment/);
   assert.doesNotMatch(html, /\bfive Mac apps\b|Five Mac apps/i);
+  assert.match(html, /<img class="suite-app-icon" src="\/assets\/tapefolio-icon\.webp" alt="" width="56" height="56" loading="lazy">\s*<h3>Tapefolio<\/h3>/);
+  assert.match(html, /<img src="\/assets\/tapefolio-icon\.webp" alt="" width="72" height="72">/);
+  assert.equal([...html.matchAll(/class="suite-icons"[\s\S]*?<\/div>/g)][0][0].match(/<img /g).length, 6, "six icons in the row");
+  assert.ok(existsSync(join(SITE, "assets/tapefolio-icon.webp")));
   const app = jsonLd(html).find((n) => n["@type"] === "Product").hasPart.find((a) => a.name === "Tapefolio");
   assert.equal(app.operatingSystem, "macOS 26+");
   assert.equal(app.url, "https://purplelink.llc/tapefolio/");
@@ -472,6 +476,16 @@ test("the Suite page, the Suite terms and llms.txt say the same about updates an
   assert.match(terms, /all updates to Keyfeel and Tapefolio, updates to the version of Legroom you receive/);
   assert.match(read("suite/index.html"), /so is every Keyfeel and Tapefolio update\. Legroom updates to the version you buy are included/);
   assert.match(read("suite/index.html"), /its check for a new version, which sends the app's name, its version and the macOS version, and macOS itself/);
+});
+
+test("the site promo card offers Tapefolio with its real icon, and never on its own page or the Suite page", () => {
+  const src = read("site.js");
+  const entry = src.match(/\{ id: 'tapefolio'[\s\S]*?own: \[[^\]]*\] \}/)[0];
+  assert.match(entry, /icon: '\/assets\/tapefolio-icon-128\.webp'/);
+  assert.match(entry, /\$29\.99/);
+  assert.match(entry, /own: \['\/tapefolio\/', '\/suite\/'\]/);
+  assert.doesNotMatch(entry, /[–—]/);
+  assert.ok(existsSync(join(SITE, "assets/tapefolio-icon-128.webp")));
 });
 
 // ---- no bundled speech model ------------------------------------------------------------------

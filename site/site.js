@@ -1027,6 +1027,8 @@
       text: 'Shows your free disk space and cleans the folders you choose, after you approve a preview. Free 7-day trial, then $9.99.', own: ['/legroom/', '/suite/'] },
     { id: 'keyfeel', name: 'Keyfeel', href: '/keyfeel/', icon: '/assets/keyfeel-icon-128.webp', cta: 'Try it free',
       text: 'Recorded keyboard, click and scroll sounds for your Mac, with optional trackpad haptics. Free 7-day trial, then $9.99.', own: ['/keyfeel/', '/suite/'] },
+    { id: 'tapefolio', name: 'Tapefolio', href: '/tapefolio/', icon: '/assets/tapefolio-icon-128.webp', cta: 'Try it free',
+      text: 'Transcribes interviews and reads scanned pages on your Mac, and your files are not uploaded. Free 7-day trial, then $29.99.', own: ['/tapefolio/', '/suite/'] },
     { id: 'vitae', name: 'Vitae', href: '/vitae/', icon: '/assets/vitae-icon.webp', cta: 'Get it free',
       text: 'Track submissions, grants and your CV in one place. Free for Mac, with an optional Plus subscription from $2.99 a month.', own: ['/vitae/'] },
     { id: 'paper-review', name: 'Paper Review', href: '/tools/paper-review/', icon: '/assets/purplelink-logo-64.png', cta: 'See how it works',
