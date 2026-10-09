@@ -28,7 +28,7 @@ test("the Keyfeel page offers the app at $9.99 once, with a 14-day refund, for m
   assert.equal(app.offers.priceCurrency, "USD");
   assert.equal(app.offers.hasMerchantReturnPolicy.merchantReturnDays, 14);
   assert.equal(app.operatingSystem, "macOS 13+");
-  assert.equal(app.offers.availability, undefined, "no availability is claimed in the markup");
+  assert.equal(app.offers.availability, "https://schema.org/InStock", "Keyfeel is on sale, like every other live product page");
 });
 
 test("the page is wired to the delivery and checkout functions and carries the shared head tags", () => {
