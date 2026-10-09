@@ -69,8 +69,9 @@
 - **Description:** A Mac menu-bar app that plays recorded keyboard-switch sounds when you press a key, with mouse-click sounds, speed-aware scroll ticks and optional trackpad haptics (only while a finger is on the trackpad). Recorded profiles Tactile, Cherry MX Brown and Dome, a different recording each press, per-key pitch and left-to-right stereo, sounds for the space bar and Return, a click ripple, per-app silence, silence while the microphone is in use, and import of your own sound.
 - **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once to keep, updates included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. 14-day refund.
 - **Privacy:** It reads key codes, never the characters you type. It works offline. It needs the macOS Input Monitoring permission. No account, no analytics.
-- **Status:** Shipping, version 1.3.1 (October 2026).
+- **Status:** Shipping, version 1.4.0 (October 2026). One license key works on two of your Macs.
 - **Trial and purchase:** https://purplelink.llc/keyfeel/
+- **Sound credits:** https://purplelink.llc/keyfeel/sound-credits/ (author and license, all CC0 1.0, of every recorded sound in the app)
 - **Comparison:** https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ (Klack, KeyOpera, Thock, Mechvibes and others, by price, sounds, permissions and limits)
 - **Mechvibes sound packs:** https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/ (Keyfeel imports Mechvibes packs in the original format, not the MechvibesDX V2 format; how to import, what does not carry over)
 - **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (Keyfeel needs Input Monitoring and reads key codes, never characters; Accessibility is optional for two features)
@@ -359,6 +360,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Best Chrome extensions for Google Scholar (2026): https://purplelink.llc/guides/best-chrome-extensions-for-google-scholar/ — journal rankings, citation and author metrics, retraction warnings and what each cannot do.
 - Overleaf alternatives for Mac: https://purplelink.llc/guides/overleaf-alternative-mac/ — offline LaTeX editors compared, and how to move a project off Overleaf.
 - TeXShop alternative for Mac: https://purplelink.llc/guides/texshop-alternative-mac/ — ModernTex, TeXShop and TeXstudio compared on price, platforms, PDF sync, multi-file projects and bibliographies, with who should pick which.
+- How to install LaTeX on a Mac: https://purplelink.llc/guides/install-latex-on-mac/ : MacTeX (6.4 GB installer), BasicTeX (134 MB) and TinyTeX compared, install steps with Homebrew and the installer package, how to check the install, add packages with tlmgr, pick an editor, and fix common errors.
 - Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
 - GlobePin vs Polarsteps vs Visited: https://purplelink.llc/guides/globepin-vs-polarsteps/ — comparison of three iOS travel-mapping approaches.
 - Best health tracking apps that keep your data on your phone (2026): https://purplelink.llc/guides/best-on-device-health-apps/ — about 30 iPhone health apps compared by App Store privacy label, account, where the data lives and price, with Haea (Purplelink's own, not yet released) disclosed.
