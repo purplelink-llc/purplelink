@@ -113,8 +113,8 @@ test("the recovery email for the Suite links the one page and carries the Modern
   const mail = recoveryEmail([{ sessionId: "cs_suite", product: "app-suite", created: 5 }], "MTX1-AAAAA-BBBBB");
   assert.match(mail.text, /Purplelink Mac Suite/);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_suite/);
-  assert.match(mail.text, /ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key/);
-  assert.match(mail.html, /Keyfeel downloads/);
+  assert.match(mail.text, /ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads and your lifetime Vitae Plus key/);
+  assert.match(mail.html, /Keyfeel and Tapefolio downloads/);
   assert.match(mail.text, /MTX1-AAAAA-BBBBB/);
   assert.match(mail.html, /MTX1-AAAAA-BBBBB/);
   // Without a signing key it does not invent one.
@@ -157,4 +157,46 @@ test("the recovery email for Keyfeel links its success page and carries no Moder
   assert.match(mail.text, /https:\/\/purplelink\.llc\/keyfeel\/success\/\?session_id=cs_kf/);
   assert.doesNotMatch(mail.text, /MTX1|license key/i);
   assert.match(mail.html, /keyfeel\/success\//);
+});
+
+// ---- Tapefolio ----
+
+test("finds a paid Tapefolio purchase and ignores an unpaid one", async () => {
+  sessions = [
+    { id: "cs_tf", payment_status: "paid", created: 11, metadata: { product: "tapefolio" } },
+    { id: "cs_tf_unpaid", payment_status: "unpaid", created: 12, metadata: { product: "tapefolio" } },
+  ];
+  const { purchases } = await purchasesForEmail("buyer@example.com", "sk_test_dummy");
+  assert.deepEqual(purchases.map((p) => [p.sessionId, p.product]), [["cs_tf", "tapefolio"]]);
+});
+
+test("the recovery email for Tapefolio links its success page, carries no ModernTex key, and carries the Tapefolio key it is given", () => {
+  const without = recoveryEmail([{ sessionId: "cs_tf", product: "tapefolio", created: 11 }], null);
+  assert.match(without.text, /Tapefolio for macOS/);
+  assert.match(without.text, /https:\/\/purplelink\.llc\/tapefolio\/success\/\?session_id=cs_tf/);
+  assert.doesNotMatch(without.text, /MTX1|license key/i);
+  assert.match(without.html, /tapefolio\/success\//);
+  const KEY = "TFL1-ABCDE-FGHJK";
+  const withKey = recoveryEmail([{ sessionId: "cs_tf", product: "tapefolio", created: 11 }], null, null, new Map(), KEY);
+  assert.match(withKey.text, /Tapefolio license key \(in Tapefolio, choose Enter License Key and paste it\): TFL1-ABCDE-FGHJK/);
+  assert.match(withKey.html, /TFL1-ABCDE-FGHJK/);
+  // Another product's recovery email never carries it.
+  assert.doesNotMatch(recoveryEmail([{ sessionId: "cs_lg", product: "legroom", created: 7 }], null, null, new Map(), KEY).text, /TFL1/);
+  // The Suite does.
+  assert.match(recoveryEmail([{ sessionId: "cs_suite", product: "app-suite", created: 5 }], null, null, new Map(), KEY).text, /TFL1-ABCDE-FGHJK/);
+});
+
+test("the recovery handler emails a Tapefolio buyer the key for the address they typed, the same key checkout showed", async (t) => {
+  env.TAPEFOLIO_LICENSE_PRIVATE_KEY = Buffer.alloc(32, 5).toString("base64");
+  t.after(() => { delete env.TAPEFOLIO_LICENSE_PRIVATE_KEY; });
+  sessions = [{ id: "cs_tf2", payment_status: "paid", created: 13, metadata: { product: "tapefolio" } }];
+  const res = await post({ email: "Tapefolio.Buyer@example.com" }, "10.9.0.1");
+  assert.equal(res.status, 200);
+  const sent = calls.filter((c) => c.url.startsWith("https://api.resend.com/"));
+  assert.equal(sent.length, 1);
+  const payload = JSON.parse(sent[0].opts.body);
+  const { issueTapefolioLicense } = await import("../lib/tapefolio-license.mjs");
+  const expected = issueTapefolioLicense("Tapefolio.Buyer@example.com", (k) => env[k]);
+  if (expected === null) return t.skip("this Node rejects a seed that does not match the production public key");
+  assert.ok(payload.text.includes(expected), "the emailed key is the key derived from the address");
 });

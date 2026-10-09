@@ -133,6 +133,7 @@ SITES = [
                         ("ovTrialDownloads", "Outbound Veil trial downloads"),
                         ("lgTrialDownloads", "Legroom trial downloads"),
                         ("kfTrialDownloads", "Keyfeel trial downloads"),
+                        ("tfTrialDownloads", "Tapefolio trial downloads"),
                         ("vitaeDownloads", "Vitae downloads"),
                         ("checkoutClicks", "checkout clicks")],
         # Paths that actually show a buy button. The useful denominator for a
@@ -169,6 +170,8 @@ SITES = [
             "/legroom/",
             # Keyfeel: buy button (pr-checkout-btn, data-product="keyfeel").
             "/keyfeel/",
+            # Tapefolio: buy button (pr-checkout-btn, data-product="tapefolio").
+            "/tapefolio/",
         ),
         # Waitlists are Netlify Forms, so they never reach the analytics beacon.
         # Without this they read as zero while people are actually signing up.
@@ -238,7 +241,7 @@ ADMOB_APPS = {
                  "appId": "ca-app-pub-6407975157274256~3074958691"},
 }
 ADMOB_DAYS = 7  # matches the Apple Search Ads manual reading, for a fair spend-vs-earnings comparison
-PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/vitae", "/suite"}
+PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/tapefolio", "/vitae", "/suite"}
 GOOGLE_ADS_DAYS = 7  # matches the ModernTex Google Ads manual reading, for a fair spend-vs-revenue comparison
 
 
@@ -2362,7 +2365,7 @@ def site_card(s: dict) -> str:
 
 
 PRODUCT_LABELS = {
-    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "freeboard": "Legroom", "app-suite": "Mac Suite", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "freeboard": "Legroom", "app-suite": "Mac Suite", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
     "citation-gap": "Citation gap", "revision-review": "Revision review",
     "response-review": "Response review", "resume-review": "Resume review",
     "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
@@ -2908,6 +2911,7 @@ PRODUCT_GROUPS = [
     ("Scholar Utility Belt Pro", "oklch(72% 0.13 150)"),
     ("Legroom", "oklch(72% 0.14 215)"),
     ("Keyfeel", "oklch(74% 0.13 190)"),
+    ("Tapefolio", "oklch(70% 0.14 255)"),
     ("Mac Suite", "oklch(70% 0.18 330)"),
     ("Paper Review & tools", "oklch(75% 0.14 230)"),
     ("Kits", "oklch(80% 0.13 85)"),
@@ -2935,6 +2939,8 @@ def product_group(row: dict) -> str:
         return "Legroom"
     if product == "keyfeel":
         return "Keyfeel"
+    if product == "tapefolio":
+        return "Tapefolio"
     if product == "app-suite":  # all the Mac apps in one purchase; revenue is not split per app
         return "Mac Suite"
     if product.startswith("kit-"):
@@ -4023,7 +4029,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Keyfeel", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Keyfeel", "Tapefolio", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 

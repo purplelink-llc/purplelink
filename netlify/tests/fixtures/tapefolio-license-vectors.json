@@ -1,0 +1,54 @@
+{
+  "note": "TEST key only. Never matches production. Scheme TapefolioLicenseV1; see netlify/lib/tapefolio-license.mjs. Generated once from a throwaway Ed25519 key; its private half was discarded.",
+  "testPublicKeyBase64": "G0u3gtZ7bgc+czaRe/O6ryIw5H8NYkCLVrKjhLRI3hM=",
+  "domain": "TapefolioLicenseV1",
+  "signedMessage": "UTF-8 bytes of the domain followed by the 4 nonce bytes",
+  "nonceSeed": "first 4 bytes of sha256(\"tapefolio-license:\" + lower-cased, trimmed email)",
+  "valid": [
+    {
+      "email": "alice@example.org",
+      "key": "TFL1-MNXPB-HTD04-Z6CP7-5HQEE-46PFA-METWN-8ZNNY-JYTAP-ZBSBE-QSJ7T-XYXZY-8DTPN-58NA5-CXK16-NCKSB-1H8GP-QYTHZ-NHVDR-6Y215-R1P86-2SKJB-K008"
+    },
+    {
+      "email": "bob.researcher@example.edu",
+      "key": "TFL1-JG6KD-J507J-KXBH5-0BXNF-SXZ7K-RDTW6-AQNP7-ETPV8-90PM1-BHVQE-90H5A-AC7RJ-W85V2-GRKJ5-FHHT0-286KX-BN2RT-AYJ9Q-9YKXS-Z4K5A-4VVCS-QPG8"
+    },
+    {
+      "email": "carol+tapefolio@example.com",
+      "key": "TFL1-JFWRW-D6WQF-6RDK5-H8NFH-YWQM7-CE7TY-9PNWZ-N5J1G-W3PB1-H781Y-6DZTG-BQ004-8Y4X6-S9VJ0-DNBJG-PGPFP-T81G8-X5SF8-3937C-7TJR7-BQHZG-Q70R"
+    }
+  ],
+  "invalid": [
+    {
+      "key": "TFL1-MNXPBAHTD04-Z6CP7-5HQEE-46PFA-METWN-8ZNNY-JYTAP-ZBSBE-QSJ7T-XYXZY-8DTPN-58NA5-CXK16-NCKSB-1H8GP-QYTHZ-NHVDR-6Y215-R1P86-2SKJB-K008",
+      "why": "one character changed"
+    },
+    {
+      "key": "TFL1-MNXPB-HTJHH-1H5AZ-F0F3M-716CZ-PVN0S-BTSVC-VC1ZG-8KG4C-MMNRX-NXNG6-KMPE6-DN9VB-QDP2V-MG33V-2F95V-ASJ9G-6768Z-JKWV9-HHF9W-TC1MD-KSGJ",
+      "why": "right shape, signed under a different domain string (KeyfeelLicenseV1)"
+    },
+    {
+      "key": "TFL1-MNXPB-HZJHX-ZXWPG-2K7XZ-69BQR-FM65C-VMK2S-EYKK0-4QQCV-9SZGA-5N80J-0Q65N-G67P4-T6CFY-SC2XB-1YH2M-E4NE1-158TQ-34X4B-X58MZ-PVRCZ-GK0T",
+      "why": "right shape, signed by a different key"
+    },
+    {
+      "key": "KFL1-MNXPB-HTD04-Z6CP7-5HQEE-46PFA-METWN-8ZNNY-JYTAP-ZBSBE-QSJ7T-XYXZY-8DTPN-58NA5-CXK16-NCKSB-1H8GP-QYTHZ-NHVDR-6Y215-R1P86-2SKJB-K008",
+      "why": "the Keyfeel prefix on a Tapefolio key body is not a Tapefolio key"
+    },
+    {
+      "key": "TFL1-12345-12345",
+      "why": "too short"
+    },
+    {
+      "key": "",
+      "why": "empty"
+    }
+  ],
+  "spelling": [
+    "tfl1-mnxpb-htd04-z6cp7-5hqee-46pfa-metwn-8znny-jytap-zbsbe-qsj7t-xyxzy-8dtpn-58na5-cxk16-ncksb-1h8gp-qythz-nhvdr-6y215-r1p86-2skjb-k008",
+    "TFL1MNXPBHTD04Z6CP75HQEE46PFAMETWN8ZNNYJYTAPZBSBEQSJ7TXYXZY8DTPN58NA5CXK16NCKSB1H8GPQYTHZNHVDR6Y215R1P862SKJBK008",
+    "  TFL1-MNXPB-HTD04-Z6CP7-5HQEE-46PFA-METWN-8ZNNY-JYTAP-ZBSBE-QSJ7T-XYXZY-8DTPN-58NA5-CXK16-NCKSB-1H8GP-QYTHZ-NHVDR-6Y215-R1P86-2SKJB-K008  ",
+    "TFL1 MNXPB HTD04 Z6CP7 5HQEE 46PFA METWN 8ZNNY JYTAP ZBSBE QSJ7T XYXZY 8DTPN 58NA5 CXK16 NCKSB 1H8GP QYTHZ NHVDR 6Y215 R1P86 2SKJB K008"
+  ],
+  "lookalikes": "Crockford: O reads as 0, I and L read as 1, U is not in the alphabet and is rejected"
+}

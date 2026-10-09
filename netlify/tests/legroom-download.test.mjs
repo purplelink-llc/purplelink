@@ -82,7 +82,7 @@ test("an unpaid session is refused", async () => {
 });
 
 test("a paid session for another product is refused", async () => {
-  for (const product of ["moderntex", "outbound-veil", "kit-bundle", ""]) {
+  for (const product of ["moderntex", "outbound-veil", "tapefolio", "kit-bundle", ""]) {
     session.metadata = product ? { product } : {};
     const res = await call(`session_id=${SESSION}`);
     assert.equal(res.status, 403, product);

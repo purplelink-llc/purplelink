@@ -63,7 +63,7 @@ export default async function handler(request) {
   const store = getStore("analytics");
   const now = Date.now();
   const s = {
-    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, events: 0 },
+    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
     checkoutByProduct: {}, checkoutByPath: {},
     otherEvents: {}, otherEventDetail: {},
@@ -95,7 +95,7 @@ export default async function handler(request) {
 
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
-    if (!s.byDay[day]) s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0 };
+    if (!s.byDay[day]) s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0 };
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
 
     const records = await mapLimit(blobs, 64, async (b) => {
@@ -139,6 +139,9 @@ export default async function handler(request) {
       } else if (rec.type === "kf_trial_download") {
         // Keyfeel trial DMG downloads. Its own event type, for the same reason.
         s.totals.kfTrialDownloads++; s.byDay[day].kfTrialDownloads++;
+      } else if (rec.type === "tf_trial_download") {
+        // Tapefolio trial DMG downloads. Its own event type, for the same reason.
+        s.totals.tfTrialDownloads++; s.byDay[day].tfTrialDownloads++;
       } else if (rec.type === "checkout_click" && !String(rec.meta || "").startsWith("__")) {
         // Product keys are dunder-prefixed only by the self-test that verifies
         // the beacon actually fires end to end. Real keys never look like this,

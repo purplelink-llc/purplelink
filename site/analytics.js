@@ -168,6 +168,9 @@
       if (a && a.getAttribute("href").indexOf("keyfeel-download?trial=1") !== -1) {
         window.plTrack("kf_trial_download", "keyfeel");
       }
+      if (a && /tapefolio-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
+        window.plTrack("tf_trial_download", "tapefolio");
+      }
       // Anything else marked data-track="<event>" (optional data-track-meta):
       // template downloads, the phone sticky bar.
       var t = ev.target && ev.target.closest && ev.target.closest("[data-track]");

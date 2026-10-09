@@ -14,7 +14,7 @@ import { getStore } from "@netlify/blobs";
 import { licenseKeysForSession } from "./stripe-webhook.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
-const KEYED_PRODUCTS = new Set(["moderntex", "outbound-veil", "legroom", "keyfeel", "app-suite"]);
+const KEYED_PRODUCTS = new Set(["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "app-suite"]);
 const DAILY_LIMIT = 120;
 
 function json(status, body) {

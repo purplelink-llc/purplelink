@@ -111,12 +111,16 @@ const PRODUCT_CATALOG = {
   // Keyfeel for macOS: $9.99 one-time, priced inline (no Stripe Price to create), like ModernTex.
   // Delivery is the session-gated DMG from the keyfeel-files Blobs store; see keyfeel-download.mjs.
   "keyfeel":                 { amount: 999, name: "Keyfeel for macOS", successPath: "/keyfeel/success/" },
-  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Vitae Plus for life, $54.99
-  // one-time (was $54 until 2026-10-07, $49 with four apps, $39 before Legroom). Priced inline (no Stripe Price to
-  // create). One session unlocks all five: the ModernTex, Outbound Veil, Legroom and Keyfeel
-  // download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it.
-  // See docs/products/app-suite.md.
-  "app-suite":               { amount: 5499, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel and Vitae Plus for life", successPath: "/suite/success/" },
+  // Tapefolio for macOS: $29.99 one-time, priced inline (no Stripe Price to create), like Keyfeel.
+  // Delivery is the session-gated DMG from the tapefolio-files Blobs store; see tapefolio-download.mjs.
+  // Product page and success page: /tapefolio/ and /tapefolio/success/. See docs/products/tapefolio.md.
+  "tapefolio":               { amount: 2999, name: "Tapefolio for macOS", successPath: "/tapefolio/success/" },
+  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life, $54.99
+  // one-time (was $54 until 2026-10-07, $49 with four apps, $39 before Legroom; Tapefolio joined 2026-10-09 at the
+  // same price). Priced inline (no Stripe Price to create). One session unlocks all six: the ModernTex, Outbound
+  // Veil, Legroom, Keyfeel and Tapefolio download functions accept it, and vitae-license.mjs signs a 100-year
+  // Vitae Plus key from it. See docs/products/app-suite.md.
+  "app-suite":               { amount: 5499, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life", successPath: "/suite/success/" },
   // Vitae Plus: optional subscription for the free Vitae app ($2.99/month or
   // $23.99/year, 7-day trial). The success page asks vitae-license.mjs for a
   // signed key; the app refreshes it from the same function about monthly.

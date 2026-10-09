@@ -28,6 +28,7 @@
  */
 
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
+import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
 import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivateKey } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
@@ -82,8 +83,9 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["outbound-veil",     { name: "Outbound Veil for macOS",           successPath: "/outbound-veil/success/" }],
   ["legroom",           { name: "Legroom for macOS",                 successPath: "/legroom/success/" }],
   ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Vitae Plus for life. /suite/success/
-  // lists all four downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  ["tapefolio",         { name: "Tapefolio for macOS",               successPath: "/tapefolio/success/" }],
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life. /suite/success/
+  // lists all five downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
   ["sheet-submission",  { name: "the Journal Submission & R&R Tracker", successPath: "/sheets/success/" }],
   ["sheet-tenure",      { name: "the Tenure & Promotion Dossier Tracker", successPath: "/sheets/success/" }],
@@ -252,8 +254,9 @@ export function issueModernTexLicense(sessionId) {
 
 /**
  * Every license key a paid session is entitled to, as [{ slug, label, key }]. ModernTex has its own scheme
- * (MTX1); Outbound Veil, Legroom and Keyfeel share PurplelinkLicenseV1 (netlify/lib/license.mjs). The Mac
- * Suite entitles all four. Keys are derived from the session id, so every caller gets the same key.
+ * (MTX1); Outbound Veil and Legroom share PurplelinkLicenseV1 (netlify/lib/license.mjs). Keyfeel (KFL1) and
+ * Tapefolio (TFL1) each have their own scheme, keyed on the buyer's address, and are added by the caller. The Mac
+ * Suite entitles all of them. Keys are derived from the session id, so every caller gets the same key.
  * An entry is left out, never faked, when its signing secret is not configured.
  */
 export function licenseKeysForSession(productKey, sessionId) {
@@ -314,13 +317,13 @@ async function emailDownloadLink(to, sessionId, productKey) {
     : "";
   const reviewTextBlock = reviewApp ? `${reviewAsk}\n\n` : "";
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
-  // Mac Suite: say what is on the page, since one link carries five things.
+  // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
-    ? `That page has five things: the ModernTex, Outbound Veil, Legroom and Keyfeel downloads, and your Vitae Plus key ` +
+    ? `That page has six things: the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has five things: the ModernTex, Outbound Veil, Legroom and Keyfeel downloads, and your Vitae Plus key ` +
+    ? `<p>That page has six things: the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Outbound Veil: the one step new users trip on is macOS Accessibility, so point at the setup guide.
@@ -353,12 +356,35 @@ async function emailDownloadLink(to, sessionId, productKey) {
       `It reads which key, never the characters you type. macOS asks the first time you open it; ` +
       `the permission is under System Settings, Privacy &amp; Security, Input Monitoring.</p>`
     : "");
+  // Tapefolio: its key is derived from the buyer's address (its own scheme, like Keyfeel's). The one thing new users
+  // wonder about is the wait on the first run, so say it here too. Also sent to Suite buyers, who get the app with it.
+  const tapefolioLicense = productKey === "tapefolio" || isSuite ? issueTapefolioLicense(to) : null;
+  const tapefolioLicenseText = tapefolioLicense
+    ? `Your Tapefolio license key (in Tapefolio, choose Enter License Key and paste it):\n${tapefolioLicense}\n\n` +
+      `It unlocks Tapefolio on up to two of your Macs. No account, and it works offline.\n\n`
+    : "";
+  const tapefolioLicenseHtml = tapefolioLicense
+    ? `<p>Your Tapefolio license key (in Tapefolio, choose Enter License Key and paste it):</p>` +
+      `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${tapefolioLicense}</p>` +
+      `<p>It unlocks Tapefolio on up to two of your Macs. No account, and it works offline.</p>`
+    : "";
+  const tapefolioText = tapefolioLicenseText + (productKey === "tapefolio" || isSuite
+    ? `Tapefolio needs macOS 26 or later on an Apple silicon Mac. The first run on a new Mac can take a few minutes while macOS ` +
+      `prepares its models for the Neural Engine; that wait happens once. Your files stay on your Mac. Tapefolio will mishear ` +
+      `some words and mislabel some speakers, so check any quoted text against the recording.\n\n`
+    : "");
+  const tapefolioHtml = tapefolioLicenseHtml + (productKey === "tapefolio" || isSuite
+    ? `<p>Tapefolio needs macOS 26 or later on an Apple silicon Mac. The first run on a new Mac can take a few minutes while macOS ` +
+      `prepares its models for the Neural Engine; that wait happens once. Your files stay on your Mac. Tapefolio will mishear ` +
+      `some words and mislabel some speakers, so check any quoted text against the recording.</p>`
+    : "");
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
     startText +
     suiteText +
     keyfeelText +
+    tapefolioText +
     licenseTextBlock +
     `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
     `Questions or trouble downloading: reply to this email.\n\n` +
@@ -370,6 +396,7 @@ async function emailDownloadLink(to, sessionId, productKey) {
     startHtml +
     suiteHtml +
     keyfeelHtml +
+    tapefolioHtml +
     licenseHtmlBlock +
     `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
     `<p>Questions or trouble downloading: reply to this email.</p>` +

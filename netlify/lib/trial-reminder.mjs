@@ -1,5 +1,5 @@
 /**
- * Shared engine for the optional Mac-app trial emails (Legroom, Keyfeel). Outbound Veil has its own copy of the same
+ * Shared engine for the optional Mac-app trial emails (Legroom, Keyfeel, Tapefolio). Outbound Veil has its own copy of the same
  * logic in netlify/functions/outbound-veil-reminder.mjs and is deliberately left alone.
  *
  * One setup email when someone asks for it, and one reminder REMIND_AFTER_DAYS later. Nothing else, and never a

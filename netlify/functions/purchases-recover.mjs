@@ -18,6 +18,7 @@
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
+import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
 import { issueModernTexLicense, licenseKeysForSession, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
@@ -93,7 +94,7 @@ function escapeHtml(s) {
 }
 
 /** The email body for a set of purchases; exported for tests. */
-export function recoveryEmail(purchases, license, keyfeelLicense = null, keysBySession = new Map()) {
+export function recoveryEmail(purchases, license, keyfeelLicense = null, keysBySession = new Map(), tapefolioLicense = null) {
   const lines = [];
   const html = [];
   const mtx = purchases.filter((p) => p.product === "moderntex");
@@ -126,17 +127,22 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
       html.push(`<p>Keyfeel license key (in Keyfeel, choose Enter License Key and paste it):</p>` +
         `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(keyfeelLicense)}</p>`);
     }
+    if (tapefolioLicense && (suite || p.product === "tapefolio")) {
+      lines.splice(lines.length - 1, 0, `Tapefolio license key (in Tapefolio, choose Enter License Key and paste it): ${tapefolioLicense}`);
+      html.push(`<p>Tapefolio license key (in Tapefolio, choose Enter License Key and paste it):</p>` +
+        `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(tapefolioLicense)}</p>`);
+    }
     if (suite) {
       // The page holds the downloads and the Vitae Plus key; the ModernTex key is only ever emailed.
-      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key.");
-      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom and Keyfeel downloads and your lifetime Vitae Plus key.</p>");
+      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads and your lifetime Vitae Plus key.");
+      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads and your lifetime Vitae Plus key.</p>");
       if (license) {
         lines.splice(lines.length - 1, 0, `ModernTex license key (in ModernTex, choose Enter license key and paste it): ${license}`);
         html.push(`<p>ModernTex license key (in ModernTex, choose Enter license key and paste it):</p>` +
           `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(license)}</p>`);
       }
     }
-    // Outbound Veil, Legroom and Keyfeel keys are derived from the session, so these are the keys the
+    // Outbound Veil and Legroom keys are derived from the session, so these are the keys the
     // original purchase email and the download page show.
     const keys = keysBySession.get(p.sessionId) || [];
     if (keys.length) {
@@ -159,12 +165,13 @@ async function sendRecovery(to, purchases) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   if (!apiKey) return false;
   // The ModernTex key is derived from the newest ModernTex or Suite purchase, so it matches what that
-  // purchase's own email and download page show. Keyfeel's key is derived from the address (its own scheme).
+  // purchase's own email and download page show. Keyfeel's and Tapefolio's keys are derived from the address (their own schemes).
   const mtxPurchase = purchases.find((p) => p.product === "moderntex" || p.product === "app-suite");
   const license = mtxPurchase ? issueModernTexLicense(mtxPurchase.sessionId) : null;
   const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite") ? issueKeyfeelLicense(to) : null;
+  const tapefolioLicense = purchases.some((p) => p.product === "tapefolio" || p.product === "app-suite") ? issueTapefolioLicense(to) : null;
   const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId).filter((k) => k.slug !== "moderntex")]));
-  const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession);
+  const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense);
   try {
     const resp = await fetch(RESEND_API_URL, {
       method: "POST",

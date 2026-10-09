@@ -60,8 +60,8 @@ test("a paid Suite order is acknowledged and emails the suite page link once", a
   assert.deepEqual(mail.to, ["buyer@example.com"]);
   assert.match(mail.subject, /Purplelink Mac Suite/);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_live_suite_abcdefghij/);
-  assert.match(mail.text, /That page has five things: the ModernTex, Outbound Veil, Legroom and Keyfeel downloads, and your Vitae Plus key/);
-  assert.match(mail.html, /ModernTex, Outbound Veil, Legroom and Keyfeel downloads/);
+  assert.match(mail.text, /That page has six things: the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads, and your Vitae Plus key/);
+  assert.match(mail.html, /ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads/);
   assert.match(mail.html, /\/suite\/success\//);
 });
 
@@ -127,4 +127,73 @@ test("other products' emails do not carry the Keyfeel permission note", async ()
   await handler(signed(completed("legroom", "evt_lg2")));
   const mail = JSON.parse(calls.find((c) => c.url.startsWith("https://api.resend.com/")).opts.body);
   assert.doesNotMatch(mail.text, /Input Monitoring/);
+});
+
+// ---- Tapefolio ----
+// The handler signs with the production public key compiled into netlify/lib/tapefolio-license.mjs, so these tests
+// sign with a seed Node accepts beside it (Node 24 does). A Node that checks the pair would return no key, and the
+// key tests are skipped there; the signing itself is covered in tapefolio-license.test.mjs.
+const { issueTapefolioLicense } = await import("../lib/tapefolio-license.mjs");
+const TF_SEED = Buffer.alloc(32, 5).toString("base64");
+const tfCanSign = issueTapefolioLicense("probe@example.org", (k) => (k === "TAPEFOLIO_LICENSE_PRIVATE_KEY" ? TF_SEED : undefined)) !== null;
+const tfSkip = !tfCanSign && "this Node rejects a seed that does not match the production public key";
+const tfCompleted = (id = "evt_tf") => ({ ...completed("tapefolio", id), data: { object: { ...completed("tapefolio").data.object, id: "cs_live_tapefolio_abcdefg1", amount_total: 2999 } } });
+const resendMail = () => JSON.parse(calls.find((c) => c.url.startsWith("https://api.resend.com/")).opts.body);
+
+test("Tapefolio is a blob-delivered product with its own success page", () => {
+  assert.equal(BLOB_DELIVERED_PRODUCTS.get("tapefolio").successPath, "/tapefolio/success/");
+  assert.equal(BLOB_DELIVERED_PRODUCTS.get("tapefolio").name, "Tapefolio for macOS");
+});
+
+test("a paid Tapefolio order emails the download page, the first-run note and the Tapefolio license key", { skip: tfSkip }, async () => {
+  env.TAPEFOLIO_LICENSE_PRIVATE_KEY = TF_SEED;
+  const res = await handler(signed(tfCompleted()));
+  assert.equal((await res.json()).status, "delivered_by_blobs");
+  const sent = calls.filter((c) => c.url.startsWith("https://api.resend.com/"));
+  assert.equal(sent.length, 1);
+  const mail = JSON.parse(sent[0].opts.body);
+  assert.deepEqual(mail.to, ["buyer@example.com"]);
+  assert.match(mail.subject, /Tapefolio for macOS download/);
+  assert.match(mail.text, /https:\/\/purplelink\.llc\/tapefolio\/success\/\?session_id=cs_live_tapefolio_abcdefg1/);
+  assert.match(mail.text, /Your Tapefolio license key[^\n]*\nTFL1-/);
+  assert.match(mail.text, /two of your Macs/);
+  assert.match(mail.text, /macOS 26 or later on an Apple silicon Mac/);
+  assert.match(mail.text, /a few minutes while macOS prepares its models for the Neural Engine/);
+  assert.match(mail.text, /mishear some words and mislabel some speakers/);
+  assert.doesNotMatch(mail.text, /MTX1|KFL1|Vitae|Outbound Veil|Keyfeel|Input Monitoring/i);
+  assert.doesNotMatch(mail.text, /—|–/);
+  assert.match(mail.html, /tapefolio\/success\//);
+  assert.match(mail.html, /TFL1-/);
+  delete env.TAPEFOLIO_LICENSE_PRIVATE_KEY;
+});
+
+test("a Tapefolio order with no signing secret still delivers the link, without a key", async () => {
+  delete env.TAPEFOLIO_LICENSE_PRIVATE_KEY;
+  const res = await handler(signed(tfCompleted("evt_tf2")));
+  assert.equal((await res.json()).status, "delivered_by_blobs");
+  const mail = resendMail();
+  assert.match(mail.text, /tapefolio\/success\//);
+  assert.doesNotMatch(mail.text, /TFL1-/);
+});
+
+test("the Suite email carries a Tapefolio key and the first-run note, and the Tapefolio key matches the one a Tapefolio-only buyer gets", { skip: tfSkip }, async () => {
+  env.TAPEFOLIO_LICENSE_PRIVATE_KEY = TF_SEED;
+  await handler(signed(completed("app-suite", "evt_s3")));
+  const suiteMail = resendMail();
+  calls.length = 0;
+  await handler(signed(tfCompleted("evt_tf3")));
+  const aloneMail = resendMail();
+  delete env.TAPEFOLIO_LICENSE_PRIVATE_KEY;
+  const keyIn = (t) => t.match(/TFL1-(?:[0-9A-Z]{5}-){21}[0-9A-Z]{4}/)?.[0];
+  assert.ok(keyIn(suiteMail.text), "the Suite email has a Tapefolio key");
+  assert.equal(keyIn(suiteMail.text), keyIn(aloneMail.text));
+  assert.match(suiteMail.text, /Neural Engine/);
+});
+
+test("other products' emails carry no Tapefolio note or key", async () => {
+  env.TAPEFOLIO_LICENSE_PRIVATE_KEY = TF_SEED;
+  await handler(signed(completed("legroom", "evt_lg3")));
+  const mail = resendMail();
+  delete env.TAPEFOLIO_LICENSE_PRIVATE_KEY;
+  assert.doesNotMatch(mail.text, /Tapefolio|Neural Engine|TFL1-/);
 });

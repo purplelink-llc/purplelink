@@ -13,6 +13,7 @@
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/checkout.test.mjs
 
+import { readFileSync } from "node:fs";
 import { test, mock } from "node:test";
 import assert from "node:assert/strict";
 
@@ -156,7 +157,7 @@ test("Legroom checks out with its Stripe price, its own success page and product
   assert.equal(paramFromBody(captured, "mode"), "payment");
 });
 
-test("the Mac Suite checkout line names all five apps", async () => {
+test("the Mac Suite checkout line names all six apps", async () => {
   let captured = null;
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, opts) => {
@@ -177,7 +178,7 @@ test("the Mac Suite checkout line names all five apps", async () => {
     globalThis.fetch = originalFetch;
   }
   const name = paramFromBody(captured, "line_items[0][price_data][product_data][name]");
-  for (const app of ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Vitae Plus"]) assert.ok(name.includes(app), `${app} missing from "${name}"`);
+  for (const app of ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Tapefolio", "Vitae Plus"]) assert.ok(name.includes(app), `${app} missing from "${name}"`);
 });
 
 test("Keyfeel checks out at $9.99, priced inline, with its own success page and product metadata", async () => {
@@ -208,4 +209,40 @@ test("Keyfeel checks out at $9.99, priced inline, with its own success page and 
   assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/keyfeel/success/"));
   assert.ok(paramFromBody(captured, "cancel_url").startsWith("https://purplelink.llc/keyfeel/?checkout=canceled"));
   assert.equal(paramFromBody(captured, "mode"), "payment");
+});
+
+test("Tapefolio checks out at $29.99, priced inline, with its own success page, product metadata and promotion codes", async () => {
+  let captured = null;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {
+    if (String(url).includes("api.stripe.com")) {
+      captured = opts.body;
+      return new Response(JSON.stringify({ id: "cs_test_tapefolio", url: "https://checkout.stripe.com/pay/cs_test_tapefolio" }), { status: 200 });
+    }
+    throw new Error(`Unexpected fetch to ${url}`);
+  };
+  try {
+    const res = await handler(new Request("https://purplelink.llc/.netlify/functions/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.54" },
+      body: JSON.stringify({ product: "tapefolio" }),
+    }));
+    assert.equal(res.status, 200);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "2999");
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][currency]"), "usd");
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][product_data][name]"), "Tapefolio for macOS");
+  assert.ok(!paramFromBody(captured, "line_items[0][price]"), "inline price, no Stripe Price id");
+  assert.equal(paramFromBody(captured, "metadata[product]"), "tapefolio");
+  assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/tapefolio/success/"));
+  assert.ok(paramFromBody(captured, "cancel_url").startsWith("https://purplelink.llc/tapefolio/?checkout=canceled"));
+  assert.equal(paramFromBody(captured, "mode"), "payment");
+  assert.equal(paramFromBody(captured, "allow_promotion_codes"), "true", "a 100%-off test code can be entered");
+});
+
+test("the Suite price did not move when Tapefolio joined: still $54.99", async () => {
+  const src = readFileSync(new URL("../functions/checkout.mjs", import.meta.url), "utf8");
+  assert.match(src, /"app-suite":\s+\{ amount: 5499,/);
 });
