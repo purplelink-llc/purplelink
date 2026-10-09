@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Clean a Zoom or Teams Transcript (VTT) in Your Browser | Purplelink</title>
+    <meta name="description" content="Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text without cue numbers or timestamps. Free, and the file never leaves your browser.">
+    <link rel="canonical" href="https://purplelink.llc/tools/transcript-cleaner/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Clean a Zoom or Teams transcript (VTT), free">
+    <meta property="og:description" content="Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text. Free, in your browser, nothing uploaded.">
+    <meta property="og:url" content="https://purplelink.llc/tools/transcript-cleaner/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/transcript-cleaner.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Clean a Zoom or Teams transcript (VTT), free">
+    <meta name="twitter:description" content="Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text. Free, in your browser, nothing uploaded.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/transcript-cleaner.png">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Transcript Cleaner",
+      "url": "https://purplelink.llc/tools/transcript-cleaner/",
+      "description": "Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text without cue numbers or timestamps. Free, and the file never leaves your browser.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "featureList": [
+        "Reads .vtt, .srt and .txt files",
+        "Removes the WEBVTT header, cue numbers and timestamps",
+        "Joins consecutive lines by the same speaker",
+        "Keeps speaker names and a time per turn if you choose",
+        "Exports plain text and Markdown",
+        "Runs in the browser; files are never uploaded"
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Clean a Zoom or Teams transcript",
+      "description": "Turn a .vtt, .srt or labelled .txt transcript into readable text in your browser, without uploading the file.",
+      "totalTime": "PT5M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Get the transcript file",
+          "text": "Download the transcript as a .vtt file. Zoom saves the transcript of a cloud recording as .vtt, and Microsoft Teams lets you download a meeting transcript as .vtt. An .srt file or a .txt file with speaker labels works too."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Add the file",
+          "text": "Drop it on the page or choose it. You can add several files at once."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Pick the options",
+          "text": "Keep speaker names, put a time before each turn, join each turn into one paragraph, and remove bracketed sound tags such as [inaudible]. Changing an option updates every file at once."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Check the preview",
+          "text": "Read a few turns and compare them with your original file. The cleaner does not correct the words, so any error in the transcript is still there."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Copy or download",
+          "text": "Copy the text, or download it as a .txt or .md file."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my file uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The page reads the file with your browser and cleans it in a background worker on your device. The meter on the page counts the requests the page makes while it works. The only one is an anonymous usage count that names the file type (vtt, srt or text), never the file name or any of its text."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it change the words?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It does not summarise, correct, translate or reword anything. Spelling, grammar, false starts and filler words stay as they are. The changes to the text itself are small: line breaks inside a cue become spaces, repeated spaces become one, the HTML codes for ampersand, less-than, greater-than and non-breaking space that VTT files use are turned back into characters, and caption tags such as italics are removed. If you tick the sound tag option, a fixed list of bracketed tags is removed too."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which files and layouts can it read?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It reads .vtt (WebVTT), .srt (SubRip) and .txt files. In a VTT or SRT file, speaker names are taken from voice tags such as <v Jane Doe> (the layout Microsoft Teams uses) or from a name and colon at the start of each cue, such as Jane Doe: (the layout Zoom uses). A .txt file can use Name: lines, or a line such as [Jane Doe] 00:00:05 above each turn. It was built and tested on sample files written from the published formats, not on real exports. If a real Zoom or Teams file comes out wrong, send the first few lines with the names changed to ben@purplelink.llc."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does it decide who is speaking?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Voice tags are taken as written. For Name: labels, the start of a line counts as a speaker only when at least half of the cues start with a label, or when at least two different capitalised names each appear three times or more. Ordinary text such as Note: see page 4 is not mistaken for a speaker. A cue with no name stays with the speaker above it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens when people talk over each other?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cues stay in the order they appear in the file. If one cue holds two voice tags, or two lines with different names, each speaker gets their own turn. If a cue starts before the previous speaker's cue has ended, the result says how many times that happened."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it do when there are no speaker names?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A pause of more than three seconds between cues starts a new paragraph. In a text file with no times, the blank lines you already have are kept as paragraph breaks."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which sound tags are removed?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only when you tick the option, and only a fixed list in square or round brackets: inaudible, unintelligible, crosstalk, laughter, applause, music, silence, pause, noise and a few similar words, with or without a time inside the brackets. Any other bracketed text, such as [NAME] or [sic], stays."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it remove names or other personal details?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It only removes the structure of the file. Names, places and other details in what people said are left as they are, so check the text before you share it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How large a file can it handle?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Up to 50 MB per file. A two-hour interview is usually under 1 MB. Files are cleaned in a background worker, so the page stays usable. The preview shows the first 200,000 characters. Copy and the downloads include everything."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Transcript Cleaner",
+          "item": "https://purplelink.llc/tools/transcript-cleaner/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=cf35a6634a">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=95cfec31bc" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <link rel="stylesheet" href="/tools/transcript-cleaner/transcript-cleaner.css?v=931dd60339">
+    <link rel="prefetch" as="script" data-tc-worker href="/tools/transcript-cleaner/transcript-cleaner-worker.js?v=b91de4093d">
+    <script src="/tools/transcript-cleaner/transcript-cleaner-core.js?v=618b278e84" defer></script>
+    <script src="/tools/transcript-cleaner/transcript-cleaner.js?v=3183c83f3d" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Transcript Cleaner</h1>
+        <p>Turn a Zoom or Microsoft Teams transcript (.vtt), a subtitle file (.srt) or a text file with speaker labels into plain text you can read and quote. The WEBVTT header, cue numbers and timestamps are removed, and each speaker's lines are joined into one paragraph. It does not summarise, correct or reword anything. <strong>Everything runs in your browser. Your file is never uploaded.</strong></p>
+      </div>
+
+      <figure class="tc-demo">
+        <div class="tc-demo-grid">
+          <div class="tc-demo-pane">
+            <p class="tc-demo-title">A Zoom-style .vtt file</p>
+            <pre>WEBVTT
+
+1
+00:00:03.120 --&gt; 00:00:06.480
+Jane Doe: Thanks for making time.
+
+2
+00:00:07.000 --&gt; 00:00:09.400
+Jane Doe: Let's start with the survey.
+
+3
+00:00:09.900 --&gt; 00:00:12.000
+Alex Sample: Sure.</pre>
+          </div>
+          <div class="tc-demo-pane">
+            <p class="tc-demo-title">After cleaning</p>
+            <pre>Jane Doe: Thanks for making time. Let's start with the survey.
+
+Alex Sample: Sure.</pre>
+          </div>
+        </div>
+        <figcaption>A made-up example, with speaker names kept and timestamps off.</figcaption>
+      </figure>
+
+      <div class="tool-app tc-app">
+        <noscript><p class="tc-error">This tool needs JavaScript. It runs in your browser and sends nothing anywhere.</p></noscript>
+        <div class="tc-drop" id="tc-drop">
+          <svg class="tc-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+            <path d="M12 5h17l9 9v29H12z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M29 5v9h9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M17 23h14M17 29h14M17 35h9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+          <p class="tc-drop-label"><strong>Drop .vtt, .srt or .txt files here</strong></p>
+          <div class="tc-pick">
+            <button type="button" class="btn btn-primary tc-small" id="tc-choose">Choose files</button>
+          </div>
+          <input id="tc-file" class="sr-only" type="file" multiple accept=".vtt,.srt,.txt,.text" tabindex="-1" aria-label="Transcript files">
+          <p class="tc-hint">You can add several files at once, up to 50 MB each.</p>
+        </div>
+
+        <details class="tc-opts" open>
+          <summary>Options</summary>
+          <div class="tc-opts-body">
+            <label class="tc-opt"><input type="checkbox" id="tc-opt-speakers" checked><span>Keep speaker names</span><span class="tc-opt-hint">Turns stay separate when this is off.</span></label>
+            <label class="tc-opt"><input type="checkbox" id="tc-opt-times"><span>Put a time before each turn</span><span class="tc-opt-hint">Shown as [00:01:35]. Needs a file with times.</span></label>
+            <label class="tc-opt"><input type="checkbox" id="tc-opt-para" checked><span>Join each turn into one paragraph</span><span class="tc-opt-hint">When this is off, each cue keeps its own line.</span></label>
+            <label class="tc-opt"><input type="checkbox" id="tc-opt-tags"><span>Remove bracketed sound tags</span><span class="tc-opt-hint">A fixed list such as [inaudible], [crosstalk] and [laughter]. Other bracketed text, such as [NAME], stays.</span></label>
+          </div>
+        </details>
+
+        <details class="tc-paste">
+          <summary>Paste text instead</summary>
+          <div class="tc-paste-body">
+            <label for="tc-paste-in">Transcript text</label>
+            <textarea id="tc-paste-in" spellcheck="false" placeholder="Paste the contents of a .vtt, .srt or .txt file"></textarea>
+            <div><button type="button" class="btn btn-ghost tc-small" id="tc-paste-go">Clean pasted text</button></div>
+          </div>
+        </details>
+
+        <p class="tc-net" id="tc-net"><span class="tc-net-dot" aria-hidden="true"></span><span id="tc-net-text">Bytes of your text sent anywhere: 0</span></p>
+        <p class="tc-status" id="tc-status" role="status" aria-live="polite"></p>
+
+        <fieldset class="tc-view" id="tc-view" hidden>
+          <legend>Show as</legend>
+          <label><input type="radio" name="tc-view" value="txt" checked> Plain text</label>
+          <label><input type="radio" name="tc-view" value="md"> Markdown</label>
+        </fieldset>
+
+        <ul class="tc-list" id="tc-list"></ul>
+        <div class="tc-bar" id="tc-bar" hidden>
+          <button type="button" class="btn btn-ghost" id="tc-clear">Clear all</button>
+        </div>
+
+        <p class="tool-privacy">Files are read and cleaned in this tab, in a background worker. The only request the page makes is an anonymous usage count that names the file type. Your files and text are never sent anywhere.</p>
+      </div>
+
+      <section class="tc-sections" aria-labelledby="tc-changes-h">
+        <h2 id="tc-changes-h">What it changes and what it leaves alone</h2>
+        <ul class="tc-list-plain">
+          <li><strong>Removed.</strong> The WEBVTT header, NOTE and STYLE blocks, cue numbers and ids, start and end times, and caption tags such as italics and voice spans. The speaker name is taken from the cue and, if you keep names, written once before each turn.</li>
+          <li><strong>Joined.</strong> Lines inside a cue become one line. Consecutive cues from the same speaker become one turn. A cue with no name stays with the speaker above it. When a file has no speaker names, a pause of more than 3 seconds starts a new paragraph.</li>
+          <li><strong>Left as written.</strong> Every word, including spelling mistakes, false starts, repeated words and filler such as "um". Nothing is summarised, corrected, translated or reworded. The few changes to the text itself are listed under "Does it change the words?" below.</li>
+        </ul>
+      </section>
+
+      <section class="tool-howto">
+        <h2>How to clean a Zoom or Teams transcript</h2>
+        <ol>
+          <li><strong>Get the transcript file.</strong> Download the transcript as a .vtt file. Zoom saves the transcript of a cloud recording as .vtt, and Microsoft Teams lets you download a meeting transcript as .vtt. An .srt file or a .txt file with speaker labels works too.</li>
+          <li><strong>Add the file.</strong> Drop it on the page or choose it. You can add several files at once.</li>
+          <li><strong>Pick the options.</strong> Keep speaker names, put a time before each turn, join each turn into one paragraph, and remove bracketed sound tags such as [inaudible]. Changing an option updates every file at once.</li>
+          <li><strong>Check the preview.</strong> Read a few turns and compare them with your original file. The cleaner does not correct the words, so any error in the transcript is still there.</li>
+          <li><strong>Copy or download.</strong> Copy the text, or download it as a .txt or .md file.</li>
+        </ol>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Is my file uploaded?</summary><div class="faq-body">No. The page reads the file with your browser and cleans it in a background worker on your device. The meter on the page counts the requests the page makes while it works. The only one is an anonymous usage count that names the file type (vtt, srt or text), never the file name or any of its text.</div></details>
+        <details><summary>Does it change the words?</summary><div class="faq-body">No. It does not summarise, correct, translate or reword anything. Spelling, grammar, false starts and filler words stay as they are. The changes to the text itself are small: line breaks inside a cue become spaces, repeated spaces become one, the HTML codes for ampersand, less-than, greater-than and non-breaking space that VTT files use are turned back into characters, and caption tags such as italics are removed. If you tick the sound tag option, a fixed list of bracketed tags is removed too.</div></details>
+        <details><summary>Which files and layouts can it read?</summary><div class="faq-body">It reads .vtt (WebVTT), .srt (SubRip) and .txt files. In a VTT or SRT file, speaker names are taken from voice tags such as &lt;v Jane Doe&gt; (the layout Microsoft Teams uses) or from a name and colon at the start of each cue, such as Jane Doe: (the layout Zoom uses). A .txt file can use Name: lines, or a line such as [Jane Doe] 00:00:05 above each turn. It was built and tested on sample files written from the published formats, not on real exports. If a real Zoom or Teams file comes out wrong, send the first few lines with the names changed to ben@purplelink.llc.</div></details>
+        <details><summary>How does it decide who is speaking?</summary><div class="faq-body">Voice tags are taken as written. For Name: labels, the start of a line counts as a speaker only when at least half of the cues start with a label, or when at least two different capitalised names each appear three times or more. Ordinary text such as Note: see page 4 is not mistaken for a speaker. A cue with no name stays with the speaker above it.</div></details>
+        <details><summary>What happens when people talk over each other?</summary><div class="faq-body">Cues stay in the order they appear in the file. If one cue holds two voice tags, or two lines with different names, each speaker gets their own turn. If a cue starts before the previous speaker's cue has ended, the result says how many times that happened.</div></details>
+        <details><summary>What does it do when there are no speaker names?</summary><div class="faq-body">A pause of more than three seconds between cues starts a new paragraph. In a text file with no times, the blank lines you already have are kept as paragraph breaks.</div></details>
+        <details><summary>Which sound tags are removed?</summary><div class="faq-body">Only when you tick the option, and only a fixed list in square or round brackets: inaudible, unintelligible, crosstalk, laughter, applause, music, silence, pause, noise and a few similar words, with or without a time inside the brackets. Any other bracketed text, such as [NAME] or [sic], stays.</div></details>
+        <details><summary>Does it remove names or other personal details?</summary><div class="faq-body">No. It only removes the structure of the file. Names, places and other details in what people said are left as they are, so check the text before you share it.</div></details>
+        <details><summary>How large a file can it handle?</summary><div class="faq-body">Up to 50 MB per file. A two-hour interview is usually under 1 MB. Files are cleaned in a background worker, so the page stays usable. The preview shows the first 200,000 characters. Copy and the downloads include everything.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/word-counter/">Word Counter</a></li>
+          <li><a href="/tools/file-to-markdown/">File to Markdown</a></li>
+          <li><a href="/tools/metadata-cleaner/">Metadata Cleaner</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js?v=3355638b88" defer></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+WEBVTT
+
+NOTE Synthetic sample written for tests from the documented WebVTT voice-span format.
+
+7b1c0e5a-3b9c-4d6e-8d2a-0123456789ab/10-0
+00:00:00.000 --> 00:00:04.560
+<v Jane Doe>Thanks for making time today.</v>
+
+7b1c0e5a-3b9c-4d6e-8d2a-0123456789ab/11-0
+00:00:04.560 --> 00:00:09.120
+<v Alex Sample>Sure. I joined in 2021 &amp; started on the data side.</v>
+
+7b1c0e5a-3b9c-4d6e-8d2a-0123456789ab/12-0
+00:00:09.120 --> 00:00:12.000
+<v Alex Sample>Then I moved to the survey team,
+which was a bigger change than I expected.</v>
+
+7b1c0e5a-3b9c-4d6e-8d2a-0123456789ab/13-0
+00:00:12.000 --> 00:00:14.800
+<v Jane Doe>Was that <i>your</i> choice?</v>
+
+7b1c0e5a-3b9c-4d6e-8d2a-0123456789ab/14-0
+00:00:14.800 --> 00:00:16.000
+<v Alex Sample>Partly. 5 &lt; 6 hires left, so yes.</v>

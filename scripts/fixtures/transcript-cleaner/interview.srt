@@ -1,0 +1,19 @@
+1
+00:00:02,000 --> 00:00:05,000
+Interviewer: Tell me about the first week.
+
+2
+00:00:05,500 --> 00:00:08,000
+Participant: It was slow at first.
+
+3
+00:00:08,200 --> 00:00:11,000
+Nobody had set up my account yet.
+
+4
+00:00:11,500 --> 00:00:13,000
+Interviewer: And then?
+
+5
+00:00:13,200 --> 00:00:16,000
+Participant: Then it got busy.
