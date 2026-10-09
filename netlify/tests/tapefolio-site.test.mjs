@@ -725,7 +725,7 @@ test("the promo video is a poster that loads the YouTube embed on click, the way
   assert.equal(video.embedUrl, "https://www.youtube-nocookie.com/embed/b5iFfo1E_lY");
   assert.equal(video.contentUrl, "https://www.youtube.com/watch?v=b5iFfo1E_lY");
   assert.equal(video.thumbnailUrl, "https://purplelink.llc/assets/video/tapefolio-poster.webp");
-  assert.match(video.uploadDate, /^\d{4}-\d{2}-\d{2}$/);
+  assert.match(video.uploadDate, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:[+-]\d{2}:\d{2}|Z)$/);
   assert.match(video.description, /invented interview read by computer voices/);
   // The same site machinery Keyfeel uses: motion.js builds the embed, and the CSP already allows the privacy-enhanced domain.
   assert.match(read("motion.js"), /youtube-nocookie\.com\/embed\//);
