@@ -1,0 +1,20 @@
+1
+00:00:01,000 --> 00:00:03,500
+<i>Welcome back.</i> Today we look at
+how the survey was built.
+
+2
+00:00:03,600 --> 00:00:06,000
+{\an8}The first version had forty questions.
+
+3
+00:00:12,000 --> 00:00:14,200
+After the pilot we cut it to twenty-two.
+
+4
+00:00:14,300 --> 00:00:16,000
+Note: that number is from the pilot only.
+
+5
+00:00:16,100 --> 00:00:18,000
+http://example.org: the form is still online.

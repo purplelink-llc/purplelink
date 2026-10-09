@@ -2630,6 +2630,10 @@ Merge, split, and compress PDFs. Merge and split run in your browser.
 
 Remove author names, GPS and edit history from photos, PDFs, Office files and video, or cover parts of a picture. Nothing is uploaded.
 
+### Transcript Cleaner
+
+Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text, with speaker names kept if you want them. Nothing is uploaded.
+
 ### Word Counter
 
 Live word, character, sentence, and reading-time stats in your browser.
