@@ -1,4 +1,5 @@
 import asyncio
+import pytest
 import sys
 from pathlib import Path
 BACKEND = Path(__file__).resolve().parent.parent
@@ -377,6 +378,7 @@ def test_the_output_cap_is_room_for_eight_verdicts_and_the_model_is_configurable
 
 
 def test_a_truncated_batch_is_retried_in_halves_instead_of_blanking_every_item(monkeypatch):
+    monkeypatch.setattr(ca, "VERIFY_MODEL", ca.ASSESS_MODEL)   # these tests are about the retry, not the cascade
     calls = []
 
     async def _fake(client, system, user_content, max_tokens, **k):
@@ -394,6 +396,7 @@ def test_a_truncated_batch_is_retried_in_halves_instead_of_blanking_every_item(m
 
 
 def test_only_the_missing_items_are_asked_again(monkeypatch):
+    monkeypatch.setattr(ca, "VERIFY_MODEL", ca.ASSESS_MODEL)   # these tests are about the retry, not the cascade
     calls = []
 
     async def _fake(client, system, user_content, max_tokens, **k):
@@ -416,3 +419,60 @@ def test_a_batch_that_keeps_failing_ends_as_source_unavailable_without_raising(m
     monkeypatch.setattr(ca, "_anthropic_message", _boom)
     findings = asyncio.run(ca.assess_claims(object(), _pairs(3)))
     assert [f.verdict for f in findings] == ["Source unavailable"] * 3
+
+
+# ---- the Haiku-first cascade -----------------------------------------------------------------
+
+def _cascade(monkeypatch, first, second, n=4):
+    """first / second: functions (n_items_in_call, call_index) -> list of verdicts, one per item asked about."""
+    calls = []
+
+    async def _fake(client, system, user_content, max_tokens, **k):
+        model = k.get("model")
+        count = user_content[0]["text"].count("CLAIM:")
+        calls.append((model, count))
+        verdicts = (first if model == ca.ASSESS_MODEL else second)(count, len(calls))
+        return "[" + ",".join(f'{{"index": {i}, "verdict": "{v}", "rationale": "r"}}' for i, v in enumerate(verdicts)) + "]"
+
+    monkeypatch.setattr(ca, "_anthropic_message", _fake)
+    findings = asyncio.run(ca.assess_claims(object(), _pairs(n)))
+    return calls, [f.verdict for f in findings]
+
+
+def test_the_default_cascade_is_haiku_then_opus():
+    assert ca.ASSESS_MODEL == "claude-haiku-5-5" and ca.VERIFY_MODEL == "claude-opus-5-5"
+
+
+def test_when_every_claim_is_supported_only_the_cheap_model_is_called(monkeypatch):
+    calls, verdicts = _cascade(monkeypatch, lambda n, c: ["Supported"] * n, lambda n, c: pytest.fail("verifier called"))
+    assert calls == [("claude-haiku-5-5", 4)] and verdicts == ["Supported"] * 4
+
+
+def test_only_flagged_items_go_to_the_stronger_model_and_its_verdict_wins(monkeypatch):
+    def first(n, c):
+        return ["Supported", "Contradicted", "Supported", "Not supported by abstract"]
+
+    def second(n, c):
+        assert n == 2
+        return ["Supported", "Contradicted"]      # the verifier clears the first flag, confirms the second
+
+    calls, verdicts = _cascade(monkeypatch, first, second)
+    assert calls == [("claude-haiku-5-5", 4), ("claude-opus-5-5", 2)]
+    assert verdicts == ["Supported", "Supported", "Supported", "Contradicted"]
+
+
+def test_if_the_verifier_fails_the_first_verdict_stands(monkeypatch):
+    async def _fake(client, system, user_content, max_tokens, **k):
+        if k.get("model") == ca.VERIFY_MODEL:
+            raise RuntimeError("refusal: bio")
+        return '[{"index": 0, "verdict": "Contradicted", "rationale": "r"}, {"index": 1, "verdict": "Supported", "rationale": "r"}]'
+
+    monkeypatch.setattr(ca, "_anthropic_message", _fake)
+    findings = asyncio.run(ca.assess_claims(object(), _pairs(2)))
+    assert [f.verdict for f in findings] == ["Contradicted", "Supported"]
+
+
+def test_the_second_pass_is_off_when_both_models_are_the_same(monkeypatch):
+    monkeypatch.setattr(ca, "VERIFY_MODEL", ca.ASSESS_MODEL)
+    calls, verdicts = _cascade(monkeypatch, lambda n, c: ["Contradicted"] * n, lambda n, c: pytest.fail("verifier called"), n=3)
+    assert len(calls) == 1 and verdicts == ["Contradicted"] * 3

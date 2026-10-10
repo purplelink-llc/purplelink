@@ -22,7 +22,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from latextools import safety as _safety
-from .papercheck import DEFAULT_MODEL, _anthropic_message, _parse_json_findings
+from .papercheck import _anthropic_message, _parse_json_findings
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +30,17 @@ MAX_AUDIT_PAIRS = 40
 ASSESS_BATCH_SIZE = 8
 # Eight verdicts with a quote and a rationale each run 1,100 to 1,500+ output tokens on the 5.x models; a
 # 1,500 cap truncated most batches on 2026-10-09 (the JSON then failed to parse and every item in the batch
-# became "Source unavailable"). Set CITATION_AUDIT_MODEL to run this layer on a cheaper model, for example
-# claude-haiku-5-5, which benchmarked at about a hundredth of Fable's cost on this task.
+# became "Source unavailable"), so the cap is 4,000.
+#
+# Cascade (benchmarked 2026-10-09 on 144 constructed pairs): Haiku 5.5 judges every citation at about $0.02 per
+# 100 pairs (83% accuracy, 2.8% of supported claims wrongly flagged, every real problem flagged). Anything it
+# does not call "Supported" is the only thing the report shows, so those items are re-judged by Opus 5.5
+# ($0.73 per 100 pairs, 89%, no refusals) and the stronger verdict wins. Fable, the old default, cost $2.18 per
+# 100 pairs and refused about a third of batches on biology content. Override with CITATION_AUDIT_MODEL and
+# CITATION_AUDIT_VERIFY_MODEL; setting both to the same model turns the second pass off.
 ASSESS_MAX_TOKENS = 4000
-ASSESS_MODEL = os.environ.get("CITATION_AUDIT_MODEL", DEFAULT_MODEL)
+ASSESS_MODEL = os.environ.get("CITATION_AUDIT_MODEL", "claude-haiku-5-5")
+VERIFY_MODEL = os.environ.get("CITATION_AUDIT_VERIFY_MODEL", "claude-opus-5-5")
 VERDICTS = (
     "Supported",
     "Partially supported",
@@ -359,7 +366,7 @@ def _build_assess_prompt(batch: list) -> str:
     return "\n\n".join(lines)
 
 
-async def _assess_batch(client, batch: list, depth: int = 0) -> dict:
+async def _assess_batch(client, batch: list, depth: int = 0, model: Optional[str] = None) -> dict:
     """Verdict objects for one batch, keyed by index within the batch. Items that come back without a
     verdict (an unparseable or truncated answer, a refusal, an API error) are asked again once, in two
     smaller batches, so one bad response does not blank eight citations. Never raises."""
@@ -369,7 +376,7 @@ async def _assess_batch(client, batch: list, depth: int = 0) -> dict:
             system=_ASSESS_SYSTEM,
             user_content=[{"type": "text", "text": _build_assess_prompt(batch)}],
             max_tokens=ASSESS_MAX_TOKENS,
-            model=ASSESS_MODEL,
+            model=model or ASSESS_MODEL,
         )
         parsed = _parse_json_findings(raw)
         by_index = {int(o.get("index", -1)): o for o in parsed if isinstance(o, dict)}
@@ -381,9 +388,28 @@ async def _assess_batch(client, batch: list, depth: int = 0) -> dict:
         mid = (len(sub) + 1) // 2
         for offset, chunk in ((0, sub[:mid]), (mid, sub[mid:])):
             if chunk:
-                for j, o in (await _assess_batch(client, chunk, depth=1)).items():
+                for j, o in (await _assess_batch(client, chunk, depth=1, model=model)).items():
                     by_index[missing[offset + j]] = o
     return by_index
+
+
+async def _verify_flagged(client, batch: list, by_index: dict) -> dict:
+    """Second pass of the cascade: re-judge every item the first model did not call "Supported" with the
+    stronger model, and let that verdict replace the first. If the stronger model gives no verdict for an
+    item (error, refusal, truncation), the first model's verdict stands. No-op when both models are the same."""
+    if not VERIFY_MODEL or VERIFY_MODEL == ASSESS_MODEL:
+        return by_index
+    flagged = [i for i, o in by_index.items()
+               if isinstance(o, dict) and _clamp_verdict(o.get("verdict")) != "Supported" and 0 <= i < len(batch)]
+    if not flagged:
+        return by_index
+    sub = [batch[i] for i in flagged]
+    checked = await _assess_batch(client, sub, model=VERIFY_MODEL)
+    merged = dict(by_index)
+    for j, o in checked.items():
+        if 0 <= j < len(flagged):
+            merged[flagged[j]] = o
+    return merged
 
 
 async def assess_claims(client, pairs: list) -> list:
@@ -412,6 +438,7 @@ async def assess_claims(client, pairs: list) -> list:
     for start in range(0, len(assessable), ASSESS_BATCH_SIZE):
         batch = assessable[start:start + ASSESS_BATCH_SIZE]
         by_index = await _assess_batch(client, batch)
+        by_index = await _verify_flagged(client, batch, by_index)
         for i, (claim, src) in enumerate(batch):
             o = by_index.get(i)
             if o is None:
