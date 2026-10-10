@@ -602,11 +602,15 @@ def html_lifecycle_mtx_before_submit(*, unsubscribe_url: str, **_ignored) -> str
     checks that every entry resolves, and the
     <a href="https://purplelink.llc/tools/submission-checklist/?utm_source=email&amp;utm_campaign=mtx-d21" style="color: #6d28d9;">submission checklist</a>
     covers the rest.</li>
-    <li><strong>A reviewer's read.</strong> Paper Review ($9) puts the PDF in
-    front of four AI reviewers (methods, statistics, data integrity and an
-    editor), checks every reference against CrossRef, and quotes the
-    passages it questions. Results in minutes, no account, and the file is
-    deleted within a day.</li>
+    <li><strong>A reviewer's read.</strong> Start with the free preview on
+    the <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=mtx-d21#pr-preview-h" style="color: #6d28d9;">Paper Review page</a>:
+    upload the PDF or a Word file and it checks every reference against
+    CrossRef, flags any cited paper that has been retracted, and scans for
+    details that identify the authors. No account, nothing kept. The full
+    review ($9) adds AI reviewers on methods, statistics and data integrity,
+    a table pairing your central claims with the evidence offered for them,
+    and quotes of the passages it questions. Results in minutes; the
+    manuscript is deleted 30 minutes after you first open the result.</li>
   </ol>
   <p>
     <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=mtx-d21"

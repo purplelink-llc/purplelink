@@ -2513,3 +2513,12 @@ def test_the_source_note_goes_under_the_report_title():
     assert out.startswith("# Manuscript Review\n\n_Note: converted._\n\n## What's Working")
     assert backend_app._prepend_source_note("no title here\n", note).startswith(note + "\n\nno title here")
     assert backend_app._prepend_source_note("# Only a title", note) == "# Only a title\n\n_Note: converted._\n"
+
+
+def test_the_modertex_before_you_submit_email_points_at_the_free_preview_and_says_what_it_does():
+    from latextools import delivery
+    html = delivery.html_lifecycle_mtx_before_submit(unsubscribe_url="https://example.invalid/u")
+    assert "tools/paper-review/?utm_source=email&amp;utm_campaign=mtx-d21#pr-preview-h" in html
+    assert "retracted" in html and "Word file" in html
+    assert "30 minutes" in html                      # the retention wording matches the product page
+    assert "four AI reviewers" not in html
