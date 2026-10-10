@@ -713,7 +713,7 @@
     "overleaf-alternative-mac": "mt", "the-co-author-who-writes-in-word": "mt",
     "latex-track-changes": "mt", "compile-latex-project-to-pdf-online": "mt",
     "tikz-and-tables-without-the-syntax": "tikz",
-    "ai-paper-review-tools-compared": "pr", "paper-review": "pr", "use-paper-review-before-submitting": "pr",
+    "ai-paper-review-tools-compared": "pr", "retracted-papers-paper-review-test": "pr", "paper-review": "pr", "use-paper-review-before-submitting": "pr",
     "running-your-manuscript-through-paper-review": "pr", "get-feedback-on-a-paper-before-submitting": "pr",
     "methodology-problems-peer-reviewers-flag": "pr", "desk-reject-recovery": "pr",
     "reviewer-says-novelty-is-limited": "pr", "how-to-respond-to-reviewer-2": "pr",
