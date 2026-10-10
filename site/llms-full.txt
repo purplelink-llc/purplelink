@@ -1167,6 +1167,8 @@ Try it free for 7 days
 
 The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.1, released October 9, 2026. 43 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
 
+Comparing options? See Mac apps for transcription, text to speech and OCR compared.
+
 Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
 
 The review screen on a demo recording: an invented interview read by two computer voices. The draft is not perfect, and the first pass did not mark every identifier.
@@ -1388,7 +1390,7 @@ Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
 ← All products
 
 macOS
-Free app · optional Plus from $2.99 a month · v1.0.4 Beta
+Free app · optional Plus from $2.99 a month · v1.1.2 Beta
 
 # Vitae
 
@@ -1421,9 +1423,9 @@ Start from the CV you have. Vitae imports it from Word, PDF, RTF, ODT, or a web 
 
 Connect iCloud, Gmail, Outlook, Yahoo, Fastmail, or your university mail, read-only. Vitae recognizes messages from journal submission systems, reads them on your Mac, and proposes submission updates. You review each one before anything changes.
 
-### Collaborators & projects
+### Collaborators, projects & ideas
 
-Track coauthors, collaborators, and projects. Link people to papers, grants, and roles so your network stays navigable. Send any publication to Zotero in one click.
+Track coauthors, collaborators, and projects. Link people to papers, grants, and roles so your network stays navigable. Capture research ideas before they are projects: sort them on a board by stage, group them by type or author, plot them by impact against feasibility, or link them on a map, then make one a project with its authors in order. Send any publication to Zotero in one click.
 
 ### Local-first & private
 
@@ -1656,7 +1658,7 @@ Report by email, manuscript deleted. The report is emailed to you as a PDF. Purp
 
 ## Check your references first, free
 
-Upload the PDF to see how many of its references CrossRef can confirm, with up to three findings quoted from your manuscript. No payment, no account.
+Upload the PDF or Word file to see how many of its references CrossRef can confirm and whether any cited paper has been retracted, with up to three findings quoted from your manuscript. No payment, no account.
 
 Watch the tour
 
@@ -1790,7 +1792,7 @@ Reviewing a grant proposal instead of a paper? Grant Review is an idea for NSF a
 
 ## How your manuscript is handled
 
-- Analysis. The PDF is read in memory. To check figures and tables, pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.
+- Analysis. A Word file is first converted to PDF on our server, and the PDF is read in memory. To check figures and tables, pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.
 
 - Anthropic. The text and page images are sent to Anthropic's Claude API. Anthropic keeps API inputs for up to 30 days for abuse monitoring and does not train on them.
 
@@ -1854,7 +1856,7 @@ AI reviewers can be wrong. The output flags concerns with hedged language and qu
 
 What file format?
 
-PDF or Word (.docx) up to 20 MB. A Word file is converted to PDF before the review, so its layout differs from Word. If you're submitting LaTeX, compile to PDF first (our free LaTeX-to-PDF tool works).
+PDF or Word (.docx) up to 20 MB. A Word file is converted to PDF before the review, so fonts, page breaks and figure placement differ from Word and a picture the converter cannot place is left out; exporting a PDF from Word keeps your own layout. If you're submitting LaTeX, compile to PDF first (our free LaTeX-to-PDF tool works).
 
 What about clinical or patient data?
 
@@ -5755,6 +5757,8 @@ If the material must not leave your machine, yes. Ollama and LM Studio run open 
 
 - Can you use AI to check your own manuscript? What publishers allow.
 
+- Best Mac apps for transcription, text to speech and OCR: if the text you will paste into a chat comes from a recording or a scan.
+
 - Purplelink's privacy page, the Mac Suite and all guides.
 
 From the team behind these tools
@@ -7332,6 +7336,190 @@ Yes. Keyfeel is Purplelink's Mac menu-bar app: free for 7 days, then $9.99 once 
 - Use Mechvibes sound packs on a Mac: which packs import, how, and what does not carry over.
 
 - Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what the permission a keyboard sound app asks for allows.
+
+- Purplelink's privacy page, all products and all guides.
+
+
+---
+
+Source: https://purplelink.llc/guides/best-mac-apps-transcription-text-to-speech-ocr/
+Title: Best Mac apps for transcription, text to speech and OCR (2026) | Purplelink
+
+← All guides
+
+Comparison
+
+# Best Mac apps for transcription, text to speech and OCR (2026)
+
+By Benjamin Ampel · October 9, 2026
+
+Apps that turn speech into text, text into speech, and photos or scans into text, with the price of each, whether it runs on your Mac or in the cloud, and where it is the wrong choice.
+
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Tapefolio. I have kept its entry to what it does today, and I have not ranked it above anything. It is new, and where another app is the better choice I say so.
+
+Prices checked on October 9, 2026, on each vendor's own page. I did not test the other apps. Prices change, and where a page did not say something I write "not stated" instead of guessing.
+
+## Start with where the file must stay
+
+Ask one question before you compare prices: must the file stay on your Mac? Ethics boards (IRBs, institutional review boards), client contracts and confidentiality agreements can bar cloud tools for a given file, whatever they cost. In the tables, "cloud" means the file is sent to the vendor's servers. "On device" is the vendor's own statement; I have not audited any of them.
+
+## Speech to text and transcripts
+
+AppPriceWhere it runsSpeaker labels
+
+Apple Voice MemosFree, built in; not available in every country or regionBuilt in; Apple's page does not say where it is processedNot mentioned by Apple
+
+MacWhisperFree tier; Pro €64 onceOn device; cloud models optional with your own API keysListed as a feature; plan not stated
+
+Aiko$24 onceOn deviceNo; the developer says it is not supported yet
+
+BuzzFree, MIT licenseOn device, offline; current builds are Apple silicon onlyListed as a feature
+
+OtterFree Basic (300 minutes a month); Pro $8.33 a month billed yearly ($16.99 monthly); Business $19.99 billed yearlyCloudYes
+
+DescriptFree (1 hour); Hobbyist $16 a month billed yearly ($24 monthly)CloudYes
+
+Happy ScribeBasic $8.50 a month on yearly billing (120 minutes a month); Pro $19 (600 minutes); human transcripts from $2.00 a minuteCloudYes
+
+Sonix$10 an hour pay as you go; Core $25 a month with 5 hoursCloudListed as a feature
+
+RevHuman transcripts $1.99 a minute; free AI tier of 45 minutes a monthCloudNot stated on its pricing page
+
+Tapefolio (mine)$29.99 once; 7-day trialOn device; needs macOS 26 and Apple siliconYes, on device
+
+Sources: Apple Voice Memos, macwhisper.com, sindresorhus.com/aiko, github.com/chidiwilliams/buzz, otter.ai/pricing, descript.com/pricing, happyscribe.com/pricing, sonix.ai/pricing, rev.com/pricing.
+
+Match the app to the job:
+
+- The recording must stay on your Mac: MacWhisper, Aiko or Buzz, or Tapefolio below. Buzz is free and open source.
+
+- You edit transcripts like a document: Descript, which edits the audio by editing its text.
+
+- A person must check the words: Rev or Happy Scribe, which both sell human transcripts.
+
+- You transcribe a few hours a year: Sonix, pay as you go.
+
+Every automatic transcript needs a listen-through. Whisper-based tools (the open speech model behind several apps above) can invent words, and their developers link this to pauses, background sounds and music [Gigazine summary]. A university library guide to running Whisper locally says the output may need review and editing, particularly with technical terms or several speakers [SMU Libraries]. Plan a correction pass, and quote only text you have checked against the audio.
+
+## Text to speech
+
+AppPriceWhere it runs
+
+Apple Spoken ContentFree, built inBuilt in
+
+Piper - Neural TTSFree in the App StoreOn device, per its listing; you download voices inside the app
+
+NaturalReaderFree tier; one-time $99.50 (Personal), $129.50 (Professional) or $199.50 (Ultimate)Desktop software with a Mac version; its page does not say whether it works offline
+
+SpeechifyFree tier; Premium $29 a month billed monthlyCloud service; Mac app offered
+
+ElevenReaderFree 10 hours a month; Ultra $11 a month or $99 a yearOnline service; iOS, Android and web, no Mac app listed
+
+VoiceboxFree, MIT licenseLocal; Apple silicon and Intel
+
+Sources: Apple Spoken Content, Piper - Neural TTS, naturalreaders.com, speechify.com/pricing, elevenreader.io, github.com/jamiepine/voicebox.
+
+Match the app to the job:
+
+- You want free and private: Apple Spoken Content. Turn on Speak selection in Read & Speak settings, select text and press Option-Escape. Piper adds more natural voices to the system, and you download them inside its app.
+
+- You read long PDFs in a dedicated reader: Speechify or ElevenReader. ElevenReader lists no Mac app.
+
+- You want no subscription: NaturalReader sells one-time licenses.
+
+- You want audio you can keep and edit locally: Voicebox, which takes more setup than a reader.
+
+## OCR for scans and photos
+
+OCR (optical character recognition) reads the letters in an image and returns text.
+
+AppPriceBatch of many files
+
+Apple Live Text (Preview)FreeNo, one image or PDF at a time
+
+TextSniper$7.99 once for one Mac, $9.99 for three; its page also shows a $6.99 buttonNo, it captures text from a screen area
+
+macOCRFree, MIT licenseNo, one PDF at a time; needs OCRmyPDF and Tesseract, about 500 MB
+
+ABBYY FineReader PDF for Mac$69 a year, or $186 for three yearsNot stated on its pricing page
+
+Adobe Acrobat Pro$19.99 a month on an annual plan billed monthly; $29.99 month to monthNot stated on its pricing page
+
+Tapefolio (mine)$29.99 once; 7-day trialYes, one file or a whole folder
+
+Sources: Apple Live Text, textsniper.app, github.com/ezgranet/macocr, pdf.abbyy.com/pricing, adobe.com/acrobat/pricing.
+
+Match the app to the job:
+
+- You need one snippet from a screenshot: Live Text (Apple's built-in text recognition) or TextSniper.
+
+- You have one PDF with a poor text layer and no budget: macOCR, which runs OCR on every page and always writes PDF/A.
+
+- You have many scans: ask ABBYY or Adobe about batch support before you buy, since neither pricing page says, or use Tapefolio below.
+
+- You already pay for a PDF suite: Acrobat Pro lists turning scans into editable PDFs.
+
+Google Drive can also convert a photo or PDF to text, but it uploads the file and, per Google's help page, the file should be 2 MB or smaller. Neither suits a confidential scan.
+
+## Where Tapefolio fits
+
+Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $54.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.0.1, released October 9, 2026, so it is the newest and least proven app here. As of that date it does the following:
+
+- Transcribes on your Mac with the time of every word, from audio files or from the microphone inside the app.
+
+- Speech model: the download is about 40 MB and includes no speech model. Until you download one, it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet (English), Whisper base (English) and Whisper large-v3 turbo (many languages). Settings can delete any of them.
+
+- Labels speakers on your Mac. You name each speaker once and merge labels that are one person in the review screen, which plays the audio beside the text.
+
+- Remembers a voice only if you ask it to. Speaker memory is off until you turn it on for a project and record a consent note. Voices are stored encrypted on your Mac, the app only suggests matches for you to confirm, and you can delete them.
+
+- Replaces identifiers with codes: names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth. You review each one, and the key file that maps the codes back is saved separately. It misses some, so you read the result.
+
+- Reads scans in batches: photos, scans and PDFs, one file or a folder, into a searchable PDF, text, Markdown, Word, JSON or CSV.
+
+- Exports transcripts to Word, HTML, Markdown, text, SRT, VTT and JSON, plus a timestamped Word file for MAXQDA.
+
+What it does not do. It will mishear words and mislabel speakers. It does not anonymize a transcript or make a study compliant, and it cannot tell when a detail identifies someone only in context. It does not read text aloud; it has no text to speech. It has been measured on generated OCR test files only, not on handwriting or phone photos, and on English meeting audio only. It has no Intel, Windows, iPhone or iPad version.
+
+The measurements, from its page. On two meetings from the AMI corpus, the word error rate was between 21% and 29% for Apple's engine, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for Whisper base. Word accuracy on a real recorded two-person conversation has not been measured. OCR on nine generated test files (11 pages) had a word error rate of 1.5%. These are small checks on one machine, so treat every transcript as a draft.
+
+Transcription, speaker labels, identifier removal and OCR run on the Mac, and nothing from your files is uploaded. The internet is used for the optional model downloads, an update check, and macOS itself if you use Apple's speech recognition. Whether that meets your ethics board's rules is for you and the board to decide.
+
+If a free tool above does the job, use that. Buzz or MacWhisper's free tier handle a transcript that must stay on your Mac, and Live Text handles a single image. Tapefolio is for the case where you want speaker labels, identifier replacement, a review screen and batch OCR in one place, and you have a Mac that can run it.
+
+## Choose in one minute
+
+- Decide whether the file must stay on your Mac, and if it must, consider on-device apps only.
+
+- Count the files, and use the built-in tools for one file and a batch tool for hundreds.
+
+- Decide who will rely on the exact words, and if anyone will, pay for a human check or listen back yourself.
+
+## Frequently asked
+
+### Which Mac transcription apps keep the recording on my Mac?
+
+MacWhisper, Aiko, Buzz and Tapefolio (which I make) say they transcribe on the device. MacWhisper can also be pointed at cloud models with your own API keys, so check its settings. Otter, Descript, Happy Scribe, Sonix and Rev are cloud services. Whether an on-device app meets your ethics board's rules is for you and the board to decide.
+
+### Is there a free way to read text aloud on a Mac?
+
+Yes. Turn on Speak selection in Read & Speak settings, select text and press Option-Escape. Piper - Neural TTS is a free App Store app that adds more natural voices to the system, and Voicebox is free and open source.
+
+### Does Tapefolio read text aloud?
+
+No. Tapefolio transcribes speech and reads scans into text. It has no text to speech. For that, use one of the apps in the text to speech table.
+
+### Can OCR on a Mac be done without uploading the file?
+
+Yes. Live Text in Preview and TextSniper work on a single image, macOCR handles one PDF at a time, and Tapefolio reads a whole folder, all on the Mac. Google Drive's image-to-text conversion uploads the file.
+
+## Related guides
+
+- Tapefolio: the Purplelink Mac app described above.
+
+- Best tools to redact personal information before using ChatGPT: if a transcript will go into an AI chat.
+
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what the permissions an app asks for allow.
 
 - Purplelink's privacy page, all products and all guides.
 

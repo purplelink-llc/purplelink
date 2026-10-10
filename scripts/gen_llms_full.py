@@ -62,6 +62,7 @@ PAGES = [
     "guides/best-travel-map-apps-for-iphone/",
     "guides/best-disk-space-analyzer-for-mac/",
     "guides/best-keyboard-sound-apps-for-mac/",
+    "guides/best-mac-apps-transcription-text-to-speech-ocr/",
     "guides/show-free-disk-space-mac-menu-bar/",
     "guides/mechvibes-sound-packs-on-mac/",
     "guides/mac-privacy-permissions-explained/",
