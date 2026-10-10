@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Paper Review on 23 retracted papers: what it caught and missed | Purplelink</title>
-    <meta name="description" content="I ran Paper Review on 23 open-access papers later retracted for honest errors. It pointed at the documented problem in 14. How the test worked, what it missed, and every paper.">
+    <meta name="description" content="I ran Paper Review on 23 open-access papers later retracted for honest errors. It pointed at the documented problem in 14. How the test worked and what it missed.">
     <link rel="canonical" href="https://purplelink.llc/guides/retracted-papers-paper-review-test/">
     <meta property="og:title" content="Does an AI paper review find what later gets a paper retracted? A test on 23 papers">
-    <meta property="og:description" content="I ran Paper Review on 23 open-access papers later retracted for honest errors. It pointed at the documented problem in 14. How the test worked, what it missed, and every paper.">
+    <meta property="og:description" content="I ran Paper Review on 23 open-access papers later retracted for honest errors. It pointed at the documented problem in 14. How the test worked and what it missed.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/retracted-papers-paper-review-test/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Does an AI paper review find what later gets a paper retracted? A test on 23 papers">
-    <meta name="twitter:description" content="I ran Paper Review on 23 open-access papers later retracted for honest errors. It pointed at the documented problem in 14. How the test worked, what it missed, and every paper.">
+    <meta name="twitter:description" content="I ran Paper Review on 23 open-access papers later retracted for honest errors. It pointed at the documented problem in 14. How the test worked and what it missed.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
     <meta name="twitter:image:alt" content="Paper Review on 23 retracted papers">
     <script type="application/ld+json">
@@ -26,7 +26,7 @@
     {
       "@type": "Article",
       "headline": "Does an AI paper review find what later gets a paper retracted? A test on 23 papers",
-      "description": "I ran Paper Review on 23 open-access papers later retracted for honest errors. It pointed at the documented problem in 14. How the test worked, what it missed, and every paper.",
+      "description": "I ran Paper Review on 23 open-access papers later retracted for honest errors. It pointed at the documented problem in 14. How the test worked and what it missed.",
       "author": {
         "@id": "https://purplelink.llc/about/#person"
       },
@@ -120,7 +120,7 @@
 
         <h2>Limits</h2>
         <ul>
-          <li>The 23 papers were chosen for retractions with a specific, checkable cause, mostly from PLOS ONE, Scientific Reports and Cureus. Subtle flaws and misconduct are not represented, and those are harder to find.</li>
+          <li>The 23 papers were chosen for retractions with a specific, checkable cause, about half from PLOS ONE. Subtle flaws and misconduct are not represented, and those are harder to find.</li>
           <li>One model scored the results, and each paper was run once, so the percentages are not tight.</li>
           <li>Figures were absent, so the figure scan was not exercised.</li>
           <li>The review reads only what the paper shows. It cannot catch a mistake in data the paper does not include.</li>
@@ -130,184 +130,93 @@
         <h2>Cost</h2>
         <p>Model fees were about $3.90 per paper, up to $5.40 for papers of up to 58 pages. The Standard review costs $9. The whole test, including the non-retracted papers and the baseline, cost about $113.</p>
 
-        <h2>The papers</h2>
-        <p>Every paper in the test is listed, including the misses. Each is a public retraction; follow the DOI to the paper and its notice. The last two columns are the judge's verdict and the finding it relied on.</p>
+        <h2>The numbers in more detail</h2>
+        <p>The papers were published between 2015 and 2024. Eleven are from PLOS ONE, three from Cureus, and the other nine from nine different journals. The retractions fall into five causes, taken from the notices. "Duplicated or inconsistent data" means numbers in the paper that contradict each other or cannot be real. "Data error" means a mistake in the data file itself, such as the wrong records merged.</p>
 
         <table class="compare-table compare-stack">
-          <caption>23 retracted papers and what the review said about each</caption>
+          <caption>Verdict by cause of retraction</caption>
           <thead>
             <tr>
-              <th scope="col">Paper</th>
-              <th scope="col">Journal</th>
-              <th scope="col">Reason in the retraction notice</th>
-              <th scope="col">Review pointed at it</th>
-              <th scope="col">Finding the judge relied on</th>
+              <th scope="col">Cause</th>
+              <th scope="col">Papers</th>
+              <th scope="col">Yes</th>
+              <th scope="col">Partly</th>
+              <th scope="col">No</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0140494" rel="noopener">10.1371/journal.pone.0140494</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Regression model was overfitted: too few events per variable for the number of predictors, so the statistical conclusions were not supported.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">The multivariable logistic model is overfit with quasi-separation: with 23 events and 5 covariates (≈4.6 events per variable), inflated ORs with huge CIs; predictor list statistically unreliable.</td>
+              <th scope="row">Duplicated or inconsistent data</th>
+              <td data-label="Papers">5</td>
+              <td data-label="Yes">5</td>
+              <td data-label="Partly">0</td>
+              <td data-label="No">0</td>
             </tr>
             <tr>
-              <th scope="row"><a href="https://doi.org/10.1097/md.0000000000006042" rel="noopener">10.1097/md.0000000000006042</a></th>
-              <td data-label="Journal">Medicine</td>
-              <td data-label="Reason in the retraction notice">Confidence intervals in Table 2 were wrong because the wrong mode was chosen in the statistical software, making the reported odds ratios and intervals inconsistent.</td>
-              <td data-label="Review pointed at it">No</td>
-              <td data-label="Finding the judge relied on">None relevant</td>
+              <th scope="row">Statistical error</th>
+              <td data-label="Papers">5</td>
+              <td data-label="Yes">2</td>
+              <td data-label="Partly">2</td>
+              <td data-label="No">1</td>
             </tr>
             <tr>
-              <th scope="row"><a href="https://doi.org/10.1186/s12884-023-05747-7" rel="noopener">10.1186/s12884-023-05747-7</a></th>
-              <td data-label="Journal">BMC pregnancy and childbirth</td>
-              <td data-label="Reason in the retraction notice">Pooled estimate&#x27;s 95% CI crossed zero, yet the text claimed a significant effect; birthweights were also compared without adjusting for gestational age.</td>
-              <td data-label="Review pointed at it">Partly</td>
-              <td data-label="Finding the judge relied on">Conclusion claims sildenafil &#x27;prolongs pregnancies&#x27; but the pooled GA MD of 0.82 (95% CI [-0.15, 1.80], P = 0.10) is non-significant. The review never mentions birthweight being compared without adjusting for gestational age.</td>
+              <th scope="row">Calculation error</th>
+              <td data-label="Papers">5</td>
+              <td data-label="Yes">3</td>
+              <td data-label="Partly">1</td>
+              <td data-label="No">1</td>
             </tr>
             <tr>
-              <th scope="row"><a href="https://doi.org/10.7759/cureus.50212" rel="noopener">10.7759/cureus.50212</a></th>
-              <td data-label="Journal">Cureus</td>
-              <td data-label="Reason in the retraction notice">Impossible hematology values (hemoglobin 116 g/dL, neutrophil % above 100) and mutually incompatible model metrics (AUC below 0.5 with high accuracy and sensitivity).</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Physiologically impossible values remain in the modelling data: Table 2 lists Neutrophil (%) max 6201 and Hemoglobin max 116 g/dL; SVM comorbidities AUC 0.45 and impossible metric combinations flagged.</td>
+              <th scope="row">Analysis error</th>
+              <td data-label="Papers">4</td>
+              <td data-label="Yes">3</td>
+              <td data-label="Partly">0</td>
+              <td data-label="No">1</td>
             </tr>
             <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0304589" rel="noopener">10.1371/journal.pone.0304589</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Table 2 showed a median below the minimum for one group; a core variable was missing, so analyses could not be reproduced.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Table 2 descriptive statistics are mathematically impossible: Profitability row places an apparent median below the minimum; regenerate Table 2; also supply raw data/code since the data availability statement is inaccurate.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1155/2018/1837634" rel="noopener">10.1155/2018/1837634</a></th>
-              <td data-label="Journal">BioMed research international</td>
-              <td data-label="Reason in the retraction notice">Fundamental error in the calculations underlying the pooled results, raised by outside readers.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Multi-arm trials split into 14 comparisons sharing one placebo group (unit-of-analysis error), plus Lewis/Karlowski double-counted; all pooled weights, CIs and P-values invalid and must be re-run.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0229035" rel="noopener">10.1371/journal.pone.0229035</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Non-significant results from a very small sample were read as evidence of no effect; reported intervals actually indicated substantial effects of stiffness and height.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Underpowered null results (n = 5) are presented as &#x27;no effect&#x27;; the paper&#x27;s own tables show height and stiffness spreads as large as the significant shape effect. Fix: report effects with 95% CIs, run equivalence tests.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0247992" rel="noopener">10.1371/journal.pone.0247992</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Reported prevalences disagreed with the source survey data and with the paper&#x27;s own odds ratios; a funnel plot was misused for non-meta-analytic data.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Country prevalences contradict the paper&#x27;s own regression: &#x27;highest modern contraceptive utilization in Comoros (61.49%)&#x27; is irreconcilable with Table 3&#x27;s Comoros OR of 0.22 vs Burundi; the ranking is arithmetically impossible.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.7759/cureus.40492" rel="noopener">10.7759/cureus.40492</a></th>
-              <td data-label="Journal">Cureus</td>
-              <td data-label="Reason in the retraction notice">Physiologically implausible mean serum calcium levels, sample-size discrepancies and inconsistent reporting throughout.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Calcium mean 5.07 with range 2.07-12.39 and no units fits neither mg/dL nor mmol/L (5.07 mmol/L would be lethal). Methods state n=100 while the tables say n=121. Internal contradictions run throughout.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1177/1073274820976671" rel="noopener">10.1177/1073274820976671</a></th>
-              <td data-label="Journal">Cancer control : journal of the Moffitt Cancer Center</td>
-              <td data-label="Reason in the retraction notice">Contradictory statements on survival and expression direction, inconsistent mutation reporting, and correlation statistics that did not fit the stated sample size.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Review flags survival direction contradicting between text and Figure 2C caption, the abstract reversing tumor-vs-normal expression, 1,692 mutated vs 0.1% frequency, and r=0.385/p=0.0052 impossible with n=7.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0196128" rel="noopener">10.1371/journal.pone.0196128</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Data extraction errors found by comparing the analysis dataset with the source trials (arms, participants, duration); some trials violated stated inclusion criteria.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Inclusion criterion &#x27;treatment duration greater than two weeks&#x27; contradicted by &#x27;duration of the interventions ranged from 1 week to 24 weeks&#x27;, one-week trials violate the stated eligibility rule.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0255392" rel="noopener">10.1371/journal.pone.0255392</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Stress-scale items needing reverse coding appear to have been scored without it; figure wave labels were switched and tables disagreed with the dataset.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">PSS monotonicity claim fails unless items 4, 5, 7, 8 are reverse-scored; no reverse-scoring is stated, so the plain sum described is invalid as a stress measure.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1039/d3ra08796d" rel="noopener">10.1039/d3ra08796d</a></th>
-              <td data-label="Journal">RSC advances</td>
-              <td data-label="Reason in the retraction notice">Simulation setup described with mistakes (misused terms), and Table 4 values could not be obtained from the stated formulae.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">MD section must be redone: engine, Hamiltonian, ensemble unspecified, and &#x27;NVE cannot hold temperature fixed&#x27;. Table 4 is flagged as corrupted (wrong orbital labels, 1178 kcal/mol E(2)), and tabulated values do not follow from the stated equations.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1038/s41598-023-38091-z" rel="noopener">10.1038/s41598-023-38091-z</a></th>
-              <td data-label="Journal">Scientific reports</td>
-              <td data-label="Reason in the retraction notice">Errors in energy unit conversion (eV to kcal/mol), thermodynamic calculations, free energy correction and Boltzmann constant units made table values inaccurate.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Table 1 eV entries equal kcal/mol ÷ 27.21 instead of ÷ 23.06; thermodynamic ΔH/ΔG values physically impossible; conductivity expression gives Boltzmann&#x27;s constant in kcal/mol while Eg is in eV.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0194582" rel="noopener">10.1371/journal.pone.0194582</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Internal tension force was miscalculated using the wrong displacement in two equations, invalidating the drill-string results in Figs 4-11.</td>
-              <td data-label="Review pointed at it">No</td>
-              <td data-label="Finding the judge relied on">None relevant</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0210555" rel="noopener">10.1371/journal.pone.0210555</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Acoustic analyses failed to exclude pauses and unvoiced segments, and pitch tracking had errors; reanalysis undermined the voice-acoustics conclusions.</td>
-              <td data-label="Review pointed at it">No</td>
-              <td data-label="Finding the judge relied on">None relevant</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.3389/fpsyg.2018.01333" rel="noopener">10.3389/fpsyg.2018.01333</a></th>
-              <td data-label="Journal">Frontiers in psychology</td>
-              <td data-label="Reason in the retraction notice">Clerical error merging longitudinal waves assigned wave 3 data to the wrong participants; reanalysis changed the results pattern.</td>
-              <td data-label="Review pointed at it">No</td>
-              <td data-label="Finding the judge relied on">None relevant</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1155/2021/8837319" rel="noopener">10.1155/2021/8837319</a></th>
-              <td data-label="Journal">Journal of obesity</td>
-              <td data-label="Reason in the retraction notice">SAS code mistake classified most participants as one year older in Table 3; corrected estimates lost significance in one subgroup.</td>
-              <td data-label="Review pointed at it">Partly</td>
-              <td data-label="Finding the judge relied on">Table 3 HWC ≥65 stratum: RR 1.12 (1.00–1.27) marked P&lt;0.05, but recomputed p ≈ 0.06–0.08; the key age-stratified positive result is borderline. Also flags tested-sample median age mismatch (69 vs 71).</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.7759/cureus.52054" rel="noopener">10.7759/cureus.52054</a></th>
-              <td data-label="Journal">Cureus</td>
-              <td data-label="Reason in the retraction notice">Spreadsheet treated a minus sign as a formula, corrupting HbA1c medians and SDs, plus an error selecting pre-intervention values.</td>
-              <td data-label="Review pointed at it">Partly</td>
-              <td data-label="Finding the judge relied on">The review flags an undefined HbA1c sign convention and asks to verify that every study was entered with a consistent sign. It also asks how pre-post designs and time points were handled, but never identifies the spreadsheet corruption.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0116682" rel="noopener">10.1371/journal.pone.0116682</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Experimental and control groups were inadvertently switched during analysis, reversing the reported association.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">HCC-vs-control odds ratios appear to be reciprocals of what the paper&#x27;s own counts imply (GA crude 1.80 vs reported 0.54), pointing to a coding/reference-category error that reverses the protective claim.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0278333" rel="noopener">10.1371/journal.pone.0278333</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Analysis used 422 records when 182 should have been removed (unmatched IDs, out-of-range ages, absent children); sample size was wrong.</td>
-              <td data-label="Review pointed at it">No</td>
-              <td data-label="Finding the judge relied on">None relevant</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.1371/journal.pone.0223360" rel="noopener">10.1371/journal.pone.0223360</a></th>
-              <td data-label="Journal">PloS one</td>
-              <td data-label="Reason in the retraction notice">Coding error in p-value calculation affected a figure; corrected analysis showed no causal relationship in the validation data.</td>
-              <td data-label="Review pointed at it">Partly</td>
-              <td data-label="Finding the judge relied on">Table 3 has impossible or duplicated Λ entries (m=1000: 61.60 exceeds the 31.59 ceiling; m=20000 duplicates another row), so Fig 4 must be regenerated. The headline causal conclusion is sign-reversed and should be corrected or withdrawn.</td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://doi.org/10.21037/tcr.2020.01.32" rel="noopener">10.21037/tcr.2020.01.32</a></th>
-              <td data-label="Journal">Translational cancer research</td>
-              <td data-label="Reason in the retraction notice">Authors found obvious errors in the statistical analysis and a graph and asked for retraction.</td>
-              <td data-label="Review pointed at it">Yes</td>
-              <td data-label="Finding the judge relied on">Multivariate Cox results are internally impossible: HDAC8 CI 0.215–6.416 spans 1 yet P=0.003; CDKN2A HR 0.65 lies outside its CI 0.680–1.468; P values duplicate log-rank values.</td>
+              <th scope="row">Data error</th>
+              <td data-label="Papers">4</td>
+              <td data-label="Yes">1</td>
+              <td data-label="Partly">1</td>
+              <td data-label="No">2</td>
             </tr>
           </tbody>
         </table>
+
+        <p>The pattern is what you would expect from a tool that reads the paper and not the data. Contradictions that show on the page were found in all five cases. Mistakes that live in a data file mostly were not.</p>
+
+        <p>Before running anything, I rated each retraction on whether its error could be seen from the manuscript alone. I rated 11 as visible and 12 as uncertain.</p>
+
+        <table class="compare-table compare-stack">
+          <caption>Verdict by whether the error was expected to be visible in the manuscript</caption>
+          <thead>
+            <tr>
+              <th scope="col">Expected visibility</th>
+              <th scope="col">Papers</th>
+              <th scope="col">Yes</th>
+              <th scope="col">Partly</th>
+              <th scope="col">No</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Visible in the manuscript</th>
+              <td data-label="Papers">11</td>
+              <td data-label="Yes">9</td>
+              <td data-label="Partly">1</td>
+              <td data-label="No">1</td>
+            </tr>
+            <tr>
+              <th scope="row">Uncertain</th>
+              <td data-label="Papers">12</td>
+              <td data-label="Yes">5</td>
+              <td data-label="Partly">3</td>
+              <td data-label="No">4</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>The list of papers is available on request. Write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will send the DOIs, the retraction reasons and the verdicts. I left the per-paper list off the page because each row is a named author's retracted paper.</p>
 
         <p>If you want to see what a report looks like, there is a <a href="/tools/paper-review/sample/">sample report</a>. To run one on your own manuscript, go to <a href="/tools/paper-review/">Paper Review</a>. The free <a href="/tools/retraction-check/">Retraction Checker</a> checks your reference list for retracted papers with no upload.</p>
       </div>
