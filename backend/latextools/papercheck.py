@@ -44,9 +44,11 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ----------------------------------------------------------------------------
 
-# Claude Fable 5 — top-quality reasoning/vision model, used for review depth.
-# Set via ANTHROPIC_MODEL env var to override (e.g. for a cheaper test pass).
-DEFAULT_MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-fable-5")
+# Default model for the vision pass, the report synthesis and anything that does not name its own.
+# Opus 5.5 since 2026-10-10 (was Fable 5): Fable refuses some biology and chemistry text, which forced a
+# fallback to Opus anyway, and costs 2.5x as much. The persona and citation layers choose their own models.
+# Set via ANTHROPIC_MODEL env var to override (e.g. to compare against Fable 5).
+DEFAULT_MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-opus-5-5")
 
 # If a call to DEFAULT_MODEL is rejected by the API itself (model not found /
 # not enabled on this account / invalid-request on the model field), retry
@@ -235,8 +237,12 @@ MAX_BODY_CHARS = 80_000
 # ceiling, so raising it costs nothing on calls that finish sooner. Non-streaming calls have a 300 s read
 # timeout; 12,000 tokens takes about 40 to 150 s depending on the model.
 PERSONA_MAX_OUTPUT_TOKENS = 12_000
-RECTIFY_MAX_OUTPUT_TOKENS = 12_000   # was 6_000, then 7_500 for the Claims and Evidence table
-L1_MAX_OUTPUT_TOKENS = 6_000
+# Thinking counts against max_tokens. At 12_000 every one of 29 reviews on 2026-10-09 stopped mid-word, and 14 never
+# reached the Panel Transcript. Replaying one paper's layer 4 on Opus 5.5 (benchmark/l4_probe.py): at the default effort
+# it thinks 8_000 to 10_000 tokens and writes about 14_000 more, so 20_000 still cut it off (Panel Transcript lost) and
+# 32_000 finished (23_000 used, $0.69). Output tokens are billed only when used.
+RECTIFY_MAX_OUTPUT_TOKENS = 32_000
+L1_MAX_OUTPUT_TOKENS = 16_000   # was 6_000; thinking shares this budget on 5.x models and a cut-off JSON list parses to nothing
 # The persona and deep-pass calls run on Opus 5.5: on a planted-defect test it caught 5 of 5 with no invented
 # quotes at about a third of Fable's cost, and it did not refuse biology content. Override with PERSONA_MODEL.
 PERSONA_MODEL = os.environ.get("PERSONA_MODEL", "claude-opus-5-5")
@@ -1129,6 +1135,7 @@ async def _anthropic_message_once(
     max_tokens: int,
     model: str,
     temperature: float,
+    effort: Optional[str] = None,
 ) -> tuple[str, dict]:
     """Call Anthropic's /v1/messages endpoint once (with same-model retries).
 
@@ -1160,6 +1167,9 @@ async def _anthropic_message_once(
     }
     if accepts_temperature(model):
         body["temperature"] = temperature
+    if effort:
+        # How much the model thinks before and while answering. Thinking counts against max_tokens.
+        body["output_config"] = {"effort": effort}
     headers = {
         "x-api-key": api_key,
         "anthropic-version": ANTHROPIC_VERSION,
@@ -1220,8 +1230,13 @@ async def _anthropic_message_once(
         usage_dict = {
             "input_tokens": int(usage.get("input_tokens", 0) or 0),
             "output_tokens": int(usage.get("output_tokens", 0) or 0),
+            "truncated": data.get("stop_reason") == "max_tokens",
+            "thinking_tokens": int((usage.get("output_tokens_details") or {}).get("thinking_tokens", 0) or 0),
         }
         text = "".join(parts).strip()
+        if usage_dict["truncated"]:
+            logger.warning("anthropic output cut off at max_tokens=%d: model=%s output_tokens=%d thinking_tokens=%d",
+                           max_tokens, model, usage_dict["output_tokens"], usage_dict["thinking_tokens"])
         if data.get("stop_reason") == "refusal":
             # The model declined the request outright (Fable refuses some biology, genetics and
             # chemistry content with category "bio"), returning no text. That is a model-level
@@ -1265,6 +1280,8 @@ async def _anthropic_message(
     max_tokens: int,
     model: str = DEFAULT_MODEL,
     temperature: float = TEMPERATURE,
+    on_truncated=None,
+    effort: Optional[str] = None,
 ) -> str:
     """Call Anthropic's /v1/messages, trying `model` first and falling back
     to FALLBACK_MODEL once if the API rejects `model` itself. Records usage
@@ -1285,6 +1302,7 @@ async def _anthropic_message(
                 max_tokens=max_tokens,
                 model=try_model,
                 temperature=temperature,
+                effort=effort,
             )
         except _ModelRejectedError as e:
             last_exc = e
@@ -1296,6 +1314,8 @@ async def _anthropic_message(
                 continue
             raise
         _record_usage(try_model, usage["input_tokens"], usage["output_tokens"])
+        if usage.get("truncated") and on_truncated is not None:
+            on_truncated(try_model)
         return text
 
     if last_exc is not None:
@@ -2266,6 +2286,10 @@ Constraints:
 L4_SYSTEM = _safety.SAFETY_PREAMBLE + "\n\n" + _L4_SYSTEM_CORE
 
 
+_TRUNCATION_NOTE = (
+    "\n\n---\n_This report was cut off by the model's output limit, so the last section may be incomplete. "
+    "The findings above it are unaffected. Email ben@purplelink.llc if you want a refund or a re-run._\n"
+)
 _CLAIMS_HEADING_RE = re.compile(r"^##\s+Claims and Evidence\s*$", re.I | re.M)
 _QUOTED_RE = re.compile(r"[\u201c\"]([^\u201c\u201d\"]{6,}?)[\u201d\"]")
 _QUOTE_MARK = " (quote not found verbatim in the extracted text)"
@@ -2458,17 +2482,23 @@ async def run_layer_4_rectify(
         + "Produce the final Markdown report now."
     )
 
+    truncated: list[bool] = []
     try:
         markdown = await _anthropic_message(
             client,
             system=L4_SYSTEM,
             user_content=[{"type": "text", "text": text}],
             max_tokens=RECTIFY_MAX_OUTPUT_TOKENS,
+            on_truncated=lambda _m: truncated.append(True),
+            effort=os.environ.get("RECTIFY_EFFORT") or None,
         )
     except Exception:
         logger.exception("L4 rectify call failed")
         return {"status": "error", "markdown": ""}
-    return {"status": "ok", "markdown": verify_claim_quotes(markdown.strip(), structure.body)}
+    markdown = markdown.strip()
+    if truncated:
+        markdown += _TRUNCATION_NOTE
+    return {"status": "ok", "markdown": verify_claim_quotes(markdown, structure.body)}
 
 
 # ----------------------------------------------------------------------------

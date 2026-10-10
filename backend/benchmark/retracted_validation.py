@@ -67,9 +67,11 @@ JUDGE_SYSTEM = (
 
 
 @stub.function(image=IMAGE, secrets=SECRETS, timeout=1200, cpu=2.0, memory=4096, max_containers=6)
-def review(pdf: bytes) -> dict:
+def review(pdf: bytes, env: dict | None = None) -> dict:
     import asyncio
     import time
+
+    os.environ.update(env or {})      # experiment switches such as RECTIFY_EFFORT, set before papercheck reads them
 
     from latextools import papercheck
 
@@ -135,7 +137,7 @@ def false_alarm_counts(md: str) -> dict:
 
 
 @stub.local_entrypoint()
-def main(candidates: str, pdf_dir: str, out: str, limit: int = 0, include_controls: bool = True, only: str = ""):
+def main(candidates: str, pdf_dir: str, out: str, limit: int = 0, include_controls: bool = True, only: str = "", env: str = ""):
     os.makedirs(out, exist_ok=True)
     data = json.load(open(candidates))
     papers = [(c["id"], c, "retracted") for c in data.get("candidates", [])]
@@ -160,7 +162,8 @@ def main(candidates: str, pdf_dir: str, out: str, limit: int = 0, include_contro
     if limit:
         todo = todo[:limit]
     print(f"Reviewing {len(todo)} papers on Modal (about $2.50 each); {len(prior)} already done.")
-    results = list(review.map([open(p, "rb").read() for _, _, _, p in todo], return_exceptions=True))
+    extra = dict(kv.split("=", 1) for kv in env.split(",") if "=" in kv)
+    results = list(review.starmap([(open(p, "rb").read(), extra) for _, _, _, p in todo], return_exceptions=True))
     rows, total = list(prior.values()), sum(r.get("usd", 0) for r in prior.values())
     for (pid, meta, kind, _), res in zip(todo, results):
         if isinstance(res, Exception) or "error" in res:

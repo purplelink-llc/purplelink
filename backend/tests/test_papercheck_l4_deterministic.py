@@ -37,7 +37,7 @@ def _run_l4_capture_prompt(monkeypatch, deterministic):
     return the `text` (user prompt) that was built."""
     captured = {}
 
-    async def fake_anthropic_message(client, *, system, user_content, max_tokens):
+    async def fake_anthropic_message(client, *, system, user_content, max_tokens, on_truncated=None, effort=None):
         captured["text"] = user_content[0]["text"]
         return "stub markdown report"
 
