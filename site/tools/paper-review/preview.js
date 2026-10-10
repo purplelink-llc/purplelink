@@ -146,12 +146,12 @@
     if (busy) return;
     var file = fileInput.files && fileInput.files[0];
     if (!file) {
-      setStatus("Choose a PDF first.", "error");
+      setStatus("Choose a PDF or Word file first.", "error");
       fileInput.focus();
       return;
     }
-    if (!/\.pdf$/i.test(file.name)) {
-      setStatus("The file must be a PDF.", "error");
+    if (!/\.(pdf|docx)$/i.test(file.name)) {
+      setStatus("The file must be a PDF or a Word (.docx) file.", "error");
       return;
     }
     if (file.size > MAX_BYTES) {

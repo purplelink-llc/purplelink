@@ -246,7 +246,11 @@ def test_preview_rejects_non_pdf(client, crossref):
     r = _post(http, b"PK\x03\x04 not a pdf at all", name="paper.pdf")
     assert r.status_code == 400
     assert r.json()["error"] == "invalid"
+    # A PDF renamed to .docx is Word as far as the extension goes; the archive inspection refuses it.
     r = _post(http, _manuscript_pdf(), name="paper.docx")
+    assert r.status_code == 422
+    assert r.json()["error"] == "convert" and "not a Word" in r.json()["detail"]
+    r = _post(http, b"hello", name="paper.txt")
     assert r.status_code == 400
     assert r.json()["error"] == "invalid"
     assert crossref.hosts == []
@@ -592,3 +596,46 @@ def test_symbols_xelatex_would_drop_are_spelled_out():
     assert "_1" in out and "_2" in out and "delta" in out
     assert "[ok]" in out and "[x]" in out and "[!]" in out
     assert "→" in out  # the arrow has a glyph and is left alone
+
+
+# ---------------------------------------------------------------------------
+# Word (.docx) uploads to the free check
+# ---------------------------------------------------------------------------
+
+def _post_docx(http, data=b"PK\x03\x04docx", name="paper.docx"):
+    return http.post("/paper-review/preview", files={"file": (name, io.BytesIO(data), "application/octet-stream")})
+
+
+def test_preview_accepts_a_word_file_by_converting_it_first(client, crossref, monkeypatch):
+    from latextools import docx_to_pdf as d2p
+    http, backend_app = client
+    seen = {}
+
+    def fake_convert(data, timeout):
+        seen["timeout"] = timeout
+        return d2p.Conversion(pdf=_manuscript_pdf())
+
+    monkeypatch.setattr(d2p, "convert", fake_convert)
+    r = _post_docx(http)
+    assert r.status_code == 200, r.text
+    assert r.json()["counts"]["references_found"] == 4
+    assert seen["timeout"] == backend_app.PREVIEW_DOCX_SECONDS
+
+
+def test_preview_explains_a_word_file_it_cannot_convert(client, crossref, monkeypatch):
+    from latextools import docx_to_pdf as d2p
+    http, backend_app = client
+
+    def boom(data, timeout):
+        raise d2p.DocxError("Converting that Word file took too long. Export it to PDF from Word and upload the PDF.")
+
+    monkeypatch.setattr(d2p, "convert", boom)
+    r = _post_docx(http)
+    assert r.status_code == 422
+    assert r.json()["error"] == "convert" and "took too long" in r.json()["detail"]
+
+
+def test_preview_still_refuses_other_files(client, crossref):
+    http, backend_app = client
+    r = _post_docx(http, b"hello", name="paper.txt")
+    assert r.status_code == 400 and ".pdf or .docx" in r.json()["detail"]

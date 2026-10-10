@@ -1646,7 +1646,7 @@ A colleague shared this link. Pay with a .edu email address and you each receive
 
 - Pay through Stripe
 
-- Upload your PDF, up to 20 MB; the link is also emailed, so you can upload from another device
+- Upload your manuscript as a PDF or Word (.docx) file, up to 20 MB; the link is also emailed, so you can upload from another device
 
 - Read the report, usually in 4 to 8 minutes
 
@@ -1778,7 +1778,7 @@ rectification checklist, and an honest novelty estimate.
 
 ## What you get
 
-- One review of one manuscript (up to 20 MB PDF, ~100 pages). To have supplementary material read too, merge it into the same PDF.
+- One review of one manuscript (up to 20 MB, PDF or Word .docx, ~100 pages). To have supplementary material read too, merge it into the same file.
 
 - An anonymity scan for double-blind submission on every tier: author names, institutions, funders, protocol numbers and self-citations left in the text.
 
@@ -1854,7 +1854,7 @@ AI reviewers can be wrong. The output flags concerns with hedged language and qu
 
 What file format?
 
-PDF up to 20 MB. If you're submitting LaTeX, compile to PDF first (our free LaTeX-to-PDF tool works).
+PDF or Word (.docx) up to 20 MB. A Word file is converted to PDF before the review, so its layout differs from Word. If you're submitting LaTeX, compile to PDF first (our free LaTeX-to-PDF tool works).
 
 What about clinical or patient data?
 

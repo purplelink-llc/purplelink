@@ -167,8 +167,9 @@
   }
 
   function validPdf(file) {
-    if (!file.name.toLowerCase().endsWith(".pdf")) {
-      statusEl.textContent = "Please choose a PDF file."; return false;
+    var lower = file.name.toLowerCase();
+    if (!lower.endsWith(".pdf") && !lower.endsWith(".docx")) {
+      statusEl.textContent = "Please choose a PDF or a Word (.docx) file."; return false;
     }
     if (file.size === 0) { statusEl.textContent = "That file is empty."; return false; }
     if (file.size > MAX_PDF_BYTES) {

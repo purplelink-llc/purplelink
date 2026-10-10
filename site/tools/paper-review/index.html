@@ -157,7 +157,7 @@
         <p class="pr-ref-note" id="ref-note" hidden>A colleague shared this link. Pay with a .edu email address and you each receive a $2 code toward a later review.</p>
         <ol class="pr-steps" data-motion="stagger" aria-label="How it works">
           <li><strong>Pay</strong> through Stripe</li>
-          <li><strong>Upload</strong> your PDF, up to 20 MB; the link is also emailed, so you can upload from another device</li>
+          <li><strong>Upload</strong> your manuscript as a PDF or Word (.docx) file, up to 20 MB; the link is also emailed, so you can upload from another device</li>
           <li><strong>Read the report</strong>, usually in 4 to 8 minutes</li>
         </ol>
         <p class="pr-checkout-meta">Secure checkout via Stripe. One-time payment, no subscription. <a href="#choose-tier">Compare the three tiers, $9 to $15</a>.</p>
@@ -167,14 +167,14 @@
 
       <section class="pr-preview" aria-labelledby="pr-preview-h">
         <h2 id="pr-preview-h">Check your references first, free</h2>
-        <p class="pr-preview-lede">Upload the PDF to see how many of its references CrossRef can confirm and whether any cited paper has been retracted, with up to three findings quoted from your manuscript. No payment, no account.</p>
+        <p class="pr-preview-lede">Upload the PDF or Word file to see how many of its references CrossRef can confirm and whether any cited paper has been retracted, with up to three findings quoted from your manuscript. No payment, no account.</p>
         <form class="pr-preview-form" id="pr-preview-form" novalidate>
-          <label class="pr-field-label" for="pr-preview-file">Manuscript PDF <span class="pr-field-hint">(up to 20 MB)</span></label>
+          <label class="pr-field-label" for="pr-preview-file">Manuscript PDF or Word <span class="pr-field-hint">(up to 20 MB)</span></label>
           <div class="pr-preview-row">
-            <input class="pr-input pr-preview-file" type="file" id="pr-preview-file" name="file" accept="application/pdf,.pdf" aria-describedby="pr-preview-privacy">
+            <input class="pr-input pr-preview-file" type="file" id="pr-preview-file" name="file" accept="application/pdf,.pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-describedby="pr-preview-privacy">
             <button type="submit" class="btn btn-secondary pr-preview-btn" id="pr-preview-btn">Check</button>
           </div>
-          <p class="pr-field-help" id="pr-preview-privacy">Your PDF is read on our server to check the reference list against CrossRef and for anonymity leftovers, then discarded. It is not sent to Anthropic and nothing is kept.</p>
+          <p class="pr-field-help" id="pr-preview-privacy">Your file is read on our server (a Word file is converted to PDF first) to check the reference list against CrossRef and for anonymity leftovers, then discarded. It is not sent to Anthropic and nothing is kept.</p>
         </form>
         <p class="pr-preview-status" id="pr-preview-status" role="status" aria-live="polite"></p>
         <div class="pr-preview-results" id="pr-preview-results" tabindex="-1" hidden></div>
@@ -309,7 +309,7 @@
       <section class="pr-pricing">
         <h2>What you get</h2>
         <ul>
-          <li>One review of one manuscript (up to 20 MB PDF, ~100 pages). To have supplementary material read too, merge it into the same PDF.</li>
+          <li>One review of one manuscript (up to 20 MB, PDF or Word .docx, ~100 pages). To have supplementary material read too, merge it into the same file.</li>
           <li>An anonymity scan for double-blind submission on every tier: author names, institutions, funders, protocol numbers and self-citations left in the text.</li>
           <li>A Markdown report and an annotated PDF with comments on the pages they refer to.</li>
           <li>Standard reviews are usually ready in 4-8 minutes, Deep Review in 10-15, on a status page that updates itself.</li>
@@ -345,7 +345,7 @@
       <section class="tool-faq" id="data-handling" aria-labelledby="data-handling-h">
         <h2 id="data-handling-h">How your manuscript is handled</h2>
         <ul class="pr-handling-list" data-motion="stagger">
-          <li><strong>Analysis.</strong> The PDF is read in memory. To check figures and tables, pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.</li>
+          <li><strong>Analysis.</strong> A Word file is first converted to PDF on our server, and the PDF is read in memory. To check figures and tables, pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.</li>
           <li><strong>Anthropic.</strong> The text and page images are sent to Anthropic's Claude API. Anthropic keeps API inputs for up to 30 days for abuse monitoring and does not train on them.</li>
           <li><strong>Delivery and deletion.</strong> The report is emailed to you as a PDF when the review finishes. The manuscript and the online copy are deleted 30 minutes after you first open the result, or after 24 hours if you never open it. The email is sent through Resend and carries the report only, never the manuscript or the annotated PDF.</li>
           <li><strong>What we keep.</strong> A permanent cost record per job: product, status, price, token counts and model names. It contains no manuscript text.</li>
@@ -364,7 +364,7 @@
         <details id="faq-policy"><summary>Am I allowed to use an AI review on my own manuscript?</summary><div class="faq-body">Yes, under the policies of the major publishers and venues we have checked. Elsevier, Springer Nature, Wiley, Taylor &amp; Francis, IEEE, ACM, ICMJE and NeurIPS let authors use AI tools while preparing a manuscript; the rule against uploading manuscripts to AI is for reviewers, who hold someone else's work. Paper Review writes nothing into your paper, so most disclosure rules, which cover AI-generated text, do not obviously apply; if your venue's policy is strict, a one-line note is enough. The <a href="/guides/ai-policy-checking-your-own-manuscript/">policy guide</a> compares ten publishers and venues.</div></details>
         <details><summary>Is this a replacement for peer review?</summary><div class="faq-body">No. Treat it as a first-pass red team before you submit: a way to catch the obvious problems a real reviewer will flag before they do. The review is advisory only; you remain responsible for every decision about your manuscript.</div></details>
         <details><summary>What if the review misses something or makes a mistake?</summary><div class="faq-body">AI reviewers can be wrong. The output flags concerns with hedged language and quotes the manuscript when challenging a claim, so you can verify every finding against your text. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. One refund per manuscript.</div></details>
-        <details><summary>What file format?</summary><div class="faq-body">PDF up to 20 MB. If you're submitting LaTeX, compile to PDF first (our <a href="/tools/latex-to-pdf/">free LaTeX-to-PDF tool</a> works).</div></details>
+        <details><summary>What file format?</summary><div class="faq-body">PDF or Word (.docx) up to 20 MB. A Word file is converted to PDF before the review, so fonts, page breaks and figure placement differ from Word and a picture the converter cannot place is left out; exporting a PDF from Word keeps your own layout. If you're submitting LaTeX, compile to PDF first (our <a href="/tools/latex-to-pdf/">free LaTeX-to-PDF tool</a> works).</div></details>
         <details><summary>What about clinical or patient data?</summary><div class="faq-body">Do not upload identifiable patient data, data covered by a data use agreement, or export-controlled material. The manuscript is sent to Anthropic's API, which keeps it for up to 30 days and does not train on it. For papers containing identifiable health information, redact before upload.</div></details>
       </section>
 

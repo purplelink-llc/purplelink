@@ -233,6 +233,7 @@ PREVIEW_HOURLY_LIMIT = 5            # per IP per UTC hour
 PREVIEW_DAILY_LIMIT = 20            # per IP per UTC day
 PREVIEW_GLOBAL_DAILY_LIMIT = 300    # all callers per UTC day
 PREVIEW_TIMEOUT_SECONDS = 60
+PREVIEW_DOCX_SECONDS = 40           # budget for converting a Word upload before the check
 PREVIEW_MAX_CONCURRENT = 2          # per web container, so paid routes keep CPU
 
 # Secrets — create via:
@@ -332,6 +333,14 @@ def _write_usage_ledger(token: str, product_key: str, status: str, usage) -> Non
         logger.info("usage_ledger %s", record)
     except Exception:
         logger.exception("usage_ledger write failed for token=%s", token[:12])
+
+
+def _prepend_source_note(markdown: str, note: str) -> str:
+    """Put `note` under the report's title line, or at the top if there is none."""
+    first, sep, rest = markdown.partition("\n")
+    if first.startswith("# "):
+        return f"{first}\n\n{note}\n{sep}{rest.lstrip(chr(10))}" if rest else f"{first}\n\n{note}\n"
+    return f"{note}\n\n{markdown}"
 
 
 def _reissue_token_on_failure(token: str) -> str | None:
@@ -512,8 +521,12 @@ def paper_review_pipeline(
     journal_key: str = "",
     anonymity_check: bool = False,
     deliver_email: str = "",
+    source_note: str = "",
 ) -> None:
-    """Run the full Paper Review pipeline (any tier) and persist to dict."""
+    """Run the full Paper Review pipeline (any tier) and persist to dict.
+
+    `source_note` is a line the web layer sets when the review ran on a PDF it
+    converted from a Word file; it is placed at the top of the report."""
     import asyncio as _asyncio
     import base64
     import time as _time
@@ -541,6 +554,8 @@ def paper_review_pipeline(
                     journal_pack=journal_pack,
                     anonymity_check=anonymity_check,
                 )
+                if source_note and final.get("result_md"):
+                    final["result_md"] = _prepend_source_note(final["result_md"], source_note)
                 job_status = "done" if final.get("result_md") else "error"
                 replacement_token = None
                 if job_status == "error":
@@ -2958,22 +2973,41 @@ def web():
         if not _claim_token(token):
             return JSONResponse({"error": "already_used"}, status_code=409)
 
+        async def _reject(detail: str, status_code: int = 400, error: str = "invalid"):
+            """Release the claim taken above before refusing the upload, so a customer
+            who chose the wrong file can try again with the right one."""
+            try:
+                await paper_token_claims_dict.pop.aio(token)
+            except Exception:
+                logger.exception("could not release the claim for token=%s", token[:12])
+            return JSONResponse({"error": error, "detail": detail}, status_code=status_code)
+
         try:
             data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
         except _UploadTooLarge:
-            return JSONResponse(
-                {"error": "invalid", "detail": "File is too large (max 20 MB)."},
-                status_code=400,
-            )
+            return await _reject("File is too large (max 20 MB).")
         try:
-            core.validate_paper_upload(file.filename or "", len(data))
+            kind = core.validate_manuscript_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
-        if not data.startswith(b"%PDF-"):
-            return JSONResponse(
-                {"error": "invalid", "detail": "File is not a valid PDF."},
-                status_code=400,
-            )
+            return await _reject(str(e))
+        source_note = ""
+        if kind == "pdf":
+            if not data.startswith(b"%PDF-"):
+                return await _reject("File is not a valid PDF.")
+        else:
+            from latextools import docx_to_pdf as _d2p
+            try:
+                converted = await run_in_threadpool(_d2p.convert, data)
+            except _d2p.DocxError as e:
+                return await _reject(str(e), 422, "convert")
+            except Exception:
+                logger.exception("docx conversion crashed for token=%s", token[:12])
+                return await _reject(
+                    "That Word file could not be converted. Export it to PDF from Word and upload the PDF.",
+                    422, "convert",
+                )
+            data = converted.pdf
+            source_note = converted.note
 
         if domain not in (
             "general", "machine_learning", "biomedicine",
@@ -3042,6 +3076,7 @@ def web():
                 journal_key=chosen_journal,
                 anonymity_check=do_anonymity,
                 deliver_email=_deliver_to,
+                source_note=source_note,
             )
         except Exception:
             logger.exception("paper_review_pipeline.spawn failed for token=%s", token[:12])
@@ -3252,10 +3287,10 @@ def web():
         except _UploadTooLarge:
             return _preview_error("invalid", too_large, 400)
         try:
-            core.validate_paper_upload(file.filename or "", len(data))
+            kind = core.validate_manuscript_upload(file.filename or "", len(data))
         except core.ValidationError as e:
             return _preview_error("invalid", str(e), 400)
-        if not data.startswith(b"%PDF-"):
+        if kind == "pdf" and not data.startswith(b"%PDF-"):
             return _preview_error("invalid", "File is not a valid PDF.", 400)
 
         if _preview_slots.locked():
@@ -3263,6 +3298,17 @@ def web():
 
         from latextools import papercheck as _pc, preview as _preview
         async with _preview_slots:
+            if kind == "docx":
+                # Same conversion the paid review uses, on a shorter budget: the
+                # free check is rate limited and must not tie up the server.
+                from latextools import docx_to_pdf as _d2p
+                try:
+                    data = (await run_in_threadpool(_d2p.convert, data, PREVIEW_DOCX_SECONDS)).pdf
+                except _d2p.DocxError as e:
+                    return _preview_error("convert", str(e), 422)
+                except Exception:
+                    logger.error("paper preview: docx conversion crashed")
+                    return _preview_error("convert", "That Word file could not be converted. Export it to PDF from Word and upload the PDF.", 422)
             try:
                 result = await _preview_asyncio.wait_for(
                     _preview.run_preview(data), timeout=PREVIEW_TIMEOUT_SECONDS,

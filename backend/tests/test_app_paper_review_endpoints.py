@@ -2386,3 +2386,130 @@ def test_resubmission_deadline_gets_its_own_email(client, monkeypatch):
     # An unknown kind falls back to a first submission.
     http.post("/lifecycle/deadline", json={"email": "x@example.com", "deadline": _iso_days_ahead(30), "kind": "grant"})
     assert backend_app.customer_lifecycle_dict.get("deadline:x@example.com")["kind"] == "submission"
+
+
+def test_a_rejected_upload_does_not_burn_the_token(client):
+    """A customer who picks the wrong file must be able to retry with the right
+    one: the claim taken before validation has to be released on every rejection."""
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-retry-after-reject")
+
+    r = http.post(
+        "/paper-review/submit",
+        data={"token": token, "domain": "general"},
+        files={"file": ("paper.pdf", io.BytesIO(b"not a pdf at all"), "application/pdf")},
+    )
+    assert r.status_code == 400
+    assert backend_app.paper_token_claims_dict.get(token) is None
+
+    r2 = http.post(
+        "/paper-review/submit",
+        data={"token": token, "domain": "general"},
+        files={"file": ("paper.pdf", io.BytesIO(PDF_BYTES), "application/pdf")},
+    )
+    assert r2.status_code == 200, r2.text
+
+
+# ---- Word (.docx) uploads ---------------------------------------------------------------
+
+def _docx_post(http, token, name="paper.docx", body=b"PK\x03\x04docx"):
+    return http.post(
+        "/paper-review/submit",
+        data={"token": token, "domain": "general"},
+        files={"file": (name, io.BytesIO(body), "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+    )
+
+
+def test_a_word_upload_is_converted_and_the_review_runs_on_the_pdf(client, monkeypatch):
+    from latextools import docx_to_pdf as d2p
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-docx-ok")
+    monkeypatch.setattr(d2p, "convert", lambda data: d2p.Conversion(pdf=PDF_BYTES, images_dropped=False))
+
+    r = _docx_post(http, token)
+    assert r.status_code == 200, r.text
+    args, kwargs = backend_app.paper_review_pipeline.calls[0]
+    assert args[1] == PDF_BYTES                       # the converted PDF, not the .docx
+    assert kwargs["source_note"] == d2p.NOTE_CONVERTED
+    assert token in backend_app.paper_tokens_dict["s-docx-ok"]["consumed_tokens"]
+
+
+def test_dropped_images_are_mentioned_in_the_note(client, monkeypatch):
+    from latextools import docx_to_pdf as d2p
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-docx-img")
+    monkeypatch.setattr(d2p, "convert", lambda data: d2p.Conversion(pdf=PDF_BYTES, images_dropped=True))
+    assert _docx_post(http, token).status_code == 200
+    assert "left out" in backend_app.paper_review_pipeline.calls[0][1]["source_note"]
+
+
+def test_a_pdf_upload_carries_no_conversion_note(client):
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-pdf-note")
+    r = http.post("/paper-review/submit", data={"token": token, "domain": "general"},
+                  files={"file": ("paper.pdf", io.BytesIO(PDF_BYTES), "application/pdf")})
+    assert r.status_code == 200
+    assert backend_app.paper_review_pipeline.calls[0][1]["source_note"] == ""
+
+
+def test_a_failed_conversion_is_explained_and_does_not_burn_the_token(client, monkeypatch):
+    from latextools import docx_to_pdf as d2p
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-docx-fail")
+
+    def boom(data):
+        raise d2p.DocxError("That Word file is password-protected. Save an unprotected copy and upload that.")
+
+    monkeypatch.setattr(d2p, "convert", boom)
+    r = _docx_post(http, token)
+    assert r.status_code == 422 and r.json()["error"] == "convert"
+    assert "password-protected" in r.json()["detail"]
+    assert backend_app.paper_review_pipeline.calls == []
+    assert backend_app.paper_token_claims_dict.get(token) is None
+    assert token not in (backend_app.paper_tokens_dict["s-docx-fail"].get("consumed_tokens") or [])
+
+    # The same token still works with the PDF the author exports afterwards.
+    r2 = http.post("/paper-review/submit", data={"token": token, "domain": "general"},
+                   files={"file": ("paper.pdf", io.BytesIO(PDF_BYTES), "application/pdf")})
+    assert r2.status_code == 200, r2.text
+
+
+def test_an_unexpected_conversion_crash_is_a_422_with_advice_not_a_500(client, monkeypatch):
+    from latextools import docx_to_pdf as d2p
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-docx-crash")
+
+    def crash(data):
+        raise RuntimeError("secret manuscript text")
+
+    monkeypatch.setattr(d2p, "convert", crash)
+    r = _docx_post(http, token)
+    assert r.status_code == 422
+    assert "secret manuscript text" not in r.text and "Export it to PDF" in r.json()["detail"]
+    assert backend_app.paper_token_claims_dict.get(token) is None
+
+
+def test_a_pdf_renamed_to_docx_is_refused_by_the_real_inspection(client):
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-docx-fake")
+    r = _docx_post(http, token, body=PDF_BYTES)
+    assert r.status_code == 422 and "not a Word" in r.json()["detail"]
+    assert backend_app.paper_token_claims_dict.get(token) is None
+
+
+def test_other_extensions_are_still_refused_and_name_both_formats(client):
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-txt")
+    r = _docx_post(http, token, name="paper.txt", body=b"hello")
+    assert r.status_code == 400 and ".pdf or .docx" in r.json()["detail"]
+    assert backend_app.paper_token_claims_dict.get(token) is None
+
+
+def test_the_source_note_goes_under_the_report_title():
+    import app as backend_app
+    note = "_Note: converted._"
+    md = "# Manuscript Review\n\n## What's Working\n- x\n"
+    out = backend_app._prepend_source_note(md, note)
+    assert out.startswith("# Manuscript Review\n\n_Note: converted._\n\n## What's Working")
+    assert backend_app._prepend_source_note("no title here\n", note).startswith(note + "\n\nno title here")
+    assert backend_app._prepend_source_note("# Only a title", note) == "# Only a title\n\n_Note: converted._\n"
