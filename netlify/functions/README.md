@@ -190,3 +190,25 @@ Look for a `indexnow-ping` invocation with a `200 pinged` response.
 - **Disable the local one** — edit `scripts/deploy.sh` to default to `--skip-ping`, or just stop using `make deploy` and rely on the webhook.
 
 I'd recommend leaving both for the first week, then disabling the local ping once you've confirmed the webhook is firing reliably in the Function logs.
+
+## `delivery-health`
+
+Owner-only, read-only. Answers "did every paid order reach the site's webhook?"
+from Stripe's own records: the `stripe-webhook` endpoint exists, is enabled and
+listens for `checkout.session.completed`; every paid Checkout Session older
+than 15 minutes has such an event; and each event shows `pending_webhooks: 0`
+(every endpoint answered 2xx). Anything else is reported with the product,
+amount and age of the order, never the buyer.
+
+**Function URL:** `https://purplelink.llc/.netlify/functions/delivery-health?days=14`
+with header `x-stats-token: <STATS_TOKEN>` (`?token=` also works but lands in logs).
+`days` is 1 to 30; Stripe's Events API keeps 30 days.
+
+Env vars: the same `STATS_TOKEN` and `STRIPE_SECRET_KEY` that `sales` uses. The
+key needs read access to Checkout Sessions, Events and Webhook Endpoints.
+
+It cannot see past the webhook: a delivered event whose handler then failed to
+send a licence email or mint a Modal token is the operator alert email's job.
+The dashboard reads the `checks` array from this response.
+
+Test: `node --test netlify/tests/delivery-health.test.mjs`
