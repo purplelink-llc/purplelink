@@ -645,6 +645,12 @@ def extract_paper(pdf_bytes: bytes, page_texts: Optional[list] = None) -> PaperS
                         # document, is treated as the references blob.
                         line_idx = page_text.find(line)
                         references_blob = page_text[line_idx + split_at:]
+                        # The text above the heading on this page is still body text (often the end of
+                        # the conclusion). It used to be dropped, so a paper whose references began on
+                        # the same page as its last paragraphs lost them from every review layer.
+                        lead = page_text[:line_idx].strip()
+                        if lead:
+                            all_text_parts.append(page_text[:line_idx])
                         break
                 else:
                     all_text_parts.append(page_text)

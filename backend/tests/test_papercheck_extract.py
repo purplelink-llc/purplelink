@@ -250,3 +250,35 @@ def test_extract_paper_succeeds_with_sufficient_body_text():
 
     structure = papercheck.extract_paper(pdf_bytes)
     assert len(structure.body.strip()) >= papercheck.MIN_EXTRACTED_BODY_CHARS
+
+
+def test_text_above_the_references_heading_on_the_same_page_stays_in_the_body():
+    """Regression: the page that held the References heading contributed only the text AFTER the heading, so the
+    end of the paper (often the conclusion) vanished from the body, and a one-page manuscript had none at all."""
+    import io
+    buf = io.BytesIO()
+    c = reportlab_canvas.Canvas(buf, pagesize=(612, 792))
+    c.setFont("Helvetica", 10)
+    y = 740
+    for line in [
+        "A Short Study of Citation Habits",
+        "Abstract",
+        "We examine how authors cite earlier work and report the pattern across several fields of study.",
+        "1 Introduction",
+        "Earlier work [1] described the pattern and later work [2] extended it considerably in many ways here.",
+        "6 Conclusion",
+        "Our conclusion is that authors cite broadly and that the final paragraph of this paper must be kept.",
+        "References",
+        "[1] Smith, J. (2020). Learning to cite. Journal of Things, 4, 1-10.",
+        "[2] Doe, J. (2019). A real paper. Physics Letters, 2, 11-20.",
+        "[3] Roe, R. (2018). Another real paper. Nature Methods, 9, 21-30.",
+    ]:
+        c.drawString(40, y, line)
+        y -= 22
+    c.showPage()
+    c.save()
+    s = papercheck.extract_paper(buf.getvalue())
+    assert "final paragraph of this paper must be kept" in s.body
+    assert "Introduction" in s.body and "Abstract" in s.body
+    assert "Learning to cite" not in s.body            # the references themselves are not body
+    assert s.n_references_total == 3
