@@ -92,6 +92,15 @@
         <span class="changelog-date">October 9, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 1.6.0</h2>
+          <p>Sync now has Changes Since Last Sync (Command-Option-D). It builds a PDF of your project with your edits marked, additions underlined in blue and deletions struck through in red, compared with the version the other side had the last time you got or sent changes. It follows \input and \include into every file. The same sheet can mark what your co-author or your other Mac changed in the last Get Changes. It uses latexdiff, which ModernTex can install for you with TinyTeX. Only the text of .tex files is compared; changes to figures and .bib files are not marked. The PDF is built in a temporary folder and is not added to your project.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 9, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>ModernTex 1.5.0</h2>
           <p>Projects stored in iCloud Drive, OneDrive, Dropbox or Google Drive now build. A project under iCloud Drive failed with "I can't find file", because the engine was handed a folder path TeX could not read; it now gets only the file's name. Manuscript Checks flags a "Figure" reference that points at a table, and an undefined reference or citation names the closest label or key. The status bar shows "Checks: clear" or "Checks: 3 to fix". After a successful build ModernTex saves an automatic checkpoint in the Revisions tab, at most every 10 minutes, keeping the newest 20; Settings turns it off. When a build fails, the preview says it is showing your last good PDF.</p>
         </div>
