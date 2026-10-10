@@ -135,12 +135,15 @@ def false_alarm_counts(md: str) -> dict:
 
 
 @stub.local_entrypoint()
-def main(candidates: str, pdf_dir: str, out: str, limit: int = 0, include_controls: bool = True):
+def main(candidates: str, pdf_dir: str, out: str, limit: int = 0, include_controls: bool = True, only: str = ""):
     os.makedirs(out, exist_ok=True)
     data = json.load(open(candidates))
     papers = [(c["id"], c, "retracted") for c in data.get("candidates", [])]
     if include_controls:
         papers += [(c.get("id") or f"control-{i + 1}", c, "control") for i, c in enumerate(data.get("controls", []))]
+    if only:                       # a fixed, outcome-blind selection, for example every other control
+        wanted = {i.strip() for i in only.split(",") if i.strip()}
+        papers = [p for p in papers if p[0] in wanted]
     todo = []
     for pid, meta, kind in papers:
         path = os.path.join(pdf_dir, f"{pid}.pdf")
