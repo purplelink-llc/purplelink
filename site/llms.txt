@@ -303,6 +303,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Markdown to PDF: https://purplelink.llc/tools/markdown-to-pdf/ — render Markdown to a typeset PDF, files never stored.
 - BibTeX Builder: https://purplelink.llc/tools/bib-builder/ — generate BibTeX entries from a DOI or arXiv ID, nothing stored.
 - BibTeX Validator: https://purplelink.llc/tools/bib-validator/ — check a .bib file for syntax errors and missing required fields, processed on Purplelink's server and not stored.
+- Retraction Checker: https://purplelink.llc/tools/retraction-check/ — check a reference list, BibTeX or DOIs against Crossref's Retraction Watch data for retractions and expressions of concern; runs in your browser and the list is not sent to Purplelink.
 - Citation Generator: https://purplelink.llc/tools/citation-generator/ — build IEEE, APA, MLA, and Chicago citations from entry fields, runs in your browser.
 - Reference Converter: https://purplelink.llc/tools/reference-converter/ — convert references between BibTeX, RIS, and other formats, runs in your browser.
 - Equation Renderer: https://purplelink.llc/tools/equation-renderer/ — render LaTeX math to an image; the equation is compiled on Purplelink's server and not stored.

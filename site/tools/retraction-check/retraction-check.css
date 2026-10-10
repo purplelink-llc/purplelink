@@ -1,0 +1,26 @@
+.rc-app { display: flex; flex-direction: column; gap: 8px; }
+.rc-label { font-weight: 600; font-size: 0.92rem; margin-top: 8px; }
+.rc-textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; line-height: 1.55; resize: vertical; min-height: 12rem; }
+.rc-textarea:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
+.rc-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 4px; }
+.rc-status { min-height: 1.4em; margin: 6px 0 0; color: var(--muted); }
+.rc-status.is-error { color: oklch(52% 0.19 25); font-weight: 600; }
+.rc-results { margin-top: 14px; }
+.rc-results[hidden] { display: none; }
+.rc-summary { margin: 0 0 12px; font-size: 1.02rem; }
+.rc-summary strong { color: var(--ink); }
+.rc-findings { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.rc-finding { padding: 14px 16px; border: 1px solid var(--line); border-left-width: 4px; border-radius: 12px; background: var(--panel); }
+.rc-finding.rc-retracted { border-left-color: oklch(55% 0.19 25); }
+.rc-finding.rc-concern { border-left-color: oklch(70% 0.15 80); }
+.rc-finding h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 1.05rem; }
+.rc-ref { margin: 0 0 6px; overflow-wrap: anywhere; }
+.rc-meta { margin: 0 0 4px; color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
+.rc-advice { margin: 8px 0 0; font-size: 0.92rem; }
+.rc-clear { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.rc-unchecked { margin-top: 12px; color: var(--muted); }
+.rc-unchecked summary { cursor: pointer; font-weight: 600; }
+.rc-unchecked ul { margin: 8px 0 0; padding-left: 1.2rem; overflow-wrap: anywhere; }
+.rc-note { margin: 10px 0 0; color: var(--muted); font-size: 0.9rem; }
+:root:not([data-theme="light"]) .rc-status.is-error { color: oklch(75% 0.14 25); }
+:root[data-theme="dark"] .rc-status.is-error { color: oklch(75% 0.14 25); }

@@ -1638,6 +1638,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/retraction-check/</loc>
+    <lastmod>2026-10-09</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/tools/submission-checklist/</loc>
     <lastmod>2026-10-09</lastmod>
     <priority>0.7</priority>

@@ -43,6 +43,7 @@ PAGES = [
     "tools/",
     "tools/latex-to-pdf/",
     "tools/bib-validator/",
+    "tools/retraction-check/",
     "tools/citation-generator/",
     "globepin/",
     "haea/",

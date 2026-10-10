@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Retraction Checker: find retracted papers in a reference list | Purplelink</title>
+    <meta name="description" content="Paste a reference list, BibTeX or DOIs and check each against Crossref's Retraction Watch data for retractions and expressions of concern. Free, and your list stays in your browser.">
+    <link rel="canonical" href="https://purplelink.llc/tools/retraction-check/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Retraction Checker: find retracted papers in a reference list">
+    <meta property="og:description" content="Paste a reference list, BibTeX or DOIs and check each against Crossref's Retraction Watch data for retractions and expressions of concern. Free, and your list stays in your browser.">
+    <meta property="og:url" content="https://purplelink.llc/tools/retraction-check/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Retraction Checker: find retracted papers in a reference list">
+    <meta name="twitter:description" content="Paste a reference list, BibTeX or DOIs and check each against Crossref's Retraction Watch data for retractions and expressions of concern. Free, and your list stays in your browser.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/purplelink-card.png">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Retraction Checker",
+      "url": "https://purplelink.llc/tools/retraction-check/",
+      "description": "Paste a reference list, BibTeX or DOIs and check each against Crossref's Retraction Watch data for retractions and expressions of concern. Free, and your list stays in your browser.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@id": "https://purplelink.llc/#organization" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+        { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+        { "@type": "ListItem", "position": 3, "name": "Retraction Checker", "item": "https://purplelink.llc/tools/retraction-check/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Where does the retraction information come from?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "From Crossref, which carries Retraction Watch's database. A retracted work's record lists the retraction notice, and the tool reads that. Crossref only holds works registered with it, so a DOI from another registrar, a book or a web page may come back as not found."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does no result mean a paper is safe to cite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. A retraction that is days or weeks old may not be in Crossref yet, and a paper can be unreliable without being retracted. Treat a clear result as one check, not a clearance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should I do if a cited paper is retracted?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Read the retraction notice. Do not cite the work as support for a claim. If you need to mention it, say that it was retracted and why. An expression of concern means the journal has doubts but has not retracted the paper, so check what the notice says before you rely on the result."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my reference list sent to Purplelink?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Your browser asks Crossref about each DOI and title, and Purplelink does not receive the list. Crossref, a public service, does see the DOIs and titles your browser asks about."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it check references that have no DOI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, up to 25 per run, by searching Crossref for the title and accepting only a close match. A DOI is more reliable, so add DOIs where you have them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it check a whole manuscript at once?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The free preview on the Paper Review page does: upload a PDF or Word file and it checks the references and flags any retraction. A full review also checks whether each cited source supports the claim it is attached to."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=cf35a6634a">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=258cd9c67e" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <link rel="stylesheet" href="/tools/retraction-check/retraction-check.css?v=a0179d52cf">
+    <script src="/tools/retraction-check/retraction-check.js?v=d0a490037a" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Retraction Checker</h1>
+        <p>Paste a reference list, BibTeX or a list of DOIs. The tool asks Crossref, which carries Retraction Watch's data, whether any of them has been retracted or carries an expression of concern. <strong>Your list is not sent to Purplelink.</strong></p>
+      </div>
+
+      <form class="tool-app rc-app" id="rc-form" novalidate>
+        <label for="rc-text" class="rc-label">References or DOIs</label>
+        <textarea id="rc-text" class="rc-textarea" rows="12" spellcheck="false" placeholder="Paste your reference list, BibTeX entries or DOIs, one per line."></textarea>
+        <div class="rc-actions">
+          <button type="submit" class="btn btn-primary" id="rc-run">Check for retractions</button>
+          <button type="button" class="btn btn-ghost" id="rc-example">Try an example</button>
+        </div>
+        <p class="rc-status" id="rc-status" role="status" aria-live="polite"></p>
+        <div class="rc-results" id="rc-results" aria-live="polite" tabindex="-1" hidden></div>
+        <p class="tool-next" data-tool-next="#rc-results" hidden>Checking a whole manuscript? The free preview on the <a data-track="tool_next" data-track-meta="retraction-check" href="/tools/paper-review/">Paper Review page</a> reads a PDF or Word file, checks every reference against Crossref and flags retractions. A full review ($9) also checks whether each cited source supports the claim it is attached to.</p>
+      </form>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Where does the retraction information come from?</summary><div class="faq-body">From Crossref, which carries Retraction Watch's database. A retracted work's record lists the retraction notice, and the tool reads that. Crossref only holds works registered with it, so a DOI from another registrar, a book or a web page may come back as not found.</div></details>
+        <details><summary>Does no result mean a paper is safe to cite?</summary><div class="faq-body">No. A retraction that is days or weeks old may not be in Crossref yet, and a paper can be unreliable without being retracted. Treat a clear result as one check, not a clearance.</div></details>
+        <details><summary>What should I do if a cited paper is retracted?</summary><div class="faq-body">Read the retraction notice. Do not cite the work as support for a claim. If you need to mention it, say that it was retracted and why. An expression of concern means the journal has doubts but has not retracted the paper, so check what the notice says before you rely on the result.</div></details>
+        <details><summary>Is my reference list sent to Purplelink?</summary><div class="faq-body">No. Your browser asks Crossref about each DOI and title, and Purplelink does not receive the list. Crossref, a public service, does see the DOIs and titles your browser asks about.</div></details>
+        <details><summary>Does it check references that have no DOI?</summary><div class="faq-body">Yes, up to 25 per run, by searching Crossref for the title and accepting only a close match. A DOI is more reliable, so add DOIs where you have them.</div></details>
+        <details><summary>Can it check a whole manuscript at once?</summary><div class="faq-body">The free preview on the Paper Review page does: upload a PDF or Word file and it checks the references and flags any retraction. A full review also checks whether each cited source supports the claim it is attached to.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+          <li><a href="/guides/catch-ai-hallucinated-citations/">Catch AI-hallucinated citations</a></li>
+          <li><a href="/scholar-utility-belt/">Scholar Utility Belt: retraction alerts in Google Scholar</a></li>
+          <li><a href="/tools/paper-review/">Paper Review</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js?v=4cbb1f9af4" defer></script>
+  </body>
+</html>
