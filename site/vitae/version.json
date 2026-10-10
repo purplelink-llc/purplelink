@@ -1,5 +1,5 @@
 {
-  "version": "1.1.1",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.1.1.dmg",
-  "releaseNotes": "Search Everything (Command-K) now finds research ideas and opens them on the Ideas screen. Ideas also appear in Spotlight on this Mac, which you can turn off in Settings. Before you have any ideas, each view now says what it will show."
+  "version": "1.1.2",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.1.2.dmg",
+  "releaseNotes": "Ideas now appear on the Dashboard, projects marked Idea can be brought into the Ideas screen, and ideas can be listed on your CV and made into Shareables. The Map can suggest links between ideas, and each idea lists related projects, publications, reading and talks. Matching uses topics and words on this Mac."
 }
