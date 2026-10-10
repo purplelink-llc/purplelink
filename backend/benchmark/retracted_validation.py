@@ -66,7 +66,7 @@ JUDGE_SYSTEM = (
 )
 
 
-@stub.function(image=IMAGE, secrets=SECRETS, timeout=1200, cpu=2.0, memory=4096)
+@stub.function(image=IMAGE, secrets=SECRETS, timeout=1200, cpu=2.0, memory=4096, max_containers=6)
 def review(pdf: bytes) -> dict:
     import asyncio
     import time
@@ -148,11 +148,17 @@ def main(candidates: str, pdf_dir: str, out: str, limit: int = 0, include_contro
             todo.append((pid, meta, kind, path))
         else:
             print(f"skip {pid}: no PDF at {path}")
+    # Resume: papers already reviewed without error in a previous run of this --out are kept, not paid for again.
+    prior = {}
+    prior_path = os.path.join(out, "results.json")
+    if os.path.exists(prior_path):
+        prior = {r["id"]: r for r in json.load(open(prior_path)).get("rows", []) if "error" not in r}
+        todo = [t for t in todo if t[0] not in prior]
     if limit:
         todo = todo[:limit]
-    print(f"Reviewing {len(todo)} papers on Modal (about $2.50 each).")
+    print(f"Reviewing {len(todo)} papers on Modal (about $2.50 each); {len(prior)} already done.")
     results = list(review.map([open(p, "rb").read() for _, _, _, p in todo], return_exceptions=True))
-    rows, total = [], 0.0
+    rows, total = list(prior.values()), sum(r.get("usd", 0) for r in prior.values())
     for (pid, meta, kind, _), res in zip(todo, results):
         if isinstance(res, Exception) or "error" in res:
             rows.append({"id": pid, "kind": kind, "error": str(res)[:200] if isinstance(res, Exception) else res["error"]})

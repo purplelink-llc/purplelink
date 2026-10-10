@@ -63,23 +63,25 @@ def run(create: bool, product_ids: str, code: str, max_redemptions: int, expires
 
     coupon_id = f"early-reviewer-{code.lower()}"
     data = {"id": coupon_id, "percent_off": "100", "duration": "once", "max_redemptions": str(max_redemptions),
-            "redeem_by": str(expires_at), "name": f"Early reviewer ({code}): free Paper Review"}
+            "redeem_by": str(expires_at), "name": f"Early reviewer {code}"[:40]}
     for i, pid in enumerate(ids):
         data[f"applies_to[products][{i}]"] = pid
     r = httpx.post("https://api.stripe.com/v1/coupons", auth=auth, data=data, timeout=30)
     if r.status_code == 400 and "already exists" in r.text:
         print("Coupon already exists:", coupon_id)
     else:
-        r.raise_for_status()
+        if r.status_code >= 400:
+            raise SystemExit(f"Stripe refused the coupon ({r.status_code}): {r.text[:600]}")
         print("Created coupon:", coupon_id)
 
     r = httpx.post("https://api.stripe.com/v1/promotion_codes", auth=auth, timeout=30, data={
-        "coupon": coupon_id, "code": code, "max_redemptions": str(max_redemptions), "expires_at": str(expires_at),
+        "promotion[type]": "coupon", "promotion[coupon]": coupon_id, "code": code, "max_redemptions": str(max_redemptions), "expires_at": str(expires_at),
         "restrictions[first_time_transaction]": "true"})
     if r.status_code == 400 and "already exists" in r.text.lower():
         print("Promotion code already exists:", code)
         return
-    r.raise_for_status()
+    if r.status_code >= 400:
+        raise SystemExit(f"Stripe refused the promotion code ({r.status_code}): {r.text[:600]}")
     print(f"Created promotion code {code}: {max_redemptions} redemptions, first-time customers only, expires {expires}.")
 
 
