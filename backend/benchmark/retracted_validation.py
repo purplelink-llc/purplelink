@@ -194,3 +194,26 @@ def main(candidates: str, pdf_dir: str, out: str, limit: int = 0, include_contro
         lines.append(f"| {r['id']} | {r['verdict']} | {str(r.get('reason', ''))[:70]} | {str(r.get('finding', ''))[:90]} |")
     open(os.path.join(out, "results.md"), "w").write("\n".join(lines) + "\n")
     print("\n".join(lines))
+
+
+@stub.local_entrypoint()
+def baseline(candidates: str, out: str, per_reason: int = 2):
+    """Chance baseline: judge each retraction reason against the findings of NON-retracted papers' reports.
+
+    If the judge says 'yes' often on a mismatched report, the matched-pair hit rate is mostly chance. Pairing is
+    fixed (reason i against controls i, i+1, ... in id order) so it cannot be chosen by outcome."""
+    data = json.load(open(candidates))
+    rows = json.load(open(os.path.join(out, "results.json")))["rows"]
+    reasons = {c["id"]: c for c in data["candidates"]}
+    done = sorted(r["id"] for r in rows if r.get("kind") == "retracted" and "verdict" in r)
+    ctl = sorted(r["id"] for r in rows if r.get("kind") == "control" and "error" not in r)
+    pairs = [(rid, ctl[(i + k) % len(ctl)]) for i, rid in enumerate(done) for k in range(per_reason)]
+    texts = {cid: findings_section(open(os.path.join(out, f"{cid}.report.md")).read()) for cid in ctl}
+    res = list(judge.starmap([(reasons[rid].get("reason_summary", ""), texts[cid]) for rid, cid in pairs], return_exceptions=True))
+    matched = {r["id"]: r["verdict"] for r in rows if r.get("kind") == "retracted" and "verdict" in r}
+    out_rows = [{"reason_of": rid, "control": cid, "verdict": (r["verdict"] if isinstance(r, dict) else "error"),
+                 "finding": (r.get("finding", "") if isinstance(r, dict) else str(r)[:100])} for (rid, cid), r in zip(pairs, res)]
+    json.dump(out_rows, open(os.path.join(out, "baseline.json"), "w"), indent=1)
+    cnt = lambda vs: {k: sum(1 for v in vs if v == k) for k in ("yes", "partly", "no", "unparsed", "error")}
+    print("matched   ", cnt(matched.values()), "of", len(matched))
+    print("mismatched", cnt([r["verdict"] for r in out_rows]), "of", len(out_rows))
