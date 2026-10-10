@@ -48,7 +48,20 @@
           <button type="button" class="btn btn-ghost" data-track="ext_uninstall_reason" data-track-meta="unused">I do not use Scholar anymore</button>
           <button type="button" class="btn btn-ghost" data-track="ext_uninstall_reason" data-track-meta="other">Something else</button>
         </div>
-        <p class="tool-status" id="reason-thanks" role="status" hidden>Thank you. If you want to say more, email <a href="mailto:ben@purplelink.llc?subject=Scholar%20Utility%20Belt">ben@purplelink.llc</a>; one person reads every message.</p>
+        <p class="tool-status" id="reason-thanks" role="status" hidden>Thank you, that is recorded. If you would like to add a few words, there is an optional box below.</p>
+        <div id="uf-wrap" hidden>
+        <form class="feedback-form" id="uninstall-form" name="scholar-uninstall-feedback" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="scholar-uninstall-feedback">
+          <input type="hidden" name="reason" id="uf-reason" value="">
+          <input type="hidden" name="version" id="uf-version" value="">
+          <p hidden><input name="bot-field" tabindex="-1" autocomplete="off"></p>
+          <label for="uf-comment">What would have made it worth keeping? <span class="deadline-opt">(optional)</span></label>
+          <textarea id="uf-comment" name="comment" rows="4" maxlength="1000" placeholder="For example: the badges were fine, but the page felt slower than before."></textarea>
+          <button type="submit" class="btn btn-primary">Send</button>
+          <p class="deadline-status" id="uf-status" aria-live="polite">No name or email is asked for. Please leave out personal details. Your choice above is already saved either way, and one person reads every comment.</p>
+        </form>
+        </div>
+        <p class="feedback-thanks" id="uf-done" role="status" tabindex="-1" hidden>Thank you. If you want a reply, email <a href="mailto:ben@purplelink.llc?subject=Scholar%20Utility%20Belt">ben@purplelink.llc</a>.</p>
       </section>
 
       <section class="kit-trust" aria-labelledby="back-h">
