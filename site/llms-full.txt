@@ -295,7 +295,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $19.99 to keep · v1.5.0
+Free 7-day trial · $19.99 to keep · v1.6.1
 
 # ModernTex
 
@@ -307,7 +307,7 @@ Refunded if you email within 14 days of purchase. Updates are included forever.
 
 From the studio behind Scholar Utility Belt, which 1,000 researchers use and the Chrome Web Store rates 4.5 out of 5.
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.4.0 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once. First ten minutes: install and first build.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.6.1 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once. First ten minutes: install and first build.
 
 ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.
 
@@ -447,9 +447,13 @@ AI featuresOptional. Fix with AI proposes a repair for a build error and shows i
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
-Current version1.5.0, which builds projects kept in iCloud Drive and OneDrive, flags a Figure that points at a table, suggests the label you meant, shows a checks summary in the status bar and saves automatic checkpoints. 1.4.0 made ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
+Current version1.6.1, which shortens the toolbar into Insert and Cite menus and a search field, keeps the Build Results panel closed until you open it, and marks the line of a build error in the editor with a one-click fix. 1.6.0 builds a PDF of your project with your edits marked since the last time you synced, and can mark what the last Get Changes brought in. 1.5.0 builds projects kept in iCloud Drive and OneDrive, flags a Figure that points at a table, suggests the label you meant, shows a checks summary in the status bar and saves automatic checkpoints. 1.4.0 made ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
 
-### Twelve updates since launch on September 4
+### Fourteen updates since launch on September 4
+
+- Oct 101.6.1A shorter toolbar with Insert and Cite menus; build errors marked in the editor with a one-click fix; Build Results stays closed until you open it.
+
+- Oct 91.6.0Changes Since Last Sync: a PDF with your edits marked since you last synced, and what the last Get brought in.
 
 - Oct 91.5.0Builds projects in iCloud Drive and OneDrive; catches a Figure that points at a table; checks summary in the status bar; automatic checkpoints.
 
@@ -481,7 +485,7 @@ Every update is included in the $19.99, forever, and the app installs it in plac
 
 Coming from Overleaf? What changes when you write locally, or see how the Mac LaTeX editors compare, including ModernTex against TeXShop and TeXstudio.
 
-Submitting soon? Work through the free submission checklist, or see a sample Paper Review report ($9, back in minutes).
+Submitting soon? Work through the free submission checklist, or try the free reference and retraction check on your PDF, and see a sample Paper Review report ($9, back in minutes).
 
 Comparison
 
@@ -1556,7 +1560,7 @@ Word (.docx) export with your own Word templates, short and one-page CV variants
 
 ### Revision workspace
 
-Splits a decision letter into reviewer points, tracks who answers each one, and exports the response letter.
+Splits a decision letter into reviewer points, tracks who answers each one, and exports the response letter. When the revision is ready, Revision Review ($2) checks whether the revised manuscript answers each point.
 
 ### Shareables
 
@@ -2849,6 +2853,10 @@ Build, verify, and convert reference lists across the major formats.
 
 Check citations for missing fields, dead DOIs, and AI hallucinations.
 
+### Retraction Checker
+
+Paste references or DOIs and check each against Crossref for retractions.
+
 ### BibTeX Builder
 
 Paste DOIs or arXiv IDs and download a ready-to-use .bib file.
@@ -3103,6 +3111,46 @@ See what it does
 Requires macOS 14 or later. Free 7-day trial, no account.
 
 If this saves you time, you can leave a tip. It helps keep these tools free and online.
+
+
+---
+
+Source: https://purplelink.llc/tools/retraction-check/
+Title: Retraction Checker: find retracted papers in a reference list | Purplelink
+
+← All tools
+
+Free web tool
+
+# Retraction Checker
+
+Paste a reference list, BibTeX or a list of DOIs. The tool asks Crossref, which carries Retraction Watch's data, whether any of them has been retracted or carries an expression of concern. Your list is not sent to Purplelink.
+
+## Questions
+
+Where does the retraction information come from?
+
+From Crossref, which carries Retraction Watch's database. A retracted work's record lists the retraction notice, and the tool reads that. Crossref only holds works registered with it, so a DOI from another registrar, a book or a web page may come back as not found.
+
+Does no result mean a paper is safe to cite?
+
+No. A retraction that is days or weeks old may not be in Crossref yet, and a paper can be unreliable without being retracted. Treat a clear result as one check, not a clearance.
+
+What should I do if a cited paper is retracted?
+
+Read the retraction notice. Do not cite the work as support for a claim. If you need to mention it, say that it was retracted and why. An expression of concern means the journal has doubts but has not retracted the paper, so check what the notice says before you rely on the result.
+
+Is my reference list sent to Purplelink?
+
+No. Your browser asks Crossref about each DOI and title, and Purplelink does not receive the list. Crossref, a public service, does see the DOIs and titles your browser asks about.
+
+Does it check references that have no DOI?
+
+Yes, up to 25 per run, by searching Crossref for the title and accepting only a close match. A DOI is more reliable, so add DOIs where you have them.
+
+Can it check a whole manuscript at once?
+
+The free preview on the Paper Review page does: upload a PDF or Word file and it checks the references and flags any retraction. A full review also checks whether each cited source supports the claim it is attached to.
 
 
 ---
@@ -6707,13 +6755,13 @@ Requires iOS 17 or later. The free version shows ads and its privacy label lists
 ---
 
 Source: https://purplelink.llc/guides/best-disk-space-analyzer-for-mac/
-Title: Best disk space analyzer and cleaner for Mac (2026) | Purplelink
+Title: Best disk space analyzer and cleaner for Mac (2026): DaisyDisk alternatives compared | Purplelink
 
 ← All guides
 
 Comparison
 
-# Best disk space analyzer and cleaner for Mac (2026)
+# Best disk space analyzer and cleaner for Mac (2026): DaisyDisk alternatives compared
 
 By Benjamin Ampel · October 4, 2026
 
@@ -7101,13 +7149,13 @@ Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 on
 ---
 
 Source: https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/
-Title: Best keyboard sound apps for Mac (2026) | Purplelink
+Title: Best keyboard sound apps for Mac (2026): Klack alternatives compared | Purplelink
 
 ← All guides
 
 Comparison
 
-# Best keyboard sound apps for Mac (2026)
+# Best keyboard sound apps for Mac (2026): Klack alternatives compared
 
 By Benjamin Ampel · October 7, 2026
 
