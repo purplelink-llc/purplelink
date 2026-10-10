@@ -229,9 +229,17 @@ MAX_REFERENCES_BLOB_CHARS = 200_000
 MAX_BODY_CHARS = 80_000
 
 # Output token caps per persona — bound spend even on pathological inputs.
-PERSONA_MAX_OUTPUT_TOKENS = 4_000
-RECTIFY_MAX_OUTPUT_TOKENS = 7_500   # was 6_000 before the Claims and Evidence table
-L1_MAX_OUTPUT_TOKENS = 3_000
+# Output caps. The 5.x models think before they answer and thinking counts against max_tokens: a persona review
+# takes 5,000 to 6,000 tokens, so the old 4,000 cap stopped at max_tokens, cut the JSON off and parsed to zero
+# findings (measured 2026-10-09 on Opus 5.5 and Sonnet 5.5: 4,000 -> 0 findings, 12,000 -> 12). A cap is only a
+# ceiling, so raising it costs nothing on calls that finish sooner. Non-streaming calls have a 300 s read
+# timeout; 12,000 tokens takes about 40 to 150 s depending on the model.
+PERSONA_MAX_OUTPUT_TOKENS = 12_000
+RECTIFY_MAX_OUTPUT_TOKENS = 12_000   # was 6_000, then 7_500 for the Claims and Evidence table
+L1_MAX_OUTPUT_TOKENS = 6_000
+# The persona and deep-pass calls run on Opus 5.5: on a planted-defect test it caught 5 of 5 with no invented
+# quotes at about a third of Fable's cost, and it did not refuse biology content. Override with PERSONA_MODEL.
+PERSONA_MODEL = os.environ.get("PERSONA_MODEL", "claude-opus-5-5")
 
 # Imported lazily inside functions where needed to avoid circular imports
 # during module collection. The safety module is dependency-free so this
@@ -1890,6 +1898,7 @@ async def _run_one_persona(
             system=system,
             user_content=user_content,
             max_tokens=PERSONA_MAX_OUTPUT_TOKENS,
+            model=PERSONA_MODEL,
         )
     except Exception:
         logger.exception("persona %s failed", persona_key)
@@ -2032,6 +2041,7 @@ async def _run_one_persona_deep(
             system=system,
             user_content=base_user,
             max_tokens=PERSONA_MAX_OUTPUT_TOKENS,
+            model=PERSONA_MODEL,
         )
     except Exception:
         logger.exception("deep-pass persona %s failed", persona_key)
