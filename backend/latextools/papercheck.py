@@ -58,6 +58,11 @@ FALLBACK_MODEL = os.environ.get("ANTHROPIC_FALLBACK_MODEL", "claude-opus-4-8")
 # $ per million tokens, base (non-cached) rates. Used only for cost
 # estimation/logging (UsageTracker below) — never sent to the API.
 MODEL_PRICING_PER_MTOK: dict[str, dict[str, float]] = {
+    # 5.x family, per OpenRouter's catalogue on 2026-10-09 (Haiku 5.5 is 10x cheaper than Haiku 4.5).
+    "claude-fable-5-1": {"input": 10.0, "output": 50.0},
+    "claude-opus-5-5": {"input": 4.0, "output": 20.0},
+    "claude-sonnet-5-5": {"input": 2.0, "output": 10.0},
+    "claude-haiku-5-5": {"input": 0.10, "output": 0.50},
     "claude-fable-5": {"input": 10.0, "output": 50.0},
     "claude-opus-4-8": {"input": 5.0, "output": 25.0},
     "claude-sonnet-4-5": {"input": 3.0, "output": 15.0},
@@ -70,6 +75,13 @@ MODEL_PRICING_PER_MTOK: dict[str, dict[str, float]] = {
 # silently ignoring it. Omit the field entirely for these; every other
 # model in MODEL_PRICING_PER_MTOK still gets our low-temperature setting.
 MODELS_WITHOUT_TEMPERATURE = {"claude-fable-5", "claude-mythos-5"}
+# Every 5.x model rejects `temperature` (verified 2026-10-09 against opus, sonnet and haiku 5.5, as with
+# Fable 5): the 400 would otherwise be treated as a model rejection and silently fall back to FALLBACK_MODEL.
+_NO_TEMPERATURE_RE = re.compile(r"^claude-(?:fable|mythos|opus|sonnet|haiku)-5(?:-\d+)?$")
+
+
+def accepts_temperature(model: str) -> bool:
+    return model not in MODELS_WITHOUT_TEMPERATURE and not _NO_TEMPERATURE_RE.match(model or "")
 
 
 def _cost_usd(model: str, input_tokens: int, output_tokens: int) -> float:
@@ -1132,7 +1144,7 @@ async def _anthropic_message_once(
         "system": system,
         "messages": [{"role": "user", "content": user_content}],
     }
-    if model not in MODELS_WITHOUT_TEMPERATURE:
+    if accepts_temperature(model):
         body["temperature"] = temperature
     headers = {
         "x-api-key": api_key,

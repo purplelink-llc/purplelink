@@ -239,3 +239,21 @@ def test_preview_does_not_flag_a_retraction_when_the_doi_names_another_paper():
 
     res = _run(go())[0]
     assert res["status"] == "doi_mismatch" and "retraction" not in res
+
+
+# ---- model parameters (found while benchmarking Haiku 5.5, 2026-10-09) -----------------------
+
+def test_every_5x_model_is_sent_no_temperature_and_older_ones_still_get_it():
+    from latextools import papercheck as p
+    for m in ("claude-fable-5", "claude-fable-5-1", "claude-opus-5", "claude-opus-5-5",
+              "claude-sonnet-5", "claude-sonnet-5-5", "claude-haiku-5-5", "claude-mythos-5"):
+        assert p.accepts_temperature(m) is False, m
+    for m in ("claude-opus-4-8", "claude-sonnet-4-6", "claude-haiku-4-5-20251001", "claude-opus-4-5-20251101"):
+        assert p.accepts_temperature(m) is True, m
+
+
+def test_the_5_5_models_are_priced_and_do_not_fall_back_to_fable_rates():
+    from latextools import papercheck as p
+    assert p._cost_usd("claude-haiku-5-5", 1_000_000, 1_000_000) == 0.60
+    assert p._cost_usd("claude-sonnet-5-5", 1_000_000, 0) == 2.0
+    assert p._cost_usd("claude-unknown-9", 1_000_000, 0) == 10.0     # unknown still looks expensive, never free
