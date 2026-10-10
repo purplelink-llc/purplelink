@@ -257,3 +257,35 @@ def test_the_5_5_models_are_priced_and_do_not_fall_back_to_fable_rates():
     assert p._cost_usd("claude-haiku-5-5", 1_000_000, 1_000_000) == 0.60
     assert p._cost_usd("claude-sonnet-5-5", 1_000_000, 0) == 2.0
     assert p._cost_usd("claude-unknown-9", 1_000_000, 0) == 10.0     # unknown still looks expensive, never free
+
+
+def test_a_refusal_stop_falls_back_to_the_fallback_model(monkeypatch):
+    """Fable returned stop_reason 'refusal' (category bio) with no text on biochemistry batches. That must
+    count as a model-level failure so the caller retries on FALLBACK_MODEL, not as an empty result."""
+    import asyncio
+    import httpx
+    from latextools import papercheck as p
+
+    seen = []
+
+    def handler(request):
+        import json
+        model = json.loads(request.content)["model"]
+        seen.append(model)
+        if model == "claude-fable-5":
+            return httpx.Response(200, json={"content": [], "stop_reason": "refusal",
+                                             "stop_details": {"type": "refusal", "category": "bio"},
+                                             "usage": {"input_tokens": 100, "output_tokens": 0}})
+        return httpx.Response(200, json={"content": [{"type": "text", "text": "answer"}], "stop_reason": "end_turn",
+                                         "usage": {"input_tokens": 100, "output_tokens": 5}})
+
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test")
+
+    async def go():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as c:
+            return await p._anthropic_message(c, system="s", user_content=[{"type": "text", "text": "u"}],
+                                              max_tokens=50, model="claude-fable-5")
+
+    assert asyncio.run(go()) == "answer"
+    assert seen == ["claude-fable-5", p.FALLBACK_MODEL]
+    assert p.FALLBACK_MODEL == "claude-opus-5-5"

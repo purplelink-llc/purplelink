@@ -3,12 +3,11 @@
 """Which Claude model should judge citation support in Paper Review?
 
 THIS COSTS REAL MONEY WHEN RUN (about $6 at 60 abstracts, mostly the production
-default model) AND IT USES THE PRODUCTION `anthropic-secret`. On 2026-10-09 two runs
-used up the account's prepaid credit and stopped the daily digest cron until it was
-topped up. Check the Anthropic credit balance first, keep N_ABSTRACTS small, or point
-the secret at a separate key. It runs on Modal, so no key is needed locally:
+default model). Give it a SEPARATE key with spare credit: on 2026-10-09 two runs on the
+production key used up its prepaid credit and stopped the daily digest cron. The key is
+read from BENCH_ANTHROPIC_KEY and sent to Modal as an inline secret:
 
-    cd backend && python3 -m modal run benchmark/citation_audit_models.py
+    cd backend && BENCH_ANTHROPIC_KEY=... N_ABSTRACTS=30 python3 -m modal run benchmark/citation_audit_models.py
 
 What it does
   1. Samples real, public abstracts from OpenAlex (a seeded random sample).
@@ -44,7 +43,12 @@ IMAGE = (
     .pip_install("httpx==0.27.2", "pdfplumber>=0.11,<1", "pdf2image>=1.17,<2", "pillow>=10,<12", "pypdf>=4.3,<6")
     .add_local_python_source("latextools")
 )
-SECRETS = [modal.Secret.from_name("anthropic-secret")]
+# The key is passed at launch (BENCH_ANTHROPIC_KEY) and travels as an inline secret: nothing is stored in Modal
+# and the production `anthropic-secret` is never touched. The object is defined unconditionally so the
+# container sees the same one (its contents only matter locally).
+if modal.is_local() and not os.environ.get("BENCH_ANTHROPIC_KEY"):
+    raise SystemExit("Set BENCH_ANTHROPIC_KEY to a key with spare credit (not the production key).")
+SECRETS = [modal.Secret.from_dict({"ANTHROPIC_API_KEY": os.environ.get("BENCH_ANTHROPIC_KEY", "")})]
 
 stub = modal.App("citation-audit-model-benchmark")
 
@@ -64,10 +68,10 @@ LABELS = {
     "contradicted": "Contradicted",
     "unsupported": "Not supported by abstract",
 }
-N_ABSTRACTS = int(os.environ.get("N_ABSTRACTS", "40"))
-JUDGE_MAX_TOKENS = int(os.environ.get("JUDGE_MAX_TOKENS", "4000"))   # production uses 1500
+N_ABSTRACTS = 40
+JUDGE_MAX_TOKENS = 4000   # production uses 1500
 BATCH = 8
-BUDGET_USD = 8.0
+BUDGET_USD = 5.0
 
 GEN_SYSTEM = (
     "You write test items for evaluating a citation checker. You are given the abstract of a real paper. "
@@ -84,6 +88,9 @@ GEN_SYSTEM = (
 )
 
 
+EFFORT = None   # set per run; "low" | "medium" | "high" | None (the API default)
+
+
 async def _call(client, model, system, user, max_tokens, spend):
     """One Anthropic messages call with transient-error retries. Returns
     (text, usage, seconds, echoed_model) or raises RuntimeError with the API's message."""
@@ -92,6 +99,8 @@ async def _call(client, model, system, user, max_tokens, spend):
 
     body = {"model": model, "max_tokens": max_tokens, "system": system,
             "messages": [{"role": "user", "content": [{"type": "text", "text": user}]}]}
+    if EFFORT:
+        body["output_config"] = {"effort": EFFORT}
     # No temperature: every 5.x model rejects the field, so all candidates run at their default
     # (production sends 0.1 only to models that still accept it).
     headers = {"x-api-key": os.environ["ANTHROPIC_API_KEY"], "anthropic-version": "2023-06-01",
@@ -111,12 +120,16 @@ async def _call(client, model, system, user, max_tokens, spend):
         spend["usd"] += (u.get("input_tokens", 0) * pin + u.get("output_tokens", 0) * pout) / 1e6
         if spend["usd"] > BUDGET_USD:
             raise RuntimeError(f"budget guard: spent ${spend['usd']:.2f} > ${BUDGET_USD}")
-        return text, u, time.time() - t, d.get("model", model), d.get("stop_reason")
+        return text, u, time.time() - t, d.get("model", model), (d.get("stop_reason"), d.get("stop_details"))
     raise RuntimeError("too many transient errors")
 
 
 @stub.function(image=IMAGE, secrets=SECRETS, timeout=3000, cpu=2.0, memory=2048)
-def run() -> dict:
+def run(n_abstracts: int = N_ABSTRACTS, models: list | None = None, judge_cap: int = JUDGE_MAX_TOKENS,
+        budget_usd: float = BUDGET_USD, effort: str | None = None) -> dict:
+    global BUDGET_USD, JUDGE_MAX_TOKENS, CANDIDATES, EFFORT
+    BUDGET_USD, JUDGE_MAX_TOKENS, EFFORT = budget_usd, judge_cap, effort
+    CANDIDATES = models or CANDIDATES
     import asyncio
     import json
     import random
@@ -147,7 +160,7 @@ def run() -> dict:
                 if text and 500 <= len(text) <= 1800 and text.isascii():
                     topic = ((w.get("primary_topic") or {}).get("field") or {}).get("display_name", "")
                     abstracts.append({"id": w["id"], "text": text, "field": topic})
-            abstracts = abstracts[:N_ABSTRACTS]
+            abstracts = abstracts[:n_abstracts]
 
             # 2. Labelled claims -----------------------------------------------------------------
             sem = asyncio.Semaphore(6)
@@ -194,6 +207,7 @@ def run() -> dict:
                 toks_in = toks_out = 0
                 lats, errors, seen_models = [], [], set()
                 stops = Counter()
+                refusals = []
                 unparsed_calls = 0
                 bsem = asyncio.Semaphore(4)
 
@@ -210,7 +224,10 @@ def run() -> dict:
                             errors.append(str(e)[:200])
                             return
                     toks_in += u.get("input_tokens", 0); toks_out += u.get("output_tokens", 0)
-                    lats.append(secs); seen_models.add(echoed); stops[stop] += 1
+                    lats.append(secs); seen_models.add(echoed); stops[stop[0]] += 1
+                    if stop[0] == "refusal":
+                        refusals.append({"details": stop[1], "fields": [it["abstract"]["field"] for it in batch],
+                                         "labels": [it["label"] for it in batch], "out_tokens": u.get("output_tokens")})
                     parsed = _parse_json_findings(raw)
                     if not parsed:
                         nonlocal_unparsed.append(1)
@@ -221,16 +238,34 @@ def run() -> dict:
                             preds[start + i] = ca._clamp_verdict(o.get("verdict"))
 
                 await asyncio.gather(*[one(s) for s in range(0, len(items), BATCH)])
-                return model, preds, toks_in, toks_out, lats, errors, seen_models, stops, len(nonlocal_unparsed)
+                return model, preds, toks_in, toks_out, lats, errors, seen_models, stops, len(nonlocal_unparsed), refusals
 
             outs = await asyncio.gather(*[judge(m) for m in CANDIDATES])
+
+            # 3b. What happens at the PRODUCTION output cap (1500 tokens)? First three batches per model.
+            async def cap_check(model):
+                res = {"batches": 0, "stop_reasons": Counter(), "parsed_items": 0, "out_tokens": []}
+                for start in range(0, min(len(items), 3 * BATCH), BATCH):
+                    batch = items[start:start + BATCH]
+                    pairs = [(ca.ClaimCitation(claim_sentence=it["claim"], ref_keys=["1"]),
+                              ca.SourceAbstract(ref_key="1", status="ok", text=it["abstract"]["text"])) for it in batch]
+                    try:
+                        raw, u, _, _, stop = await _call(client, model, ca._ASSESS_SYSTEM, ca._build_assess_prompt(pairs), 1500, spend)
+                    except Exception as e:
+                        res["error"] = str(e)[:160]; break
+                    res["batches"] += 1; res["stop_reasons"][stop[0]] += 1; res["out_tokens"].append(u.get("output_tokens"))
+                    res["parsed_items"] += len([o for o in _parse_json_findings(raw) if isinstance(o, dict)])
+                res["stop_reasons"] = dict(res["stop_reasons"])
+                return model, res
+
+            cap_results = dict(await asyncio.gather(*[cap_check(m) for m in CANDIDATES]))
 
             # 4. Report --------------------------------------------------------------------------
             truth = [it["label"] for it in items]
             classes = list(LABELS.values())
             report = {"id_check": id_check, "models_listed": listed, "gen_errors": gen_errors[:3], "n_abstracts": len(abstracts), "n_items": len(items), "generation_usd": round(gen_usd, 3),
                       "fields": dict(Counter(a["field"] for a in abstracts).most_common(8)), "models": {}}
-            for model, preds, ti, to, lats, errors, seen, stops, n_unparsed in outs:
+            for model, preds, ti, to, lats, errors, seen, stops, n_unparsed, refusals in outs:
                 answered = [(t, p) for t, p in zip(truth, preds) if p is not None]
                 acc = sum(t == p for t, p in answered) / max(1, len(answered))
                 recall = {c: round(sum(1 for t, p in answered if t == c and p == c) / max(1, sum(1 for t, _ in answered if t == c)), 3) for c in classes}
@@ -243,7 +278,7 @@ def run() -> dict:
                 caught = sum(1 for t, p in bad if p != "Supported") / max(1, len(bad))
                 pin, pout = PRICES[model]
                 report["models"][model] = {
-                    "echoed_model": sorted(seen), "stop_reasons": dict(stops), "calls_with_no_parseable_json": n_unparsed, "judge_max_tokens": JUDGE_MAX_TOKENS, "answered": len(answered), "unparsed_or_failed": len(items) - len(answered),
+                    "echoed_model": sorted(seen), "stop_reasons": dict(stops), "refusals": refusals[:6], "calls_with_no_parseable_json": n_unparsed, "judge_max_tokens": JUDGE_MAX_TOKENS, "effort": EFFORT, "answered": len(answered), "unparsed_or_failed": len(items) - len(answered),
                     "errors": errors[:2], "accuracy": round(acc, 3), "recall": recall,
                     "false_flag_rate_on_supported": round(false_flag, 3), "problem_detection_recall": round(caught, 3),
                     "contradicted_recall": recall["Contradicted"],
@@ -259,6 +294,7 @@ def run() -> dict:
             report["agreement_with_fable"] = {
                 m: round(sum(1 for a, b in zip(pm["claude-fable-5"], pm[m]) if a is not None and a == b) / max(1, sum(1 for a in pm["claude-fable-5"] if a is not None)), 3)
                 for m in ids if m != "claude-fable-5"}
+            report["production_cap_check_1500_tokens"] = cap_results
             report["total_usd"] = round(spend["usd"], 2)
             report["samples"] = [{"label": it["label"], "claim": it["claim"], "abstract_start": it["abstract"]["text"][:160]}
                                  for it in items[:6]]
@@ -270,4 +306,8 @@ def run() -> dict:
 @stub.local_entrypoint()
 def entry():
     import json
-    print(json.dumps(run.remote(), indent=1))
+    models = [m for m in os.environ.get("BENCH_MODELS", "").split(",") if m] or None
+    print(json.dumps(run.remote(n_abstracts=int(os.environ.get("N_ABSTRACTS", N_ABSTRACTS)), models=models,
+                                judge_cap=int(os.environ.get("JUDGE_MAX_TOKENS", JUDGE_MAX_TOKENS)),
+                                budget_usd=float(os.environ.get("BENCH_BUDGET_USD", BUDGET_USD)),
+                                effort=os.environ.get("BENCH_EFFORT") or None), indent=1))

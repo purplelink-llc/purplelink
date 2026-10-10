@@ -53,7 +53,7 @@ DEFAULT_MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-fable-5")
 # once against this model rather than failing the whole review. Does NOT
 # apply to transient issues (429/529/timeouts) — those are already retried
 # against the same model inside the per-request retry loop.
-FALLBACK_MODEL = os.environ.get("ANTHROPIC_FALLBACK_MODEL", "claude-opus-4-8")
+FALLBACK_MODEL = os.environ.get("ANTHROPIC_FALLBACK_MODEL", "claude-opus-5-5")
 
 # $ per million tokens, base (non-cached) rates. Used only for cost
 # estimation/logging (UsageTracker below) — never sent to the API.
@@ -1208,6 +1208,14 @@ async def _anthropic_message_once(
             "output_tokens": int(usage.get("output_tokens", 0) or 0),
         }
         text = "".join(parts).strip()
+        if data.get("stop_reason") == "refusal":
+            # The model declined the request outright (Fable refuses some biology, genetics and
+            # chemistry content with category "bio"), returning no text. That is a model-level
+            # failure, so let the caller fall back to FALLBACK_MODEL instead of treating the empty
+            # answer as a result. Seen on 2026-10-09 benchmarking batches of biochemistry abstracts.
+            details = data.get("stop_details") or {}
+            logger.warning("anthropic refusal: model=%s category=%r", model, details.get("category"))
+            raise _ModelRejectedError(f"refusal: {details.get('category') or 'unknown'}")
         if not text:
             # Only text blocks are collected above, so a response carrying no
             # text block returns "" and callers cannot tell an empty answer

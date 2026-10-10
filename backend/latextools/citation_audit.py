@@ -16,17 +16,24 @@ from __future__ import annotations
 import asyncio
 import dataclasses
 import logging
+import os
 import re
 from dataclasses import dataclass, field
 from typing import Optional
 
 from latextools import safety as _safety
-from .papercheck import _anthropic_message, _parse_json_findings
+from .papercheck import DEFAULT_MODEL, _anthropic_message, _parse_json_findings
 
 logger = logging.getLogger(__name__)
 
 MAX_AUDIT_PAIRS = 40
 ASSESS_BATCH_SIZE = 8
+# Eight verdicts with a quote and a rationale each run 1,100 to 1,500+ output tokens on the 5.x models; a
+# 1,500 cap truncated most batches on 2026-10-09 (the JSON then failed to parse and every item in the batch
+# became "Source unavailable"). Set CITATION_AUDIT_MODEL to run this layer on a cheaper model, for example
+# claude-haiku-5-5, which benchmarked at about a hundredth of Fable's cost on this task.
+ASSESS_MAX_TOKENS = 4000
+ASSESS_MODEL = os.environ.get("CITATION_AUDIT_MODEL", DEFAULT_MODEL)
 VERDICTS = (
     "Supported",
     "Partially supported",
@@ -352,6 +359,33 @@ def _build_assess_prompt(batch: list) -> str:
     return "\n\n".join(lines)
 
 
+async def _assess_batch(client, batch: list, depth: int = 0) -> dict:
+    """Verdict objects for one batch, keyed by index within the batch. Items that come back without a
+    verdict (an unparseable or truncated answer, a refusal, an API error) are asked again once, in two
+    smaller batches, so one bad response does not blank eight citations. Never raises."""
+    try:
+        raw = await _anthropic_message(
+            client,
+            system=_ASSESS_SYSTEM,
+            user_content=[{"type": "text", "text": _build_assess_prompt(batch)}],
+            max_tokens=ASSESS_MAX_TOKENS,
+            model=ASSESS_MODEL,
+        )
+        parsed = _parse_json_findings(raw)
+        by_index = {int(o.get("index", -1)): o for o in parsed if isinstance(o, dict)}
+    except Exception:
+        by_index = {}
+    missing = [i for i in range(len(batch)) if i not in by_index]
+    if missing and depth == 0 and len(batch) > 1:
+        sub = [batch[i] for i in missing]
+        mid = (len(sub) + 1) // 2
+        for offset, chunk in ((0, sub[:mid]), (mid, sub[mid:])):
+            if chunk:
+                for j, o in (await _assess_batch(client, chunk, depth=1)).items():
+                    by_index[missing[offset + j]] = o
+    return by_index
+
+
 async def assess_claims(client, pairs: list) -> list:
     """Assess (ClaimCitation, SourceAbstract) pairs into AuditFindings.
 
@@ -377,17 +411,7 @@ async def assess_claims(client, pairs: list) -> list:
 
     for start in range(0, len(assessable), ASSESS_BATCH_SIZE):
         batch = assessable[start:start + ASSESS_BATCH_SIZE]
-        try:
-            raw = await _anthropic_message(
-                client,
-                system=_ASSESS_SYSTEM,
-                user_content=[{"type": "text", "text": _build_assess_prompt(batch)}],
-                max_tokens=1500,
-            )
-            parsed = _parse_json_findings(raw)
-            by_index = {int(o.get("index", -1)): o for o in parsed if isinstance(o, dict)}
-        except Exception:
-            by_index = {}
+        by_index = await _assess_batch(client, batch)
         for i, (claim, src) in enumerate(batch):
             o = by_index.get(i)
             if o is None:

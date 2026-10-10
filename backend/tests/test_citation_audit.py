@@ -353,3 +353,66 @@ def test_source_abstract_added_to_our_tags():
     from latextools import safety as _safety
     assert "source_abstract" in _safety._OUR_TAGS
     assert "claim" in _safety._OUR_TAGS
+
+
+# ---- truncation, refusal and retry (found benchmarking 2026-10-09) -----------------------
+
+def _pairs(n):
+    return [(ca.ClaimCitation(f"Claim {i} [1].", ["1"]), ca.SourceAbstract(ref_key="1", text=f"abstract {i}", status="ok"))
+            for i in range(n)]
+
+
+def test_the_output_cap_is_room_for_eight_verdicts_and_the_model_is_configurable(monkeypatch):
+    assert ca.ASSESS_MAX_TOKENS >= 3000
+    seen = {}
+
+    async def _fake(client, system, user_content, max_tokens, **k):
+        seen.update(max_tokens=max_tokens, model=k.get("model"))
+        return '[{"index": 0, "verdict": "Supported", "rationale": "ok"}]'
+
+    monkeypatch.setattr(ca, "_anthropic_message", _fake)
+    monkeypatch.setattr(ca, "ASSESS_MODEL", "claude-haiku-5-5")
+    asyncio.run(ca.assess_claims(object(), _pairs(1)))
+    assert seen == {"max_tokens": ca.ASSESS_MAX_TOKENS, "model": "claude-haiku-5-5"}
+
+
+def test_a_truncated_batch_is_retried_in_halves_instead_of_blanking_every_item(monkeypatch):
+    calls = []
+
+    async def _fake(client, system, user_content, max_tokens, **k):
+        n = user_content[0]["text"].count("CLAIM:")
+        calls.append(n)
+        if n == 8:
+            return '[{"index": 0, "verdict": "Supported", "rationale": "cut off'      # truncated JSON
+        return "[" + ",".join(f'{{"index": {i}, "verdict": "Contradicted", "rationale": "r"}}' for i in range(n)) + "]"
+
+    monkeypatch.setattr(ca, "_anthropic_message", _fake)
+    findings = asyncio.run(ca.assess_claims(object(), _pairs(8)))
+    assert calls == [8, 4, 4]
+    assert [f.verdict for f in findings] == ["Contradicted"] * 8
+    assert [f.claim_sentence for f in findings] == [f"Claim {i} [1]." for i in range(8)]   # order preserved
+
+
+def test_only_the_missing_items_are_asked_again(monkeypatch):
+    calls = []
+
+    async def _fake(client, system, user_content, max_tokens, **k):
+        text = user_content[0]["text"]
+        calls.append(text.count("CLAIM:"))
+        if len(calls) == 1:   # answers items 0, 1, 2, 4, 5 of 6
+            return "[" + ",".join(f'{{"index": {i}, "verdict": "Supported", "rationale": "r"}}' for i in (0, 1, 2, 4, 5)) + "]"
+        return "[" + ",".join(f'{{"index": {i}, "verdict": "Partially supported", "rationale": "r"}}' for i in range(text.count("CLAIM:"))) + "]"
+
+    monkeypatch.setattr(ca, "_anthropic_message", _fake)
+    findings = asyncio.run(ca.assess_claims(object(), _pairs(6)))
+    assert calls == [6, 1]
+    assert [f.verdict for f in findings] == ["Supported", "Supported", "Supported", "Partially supported", "Supported", "Supported"]
+
+
+def test_a_batch_that_keeps_failing_ends_as_source_unavailable_without_raising(monkeypatch):
+    async def _boom(*a, **k):
+        raise RuntimeError("refusal: bio")
+
+    monkeypatch.setattr(ca, "_anthropic_message", _boom)
+    findings = asyncio.run(ca.assess_claims(object(), _pairs(3)))
+    assert [f.verdict for f in findings] == ["Source unavailable"] * 3
