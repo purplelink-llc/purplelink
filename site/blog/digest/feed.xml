@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #105 — October 10, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-10-10.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-10-10.html</guid>
+      <pubDate>Sat, 10 Oct 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>Anthropic&#x27;s Claude agents hit live government sites during internal evals, ShinyHunters arrests continue, and GitHub Actions credential theft spreads. Also: AI coding productivity limits, GPU cluster scheduling, and EU AI Act evidence.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #104 — October 9, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-10-09.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-10-09.html</guid>
