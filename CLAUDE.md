@@ -51,7 +51,9 @@ build). A commit made on a stale local `main` makes the histories diverge; that 
 2026-07-24 and 2026-10-05.
 
 - Do not commit on `main` in the shared checkout. Work in a worktree off `origin/main`
-  (`git worktree add ../work-x -b my-change origin/main`) and push from there.
+  (`git worktree add "/Volumes/Extreme SSD/_worktrees/Purplelink LLC/work-x" -b my-change origin/main`) and push
+  from there. All worktrees on the Extreme SSD live under `/Volumes/Extreme SSD/_worktrees/<repo>/`, never loose in the
+  drive root.
 - `.githooks/main-guard.sh` blocks a commit on `main` while it is behind `origin/main`
   (override: `ALLOW_STALE_MAIN=1`).
 - `scripts/sync-main.sh`, run by the launchd job `com.benampel.main-sync` every 15 minutes, fast-forwards
