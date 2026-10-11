@@ -91,6 +91,22 @@ def password(account, service):
 
 
 CLEAN_SET = WS / "clean-upload-set.json"
+CATEGORIES = WS / "alamy-categories.json"
+
+
+def dreamstime_lifestyle_files():
+    """Filenames labelled "Lifestyle" in alamy-categories.json.
+
+    Skip rule added 2026-10-10: Dreamstime refused 27 of 32 Lifestyle photos (84%)
+    against 31% of the other 538 in the CSV, and the gap holds within each rating
+    and capture year. Their refusal text is generic, so this is a pattern in how
+    Dreamstime treats these files, not a diagnosis. Re-enable with
+    --include-dreamstime-lifestyle. Fails loudly if the label file is missing, so
+    the rule can't silently stop working."""
+    if not CATEGORIES.exists():
+        sys.exit(f"ERROR: {CATEGORIES} not found, so the Dreamstime Lifestyle skip rule can't run.\n"
+                 "Run from the main checkout, or pass --include-dreamstime-lifestyle to upload without the rule.")
+    return {fn for fn, c in json.loads(CATEGORIES.read_text()).items() if c == "Lifestyle"}
 
 
 def eligible(min_mp):
@@ -137,6 +153,8 @@ def main():
     ap.add_argument("--only", help="JSON list of filenames: restrict the upload to these")
     ap.add_argument("--shard", help="K/N: upload only every Nth file starting at K, so N copies can run at once "
                                     "(each keeps its own state file; needed when per-file latency, not bandwidth, is the limit)")
+    ap.add_argument("--include-dreamstime-lifestyle", action="store_true",
+                    help="turn OFF the Dreamstime skip rule for photos labelled Lifestyle (see dreamstime_lifestyle_files)")
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--status", action="store_true")
     a = ap.parse_args()
@@ -162,6 +180,12 @@ def main():
 
     rows = eligible(cfg["min_mp"])
     names = [r["filename"] for r in rows]
+    if a.agency == "dreamstime" and not a.include_dreamstime_lifestyle:
+        skip = dreamstime_lifestyle_files()
+        skipped = [n for n in names if n in skip]
+        names = [n for n in names if n not in skip]
+        print(f"  dreamstime Lifestyle skip rule: {len(skipped)} file(s) left out "
+              "(--include-dreamstime-lifestyle to override)")
     if a.only:
         allow = set(json.loads(Path(a.only).read_text()))
         names = [n for n in names if n in allow]
