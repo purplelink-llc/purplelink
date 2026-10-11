@@ -1090,6 +1090,84 @@ def launch_chrome(headless=True):
     raise RuntimeError("Chrome did not open its debug port")
 
 
+# FAA and Getty ESP keep their login in session-only cookies (PHPSESSID, unisess), and Chrome drops
+# those whenever it quits, so both needed a fresh sign-in every day (Ben, 2026-10-10). Keep a copy of
+# just those platforms' cookies, written only after a run in which they read fine, and put them back
+# before the next run. No password is involved. File is outside the repo, owner-readable only.
+SESSION_COOKIE_FILE = Path.home() / ".purplelink" / "session-cookies.json"
+SESSION_COOKIE_SITES = {"fineartamerica": ("fineartamerica.com",), "getty": ("gettyimages.com",),
+                        "getty_stats": ("gettyimages.com",)}
+SESSION_COOKIE_DAYS = 30
+
+
+def _cookie_domains(platforms):
+    return sorted({d for k in platforms for d in SESSION_COOKIE_SITES.get(k, ())})
+
+
+def save_session_cookies(platforms):
+    """Save the cookies of the given platforms (names whose read just succeeded or were just signed in)."""
+    domains = _cookie_domains(platforms)
+    if not domains:
+        return
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from cdp_tab import Tab
+        t = Tab.new(background=True)
+        try:
+            allc = t.send("Network.getAllCookies").get("cookies", [])
+        finally:
+            t.close()
+        keep = [c for c in allc if any(c["domain"].lstrip(".").endswith(d) for d in domains)]
+        try:
+            old = json.loads(SESSION_COOKIE_FILE.read_text())
+        except Exception:
+            old = {}
+        old.update({d: [c for c in keep if c["domain"].lstrip(".").endswith(d)] for d in domains})
+        SESSION_COOKIE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        tmp = SESSION_COOKIE_FILE.with_suffix(".tmp")
+        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "w") as fh:
+            json.dump(old, fh)
+        os.replace(tmp, SESSION_COOKIE_FILE)
+        print(f"  saved login cookies for {', '.join(domains)} ({sum(len(v) for v in old.values())} cookies)", flush=True)
+    except Exception as e:
+        print(f"  WARN save cookies: {type(e).__name__}: {e}", flush=True)
+
+
+def restore_session_cookies():
+    """Put back saved session-only cookies that Chrome dropped. Never overwrites a cookie Chrome has now."""
+    try:
+        saved = json.loads(SESSION_COOKIE_FILE.read_text())
+    except Exception:
+        return
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from cdp_tab import Tab
+        t = Tab.new(background=True)
+        try:
+            have = {(c["name"], c["domain"], c["path"]) for c in t.send("Network.getAllCookies").get("cookies", [])}
+            n = 0
+            for cookies in saved.values():
+                for c in cookies:
+                    if (c["name"], c["domain"], c["path"]) in have:
+                        continue
+                    p = {k: c[k] for k in ("name", "value", "domain", "path", "secure", "httpOnly", "sameSite") if k in c}
+                    # Session-only cookies get a real expiry; persistent ones keep theirs.
+                    exp = c.get("expires", -1)
+                    p["expires"] = exp if exp and exp > 0 else time.time() + SESSION_COOKIE_DAYS * 86400
+                    if p["expires"] < time.time():
+                        continue
+                    if t.send("Network.setCookie", **p).get("success"):
+                        n += 1
+        finally:
+            t.close()
+        if n:
+            print(f"  restored {n} saved login cookie(s)", flush=True)
+    except Exception as e:
+        print(f"  WARN restore cookies: {type(e).__name__}: {e}", flush=True)
+
+
+
 def quit_chrome(proc):
     """Terminate gracefully so Chrome flushes cookies. A hard kill loses the
     session and the next run reports everything as signed out."""
@@ -1474,6 +1552,7 @@ def _run_inner(state, headless=True, auto_login=True, login_budget_s=300, includ
     up = wait_for_cdp(3)
     state["proc"] = None if up else launch_chrome(headless=False if auto_login else headless)
     chrome_launched = not up
+    restore_session_cookies()
     chrome_lock = threading.Lock()
     pages, needs_login = {}, []
     transient_fail = []
@@ -1611,6 +1690,7 @@ def _run_inner(state, headless=True, auto_login=True, login_budget_s=300, includ
             print(f"  ledger {line}", flush=True)
     except Exception as e:
         print(f"  WARN sales ledgers: {type(e).__name__}: {e}", flush=True)
+    save_session_cookies([k for k, v in entry["platforms"].items() if v.get("ok")])
     quit_chrome(state["proc"])
     hist = save_entry(entry)
     entry = next(h for h in hist if h["date"] == entry["date"])      # the merged day
@@ -1686,8 +1766,12 @@ def login():
         browser = p.chromium.connect_over_cdp(f"http://127.0.0.1:{CDP_PORT}")
         ctx = browser.contexts[0]
         for _name, url in tabs:
-            ctx.new_page().goto(url)
+            try:
+                ctx.new_page().goto(url, wait_until="commit", timeout=30_000)
+            except Exception as e:   # a redirecting sign-in page (Adobe) aborts the first navigation; the tab is still open
+                print(f"  (tab for {url}: {type(e).__name__}, leaving it open)")
         input("\nPress Enter here once you've signed in to all of them...")
+    save_session_cookies(["fineartamerica", "getty"])
     # graceful quit so the cookies actually reach disk
     quit_chrome(proc)
     print("sessions saved to", PROFILE)
