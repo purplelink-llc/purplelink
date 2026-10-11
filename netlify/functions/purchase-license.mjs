@@ -7,14 +7,15 @@
  * The Stripe Checkout session id is the bearer token, exactly as for the download pages. Keys are derived
  * from the session id (see netlify/lib/license.mjs and licenseKeysForSession), so this returns the same keys
  * the purchase email carried; nothing is stored. Only paid sessions for a product that has a key are answered.
- * A missing signing secret yields an empty list, never an error page, so a download page still works.
+ * A custom bundle also returns `parts`, the part slugs it contains, so its success page can hide the rest. A missing signing secret yields an empty list, never an error page, so a download page still works.
  */
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { licenseKeysForSession } from "./stripe-webhook.mjs";
+import { entitledParts, isBundleProduct } from "../lib/bundles.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
-const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "app-suite"]);
+const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "app-suite", "bundle-2", "bundle-3"]);
 const DAILY_LIMIT = 120;
 
 function json(status, body) {
@@ -55,6 +56,14 @@ export default async function handler(request) {
   if (!KEYED_PRODUCTS.has(product)) return json(403, { error: "not_entitled", detail: "This order has no license key." });
 
   const seats = parseInt(session.metadata?.seats || "0", 10) || 0;
-  const keys = licenseKeysForSession(product, sessionId, { seats }).map((k) => ({ product: k.slug, label: k.label, key: k.key }));
+  const apps = session.metadata?.apps || "";
+  const keys = licenseKeysForSession(product, sessionId, { seats, apps }).map((k) => ({ product: k.slug, label: k.label, key: k.key }));
+  // The success page of a custom bundle shows only the parts that were chosen; it reads them here, from Stripe's
+  // own record, rather than trusting anything in the URL. Other products answer without `parts`.
+  if (isBundleProduct(product)) {
+    const parts = [...entitledParts(product, { apps })];
+    if (!parts.length) return json(403, { error: "not_entitled", detail: "This order has no license key." });
+    return json(200, { keys, parts });
+  }
   return json(200, { keys });
 }

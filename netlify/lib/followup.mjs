@@ -33,6 +33,8 @@ export const FOLLOWUP_PRODUCTS = {
   keyfeel: "Keyfeel",
   tapefolio: "Tapefolio",
   "app-suite": "the Mac Suite",
+  "bundle-2": "your Mac Suite bundle",
+  "bundle-3": "your Mac Suite bundle",
 };
 
 /**
@@ -83,7 +85,7 @@ export function followupEmail({ to, product, seats = 0, secret }) {
   const unsub = unsubscribeUrl(to, secret);
   const paragraphs = [
     `You bought ${app}${seatNote} two weeks ago, so I have one question: what do you use it for? A single sentence is plenty.`,
-    `If it is working well and you are happy for me to quote your sentence on the ${app === "the Mac Suite" ? "product" : app} page, say so and tell me the first name and field to use. I will not quote anything without a yes.`,
+    `If it is working well and you are happy for me to quote your sentence on the ${app === "the Mac Suite" || app === "your Mac Suite bundle" ? "product" : app} page, say so and tell me the first name and field to use. I will not quote anything without a yes.`,
     "If something is not working, reply and tell me. I read every reply myself.",
     ...(review ? [`If you would rather leave a public review, ${review.label} is here: ${review.url}`] : []),
     "Ben Ampel",
@@ -95,7 +97,7 @@ export function followupEmail({ to, product, seats = 0, secret }) {
     from: FROM_ADDRESS,
     reply_to: REPLY_TO,
     to: [to],
-    subject: `How is ${app === "the Mac Suite" ? "the Mac Suite" : app} working out?`,
+    subject: `How is ${app} working out?`,
     text,
     html,
     headers: { "List-Unsubscribe": `<${unsub}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },

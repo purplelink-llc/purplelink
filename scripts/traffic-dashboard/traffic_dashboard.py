@@ -2365,7 +2365,7 @@ def site_card(s: dict) -> str:
 
 
 PRODUCT_LABELS = {
-    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "freeboard": "Legroom", "app-suite": "Mac Suite", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "freeboard": "Legroom", "app-suite": "Mac Suite", "bundle-2": "Mac Suite bundle (any 2)", "bundle-3": "Mac Suite bundle (any 3)", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
     "citation-gap": "Citation gap", "revision-review": "Revision review",
     "response-review": "Response review", "resume-review": "Resume review",
     "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
@@ -2941,7 +2941,7 @@ def product_group(row: dict) -> str:
         return "Keyfeel"
     if product == "tapefolio":
         return "Tapefolio"
-    if product == "app-suite":  # all the Mac apps in one purchase; revenue is not split per app
+    if product in ("app-suite", "bundle-2", "bundle-3"):  # the Suite and its pick-2 / pick-3 bundles; revenue is not split per app
         return "Mac Suite"
     if product.startswith("kit-"):
         return "Kits"

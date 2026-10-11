@@ -1,0 +1,20 @@
+/* Pick-your-own bundles on /suite/. External file so the strict CSP permits it. */
+.bundle-picker { margin: 0; max-width: 760px; }
+.bundle-picker fieldset { border: 0; padding: 0; margin: 0; }
+.bundle-picker legend { font-weight: 600; margin-bottom: 0.75rem; }
+.bundle-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.6rem; }
+.bundle-option {
+  display: grid; grid-template-columns: auto 40px 1fr; align-items: center; gap: 0.2rem 0.75rem;
+  padding: 0.75rem 0.9rem; border: 1px solid var(--line); border-radius: 0.75rem; background: var(--panel); cursor: pointer;
+}
+.bundle-option:has(input:checked) { border-color: var(--purple); background: color-mix(in oklch, var(--purple) 8%, var(--panel)); }
+.bundle-option:has(input:focus-visible) { outline: 2px solid var(--purple); outline-offset: 2px; }
+.bundle-option img { width: 40px; height: 40px; border-radius: 10px; }
+.bundle-name { font-weight: 600; }
+.bundle-price { grid-column: 3; color: var(--muted); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.bundle-summary { margin: 1.1rem 0 0.75rem; min-height: 3.2em; }
+.bundle-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+.bundle-status { margin: 0.75rem 0 0; color: var(--muted); }
+.bundle-error { color: var(--danger, #b42318); }
+.bundle-ladder { display: flex; flex-wrap: wrap; gap: 0.6rem 1.5rem; margin: 0 0 1.25rem; padding: 0; list-style: none; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bundle-ladder strong { color: var(--ink); }

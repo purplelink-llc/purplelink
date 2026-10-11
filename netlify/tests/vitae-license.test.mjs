@@ -234,6 +234,20 @@ test("an unpaid Mac Suite session is refused, and other one-time products get no
   assert.equal((await get("?session_id=cs_live_other12345678")).status, 404);
 });
 
+test("a custom bundle that names Vitae Plus issues the lifetime key; one that does not gets none", async () => {
+  stripe["/checkout/sessions/cs_live_bundle12345678"] = suiteSession({ id: "cs_live_bundle12345678", metadata: { product: "bundle-3", apps: "moderntex,legroom,vitae-plus" } });
+  const res = await get("?session_id=cs_live_bundle12345678", "198.51.100.31");
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.equal(body.plan, "lifetime");
+  assert.equal(decodeKey(body.key).p, "vitae-plus");
+  stripe["/checkout/sessions/cs_live_bundle87654321"] = suiteSession({ id: "cs_live_bundle87654321", metadata: { product: "bundle-2", apps: "moderntex,legroom" } });
+  assert.equal((await get("?session_id=cs_live_bundle87654321", "198.51.100.32")).status, 404);
+  // The pick count must match the product, or the apps list is ignored.
+  stripe["/checkout/sessions/cs_live_bundlebad12345"] = suiteSession({ id: "cs_live_bundlebad12345", metadata: { product: "bundle-2", apps: "moderntex,legroom,vitae-plus" } });
+  assert.equal((await get("?session_id=cs_live_bundlebad12345", "198.51.100.33")).status, 404);
+});
+
 test("a lifetime key has no refresh mapping and nothing to manage", async () => {
   stripe["/checkout/sessions/cs_live_suite1234567890"] = suiteSession();
   const { key } = await (await get("?session_id=cs_live_suite1234567890")).json();

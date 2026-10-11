@@ -33,6 +33,7 @@
  */
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { bundleHasPart } from "../lib/bundles.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "legroom-files";
@@ -80,9 +81,9 @@ async function loadSession(sessionId) {
   if (!resp.ok) return { error: json(403, { error: "session_not_found", detail: "That download link is not valid for this store." }) };
   const session = await resp.json();
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
-  // The Mac Suite bundle includes this app, so its session unlocks the same download.
+  // The Mac Suite, and a custom bundle that names this app, include it, so their sessions unlock the same download.
   const bought = session.metadata?.product || "";
-  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY) {
+  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "legroom")) {
     return { error: json(403, { error: "not_entitled", detail: "This order is for a different product." }) };
   }
   return { session };

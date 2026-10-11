@@ -1,4 +1,4 @@
-// /suite/success/ — turn a paid Mac Suite session into six things: the ModernTex download,
+// /suite/success/ — turn a paid Mac Suite (or custom bundle) session into its things; the Suite is six: the ModernTex download,
 // the Outbound Veil download, the Legroom download, the Keyfeel download, the Tapefolio download, and a lifetime Vitae Plus key. Each is its own request, so one
 // slow or failed part never hides the others. Everything is built with textContent or an
 // escaped attribute; nothing from a response is parsed as HTML.
@@ -143,10 +143,31 @@
     box.appendChild(row);
   }
 
-  files(boxes.mtx, "moderntex-download");
-  files(boxes.ov, "outbound-veil-download");
-  files(boxes.lg, "legroom-download");
-  files(boxes.kf, "keyfeel-download", "Keyfeel");
-  files(boxes.tf, "tapefolio-download", "Tapefolio");
-  loadKey();
+  // A custom bundle holds only the parts that were chosen. purchase-license reads them from Stripe's own record
+  // and returns `parts` for a bundle; the whole Suite (and any failure to ask) shows all six.
+  function start(parts) {
+    var keep = function (slug) { return !parts || parts.indexOf(slug) !== -1; };
+    ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "vitae-plus"].forEach(function (slug) {
+      var section = document.getElementById("part-" + slug);
+      if (section && !keep(slug)) section.hidden = true;
+    });
+    var keys = document.getElementById("part-keys");
+    if (keys && !(keep("moderntex") || keep("outbound-veil") || keep("legroom"))) keys.hidden = true;
+    if (parts) {
+      var title = document.getElementById("hero-title");
+      var lead = document.getElementById("hero-lead");
+      if (title) title.textContent = "Your bundle is yours";
+      if (lead) lead.textContent = "Everything you chose is below: the downloads and license keys for your parts. We have also emailed this page to the address on your receipt.";
+    }
+    if (keep("moderntex")) files(boxes.mtx, "moderntex-download");
+    if (keep("outbound-veil")) files(boxes.ov, "outbound-veil-download");
+    if (keep("legroom")) files(boxes.lg, "legroom-download");
+    if (keep("keyfeel")) files(boxes.kf, "keyfeel-download", "Keyfeel");
+    if (keep("tapefolio")) files(boxes.tf, "tapefolio-download", "Tapefolio");
+    if (keep("vitae-plus")) loadKey();
+  }
+  fetch("/.netlify/functions/purchase-license?session_id=" + encodeURIComponent(sessionId))
+    .then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
+    .then(function (r) { start(r.ok && r.body && Array.isArray(r.body.parts) ? r.body.parts : null); })
+    .catch(function () { start(null); });
 })();

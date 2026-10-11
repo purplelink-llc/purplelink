@@ -34,6 +34,7 @@
  */
 
 import { MAX_SEATS, parseSeats, seatUnitCents } from "../lib/seats.mjs";
+import { BUNDLES, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 
@@ -138,6 +139,12 @@ const PRODUCT_CATALOG = {
   // Veil, Legroom, Keyfeel and Tapefolio download functions accept it, and vitae-license.mjs signs a 100-year
   // Vitae Plus key from it. See docs/products/app-suite.md.
   "app-suite":               { amount: 5499, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life", successPath: "/suite/success/" },
+  // Custom bundles of the Mac Suite: pick any 2 for $34.99 or any 3 for $44.99, the same price whichever parts are
+  // chosen (the six parts are the five apps and a lifetime Vitae Plus key; all six is the Suite above). The client sends
+  // only `apps`; the price is the table in netlify/lib/bundles.mjs. Delivery reuses /suite/success/ and the per-app
+  // download functions, which read metadata.apps back. See docs/growth-briefs/custom-bundle-pricing-2026-10-11.md.
+  "bundle-2":                { amount: BUNDLES["bundle-2"].cents, bundle: true, name: "Purplelink Mac Suite custom bundle (any 2)", successPath: "/suite/success/" },
+  "bundle-3":                { amount: BUNDLES["bundle-3"].cents, bundle: true, name: "Purplelink Mac Suite custom bundle (any 3)", successPath: "/suite/success/" },
   // Vitae Plus: optional subscription for the free Vitae app ($2.99/month or
   // $23.99/year, 7-day trial). The success page asks vitae-license.mjs for a
   // signed key; the app refreshes it from the same function about monthly.
@@ -294,6 +301,18 @@ export default async function handler(request) {
     seatUnit = unit;
   }
 
+  // Custom bundles: the count is fixed by the product, so the client must name exactly that many known parts.
+  let bundleParts = [];
+  if (entry.bundle) {
+    bundleParts = parseBundleParts(body.apps, BUNDLES[product].count) || [];
+    if (!bundleParts.length) {
+      return jsonResponse(400, {
+        error: "invalid_apps",
+        detail: `Choose exactly ${BUNDLES[product].count} different parts of the Mac Suite.`,
+      });
+    }
+  }
+
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   const priceId = entry.amount || entry.seats ? null : Netlify.env.get(entry.envKey);
   if (!secretKey || (!entry.amount && !entry.seats && !priceId)) {
@@ -319,7 +338,7 @@ export default async function handler(request) {
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v4:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}:${seats}`)
+    .update(`v4:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}:${seats}:${bundleParts.join("+")}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -339,7 +358,7 @@ export default async function handler(request) {
       ? {
           "line_items[0][price_data][currency]": "usd",
           "line_items[0][price_data][unit_amount]": String(entry.seats ? seatUnit : entry.amount),
-          "line_items[0][price_data][product_data][name]": photo ? `${entry.name}: ${photo}` : entry.name,
+          "line_items[0][price_data][product_data][name]": photo ? `${entry.name}: ${photo}` : entry.bundle ? `${entry.name}: ${partsSentence(bundleParts)}` : entry.name,
           ...(entry.interval ? { "line_items[0][price_data][recurring][interval]": entry.interval } : {}),
         }
       : { "line_items[0][price]": priceId }),
@@ -377,6 +396,7 @@ export default async function handler(request) {
     });
   }
   if (entry.seats) params["metadata[seats]"] = String(seats);
+  if (entry.bundle) params["metadata[apps]"] = bundleParts.join(",");
   if (referralCode) {
     params["metadata[referral_code]"] = referralCode;
   }
