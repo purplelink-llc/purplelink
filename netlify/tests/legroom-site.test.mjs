@@ -245,10 +245,54 @@ test("/suite/success/ fetches all six parts: five downloads and the Vitae key", 
     "/.netlify/functions/legroom-download",
     "/.netlify/functions/moderntex-download",
     "/.netlify/functions/outbound-veil-download",
+    "/.netlify/functions/purchase-license",
     "/.netlify/functions/tapefolio-download",
     "/.netlify/functions/vitae-license",
   ]);
   assert.ok(fetched.every((u) => u.endsWith(`session_id=${SID}`)));
+});
+
+test("/suite/success/ shows only the parts of a custom bundle and hides the rest", async () => {
+  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license", "hero-title", "hero-lead",
+    "part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-keyfeel", "part-tapefolio", "part-vitae-plus"];
+  const { nodes, fetched } = runScript("suite/success.js", {
+    search: `?session_id=${SID}`, ids,
+    fetchImpl: (url) => (String(url).includes("purchase-license") ? reply(200, { keys: [], parts: ["keyfeel", "vitae-plus"] })
+      : String(url).includes("vitae-license") ? reply(200, { key: "VITAE-KEY" }) : reply(200, { files: [{ url: "/x", label: "App" }] })),
+  });
+  await tick();
+  assert.deepEqual(fetched.map((u) => u.split("?")[0]).sort(), [
+    "/.netlify/functions/keyfeel-download", "/.netlify/functions/purchase-license", "/.netlify/functions/vitae-license",
+  ]);
+  for (const hidden of ["part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-tapefolio"]) assert.equal(nodes[hidden].hidden, true, hidden);
+  for (const shown of ["part-keyfeel", "part-vitae-plus"]) assert.notEqual(nodes[shown].hidden, true, shown);
+  assert.equal(nodes["hero-title"].textContent, "Your bundle is yours");
+  assert.equal(nodes["dl-kf"].children[0].textContent, "Download: App");
+});
+
+test("/suite/success/ keeps the license-key section for a bundle that has a keyed app, and shows everything for the Suite", async () => {
+  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license", "hero-title", "part-keys", "part-moderntex", "part-keyfeel"];
+  const bundle = runScript("suite/success.js", {
+    search: `?session_id=${SID}`, ids,
+    fetchImpl: (url) => (String(url).includes("purchase-license") ? reply(200, { keys: [], parts: ["moderntex", "tapefolio"] }) : reply(200, { files: [{ url: "/x", label: "App" }] })),
+  });
+  await tick();
+  assert.notEqual(bundle.nodes["part-keys"].hidden, true);
+  assert.equal(bundle.nodes["part-keyfeel"].hidden, true);
+  const suite = runScript("suite/success.js", {
+    search: `?session_id=${SID}`, ids,
+    fetchImpl: (url) => (String(url).includes("purchase-license") ? reply(200, { keys: [] }) : reply(200, { files: [{ url: "/x", label: "App" }] })),
+  });
+  await tick();
+  assert.notEqual(suite.nodes["part-keyfeel"].hidden, true);
+  assert.notEqual(suite.nodes["hero-title"].textContent, "Your bundle is yours");
+});
+
+test("the Suite success page has an id on every part the script can hide", () => {
+  const html = read("suite/success/index.html");
+  for (const id of ["part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-keyfeel", "part-tapefolio", "part-vitae-plus", "hero-title", "hero-lead"]) {
+    assert.match(html, new RegExp(`id="${id}"`), id);
+  }
 });
 
 test("/suite/success/ keeps working for the other parts when the Legroom part fails", async () => {

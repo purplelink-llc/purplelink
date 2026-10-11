@@ -66,6 +66,7 @@
  */
 import { createHash, createHmac, createPrivateKey, sign, timingSafeEqual } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { bundleHasPart } from "../lib/bundles.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const PAYLOAD_PRODUCT = "vitae-plus";
@@ -76,6 +77,8 @@ const MAPPING_STORE = "vitae-plus";
 // and an expiry 100 years out, so the shipped app verifies it as is and never asks to refresh it
 // (it refreshes only inside the last 10 days). The id comes from the Checkout session id.
 const SUITE_PRODUCT = "app-suite";
+// A custom bundle that names Vitae Plus carries the same lifetime entitlement (netlify/lib/bundles.mjs).
+const grantsLifetime = (metadata) => metadata?.product === SUITE_PRODUCT || bundleHasPart(metadata?.product || "", metadata, "vitae-plus");
 const LIFETIME_SECONDS = 100 * 365 * 24 * 60 * 60;
 const GRACE_SECONDS = 7 * 24 * 60 * 60;
 const LICENSE_DAILY_LIMIT = 60;
@@ -224,7 +227,7 @@ async function issue(sessionId, secretKey, pem) {
   const session = got.data;
 
   const product = session?.metadata?.product || "";
-  if (product === SUITE_PRODUCT && session.mode === "payment") {
+  if (grantsLifetime(session?.metadata) && session.mode === "payment") {
     if (session.status !== "complete" || session.payment_status !== "paid") {
       return json(402, { error: "not_paid", detail: "The payment has not cleared yet." });
     }
@@ -411,7 +414,7 @@ export async function keysForEmail(email, secretKey, pem, now = Math.floor(Date.
       `/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100`, secretKey);
     if (sessions.error) return { error: sessions.error };
     for (const s of sessions.data?.data ?? []) {
-      if (s?.metadata?.product !== SUITE_PRODUCT || s.payment_status !== "paid" || typeof s.id !== "string") continue;
+      if (!grantsLifetime(s?.metadata) || s.payment_status !== "paid" || typeof s.id !== "string") continue;
       if (seen.has(s.id)) continue;
       seen.add(s.id);
       keys.push({ key: buildLicenseKey({ subscriptionId: s.id, plan: "lifetime", exp: now + LIFETIME_SECONDS, iat: now, privateKey }), plan: "lifetime" });

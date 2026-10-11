@@ -91,6 +91,7 @@
 ### Mac Suite (macOS bundle)
 - **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and a lifetime Vitae Plus key.
 - **Pricing:** $54.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
+- **Pick your own:** any 2 of the six parts for $34.99, or any 3 for $44.99, the same price whichever parts are chosen (Vitae Plus counts as one part, as a lifetime key). Four or more cost more than the Suite, so the Suite is the better buy. The checkout page lists only the chosen parts.
 - **Page:** https://purplelink.llc/suite/
 
 ### Vitae (macOS)

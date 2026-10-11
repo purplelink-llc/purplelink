@@ -28,9 +28,11 @@
 <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/buy.css?v=3d2e4d1dc6">
 <link rel="stylesheet" href="/suite/suite.css?v=4284e94737">
+<link rel="stylesheet" href="/suite/bundle.css?v=e15543a7da">
 <script src="/site.js?v=0c8373a945" defer></script>
 <script src="/motion.js?v=0c540c5924" defer></script>
 <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+<script src="/suite/bundle.js?v=7d33fdb5a4" defer></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -246,6 +248,7 @@
           <div class="suite-actions" id="buy">
             <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="app-suite">Buy the Suite, $54.99</button>
             <a class="btn btn-ghost" href="#whats-in-it">What is in it</a>
+            <a class="btn btn-ghost" href="#bundle">Or pick any 2 or 3</a>
           </div>
         <p class="buy-assurance">Refunded if you email within 14 days of purchase. One payment, no subscription.</p>
           <p class="tool-status" id="checkout-status" aria-live="polite"></p>
@@ -267,6 +270,37 @@
           <figcaption>Prices are the ones on each product page today.</figcaption>
         </figure>
       </div>
+
+      <section class="features-section" id="bundle" aria-labelledby="bundle-h">
+        <div class="features-header">
+          <h2 id="bundle-h">Want fewer than all six? Pick your own</h2>
+          <p class="section-intro">Any 2 for $34.99, or any 3 for $44.99. The price is the same whichever parts you choose, so pick the ones you will use. The Suite stays the best value: all six for $54.99.</p>
+        </div>
+        <form class="bundle-picker" id="bundle-form" novalidate>
+          <ul class="bundle-ladder" aria-label="Prices">
+            <li><strong>Any 2</strong> $34.99</li>
+            <li><strong>Any 3</strong> $44.99</li>
+            <li><strong>All six</strong> $54.99</li>
+          </ul>
+          <fieldset>
+            <legend>Choose two or three</legend>
+            <div class="bundle-options">
+          <label class="bundle-option"><input type="checkbox" name="apps" value="moderntex"><img src="/assets/moderntex-icon.webp" alt="" width="40" height="40" loading="lazy"><span class="bundle-name">ModernTex</span><span class="bundle-price">$19.99 on its own</span></label>
+          <label class="bundle-option"><input type="checkbox" name="apps" value="outbound-veil"><img src="/assets/outbound-veil-icon.webp" alt="" width="40" height="40" loading="lazy"><span class="bundle-name">Outbound Veil</span><span class="bundle-price">$29.99 on its own</span></label>
+          <label class="bundle-option"><input type="checkbox" name="apps" value="legroom"><img src="/assets/legroom-icon.webp" alt="" width="40" height="40" loading="lazy"><span class="bundle-name">Legroom</span><span class="bundle-price">$9.99 on its own</span></label>
+          <label class="bundle-option"><input type="checkbox" name="apps" value="keyfeel"><img src="/assets/keyfeel-icon.webp" alt="" width="40" height="40" loading="lazy"><span class="bundle-name">Keyfeel</span><span class="bundle-price">$9.99 on its own</span></label>
+          <label class="bundle-option"><input type="checkbox" name="apps" value="tapefolio"><img src="/assets/tapefolio-icon.webp" alt="" width="40" height="40" loading="lazy"><span class="bundle-name">Tapefolio</span><span class="bundle-price">$29.99 on its own</span></label>
+          <label class="bundle-option"><input type="checkbox" name="apps" value="vitae-plus"><img src="/assets/vitae-icon.webp" alt="" width="40" height="40" loading="lazy"><span class="bundle-name">Vitae Plus for life</span><span class="bundle-price">$23.99 a year on its own</span></label>
+            </div>
+          </fieldset>
+          <p class="bundle-summary" id="bundle-summary" aria-live="polite">Choose two or three parts.</p>
+          <div class="bundle-actions">
+            <button type="button" class="btn btn-primary" id="bundle-buy" disabled>Choose your parts</button>
+          </div>
+          <p class="bundle-status" id="bundle-status" aria-live="polite"></p>
+          <p class="waitlist-fine-print">One payment through Stripe, no subscription, refunded if you email within 14 days. Each app you pick runs free for 7 days, then asks for its license key. Vitae Plus is a lifetime key. Checkout sends you to a page with only the parts you chose, and we email the same link.</p>
+        </form>
+      </section>
 
       <section class="features-section" id="whats-in-it" aria-labelledby="in-h">
         <div class="features-header">

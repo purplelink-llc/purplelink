@@ -32,6 +32,7 @@ import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
 import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivateKey } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
+import { bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -88,6 +89,10 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life. /suite/success/
   // lists all five downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
+  // Custom bundles: any 2 or any 3 of the six Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
+  // lists only the chosen parts; each download function and vitae-license.mjs read metadata.apps back.
+  ["bundle-2",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
+  ["bundle-3",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
   ["sheet-submission",  { name: "the Journal Submission & R&R Tracker", successPath: "/sheets/success/" }],
   ["sheet-tenure",      { name: "the Tenure & Promotion Dossier Tracker", successPath: "/sheets/success/" }],
   ["sheet-jobmarket",   { name: "the Academic Job Market Tracker", successPath: "/sheets/success/" }],
@@ -257,11 +262,13 @@ export function issueModernTexLicense(sessionId, index) {
  * Every license key a paid session is entitled to, as [{ slug, label, key }]. ModernTex has its own scheme
  * (MTX1); Outbound Veil and Legroom share PurplelinkLicenseV1 (netlify/lib/license.mjs). Keyfeel (KFL1) and
  * Tapefolio (TFL1) each have their own scheme, keyed on the buyer's address, and are added by the caller. The Mac
- * Suite entitles all of them. Keys are derived from the session id, so every caller gets the same key.
+ * Suite entitles all of them; a custom bundle (`apps` = its chosen parts, comma-separated) entitles only those. Keys are derived from the session id, so every caller gets the same key.
  * An entry is left out, never faked, when its signing secret is not configured.
  */
-export function licenseKeysForSession(productKey, sessionId, { seats = 0 } = {}) {
+export function licenseKeysForSession(productKey, sessionId, { seats = 0, apps = "" } = {}) {
   const out = [];
+  // What the purchase entitles: the whole Suite, the chosen parts of a custom bundle, or the single app.
+  const parts = entitledParts(productKey, { apps });
   if (productKey === "moderntex-seats") {
     // One key per seat, each from its own index so the keys differ yet stay the same for a given purchase.
     // Slug "moderntex-seat" (not "moderntex") so the recovery email lists them with the other session keys.
@@ -272,14 +279,15 @@ export function licenseKeysForSession(productKey, sessionId, { seats = 0 } = {})
     }
     return out;
   }
-  if (productKey === "moderntex" || productKey === "app-suite") {
+  if (productKey === "moderntex" || parts.has("moderntex")) {
     const key = issueModernTexLicense(sessionId);
     if (key) out.push({ slug: "moderntex", label: "ModernTex", key });
   }
   const seedB64 = Netlify.env.get("PURPLELINK_LICENSE_PRIVATE_KEY");
   // PURPLELINK_LICENSE_PUBLIC_KEY is only ever set by tests; production uses the key baked into license.mjs.
   const publicB64 = Netlify.env.get("PURPLELINK_LICENSE_PUBLIC_KEY") || undefined;
-  for (const slug of licensedSlugsFor(productKey)) {
+  const licensedSlugs = isBundleProduct(productKey) ? Object.keys(LICENSED_PRODUCTS).filter((x) => parts.has(x)) : licensedSlugsFor(productKey);
+  for (const slug of licensedSlugs) {
     const key = issueLicense(slug, { sessionId, seedB64, publicB64 });
     if (key) out.push({ slug, label: LICENSED_PRODUCTS[slug].label, key });
   }
@@ -313,7 +321,7 @@ export function paperReviewOffer(productKey, nowMs = Date.now()) {
  * paid buyer with neither the page nor the email is exactly what the alert
  * exists for.
  */
-async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) {
+async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = "" } = {}) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   const entry = BLOB_DELIVERED_PRODUCTS.get(productKey);
   if (!apiKey || !to || !entry) return false;
@@ -322,7 +330,10 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
   // for good, offline, no account. A signing failure (missing secret, transient error) must not block the
   // download email, so a missing key is simply left out and the buyer still gets the link.
   const isSuite = productKey === "app-suite";
-  const keys = licenseKeysForSession(productKey, sessionId, { seats });
+  const isBundle = isBundleProduct(productKey);
+  const parts = entitledParts(productKey, { apps });
+  const bundleParts = isBundle ? bundlePartsOf({ product: productKey, apps }) : [];
+  const keys = licenseKeysForSession(productKey, sessionId, { seats, apps });
   const isSeats = productKey === "moderntex-seats";
   const keyHint = (k) => (k.slug === "moderntex" ? `"Enter license key" (older trial copies say "Have a license key?")` : `"Enter license key"`);
   const licenseTextBlock = isSeats && keys.length
@@ -363,6 +374,17 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
     ? `<p>That page has six things: the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
+  // Custom bundle: name the chosen parts, and say that the page lists those and nothing else.
+  const bundleVitae = bundleParts.includes("vitae-plus");
+  const bundleApps = bundleParts.filter((x) => x !== "vitae-plus");
+  const bundleLine = isBundle && bundleParts.length
+    ? `Your bundle: ${partsSentence(bundleParts)}. That page has ` +
+      (bundleApps.length ? `the ${partsSentence(bundleApps)} download${bundleApps.length > 1 ? "s" : ""}` : "") +
+      (bundleVitae ? `${bundleApps.length ? " and " : ""}your lifetime Vitae Plus key (in Vitae open Settings, then Vitae Plus, paste it and click Activate; Vitae itself is a free download from the same page)` : "") +
+      "."
+    : "";
+  const bundleText = bundleLine ? `${bundleLine}\n\n` : "";
+  const bundleHtml = bundleLine ? `<p>${bundleLine}</p>` : "";
   // Outbound Veil: the one step new users trip on is macOS Accessibility, so point at the setup guide.
   const startUrl = `${SITE_ORIGIN}/outbound-veil/start/`;
   const startText = productKey === "outbound-veil"
@@ -373,7 +395,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
     : "";
   // Keyfeel: the one step new users trip on is the macOS Input Monitoring permission, so say what it is for
   // (and what the app does not read) in the email too. Also sent to Suite buyers, who get the app with it.
-  const keyfeelLicense = productKey === "keyfeel" || isSuite ? issueKeyfeelLicense(to) : null;
+  const keyfeelLicense = parts.has("keyfeel") ? issueKeyfeelLicense(to) : null;
   const keyfeelLicenseText = keyfeelLicense
     ? `Your Keyfeel license key (in Keyfeel, choose Enter License Key and paste it):\n${keyfeelLicense}\n\n` +
       `It unlocks Keyfeel for good. No account, and it works offline.\n\n`
@@ -383,19 +405,19 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
       `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${keyfeelLicense}</p>` +
       `<p>It unlocks Keyfeel for good. No account, and it works offline.</p>`
     : "";
-  const keyfeelText = keyfeelLicenseText + (productKey === "keyfeel" || isSuite
+  const keyfeelText = keyfeelLicenseText + (parts.has("keyfeel")
     ? `Keyfeel needs the macOS Input Monitoring permission, which is how it hears that a key was pressed. ` +
       `It reads which key, never the characters you type. macOS asks the first time you open it; ` +
       `the permission is under System Settings, Privacy & Security, Input Monitoring.\n\n`
     : "");
-  const keyfeelHtml = keyfeelLicenseHtml + (productKey === "keyfeel" || isSuite
+  const keyfeelHtml = keyfeelLicenseHtml + (parts.has("keyfeel")
     ? `<p>Keyfeel needs the macOS Input Monitoring permission, which is how it hears that a key was pressed. ` +
       `It reads which key, never the characters you type. macOS asks the first time you open it; ` +
       `the permission is under System Settings, Privacy &amp; Security, Input Monitoring.</p>`
     : "");
   // Tapefolio: its key is derived from the buyer's address (its own scheme, like Keyfeel's). The one thing new users
   // wonder about is the wait on the first run, so say it here too. Also sent to Suite buyers, who get the app with it.
-  const tapefolioLicense = productKey === "tapefolio" || isSuite ? issueTapefolioLicense(to) : null;
+  const tapefolioLicense = parts.has("tapefolio") ? issueTapefolioLicense(to) : null;
   const tapefolioLicenseText = tapefolioLicense
     ? `Your Tapefolio license key (in Tapefolio, choose Enter License Key and paste it):\n${tapefolioLicense}\n\n` +
       `It unlocks Tapefolio on up to two of your Macs. No account, and it works offline.\n\n`
@@ -405,12 +427,12 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
       `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${tapefolioLicense}</p>` +
       `<p>It unlocks Tapefolio on up to two of your Macs. No account, and it works offline.</p>`
     : "";
-  const tapefolioText = tapefolioLicenseText + (productKey === "tapefolio" || isSuite
+  const tapefolioText = tapefolioLicenseText + (parts.has("tapefolio")
     ? `Tapefolio needs macOS 26 or later on an Apple silicon Mac. The first time each model runs on a Mac, it can take a few minutes ` +
       `while macOS prepares it for the Neural Engine; that wait happens once for each model. Your files stay on your Mac. Tapefolio will mishear ` +
       `some words and mislabel some speakers, so check any quoted text against the recording.\n\n`
     : "");
-  const tapefolioHtml = tapefolioLicenseHtml + (productKey === "tapefolio" || isSuite
+  const tapefolioHtml = tapefolioLicenseHtml + (parts.has("tapefolio")
     ? `<p>Tapefolio needs macOS 26 or later on an Apple silicon Mac. The first time each model runs on a Mac, it can take a few minutes ` +
       `while macOS prepares it for the Neural Engine; that wait happens once for each model. Your files stay on your Mac. Tapefolio will mishear ` +
       `some words and mislabel some speakers, so check any quoted text against the recording.</p>`
@@ -420,6 +442,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
     `Your download page:\n${link}\n\n` +
     startText +
     suiteText +
+    bundleText +
     keyfeelText +
     tapefolioText +
     licenseTextBlock +
@@ -433,6 +456,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
     `<p><a href="${link}">Open your download page</a></p>` +
     startHtml +
     suiteHtml +
+    bundleHtml +
     keyfeelHtml +
     tapefolioHtml +
     licenseHtmlBlock +
@@ -673,7 +697,7 @@ export default async function handler(request) {
       return jsonResponse(200, { status: "duplicate_event_ignored", product: rawProduct, event_id: event.id || null });
     }
     await dedupeStore.set(dedupeKey, new Date().toISOString());
-    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0 });
+    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "" });
     if (LIFECYCLE_PRODUCTS.has(rawProduct) && email) {
       // Day-3 tips and a day-21 note, sent by the backend's daily sweep with
       // an unsubscribe link. The buyer already has the key and download, so

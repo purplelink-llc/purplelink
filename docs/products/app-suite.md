@@ -86,3 +86,22 @@ rejects that JWK. It passes on Node 22.
 2. One real purchase on the live site, then a refund: check the success page shows the five downloads and the keys, the
    email arrives with a working ModernTex key, and the Vitae key activates in Vitae.
 3. Optional: a Vitae update labeling the lifetime plan.
+
+
+## Custom bundles (added 2026-10-11)
+
+Pick any 2 of the six parts for $34.99, or any 3 for $44.99, the same price whichever parts. The six parts are the five apps and
+a lifetime Vitae Plus key; all six stays the Suite at $54.99, and there is no pick 4 or 5 (it would sit within $5 of the Suite). The
+picker on `/suite/` sends four or more parts to the Suite, and refuses a pair or triple that costs less bought separately.
+
+- **Price analysis:** `docs/growth-briefs/custom-bundle-pricing-2026-10-11.md` (git-ignored; model in `custom-bundle-model-2026-10-11.py`).
+  Rules: every bundle costs more than the dearest single app ($29.99); price against the dearest combination, not the average; the Suite
+  stays the best value; cheap pairs stay cheaper apart. Read after 60 days, change a price only on 30 or more bundle checkout clicks.
+- **Code:** `netlify/lib/bundles.mjs` (table, parsing, `entitledParts`), products `bundle-2` and `bundle-3` in `checkout.mjs` (client sends only
+  `apps`; Stripe metadata `product` and `apps`), the five `*-download.mjs` doors and `vitae-license.mjs` accept a bundle that names their part,
+  `licenseKeysForSession(product, sid, { apps })` issues only the chosen apps' keys (the same keys the Suite gets for that session),
+  `purchase-license.mjs` returns `parts` so `/suite/success/` (`success.js`) hides the rest, and the purchase and recovery emails name the parts.
+- **Page:** `site/suite/bundle.js` and `bundle.css`; its price table is checked against the server's in `netlify/tests/custom-bundles.test.mjs`.
+- **Reading the ModernTex price checkpoint (2026-11-08):** a bundle that includes ModernTex is not a ModernTex order in `product_funnel.json`;
+  count it as one when reading the checkpoint.
+- **Vitae Plus lifetime** is a standing commitment with no later revenue; the Suite already carries it.

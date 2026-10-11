@@ -20,6 +20,7 @@ import { getStore } from "@netlify/blobs";
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
 import { issueModernTexLicense, licenseKeysForSession, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
+import { entitledParts, isBundleProduct, partsSentence, bundlePartsOf } from "../lib/bundles.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const RESEND_API_URL = "https://api.resend.com/emails";
@@ -80,7 +81,7 @@ export async function purchasesForEmail(email, secretKey) {
         // Live sheets start on a free trial, so their session is complete but unpaid.
         const live = LIVE_PRODUCTS.has(product) && s.status === "complete";
         if (!live && (s.payment_status !== "paid" || !BLOB_DELIVERED_PRODUCTS.has(product))) continue;
-        found.set(s.id, { sessionId: s.id, product, created: s.created || 0, seats: parseInt(s?.metadata?.seats || "0", 10) || 0 });
+        found.set(s.id, { sessionId: s.id, product, created: s.created || 0, seats: parseInt(s?.metadata?.seats || "0", 10) || 0, apps: s?.metadata?.apps || "" });
       }
       if (!res.data?.has_more || rows.length === 0) break;
       after = rows[rows.length - 1].id;
@@ -116,21 +117,36 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
   }
   for (const p of purchases.filter((q) => q.product !== "moderntex")) {
     const suite = p.product === "app-suite";
+    const bundle = isBundleProduct(p.product);
+    const parts = entitledParts(p.product, { apps: p.apps || "" });
     const live = LIVE_PRODUCTS.has(p.product);
     const entry = live ? LIVE_PRODUCTS.get(p.product) : BLOB_DELIVERED_PRODUCTS.get(p.product);
     const link = `${SITE_ORIGIN}${entry.successPath}?session_id=${encodeURIComponent(p.sessionId)}`;
     const what = live ? "Setup page (your formulas and billing)" : "Download page";
     lines.push(entry.name.charAt(0).toUpperCase() + entry.name.slice(1), `${what}: ${link}`, "");
     html.push(`<h3>${escapeHtml(entry.name.charAt(0).toUpperCase() + entry.name.slice(1))}</h3><p><a href="${escapeHtml(link)}">Open your ${live ? "setup" : "download"} page</a></p>`);
-    if (keyfeelLicense && (suite || p.product === "keyfeel")) {
+    if (keyfeelLicense && parts.has("keyfeel")) {
       lines.splice(lines.length - 1, 0, `Keyfeel license key (in Keyfeel, choose Enter License Key and paste it): ${keyfeelLicense}`);
       html.push(`<p>Keyfeel license key (in Keyfeel, choose Enter License Key and paste it):</p>` +
         `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(keyfeelLicense)}</p>`);
     }
-    if (tapefolioLicense && (suite || p.product === "tapefolio")) {
+    if (tapefolioLicense && parts.has("tapefolio")) {
       lines.splice(lines.length - 1, 0, `Tapefolio license key (in Tapefolio, choose Enter License Key and paste it): ${tapefolioLicense}`);
       html.push(`<p>Tapefolio license key (in Tapefolio, choose Enter License Key and paste it):</p>` +
         `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(tapefolioLicense)}</p>`);
+    }
+    if (bundle) {
+      // A custom bundle: the page lists only the chosen parts; the ModernTex key, if chosen, is only ever emailed.
+      const chosen = bundlePartsOf({ product: p.product, apps: p.apps || "" });
+      const line = `Your bundle: ${partsSentence(chosen)}. That page has the downloads for the apps you chose` +
+        (chosen.includes("vitae-plus") ? " and your lifetime Vitae Plus key." : ".");
+      lines.splice(lines.length - 1, 0, line);
+      html.push(`<p>${escapeHtml(line)}</p>`);
+      if (license && parts.has("moderntex")) {
+        lines.splice(lines.length - 1, 0, `ModernTex license key (in ModernTex, choose Enter license key and paste it): ${license}`);
+        html.push(`<p>ModernTex license key (in ModernTex, choose Enter license key and paste it):</p>` +
+          `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(license)}</p>`);
+      }
     }
     if (suite) {
       // The page holds the downloads and the Vitae Plus key; the ModernTex key is only ever emailed.
@@ -166,11 +182,11 @@ async function sendRecovery(to, purchases) {
   if (!apiKey) return false;
   // The ModernTex key is derived from the newest ModernTex or Suite purchase, so it matches what that
   // purchase's own email and download page show. Keyfeel's and Tapefolio's keys are derived from the address (their own schemes).
-  const mtxPurchase = purchases.find((p) => p.product === "moderntex" || p.product === "app-suite");
+  const mtxPurchase = purchases.find((p) => p.product === "moderntex" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("moderntex")));
   const license = mtxPurchase ? issueModernTexLicense(mtxPurchase.sessionId) : null;
-  const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite") ? issueKeyfeelLicense(to) : null;
-  const tapefolioLicense = purchases.some((p) => p.product === "tapefolio" || p.product === "app-suite") ? issueTapefolioLicense(to) : null;
-  const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId, { seats: p.seats || 0 }).filter((k) => k.slug !== "moderntex")]));
+  const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("keyfeel"))) ? issueKeyfeelLicense(to) : null;
+  const tapefolioLicense = purchases.some((p) => p.product === "tapefolio" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("tapefolio"))) ? issueTapefolioLicense(to) : null;
+  const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId, { seats: p.seats || 0, apps: p.apps || "" }).filter((k) => k.slug !== "moderntex")]));
   const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense);
   try {
     const resp = await fetch(RESEND_API_URL, {
