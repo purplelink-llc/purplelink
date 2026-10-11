@@ -2981,6 +2981,10 @@ def merge_ledger(history: dict, sales: dict) -> list[dict] | None:
             events.append({"kind": "refund", "product": r["product"],
                            "gross": (r.get("refunded") or 0) - (old.get("refunded") or 0), "ts": r["ts"]})
         archive[r["id"]] = r
+    # Free copies (a 100%-off code, $0) are no longer sent as orders since 2026-10-11;
+    # drop the ones archived before that so they stop counting as customers.
+    for k in [k for k, r in archive.items() if not r.get("market") and r.get("kind") == "purchase" and r.get("gross") == 0]:
+        del archive[k]
     return events
 
 
@@ -3503,6 +3507,13 @@ def print_ad_funnel(history: dict, manual_ads: dict) -> None:
             print("   -> 0 orders attributed to a Google ad click so far (Stripe metadata g=1 or utm medium cpc)")
         if clicks >= 10 and seen == 0:
             print("   ! Google reports clicks but we saw none: check auto-tagging and that the ad URL lands on purplelink.llc")
+    heard = {}
+    for r in (history.get("ledger") or {}).values():
+        if r.get("heard"):
+            heard[r["heard"]] = heard.get(r["heard"], 0) + 1
+    if heard:
+        print("   Buyers' own answer, 'How did you first hear about us?' (asked at checkout since 2026-10-11): "
+              + ", ".join(f"{k} {v}" for k, v in sorted(heard.items(), key=lambda kv: -kv[1])))
 
 
 

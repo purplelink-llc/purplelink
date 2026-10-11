@@ -54,6 +54,19 @@ const DEFAULT_ORIGIN = "https://purplelink.llc";
 // same Stripe Checkout Session instead of creating a duplicate one.
 const IDEMPOTENCY_WINDOW_MS = 5 * 60 * 1000;
 
+// "How did you first hear about us?" answers. Values are stored, labels shown.
+// Stripe allows only letters and digits in a dropdown value.
+const HEARD_OPTIONS = [
+  ["Search engine", "search"],
+  ["AI assistant (ChatGPT and others)", "ai"],
+  ["Reddit", "reddit"],
+  ["A directory or app list", "directory"],
+  ["An email from Purplelink", "email"],
+  ["A friend or colleague", "friend"],
+  ["A university or library page", "library"],
+  ["Other", "other"],
+];
+
 // Defense-in-depth: cap how many Checkout Sessions one IP can spin up per
 // day. This costs the attacker nothing directly, but unbounded creation
 // pollutes the Stripe dashboard and can trip Stripe's own abuse detection
@@ -287,7 +300,7 @@ export default async function handler(request) {
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v3:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}`)
+    .update(`v4:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -328,6 +341,21 @@ export default async function handler(request) {
   // rejects the param outright if it's present there.
   if (mode === "payment") {
     params.customer_creation = "if_required";
+  }
+  // One optional question at checkout, so an order says how the buyer first
+  // heard of us even when the browser record only says "from:trial" or nothing.
+  // One-time purchases only (not photo licences); sales.mjs reads the answer
+  // code back from the session. Stripe allows up to three fields per session.
+  if (mode === "payment" && !photo) {
+    params["custom_fields[0][key]"] = "heard";
+    params["custom_fields[0][label][type]"] = "custom";
+    params["custom_fields[0][label][custom]"] = "How did you first hear about us?";
+    params["custom_fields[0][type]"] = "dropdown";
+    params["custom_fields[0][optional]"] = "true";
+    HEARD_OPTIONS.forEach(([label, value], i) => {
+      params[`custom_fields[0][dropdown][options][${i}][label]`] = label;
+      params[`custom_fields[0][dropdown][options][${i}][value]`] = value;
+    });
   }
   if (referralCode) {
     params["metadata[referral_code]"] = referralCode;

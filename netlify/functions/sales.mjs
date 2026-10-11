@@ -173,6 +173,13 @@ export default async function handler(request) {
     const first = touch(md && md.attr_first), last = touch(md && md.attr_last);
     return first || last ? { first, last } : null;
   };
+  // The optional "How did you first hear about us?" answer (checkout.mjs), as
+  // its short code, or null when the buyer skipped it or it was not asked.
+  const heardOf = (sess) => {
+    const f = (sess.custom_fields || []).find((x) => x && x.key === "heard");
+    const v = f && f.dropdown && f.dropdown.value;
+    return typeof v === "string" && /^[a-z0-9]{1,20}$/.test(v) ? v : null;
+  };
   const attrOfSub = new Map(subs.rows.map((s) => [s.id, attrOf(s.metadata)]));
 
   // --- one ledger: first purchases and subscription renewals --------------------
@@ -187,6 +194,7 @@ export default async function handler(request) {
       amount: s.amount_total || 0, currency: s.currency || "usd",
       email: (s.customer_details && s.customer_details.email) || "",
       attr: attrOf(s.metadata),
+      heard: heardOf(s),
       ...chargeFacts(pi && pi.latest_charge),
     });
   }
@@ -209,7 +217,10 @@ export default async function handler(request) {
   paid.sort((a, b) => b.created - a.created);
 
   const selfTests = paid.filter((p) => isOwner(p.email));
-  const customer = paid.filter((p) => !isOwner(p.email));
+  // Free copies given with a 100%-off code (a friend, a tester) are "paid" in
+  // Stripe at $0. They are not customers or orders; counted on their own.
+  const comps = paid.filter((p) => !isOwner(p.email) && p.amount === 0);
+  const customer = paid.filter((p) => !isOwner(p.email) && p.amount > 0);
 
   // --- aggregate (same shape as before, renewals now included) -----------------
   const allTime = { orders: customer.length, gross: customer.reduce((n, p) => n + p.amount, 0) };
@@ -328,8 +339,9 @@ export default async function handler(request) {
     ledger: customer.map((p) => ({
       id: p.id, kind: p.kind, ts: p.created, product: p.product, site: p.site,
       gross: p.amount, fee: p.fee, net: p.net, refunded: p.refunded, disputed: p.disputed,
-      cust: custKey(p.email), attr: p.attr,
+      cust: custKey(p.email), attr: p.attr, heard: p.heard,
     })),
+    comps: { orders: comps.length, note: "Free copies given with a 100%-off code, excluded from every figure above." },
     refunds,
     subscriptions,
     balance,
