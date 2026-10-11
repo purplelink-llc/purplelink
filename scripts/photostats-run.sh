@@ -57,6 +57,9 @@ cd "$VOL" || exit 1
 # its session server-side within hours, so a sign-in each day is expected. Later attempts
 # never open a window, so Chrome does not keep popping up.
 if [ "$n" -eq 0 ]; then LOGIN_FLAG=""; else LOGIN_FLAG="--no-auto-login"; fi
+# With a Keychain entry (scripts/faa-autologin.py), sign in to Fine Art America first. A no-op when already
+# signed in or when there is no entry, and it never blocks the sweep.
+"$PY" -u "$VOL/scripts/faa-autologin.py" --if-needed >> "$LOG" 2>&1 || true
 "$PY" -u "$VOL/scripts/stats-collect.py" --headed $LOGIN_FLAG >> "$LOG" 2>&1
 rc=$?
 echo "--- $(date '+%F %T') finished, exit $rc ---" >> "$LOG"
