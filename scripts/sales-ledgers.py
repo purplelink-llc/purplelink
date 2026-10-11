@@ -34,7 +34,7 @@ Sources verified 2026-09-30. Each ledger is rewritten from the source on every
 run (the sources are full histories), and a platform that fails to read is
 reported and left untouched rather than blanked.
 """
-import csv, datetime, json, re, sys, urllib.request
+import csv, datetime, json, re, sys, time, urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
