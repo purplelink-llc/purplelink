@@ -250,10 +250,20 @@ def main():
     t = Tab(pages[0]) if pages else Tab.new()
     t.front()
     for name, fn in (("adobe", adobe), ("shutterstock", shutterstock), ("getty", getty), ("getty-downloads", getty_downloads), ("faa-sales", faa_sales)):
-        try:
-            print(f"{name}: {fn(t)}")
-        except Exception as e:
-            print(f"{name}: FAILED {type(e).__name__}: {e}")
+        # One retry: Getty's Account Management page failed with a bare "Uncaught" on 2026-10-09 and 10-10
+        # but read fine when run alone, so a page that had not finished rendering is the likely cause.
+        # A signed-out site is not retried, since waiting cannot fix it.
+        for attempt in (1, 2):
+            try:
+                print(f"{name}: {fn(t)}")
+                break
+            except Exception as e:
+                if attempt == 1 and "not signed in" not in str(e).lower():
+                    print(f"{name}: {type(e).__name__}: {e} -- retrying", flush=True)
+                    time.sleep(10)
+                    continue
+                print(f"{name}: FAILED {type(e).__name__}: {e}")
+                break
 
 
 if __name__ == "__main__":
