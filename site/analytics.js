@@ -29,7 +29,10 @@
       // personal referral codes and are deliberately not recorded.
       var ref = q.get("ref");
       var appRef = (ref === "vitae" || ref === "vitae-card") ? "ref:" + ref : "";
-      return q.get("utm_source") || (q.get("from") ? "from:" + q.get("from") : "") || appRef;
+      // Some mail clients leave quoted-printable "=3D" in a link, so utm_source=email
+      // arrives as "3Demail". Strip that prefix so those visits count as email.
+      var src = (q.get("utm_source") || "").replace(/^3D(?=[a-z])/i, "");
+      return src || (q.get("from") ? "from:" + q.get("from") : "") || appRef;
     }
     catch (e) { return ""; }
   }
