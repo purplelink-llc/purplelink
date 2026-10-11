@@ -3,7 +3,7 @@ import unittest
 from common import SITE, ORIGIN, EMOJI, read_site, page_of, canonical, jsonld_blocks, walk, meta, main_text
 import json
 
-GUIDES = ["/guides/before-you-paste-client-notes-into-chatgpt/", "/guides/what-ai-tools-leave-on-your-mac/"]
+GUIDES = ["/guides/before-you-paste-client-notes-into-chatgpt/", "/guides/what-ai-tools-leave-on-your-mac/", "/guides/faculty-annual-report-from-your-record/"]
 ARTICLE_TYPES = {"Article", "BlogPosting", "TechArticle", "NewsArticle"}
 
 
