@@ -13,7 +13,11 @@
             "sk[oó]gafoss"
           ],
           "intro": "Skógafoss drops about 60 metres off the old sea cliff on the south coast. The spray throws a rainbow across the base on any afternoon with sun, and a staircase on the east side climbs to the top of the fall.",
-          "fact": "Skógafoss is about 60 metres high and 25 metres wide; the cliff it falls over was once the coastline."
+          "fact": "Skógafoss is about 60 metres high and 25 metres wide; the cliff it falls over was once the coastline.",
+          "more": [
+            "The Skógá river rises on the Eyjafjallajökull ice cap and reaches the sea a few kilometres past the falls. A hiking trail follows the river upstream from the top of the stairs toward the pass at Fimmvörðuháls.",
+            "The three photographs here were made on 10 June 2024, one from the air and one with a person standing at the base for scale."
+          ]
         },
         {
           "slug": "jokulsarlon",
@@ -24,7 +28,11 @@
             "diamond beach"
           ],
           "intro": "Icebergs calve off Breiðamerkurjökull and drift across the lagoon toward the sea, where the tide pushes them back onto the black sand of Diamond Beach. The ice is blue where it is dense and streaked black with ash.",
-          "fact": "The lagoon only formed in the 1930s as the glacier retreated; it is now Iceland's deepest lake."
+          "fact": "The lagoon only formed in the 1930s as the glacier retreated; it is now Iceland's deepest lake.",
+          "more": [
+            "Jökulsárlón sits at the foot of Breiðamerkurjökull, an outlet glacier of Vatnajökull, Europe's largest ice cap by volume. A short river carries the lagoon's water and ice under the ring road and out to the Atlantic.",
+            "The ice that washes onto the beach across the road is the reason for the name Diamond Beach. The three photographs here were made on 11 June 2024."
+          ]
         },
         {
           "slug": "fjadrargljufur",
@@ -34,7 +42,11 @@
             "slot canyon"
           ],
           "intro": "A two-kilometre canyon with mossy walls up to 100 metres high, cut by the Fjaðrá river. A path runs along the rim with several viewpoints over the river below.",
-          "fact": "The canyon is about two kilometres long and up to 100 metres deep, cut through palagonite rock."
+          "fact": "The canyon is about two kilometres long and up to 100 metres deep, cut through palagonite rock.",
+          "more": [
+            "The canyon was carved by glacial meltwater, and the Fjaðrá still runs along its floor. The moss on the walls is fragile, so the path along the rim is sometimes closed in spring to let it recover.",
+            "This page holds one photograph, made on 11 June 2024. A second view of the same canyon is on the south coast page."
+          ]
         },
         {
           "slug": "dyrholaey",
@@ -44,7 +56,11 @@
             "sea arch"
           ],
           "intro": "A headland near Vík with a natural arch big enough to sail through, cliffs full of puffins in summer and a view east along the black beaches toward Reynisdrangar.",
-          "fact": "Dyrhólaey is a 120-metre headland near Vík; its name means door-hill island, after the arch."
+          "fact": "Dyrhólaey is a 120-metre headland near Vík; its name means door-hill island, after the arch.",
+          "more": [
+            "Dyrhólaey is a rock promontory about 120 metres high with a lighthouse on top and black sand on both sides. The arch in the cliff is large enough for small boats to pass through at high tide.",
+            "This page holds one photograph, made on 10 June 2024. The Reynisfjara beach and its basalt stacks are shown on the south coast page."
+          ]
         },
         {
           "slug": "snaefellsnes",
@@ -59,7 +75,11 @@
             "kirkjufell"
           ],
           "intro": "The peninsula west of Reykjavík: a glacier-capped volcano at its tip, sea stacks and basalt cliffs on the south shore, and the black wooden church at Búðir standing alone on the lava field.",
-          "fact": "Snæfellsjökull is the volcano Jules Verne chose as the entrance in Journey to the Centre of the Earth."
+          "fact": "Snæfellsjökull is the volcano Jules Verne chose as the entrance in Journey to the Centre of the Earth.",
+          "more": [
+            "The peninsula is about 90 kilometres long and is sometimes called Iceland in miniature, because it holds a glacier, lava fields, sea cliffs and beaches within a single day's drive. Snæfellsjökull, the volcano at the western tip, rises to 1,446 metres.",
+            "The seven photographs here were made on 9 June 2024. Kirkjufell, the mountain on the north coast, stands 463 metres above the fjord."
+          ]
         },
         {
           "slug": "golden-circle",
@@ -73,7 +93,11 @@
             "þingvellir"
           ],
           "intro": "The loop east of Reykjavík: Gullfoss falling in two steps into its gorge, Strokkur erupting every few minutes, and the blue water of Brúarfoss.",
-          "fact": "Strokkur erupts roughly every five to ten minutes, to a height of 15 to 20 metres."
+          "fact": "Strokkur erupts roughly every five to ten minutes, to a height of 15 to 20 metres.",
+          "more": [
+            "The Golden Circle is a route of roughly 300 kilometres from Reykjavík to Þingvellir, Geysir and Gullfoss and back. Þingvellir is where Iceland's parliament, the Alþingi, first met in 930, and the rift valley there is where the North American and Eurasian plates are moving apart.",
+            "Gullfoss drops 32 metres in two steps. Strokkur erupts every five to ten minutes. The ten photographs here were made on 8 June 2024."
+          ]
         },
         {
           "slug": "south-coast",
@@ -89,7 +113,11 @@
             "waterfall.*iceland"
           ],
           "intro": "The road along the south coast passes one waterfall after another. Seljalandsfoss you can walk behind; Gljúfrabúi hides in a cleft a few hundred metres on.",
-          "fact": "Seljalandsfoss falls about 60 metres and a path runs behind the curtain of water."
+          "fact": "Seljalandsfoss falls about 60 metres and a path runs behind the curtain of water.",
+          "more": [
+            "Route 1 runs along the south coast for about 180 kilometres between Reykjavík and Vík, with the volcanoes and ice caps on one side and the Atlantic on the other. Seljalandsfoss is 60 metres high, and the path behind it is slippery in rain.",
+            "The eight photographs here were made between 9 and 11 June 2024."
+          ]
         }
       ]
     },
@@ -111,7 +139,11 @@
             "philosopher's walk"
           ],
           "intro": "Kiyomizu-dera on its wooden stage above the city, the vermilion gates of Fushimi Inari climbing the hill, and the lanes of Higashiyama early in the morning.",
-          "fact": "Fushimi Inari's paths carry around 10,000 torii gates, each donated by a business or family."
+          "fact": "Fushimi Inari's paths carry around 10,000 torii gates, each donated by a business or family.",
+          "more": [
+            "Kyoto was the imperial capital from 794 until 1868 and holds 17 sites on the UNESCO World Heritage list. Kiyomizu-dera dates from 778, and its main hall stands on a wooden stage built without nails.",
+            "The 16 photographs here were made on 10 and 11 June 2025, on the hillside temples and in the Arashiyama district to the west."
+          ]
         },
         {
           "slug": "arashiyama",
@@ -125,7 +157,10 @@
             "sagano"
           ],
           "intro": "West of Kyoto the Hozu river comes out of its gorge under the Togetsukyo bridge. The bamboo grove is a short walk from the station; the monkey park climbs the hill opposite.",
-          "fact": "The Sagano scenic railway follows the Hozu gorge for about seven kilometres between Saga and Kameoka."
+          "fact": "The Sagano scenic railway follows the Hozu gorge for about seven kilometres between Saga and Kameoka.",
+          "more": [
+            "The Sagano bamboo grove is a path through tall stalks. At the main path visitors have carved names and initials into the stalks, and three of the photographs here show that wear."
+          ]
         },
         {
           "slug": "tokyo",
@@ -145,7 +180,11 @@
             "harajuku"
           ],
           "intro": "Zōjō-ji with Tokyo Tower behind it, Shibuya crossing from above, Kabukicho after dark, and the quiet of Meiji Shrine a few minutes from Harajuku.",
-          "fact": "Tokyo Tower, finished in 1958 and modelled on the Eiffel Tower, stands 333 metres tall."
+          "fact": "Tokyo Tower, finished in 1958 and modelled on the Eiffel Tower, stands 333 metres tall.",
+          "more": [
+            "Tokyo Tower was completed in 1958 and is 333 metres high. Shibuya crossing is where several streets meet, and signals stop all traffic so pedestrians can cross in every direction at once. Kabukicho in Shinjuku is an entertainment district that stays lit after dark.",
+            "The 16 photographs here were made on 5 and 6 June 2025."
+          ]
         },
         {
           "slug": "nara",
@@ -158,7 +197,11 @@
             "kasuga"
           ],
           "intro": "The deer of Nara Park bow for crackers in front of Tōdai-ji, whose Great Buddha Hall is among the largest wooden buildings in the world.",
-          "fact": "More than a thousand sika deer roam Nara Park and are protected as natural monuments."
+          "fact": "More than a thousand sika deer roam Nara Park and are protected as natural monuments.",
+          "more": [
+            "Nara was Japan's capital from 710 to 784. Tōdai-ji, founded in 728, houses a bronze Great Buddha cast in the 8th century. The present Great Buddha Hall was rebuilt in 1709 and is about two thirds the width of the original.",
+            "The deer in Nara Park are wild. Visitors buy deer crackers from stalls, and the deer bow before taking them."
+          ]
         },
         {
           "slug": "osaka",
@@ -172,7 +215,11 @@
             "osaka castle"
           ],
           "intro": "Dōtonbori at night: the Glico runner, the canal and the restaurant signs stacked above it.",
-          "fact": "The Glico running man sign over the Dōtonbori canal has been there, in six versions, since 1935."
+          "fact": "The Glico running man sign over the Dōtonbori canal has been there, in six versions, since 1935.",
+          "more": [
+            "Dōtonbori runs along a canal in the Namba district and is known for its food stalls and its large mechanical signs. A Glico running man has stood above the canal since 1935.",
+            "The Umeda Sky Building, a 173-metre twin tower joined at the top by an open-air platform, was completed in 1993. The six photographs here were made on 13 and 14 June 2025."
+          ]
         },
         {
           "slug": "miyajima",
@@ -185,7 +232,11 @@
             "floating torii"
           ],
           "intro": "The great torii of Itsukushima Shrine stands in the sea at high tide and on wet sand at low tide. Hiroshima is a short ferry and train ride away.",
-          "fact": "The current torii at Itsukushima dates from 1875 and stands about 16 metres high; it is not fixed to the seabed but held by its own weight."
+          "fact": "The current torii at Itsukushima dates from 1875 and stands about 16 metres high; it is not fixed to the seabed but held by its own weight.",
+          "more": [
+            "The Itsukushima Shrine is a UNESCO World Heritage Site and its torii gate is about 16 metres high. The gate in the water today was built in 1875. It stands on the seabed without being fixed to it, held in place by its own weight.",
+            "The photographs here also include Hiroshima, the city on the mainland across the strait, where a tram line runs through the downtown streets."
+          ]
         },
         {
           "slug": "mount-fuji",
@@ -198,8 +249,16 @@
             "fuji five lakes"
           ],
           "intro": "Fuji from the north shore of Lake Kawaguchi and from the Chureito pagoda, when the cloud lifted.",
-          "fact": "Mount Fuji is 3,776 metres high and last erupted in 1707."
+          "fact": "Mount Fuji is 3,776 metres high and last erupted in 1707.",
+          "more": [
+            "Fuji is 3,776 metres high, Japan's tallest mountain, and an active volcano that last erupted in 1707. Lake Kawaguchi is the best known of the five lakes at its northern base.",
+            "A Lawson convenience store in Kawaguchiko, with the mountain directly behind its sign, is a well-known viewpoint, and two of the photographs here show it."
+          ]
         }
+      ],
+      "more": [
+        "The 71 photographs here were made on one two-week trip in June 2025. The route ran from Tokyo to the Fuji lakes, then Kyoto, Nara, Osaka and Miyajima. June is the start of the rainy season (tsuyu, usually early to mid June in central Japan), which gives low cloud over the mountains and wet streets in the cities.",
+        "Each place has its own page below. Each photograph is available as a print or under a licence."
       ]
     },
     {
@@ -220,7 +279,11 @@
             "rotenboden"
           ],
           "intro": "The Gornergrat railway climbs to 3,089 metres above Zermatt. From Rotenboden a short path leads to Riffelsee, where the Matterhorn reflects on a still morning, and the Gorner glacier fills the valley below.",
-          "fact": "The Matterhorn is 4,478 metres high; the Gornergrat railway, opened in 1898, was Switzerland's first electric cog railway."
+          "fact": "The Matterhorn is 4,478 metres high; the Gornergrat railway, opened in 1898, was Switzerland's first electric cog railway.",
+          "more": [
+            "The Matterhorn is 4,478 metres high and straddles the border with Italy. Zermatt has restricted cars since the 1960s, and visitors arrive by train and move around by electric taxi or on foot.",
+            "Riffelsee is a small lake on the Gornergrat side of the valley. On calm mornings it mirrors the peak. The eight photographs here were made on 16 and 17 June 2026."
+          ]
         },
         {
           "slug": "lauterbrunnen",
@@ -239,7 +302,11 @@
             "brienz"
           ],
           "intro": "Staubbach Falls drops nearly 300 metres into the Lauterbrunnen valley. The Jungfraujoch railway tunnels through the Eiger to Europe's highest station, and Interlaken sits between two lakes.",
-          "fact": "The Jungfraujoch station at 3,454 metres is the highest railway station in Europe."
+          "fact": "The Jungfraujoch station at 3,454 metres is the highest railway station in Europe.",
+          "more": [
+            "Lauterbrunnen is a glacial valley with sheer cliffs on both sides. The Jungfrau railway climbs from the valley to the Jungfraujoch at 3,454 metres, the highest railway station in Europe.",
+            "From the Sphinx observation terrace, the Aletsch Glacier runs about 23 kilometres, making it the longest in the Alps. The 11 photographs here were made on 13 and 14 June 2026."
+          ]
         },
         {
           "slug": "bern",
@@ -255,7 +322,11 @@
             "bern.*m[uü]nster"
           ],
           "intro": "The old town fills a loop of the Aare: arcaded streets, the Zytglogge clock tower, the cathedral spire and the red roofs seen from the Rose Garden.",
-          "fact": "Bern's old town has been a UNESCO World Heritage Site since 1983; its arcades run for about six kilometres."
+          "fact": "Bern's old town has been a UNESCO World Heritage Site since 1983; its arcades run for about six kilometres.",
+          "more": [
+            "Bern's old town is a UNESCO World Heritage Site and has about six kilometres of arcades, which allow shoppers to walk under cover. The Zytglogge clock tower has an astronomical clock added in 1530, and the Minster tower was completed in 1893.",
+            "The BärenPark on the Aare has housed brown bears since 2009. The eight photographs here were made on 12 June 2026."
+          ]
         },
         {
           "slug": "swiss-alps",
@@ -266,7 +337,11 @@
             "(peak|summit|mountain|glacier|alpine).*switzerland"
           ],
           "intro": "Peaks and glaciers from the train windows and the viewpoints between Interlaken and Zermatt.",
-          "fact": "Switzerland has 48 peaks above 4,000 metres, more than any other country in the Alps."
+          "fact": "Switzerland has 48 peaks above 4,000 metres, more than any other country in the Alps.",
+          "more": [
+            "The alpine chough nests on high cliffs and has learned to approach viewpoints for scraps. The cattle in the high pastures stay on the summer slopes from June to September.",
+            "The three photographs here were made on 13 and 14 June 2026."
+          ]
         }
       ]
     },
@@ -293,8 +368,16 @@
             "the shard"
           ],
           "intro": "Big Ben and the Houses of Parliament from the south bank at sunset, Westminster Abbey, Piccadilly Circus at night and the towers of Canary Wharf.",
-          "fact": "The Elizabeth Tower, usually called Big Ben after its bell, is 96 metres tall; the bell itself weighs 13.7 tonnes."
+          "fact": "The Elizabeth Tower, usually called Big Ben after its bell, is 96 metres tall; the bell itself weighs 13.7 tonnes.",
+          "more": [
+            "Big Ben is the name of the bell, not the tower. The tower is called Elizabeth Tower, a name it was given in 2012. The Palace of Westminster was rebuilt after a fire in 1834, and Westminster Abbey has been the coronation church since 1066.",
+            "The Albert Memorial, unveiled in 1872, faces the Royal Albert Hall, which opened in 1871. The 16 photographs here cover Westminster, the river and the parks to the west."
+          ]
         }
+      ],
+      "more": [
+        "The 16 photographs here are all of London, between Westminster and Kensington. They show the Houses of Parliament from the south bank, the Abbey, the Thames at dusk and the memorials on the park side of the river.",
+        "Each photograph is available as a print or under a licence."
       ]
     },
     {
@@ -318,8 +401,16 @@
             "k[oø]benhavn"
           ],
           "intro": "Nyhavn's painted houses along the canal, Amalienborg at dusk, the Christmas lights on Hotel d'Angleterre and the red rooftops seen from the Round Tower.",
-          "fact": "Nyhavn was dug in the 1670s as a harbour canal; Hans Christian Andersen lived at three different addresses on it."
+          "fact": "Nyhavn was dug in the 1670s as a harbour canal; Hans Christian Andersen lived at three different addresses on it.",
+          "more": [
+            "Nyhavn was dug in the 1670s to bring ships from the sea into the city centre. Amalienborg is four identical palaces around an octagonal square and is the royal family's winter residence. The Round Tower, built in 1642, has a spiral ramp instead of stairs.",
+            "Tivoli Gardens opened in 1843 and holds a Christmas market each winter. The 16 photographs here were made between 5 and 9 December 2025."
+          ]
         }
+      ],
+      "more": [
+        "The gallery holds 19 photographs, 16 of them of Copenhagen, made over five days in December 2025. Copenhagen is Denmark's capital and largest city, built on the islands of Zealand and Amager.",
+        "The set covers the harbour district, the royal palace square, the rooftops and the Christmas lights. Each photograph is available as a print or under a licence."
       ]
     },
     {
@@ -339,8 +430,16 @@
             "dutch canal"
           ],
           "intro": "The canals of the Jordaan, the Amstel river panorama, the Rijksmuseum and the basilica of Saint Nicholas by the station.",
-          "fact": "Amsterdam has about 165 canals and over 1,200 bridges; the canal ring is a UNESCO World Heritage Site."
+          "fact": "Amsterdam has about 165 canals and over 1,200 bridges; the canal ring is a UNESCO World Heritage Site.",
+          "more": [
+            "Amsterdam's canal ring was dug in the 17th century and is a UNESCO World Heritage Site. The Rijksmuseum reopened in 2013 after a renovation of ten years, and its library is the one with the tall galleries of bookshelves.",
+            "The Basilica of Saint Nicholas, built in the 1880s, stands a short walk from Central Station. The 16 photographs here cover the canals, the Amstel, the museum quarter and the old centre."
+          ]
         }
+      ],
+      "more": [
+        "The 16 photographs here are all of Amsterdam. The city grew around the Amstel, and its 17th-century canal ring (the Grachtengordel, a belt of concentric canals dug for trade and housing) has been a UNESCO World Heritage Site since 2010.",
+        "The set follows the canals, the Rijksmuseum and the quarter around Saint Nicholas. Each photograph is available as a print or under a licence."
       ]
     },
     {
@@ -358,7 +457,11 @@
             "rhine"
           ],
           "intro": "Cologne Cathedral and the Hohenzollern Bridge from across the Rhine at dusk, and the Christmas markets in the old town.",
-          "fact": "Cologne Cathedral took 632 years to build, from 1248 to 1880, and was the tallest building in the world for four years."
+          "fact": "Cologne Cathedral took 632 years to build, from 1248 to 1880, and was the tallest building in the world for four years.",
+          "more": [
+            "Cologne Cathedral took 632 years to build. Work began in 1248, stopped for roughly three centuries, and finished in 1880. The twin spires are 157 metres high, and the cathedral has been a UNESCO World Heritage Site since 1996.",
+            "The Hohenzollern Bridge, a railway bridge across the Rhine, opened in 1911. The 11 photographs here include the cathedral's interior, the skyline from across the river and the streets of the old town."
+          ]
         },
         {
           "slug": "heidelberg",
@@ -369,8 +472,16 @@
             "old bridge"
           ],
           "intro": "The red sandstone castle above the old town, the Old Bridge across the Neckar lit at dusk, and the view from the Philosophers' Walk.",
-          "fact": "Heidelberg Castle's Great Tun holds about 220,000 litres and is one of the largest wine barrels ever made."
+          "fact": "Heidelberg Castle's Great Tun holds about 220,000 litres and is one of the largest wine barrels ever made.",
+          "more": [
+            "Heidelberg Castle was damaged by French troops in 1693 and again by lightning in 1764, and it has stood as a ruin since. The Old Bridge across the Neckar was completed in 1788, and Heidelberg University, founded in 1386, is the oldest in Germany.",
+            "The five photographs here show the castle, the bridge, the Kornmarkt square and the old town from above."
+          ]
         }
+      ],
+      "more": [
+        "Two cities make up this gallery of 16 photographs. Cologne contributes 11, centred on the cathedral and the Rhine. Heidelberg contributes 5, from the castle and the Neckar.",
+        "Each photograph is available as a print or under a licence."
       ]
     },
     {
@@ -453,7 +564,11 @@
             "lombard"
           ],
           "intro": "The Golden Gate Bridge from the Marin headlands and the bay from the water.",
-          "fact": "The Golden Gate Bridge's towers stand 227 metres above the water; its colour is called International Orange."
+          "fact": "The Golden Gate Bridge's towers stand 227 metres above the water; its colour is called International Orange.",
+          "more": [
+            "The Golden Gate Bridge opened in 1937. It is 2.7 kilometres long, and its towers rise 227 metres above the water. The colour is a custom orange called International Orange. Alcatraz, in the bay, held a federal prison from 1934 to 1963.",
+            "The nine photographs here were made between 3 and 5 October 2025."
+          ]
         },
         {
           "slug": "pittsburgh",
@@ -466,7 +581,11 @@
             "duquesne incline"
           ],
           "intro": "The three rivers and the downtown skyline from Mount Washington.",
-          "fact": "Pittsburgh has 446 bridges, more than any other city in the world."
+          "fact": "Pittsburgh has 446 bridges, more than any other city in the world.",
+          "more": [
+            "Pittsburgh sits where the Allegheny and Monongahela rivers meet to form the Ohio. Downtown stands on the point of land between them, and the best views of it are from the overlook on Mount Washington.",
+            "The two photographs here were made on 21 and 23 July 2022."
+          ]
         },
         {
           "slug": "sequoias",
@@ -478,7 +597,11 @@
             "giant forest"
           ],
           "intro": "Among the big trees: a bench in a redwood grove, trunks disappearing into fog.",
-          "fact": "Coast redwoods are the tallest trees on Earth, the highest known standing just over 115 metres."
+          "fact": "Coast redwoods are the tallest trees on Earth, the highest known standing just over 115 metres.",
+          "more": [
+            "The page takes its name from the genus Sequoia, the coast redwood. Coast redwoods are the tallest trees on Earth, and the tallest known specimen, in Redwood National Park, stands more than 115 metres high. Giant sequoias, a different species in the Sierra Nevada, are the largest by volume.",
+            "The photograph here was made on 5 October 2025, during the trip that also produced the San Francisco set."
+          ]
         }
       ]
     },
@@ -501,8 +624,16 @@
             "capilano"
           ],
           "intro": "The skyline across False Creek, the seawall at Stanley Park, and the North Shore mountains over Burrard Inlet.",
-          "fact": "Stanley Park's seawall, finished in 1980 after 63 years of work, runs for about nine kilometres."
+          "fact": "Stanley Park's seawall, finished in 1980 after 63 years of work, runs for about nine kilometres.",
+          "more": [
+            "Stanley Park covers about 405 hectares and is ringed by a seawall of roughly nine kilometres, which is the easiest way to see the skyline from the water. Across Burrard Inlet, Grouse Mountain and the other North Shore peaks stay in view most of the day.",
+            "The six photographs here were made on 18 April 2026, when the cherry trees were in flower."
+          ]
         }
+      ],
+      "more": [
+        "All six photographs in this gallery were made on one day, 18 April 2026, in Vancouver. Downtown sits on a peninsula between Burrard Inlet and English Bay, with the Coast Mountains rising directly behind the north shore.",
+        "The set covers the skyline from the water, the totem poles in Stanley Park and the cherry trees in bloom. Each photograph is available as a print or under a licence."
       ]
     },
     {
@@ -521,8 +652,16 @@
             "amador"
           ],
           "intro": "Casco Viejo's balconies, the skyline across the bay from the causeway, and a ship rising in the Miraflores locks.",
-          "fact": "A ship takes eight to ten hours to pass through the Panama Canal; the Miraflores locks lift it about 16 metres."
+          "fact": "A ship takes eight to ten hours to pass through the Panama Canal; the Miraflores locks lift it about 16 metres.",
+          "more": [
+            "Casco Viejo was founded in 1673 after the original city, Panamá Viejo, was sacked by the pirate Henry Morgan in 1671. The old town and the ruins of Panamá Viejo are listed together as a UNESCO World Heritage Site.",
+            "The Miraflores locks lift ships about 16 metres from the Pacific up to Miraflores Lake. The 13 photographs here were made between 9 and 12 August 2023."
+          ]
         }
+      ],
+      "more": [
+        "The 16 photographs here were made in August 2023, 13 of them in Panama City. The city sits at the Pacific end of the Panama Canal, which opened on 15 August 1914 and now carries ships through locks on both coasts.",
+        "The set covers the colonial old town, the skyline across the bay and the canal. Each photograph is available as a print or under a licence."
       ]
     }
   ]

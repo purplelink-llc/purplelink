@@ -44,14 +44,6 @@ future audit flags it, surface this note rather than reverting.
 Invoke design work with the impeccable skill (e.g. `/impeccable critique
 /tools/word-counter/`, `/impeccable audit`, `/impeccable polish`).
 
-## AdSense re-review: content freeze (from 2026-10-11)
-
-AdSense rejected purplelink.llc again with "Low value content" (2026-10-11). The site went from about one new
-guide or article a week to 3 to 4 a day in October, which reads as scaled content. Until Ben re-applies (not before
-2026-11-08), do not add new guides, blog posts, tool pages or other indexable pages. Improving or merging existing
-pages is fine. The public links to the Daily Digest were removed on 2026-10-11 (the pages stay, `noindex` and
-disallowed). Do not re-apply for AdSense without Ben's say-so; each rejection counts.
-
 ## Keep local main in sync
 
 `origin/main` moves all day (the Modal digest cron pushes to it, and every push triggers a production

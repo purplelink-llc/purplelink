@@ -335,6 +335,11 @@ def shop_strip():
             '        </aside>\n')
 
 
+def more_paras(entry):
+    """Extra hand-written paragraphs (optional "more" list in photo-places.json) under the intro."""
+    return "".join(f'        <p class="hub-intro">{esc(t)}</p>\n' for t in entry.get("more", []))
+
+
 def write(path, text, check, changed):
     if path.exists() and path.read_text(encoding="utf-8") == text:
         return
@@ -383,7 +388,7 @@ def main():
             body = (f'      <nav class="hub-crumbs" aria-label="Breadcrumb"><a href="/photography/">Photography</a> <span aria-hidden="true">/</span> '
                     f'<a href="/photography/{cs}/">{esc(c["name"])}</a> <span aria-hidden="true">/</span> <span aria-current="page">{esc(p["name"])}</span></nav>\n'
                     f'      <section class="hub-head">\n        <h1>{esc(p["name"])}</h1>\n        <p class="hub-intro">{esc(p["intro"])}</p>\n'
-                    f'        <p class="hub-fact">{esc(p["fact"])}</p>\n      </section>\n'
+                    f'        <p class="hub-fact">{esc(p["fact"])}</p>\n' + more_paras(p) + '      </section>\n'
                     f'      <section class="hub-photos" aria-label="Photographs of {esc(p["name"])}">\n' + grid([i for i in imgs if not i["event"]], etsy) + shop_strip() + '      </section>\n')
             ev = [i for i in imgs if i["event"]]
             if ev:
@@ -407,7 +412,7 @@ def main():
         if not all_imgs:
             continue
         body = (f'      <nav class="hub-crumbs" aria-label="Breadcrumb"><a href="/photography/">Photography</a> <span aria-hidden="true">/</span> <span aria-current="page">{esc(c["name"])}</span></nav>\n'
-                f'      <section class="hub-head">\n        <h1>{esc(c["name"])}</h1>\n        <p class="hub-intro">{esc(c["intro"])}</p>\n      </section>\n')
+                f'      <section class="hub-head">\n        <h1>{esc(c["name"])}</h1>\n        <p class="hub-intro">{esc(c["intro"])}</p>\n' + more_paras(c) + '      </section>\n')
         if place_cards:
             body += '      <section class="hub-places" aria-label="Places">\n        <div class="hub-cards">\n' + "".join(place_cards) + '        </div>\n      </section>\n'
         if extra:
