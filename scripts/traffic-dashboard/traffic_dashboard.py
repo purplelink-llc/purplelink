@@ -4024,7 +4024,8 @@ def print_metrics(m: dict | None) -> None:
 # Revenue minus what it cost to earn, per product line, over the last 7 days
 # (the window every ad reading covers). Net revenue is already after Stripe's
 # fee, refunds and Apple's cut; from it come ad spend, Claude API cost per paid
-# job, Modal compute, and fixed costs from COSTS_PATH, spread evenly per day.
+# job, Modal compute, and fixed costs from COSTS_PATH, spread evenly per day
+# (usdPerMonth, usdPerYear), or counted once in the window holding its date (usdOnce + date).
 # Only measured or entered costs appear; what is not measured is listed.
 
 PROFIT_DAYS = 7
@@ -4084,7 +4085,8 @@ def profit_view(history: dict, manual_ads: dict, days: int = PROFIT_DAYS) -> dic
             gaps.append(f"{ms['label']} sales ({issue})")
     if any(r.get("feeEstimated") and r["ts"] >= lo_ts for r in ledger):
         gaps.append("marketplace fees estimated from the published schedule where the page showed none")
-    gaps.append(f"shop-level Etsy costs (listing fees for the 7 new sheets, ${ETSY_SHEET_LISTING_FEES:.2f} one time)")
+    if not any(it.get("usdOnce") for it in load_costs()):
+        gaps.append(f"shop-level Etsy costs (listing fees for the 7 new sheets, ${ETSY_SHEET_LISTING_FEES:.2f} one time)")
 
     usage = history.get("apiUsage")
     if usage is None:
@@ -4104,11 +4106,18 @@ def profit_view(history: dict, manual_ads: dict, days: int = PROFIT_DAYS) -> dic
 
     items = load_costs()
     for it in items:
+        if it.get("pending"):  # known cost, amount not yet entered: listed, never counted
+            gaps.append(f"{it.get('name', 'a fixed cost')} (amount not entered)")
+            continue
         per_day = (it.get("usdPerMonth", 0) * 12 + it.get("usdPerYear", 0)) / 365
         line = it.get("line") if it.get("line") in lines else "Company"
         lines[line]["fixed"] += per_day * days
-    gaps.append("Claude API calls outside paid jobs (the daily digest's curation)")
-    if not items:
+        # One-time cost: counted in full in the window that contains its date.
+        if it.get("usdOnce") and lo < (it.get("date") or "") <= today.isoformat():
+            lines[line]["fixed"] += it["usdOnce"]
+    gaps.append("Claude API calls outside paid jobs (the daily digest's curation)" +
+                (", entered as an estimate" if any("digest" in (it.get("name") or "").lower() for it in items) else ""))
+    if not [it for it in items if not it.get("pending")]:
         gaps.append(f"fixed costs (none entered in {COSTS_PATH})")
 
     rows = []
@@ -4121,7 +4130,7 @@ def profit_view(history: dict, manual_ads: dict, days: int = PROFIT_DAYS) -> dic
                      "margin": ((v["revenue"] - cost) / v["revenue"] * 100) if v["revenue"] else None})
     tot = {f: sum(r[f] for r in rows) for f in ("revenue", "ads", "api", "hosting", "fixed", "cost", "profit")}
     return {"days": days, "rows": rows, "total": tot, "jobs": jobs, "gaps": gaps,
-            "fixedItems": [it.get("name", "?") for it in items]}
+            "fixedItems": [it.get("name", "?") for it in items if not it.get("pending")]}
 
 
 def classify_touch(t: dict | None) -> str:
