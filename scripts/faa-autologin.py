@@ -87,6 +87,15 @@ def save_state(d):
     STATE.write_text(json.dumps(d))
 
 
+def click(t, selector):
+    """A real mouse click at the centre of the element (counts as a user gesture, unlike el.click())."""
+    r = t.eval("(()=>{const e=document.querySelector(%s);e.scrollIntoView({block:'center'});const b=e.getBoundingClientRect();"
+               "return {x:b.left+b.width/2,y:b.top+b.height/2}})()" % json.dumps(selector))
+    for typ in ("mousePressed", "mouseReleased"):
+        t.send("Input.dispatchMouseEvent", type=typ, x=r["x"], y=r["y"], button="left", clickCount=1)
+    time.sleep(0.4)
+
+
 def signed_in(t):
     return bool(t.eval(SIGNED_IN_JS))
 
@@ -105,6 +114,7 @@ def main():
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--keychain", action="store_true", help="type the Keychain password even when Chrome autofilled")
     a = ap.parse_args()
 
     ensure_chrome()
@@ -133,23 +143,31 @@ def main():
         if not a.force and time.time() - st.get("last_fail", 0) < RETRY_AFTER_FAIL_S:
             log("last attempt failed less than 6 hours ago; not trying again (use --force)")
             return 3
-        pw = keychain_password()
-        if not pw:
-            log(f'no Keychain entry. Add it once with:  security add-generic-password -a "{ACCOUNT}" -s {SERVICE} -w')
-            return 2
-        try:
-            # Type into the real fields so the page sees ordinary input events.
-            t.eval("(()=>{const u=document.querySelector('input[name=username]');u.focus();u.select()})()")
-            t.send("Input.insertText", text=ACCOUNT)
-            # Chrome may have autofilled this field already; select it all first so typing replaces it instead
-            # of being appended to it (the first version appended and the site rejected the doubled password).
-            t.eval("(()=>{const p=document.querySelector('input[type=password]');p.focus();p.select()})()")
-            t.send("Input.insertText", text=pw)
-        finally:
-            del pw
-        # The page's own Login control is a link that calls document.loginartist.submit().
-        t.eval("document.loginartist.submit()")
+        # Chrome's password manager in this profile has usually autofilled the form already. Prefer that and just
+        # click Login with a real mouse click (a click also releases the autofilled value to the page); fall back to
+        # the Keychain only when the password field is empty.
+        autofilled = bool(t.eval("document.querySelector('input[type=password]').matches(':-webkit-autofill')"))
+        if autofilled and not a.keychain:
+            log("password autofilled by Chrome; clicking Login")
+            click(t, "input[type=password]")
+        else:
+            pw = keychain_password()
+            if not pw:
+                log(f'no autofill and no Keychain entry. Add it once with:  security add-generic-password -a "{ACCOUNT}" -s {SERVICE} -w')
+                return 2
+            try:
+                # Select the whole field first so typing replaces any existing text instead of being appended to it.
+                t.eval("(()=>{const u=document.querySelector('input[name=username]');u.focus();u.select()})()")
+                t.send("Input.insertText", text=ACCOUNT)
+                t.eval("(()=>{const p=document.querySelector('input[type=password]');p.focus();p.select()})()")
+                t.send("Input.insertText", text=pw)
+            finally:
+                del pw
+        click(t, "form[action*=loginValidation] a.button")      # the page's own Login link
         time.sleep(8)
+        seen = t.eval("(()=>({path:location.pathname,"
+                      "msg:(document.body.innerText.match(/[^\\n]*(invalid|incorrect|wrong|not match|try again|locked|captcha|verify)[^\\n]*/i)||[''])[0].slice(0,140)}))()")
+        log(f"after submit: {seen.get('path')} {('| page says: ' + seen['msg']) if seen.get('msg') else ''}")
         t.goto("https://fineartamerica.com/controlpanel/main", settle=6)
         if signed_in(t):
             save_state({"last_ok": time.time()})
