@@ -63,6 +63,8 @@ build). A commit made on a stale local `main` makes the histories diverge; that 
 
 ## Deploy
 
+- **Batch pushes.** Netlify Starter allows 300 build minutes a month and every push to `main` that touches the site costs about 20 seconds; commit locally and push once per working session, not once per edit. `netlify.toml` skips builds for pushes that change nothing in the build's inputs, and the digest cron marks all but its last commit `[skip netlify]`; add `[skip netlify]` to a commit message to skip a build by hand.
+
 - Frontend: `bash scripts/deploy.sh` (Netlify `--prod` + IndexNow ping).
 - Backend (Modal): `bash scripts/deploy.sh --backend`.
 - The site is live at https://purplelink.llc.

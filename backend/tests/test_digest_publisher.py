@@ -184,11 +184,11 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
     async def _fake_count(client, token):
         count_called.append(1)
         return 6
-    async def _fake_write(client, html, digest, token): write_called.append(1)
-    async def _fake_write_json(client, digest, token): write_json_called.append(1)
-    async def _fake_index(client, entry, token): index_called.append(1)
-    async def _fake_rss(client, rss_item, token): rss_called.append(1)
-    async def _fake_topic_hub(client, section_label, entry, token): topic_hub_called.append(section_label)
+    async def _fake_write(client, html, digest, token, skip_build=False): write_called.append(skip_build)
+    async def _fake_write_json(client, digest, token, skip_build=False): write_json_called.append(skip_build)
+    async def _fake_index(client, entry, token, skip_build=False): index_called.append(skip_build)
+    async def _fake_rss(client, rss_item, token, skip_build=False): rss_called.append(skip_build)
+    async def _fake_topic_hub(client, section_label, entry, token, skip_build=False): topic_hub_called.append(section_label)
     async def _fake_websub(client): websub_called.append(1)
     async def _fake_linkedin(client, digest, access_token, author_urn): linkedin_called.append(1)
 
@@ -205,7 +205,8 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
     asyncio.run(publish(digest, "gh_token"))
 
     assert count_called, "github_count_digests was not called"
-    assert write_called, "github_write_digest was not called"
+    assert write_called == [False], "the digest page is the one commit that triggers the build"
+    assert write_json_called == [True] and index_called == [True] and rss_called == [True]
     assert write_json_called, "github_write_digest_json was not called"
     assert index_called, "github_update_digest_index was not called"
     assert rss_called, "github_update_rss_feed was not called"
@@ -436,3 +437,21 @@ def test_load_asset_stamps_hashes_file_bytes():
     finally:
         _pub._github_get_file = original
         _clear_stamps()
+
+
+def test_put_file_marks_skip_build_commits():
+    sent = []
+
+    class _Resp:
+        status_code = 200
+        def raise_for_status(self): pass
+
+    class _Client:
+        async def put(self, url, headers=None, json=None, timeout=None):
+            sent.append(json["message"])
+            return _Resp()
+
+    from digest.publisher import _github_put_file
+    asyncio.run(_github_put_file(_Client(), "a", "x", "chore(digest): a", "t", skip_build=True))
+    asyncio.run(_github_put_file(_Client(), "b", "x", "chore(digest): b", "t"))
+    assert sent == ["chore(digest): a [skip netlify]", "chore(digest): b"]

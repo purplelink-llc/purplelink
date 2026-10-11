@@ -8,6 +8,14 @@
   # lastmod dates come from git history, which a shallow build clone lacks.
   # check_content reports problems without failing, so one bad page never
   # blocks the digest; check_og_images fails the build, as in deploy.sh.
+  # Skip the build (exit 0) when a push touched none of the build's inputs: the
+  # published folder, the functions, this file, the function dependencies, the
+  # eight build scripts and the games data check_games reads. Backend, video,
+  # docs, other scripts and the like never reach the site, so they cost no
+  # minutes. Any other outcome (changes found, or an unreadable ref in a fresh
+  # clone) exits non-zero and builds. Adding a script to `command` below means
+  # adding it here too.
+  ignore = "git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- site netlify netlify.toml package.json package-lock.json scripts/apply_layout.py scripts/fingerprint_assets.py scripts/gen_search_index.py scripts/gen_blog_feed.py scripts/gen_llms_full.py scripts/check_og_images.py scripts/check_content.py scripts/check_games.py scripts/games-data"
   command = "python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py && python3 scripts/gen_search_index.py && python3 scripts/gen_blog_feed.py && python3 scripts/gen_llms_full.py && python3 scripts/check_og_images.py && python3 scripts/check_content.py && python3 scripts/check_games.py"
 
 [functions]

@@ -642,11 +642,19 @@ async def _github_get_file(client, path: str, token: str) -> tuple[Optional[str]
         return None, None
 
 
+# Netlify skips the production build for a commit whose message carries this
+# marker. The digest cron writes about nine files per run, one commit each;
+# only the last commit should trigger a build, and it picks up all the others.
+_SKIP_BUILD = " [skip netlify]"
+
+
 async def _github_put_file(
     client, path: str, content: str, message: str,
-    token: str, sha: Optional[str] = None,
+    token: str, sha: Optional[str] = None, skip_build: bool = False,
 ) -> None:
     import asyncio as _asyncio
+    if skip_build:
+        message += _SKIP_BUILD
     url = f"{GITHUB_API}/repos/{GITHUB_REPO}/contents/{path}"
     body: dict = {
         "message": message,
@@ -681,7 +689,7 @@ async def _github_put_file(
 
 
 async def github_write_digest(
-    client, html: str, digest: DigestData, token: str,
+    client, html: str, digest: DigestData, token: str, skip_build: bool = False,
 ) -> None:
     """Write the digest HTML file to the repo."""
     iso = digest.date.isoformat()
@@ -692,6 +700,7 @@ async def github_write_digest(
         message=f"chore(digest): Daily Digest #{digest.number} ({iso})",
         token=token,
         sha=existing_sha,
+        skip_build=skip_build,
     )
     logger.info("github_write_digest: wrote %s", path)
 
@@ -700,7 +709,9 @@ def _digest_json_path(iso: str) -> str:
     return f"{DIGEST_DIR}/data/{iso}.json"
 
 
-async def github_write_digest_json(client, digest: DigestData, token: str) -> None:
+async def github_write_digest_json(
+    client, digest: DigestData, token: str, skip_build: bool = False,
+) -> None:
     """Write a raw JSON snapshot alongside the rendered HTML -- see
     digest_to_dict for why this exists."""
     import json
@@ -708,7 +719,8 @@ async def github_write_digest_json(client, digest: DigestData, token: str) -> No
     path = _digest_json_path(iso)
     _, existing_sha = await _github_get_file(client, path, token)
     content = json.dumps(digest_to_dict(digest), indent=2)
-    await _github_put_file(client, path, content, f"digest: JSON snapshot {iso}", token, sha=existing_sha)
+    await _github_put_file(client, path, content, f"digest: JSON snapshot {iso}", token,
+                          sha=existing_sha, skip_build=skip_build)
 
 
 async def github_read_digest_json(client, iso: str, token: str) -> Optional[DigestData]:
@@ -726,7 +738,7 @@ _INDEX_LIST_MARKER = "<!-- DIGEST_LIST_START -->"
 
 
 async def github_update_digest_index(
-    client, entry_html: str, token: str,
+    client, entry_html: str, token: str, skip_build: bool = False,
 ) -> None:
     """Prepend entry_html to the digest index page list."""
     current, sha = await _github_get_file(client, DIGEST_INDEX_PATH, token)
@@ -743,13 +755,13 @@ async def github_update_digest_index(
     await _github_put_file(
         client, DIGEST_INDEX_PATH, updated,
         message="chore(digest): update digest index",
-        token=token, sha=sha,
+        token=token, sha=sha, skip_build=skip_build,
     )
     logger.info("github_update_digest_index: updated index")
 
 
 async def github_update_rss_feed(
-    client, rss_item: str, token: str,
+    client, rss_item: str, token: str, skip_build: bool = False,
 ) -> None:
     """Prepend rss_item to feed.xml, creating the file if it doesn't exist."""
     current, sha = await _github_get_file(client, DIGEST_FEED_PATH, token)
@@ -760,13 +772,14 @@ async def github_update_rss_feed(
     await _github_put_file(
         client, DIGEST_FEED_PATH, updated,
         message="chore(digest): update RSS feed",
-        token=token, sha=sha,
+        token=token, sha=sha, skip_build=skip_build,
     )
     logger.info("github_update_rss_feed: updated feed.xml")
 
 
 async def github_update_topic_hub(
     client, section_label: str, entry_html: str, token: str,
+    skip_build: bool = False,
 ) -> None:
     """Prepend entry_html to a topic hub page, creating it from
     _topic_hub_skeleton on first use — same create-on-first-write pattern
@@ -787,7 +800,7 @@ async def github_update_topic_hub(
     await _github_put_file(
         client, path, updated,
         message=f"chore(digest): update {slug} topic hub",
-        token=token, sha=sha,
+        token=token, sha=sha, skip_build=skip_build,
     )
     logger.info("github_update_topic_hub: updated %s", slug)
 
@@ -892,14 +905,21 @@ async def publish(
         entry = render_index_entry(digest)
         rss_item = render_rss_item(digest)
 
-        await github_write_digest(client, html_content, digest, github_token)
-        await github_write_digest_json(client, digest, github_token)
-        await github_update_digest_index(client, entry, github_token)
-        await github_update_rss_feed(client, rss_item, github_token)
+        # One production build per run: every supporting file is committed with
+        # the skip marker and the digest page goes last, unmarked, so the single
+        # build that follows publishes all of them. If a run dies partway the
+        # earlier files wait for the next build rather than shipping half a set.
+        await github_write_digest_json(client, digest, github_token, skip_build=True)
+        await github_update_digest_index(client, entry, github_token, skip_build=True)
+        await github_update_rss_feed(client, rss_item, github_token, skip_build=True)
 
         for section_label, items in digest.sections.items():
             topic_entry = render_topic_entry(digest, section_label, items)
-            await github_update_topic_hub(client, section_label, topic_entry, github_token)
+            await github_update_topic_hub(
+                client, section_label, topic_entry, github_token, skip_build=True,
+            )
+
+        await github_write_digest(client, html_content, digest, github_token)
 
         await ping_websub(client)
 
