@@ -75,7 +75,9 @@ class Tab:
     def eval(self, js, await_promise=True):
         r = self.send("Runtime.evaluate", expression=js, returnByValue=True, awaitPromise=await_promise)
         if "exceptionDetails" in r:
-            raise RuntimeError(r["exceptionDetails"].get("text"))
+            d = r["exceptionDetails"]
+            detail = (d.get("exception") or {}).get("description") or ""
+            raise RuntimeError((d.get("text") or "eval failed") + (": " + detail.splitlines()[0][:160] if detail else ""))
         return r.get("result", {}).get("value")
 
     def goto(self, url, settle=6):

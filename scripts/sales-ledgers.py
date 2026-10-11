@@ -116,8 +116,10 @@ def shutterstock(t):
 
 
 def getty(t):
-    t.goto("https://accountmanagement.gettyimages.com/Reports/Export", settle=8)
-    if "Royalties" not in t.eval("document.body.innerText"):
+    # Account Management only accepts a signed hand-off link now; the bare URL redirects to the ESP home page
+    # (checked 2026-10-10). The ESP link below redirects to the signed Reports/Export address.
+    t.goto("https://esp.gettyimages.com/ui/account_manager?path=Reports/Export", settle=10)
+    if "accountmanagement.gettyimages.com" not in t.eval("location.href") or "Royalties" not in t.eval("document.body.innerText"):
         raise RuntimeError("Getty: not signed in to Account Management")
     years = t.eval("[...document.querySelector('select[name=Years]').options].map(o=>o.value)")
     contracts = t.eval("[...document.querySelector('select[name=contractId]').options].map(o=>o.value).filter(Boolean)")
