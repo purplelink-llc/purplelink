@@ -212,3 +212,14 @@ send a licence email or mint a Modal token is the operator alert email's job.
 The dashboard reads the `checks` array from this response.
 
 Test: `node --test netlify/tests/delivery-health.test.mjs`
+
+## `post-purchase-followup` and `followup-unsubscribe`
+
+Daily at 14:30 UTC, `post-purchase-followup` emails each buyer of Outbound Veil, Legroom, Keyfeel, Tapefolio, the Mac Suite or ModernTex seats once,
+14 days after the order, with one question ("what do you use it for?") and no link. Single ModernTex copies are left out on purpose: they already get the
+backend's day-3 and day-21 emails, whose opt-outs the Netlify side cannot read (add `moderntex` to `FOLLOWUP_PRODUCTS` in `netlify/lib/followup.mjs` once it can).
+**Off until the Netlify env var `POST_PURCHASE_FOLLOWUP` is `on`**; while off the log line shows `would_send` counts and nothing is sent. To read the counts:
+Netlify function logs for `post-purchase-followup`. Skips refunded or disputed orders and anyone who unsubscribed; one email per address, not again for 90 days;
+at most 40 per run; sent sessions are remembered in the `followup-sent` Blobs store, suppressions in `followup-suppressed` (keyed by a hash). The unsubscribe link
+is an HMAC of the address (secret: `FOLLOWUP_UNSUBSCRIBE_SECRET`, falling back to `STRIPE_WEBHOOK_SECRET`), so nothing is stored to make a link.
+To add a public-review link for an app, put `{ label, url }` in `REVIEW_LINKS` once the listing is live. Tests: `netlify/tests/post-purchase-followup.test.mjs`.
