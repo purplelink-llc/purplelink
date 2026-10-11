@@ -80,6 +80,7 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["kit-bundle",        { name: "the kit bundle",                    successPath: "/kits/success/" }],
   ["kit-clip",          { name: "The Clip Pipeline kit",             successPath: "/kits/success/" }],
   ["moderntex",         { name: "ModernTex for macOS",               successPath: "/moderntex/success/" }],
+  ["moderntex-seats",   { name: "ModernTex for macOS (license seats)",   successPath: "/moderntex/success/" }],
   ["outbound-veil",     { name: "Outbound Veil for macOS",           successPath: "/outbound-veil/success/" }],
   ["legroom",           { name: "Legroom for macOS",                 successPath: "/legroom/success/" }],
   ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
@@ -228,7 +229,7 @@ function crockfordBase32Encode(buf) {
  * Signs one new, unique license key, or null if the private key isn't configured (never
  * throws — a signing failure must not break checkout delivery of the download itself).
  */
-export function issueModernTexLicense(sessionId) {
+export function issueModernTexLicense(sessionId, index) {
   const privB64 = Netlify.env.get("MODERNTEX_LICENSE_PRIVATE_KEY");
   if (!privB64) return null;
   try {
@@ -240,7 +241,7 @@ export function issueModernTexLicense(sessionId) {
     // With a session id the nonce is derived from it, so the same purchase always yields the same key
     // (the success page, the email and recovery then all agree). Any nonce verifies in the app.
     const nonce = sessionId
-      ? createHmac("sha256", Buffer.from(privB64, "base64")).update(`nonce|moderntex|${sessionId}`).digest().subarray(0, 4)
+      ? createHmac("sha256", Buffer.from(privB64, "base64")).update(index === undefined ? `nonce|moderntex|${sessionId}` : `nonce|moderntex|${sessionId}|${index}`).digest().subarray(0, 4)
       : randomBytes(4);
     const signature = edSign(null, Buffer.concat([MTX_LICENSE_DOMAIN, nonce]), privateKey);
     const body = crockfordBase32Encode(Buffer.concat([nonce, signature]));
@@ -259,8 +260,18 @@ export function issueModernTexLicense(sessionId) {
  * Suite entitles all of them. Keys are derived from the session id, so every caller gets the same key.
  * An entry is left out, never faked, when its signing secret is not configured.
  */
-export function licenseKeysForSession(productKey, sessionId) {
+export function licenseKeysForSession(productKey, sessionId, { seats = 0 } = {}) {
   const out = [];
+  if (productKey === "moderntex-seats") {
+    // One key per seat, each from its own index so the keys differ yet stay the same for a given purchase.
+    // Slug "moderntex-seat" (not "moderntex") so the recovery email lists them with the other session keys.
+    const n = Number.isInteger(seats) && seats > 0 ? Math.min(seats, 500) : 0;
+    for (let i = 0; i < n; i++) {
+      const key = issueModernTexLicense(sessionId, i);
+      if (key) out.push({ slug: "moderntex-seat", label: `ModernTex seat ${i + 1}`, key });
+    }
+    return out;
+  }
   if (productKey === "moderntex" || productKey === "app-suite") {
     const key = issueModernTexLicense(sessionId);
     if (key) out.push({ slug: "moderntex", label: "ModernTex", key });
@@ -286,7 +297,7 @@ export function licenseKeysForSession(productKey, sessionId) {
  * paid buyer with neither the page nor the email is exactly what the alert
  * exists for.
  */
-async function emailDownloadLink(to, sessionId, productKey) {
+async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   const entry = BLOB_DELIVERED_PRODUCTS.get(productKey);
   if (!apiKey || !to || !entry) return false;
@@ -295,15 +306,24 @@ async function emailDownloadLink(to, sessionId, productKey) {
   // for good, offline, no account. A signing failure (missing secret, transient error) must not block the
   // download email, so a missing key is simply left out and the buyer still gets the link.
   const isSuite = productKey === "app-suite";
-  const keys = licenseKeysForSession(productKey, sessionId);
+  const keys = licenseKeysForSession(productKey, sessionId, { seats });
+  const isSeats = productKey === "moderntex-seats";
   const keyHint = (k) => (k.slug === "moderntex" ? `"Enter license key" (older trial copies say "Have a license key?")` : `"Enter license key"`);
-  const licenseTextBlock = keys.length
+  const licenseTextBlock = isSeats && keys.length
+    ? `\nYour ${keys.length} ModernTex license keys. Give one key to each person (every copy runs free for 7 days, then asks for a key):\n` +
+      keys.map((k, i) => `${i + 1}. ${k.key}`).join("\n") +
+      `\n\nIn ModernTex choose "Enter license key" and paste one key. It unlocks that Mac for good, with no account. The same keys are on your download page.\n\n`
+    : keys.length
     ? `\n${keys.length > 1 ? "Your license keys" : "Your license key"} (each app runs free for 7 days, then asks for its key):\n` +
       keys.map((k) => `${k.label}: ${k.key}`).join("\n") +
       `\n\nPaste a key into the matching app (${keys.map((k) => `${k.label}: ${keyHint(k)}`).join("; ")}). ` +
       `It unlocks that app for good, with no account. The same keys are on your download page.\n\n`
     : "";
-  const licenseHtmlBlock = keys.length
+  const licenseHtmlBlock = isSeats && keys.length
+    ? `<p>Your ${keys.length} ModernTex license keys. Give one key to each person (every copy runs free for 7 days, then asks for a key):</p>` +
+      `<ol>${keys.map((k) => `<li style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${k.key}</li>`).join("")}</ol>` +
+      `<p>In ModernTex choose &quot;Enter license key&quot; and paste one key. It unlocks that Mac for good, with no account. The same keys are on your download page.</p>`
+    : keys.length
     ? `<p>${keys.length > 1 ? "Your license keys" : "Your license key"} (each app runs free for 7 days, then asks for its key):</p>` +
       keys.map((k) => `<p>${k.label}<br><span style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${k.key}</span></p>`).join("") +
       `<p>Paste a key into the matching app (${keys.map((k) => `${k.label}: ${keyHint(k).replace(/"/g, "&quot;")}`).join("; ")}). ` +
@@ -634,7 +654,7 @@ export default async function handler(request) {
       return jsonResponse(200, { status: "duplicate_event_ignored", product: rawProduct, event_id: event.id || null });
     }
     await dedupeStore.set(dedupeKey, new Date().toISOString());
-    const emailed = await emailDownloadLink(email, sessionId, rawProduct);
+    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0 });
     if (LIFECYCLE_PRODUCTS.has(rawProduct) && email) {
       // Day-3 tips and a day-21 note, sent by the backend's daily sweep with
       // an unsubscribe link. The buyer already has the key and download, so

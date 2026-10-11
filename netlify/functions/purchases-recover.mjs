@@ -80,7 +80,7 @@ export async function purchasesForEmail(email, secretKey) {
         // Live sheets start on a free trial, so their session is complete but unpaid.
         const live = LIVE_PRODUCTS.has(product) && s.status === "complete";
         if (!live && (s.payment_status !== "paid" || !BLOB_DELIVERED_PRODUCTS.has(product))) continue;
-        found.set(s.id, { sessionId: s.id, product, created: s.created || 0 });
+        found.set(s.id, { sessionId: s.id, product, created: s.created || 0, seats: parseInt(s?.metadata?.seats || "0", 10) || 0 });
       }
       if (!res.data?.has_more || rows.length === 0) break;
       after = rows[rows.length - 1].id;
@@ -170,7 +170,7 @@ async function sendRecovery(to, purchases) {
   const license = mtxPurchase ? issueModernTexLicense(mtxPurchase.sessionId) : null;
   const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite") ? issueKeyfeelLicense(to) : null;
   const tapefolioLicense = purchases.some((p) => p.product === "tapefolio" || p.product === "app-suite") ? issueTapefolioLicense(to) : null;
-  const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId).filter((k) => k.slug !== "moderntex")]));
+  const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId, { seats: p.seats || 0 }).filter((k) => k.slug !== "moderntex")]));
   const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense);
   try {
     const resp = await fetch(RESEND_API_URL, {

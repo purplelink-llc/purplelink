@@ -28,6 +28,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=9a8aeb6e78">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/moderntex/seats.css?v=bf2a8b7fe8">
     <link rel="stylesheet" href="/buy.css?v=3d2e4d1dc6">
     <script src="/site.js?v=0c8373a945" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -220,6 +221,7 @@
         <figcaption>ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.</figcaption>
       </figure>
     </div>
+    <script src="/moderntex/seats.js?v=372cfdf34a" defer></script>
     <script src="/exp-moderntex-hero.js?v=144980bbe3"></script>
 
     <section class="screenshots-section tour-section">
@@ -452,7 +454,23 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
     <section class="specs-section" id="departments" aria-labelledby="departments-h">
       <p class="eyebrow">For labs and departments</p>
       <h2 id="departments-h">Buying for more than one person?</h2>
-      <p>Ask for a quote for five or more seats. You get an invoice, and a W-9 on request, so a lab or a department can pay with a purchase order or a P-card. Write to <a href="mailto:ben@purplelink.llc?subject=ModernTex%20for%20a%20lab%20or%20department">ben@purplelink.llc</a> with the number of seats and who the invoice should name.</p>
+      <p>Buy seats here with a card. Each seat is one license key. The more seats, the lower the price per seat, and every seat in an order is charged the price of its tier. From 25 seats it is $9.99 each, about half the single-copy price.</p>
+      <form class="seat-picker" id="seat-form" novalidate>
+        <fieldset>
+          <legend>Choose how many seats</legend>
+          <div class="seat-options">
+            <div class="seat-option"><input type="radio" name="seats" value="5" id="seat-r5"><label class="seat-count" for="seat-r5">5 seats</label><span class="seat-unit">$13.99 each</span><span class="seat-total">$69.95</span></div>
+            <div class="seat-option"><input type="radio" name="seats" value="10" id="seat-r10"><label class="seat-count" for="seat-r10">10 seats</label><span class="seat-unit">$12.49 each</span><span class="seat-total">$124.90</span></div>
+            <div class="seat-option"><input type="radio" name="seats" value="15" id="seat-r15"><label class="seat-count" for="seat-r15">15 seats</label><span class="seat-unit">$11.49 each</span><span class="seat-total">$172.35</span></div>
+            <div class="seat-option"><input type="radio" name="seats" value="20" id="seat-r20"><label class="seat-count" for="seat-r20">20 seats</label><span class="seat-unit">$10.49 each</span><span class="seat-total">$209.80</span></div>
+            <div class="seat-option"><input type="radio" name="seats" value="bulk" id="seat-rbulk"><label class="seat-count" for="seat-rbulk">25 seats or more</label><span class="seat-unit">$9.99 each</span><span class="seat-total" id="seat-bulk-total">$249.75</span><span class="seat-qty"><label for="seat-qty">Number of seats (25 to 500)</label><input type="number" id="seat-qty" min="25" max="500" value="25" inputmode="numeric"></span></div>
+          </div>
+        </fieldset>
+        <p class="seat-summary" id="seat-summary" aria-live="polite"></p>
+        <button type="button" class="btn btn-primary" id="seat-buy">Buy 5 seats, $69.95</button>
+        <p class="tool-status" id="seat-status" aria-live="polite"></p>
+      </form>
+      <p>Need an invoice or a purchase order instead? Ask for a quote. You get an invoice, and a W-9 on request, so a lab or a department can pay with a purchase order or a P-card. Write to <a href="mailto:ben@purplelink.llc?subject=ModernTex%20for%20a%20lab%20or%20department">ben@purplelink.llc</a> with the number of seats and who the invoice should name.</p>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
           <tr><th scope="row">Where documents go</th><td>Nowhere. Manuscripts are edited and compiled on the Mac. There is no cloud sync and no data collection.</td></tr>

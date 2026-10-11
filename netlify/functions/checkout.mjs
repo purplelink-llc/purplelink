@@ -33,6 +33,7 @@
  *   STRIPE_SECRET_KEY (shared, sk_test_… or sk_live_…)
  */
 
+import { MAX_SEATS, parseSeats, seatUnitCents } from "../lib/seats.mjs";
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 
@@ -111,6 +112,9 @@ const PRODUCT_CATALOG = {
   // ModernTex for macOS: $19.99 one-time. Delivery is the session-gated DMG from the
   // moderntex-files Blobs store; see moderntex-download.mjs.
   "moderntex":               { amount: 1999, name: "ModernTex for macOS", successPath: "/moderntex/success/" },
+  // ModernTex for labs and departments: 5 or more seats, one license key per seat, priced by seat count in
+  // netlify/lib/seats.mjs (never from the client). The same delivery page as a single copy; it lists every key.
+  "moderntex-seats":         { seats: true, name: "ModernTex for macOS, license seats", successPath: "/moderntex/success/" },
   // Outbound Veil for macOS: $29.99 one-time (price set in the Stripe Price that
   // STRIPE_PRICE_OUTBOUND_VEIL points at; keep it equal to the copy on /outbound-veil/).
   // Delivery is the session-gated DMG from the outbound-veil-files Blobs store; see
@@ -275,9 +279,24 @@ export default async function handler(request) {
     return jsonResponse(400, { error: "missing_photo", detail: "Choose a photograph first." });
   }
 
+  // Seat packs: the count is the only thing the client chooses; the unit price comes from the table.
+  let seats = 0;
+  let seatUnit = 0;
+  if (entry.seats) {
+    seats = parseSeats(body.seats);
+    const unit = seatUnitCents(seats);
+    if (unit === null) {
+      return jsonResponse(400, {
+        error: "invalid_seats",
+        detail: `Choose 5, 10, 15 or 20 seats, or any number from 25 to ${MAX_SEATS}. For one to four copies, buy ModernTex at $19.99 each.`,
+      });
+    }
+    seatUnit = unit;
+  }
+
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
-  const priceId = entry.amount ? null : Netlify.env.get(entry.envKey);
-  if (!secretKey || (!entry.amount && !priceId)) {
+  const priceId = entry.amount || entry.seats ? null : Netlify.env.get(entry.envKey);
+  if (!secretKey || (!entry.amount && !entry.seats && !priceId)) {
     return jsonResponse(500, {
       error: "misconfigured",
       detail: `Set STRIPE_SECRET_KEY and ${entry.envKey} on this site.`,
@@ -300,7 +319,7 @@ export default async function handler(request) {
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v4:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}`)
+    .update(`v4:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}:${seats}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -316,15 +335,15 @@ export default async function handler(request) {
     "payment_method_types[1]": "link",
     // Lets a buyer enter a promotion code created in the Stripe dashboard.
     allow_promotion_codes: "true",
-    ...(entry.amount
+    ...(entry.amount || entry.seats
       ? {
           "line_items[0][price_data][currency]": "usd",
-          "line_items[0][price_data][unit_amount]": String(entry.amount),
+          "line_items[0][price_data][unit_amount]": String(entry.seats ? seatUnit : entry.amount),
           "line_items[0][price_data][product_data][name]": photo ? `${entry.name}: ${photo}` : entry.name,
           ...(entry.interval ? { "line_items[0][price_data][recurring][interval]": entry.interval } : {}),
         }
       : { "line_items[0][price]": priceId }),
-    "line_items[0][quantity]": "1",
+    "line_items[0][quantity]": String(entry.seats ? seats : 1),
     success_url: `${origin}${entry.successPath}?session_id={CHECKOUT_SESSION_ID}`,
     // Strips the terminal path segment to send a canceled checkout back to
     // the product's own landing page instead of the paid confirmation page.
@@ -357,6 +376,7 @@ export default async function handler(request) {
       params[`custom_fields[0][dropdown][options][${i}][value]`] = value;
     });
   }
+  if (entry.seats) params["metadata[seats]"] = String(seats);
   if (referralCode) {
     params["metadata[referral_code]"] = referralCode;
   }
