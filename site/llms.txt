@@ -107,7 +107,7 @@
 - **Category:** Travel
 - **Description:** A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Features interactive map visualization with 3D globe view, flight statistics dashboards, travel goal tracking, anniversary reminders for visits, and shareable travel postcards.
 - **Target users:** Frequent travelers who want a complete personal travel record
-- **Pricing:** Free. No subscription and no in-app purchase.
+- **Pricing:** Free to download, with small ads served by Google AdMob. A one-time Pro purchase of $14.99 removes the ads. No subscription.
 - **Sync:** iCloud sync via CloudKit (no Purplelink account required)
 - **Status:** Shipping. Version 1.0 released on the App Store 2026-09-03.
 - **Download:** https://apps.apple.com/us/app/globepin/id6762313540
