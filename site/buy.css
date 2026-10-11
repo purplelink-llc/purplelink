@@ -65,3 +65,48 @@
   border-radius: 0;
 }
 .kit-product-buy .key-row:last-child { border-bottom-width: 0; }
+
+/* ModernTex hero: the trial and the purchase are two equal choices, so both buttons are
+   filled and share the row evenly. Only the label tells them apart. */
+
+.app-hero-actions:has(> [data-product="moderntex"]) > .btn {
+  flex: 1 1 15rem;
+  max-width: 22rem;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Experiment moderntex-hero-screenshot, B days (site/exp-moderntex-hero.js adds .exp-hero-shot to the
+   hero and moves the tagline to the end of it). On wide screens the screenshot is flat (no tilt) and sits
+   beside the buttons, with the tagline in a row below. On narrow screens the text column is flattened
+   into the hero grid so the screenshot can sit directly under the buy buttons. */
+
+.exp-hero-shot .app-hero-tagline-lower {
+  grid-column: 1 / -1;
+  max-width: 68ch;
+  margin: 0;
+}
+
+@media (min-width: 1100px) {
+  .exp-hero-shot .app-hero-window .frame-soft { transform: none; }
+  .exp-hero-shot .app-hero-tagline-lower { grid-column: 2 / -1; }
+}
+
+@media (max-width: 1099.98px) {
+  .app-hero.exp-hero-shot:has(.app-hero-window) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+  .exp-hero-shot .app-hero-copy { display: contents; }
+  .exp-hero-shot .app-hero-icon { order: 0; margin-bottom: 20px; }
+  .exp-hero-shot .app-hero-meta { order: 1; }
+  .exp-hero-shot .app-hero-name { order: 2; }
+  .exp-hero-shot .app-hero-actions { order: 3; }
+  .exp-hero-shot .buy-assurance { order: 4; }
+  .exp-hero-shot .tool-status { order: 5; }
+  .exp-hero-shot .trial-remind { order: 6; }
+  .exp-hero-shot .app-hero-window { order: 7; margin-top: 24px; }
+  .exp-hero-shot .app-hero-tagline-lower { order: 8; margin-top: 20px; }
+  .exp-hero-shot .buy-proof { order: 9; margin-top: 20px; }
+  .exp-hero-shot .waitlist-fine-print { order: 10; margin-top: 12px; }
+}
