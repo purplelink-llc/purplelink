@@ -141,11 +141,14 @@ def main():
             # Type into the real fields so the page sees ordinary input events.
             t.eval("(()=>{const u=document.querySelector('input[name=username]');u.focus();u.select()})()")
             t.send("Input.insertText", text=ACCOUNT)
-            t.eval("document.querySelector('input[type=password]').focus()")
+            # Chrome may have autofilled this field already; select it all first so typing replaces it instead
+            # of being appended to it (the first version appended and the site rejected the doubled password).
+            t.eval("(()=>{const p=document.querySelector('input[type=password]');p.focus();p.select()})()")
             t.send("Input.insertText", text=pw)
         finally:
             del pw
-        t.eval("document.querySelector('form[action*=loginValidation]').requestSubmit()")
+        # The page's own Login control is a link that calls document.loginartist.submit().
+        t.eval("document.loginartist.submit()")
         time.sleep(8)
         t.goto("https://fineartamerica.com/controlpanel/main", settle=6)
         if signed_in(t):
