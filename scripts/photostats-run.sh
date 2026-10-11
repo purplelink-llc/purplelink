@@ -9,6 +9,7 @@
 #     2026-10-06 and 2026-10-08), so launchd calls this at login, hourly and at 07:00,
 #     and this keeps it to one good sweep a day.
 #   * It waits for the SSD instead of failing when the Mac has just woken.
+#   * The first sweep of the day may open a sign-in window (see LOGIN_FLAG below).
 #   * A sweep that only failed for connection reasons is retried, at most 3 attempts a day,
 #     so Chrome does not keep opening.
 #   * It reports what is stale afterwards (collector-health.py).
@@ -51,7 +52,12 @@ fi
 echo $((n + 1)) > "$ATTEMPTS_FILE"
 echo "--- $(date '+%F %T') attempt $((n + 1)) of 3 ---" >> "$LOG"
 cd "$VOL" || exit 1
-"$PY" -u "$VOL/scripts/stats-collect.py" --headed --no-auto-login >> "$LOG" 2>&1
+# First attempt of the day: if a site is signed out, bring its login page to the front (the
+# collector waits up to 5 minutes per site and carries on the moment it is signed in). FAA ends
+# its session server-side within hours, so a sign-in each day is expected. Later attempts
+# never open a window, so Chrome does not keep popping up.
+if [ "$n" -eq 0 ]; then LOGIN_FLAG=""; else LOGIN_FLAG="--no-auto-login"; fi
+"$PY" -u "$VOL/scripts/stats-collect.py" --headed $LOGIN_FLAG >> "$LOG" 2>&1
 rc=$?
 echo "--- $(date '+%F %T') finished, exit $rc ---" >> "$LOG"
 
