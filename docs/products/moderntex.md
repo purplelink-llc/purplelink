@@ -103,3 +103,14 @@ ModernTex download page and each kit's download page. Same answer for every
 address; 3 requests per address and 20 per IP per UTC day (Blobs
 `rate-limits`). Tests: `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs`
 (run `npm install` first).
+
+## Seats for labs and departments (2026-10-11)
+
+Product key `moderntex-seats` in `netlify/functions/checkout.mjs`; pricing in `netlify/lib/seats.mjs` (5 seats $13.99 each, 10 $12.49,
+15 $11.49, 20 $10.49, 25 to 500 at $9.99; counts of 1 to 4 and anything else are refused, the client never sends a price). The order is one Stripe
+line item with `quantity = seats` and `metadata[seats]`; promotion codes work as for a single copy. Keys: `issueModernTexLicense(sessionId, index)`
+derives seat *i*'s nonce from `nonce|moderntex|<session>|<i>`, so the success page, the email and the recovery email always show the same
+keys and a single copy's key is unchanged. Nothing is stored. The success page is the ordinary `/moderntex/success/`, which lists every key
+with Copy all and a CSV download. No activation count exists, as for a single copy (keys verify offline). The picker is on `/moderntex/#departments`
+(`site/moderntex/seats.js` carries the same table; `netlify/tests/moderntex-seats.test.mjs` fails if the two differ).
+To test live: create a 100%-off promotion code in Stripe, buy 5 seats with it, and check the email, the success page and `/recover/`.

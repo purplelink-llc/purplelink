@@ -14,7 +14,7 @@ import { getStore } from "@netlify/blobs";
 import { licenseKeysForSession } from "./stripe-webhook.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
-const KEYED_PRODUCTS = new Set(["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "app-suite"]);
+const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "app-suite"]);
 const DAILY_LIMIT = 120;
 
 function json(status, body) {
@@ -54,6 +54,7 @@ export default async function handler(request) {
   const product = session.metadata?.product || "";
   if (!KEYED_PRODUCTS.has(product)) return json(403, { error: "not_entitled", detail: "This order has no license key." });
 
-  const keys = licenseKeysForSession(product, sessionId).map((k) => ({ product: k.slug, label: k.label, key: k.key }));
+  const seats = parseInt(session.metadata?.seats || "0", 10) || 0;
+  const keys = licenseKeysForSession(product, sessionId, { seats }).map((k) => ({ product: k.slug, label: k.label, key: k.key }));
   return json(200, { keys });
 }

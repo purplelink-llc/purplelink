@@ -41,6 +41,33 @@
     return wrap;
   }
 
+  // Orders with many seats: copy every key at once, or save them as a CSV to hand out.
+  function bulkTools(keys) {
+    var wrap = document.createElement("div");
+    wrap.className = "key-bulk";
+    var lines = keys.map(function (k) { return k.label + "," + k.key; });
+    var copyAll = document.createElement("button");
+    copyAll.type = "button";
+    copyAll.className = "btn btn-ghost";
+    copyAll.textContent = "Copy all " + keys.length + " keys";
+    copyAll.addEventListener("click", function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(keys.map(function (k) { return k.key; }).join("\n")).then(function () {
+          copyAll.textContent = "Copied";
+          setTimeout(function () { copyAll.textContent = "Copy all " + keys.length + " keys"; }, 1800);
+        }, function () {});
+      }
+    });
+    var csv = document.createElement("a");
+    csv.className = "btn btn-ghost";
+    csv.textContent = "Download as CSV";
+    csv.download = "moderntex-license-keys.csv";
+    csv.href = "data:text/csv;charset=utf-8," + encodeURIComponent("seat,key\n" + lines.join("\n") + "\n");
+    wrap.appendChild(copyAll);
+    wrap.appendChild(csv);
+    return wrap;
+  }
+
   Array.prototype.forEach.call(boxes, function (box) {
     if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
       note(box, "Your key is in your receipt email. Find a purchase on this site sends it again.");
@@ -58,6 +85,11 @@
         }
         clear(box);
         keys.forEach(function (k) { box.appendChild(row(k)); });
+        if (keys.length > 1) {
+          var h = document.getElementById("key-h");
+          if (h && /^Your license key$/.test(h.textContent)) h.textContent = "Your license keys";
+        }
+        if (keys.length > 3) box.appendChild(bulkTools(keys));
       })
       .catch(function () { note(box, "We could not load your key just now. It is also in your receipt email."); });
   });

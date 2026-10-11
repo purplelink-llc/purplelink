@@ -39,6 +39,7 @@ const FILE_STORE = "moderntex-files";
 const STATS_STORE = "moderntex-stats";
 const PRODUCT_KEY = "moderntex";
 const SUITE_KEY = "app-suite";
+const SEATS_KEY = "moderntex-seats";
 const DMG_NAME = /^ModernTex-\d+\.\d+\.\d+\.dmg$/;
 const TRIAL_DMG_NAME = /^ModernTex-Trial-\d+\.\d+\.\d+\.dmg$/;
 const TRIAL_DAILY_LIMIT = 20;
@@ -82,7 +83,7 @@ async function loadSession(sessionId) {
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
   // The Mac Suite bundle includes this app, so its session unlocks the same download.
   const bought = session.metadata?.product || "";
-  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY) {
+  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && bought !== SEATS_KEY) {
     return { error: json(403, { error: "not_entitled", detail: "This order is for a different product." }) };
   }
   return { session };

@@ -1,0 +1,24 @@
+/* Seat picker on /moderntex/ (labs and departments). Colours follow the page's tokens so both themes work. */
+.seat-picker { margin: 1.5rem 0 2rem; }
+.seat-picker fieldset { border: 0; padding: 0; margin: 0; }
+.seat-picker legend { font-weight: 600; margin-bottom: 0.75rem; }
+.seat-options { display: grid; gap: 0.5rem; }
+.seat-option {
+  display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-md, 0.75rem);
+  background: var(--panel);
+}
+.seat-option:has(input:checked) { border-color: var(--purple); background: color-mix(in oklch, var(--purple) 8%, var(--panel)); }
+.seat-option:has(input:focus-visible) { outline: 2px solid var(--purple); outline-offset: 2px; }
+.seat-count { font-weight: 600; cursor: pointer; }
+.seat-unit, .seat-total { color: var(--muted); font-variant-numeric: tabular-nums; }
+.seat-total { color: var(--ink); font-weight: 600; min-width: 5.5rem; text-align: right; }
+.seat-qty { grid-column: 2 / -1; display: flex; align-items: center; gap: 0.5rem; color: var(--muted); }
+.seat-qty input { width: 6rem; padding: 0.4rem 0.6rem; border: 1px solid var(--line); border-radius: 0.5rem; background: var(--bg); color: var(--ink); font: inherit; }
+.seat-summary { margin: 1rem 0 0.75rem; }
+.seat-error { color: var(--danger, #b42318); }
+@media (max-width: 560px) {
+  .seat-option { grid-template-columns: auto 1fr auto; }
+  .seat-unit { grid-column: 2; }
+  .seat-total { grid-column: 3; }
+}
