@@ -1088,3 +1088,13 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', place); else place();
 })();
+
+// Experiment trial-link-in-header (day-level switchback, 2026-10-19 to 2026-12-27; see /exp-trial-link.js).
+// Loads the experiment script on every page that has this file; stops requesting it after 2027-01-01.
+(() => {
+  if (Date.now() >= Date.UTC(2027, 0, 1)) return;
+  const s = document.createElement('script');
+  s.src = '/exp-trial-link.js';
+  s.async = true;
+  document.head.appendChild(s);
+})();
