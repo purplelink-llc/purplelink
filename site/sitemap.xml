@@ -19,18 +19,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://purplelink.llc/binnacle/</loc>
-    <lastmod>2026-10-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/binnacle/terms/</loc>
-    <lastmod>2026-10-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
     <loc>https://purplelink.llc/blog/both-bugs-had-the-same-symptom-zero/</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>never</changefreq>
@@ -185,12 +173,6 @@
     <lastmod>2026-10-09</lastmod>
     <changefreq>never</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/budgetcast/privacy/</loc>
-    <lastmod>2026-10-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/changelog/</loc>
@@ -861,6 +843,12 @@
   <url>
     <loc>https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/</loc>
     <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/what-ai-tools-leave-on-your-mac/</loc>
+    <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
