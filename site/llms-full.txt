@@ -525,6 +525,24 @@ Want one email when a notable version ships? Leave your address. No newsletters,
 
 Your email is used for release notes and nothing else. Privacy Policy · Why ModernTex →
 
+For labs and departments
+
+## Buying for more than one person?
+
+Buy seats here with a card. Each seat is one license key. The more seats, the lower the price per seat, and every seat in an order is charged the price of its tier. From 25 seats it is $9.99 each, about half the single-copy price.
+
+Need an invoice or a purchase order instead? Ask for a quote. You get an invoice, and a W-9 on request, so a lab or a department can pay with a purchase order or a P-card. Write to ben@purplelink.llc with the number of seats and who the invoice should name.
+
+Where documents goNowhere. Manuscripts are edited and compiled on the Mac. There is no cloud sync and no data collection.
+
+LicensingOne key per person, verified inside the app with no server involved. There is no activation count and no license server to reach.
+
+UpdatesThe app checks once a day and installs in place. Updates are included in the purchase.
+
+InstallingOne signed, notarized disk image for macOS 14 or later, Apple silicon or Intel. Each person needs a TeX distribution (MacTeX or TinyTeX), and ModernTex can install TinyTeX itself.
+
+Trying it firstThe same download runs the complete app free for seven days, with no account.
+
 ## Frequently asked questions
 
 How do I get updates?
@@ -5078,7 +5096,7 @@ Comparison
 
 # Best LaTeX editor for Mac in 2026: 16 editors compared
 
-By Benjamin Ampel · May 31, 2026, updated October 9, 2026
+By Benjamin Ampel · May 31, 2026, updated October 11, 2026
 
 A direct comparison of the LaTeX editors that actually work on Mac in 2026, covering what each one is good at, what it costs, and which workflow it suits. No affiliate links, no rankings padding.
 
@@ -5086,7 +5104,7 @@ Disclosure up front: I make one of the editors on this list (ModernTex). I've tr
 
 ## The short answer
 
-TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 9, 2026.
+TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 11, 2026.
 
 ## The editors side by side
 
@@ -5127,6 +5145,22 @@ texspark$39.99 one-time; free 14-day trialmacOS 14+Not statedSyncTeX across mult
 OleaflyFree, open source (AGPL-3.0)macOS (Apple Silicon), Windows, LinuxNot statedPDF pane; SyncTeX not stated on the pages readParts of the app are labeled beta on its page; not tested
 
 Sources for the added rows, read October 9, 2026. texspark: texspark.io. Oleafly: oleafly.com and its editor documentation. I did not install or test either one, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.
+
+## What I ran on October 11, 2026
+
+I installed the three free editors on an Apple silicon Mac, compiled one small article in each, then removed them. The file had one citation, one deliberately undefined reference and a BibTeX file. This Mac has TinyTeX, not MacTeX, so it also tested how each editor finds a TeX installation. I drove each app with AppleScript and keystrokes, so this covers installing, launching and compiling. It does not cover every menu, and I did not test SyncTeX click-to-source, autocomplete or error messages.
+
+CheckTeXShop 5.57TeXstudio 4.9.8VS Code 1.141 + LaTeX Workshop 10.19
+
+Install size83 MB429 MB902 MB, plus 32 MB for the extension
+
+Signed and notarized by AppleYesNo (the Apple silicon build is unsigned, so macOS blocks it until you approve it)Yes
+
+Finds a TeX installation by itselfOnly at the MacTeX location. With TinyTeX it compiled nothing until I set the TeX path in its preferences.Not on this Mac; I started it with the TinyTeX folder as the TeX pathNot tested
+
+One compileRan LaTeX once. The PDF and SyncTeX file were written. The citation stayed undefined until BibTeX was run as a separate step.Ran BibTeX itself. The citation resolved and only my undefined reference remained.Not verified: my automated build command did not start a build
+
+Two readings follow from this. First, TeXShop works as long as MacTeX is installed, and the extra BibTeX step is the kind of thing a new user trips on. Second, TeXstudio's compile handled the bibliography on its own, but its Apple silicon download is unsigned, which is a real hurdle for a first-time Mac user. I make no claim about VS Code's compile because I could not confirm one.
 
 ## What you actually need to run LaTeX on a Mac
 
@@ -7137,6 +7171,8 @@ Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 on
 
 ## Related guides
 
+- What AI tools leave on your Mac, and what is safe to delete: measured sizes and the commands that clear them.
+
 - Best LaTeX editor for Mac: MacTeX is about 5 GB and BasicTeX about 100 MB, a real choice if your disk is tight.
 
 - Show free disk space in the Mac menu bar: the built-in views and the menu-bar apps that keep a free-space number in view.
@@ -7676,6 +7712,8 @@ No. Showing the number does not change anything, and Legroom does not speed up a
 Find what is big before deleting anything: start with Storage settings, then use a disk map or a list of the largest items. Empty the Trash, and leave purgeable space and system folders alone. The disk space analyzer guide compares the tools and covers what is safe to delete.
 
 ## Related guides
+
+- What AI tools leave on your Mac, and what is safe to delete: measured sizes and the commands that clear them.
 
 - Best disk space analyzer and cleaner for Mac (2026): maps, cleaners and what is safe to delete.
 

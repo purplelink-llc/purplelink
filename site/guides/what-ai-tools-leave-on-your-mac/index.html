@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>What AI tools leave on your Mac, and what is safe to delete | Purplelink</title>
+    <meta name="description" content="Measured on one working developer Mac: about 10.5 GB in Claude Code session logs, Docker, Xcode builds and package caches. Where each tool keeps its files, the command that clears it, and what to leave alone.">
+    <link rel="canonical" href="https://purplelink.llc/guides/what-ai-tools-leave-on-your-mac/">
+    <meta property="og:title" content="What AI tools leave on your Mac, and what is safe to delete">
+    <meta property="og:description" content="Measured on one working developer Mac: about 10.5 GB in Claude Code session logs, Docker, Xcode builds and package caches. Where each tool keeps its files, the command that clears it, and what to leave alone.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/what-ai-tools-leave-on-your-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/legroom.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="What AI tools leave on your Mac, and what is safe to delete">
+    <meta name="twitter:description" content="Measured on one working developer Mac: about 10.5 GB in Claude Code session logs, Docker, Xcode builds and package caches. Where each tool keeps its files, the command that clears it, and what to leave alone.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/legroom.png">
+    <meta name="twitter:image:alt" content="What AI tools leave on your Mac, and what is safe to delete">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "What AI tools leave on your Mac, and what is safe to delete",
+      "description": "Measured on one working developer Mac: about 10.5 GB in Claude Code session logs, Docker, Xcode builds and package caches. Where each tool keeps its files, the command that clears it, and what to leave alone.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-11",
+      "dateModified": "2026-10-11",
+      "image": "https://purplelink.llc/assets/og/legroom.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/what-ai-tools-leave-on-your-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "What AI tools leave on your Mac, and what is safe to delete",
+          "item": "https://purplelink.llc/guides/what-ai-tools-leave-on-your-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is it safe to delete ~/.claude/projects?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, with one cost. That folder holds the session logs Claude Code writes so you can resume a conversation. Deleting old ones frees the space and removes the ability to resume those sessions. Your settings and instructions live elsewhere in ~/.claude and are not in projects."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it safe to delete Docker's data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only through Docker. Run docker system prune to remove stopped containers, unused networks and dangling images; it leaves volumes alone unless you add --volumes, and that flag deletes data you may need. Do not delete the Containers folder by hand while Docker Desktop is installed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will deleting Xcode's DerivedData break my projects?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. DerivedData holds build products and indexes that Xcode regenerates, so the next build is slower and nothing is lost. Quit Xcode first."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do local models take much space?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "They can. On this Mac Ollama and Hugging Face were empty, so I measured nothing. A single model download is commonly several gigabytes, and ollama list and huggingface-cli scan-cache show exactly what yours hold."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=9a8aeb6e78">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=0c8373a945" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">What AI tools leave on your Mac, and what is safe to delete</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-11">October 11, 2026</time></p>
+        <p class="post-lede">AI coding tools, local models and the package managers behind them keep files that nothing ever cleans up. On the Mac I use every day they added up to about 10.5 GB, half of the 21 GB the disk has free. Here is where each one lives, how to measure it, and what is safe to remove.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I make <a href="/legroom/">Legroom</a>, a Mac app that finds and cleans disk space, and it is mentioned near the end. Every number below is from my own Mac (Apple silicon, macOS 27.2, a 245 GB disk with 21 GB free), measured on October 11, 2026 with <code>du</code>, in decimal gigabytes as Finder shows them. It is one machine, so yours will differ.</p>
+
+        <h2>What I found</h2>
+        <p>Eight folders held 10.52 GB between them. None of it is a model: Ollama and Hugging Face were empty here. It is logs, build output and package downloads that tools write and never remove. Sorted by size:</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">What</th><th class="u-th" scope="col">Where</th><th class="u-th" scope="col">Size here</th><th class="u-th" scope="col">Safe to delete?</th><th class="u-th" scope="col">How</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell"><strong>Xcode DerivedData</strong></td><td class="u-cell"><code>~/Library/Developer/Xcode/DerivedData</code></td><td class="u-cell">2.05 GB</td><td class="u-cell">Yes. Xcode rebuilds it. Quit Xcode first.</td><td class="u-cell"><code>rm -rf ~/Library/Developer/Xcode/DerivedData/*</code></td></tr>
+              <tr><td class="u-cell"><strong>Claude Code session logs</strong></td><td class="u-cell"><code>~/.claude/projects</code></td><td class="u-cell">2.00 GB</td><td class="u-cell">Yes. You lose the ability to resume those sessions. Keep settings.json and CLAUDE.md, which are not in this folder.</td><td class="u-cell"><code>delete project folders you no longer need</code></td></tr>
+              <tr><td class="u-cell"><strong>Docker Desktop data</strong></td><td class="u-cell"><code>~/Library/Containers/com.docker.docker</code></td><td class="u-cell">1.72 GB</td><td class="u-cell">Through Docker only.</td><td class="u-cell"><code>docker system prune</code></td></tr>
+              <tr><td class="u-cell"><strong>Claude desktop app data</strong></td><td class="u-cell"><code>~/Library/Application Support/Claude</code></td><td class="u-cell">1.48 GB</td><td class="u-cell">I measured the size and did not look inside. Clear things from the app, not the folder.</td><td class="u-cell"><code>use the app&#x27;s own settings</code></td></tr>
+              <tr><td class="u-cell"><strong>npm cache</strong></td><td class="u-cell"><code>~/.npm</code></td><td class="u-cell">1.41 GB</td><td class="u-cell">Yes. Packages download again when needed.</td><td class="u-cell"><code>npm cache clean --force</code></td></tr>
+              <tr><td class="u-cell"><strong>uv cache</strong></td><td class="u-cell"><code>~/.cache/uv</code></td><td class="u-cell">1.36 GB</td><td class="u-cell">Yes. Packages download again when needed.</td><td class="u-cell"><code>uv cache clean</code></td></tr>
+              <tr><td class="u-cell"><strong>Homebrew downloads</strong></td><td class="u-cell"><code>~/Library/Caches/Homebrew</code></td><td class="u-cell">0.29 GB</td><td class="u-cell">Yes.</td><td class="u-cell"><code>brew cleanup</code></td></tr>
+              <tr><td class="u-cell"><strong>pip cache</strong></td><td class="u-cell"><code>~/Library/Caches/pip</code></td><td class="u-cell">0.21 GB</td><td class="u-cell">Yes.</td><td class="u-cell"><code>pip cache purge</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>To measure your own, paste one line into Terminal, for example <code>du -sh ~/.claude/projects ~/.npm ~/.cache/uv ~/Library/Developer/Xcode/DerivedData</code>. Terminal reports in binary units, so its numbers run about 7% lower than Finder's for the same folder.</p>
+
+        <h2>AI coding tools</h2>
+        <p><strong>Claude Code.</strong> It writes one log file per session under <code>~/.claude/projects</code>, in a folder named for each project. On this Mac that was 20 project folders and 2.00 GB. The logs let you resume a conversation, so deleting a project's folder only costs you that history. Instructions you wrote, such as a CLAUDE.md file, and the settings file are not in <code>projects</code>.</p>
+        <p><strong>Claude desktop app.</strong> Its data folder was 1.48 GB. I did not open it to see what each part is for, so I cannot tell you which parts are safe. Clear history or cache from inside the app, and quit it before touching the folder.</p>
+        <p><strong>Not on this Mac, so not measured:</strong> Cursor, Windsurf, LM Studio and the ChatGPT desktop app. Each keeps its data under <code>~/Library/Application Support</code> or in its own models folder, and each shows its size in Finder. Check them before assuming they are small.</p>
+
+        <h2>Local models</h2>
+        <p>Ollama keeps models in <code>~/.ollama/models</code>, and <code>ollama list</code> shows each one with its size; remove one with <code>ollama rm</code> and its name. Hugging Face tools cache downloads under <code>~/.cache/huggingface</code>, and <code>huggingface-cli scan-cache</code> lists what is there, with <code>huggingface-cli delete-cache</code> to remove revisions. Mine held 0 bytes, so I have no measurement to offer, and a single model is commonly several gigabytes.</p>
+
+        <h2>The package managers behind them</h2>
+        <p>Python and JavaScript tools install through <code>uv</code>, <code>pip</code> and <code>npm</code>, and each keeps every package it ever downloaded. Here that was 1.36 GB for uv, 1.41 GB for npm and 0.21 GB for pip. Homebrew adds 0.29 GB of old downloads. All four are caches: clearing them costs you a re-download the next time you install something, and nothing else.</p>
+        <p>Docker and Xcode are the two largest items outside the AI tools themselves. Docker's data (1.72 GB here) should be cleaned with <code>docker system prune</code> rather than by deleting the folder. Xcode's DerivedData (2.05 GB) is the biggest single folder on the list and is the safest: it is build output.</p>
+
+        <h2>What Legroom does here, and what it does not</h2>
+        <p>Legroom's Space Map shows where the space on your disk is, and a cleaning rule can point at any folder you choose, with a preview of what it would remove and your approval before anything goes to the Trash or is deleted. It recommends known caches such as Xcode DerivedData, Homebrew downloads and the npm cache. Today it has no built-in rules for Claude Code logs, Ollama or Hugging Face folders, so for those you would add a folder rule yourself. It is $9.99 once after a 7-day trial; the full details are on <a href="/legroom/">its page</a>.</p>
+        <p>You do not need it for any of this. Every command above is free, and the Terminal line measures what you have.</p>
+
+        <h2>Frequently asked</h2>
+        <h3>Is it safe to delete ~/.claude/projects?</h3>
+        <p>Yes, with one cost. That folder holds the session logs Claude Code writes so you can resume a conversation. Deleting old ones frees the space and removes the ability to resume those sessions. Your settings and instructions live elsewhere in ~/.claude and are not in projects.</p>
+        <h3>Is it safe to delete Docker&#x27;s data?</h3>
+        <p>Only through Docker. Run docker system prune to remove stopped containers, unused networks and dangling images; it leaves volumes alone unless you add --volumes, and that flag deletes data you may need. Do not delete the Containers folder by hand while Docker Desktop is installed.</p>
+        <h3>Will deleting Xcode&#x27;s DerivedData break my projects?</h3>
+        <p>No. DerivedData holds build products and indexes that Xcode regenerates, so the next build is slower and nothing is lost. Quit Xcode first.</p>
+        <h3>Do local models take much space?</h3>
+        <p>They can. On this Mac Ollama and Hugging Face were empty, so I measured nothing. A single model download is commonly several gigabytes, and ollama list and huggingface-cli scan-cache show exactly what yours hold.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer and cleaner for Mac (2026)</a>: maps, cleaners and what is safe to delete.</li>
+          <li><a href="/guides/show-free-disk-space-mac-menu-bar/">Show free disk space in the Mac menu bar</a>: the built-in views and the apps compared.</li>
+          <li><a href="/legroom/">Legroom</a>, <a href="/products/">all products</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=8b40b7d2a4" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
