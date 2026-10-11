@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-05-31",
-          "dateModified": "2026-10-09",
+          "dateModified": "2026-10-11",
           "image": "https://purplelink.llc/assets/og/moderntex.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/best-mac-latex-editors/"
         },
@@ -142,7 +142,7 @@
       <div class="post-hero">
         <p class="post-date">Comparison</p>
         <h1 class="post-title">Best LaTeX editor for Mac in 2026: 16 editors compared</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time>, updated <time datetime="2026-10-09">October 9, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time>, updated <time datetime="2026-10-11">October 11, 2026</time></p>
         <p class="post-lede">A direct comparison of the LaTeX editors that actually work on Mac in 2026, covering what each one is good at, what it costs, and which workflow it suits. No affiliate links, no rankings padding.</p>
       </div>
 
@@ -150,7 +150,7 @@
         <p><strong>Disclosure up front:</strong> I make one of the editors on this list (ModernTex). I've tried to write the comparison honestly. <a href="https://pages.uoregon.edu/koch/texshop/" rel="noopener">TeXShop</a> is the right call for most academics today, and <a href="https://www.texifier.com/" rel="noopener">Texifier</a> is the right call for most people who want a polished modern editor. ModernTex shipped its 1.0 in September 2026; I've kept its entry to what the app actually does today.</p>
 
         <h2>The short answer</h2>
-        <p>TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 9, 2026.</p>
+        <p>TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 11, 2026.</p>
 
         <h2>The editors side by side</h2>
         <p>"Not stated" means the guide, or the source page it cites, does not say. Offline means the editor compiles on your machine without a server.</p>
@@ -180,6 +180,21 @@
           </table>
         </div>
         <p><strong>Sources for the added rows, read October 9, 2026.</strong> texspark: <a href="https://texspark.io/" rel="noopener">texspark.io</a>. Oleafly: <a href="https://oleafly.com/" rel="noopener">oleafly.com</a> and its <a href="https://oleafly.com/docs/editor/" rel="noopener">editor documentation</a>. I did not install or test either one, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.</p>
+
+        <h2 id="hands-on">What I ran on October 11, 2026</h2>
+        <p>I installed the three free editors on an Apple silicon Mac, compiled one small article in each, then removed them. The file had one citation, one deliberately undefined reference and a BibTeX file. This Mac has TinyTeX, not MacTeX, so it also tested how each editor finds a TeX installation. I drove each app with AppleScript and keystrokes, so this covers installing, launching and compiling. It does not cover every menu, and I did not test SyncTeX click-to-source, autocomplete or error messages.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th>Check</th><th>TeXShop 5.57</th><th>TeXstudio 4.9.8</th><th>VS Code 1.141 + LaTeX Workshop 10.19</th></tr></thead>
+            <tbody>
+              <tr><td>Install size</td><td>83 MB</td><td>429 MB</td><td>902 MB, plus 32 MB for the extension</td></tr>
+              <tr><td>Signed and notarized by Apple</td><td>Yes</td><td>No (the Apple silicon build is unsigned, so macOS blocks it until you approve it)</td><td>Yes</td></tr>
+              <tr><td>Finds a TeX installation by itself</td><td>Only at the MacTeX location. With TinyTeX it compiled nothing until I set the TeX path in its preferences.</td><td>Not on this Mac; I started it with the TinyTeX folder as the TeX path</td><td>Not tested</td></tr>
+              <tr><td>One compile</td><td>Ran LaTeX once. The PDF and SyncTeX file were written. The citation stayed undefined until BibTeX was run as a separate step.</td><td>Ran BibTeX itself. The citation resolved and only my undefined reference remained.</td><td>Not verified: my automated build command did not start a build</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Two readings follow from this. First, TeXShop works as long as MacTeX is installed, and the extra BibTeX step is the kind of thing a new user trips on. Second, TeXstudio's compile handled the bibliography on its own, but its Apple silicon download is unsigned, which is a real hurdle for a first-time Mac user. I make no claim about VS Code's compile because I could not confirm one.</p>
 
         <h2>What you actually need to run LaTeX on a Mac</h2>
         <p>A LaTeX editor is only half of the setup, and this trips up most people
