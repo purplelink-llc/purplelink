@@ -30,6 +30,8 @@ SRC = Path("/Volumes/Extreme SSD/Nikon Photos")
 MASTER = WS / "metadata-master.csv"
 CLEAN = WS / "clean-upload-set.json"
 OUT = WS / "dreamstime-metadata.csv"
+CATEGORIES = WS / "alamy-categories.json"
+SKIPPED_LIFESTYLE = WS / "dreamstime-skipped-lifestyle.csv"
 
 COLUMNS = ["Filename", "Image Name", "Description", "Category 1", "Category 2",
            "Category 3", "keywords", "Free", "W-EL", "P-EL", "SR-EL", "SR-Price",
@@ -217,11 +219,30 @@ def categories_for(title, keywords, travel_hint):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--upload", action="store_true", help="FTP the CSV to Dreamstime")
+    ap.add_argument("--include-lifestyle", action="store_true",
+                    help="turn OFF the skip rule for photos labelled Lifestyle in alamy-categories.json")
     a = ap.parse_args()
 
     clean = set(json.loads(CLEAN.read_text()))
     rows = {r["filename"]: r for r in csv.DictReader(open(MASTER))}
     sel = [rows[f] for f in sorted(clean) if f in rows]
+
+    # Skip rule added 2026-10-10: Dreamstime refused 27 of 32 Lifestyle photos
+    # (84%) against 31% of the other 538 in this CSV; the gap holds within each
+    # rating and capture year. Refusal text is generic, so this is a pattern, not
+    # a diagnosis. A row left out of this CSV stays "incomplete" in Dreamstime's
+    # queue and is not submitted (see dreamstime-submission-log.json).
+    if not a.include_lifestyle:
+        if not CATEGORIES.exists():
+            sys.exit(f"ERROR: {CATEGORIES} not found, so the Lifestyle skip rule can't run. "
+                     "Run from the main checkout, or pass --include-lifestyle.")
+        cats = json.loads(CATEGORIES.read_text())
+        skipped = [r["filename"] for r in sel if cats.get(r["filename"]) == "Lifestyle"]
+        sel = [r for r in sel if cats.get(r["filename"]) != "Lifestyle"]
+        with open(SKIPPED_LIFESTYLE, "w", newline="") as fh:
+            w = csv.writer(fh); w.writerow(["filename"]); w.writerows([f] for f in skipped)
+        print(f"Lifestyle skip rule: {len(skipped)} row(s) left out -> {SKIPPED_LIFESTYLE.name} "
+              "(--include-lifestyle to override)")
 
     ed_fmt = re.compile(r"^[^:]{5,70}\d{4}\s*:")
     need_prefix = [r["filename"] for r in sel
