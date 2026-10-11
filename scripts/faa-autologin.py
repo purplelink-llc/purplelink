@@ -165,9 +165,11 @@ def main():
                 del pw
         click(t, "form[action*=loginValidation] a.button")      # the page's own Login link
         time.sleep(8)
+        # Only look for an error message while still on a login page. On the control panel the page text can hold
+        # words like "verify" (a group description once did), which is not an error.
         seen = t.eval("(()=>({path:location.pathname,"
-                      "msg:(document.body.innerText.match(/[^\\n]*(invalid|incorrect|wrong|not match|try again|locked|captcha|verify)[^\\n]*/i)||[''])[0].slice(0,140)}))()")
-        log(f"after submit: {seen.get('path')} {('| page says: ' + seen['msg']) if seen.get('msg') else ''}")
+                      "msg:/login/i.test(location.pathname)?(document.body.innerText.match(/[^\\n]*(invalid|incorrect|wrong password|does not match|try again|locked|captcha)[^\\n]*/i)||[''])[0].slice(0,140):''}))()")
+        log(f"after submit: {seen.get('path')}" + (f" | page says: {seen['msg']}" if seen.get("msg") else ""))
         t.goto("https://fineartamerica.com/controlpanel/main", settle=6)
         if signed_in(t):
             save_state({"last_ok": time.time()})
