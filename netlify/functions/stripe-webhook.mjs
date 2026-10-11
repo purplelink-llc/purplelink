@@ -287,6 +287,22 @@ export function licenseKeysForSession(productKey, sessionId, { seats = 0 } = {})
 }
 
 /**
+ * ModernTex buyers write papers, so the purchase email carries one plain line about Paper Review and the
+ * early-reviewer code PRSTART (Stripe: 100% off Standard and Standard + Journal Pack, first-time customers,
+ * 20 uses, expires 2026-12-15). Single ModernTex copies only. The line drops out after the code expires.
+ */
+export const PRSTART_LAST_DAY_MS = Date.UTC(2026, 11, 15, 23, 59, 59);
+export function paperReviewOffer(productKey, nowMs = Date.now()) {
+  if (productKey !== "moderntex" || nowMs > PRSTART_LAST_DAY_MS) return { text: "", html: "" };
+  const url = `${SITE_ORIGIN}/tools/paper-review/?utm_source=moderntex`;
+  const line =
+    "If you also want a second look at a manuscript before you submit it, Paper Review checks the references and the " +
+    "claims and gives you a written report. The code PRSTART makes a first Standard review free at checkout " +
+    "(20 codes in all, until December 15), and the free preview needs no code.";
+  return { text: `${line}\n${url}\n\n`, html: `<p>${line} <a href="${url}">Open Paper Review</a>.</p>` };
+}
+
+/**
  * Email the buyer the link that reopens their download page. Stripe's own
  * receipt carries no such link, so a buyer who closed the success tab before
  * it loaded would otherwise hold only a charge and no way back to the file.
@@ -336,6 +352,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
       "With your permission I may quote it on the product page, first name and field only."
     : "";
   const reviewTextBlock = reviewApp ? `${reviewAsk}\n\n` : "";
+  const prOffer = paperReviewOffer(productKey);
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
@@ -409,6 +426,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
     `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
     `Questions or trouble downloading: reply to this email.\n\n` +
     reviewTextBlock +
+    prOffer.text +
     `Purplelink LLC, Atlanta, Georgia`;
   const html =
     `<p>Thanks for buying ${entry.name}.</p>` +
@@ -421,6 +439,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0 } = {}) 
     `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
     `<p>Questions or trouble downloading: reply to this email.</p>` +
     reviewHtmlBlock +
+    prOffer.html +
     `<p>Purplelink LLC, Atlanta, Georgia</p>`;
   try {
     const resp = await fetch(RESEND_API_URL, {
