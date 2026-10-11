@@ -4966,6 +4966,9 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .app-hero-window { display: block; margin: 0; }
 .app-hero-window figcaption { margin-top: 12px; font-size: 0.85rem; color: var(--muted); }
 .app-hero:has(.app-hero-window) { grid-template-columns: auto 1fr; }
+/* The mobile one-column rule for .app-hero sits earlier and has lower specificity than the :has() rule
+   above, so without this the icon takes a column of its own and squeezes the text on phones. */
+@media (max-width: 720px) { .app-hero:has(.app-hero-window) { grid-template-columns: minmax(0, 1fr); } }
 .app-hero:has(.app-hero-window) .app-hero-window { grid-column: 1 / -1; max-width: 900px; }
 @media (min-width: 1100px) {
   .app-hero:has(.app-hero-window) { grid-template-columns: auto minmax(0, 5fr) minmax(0, 6fr); align-items: center; }
