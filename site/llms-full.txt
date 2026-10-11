@@ -618,6 +618,8 @@ Free 7-day trial · $29.99 to keep
 
 Outbound Veil checks what you type for personal information before you send it. It runs in the Mac menu bar, the checking happens on your Mac, and the text never leaves it.
 
+Works in the ChatGPT and claude.ai prompt boxes in Chrome, so a client note is checked before you paste it into a chat. Tested October 3, 2026 on one Mac; see every app tried, or read the checklist before you paste.
+
 Try it free for 7 days
 
 Refunded if you email within 14 days of purchase. Updates are included forever.
@@ -5840,6 +5842,8 @@ Outbound Veil, which Purplelink makes, checks the text field you are typing in, 
 If the material must not leave your machine, yes. Ollama and LM Studio run open models on your computer. The cost is setup time and usually a less capable model. Ollama also offers cloud models that run on its servers, so choose a local one.
 
 ## Related guides
+
+- Before you paste client notes into ChatGPT or Claude: a checklist for Mac users: a five-step checklist.
 
 - Can you use AI to check your own manuscript? What publishers allow.
 
