@@ -1,0 +1,137 @@
+{
+ "id": "rubblefront-30s",
+ "voice": "en-US-AndrewNeural",
+ "rate": "-4%",
+ "music": {
+  "file": "title.ogg",
+  "in": 0,
+  "t": 0,
+  "gain_db": -9,
+  "fade_in": 0.8,
+  "fade_out": 2.0,
+  "duck_db": -7
+ },
+ "sfxDb": -4,
+ "crf": 19,
+ "scenes": [
+  {
+   "clip": "odds",
+   "in": 0,
+   "dur": 4.2,
+   "narration": "Every shot shows its odds.",
+   "narrAt": 1.9,
+   "v": {
+    "z": 1.4,
+    "x": 0.2,
+    "y": 0.5
+   },
+   "zoom": {
+    "from": 1,
+    "to": 1.05,
+    "x": 0.3,
+    "y": 0.45
+   }
+  },
+  {
+   "clip": "odds",
+   "in": 7.2,
+   "dur": 3.6,
+   "v": {
+    "z": 1.4,
+    "x": 0.3,
+    "y": 0.5
+   }
+  },
+  {
+   "clip": "flank",
+   "in": 4.5,
+   "dur": 4.0,
+   "narration": "A flank counts half the cover.",
+   "narrAt": 0.4,
+   "v": {
+    "z": 1.4,
+    "x": 0.2,
+    "y": 0.5
+   }
+  },
+  {
+   "clip": "rubble",
+   "in": 9.4,
+   "dur": 2.0,
+   "narration": "Cover holds until it is shot away.",
+   "narrAt": 0.2,
+   "v": {
+    "z": 1.4,
+    "x": 0.3,
+    "y": 0.5
+   }
+  },
+  {
+   "clip": "rubble",
+   "in": 15.2,
+   "dur": 2.8,
+   "v": {
+    "z": 1.4,
+    "x": 0.45,
+    "y": 0.5
+   }
+  },
+  {
+   "clip": "overwatch",
+   "in": 5.6,
+   "dur": 4.4,
+   "narration": "Hold still, and a unit shoots whoever walks into its range.",
+   "narrAt": 0.1,
+   "v": {
+    "z": 1.4,
+    "x": 0.35,
+    "y": 0.5
+   }
+  },
+  {
+   "clip": "outpost",
+   "in": 2.0,
+   "dur": 3.0,
+   "v": {
+    "z": 1.4,
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  {
+   "clip": "runmap",
+   "in": 0.3,
+   "dur": 3.0,
+   "v": {
+    "z": 1.4,
+    "x": 0.3,
+    "y": 0.4
+   },
+   "zoom": {
+    "from": 1,
+    "to": 1.06,
+    "x": 0.35,
+    "y": 0.4
+   }
+  },
+  {
+   "type": "end",
+   "dur": 3.6,
+   "lines": [
+    "Wishlist on Steam",
+    "Spring 2027",
+    "rubblefront.com",
+    "A Purplelink LLC game"
+   ],
+   "narration": "Rubblefront. Spring 2027.",
+   "narrAt": 0.5
+  }
+ ],
+ "outputs": {
+  "16x9": "rubblefront-trailer-30s-16x9.mp4"
+ },
+ "formats": [
+  "16x9"
+ ],
+ "srt": "rubblefront-trailer-30s.srt"
+}

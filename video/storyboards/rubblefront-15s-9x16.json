@@ -1,0 +1,83 @@
+{
+ "id": "rubblefront-15s-9x16",
+ "voice": "en-US-AndrewNeural",
+ "rate": "-4%",
+ "music": {
+  "file": "title.ogg",
+  "in": 10,
+  "t": 0,
+  "gain_db": -8,
+  "fade_in": 0.8,
+  "fade_out": 1.5,
+  "duck_db": -7
+ },
+ "sfxDb": -4,
+ "crf": 19,
+ "scenes": [
+  {
+   "clip": "odds",
+   "in": 1.8,
+   "dur": 3.0,
+   "caption": "Every shot shows its odds.",
+   "capAt": 0.3,
+   "capDur": 2.6,
+   "v": {
+    "z": 1.5,
+    "x": 0.22,
+    "y": 0.5
+   }
+  },
+  {
+   "clip": "odds",
+   "in": 7.9,
+   "dur": 2.6,
+   "v": {
+    "z": 1.45,
+    "x": 0.3,
+    "y": 0.55
+   }
+  },
+  {
+   "clip": "rubble",
+   "in": 15.0,
+   "dur": 3.2,
+   "caption": "Cover holds until it is shot away.",
+   "capAt": 0.2,
+   "capDur": 2.8,
+   "v": {
+    "z": 1.5,
+    "x": 0.45,
+    "y": 0.55
+   }
+  },
+  {
+   "clip": "overwatch",
+   "in": 6.8,
+   "dur": 3.0,
+   "caption": "Overwatch shoots whoever walks in.",
+   "capAt": 0.2,
+   "capDur": 2.6,
+   "v": {
+    "z": 1.5,
+    "x": 0.35,
+    "y": 0.5
+   }
+  },
+  {
+   "type": "end",
+   "dur": 3.2,
+   "lines": [
+    "Wishlist on Steam",
+    "Spring 2027",
+    "rubblefront.com",
+    "A Purplelink LLC game"
+   ]
+  }
+ ],
+ "formats": [
+  "9x16"
+ ],
+ "outputs": {
+  "9x16": "rubblefront-trailer-15s-9x16.mp4"
+ }
+}

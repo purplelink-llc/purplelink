@@ -1,0 +1,38 @@
+{
+ "id": "rubblefront-hook-a",
+ "voice": "en-US-AndrewNeural",
+ "rate": "-4%",
+ "music": {
+  "file": "title.ogg",
+  "in": 0,
+  "t": 0,
+  "gain_db": -9,
+  "fade_in": 0.8,
+  "fade_out": 1.2,
+  "duck_db": -7
+ },
+ "sfxDb": -4,
+ "crf": 19,
+ "scenes": [
+  {
+   "clip": "odds",
+   "in": 0.0,
+   "dur": 8.0,
+   "caption": "Every shot shows its odds.",
+   "capAt": 2.6,
+   "capDur": 4.0,
+   "zoom": {
+    "from": 1,
+    "to": 1.05,
+    "x": 0.3,
+    "y": 0.45
+   }
+  }
+ ],
+ "outputs": {
+  "16x9": "rubblefront-hook-a-16x9.mp4"
+ },
+ "formats": [
+  "16x9"
+ ]
+}
