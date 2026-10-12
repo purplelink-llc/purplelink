@@ -2,7 +2,7 @@
 // Builds the review bundle that critics (agents or people) judge a trailer from.
 //   node fast/critic-bundle.mjs <video.mp4> --sb <storyboard.json> --format 16x9|9x16 --kind main|30s|vertical --adapter rubblefront5 --out <dir>
 // Critics cannot watch video, so the bundle turns it into things they can read and look at:
-//   contact.jpg (1 fps), micro6.jpg (first 6 s at 2 frames per second: the Steam microtrailer loop), scenes.jpg (one frame per scene),
+//   contact.jpg (1 fps), micro6.jpg (first 6 s at 4 frames per second: the Steam microtrailer loop), scenes.jpg (one frame per scene),
 //   phone-NN.jpg (480 px grabs), waveform.png (audio shape), scenes.json (shot table with cards), audio-events.json (sfx times, music cues,
 //   loudness per second), gates.json (objective pass/fail checks, written by code, not by a model), report.txt (summary).
 import fs from "node:fs";
@@ -31,8 +31,8 @@ const probe = JSON.parse(execFileSync("ffprobe", ["-v", "error", "-print_format"
 const v = probe.streams.find((s) => s.codec_type === "video"), a = probe.streams.find((s) => s.codec_type === "audio");
 const dur = Number(probe.format.duration);
 
-// 2. the first six seconds as the muted Steam microtrailer loop: 12 frames, 2 per second
-ff(["-i", video, "-t", "6", "-vf", `fps=2,scale=${format === "9x16" ? 180 : 320}:-1,tile=6x2:padding=4:color=black`, "-frames:v", "1", "-q:v", "3", path.join(out, "micro6.jpg")]);
+// 2. the first six seconds as the muted Steam microtrailer loop: 24 frames, 4 per second
+ff(["-i", video, "-t", "6", "-vf", `fps=4,scale=${format === "9x16" ? 180 : 320}:-1,tile=6x4:padding=4:color=black`, "-frames:v", "1", "-q:v", "3", path.join(out, "micro6.jpg")]);
 
 // 3. audio you can look at: waveform picture and loudness per second
 ff(["-i", video, "-filter_complex", "showwavespic=s=1600x240:colors=0x2fd0e0", "-frames:v", "1", path.join(out, "waveform.png")]);
