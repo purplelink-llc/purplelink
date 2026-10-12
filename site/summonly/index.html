@@ -28,7 +28,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=9a8aeb6e78">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/summonly/summonly.css?v=6590a9e2cd">
+    <link rel="stylesheet" href="/summonly/summonly.css?v=eae0d33f05">
     <script src="/site.js?v=83a8410df7" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script src="/summonly/launch.js?v=6716ef4783" defer></script>
@@ -195,12 +195,35 @@
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>, $54.99 once.</p>
       </div>
       <figure class="app-hero-window lf-hero-window">
-        <div class="frame-soft">
+        <div class="frame-soft hero-media" data-motion="video">
           <img src="/summonly/img/panel.webp" alt="The Summonly search box with the word report typed in. Below it, a calculator answer, three files and a web search row." width="1600" height="900" fetchpriority="high" decoding="async">
+          <video muted loop playsinline preload="none" poster="/summonly/img/panel.webp" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+            <source data-src="/summonly/media/summonly-hero.webm" type="video/webm">
+            <source data-src="/summonly/media/summonly-hero.mp4" type="video/mp4">
+          </video>
+          <button type="button" class="motion-toggle" data-motion-toggle hidden>Pause video</button>
         </div>
         <figcaption>The search panel with sample results. These are not real files.</figcaption>
       </figure>
     </div>
+
+    <section class="screenshots-section tour-section sm-tour" aria-labelledby="tour-h">
+      <p class="eyebrow">Watch it work</p>
+      <h2 id="tour-h">A search, a question and clipboard history</h2>
+      <p class="section-intro">Twenty-nine seconds with narration and captions. Every screen is the app's own window drawn on invented sample files, not a recording of a real Mac.</p>
+      <video class="sm-video" controls preload="none" playsinline poster="/summonly/media/summonly-poster.webp" width="1920" height="1080">
+        <source src="/summonly/media/summonly-promo.mp4" type="video/mp4">
+        <track kind="captions" src="/summonly/media/summonly-promo.vtt" srclang="en" label="English" default>
+        Your browser cannot play this video. The transcript below says what it shows.
+      </video>
+      <div class="sm-transcript">
+        <h3>What the video says and shows</h3>
+        <p>Press Option-Space, type a few letters, and press Return. The search box lists folders and files that match, then rows to search Google, Claude or ChatGPT.</p>
+        <p>Ask a question, and it shows the passage and the page. It matches the words you use. The answer is the file, with the passage and, for a PDF, the page number.</p>
+        <p>Clipboard history keeps what you copy. It is off until you turn it on, and it skips password managers. The first-run window shows the choice, left unticked.</p>
+        <p>Nine ninety-nine, once, with a seven day free trial.</p>
+      </div>
+    </section>
 
     <section class="features-section" aria-labelledby="how-h">
       <div class="features-header">
@@ -219,6 +242,61 @@
           <h3>You act on a result</h3>
           <p>Return opens it. Command-Return shows it in Finder. Option-Return copies its path. A calculation, snippet or clipboard item is copied.</p>
         </div>
+      </div>
+    </section>
+
+    <section class="screenshots-section sm-gallery" aria-labelledby="look-h">
+      <h2 id="look-h">A closer look</h2>
+      <p class="section-intro">Each picture is the app's own interface, drawn on invented sample files in a throwaway home folder. None of it is from a real Mac.</p>
+      <div class="sm-shots">
+        <figure class="sm-shot">
+          <h3>Ask a question</h3>
+          <p>Optional, and off until you turn it on. Summonly shows the file and the passage, with the page number for a PDF. It finds the words you use, so a question worded very differently from the document is found less often.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/panel-question.webp" alt="The Summonly search box with the question which file mentions the refund policy typed in. The first answer is Customer terms.pdf, marked page 3, with the start of its refund policy passage. The second is a notes file with a matching passage." width="1600" height="900" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+        <figure class="sm-shot">
+          <h3>Leave words out</h3>
+          <p>A minus sign before a word leaves out files that contain it. Here invoice -draft lists two invoices and not the draft.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/panel-operators.webp" alt="The Summonly search box with invoice -draft typed in. Two invoice PDFs are listed, Invoice 1043 and Invoice 1042. The file named Invoice 1043 draft is not listed." width="1600" height="900" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+        <figure class="sm-shot">
+          <h3>Clipboard history</h3>
+          <p>Press Option-Shift-V, or type clip. A pinned item comes first, then recent ones with how long ago you copied them. History is off until you turn it on.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/panel-clipboard.webp" alt="Clipboard history opened by typing clip: one pinned item, then five recent items such as a link, a short note and an invoice total, each with how long ago it was copied." width="1600" height="900" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+        <figure class="sm-shot sm-shot-small">
+          <h3>Why isn't it found?</h3>
+          <p>In Settings, choose a file and Summonly says which rule applies. This file is outside the folders it searches.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/why-not-found.webp" alt="A dialog titled About Quote 2207.pdf. It says the file is not inside a folder Summonly searches, and to add its folder in Settings under Folders." width="520" height="490" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+      </div>
+      <div class="sm-shots">
+        <figure class="sm-shot">
+          <h3>First-run window</h3>
+          <p>Choose your folders and every other option here. Each choice is also in Settings.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/setup.webp" alt="The Set up Summonly window. It has choices for the folders to search, question search, clipboard history, web rows, opening at login and the shortcut." width="1280" height="1584" loading="lazy" decoding="async">
+          </div>
+        </figure>
+        <figure class="sm-shot">
+          <h3>Settings</h3>
+          <p>Shortcuts, question search, folders, clipboard rules, snippets, web searches and the license.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/settings.webp" alt="The Summonly Settings window, showing the Option-Space and Option-Shift-V shortcuts, search options and the Question search section." width="1200" height="1504" loading="lazy" decoding="async">
+          </div>
+        </figure>
       </div>
     </section>
 

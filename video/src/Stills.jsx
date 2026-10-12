@@ -133,7 +133,8 @@ function windowFor(plan, t) {
   const overlay = plan.cursors && plan.cursors.length ? (s) => <Cursors cursors={plan.cursors} t={t} s={s} /> : null;
   if (plan.frame === "phone") return { ...base, chrome: <PhoneBezel />, radius: 150, bg: "oklch(8% 0.01 300)", shadow: false, overlay };
   if (plan.frame === "browser") return { ...base, chrome: <BrowserBar url={plan.url} w={view.w} />, radius: "0 0 24px 24px", bg: "oklch(99% 0.003 310)", shadow: false, overlay };
-  return { ...base, overlay };
+  // a plan may give its window a fill and radius (transparent panels, so the corners do not show the default paper colour)
+  return { ...base, overlay, ...(plan.windowBg ? { bg: plan.windowBg, radius: plan.windowRadius ?? 24 } : {}) };
 }
 
 // ---- compositions ---------------------------------------------------------------------------------

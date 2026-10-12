@@ -15,3 +15,34 @@
 
 .lf-hero-window .frame-soft { max-width: 640px; margin-inline: auto; }
 .lf-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+/* Promo video: a native player with controls, poster, captions and a written transcript beside it. */
+.sm-tour .sm-video {
+  display: block;
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 24px 60px oklch(20% 0.08 310 / 0.18), 0 3px 10px oklch(20% 0.08 310 / 0.08);
+}
+.sm-transcript { max-width: 960px; margin-top: 16px; }
+.sm-transcript h3 { margin: 0 0 6px; font-size: 1rem; }
+.sm-transcript p { margin: 0 0 8px; color: var(--muted); }
+
+/* Screenshots: the app's own windows drawn on invented sample files. */
+.sm-gallery .section-intro { max-width: 64ch; }
+.sm-shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 40px 32px;
+  margin-top: 28px;
+  align-items: start;
+}
+.sm-shot { margin: 0; }
+.sm-shot h3 { margin: 0 0 6px; }
+.sm-shot p { margin: 0 0 14px; color: var(--muted); max-width: 56ch; }
+.sm-shot figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+.sm-shot-small .frame-soft { max-width: 300px; }
