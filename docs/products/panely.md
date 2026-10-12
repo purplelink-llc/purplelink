@@ -39,7 +39,7 @@ later; both slices (arm64 and x86_64) compile, the Intel slice has not been run 
 
 ## Hand checks before the gate flips (written from code and unit tests, never run end to end on a real Mac)
 
-- [ ] Accessibility prompt appears on the first snap and snapping works after it is granted.
+- [ ] The Accessibility prompt appears when Panely first opens (not on the first snap), and snapping works after it is granted.
 - [ ] Every default shortcut moves a window to the right place on one and on two displays; the half shortcut cycles; Restore returns the first size.
 - [ ] Drag to each edge and corner: preview appears, release snaps, a click in window content does not snap, macOS's own edge tiling on at the same time (Settings warning shows and its button opens the right pane).
 - [ ] Apps that enforce a minimum size or refuse resizing (Electron, Terminal, Xcode) end up sensible.
