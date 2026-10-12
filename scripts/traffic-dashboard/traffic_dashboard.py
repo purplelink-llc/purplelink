@@ -471,6 +471,49 @@ def fetch_sparkle_updates_blobs() -> dict | None:
         return None
 
 
+# --- Panely and Summonly: downloads served and in-app updates ---------------------
+#
+# The two download functions count every served download in their own stats store: "public:<file>"
+# (the trial download), "buyer:<file>" (a purchase download), "day:<date>:<kind>" (per UTC day) and
+# "downloads:<file>" (Sparkle updates, one counter per version). They are requests handed the file,
+# not confirmed installs. Read straight from the Blobs store with the Netlify CLI's token, so no
+# update-channel secret has to be kept locally.
+APP_STATS_STORES = {"panely": "panely-stats", "summonly": "summonly-stats"}
+
+
+def fetch_app_stats_blobs(app: str) -> dict | None:
+    store = APP_STATS_STORES[app]
+    try:
+        by_day: dict[str, dict[str, int]] = {}
+        for key, n in blobs_read(store, "day:").items():
+            day, _, kind = key.partition(":")
+            if kind in ("public", "buyer"):
+                by_day.setdefault(day, {"public": 0, "buyer": 0})[kind] = n
+        return {"updates": blobs_read(store, "downloads:"), "public": blobs_read(store, "public:"),
+                "buyer": blobs_read(store, "buyer:"), "byDay": by_day,
+                "fetchedAt": dt.datetime.now(dt.timezone.utc).isoformat()}
+    except (OSError, http.client.HTTPException, ValueError) as exc:
+        print(f"  ! {app} download counters (Blobs) unavailable: {str(exc)[:80]}", file=sys.stderr)
+        return None
+
+
+def app_stats_summary(entry: dict | None, today: dt.date | None = None) -> dict | None:
+    """Totals from one app's stored counters: public and buyer downloads (all time, last 7 complete days,
+    today) and in-app updates by version."""
+    if not entry:
+        return None
+    today = today or dt.date.today()
+    by_day = entry.get("byDay") or {}
+    last7 = [(today - dt.timedelta(days=i)).isoformat() for i in range(1, 8)]
+    pub7 = sum((by_day.get(d) or {}).get("public", 0) for d in last7)
+    buy7 = sum((by_day.get(d) or {}).get("buyer", 0) for d in last7)
+    t = by_day.get(today.isoformat()) or {}
+    return {"publicAll": sum((entry.get("public") or {}).values()), "buyerAll": sum((entry.get("buyer") or {}).values()),
+            "public7": pub7, "buyer7": buy7, "publicToday": t.get("public", 0), "buyerToday": t.get("buyer", 0),
+            "updates": dict(sorted((entry.get("updates") or {}).items())), "updatesAll": sum((entry.get("updates") or {}).values()),
+            "firstDay": min(by_day) if by_day else None}
+
+
 def fetch_vitae_downloads(token: str) -> dict | None:
     """{"downloads": {file: lifetime}, "byDay": {date: n}} or None on failure."""
     req = urllib.request.Request(
@@ -4051,6 +4094,33 @@ def legroom_report(history: dict) -> dict | None:
     return r
 
 
+def _suite_orders(history: dict) -> int:
+    return sum(1 for x in (history.get("ledger") or {}).values() if x.get("product") == "app-suite" and x.get("kind") == "purchase")
+
+
+def panely_report(history: dict) -> dict | None:
+    """Panely ($9.99, 7-day trial), live 2026-10-12. Its own orders only: Mac Suite orders include it and are
+    reported apart as `suiteOrders`. `server` holds the download counters kept by the download function."""
+    r = app_funnel_report(history, page="/panely", metric="pnTrialDownloads", since="2026-10-12",
+                          checkout_keys=("panely",),
+                          ledger_match=lambda x: x.get("product") == "panely" and x.get("kind") == "purchase")
+    if r is not None:
+        r["suiteOrders"] = _suite_orders(history)
+        r["server"] = app_stats_summary((history.get("appStats") or {}).get("panely"))
+    return r
+
+
+def summonly_report(history: dict) -> dict | None:
+    """Summonly ($9.99, 7-day trial), live 2026-10-12. Same shape as panely_report."""
+    r = app_funnel_report(history, page="/summonly", metric="smTrialDownloads", since="2026-10-12",
+                          checkout_keys=("summonly",),
+                          ledger_match=lambda x: x.get("product") == "summonly" and x.get("kind") == "purchase")
+    if r is not None:
+        r["suiteOrders"] = _suite_orders(history)
+        r["server"] = app_stats_summary((history.get("appStats") or {}).get("summonly"))
+    return r
+
+
 def vitae_report(history: dict) -> dict | None:
     """Vitae is free: the first step is a download, the conversion is a Vitae Plus subscription
     ($2.99 a month or $23.99 a year, 7-day trial). Downloads are counted since 2026-09-22."""
@@ -4099,6 +4169,33 @@ def print_legroom(o: dict | None) -> None:
     print_app_funnel(o, "Legroom (Mac app, $9.99, 7-day trial)", "/legroom/")
     if o:
         print("   Not measured: in-app update downloads and trial-to-paid by email (the trial has no sign-up step)")
+
+
+def print_app_server_counts(o: dict | None) -> None:
+    sv = (o or {}).get("server")
+    if not sv:
+        print("   Downloads served (server count): not available this run")
+        return
+    print(f"   Downloads served by the site (all browsers, not only those the beacon sees): {sv['publicAll']} public (trial), "
+          f"{sv['buyerAll']} to buyers; last 7 complete days {sv['public7']} public, {sv['buyer7']} buyer; today {sv['publicToday']} + {sv['buyerToday']}")
+    if sv["updates"]:
+        print("   In-app updates installed, by version: " + ", ".join(f"{k.replace('.dmg', '')} x{n}" for k, n in sv["updates"].items()))
+    else:
+        print("   In-app updates installed: none yet (counted when the app's updater asks for a version)")
+
+
+def print_panely(o: dict | None) -> None:
+    print_app_funnel(o, "Panely (Mac app, $9.99, 7-day trial)", "/panely/")
+    print_app_server_counts(o)
+    if o:
+        print("   Not measured: trials started (the app sends nothing), trial-to-paid by email")
+
+
+def print_summonly(o: dict | None) -> None:
+    print_app_funnel(o, "Summonly (Mac app, $9.99, 7-day trial)", "/summonly/")
+    print_app_server_counts(o)
+    if o:
+        print("   Not measured: trials started (the app sends nothing), trial-to-paid by email")
 
 
 def print_vitae(o: dict | None) -> None:
@@ -5700,6 +5797,15 @@ def main() -> int:
             delta_note = f", {today['delta']} today" if today["delta"] is not None else " (first snapshot)"
             print(f"  ok ModernTex in-app updates: {today['total']} lifetime{delta_note}")
 
+        # Panely and Summonly: downloads served (public and buyer) and in-app updates by version.
+        for app_key in APP_STATS_STORES:
+            app_entry = fetch_app_stats_blobs(app_key)
+            if app_entry is not None:
+                history.setdefault("appStats", {})[app_key] = app_entry
+                sm_ = app_stats_summary(app_entry)
+                print(f"  ok {app_key.title()} downloads: {sm_['publicAll']} public, {sm_['buyerAll']} buyer, "
+                      f"{sm_['updatesAll']} in-app update(s)")
+
         # App Store Connect (GlobePin): archived per day like everything else.
         if cfg.get("ASC_VENDOR_NUMBER"):
             try:
@@ -5822,6 +5928,8 @@ def main() -> int:
     print_revenue_sources(sales, appstore, market_rows, history.get("admob"))
     print_outbound_veil(outbound_veil_report(history))
     print_legroom(legroom_report(history))
+    print_panely(panely_report(history))
+    print_summonly(summonly_report(history))
     print_vitae(vitae_report(history))
     print_extensionpay(history)
     print_profit(profit, channels, tax)

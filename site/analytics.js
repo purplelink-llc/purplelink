@@ -92,7 +92,7 @@
     if (f.g || med === "cpc" || med === "ppc" || med === "paid" || med === "paidsocial") return clip("paid:" + (f.s || "google"), 40);
     return clip(f.s || f.r || "direct", 40);
   }
-  var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download)$/;
+  var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download)$/;
 
   function send(payload) {
     try {

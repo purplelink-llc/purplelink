@@ -11,7 +11,7 @@ const blobsModule = {
   getStore: (name) => ({
     get: async (k) => stores.get(`${name}/${k}`) ?? null,
     set: async (k, v) => { stores.set(`${name}/${k}`, v); },
-    list: async () => ({ blobs: [...stores.keys()].filter((k) => k.startsWith(`${name}/`)).map((k) => ({ key: k.slice(name.length + 1) })) }),
+    list: async (o = {}) => ({ blobs: [...stores.keys()].filter((k) => k.startsWith(`${name}/${o.prefix || ""}`)).map((k) => ({ key: k.slice(name.length + 1) })) }),
     getWithMetadata: async (k) => (stores.has(`${name}/${k}`) ? { data: new Response(`bytes:${k}`).body, metadata: { size: 9 } } : null),
   }),
 };
@@ -291,4 +291,50 @@ test("the token is never echoed in a response or written to the log", async () =
     Object.assign(console, orig);
   }
   assert.ok(!logged.some((l) => l.includes(TOKEN)));
+});
+
+// --- served-download counters (installs on the dashboard) -----------------------------
+
+const today = () => new Date().toISOString().slice(0, 10);
+
+test("a public download counts once per file and per day under public, a buyer download under buyer", async () => {
+  assert.equal((await call("download=1")).status, 200);
+  assert.equal((await call("trial=1")).status, 200);
+  assert.equal(stores.get("panely-stats/public:Panely-1.10.0.dmg"), "2");
+  assert.equal(stores.get(`panely-stats/day:${today()}:public`), "2");
+  const bought = await call(`session_id=${SESSION}&file=Panely-1.0.0.dmg`);
+  assert.equal(bought.status, 200);
+  assert.equal(stores.get("panely-stats/buyer:Panely-1.0.0.dmg"), "1");
+  assert.equal(stores.get(`panely-stats/day:${today()}:buyer`), "1");
+});
+
+test("HEAD requests and crawlers are not counted, and the buyer list call is not a download", async () => {
+  await call("download=1", {}, "HEAD");
+  await call("download=1", { "user-agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" });
+  await call(`session_id=${SESSION}`);
+  assert.equal([...stores.keys()].filter((k) => k.startsWith("panely-stats/")).length, 0);
+});
+
+test("stats=1 reports updates, public and buyer downloads and the per-day series behind the token", async () => {
+  await call("download=1");
+  await call(`session_id=${SESSION}&file=Panely-1.1.0.dmg`);
+  await call("update=Panely-1.1.0.dmg", { "x-panely-channel": TOKEN });
+  const res = await call("stats=1", { "x-panely-channel": TOKEN });
+  assert.equal(res.status, 200);
+  const body = await res.json();
+  assert.deepEqual(body.downloads, { "Panely-1.1.0.dmg": 1 });
+  assert.deepEqual(body.public, { "Panely-1.10.0.dmg": 1 });
+  assert.deepEqual(body.buyer, { "Panely-1.1.0.dmg": 1 });
+  assert.deepEqual(body.byDay[today()], { public: 1, buyer: 1 });
+  assert.equal((await call("stats=1")).status, 403, "still closed without the token");
+});
+
+test("a failing stats store never breaks a download", async () => {
+  const original = stores.set.bind(stores);
+  stores.set = (k, v) => { if (String(k).startsWith("panely-stats/")) throw new Error("store down"); return original(k, v); };
+  try {
+    const res = await call("download=1");
+    assert.equal(res.status, 200);
+    assert.equal(await res.text(), "bytes:Panely-1.10.0.dmg");
+  } finally { stores.set = original; }
 });
