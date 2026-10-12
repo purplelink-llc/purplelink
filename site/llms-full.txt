@@ -7177,6 +7177,8 @@ Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 on
 
 ## Related guides
 
+- Why is System Data so big on my Mac?: what fills the System Data category and which causes are safe to remove.
+
 - What AI tools leave on your Mac, and what is safe to delete: measured sizes and the commands that clear them.
 
 - Best LaTeX editor for Mac: MacTeX is about 5 GB and BasicTeX about 100 MB, a real choice if your disk is tight.
@@ -7718,6 +7720,8 @@ No. Showing the number does not change anything, and Legroom does not speed up a
 Find what is big before deleting anything: start with Storage settings, then use a disk map or a list of the largest items. Empty the Trash, and leave purgeable space and system folders alone. The disk space analyzer guide compares the tools and covers what is safe to delete.
 
 ## Related guides
+
+- Why is System Data so big on my Mac?: what fills the System Data category and which causes are safe to remove.
 
 - What AI tools leave on your Mac, and what is safe to delete: measured sizes and the commands that clear them.
 
