@@ -156,7 +156,7 @@
     if (parts) {
       var title = document.getElementById("hero-title");
       var lead = document.getElementById("hero-lead");
-      if (title) title.textContent = "Your bundle is yours";
+      if (title) title.textContent = "Your bundle is ready";
       if (lead) lead.textContent = "Everything you chose is below: the downloads and license keys for your parts. We have also emailed this page to the address on your receipt.";
     }
     if (keep("moderntex")) files(boxes.mtx, "moderntex-download");
