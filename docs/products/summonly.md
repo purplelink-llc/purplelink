@@ -59,6 +59,15 @@ later; both slices (arm64 and x86_64) compile, the Intel slice has not been run 
 - [ ] The Google button: type anything and a small Google button (text, no logo) appears at the right of the search box; click it and Shift-Return both open google.com/search in your default browser (set Safari, then Chrome, as default in System Settings and confirm each time); it works when nothing matched, for a calculation, and for a command line; it does nothing and shows nothing for an empty box; the footer shows ⇧↩ Google.
 - [ ] Web and AI: claude hello, gpt hello, ppl hello and ask hello open the right site in your browser with the words filled in (check Claude and ChatGPT still accept the ?q= address, as they can change it); typing plain text shows Search Google, Ask Claude and Ask ChatGPT as the last rows and not for a calculation or a command; Settings, Web and AI: switch a service off, delete one, add your own with a bad address (refused) and a good one.
 - [ ] Hide the menu bar icon, let the trial expire (clock forward) and confirm the icon comes back so a key can be entered.
+- [ ] First-run window: appears once on a fresh settings file; nothing is ticked that reads the clipboard, downloads a file or opens at login unless chosen; "Turn everything on" and Done work; Settings, Run setup again reopens it. Clipboard is not read (no prompt) until opted in.
+- [ ] Question search: turn it on, wait for "documents, passages" in the status; ask "which file mentions ..." about a PDF, a Word file and a note and check the file, passage and page; a reworded question may miss (say so); "?" prefix works; a nonsense question shows "No clear answer"; Delete the passage index empties it; unplug power or run hot and confirm it pauses.
+- [ ] Operators: "quarterly report" in quotes, invoice -draft, report OR invoice, name:budget, size:>5mb, in:"Project Files".
+- [ ] Office text: a docx, xlsx and pptx are found by a word inside them (after the one-time re-read on upgrade).
+- [ ] Why isn't a file found: pick a hidden file, a file in an excluded folder and a normal one; the wording matches reality. Right-click a result: Why this result, Hide this result (Settings shows it, Show again works), Leave this folder out. Command-Delete hides.
+- [ ] Delete a file and search for it: it does not appear. Unplug an external drive: its files hide and come back.
+- [ ] Whole home folder: turn it on; Library and the Trash are not indexed; the status names any folder macOS refused.
+- [ ] VoiceOver: results are read with a count and the selected title when moving; rows read as title and folder.
+- [ ] Settings, Check index reports healthy; the passage index and index sizes are reasonable on a real home folder.
 
 ## Tests
 
