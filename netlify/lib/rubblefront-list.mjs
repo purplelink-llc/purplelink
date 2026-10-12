@@ -33,6 +33,9 @@ export const SUPPRESS_STORE = "rf-list-suppressed";
 export const newToken = () => randomBytes(24).toString("hex");
 export const hashEmail = (email) => createHash("sha256").update(email).digest("hex");
 export const confirmUrlFor = (t) => `${SITE_ORIGIN}/.netlify/functions/rubblefront-confirm?t=${t}`;
+// The link a person clicks: a page on rubblefront.com with a button. The List-Unsubscribe header keeps the
+// function URL, because mail clients POST to it (RFC 8058) and a plain GET there changes nothing.
+export const unsubscribePageFor = (t) => `${LIST_SITE}/unsubscribe/?u=${t}`;
 export const unsubscribeUrlFor = (t) => `${SITE_ORIGIN}/.netlify/functions/rubblefront-unsubscribe?u=${t}`;
 
 export function parseRecord(raw) {
@@ -76,13 +79,14 @@ export const unsubscribeHeaders = (url) => ({
 export function confirmationEmail(to, record) {
   const link = confirmUrlFor(record.confirmToken);
   const unsub = unsubscribeUrlFor(record.unsubscribeToken);
+  const page = unsubscribePageFor(record.unsubscribeToken);
   return {
     from: FROM_ADDRESS,
     reply_to: REPLY_TO,
     to: [to],
     subject: "Confirm your email for RubbleFront news",
-    text: `Someone, probably you, asked for RubbleFront news at this address. To get it, confirm with this link:\n\n${link}\n\nYou will get news about the demo and the launch, and nothing else. If you did not ask, ignore this email and nothing happens.\n\nUnsubscribe: ${unsub}\n\n${POSTAL_ADDRESS}`,
-    html: `<p>Someone, probably you, asked for RubbleFront news at this address. To get it, confirm with this link:</p><p><a href="${link}">Confirm my email</a></p><p>You will get news about the demo and the launch, and nothing else. If you did not ask, ignore this email and nothing happens.</p><p><a href="${unsub}">Unsubscribe</a></p><p>${POSTAL_ADDRESS}</p>`,
+    text: `Someone, probably you, asked for RubbleFront news at this address. To get it, confirm with this link:\n\n${link}\n\nYou will get news about the demo and the launch, and nothing else. If you did not ask, ignore this email and nothing happens.\n\nUnsubscribe: ${page}\n\n${POSTAL_ADDRESS}`,
+    html: `<p>Someone, probably you, asked for RubbleFront news at this address. To get it, confirm with this link:</p><p><a href="${link}">Confirm my email</a></p><p>You will get news about the demo and the launch, and nothing else. If you did not ask, ignore this email and nothing happens.</p><p><a href="${page}">Unsubscribe</a></p><p>${POSTAL_ADDRESS}</p>`,
     headers: unsubscribeHeaders(unsub),
   };
 }

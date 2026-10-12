@@ -3,17 +3,23 @@
  * in the confirmation email (see rubblefront-confirm.mjs). Shared helpers: netlify/lib/rubblefront-list.mjs.
  *
  * POST /.netlify/functions/rubblefront-subscribe   from rubblefront.com (or purplelink.llc, for testing)
- *   body: { email, source: "hero"|"footer", website?: "<honeypot>" }
+ *   JSON body (the fetch path): { email, source: "hero"|"footer", website?: "<honeypot>" }
  *   200 { ok: true }   the same answer whether the address is new, pending, already confirmed or a bot
  *   400 invalid_json | invalid_email   403 forbidden_origin   429 rate_limited
  *   502 send_failed    Resend refused; nothing is kept
+ *
+ *
+ * The same endpoint takes an ordinary form post (Content-Type application/x-www-form-urlencoded, same fields),
+ * which is what rubblefront.com's forms do without JavaScript. Every outcome is a 303 redirect: success, the
+ * neutral already-subscribed case and the honeypot go to https://rubblefront.com/thanks/; an invalid address,
+ * rate limit, send failure or server error goes to /thanks/?error=1.
  *
  * The address is never logged; errors log a code only. Env: RESEND_API_KEY.
  */
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import {
-  SITE_ORIGIN, ALLOWED_ORIGINS, EMAIL_PATTERN, DAY_MS, STORE, TOKEN_STORE,
+  SITE_ORIGIN, LIST_SITE, ALLOWED_ORIGINS, EMAIL_PATTERN, DAY_MS, STORE, TOKEN_STORE,
   newToken, parseRecord, isExpiredPending, removeRecord, sendMail, confirmationEmail,
 } from "../lib/rubblefront-list.mjs";
 
@@ -64,28 +70,42 @@ export default async function handler(request) {
   if (request.method !== "POST") return json(405, { error: "method_not_allowed" });
   if (!origin) return json(403, { error: "forbidden_origin" });
 
-  const body = await request.json().catch(() => null);
-  if (!body || typeof body !== "object") return json(400, { error: "invalid_json" }, origin);
+  const isForm = (request.headers.get("content-type") || "").toLowerCase().includes("application/x-www-form-urlencoded");
+  // JSON callers get JSON; form posts get a 303 to the thanks page (error=1 for any failure).
+  const out = (status, body) => {
+    if (!isForm) return json(status, body, origin);
+    const path = status < 300 ? "/thanks/" : "/thanks/?error=1";
+    return new Response(null, { status: 303, headers: { Location: `${LIST_SITE}${path}`, "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" } });
+  };
+
+  let body = null;
+  if (isForm) {
+    const text = await request.text().catch(() => null);
+    if (text !== null) body = Object.fromEntries(new URLSearchParams(text));
+  } else {
+    body = await request.json().catch(() => null);
+  }
+  if (!body || typeof body !== "object") return out(400, { error: "invalid_json" });
   // Honeypot: a filled "website" field is a bot. Answer as if it worked.
-  if (typeof body.website === "string" && body.website.trim()) return json(200, { ok: true }, origin);
+  if (typeof body.website === "string" && body.website.trim()) return out(200, { ok: true });
 
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-  if (email.length > 254 || !EMAIL_PATTERN.test(email)) return json(400, { error: "invalid_email" }, origin);
+  if (email.length > 254 || !EMAIL_PATTERN.test(email)) return out(400, { error: "invalid_email" });
   const source = SOURCES.has(body.source) ? body.source : "other";
 
   try {
     if ((await overLimit("ip", clientIpOf(request), PER_IP_DAILY)) || (await overLimit("email", email, PER_EMAIL_DAILY))) {
-      return json(429, { error: "rate_limited" }, origin);
+      return out(429, { error: "rate_limited" });
     }
     const store = getStore(STORE);
     const tokens = getStore(TOKEN_STORE);
     const existing = parseRecord(await store.get(email));
     const now = Date.now();
     // Already on the list: same answer, no email, nothing revealed.
-    if (existing?.status === "confirmed") return json(200, { ok: true }, origin);
+    if (existing?.status === "confirmed") return out(200, { ok: true });
     // Pending and asked less than a day ago: nothing new.
     if (existing?.status === "pending" && !isExpiredPending(existing, now) && now - Date.parse(existing.createdAt) < DAY_MS) {
-      return json(200, { ok: true }, origin);
+      return out(200, { ok: true });
     }
 
     const record = {
@@ -105,11 +125,11 @@ export default async function handler(request) {
     if (failure) {
       console.error("rubblefront-subscribe: email failed", failure);
       await removeRecord(record); // nobody is kept who got no email
-      return json(502, { error: "send_failed" }, origin);
+      return out(502, { error: "send_failed" });
     }
-    return json(200, { ok: true }, origin);
+    return out(200, { ok: true });
   } catch (_) {
     console.error("rubblefront-subscribe: storage failed");
-    return json(500, { error: "server_error" }, origin);
+    return out(500, { error: "server_error" });
   }
 }

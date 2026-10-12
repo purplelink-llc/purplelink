@@ -20,7 +20,7 @@
 import { getStore } from "@netlify/blobs";
 import { timingSafeEqual } from "node:crypto";
 import {
-  FROM_ADDRESS, REPLY_TO, POSTAL_ADDRESS, TOKEN_PATTERN, hashEmail, unsubscribeUrlFor, unsubscribeHeaders,
+  FROM_ADDRESS, REPLY_TO, POSTAL_ADDRESS, TOKEN_PATTERN, hashEmail, unsubscribeUrlFor, unsubscribePageFor, unsubscribeHeaders,
   confirmedRecords, sendMail, EMAIL_PATTERN,
 } from "../lib/rubblefront-list.mjs";
 
@@ -45,13 +45,14 @@ const escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace
 
 export function broadcastMail(to, token, subject, text, html) {
   const unsub = unsubscribeUrlFor(token);
+  const page = unsubscribePageFor(token);
   return {
     from: FROM_ADDRESS,
     reply_to: REPLY_TO,
     to: [to],
     subject,
-    text: `${text}\n\n--\nUnsubscribe with one click: ${unsub}\n${POSTAL_ADDRESS}`,
-    html: `${html}<hr><p><a href="${unsub}">Unsubscribe with one click</a></p><p>${escapeHtml(POSTAL_ADDRESS)}</p>`,
+    text: `${text}\n\n--\nUnsubscribe: ${page}\n${POSTAL_ADDRESS}`,
+    html: `${html}<hr><p><a href="${page}">Unsubscribe</a></p><p>${escapeHtml(POSTAL_ADDRESS)}</p>`,
     headers: unsubscribeHeaders(unsub),
   };
 }
