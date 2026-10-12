@@ -5098,7 +5098,7 @@ Comparison
 
 # Best LaTeX editor for Mac in 2026: 16 editors compared
 
-By Benjamin Ampel · May 31, 2026, updated October 11, 2026
+By Benjamin Ampel · May 31, 2026, updated October 12, 2026
 
 A direct comparison of the LaTeX editors that actually work on Mac in 2026, covering what each one is good at, what it costs, and which workflow it suits. No affiliate links, no rankings padding.
 
@@ -5106,7 +5106,7 @@ Disclosure up front: I make one of the editors on this list (ModernTex). I've tr
 
 ## The short answer
 
-TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 11, 2026.
+TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 12, 2026.
 
 ## The editors side by side
 
@@ -5122,7 +5122,7 @@ OctreeFree tier with limits; paid plan about $10/moWeb, with a Mac wrapperNot st
 
 VS Code + LaTeX WorkshopFreeCross-platformNot statedSyncTeX previewFeels like a code file, not a paper
 
-OverleafFree tier (limited compile time, no Git sync); paid plans $15–$25/moBrowserNo offline access on the free tier; paid tiers not statedNot statedFree tier has limited compile time and no Git sync
+OverleafFree tier (limited compile time, no Git sync); paid plans $98 a year (Student) or $199 a year (Standard), or $25 a month billed monthlyBrowserNo offline access on the free tier; paid tiers not statedNot statedFree tier has limited compile time and no Git sync
 
 ModernTex (mine)$19.99 once, after a free 7-day trialmacOS 14+Yes: compiles with local MacTeX or TinyTeXPDF preview that stays in sync; SyncTeX not statedVersion 1.0 shipped in September 2026, so no track record; no iPad app
 
@@ -5147,6 +5147,22 @@ texspark$39.99 one-time; free 14-day trialmacOS 14+Not statedSyncTeX across mult
 OleaflyFree, open source (AGPL-3.0)macOS (Apple Silicon), Windows, LinuxNot statedPDF pane; SyncTeX not stated on the pages readParts of the app are labeled beta on its page; not tested
 
 Sources for the added rows, read October 9, 2026. texspark: texspark.io. Oleafly: oleafly.com and its editor documentation. I did not install or test either one, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.
+
+## What each option costs per year
+
+Overleaf Standard is $199 a year billed annually, or $25 a month if you pay monthly, which is $300 over twelve months. Overleaf's paid Student plan is $98 a year, or $13 a month billed monthly. Overleaf also lists a Professional plan at $399 a year and discounts for groups at degree-granting institutions; check its plans page for your case. ModernTex is free for seven days, then $19.99 once, with updates included. TeXShop is free. Costs for the other editors are listed in the table above.
+
+OptionYear 1Three years
+
+Overleaf Standard, billed annually$199$597
+
+Overleaf Student, billed annually$98$294, while you qualify
+
+ModernTex (mine)$19.99$19.99
+
+TeXShop, TeXstudio, VS Code with LaTeX WorkshopFreeFree
+
+The totals are the vendors' listed prices multiplied out, not a quote, and they leave out taxes. Price is not the whole comparison: Overleaf's paid plans are built for co-authors editing the same document at once, which ModernTex is not, and the free editors need you to install and configure a TeX distribution yourself. ModernTex is our app; the comparison uses each vendor's own pricing page, read on October 12, 2026.
 
 ## What I ran on October 11, 2026
 
@@ -5256,7 +5272,7 @@ Pick VS Code if you already live in VS Code and want one less context switch.
 
 ## Overleaf
 
-Cost: Free tier (limited compile time, no Git sync), paid plans $15–$25/mo.
+Cost: Free tier (limited compile time, no Git sync). Paid: Standard $199 a year or $25 a month, Student $98 a year, per Overleaf's plans page, read October 12, 2026.
 
 Browser-based, collaborative. Overleaf is the de facto choice for multi-author papers where co-authors aren't all comfortable installing LaTeX. The collaboration model (Google Docs-style) works.
 
@@ -5427,6 +5443,10 @@ Yes, several. TeXShop is free and arrives with MacTeX, so most people
 already have it. VS Code with the LaTeX Workshop extension is free. Overleaf
 has a free tier with limits on compile time and no Git sync. Of the paid
 options, Texifier is a one-time $29.99 rather than a subscription.
+
+### How much does Overleaf cost compared with a Mac LaTeX editor?
+
+Overleaf Standard is $199 a year billed annually or $25 a month billed monthly, and its paid Student plan is $98 a year (Overleaf's plans page, read October 12, 2026). ModernTex, which Purplelink makes, is free for seven days and then $19.99 once with updates included, and TeXShop, TeXstudio and VS Code with LaTeX Workshop are free. Overleaf's paid plans are built for co-authors editing together, which is the main reason to pay for it.
 
 ### Does macOS come with LaTeX?
 
