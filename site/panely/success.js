@@ -1,4 +1,4 @@
-// /panely/success/ — turn a paid Stripe session into download links.
+// /panely/success/: turn a paid Stripe session into download links.
 // Calls panely-download in list mode, then renders one button per entitled file.
 (function () {
   var box = document.getElementById("downloads");
@@ -10,7 +10,12 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  function message(html) { box.innerHTML = '<p class="tool-status">' + html + "</p>"; }
+  function message(html) {
+    box.innerHTML = '<p class="tool-status">' + html + "</p>";
+    // The key section must not keep saying "Preparing" when the order could not be read.
+    var lic = document.getElementById("license");
+    if (lic) lic.innerHTML = '<p class="tool-status">Your key is in your receipt email, or <a href="/recover/">find your purchase</a> and we will send it again.</p>';
+  }
 
   function showLicense(key) {
     var holder = document.getElementById("license");
@@ -19,7 +24,7 @@
     var code = document.createElement("code");
     code.className = "license-key";
     code.tabIndex = 0;
-    code.setAttribute("aria-label", "Your Panely license key");
+    code.setAttribute("aria-labelledby", "key-h");
     code.textContent = key;
     var row = document.createElement("div");
     row.className = "license-actions";

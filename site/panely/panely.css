@@ -15,21 +15,3 @@
 
 .pf-hero-window .frame-soft { max-width: 640px; margin-inline: auto; }
 .pf-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
-
-/* The four illustrations were drawn on white, so they sit on a light panel in both themes. */
-.pf-feel { display: grid; gap: clamp(20px, 3vw, 32px); grid-template-columns: 1fr; }
-@media (min-width: 760px) { .pf-feel { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.pf-feel-item { margin: 0; display: grid; gap: 12px; align-content: start; }
-.pf-feel-art {
-  background: oklch(97% 0.012 310);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: clamp(14px, 2vw, 24px);
-  display: grid;
-  place-items: center;
-  min-height: 240px;
-}
-.pf-feel-art img { display: block; width: auto; max-width: 100%; height: auto; max-height: 260px; }
-.pf-feel-item h3 { margin: 4px 0 0; }
-.pf-feel-item p { margin: 0; color: var(--muted); max-width: 52ch; }
-.pf-note { max-width: 64ch; color: var(--muted); font-size: 0.9rem; }

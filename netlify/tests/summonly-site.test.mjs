@@ -259,3 +259,37 @@ test("/summonly/success/ shows the server's reason when refused, and never fetch
   assert.equal(bad.fetched.length, 0);
   assert.match(bad.nodes.downloads.innerHTML, /receipt email/);
 });
+
+// ---- regressions found in review ----------------------------------------------------------
+
+test("the Summonly page has no broken link and no stale 'not in this version' answer", () => {
+  const html = read("summonly/index.html");
+  assert.doesNotMatch(html, /href=&(amp;)?quot;/, "an href written with entities resolves to a bogus path");
+  assert.match(html, /<a href="\/terms\/">terms<\/a>/);
+  assert.doesNotMatch(html, /not in this version/i, "the shortcut recorder exists, so the page must not say it does not");
+});
+
+test("/summonly/success/ never leaves the key section on 'Preparing' when the order cannot be read", async () => {
+  const failed = runSuccess({ search: `?session_id=${SID}`, fetchImpl: () => reply(500, { error: "boom" }) });
+  await tick();
+  assert.match(failed.nodes.license.innerHTML, /receipt email/);
+  assert.match(failed.nodes.license.innerHTML, /\/recover\//);
+  const bad = runSuccess({ search: "?session_id=nope", fetchImpl: () => assert.fail("fetched") });
+  await tick();
+  assert.match(bad.nodes.license.innerHTML, /receipt email/);
+});
+
+test("/summonly/success/ labels the key with its heading, not with an aria-label that replaces the key", async () => {
+  const { nodes } = runSuccess({ search: `?session_id=${SID}`, fetchImpl: () => reply(200, { license: "KEY-1", files: [{ key: "a", label: "A", url: "/x" }] }) });
+  await tick();
+  const code = nodes.license.children.find((c) => c.tagName === "code");
+  assert.equal(code.attrs["aria-labelledby"], "key-h");
+  assert.equal(code.attrs["aria-label"], undefined);
+});
+
+test("the Summonly page does not claim to catch passwords the rules cannot see", () => {
+  const html = read("summonly/index.html");
+  assert.doesNotMatch(html, /looks like a password/i);
+  assert.doesNotMatch(html, /private by default/i, "clipboard history is on from the first launch");
+  assert.doesNotMatch(html, /lock the screen/i, "the command turns the display off");
+});

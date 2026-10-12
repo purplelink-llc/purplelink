@@ -28,7 +28,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=9a8aeb6e78">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/panely/panely.css?v=8f2f3f31b8">
+    <link rel="stylesheet" href="/panely/panely.css?v=1cf416d878">
     <script src="/site.js?v=0c8373a945" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script src="/panely/launch.js?v=fd6b2650b8" defer></script>
@@ -53,7 +53,7 @@
             "Choose apps whose windows Panely never moves",
             "A shortcut for each action that you can record yourself, reset or turn off, with checks against macOS shortcuts and duplicates, and the same actions in the menu bar",
             "Drag a window to a screen edge or corner and a preview shows where it will land",
-            "Press the same half shortcut again to step through half, two thirds and one third",
+            "Press the left or right half shortcut again to step through half, two thirds and one third",
             "A margin around the screen and a gap between windows, from 0 to 32 points",
             "Move a window to the next or previous display, keeping its proportions",
             "Restore a window to the size it had before its first snap",
@@ -111,7 +111,7 @@
             {
               "@type": "Question",
               "name": "Can I change the shortcuts?",
-              "acceptedAnswer": { "@type": "Answer", "text": "You can switch each one off. Recording your own key combinations is not in this version." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. In Settings, click a shortcut and press the keys you want. Panely refuses combinations that macOS keeps for itself or that another action already uses. Any shortcut can be reset or turned off." }
             },
             {
               "@type": "Question",
@@ -263,7 +263,7 @@
 
     <section class="specs-section" aria-labelledby="perm-h">
       <h2 id="perm-h">The Accessibility permission</h2>
-      <p class="specs-more">The first time you snap a window, macOS asks you to allow Panely under System Settings, Privacy &amp; Security, Accessibility. That is the permission an app needs to move other apps' windows. Without it Panely can still be opened, but it cannot move anything. You can switch it off again in the same place.</p>
+      <p class="specs-more">When Panely first opens, macOS asks you to allow it under System Settings, Privacy &amp; Security, Accessibility. That is the permission an app needs to move other apps' windows. Without it Panely can still be opened, but it cannot move anything. You can switch it off again in the same place.</p>
     </section>
 
     <section class="specs-section" aria-labelledby="not-h">
@@ -272,7 +272,7 @@
         <tbody>
           <tr><th scope="row">Automatic tiling</th><td>It does not rearrange windows by itself. It acts when you ask: a shortcut, the menu, a drag, or a layout you apply.</td></tr>
           <tr><th scope="row">An AI app</th><td>It does not use a language model. Describing a layout works from a small set of fixed rules, and says when it cannot read a phrase.</td></tr>
-          <tr><th scope="row">A window recorder</th><td>It reads window positions, sizes and titles. It does not read, store or send what is inside a window.</td></tr>
+          <tr><th scope="row">A window recorder</th><td>It reads window positions, sizes and titles. It does not read, store or send what is inside a window. Saved layouts keep window titles on your Mac, and a title can contain a document name or a web address.</td></tr>
           <tr><th scope="row">Cross-platform</th><td>Mac only. There is no Windows, iPhone or iPad version.</td></tr>
         </tbody>
       </table>
@@ -307,7 +307,7 @@
         </details>
         <details class="faq-item">
           <summary>Can I change the shortcuts?</summary>
-          <div class="faq-body">You can switch each one off. Recording your own key combinations is not in this version.</div>
+          <div class="faq-body">Yes. In Settings, click a shortcut and press the keys you want. Panely refuses combinations that macOS keeps for itself or that another action already uses. Any shortcut can be reset or turned off.</div>
         </details>
         <details class="faq-item">
           <summary>Does one license work on more than one Mac?</summary>
@@ -323,7 +323,7 @@
         </details>
         <details class="faq-item">
           <summary>Can I get a refund?</summary>
-          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href=&quot;/terms/&quot;>terms</a>.</div>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href="/terms/">terms</a>.</div>
         </details>
         <details class="faq-item">
           <summary>How do I get help?</summary>

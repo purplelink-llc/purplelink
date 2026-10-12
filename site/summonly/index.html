@@ -28,7 +28,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=9a8aeb6e78">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/summonly/summonly.css?v=81b650fc85">
+    <link rel="stylesheet" href="/summonly/summonly.css?v=6590a9e2cd">
     <script src="/site.js?v=0c8373a945" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script src="/summonly/launch.js?v=6716ef4783" defer></script>
@@ -56,9 +56,9 @@
             "Optional find by meaning, using a small model built into macOS, for related documents below the word matches",
             "Calculator, percentages and unit conversions in the search box",
             "Quick tools for UUIDs, base64, URL encoding, hashes, colors, Unix time, text case and passwords",
-            "Sleep, lock the screen, start the screen saver, quit or force quit an app, and open a System Settings pane, with no extra permission",
+            "Sleep, turn the display off (it locks if your Mac asks for a password on wake), start the screen saver, quit or force quit an app, and open a System Settings pane, with no extra permission",
             "Web search shortcuts for Google, DuckDuckGo, Wikipedia, Apple Maps, YouTube, GitHub and Google Scholar",
-            "Clipboard history that skips password managers, items apps mark as private, and text that looks like a password, key or card number",
+            "Clipboard history that skips password managers, items apps mark as private, and text that looks like a card number, an access token or a long key",
             "Snippets with the date, the time and the clipboard filled in",
             "Keeps its index current from macOS file notifications, indexing in the background",
             "Works offline, with no account"
@@ -102,12 +102,12 @@
             {
               "@type": "Question",
               "name": "Does it record passwords I copy?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Not from a password manager, and not text that looks like a password, key or card number. The check is a set of rules. It is cautious, and it can miss an unusual secret, so you can also turn clipboard history off or keep it in memory only." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Not from a password manager, and not text that looks like a card number, an access token or a long key. The check is a set of rules, so a short password that you type or copy yourself, such as Hunter2!, can be recorded. It can also miss an unusual secret, so you can also turn clipboard history off or keep it in memory only." }
             },
             {
               "@type": "Question",
               "name": "Can I change the shortcut?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Summonly opens with Option-Space, and clipboard history with Option-Shift-V. Changing them is not in this version." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Summonly opens with Option-Space, and clipboard history with Option-Shift-V. You can record different shortcuts in Settings." }
             },
             {
               "@type": "Question",
@@ -233,9 +233,9 @@
           <tr><th scope="row">Find by meaning</th><td>Optional, and off until you turn it on in Settings. It uses a small English-language model built into macOS to suggest documents on the same subject, below the word matches. It runs on your Mac and helps rather than guarantees: related documents are suggested, not proven.</td></tr>
           <tr><th scope="row">Quick answers</th><td>Sums, percentages (20% of 150, 150 + 20%), powers, square roots and other functions, and conversions between units of length, weight, volume, time, data, speed and temperature, such as 5 km in miles.</td></tr>
           <tr><th scope="row">Quick tools</th><td>Type uuid, base64 hello, base64 decode, urlencode, sha256 text, md5 text, #ff8800 or rgb(255, 136, 0), epoch, epoch 1700000000, slug Some Title, snake, kebab, camel, upper, lower, title, count some words, or password 24. The answer is one line and Return copies it. Nothing is sent anywhere.</td></tr>
-          <tr><th scope="row">System</th><td>Type sleep, lock, screen saver, quit safari, force quit notes, or wifi, bluetooth, displays and sound to open that System Settings pane. These need no permission beyond the one Summonly already has. Restart and shut down are not included.</td></tr>
+          <tr><th scope="row">System</th><td>Type sleep, lock (turns the display off), screen saver, quit safari, force quit notes, or wifi, bluetooth, displays and sound to open that System Settings pane. These need no permission beyond the one Summonly already has. Restart and shut down are not included.</td></tr>
           <tr><th scope="row">Web search</th><td>Type a keyword and some words: g for Google, ddg for DuckDuckGo, w for Wikipedia, maps for Apple Maps, yt for YouTube, gh for GitHub, scholar for Google Scholar.</td></tr>
-          <tr><th scope="row">Clipboard history</th><td>Option-Shift-V, or type clip. It does not record anything copied from a password manager or marked private by the app that copied it, or text that looks like a password, key or card number. You choose how many items to keep and for how many days, and can keep history in memory only. Pin items you want to keep, and clear it at any time.</td></tr>
+          <tr><th scope="row">Clipboard history</th><td>Option-Shift-V, or type clip. It does not record anything copied from a password manager or marked private by the app that copied it, or text that looks like a card number, an access token or a long key. You choose how many items to keep and for how many days, and can keep history in memory only. Pin items you want to keep, and clear it at any time.</td></tr>
           <tr><th scope="row">Snippets</th><td>Save text under a keyword. {date}, {time} and {clipboard} are filled in when you use it. Summonly copies the snippet; you paste it where you want it.</td></tr>
           <tr><th scope="row">Folders</th><td>Desktop, Documents, Downloads and your Applications folders to start. Add or remove folders in Settings, and exclude any folder. Hidden files and developer folders such as node_modules and .git are skipped.</td></tr>
         </tbody>
@@ -256,8 +256,8 @@
           <p>The index holds file names, paths and the start of text files, in Summonly&#x27;s own folder in Application Support. You can rebuild it or delete it, and you choose which folders it covers.</p>
         </div>
         <div class="feature-item">
-          <h3>Clipboard history is private by default</h3>
-          <p>It skips password managers and anything an app marks as private, skips text that looks like a secret, and can be kept in memory only. Where it is saved, the file is readable only by you.</p>
+          <h3>Clipboard history is on from the first launch, and skips secrets</h3>
+          <p>It skips password managers and anything an app marks as private, skips text that looks like a card number, token or long key, and can be kept in memory only. Where it is saved, the file is readable only by you.</p>
         </div>
       </div>
       <p>Details are on the <a href="/privacy/">privacy page</a>.</p>
@@ -265,14 +265,14 @@
 
     <section class="specs-section" aria-labelledby="perm-h">
       <h2 id="perm-h">Folder access</h2>
-      <p class="specs-more">The first time Summonly reads your Desktop, Documents or Downloads folder, macOS asks whether to allow it. Allow the folders you want searched. Summonly does not need Full Disk Access. If you add a folder that macOS protects, it will ask for that one too. The first index of a large folder can take a few minutes and runs in the background at low priority.</p>
+      <p class="specs-more">The first time Summonly reads your Desktop, Documents or Downloads folder, macOS asks whether to allow it. Allow the folders you want searched. Summonly does not need Full Disk Access. It also reads the clipboard to keep history, and recent versions of macOS may ask you to allow that. If you add a folder that macOS protects, it will ask for that one too. The first index of a large folder can take a few minutes and runs in the background at low priority.</p>
     </section>
 
     <section class="specs-section" aria-labelledby="not-h">
       <h2 id="not-h">What it is not</h2>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">A replacement for all of Spotlight</th><td>It searches the folders you choose. It does not search Mail, Messages, Contacts, Calendar or the web&#x27;s own index.</td></tr>
+          <tr><th scope="row">A replacement for all of Spotlight</th><td>It searches the folders you choose. It does not search Mail, Messages, Contacts or Calendar, or the web.</td></tr>
           <tr><th scope="row">A workflow tool</th><td>There are no workflows, scripts or extensions in this version. It is for finding, opening, copying and calculating.</td></tr>
           <tr><th scope="row">A chat assistant</th><td>It does not answer questions in sentences. The meaning search only suggests related documents.</td></tr>
           <tr><th scope="row">Synced</th><td>Everything stays on your Mac. There is no account and no sync.</td></tr>
@@ -302,11 +302,11 @@
         </details>
         <details class="faq-item">
           <summary>Does it record passwords I copy?</summary>
-          <div class="faq-body">Not from a password manager, and not text that looks like a password, key or card number. The check is a set of rules. It is cautious, and it can miss an unusual secret, so you can also turn clipboard history off or keep it in memory only.</div>
+          <div class="faq-body">Not from a password manager, and not text that looks like a card number, an access token or a long key. The check is a set of rules, so a short password that you type or copy yourself, such as Hunter2!, can be recorded. It can also miss an unusual secret, so you can also turn clipboard history off or keep it in memory only.</div>
         </details>
         <details class="faq-item">
           <summary>Can I change the shortcut?</summary>
-          <div class="faq-body">Summonly opens with Option-Space, and clipboard history with Option-Shift-V. Changing them is not in this version.</div>
+          <div class="faq-body">Summonly opens with Option-Space, and clipboard history with Option-Shift-V. You can record different shortcuts in Settings.</div>
         </details>
         <details class="faq-item">
           <summary>Can it search inside Word documents?</summary>
@@ -326,7 +326,7 @@
         </details>
         <details class="faq-item">
           <summary>Can I get a refund?</summary>
-          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href=&quot;/terms/&quot;>terms</a>.</div>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href="/terms/">terms</a>.</div>
         </details>
         <details class="faq-item">
           <summary>How do I get help?</summary>
