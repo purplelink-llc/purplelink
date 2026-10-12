@@ -12,13 +12,15 @@ the postal line. The server sends through Resend, so RESEND_API_KEY is never nee
 Addresses are never printed. A run is split into batches of 50 and is resumable: if it stops, rerun with
 the printed --resume <id> and recipients already sent are skipped.
 
-Env: RUBBLEFRONT_BROADCAST_SECRET (required), RUBBLEFRONT_BASE_URL (default https://purplelink.llc).
+Env: RUBBLEFRONT_BROADCAST_SECRET (required), RUBBLEFRONT_BASE_URL (default https://purplelink.llc),
+SSL_CERT_FILE (optional CA bundle; otherwise /etc/ssl/cert.pem is used if the default store has none).
 """
 import argparse
 import html
 import json
 import os
 import re
+import ssl
 import sys
 import urllib.error
 import urllib.request
@@ -54,13 +56,52 @@ def render(markdown):
     return plain, "\n".join(out)
 
 
+SYSTEM_CA_FILE = "/etc/ssl/cert.pem"
+
+
+def ssl_contexts():
+    """TLS contexts to try, in order. Verification is never turned off.
+
+    The python.org build of Python ships with no CA roots, so the default context can fail with
+    CERTIFICATE_VERIFY_FAILED. The fallback is the system bundle (macOS: /etc/ssl/cert.pem), or the file
+    named by SSL_CERT_FILE when that is set."""
+    default = ssl.create_default_context()
+    contexts = [default]
+    cafile = os.environ.get("SSL_CERT_FILE") or SYSTEM_CA_FILE
+    if os.path.isfile(cafile):
+        # An empty default store means the first context cannot verify anything: start with the file.
+        empty = not default.get_ca_certs() and not os.environ.get("SSL_CERT_FILE")
+        fallback = ssl.create_default_context(cafile=cafile)
+        contexts = [fallback, default] if empty else [default, fallback]
+    return contexts
+
+
+def is_verify_error(exc):
+    reason = getattr(exc, "reason", exc)
+    return isinstance(reason, ssl.SSLCertVerificationError) or "CERTIFICATE_VERIFY_FAILED" in str(reason)
+
+
+def open_url(req):
+    last = None
+    for ctx in ssl_contexts():
+        try:
+            return urllib.request.urlopen(req, timeout=60, context=ctx)
+        except urllib.error.HTTPError:
+            raise
+        except (urllib.error.URLError, ssl.SSLError) as e:
+            if not is_verify_error(e):
+                raise
+            last = e
+    raise last
+
+
 def call(secret, payload):
     req = urllib.request.Request(
         ENDPOINT, data=json.dumps(payload).encode(), method="POST",
         headers={"Content-Type": "application/json", "Authorization": f"Bearer {secret}"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with open_url(req) as resp:
             return resp.status, json.loads(resp.read() or b"{}")
     except urllib.error.HTTPError as e:
         try:

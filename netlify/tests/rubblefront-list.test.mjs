@@ -159,15 +159,93 @@ test("rate limits: per address and per IP", async () => {
   assert.equal(last.status, 429);
 });
 
-test("GET unsubscribe deletes the record, leaves a hashed marker and redirects; unknown tokens look the same", async () => {
+test("GET unsubscribe changes nothing and redirects to the confirm page; POST unsubscribes", async () => {
   await signupAndConfirm("gone@example.org");
   const u = record("gone@example.org").unsubscribeToken;
-  const res = await unsubscribe(unsubReq(u));
-  assert.equal(res.status, 302);
-  assert.equal(res.headers.get("location"), "https://rubblefront.com/unsubscribed/");
+  const get = await unsubscribe(unsubReq(u));
+  assert.equal(get.status, 302);
+  assert.equal(get.headers.get("location"), `https://rubblefront.com/unsubscribe/?u=${u}`);
+  assert.equal(record("gone@example.org").status, "confirmed"); // a mail scanner following the link did nothing
+  assert.equal(store.has(`rf-list-suppressed/${hashEmail("gone@example.org")}`), false);
+  // The page's button: a fetch POST from rubblefront.com.
+  const res = await unsubscribe(new Request(unsubReq(u).url, { method: "POST", headers: { origin: "https://rubblefront.com" } }));
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get("access-control-allow-origin"), "https://rubblefront.com");
   assert.deepEqual(kept(), [`rf-list-suppressed/${hashEmail("gone@example.org")}`]);
   assert.doesNotMatch(kept().join(" "), /gone@example/);
+  // Unknown token: same answers.
   assert.equal((await unsubscribe(unsubReq("c".repeat(48)))).status, 302);
+  assert.equal((await unsubscribe(unsubReq("c".repeat(48), "POST"))).status, 200);
+  assert.equal((await unsubscribe(unsubReq("junk"))).headers.get("location"), "https://rubblefront.com/unsubscribe/");
+});
+
+test("unsubscribe preflight is allowed for rubblefront.com only", async () => {
+  const mk = (o) => new Request("https://purplelink.llc/.netlify/functions/rubblefront-unsubscribe?u=x", { method: "OPTIONS", headers: { origin: o } });
+  assert.equal((await unsubscribe(mk("https://rubblefront.com"))).status, 204);
+  assert.equal((await unsubscribe(mk("https://evil.example"))).status, 403);
+});
+
+const form = (fields, headers = {}) => new Request("https://purplelink.llc/.netlify/functions/rubblefront-subscribe", {
+  method: "POST",
+  headers: { "Content-Type": "application/x-www-form-urlencoded", origin: "https://rubblefront.com", "x-nf-client-connection-ip": "203.0.113.9", ...headers },
+  body: new URLSearchParams(fields).toString(),
+});
+
+test("form POST: success is a 303 to /thanks/ and sends the confirmation; repeats and confirmed addresses look the same", async () => {
+  const res = await subscribe(form({ email: "Form@Example.org", source: "hero", website: "" }));
+  assert.equal(res.status, 303);
+  assert.equal(res.headers.get("location"), "https://rubblefront.com/thanks/");
+  assert.equal(record("form@example.org").source, "hero");
+  assert.equal(singles().length, 1);
+  const again = await subscribe(form({ email: "form@example.org", source: "hero" }));
+  assert.equal(again.headers.get("location"), "https://rubblefront.com/thanks/");
+  assert.equal(singles().length, 1);
+  await confirm(confirmReq(record("form@example.org").confirmToken));
+  const known = await subscribe(form({ email: "form@example.org", source: "hero" }));
+  assert.equal(known.headers.get("location"), "https://rubblefront.com/thanks/");
+  assert.equal(singles().length, 1);
+});
+
+test("form POST: invalid address, rate limit and a Resend failure go to /thanks/?error=1", async () => {
+  const bad = await subscribe(form({ email: "nope", source: "hero" }));
+  assert.equal(bad.status, 303);
+  assert.equal(bad.headers.get("location"), "https://rubblefront.com/thanks/?error=1");
+  resendStatus = 500;
+  const failed = await subscribe(form({ email: "f@example.org", source: "hero" }));
+  assert.equal(failed.headers.get("location"), "https://rubblefront.com/thanks/?error=1");
+  assert.deepEqual(kept(), []);
+  resendStatus = 200;
+  for (let i = 0; i < 3; i++) await subscribe(form({ email: "same@example.org" }));
+  const limited = await subscribe(form({ email: "same@example.org" }));
+  assert.equal(limited.headers.get("location"), "https://rubblefront.com/thanks/?error=1");
+});
+
+test("form POST: the honeypot looks like success but stores and sends nothing; a bad origin is refused", async () => {
+  const bot = await subscribe(form({ email: "bot@example.org", website: "http://spam" }));
+  assert.equal(bot.status, 303);
+  assert.equal(bot.headers.get("location"), "https://rubblefront.com/thanks/");
+  assert.deepEqual(kept(), []);
+  assert.equal(calls.length, 0);
+  assert.equal((await subscribe(form({ email: "a@example.org" }, { origin: "https://evil.example" }))).status, 403);
+  assert.equal(calls.length, 0);
+});
+
+test("the JSON path is unchanged: 200 JSON on success, 400 JSON on a bad address", async () => {
+  const ok = await subscribe(post({ email: "json@example.org", source: "hero" }));
+  assert.equal(ok.status, 200);
+  assert.deepEqual(await ok.json(), { ok: true });
+  const bad = await subscribe(post({ email: "nope" }));
+  assert.equal(bad.status, 400);
+  assert.deepEqual(await bad.json(), { error: "invalid_email" });
+});
+
+test("emails link to the unsubscribe page; the header keeps the one-click function URL", async () => {
+  await subscribe(post({ email: "links@example.org", source: "hero" }));
+  const [mail] = singles();
+  const u = record("links@example.org").unsubscribeToken;
+  assert.ok(mail.text.includes(`https://rubblefront.com/unsubscribe/?u=${u}`));
+  assert.ok(mail.html.includes(`href="https://rubblefront.com/unsubscribe/?u=${u}"`));
+  assert.ok(mail.headers["List-Unsubscribe"].includes(`/.netlify/functions/rubblefront-unsubscribe?u=${u}`));
 });
 
 test("RFC 8058 one-click POST returns 200 and unsubscribes", async () => {
@@ -180,7 +258,7 @@ test("RFC 8058 one-click POST returns 200 and unsubscribes", async () => {
 
 test("an unsubscribed address can sign up again, and confirming clears the marker", async () => {
   await signupAndConfirm("back@example.org");
-  await unsubscribe(unsubReq(record("back@example.org").unsubscribeToken));
+  await unsubscribe(unsubReq(record("back@example.org").unsubscribeToken, "POST"));
   await signupAndConfirm("back@example.org");
   assert.equal(record("back@example.org").status, "confirmed");
   assert.equal(store.has(`rf-list-suppressed/${hashEmail("back@example.org")}`), false);
@@ -200,7 +278,7 @@ test("broadcast counts only confirmed, unsuppressed addresses and excludes unsub
   await signupAndConfirm("a@example.org");
   await signupAndConfirm("b@example.org");
   await subscribe(post({ email: "pending@example.org" }));
-  await unsubscribe(unsubReq(record("b@example.org").unsubscribeToken));
+  await unsubscribe(unsubReq(record("b@example.org").unsubscribeToken, "POST"));
   // A stale confirmed record that somehow survived with a suppression marker is still excluded.
   await signupAndConfirm("stale@example.org");
   store.set(`rf-list-suppressed/${hashEmail("stale@example.org")}`, "x");
@@ -219,7 +297,7 @@ test("broadcast send: headers, per-recipient links, postal line, resume without 
   const a = batch.find((m) => m.to[0] === "a@example.org");
   assert.match(a.headers["List-Unsubscribe"], /^<https:\/\/purplelink\.llc\/\.netlify\/functions\/rubblefront-unsubscribe\?u=[a-f0-9]{48}>, <mailto:ben@purplelink\.llc/);
   assert.equal(a.headers["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click");
-  assert.ok(a.text.includes(record("a@example.org").unsubscribeToken));
+  assert.ok(a.text.includes(`https://rubblefront.com/unsubscribe/?u=${record("a@example.org").unsubscribeToken}`));
   assert.ok(a.html.includes(POSTAL_ADDRESS));
   assert.notEqual(a.text, batch.find((m) => m.to[0] === "b@example.org").text);
   // Running the same broadcast again sends nobody.
