@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), and the Mac Suite ($54.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -110,7 +110,7 @@
 
 ### Mac Suite (macOS bundle)
 - **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus key.
-- **Pricing:** $54.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
+- **Pricing:** $59.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
 - **Pick your own:** any 2 of the eight parts for $34.99, or any 3 for $44.99, the same price whichever parts are chosen (Vitae Plus counts as one part, as a lifetime key). Four or more cost more than the Suite, so the Suite is the better buy. The checkout page lists only the chosen parts.
 - **Page:** https://purplelink.llc/suite/
 
@@ -182,7 +182,7 @@
 - Keyfeel (macOS, free 7-day trial then $9.99, recorded keyboard-switch sounds as you type): https://purplelink.llc/keyfeel/
 - Panely (macOS, free 7-day trial then $9.99, window snapping and saved layouts): https://purplelink.llc/panely/
 - Summonly (macOS, free 7-day trial then $9.99, file search, launcher and clipboard history): https://purplelink.llc/summonly/
-- Mac Suite (macOS, $54.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
+- Mac Suite (macOS, $59.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free app; optional Vitae Plus subscription from $2.99 a month, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/

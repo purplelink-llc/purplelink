@@ -132,13 +132,13 @@ test("the Outbound Veil start guide, the Suite page and the privacy page no long
 
 // ---- suite page ----------------------------------------------------------------------
 
-test("the Suite page sells eight apps at $54.99 and no longer says $39 or $49", () => {
+test("the Suite page sells eight apps at $59.99 and no longer says $39 or $49", () => {
   const html = read("suite/index.html");
   const product = jsonLd(html).find((n) => n["@type"] === "Product");
-  assert.equal(product.offers.price, "54.99");
+  assert.equal(product.offers.price, "59.99");
   assert.deepEqual(product.hasPart.map((a) => a.name), ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Tapefolio", "Panely", "Summonly", "Vitae Plus"]);
-  assert.match(html, /Buy the Suite, \$54\.99/);
-  assert.match(html, /<span id="price">\$54\.99<\/span>/);
+  assert.match(html, /Buy the Suite, \$59\.99/);
+  assert.match(html, /<span id="price">\$59\.99<\/span>/);
   assert.match(html, /data-product="app-suite"/);
   assert.doesNotMatch(html, /\$39|\$49/);
   assert.doesNotMatch(html, /[–—]/);
@@ -165,14 +165,14 @@ test("the Suite's first-year total is the sum of the prices listed beside it, ro
   // Counting Vitae Plus at a round $24, as the pricing notes always have, gives $143.93 and the same rounded figure.
   assert.equal(Math.round((sumCents - 2399 + 2400) / 100), Number(shown));
   // Tapefolio joining did not move the Suite's price.
-  assert.match(html, /<span class="suite-deal-amount">\$54\.99<\/span>/);
+  assert.match(html, /<span class="suite-deal-amount">\$59\.99<\/span>/);
 });
 
-test("the Terms, llms.txt and the products page carry the $54.99 Suite", () => {
-  assert.match(read("terms/index.html"), /Mac Suite is one payment of \$54\.99 USD/);
+test("the Terms, llms.txt and the products page carry the $59.99 Suite", () => {
+  assert.match(read("terms/index.html"), /Mac Suite is one payment of \$59\.99 USD/);
   assert.match(read("terms/index.html"), /<h2>Legroom: additional terms<\/h2>/);
-  assert.match(read("llms.txt"), /Mac Suite \(macOS, \$54\.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus/);
-  assert.match(read("products/index.html"), /<span class="catalog-card-price">\$54\.99 once<\/span>/);
+  assert.match(read("llms.txt"), /Mac Suite \(macOS, \$59\.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus/);
+  assert.match(read("products/index.html"), /<span class="catalog-card-price">\$59\.99 once<\/span>/);
   for (const p of ["llms.txt", "products/index.html", "terms/index.html", "vitae/plus/index.html", "outbound-veil/index.html", "outbound-veil/start/index.html", "moderntex/index.html", "legroom/index.html", "keyfeel/index.html"]) {
     assert.doesNotMatch(read(p), /(Mac Suite[^.]{0,120}\$(39|49)\b|\$(39|49)\b[^.]{0,40}Mac Suite)/, `${p} still prices the Suite at the old price`);
   }

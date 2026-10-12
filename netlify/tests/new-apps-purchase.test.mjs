@@ -72,10 +72,10 @@ test("checkout sells Panely and Summonly at $9.99 each, with their own success p
   }
 });
 
-test("the Suite line names all seven apps and stays $54.99", async () => {
+test("the Suite line names all seven apps and stays $59.99", async () => {
   await post({ product: "app-suite" });
   const p = stripeParams();
-  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "5499");
+  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "5999");
   assert.match(p.get("line_items[0][price_data][product_data][name]"), /Tapefolio, Panely, Summonly and Vitae Plus for life/);
 });
 
@@ -118,7 +118,7 @@ test("a paid Summonly order emails the page link, its key and the folder-permiss
 });
 
 test("the Suite email carries both new keys, and a bundle carries only the chosen ones", async () => {
-  await webhook(signed(paid({ product: "app-suite" }, 5499, "evt_suite", "cs_live_suite_abcdefghij")));
+  await webhook(signed(paid({ product: "app-suite" }, 5999, "evt_suite", "cs_live_suite_abcdefghij")));
   let mail = mailOf();
   assert.match(mail.text, /PNL1-/); assert.match(mail.text, /SML1-/);
   calls = [];

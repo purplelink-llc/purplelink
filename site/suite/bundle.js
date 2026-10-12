@@ -2,7 +2,7 @@
 // prices the order from the count alone (netlify/lib/bundles.mjs); this table is only for showing the price, and a test
 // keeps it equal to the server's. Four or more parts cost more than the whole Suite, so that case offers the Suite.
 (function () {
-  var BUNDLE_PRICING = {"2":3499,"3":4499,"suite":5499};
+  var BUNDLE_PRICING = {"2":3499,"3":4499,"suite":5999};
   // What each part costs on its own today (Vitae Plus is its first year, as in the Suite's own price stack).
   var PART_PRICE = {"moderntex":1999,"outbound-veil":2999,"legroom":999,"keyfeel":999,"tapefolio":2999,"panely":999,"summonly":999,"vitae-plus":2399};
 

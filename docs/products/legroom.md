@@ -5,7 +5,7 @@ Legroom repo (`/Volumes/Extreme SSD/Legroom`, branch `release`, `releases/stagin
 5.3 MB, both notarized). This page is the runbook; the go-live steps are at the bottom.
 
 Legroom is sold on purplelink.llc/legroom as a one-time $9.99 purchase with a 7-day trial from first launch (one download for everyone from 1.1.0; the 1.0.x line had a separate trial build), and is also in the
-Mac Suite ($54.99, see `app-suite.md`). It is a menu-bar app that shows free disk space, warns before the disk fills, and
+Mac Suite ($59.99, see `app-suite.md`). It is a menu-bar app that shows free disk space, warns before the disk fills, and
 cleans folders and developer caches through rules the user previews and approves (Trash or permanent delete), with
 What Grew (daily measurements, 1/7/30-day growth), Suggestions, Space Map and Find Files. After the trial the menu-bar
 readout and low-space alerts stay free; rules, What Grew, Suggestions, Space Map and Find Files lock until a license key
@@ -26,7 +26,7 @@ versions, and they do not mention the Uninstaller, widget or command-line tool (
 | Product key | `legroom` in `netlify/functions/checkout.mjs` (`envKey: "STRIPE_PRICE_LEGROOM"`) |
 | Success page | `/legroom/success/?session_id=cs_...` |
 
-The Mac Suite is priced inline in `checkout.mjs` (`amount: 5499`, see `app-suite.md`); it needs no Stripe object.
+The Mac Suite is priced inline in `checkout.mjs` (`amount: 5999`, see `app-suite.md`); it needs no Stripe object.
 
 ## Delivery
 

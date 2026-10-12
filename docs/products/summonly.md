@@ -8,7 +8,7 @@ Summonly is a working name Ben has not cleared: screened 2026-10-11 against the 
 Summonly is a menu-bar launcher opened with Option-Space: file, folder and app search over a private SQLite full-text index (names, paths and the start of text, code, Markdown, RTF and PDF files), filters and plain-language dates, app abbreviations, ranking by name then frecency, an optional find-by-meaning layer (Apple's built-in English sentence embedding, int8 vectors, documents only, off by default), a calculator with unit conversion, web search keywords, clipboard history with privacy rules (Option-Shift-V or "clip"), and snippets. A downloadable small embedding model is a possible later addition behind the same `Embedder` protocol; none is shipped.
 
 $9.99 once, free 7 days inside the same download, then a license key (`SML1`, Ed25519, its own key pair, derived from the buyer's address,
-`netlify/lib/summonly-license.mjs`), one key on two Macs, 14-day refund, in the Mac Suite ($54.99, now seven apps and Vitae Plus). Requires macOS 14 or
+`netlify/lib/summonly-license.mjs`), one key on two Macs, 14-day refund, in the Mac Suite ($59.99, now seven apps and Vitae Plus). Requires macOS 14 or
 later; both slices (arm64 and x86_64) compile, the Intel slice has not been run on an Intel Mac.
 
 ## State

@@ -40,7 +40,7 @@ function signed(event) {
 }
 const completed = (product, id = "evt_1") => ({
   id, type: "checkout.session.completed",
-  data: { object: { id: "cs_live_suite_abcdefghij", status: "complete", payment_status: "paid", amount_total: 5499,
+  data: { object: { id: "cs_live_suite_abcdefghij", status: "complete", payment_status: "paid", amount_total: 5999,
     customer_details: { email: "buyer@example.com" }, metadata: { product } } },
 });
 

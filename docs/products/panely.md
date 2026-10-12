@@ -8,7 +8,7 @@ Panely is a working name Ben has not cleared: screened 2026-10-11 against the Ma
 Panely is a menu-bar window manager: snaps the front window to halves, quarters, thirds, two thirds and sixths (shortcut, menu, or drag to a screen edge or corner with a preview), repeats cycle half, two thirds and one third, a margin and a gap, move to next or previous display, restore, saved layouts, a rule-based "describe a layout" parser (no model), and an automatic layout per arrangement of displays that is re-applied when a display returns. Accessibility permission only; shortcuts use Carbon hotkeys, so no Input Monitoring.
 
 $9.99 once, free 7 days inside the same download, then a license key (`PNL1`, Ed25519, its own key pair, derived from the buyer's address,
-`netlify/lib/panely-license.mjs`), one key on two Macs, 14-day refund, in the Mac Suite ($54.99, now seven apps and Vitae Plus). Requires macOS 14 or
+`netlify/lib/panely-license.mjs`), one key on two Macs, 14-day refund, in the Mac Suite ($59.99, now seven apps and Vitae Plus). Requires macOS 14 or
 later; both slices (arm64 and x86_64) compile, the Intel slice has not been run on an Intel Mac.
 
 ## State

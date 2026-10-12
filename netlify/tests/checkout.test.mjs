@@ -102,7 +102,7 @@ test("falls back to the default when Origin header is absent", async () => {
   assert.ok(successUrl.startsWith("https://purplelink.llc/"), `expected default origin, got ${successUrl}`);
 });
 
-test("the Mac Suite is sold at $54.99 with its own success page and product metadata", async () => {
+test("the Mac Suite is sold at $59.99 with its own success page and product metadata", async () => {
   let captured = null;
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, opts) => {
@@ -122,7 +122,7 @@ test("the Mac Suite is sold at $54.99 with its own success page and product meta
   } finally {
     globalThis.fetch = originalFetch;
   }
-  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "5499");
+  assert.equal(paramFromBody(captured, "line_items[0][price_data][unit_amount]"), "5999");
   assert.equal(paramFromBody(captured, "line_items[0][price_data][currency]"), "usd");
   assert.equal(paramFromBody(captured, "metadata[product]"), "app-suite");
   assert.ok(paramFromBody(captured, "success_url").startsWith("https://purplelink.llc/suite/success/"));
@@ -242,9 +242,9 @@ test("Tapefolio checks out at $29.99, priced inline, with its own success page, 
   assert.equal(paramFromBody(captured, "allow_promotion_codes"), "true", "a 100%-off test code can be entered");
 });
 
-test("the Suite price did not move when Tapefolio joined: still $54.99", async () => {
+test("the Suite price did not move when Tapefolio joined: still $59.99", async () => {
   const src = readFileSync(new URL("../functions/checkout.mjs", import.meta.url), "utf8");
-  assert.match(src, /"app-suite":\s+\{ amount: 5499,/);
+  assert.match(src, /"app-suite":\s+\{ amount: 5999,/);
 });
 
 async function postRaw(body) {

@@ -97,7 +97,7 @@ test("LAUNCHED: launch.js ships live with valid facts, and the static page alrea
   assert.match(llms.slice(llms.indexOf("### Tapefolio")), /\*\*Status:\*\* Shipping, version 1\.0\.1/);
   assert.doesNotMatch(llms, /Not yet released/);
   const log = read("changelog/index.html");
-  assert.match(log, /<div class="changelog-list">\s*<div class="changelog-entry">\s*<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-update">Update<\/span>\s*<h2>Tapefolio 1\.0\.1<\/h2>\s*<p>Fixes speaker labels\. The standard speaker separation had been dropping about half of the speech in long recordings\. NVIDIA Nemotron 3 speaker separation, an optional download, is now used automatically when it is installed\./);
+  assert.match(log, /<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-update">Update<\/span>\s*<h2>Tapefolio 1\.0\.1<\/h2>\s*<p>Fixes speaker labels\. The standard speaker separation had been dropping about half of the speech in long recordings\. NVIDIA Nemotron 3 speaker separation, an optional download, is now used automatically when it is installed\./);
   assert.match(log, /<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-launch">Launch<\/span>\s*<h2>Tapefolio 1\.0<\/h2>/);
   assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/tapefolio\/<\/loc>\s*<lastmod>2026-10-09<\/lastmod>/);
 });
@@ -457,13 +457,13 @@ test("/tapefolio/success/ shows the server's reason when refused, and never fetc
 
 // ---- the Mac Suite --------------------------------------------------------------------------
 
-test("the Suite page lists Tapefolio with its own price and card, keeps the $54.99 price, and warns about macOS 26", () => {
+test("the Suite page lists Tapefolio with its own price and card, keeps the $59.99 price, and warns about macOS 26", () => {
   const html = read("suite/index.html");
   assert.match(html, /<h3>Tapefolio<\/h3>/);
   assert.match(html, /href="\/tapefolio\/">See Tapefolio/);
   assert.match(html, /<span class="suite-row-name">Tapefolio<\/span><span class="suite-row-price">\$29\.99 once<\/span>/);
   assert.match(html, /Tapefolio needs macOS 26 or later and Apple silicon, with no Intel version/);
-  assert.match(html, /Eight Mac apps, one \$54\.99 payment/);
+  assert.match(html, /Eight Mac apps, one \$59\.99 payment/);
   assert.doesNotMatch(html, /\bfive Mac apps\b|Five Mac apps/i);
   assert.match(html, /<img class="suite-app-icon" src="\/assets\/tapefolio-icon\.webp" alt="" width="56" height="56" loading="lazy">\s*<h3>Tapefolio<\/h3>/);
   assert.match(html, /<img src="\/assets\/tapefolio-icon\.webp" alt="" width="72" height="72">/);

@@ -13,7 +13,7 @@ Last checked: 2026-10-10. Prices are in US dollars. Each Mac app is one download
 | Tapefolio | $29.99 once | 7 days | macOS 26 or later, Apple silicon | Transcribes audio and reads scans and PDFs on the Mac, labels speakers, and replaces identifying details with codes (it misses some; read every transcript). https://purplelink.llc/tapefolio/ |
 | Panely | $9.99 once | 7 days | macOS 14 or later | Menu-bar window snapping: halves, thirds, quarters and sixths by shortcut or by dragging to a screen edge, saved layouts, and windows put back when a monitor is reconnected. Works offline. https://purplelink.llc/panely/ |
 | Summonly | $9.99 once | 7 days | macOS 14 or later | Menu-bar launcher that finds files, apps and clipboard history from one box (Option-Space), with quick answers and web search keywords. Private index on your Mac. https://purplelink.llc/summonly/ |
-| Mac Suite | $54.99 once | 14-day refund | see each app | ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life. https://purplelink.llc/suite/ |
+| Mac Suite | $59.99 once | 14-day refund | see each app | ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life. https://purplelink.llc/suite/ |
 | Vitae | Free; Plus $2.99 a month or $23.99 a year | n/a | macOS 15 or later | Free Mac app for academics to keep submissions, grants and a CV record. https://purplelink.llc/vitae/ |
 
 ## Web tools
