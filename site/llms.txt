@@ -165,6 +165,7 @@
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/
 - Free tools: https://purplelink.llc/tools/
+- RubbleFront (a turn-based isometric tactics game from Purplelink LLC; every shot shows its real hit chance; coming to Steam for Windows, macOS and Linux in Spring 2027): https://rubblefront.com/
 - Daily games and unlimited rated puzzles (Linkle, Quadlink, Daily Five, Daily Photo, Daily Chess, Sudoku, crossword, Daily Stars, Chess Puzzles, Sudoku Unlimited, leaderboards, Landlink, Atomlink, Prizelink, Citylink, Peaklink, Codelink, Thinkerlink, Riverlink, Wildlink, Lockerlink, Gridlink, Under the Cap; free, no account needed): https://purplelink.llc/games/
   - Linkle: Linkle is a free daily word game. https://purplelink.llc/games/linkle/
   - Quadlink: Quadlink is a free daily word game where you solve four hidden five-letter words at once in nine guesses. https://purplelink.llc/games/quadlink/
