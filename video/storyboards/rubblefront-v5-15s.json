@@ -22,7 +22,7 @@
    "file": "battle_mid.ogg",
    "in": 0.0,
    "t": 1.5,
-   "dur": 8.6,
+   "dur": 8.02,
    "gain_db": 0.0,
    "fade_in": 0.02,
    "fade_out": 0.25
@@ -31,15 +31,15 @@
    "file": "battle_mid_drive.ogg",
    "in": 0.0,
    "t": 1.5,
-   "dur": 4.6,
+   "dur": 4.02,
    "gain_db": 2.0,
    "fade_in": 0.02,
    "fade_out": 0.25
   },
   {
    "file": "battle_high.ogg",
-   "in": 9.0,
-   "t": 10.5,
+   "in": 8.42,
+   "t": 9.92,
    "dur": 100.0,
    "gain_db": 0.0,
    "fade_in": 0.02,
@@ -47,8 +47,8 @@
   },
   {
    "file": "battle_high_drive.ogg",
-   "in": 9.0,
-   "t": 10.5,
+   "in": 8.42,
+   "t": 9.92,
    "dur": 100.0,
    "gain_db": 2.0,
    "fade_in": 0.02,
@@ -63,15 +63,10 @@
    "gain_db": -3
   },
   {
-   "t": 10.1,
+   "t": 9.52,
    "kind": "riser",
-   "dur": 4.6,
+   "dur": 4.02,
    "gain_db": -3
-  },
-  {
-   "t": 10.5,
-   "kind": "boom",
-   "gain_db": 6
   }
  ],
  "scenes": [
@@ -106,7 +101,8 @@
      "text": "TURN-BASED\n*TACTICS.*",
      "at": 0.1,
      "dur": 2.3,
-     "pos": "bottom"
+     "pos": "bottom",
+     "sfxDb": -4.5
     }
    ],
    "vclip": "v_a",
@@ -130,8 +126,8 @@
   },
   {
    "clip": "v_a",
-   "in": 8.133,
-   "dur": 1.9,
+   "in": 8.033,
+   "dur": 3.02,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -139,7 +135,7 @@
    },
    "flash": [
     {
-     "at": 0.9199999999999999,
+     "at": 1.02,
      "dur": 0.07,
      "amp": 0.85,
      "color": "#fff6e6",
@@ -148,7 +144,7 @@
    ],
    "shake": [
     {
-     "at": 0.9199999999999999,
+     "at": 1.02,
      "amp": 16,
      "dur": 0.35,
      "zoom": 0.03
@@ -156,60 +152,23 @@
    ],
    "slow": [
     {
-     "at": 0.8999999999999999,
+     "at": 1.0,
      "dur": 0.42,
      "speed": 0.4
+    },
+    {
+     "at": 1.42,
+     "dur": 0.9,
+     "speed": 2.0
     }
    ],
    "cards": [
     {
      "text": "BLOW A HOLE IN\nTHEIR *COVER.*",
-     "at": 0.0,
-     "dur": 1.9,
-     "pos": "bottom"
-    }
-   ],
-   "vclip": "v_a"
-  },
-  {
-   "clip": "v_a",
-   "in": 13.133,
-   "dur": 1.7,
-   "v": {
-    "cx": 960,
-    "cy": 540,
-    "s": 1.0
-   },
-   "flash": [
-    {
-     "at": 0.9199999999999999,
-     "dur": 0.07,
-     "amp": 0.85,
-     "color": "#fff6e6",
-     "sfx": "hit"
-    }
-   ],
-   "shake": [
-    {
-     "at": 0.9199999999999999,
-     "amp": 16,
-     "dur": 0.35,
-     "zoom": 0.03
-    }
-   ],
-   "slow": [
-    {
-     "at": 0.8999999999999999,
-     "dur": 0.42,
-     "speed": 0.4
-    }
-   ],
-   "cards": [
-    {
-     "text": "EVERY SHOT\nHAS *ODDS.*",
-     "at": 0.0,
-     "dur": 1.7,
-     "pos": "bottom"
+     "at": 2.02,
+     "dur": 1.0,
+     "pos": "bottom",
+     "sfxDb": -4.5
     }
    ],
    "vclip": "v_a"
@@ -235,7 +194,8 @@
      "text": "EARLY *SQUAD.*",
      "at": 0.0,
      "dur": 1.6,
-     "pos": "bottom"
+     "pos": "bottom",
+     "sfxDb": -4.5
     }
    ],
    "vclip": "v_g1"
@@ -261,7 +221,8 @@
      "text": "UPGRADED *SQUAD.*",
      "at": 0.0,
      "dur": 1.6,
-     "pos": "bottom"
+     "pos": "bottom",
+     "sfxDb": -4.5
     }
    ],
    "vclip": "v_g3"
@@ -269,7 +230,7 @@
   {
    "clip": "v_e",
    "in": 2.1,
-   "dur": 2.3,
+   "dur": 2.7,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -307,8 +268,8 @@
   },
   {
    "clip": "v_a",
-   "in": 3.433,
-   "dur": 0.9,
+   "in": 13.333,
+   "dur": 1.2,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -331,19 +292,13 @@
      "zoom": 0.03
     }
    ],
-   "slow": [
-    {
-     "at": 0.7,
-     "dur": 0.42,
-     "speed": 0.4
-    }
-   ],
    "cards": [
     {
      "text": "ONE MORE *RUN.*",
      "at": 0.0,
-     "dur": 0.9,
-     "pos": "bottom"
+     "dur": 1.2,
+     "pos": "bottom",
+     "sfx": false
     }
    ],
    "vclip": "v_a"
@@ -360,7 +315,7 @@
     {
      "at": 0.0,
      "kind": "boom",
-     "gain_db": 0
+     "gain_db": 4
     }
    ]
   }
@@ -376,19 +331,19 @@
    "db": -3
   },
   {
-   "t": 10.05,
+   "t": 9.47,
    "db": 2
   },
   {
-   "t": 10.1,
+   "t": 9.52,
    "db": -40
   },
   {
-   "t": 10.47,
+   "t": 9.89,
    "db": -40
   },
   {
-   "t": 10.5,
+   "t": 9.92,
    "db": 0
   }
  ]

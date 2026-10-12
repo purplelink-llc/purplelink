@@ -229,8 +229,8 @@ function Card({ c, fmt, t }) {
           style={{
             transform: `scale(${1.18 - 0.18 * inP})`, fontFamily: DISPLAY, fontWeight: 800, fontSize: size, lineHeight: 1.02, color: C.ink, textAlign: "center", textTransform: "uppercase",
             letterSpacing: `${0.02 + (1 - inP) * 0.08}em`, textShadow: "0 3px 0 rgba(7,6,14,0.9), 0 4px 30px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8)", maxWidth: v ? 1000 : 1700,
-            WebkitTextStroke: v ? "5px rgba(7,6,14,0.92)" : "7px rgba(7,6,14,0.92)", paintOrder: "stroke fill",
-            background: "rgba(7,6,14,0.52)", padding: v ? "8px 30px" : "10px 40px", borderRadius: 26,
+            WebkitTextStroke: v ? "5px rgba(7,6,14,0.92)" : (c.strong ? "10px rgba(7,6,14,0.98)" : "7px rgba(7,6,14,0.92)"), paintOrder: "stroke fill",
+            background: c.strong ? "rgba(7,6,14,0.82)" : "rgba(7,6,14,0.52)", padding: v ? "8px 30px" : "10px 40px", borderRadius: 26,
           }}
         >
           {renderText(c.text, accent)}
