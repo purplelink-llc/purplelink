@@ -356,19 +356,19 @@ test("every shared footer that links Keyfeel also links Tapefolio, and the layou
   assert.match(readFileSync(join(SITE, "..", "scripts", "gen_llms_full.py"), "utf8"), /"tapefolio\/",/);
 });
 
-test("the home page dock has an eighth tile for Tapefolio with its icon, and the dock CSS lays eight out", () => {
+test("the home page dock has a tile for Tapefolio with its icon, and the dock CSS lays ten out in rows of five", () => {
   const home = read("index.html");
   const tiles = [...home.matchAll(/<a class="dock-app" href="([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/vitae/", "/scholar-utility-belt/", "/globepin/"]);
+  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/", "/vitae/", "/scholar-utility-belt/", "/globepin/"]);
   assert.match(home, /<a class="dock-app" href="\/tapefolio\/" data-track="home_cta" data-track-meta="dock-tapefolio">\s*<span class="dock-art"><img src="\/assets\/tapefolio-icon\.webp" alt="" width="96" height="96" decoding="async"><\/span>\s*<strong class="dock-name">Tapefolio<\/strong>/);
   assert.match(home, /Free for 7 days, \$29\.99/);
   const css = read("home.css");
-  assert.match(css, /\.dock \{[^}]*grid-template-columns: repeat\(8, minmax\(0, 1fr\)\)/);
-  assert.match(css, /@media \(max-width: 1599px\) \{\s*\.dock \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
-  assert.match(css, /@media \(max-width: 560px\) \{\s*\.dock \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(css, /\.dock > li:nth-child\(8\) \{ animation-delay/);
+  assert.match(css, /\.dock \{[^}]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 999px\) \{\s*\.dock \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /\.dock > li:nth-child\(10\) \{ animation-delay/);
   assert.match(css, /\.dock > li:nth-child\(8\) \.dock-art \{ animation-delay/);
   assert.doesNotMatch(css, /repeat\(7,/);
+  assert.doesNotMatch(css, /repeat\(8,/);
 });
 
 // ---- Terms and Privacy ------------------------------------------------------------------

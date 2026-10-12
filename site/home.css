@@ -69,7 +69,7 @@
 .dock {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: clamp(8px, 1.1vw, 20px);
   margin-top: clamp(8px, 2vw, 24px);
 }
@@ -168,11 +168,9 @@
 .studio-col ul { list-style: none; display: grid; gap: 8px; }
 .studio-col li a { color: var(--ink); text-decoration-color: var(--purple); text-underline-offset: 3px; }
 
-/* Eight tiles: eight across only where each keeps a readable column; below that, two rows of four, then two columns. */
-@media (max-width: 1599px) {
-  .dock { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 24px); }
-}
-@media (max-width: 560px) {
+/* Ten tiles: two rows of five where each keeps a readable column, then two columns. */
+.dock { gap: clamp(10px, 1.6vw, 24px); }
+@media (max-width: 999px) {
   .dock { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -218,7 +216,7 @@
   .sweep:nth-child(2) > span::after { animation-delay: 0.42s; }
 
   .stage-lede { animation: stage-fade 0.8s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.85s backwards; }
-  .stage-suite { animation: stage-fade 0.8s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 1.7s backwards; }
+  .stage-suite { animation: stage-fade 0.8s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 2.0s backwards; }
 
   .dock > li { animation: dock-land 0.85s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
   .dock > li:nth-child(1) { animation-delay: 1.0s; }
@@ -229,6 +227,8 @@
   .dock > li:nth-child(6) { animation-delay: 1.45s; }
   .dock > li:nth-child(7) { animation-delay: 1.54s; }
   .dock > li:nth-child(8) { animation-delay: 1.63s; }
+  .dock > li:nth-child(9) { animation-delay: 1.72s; }
+  .dock > li:nth-child(10) { animation-delay: 1.81s; }
 
   /* A slow drift once the icons have landed, each out of step with the next. */
   .dock-art { animation: dock-float 6s ease-in-out infinite alternate; }
@@ -239,6 +239,8 @@
   .dock > li:nth-child(6) .dock-art { animation-delay: -5s; }
   .dock > li:nth-child(7) .dock-art { animation-delay: -6s; }
   .dock > li:nth-child(8) .dock-art { animation-delay: -7s; }
+  .dock > li:nth-child(9) .dock-art { animation-delay: -4.5s; }
+  .dock > li:nth-child(10) .dock-art { animation-delay: -5.5s; }
   .dock-app:hover .dock-art,
   .dock-app:focus-visible .dock-art { animation-play-state: paused; }
 }
