@@ -1,0 +1,17 @@
+/* Cross-promotion card for RubbleFront (rubblefront.com). External file so the strict CSP permits it. */
+.rf-promo {
+  padding: clamp(32px, 5vw, 56px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+}
+.rf-promo-card {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px clamp(18px, 3vw, 32px); align-items: center;
+  max-width: 880px; padding: clamp(18px, 3vw, 28px); border: 1px solid var(--line); border-radius: 18px; background: var(--panel);
+}
+.rf-promo-badge { width: 96px; height: 96px; border-radius: 20px; display: block; }
+.rf-promo-eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+.rf-promo-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.4vw, 1.7rem); line-height: 1.15; margin: 0 0 6px; }
+.rf-promo-text { margin: 0 0 14px; color: var(--muted); max-width: 58ch; }
+@media (max-width: 560px) {
+  .rf-promo-card { grid-template-columns: minmax(0, 1fr); }
+  .rf-promo-badge { width: 72px; height: 72px; border-radius: 16px; }
+}
