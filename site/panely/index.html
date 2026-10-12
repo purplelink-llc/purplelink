@@ -1,11 +1,9 @@
 <!doctype html>
-<!-- LAUNCH CHECKLIST (Panely): this page is unlisted, noindex and its buttons are dead until site/panely/launch.js is switched on.
-     Every claim below was written from the code and its unit tests. Verify each one by hand on a real Mac before launch. -->
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex, follow">
+    <meta name="robots" content="index, follow">
     <title>Panely - Window Snapping and Saved Layouts for Mac | Purplelink LLC</title>
     <meta name="description" content="A Mac menu-bar app that snaps windows to halves, thirds and corners with a shortcut or by dragging to a screen edge, and saves layouts for each monitor setup. Works offline. Free for 7 days.">
     <link rel="canonical" href="https://purplelink.llc/panely/">
@@ -31,7 +29,7 @@
     <link rel="stylesheet" href="/panely/panely.css?v=b09a37dc87">
     <script src="/site.js?v=cfa7188dde" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
-    <script src="/panely/launch.js?v=fd6b2650b8" defer></script>
+    <script src="/panely/launch.js?v=7a8f643679" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
     {
@@ -67,7 +65,7 @@
             "@type": "Offer",
             "price": "9.99",
             "priceCurrency": "USD",
-            "availability": "https://schema.org/PreOrder",
+            "availability": "https://schema.org/InStock",
             "url": "https://purplelink.llc/panely/",
             "category": "One-time purchase, updates included",
             "seller": { "@id": "https://purplelink.llc/#organization" },
@@ -179,17 +177,16 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status product-status-soon" data-pf-pre-only>Not released yet</span>
-          <span class="product-status product-status-live" data-pf-live-only hidden>Free 7-day trial &middot; <span id="price">$9.99</span> to keep</span>
+          <span class="product-status product-status-live" data-pf-live-only>Free 7-day trial &middot; <span id="price">$9.99</span> to keep</span>
         </div>
         <h1 class="app-hero-name">Panely</h1>
         <p class="app-hero-tagline">Panely snaps windows to halves, thirds, quarters and sixths with a shortcut or by dragging to the edge of the screen. It saves layouts, and can put your windows back when a monitor is plugged in again. It runs in the menu bar and works offline.</p>
         <div class="app-hero-actions" id="buy">
-          <a class="btn btn-primary" id="trial-download" data-pf-gated data-pf-href="/.netlify/functions/panely-download?download=1" data-pf-live-text="Try it free for 7 days" aria-disabled="true">Not released yet</a>
-          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="panely" data-pf-gated data-pf-live-text="Buy Panely" disabled>Buy Panely</button>
+          <a class="btn btn-primary" id="trial-download" data-pf-gated data-pf-href="/.netlify/functions/panely-download?download=1" data-pf-live-text="Try it free for 7 days" href="/.netlify/functions/panely-download?download=1">Try it free for 7 days</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="panely" data-pf-gated data-pf-live-text="Buy Panely">Buy Panely</button>
         </div>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
-        <p class="waitlist-fine-print" data-pf-facts></p>
+        <p class="waitlist-fine-print" data-pf-facts>Version 1.0.0, released October 12, 2026. 4 MB disk image.</p>
         <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>, $59.99 once.</p>
       </div>
@@ -408,8 +405,8 @@
       <h2 id="closing-cta-heading">Try it for a week.</h2>
       <p>Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.</p>
       <div class="closing-cta-actions">
-        <a class="btn btn-primary" data-pf-gated data-pf-href="/.netlify/functions/panely-download?download=1" data-pf-live-text="Try it free for 7 days" aria-disabled="true">Not released yet</a>
-        <a class="btn btn-ghost" href="#buy" data-pf-live-only hidden>Buy Panely</a>
+        <a class="btn btn-primary" data-pf-gated data-pf-href="/.netlify/functions/panely-download?download=1" data-pf-live-text="Try it free for 7 days" href="/.netlify/functions/panely-download?download=1">Try it free for 7 days</a>
+        <a class="btn btn-ghost" href="#buy" data-pf-live-only>Buy Panely</a>
       </div>
       <p class="closing-cta-fine">macOS 14 or later</p>
     </section>
