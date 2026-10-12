@@ -48,6 +48,15 @@ later; both slices (arm64 and x86_64) compile, the Intel slice has not been run 
 - [ ] Find by meaning on and off with a few hundred real documents; check that results below the word matches make sense.
 - [ ] Trial and licence as for Panely; Sparkle update path.
 - [ ] Intel Mac if one is available (the slice compiles, it has not been run).
+- [ ] Settings: record a different Summonly hotkey and a different clipboard hotkey; try a bare key, Command-Q, and the other hotkey's combination (each is refused with a message); Command-Space shows the Spotlight note; Reset restores the defaults. Choose a combination another app holds and confirm the orange warning.
+- [ ] Settings take effect without a relaunch: add a folder (indexed within a minute), remove a folder (its files stop appearing at once), leave a folder out, turn off "search inside files" (text results disappear, names remain).
+- [ ] Quick tools row appears for uuid, base64 hello, sha256 abc, #ff8800, epoch, slug, count, password 24; a file whose name matches (create "uuid-list.txt") stays above the tool row; Return copies. The generated password is not recorded in Summonly's own clipboard history and is gone from the clipboard after a minute.
+- [ ] System rows: type sleep (a file called "sleep schedule" outranks it), lock, screen saver, quit safari, force quit notes (the alert names the app and Cancel does nothing), wifi (opens that Settings pane). Do not run sleep or lock while anything important is open.
+- [ ] Safari, Notes and other apps that are symlinks into the system volume are found by name.
+- [ ] Open at login switch: restart and confirm Summonly starts; switching it off removes it from System Settings, General, Login Items.
+- [ ] Clipboard privacy on macOS 27: does reading the pasteboard in the background raise a prompt or a banner? If so, say so on the page.
+- [ ] A file that iCloud has moved off the Mac (Optimize Mac Storage) is not downloaded by indexing.
+- [ ] Hide the menu bar icon, let the trial expire (clock forward) and confirm the icon comes back so a key can be entered.
 
 ## Tests
 

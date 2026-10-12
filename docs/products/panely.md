@@ -47,6 +47,15 @@ later; both slices (arm64 and x86_64) compile, the Intel slice has not been run 
 - [ ] Save a layout, quit apps, relaunch, apply it: the unmatched list is accurate. Describe a layout with a real phrase.
 - [ ] Trial ends after 7 days (set the clock forward), the alert offers Buy and Enter Key, a key unlocks, setting the clock back does not extend it.
 - [ ] Sparkle update from an older build to a newer one through the real feed.
+- [ ] The Accessibility prompt appears when Panely first opens (not at the first snap).
+- [ ] Settings: record a shortcut for an action with none (a sixth) and for an area; a bare key, Command-Space and Control-Up are refused with a message; another action's shortcut is refused naming it; Delete turns a shortcut off; Reset restores the default; a combination another app holds shows the orange warning.
+- [ ] Custom areas: Add an area, move the sliders, give it a shortcut, snap a window into it; place a window, choose Save this window as an area, snap another window into it. Areas survive quitting and reopening.
+- [ ] Fourths, full height, full width, make larger and smaller shortcuts on a real window; the ignored-apps item (Never move windows of X) stops shortcuts, drag, saved layouts and the automatic restore for that app.
+- [ ] Restore after unplugging the monitor a window was snapped on: the window lands on a screen that exists.
+- [ ] Open at login switch: restart and confirm Panely starts; switching it off removes it from Login Items.
+- [ ] Settings window on a Retina display (NSHighResolutionCapable was added): sharp text, the shortcut rows and area editor lay out without clipping.
+- [ ] A hung app (pause one in Activity Monitor with Stop) does not freeze Panely's menu or hotkeys (the Accessibility messaging timeout is 0.4 s).
+- [ ] Trial: with the app left running and only dragging windows, the trial still ends on day 8 (the timer refreshes it).
 
 ## Tests
 
