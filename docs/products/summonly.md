@@ -56,6 +56,7 @@ later; both slices (arm64 and x86_64) compile, the Intel slice has not been run 
 - [ ] Open at login switch: restart and confirm Summonly starts; switching it off removes it from System Settings, General, Login Items.
 - [ ] Clipboard privacy on macOS 27: does reading the pasteboard in the background raise a prompt or a banner? If so, say so on the page.
 - [ ] A file that iCloud has moved off the Mac (Optimize Mac Storage) is not downloaded by indexing.
+- [ ] The Google button: type anything and a small Google button (text, no logo) appears at the right of the search box; click it and Shift-Return both open google.com/search in your default browser (set Safari, then Chrome, as default in System Settings and confirm each time); it works when nothing matched, for a calculation, and for a command line; it does nothing and shows nothing for an empty box; the footer shows ⇧↩ Google.
 - [ ] Web and AI: claude hello, gpt hello, ppl hello and ask hello open the right site in your browser with the words filled in (check Claude and ChatGPT still accept the ?q= address, as they can change it); typing plain text shows Search Google, Ask Claude and Ask ChatGPT as the last rows and not for a calculation or a command; Settings, Web and AI: switch a service off, delete one, add your own with a bad address (refused) and a good one.
 - [ ] Hide the menu bar icon, let the trial expire (clock forward) and confirm the icon comes back so a key can be entered.
 
