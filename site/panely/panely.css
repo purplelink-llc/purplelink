@@ -15,3 +15,27 @@
 
 .pf-hero-window .frame-soft { max-width: 640px; margin-inline: auto; }
 .pf-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+/* Watch it work: a self-hosted video with controls, captions and a transcript. */
+.pf-video { max-width: 960px; margin-inline: auto; }
+.pf-video video { display: block; width: 100%; height: auto; background: #000; }
+.pf-watch .pf-transcript { max-width: 64ch; margin: 18px auto 0; }
+.pf-transcript summary { cursor: pointer; font-weight: 600; }
+.pf-transcript p, .pf-transcript li { margin-top: 10px; }
+.pf-transcript ul { padding-left: 1.2em; }
+
+/* A closer look: drawn desktops and the app's own Settings window rendered on sample data. */
+.pf-gallery .section-intro { max-width: 64ch; }
+.pf-gallery-grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 48px);
+  grid-template-columns: 1fr;
+  margin-top: 28px;
+}
+@media (min-width: 900px) {
+  .pf-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.pf-shot { margin: 0; }
+.pf-shot h3 { margin: 0 0 10px; }
+.pf-shot .frame-soft { max-width: 100%; }
+.pf-shot figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }

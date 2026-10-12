@@ -1,0 +1,34 @@
+{
+  "id": "panely-promo",
+  "title": "Panely promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+4%",
+  "scenes": [
+    {
+      "narration": "Panely snaps windows into place on your Mac."
+    },
+    {
+      "narration": "Press a shortcut, or drag a window to a screen edge or corner."
+    },
+    {
+      "narration": "Halves, thirds, quarters, sixths, or an area you draw yourself."
+    },
+    {
+      "narration": "Click any shortcut in Settings and press the keys you want."
+    },
+    {
+      "narration": "Choose apps it should never move."
+    },
+    {
+      "narration": "Nine ninety-nine once, with a seven day free trial."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
