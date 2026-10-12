@@ -14,6 +14,8 @@ const FMT = { "16x9": { W: 1920, H: 1080, vertical: false }, "9x16": { W: 1080, 
 const VWIN = { top: 230, size: 1080 };
 const VCARD = { top: 1560, h: 260 };
 const VCARD_TOP = 1480;
+const VCLIP_TOP = 95; // ends at 1310, the same line as the square window of the landscape-clip vertical shots
+const VCLIP_H = 1215; // the full-frame vertical captures are 1920x2160 (8:9), so at 1080 wide they are 1215 tall; never stretch them
 
 function useFonts() {
   const [handle] = useState(() => delayRender("fonts"));
@@ -117,10 +119,11 @@ function Footage({ shot, fmt, fps }) {
     const sp0 = shot.spans[0];
     body = (
       <>
-        <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: VCARD_TOP, overflow: "hidden", transform: `translate(${dx}px, ${dy}px) scale(${pn * (1 + pulse)})`, transformOrigin: "50% 40%", filter }}>
-          <OffthreadVideo src={vsrc} muted startFrom={Math.max(0, Math.round(sp0.src * fps))} playbackRate={sp0.rate || 1} style={{ position: "absolute", width: 1080, height: 1920, left: 0, top: 0, objectFit: "fill" }} />
+        <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1920, background: "linear-gradient(to bottom, #120f22, #07060e)" }} />
+        <div style={{ position: "absolute", left: 0, top: VCLIP_TOP, width: 1080, height: VCLIP_H, overflow: "hidden", transform: `translate(${dx}px, ${dy}px) scale(${pn * (1 + pulse)})`, transformOrigin: "50% 40%", filter }}>
+          <OffthreadVideo src={vsrc} muted startFrom={Math.max(0, Math.round(sp0.src * fps))} playbackRate={sp0.rate || 1} style={{ position: "absolute", width: 1080, height: VCLIP_H, left: 0, top: 0, objectFit: "fill" }} />
         </div>
-        <div style={{ position: "absolute", left: 0, top: VCARD_TOP, width: 1080, height: 1920 - VCARD_TOP, background: "linear-gradient(to bottom, #120f22, #07060e)" }} />
+        
       </>
     );
   } else if (fmt.vertical) {
