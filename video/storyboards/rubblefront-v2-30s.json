@@ -22,7 +22,7 @@
    "file": "battle_mid.ogg",
    "in": 0.0,
    "t": 3.0,
-   "dur": 9.0,
+   "dur": 10.0,
    "gain_db": 0,
    "fade_in": 0.02,
    "fade_out": 0.3
@@ -31,15 +31,15 @@
    "file": "battle_mid_drive.ogg",
    "in": 0.0,
    "t": 3.0,
-   "dur": 9.0,
+   "dur": 10.0,
    "gain_db": 2,
    "fade_in": 0.02,
    "fade_out": 0.3
   },
   {
    "file": "battle_high.ogg",
-   "in": 10.0,
-   "t": 13.0,
+   "in": 11.0,
+   "t": 14.0,
    "dur": 100.0,
    "gain_db": 0,
    "fade_in": 0.02,
@@ -47,8 +47,8 @@
   },
   {
    "file": "battle_high_drive.ogg",
-   "in": 10.0,
-   "t": 13.0,
+   "in": 11.0,
+   "t": 14.0,
    "dur": 100.0,
    "gain_db": 2,
    "fade_in": 0.02,
@@ -61,19 +61,19 @@
    "db": 0
   },
   {
-   "t": 11.9,
+   "t": 12.9,
    "db": 0
   },
   {
-   "t": 12.0,
-   "db": -40
-  },
-  {
-   "t": 12.95,
-   "db": -40
-  },
-  {
    "t": 13.0,
+   "db": -40
+  },
+  {
+   "t": 13.95,
+   "db": -40
+  },
+  {
+   "t": 14.0,
    "db": 0
   }
  ],
@@ -85,7 +85,7 @@
    "gain_db": -2
   },
   {
-   "t": 13.0,
+   "t": 14.0,
    "kind": "riser",
    "dur": 1.0,
    "gain_db": 0
@@ -93,27 +93,23 @@
  ],
  "scenes": [
   {
-   "clip": "c_odds",
-   "in": 2.3,
-   "dur": 2.4,
+   "clip": "c_aim",
+   "in": 1.65,
+   "dur": 2.3,
+   "speed": 0.85,
    "punch": {
     "from": 1.0,
-    "to": 1.24
+    "to": 1.2
    },
    "crop": {
     "x": 0.42,
-    "y": 0.45,
+    "y": 0.42,
     "s": 1.0
    },
    "v": {
-    "x": 0.08,
+    "x": 0.3,
     "y": 0.5,
-    "s": 1.0,
-    "fit": {
-     "z": 1.5,
-     "x": 0.0,
-     "y": 0.25
-    }
+    "s": 1.0
    },
    "hits": [
     {
@@ -139,111 +135,70 @@
    ]
   },
   {
-   "clip": "c_odds",
-   "in": 5.15,
-   "dur": 1.6,
+   "clip": "c_aim",
+   "in": 3.6,
+   "dur": 1.7,
    "slow": [
     {
-     "at": 0.2,
-     "dur": 0.3,
+     "at": 0.55,
+     "dur": 0.15,
      "speed": 0.5
     },
     {
-     "at": 0.6,
+     "at": 0.72,
      "dur": 0.13333333333333333,
      "speed": 0
     }
    ],
    "crop": {
-    "x": 0.45,
-    "y": 0.5,
-    "s": 1.2
+    "x": 0.42,
+    "y": 0.45,
+    "s": 1.1
    },
    "v": {
-    "x": 0.58,
+    "x": 0.4,
     "y": 0.5,
     "s": 1.0
    },
    "flash": [
     {
-     "at": 0.6,
+     "at": 0.7,
      "dur": 0.24,
-     "amp": 0.95,
+     "amp": 1.0,
      "color": "#fff4e0",
      "sfx": "boom"
     }
    ],
    "shake": [
     {
-     "at": 0.6,
-     "amp": 26,
+     "at": 0.7,
+     "amp": 28,
      "dur": 0.45,
      "zoom": 0.04
     }
    ]
   },
   {
-   "clip": "c_flank",
-   "in": 5.4,
-   "dur": 1.0,
-   "punch": {
-    "from": 1.0,
-    "to": 1.1
-   },
-   "crop": {
-    "x": 0.3,
-    "y": 0.3,
-    "s": 1.0
-   },
-   "v": {
-    "x": 0.08,
-    "y": 0.5,
-    "s": 1.0,
-    "fit": {
-     "z": 1.5,
-     "x": 0.0,
-     "y": 0.25
-    }
-   },
-   "cards": [
-    {
-     "text": "EVERY SHOT\nHAS *ODDS.*",
-     "at": 0.0,
-     "pos": "lowright",
-     "dur": 2.0,
-     "size": 112
-    }
-   ]
-  },
-  {
-   "clip": "c_flank",
-   "in": 7.15,
+   "clip": "c_titan",
+   "in": 3.5,
    "dur": 1.0,
    "crop": {
-    "x": 0.45,
+    "x": 0.5,
     "y": 0.5,
-    "s": 1.15
+    "s": 1.1
    },
    "v": {
     "x": 0.5,
     "y": 0.5,
     "s": 1.0
    },
-   "flash": [
+   "cards": [
     {
-     "at": 0.55,
-     "dur": 0.24,
-     "amp": 0.6,
-     "color": "#fff4e0",
-     "sfx": "hit"
-    }
-   ],
-   "shake": [
-    {
-     "at": 0.55,
-     "amp": 16,
-     "dur": 0.45,
-     "zoom": 0.04
+     "text": "EVERY SHOT\nHAS *ODDS.*",
+     "at": 0.0,
+     "pos": "lowright",
+     "dur": 0.95,
+     "size": 112
     }
    ]
   },
@@ -288,29 +243,39 @@
    ]
   },
   {
-   "clip": "c_rubble",
-   "in": 8.15,
-   "dur": 1.0,
+   "clip": "c_rubble2",
+   "in": 3.4,
+   "dur": 2.0,
    "slow": [
     {
-     "at": 0.12,
-     "dur": 0.5,
+     "at": 0.2,
+     "dur": 0.2,
      "speed": 0.5
+    },
+    {
+     "at": 1.05,
+     "dur": 0.55,
+     "speed": 0.4
+    },
+    {
+     "at": 1.25,
+     "dur": 0.13333333333333333,
+     "speed": 0
     }
    ],
    "crop": {
-    "x": 0.45,
+    "x": 0.42,
     "y": 0.5,
-    "s": 1.2
+    "s": 1.05
    },
    "v": {
-    "x": 0.5,
+    "x": 0.4,
     "y": 0.5,
     "s": 1.0
    },
    "flash": [
     {
-     "at": 0.2,
+     "at": 1.25,
      "dur": 0.24,
      "amp": 0.8,
      "color": "#fff4e0",
@@ -319,8 +284,8 @@
    ],
    "shake": [
     {
-     "at": 0.2,
-     "amp": 24,
+     "at": 1.25,
+     "amp": 22,
      "dur": 0.45,
      "zoom": 0.04
     }
@@ -407,7 +372,7 @@
      "text": "PRAY THE *78%*\nHOLDS.",
      "at": 0.0,
      "pos": "low",
-     "dur": 2.0
+     "dur": 1.9
     }
    ]
   },
@@ -456,189 +421,51 @@
    ]
   },
   {
+   "clip": "c_titan",
+   "in": 16.4,
+   "dur": 1.0,
+   "slow": [
+    {
+     "at": 0.45,
+     "dur": 0.4,
+     "speed": 0.5
+    }
+   ],
+   "crop": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.2
+   },
+   "v": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.6,
+     "dur": 0.24,
+     "amp": 0.9,
+     "color": "#fff4e0",
+     "sfx": "boom"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.6,
+     "amp": 26,
+     "dur": 0.45,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
    "type": "black",
    "dur": 0.5
   },
   {
    "type": "logo",
    "dur": 1.5
-  },
-  {
-   "clip": "c_weather",
-   "in": 0.7,
-   "dur": 0.75,
-   "cards": [
-    {
-     "text": "SNOW.",
-     "at": 0.0,
-     "pos": "low",
-     "dur": 0.7,
-     "size": 150,
-     "sfx": false
-    }
-   ],
-   "punch": {
-    "from": 1.0,
-    "to": 1.08
-   },
-   "v": {
-    "x": 0.45,
-    "y": 0.5,
-    "s": 1.0
-   },
-   "flash": [
-    {
-     "at": 0.0,
-     "dur": 0.15,
-     "amp": 0.35,
-     "color": "#ffffff",
-     "sfx": "slam"
-    }
-   ]
-  },
-  {
-   "clip": "c_weather",
-   "in": 3.3,
-   "dur": 0.75,
-   "cards": [
-    {
-     "text": "SAND.",
-     "at": 0.0,
-     "pos": "low",
-     "dur": 0.7,
-     "size": 150,
-     "sfx": false
-    }
-   ],
-   "punch": {
-    "from": 1.0,
-    "to": 1.08
-   },
-   "v": {
-    "x": 0.45,
-    "y": 0.5,
-    "s": 1.0
-   },
-   "flash": [
-    {
-     "at": 0.0,
-     "dur": 0.15,
-     "amp": 0.35,
-     "color": "#ffffff",
-     "sfx": "slam"
-    }
-   ]
-  },
-  {
-   "clip": "c_weather",
-   "in": 5.9,
-   "dur": 0.75,
-   "cards": [
-    {
-     "text": "RAIN.",
-     "at": 0.0,
-     "pos": "low",
-     "dur": 0.7,
-     "size": 150,
-     "sfx": false
-    }
-   ],
-   "punch": {
-    "from": 1.0,
-    "to": 1.08
-   },
-   "v": {
-    "x": 0.45,
-    "y": 0.5,
-    "s": 1.0
-   },
-   "flash": [
-    {
-     "at": 0.0,
-     "dur": 0.15,
-     "amp": 0.35,
-     "color": "#ffffff",
-     "sfx": "slam"
-    }
-   ]
-  },
-  {
-   "clip": "c_weather",
-   "in": 8.6,
-   "dur": 0.75,
-   "cards": [
-    {
-     "text": "NIGHT.",
-     "at": 0.0,
-     "pos": "low",
-     "dur": 0.7,
-     "size": 150,
-     "sfx": false
-    }
-   ],
-   "punch": {
-    "from": 1.0,
-    "to": 1.08
-   },
-   "v": {
-    "x": 0.45,
-    "y": 0.5,
-    "s": 1.0
-   },
-   "flash": [
-    {
-     "at": 0.0,
-     "dur": 0.15,
-     "amp": 0.35,
-     "color": "#ffffff",
-     "sfx": "slam"
-    }
-   ]
-  },
-  {
-   "clip": "c_hub_l1",
-   "in": 1.8,
-   "dur": 1.5,
-   "punch": {
-    "from": 1.0,
-    "to": 1.1
-   },
-   "v": {
-    "x": 0.5,
-    "y": 0.5,
-    "s": 1.0
-   },
-   "cards": [
-    {
-     "text": "BUILD THE\n*OUTPOST.*",
-     "at": 0.0,
-     "pos": "low",
-     "dur": 3.0
-    }
-   ]
-  },
-  {
-   "clip": "c_hub_l3",
-   "in": 1.8,
-   "dur": 1.5,
-   "punch": {
-    "from": 1.0,
-    "to": 1.1
-   },
-   "v": {
-    "x": 0.5,
-    "y": 0.5,
-    "s": 1.0
-   },
-   "flash": [
-    {
-     "at": 0.0,
-     "dur": 0.3,
-     "amp": 0.6,
-     "color": "#fff4e0",
-     "sfx": "hit"
-    }
-   ]
   },
   {
    "clip": "c_runmap",
@@ -664,8 +491,120 @@
     {
      "text": "CHOOSE YOUR\n*ROUTE.*",
      "at": 0.0,
-     "pos": "mid",
-     "size": 120
+     "pos": "low",
+     "size": 112
+    }
+   ]
+  },
+  {
+   "clip": "c_spoils",
+   "in": 6.2,
+   "dur": 1.0,
+   "crop": {
+    "x": 0.5,
+    "y": 0.3,
+    "s": 1.3
+   },
+   "punch": {
+    "from": 1.0,
+    "to": 1.05
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.45,
+    "s": 1.4
+   },
+   "cards": [
+    {
+     "text": "PICK ONE\nOF *THREE.*",
+     "at": 0.0,
+     "pos": "low",
+     "size": 112
+    }
+   ]
+  },
+  {
+   "clip": "c_hub_place",
+   "in": 3.0,
+   "dur": 1.5,
+   "punch": {
+    "from": 1.0,
+    "to": 1.12
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "BUILD THE\n*OUTPOST.*",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 1.5
+    }
+   ]
+  },
+  {
+   "clip": "c_hub_l3",
+   "in": 1.8,
+   "dur": 1.0,
+   "punch": {
+    "from": 1.0,
+    "to": 1.1
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.0,
+     "dur": 0.3,
+     "amp": 0.6,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ]
+  },
+  {
+   "clip": "c_fog",
+   "in": 3.0,
+   "dur": 1.0,
+   "crop": {
+    "x": 0.42,
+    "y": 0.5,
+    "s": 1.1
+   },
+   "v": {
+    "x": 0.4,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "FOG CHANGES\nTHE *ODDS.*",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 1.0
+    }
+   ],
+   "flash": [
+    {
+     "at": 0.95,
+     "dur": 0.24,
+     "amp": 0.5,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.95,
+     "amp": 14,
+     "dur": 0.45,
+     "zoom": 0.04
     }
    ]
   },
@@ -802,8 +741,8 @@
   },
   {
    "clip": "c_weather",
-   "in": 5.9,
-   "dur": 2.2,
+   "in": 5.7,
+   "dur": 2.0,
    "punch": {
     "from": 1.0,
     "to": 1.06
@@ -811,7 +750,7 @@
    "cards": [
     {
      "text": "ONE MORE *RUN.*",
-     "at": 1.0000000000000002,
+     "at": 0.8,
      "pos": "mid",
      "dur": 1.2,
      "size": 170,
@@ -826,7 +765,7 @@
   },
   {
    "type": "end",
-   "dur": 3.8,
+   "dur": 4.5,
    "lines": [
     "Spring 2027",
     "rubblefront.com",

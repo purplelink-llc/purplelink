@@ -114,7 +114,7 @@ def runmap(dur=2.0, **kw):
 
 
 def spoils(dur=2.0, **kw):
-    return S("c_spoils", 5.2, dur, dim=0.62, crop={"x": 0.5, "y": 0.4, "s": 1.0}, punch={"from": 1.0, "to": 1.07}, v={"x": 0.5, "y": 0.45, "s": 1.4}, **kw)
+    return S("c_spoils", 6.2, dur, crop={"x": 0.5, "y": 0.3, "s": 1.3}, punch={"from": 1.0, "to": 1.05}, v={"x": 0.5, "y": 0.45, "s": 1.4}, **kw)
 
 
 def loot(dur=1.5, **kw):
@@ -134,7 +134,7 @@ def outpost(dur=2.5, **kw):
 
 
 def roster(dur=2.0, **kw):
-    return S("c_roster", 0.8, dur, dim=0.62, crop={"x": 0.28, "y": 0.4, "s": 1.3}, v={"x": 0.15, "y": 0.3, "s": 1.4}, **kw)
+    return S("c_roster", 1.2, dur, crop={"x": 0.3, "y": 0.3, "s": 1.55}, v={"x": 0.15, "y": 0.3, "s": 1.4}, **kw)
 
 
 def endless(dur=1.5, **kw):
@@ -173,7 +173,7 @@ def titan_kill(dur=1.5):
 
 
 def beauty(dur=2.2):
-    return S("c_weather", 5.9, dur, punch={"from": 1.0, "to": 1.06}, cards=[card("ONE MORE *RUN.*", dur - 1.2, 1.2, pos="mid", size=170, sfx="boom")], v={"x": 0.45, "y": 0.5, "s": 1.0})
+    return S("c_weather", 5.7, min(dur, 2.3), punch={"from": 1.0, "to": 1.06}, cards=[card("ONE MORE *RUN.*", dur - 1.2, 1.2, pos="mid", size=170, sfx="boom")], v={"x": 0.45, "y": 0.5, "s": 1.0})
 
 
 def quick():
@@ -200,129 +200,127 @@ def timeline(scenes, label):
     return t
 
 
-# ------------------------------------------------------------------ MAIN
+
+# ---- second-pass shots: the number small, closer wall, fog, growth ---------------------------------------------------
+def aim_line(dur=2.3):
+    return S("c_aim", 1.65, dur, speed=0.85, punch={"from": 1.0, "to": 1.2}, crop={"x": 0.42, "y": 0.42, "s": 1.0}, v={"x": 0.3, "y": 0.5, "s": 1.0},
+             hits=[{"at": t, "kind": "tick", "gain_db": -4} for t in (0.5, 1.0, 1.5, 2.0)])
+
+
+def aim_fire(dur=1.7):
+    return S("c_aim", 3.6, dur, fx=hitfx(0.7, 1.0, 28, "boom"), slow=[{"at": 0.55, "dur": 0.15, "speed": 0.5}, freeze(0.72, 4)], crop={"x": 0.42, "y": 0.45, "s": 1.1}, v={"x": 0.4, "y": 0.5, "s": 1.0})
+
+
+def wall_break(dur=2.0, **kw):
+    return S("c_rubble2", 3.4, dur, fx=hitfx(1.25, 0.8, 22, "boom"), slow=[{"at": 0.2, "dur": 0.2, "speed": 0.5}, {"at": 1.05, "dur": 0.55, "speed": 0.4}, freeze(1.25, 4)],
+             crop={"x": 0.42, "y": 0.5, "s": 1.05}, v={"x": 0.4, "y": 0.5, "s": 1.0}, **kw)
+
+
+def fog(dur=1.5, **kw):
+    return S("c_fog", 3.0, dur, fx=hitfx(0.95, 0.5, 14), crop={"x": 0.42, "y": 0.5, "s": 1.1}, v={"x": 0.4, "y": 0.5, "s": 1.0}, **kw)
+
+
+def growth(dur=2.0, **kw):
+    return S("c_hub_place", 3.0, dur, punch={"from": 1.0, "to": 1.12}, v={"x": 0.5, "y": 0.5, "s": 1.0}, **kw)
+
+
 def c(text, **kw):
     return [card(text, **kw)]
 
 
-main = []
-main += [odds_push(), odds_hit()]
-main += [flank_front(), flank_side(cards=[card("EVERY SHOT\nHAS *ODDS.*", 0.0, 2.0, pos="lowright", size=112)]), flank_hit()]
-main += [cover_shot(cards=c("BLOW A HOLE\nIN THEIR *COVER.*", dur=2.2)), cover_rubble(), rubble_hit(), rubble_kill()]
-main += [ow_walk(2.0, cards=c("HOLD. WAIT.\n*AMBUSH.*", dur=2.6)), ow_hit(), ow_boom(1.0)]
-main += [massive_a(cards=c("BOARDS UP TO\n*18 BY 14.*", dur=2.0)), massive_b()]
-main += [titan_card(cards=c("PRAY THE *78%*\nHOLDS.", dur=2.0)), titan_miss(), titan_crit()]
-main += [BLACK(1.0), LOGO(2.5)]                                           # t = 20 .. 23: the drop
-main += weather4(1.0)                                                     # 23.5 .. 27.5
-main += [runmap(cards=c("CHOOSE YOUR\n*ROUTE.*", pos="mid", size=120)), spoils(1.5, cards=c("PICK ONE\nOF *THREE.*", pos="mid", size=120))]
-main += [hub1(cards=c("BUILD THE\n*OUTPOST.*", dur=3.5)), hub3(2.5), outpost(3.0)]
-main += [roster(cards=c("KEEP YOUR\n*VETERANS* ALIVE.", pos="mid", size=112)), endless(cards=c("GO *DEEPER.*", pos="mid", size=130)), daily(cards=c("A NEW BATTLE\nEVERY *DAY.*", pos="mid", size=112))]
-main += [massive_a(1.0)] + fights(3) + [strike(), titan_kill()]
+# ------------------------------------------------------------------ MAIN
+main = [aim_line(), aim_fire()]                                              # 0 to 4: cold open, impact at 3.0 (downbeat)
+main += [titan_miss(1.0, cards=[card("EVERY SHOT\nHAS *ODDS.*", 0.0, 1.9, pos="lowright", size=112)]), flank_hit()]
+main += [cover_shot(cards=c("BLOW A HOLE\nIN THEIR *COVER.*", dur=2.0)), wall_break()]
+main += [ow_walk(2.0, cards=c("HOLD. WAIT.\n*AMBUSH.*", dur=2.4)), ow_hit(), ow_boom(1.0)]
+main += [massive_a(1.0, cards=c("BOARDS UP TO\n*18 BY 14.*", dur=1.8)), massive_b()]
+main += [titan_card(cards=c("PRAY THE *78%*\nHOLDS.", dur=2.0)), titan_miss(), titan_crit(), titan_kill(2.0)]   # to 20
+main += [BLACK(1.0), LOGO(2.5)]                                             # drop at 21
+main += [runmap(2.0, cards=c("CHOOSE YOUR\n*ROUTE.*", pos="low", size=112)), spoils(1.5, cards=c("PICK ONE\nOF *THREE.*", pos="low", size=112))]
+main += [hub1(1.5, cards=c("BUILD THE\n*OUTPOST.*", dur=1.5)), growth(2.0, cards=c("SALVAGE BUILDS\nIT *UP.*", dur=2.0)), hub3(1.0), outpost(1.5)]
+main += [roster(1.5, cards=c("KEEP YOUR\n*VETERANS* ALIVE.", pos="low", size=104)), titan_more(13.1, 1.0)]
+main[-1]["cards"] = c("GO *DEEPER.*", pos="lowright", size=112)
+main += [fog(1.5, cards=c("FOG CHANGES\nTHE *ODDS.*", dur=1.5))]
+main += fights(3)
+main += [sub_strike := strike(1.0)]
+main[-1]["cards"] = c("A NEW BATTLE\nEVERY *DAY.*", dur=1.0)
+main += [S("c_ow", 8.8, 1.0, fx=hitfx(0.2, 0.9, 26, "boom"), crop={"x": 0.5, "y": 0.5, "s": 1.2}, v={"x": 0.5, "y": 0.5, "s": 1.0})]
+main += [rubble_kill(0.75), titan_crit(0.75)]
 main += quick()
-
-main += [beauty(2.7), END(6.0)]
+main += [beauty(2.5), END(6.0)]
 timeline(main, "main")
 
-MAIN = {
-    "id": "rubblefront-v2",
-    "outputs": {"16x9": "rubblefront-trailer-v2-16x9.mp4"},
-    "poster": {"file": "rubblefront-poster-v2.png", "at": 3.1},
-    "formats": ["16x9"],
-    "crf": 16,
-    "sfxDb": -6,
-    "music": [],      # filled below from the section list
-    "scenes": main,
-}
-
-
-def music_for(total, logo_t, end_t):
-    """Intro, mid section, silence for the drop, then low (loop), mid, high with the drive stem; all on one running bar position."""
-    m = []
-
-    def seg(f, t0, t1, g=0.0, fi=0.03, fo=0.3):
-        m.append({"file": f, "in": t0 - 3.0, "t": t0, "dur": t1 - t0, "gain_db": g, "fade_in": fi, "fade_out": fo})
-    m.append({"file": "battle_low.ogg", "in": 44.0, "t": 0.0, "dur": 3.4, "gain_db": -6, "fade_in": 1.2, "fade_out": 0.3})
-    seg("battle_mid.ogg", 3.0, logo_t - 1.0)
-    seg("battle_mid_drive.ogg", 3.0, logo_t - 1.0, 2.0)
-    return m
-
-
-# 120 bpm music: low base (intro), mid + drive (fights), silence, high + drive at the logo and through the weather montage,
-# then mid for the loop, high + drive for the finale.
-LOGO_T = 21.0
+MAIN = {"id": "rubblefront-v2", "outputs": {"16x9": "rubblefront-trailer-v2-16x9.mp4"}, "poster": {"file": "rubblefront-poster-v2.png", "at": 22.2},
+        "formats": ["16x9"], "crf": 16, "sfxDb": -6, "music": [], "scenes": main}
 MAIN["music"] = [
     {"file": "battle_low.ogg", "in": 44.0, "t": 0.0, "dur": 3.4, "gain_db": -6, "fade_in": 1.2, "fade_out": 0.3},
     {"file": "battle_mid.ogg", "in": 0.0, "t": 3.0, "dur": 17.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 0.4},
     {"file": "battle_mid_drive.ogg", "in": 0.0, "t": 3.0, "dur": 17.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 0.4},
-    {"file": "battle_high.ogg", "in": 18.0, "t": 21.0, "dur": 8.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 0.3},
-    {"file": "battle_high_drive.ogg", "in": 18.0, "t": 21.0, "dur": 8.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 0.3},
-    {"file": "battle_mid.ogg", "in": 26.0, "t": 29.0, "dur": 14.0, "gain_db": 0, "fade_in": 0.05, "fade_out": 0.3},
-    {"file": "battle_mid_drive.ogg", "in": 38.0, "t": 41.0, "dur": 4.0, "gain_db": 2, "fade_in": 0.05, "fade_out": 0.3},
-    {"file": "battle_high.ogg", "in": 42.0, "t": 45.0, "dur": 100.0, "gain_db": 0, "fade_in": 0.05, "fade_out": 3.5},
-    {"file": "battle_high_drive.ogg", "in": 42.0, "t": 45.0, "dur": 100.0, "gain_db": 2, "fade_in": 0.05, "fade_out": 3.5},
+    {"file": "battle_mid.ogg", "in": 18.0, "t": 21.0, "dur": 12.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 0.3},
+    {"file": "battle_high.ogg", "in": 30.0, "t": 33.0, "dur": 100.0, "gain_db": 0, "fade_in": 0.05, "fade_out": 3.5},
+    {"file": "battle_high_drive.ogg", "in": 30.0, "t": 33.0, "dur": 100.0, "gain_db": 2, "fade_in": 0.05, "fade_out": 3.5},
+    {"file": "battle_high_drive.ogg", "in": 18.0, "t": 21.0, "dur": 12.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 0.3},
 ]
-MAIN["musicEnv"] = [{"t": 0, "db": 0}, {"t": 19.9, "db": 0}, {"t": 20.0, "db": -40}, {"t": 20.95, "db": -40}, {"t": 21.0, "db": 0}, {"t": 52.4, "db": 0}, {"t": 52.5, "db": -40}, {"t": 52.95, "db": -40}, {"t": 53.0, "db": 0}]
-MAIN["synth"] = [{"t": 3.0, "kind": "riser", "dur": 2.8, "gain_db": -2}, {"t": 21.0, "kind": "riser", "dur": 1.0, "gain_db": 0}, {"t": 53.0, "kind": "riser", "dur": 0.9, "gain_db": -1}]
+MAIN["musicEnv"] = [{"t": 0, "db": 0}, {"t": 19.9, "db": 0}, {"t": 20.0, "db": -40}, {"t": 20.95, "db": -40}, {"t": 21.0, "db": 0}, {"t": 46.3, "db": 0}, {"t": 46.4, "db": -40}, {"t": 46.95, "db": -40}, {"t": 47.0, "db": 0}]
+MAIN["synth"] = [{"t": 3.0, "kind": "riser", "dur": 2.8, "gain_db": -2}, {"t": 21.0, "kind": "riser", "dur": 1.0, "gain_db": 0}, {"t": 47.0, "kind": "riser", "dur": 0.6, "gain_db": -1}, {"t": 21.0, "kind": "riser", "dur": 2.0, "gain_db": -4}]
 (OUTDIR / "rubblefront-v2.json").write_text(json.dumps(MAIN, indent=1))
 
 
-# ------------------------------------------------------------------ 30 s (16:9)
 def sub(d, **kw):
     d = copy.deepcopy(d)
     d.update(kw)
     return d
 
 
-s30 = [odds_push(), odds_hit()]
-s30 += [flank_side(cards=[card("EVERY SHOT\nHAS *ODDS.*", 0.0, 2.0, pos="lowright", size=112)]), flank_hit()]
-s30 += [cover_shot(cards=c("BLOW A HOLE\nIN THEIR *COVER.*", dur=2.0)), rubble_kill()]
+# ------------------------------------------------------------------ 30 s (16:9)
+s30 = [aim_line(), aim_fire()]
+s30 += [titan_miss(1.0, cards=[card("EVERY SHOT\nHAS *ODDS.*", 0.0, 0.95, pos="lowright", size=112)]), cover_shot(cards=c("BLOW A HOLE\nIN THEIR *COVER.*", dur=2.0)), wall_break()]
 s30 += [ow_walk(1.5, cards=c("HOLD. WAIT.\n*AMBUSH.*", dur=2.4)), ow_boom(1.0)]
-s30 += [titan_miss(1.0, cards=c("PRAY THE *78%*\nHOLDS.", dur=2.0)), titan_crit()]
-s30 += [BLACK(0.5), LOGO(1.5)]
-s30 += weather4(0.75, 150)
-s30 += [hub1(1.5, cards=c("BUILD THE\n*OUTPOST.*", dur=3.0)), hub3(1.5)]
-s30 += [runmap(1.5, cards=c("CHOOSE YOUR\n*ROUTE.*", pos="mid", size=120))]
+s30 += [titan_miss(1.0, cards=c("PRAY THE *78%*\nHOLDS.", dur=1.9)), titan_crit(), titan_kill(1.0)]      # to 13.5
+s30 += [BLACK(0.5), LOGO(1.5)]                                                                           # logo at 14
+s30 += [runmap(1.5, cards=c("CHOOSE YOUR\n*ROUTE.*", pos="low", size=112)), spoils(1.0, cards=c("PICK ONE\nOF *THREE.*", pos="low", size=112))]
+s30 += [growth(1.5, cards=c("BUILD THE\n*OUTPOST.*", dur=1.5)), hub3(1.0)]
+s30 += [fog(1.0, cards=c("FOG CHANGES\nTHE *ODDS.*", dur=1.0))]
 s30 += quick()
-s30 += [beauty(2.2), END(3.8)]
+s30 += [beauty(2.0), END(4.5)]
 timeline(s30, "30 s")
-T30_LOGO = 13.0
-S30 = {
-    "id": "rubblefront-v2-30s", "outputs": {"16x9": "rubblefront-trailer-v2-30s-16x9.mp4"}, "formats": ["16x9"], "crf": 16, "sfxDb": -6,
-    "music": [
-        {"file": "battle_low.ogg", "in": 44.0, "t": 0.0, "dur": 3.4, "gain_db": -6, "fade_in": 1.2, "fade_out": 0.3},
-        {"file": "battle_mid.ogg", "in": 0.0, "t": 3.0, "dur": 9.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 0.3},
-        {"file": "battle_mid_drive.ogg", "in": 0.0, "t": 3.0, "dur": 9.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 0.3},
-        {"file": "battle_high.ogg", "in": 10.0, "t": 13.0, "dur": 100.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 3.0},
-        {"file": "battle_high_drive.ogg", "in": 10.0, "t": 13.0, "dur": 100.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 3.0},
-    ],
-    "musicEnv": [{"t": 0, "db": 0}, {"t": 11.9, "db": 0}, {"t": 12.0, "db": -40}, {"t": 12.95, "db": -40}, {"t": 13.0, "db": 0}],
-    "synth": [{"t": 3.0, "kind": "riser", "dur": 2.8, "gain_db": -2}, {"t": 13.0, "kind": "riser", "dur": 1.0, "gain_db": 0}],
-    "scenes": s30,
-}
+T = 13.5
+S30 = {"id": "rubblefront-v2-30s", "outputs": {"16x9": "rubblefront-trailer-v2-30s-16x9.mp4"}, "formats": ["16x9"], "crf": 16, "sfxDb": -6,
+       "music": [
+           {"file": "battle_low.ogg", "in": 44.0, "t": 0.0, "dur": 3.4, "gain_db": -6, "fade_in": 1.2, "fade_out": 0.3},
+           {"file": "battle_mid.ogg", "in": 0.0, "t": 3.0, "dur": 10.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 0.3},
+           {"file": "battle_mid_drive.ogg", "in": 0.0, "t": 3.0, "dur": 10.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 0.3},
+           {"file": "battle_high.ogg", "in": 11.0, "t": 14.0, "dur": 100.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 3.0},
+           {"file": "battle_high_drive.ogg", "in": 11.0, "t": 14.0, "dur": 100.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 3.0}],
+       "musicEnv": [{"t": 0, "db": 0}, {"t": 12.9, "db": 0}, {"t": 13.0, "db": -40}, {"t": 13.95, "db": -40}, {"t": 14.0, "db": 0}],
+       "synth": [{"t": 3.0, "kind": "riser", "dur": 2.8, "gain_db": -2}, {"t": 14.0, "kind": "riser", "dur": 1.0, "gain_db": 0}],
+       "scenes": s30}
 (OUTDIR / "rubblefront-v2-30s.json").write_text(json.dumps(S30, indent=1))
 
-# ------------------------------------------------------------------ 15 s (9:16)
-o = S("c_odds", 3.2, 0.9, punch={"from": 1.0, "to": 1.15}, v={"x": 0.1, "y": 0.5, "s": 1.0, "fit": {"z": 1.5, "x": 0.0, "y": 0.25}}, hits=[{"at": 0.4, "kind": "tick", "gain_db": -4}, {"at": 0.65, "kind": "tick", "gain_db": -2}])
-oh = sub(odds_hit(), dur=1.1)
-v15 = [o, oh]
-v15 += [sub(flank_side(1.0, cards=[card("EVERY SHOT\nHAS *ODDS.*", 0.0, 1.9)])), flank_hit()]
-v15 += [cover_shot(1.0, cards=c("BLOW A HOLE\nIN THEIR *COVER.*", dur=1.9)), rubble_kill()]
-v15 += [sub(ow_boom(1.0), cards=c("HOLD. WAIT.\n*AMBUSH.*", dur=1.2))]
-v15 += [titan_miss(0.75, cards=c("PRAY THE *78%*\nHOLDS.", dur=1.7)), titan_crit()]
-v15 += [hub1(1.0, cards=c("BUILD THE\n*OUTPOST.*", dur=2.0)), hub3(1.0)]
-v15 += [beauty(1.5)]
-v15 += [END(2.75)]
+# ------------------------------------------------------------------ 15 s (9:16): the action is centred and the cards sit in the safe zone
+def vc(d, x, y=0.5, s=1.0):
+    d = copy.deepcopy(d)
+    d["v"] = {"x": x, "y": y, "s": s}
+    return d
+
+
+def vcard(text, dur):
+    return [card(text, 0.0, dur, pos="low", size=108)]
+
+
+v15 = [vc(aim_line(1.7), 0.6, 0.5, 1.0), vc(aim_fire(1.3), 0.6, 0.5, 1.0)]
+v15 += [vc(cover_shot(1.0, cards=vcard("BLOW A HOLE\nIN THEIR *COVER.*", 1.9)), 0.6, 0.5, 1.0), vc(wall_break(1.5), 0.6, 0.5, 1.0)]
+v15 += [vc(ow_boom(1.0, cards=vcard("HOLD. WAIT.\n*AMBUSH.*", 1.0)), 0.5, 0.5, 1.0)]
+v15 += [vc(titan_miss(0.75, cards=vcard("PRAY THE *78%*\nHOLDS.", 1.7)), 0.5, 0.5, 1.0), vc(titan_crit(1.0), 0.5, 0.5, 1.0)]
+v15 += [vc(growth(1.5, cards=vcard("BUILD THE\n*OUTPOST.*", 1.5)), 0.5, 0.5, 1.0), vc(hub3(0.75), 0.5, 0.5, 1.0)]
+v15 += [vc(beauty(1.5), 0.5, 0.5, 1.0), END(3.0)]
 timeline(v15, "15 s vertical")
-S15 = {
-    "id": "rubblefront-v2-15s", "outputs": {"9x16": "rubblefront-trailer-v2-15s-9x16.mp4"}, "formats": ["9x16"], "crf": 17, "sfxDb": -6,
-    "music": [
-        {"file": "battle_low.ogg", "in": 44.0, "t": 0.0, "dur": 1.9, "gain_db": -6, "fade_in": 0.6, "fade_out": 0.2},
-        {"file": "battle_mid.ogg", "in": 0.0, "t": 1.5, "dur": 8.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 0.3},
-        {"file": "battle_mid_drive.ogg", "in": 0.0, "t": 1.5, "dur": 8.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 0.3},
-        {"file": "battle_high.ogg", "in": 8.0, "t": 9.5, "dur": 100.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 2.0},
-        {"file": "battle_high_drive.ogg", "in": 8.0, "t": 9.5, "dur": 100.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 2.0},
-    ],
-    "synth": [{"t": 1.5, "kind": "riser", "dur": 1.4, "gain_db": -2}],
-    "scenes": v15,
-}
+S15 = {"id": "rubblefront-v2-15s", "outputs": {"9x16": "rubblefront-trailer-v2-15s-9x16.mp4"}, "formats": ["9x16"], "crf": 17, "sfxDb": -6,
+       "music": [
+           {"file": "battle_low.ogg", "in": 44.0, "t": 0.0, "dur": 1.9, "gain_db": -6, "fade_in": 0.6, "fade_out": 0.2},
+           {"file": "battle_mid.ogg", "in": 0.0, "t": 1.5, "dur": 8.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 0.3},
+           {"file": "battle_mid_drive.ogg", "in": 0.0, "t": 1.5, "dur": 8.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 0.3},
+           {"file": "battle_high.ogg", "in": 8.0, "t": 9.5, "dur": 100.0, "gain_db": 0, "fade_in": 0.02, "fade_out": 2.0},
+           {"file": "battle_high_drive.ogg", "in": 8.0, "t": 9.5, "dur": 100.0, "gain_db": 2, "fade_in": 0.02, "fade_out": 2.0}],
+       "synth": [{"t": 1.5, "kind": "riser", "dur": 1.4, "gain_db": -2}], "scenes": v15}
 (OUTDIR / "rubblefront-v2-15s.json").write_text(json.dumps(S15, indent=1))
