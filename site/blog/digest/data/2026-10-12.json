@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-12",
+  "number": 107,
+  "intro": "AI-assisted attacks using Claude Code and ARTEX AI hit Ukrainian and South Korean targets. Also in the digest: the DarkSword P7 iOS exploit kit, a Zod npm compromise report, EU AI Act model-level evidence, and Tencent's AI capex bond.",
+  "sections": {
+    "Papers & Research": [
+      {
+        "title": "Regulating the Frontier: Model-Level Evidence from the EU AI Act",
+        "url": "https://philpapers.org/rec/LIRTFO",
+        "source_name": "OpenAlex",
+        "category": "papers",
+        "editorial_note": "This paper asks an empirical question most AI-policy commentary skips: does the EU AI Act's GPAI transparency regime change how models are built, or only produce paperwork? Model-level evidence is rarer and more useful than legal analysis of the text. The snippet is truncated, so effect sizes and the identification strategy need checking in the full paper."
+      },
+      {
+        "title": "Replication Package for Fairness Bugs Detection Empirical Study",
+        "url": "https://doi.org/10.5281/zenodo.19207801",
+        "source_name": "OpenAlex",
+        "category": "papers",
+        "editorial_note": "A replication package for a metamorphic-testing study of fairness bugs in LLMs on medical QA, including benchmark data and evaluation scripts. Metamorphic testing needs no ground-truth labels, a technique that transfers to adversarial robustness testing of security LLMs. The paper is still under review, so treat the findings as preliminary."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "CyberXero Uses Claude Code in Campaign That Stole Over 628,000 Ukrainian Records",
+        "url": "https://thehackernews.com/2026/10/cyberxero-uses-claude-code-in-campaign.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "CyberXero paired commodity offensive tooling such as Cobalt Strike with Claude Code in a two-pronged initial access campaign that exfiltrated over 628,000 Ukrainian records. The notable detail is the mix: agentic AI is being bolted onto old tradecraft against WordPress, e-commerce, and critical infrastructure targets rather than replacing it. Researchers studying LLM-enabled threat detection should ask which artifacts of the AI-assisted workflow, such as prompt-shaped scripts or tooling cadence, are detectable."
+      },
+      {
+        "title": "ARTEX AI, Claude agents used in cyberattacks on South Korean banks",
+        "url": "https://www.bleepingcomputer.com/news/security/hacker-used-artex-ai-and-claude-agents-to-target-south-korean-banks",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "A single Chinese operator reportedly used the ARTEX AI penetration testing suite plus Claude agents to disrupt the South Korean financial sector. A lone actor with off-the-shelf AI pentest tooling producing sector-wide impact is the strongest real-world data point yet for the offensive-agent scaling argument. Attribution rests on reporting, so the open question is how much of the impact came from the agents versus ordinary access. Connects to: CyberXero Uses Claude Code in Campaign That Stole Over 628,000 Ukrainian Records."
+      },
+      {
+        "title": "P7 DarkSword iOS Exploit Kit Adds Crypto Wallet Data Theft and Remote Commands",
+        "url": "https://thehackernews.com/2026/10/p7-darksword-ios-exploit-kit-adds.html",
+        "source_name": "The Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "The P7 variant of DarkSword shrinks its on-device footprint while adding keychain and crypto-wallet theft and two-way C2. The smaller footprint is the signal: it targets the on-device forensic artifacts that mobile defenders rely on. Apple-platform developers should note the keychain theft, which raises the stakes for how apps store secrets."
+      },
+      {
+        "title": "Zod 4.6.6 compromised by malware?",
+        "url": "https://github.com/colinhacks/zod/commit/d821685ea6732436fcdf786a81d076958471e467",
+        "source_name": "Hacker News",
+        "category": "cybersecurity",
+        "editorial_note": "A reported malware compromise of Zod 4.6.6 would hit one of the most widely depended-on validation libraries in the TypeScript ecosystem. Libraries at this depth turn a single publish into a broad supply-chain event. The claim is a question mark in the title, so verify against the advisory and lockfiles before treating it as confirmed."
+      }
+    ],
+    "Finance & Business": [
+      {
+        "title": "Tencent Tells Investors Its $5 Billion Bond Mainly for AI Capex",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-12/tencent-tells-investors-its-5-billion-bond-mainly-for-ai-capex",
+        "source_name": "Bloomberg Technology",
+        "category": "finance",
+        "editorial_note": "Tencent is raising about $5 billion in debt, mainly for AI capex. Debt-funded rather than cash-flow-funded buildout is a meaningful shift in AI infrastructure economics. Paired with the Firmus IPO collapse, it suggests capital markets are splitting between incumbents who can borrow and new entrants who cannot."
+      }
+    ]
+  },
+  "sources_reviewed": 584,
+  "items_selected": 7
+}
