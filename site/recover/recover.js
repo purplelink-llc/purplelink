@@ -23,7 +23,7 @@
       });
       const body = await r.json().catch(() => ({}));
       if (r.ok) {
-        status.textContent = `If ${email} made a ModernTex or kit purchase, the details are on their way to it now.`;
+        status.textContent = `If ${email} bought a Purplelink app, the Mac Suite or a kit, the details are on their way to it now.`;
       } else {
         status.textContent = body.detail || "That didn't go through. Try again, or email ben@purplelink.llc.";
         btn.disabled = false;
