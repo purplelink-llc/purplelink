@@ -1,0 +1,54 @@
+{
+  "note": "TEST key only. Never matches production. Scheme LookfoldLicenseV1; see netlify/lib/summonly-license.mjs. Generated once from a throwaway Ed25519 key; its private half was discarded.",
+  "testPublicKeyBase64": "OIEZqxFdCQ5q1vLct6pE8U1/+KB/A0/whiRNFBUrOzI=",
+  "domain": "LookfoldLicenseV1",
+  "signedMessage": "UTF-8 bytes of the domain followed by the 4 nonce bytes",
+  "nonceSeed": "first 4 bytes of sha256(\"lookfold-license:\" + lower-cased, trimmed email)",
+  "valid": [
+    {
+      "email": "alice@example.org",
+      "key": "SML1-RA259-FMNX6-BA5H9-JTHWC-6J37Q-0A64S-188KW-JDBPH-54W0E-1BFS4-A7WYB-DP67X-TFNDZ-9XKNB-PTFCN-JA532-F30AW-V4NVA-4NMKA-TK5Z0-E49Q2-Y2GJ"
+    },
+    {
+      "email": "bob.researcher@example.edu",
+      "key": "SML1-TTH3Z-7QZBC-N8A5C-ZRY16-0H6KY-3XGF4-P82G6-4GCHB-8KAN3-HDAVD-3TRXZ-13ZK3-H8260-CXMXM-GTVMW-2TWJC-EHHZ1-8DFAT-83R7E-WREGR-EZBGR-1SG0"
+    },
+    {
+      "email": "carol+summonly@example.com",
+      "key": "SML1-RW7HN-7BQ9E-31VRA-3CSKB-ME7M9-35Q9T-Y8CGZ-1YYM7-366WP-NBA5M-TSWB0-JXVAN-6E7RY-C8VSD-BFQ7B-B2HMK-X6YNN-FCN9G-RV1AY-4R691-YAZGK-H8GC"
+    }
+  ],
+  "invalid": [
+    {
+      "key": "SML1-RA259-FANX6-BA5H9-JTHWC-6J37Q-0A64S-188KW-JDBPH-54W0E-1BFS4-A7WYB-DP67X-TFNDZ-9XKNB-PTFCN-JA532-F30AW-V4NVA-4NMKA-TK5Z0-E49Q2-Y2GJ",
+      "why": "one character changed"
+    },
+    {
+      "key": "SML1-RA259-FHQX4-0MC83-AQBED-NRD97-756TT-64F8V-CW9XX-VVZE7-2KRBE-KES1T-3X0XB-81R35-W86JC-0XWF6-5HBDM-88D6N-QC8TP-9ZEQJ-V8SQ9-NBBMW-53GE",
+      "why": "right shape, signed under a different domain string (KeyfeelLicenseV1)"
+    },
+    {
+      "key": "SML1-RA259-FQETT-X5XPW-KC54E-0AMHA-3F0SN-VQGH4-Z42DQ-YH1PQ-5WCDE-9SSQE-TN9F3-MJP9R-ZVCX0-T7QY6-EJTK3-ETTJT-NJ34P-F9ZQ4-NFY96-DTT4H-AKG4",
+      "why": "right shape, signed by a different key"
+    },
+    {
+      "key": "KFL1-RA259-FMNX6-BA5H9-JTHWC-6J37Q-0A64S-188KW-JDBPH-54W0E-1BFS4-A7WYB-DP67X-TFNDZ-9XKNB-PTFCN-JA532-F30AW-V4NVA-4NMKA-TK5Z0-E49Q2-Y2GJ",
+      "why": "the Keyfeel prefix on a Summonly key body is not a Summonly key"
+    },
+    {
+      "key": "SML1-12345-12345",
+      "why": "too short"
+    },
+    {
+      "key": "",
+      "why": "empty"
+    }
+  ],
+  "spelling": [
+    "sml1-ra259-fmnx6-ba5h9-jthwc-6j37q-0a64s-188kw-jdbph-54w0e-1bfs4-a7wyb-dp67x-tfndz-9xknb-ptfcn-ja532-f30aw-v4nva-4nmka-tk5z0-e49q2-y2gj",
+    "SML1RA259FMNX6BA5H9JTHWC6J37Q0A64S188KWJDBPH54W0E1BFS4A7WYBDP67XTFNDZ9XKNBPTFCNJA532F30AWV4NVA4NMKATK5Z0E49Q2Y2GJ",
+    "  SML1-RA259-FMNX6-BA5H9-JTHWC-6J37Q-0A64S-188KW-JDBPH-54W0E-1BFS4-A7WYB-DP67X-TFNDZ-9XKNB-PTFCN-JA532-F30AW-V4NVA-4NMKA-TK5Z0-E49Q2-Y2GJ  ",
+    "SML1 RA259 FMNX6 BA5H9 JTHWC 6J37Q 0A64S 188KW JDBPH 54W0E 1BFS4 A7WYB DP67X TFNDZ 9XKNB PTFCN JA532 F30AW V4NVA 4NMKA TK5Z0 E49Q2 Y2GJ"
+  ],
+  "lookalikes": "Crockford: O reads as 0, I and L read as 1, U is not in the alphabet and is rejected"
+}
