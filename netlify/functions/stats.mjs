@@ -12,7 +12,8 @@
  * Other sites send their beacons to the same collector (track.mjs stores the host each event came from). Hosts in
  * EXTERNAL_HOSTS are kept OUT of the default aggregation, so Purplelink's own totals, paths, referrers and days never
  * include them, and are read on their own with ?host=<host>, which returns only that host's records in the same shape
- * plus per-day counts of the event types in HOST_EVENT_FIELDS. Without the filter the response says how many records
+ * plus per-day counts of the event types in HOST_EVENT_FIELDS and the breakdowns byCountry, device, scrollDepth and
+ * engagedTime (never in the default response). Without the filter the response says how many records
  * it left out, in `excludedHosts`.
  *
  * Gated by STATS_TOKEN (set it on the Netlify site). Scale note: this
@@ -39,6 +40,11 @@ export const HOST_EVENT_FIELDS = {
   download: "downloads",
   newsletter_submit: "newsletterSubmits",
 };
+// Values the rubblefront beacon sends as meta. Anything else is ignored by the ?host= breakdowns.
+export const DEVICE_CLASSES = ["mobile", "tablet", "desktop"];
+export const SCROLL_BUCKETS = ["0", "25", "50", "75", "100"];
+export const ENGAGED_BUCKETS = ["0-10s", "10-30s", "30-60s", "1-3m", "3m-plus"];
+const zeroed = (keys) => Object.fromEntries(keys.map((k) => [k, 0]));
 /** A record's host, lower-cased without a leading "www.", so "RubbleFront.com" and "www.rubblefront.com" match. */
 export function normalizeHost(h) {
   return String(h || "").trim().toLowerCase().replace(/^www\./, "");
@@ -97,6 +103,9 @@ export default async function handler(request) {
   };
   if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.totals[f] = 0;
   const uniquesPerDay = {};
+  // ?host= only: country, device, scroll depth and engaged time. Read-only side tallies; they feed no total above.
+  const geo = { countries: {}, unknown: 0 };
+  const device = zeroed(DEVICE_CLASSES), scrollDepth = zeroed(SCROLL_BUCKETS), engagedTime = zeroed(ENGAGED_BUCKETS);
 
   // Every blob read used to be awaited one at a time, so the wall clock was
   // (number of events) x (one round trip). At ~670 events over 30 days that
@@ -139,6 +148,15 @@ export default async function handler(request) {
       } else if (EXTERNAL_HOSTS.includes(recHost)) {
         bump(s.excludedHosts, recHost);
         continue;
+      }
+      if (hostFilter && !String(rec.meta || "").startsWith("__")) {
+        const meta = String(rec.meta || "");
+        if (rec.type === "pageview") {
+          const cc = /^[A-Z]{2}$/.test(rec.cc || "") ? rec.cc : "";
+          if (cc) bump(geo.countries, cc); else geo.unknown++;
+          if (DEVICE_CLASSES.includes(meta)) device[meta]++;
+        } else if (rec.type === "scroll_depth" && SCROLL_BUCKETS.includes(meta)) scrollDepth[meta]++;
+        else if (rec.type === "engaged_time" && ENGAGED_BUCKETS.includes(meta)) engagedTime[meta]++;
       }
       s.totals.events++;
       if (rec.vid) uniquesPerDay[day].add(rec.vid);
@@ -215,6 +233,14 @@ export default async function handler(request) {
     generatedAt: new Date().toISOString(),
     ...(hostFilter ? { host: hostFilter } : { excludedHosts: s.excludedHosts }),
     totals: s.totals,
+    ...(hostFilter ? {
+      byCountry: {
+        top: topN(geo.countries, 15),
+        other: Object.values(geo.countries).reduce((a, n) => a + n, 0) - topN(geo.countries, 15).reduce((a, x) => a + x.count, 0),
+        unknown: geo.unknown,
+      },
+      device, scrollDepth, engagedTime,
+    } : {}),
     toolRuns: topN(s.toolRuns),
     checkoutByProduct: topN(s.checkoutByProduct),
     checkoutByPath: topN(s.checkoutByPath),

@@ -1342,6 +1342,59 @@ def load_history() -> dict:
     return {"sites": {}}
 
 
+AUDIENCE_MIN_VISITS = 20   # below this a percentage of visits says nothing; the line says so instead
+AUDIENCE_SCROLL = ["0", "25", "50", "75", "100"]
+AUDIENCE_ENGAGED = ["0-10s", "10-30s", "30-60s", "1-3m", "3m-plus"]
+AUDIENCE_DEVICE = ["mobile", "tablet", "desktop"]
+
+
+def audience_summary(payload: dict) -> dict | None:
+    """Country, device, scroll-depth and engaged-time breakdowns from a ?host= stats response (stats.mjs).
+
+    None when the response has none of them (an older collector, or a site fetched without a host filter), so a site
+    that does not report them shows nothing. Visits are counted by the scroll_depth events, which the site sends once
+    per visit; the plain-language line says so rather than guessing when the sample is small.
+    """
+    if not isinstance(payload, dict) or not any(k in payload for k in ("byCountry", "device", "scrollDepth", "engagedTime")):
+        return None
+
+    def num(v) -> int:
+        return int(v) if isinstance(v, (int, float)) and not isinstance(v, bool) and v >= 0 else 0
+
+    def rows(src, order) -> list[dict]:
+        src = src if isinstance(src, dict) else {}
+        return [{"key": k, "count": num(src.get(k))} for k in order]
+
+    by_country = payload.get("byCountry") if isinstance(payload.get("byCountry"), dict) else {}
+    countries = [{"key": str(c.get("key")), "count": num(c.get("count"))}
+                 for c in (by_country.get("top") or []) if isinstance(c, dict) and c.get("key")]
+    scroll = rows(payload.get("scrollDepth"), AUDIENCE_SCROLL)
+    visits = sum(r["count"] for r in scroll)
+    reach50 = sum(r["count"] for r in scroll if r["key"] in ("50", "75", "100"))
+    if visits == 0:
+        sentence = "No visit has reported a scroll depth yet."
+        pct50 = None
+    elif visits < AUDIENCE_MIN_VISITS:
+        sentence = (f"Only {visits} visit{'s' if visits != 1 else ''} reported a scroll depth, too few for a percentage "
+                    f"({reach50} reached 50 percent scroll).")
+        pct50 = None
+    else:
+        pct50 = reach50 / visits * 100
+        sentence = f"{pct50:.0f} percent of visits reached 50 percent scroll ({reach50} of {visits})."
+    return {
+        "countries": countries,
+        "countryOther": num(by_country.get("other")),
+        "countryUnknown": num(by_country.get("unknown")),
+        "device": rows(payload.get("device"), AUDIENCE_DEVICE),
+        "scroll": scroll,
+        "engaged": rows(payload.get("engagedTime"), AUDIENCE_ENGAGED),
+        "visits": visits,
+        "reach50": reach50,
+        "pct50": pct50,
+        "sentence": sentence,
+    }
+
+
 def merge_history(history: dict, key: str, payload: dict) -> None:
     """Merge a fetch into the durable archive.
 
@@ -1390,6 +1443,9 @@ def merge_history(history: dict, key: str, payload: dict) -> None:
         "toolRuns": payload.get("toolRuns", []),
         "totals": payload.get("totals", {}),
     }
+    audience = audience_summary(payload)
+    if audience:
+        site_hist["latest"]["audience"] = audience
 
 
 def _record_metric_starts(site_hist: dict, key: str, payload: dict) -> None:
@@ -1556,6 +1612,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
         "tool_runs": latest.get("toolRuns", [])[:5],
         "calc_runs": latest.get("calcByTool", [])[:5],
         "form_breakdown": latest.get("formBreakdown", [])[:6],
+        "audience": latest.get("audience"),
         "gsc": site_hist.get("gsc"),
         "proj": project(by_day, today),
         "checkout": checkout_rate(
@@ -2347,6 +2404,25 @@ def table(title: str, rows: list[dict], empty: str) -> str:
     )
     return (f"<div class='card'><h2 style='margin-top:0'>{html.escape(title)}</h2>"
             f"<table><tbody>{body}</tbody></table></div>")
+
+
+def audience_card(a: dict | None) -> str:
+    """Country, device, scroll depth and engaged time for a site whose beacon reports them (RubbleFront)."""
+    if not a:
+        return ""
+    cc = list(a["countries"])
+    if a["countryOther"]:
+        cc.append({"key": "other countries", "count": a["countryOther"]})
+    cc.append({"key": "unknown", "count": a["countryUnknown"]})
+    out = (f"<div class='card'><h2 style='margin-top:0'>Reading depth</h2>"
+           f"<p style='margin:0'>{html.escape(a['sentence'])}</p>"
+           f"<p class='fnote'>A visit is counted when it sends its once-a-visit scroll event, so visits that leave "
+           f"before it fires are missing from these three tables.</p></div>")
+    out += table("Countries (page views)", cc, "No page views recorded in this window.")
+    out += table("Devices (page views)", a["device"], "None recorded.")
+    out += table("Scroll depth, percent of page (visits)", a["scroll"], "None recorded.")
+    out += table("Time on page while visible (visits)", a["engaged"], "None recorded.")
+    return out
 
 
 def site_card(s: dict) -> str:
@@ -5397,6 +5473,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
                                 "No queries returned for this window.")
             tables += gsc_table("Search landing pages", s["gsc"]["pages"],
                                 "No pages returned for this window.")
+        tables += audience_card(s.get("audience"))
         tables += table("Top pages", s["top_paths"], "No pages recorded in this window.")
         tables += table("Top referrers", s["top_referrers"], "No external referrers recorded.")
         # Render these even when empty. "No tool runs at all this week" is a
