@@ -1,0 +1,18 @@
+{
+  "adapter": "rubblefront4",
+  "reps": 2,
+  "baseline": { "clips": "orig", "concurrency": 5, "imageFormat": "jpeg", "hw": "disable", "crf": 16 },
+  "sweeps": {
+    "concurrency": [2, 3, 4, 6, 8, 10],
+    "clips": ["gop15", "intra", "vt_intra", "prores"],
+    "imageFormat": ["png"],
+    "jpegQuality": [60, 90],
+    "hw": ["if-possible", "required"],
+    "x264Preset": ["ultrafast", "superfast", "veryfast"],
+    "gl": ["angle", "swangle"],
+    "threads": [1, 2, 4, 8],
+    "cacheMB": [512, 2048],
+    "mediaCacheMB": [1024],
+    "noParallelEncode": [true]
+  }
+}

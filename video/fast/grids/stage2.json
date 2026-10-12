@@ -1,0 +1,12 @@
+{
+  "adapter": "rubblefront4",
+  "reps": 3,
+  "baseline": { "clips": "orig", "concurrency": 5, "imageFormat": "jpeg", "hw": "disable", "crf": 16 },
+  "sweeps": {},
+  "combined": [
+    { "name": "final_gop15", "clips": "gop15", "concurrency": 5, "jpegQuality": 90, "cacheMB": 2048, "crf": 16 },
+    { "name": "final_gop15_hw", "clips": "gop15", "concurrency": 5, "jpegQuality": 90, "cacheMB": 2048, "hw": "required" },
+    { "name": "final_prores", "clips": "prores", "concurrency": 5, "jpegQuality": 90, "cacheMB": 2048, "crf": 16 },
+    { "name": "draft_half", "clips": "gop15", "concurrency": 6, "scale": 0.5, "jpegQuality": 70, "x264Preset": "ultrafast", "crf": 24 }
+  ]
+}
