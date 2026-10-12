@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>How to snap and tile windows on a Mac | Purplelink</title>
+    <meta name="description" content="How to snap and tile windows on a Mac: drag to an edge, the green button and Window menu, Fn-Control shortcuts, turning macOS tiling off, windows that will not resize, displays and Spaces, and when Rectangle, Magnet, BetterSnapTool or Panely is worth it.">
+    <link rel="canonical" href="https://purplelink.llc/guides/snap-windows-on-mac/">
+    <meta property="og:title" content="How to snap and tile windows on a Mac">
+    <meta property="og:description" content="How to snap and tile windows on a Mac: drag to an edge, the green button and Window menu, Fn-Control shortcuts, turning macOS tiling off, windows that will not resize, displays and Spaces, and when Rectangle, Magnet, BetterSnapTool or Panely is worth it.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/snap-windows-on-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/panely.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to snap and tile windows on a Mac">
+    <meta name="twitter:description" content="How to snap and tile windows on a Mac: drag to an edge, the green button and Window menu, Fn-Control shortcuts, turning macOS tiling off, windows that will not resize, displays and Spaces, and when Rectangle, Magnet, BetterSnapTool or Panely is worth it.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/panely.png">
+    <meta name="twitter:image:alt" content="How to snap and tile windows on a Mac: guide">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "How to snap and tile windows on a Mac",
+      "description": "How to snap and tile windows on a Mac: drag to an edge, the green button and Window menu, Fn-Control shortcuts, turning macOS tiling off, windows that will not resize, displays and Spaces, and when Rectangle, Magnet, BetterSnapTool or Panely is worth it.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-12",
+      "dateModified": "2026-10-12",
+      "image": "https://purplelink.llc/assets/og/panely.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/snap-windows-on-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to snap and tile windows on a Mac",
+          "item": "https://purplelink.llc/guides/snap-windows-on-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I snap a window to half the screen on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Drag it to the left or right edge until a highlighted area appears, then release. Or press Fn-Control with the left or right arrow key, or use Window, Move & Resize, Halves in the menu bar. Apple describes these in its help for macOS Sequoia 15 and later."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the keyboard shortcut to tile windows on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Apple lists Fn-Control with an arrow key for a half, Fn-Control-F to fill the desktop, Fn-Control-C to center and Fn-Control-R to return to the previous size. Adding Shift arranges two windows."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I turn off window snapping on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Open System Settings, choose Desktop & Dock, and in the Windows section switch off the drag-to-edge option. Apple's current page words it as dragging windows to the left or right edge of the screen to tile. The name differs by macOS version."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why will my window not resize when I snap it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The app sets a minimum size, or the window is fixed in size. Try a larger area such as a half, close side panels, or resize by hand to find the minimum. No window manager can override an app's limit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a third-party window manager on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not for halves and quarters. An app is worth it if you want shortcuts you choose, sixths or custom areas, saved layouts, or windows that return after a monitor is reconnected."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do Mac window managers work across Spaces?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Window managers that use macOS APIs, including Panely, work on windows in the current Space, because macOS offers no way for apps to move windows between Spaces. Some tiling managers, such as AeroSpace, instead create their own workspaces."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does Panely cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Free for 7 days, then $9.99 once, for macOS 14 or later. I make it, it is new, and this guide describes it from its own product page."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=9a8aeb6e78">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=cfa7188dde" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">How to snap and tile windows on a Mac</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-12">October 12, 2026</time></p>
+        <p class="post-lede">The built-in ways to snap windows on a current Mac, the keyboard shortcuts, how to turn tiling and drag to edges on or off, what to do when a window refuses to resize, and an honest comparison with Rectangle, Magnet, BetterSnapTool and Panely.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes one app mentioned here, <a href="/panely/">Panely</a>, sold as a free 7-day trial and then $9.99 once. The built-in steps come from Apple's help pages, which I read on October 12, 2026; the other apps are described from their own pages and listings, and I did not test them. Menu and setting names can differ between macOS versions, so where I am not sure of a path I describe it generally.</p>
+
+        <h2>The short answer</h2>
+        <p>On a current Mac, drag a window to the left or right edge to fill half the screen, or press Fn-Control with an arrow key. For quarters, use the Window menu, Move &amp; Resize, or the green button's menu. If you want sixths, your own areas, shortcuts you choose, or saved layouts, that is the point where a third-party app earns its place.</p>
+
+        <h2>Snap a window by dragging</h2>
+        <p>Per Apple's <a href="https://support.apple.com/guide/mac-help/mchlef287e5d/mac" rel="noopener">Tile windows on Mac</a> page:</p>
+        <!-- source: https://support.apple.com/guide/mac-help/mchlef287e5d/mac, 2026-10-12 -->
+        <ol>
+          <li>Drag the window toward the left or right edge of the screen, or into a corner. Dragging to the menu bar fills the desktop.</li>
+          <li>When a highlighted area appears, release. The window snaps into place.</li>
+        </ol>
+        <p>Apple also describes holding Option while dragging: press and hold Option, drag toward the top, a side or a corner, and release in the highlighted area. If you drag a window all the way through the top edge, Mission Control can open; Apple names a setting for that, "Drag windows to top of screen to enter Mission Control", in Desktop &amp; Dock settings.</p>
+
+        <h2>Snap a window from a menu</h2>
+        <ul>
+          <li><strong>Green button.</strong> Hover over the green button at the top left of the window. Apple lists Move &amp; Resize for the active window, Fill &amp; Arrange for several windows, and Full Screen. Press Option to see more layouts.</li>
+          <li><strong>Window menu.</strong> In the menu bar, choose Window, then Move &amp; Resize, and pick a layout under Halves, Quarters or Arrange. Center and Fill are also on that menu.</li>
+        </ul>
+        <!-- source: https://support.apple.com/guide/mac-help/mchlef287e5d/mac, 2026-10-12 -->
+
+        <h2>Keyboard shortcuts for snapping</h2>
+        <p>Apple's <a href="https://support.apple.com/guide/mac-help/mac-window-tiling-icons-keyboard-shortcuts-mchl9674d0b0/mac" rel="noopener">tiling shortcut list</a>, as of October 12, 2026:</p>
+        <!-- source: https://support.apple.com/guide/mac-help/mac-window-tiling-icons-keyboard-shortcuts-mchl9674d0b0/mac, 2026-10-12 -->
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">Action</th><th class="u-th" scope="col">Shortcut</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell">Fill the desktop</td><td class="u-cell">Fn-Control-F</td></tr>
+              <tr><td class="u-cell">Center the window</td><td class="u-cell">Fn-Control-C</td></tr>
+              <tr><td class="u-cell">Left, right, top or bottom half</td><td class="u-cell">Fn-Control with the matching arrow key</td></tr>
+              <tr><td class="u-cell">Return to the previous size</td><td class="u-cell">Fn-Control-R</td></tr>
+              <tr><td class="u-cell">Two windows, left and right or top and bottom</td><td class="u-cell">Fn-Control-Shift with an arrow key</td></tr>
+              <tr><td class="u-cell">One window in a half and others in quarters</td><td class="u-cell">Fn-Control-Option-Shift with an arrow key</td></tr>
+              <tr><td class="u-cell">Corner quarters</td><td class="u-cell">No shortcut on Apple's list</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>On a laptop keyboard, Fn is the key in the bottom left corner. Apple's page lists no default shortcut for corner quarters, and none for the full screen tile options.</p>
+
+        <h2>Turn macOS tiling and drag to edges on or off</h2>
+        <p>Per Apple's <a href="https://support.apple.com/guide/mac-help/mchl118087b0/mac" rel="noopener">tiling settings page</a>, open System Settings, choose Desktop &amp; Dock in the sidebar (scroll down if you need to), and open the Windows section. The options listed there on the current page are:</p>
+        <!-- source: https://support.apple.com/guide/mac-help/mchl118087b0/mac, 2026-10-12 -->
+        <ul>
+          <li>Drag windows to left or right edge of screen to tile</li>
+          <li>Drag windows to menu bar to fill screen</li>
+          <li>Hold ⌥ key while dragging windows to tile</li>
+          <li>Tiled windows have margins</li>
+        </ul>
+        <p>Switch each on or off to taste. The wording differs between versions; Apple's page has separate versions for macOS Sequoia 15, Tahoe 26 and macOS 27, and an older version words the first option as dragging windows to screen edges. If you cannot find an option by name, look in the same Windows section for the one that mentions edges or tiling.</p>
+        <p>Turn off the drag option if you add a third-party manager that also snaps on drag. Panely's page says that with both on, a drag to an edge may be snapped twice, and its Settings tells you when macOS's edge tiling is on and opens the right pane.</p>
+
+        <h2>When a window will not resize</h2>
+        <p>A snap asks the window's app to take a size. Apps set their own minimum, and some windows, such as many dialogs and settings panes, do not resize at all. Neither Apple nor the third-party apps can override that; What you will see is a window that lands smaller or larger than the area, or in a slightly different spot.</p>
+        <ol>
+          <li><strong>Try a larger area.</strong> A window with a wide minimum will not fit a quarter or a third but will fit a half.</li>
+          <li><strong>Drag its edge by hand</strong> to find out how small it will go. If it stops, that is the app's minimum.</li>
+          <li><strong>Close side panels and toolbars</strong> in the app, which can lower the minimum width.</li>
+          <li><strong>Check the app's own settings</strong> for a compact or mini view.</li>
+          <li><strong>Check that the window is not full screen.</strong> Windows in macOS full screen are managed by macOS itself, so a third-party app will not snap them.</li>
+        </ol>
+
+        <h2>Multiple displays and Spaces</h2>
+        <p>Apple's tiling pages that I read do not cover multiple displays or Spaces, so I will not describe them in detail. In practice, drag the window to an edge of the display you want it on.</p>
+        <p>Third-party apps differ here. Magnet's site says it supports up to six external displays and Rectangle has next and previous display actions. Panely moves a window to the next or previous display keeping its proportions, orders displays left to right, and works on the windows you can see in the current Space; macOS gives apps no way to move windows between Spaces, so it does not. AeroSpace takes the opposite approach and reimplements Spaces as its own workspaces.</p>
+        <!-- source: https://magnet.crowdcafe.com, 2026-10-12 --><!-- source: https://github.com/rxhanson/Rectangle, 2026-10-12 --><!-- source: https://nikitabobko.github.io/AeroSpace/guide, 2026-10-12 -->
+
+        <h2>When a third-party manager is worth it</h2>
+        <p>The built-in tools are enough for halves, quarters and the occasional fill. Consider an app when you want any of these:</p>
+        <ul>
+          <li>Shortcuts you choose, and shortcuts for thirds, sixths or two thirds.</li>
+          <li>Your own areas, such as a reading column in the middle of the screen.</li>
+          <li>A saved arrangement you can apply in one step.</li>
+          <li>Windows that go back where they were when you reconnect a monitor.</li>
+          <li>Margins and gaps you set yourself.</li>
+          <li>Apps that should never be moved.</li>
+        </ul>
+        <p>If you want windows arranged for you instead, that is a different kind of tool, covered in the <a href="/guides/best-window-managers-for-mac/">comparison of Mac window managers</a>.</p>
+
+        <h2>Built in versus Rectangle, Magnet, BetterSnapTool and Panely</h2>
+        <p>An honest side by side, from vendor pages and listings read on October 12, 2026. I did not test any of them.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">App</th><th class="u-th" scope="col">Price model</th><th class="u-th" scope="col">What it adds over macOS</th><th class="u-th" scope="col">What it does not do, per the pages I read</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell"><strong>Rectangle</strong></td><td class="u-cell">Free, open source; Pro is a one-time license</td><td class="u-cell">Repeat-to-cycle sizes, extra positions, next and previous display, restore, per-app disabling; Pro adds custom snap areas and arranging apps when displays connect</td><td class="u-cell">Free app: saved arrangements not described</td></tr>
+              <tr><td class="u-cell"><strong>Magnet</strong></td><td class="u-cell">$4.99 on the Mac App Store</td><td class="u-cell">Customizable shortcuts, thirds, custom commands, up to six external displays, vertical screens</td><td class="u-cell">Restore and saved layouts not described</td></tr>
+              <tr><td class="u-cell"><strong>BetterSnapTool</strong></td><td class="u-cell">$1.99 on its Mac App Store listing, with in-app purchases</td><td class="u-cell">Custom snap areas, customizable shortcuts, modifier-key moving</td><td class="u-cell">Saved arrangements not described</td></tr>
+              <tr><td class="u-cell"><strong>Panely (mine)</strong></td><td class="u-cell">$9.99 once, 7-day trial</td><td class="u-cell">Sixths and two thirds, recordable shortcuts, up to twelve custom areas, saved and described layouts, an automatic layout per set of displays, ignored apps</td><td class="u-cell">Mac only, macOS 14 or later, no automatic tiling, does not move windows between Spaces</td></tr>
+            </tbody>
+          </table>
+        </div>
+<!-- source: https://rectangleapp.com, 2026-10-12 --><!-- source: https://github.com/rxhanson/Rectangle, 2026-10-12 --><!-- source: https://rectangleapp.com/pro, 2026-10-12 --><!-- source: https://apps.apple.com/us/app/magnet/id441258766?mt=12, 2026-10-12 --><!-- source: https://magnet.crowdcafe.com, 2026-10-12 --><!-- source: https://apps.apple.com/us/app/bettersnaptool/id417375580?mt=12, 2026-10-12 --><!-- source: https://folivora.ai/bettersnaptool, 2026-10-12 -->
+        <p><strong>Where the others are stronger than Panely:</strong> Rectangle is free and open source, Magnet and BetterSnapTool cost less, and all three have been around longer. <strong>What Panely is for:</strong> snapping with shortcuts you record, custom areas stored as fractions of the screen so they fit any display, and layouts that come back after a monitor is reconnected, for one $9.99 payment. It needs macOS 14 or later and the Accessibility permission, which is the permission any app needs to move other apps' windows. You can switch it off again in System Settings, Privacy &amp; Security, Accessibility.</p>
+
+        <h2>Quick picks</h2>
+        <ul>
+          <li><strong>Halves and quarters only?</strong> The built-in tools.</li>
+          <li><strong>Want more, free?</strong> Rectangle.</li>
+          <li><strong>Want custom snap areas at a low price?</strong> BetterSnapTool or Magnet.</li>
+          <li><strong>Want saved layouts and per-monitor memory?</strong> Panely, or Rectangle Pro.</li>
+        </ul>
+
+        <h2 id="faq">Frequently asked</h2>
+        <h3>How do I snap a window to half the screen on a Mac?</h3>
+        <p>Drag it to the left or right edge until a highlighted area appears, then release. Or press Fn-Control with the left or right arrow key, or use Window, Move &amp; Resize, Halves in the menu bar. Apple describes these in its help for macOS Sequoia 15 and later.</p>
+        <h3>What is the keyboard shortcut to tile windows on a Mac?</h3>
+        <p>Apple lists Fn-Control with an arrow key for a half, Fn-Control-F to fill the desktop, Fn-Control-C to center and Fn-Control-R to return to the previous size. Adding Shift arranges two windows.</p>
+        <h3>How do I turn off window snapping on a Mac?</h3>
+        <p>Open System Settings, choose Desktop &amp; Dock, and in the Windows section switch off the drag-to-edge option. Apple's current page words it as dragging windows to the left or right edge of the screen to tile. The name differs by macOS version.</p>
+        <h3>Why will my window not resize when I snap it?</h3>
+        <p>The app sets a minimum size, or the window is fixed in size. Try a larger area such as a half, close side panels, or resize by hand to find the minimum. No window manager can override an app's limit.</p>
+        <h3>Do I need a third-party window manager on a Mac?</h3>
+        <p>Not for halves and quarters. An app is worth it if you want shortcuts you choose, sixths or custom areas, saved layouts, or windows that return after a monitor is reconnected.</p>
+        <h3>Do Mac window managers work across Spaces?</h3>
+        <p>Window managers that use macOS APIs, including Panely, work on windows in the current Space, because macOS offers no way for apps to move windows between Spaces. Some tiling managers, such as AeroSpace, instead create their own workspaces.</p>
+        <h3>What does Panely cost?</h3>
+        <p>Free for 7 days, then $9.99 once, for macOS 14 or later. I make it, it is new, and this guide describes it from its own product page.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/best-window-managers-for-mac/">Best window managers for Mac (2026)</a>: the full comparison, including tiling managers.</li>
+          <li><a href="/panely/">Panely</a>: the Purplelink Mac menu-bar window manager.</li>
+          <li><a href="/guides/mac-privacy-permissions-explained/">Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?</a>: what Accessibility allows.</li>
+          <li><a href="/products/">All products</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=b8ce8097c2" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

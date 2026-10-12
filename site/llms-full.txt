@@ -7482,6 +7482,889 @@ Yes. Keyfeel is Purplelink's Mac menu-bar app: free for 7 days, then $9.99 once 
 
 ---
 
+Source: https://purplelink.llc/guides/best-alfred-alternatives-for-mac/
+Title: Best Alfred alternatives for Mac (2026) | Purplelink
+
+← All guides
+
+Comparison
+
+# Best Alfred alternatives for Mac (2026)
+
+By Benjamin Ampel · October 12, 2026
+
+Launchers and file search apps for the Mac, compared. Short version: Alfred and Raycast are stronger if you want workflows, extensions or AI, Quicksilver is the free one, LaunchBar and Summonly are the one-time-price options, and Spotlight now does more than it used to.
+
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Summonly, a launcher and file search app sold as a free 7-day trial and then $9.99 once. It is new, it does less than Alfred and Raycast in several ways, and where another app is the better choice I say so.
+
+I did not install or test Alfred, Raycast, LaunchBar, Quicksilver or Keyboard Maestro for this guide. Everything about them is read from the vendors' own pages on October 12, 2026, and where a page did not say something I write "not stated" instead of guessing. Prices and features change, so check the vendor page before you buy. Summonly is described from its own product page, not from a test against the others.
+
+## The short answer
+
+If you want workflows and a large library of add-ons, stay with Alfred or try Raycast. If you want something plainer, Quicksilver is free, LaunchBar has a trial and Summonly has a one-time price and focuses on file search. If your real goal is macros that press keys and run steps for you, that is Keyboard Maestro, which is a different job from a launcher. Spotlight, already on your Mac, now covers launching, a calculator, unit conversion and clipboard history, so check it before paying for anything.
+
+The first table compares price model and platform. The second compares the apps job by job.
+
+## Price model and platform side by side
+
+"Not stated" means the vendor page I read did not say. Alfred's prices are shown in pounds because that is how the page lists them.
+
+AppPrice modelFree tierPlatformNotable limit
+
+AlfredFree core; Powerpack at £34 (Single License) or £59 (Mega Supporter, free lifetime upgrades) per its pageYes, "free forever" coremacOS 10.14 or later, Intel and Apple siliconClipboard history, snippets and workflows need the Powerpack
+
+RaycastFree; Pro $10 a month or $96 a year; higher tiers above thatYes, with clipboard history limited to 3 months and no AImacOS; the site also has Windows and iOS pagesAI, cloud sync and unlimited clipboard history are Pro
+
+LaunchBarBuy link on the page, no amount shown; 30-day trialAfter the trial it keeps working, with occasional prompts to take a break, per the pageNot statedI could not read a price on the page
+
+QuicksilverFree and open sourceEverything is freemacOS; no minimum version statedFeatures come from plugins
+
+Keyboard MaestroUS$36 once for version 11, no subscriptionFree trial; length not statedmacOS 10.13 or laterAn automation tool, not a launcher first
+
+SpotlightBuilt into macOSIncludedmacOSNo workflows or extensions described on Apple's page
+
+Summonly (mine)$9.99 once, updates included7-day trial of the full app, no accountmacOS 14 or laterNo workflows or extensions; new
+
+## Which app does which job
+
+One row per job. Where a cell says "Yes", the vendor page lists it; "Not stated" means it was not on the pages I read, which is not the same as "no". For Alfred, the Powerpack is noted where its pages say a feature needs it.
+
+JobAlfredRaycastLaunchBarSpotlightQuicksilverKeyboard MaestroSummonly
+
+Launch appsYesYesNot stated on the page I readYesYesYes, as one action among manyYes, with abbreviations such as vsc
+
+File searchYes; File Filters need the PowerpackYesNot statedYesOpens files; search depth not statedNot its jobYes, in folders you choose, with operators
+
+Clipboard historyYes; PowerpackYes; 3 months on Free, unlimited on ProYesYes, per Apple's page for macOS 27Yes, as a pluginYesYes, off until you turn it on
+
+SnippetsYes; PowerpackYesYesNot statedNot statedNot stated on the page I readYes, copied for you to paste
+
+CalculatorYesYesYesYes, with unit and currency conversionYes, as a pluginNot statedYes, with unit conversion
+
+Web searches by keywordYes, default and customNot stated on the pages I readYesNot statedNot statedNot statedYes, plus a Google button and Claude and ChatGPT rows
+
+Workflows or extensionsWorkflows, which need the PowerpackThousands of extensions; you can write your ownScript-based actionsNot describedHundreds of pluginsMacros are the whole productNo
+
+AI featuresNot statedYes, on ProNot statedA Siri AI beta, with device, language and region limitsNot statedNot statedNo built-in AI; rows that open Claude or ChatGPT in your browser
+
+Price modelFree core, paid PowerpackFree, monthly or yearly ProTrial, then paid; no amount statedIncludedFree, open sourceUS$36 once$9.99 once
+
+Free tierCore, no time limitYesUsable after the trial, per the pageIncludedAll of itTrial only7-day trial only
+
+One correction to a common assumption: Spotlight is no longer only a file finder. Apple's page for macOS 27 lists calculations, unit and currency conversion, word definitions and clipboard history. If those were your reasons for leaving it, test the current version first.
+
+## What these apps do, and what they do not
+
+A launcher is a box you open with a shortcut, type into, and press Return. The differences that matter are these.
+
+- How much you can extend it. Alfred has workflows, Raycast has a store of extensions, Quicksilver has plugins, LaunchBar has script actions. Summonly has none of these.
+
+- What you pay for, and when. A free core with a paid upgrade, a subscription for the extras, a one-time price, or free.
+
+- How it finds files. Some tools use Spotlight's index and some keep their own; the vendor pages I read mostly did not say. Summonly keeps its own index of the folders you choose.
+
+- Whether it is a launcher at all. Keyboard Maestro runs macros; it overlaps with launchers but solves another problem.
+
+## The shortlist
+
+- Alfred: free core, paid Powerpack for workflows, clipboard history and snippets.
+
+- Raycast: free, with a store of extensions and a paid Pro tier that adds AI.
+
+- LaunchBar: the long-running paid launcher, with a trial and script actions.
+
+- Spotlight: already installed, and wider than it was.
+
+- Quicksilver: free, open source, plugin based.
+
+- Keyboard Maestro: macros, US$36 once.
+
+Summonly is not on the shortlist because I make it; it has its own section below. Then how to choose and a short FAQ.
+
+## Alfred
+
+Cost: the core is free, and the page says it is free to use forever. The Powerpack page lists £34 for a Single License and £59 for a Mega Supporter license with free lifetime upgrades, and says a purchase includes a free upgrade to Alfred 6. Platform: the home page lists macOS 10.14 or later, Intel and Apple silicon.
+
+Alfred launches apps and finds files from the keyboard. Its home page lists clipboard history for text, images, file paths and color codes, snippets that expand anywhere, a calculator, and web searches with default and custom keywords. Its clipboard and snippet help pages say those features are part of the Powerpack, and the file search page names File Filters as a Powerpack feature. The page describes the Powerpack as adding workflows and themes.
+
+Where Alfred is stronger than Summonly: workflows. You can build or import them to chain steps together, and Summonly has nothing like that. Alfred also has custom themes. What I did not find: a stated AI feature, or a stated price in dollars. Pick it if you want to automate small tasks from the search box and do not mind buying the Powerpack.
+
+## Raycast
+
+Cost: the pricing page lists Free at $0 and Pro at $10 a month or $96 a year, with Plus and Max tiers above Pro. Platform: a macOS download, and the site also has Windows and iOS pages.
+
+Raycast describes itself as an extendable launcher. The home page lists file search, clipboard history, snippets, a calculator, window management, and a Store with thousands of extensions that developers can add to. Free includes core features and extensions, and clipboard history for 3 months. Pro lists unlimited clipboard history, Raycast AI with monthly credits, cloud sync, dictation, custom themes and a translator. Its clipboard page says the content never leaves your computer and is encrypted on your local drive.
+
+Its file search page says searching external drives needs Full Disk Access.
+
+Where Raycast is stronger than Summonly: extensions, AI, and a free tier. Those are the clearest gaps between it and Summonly. What I did not find: keyword web searches on the pages I read, so check before you rely on them. Pick it if you want extensions or AI built into the launcher, or you also work on Windows.
+
+## LaunchBar
+
+Cost: the product page shows Buy and Free Download links and no amount. It offers a 30-day trial, and says that afterward LaunchBar can be used for free with no time limit, though it occasionally suggests taking a short break. Platform: not stated on that page.
+
+LaunchBar searches your desktop or the web and shows suggestions from Google, Wikipedia and DuckDuckGo. The page lists a clipboard history, a snippet manager, a calculator and a script runner, and says custom actions can be written in AppleScript, JavaScript, Ruby, Python or PHP.
+
+What I did not find: a price or a macOS requirement. Pick it if you want a long-established launcher with script actions and can try it for 30 days.
+
+## Spotlight
+
+Cost: included with macOS. Open it: Command-Space.
+
+Apple's page describes it as finding apps, files, emails, messages and more. It lists calculations, unit and currency conversion, word definitions and a clipboard history, and a Siri AI beta with device, language and region requirements. Results can be previewed with the space bar and opened with Return, and Tab shows quick actions for a result.
+
+Because it is built in, it needs no install and no new permission. It does not offer workflows or extensions on the page I read. Pick it if your needs are launching, quick sums and finding things, and you have not tried the current version for them.
+
+## Quicksilver
+
+Cost: free and open source; the page says "free forever". Platform: macOS, with no minimum version on the page.
+
+Quicksilver launches apps, opens files and reaches bookmarks from the keyboard, runs actions such as moving, copying, emailing or compressing files, and learns your habits. The page says hundreds of plugins extend it, and names Calculator and Clipboard and Shelf among them, along with Browsers, Calendar and Reminders, Emojis and Image Manipulation.
+
+What I did not find: a stated macOS requirement. Pick it if you want a free, open source launcher and are happy to assemble features from plugins.
+
+## Keyboard Maestro
+
+Cost: the page lists US$36 once for version 11, with no subscription, and a free trial. Platform: macOS 10.13 or later.
+
+This is not an Alfred alternative in the strict sense; it is the tool you add when you want the Mac to do steps for you. The page describes it as automation software that works on applications, web sites, text and images, on command or on a schedule. It can launch apps and arrange their windows, and it lists a clipboard history with several entries.
+
+Pick it if you want macros that press keys and move data for you. You can run it next to a launcher, so it does not have to replace one.
+
+## Summonly (Purplelink's)
+
+Cost: free for 7 days, the complete app with no account, then $9.99 once with every update included. One license key works on two of your Macs. Platform: macOS 14 or later. I make it, it is new, and it is described here from its product page, not from a test against the others.
+
+Press Option-Space, type, press Return. Summonly keeps a small index of the folders you choose, on your Mac, and finds files, folders and apps by name. It reads the start of text, code and Markdown files and RTF files, the first pages of PDFs, and the text of Word, Excel, PowerPoint and OpenDocument files. Pages and Keynote files are found by name only.
+
+Searches can be precise: quotes for a phrase, a minus sign to leave a word out, OR between words, and filters such as kind:pdf, name:budget and size:>5mb. An optional question search, off until you turn it on, reads inside your documents and answers a question with the file and the passage. It finds the words you use, so a question worded very differently from the document is found less often.
+
+Around that it has the usual launcher extras: a calculator with unit conversions, quick tools for UUIDs, hashes and encodings, system commands such as sleep and screen saver, web search keywords, a Google button, and rows that open a prompt in Claude or ChatGPT in your browser. Snippets fill in the date, the time and the clipboard, and Summonly copies the snippet for you to paste. Clipboard history is off until you turn it on and skips password managers and text that looks like a secret. A tool in Settings explains why a given file is not found.
+
+What it is not: it has no workflows, scripts or extensions in this version, no AI of its own, no Mail, Messages, Contacts or Calendar search, no sync and no Windows or iPhone version. Alfred and Raycast are clearly stronger on workflows, extensions and plugin ecosystems, and Raycast on AI.
+
+Pick Summonly if you want finding, opening, copying and calculating from one box, a single price, and an index that stays on your Mac, and you do not need to automate anything. macOS asks permission before it reads Desktop, Documents and Downloads, and it does not need Full Disk Access.
+
+## Also worth knowing
+
+- You may not need to leave Spotlight. Check its calculator, conversions and clipboard history on your version of macOS before you pay.
+
+- A launcher is not always a file search tool. Some tools use Spotlight's index and some keep their own, and the vendor pages I read mostly did not say which. If Spotlight misses files, the guide on finding files on a Mac when Spotlight cannot covers the causes and the tools built for that.
+
+- Raycast and Alfred prices are not directly comparable. One lists a subscription in dollars, the other lists a one-time license in pounds. Compare over the years you expect to use it.
+
+- Permissions differ. Raycast's file search page mentions Full Disk Access for external drives; Alfred's clipboard page says it needs Accessibility. Read what each app asks for before you grant it. The permissions guide explains what those allow.
+
+## Quick picks
+
+- Want workflows? Alfred with the Powerpack.
+
+- Want extensions or AI? Raycast.
+
+- Want free and open source? Quicksilver, or Spotlight.
+
+- Want a one-time price? Summonly if file search is the point, or LaunchBar if you prefer a long-established app and its trial suits you.
+
+- Want macros? Keyboard Maestro, alongside any of the above.
+
+## How to choose
+
+- Write down what you actually open it for. If the list is apps, files and sums, almost everything here works and Spotlight may be enough.
+
+- Decide whether you want to build things. If yes, Alfred, Raycast, Quicksilver or LaunchBar. If no, the simpler apps are enough.
+
+- Pick a price model you will accept. Free core plus paid upgrade, subscription, one-time, or free.
+
+- Check the permissions it asks for. An app that sees your files and clipboard should say what it reads, where it keeps it and what it sends.
+
+- Use the trial. LaunchBar has 30 days, Summonly 7, Keyboard Maestro a free trial of unstated length, and Alfred and Raycast have free tiers. A launcher is a daily habit, so a week shows whether it fits.
+
+- Download from the vendor. Use the vendor's own site, not a search ad.
+
+## Frequently asked
+
+### What is the best Alfred alternative for Mac?
+
+It depends on what you use Alfred for. For workflows, there is no like-for-like replacement here. For extensions and AI, Raycast, which has a free tier and a Pro plan at $10 a month or $96 a year per its pricing page. For a free, open source launcher, Quicksilver. For a one-time price and file search with no workflows, LaunchBar or Summonly, which I make. I read vendor pages and did not test any of them.
+
+### Is Raycast free?
+
+There is a free plan, which Raycast's pricing page lists at $0 with core features, extensions and 3 months of clipboard history. Raycast AI, cloud sync and unlimited clipboard history are on the Pro plan, which the page lists at $10 a month or $96 a year.
+
+### How much is Alfred?
+
+The core is free. Alfred's Powerpack page lists £34 for a Single License and £59 for a Mega Supporter license with free lifetime upgrades, in pounds. Clipboard history, snippets and workflows are part of the Powerpack, per Alfred's own pages.
+
+### Is Spotlight enough instead of Alfred?
+
+For launching apps, sums, unit conversion and clipboard history it may be. Apple's page for macOS 27 lists calculations, unit and currency conversion, definitions and clipboard history. It does not describe workflows or extensions, which is the main reason to choose Alfred or Raycast.
+
+### Is there a one-time-price launcher for Mac?
+
+Yes. LaunchBar has a buy option and a 30-day trial, though I could not read a price on its page. Summonly, which I make, is free for 7 days and then $9.99 once. Keyboard Maestro is US$36 once but is an automation tool. Quicksilver is free.
+
+### What does Summonly not do compared with Alfred or Raycast?
+
+It has no workflows, scripts or extensions, no AI of its own, no Mail, Messages, Contacts or Calendar search, and no Windows version. It finds files, apps and clipboard history, answers sums and conversions, and runs web searches from a keyword. Alfred and Raycast are stronger for anything you want to automate or extend.
+
+### Is Keyboard Maestro an Alfred alternative?
+
+Only partly. Keyboard Maestro is automation software for building macros, priced at US$36 once on its page. It can launch apps, but it is not built around a search box. It can run alongside a launcher.
+
+## Related guides
+
+- Summonly: the Purplelink Mac launcher and file search app described above.
+
+- How to find files on a Mac when Spotlight cannot: why Spotlight misses files and which tools find them.
+
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what the permissions a launcher asks for allow.
+
+- Best keyboard sound apps for Mac: the same kind of comparison, for another Purplelink app.
+
+- Purplelink's privacy page, all products and all guides.
+
+
+---
+
+Source: https://purplelink.llc/guides/find-files-on-mac-when-spotlight-cant/
+Title: How to find files on a Mac when Spotlight cannot | Purplelink
+
+← All guides
+
+How-to
+
+# How to find files on a Mac when Spotlight cannot
+
+By Benjamin Ampel · October 12, 2026
+
+A how-to for the common case where a file is on your Mac but Spotlight does not show it: the causes, how to check and fix each one, and the other ways to search.
+
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Summonly, sold as a free 7-day trial and then $9.99 once. It is new, it searches only the folders you choose, and where another tool is the better fit I say so.
+
+The Spotlight steps come from Apple's Mac User Guide pages, read on October 12, 2026, where Apple's current pages are written for macOS 27. I checked the Terminal commands on a Mac running macOS 27 on the same day. Third-party tools are described from their own pages, which I read on October 12, 2026, and I did not install or test them. Menu names change between macOS versions, so where I am not sure of the exact wording I describe the path in general terms and say so.
+
+## The short answer
+
+When Spotlight cannot find a file, the cause is usually one of six things: the folder is on Spotlight's exclusion list, the index is stale, the file is on an external or network volume, the file is a placeholder that is only in iCloud, the file's text cannot be read by Spotlight, or the file lives in a place Spotlight leaves out, such as the Library folder. Each has a check that takes under a minute. If you only need the file today, search from Finder with a Kind filter, or use a tool that does not depend on the Spotlight index, such as Find Any File or EasyFind.
+
+Below: a table of the causes, the steps for each, then the options compared.
+
+## Why Spotlight misses files
+
+CauseHow to checkFix
+
+Folder excludedSystem Settings, Spotlight, Search Privacy: is the folder or disk in the list?Select it and click the minus button
+
+Stale or broken indexSearch for a file you just made; mdutil -s / in Terminal shows indexing statusAdd and remove the folder in Search Privacy, or sudo mdutil -E /
+
+Result category switched offSystem Settings, Spotlight: the lists of what results appearTurn the category back on
+
+External or network volumemdutil -s /Volumes/NameTurn indexing on for the volume, or use a tool that searches without the index
+
+iCloud placeholderA cloud icon beside the file in FinderControl-click, Download Now
+
+Text not readableA scanned PDF or an unusual format: search by name finds it, search by text does notSearch by name, or run OCR first
+
+Hidden or system locationThe file is in Library, a system folder or a hidden folderUse Finder with Go to Folder, or a tool that searches those places
+
+## Step by step
+
+### 1. Try Finder before anything else
+
+Open a Finder window, press Command-F or click the search field, and type part of the name. Under the typed text, choose whether to search This Mac or only the current folder, because a search limited to a folder that does not contain the file looks like a missed file. The exact words in that bar can differ by macOS version.
+
+### 2. Check Search Privacy
+
+Apple's guide for macOS 27 says: open System Settings, click Spotlight in the sidebar (you may need to scroll), then click Search Privacy in the lower-right corner. The list shows folders and disks Spotlight is not allowed to search. To include one again, select it and click the Remove button (minus sign). On macOS 14, Apple's guide places this under Siri & Spotlight, with the button labeled Spotlight Privacy. If an old backup disk, a work folder or your whole drive is in that list by mistake, that is your answer.
+
+Apple's page warns that excluding files or folders can stop update notifications for some apps, and excluding your whole internal disk stops them completely.
+
+### 3. Check which results Spotlight shows
+
+In System Settings, Spotlight, Apple's macOS 27 guide lists Results from Apps and Results from System, where you turn on the apps and system items you want in results. A file type or app whose results are off will not appear. Older versions of macOS used a single list of search result categories, and the wording differs, so look for a list of checkboxes in the same Spotlight settings.
+
+### 4. Rebuild the index for one folder
+
+Apple's article on rebuilding the index says to use System Settings, Spotlight (or Siri & Spotlight on some versions), then the Search Privacy (or Spotlight Privacy) button at the bottom. Add the disk or folder to the list, wait a few seconds, select what you added and click the minus button, then click Done and quit System Settings. Spotlight then reindexes it, which can take time and may show a progress indicator in the Spotlight window. If you get an "unknown" or permissions error, Apple says your account may lack ownership of some items in that folder.
+
+In Terminal, mdutil -s / prints the indexing status of the startup volume, and sudo mdutil -E / erases and rebuilds its index. Those options are in the mdutil usage text on macOS 27 as of October 12, 2026. Apple notes that reindexing can take some time, so try one folder first.
+
+### 5. External drives and network shares
+
+Spotlight keeps an index per volume. Run mdutil -s /Volumes/YourDrive to see whether a mounted volume is indexed, and sudo mdutil -i on /Volumes/YourDrive to turn it on; the usage text lists -i (on|off) to turn indexing on or off. I am not certain which volume formats and network shares Spotlight will index on every version, so if the status says indexing is disabled and turning it on does not help, use a tool that searches without the index. Also check that the drive is not in Search Privacy.
+
+### 6. iCloud placeholders
+
+With Optimize Mac Storage on, older iCloud Drive files can be kept only in iCloud and show a cloud icon in Finder. Apple's guide says you need an internet connection to open them unless you download them first: Control-click the file and choose Download Now. To stop a folder or file being removed from your Mac, Control-click it and choose Keep Downloaded. Apple puts the setting under your name in System Settings, then iCloud, then Drive. Until it is downloaded, its contents are not on your Mac, so a search for words inside it can fail.
+
+### 7. Files whose text cannot be read
+
+Spotlight finds a file by its name and details, and by its text when it can read the format. A scanned PDF is a picture of a page with no text underneath, so searching for a word on it finds nothing. If you can find the file by name but not by a phrase inside it, this is the likely cause. The fix is to search by name, or to run OCR on the PDF first. Which other formats Spotlight can read varies, so I will not list them.
+
+### 8. Library, system and hidden folders
+
+Find Any File's page says it can find files in folders that are usually excluded from Spotlight search, such as the System and Library folders. If the file you want is in one of those, or in a hidden folder, Spotlight is not the tool. In Finder you can open the Library folder with Go to Folder from the Go menu, and show hidden files with Command-Shift-Period.
+
+## Searching better with what is already on your Mac
+
+### Finder search and its operators
+
+Apple's page on narrowing Finder search results describes two ways. Type a search, press Return, click the Add button below the search field, and choose Kind from the first pop-up menu and a type such as Document or Image from the second. Or type a keyword in the field: "New York City kind:images" is Apple's example, and the page has a table with kind:pdf, kind:folder and kind:email. Each criterion narrows the results, and an item must match all of them. For AND, OR and NOT, Apple says to hold Option and click the More button; a minus sign before a term excludes it. Keyword names vary slightly between macOS versions.
+
+### Spotlight syntax
+
+The Spotlight window accepts the same kind of keywords. Apple's page documents kind:. The ones people use beyond it, such as name: and date:, I did not find on an Apple page I read, so test them on your version. On macOS 27, a command line check with mdfind -interpret "name:index" matched a file by name on one Mac, which shows the Spotlight parser accepts name:. A bare word searches names and text, so a name search is narrower and quieter when you know the file name.
+
+### Terminal: mdfind
+
+mdfind queries the same Spotlight index from Terminal. The macOS 27 manual page lists these options: -onlyin dir to limit the search to a folder, -name fileName for matching file names only, -count for the number of matches, -literal and -interpret for how the query is read, and -0 for NUL-separated output. Two forms of the command, which I ran on macOS 27 with other folders and names:
+
+mdfind -onlyin ~/Documents -name invoice
+mdfind -onlyin ~/Documents "kMDItemContentType == 'com.adobe.pdf'"
+
+The first lists files in Documents whose names match; the second lists PDFs. If a file does not appear here, it is not in the Spotlight index, whatever the Spotlight window shows. That is a useful way to separate "Spotlight did not index it" from "I typed the wrong thing".
+
+## Options when Spotlight is not enough
+
+"Not stated" means the vendor page I read did not say. Prices are as each page lists them on October 12, 2026.
+
+OptionPriceIndexGood forNotable limit
+
+Finder searchIncludedNot stated on the pageKind filters, several criteria, minus and BooleanMenu names vary by version
+
+SpotlightIncludedIts own indexQuick lookups, calculator, clipboardCan miss files for the reasons above
+
+mdfindIncludedThe Spotlight indexChecking what is indexedTerminal only
+
+HoudahSpotNot stated on the page; trial offeredBuilds on SpotlightCombining many criteria, saved templatesSpotlight indexing must be on
+
+Find Any File6 USD on its page; also on the Mac App StoreNot statedFolders Spotlight leaves out; exact propertiesAdmin password for its full-disk mode
+
+EasyFindFreeDoes not require indexingName, content, tags, comments; regular expressionsIts page does not describe speed or limits
+
+AlfredFree core; Powerpack for File FiltersNot statedKeyword file search from the launcherPowerpack for custom filters
+
+RaycastFree and paid plansNot statedRecent files, then actions on a resultExternal drives need Full Disk Access
+
+Summonly (mine)$9.99 once; 7-day trialIts own index of folders you chooseFast name and text search with operators; a tool that says why a file is missingNot Mail, Messages, Contacts or Calendar; macOS 14 or later
+
+## HoudahSpot
+
+The product page calls it an advanced file search app that builds on Spotlight. You start with a simple search and refine it by adding and combining criteria such as name, text content, file extension, tags, dates, file size, resolution and author, and you can save searches as templates. It offers a free trial and a Buy Now link, with no amount or trial length on the page, and says it requires macOS 10.14 or newer with Spotlight indexing enabled. Because it builds on Spotlight, it cannot find what the index never saw, so the checks above still apply. Pick it if your problem is too many results, not missing ones.
+
+## Find Any File
+
+The page says it lets you search for files on your disks by properties such as name, extension, date range, size and kind, and that it is not meant to replace Spotlight and can find files Spotlight does not, including in folders usually excluded from Spotlight, such as the System and Library folders. It lists a price of 6 USD, with a Mac App Store option, and shareware you can try first. It says it can find text in plain text and in zip files including Word and Excel, and in PDFs if Spotlight has indexed them. Holding Option and choosing Find All starts a root mode that asks for an administrator password and covers local volumes, including other users' home folders, but not network mounts. The page lists macOS 10.11 to 27. Pick it if the file is somewhere Spotlight never looks.
+
+## EasyFind
+
+Listed on DEVONtechnologies' freeware page as a free utility. It can search by name, content, tags or comments, and supports Boolean operators, wildcards, phrases and regular expressions. The page says it does not require indexing and that version 5.0.2 requires OS X El Capitan or later. Pick it if you want a free tool with regular expressions and no dependence on the Spotlight index.
+
+## Alfred and Raycast
+
+Both are launchers that can find files. Alfred's file search page lists keywords: open to open a file, find to reveal it in Finder, and in to search inside file contents. It describes File Filters, for custom searches by file type or scope, as a Powerpack feature. Raycast's file search page says it helps you find documents and see recently opened files, with actions such as copying the path or opening in Finder, and that searching external drives needs Full Disk Access. Neither page says which index it uses. The Alfred alternatives guide compares them with other launchers.
+
+## Summonly (Purplelink's)
+
+Cost: free for 7 days, the complete app, then $9.99 once. Platform: macOS 14 or later. I make it, and this is described from its product page rather than from a test against the others.
+
+Summonly keeps its own small index of the folders you choose, by default Desktop, Documents, Downloads and your Applications folders, or your whole home folder if you choose it, with Library and the Trash always left out. Press Option-Space and type. It finds files, folders and apps by name, reads the start of text, code and Markdown files and RTF files, the first pages of PDFs, and the text of Word, Excel, PowerPoint and OpenDocument files. Pages and Keynote files are found by name only.
+
+It supports the operators this guide has been describing: quoted phrases, a minus sign to leave a word out, OR, name: and size:, and filters such as kind:pdf, ext:docx, in:Documents and modified:week. An optional question search, off until you turn it on, reads inside documents and shows the file and passage; it finds the words you use and can miss a question worded very differently from the document.
+
+The part that matches this guide is the check in Settings. Choose a file and Summonly says whether it is indexed and, if not, which rule applies: outside your folders, hidden, inside a build folder, left out by you, in iCloud and not downloaded, or too large to read inside. A file on a drive that is not connected is hidden and comes back when the drive does. It does not need Full Disk Access, and macOS asks permission before it reads Desktop, Documents and Downloads.
+
+What it does not do: it does not search Mail, Messages, Contacts or Calendar, and it will not find a file outside the folders you gave it. Spotlight searches more kinds of content than Summonly does. Pick it if the files are in your own folders and you want fast, precise search and a clear reason when one is missing.
+
+## Quick picks
+
+- Need the file now? Finder search with a Kind filter, then mdfind -name in Terminal.
+
+- File is in Library or a hidden folder? Find Any File.
+
+- Want free, with regular expressions? EasyFind.
+
+- Too many results? HoudahSpot, or operators in Summonly.
+
+- Want to know why one file is missing? Search Privacy, mdutil -s, or Summonly's check in Settings.
+
+## How to choose
+
+- Run the cheap checks first. Search Privacy, a placeholder icon, and the search scope in Finder fix most cases and cost nothing.
+
+- Ask whether the file should be in the index at all. Library files, hidden files and some external volumes are common exceptions.
+
+- Match the tool to the problem. Missing files call for a tool that does not rely on Spotlight; too many results call for better operators.
+
+- Check what each tool needs from macOS. Full Disk Access and administrator passwords widen what an app can read. The permissions guide explains them.
+
+- Try before you buy. EasyFind is free, Find Any File and HoudahSpot offer trials, Summonly has 7 days.
+
+## Frequently asked
+
+### Why can't Spotlight find a file I know is on my Mac?
+
+The usual causes are a folder or disk on the Spotlight exclusion list (System Settings, Spotlight, Search Privacy), a stale index, an external or network volume, a file that is only in iCloud, a file whose text Spotlight cannot read such as a scanned PDF, or a file in a place Spotlight leaves out, such as the Library folder.
+
+### How do I rebuild the Spotlight index on a Mac?
+
+Apple's article says to open System Settings, click Spotlight (or Siri & Spotlight), click Search Privacy (or Spotlight Privacy), add the folder or disk to the list, wait a few seconds, then remove it with the minus button and click Done. In Terminal, sudo mdutil -E / erases and rebuilds the startup volume's index. The menu names can differ by macOS version.
+
+### How do I search for a file type in Finder?
+
+Type your search, press Return, click the Add button below the search field and choose Kind and a type, or type a keyword such as kind:pdf in the search field. Apple's page lists kind:pdf, kind:folder and kind:email among its keywords.
+
+### What is mdfind?
+
+A Terminal command that queries the Spotlight index. Its manual page lists options such as -onlyin to limit the search to a folder, -name to match file names only, and -count to print the number of matches. If a file does not show up in mdfind, it is not in the index.
+
+### What can find files Spotlight cannot?
+
+Find Any File says it can find files in folders usually excluded from Spotlight, such as the System and Library folders. EasyFind says it does not require indexing. Summonly, which I make, keeps its own index of folders you choose and can tell you why a given file is not found.
+
+### Does Summonly search everything Spotlight does?
+
+No. It searches the folders you choose and does not search Mail, Messages, Contacts or Calendar. It adds operators, a clipboard history that is off until you turn it on, and a tool that explains why a file is not found.
+
+## Related guides
+
+- Summonly: the Purplelink Mac launcher and file search app described above.
+
+- Best Alfred alternatives for Mac: launchers compared by job and price.
+
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what the permissions a file search tool asks for allow.
+
+- Why is System Data so big on my Mac?: what fills the disk and what is safe to remove.
+
+- Purplelink's privacy page, all products and all guides.
+
+
+---
+
+Source: https://purplelink.llc/guides/best-window-managers-for-mac/
+Title: Best window managers for Mac (2026): Rectangle, Magnet, Moom and Panely compared | Purplelink
+
+← All guides
+
+Comparison
+
+# Best window managers for Mac (2026): Rectangle, Magnet, Moom and Panely compared
+
+By Benjamin Ampel · October 12, 2026
+
+Apps and built-in tools that snap and arrange windows on a Mac. Short version: macOS covers halves and quarters for free, Rectangle is the usual free pick, Magnet and BetterSnapTool are low-priced, Moom is the deepest, AeroSpace, yabai and Amethyst tile automatically, and the real differences are custom layouts, what happens when you reconnect a monitor, price model and permissions.
+
+Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Panely, sold as a free 7-day trial and then $9.99 once. I write about it from its own product page, and where another app is the better choice I say so.
+
+I did not install or test any of the other apps. Everything below is read from Apple's help pages and from each vendor's own page, store listing or repository, on October 12, 2026. Prices, versions and features change, "not stated" means the page I read did not say, and I left out any claim I could not find on a vendor or Apple page.
+
+## The short answer
+
+Try what is already in macOS first: it snaps windows to halves, quarters and more by dragging or with Fn-Control shortcuts, and it costs nothing. If you want more, the common free pick is Rectangle, the low-priced App Store picks are Magnet and BetterSnapTool, and Moom is the deepest for custom layouts. AeroSpace, yabai and Amethyst are a different kind of tool that tiles automatically. Panely, which I make, is for snapping plus saved layouts that return after a monitor is reconnected, for a single $9.99 payment.
+
+The table below compares them by job. A longer section on each follows.
+
+## The apps side by side
+
+October 12, 2026, as stated on each source page. Sources are listed in each section.
+
+AppPrice modelOpen sourceKeyboard snappingDrag to edgesCustom areas or layoutsMulti-displayRemember or restorePermission stated
+
+macOS built inFree, part of macOSNoYes, Fn-Control combinationsYes, plus Option-dragFixed layouts: halves, quarters, arrangements. No custom areas on the pages I readNot covered on the pages I readYes, Return to Previous SizeNone to install
+
+RectangleFree; Rectangle Pro is a one-time license with a 10-day trialYes (source on GitHub)Yes; repeating a shortcut cycles sizesYesExtra shortcuts for more positions; Pro adds custom snap areasNext and previous displayRestore action; Pro can arrange apps when displays connectAccessibility, per its troubleshooting notes
+
+Magnet$4.99 on the Mac App Store, perpetualNot statedYes, customizableYesHalves, quarters, thirds; custom commands per its listingUp to six external displays per its siteNot statedNot stated
+
+BetterSnapTool$1.99 on the Mac App Store listing, with in-app purchasesNot statedYes, customizableYesCustom snap areasMultiple monitors per its listingNot statedNot stated
+
+Moom$15, trial availableNoYes, with an on-screen keyboard controllerSnap zonesGrid, custom actions, saved layoutsSaved layouts adjust to other display sizesSaved layoutsNot stated
+
+LoopFreeYes (GPLv3)Yes, a trigger key plus a directionNot statedRadial menu, repeat to cycleNot statedNot statedNot stated
+
+Swish$16 once, 14-day trial; also on SetappNot statedYesTrackpad swipes on a title bar, not edges2x2, 3x2 and 3x3 gridsMoves windows between screensNot statedNot stated
+
+AeroSpaceNot statedNot verifiedYes, plus a command lineNot a drag toolAutomatic tree tilingMulti-monitor supportNot statedNot stated; does not require turning off SIP
+
+yabaiNot statedYes (MIT)Through skhd or other softwareNot a drag toolAutomatic tilingControls displaysNot statedAccessibility; some features need SIP partly off
+
+AmethystFreeYes (MIT)YesNot a drag toolAutomatic layoutsNot statedNot statedAccessibility
+
+Panely (mine)$9.99 once, 7-day trialNoYes, recordable shortcutsYes, with a previewUp to twelve custom areas; saved layoutsNext and previous display; layout per set of displaysRestore, saved layouts, automatic return after a display reconnectsAccessibility; no Input Monitoring
+
+## What window managers do, and what they do not
+
+There are two different ideas under the same name, and most of the confusion in comparisons comes from mixing them.
+
+- Snappers. You ask for a place: a shortcut, a drag to an edge, a menu. The window goes there and stays until you move it. macOS, Rectangle, Magnet, BetterSnapTool, Moom, Loop, Swish and Panely work this way.
+
+- Automatic tiling managers. The app decides the arrangement and re-tiles as windows open and close. AeroSpace, yabai and Amethyst work this way. They reward people who like to configure a system and keep their hands on the keyboard, and they ask you to learn a model.
+
+Whichever you pick, a window manager needs the Accessibility permission, which is how macOS lets an app move other apps' windows. You can check or switch it off in System Settings, Privacy & Security, Accessibility. And no manager can resize a window below the minimum its app allows.
+
+## The shortlist
+
+- macOS built in: free, nothing to install, fixed layouts.
+
+- Rectangle: free and open source, with a paid Pro.
+
+- Magnet: $4.99 on the Mac App Store.
+
+- BetterSnapTool: custom snap areas, $1.99 on its listing.
+
+- Moom: $15, custom actions and saved layouts.
+
+- Loop: free, a radial menu.
+
+- Swish: trackpad gestures.
+
+- AeroSpace, yabai and Amethyst: automatic tiling.
+
+- Panely: mine, $9.99 once, with saved layouts.
+
+Jump to the side-by-side table, how to choose or the FAQ.
+
+## macOS built in
+
+Cost: free. Platform: Apple's help describes window tiling for macOS Sequoia 15 and later, with pages for Sequoia, Tahoe 26 and macOS 27.
+
+Apple lists five ways to tile: drag a window to an edge, hold Option while dragging to a highlighted area, use the green button's menu, use the Window menu under Move & Resize, or use keyboard shortcuts. Dragging to the menu bar fills the desktop. Shortcuts on Apple's list include Fn-Control-F to fill, Fn-Control-C to center, Fn-Control with an arrow key for a half, and Fn-Control-R to return to the previous size. Adding Shift arranges two windows side by side or stacked. Corner quarters have no shortcut on that list.
+
+Settings are under System Settings, Desktop & Dock, Windows, and include whether dragging to an edge tiles and whether tiled windows have margins. Apple's page words them as "Drag windows to left or right edge of screen to tile" and "Tiled windows have margins"; names can differ between macOS versions.
+
+What I did not find: custom areas, saved layouts, or anything about remembering windows across monitors on the pages I read. Pick it if halves and quarters are all you need. See also how to snap and tile windows on a Mac.
+
+## Rectangle
+
+Cost: free and open source; its site also offers Rectangle Pro, free for 10 days, and its docs describe the license as a one-time, lifetime purchase usable on three devices at once. I could not read the Pro price on those pages. Platform: the repository says macOS 14 and later, with older releases for older systems.
+
+Rectangle is the app most people mean by "a free window manager". Keyboard shortcuts move and resize windows, and repeating a shortcut cycles through sizes. Dragging to an edge or corner snaps to halves, quarters, thirds or maximized, and snapping can be turned off. It has next and previous display actions, a restore action, extra shortcuts for more positions, per-app shortcut disabling, and JSON import and export of settings. Pro adds custom snap areas, custom sizes, arranging a set of apps with one shortcut (optionally when displays connect or disconnect), stashing windows at an edge, and iCloud sync, per its Pro page.
+
+Where it beats Panely: it is free and open source, supports older macOS releases, and has been the default recommendation for years. Pick it if you want a capable free snapper. The pages I read describe no saved arrangements in the free app; that is where Rectangle Pro or Panely come in.
+
+## Magnet
+
+Cost: $4.99 on the Mac App Store, which describes it as a perpetual license with no subscription or in-app purchases. Platform: macOS 13.0 or later, by BOOTCODE A.S.
+
+Per Magnet's site, it activates by dragging, customizable keyboard shortcuts or the menu bar, snaps to halves, quarters and thirds, supports up to six external displays, and adapts to vertical screens. The listing adds optional iCloud sync and unlimited custom commands. The developer reports on the listing that it collects no data.
+
+What I did not find: a restore action or saved layouts on those pages. Pick it if you want an established paid snapper from the App Store.
+
+## BetterSnapTool
+
+Cost: $1.99 with in-app purchases on the Mac App Store listing; the vendor page links to a separate license and gives no price I could read. Platform: macOS 12.0 or later, by folivora.AI GmbH.
+
+The listing describes drag to an edge or corner, halves and quarters, custom snap areas, multiple monitors, customizable shortcuts, and moving or resizing with modifier keys. The vendor page lists custom snap areas anywhere on the display.
+
+What I did not find: saved arrangements. Pick it if you want the lowest entry price and custom snap areas, and it supports an older macOS than most.
+
+## Moom
+
+Cost: $15, with a free trial, per Many Tricks; the page says the license is valid forever and includes updates for at least one year. Platform: Moom 4.6 requires macOS 10.13 or newer.
+
+Moom is the long-running power tool. It has a pop-up palette of up to 61 custom actions that can be chained, an on-screen grid, a keyboard controller, snap zones, hover-and-modifier moving, and layouts saved per app or for the most recently used windows. Saved layouts try to adjust to displays of other sizes, which the page says suits laptops that sometimes use an external display.
+
+Where it beats Panely: depth of custom actions and a long history. Pick it if you want to script your own window moves and do not mind a higher price and a busier interface.
+
+## Loop
+
+Cost: free and GPLv3-licensed, per its repository, which also has a sponsor link. Platform: the README says macOS 13 and later, though a table on the same page says macOS 15 or later, so check before installing.
+
+You hold a trigger key and move the cursor over a radial menu to choose where a window goes, with a preview before you commit. Keys can be paired with the trigger, repeated combinations cycle actions, windows can be stashed at the screen edge, and a URL scheme allows scripting.
+
+Pick it if you like a radial menu and open source. I did not find drag to edges or multi-display behavior stated on that page.
+
+## Swish
+
+Cost: $16 once with a 14-day trial, per its site, which also says it is in Setapp. One license works on two Macs. Platform: macOS 12 or later.
+
+Swish is gesture based: about 30 trackpad gestures for windows, the Dock and the menu bar, snapping by swiping a title bar to 2x2, 3x2 or 3x3 grids, resizing several windows at once by dragging a divider, and moving windows between screens. It also takes keyboard shortcuts.
+
+Pick it if you work on a trackpad and want gestures rather than shortcuts.
+
+## AeroSpace, yabai and Amethyst
+
+These are tiling window managers. You describe rules, and the app arranges everything. They are a different approach from the snappers above, and the cost is a learning curve.
+
+AeroSpace is, per its guide, an i3-like tiling manager for Apple silicon and Intel, configured in a TOML file, with a CLI. It reimplements Spaces as its own "workspaces" and suggests using a single macOS Space after that. Its README says it runs on macOS 13 or later and that it will never require turning off System Integrity Protection.
+
+yabai is, per its repository, an MIT-licensed tiling manager based on binary space partitioning, controlled from the command line, with shortcuts from skhd or other software. It requires Accessibility, needs Screen Recording only for window animations, and some features need System Integrity Protection partly disabled for a scripting addition. The page lists support from macOS Big Sur on Intel and Monterey on Apple silicon through Tahoe 26.
+
+Amethyst is, per its repository, a free, MIT-licensed tiling manager "à la xmonad" for macOS 10.15 and later, with layouts such as Tall, Wide, Two Pane, three-column, Fullscreen and BSP, and a beta custom layout in JavaScript. It needs the Accessibility permission.
+
+Pick one of these if you want windows tiled for you. If you only want to place a window when you ask, they are more machinery than the job needs.
+
+## Panely (Purplelink's)
+
+Cost: free for 7 days, then $9.99 once, every update included; one key works on two Macs. Also part of the $59.99 Mac Suite. Platform: macOS 14 or later, a direct download from its page, no Mac App Store build. I make it, it is new, and I have not compared it with the others on a test Mac.
+
+Panely snaps the front window to halves, thirds, quarters, two thirds and sixths, plus maximize, almost maximize, center and a step larger or smaller, from a shortcut, the menu bar, or a drag to an edge or corner with a preview of where the window will land. Every shortcut can be re-recorded, reset or turned off, and Panely refuses combinations macOS keeps for itself. A margin and a gap between windows run from 0 to 32 points.
+
+Beyond that: up to twelve custom areas, set as percentages of the screen so they fit any display; saved layouts of your open windows that you apply from the menu bar; a layout you describe in words, read by fixed rules on your Mac rather than a model; and an automatic layout for each arrangement of displays that puts windows back a few seconds after a display is plugged in again. It can ignore chosen apps, such as a game or a video call, and restores a window to its size before the first snap.
+
+It needs the Accessibility permission, reads each window's position, size and title and nothing inside it, and works offline. It uses macOS's own global shortcut system, so it does not need Input Monitoring. Its only network use is its check for a new version.
+
+What it lacks: it is Mac only, new, and macOS 14 or later, which is a higher floor than Magnet, BetterSnapTool, Moom or Swish. It is not open source. It does not tile automatically, and it works only on windows in the current Space; macOS gives apps no way to move windows between Spaces.
+
+Where others are better today: Rectangle for free and open source, Magnet or BetterSnapTool for a lower price, Moom for custom actions, AeroSpace, yabai and Amethyst for automatic tiling. Pick Panely if you want snapping and a saved arrangement that comes back when you reconnect a monitor, with one payment and no subscription.
+
+## Quick picks
+
+- Only halves and quarters? macOS built in.
+
+- Want free and open source? Rectangle, or Loop for a radial menu.
+
+- Want the lowest paid price? BetterSnapTool or Magnet from the App Store.
+
+- Want custom actions and layouts? Moom, or Panely for saved layouts with a one-time price.
+
+- Want to restore windows after a monitor change? Panely, Moom's saved layouts, or Rectangle Pro.
+
+- Want windows tiled for you? AeroSpace, yabai or Amethyst.
+
+- Want trackpad gestures? Swish.
+
+## How to choose
+
+- Decide whether you want to place windows or have them placed. Snappers act when you ask. Tiling managers rearrange by themselves.
+
+- Start with the built-in tools. If halves and quarters cover you, you may not need an app. The how-to guide shows the steps.
+
+- Count your displays. If you plug a laptop into a monitor and back, look for saved layouts or a per-monitor memory, not just snapping.
+
+- Check the price model. Free, one-time or paid upgrade; a license that covers a second Mac matters if you have two.
+
+- Check your macOS version. Floors run from macOS 10.13 for Moom to macOS 14 for Panely and the current Rectangle.
+
+- Read the permission. Window managers use Accessibility. A repository you can read is a real advantage for a tool with that access.
+
+- Turn off overlapping behavior. If you add an app and keep macOS's drag-to-edge tiling on, a drag may snap twice.
+
+## Frequently asked
+
+### What is the best window manager for Mac?
+
+There is no single best one. macOS's built-in tiling covers halves and quarters for free. Rectangle is the usual free, open source pick. Magnet and BetterSnapTool are low-priced App Store options, Moom is the deepest for custom actions, and AeroSpace, yabai and Amethyst tile automatically. Panely, which I make, is for snapping plus saved layouts. I tested none of the others, so this is a reading of vendor pages, not a ranking by use.
+
+### Does macOS have built-in window snapping?
+
+Yes. Apple's help describes tiling in macOS Sequoia 15 and later: drag a window to an edge, hold Option while dragging, use the green button menu or the Window menu under Move & Resize, or use Fn-Control shortcuts. It offers fixed layouts and no custom areas on the pages I read.
+
+### Is Rectangle free?
+
+Rectangle itself is free and open source. Rectangle Pro is a separate paid option with a 10-day trial; its docs describe a one-time, lifetime license usable on three devices at once. I could not read the Pro price on those pages.
+
+### What is the difference between a window manager and a tiling window manager?
+
+A snapper such as Rectangle, Magnet or Panely moves a window when you ask. A tiling manager such as AeroSpace, yabai or Amethyst arranges all windows by rule and re-tiles as windows open and close. Tiling managers take more setup.
+
+### Do window managers need special permissions?
+
+They use the macOS Accessibility permission to move other apps' windows. yabai also lists Screen Recording for animations, and some yabai features need System Integrity Protection partly disabled. AeroSpace says it will never require that. Panely uses Accessibility and does not need Input Monitoring.
+
+### Will a window manager restore my layout after I reconnect a monitor?
+
+Some can. Panely keeps an automatic layout for each arrangement of displays, Moom saves layouts that adjust to other display sizes, and Rectangle Pro can arrange a set of apps when displays connect or disconnect. Magnet and the free Rectangle do not state this on the pages I read.
+
+### Is Panely available, and what does it cost?
+
+Panely is Purplelink's Mac menu-bar window manager: free for 7 days, then $9.99 once, for macOS 14 or later. I make it, it is new, and this guide describes it from its own product page rather than from a test against the others.
+
+## Related guides
+
+- Panely: the Purplelink Mac menu-bar window manager described above.
+
+- How to snap and tile windows on a Mac: the built-in steps and shortcuts, and what to do when a window will not resize.
+
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what the Accessibility permission allows.
+
+- Best keyboard sound apps for Mac: the same kind of comparison for another Purplelink app.
+
+- All products and all guides.
+
+
+---
+
+Source: https://purplelink.llc/guides/snap-windows-on-mac/
+Title: How to snap and tile windows on a Mac | Purplelink
+
+← All guides
+
+How-to
+
+# How to snap and tile windows on a Mac
+
+By Benjamin Ampel · October 12, 2026
+
+The built-in ways to snap windows on a current Mac, the keyboard shortcuts, how to turn tiling and drag to edges on or off, what to do when a window refuses to resize, and an honest comparison with Rectangle, Magnet, BetterSnapTool and Panely.
+
+Disclosure up front: Purplelink, which publishes this site, makes one app mentioned here, Panely, sold as a free 7-day trial and then $9.99 once. The built-in steps come from Apple's help pages, which I read on October 12, 2026; the other apps are described from their own pages and listings, and I did not test them. Menu and setting names can differ between macOS versions, so where I am not sure of a path I describe it generally.
+
+## The short answer
+
+On a current Mac, drag a window to the left or right edge to fill half the screen, or press Fn-Control with an arrow key. For quarters, use the Window menu, Move & Resize, or the green button's menu. If you want sixths, your own areas, shortcuts you choose, or saved layouts, that is the point where a third-party app earns its place.
+
+## Snap a window by dragging
+
+Per Apple's Tile windows on Mac page:
+
+- Drag the window toward the left or right edge of the screen, or into a corner. Dragging to the menu bar fills the desktop.
+
+- When a highlighted area appears, release. The window snaps into place.
+
+Apple also describes holding Option while dragging: press and hold Option, drag toward the top, a side or a corner, and release in the highlighted area. If you drag a window all the way through the top edge, Mission Control can open; Apple names a setting for that, "Drag windows to top of screen to enter Mission Control", in Desktop & Dock settings.
+
+## Snap a window from a menu
+
+- Green button. Hover over the green button at the top left of the window. Apple lists Move & Resize for the active window, Fill & Arrange for several windows, and Full Screen. Press Option to see more layouts.
+
+- Window menu. In the menu bar, choose Window, then Move & Resize, and pick a layout under Halves, Quarters or Arrange. Center and Fill are also on that menu.
+
+## Keyboard shortcuts for snapping
+
+Apple's tiling shortcut list, as of October 12, 2026:
+
+ActionShortcut
+
+Fill the desktopFn-Control-F
+
+Center the windowFn-Control-C
+
+Left, right, top or bottom halfFn-Control with the matching arrow key
+
+Return to the previous sizeFn-Control-R
+
+Two windows, left and right or top and bottomFn-Control-Shift with an arrow key
+
+One window in a half and others in quartersFn-Control-Option-Shift with an arrow key
+
+Corner quartersNo shortcut on Apple's list
+
+On a laptop keyboard, Fn is the key in the bottom left corner. Apple's page lists no default shortcut for corner quarters, and none for the full screen tile options.
+
+## Turn macOS tiling and drag to edges on or off
+
+Per Apple's tiling settings page, open System Settings, choose Desktop & Dock in the sidebar (scroll down if you need to), and open the Windows section. The options listed there on the current page are:
+
+- Drag windows to left or right edge of screen to tile
+
+- Drag windows to menu bar to fill screen
+
+- Hold ⌥ key while dragging windows to tile
+
+- Tiled windows have margins
+
+Switch each on or off to taste. The wording differs between versions; Apple's page has separate versions for macOS Sequoia 15, Tahoe 26 and macOS 27, and an older version words the first option as dragging windows to screen edges. If you cannot find an option by name, look in the same Windows section for the one that mentions edges or tiling.
+
+Turn off the drag option if you add a third-party manager that also snaps on drag. Panely's page says that with both on, a drag to an edge may be snapped twice, and its Settings tells you when macOS's edge tiling is on and opens the right pane.
+
+## When a window will not resize
+
+A snap asks the window's app to take a size. Apps set their own minimum, and some windows, such as many dialogs and settings panes, do not resize at all. Neither Apple nor the third-party apps can override that; What you will see is a window that lands smaller or larger than the area, or in a slightly different spot.
+
+- Try a larger area. A window with a wide minimum will not fit a quarter or a third but will fit a half.
+
+- Drag its edge by hand to find out how small it will go. If it stops, that is the app's minimum.
+
+- Close side panels and toolbars in the app, which can lower the minimum width.
+
+- Check the app's own settings for a compact or mini view.
+
+- Check that the window is not full screen. Windows in macOS full screen are managed by macOS itself, so a third-party app will not snap them.
+
+## Multiple displays and Spaces
+
+Apple's tiling pages that I read do not cover multiple displays or Spaces, so I will not describe them in detail. In practice, drag the window to an edge of the display you want it on.
+
+Third-party apps differ here. Magnet's site says it supports up to six external displays and Rectangle has next and previous display actions. Panely moves a window to the next or previous display keeping its proportions, orders displays left to right, and works on the windows you can see in the current Space; macOS gives apps no way to move windows between Spaces, so it does not. AeroSpace takes the opposite approach and reimplements Spaces as its own workspaces.
+
+## When a third-party manager is worth it
+
+The built-in tools are enough for halves, quarters and the occasional fill. Consider an app when you want any of these:
+
+- Shortcuts you choose, and shortcuts for thirds, sixths or two thirds.
+
+- Your own areas, such as a reading column in the middle of the screen.
+
+- A saved arrangement you can apply in one step.
+
+- Windows that go back where they were when you reconnect a monitor.
+
+- Margins and gaps you set yourself.
+
+- Apps that should never be moved.
+
+If you want windows arranged for you instead, that is a different kind of tool, covered in the comparison of Mac window managers.
+
+## Built in versus Rectangle, Magnet, BetterSnapTool and Panely
+
+An honest side by side, from vendor pages and listings read on October 12, 2026. I did not test any of them.
+
+AppPrice modelWhat it adds over macOSWhat it does not do, per the pages I read
+
+RectangleFree, open source; Pro is a one-time licenseRepeat-to-cycle sizes, extra positions, next and previous display, restore, per-app disabling; Pro adds custom snap areas and arranging apps when displays connectFree app: saved arrangements not described
+
+Magnet$4.99 on the Mac App StoreCustomizable shortcuts, thirds, custom commands, up to six external displays, vertical screensRestore and saved layouts not described
+
+BetterSnapTool$1.99 on its Mac App Store listing, with in-app purchasesCustom snap areas, customizable shortcuts, modifier-key movingSaved arrangements not described
+
+Panely (mine)$9.99 once, 7-day trialSixths and two thirds, recordable shortcuts, up to twelve custom areas, saved and described layouts, an automatic layout per set of displays, ignored appsMac only, macOS 14 or later, no automatic tiling, does not move windows between Spaces
+
+Where the others are stronger than Panely: Rectangle is free and open source, Magnet and BetterSnapTool cost less, and all three have been around longer. What Panely is for: snapping with shortcuts you record, custom areas stored as fractions of the screen so they fit any display, and layouts that come back after a monitor is reconnected, for one $9.99 payment. It needs macOS 14 or later and the Accessibility permission, which is the permission any app needs to move other apps' windows. You can switch it off again in System Settings, Privacy & Security, Accessibility.
+
+## Quick picks
+
+- Halves and quarters only? The built-in tools.
+
+- Want more, free? Rectangle.
+
+- Want custom snap areas at a low price? BetterSnapTool or Magnet.
+
+- Want saved layouts and per-monitor memory? Panely, or Rectangle Pro.
+
+## Frequently asked
+
+### How do I snap a window to half the screen on a Mac?
+
+Drag it to the left or right edge until a highlighted area appears, then release. Or press Fn-Control with the left or right arrow key, or use Window, Move & Resize, Halves in the menu bar. Apple describes these in its help for macOS Sequoia 15 and later.
+
+### What is the keyboard shortcut to tile windows on a Mac?
+
+Apple lists Fn-Control with an arrow key for a half, Fn-Control-F to fill the desktop, Fn-Control-C to center and Fn-Control-R to return to the previous size. Adding Shift arranges two windows.
+
+### How do I turn off window snapping on a Mac?
+
+Open System Settings, choose Desktop & Dock, and in the Windows section switch off the drag-to-edge option. Apple's current page words it as dragging windows to the left or right edge of the screen to tile. The name differs by macOS version.
+
+### Why will my window not resize when I snap it?
+
+The app sets a minimum size, or the window is fixed in size. Try a larger area such as a half, close side panels, or resize by hand to find the minimum. No window manager can override an app's limit.
+
+### Do I need a third-party window manager on a Mac?
+
+Not for halves and quarters. An app is worth it if you want shortcuts you choose, sixths or custom areas, saved layouts, or windows that return after a monitor is reconnected.
+
+### Do Mac window managers work across Spaces?
+
+Window managers that use macOS APIs, including Panely, work on windows in the current Space, because macOS offers no way for apps to move windows between Spaces. Some tiling managers, such as AeroSpace, instead create their own workspaces.
+
+### What does Panely cost?
+
+Free for 7 days, then $9.99 once, for macOS 14 or later. I make it, it is new, and this guide describes it from its own product page.
+
+## Related guides
+
+- Best window managers for Mac (2026): the full comparison, including tiling managers.
+
+- Panely: the Purplelink Mac menu-bar window manager.
+
+- Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?: what Accessibility allows.
+
+- All products and all guides.
+
+
+---
+
 Source: https://purplelink.llc/guides/best-mac-apps-transcription-text-to-speech-ocr/
 Title: Best Mac apps for transcription, text to speech and OCR (2026) | Purplelink
 
