@@ -1,0 +1,384 @@
+{
+ "id": "rubblefront-v5-15s",
+ "outputs": {
+  "9x16": "rubblefront-trailer-v5-15s-9x16.mp4"
+ },
+ "formats": [
+  "9x16"
+ ],
+ "crf": 17,
+ "sfxDb": -6,
+ "music": [
+  {
+   "file": "battle_low.ogg",
+   "in": 44.0,
+   "t": 0.0,
+   "dur": 1.9,
+   "gain_db": -6,
+   "fade_in": 1.2,
+   "fade_out": 0.3
+  },
+  {
+   "file": "battle_mid.ogg",
+   "in": 0.0,
+   "t": 1.5,
+   "dur": 8.6,
+   "gain_db": 0.0,
+   "fade_in": 0.02,
+   "fade_out": 0.25
+  },
+  {
+   "file": "battle_mid_drive.ogg",
+   "in": 0.0,
+   "t": 1.5,
+   "dur": 4.6,
+   "gain_db": 2.0,
+   "fade_in": 0.02,
+   "fade_out": 0.25
+  },
+  {
+   "file": "battle_high.ogg",
+   "in": 9.0,
+   "t": 10.5,
+   "dur": 100.0,
+   "gain_db": 0.0,
+   "fade_in": 0.02,
+   "fade_out": 2.0
+  },
+  {
+   "file": "battle_high_drive.ogg",
+   "in": 9.0,
+   "t": 10.5,
+   "dur": 100.0,
+   "gain_db": 2.0,
+   "fade_in": 0.02,
+   "fade_out": 2.0
+  }
+ ],
+ "synth": [
+  {
+   "t": 1.5,
+   "kind": "riser",
+   "dur": 2.4,
+   "gain_db": -3
+  },
+  {
+   "t": 10.5,
+   "kind": "riser",
+   "dur": 4.0,
+   "gain_db": -6
+  },
+  {
+   "t": 10.5,
+   "kind": "boom",
+   "gain_db": 3
+  }
+ ],
+ "scenes": [
+  {
+   "clip": "v_a",
+   "in": 2.133,
+   "dur": 2.5,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 2.02,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 2.02,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "cards": [
+    {
+     "text": "TURN-BASED\n*TACTICS.*",
+     "at": 0.1,
+     "dur": 2.3,
+     "pos": "bottom"
+    }
+   ],
+   "vclip": "v_a",
+   "hits": [
+    {
+     "at": 0.4,
+     "kind": "tick",
+     "gain_db": -4
+    },
+    {
+     "at": 0.9,
+     "kind": "tick",
+     "gain_db": -4
+    },
+    {
+     "at": 1.4,
+     "kind": "tick",
+     "gain_db": -4
+    }
+   ]
+  },
+  {
+   "clip": "v_a",
+   "in": 8.133,
+   "dur": 1.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.9199999999999999,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.9199999999999999,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.8999999999999999,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "BLOW A HOLE IN\nTHEIR *COVER.*",
+     "at": 0.0,
+     "dur": 1.9,
+     "pos": "bottom"
+    }
+   ],
+   "vclip": "v_a"
+  },
+  {
+   "clip": "v_a",
+   "in": 13.133,
+   "dur": 1.7,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.9199999999999999,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.9199999999999999,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.8999999999999999,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "EVERY SHOT\nHAS *ODDS.*",
+     "at": 0.0,
+     "dur": 1.7,
+     "pos": "bottom"
+    }
+   ],
+   "vclip": "v_a"
+  },
+  {
+   "clip": "v_g1",
+   "in": 2.833,
+   "dur": 1.6,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 1.32,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ],
+   "cards": [
+    {
+     "text": "DAY *ONE.*",
+     "at": 0.0,
+     "dur": 1.6,
+     "pos": "bottom"
+    }
+   ],
+   "vclip": "v_g1"
+  },
+  {
+   "clip": "v_g3",
+   "in": 2.833,
+   "dur": 1.6,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 1.32,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ],
+   "cards": [
+    {
+     "text": "RUN *THREE.*",
+     "at": 0.0,
+     "dur": 1.6,
+     "pos": "bottom"
+    }
+   ],
+   "vclip": "v_g3"
+  },
+  {
+   "clip": "v_e",
+   "in": 2.1,
+   "dur": 2.3,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 1.2,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 1.2,
+     "amp": 20,
+     "dur": 0.4,
+     "zoom": 0.035
+    }
+   ],
+   "slow": [
+    {
+     "at": 1.18,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "vclip": "v_e",
+   "logo": {
+    "at": 1.2,
+    "dur": 1.0
+   }
+  },
+  {
+   "clip": "v_a",
+   "in": 3.433,
+   "dur": 0.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.72,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.72,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.7,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "ONE MORE *RUN.*",
+     "at": 0.0,
+     "dur": 0.9,
+     "pos": "bottom"
+    }
+   ],
+   "vclip": "v_a"
+  },
+  {
+   "type": "end",
+   "dur": 2.5,
+   "lines": [
+    "Spring 2027",
+    "rubblefront.com",
+    "A Purplelink LLC game"
+   ]
+  }
+ ],
+ "wishlistText": "Wishlist on Steam",
+ "musicEnv": [
+  {
+   "t": 0,
+   "db": 0
+  },
+  {
+   "t": 10.1,
+   "db": 0
+  },
+  {
+   "t": 10.15,
+   "db": -40
+  },
+  {
+   "t": 10.47,
+   "db": -40
+  },
+  {
+   "t": 10.5,
+   "db": 0
+  }
+ ]
+}
