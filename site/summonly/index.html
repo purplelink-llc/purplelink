@@ -58,7 +58,7 @@
             "Quick tools for UUIDs, base64, URL encoding, hashes, colors, Unix time, text case and passwords",
             "Sleep, turn the display off (it locks if your Mac asks for a password on wake), start the screen saver, quit or force quit an app, and open a System Settings pane, with no extra permission",
             "Web search shortcuts for Google, DuckDuckGo, Wikipedia, Apple Maps, YouTube, GitHub and Google Scholar",
-            "Clipboard history that skips password managers, items apps mark as private, and text that looks like a card number, an access token or a long key",
+            "Clipboard history that skips password managers, items apps mark as private, and text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol",
             "Snippets with the date, the time and the clipboard filled in",
             "Keeps its index current from macOS file notifications, indexing in the background",
             "Works offline, with no account"
@@ -102,7 +102,7 @@
             {
               "@type": "Question",
               "name": "Does it record passwords I copy?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Not from a password manager, and not text that looks like a card number, an access token or a long key. The check is a set of rules, so a short password that you type or copy yourself, such as Hunter2!, can be recorded. It can also miss an unusual secret, so you can also turn clipboard history off or keep it in memory only." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Not from a password manager, and not text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol. The check is a set of rules, so a password made only of letters, or any other unusual secret, can be recorded. It is cautious but not perfect, so you can also turn clipboard history off or keep it in memory only." }
             },
             {
               "@type": "Question",
@@ -232,12 +232,12 @@
           <tr><th scope="row">Ranking</th><td>A name that matches comes first, then the file you open often and recently, then newer files. Opening a file teaches it, and you can clear what it has learned.</td></tr>
           <tr><th scope="row">Find by meaning</th><td>Optional, and off until you turn it on in Settings. It uses a small English-language model built into macOS to suggest documents on the same subject, below the word matches. It runs on your Mac and helps rather than guarantees: related documents are suggested, not proven.</td></tr>
           <tr><th scope="row">Quick answers</th><td>Sums, percentages (20% of 150, 150 + 20%), powers, square roots and other functions, and conversions between units of length, weight, volume, time, data, speed and temperature, such as 5 km in miles.</td></tr>
-          <tr><th scope="row">Quick tools</th><td>Type uuid, base64 hello, base64 decode, urlencode, sha256 text, md5 text, #ff8800 or rgb(255, 136, 0), epoch, epoch 1700000000, slug Some Title, snake, kebab, camel, upper, lower, title, count some words, or password 24. The answer is one line and Return copies it. Nothing is sent anywhere.</td></tr>
-          <tr><th scope="row">System</th><td>Type sleep, lock (turns the display off), screen saver, quit safari, force quit notes, or wifi, bluetooth, displays and sound to open that System Settings pane. These need no permission beyond the one Summonly already has. Restart and shut down are not included.</td></tr>
+          <tr><th scope="row">Quick tools</th><td>Type uuid, base64 hello, base64 decode, urlencode, sha256 text, md5 text, #ff8800 or rgb(255, 136, 0), epoch, epoch 1700000000, slug Some Title, snake, kebab, camel, upper, lower, title, count some words, or password 24. The answer is one line and Return copies it. A generated password is copied marked as private, so other clipboard tools skip it, and it is cleared from the clipboard after a minute. Nothing is sent anywhere.</td></tr>
+          <tr><th scope="row">System</th><td>Type sleep, lock (turns the display off), screen saver, quit safari, force quit notes, or wifi, bluetooth, displays and sound to open that System Settings pane. These need no permission beyond the one Summonly already has. Restart and shut down are not included. Force quit asks before it acts. A switch in Settings opens Summonly when you log in.</td></tr>
           <tr><th scope="row">Web search</th><td>Type a keyword and some words: g for Google, ddg for DuckDuckGo, w for Wikipedia, maps for Apple Maps, yt for YouTube, gh for GitHub, scholar for Google Scholar.</td></tr>
-          <tr><th scope="row">Clipboard history</th><td>Option-Shift-V, or type clip. It does not record anything copied from a password manager or marked private by the app that copied it, or text that looks like a card number, an access token or a long key. You choose how many items to keep and for how many days, and can keep history in memory only. Pin items you want to keep, and clear it at any time.</td></tr>
+          <tr><th scope="row">Clipboard history</th><td>Option-Shift-V, or type clip. It does not record anything copied from a password manager or marked private by the app that copied it, or text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol. You choose how many items to keep and for how many days, and can keep history in memory only. Pin items you want to keep, and clear it at any time.</td></tr>
           <tr><th scope="row">Snippets</th><td>Save text under a keyword. {date}, {time} and {clipboard} are filled in when you use it. Summonly copies the snippet; you paste it where you want it.</td></tr>
-          <tr><th scope="row">Folders</th><td>Desktop, Documents, Downloads and your Applications folders to start. Add or remove folders in Settings, and exclude any folder. Hidden files and developer folders such as node_modules and .git are skipped.</td></tr>
+          <tr><th scope="row">Folders</th><td>Desktop, Documents, Downloads and your Applications folders to start. Add or remove folders in Settings, and leave any folder out. Changes apply at once, without reopening Summonly. Files whose names suggest secrets, such as .env files, key files and names with password or secret in them, are found by name only: nothing inside them is read. Hidden files and developer folders such as node_modules and .git are skipped.</td></tr>
         </tbody>
       </table>
     </section>
@@ -302,7 +302,7 @@
         </details>
         <details class="faq-item">
           <summary>Does it record passwords I copy?</summary>
-          <div class="faq-body">Not from a password manager, and not text that looks like a card number, an access token or a long key. The check is a set of rules, so a short password that you type or copy yourself, such as Hunter2!, can be recorded. It can also miss an unusual secret, so you can also turn clipboard history off or keep it in memory only.</div>
+          <div class="faq-body">Not from a password manager, and not text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol. The check is a set of rules, so a password made only of letters, or any other unusual secret, can be recorded. It is cautious but not perfect, so you can also turn clipboard history off or keep it in memory only.</div>
         </details>
         <details class="faq-item">
           <summary>Can I change the shortcut?</summary>
