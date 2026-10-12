@@ -217,6 +217,19 @@ SITES = [
         ),
         "gsc_property": "sc-domain:getmuscleonglp.com",
     },
+    {
+        # RubbleFront (rubblefront.com, the Frontlink game's site). Its analytics.js beacons to Purplelink's collector with
+        # h="rubblefront.com", so its records sit in the same store; stats.mjs keeps them out of Purplelink's own numbers
+        # and returns them alone for ?host=rubblefront.com. Same stats token. No Search Console property is set here yet.
+        "key": "rubblefront",
+        "label": "RubbleFront",
+        "domain": "rubblefront.com",
+        "url": "https://purplelink.llc/.netlify/functions/stats",
+        "stats_host": "rubblefront.com",
+        "token_env": "PURPLELINK_STATS_TOKEN",
+        "secondaries": [("steamClicks", "Steam clicks"), ("outboundClicks", "outbound clicks"),
+                        ("downloads", "downloads"), ("newsletterSubmits", "newsletter signups")],
+    },
 ]
 
 # Service-account key for the Search Console API. Absent on a machine that has
@@ -286,6 +299,10 @@ def fetch_site(site: dict, token: str, days: int | None = None) -> dict:
     retrying it would just be slower.
     """
     url = f"{site['url']}?token={urllib.parse.quote(token)}&days={days or FETCH_DAYS}"
+    # A site that shares the collector with Purplelink asks for its own records (stats.mjs ?host=); without
+    # this the shared endpoint answers with Purplelink's numbers only.
+    if site.get("stats_host"):
+        url += f"&host={urllib.parse.quote(site['stats_host'])}"
     req = urllib.request.Request(url, headers={"User-Agent": "purplelink-traffic-dashboard"})
     last: Exception | None = None
     for attempt in range(RETRIES):

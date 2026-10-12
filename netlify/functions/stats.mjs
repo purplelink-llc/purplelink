@@ -9,6 +9,12 @@
  * `tool_use` runs grouped by tool page, so you can finally see which LaTeX
  * tools have actually been used and how often.
  *
+ * Other sites send their beacons to the same collector (track.mjs stores the host each event came from). Hosts in
+ * EXTERNAL_HOSTS are kept OUT of the default aggregation, so Purplelink's own totals, paths, referrers and days never
+ * include them, and are read on their own with ?host=<host>, which returns only that host's records in the same shape
+ * plus per-day counts of the event types in HOST_EVENT_FIELDS. Without the filter the response says how many records
+ * it left out, in `excludedHosts`.
+ *
  * Gated by STATS_TOKEN (set it on the Netlify site). Scale note: this
  * lists+reads one blob per event, fine at early-stage volume; if daily events
  * reach the thousands, switch to pre-aggregated counters.
@@ -23,6 +29,20 @@ function json(status, body) {
   });
 }
 function bump(obj, key, n = 1) { if (key) obj[key] = (obj[key] || 0) + n; }
+
+// Sites other than purplelink.llc that beacon to this collector. Their records are never mixed into the default numbers.
+export const EXTERNAL_HOSTS = ["rubblefront.com"];
+// Event types counted per day in a ?host= response (the host's own funnel), keyed to the byDay / totals field they feed.
+export const HOST_EVENT_FIELDS = {
+  steam_click: "steamClicks",
+  outbound_click: "outboundClicks",
+  download: "downloads",
+  newsletter_submit: "newsletterSubmits",
+};
+/** A record's host, lower-cased without a leading "www.", so "RubbleFront.com" and "www.rubblefront.com" match. */
+export function normalizeHost(h) {
+  return String(h || "").trim().toLowerCase().replace(/^www\./, "");
+}
 
 /* Run fn over items with at most `limit` in flight, preserving input order.
    Bounded rather than a bare Promise.all: a month of events is unbounded in
@@ -56,6 +76,10 @@ export default async function handler(request) {
   if (!expected) return json(500, { error: "misconfigured", detail: "Set STATS_TOKEN on this site." });
   if (url.searchParams.get("token") !== expected) return json(401, { error: "unauthorized" });
 
+  // ?host=<host> returns only that host's records; without it, EXTERNAL_HOSTS are left out.
+  const hostFilter = normalizeHost(url.searchParams.get("host"));
+  if (url.searchParams.has("host") && !/^[a-z0-9.-]{1,80}$/.test(hostFilter)) return json(400, { error: "bad_host" });
+
   let days = parseInt(url.searchParams.get("days") || "30", 10);
   if (!Number.isFinite(days) || days < 1) days = 30;
   if (days > 120) days = 120;
@@ -69,7 +93,9 @@ export default async function handler(request) {
     otherEvents: {}, otherEventDetail: {},
     byDay: {},
     funnelByChannel: {},
+    excludedHosts: {},
   };
+  if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.totals[f] = 0;
   const uniquesPerDay = {};
 
   // Every blob read used to be awaited one at a time, so the wall clock was
@@ -95,7 +121,10 @@ export default async function handler(request) {
 
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
-    if (!s.byDay[day]) s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0 };
+    if (!s.byDay[day]) {
+      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0 };
+      if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.byDay[day][f] = 0;
+    }
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
 
     const records = await mapLimit(blobs, 64, async (b) => {
@@ -104,6 +133,13 @@ export default async function handler(request) {
 
     for (const rec of records) {
       if (!rec) continue;
+      const recHost = normalizeHost(rec.host);
+      if (hostFilter) {
+        if (recHost !== hostFilter) continue;
+      } else if (EXTERNAL_HOSTS.includes(recHost)) {
+        bump(s.excludedHosts, recHost);
+        continue;
+      }
       s.totals.events++;
       if (rec.vid) uniquesPerDay[day].add(rec.vid);
       if (rec.host) bump(s.byHost, rec.host);
@@ -156,6 +192,13 @@ export default async function handler(request) {
         // views of pages that carry a buy button, and that list is maintained
         // by hand; recording the path makes it checkable instead of trusted.
         bump(s.checkoutByPath, rec.path || "unknown");
+      } else if (hostFilter && HOST_EVENT_FIELDS[rec.type] && !String(rec.meta || "").startsWith("__")) {
+        // This host's own funnel events (steam_click, outbound_click, download, newsletter_submit): a per-day count,
+        // and the same type and type-plus-meta counts every other event gets.
+        const f = HOST_EVENT_FIELDS[rec.type];
+        s.totals[f]++; s.byDay[day][f]++;
+        bump(s.otherEvents, rec.type);
+        if (rec.meta) bump(s.otherEventDetail, `${rec.type}: ${String(rec.meta).slice(0, 80)}`);
       } else if (rec.type && !String(rec.meta || "").startsWith("__")) {
         // Every other first-party event (deadline_signup, feedback_rating,
         // checkout_canceled, search, tool_next, sticky_cta, ...) was stored
@@ -170,6 +213,7 @@ export default async function handler(request) {
 
   return json(200, {
     generatedAt: new Date().toISOString(),
+    ...(hostFilter ? { host: hostFilter } : { excludedHosts: s.excludedHosts }),
     totals: s.totals,
     toolRuns: topN(s.toolRuns),
     checkoutByProduct: topN(s.checkoutByProduct),
