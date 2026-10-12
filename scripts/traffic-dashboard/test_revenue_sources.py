@@ -155,5 +155,10 @@ class GettyEstimate(unittest.TestCase):
             self.assertEqual(td.getty_estimate_by_month(["2026-09", "2026-10"]), {"2026-09": 0.0, "2026-10": 1.6})
         with mock.patch.object(td, "PHOTO_AN", Path(TMP) / "none"):
             self.assertEqual(td.photo_sale_rows(), [])
-        self.assertIn("getty_est", td.ESTIMATED_SOURCES)
-        self.assertIn("getty_est", [k for k, _l, _c in td.REVENUE_SOURCES])
+        # grouped into Photo licensing, not a source of its own, but still named as an estimate
+        self.assertNotIn("getty_est", [k for k, _l, _c in td.REVENUE_SOURCES])
+        with mock.patch.object(td, "photo_revenue_by_month", lambda months: {m: 5.0 for m in months}), \
+             mock.patch.object(td, "getty_estimate_by_month", lambda months: {m: 1.6 for m in months}):
+            s = td.revenue_series(None, None, [], None, [THIS])
+        self.assertAlmostEqual(s["photo"][THIS], 6.6)
+        self.assertAlmostEqual(s["getty_est"][THIS], 1.6)

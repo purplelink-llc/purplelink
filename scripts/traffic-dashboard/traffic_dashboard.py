@@ -4605,11 +4605,10 @@ REVENUE_SOURCES = [
     ("extpay", SRC_EXTENSION, "oklch(72% 0.13 150)"),
     ("ads", "Ad revenue (est.)", "oklch(80% 0.12 110)"),
     ("tiktok", "TikTok Creator Rewards (est.)", "oklch(70% 0.16 10)"),
-    ("getty_est", "Getty downloads (est.)", "oklch(72% 0.10 200)"),
 ]
-# Money that is TikTok's or AdMob's own estimate, or our estimate of Getty downloads not yet on a royalty statement,
-# and has not been paid out. Shown in the totals, never hidden inside them.
-ESTIMATED_SOURCES = ("ads", "tiktok", "getty_est")
+# Money that is TikTok's or AdMob's own estimate and has not been paid out. Our estimate of Getty downloads not yet on a
+# royalty statement is folded into "photo" and reported separately as series["getty_est"], which is not a source of its own. Shown in the totals, never hidden inside them.
+ESTIMATED_SOURCES = ("ads", "tiktok")
 TIKTOK_REWARDS_CSV = Path("/Volumes/Extreme SSD/TikTokPipeline/analytics/tiktok_rewards.csv")
 
 
@@ -4716,15 +4715,17 @@ def extension_revenue_by_month(rows: list[dict], months: list[str]) -> dict[str,
 
 def revenue_series(sales, appstore, market_rows, admob, months: list[str]) -> dict[str, dict[str, float]]:
     rows = market_rows or []
+    getty_est = getty_estimate_by_month(months)
+    photo = photo_revenue_by_month(months)
     return {
         "sales": sales_revenue_by_month(sales, months),
         "appstore": appstore_revenue_by_month(appstore, months),
-        "photo": photo_revenue_by_month(months),
+        "photo": {m: photo.get(m, 0.0) + getty_est.get(m, 0.0) for m in months},
         "marketplaces": marketplace_revenue_by_month([r for r in rows if r.get("market") != "extensionpay"], months),
         "extpay": extension_revenue_by_month(rows, months),
         "ads": admob_revenue_by_month(admob, months),
         "tiktok": tiktok_rewards_by_month(months),
-        "getty_est": getty_estimate_by_month(months),
+        "getty_est": getty_est,
     }
 
 
@@ -4735,9 +4736,10 @@ def print_revenue_sources(sales, appstore, market_rows, admob) -> None:
     now_m, prev = months[-1], months[0]
     def total(m, only=None):
         return sum(series[k].get(m, 0.0) for k, _l, _c in REVENUE_SOURCES if only is None or (k in ESTIMATED_SOURCES) == only)
-    est = total(now_m, True)
+    getty_est = series["getty_est"].get(now_m, 0.0)
+    est = total(now_m, True) + getty_est
     print(f"\n  Revenue, all sources, {dt.datetime.strptime(now_m, '%Y-%m').strftime('%B')} so far: ${total(now_m):,.2f} "
-          f"(${total(now_m, False):,.2f} received or sold, ${est:,.2f} estimated); last month ${total(prev):,.2f}")
+          f"(${total(now_m, False) - getty_est:,.2f} received or sold, ${est:,.2f} estimated); last month ${total(prev):,.2f}")
     bits = [f"{label} ${series[k].get(now_m, 0.0):,.2f}" for k, label, _c in REVENUE_SOURCES if series[k].get(now_m, 0.0) > 0]
     print("   " + ("; ".join(bits) if bits else "nothing yet"))
 
@@ -4878,10 +4880,10 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
         prev = months[-2]
         last_month_fig = (f"<div><span class=\"sales-figure-label\">Last month ({dt.datetime.strptime(prev, '%Y-%m').strftime('%B')})</span>"
                           f"<span class=\"sales-secondary\">${monthly_totals[prev]:,.2f}</span></div>")
-    est_now = sum(series[k].get(this_month, 0.0) for k in ESTIMATED_SOURCES)
+    est_now = sum(series[k].get(this_month, 0.0) for k in ESTIMATED_SOURCES) + series["getty_est"].get(this_month, 0.0)
     est_note = (f"This month includes ${est_now:,.2f} of estimates that have not been paid out: TikTok's own Creator "
                 f"Rewards estimate, AdMob's estimated earnings, and our estimate of Getty downloads that are not on a royalty "
-                f"statement yet. The rest is money received or sold.")
+                f"statement yet (counted under Photo licensing). The rest is money received or sold.")
     proj = project_revenue(monthly_totals, months)
     if proj.get("insufficient"):
         proj_note = (f"Not projecting future months yet: {proj['have']} real month(s) of revenue "
