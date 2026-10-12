@@ -1,0 +1,837 @@
+{
+ "id": "rubblefront-v2-30s",
+ "outputs": {
+  "16x9": "rubblefront-trailer-v2-30s-16x9.mp4"
+ },
+ "formats": [
+  "16x9"
+ ],
+ "crf": 16,
+ "sfxDb": -6,
+ "music": [
+  {
+   "file": "battle_low.ogg",
+   "in": 44.0,
+   "t": 0.0,
+   "dur": 3.4,
+   "gain_db": -6,
+   "fade_in": 1.2,
+   "fade_out": 0.3
+  },
+  {
+   "file": "battle_mid.ogg",
+   "in": 0.0,
+   "t": 3.0,
+   "dur": 9.0,
+   "gain_db": 0,
+   "fade_in": 0.02,
+   "fade_out": 0.3
+  },
+  {
+   "file": "battle_mid_drive.ogg",
+   "in": 0.0,
+   "t": 3.0,
+   "dur": 9.0,
+   "gain_db": 2,
+   "fade_in": 0.02,
+   "fade_out": 0.3
+  },
+  {
+   "file": "battle_high.ogg",
+   "in": 10.0,
+   "t": 13.0,
+   "dur": 100.0,
+   "gain_db": 0,
+   "fade_in": 0.02,
+   "fade_out": 3.0
+  },
+  {
+   "file": "battle_high_drive.ogg",
+   "in": 10.0,
+   "t": 13.0,
+   "dur": 100.0,
+   "gain_db": 2,
+   "fade_in": 0.02,
+   "fade_out": 3.0
+  }
+ ],
+ "musicEnv": [
+  {
+   "t": 0,
+   "db": 0
+  },
+  {
+   "t": 11.9,
+   "db": 0
+  },
+  {
+   "t": 12.0,
+   "db": -40
+  },
+  {
+   "t": 12.95,
+   "db": -40
+  },
+  {
+   "t": 13.0,
+   "db": 0
+  }
+ ],
+ "synth": [
+  {
+   "t": 3.0,
+   "kind": "riser",
+   "dur": 2.8,
+   "gain_db": -2
+  },
+  {
+   "t": 13.0,
+   "kind": "riser",
+   "dur": 1.0,
+   "gain_db": 0
+  }
+ ],
+ "scenes": [
+  {
+   "clip": "c_odds",
+   "in": 2.3,
+   "dur": 2.4,
+   "punch": {
+    "from": 1.0,
+    "to": 1.24
+   },
+   "crop": {
+    "x": 0.42,
+    "y": 0.45,
+    "s": 1.0
+   },
+   "v": {
+    "x": 0.08,
+    "y": 0.5,
+    "s": 1.0,
+    "fit": {
+     "z": 1.5,
+     "x": 0.0,
+     "y": 0.25
+    }
+   },
+   "hits": [
+    {
+     "at": 0.5,
+     "kind": "tick",
+     "gain_db": -4
+    },
+    {
+     "at": 1.0,
+     "kind": "tick",
+     "gain_db": -4
+    },
+    {
+     "at": 1.5,
+     "kind": "tick",
+     "gain_db": -4
+    },
+    {
+     "at": 2.0,
+     "kind": "tick",
+     "gain_db": -4
+    }
+   ]
+  },
+  {
+   "clip": "c_odds",
+   "in": 5.15,
+   "dur": 1.6,
+   "slow": [
+    {
+     "at": 0.2,
+     "dur": 0.3,
+     "speed": 0.5
+    },
+    {
+     "at": 0.6,
+     "dur": 0.13333333333333333,
+     "speed": 0
+    }
+   ],
+   "crop": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.2
+   },
+   "v": {
+    "x": 0.58,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.6,
+     "dur": 0.24,
+     "amp": 0.95,
+     "color": "#fff4e0",
+     "sfx": "boom"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.6,
+     "amp": 26,
+     "dur": 0.45,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_flank",
+   "in": 5.4,
+   "dur": 1.0,
+   "punch": {
+    "from": 1.0,
+    "to": 1.1
+   },
+   "crop": {
+    "x": 0.3,
+    "y": 0.3,
+    "s": 1.0
+   },
+   "v": {
+    "x": 0.08,
+    "y": 0.5,
+    "s": 1.0,
+    "fit": {
+     "z": 1.5,
+     "x": 0.0,
+     "y": 0.25
+    }
+   },
+   "cards": [
+    {
+     "text": "EVERY SHOT\nHAS *ODDS.*",
+     "at": 0.0,
+     "pos": "lowright",
+     "dur": 2.0,
+     "size": 112
+    }
+   ]
+  },
+  {
+   "clip": "c_flank",
+   "in": 7.15,
+   "dur": 1.0,
+   "crop": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.15
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.55,
+     "dur": 0.24,
+     "amp": 0.6,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.55,
+     "amp": 16,
+     "dur": 0.45,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_cover",
+   "in": 4.75,
+   "dur": 1.0,
+   "crop": {
+    "x": 0.4,
+    "y": 0.5,
+    "s": 1.1
+   },
+   "v": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "BLOW A HOLE\nIN THEIR *COVER.*",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 2.0
+    }
+   ],
+   "flash": [
+    {
+     "at": 0.5,
+     "dur": 0.24,
+     "amp": 0.6,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.5,
+     "amp": 16,
+     "dur": 0.45,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_rubble",
+   "in": 8.15,
+   "dur": 1.0,
+   "slow": [
+    {
+     "at": 0.12,
+     "dur": 0.5,
+     "speed": 0.5
+    }
+   ],
+   "crop": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.2
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.2,
+     "dur": 0.24,
+     "amp": 0.8,
+     "color": "#fff4e0",
+     "sfx": "boom"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.2,
+     "amp": 24,
+     "dur": 0.45,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_ow",
+   "in": 5.0,
+   "dur": 1.5,
+   "crop": {
+    "x": 0.4,
+    "y": 0.5,
+    "s": 1.1
+   },
+   "v": {
+    "x": 0.4,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "HOLD. WAIT.\n*AMBUSH.*",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 2.4
+    }
+   ]
+  },
+  {
+   "clip": "c_ow",
+   "in": 8.8,
+   "dur": 1.0,
+   "slow": [
+    {
+     "at": 0.15,
+     "dur": 0.4,
+     "speed": 0.45
+    }
+   ],
+   "crop": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.2
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.2,
+     "dur": 0.24,
+     "amp": 0.9,
+     "color": "#fff4e0",
+     "sfx": "boom"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.2,
+     "amp": 26,
+     "dur": 0.45,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_titan",
+   "in": 3.5,
+   "dur": 1.0,
+   "crop": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.1
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "PRAY THE *78%*\nHOLDS.",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 2.0
+    }
+   ]
+  },
+  {
+   "clip": "c_titan",
+   "in": 4.85,
+   "dur": 1.0,
+   "slow": [
+    {
+     "at": 0.2,
+     "dur": 0.2,
+     "speed": 0.5
+    },
+    {
+     "at": 0.5,
+     "dur": 0.16666666666666666,
+     "speed": 0
+    }
+   ],
+   "crop": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.15
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.5,
+     "dur": 0.24,
+     "amp": 1.0,
+     "color": "#fff4e0",
+     "sfx": "boom"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.5,
+     "amp": 32,
+     "dur": 0.45,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "type": "black",
+   "dur": 0.5
+  },
+  {
+   "type": "logo",
+   "dur": 1.5
+  },
+  {
+   "clip": "c_weather",
+   "in": 0.7,
+   "dur": 0.75,
+   "cards": [
+    {
+     "text": "SNOW.",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 0.7,
+     "size": 150,
+     "sfx": false
+    }
+   ],
+   "punch": {
+    "from": 1.0,
+    "to": 1.08
+   },
+   "v": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.0,
+     "dur": 0.15,
+     "amp": 0.35,
+     "color": "#ffffff",
+     "sfx": "slam"
+    }
+   ]
+  },
+  {
+   "clip": "c_weather",
+   "in": 3.3,
+   "dur": 0.75,
+   "cards": [
+    {
+     "text": "SAND.",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 0.7,
+     "size": 150,
+     "sfx": false
+    }
+   ],
+   "punch": {
+    "from": 1.0,
+    "to": 1.08
+   },
+   "v": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.0,
+     "dur": 0.15,
+     "amp": 0.35,
+     "color": "#ffffff",
+     "sfx": "slam"
+    }
+   ]
+  },
+  {
+   "clip": "c_weather",
+   "in": 5.9,
+   "dur": 0.75,
+   "cards": [
+    {
+     "text": "RAIN.",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 0.7,
+     "size": 150,
+     "sfx": false
+    }
+   ],
+   "punch": {
+    "from": 1.0,
+    "to": 1.08
+   },
+   "v": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.0,
+     "dur": 0.15,
+     "amp": 0.35,
+     "color": "#ffffff",
+     "sfx": "slam"
+    }
+   ]
+  },
+  {
+   "clip": "c_weather",
+   "in": 8.6,
+   "dur": 0.75,
+   "cards": [
+    {
+     "text": "NIGHT.",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 0.7,
+     "size": 150,
+     "sfx": false
+    }
+   ],
+   "punch": {
+    "from": 1.0,
+    "to": 1.08
+   },
+   "v": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.0,
+     "dur": 0.15,
+     "amp": 0.35,
+     "color": "#ffffff",
+     "sfx": "slam"
+    }
+   ]
+  },
+  {
+   "clip": "c_hub_l1",
+   "in": 1.8,
+   "dur": 1.5,
+   "punch": {
+    "from": 1.0,
+    "to": 1.1
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "BUILD THE\n*OUTPOST.*",
+     "at": 0.0,
+     "pos": "low",
+     "dur": 3.0
+    }
+   ]
+  },
+  {
+   "clip": "c_hub_l3",
+   "in": 1.8,
+   "dur": 1.5,
+   "punch": {
+    "from": 1.0,
+    "to": 1.1
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.0,
+     "dur": 0.3,
+     "amp": 0.6,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ]
+  },
+  {
+   "clip": "c_runmap",
+   "in": 0.6,
+   "dur": 1.5,
+   "dim": 0.62,
+   "crop": {
+    "x": 0.12,
+    "y": 0.34,
+    "s": 1.7,
+    "to": {
+     "x": 0.36,
+     "y": 0.34,
+     "s": 1.7
+    }
+   },
+   "v": {
+    "x": 0.2,
+    "y": 0.3,
+    "s": 1.5
+   },
+   "cards": [
+    {
+     "text": "CHOOSE YOUR\n*ROUTE.*",
+     "at": 0.0,
+     "pos": "mid",
+     "size": 120
+    }
+   ]
+  },
+  {
+   "clip": "c_odds",
+   "in": 5.3,
+   "dur": 0.5,
+   "slow": [],
+   "crop": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.2
+   },
+   "v": {
+    "x": 0.58,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.3,
+     "dur": 0.2,
+     "amp": 0.8,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.3,
+     "amp": 22,
+     "dur": 0.3,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_ow",
+   "in": 8.85,
+   "dur": 0.5,
+   "slow": [],
+   "crop": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.2
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.15,
+     "dur": 0.2,
+     "amp": 0.8,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.15,
+     "amp": 22,
+     "dur": 0.3,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_titan",
+   "in": 4.75,
+   "dur": 0.5,
+   "crop": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.15
+   },
+   "v": {
+    "x": 0.4,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.25,
+     "dur": 0.24,
+     "amp": 0.8,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.25,
+     "amp": 22,
+     "dur": 0.45,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_rubble",
+   "in": 8.3,
+   "dur": 0.5,
+   "slow": [],
+   "crop": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.2
+   },
+   "v": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.1,
+     "dur": 0.2,
+     "amp": 0.8,
+     "color": "#fff4e0",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.1,
+     "amp": 22,
+     "dur": 0.3,
+     "zoom": 0.04
+    }
+   ]
+  },
+  {
+   "clip": "c_weather",
+   "in": 5.9,
+   "dur": 2.2,
+   "punch": {
+    "from": 1.0,
+    "to": 1.06
+   },
+   "cards": [
+    {
+     "text": "ONE MORE *RUN.*",
+     "at": 1.0000000000000002,
+     "pos": "mid",
+     "dur": 1.2,
+     "size": 170,
+     "sfx": "boom"
+    }
+   ],
+   "v": {
+    "x": 0.45,
+    "y": 0.5,
+    "s": 1.0
+   }
+  },
+  {
+   "type": "end",
+   "dur": 3.8,
+   "lines": [
+    "Spring 2027",
+    "rubblefront.com",
+    "A Purplelink LLC game"
+   ]
+  }
+ ]
+}
