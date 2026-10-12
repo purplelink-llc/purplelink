@@ -316,3 +316,10 @@ test("the Summonly page does not claim to catch passwords the rules cannot see",
   assert.doesNotMatch(html, /private by default/i, "clipboard history is on from the first launch");
   assert.doesNotMatch(html, /lock the screen/i, "the command turns the display off");
 });
+
+test("the Terms describe Summonly's clipboard filter the way the product page does, without promising it catches passwords", () => {
+  const terms = read("terms/index.html");
+  assert.doesNotMatch(terms, /looks like a password/i);
+  assert.match(terms, /one-time code/);
+  assert.match(terms, /these rules are not perfect/);
+});
