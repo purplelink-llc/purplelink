@@ -113,8 +113,8 @@ test("the recovery email for the Suite links the one page and carries the Modern
   const mail = recoveryEmail([{ sessionId: "cs_suite", product: "app-suite", created: 5 }], "MTX1-AAAAA-BBBBB");
   assert.match(mail.text, /Purplelink Mac Suite/);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_suite/);
-  assert.match(mail.text, /ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads and your lifetime Vitae Plus key/);
-  assert.match(mail.html, /Keyfeel and Tapefolio downloads/);
+  assert.match(mail.text, /ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads and your lifetime Vitae Plus key/);
+  assert.match(mail.html, /Panely and Summonly downloads/);
   assert.match(mail.text, /MTX1-AAAAA-BBBBB/);
   assert.match(mail.html, /MTX1-AAAAA-BBBBB/);
   // Without a signing key it does not invent one.

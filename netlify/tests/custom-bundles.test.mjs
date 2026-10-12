@@ -65,13 +65,13 @@ const bundle = (product, apps, over = {}) => ({ id: SID, status: "complete", pay
 
 // ---- the price table and the helper ----
 
-test("two prices, below the Suite, above the dearest single app, and the six parts are the Suite's six", () => {
+test("two prices, below the Suite, above the dearest single app, and the eight parts are the Suite's eight", () => {
   assert.deepEqual(lib.BUNDLES, { "bundle-2": { count: 2, cents: 3499 }, "bundle-3": { count: 3, cents: 4499 } });
   const dearestSingle = 2999;
   assert.ok(lib.BUNDLES["bundle-2"].cents > dearestSingle, "pick 2 costs more than any single app");
   assert.ok(lib.BUNDLES["bundle-2"].cents < lib.BUNDLES["bundle-3"].cents);
   assert.ok(lib.BUNDLES["bundle-3"].cents < 5499, "pick 3 stays under the Suite");
-  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "vitae-plus"]);
+  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "vitae-plus"]);
 });
 
 test("the page's price tables are the server's", () => {
@@ -97,8 +97,8 @@ test("parsing: exactly the right number of different, known parts, in the canoni
   assert.equal(lib.parseBundleParts(["moderntex", "moderntex", "legroom"], 3), null, "a duplicate cannot pad the count");
 });
 
-test("entitlements: the Suite is all six, a bundle its parts, a single app itself, a mismatched bundle nothing", () => {
-  assert.equal(lib.entitledParts("app-suite", {}).size, 6);
+test("entitlements: the Suite is all eight, a bundle its parts, a single app itself, a mismatched bundle nothing", () => {
+  assert.equal(lib.entitledParts("app-suite", {}).size, 8);
   assert.deepEqual([...lib.entitledParts("bundle-2", { apps: "legroom,keyfeel" })], ["legroom", "keyfeel"]);
   assert.deepEqual([...lib.entitledParts("legroom", {})], ["legroom"]);
   assert.deepEqual([...lib.entitledParts("moderntex-seats", {})], ["moderntex"]);

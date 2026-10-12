@@ -4,7 +4,7 @@
 (function () {
   var BUNDLE_PRICING = {"2":3499,"3":4499,"suite":5499};
   // What each part costs on its own today (Vitae Plus is its first year, as in the Suite's own price stack).
-  var PART_PRICE = {"moderntex":1999,"outbound-veil":2999,"legroom":999,"keyfeel":999,"tapefolio":2999,"vitae-plus":2399};
+  var PART_PRICE = {"moderntex":1999,"outbound-veil":2999,"legroom":999,"keyfeel":999,"tapefolio":2999,"panely":999,"summonly":999,"vitae-plus":2399};
 
   var form = document.getElementById("bundle-form");
   if (!form) return;

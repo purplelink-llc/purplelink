@@ -60,8 +60,8 @@ test("a paid Suite order is acknowledged and emails the suite page link once", a
   assert.deepEqual(mail.to, ["buyer@example.com"]);
   assert.match(mail.subject, /Purplelink Mac Suite/);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/suite\/success\/\?session_id=cs_live_suite_abcdefghij/);
-  assert.match(mail.text, /That page has six things: the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads, and your Vitae Plus key/);
-  assert.match(mail.html, /ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads/);
+  assert.match(mail.text, /That page has eight things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads, and your Vitae Plus key/);
+  assert.match(mail.html, /ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads/);
   assert.match(mail.html, /\/suite\/success\//);
 });
 

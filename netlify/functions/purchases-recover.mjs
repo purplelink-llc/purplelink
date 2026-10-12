@@ -19,6 +19,8 @@ import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
+import { issuePanelyLicense } from "../lib/panely-license.mjs";
+import { issueSummonlyLicense } from "../lib/summonly-license.mjs";
 import { issueModernTexLicense, licenseKeysForSession, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
 import { entitledParts, isBundleProduct, partsSentence, bundlePartsOf } from "../lib/bundles.mjs";
 
@@ -95,7 +97,7 @@ function escapeHtml(s) {
 }
 
 /** The email body for a set of purchases; exported for tests. */
-export function recoveryEmail(purchases, license, keyfeelLicense = null, keysBySession = new Map(), tapefolioLicense = null) {
+export function recoveryEmail(purchases, license, keyfeelLicense = null, keysBySession = new Map(), tapefolioLicense = null, panelyLicense = null, summonlyLicense = null) {
   const lines = [];
   const html = [];
   const mtx = purchases.filter((p) => p.product === "moderntex");
@@ -135,6 +137,13 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
       html.push(`<p>Tapefolio license key (in Tapefolio, choose Enter License Key and paste it):</p>` +
         `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(tapefolioLicense)}</p>`);
     }
+    for (const [slug, name, key] of [["panely", "Panely", panelyLicense], ["summonly", "Summonly", summonlyLicense]]) {
+      if (key && parts.has(slug)) {
+        lines.splice(lines.length - 1, 0, `${name} license key (in ${name}, choose Enter License Key and paste it): ${key}`);
+        html.push(`<p>${name} license key (in ${name}, choose Enter License Key and paste it):</p>` +
+          `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(key)}</p>`);
+      }
+    }
     if (bundle) {
       // A custom bundle: the page lists only the chosen parts; the ModernTex key, if chosen, is only ever emailed.
       const chosen = bundlePartsOf({ product: p.product, apps: p.apps || "" });
@@ -150,8 +159,8 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
     }
     if (suite) {
       // The page holds the downloads and the Vitae Plus key; the ModernTex key is only ever emailed.
-      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads and your lifetime Vitae Plus key.");
-      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads and your lifetime Vitae Plus key.</p>");
+      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads and your lifetime Vitae Plus key.");
+      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads and your lifetime Vitae Plus key.</p>");
       if (license) {
         lines.splice(lines.length - 1, 0, `ModernTex license key (in ModernTex, choose Enter license key and paste it): ${license}`);
         html.push(`<p>ModernTex license key (in ModernTex, choose Enter license key and paste it):</p>` +
@@ -186,8 +195,11 @@ async function sendRecovery(to, purchases) {
   const license = mtxPurchase ? issueModernTexLicense(mtxPurchase.sessionId) : null;
   const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("keyfeel"))) ? issueKeyfeelLicense(to) : null;
   const tapefolioLicense = purchases.some((p) => p.product === "tapefolio" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("tapefolio"))) ? issueTapefolioLicense(to) : null;
+  const hasPart = (slug) => purchases.some((p) => p.product === slug || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has(slug)));
+  const panelyLicense = hasPart("panely") ? issuePanelyLicense(to) : null;
+  const summonlyLicense = hasPart("summonly") ? issueSummonlyLicense(to) : null;
   const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId, { seats: p.seats || 0, apps: p.apps || "" }).filter((k) => k.slug !== "moderntex")]));
-  const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense);
+  const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense, panelyLicense, summonlyLicense);
   try {
     const resp = await fetch(RESEND_API_URL, {
       method: "POST",

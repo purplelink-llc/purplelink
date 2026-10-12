@@ -1,9 +1,9 @@
 /**
- * Custom bundles of the Mac Suite: pick any 2 or any 3 of the six parts for one fixed price, whichever parts
+ * Custom bundles of the Mac Suite: pick any 2 or any 3 of the eight parts for one fixed price, whichever parts
  * are chosen. One source of truth for checkout, delivery, keys and recovery; site/suite/bundle.js carries the
  * same table for the live price display, and a test keeps the two equal.
  *
- * The six parts are the five Mac apps and a lifetime Vitae Plus key. The whole Suite (all six) stays its own
+ * The eight parts are the seven Mac apps and a lifetime Vitae Plus key. The whole Suite (all eight) stays its own
  * product, "app-suite". The client chooses only WHICH parts; the price comes from this table, never from the
  * request. A bundle's session carries metadata.product ("bundle-2" or "bundle-3") and metadata.apps (the chosen
  * part slugs, comma-separated, in the canonical order below), and every entitlement check reads them back.
@@ -16,6 +16,8 @@ export const BUNDLE_PARTS = [
   { slug: "legroom",       label: "Legroom" },
   { slug: "keyfeel",       label: "Keyfeel" },
   { slug: "tapefolio",     label: "Tapefolio" },
+  { slug: "panely",      label: "Panely" },
+  { slug: "summonly",      label: "Summonly" },
   { slug: "vitae-plus",    label: "Vitae Plus for life" },
 ];
 export const BUNDLE_SLUGS = BUNDLE_PARTS.map((p) => p.slug);
@@ -55,7 +57,7 @@ export function bundlePartsOf(metadata) {
 }
 
 /**
- * The parts a purchase entitles, as a Set of slugs: the whole Suite is all six, a bundle is its chosen parts,
+ * The parts a purchase entitles, as a Set of slugs: the whole Suite is all eight, a bundle is its chosen parts,
  * a single app is itself (seat packs are ModernTex). Anything else entitles nothing.
  */
 export function entitledParts(product, metadata) {

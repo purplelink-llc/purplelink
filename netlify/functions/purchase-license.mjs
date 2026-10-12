@@ -15,7 +15,7 @@ import { licenseKeysForSession } from "./stripe-webhook.mjs";
 import { entitledParts, isBundleProduct } from "../lib/bundles.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
-const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "app-suite", "bundle-2", "bundle-3"]);
+const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
 const DAILY_LIMIT = 120;
 
 function json(status, body) {

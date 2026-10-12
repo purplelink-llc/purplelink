@@ -29,6 +29,8 @@
 
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
+import { issuePanelyLicense } from "../lib/panely-license.mjs";
+import { issueSummonlyLicense } from "../lib/summonly-license.mjs";
 import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivateKey } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
@@ -86,6 +88,8 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["legroom",           { name: "Legroom for macOS",                 successPath: "/legroom/success/" }],
   ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
   ["tapefolio",         { name: "Tapefolio for macOS",               successPath: "/tapefolio/success/" }],
+  ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
+  ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
   // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life. /suite/success/
   // lists all five downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
@@ -261,7 +265,7 @@ export function issueModernTexLicense(sessionId, index) {
 /**
  * Every license key a paid session is entitled to, as [{ slug, label, key }]. ModernTex has its own scheme
  * (MTX1); Outbound Veil and Legroom share PurplelinkLicenseV1 (netlify/lib/license.mjs). Keyfeel (KFL1) and
- * Tapefolio (TFL1) each have their own scheme, keyed on the buyer's address, and are added by the caller. The Mac
+ * Tapefolio (TFL1), Panely (PNL1) and Summonly (SML1) each have their own scheme, keyed on the buyer's address, and are added by the caller. The Mac
  * Suite entitles all of them; a custom bundle (`apps` = its chosen parts, comma-separated) entitles only those. Keys are derived from the session id, so every caller gets the same key.
  * An entry is left out, never faked, when its signing secret is not configured.
  */
@@ -367,11 +371,11 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
-    ? `That page has six things: the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads, and your Vitae Plus key ` +
+    ? `That page has eight things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has six things: the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads, and your Vitae Plus key ` +
+    ? `<p>That page has eight things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Custom bundle: name the chosen parts, and say that the page lists those and nothing else.
@@ -437,6 +441,24 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
       `while macOS prepares it for the Neural Engine; that wait happens once for each model. Your files stay on your Mac. Tapefolio will mishear ` +
       `some words and mislabel some speakers, so check any quoted text against the recording.</p>`
     : "");
+  // Panely and Summonly: keys from the buyer's address (their own schemes, like Tapefolio's). Each app has one permission
+  // new users meet first, so the email says what it is and why.
+  const panelyLicense = parts.has("panely") ? issuePanelyLicense(to) : null;
+  const summonlyLicense = parts.has("summonly") ? issueSummonlyLicense(to) : null;
+  const keyBlock = (name, key) => ({
+    text: `Your ${name} license key (in ${name}, choose Enter License Key and paste it):\n${key}\n\nIt unlocks ${name} on up to two of your Macs. No account, and it works offline.\n\n`,
+    html: `<p>Your ${name} license key (in ${name}, choose Enter License Key and paste it):</p>` +
+      `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${key}</p>` +
+      `<p>It unlocks ${name} on up to two of your Macs. No account, and it works offline.</p>`,
+  });
+  const panelyNote = "Panely needs the macOS Accessibility permission, which is how it moves other apps' windows. macOS asks the first time you snap a window; " +
+    "the permission is under System Settings, Privacy & Security, Accessibility. Panely reads window positions and titles, never what is inside a window.";
+  const summonlyNote = "Summonly indexes file names and the start of text files in the folders you choose, on your Mac. macOS asks before Summonly can read Desktop, Documents and Downloads. " +
+    "The first index takes a few minutes in the background. Nothing leaves your Mac, and clipboard history skips password managers.";
+  const panelyText = (panelyLicense ? keyBlock("Panely", panelyLicense).text : "") + (parts.has("panely") ? panelyNote + "\n\n" : "");
+  const panelyHtml = (panelyLicense ? keyBlock("Panely", panelyLicense).html : "") + (parts.has("panely") ? `<p>${panelyNote.replace(/&/g, "&amp;")}</p>` : "");
+  const summonlyText = (summonlyLicense ? keyBlock("Summonly", summonlyLicense).text : "") + (parts.has("summonly") ? summonlyNote + "\n\n" : "");
+  const summonlyHtml = (summonlyLicense ? keyBlock("Summonly", summonlyLicense).html : "") + (parts.has("summonly") ? `<p>${summonlyNote}</p>` : "");
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
@@ -445,6 +467,8 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     bundleText +
     keyfeelText +
     tapefolioText +
+    panelyText +
+    summonlyText +
     licenseTextBlock +
     `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
     `Questions or trouble downloading: reply to this email.\n\n` +
@@ -459,6 +483,8 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     bundleHtml +
     keyfeelHtml +
     tapefolioHtml +
+    panelyHtml +
+    summonlyHtml +
     licenseHtmlBlock +
     `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
     `<p>Questions or trouble downloading: reply to this email.</p>` +

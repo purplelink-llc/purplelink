@@ -11,7 +11,7 @@ Products
 
 # Tools for the paper, from first draft to accepted.
 
-Six Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
+Eight Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
 
 Watch the overview
 
@@ -61,6 +61,14 @@ Interviews or scanned pages to turn into text
 
 Tapefolio transcribes recordings and reads scans on your Mac, labels speakers and helps you replace identifiers. You check every transcript against the audio.
 
+Windows piled up across one or two screens
+
+Panely snaps windows to halves, thirds and corners with a shortcut or a drag, and saves layouts for each monitor setup.
+
+Finding a file or app without opening Finder
+
+Summonly searches the folders you choose from one box, answers sums and unit conversions, and keeps a clipboard history that skips passwords.
+
 Keeping track of where everything is
 
 Vitae, a free app. Vitae Plus is an optional subscription from $2.99 a month.
@@ -93,7 +101,7 @@ $54.99 once
 
 ### The Mac Suite
 
-ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life in one payment. Bought separately they come to $124 the first year, then $23.99 a year for Plus.
+ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life in one payment. Bought separately they come to $144 the first year, then $23.99 a year for Plus.
 
 See the Suite →
 
@@ -144,6 +152,22 @@ Free 7-day trial, then $29.99
 A Mac app that transcribes interviews and meetings on your Mac, labels the speakers, helps you replace names and other identifiers case by case, and reads scanned pages and photos into text. Your files are not uploaded. It will mishear words, so you check the text against the audio. macOS 26 or later, Apple silicon.
 
 See Tapefolio →
+
+Free 7-day trial, then $9.99
+
+### Panely
+
+A menu-bar app that snaps windows to halves, thirds and corners with a shortcut or by dragging to a screen edge, and saves layouts for each monitor setup. It works offline and reads window positions and titles, never what is inside a window. macOS 14 or later.
+
+See Panely →
+
+Free 7-day trial, then $9.99
+
+### Summonly
+
+A menu-bar app that finds files, apps and clipboard history from one box, opened with Option-Space. It keeps a private index of the folders you choose, answers sums and unit conversions, and runs web searches from a keyword. macOS 14 or later.
+
+See Summonly →
 
 Before you submit
 
@@ -307,7 +331,7 @@ Refunded if you email within 14 days of purchase. Updates are included forever.
 
 From the studio behind Scholar Utility Belt, which 1,000 researchers use and the Chrome Web Store rates 4.5 out of 5.
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.6.3 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once. First ten minutes: install and first build.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms); the receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.6.3 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $54.99 once. First ten minutes: install and first build.
 
 ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.
 
@@ -626,7 +650,7 @@ Refunded if you email within 14 days of purchase. Updates are included forever.
 
 The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0 · 38 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
-Also in the Mac Suite: Outbound Veil, ModernTex, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
+Also in the Mac Suite: Outbound Veil, ModernTex, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $54.99 once.
 
 Outbound Veil checking a fictional client note typed into a plain text field in Chrome. Every name and number on this page is invented.
 
@@ -793,7 +817,7 @@ Refunded if you email within 14 days of purchase.
 
 The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.0 · 7.3 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 
-Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $54.99 once.
 
 Sample data for the last clean. The disk figures are read from the Mac it was captured on. The window title comes from the test build.
 
@@ -1016,7 +1040,7 @@ The trial is the complete app for seven days from the first time you open it, wi
 
 Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
 
-Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $54.99 once.
 
 An illustration of the idea, not a screenshot of the app.
 
@@ -1197,7 +1221,7 @@ The trial is the complete app for seven days from the first time you open it, wi
 
 Comparing options? See Mac apps for transcription, text to speech and OCR compared.
 
-Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, $54.99 once.
+Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $54.99 once.
 
 The review screen on a demo recording: an invented interview read by two computer voices. The draft is not perfect, and the first pass did not mark every identifier.
 
@@ -1568,7 +1592,7 @@ $23.99 a year
 
 Stripe handles the card; Purplelink never sees it. Stripe asks for a card to start the trial and charges nothing until the 7 days are up. Cancel before then and you pay nothing. Cancel anytime after that and Plus keeps working through the period you have paid for.
 
-Want Plus for life? It is included in the Mac Suite, $54.99 once, with ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio.
+Want Plus for life? It is included in the Mac Suite, $54.99 once, with ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly.
 
 What Plus adds
 

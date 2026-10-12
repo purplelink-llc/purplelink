@@ -42,7 +42,7 @@ SKIP_PATHS = {
 
 # (label, href, sections that mark it current)
 NAV = [
-    ("Products", "/products/", ("products/", "moderntex/", "legroom/", "keyfeel/", "tapefolio/", "vitae/", "globepin/",
+    ("Products", "/products/", ("products/", "moderntex/", "legroom/", "keyfeel/", "tapefolio/", "panely/", "summonly/", "vitae/", "globepin/",
                                 "haea/", "binnacle/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/", "latex-errors/")),
@@ -58,6 +58,8 @@ FOOTER_COLUMNS = [
         ("Legroom", "/legroom/"),
         ("Keyfeel", "/keyfeel/"),
         ("Tapefolio", "/tapefolio/"),
+        ("Panely", "/panely/"),
+        ("Summonly", "/summonly/"),
         ("Paper Review", "/tools/paper-review/"),
         ("Scholar Utility Belt", "/scholar-utility-belt/"),
         ("All products", "/products/"),

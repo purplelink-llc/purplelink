@@ -6,6 +6,14 @@ price went to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`); 
 price ends in .99, so the Suite became $54.99 (Outbound Veil $29.99, Legroom $9.99); Tapefolio joined on 2026-10-09 with
 the price left at $54.99 by the owner's decision (see "Tapefolio joined" below and `tapefolio.md`).
 
+## Panely and Summonly joined (2026-10-12, prepared, not live), price unchanged
+Panely ($9.99, `panely.md`) and Summonly ($9.99, `summonly.md`) are the sixth and seventh apps, so the Suite is seven apps and Vitae Plus, eight
+parts in custom bundles, and stays $54.99 by Ben's decision (2026-10-11). The parts come to $143.92 the first year (the page rounds to $144; the
+test `legroom-site.test.mjs` checks the rows against the shown total). Prepared on branch `new-apps/launch-day`, which must not merge before both
+releases are published: it changes the Suite's entitlement, checkout line name, emails, success page and every page footer. Per-app terms sections
+for Panely and Summonly are drafts for Ben to read. To do by hand: re-render `site/assets/og/mac-suite.png` from `_gen.html` (`?t=mac-suite`;
+the kicker now says Eight Mac apps) and decide how the home dock shows ten products.
+
 ## Tapefolio joined (2026-10-09), price unchanged
 Tapefolio ($29.99 once, `tapefolio.md`) is the sixth part and the Suite stays $54.99; `amount: 5499` in `checkout.mjs`
 was not touched. The first-year parts now come to $123.95 (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99,

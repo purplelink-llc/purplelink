@@ -289,7 +289,7 @@ test("the share card is 1200 by 630, is what the page's meta tags and JSON-LD po
   }
   const gen = read("assets/og/_gen.html");
   assert.match(gen, /"tapefolio":\s+\{[^}]*title: "Tapefolio"/);
-  assert.match(gen, /"mac-suite":\s+\{[^}]*Six Mac apps/);
+  assert.match(gen, /"mac-suite":\s+\{[^}]*Eight Mac apps/);
 });
 
 test("the stylesheets, scripts and fonts the pages load all exist", () => {
@@ -323,7 +323,7 @@ test("the sitemap, llms.txt, the search index, the products and pricing pages, t
   assert.ok(JSON.parse(read("search-index.json")).some((e) => e.u === "/tapefolio/"));
   assert.match(read("products/index.html"), /<a class="catalog-card" href="\/tapefolio\/">/);
   assert.match(read("products/index.html"), /"name": "Tapefolio", "url": "https:\/\/purplelink\.llc\/tapefolio\/"/);
-  assert.match(read("products/index.html"), /Six Mac apps, a set of pay-per-use/);
+  assert.match(read("products/index.html"), /Eight Mac apps, a set of pay-per-use/);
   assert.match(read("pricing/index.html"), /Tapefolio for Mac/);
   assert.match(read("pricing/index.html"), /\$29\.99 once/);
   assert.match(read("index.html"), /<a href="\/tapefolio\/">Tapefolio<\/a>, after a 7-day trial/);
@@ -384,7 +384,7 @@ test("the Terms carry Tapefolio's own section: price, refund, two Macs, drafts, 
   assert.match(section, /does not anonymize a transcript/);
   assert.match(section, /Consent/);
   assert.match(section, /Liability cap for Tapefolio/);
-  assert.match(html, /the ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio Mac apps/);
+  assert.match(html, /the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly Mac apps/);
 });
 
 test("the Privacy page says what Tapefolio sends and does not send, and names its trial emails and recovery", () => {
@@ -463,11 +463,11 @@ test("the Suite page lists Tapefolio with its own price and card, keeps the $54.
   assert.match(html, /href="\/tapefolio\/">See Tapefolio/);
   assert.match(html, /<span class="suite-row-name">Tapefolio<\/span><span class="suite-row-price">\$29\.99 once<\/span>/);
   assert.match(html, /Tapefolio needs macOS 26 or later and Apple silicon, with no Intel version/);
-  assert.match(html, /Six Mac apps, one \$54\.99 payment/);
+  assert.match(html, /Eight Mac apps, one \$54\.99 payment/);
   assert.doesNotMatch(html, /\bfive Mac apps\b|Five Mac apps/i);
   assert.match(html, /<img class="suite-app-icon" src="\/assets\/tapefolio-icon\.webp" alt="" width="56" height="56" loading="lazy">\s*<h3>Tapefolio<\/h3>/);
   assert.match(html, /<img src="\/assets\/tapefolio-icon\.webp" alt="" width="72" height="72">/);
-  assert.equal([...html.matchAll(/class="suite-icons"[\s\S]*?<\/div>/g)][0][0].match(/<img /g).length, 6, "six icons in the row");
+  assert.equal([...html.matchAll(/class="suite-icons"[\s\S]*?<\/div>/g)][0][0].match(/<img /g).length, 8, "eight icons in the row");
   assert.ok(existsSync(join(SITE, "assets/tapefolio-icon.webp")));
   const app = jsonLd(html).find((n) => n["@type"] === "Product").hasPart.find((a) => a.name === "Tapefolio");
   assert.equal(app.operatingSystem, "macOS 26+");
@@ -481,16 +481,16 @@ test("every page that names the Suite's contents names Tapefolio, and none still
       assert.match(m[0], /Tapefolio/, `${p}: ${m[0].trim()}`);
     }
   }
-  assert.match(read("products/index.html"), /Bought separately they come to \$124 the first year/);
+  assert.match(read("products/index.html"), /Bought separately they come to \$144 the first year/);
   assert.doesNotMatch(read("products/index.html"), /come to \$94 the first year/);
-  assert.match(read("suite/index.html"), /\$124/);
+  assert.match(read("suite/index.html"), /\$144/);
 });
 
 test("the Suite success page has a Tapefolio section and the script shows its key with the right label", async () => {
   const html = read("suite/success/index.html");
   assert.match(html, /id="dl-tf"/);
   assert.match(html, /Tapefolio&rsquo;s keys are with their downloads below/);
-  const nodes = Object.fromEntries(["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license"].map((id) => [id, new FakeNode()]));
+  const nodes = Object.fromEntries(["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "license"].map((id) => [id, new FakeNode()]));
   const ctx = {
     document: { getElementById: (id) => nodes[id] || null, createElement: (t) => new FakeNode(t), createRange: () => ({}), body: new FakeNode("body") },
     window: { location: { search: `?session_id=${SID}` }, getSelection: () => ({}) },
@@ -560,8 +560,8 @@ test("the update check is described the same way everywhere: app name, version, 
 
 test("the Suite page, the Suite terms and llms.txt say the same about updates and the update check", () => {
   const terms = read("terms/index.html");
-  assert.match(terms, /all updates to Keyfeel and Tapefolio, updates to the version of Legroom you receive/);
-  assert.match(read("suite/index.html"), /so is every Keyfeel and Tapefolio update\. Legroom updates to the version you buy are included/);
+  assert.match(terms, /all updates to Keyfeel, Tapefolio, Panely and Summonly, updates to the version of Legroom you receive/);
+  assert.match(read("suite/index.html"), /so is every Keyfeel, Tapefolio, Panely and Summonly update\. Legroom updates to the version you buy are included/);
   assert.match(read("suite/index.html"), /its check for a new version, which sends the app's name, its version and the macOS version, and macOS itself/);
 });
 

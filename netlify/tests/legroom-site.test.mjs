@@ -132,11 +132,11 @@ test("the Outbound Veil start guide, the Suite page and the privacy page no long
 
 // ---- suite page ----------------------------------------------------------------------
 
-test("the Suite page sells six apps at $54.99 and no longer says $39 or $49", () => {
+test("the Suite page sells eight apps at $54.99 and no longer says $39 or $49", () => {
   const html = read("suite/index.html");
   const product = jsonLd(html).find((n) => n["@type"] === "Product");
   assert.equal(product.offers.price, "54.99");
-  assert.deepEqual(product.hasPart.map((a) => a.name), ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Tapefolio", "Vitae Plus"]);
+  assert.deepEqual(product.hasPart.map((a) => a.name), ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Tapefolio", "Panely", "Summonly", "Vitae Plus"]);
   assert.match(html, /Buy the Suite, \$54\.99/);
   assert.match(html, /<span id="price">\$54\.99<\/span>/);
   assert.match(html, /data-product="app-suite"/);
@@ -147,22 +147,22 @@ test("the Suite page sells six apps at $54.99 and no longer says $39 or $49", ()
 test("the Suite's separate prices are the real ones, and the first-year total adds up", () => {
   const html = read("suite/index.html");
   for (const row of ["ModernTex</span><span class=\"suite-row-price\">$19.99 once", "Outbound Veil</span><span class=\"suite-row-price\">$29.99 once",
-                     "Legroom</span><span class=\"suite-row-price\">$9.99 once", "Keyfeel</span><span class=\"suite-row-price\">$9.99 once", "Tapefolio</span><span class=\"suite-row-price\">$29.99 once", "Vitae Plus</span><span class=\"suite-row-price\">$23.99 a year"]) {
+                     "Legroom</span><span class=\"suite-row-price\">$9.99 once", "Keyfeel</span><span class=\"suite-row-price\">$9.99 once", "Tapefolio</span><span class=\"suite-row-price\">$29.99 once", "Panely</span><span class=\"suite-row-price\">$9.99 once", "Summonly</span><span class=\"suite-row-price\">$9.99 once", "Vitae Plus</span><span class=\"suite-row-price\">$23.99 a year"]) {
     assert.ok(html.includes(row), row);
   }
-  // 19.99 + 29.99 + 9.99 + 9.99 + 29.99 + 24 = 123.95 (123.94 with Vitae Plus at its listed $23.99); the page rounds to $124.
-  assert.match(html, /suite-sum-amount">\$124</);
+  // 19.99 + 29.99 + 9.99 + 9.99 + 29.99 + 9.99 + 9.99 + 24 = 143.93 (143.92 with Vitae Plus at its listed $23.99); the page rounds to $144.
+  assert.match(html, /suite-sum-amount">\$144</);
 });
 
 test("the Suite's first-year total is the sum of the prices listed beside it, rounded to whole dollars", () => {
   const html = read("suite/index.html");
   const rows = [...html.matchAll(/suite-row-price">\$([\d.]+) (?:once|a year)</g)].map((m) => Math.round(parseFloat(m[1]) * 100));
-  assert.equal(rows.length, 6);
+  assert.equal(rows.length, 8);
   const sumCents = rows.reduce((a, b) => a + b, 0);
-  assert.equal(sumCents, 12394, "the listed prices sum to $123.94");
+  assert.equal(sumCents, 14392, "the listed prices sum to $143.92");
   const shown = html.match(/suite-sum-amount">\$(\d+)</)[1];
   assert.equal(Number(shown), Math.round(sumCents / 100));
-  // Counting Vitae Plus at a round $24, as the pricing notes always have, gives $123.95 and the same rounded figure.
+  // Counting Vitae Plus at a round $24, as the pricing notes always have, gives $143.93 and the same rounded figure.
   assert.equal(Math.round((sumCents - 2399 + 2400) / 100), Number(shown));
   // Tapefolio joining did not move the Suite's price.
   assert.match(html, /<span class="suite-deal-amount">\$54\.99<\/span>/);
@@ -171,7 +171,7 @@ test("the Suite's first-year total is the sum of the prices listed beside it, ro
 test("the Terms, llms.txt and the products page carry the $54.99 Suite", () => {
   assert.match(read("terms/index.html"), /Mac Suite is one payment of \$54\.99 USD/);
   assert.match(read("terms/index.html"), /<h2>Legroom: additional terms<\/h2>/);
-  assert.match(read("llms.txt"), /Mac Suite \(macOS, \$54\.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus/);
+  assert.match(read("llms.txt"), /Mac Suite \(macOS, \$54\.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus/);
   assert.match(read("products/index.html"), /<span class="catalog-card-price">\$54\.99 once<\/span>/);
   for (const p of ["llms.txt", "products/index.html", "terms/index.html", "vitae/plus/index.html", "outbound-veil/index.html", "outbound-veil/start/index.html", "moderntex/index.html", "legroom/index.html", "keyfeel/index.html"]) {
     assert.doesNotMatch(read(p), /(Mac Suite[^.]{0,120}\$(39|49)\b|\$(39|49)\b[^.]{0,40}Mac Suite)/, `${p} still prices the Suite at the old price`);
@@ -234,9 +234,9 @@ test("/legroom/success/ shows the server's reason when the session is refused, a
   assert.match(bad.nodes.downloads.innerHTML, /receipt email/);
 });
 
-test("/suite/success/ fetches all six parts: five downloads and the Vitae key", async () => {
+test("/suite/success/ fetches all eight parts: seven downloads and the Vitae key", async () => {
   const { fetched } = runScript("suite/success.js", {
-    search: `?session_id=${SID}`, ids: ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license"],
+    search: `?session_id=${SID}`, ids: ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "license"],
     fetchImpl: (url) => (String(url).includes("vitae-license") ? reply(200, { key: "VITAE-KEY" }) : reply(200, { files: [{ url: "/x", label: "App" }] })),
   });
   await tick();
@@ -245,7 +245,9 @@ test("/suite/success/ fetches all six parts: five downloads and the Vitae key", 
     "/.netlify/functions/legroom-download",
     "/.netlify/functions/moderntex-download",
     "/.netlify/functions/outbound-veil-download",
+    "/.netlify/functions/panely-download",
     "/.netlify/functions/purchase-license",
+    "/.netlify/functions/summonly-download",
     "/.netlify/functions/tapefolio-download",
     "/.netlify/functions/vitae-license",
   ]);
@@ -253,8 +255,8 @@ test("/suite/success/ fetches all six parts: five downloads and the Vitae key", 
 });
 
 test("/suite/success/ shows only the parts of a custom bundle and hides the rest", async () => {
-  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license", "hero-title", "hero-lead",
-    "part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-keyfeel", "part-tapefolio", "part-vitae-plus"];
+  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "license", "hero-title", "hero-lead",
+    "part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-keyfeel", "part-tapefolio", "part-panely", "part-summonly", "part-vitae-plus"];
   const { nodes, fetched } = runScript("suite/success.js", {
     search: `?session_id=${SID}`, ids,
     fetchImpl: (url) => (String(url).includes("purchase-license") ? reply(200, { keys: [], parts: ["keyfeel", "vitae-plus"] })
@@ -264,7 +266,7 @@ test("/suite/success/ shows only the parts of a custom bundle and hides the rest
   assert.deepEqual(fetched.map((u) => u.split("?")[0]).sort(), [
     "/.netlify/functions/keyfeel-download", "/.netlify/functions/purchase-license", "/.netlify/functions/vitae-license",
   ]);
-  for (const hidden of ["part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-tapefolio"]) assert.equal(nodes[hidden].hidden, true, hidden);
+  for (const hidden of ["part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-tapefolio", "part-panely", "part-summonly"]) assert.equal(nodes[hidden].hidden, true, hidden);
   for (const shown of ["part-keyfeel", "part-vitae-plus"]) assert.notEqual(nodes[shown].hidden, true, shown);
   assert.equal(nodes["hero-title"].textContent, "Your bundle is ready");
   assert.notEqual(nodes["hero-title"].hidden, true, "the heading is shown once the order is read");
@@ -272,7 +274,7 @@ test("/suite/success/ shows only the parts of a custom bundle and hides the rest
 });
 
 test("/suite/success/ keeps the license-key section for a bundle that has a keyed app, and shows everything for the Suite", async () => {
-  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license", "hero-title", "part-keys", "part-moderntex", "part-keyfeel"];
+  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "license", "hero-title", "part-keys", "part-moderntex", "part-keyfeel"];
   const bundle = runScript("suite/success.js", {
     search: `?session_id=${SID}`, ids,
     fetchImpl: (url) => (String(url).includes("purchase-license") ? reply(200, { keys: [], parts: ["moderntex", "tapefolio"] }) : reply(200, { files: [{ url: "/x", label: "App" }] })),
@@ -294,7 +296,7 @@ test("/suite/success/ keeps the heading hidden until the order is read, then sho
   assert.match(html, /<h1 id="hero-title" hidden>/);
   assert.match(html, /<p id="hero-lead" hidden>/);
   assert.match(html, /<noscript><h1>The Mac Suite is yours<\/h1><\/noscript>/);
-  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license", "hero-title", "hero-lead"];
+  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "license", "hero-title", "hero-lead"];
   // The script never shows the heading until the order is read: `hidden` is only ever set to false by showHero().
   let release;
   const gate = new Promise((r) => { release = r; });
@@ -317,14 +319,14 @@ test("/suite/success/ keeps the heading hidden until the order is read, then sho
 
 test("the Suite success page has an id on every part the script can hide", () => {
   const html = read("suite/success/index.html");
-  for (const id of ["part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-keyfeel", "part-tapefolio", "part-vitae-plus", "hero-title", "hero-lead"]) {
+  for (const id of ["part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-keyfeel", "part-tapefolio", "part-panely", "part-summonly", "part-vitae-plus", "hero-title", "hero-lead"]) {
     assert.match(html, new RegExp(`id="${id}"`), id);
   }
 });
 
 test("/suite/success/ keeps working for the other parts when the Legroom part fails", async () => {
   const { nodes } = runScript("suite/success.js", {
-    search: `?session_id=${SID}`, ids: ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license"],
+    search: `?session_id=${SID}`, ids: ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "license"],
     fetchImpl: (url) => {
       if (String(url).includes("legroom-download")) return reply(500, { detail: "The file is temporarily unavailable." });
       if (String(url).includes("vitae-license")) return reply(200, { key: "VITAE-KEY" });
@@ -342,6 +344,8 @@ test("the Suite success page has a Legroom section for the script to fill", () =
   assert.match(html, /id="dl-lg"/);
   assert.match(html, /id="dl-kf"/);
   assert.match(html, /id="dl-tf"/);
-  assert.match(html, /ModernTex, Outbound Veil, Legroom, Keyfeel and Tapefolio downloads/);
+  assert.match(html, /id="dl-pf"/);
+  assert.match(html, /id="dl-lf"/);
+  assert.match(html, /ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads/);
   assert.match(html, /macOS 26 or later/);
 });

@@ -1,7 +1,7 @@
 // The Summonly pages, checked as files: the offer in the structured data, the release gate (the trial link and
 // Buy button stay dead until site/summonly/launch.js is flipped), the copy rules, and the success page's script run
-// against a small fake DOM. The page is unlisted and noindex until launch day; the listing checks (sitemap,
-// llms.txt, products, pricing, footer, Suite) belong to the launch-day commit.
+// against a small fake DOM. Until the gate is switched on the page is noindex and says PreOrder; the listing checks (sitemap,
+// llms.txt, products, pricing, footer, Suite) are in the launch-day commit, and the gate flip makes the page live.
 //
 // Run with: node --test netlify/tests/summonly-site.test.mjs
 
@@ -31,7 +31,8 @@ test("the Summonly page offers the app at $9.99 once, with a 14-day refund, for 
   assert.equal(app.offers.priceCurrency, "USD");
   assert.equal(app.offers.hasMerchantReturnPolicy.merchantReturnDays, 14);
   assert.equal(app.operatingSystem, "macOS 14+");
-  assert.equal(app.offers.availability, "https://schema.org/PreOrder", "not on sale yet: the page must not claim InStock");
+  const live = /live: true,/.test(read("summonly/launch.js"));
+  assert.equal(app.offers.availability, live ? "https://schema.org/InStock" : "https://schema.org/PreOrder", "the page claims InStock only once the gate is on");
   assert.ok(nodes.some((n) => n["@type"] === "FAQPage" && n.mainEntity.length >= 8));
   assert.ok(nodes.some((n) => n["@type"] === "BreadcrumbList"));
 });
@@ -43,32 +44,41 @@ test("the page is wired to the delivery and checkout functions and carries the s
   assert.match(html, /paid-tool-landing\.js/);
   assert.match(html, /\/summonly\/launch\.js/);
   assert.match(html, /<link rel="canonical" href="https:\/\/purplelink\.llc\/summonly\/">/);
-  assert.match(html, /<meta name="robots" content="noindex, follow">/, "unlisted until launch day");
+  const live = /live: true,/.test(read("summonly/launch.js"));
+  assert.match(html, live ? /<meta name="robots" content="index, follow">/ : /<meta name="robots" content="noindex, follow">/, "noindex until the gate is switched on, indexed after");
   assert.match(html, /<meta property="og:image" content="https:\/\/purplelink\.llc\/assets\/og\/summonly\.png">/);
   assert.match(html, /\/theme\.js/);
 });
 
 // ---- the release gate ------------------------------------------------------------------
 
-test("before launch, the static page is dead and says so, whether or not scripts run", () => {
+test("the static page matches the gate: dead and saying so before launch, live after", () => {
   const html = read("summonly/index.html");
+  const live = /live: true,/.test(read("summonly/launch.js"));
   const gated = [...html.matchAll(/<a\b[^>]*data-lf-gated[^>]*>/g)].map((m) => m[0]);
   assert.ok(gated.length >= 2);
   for (const tag of gated) {
-    assert.doesNotMatch(tag, /\shref=/);
-    assert.match(tag, /aria-disabled="true"/);
+    if (live) { assert.match(tag, /\shref="\/\.netlify\/functions\/summonly-download\?download=1"/); assert.doesNotMatch(tag, /aria-disabled/); }
+    else { assert.doesNotMatch(tag, /\shref=/); assert.match(tag, /aria-disabled="true"/); }
   }
-  assert.match(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
-  assert.match(html, /Not released yet/);
-  assert.doesNotMatch(html, /Version \d+\.\d+\.\d+, released/);
+  if (live) {
+    assert.doesNotMatch(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
+    assert.doesNotMatch(html, /Not released yet/);
+    assert.match(html, /Version \d+\.\d+\.\d+, released [A-Z][a-z]+ \d{1,2}, \d{4}\. \d+ MB disk image\./);
+  } else {
+    assert.match(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
+    assert.match(html, /Not released yet/);
+    assert.doesNotMatch(html, /Version \d+\.\d+\.\d+, released/);
+  }
 });
 
-test("launch.js ships switched OFF with no facts, so nothing can sell by accident", () => {
+test("launch.js is either fully off with no facts, or on with valid facts", () => {
   const src = read("summonly/launch.js");
-  assert.match(src, /live: false,/);
-  assert.match(src, /version: "",/);
-  assert.match(src, /sizeMb: "",/);
-  assert.match(src, /released: ""/);
+  if (/live: true,/.test(src)) {
+    assert.match(src, /version: "\d+\.\d+\.\d+",/); assert.match(src, /sizeMb: "\d{1,4}",/); assert.match(src, /released: "\d{4}-\d{2}-\d{2}"/);
+  } else {
+    assert.match(src, /live: false,/); assert.match(src, /version: "",/); assert.match(src, /sizeMb: "",/); assert.match(src, /released: ""/);
+  }
 });
 
 class FakeEl {
@@ -197,8 +207,21 @@ test("the success page is noindex, loads its script and has the download box", (
   assert.match(html.toLowerCase(), /folder access/);
 });
 
-test("the page is not listed anywhere yet: not in the sitemap, llms.txt or the products page", () => {
-  for (const f of ["sitemap.xml", "llms.txt", "products/index.html"]) assert.doesNotMatch(read(f), /purplelink\.llc\/summonly\/|href="\/summonly\/"/, `${f} must not list Summonly before launch day`);
+test("the sitemap, llms.txt, the products and pricing pages and the footer list Summonly, and the Suite includes it", () => {
+  const live = /live: true,/.test(read("summonly/launch.js"));
+  assert.equal(/<loc>https:\/\/purplelink\.llc\/summonly\/<\/loc>/.test(read("sitemap.xml")), live, "in the sitemap exactly when the gate is on (noindex pages must not be listed)");
+  assert.doesNotMatch(read("sitemap.xml"), /summonly\/success/);
+  assert.match(read("llms.txt"), /### Summonly \(macOS\)/);
+  assert.match(read("llms.txt"), /https:\/\/purplelink\.llc\/summonly\//);
+  assert.match(read("products/index.html"), /href="\/summonly\/"/);
+  assert.match(read("pricing/index.html"), /href="\/summonly\/"/);
+  assert.match(read("terms/index.html"), /<h2>Summonly: additional terms<\/h2>/);
+  const suite = read("suite/index.html");
+  assert.match(suite, /<span class="suite-row-name">Summonly<\/span><span class="suite-row-price">\$9\.99 once<\/span>/);
+  assert.match(suite, /name="apps" value="summonly"/);
+  assert.match(suite, /<h3>Summonly<\/h3>/);
+  assert.match(read("suite/success/index.html"), /id="dl-lf"/);
+  for (const f of ["index.html", "keyfeel/index.html", "moderntex/index.html"]) assert.match(read(f), /href="\/summonly\/"/, `${f} footer links Summonly`);
 });
 
 // ---- the success page's script, against a fake DOM ---------------------------------------
