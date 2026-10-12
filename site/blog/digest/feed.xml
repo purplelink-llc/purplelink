@@ -9,6 +9,14 @@
     <atom:link href="https://purplelink.llc/blog/digest/feed.xml" rel="self" type="application/rss+xml"/>
     <!-- DIGEST_RSS_START -->
     <item>
+      <title>Purplelink Daily Digest #107 — October 12, 2026</title>
+      <link>https://purplelink.llc/blog/digest/2026-10-12.html</link>
+      <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-10-12.html</guid>
+      <pubDate>Mon, 12 Oct 2026 10:00:00 +0000</pubDate>
+      <dc:creator>Benjamin Ampel</dc:creator>
+      <description>AI-assisted attacks using Claude Code and ARTEX AI hit Ukrainian and South Korean targets. Also in the digest: the DarkSword P7 iOS exploit kit, a Zod npm compromise report, EU AI Act model-level evidence, and Tencent&#x27;s AI capex bond.</description>
+    </item>
+    <item>
       <title>Purplelink Daily Digest #106 — October 11, 2026</title>
       <link>https://purplelink.llc/blog/digest/2026-10-11.html</link>
       <guid isPermaLink="true">https://purplelink.llc/blog/digest/2026-10-11.html</guid>
