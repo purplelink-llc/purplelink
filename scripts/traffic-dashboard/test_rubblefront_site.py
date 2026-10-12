@@ -63,3 +63,64 @@ def test_summary_reads_the_host_metrics():
     assert labels == ["Steam clicks", "outbound clicks", "downloads", "newsletter signups"]
     steam = next(sec for sec in s["secondaries"] if sec["key"] == "steamClicks")
     assert steam["value"] == 14
+
+
+# ---- country, device, scroll depth and engaged time (stats.mjs ?host= breakdowns)
+
+def _payload(scroll, **extra):
+    p = {"generatedAt": "2026-10-12T07:00:00Z", "totals": {}, "byDay": {},
+         "byCountry": {"top": [{"key": "US", "count": 9}, {"key": "DE", "count": 3}], "other": 2, "unknown": 4},
+         "device": {"mobile": 10, "tablet": 1, "desktop": 7},
+         "scrollDepth": scroll,
+         "engagedTime": {"0-10s": 5, "10-30s": 4, "30-60s": 3, "1-3m": 2, "3m-plus": 1}}
+    p.update(extra)
+    return p
+
+
+def test_audience_line_for_a_real_sample():
+    a = td.audience_summary(_payload({"0": 10, "25": 10, "50": 10, "75": 5, "100": 5}))
+    assert a["visits"] == 40 and a["reach50"] == 20 and a["pct50"] == 50
+    assert a["sentence"] == "50 percent of visits reached 50 percent scroll (20 of 40)."
+    assert [r["key"] for r in a["scroll"]] == ["0", "25", "50", "75", "100"]
+    assert [r["key"] for r in a["engaged"]] == ["0-10s", "10-30s", "30-60s", "1-3m", "3m-plus"]
+    assert a["device"] == [{"key": "mobile", "count": 10}, {"key": "tablet", "count": 1}, {"key": "desktop", "count": 7}]
+    assert a["countryOther"] == 2 and a["countryUnknown"] == 4 and a["countries"][0] == {"key": "US", "count": 9}
+
+
+def test_audience_line_guards_zero_and_tiny_samples():
+    none = td.audience_summary(_payload({}))
+    assert none["visits"] == 0 and none["pct50"] is None
+    assert "No visit" in none["sentence"] and "percent of visits" not in none["sentence"]
+    tiny = td.audience_summary(_payload({"0": 5, "50": 3, "100": 2}))
+    assert tiny["visits"] == 10 and tiny["pct50"] is None
+    assert tiny["sentence"].startswith("Only 10 visits") and "too few" in tiny["sentence"]
+    one = td.audience_summary(_payload({"100": 1}))
+    assert one["sentence"].startswith("Only 1 visit reported")
+    edge = td.audience_summary(_payload({"0": 10, "50": 10}))
+    assert edge["visits"] == 20 and edge["sentence"].startswith("50 percent of visits")
+
+
+def test_audience_is_absent_without_the_new_fields_and_survives_garbage():
+    assert td.audience_summary({"totals": {}, "byDay": {}}) is None
+    assert td.audience_summary(None) is None
+    a = td.audience_summary({"byCountry": "x", "device": [], "scrollDepth": {"50": "7", "0": -3}, "engagedTime": None})
+    assert a["visits"] == 0 and a["countries"] == [] and a["countryUnknown"] == 0
+
+
+def test_history_keeps_the_audience_and_the_summary_and_page_show_it():
+    hist = {"sites": {}}
+    td.merge_history(hist, "rubblefront", _payload({"0": 10, "25": 10, "50": 10, "75": 5, "100": 5},
+                                                   byDay={"2026-10-11": {"pageviews": 3, "uniques": 2}}))
+    assert hist["sites"]["rubblefront"]["latest"]["audience"]["visits"] == 40
+    s = td.summarise(_site("rubblefront"), hist["sites"]["rubblefront"])
+    assert s["audience"]["reach50"] == 20
+    page = td.audience_card(s["audience"])
+    assert "50 percent of visits reached 50 percent scroll" in page
+    for needle in ("Countries", "Devices", "Scroll depth", "Time on page", "unknown", "other countries", "3m-plus", ">US<"):
+        assert needle in page
+    # An older response without the fields leaves the archive and the summary as they were.
+    old = {"sites": {}}
+    td.merge_history(old, "purplelink", {"generatedAt": "2026-10-12T07:00:00Z", "totals": {}, "byDay": {}})
+    assert "audience" not in old["sites"]["purplelink"]["latest"]
+    assert td.summarise(_site("purplelink"), old["sites"]["purplelink"])["audience"] is None
+    assert td.audience_card(None) == ""

@@ -12,7 +12,8 @@
  * the `analytics` Netlify Blobs store, keyed by day. No cookies, no
  * fingerprinting; the only per-visitor value is a daily-salted hash of the IP
  * (rotates every day, can't be reversed or linked across days). stats.mjs
- * aggregates on read. Honors Do Not Track. Best-effort: returns 204 even on an
+ * aggregates on read. Each record also carries `cc`, a two-letter country code from Netlify's geolocation (no city,
+ * region, coordinates or IP), empty when unavailable. Honors Do Not Track. Best-effort: returns 204 even on an
  * internal hiccup so analytics never breaks a page.
  */
 
@@ -25,7 +26,25 @@ function clip(v, n) {
   return String(v == null ? "" : v).slice(0, n);
 }
 
-export default async function handler(request) {
+/**
+ * Two-letter country code of the request, from Netlify's own geolocation, or "" when it is not there or not exactly two
+ * letters. Only the country is ever read: city, region, coordinates and the IP never reach the record. Netlify Functions
+ * v2 passes it as context.geo.country.code (ISO 3166-1 alpha-2); the x-nf-geo header (base64 JSON, same shape) is the
+ * fallback for a runtime that does not pass the context.
+ */
+export function countryCode(request, context) {
+  let code = context && context.geo && context.geo.country && context.geo.country.code;
+  if (code == null) {
+    try {
+      const h = request.headers.get("x-nf-geo");
+      if (h) code = JSON.parse(Buffer.from(h, "base64").toString("utf8"))?.country?.code;
+    } catch (_) { /* malformed header: treat as absent */ }
+  }
+  code = typeof code === "string" ? code.trim() : "";
+  return /^[A-Za-z]{2}$/.test(code) ? code.toUpperCase() : "";
+}
+
+export default async function handler(request, context) {
   if (request.method !== "POST") {
     return new Response("", { status: 405 });
   }
@@ -60,7 +79,8 @@ export default async function handler(request) {
   const day = new Date().toISOString().slice(0, 10);
   const vid = createHash("sha256").update(`${day}|pl|${ip}`).digest("hex").slice(0, 16);
 
-  const rec = { type, path, host, refHost, utm, meta, vid, ts: Date.now() };
+  // Country only (see countryCode). Always present; "" when Netlify gave none. Older records have no cc at all.
+  const rec = { type, path, host, refHost, utm, meta, vid, ts: Date.now(), cc: countryCode(request, context) };
   if (ft) rec.ft = ft;
 
   try {
