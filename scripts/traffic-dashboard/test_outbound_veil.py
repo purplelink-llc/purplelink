@@ -81,3 +81,15 @@ def test_mac_suite_is_its_own_line():
     assert "Mac Suite" in [g for g, _c in td.PRODUCT_GROUPS] and "Mac Suite" in td.PROFIT_LINES
     pv = td.profit_view({"ledger": {"cs_x": _row("app-suite", 4900, 4758)}}, {}, 7)
     assert any(r["line"] == "Mac Suite" and r["orders"] == 1 for r in pv["rows"])
+
+
+def test_panely_and_summonly_are_tracked_like_the_other_apps():
+    purplelink = next(s for s in td.SITES if s["key"] == "purplelink")
+    for slug, key, line in (("panely", "pnTrialDownloads", "Panely"), ("summonly", "smTrialDownloads", "Summonly")):
+        assert f"/{slug}/" in purplelink["product_paths"]
+        assert key in [k for k, _ in purplelink["secondaries"]]
+        assert f"/{slug}" in td.PRODUCT_PAGE_PATHS
+        assert line in [g for g, _c in td.PRODUCT_GROUPS] and line in td.PROFIT_LINES
+        pv = td.profit_view({"ledger": {"cs_x": _row(slug, 999, 940)}}, {}, 7)
+        assert any(r["line"] == line and r["orders"] == 1 for r in pv["rows"])
+
