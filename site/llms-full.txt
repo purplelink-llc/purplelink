@@ -933,7 +933,7 @@ Legroom has no account and no analytics. Your daily measurements, your rules, th
 
 What does it need to run?
 
-macOS 14 (Sonoma) or later, on Apple silicon or Intel.
+macOS 14 (Sonoma) or later, on Apple silicon or Intel. Tested on macOS 27.2 on October 12, 2026: the menu-bar readout and the window work.
 
 Does it delete anything on its own?
 

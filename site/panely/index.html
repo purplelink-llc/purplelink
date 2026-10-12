@@ -48,7 +48,8 @@
           "description": "Panely snaps windows to halves, thirds, quarters and sixths with a shortcut or by dragging to the edge of the screen. It saves layouts, and can put your windows back when a monitor is plugged in again. It runs in the menu bar and works offline.",
           "softwareRequirements": "macOS 14 (Sonoma) or later. Needs the macOS Accessibility permission.",
           "featureList": [
-            "Snap windows to halves, quarters, thirds, two thirds and sixths, or maximize, almost maximize and center them",
+            "Snap windows to halves, quarters, thirds, two thirds, fourths, three fourths and sixths, or maximize, full height, full width, almost maximize and center them, and make a window larger or smaller",
+            "Choose apps whose windows Panely never moves",
             "A shortcut for each action, which you can switch off one by one, and the same actions in the menu bar",
             "Drag a window to a screen edge or corner and a preview shows where it will land",
             "Press the same half shortcut again to step through half, two thirds and one third",
@@ -222,12 +223,13 @@
       <h2 id="does-h">What it does</h2>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">Snapping</th><td>Halves, quarters, thirds, two thirds and sixths of the screen, plus maximize, almost maximize, center and a larger center. Each snap can leave a margin around the screen and a gap between windows, from 0 to 32 points.</td></tr>
+          <tr><th scope="row">Snapping</th><td>Halves, quarters, thirds, two thirds, fourths, three fourths and sixths of the screen, plus maximize, full height, full width, almost maximize, center and a larger center, and make a window larger or smaller by a step. Each snap can leave a margin around the screen and a gap between windows, from 0 to 32 points.</td></tr>
           <tr><th scope="row">Shortcuts</th><td>Every tiling action has a default shortcut, such as Control-Option with an arrow key, and each can be switched off. Panely uses macOS&#x27;s own system for global shortcuts, so it does not need the Input Monitoring permission and does not see other keys you press.</td></tr>
           <tr><th scope="row">Dragging</th><td>Drag a window to the left or right edge for a half, to the top edge to maximize, to the bottom edge for a bottom half, or to a corner for a quarter. A translucent preview shows the result before you let go.</td></tr>
           <tr><th scope="row">Repeat to resize</th><td>Press a left or right half shortcut again and the window steps to two thirds, then one third, then back to half. This can be turned off.</td></tr>
           <tr><th scope="row">Displays</th><td>Move a window to the next or previous display and it keeps its proportions. Panely orders displays left to right.</td></tr>
           <tr><th scope="row">Restore</th><td>Return a window to the size and place it had before its first snap.</td></tr>
+          <tr><th scope="row">Ignored apps</th><td>Choose apps whose windows are never moved, by shortcut or by dragging, such as a game or a video call. Open the menu bar icon while that app is in front and choose Never move windows of it.</td></tr>
           <tr><th scope="row">Layouts</th><td>Save the arrangement of your open windows under a name, and apply it from the menu bar. Windows are matched by app, and by title when an app has several windows. Apps with no open window are listed instead of guessed at.</td></tr>
           <tr><th scope="row">Describe a layout</th><td>Type something like Xcode left, Simulator right, Terminal bottom. Panely reads the words with fixed rules on your Mac, asks you when an app name matches more than one app, and tells you which parts it could not read.</td></tr>
           <tr><th scope="row">Monitors</th><td>Panely keeps an automatic layout for each arrangement of displays. When you plug a display back in, it waits a few seconds for macOS to settle and then puts windows where they were.</td></tr>

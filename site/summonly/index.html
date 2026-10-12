@@ -52,8 +52,11 @@
             "Abbreviations for apps, so vsc opens Visual Studio Code",
             "Filters such as kind:pdf, ext:docx, in:Documents, modified:week, and plain words such as yesterday and last week",
             "Ranks name matches first, then what you open often and recently",
+            "Corrects a misspelled word against your own files, and still finds files when one word of a long search matches nothing",
             "Optional find by meaning, using a small model built into macOS, for related documents below the word matches",
             "Calculator, percentages and unit conversions in the search box",
+            "Quick tools for UUIDs, base64, URL encoding, hashes, colors, Unix time, text case and passwords",
+            "Sleep, lock the screen, start the screen saver, quit or force quit an app, and open a System Settings pane, with no extra permission",
             "Web search shortcuts for Google, DuckDuckGo, Wikipedia, Apple Maps, YouTube, GitHub and Google Scholar",
             "Clipboard history that skips password managers, items apps mark as private, and text that looks like a password, key or card number",
             "Snippets with the date, the time and the clipboard filled in",
@@ -209,7 +212,7 @@
         </div>
         <div class="feature-item">
           <h3>You open it and type</h3>
-          <p>Press Option-Space. Results appear as you type: a quick answer first if the text is a sum or a unit conversion, then files and apps, ranked by how well the name matches and how often you open them.</p>
+          <p>Press Option-Space. Results appear as you type: a quick answer first if the text is a sum, a unit conversion or one of the quick tools, then files and apps, ranked by how well the name matches and how often you open them.</p>
         </div>
         <div class="feature-item">
           <h3>You act on a result</h3>
@@ -225,9 +228,12 @@
           <tr><th scope="row">Finds</th><td>File and folder names, apps, and the start of text, code and Markdown files, RTF files and the first pages of PDFs. Word and Pages documents are found by name only for now.</td></tr>
           <tr><th scope="row">Abbreviations</th><td>Type vsc for Visual Studio Code, or te for TextEdit. Summonly matches the first letters of an app&#x27;s words.</td></tr>
           <tr><th scope="row">Filters</th><td>kind:pdf, ext:docx, in:Documents, modified:today, modified:week, after:2026-01-01 and before:2026-03-01. Plain words work too: invoice yesterday, notes last week, tax pdf.</td></tr>
+          <tr><th scope="row">Typos and loose words</th><td>Misspell a word and Summonly looks for the nearest word in your own files, and tells you what it searched for. If one word of a long search matches nothing, files that match the rest still appear, and a question such as how do buyers get their license key finds files that contain those words.</td></tr>
           <tr><th scope="row">Ranking</th><td>A name that matches comes first, then the file you open often and recently, then newer files. Opening a file teaches it, and you can clear what it has learned.</td></tr>
           <tr><th scope="row">Find by meaning</th><td>Optional, and off until you turn it on in Settings. It uses a small English-language model built into macOS to suggest documents on the same subject, below the word matches. It runs on your Mac and helps rather than guarantees: related documents are suggested, not proven.</td></tr>
           <tr><th scope="row">Quick answers</th><td>Sums, percentages (20% of 150, 150 + 20%), powers, square roots and other functions, and conversions between units of length, weight, volume, time, data, speed and temperature, such as 5 km in miles.</td></tr>
+          <tr><th scope="row">Quick tools</th><td>Type uuid, base64 hello, base64 decode, urlencode, sha256 text, md5 text, #ff8800 or rgb(255, 136, 0), epoch, epoch 1700000000, slug Some Title, snake, kebab, camel, upper, lower, title, count some words, or password 24. The answer is one line and Return copies it. Nothing is sent anywhere.</td></tr>
+          <tr><th scope="row">System</th><td>Type sleep, lock, screen saver, quit safari, force quit notes, or wifi, bluetooth, displays and sound to open that System Settings pane. These need no permission beyond the one Summonly already has. Restart and shut down are not included.</td></tr>
           <tr><th scope="row">Web search</th><td>Type a keyword and some words: g for Google, ddg for DuckDuckGo, w for Wikipedia, maps for Apple Maps, yt for YouTube, gh for GitHub, scholar for Google Scholar.</td></tr>
           <tr><th scope="row">Clipboard history</th><td>Option-Shift-V, or type clip. It does not record anything copied from a password manager or marked private by the app that copied it, or text that looks like a password, key or card number. You choose how many items to keep and for how many days, and can keep history in memory only. Pin items you want to keep, and clear it at any time.</td></tr>
           <tr><th scope="row">Snippets</th><td>Save text under a keyword. {date}, {time} and {clipboard} are filled in when you use it. Summonly copies the snippet; you paste it where you want it.</td></tr>
