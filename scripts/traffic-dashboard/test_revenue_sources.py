@@ -73,6 +73,10 @@ class Sources(unittest.TestCase):
         patcher = mock.patch.object(td, "photo_revenue_by_month", lambda months: {m: 0.0 for m in months})
         patcher.start()
         self.addCleanup(patcher.stop)
+        # Same for the Getty estimate, which reads the live download ledger.
+        getty = mock.patch.object(td, "getty_estimate_by_month", lambda months: {m: 0.0 for m in months})
+        getty.start()
+        self.addCleanup(getty.stop)
 
     def test_extensionpay_is_its_own_source_not_a_marketplace(self):
         rows = [etsy_row(), ext_row()]
@@ -117,3 +121,39 @@ class Sources(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class GettyEstimate(unittest.TestCase):
+    DL = [
+        # premium x2 and one subscription, one premium already on a statement
+        {"asset_id": "A", "last_download": "2026-10-11", "gi_premium": "2", "is_subscriptions": "1"},
+        {"asset_id": "B", "last_download": "2026-10-05", "gi_premium": "0", "is_subscriptions": "1"},
+        {"asset_id": "C", "last_download": "2026-08-20", "gi_premium": "1", "is_subscriptions": "0"},
+    ]
+    SALES = [
+        {"asset_id": "C", "product_type": "Premium Access Time Limited", "gross_royalty": "1.00"},
+        {"asset_id": "A", "product_type": "Premium Access Time Limited", "gross_royalty": "2.00"},
+        {"asset_id": "B", "product_type": "iStock Subscription", "gross_royalty": "0.10"},
+    ]
+
+    def test_only_unstatemented_downloads_are_priced_at_the_average_rate(self):
+        rows, rates = td.getty_unpriced_downloads(self.DL, self.SALES)
+        self.assertAlmostEqual(rates["gi_premium"], 1.5)
+        self.assertAlmostEqual(rates["is_subscriptions"], 0.10)
+        got = {(r["asset_id"], r["column"]): (r["n"], r["est_cents"]) for r in rows}
+        # A: 2 premium - 1 on a statement = 1 at $1.50; 1 subscription at $0.10. B's one subscription is on a statement.
+        # C's premium is on a statement.
+        self.assertEqual(got, {("A", "gi_premium"): (1, 150), ("A", "is_subscriptions"): (1, 10)})
+
+    def test_a_type_with_no_statement_row_is_not_guessed(self):
+        rows, rates = td.getty_unpriced_downloads(self.DL, [self.SALES[0]])
+        self.assertEqual(set(rates), {"gi_premium"})
+        self.assertTrue(all(r["column"] == "gi_premium" for r in rows))
+
+    def test_by_month_and_sales_rows_and_total(self):
+        with mock.patch.object(td, "_read_photo_csv", lambda name: self.DL if "downloads" in name else self.SALES):
+            self.assertEqual(td.getty_estimate_by_month(["2026-09", "2026-10"]), {"2026-09": 0.0, "2026-10": 1.6})
+        with mock.patch.object(td, "PHOTO_AN", Path(TMP) / "none"):
+            self.assertEqual(td.photo_sale_rows(), [])
+        self.assertIn("getty_est", td.ESTIMATED_SOURCES)
+        self.assertIn("getty_est", [k for k, _l, _c in td.REVENUE_SOURCES])

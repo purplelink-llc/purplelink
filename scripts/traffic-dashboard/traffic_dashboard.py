@@ -4605,9 +4605,11 @@ REVENUE_SOURCES = [
     ("extpay", SRC_EXTENSION, "oklch(72% 0.13 150)"),
     ("ads", "Ad revenue (est.)", "oklch(80% 0.12 110)"),
     ("tiktok", "TikTok Creator Rewards (est.)", "oklch(70% 0.16 10)"),
+    ("getty_est", "Getty downloads (est.)", "oklch(72% 0.10 200)"),
 ]
-# Money that is TikTok's or AdMob's own estimate and has not been paid out. Shown in the totals, never hidden inside them.
-ESTIMATED_SOURCES = ("ads", "tiktok")
+# Money that is TikTok's or AdMob's own estimate, or our estimate of Getty downloads not yet on a royalty statement,
+# and has not been paid out. Shown in the totals, never hidden inside them.
+ESTIMATED_SOURCES = ("ads", "tiktok", "getty_est")
 TIKTOK_REWARDS_CSV = Path("/Volumes/Extreme SSD/TikTokPipeline/analytics/tiktok_rewards.csv")
 
 
@@ -4722,6 +4724,7 @@ def revenue_series(sales, appstore, market_rows, admob, months: list[str]) -> di
         "extpay": extension_revenue_by_month(rows, months),
         "ads": admob_revenue_by_month(admob, months),
         "tiktok": tiktok_rewards_by_month(months),
+        "getty_est": getty_estimate_by_month(months),
     }
 
 
@@ -4877,7 +4880,8 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
                           f"<span class=\"sales-secondary\">${monthly_totals[prev]:,.2f}</span></div>")
     est_now = sum(series[k].get(this_month, 0.0) for k in ESTIMATED_SOURCES)
     est_note = (f"This month includes ${est_now:,.2f} of estimates that have not been paid out: TikTok's own Creator "
-                f"Rewards estimate and AdMob's estimated earnings. The rest is money received or sold.")
+                f"Rewards estimate, AdMob's estimated earnings, and our estimate of Getty downloads that are not on a royalty "
+                f"statement yet. The rest is money received or sold.")
     proj = project_revenue(monthly_totals, months)
     if proj.get("insufficient"):
         proj_note = (f"Not projecting future months yet: {proj['have']} real month(s) of revenue "
@@ -4966,7 +4970,75 @@ def photo_sale_rows() -> list[dict]:
         rows.append({"date": r.get("date", ""), "source": "Photo licensing", "detail": "Shutterstock",
                      "item": f"{n} download{'s' if n != 1 else ''} (daily total)", "gross": None,
                      "net": _cents(r.get("earnings"))})
+    unpriced, _rates = getty_unpriced_downloads(read("getty-downloads.csv"), read("getty-sales.csv"))
+    for u in unpriced:
+        kind = "Premium Access" if u["column"] == "gi_premium" else "subscription"
+        rows.append({"date": u["date"], "source": "Photo licensing", "detail": "Getty / iStock (estimate)",
+                     "item": f"{u['n']} {kind} download{'s' if u['n'] != 1 else ''}, royalty not on a statement yet "
+                             f"(asset {u['asset_id']})", "gross": None, "net": u["est_cents"], "estimate": True})
     return [r for r in rows if re.match(r"^\d{4}-\d\d-\d\d$", r["date"])]
+
+
+# Getty pays per download, a month or more late: the royalty statement is the only place a download turns into dollars.
+# The download ledger (getty-downloads.csv) is current, so downloads that no statement row covers yet are priced at the
+# average royalty the statements have paid for the same product type. Product columns of the download ledger that map
+# to a statement product_type; anything else is left unpriced rather than guessed.
+GETTY_TYPE_COLUMNS = {"Premium Access Time Limited": "gi_premium", "iStock Subscription": "is_subscriptions"}
+
+
+def getty_unpriced_downloads(downloads: list[dict], sales: list[dict]) -> tuple[list[dict], dict[str, float]]:
+    """Getty downloads with no statement row yet, each with an estimated royalty in cents.
+
+    Per asset and product type, downloads minus statement sales is what is still unpaid (never below zero). The
+    rate is the mean gross_royalty of the statement rows of that product type, so it follows what Getty really pays and
+    updates itself as statements arrive; a type with no statement row yet gets no estimate. The ledger only keeps each
+    asset's latest download date, so an asset downloaded in two months puts all its unpaid downloads in the later one.
+    Returns (rows, rates) where rows are {asset_id, date, column, n, est_cents} and rates is {column: dollars}."""
+    paid: dict[tuple[str, str], int] = {}
+    totals: dict[str, list[float]] = {}
+    for r in sales:
+        col = GETTY_TYPE_COLUMNS.get((r.get("product_type") or "").strip())
+        try:
+            royalty = float(r.get("gross_royalty"))
+        except (TypeError, ValueError):
+            continue
+        if not col:
+            continue
+        paid[(r.get("asset_id", ""), col)] = paid.get((r.get("asset_id", ""), col), 0) + 1
+        totals.setdefault(col, []).append(royalty)
+    rates = {col: sum(v) / len(v) for col, v in totals.items()}
+    out = []
+    for d in downloads:
+        date = (d.get("last_download") or "")[:10]
+        for col, rate in rates.items():
+            try:
+                have = int(float(d.get(col) or 0))
+            except ValueError:
+                continue
+            n = max(0, have - paid.get((d.get("asset_id", ""), col), 0))
+            if n:
+                out.append({"asset_id": d.get("asset_id", ""), "date": date, "column": col, "n": n,
+                            "est_cents": _cents(n * rate)})
+    return out, rates
+
+
+def _read_photo_csv(name: str) -> list[dict]:
+    import csv
+    try:
+        with open(PHOTO_AN / name, newline="", encoding="utf-8") as f:
+            return list(csv.DictReader(f))
+    except OSError:
+        return []
+
+
+def getty_estimate_by_month(months: list[str]) -> dict[str, float]:
+    """Estimated Getty royalty for downloads not on a statement yet, by the month of the asset's latest download."""
+    out = {m: 0.0 for m in months}
+    rows, _rates = getty_unpriced_downloads(_read_photo_csv("getty-downloads.csv"), _read_photo_csv("getty-sales.csv"))
+    for r in rows:
+        if r["date"][:7] in out:
+            out[r["date"][:7]] += r["est_cents"] / 100.0
+    return {m: round(v, 2) for m, v in out.items()}
 
 
 def all_sales_rows(ledger_rows: list[dict], appstore: dict | None) -> list[dict]:
@@ -5026,15 +5098,20 @@ def all_sales_block(ledger_rows: list[dict], appstore: dict | None) -> str:
         f"<td>{html.escape(r['source'])}<span class='who'> &middot; {html.escape(r['detail'])}</span></td>"
         f"<td title=\"{html.escape(r['item'])}\">{html.escape(r['item'][:80])}{REFUNDED_TAG if r.get('refunded') else ''}</td>"
         f"<td class='num'>{'' if r['gross'] is None else money(r['gross'])}</td>"
-        f"<td class='num'>{money(r['net'])}</td></tr>"
+        f"<td class='num'>{'~' if r.get('estimate') else ''}{money(r['net'])}</td></tr>"
         for r in rows) or "<tr><td colspan='5' class='who'>No sales on record yet.</td></tr>"
-    total_net = sum(r["net"] for r in rows)
+    total_net = sum(r["net"] for r in rows if not r.get("estimate"))
+    est_rows = [r for r in rows if r.get("estimate")]
+    est_n = sum(int(re.match(r"\d+", r["item"]).group()) for r in est_rows)
+    est_sentence = (f" Rows marked ~ are estimates: {est_n} Getty download(s) not on a royalty statement yet, about "
+                    f"{money(sum(r['net'] for r in est_rows))} at the average royalty Getty has paid per download. "
+                    f"They are not in the total." if est_rows else "")
     note = photo_totals_only_note(rows)
     return f"""
 <section class="sales all-sales">
   <h2>All sales &middot; every source</h2>
-  <p class="sales-sub">{len(rows)} sale(s) on record, {money(total_net)} kept after fees or royalty split. Newest first. "Kept" is what reaches you:
-  Stripe and marketplace net of fees, photo royalties as the platform reports them.</p>
+  <p class="sales-sub">{len(rows) - len(est_rows)} sale(s) on record, {money(total_net)} kept after fees or royalty split. Newest first. "Kept" is what reaches you:
+  Stripe and marketplace net of fees, photo royalties as the platform reports them.{est_sentence}</p>
   <div class="src-chips"><button type="button" class="src-chip on" data-src="">All <b>{len(rows)}</b></button>{chips}</div>
   <div class="sales-scroll"><table class="sales-list">
     <thead><tr><th>Date</th><th>Source</th><th>Item</th><th class="num">Gross</th><th class="num">Kept</th></tr></thead>
