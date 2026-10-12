@@ -1,18 +1,26 @@
 # Purplelink Mac Suite
 
-$54.99 once: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life. Added 2026-10-04 at $39
+$59.99 once: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life. Added 2026-10-04 at $39
 (three apps); Legroom joined and the price went to $49 on the Legroom launch branch (2026-10-05); Keyfeel joined and the
 price went to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`); on 2026-10-07 the owner decided every app
-price ends in .99, so the Suite became $54.99 (Outbound Veil $29.99, Legroom $9.99); Tapefolio joined on 2026-10-09 with
-the price left at $54.99 by the owner's decision (see "Tapefolio joined" below and `tapefolio.md`).
+price ends in .99, so the Suite became $59.99 (Outbound Veil $29.99, Legroom $9.99); Tapefolio joined on 2026-10-09 with
+the price left at $59.99 by the owner's decision (see "Tapefolio joined" below and `tapefolio.md`).
+
+## Panely and Summonly joined (2026-10-12, prepared, not live), price unchanged
+Panely ($9.99, `panely.md`) and Summonly ($9.99, `summonly.md`) are the sixth and seventh apps, so the Suite is seven apps and Vitae Plus, eight
+parts in custom bundles, and stays $59.99 by Ben's decision (2026-10-11). The parts come to $143.92 the first year (the page rounds to $144; the
+test `legroom-site.test.mjs` checks the rows against the shown total). Prepared on branch `new-apps/launch-day`, which must not merge before both
+releases are published: it changes the Suite's entitlement, checkout line name, emails, success page and every page footer. Per-app terms sections
+for Panely and Summonly are drafts for Ben to read. To do by hand: re-render `site/assets/og/mac-suite.png` from `_gen.html` (`?t=mac-suite`;
+the kicker now says Eight Mac apps) and decide how the home dock shows ten products.
 
 ## Tapefolio joined (2026-10-09), price unchanged
-Tapefolio ($29.99 once, `tapefolio.md`) is the sixth part and the Suite stays $54.99; `amount: 5499` in `checkout.mjs`
+Tapefolio ($29.99 once, `tapefolio.md`) is the sixth part and the Suite stays $59.99; `amount: 5999` in `checkout.mjs`
 was not touched. The first-year parts now come to $123.95 (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99,
 Keyfeel $9.99, Tapefolio $29.99, Vitae Plus counted at a round $24, as every earlier version of this note did). At the
 $23.99 the Suite page lists beside Vitae Plus the exact sum is $123.94; both round to $124, which is what the page shows
 (`netlify/tests/legroom-site.test.mjs` checks the rows against the shown total). The earlier $93.96 / $94 figures in the
-history below were the five-app totals. Nobody who already bought the Suite at $39, $49, $54 or $54.99 pays more:
+history below were the five-app totals. Nobody who already bought the Suite at $39, $49, $54 or $59.99 pays more:
 their `app-suite` session unlocks `tapefolio-download` and gets a Tapefolio key (the key comes from the buyer's address,
 so a Suite buyer and a Tapefolio-only buyer with the same address get the same key). The Terms say so without naming a
 price, and a refund is still "the full amount you paid". Everything that names the contents changed in the same branch:
@@ -23,9 +31,9 @@ the "Also in the Mac Suite" lines on the five app pages, the Vitae Plus page, th
 Apple silicon, so the Suite FAQ says so. **To do by hand:** re-render `site/assets/og/mac-suite.png` from `_gen.html`
 (`?t=mac-suite`, 1200x630); it still says five apps. The Suite page also shows no Tapefolio icon (none exists yet).
 
-## Why $54.99
+## Why $59.99
 (Written before Tapefolio joined: the parts then came to $93.96.) The 2026-10-07 .99 pricing decision moved Outbound Veil from $29 to $29.99, Legroom from $9 to $9.99 and the Suite from
-$54 to $54.99. The parts now come to $93.96 for the first year (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99,
+$54 to $59.99. The parts now come to $93.96 for the first year (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99,
 Keyfeel $9.99, Vitae Plus $24; the page rounds to $94). The contents did not change, so $54 buyers keep everything and
 the Terms say only that the price changed. The history below is why it was $54, $49 and $39.
 
@@ -50,7 +58,7 @@ the JSON-LD offer in site/suite/index.html, the Terms section, llms.txt, site/pr
 /guides/best-academic-record-tracking-software/, site/assets/og/mac-suite.png (render from _gen.html), and this file.
 
 ## How it works
-- Checkout: `app-suite` in `netlify/functions/checkout.mjs`, priced inline (`amount: 5499`), so there is no Stripe
+- Checkout: `app-suite` in `netlify/functions/checkout.mjs`, priced inline (`amount: 5999`), so there is no Stripe
   Price to create and no env var. Success path `/suite/success/`. Promotion codes are allowed like every product.
 - Delivery: the session id is the bearer token, as for every Blobs-delivered product.
   - `moderntex-download.mjs`, `outbound-veil-download.mjs`, `legroom-download.mjs`, `keyfeel-download.mjs` and `tapefolio-download.mjs` accept `metadata.product` of their own key or `app-suite`.
@@ -91,7 +99,7 @@ rejects that JWK. It passes on Node 22.
 ## Custom bundles (added 2026-10-11)
 
 Pick any 2 of the six parts for $34.99, or any 3 for $44.99, the same price whichever parts. The six parts are the five apps and
-a lifetime Vitae Plus key; all six stays the Suite at $54.99, and there is no pick 4 or 5 (it would sit within $5 of the Suite). The
+a lifetime Vitae Plus key; all six stays the Suite at $59.99, and there is no pick 4 or 5 (it would sit within $5 of the Suite). The
 picker on `/suite/` sends four or more parts to the Suite, and refuses a pair or triple that costs less bought separately.
 
 - **Price analysis:** `docs/growth-briefs/custom-bundle-pricing-2026-10-11.md` (git-ignored; model in `custom-bundle-model-2026-10-11.py`).

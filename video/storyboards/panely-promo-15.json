@@ -1,0 +1,19 @@
+{
+  "id": "panely-promo-15",
+  "title": "Panely promo, 15 second cut",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+4%",
+  "scenes": [
+    { "narration": "Press a shortcut, or drag a window to a screen edge." },
+    { "narration": "Halves, thirds, quarters, sixths." },
+    { "narration": "Nine ninety-nine once, with a seven day free trial." }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

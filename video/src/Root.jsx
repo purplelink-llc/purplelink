@@ -3,6 +3,7 @@ import { Composition } from "remotion";
 import { Promo, Hero } from "./Promo.jsx";
 import { PromoV2, HeroV2, PromoLong } from "./V2.jsx";
 import { StillPromo, StillHero } from "./Stills.jsx";
+import { PanelyShot } from "./PanelyShot.jsx";
 import { PRODUCTS } from "./products/index.js";
 import { LatexFix } from "./LatexFix.jsx";
 import { ChainDay } from "./Chain.jsx";
@@ -48,6 +49,7 @@ export const Root = () => (
     <Composition id="StillHero" component={StillHero} fps={brand.fps} width={1920} height={1080} durationInFrames={240}
       defaultProps={{ id: "vitae-promo", timing: { scenes: [] } }}
       calculateMetadata={({ props }) => ({ durationInFrames: Math.round((props.timing.scenes.length ? PRODUCTS[props.id].build(props.timing).hero.T : 8) * brand.fps) })} />
+    <Composition id="PanelyShot" component={PanelyShot} fps={brand.fps} width={1280} height={800} durationInFrames={1} defaultProps={{ shot: "layout-halves" }} />
     <Composition id="HeroV2" component={HeroV2} fps={brand.fps} width={1920} height={1080} durationInFrames={240} defaultProps={{ timing: { scenes: [] } }} />
     <Composition
       id="Hero"

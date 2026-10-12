@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Panely - Window Snapping and Saved Layouts for Mac | Purplelink LLC</title>
+    <meta name="description" content="A Mac menu-bar app that snaps windows to halves, thirds and corners with a shortcut or by dragging to a screen edge, and saves layouts for each monitor setup. Works offline. Free for 7 days.">
+    <link rel="canonical" href="https://purplelink.llc/panely/">
+    <meta property="og:title" content="Panely - Window Snapping and Saved Layouts for Mac">
+    <meta property="og:description" content="A Mac menu-bar app that snaps windows to halves, thirds and corners with a shortcut or by dragging to a screen edge, and saves layouts for each monitor setup. Works offline. Free for 7 days.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/panely.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/panely/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Panely - Window Snapping and Saved Layouts for Mac">
+    <meta name="twitter:description" content="A Mac menu-bar app that snaps windows to halves, thirds and corners with a shortcut or by dragging to a screen edge, and saves layouts for each monitor setup. Works offline. Free for 7 days.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/panely.png">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=9a8aeb6e78">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/panely/panely.css?v=b09a37dc87">
+    <script src="/site.js?v=cfa7188dde" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/panely/launch.js?v=7a8f643679" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Panely",
+          "applicationCategory": "UtilitiesApplication",
+          "applicationSubCategory": "Window management",
+          "operatingSystem": "macOS 14+",
+          "url": "https://purplelink.llc/panely/",
+          "image": "https://purplelink.llc/assets/og/panely.png",
+          "description": "Panely snaps windows to halves, thirds, quarters and sixths with a shortcut or by dragging to the edge of the screen. It saves layouts, and can put your windows back when a monitor is plugged in again. It runs in the menu bar and works offline.",
+          "softwareRequirements": "macOS 14 (Sonoma) or later. Needs the macOS Accessibility permission.",
+          "featureList": [
+            "Snap windows to halves, quarters, thirds, two thirds, fourths, three fourths and sixths, or maximize, full height, full width, almost maximize and center them, and make a window larger or smaller",
+            "Custom snap areas: name a place on the screen, set its size as percentages or save it from a window you placed, and give it a shortcut",
+            "Choose apps whose windows Panely never moves",
+            "A shortcut for each action that you can record yourself, reset or turn off, with checks against macOS shortcuts and duplicates, and the same actions in the menu bar",
+            "Drag a window to a screen edge or corner and a preview shows where it will land",
+            "Press the left or right half shortcut again to step through half, two thirds and one third",
+            "A margin around the screen and a gap between windows, from 0 to 32 points",
+            "Move a window to the next or previous display, keeping its proportions",
+            "Restore a window to the size it had before its first snap, kept on a screen that exists even if its monitor was unplugged",
+            "A switch in Settings opens Panely when you log in",
+            "Save the arrangement of your open windows as a named layout, and apply it later",
+            "Describe a layout in plain words, such as Safari left two thirds, Notes right third; the words are read on your Mac by simple rules, with no model and no network",
+            "Remembers where windows were for each arrangement of displays, and puts them back when a display is reconnected",
+            "Works offline and reads window positions and titles, never what is inside a window"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "9.99",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": "https://purplelink.llc/panely/",
+            "category": "One-time purchase, updates included",
+            "seller": { "@id": "https://purplelink.llc/#organization" },
+            "hasMerchantReturnPolicy": { "@type": "MerchantReturnPolicy", "applicableCountry": "US", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 14, "returnFees": "https://schema.org/FreeReturn", "refundType": "https://schema.org/FullRefund" }
+          },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does it need to run?",
+              "acceptedAnswer": { "@type": "Answer", "text": "macOS 14 (Sonoma) or later, and the macOS Accessibility permission." }
+            },
+            {
+              "@type": "Question",
+              "name": "macOS already snaps windows when I drag them. Will they fight?",
+              "acceptedAnswer": { "@type": "Answer", "text": "They can. If you leave both on, a drag to an edge may be snapped twice. Settings tells you when macOS's own edge tiling is on and has a button that opens the right System Settings pane, where you turn off Drag windows to screen edges to tile." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it use AI?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Describing a layout in words is done by fixed rules on your Mac, with no model and no network. If a phrase is unclear it asks or says so; it does not guess." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can it see what is in my windows?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. It reads each window's position, size and title, which it needs to move and match windows." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will it put windows back when I reconnect a monitor?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It is built to. Panely remembers where windows were for each arrangement of displays and, a few seconds after the arrangement changes back, puts the windows where they were. It only places windows that are open, and only those in the current Space." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it work with Spaces and full-screen apps?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It moves windows in the Space you are looking at. It does not move windows between Spaces, and macOS full-screen windows are managed by macOS." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I change the shortcuts?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. In Settings, click a shortcut and press the keys you want. Panely refuses combinations that macOS keeps for itself or that another action already uses. Any shortcut can be reset or turned off." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does one license work on more than one Mac?",
+              "acceptedAnswer": { "@type": "Answer", "text": "One license key works on two of your Macs. Paste the same key into Panely on each one." }
+            },
+            {
+              "@type": "Question",
+              "name": "Are updates included?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, all of them. The price is a single payment, for life. Panely checks for a new version and offers to install it in place." }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens when the trial ends?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial is the complete app for seven days from the first time you open it, with no account. To keep using Panely after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key from the menu bar and paste it. It works offline." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I get a refund?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc within 14 days of purchase. See the terms." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I get help?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Panely", "item": "https://purplelink.llc/panely/" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/products/">&larr; All products</a>
+
+    <div class="app-hero">
+      <img class="app-hero-icon" src="/assets/panely-icon.webp" width="120" height="120" fetchpriority="high" alt="Panely app icon">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS</span>
+          <span class="product-status product-status-live" data-pf-live-only>Free 7-day trial &middot; <span id="price">$9.99</span> to keep</span>
+        </div>
+        <h1 class="app-hero-name">Panely</h1>
+        <p class="app-hero-tagline">Panely snaps windows to halves, thirds, quarters and sixths with a shortcut or by dragging to the edge of the screen. It saves layouts, and can put your windows back when a monitor is plugged in again. It runs in the menu bar and works offline.</p>
+        <div class="app-hero-actions" id="buy">
+          <a class="btn btn-primary" id="trial-download" data-pf-gated data-pf-href="/.netlify/functions/panely-download?download=1" data-pf-live-text="Try it free for 7 days" href="/.netlify/functions/panely-download?download=1">Try it free for 7 days</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="panely" data-pf-gated data-pf-live-text="Buy Panely">Buy Panely</button>
+        </div>
+        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <p class="waitlist-fine-print" data-pf-facts>Version 1.0.0, released October 12, 2026. 4 MB disk image.</p>
+        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay.</p>
+        <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>, $59.99 once.</p>
+        <p class="waitlist-fine-print">Compare Panely with Rectangle, Magnet, Moom and others in <a href="/guides/best-window-managers-for-mac/">Best window managers for Mac</a>, or read <a href="/guides/snap-windows-on-mac/">how to snap and tile windows on a Mac</a> with the tools macOS already has.</p>
+      </div>
+      <figure class="app-hero-window pf-hero-window">
+        <div class="frame-soft">
+          <img src="/panely/img/hero.webp" alt="An illustration of a laptop screen with four windows tiled neatly, a tall one on the left and two stacked on the right, and a highlighted strip along the left edge where a window is being dragged to snap" width="1600" height="900" fetchpriority="high" decoding="async">
+        </div>
+        <figcaption>An illustration of the idea, not a screenshot of the app.</figcaption>
+      </figure>
+    </div>
+
+    <section class="screenshots-section tour-section pf-watch" aria-labelledby="watch-h">
+      <p class="eyebrow">Watch it work</p>
+      <h2 id="watch-h">Thirty seconds: a shortcut, a drag and your own areas</h2>
+      <p class="section-intro">The desktop in this video is drawn, with invented windows, to show the idea. The two Settings windows are the app's own, rendered on sample data. Nothing here is a recording of a real screen.</p>
+      <div class="frame-soft pf-video">
+        <video controls playsinline preload="none" poster="/panely/media/panely-poster.webp" width="1280" height="720">
+          <source src="/panely/media/panely-promo.mp4" type="video/mp4">
+          <track kind="captions" src="/panely/media/panely-promo.en.vtt" srclang="en" label="English" default>
+          <p>Your browser cannot play this video. <a href="/panely/media/panely-promo.mp4">Download the MP4</a>.</p>
+        </video>
+      </div>
+      <details class="pf-transcript">
+        <summary>Transcript and what is on screen</summary>
+        <p>Panely snaps windows into place on your Mac. Press a shortcut, or drag a window to a screen edge or corner. Halves, thirds, quarters, sixths, or an area you draw yourself. Click any shortcut in Settings and press the keys you want. Choose apps it should never move. Nine ninety-nine once, with a seven day free trial.</p>
+        <ul>
+          <li>A drawn desktop: a shortcut moves one window to the left half, then two windows are dragged to the right-hand corners, with a preview of each place before the window lands.</li>
+          <li>The same windows tiled as halves, thirds, quarters and sixths.</li>
+          <li>Settings, Custom areas: a name, a shortcut, and left, top, width and height as percentages.</li>
+          <li>Settings, Shortcuts: one shortcut button reading Press keys.</li>
+          <li>The menu-bar drop-down with Never move windows of an app, switched on for an invented app, and two shortcuts that tile the other windows and leave that one where it is.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="screenshots-section pf-gallery" aria-labelledby="look-h">
+      <h2 id="look-h">A closer look</h2>
+      <p class="section-intro">Windows and desktops drawn for this page are marked as illustrations. The Settings windows are Panely's own screens, drawn offscreen with invented sample data.</p>
+      <div class="pf-gallery-grid">
+        <figure class="pf-shot">
+          <h3>Layouts, one after another</h3>
+          <div class="frame-soft hero-media" data-motion="video">
+            <img src="/panely/media/panely-hero-poster.webp" alt="An illustration of a screen with six windows tiled in three columns and two rows" width="1280" height="720" loading="lazy" decoding="async">
+            <video muted loop playsinline preload="none" poster="/panely/media/panely-hero-poster.webp" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+              <source data-src="/panely/media/panely-hero.webm" type="video/webm">
+              <source data-src="/panely/media/panely-hero.mp4" type="video/mp4">
+            </video>
+            <button type="button" class="motion-toggle" data-motion-toggle hidden>Pause video</button>
+          </div>
+          <figcaption>Illustration: the same windows as thirds, quarters, sixths and a custom area, then back to halves.</figcaption>
+        </figure>
+        <figure class="pf-shot">
+          <h3>Drag, with a preview</h3>
+          <div class="frame-soft">
+            <img src="/panely/img/drag-to-corner.webp" alt="An illustration of a screen with a tall window on the left half, one window on the top right quarter, and a third window being dragged into the bottom right corner with a purple preview of the quarter it will fill" width="1600" height="1000" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Illustration, not a screenshot.</figcaption>
+        </figure>
+        <figure class="pf-shot">
+          <h3>Click a shortcut, press the keys</h3>
+          <div class="frame-soft">
+            <img src="/panely/img/settings-shortcut-recorder.webp" alt="Panely's Settings window, Shortcuts list, with each action beside its shortcut, such as Control-Option-U for the top left quarter, and the Left third button reading Press keys while it waits for new keys" width="1080" height="896" loading="lazy" decoding="async">
+          </div>
+          <figcaption>The app's own Settings window, drawn offscreen with sample data.</figcaption>
+        </figure>
+        <figure class="pf-shot">
+          <h3>Areas of your own</h3>
+          <div class="frame-soft">
+            <img src="/panely/img/settings-custom-areas.webp" alt="Panely's Settings window, Custom areas, with three sample areas named Reading column, Notes strip and Video call, each with a shortcut button and sliders for left, top, width and height shown as percentages" width="1080" height="856" loading="lazy" decoding="async">
+          </div>
+          <figcaption>The app's own Settings window, drawn offscreen with sample data.</figcaption>
+        </figure>
+        <figure class="pf-shot">
+          <h3>Apps it never moves</h3>
+          <div class="frame-soft">
+            <img src="/panely/img/menu-ignored-app.webp" alt="An illustration of the Panely menu-bar drop-down with its submenus for Halves, Quarters, Thirds, Fourths, Sixths and Size and display, then Layouts, Custom areas, and a checked item reading Never move windows of Callroom" width="1600" height="1000" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Illustration of the menu, using the wording from the app. Callroom is an invented app.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="features-section" aria-labelledby="how-h">
+      <div class="features-header">
+        <h2 id="how-h">How it works</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>You ask for a place</h3>
+          <p>Press a shortcut, choose an action from the menu bar, or drag a window to a screen edge or corner. While you drag, a preview shows where the window will land.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Panely moves the window</h3>
+          <p>It moves and resizes the front window through the macOS Accessibility permission. It reads each window's position, size and title, and nothing that is inside the window.</p>
+        </div>
+        <div class="feature-item">
+          <h3>It remembers</h3>
+          <p>Restore returns a window to its size before the first snap. Saved layouts bring back a whole arrangement, and Panely keeps one automatically for each set of displays you use.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="does-h">
+      <h2 id="does-h">What it does</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Snapping</th><td>Halves, quarters, thirds, two thirds, fourths, three fourths and sixths of the screen, plus maximize, full height, full width, almost maximize, center and a larger center, and make a window larger or smaller by a step. Each snap can leave a margin around the screen and a gap between windows, from 0 to 32 points.</td></tr>
+          <tr><th scope="row">Shortcuts</th><td>Most actions have a default shortcut, such as Control-Option with an arrow key. In Settings, click any shortcut and press the keys you want, including for the sixths, which have none to start with. Panely refuses combinations that macOS keeps for itself or that another action already uses, and warns you when another app holds one. Any shortcut can be reset or turned off. Panely uses macOS&#x27;s own system for global shortcuts, so it does not need the Input Monitoring permission and does not see other keys you press.</td></tr>
+          <tr><th scope="row">Dragging</th><td>Drag a window to the left or right edge for a half, to the top edge to maximize, to the bottom edge for a bottom half, or to a corner for a quarter. A translucent preview shows the result before you let go.</td></tr>
+          <tr><th scope="row">Repeat to resize</th><td>Press a left or right half shortcut again and the window steps to two thirds, then one third, then back to half. This can be turned off.</td></tr>
+          <tr><th scope="row">Displays</th><td>Move a window to the next or previous display and it keeps its proportions. Panely orders displays left to right.</td></tr>
+          <tr><th scope="row">Restore</th><td>Return a window to the size and place it had before its first snap.</td></tr>
+          <tr><th scope="row">Custom areas</th><td>Define your own places, up to twelve, such as a reading column in the middle 60% of the screen. Set the left edge, top, width and height as percentages in Settings, or place a window where you want it and choose Save this window as an area from the menu bar. Each area can have its own shortcut and appears in the menu bar. Areas are fractions of the screen, so they fit any display.</td></tr>
+          <tr><th scope="row">Ignored apps</th><td>Choose apps whose windows are never moved, by shortcut or by dragging, such as a game or a video call. Open the menu bar icon while that app is in front and choose Never move windows of it.</td></tr>
+          <tr><th scope="row">Layouts</th><td>Save the arrangement of your open windows under a name, and apply it from the menu bar. Windows are matched by app, and by title when an app has several windows. Apps with no open window are listed instead of guessed at.</td></tr>
+          <tr><th scope="row">Describe a layout</th><td>Type something like Xcode left, Simulator right, Terminal bottom. Panely reads the words with fixed rules on your Mac, asks you when an app name matches more than one app, and tells you which parts it could not read.</td></tr>
+          <tr><th scope="row">Monitors</th><td>Panely keeps an automatic layout for each arrangement of displays. When you plug a display back in, it waits a few seconds for macOS to settle and then puts windows where they were.</td></tr>
+          <tr><th scope="row">Windows it can reach</th><td>Panely works on the windows you can see in the current Space. macOS gives apps no way to move windows between Spaces, so it does not.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="features-section bg-purple-xlight" aria-labelledby="privacy-h">
+      <div class="features-header">
+        <h2 id="privacy-h">Privacy</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>Works offline</h3>
+          <p>Panely needs no network connection for any of its features. There are no accounts. The only network use is its check for a new version, which carries the app&#x27;s name and version.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Positions, sizes and titles</h3>
+          <p>To move a window, Panely reads where it is, how big it is and its title, so a saved layout can tell two windows of one app apart. It does not read what is inside a window.</p>
+        </div>
+        <div class="feature-item">
+          <h3>No keystroke access</h3>
+          <p>Shortcuts use macOS&#x27;s own global shortcut system. Panely does not need Input Monitoring and cannot see which other keys you press.</p>
+        </div>
+      </div>
+      <p>Details are on the <a href="/privacy/">privacy page</a>.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="perm-h">
+      <h2 id="perm-h">The Accessibility permission</h2>
+      <p class="specs-more">When Panely first opens, macOS asks you to allow it under System Settings, Privacy &amp; Security, Accessibility. That is the permission an app needs to move other apps' windows. Without it Panely can still be opened, but it cannot move anything. You can switch it off again in the same place.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="not-h">
+      <h2 id="not-h">What it is not</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Automatic tiling</th><td>It does not rearrange windows by itself. It acts when you ask: a shortcut, the menu, a drag, or a layout you apply.</td></tr>
+          <tr><th scope="row">An AI app</th><td>It does not use a language model. Describing a layout works from a small set of fixed rules, and says when it cannot read a phrase.</td></tr>
+          <tr><th scope="row">A window recorder</th><td>It reads window positions, sizes and titles. It does not read, store or send what is inside a window. Saved layouts keep window titles on your Mac, and a title can contain a document name or a web address.</td></tr>
+          <tr><th scope="row">Cross-platform</th><td>Mac only. There is no Windows, iPhone or iPad version.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-list" data-motion="stagger">
+        <details class="faq-item">
+          <summary>What does it need to run?</summary>
+          <div class="faq-body">macOS 14 (Sonoma) or later, and the macOS Accessibility permission.</div>
+        </details>
+        <details class="faq-item">
+          <summary>macOS already snaps windows when I drag them. Will they fight?</summary>
+          <div class="faq-body">They can. If you leave both on, a drag to an edge may be snapped twice. Settings tells you when macOS&#x27;s own edge tiling is on and has a button that opens the right System Settings pane, where you turn off Drag windows to screen edges to tile.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it use AI?</summary>
+          <div class="faq-body">No. Describing a layout in words is done by fixed rules on your Mac, with no model and no network. If a phrase is unclear it asks or says so; it does not guess.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can it see what is in my windows?</summary>
+          <div class="faq-body">No. It reads each window&#x27;s position, size and title, which it needs to move and match windows.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Will it put windows back when I reconnect a monitor?</summary>
+          <div class="faq-body">It is built to. Panely remembers where windows were for each arrangement of displays and, a few seconds after the arrangement changes back, puts the windows where they were. It only places windows that are open, and only those in the current Space.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it work with Spaces and full-screen apps?</summary>
+          <div class="faq-body">It moves windows in the Space you are looking at. It does not move windows between Spaces, and macOS full-screen windows are managed by macOS.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I change the shortcuts?</summary>
+          <div class="faq-body">Yes. In Settings, click a shortcut and press the keys you want. Panely refuses combinations that macOS keeps for itself or that another action already uses. Any shortcut can be reset or turned off.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does one license work on more than one Mac?</summary>
+          <div class="faq-body">One license key works on two of your Macs. Paste the same key into Panely on each one.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Are updates included?</summary>
+          <div class="faq-body">Yes, all of them. The price is a single payment, for life. Panely checks for a new version and offers to install it in place.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What happens when the trial ends?</summary>
+          <div class="faq-body">The trial is the complete app for seven days from the first time you open it, with no account. To keep using Panely after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key from the menu bar and paste it. It works offline.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I get a refund?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href="/terms/">terms</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I get help?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
+      <h2 id="closing-cta-heading">Try it for a week.</h2>
+      <p>Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.</p>
+      <div class="closing-cta-actions">
+        <a class="btn btn-primary" data-pf-gated data-pf-href="/.netlify/functions/panely-download?download=1" data-pf-live-text="Try it free for 7 days" href="/.netlify/functions/panely-download?download=1">Try it free for 7 days</a>
+        <a class="btn btn-ghost" href="#buy" data-pf-live-only>Buy Panely</a>
+      </div>
+      <p class="closing-cta-fine">macOS 14 or later</p>
+    </section>
+    <div class="sticky-cta" data-sticky-cta data-pf-sticky data-hide-when="#buy, .closing-cta, .footer" hidden>
+      <span class="sticky-cta-text"><strong>Panely</strong> free for 7 days</span>
+      <a class="btn btn-primary" href="#buy" data-track="sticky_cta" data-track-meta="panely">Get Panely</a>
+    </div>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=b8ce8097c2" defer></script>
+</body>
+</html>

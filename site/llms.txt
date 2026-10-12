@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), and the Mac Suite ($54.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -18,7 +18,7 @@
 
 ## What Purplelink builds
 
-1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), Tapefolio (private on-device transcription and OCR for researchers), the Mac Suite bundle, and Vitae (free academic record keeping).
+1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), Tapefolio (private on-device transcription and OCR for researchers), Panely (window snapping, a drag to a screen edge, and saved layouts that return when a monitor is reconnected), Summonly (a menu-bar launcher that finds files, apps and clipboard history, with quick answers), the Mac Suite bundle, and Vitae (free academic record keeping).
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
 4. **iOS apps** — GlobePin (travel mapping, shipping) and Haea (on-device health analytics, in development).
@@ -88,10 +88,30 @@
 - **Trial and purchase:** https://purplelink.llc/tapefolio/
 - **Comparison:** https://purplelink.llc/guides/best-mac-apps-transcription-text-to-speech-ocr/ (Mac apps for transcription, text to speech and OCR, by price, on-device or cloud, and what each does not do)
 
+### Panely (macOS)
+- **Platform:** macOS 14 or later, Apple silicon and Intel (the Intel build has not been tested on an Intel Mac yet)
+- **Category:** Window management
+- **Description:** A menu-bar app that snaps the front window to halves, quarters, thirds, two thirds and sixths, or maximizes, almost maximizes and centers it, with a shortcut, from the menu bar, or by dragging a window to a screen edge or corner (a preview shows where it will land). Repeating a half shortcut steps through half, two thirds and one third. A margin and a gap from 0 to 32 points. Moves a window to the next or previous display keeping its proportions, and restores its size from before the first snap. Layouts: save the arrangement of open windows under a name, apply it later, or describe one in words (such as Safari left two thirds, Notes right third), which fixed rules read on the Mac without a model. It keeps an automatic layout for each arrangement of displays and puts windows back after a display is reconnected. Works on the windows in the current Space.
+- **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once, every update included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. One key works on two Macs. 14-day refund.
+- **Privacy:** Works offline. It needs the macOS Accessibility permission to move other apps' windows and reads each window's position, size and title, never what is inside a window. Shortcuts use macOS's own global shortcut system, so it needs no Input Monitoring and does not see other keys. Its only network use is its check for a new version.
+- **Limits:** It does not use AI. It does not move windows between Spaces (macOS offers no way to). If macOS's own edge tiling is on as well, a drag to an edge may snap twice; Settings says so and opens the right pane. Shortcuts can be re-recorded, reset or turned off.
+- **Status:** Shipping. Notarized download, no App Store required.
+- **Trial and purchase:** https://purplelink.llc/panely/
+
+### Summonly (macOS)
+- **Platform:** macOS 14 or later, Apple silicon and Intel (the Intel build has not been tested on an Intel Mac yet)
+- **Category:** File search and launcher
+- **Description:** A menu-bar launcher opened with Option-Space. It indexes file and folder names, apps, and the start of text, code and Markdown files, RTF files and the first pages of PDFs, in folders you choose, and keeps the index current from macOS file notifications. Filters (kind:pdf, ext:docx, in:Documents, modified:week, after:2026-01-01) and plain words such as yesterday; app abbreviations (vsc opens Visual Studio Code); ranking by name match, then how often and how recently you open a result. Operators: quoted phrases, -word to leave out, OR, name:, size:. Text of Word, Excel, PowerPoint and OpenDocument files is searched. Optional question search reads inside documents (PDFs by page, Office files, notes) and answers a question with the file and passage; it works by matching words, is off until chosen, and its text is stored in a separate deletable file. A Settings tool explains why a given file is not found. Optional find by meaning, using a small English-language model built into macOS, suggests related documents below the word matches. Quick answers: sums, percentages, functions and unit conversions. Web search keywords (g, ddg, w, maps, yt, gh, scholar). Clipboard history (Option-Shift-V or type clip) that skips password managers, items apps mark private and text that looks like a password, key or card number, with limits you set and a memory-only option. Snippets with the date, time and clipboard filled in.
+- **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once, every update included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. One key works on two Macs. 14-day refund.
+- **Privacy:** Works offline. The index and the clipboard history stay on the Mac, in Summonly's own folder. macOS asks permission before Summonly reads Desktop, Documents and Downloads; it does not need Full Disk Access. Web searches and assistant prompts (claude, gpt, ppl, ask, and last rows for Google, Claude and ChatGPT) open in the browser only when you press Return, and the words go to that site, not through Summonly. Its only other network use is its check for a new version.
+- **Limits:** It searches the folders you choose, not Mail, Messages, Contacts or Calendar. Word and Pages documents are found by name only. Find by meaning is English only, optional, and helpful rather than exact. No workflows, scripts or extensions in this version.
+- **Status:** Shipping. Notarized download, no App Store required.
+- **Trial and purchase:** https://purplelink.llc/summonly/
+
 ### Mac Suite (macOS bundle)
-- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and a lifetime Vitae Plus key.
-- **Pricing:** $54.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
-- **Pick your own:** any 2 of the six parts for $34.99, or any 3 for $44.99, the same price whichever parts are chosen (Vitae Plus counts as one part, as a lifetime key). Four or more cost more than the Suite, so the Suite is the better buy. The checkout page lists only the chosen parts.
+- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus key.
+- **Pricing:** $59.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
+- **Pick your own:** any 2 of the eight parts for $34.99, or any 3 for $44.99, the same price whichever parts are chosen (Vitae Plus counts as one part, as a lifetime key). Four or more cost more than the Suite, so the Suite is the better buy. The checkout page lists only the chosen parts.
 - **Page:** https://purplelink.llc/suite/
 
 ### Vitae (macOS)
@@ -160,7 +180,9 @@
 - Outbound Veil (macOS, free 7-day trial then $29.99): https://purplelink.llc/outbound-veil/
 - Legroom (macOS, free 7-day trial then $9.99): https://purplelink.llc/legroom/
 - Keyfeel (macOS, free 7-day trial then $9.99, recorded keyboard-switch sounds as you type): https://purplelink.llc/keyfeel/
-- Mac Suite (macOS, $54.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
+- Panely (macOS, free 7-day trial then $9.99, window snapping and saved layouts): https://purplelink.llc/panely/
+- Summonly (macOS, free 7-day trial then $9.99, file search, launcher and clipboard history): https://purplelink.llc/summonly/
+- Mac Suite (macOS, $59.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free app; optional Vitae Plus subscription from $2.99 a month, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/

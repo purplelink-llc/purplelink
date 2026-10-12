@@ -70,7 +70,7 @@ as soon as the first commit deploys. Nothing on the site calls it while the butt
 
 Nothing to create. `tapefolio` is priced inline in `netlify/functions/checkout.mjs` (`amount: 2999`, name "Tapefolio for
 macOS", success path `/tapefolio/success/`), like Keyfeel, so there is no Stripe Price and no `STRIPE_PRICE_*` variable.
-`app-suite` stays `amount: 5499`. Session metadata carries `product` = `tapefolio` or `app-suite`. Promotion codes are
+`app-suite` stays `amount: 5999`. Session metadata carries `product` = `tapefolio` or `app-suite`. Promotion codes are
 allowed (`allow_promotion_codes`), which is what the test recipe below uses. The existing Stripe webhook endpoint already
 handles `checkout.session.completed` for every product; no change there.
 

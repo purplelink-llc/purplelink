@@ -133,12 +133,17 @@ const PRODUCT_CATALOG = {
   // Delivery is the session-gated DMG from the tapefolio-files Blobs store; see tapefolio-download.mjs.
   // Product page and success page: /tapefolio/ and /tapefolio/success/. See docs/products/tapefolio.md.
   "tapefolio":               { amount: 2999, name: "Tapefolio for macOS", successPath: "/tapefolio/success/" },
-  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life, $54.99
-  // one-time (was $54 until 2026-10-07, $49 with four apps, $39 before Legroom; Tapefolio joined 2026-10-09 at the
-  // same price). Priced inline (no Stripe Price to create). One session unlocks all six: the ModernTex, Outbound
-  // Veil, Legroom, Keyfeel and Tapefolio download functions accept it, and vitae-license.mjs signs a 100-year
-  // Vitae Plus key from it. See docs/products/app-suite.md.
-  "app-suite":               { amount: 5499, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio and Vitae Plus for life", successPath: "/suite/success/" },
+  // Panely (window manager) and Summonly (launcher and file search): $9.99 one-time each, priced inline like Keyfeel.
+  // Delivery is the session-gated DMG from the panely-files / summonly-files Blobs stores. Pages: /panely/ and /summonly/.
+  "panely":                { amount: 999, name: "Panely for macOS", successPath: "/panely/success/" },
+  "summonly":                { amount: 999, name: "Summonly for macOS", successPath: "/summonly/success/" },
+  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Vitae Plus for life,
+  // $59.99 one-time (was $54.99 until 2026-10-12 and $54 until 2026-10-07; $49 with four apps, $39 before Legroom; Tapefolio
+  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 with this price). Priced inline (no Stripe
+  // Price to create). One session unlocks all eight: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and
+  // Summonly download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
+  // docs/products/app-suite.md.
+  "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life", successPath: "/suite/success/" },
   // Custom bundles of the Mac Suite: pick any 2 for $34.99 or any 3 for $44.99, the same price whichever parts are
   // chosen (the six parts are the five apps and a lifetime Vitae Plus key; all six is the Suite above). The client sends
   // only `apps`; the price is the table in netlify/lib/bundles.mjs. Delivery reuses /suite/success/ and the per-app

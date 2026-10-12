@@ -1,0 +1,54 @@
+{
+  "note": "TEST key only. Never matches production. Scheme PanefoldLicenseV1; see netlify/lib/panely-license.mjs. Generated once from a throwaway Ed25519 key; its private half was discarded.",
+  "testPublicKeyBase64": "tH+k04vU919hVib6ovDx4NITbixojWzRsgbNJPiTKaQ=",
+  "domain": "PanefoldLicenseV1",
+  "signedMessage": "UTF-8 bytes of the domain followed by the 4 nonce bytes",
+  "nonceSeed": "first 4 bytes of sha256(\"panefold-license:\" + lower-cased, trimmed email)",
+  "valid": [
+    {
+      "email": "alice@example.org",
+      "key": "PNL1-7GRDQ-B180R-CCSNQ-B1FRV-BJ4D2-HNB34-SZCD2-EX5GV-G7GDQ-EV3Z8-TRYM1-1G4B9-H5R2N-4X2C7-3W1JP-B9RKE-XZWQS-51JT7-0JY3K-GMS54-6YJBK-RZ0J"
+    },
+    {
+      "email": "bob.researcher@example.edu",
+      "key": "PNL1-HE34J-PTSQC-ZT6HR-NMJND-F6SZH-W75C1-V6MV8-QQTF1-73JYT-1QM51-B2P7F-4Z716-6MYPD-F7CYG-4RAPX-71FWC-0BSPG-CVKXG-XBA63-PDT0X-A4GWE-6CGR"
+    },
+    {
+      "email": "carol+panely@example.com",
+      "key": "PNL1-QBC50-F7BKM-37WFF-1FNQD-776J9-PN42D-H0D7R-92SDX-W9VJR-WKKGD-Z2CGY-9ZK40-CSE5X-21YHZ-TT0G0-9CQ8Y-89V30-BKB97-G1AGZ-937YZ-Y88Y3-2MGT"
+    }
+  ],
+  "invalid": [
+    {
+      "key": "PNL1-7GRDQ-BA80R-CCSNQ-B1FRV-BJ4D2-HNB34-SZCD2-EX5GV-G7GDQ-EV3Z8-TRYM1-1G4B9-H5R2N-4X2C7-3W1JP-B9RKE-XZWQS-51JT7-0JY3K-GMS54-6YJBK-RZ0J",
+      "why": "one character changed"
+    },
+    {
+      "key": "PNL1-7GRDQ-B38C0-N2ZTP-4H4AC-WEJ04-7C8RA-MXZ83-0VM9K-A6R8N-KY5WY-0B1YH-M70J7-29YVN-3AC1V-ZVB4Z-EXKFF-TT0DJ-XPJNE-VBB89-GKV1G-41M7Z-850A",
+      "why": "right shape, signed under a different domain string (KeyfeelLicenseV1)"
+    },
+    {
+      "key": "PNL1-7GRDQ-B13T2-ARH30-MBKZC-4QRJG-FRNXG-RK8NB-25EMN-MWYBH-Q3N9A-W5V2F-X5TGW-7TNSD-AF26P-169YX-6T7FX-N2P89-S31SN-Y7YGW-89RRK-2HWSN-MG0T",
+      "why": "right shape, signed by a different key"
+    },
+    {
+      "key": "KFL1-7GRDQ-B180R-CCSNQ-B1FRV-BJ4D2-HNB34-SZCD2-EX5GV-G7GDQ-EV3Z8-TRYM1-1G4B9-H5R2N-4X2C7-3W1JP-B9RKE-XZWQS-51JT7-0JY3K-GMS54-6YJBK-RZ0J",
+      "why": "the Keyfeel prefix on a Panely key body is not a Panely key"
+    },
+    {
+      "key": "PNL1-12345-12345",
+      "why": "too short"
+    },
+    {
+      "key": "",
+      "why": "empty"
+    }
+  ],
+  "spelling": [
+    "pnl1-7grdq-b180r-ccsnq-b1frv-bj4d2-hnb34-szcd2-ex5gv-g7gdq-ev3z8-trym1-1g4b9-h5r2n-4x2c7-3w1jp-b9rke-xzwqs-51jt7-0jy3k-gms54-6yjbk-rz0j",
+    "PNL17GRDQB180RCCSNQB1FRVBJ4D2HNB34SZCD2EX5GVG7GDQEV3Z8TRYM11G4B9H5R2N4X2C73W1JPB9RKEXZWQS51JT70JY3KGMS546YJBKRZ0J",
+    "  PNL1-7GRDQ-B180R-CCSNQ-B1FRV-BJ4D2-HNB34-SZCD2-EX5GV-G7GDQ-EV3Z8-TRYM1-1G4B9-H5R2N-4X2C7-3W1JP-B9RKE-XZWQS-51JT7-0JY3K-GMS54-6YJBK-RZ0J  ",
+    "PNL1 7GRDQ B180R CCSNQ B1FRV BJ4D2 HNB34 SZCD2 EX5GV G7GDQ EV3Z8 TRYM1 1G4B9 H5R2N 4X2C7 3W1JP B9RKE XZWQS 51JT7 0JY3K GMS54 6YJBK RZ0J"
+  ],
+  "lookalikes": "Crockford: O reads as 0, I and L read as 1, U is not in the alphabet and is rejected"
+}

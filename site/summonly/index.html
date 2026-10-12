@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Summonly - Fast File Search, Launcher and Clipboard History for Mac | Purplelink LLC</title>
+    <meta name="description" content="A Mac menu-bar app that finds files, apps and clipboard history from one box. Press Option-Space, type, press Return. Private index on your Mac, quick answers, no account. Free for 7 days.">
+    <link rel="canonical" href="https://purplelink.llc/summonly/">
+    <meta property="og:title" content="Summonly - Fast File Search, Launcher and Clipboard History for Mac">
+    <meta property="og:description" content="A Mac menu-bar app that finds files, apps and clipboard history from one box. Press Option-Space, type, press Return. Private index on your Mac, quick answers, no account. Free for 7 days.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/summonly.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/summonly/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Summonly - Fast File Search, Launcher and Clipboard History for Mac">
+    <meta name="twitter:description" content="A Mac menu-bar app that finds files, apps and clipboard history from one box. Press Option-Space, type, press Return. Private index on your Mac, quick answers, no account. Free for 7 days.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/summonly.png">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=9a8aeb6e78">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/summonly/summonly.css?v=eae0d33f05">
+    <script src="/site.js?v=cfa7188dde" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/summonly/launch.js?v=af818f7db0" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Summonly",
+          "applicationCategory": "UtilitiesApplication",
+          "applicationSubCategory": "File search and launcher",
+          "operatingSystem": "macOS 14+",
+          "url": "https://purplelink.llc/summonly/",
+          "image": "https://purplelink.llc/assets/og/summonly.png",
+          "description": "Summonly finds files, apps and clipboard history from one box. Press Option-Space, type a few letters and press Return. It keeps a small index of your folders on your Mac, answers sums and unit conversions, and runs web searches from a keyword.",
+          "softwareRequirements": "macOS 14 (Sonoma) or later. macOS asks permission to read the Desktop, Documents and Downloads folders.",
+          "featureList": [
+            "Finds files, folders and apps by name, and by the start of text, code and Markdown files, RTF files and the first pages of PDFs",
+            "Abbreviations for apps, so vsc opens Visual Studio Code",
+            "Filters such as kind:pdf, ext:docx, in:Documents, modified:week, and plain words such as yesterday and last week",
+            "Ranks name matches first, then what you open often and recently",
+            "Corrects a misspelled word against your own files, and still finds files when one word of a long search matches nothing",
+            "Optional find by meaning, using a small model built into macOS, for related documents below the word matches",
+            "Calculator, percentages and unit conversions in the search box",
+            "Quick tools for UUIDs, base64, URL encoding, hashes, colors, Unix time, text case and passwords",
+            "Sleep, turn the display off (it locks if your Mac asks for a password on wake), start the screen saver, quit or force quit an app, and open a System Settings pane, with no extra permission",
+            "Web search shortcuts for Google, DuckDuckGo, Wikipedia, Apple Maps, YouTube, GitHub and Google Scholar",
+            "A Google button beside the search box, and Shift-Return, that searches whatever you typed in your default browser; keywords that open a prompt in Claude, ChatGPT or Perplexity in your browser, a last row that sends whatever you typed to Google, Claude or ChatGPT, and your own services",
+            "Clipboard history that skips password managers, items apps mark as private, and text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol",
+            "Snippets with the date, the time and the clipboard filled in",
+            "Keeps its index current from macOS file notifications, indexing in the background",
+            "Works offline, with no account"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "9.99",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": "https://purplelink.llc/summonly/",
+            "category": "One-time purchase, updates included",
+            "seller": { "@id": "https://purplelink.llc/#organization" },
+            "hasMerchantReturnPolicy": { "@type": "MerchantReturnPolicy", "applicableCountry": "US", "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow", "merchantReturnDays": 14, "returnFees": "https://schema.org/FreeReturn", "refundType": "https://schema.org/FullRefund" }
+          },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does it need to run?",
+              "acceptedAnswer": { "@type": "Answer", "text": "macOS 14 (Sonoma) or later. macOS asks permission before Summonly can read your Desktop, Documents and Downloads folders." }
+            },
+            {
+              "@type": "Question",
+              "name": "How is it different from Spotlight?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Summonly searches the folders you choose, ranks by name and by what you open, answers sums and unit conversions, keeps a clipboard history that skips secrets, and runs web searches from a keyword. Spotlight also searches Mail, Messages and other content that Summonly does not." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it send my files or searches anywhere?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The index and the clipboard history stay on your Mac. Web searches open in your browser, and then your browser sends them." }
+            },
+            {
+              "@type": "Question",
+              "name": "What does Find by meaning do?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It suggests documents on the same subject, using a small English-language model that is part of macOS. It is optional, indexes in the background, and is helpful rather than exact." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it record passwords I copy?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not from a password manager, and not text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol. The check is a set of rules, so a password made only of letters, or any other unusual secret, can be recorded. It is cautious but not perfect, so you can also turn clipboard history off or keep it in memory only." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I change the shortcut?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Summonly opens with Option-Space, and clipboard history with Option-Shift-V. You can record different shortcuts in Settings." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can it search inside Word documents?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. It reads the text of Word, Excel, PowerPoint and OpenDocument files, the start of text, code and Markdown files and RTF files, and the first pages of PDFs for ordinary search. If you turn on question search it reads whole documents. Pages and Keynote files are found by name only." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does one license work on more than one Mac?",
+              "acceptedAnswer": { "@type": "Answer", "text": "One license key works on two of your Macs. Paste the same key into Summonly on each one." }
+            },
+            {
+              "@type": "Question",
+              "name": "Are updates included?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, all of them. The price is a single payment, for life. Summonly checks for a new version and offers to install it in place." }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens when the trial ends?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial is the complete app for seven days from the first time you open it, with no account. To keep using Summonly after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key from the menu bar and paste it. It works offline." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I get a refund?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc within 14 days of purchase. See the terms." }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I get help?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Summonly", "item": "https://purplelink.llc/summonly/" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/products/">&larr; All products</a>
+
+    <div class="app-hero">
+      <img class="app-hero-icon" src="/assets/summonly-icon.webp" width="120" height="120" fetchpriority="high" alt="Summonly app icon">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS</span>
+          <span class="product-status product-status-live" data-lf-live-only>Free 7-day trial &middot; <span id="price">$9.99</span> to keep</span>
+        </div>
+        <h1 class="app-hero-name">Summonly</h1>
+        <p class="app-hero-tagline">Summonly finds files, apps and clipboard history from one box. Press Option-Space, type a few letters and press Return. It keeps a small index of your folders on your Mac, answers sums and unit conversions, and runs web searches from a keyword.</p>
+        <div class="app-hero-actions" id="buy">
+          <a class="btn btn-primary" id="trial-download" data-lf-gated data-lf-href="/.netlify/functions/summonly-download?download=1" data-lf-live-text="Try it free for 7 days" href="/.netlify/functions/summonly-download?download=1">Try it free for 7 days</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="summonly" data-lf-gated data-lf-live-text="Buy Summonly">Buy Summonly</button>
+        </div>
+        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <p class="waitlist-fine-print" data-lf-facts>Version 1.0.0, released October 12, 2026. 5 MB disk image.</p>
+        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay.</p>
+        <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>, $59.99 once.</p>
+        <p class="waitlist-fine-print">Comparing launchers? Read <a href="/guides/best-alfred-alternatives-for-mac/">Best Alfred alternatives for Mac (2026)</a>, which says plainly where Alfred and Raycast are stronger than Summonly. If Spotlight is missing files, <a href="/guides/find-files-on-mac-when-spotlight-cant/">How to find files on a Mac when Spotlight cannot</a> covers the usual causes and how to check each one.</p>
+      </div>
+      <figure class="app-hero-window lf-hero-window">
+        <div class="frame-soft hero-media" data-motion="video">
+          <img src="/summonly/img/panel.webp" alt="The Summonly search box with the word report typed in. Below it, a calculator answer, three files and a web search row." width="1600" height="900" fetchpriority="high" decoding="async">
+          <video muted loop playsinline preload="none" poster="/summonly/img/panel.webp" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+            <source data-src="/summonly/media/summonly-hero.webm" type="video/webm">
+            <source data-src="/summonly/media/summonly-hero.mp4" type="video/mp4">
+          </video>
+          <button type="button" class="motion-toggle" data-motion-toggle hidden>Pause video</button>
+        </div>
+        <figcaption>The search panel with sample results. These are not real files.</figcaption>
+      </figure>
+    </div>
+
+    <section class="screenshots-section tour-section sm-tour" aria-labelledby="tour-h">
+      <p class="eyebrow">Watch it work</p>
+      <h2 id="tour-h">A search, a question and clipboard history</h2>
+      <p class="section-intro">Twenty-nine seconds with narration and captions. Every screen is the app's own window drawn on invented sample files, not a recording of a real Mac.</p>
+      <video class="sm-video" controls preload="none" playsinline poster="/summonly/media/summonly-poster.webp" width="1920" height="1080">
+        <source src="/summonly/media/summonly-promo.mp4" type="video/mp4">
+        <track kind="captions" src="/summonly/media/summonly-promo.vtt" srclang="en" label="English" default>
+        Your browser cannot play this video. The transcript below says what it shows.
+      </video>
+      <div class="sm-transcript">
+        <h3>What the video says and shows</h3>
+        <p>Press Option-Space, type a few letters, and press Return. The search box lists folders and files that match, then rows to search Google, Claude or ChatGPT.</p>
+        <p>Ask a question, and it shows the passage and the page. It matches the words you use. The answer is the file, with the passage and, for a PDF, the page number.</p>
+        <p>Clipboard history keeps what you copy. It is off until you turn it on, and it skips password managers. The first-run window shows the choice, left unticked.</p>
+        <p>Nine ninety-nine, once, with a seven day free trial.</p>
+      </div>
+    </section>
+
+    <section class="features-section" aria-labelledby="how-h">
+      <div class="features-header">
+        <h2 id="how-h">How it works</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>It indexes in the background</h3>
+          <p>Summonly reads file names, and the start of text files, PDFs and Office documents, in the folders you choose, and keeps a small searchable index on your Mac. If you turn on question search it also reads whole documents. macOS tells it when files change, so the index stays current.</p>
+        </div>
+        <div class="feature-item">
+          <h3>You open it and type</h3>
+          <p>Press Option-Space. Results appear as you type: a quick answer first if the text is a sum, a unit conversion or one of the quick tools, then files and apps, ranked by how well the name matches and how often you open them.</p>
+        </div>
+        <div class="feature-item">
+          <h3>You act on a result</h3>
+          <p>Return opens it. Command-Return shows it in Finder. Option-Return copies its path. A calculation, snippet or clipboard item is copied.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screenshots-section sm-gallery" aria-labelledby="look-h">
+      <h2 id="look-h">A closer look</h2>
+      <p class="section-intro">Each picture is the app's own interface, drawn on invented sample files in a throwaway home folder. None of it is from a real Mac.</p>
+      <div class="sm-shots">
+        <figure class="sm-shot">
+          <h3>Ask a question</h3>
+          <p>Optional, and off until you turn it on. Summonly shows the file and the passage, with the page number for a PDF. It finds the words you use, so a question worded very differently from the document is found less often.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/panel-question.webp" alt="The Summonly search box with the question which file mentions the refund policy typed in. The first answer is Customer terms.pdf, marked page 3, with the start of its refund policy passage. The second is a notes file with a matching passage." width="1600" height="900" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+        <figure class="sm-shot">
+          <h3>Leave words out</h3>
+          <p>A minus sign before a word leaves out files that contain it. Here invoice -draft lists two invoices and not the draft.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/panel-operators.webp" alt="The Summonly search box with invoice -draft typed in. Two invoice PDFs are listed, Invoice 1043 and Invoice 1042. The file named Invoice 1043 draft is not listed." width="1600" height="900" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+        <figure class="sm-shot">
+          <h3>Clipboard history</h3>
+          <p>Press Option-Shift-V, or type clip. A pinned item comes first, then recent ones with how long ago you copied them. History is off until you turn it on.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/panel-clipboard.webp" alt="Clipboard history opened by typing clip: one pinned item, then five recent items such as a link, a short note and an invoice total, each with how long ago it was copied." width="1600" height="900" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+        <figure class="sm-shot sm-shot-small">
+          <h3>Why isn't it found?</h3>
+          <p>In Settings, choose a file and Summonly says which rule applies. This file is outside the folders it searches.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/why-not-found.webp" alt="A dialog titled About Quote 2207.pdf. It says the file is not inside a folder Summonly searches, and to add its folder in Settings under Folders." width="520" height="490" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample data.</figcaption>
+        </figure>
+      </div>
+      <div class="sm-shots">
+        <figure class="sm-shot">
+          <h3>First-run window</h3>
+          <p>Choose your folders and every other option here. Each choice is also in Settings.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/setup.webp" alt="The Set up Summonly window. It has choices for the folders to search, question search, clipboard history, web rows, opening at login and the shortcut." width="1280" height="1584" loading="lazy" decoding="async">
+          </div>
+        </figure>
+        <figure class="sm-shot">
+          <h3>Settings</h3>
+          <p>Shortcuts, question search, folders, clipboard rules, snippets, web searches and the license.</p>
+          <div class="frame-soft">
+            <img src="/summonly/img/settings.webp" alt="The Summonly Settings window, showing the Option-Space and Option-Shift-V shortcuts, search options and the Question search section." width="1200" height="1504" loading="lazy" decoding="async">
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="does-h">
+      <h2 id="does-h">What it does</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Finds</th><td>File and folder names, apps, and the start of text, code and Markdown files, RTF files and the first pages of PDFs. The text of Word, Excel, PowerPoint and OpenDocument files is read too. Pages and Keynote files are found by name only.</td></tr>
+          <tr><th scope="row">Abbreviations</th><td>Type vsc for Visual Studio Code, or te for TextEdit. Summonly matches the first letters of an app&#x27;s words.</td></tr>
+          <tr><th scope="row">Filters</th><td>kind:pdf, ext:docx, in:Documents, modified:today, modified:week, after:2026-01-01 and before:2026-03-01, name:budget (names only) and size:&gt;5mb or size:&lt;200kb. Put words in quotes to match them side by side, put a minus sign before a word to leave out files that contain it (invoice -draft), and use OR between words (report OR invoice). A search written this precisely is not loosened or spell-corrected. Plain words work too: invoice yesterday, notes last week, tax pdf.</td></tr>
+          <tr><th scope="row">Typos and loose words</th><td>Misspell a word and Summonly looks for the nearest word in your own files, and tells you what it searched for. If one word of a long search matches nothing, files that match the rest still appear, and a question such as how do buyers get their license key finds files that contain those words.</td></tr>
+          <tr><th scope="row">Ranking</th><td>A name that matches comes first, then the file you open often and recently, then newer files. Opening a file teaches it, and you can clear what it has learned.</td></tr>
+          <tr><th scope="row">Find by meaning</th><td>Optional, and off until you turn it on in Settings. It uses a small English-language model built into macOS to suggest documents on the same subject, below the word matches. It runs on your Mac and helps rather than guarantees: related documents are suggested, not proven.</td></tr>
+          <tr><th scope="row">Ask questions</th><td>Optional, and off until you turn it on in the first-run window or in Settings. Summonly then reads inside your documents (PDFs page by page, Word, PowerPoint, Excel, notes and text files) in the background, newest first, and answers a question such as which file mentions the refund policy with the file and the passage, with the page number for a PDF. Start with a question word, end with a question mark, or begin with ? to ask. It finds the words you use: a question worded very differently from the document is found less often, and when nothing matches well it says so and shows the ordinary results. The text it reads is kept in a separate file in Summonly&#x27;s folder in Application Support, which you can delete in Settings. It reads only while the Mac has power and is not hot, stops at a size limit, and skips files whose names suggest secrets.</td></tr>
+          <tr><th scope="row">Why isn&#x27;t it found?</th><td>In Settings, choose a file and Summonly says whether it is indexed and, if not, which rule applies: outside your folders, hidden, inside a build folder, left out by you, in iCloud and not downloaded, or too large to read inside. Right-click a result for Why this result, Hide this result, or Leave this folder out. Command-Delete hides the selected result, and Settings lists what you hid so you can show it again.</td></tr>
+          <tr><th scope="row">Stays current</th><td>A result for a file you have deleted is not shown, and the file is dropped from the index. Files on a drive that is not connected are hidden and come back when it is. Settings has Check index, which tests the index and tells you plainly if something is wrong, and indexing slows down when the Mac is hot or the battery is low.</td></tr>
+          <tr><th scope="row">Quick answers</th><td>Sums, percentages (20% of 150, 150 + 20%), powers, square roots and other functions, and conversions between units of length, weight, volume, time, data, speed and temperature, such as 5 km in miles.</td></tr>
+          <tr><th scope="row">Quick tools</th><td>Type uuid, base64 hello, base64 decode, urlencode, sha256 text, md5 text, #ff8800 or rgb(255, 136, 0), epoch, epoch 1700000000, slug Some Title, snake, kebab, camel, upper, lower, title, count some words, or password 24. The answer is one line and Return copies it. A generated password is copied marked as private, so other clipboard tools skip it, and it is cleared from the clipboard after a minute. Nothing is sent anywhere.</td></tr>
+          <tr><th scope="row">System</th><td>Type sleep, lock (turns the display off), screen saver, quit safari, force quit notes, or wifi, bluetooth, displays and sound to open that System Settings pane. These need no permission beyond the one Summonly already has. Restart and shut down are not included. Force quit asks before it acts. A switch in Settings opens Summonly when you log in.</td></tr>
+          <tr><th scope="row">Web search</th><td>Type a keyword and some words: g for Google, ddg for DuckDuckGo, w for Wikipedia, maps for Apple Maps, yt for YouTube, gh for GitHub, scholar for Google Scholar.</td></tr>
+          <tr><th scope="row">Google, always</th><td>Whatever you type, a small Google button appears beside the search box, and Shift-Return does the same from the keyboard. It opens the search in your default browser, so it follows your own choice of browser. The button says Google in words; it does not use Google's logo. Nothing is sent until you press it.</td></tr>
+          <tr><th scope="row">Ask an assistant</th><td>claude, gpt and ppl open Claude, ChatGPT or Perplexity in your browser with your words already typed in, for example claude why is the sky blue. Type ask and a question to get one row for each assistant. Any text you type also gets three last rows, Search Google, Ask Claude and Ask ChatGPT, unless the line is a calculation or a command that already has its own answer. In Settings you choose which of them appear as those last rows, and you can add any other site that takes a search address with {query} in it. Pressing Return opens the page in your browser; nothing is sent before that, the words go to that site and not through Summonly, and you use your own login there. Summonly does not talk to any assistant itself.</td></tr>
+          <tr><th scope="row">Clipboard history</th><td>Option-Shift-V, or type clip. It does not record anything copied from a password manager or marked private by the app that copied it, or text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol. You choose how many items to keep and for how many days, and can keep history in memory only. Pin items you want to keep, and clear it at any time.</td></tr>
+          <tr><th scope="row">Snippets</th><td>Save text under a keyword. {date}, {time} and {clipboard} are filled in when you use it. Summonly copies the snippet; you paste it where you want it.</td></tr>
+          <tr><th scope="row">Folders</th><td>Desktop, Documents, Downloads and your Applications folders to start, or your whole home folder if you choose it (Library and the Trash are always left out). The first-run window lets you choose these and every other option. Add or remove folders in Settings, and leave any folder out. If macOS refuses a folder, Summonly says so in its status line. Changes apply at once, without reopening Summonly. Files whose names suggest secrets, such as .env files, key files and names with password or secret in them, are found by name only: nothing inside them is read. Hidden files and developer folders such as node_modules and .git are skipped.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="features-section bg-purple-xlight" aria-labelledby="privacy-h">
+      <div class="features-header">
+        <h2 id="privacy-h">Privacy</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>Works offline</h3>
+          <p>Summonly needs no network connection for any of its features except opening a web search in your browser and its check for a new version, which carries the app&#x27;s name and version.</p>
+        </div>
+        <div class="feature-item">
+          <h3>The index stays on your Mac</h3>
+          <p>The index holds file names, paths and the start of text files, in Summonly&#x27;s own folder in Application Support. You can rebuild it or delete it, and you choose which folders it covers.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Clipboard history is off until you turn it on, and skips secrets</h3>
+          <p>Summonly does not read the clipboard at all until you choose to. It then skips password managers and anything an app marks as private, skips text that looks like a card number, token or long key, and can be kept in memory only. Where it is saved, the file is readable only by you.</p>
+        </div>
+      </div>
+      <p>Details are on the <a href="/privacy/">privacy page</a>.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="perm-h">
+      <h2 id="perm-h">Folder access</h2>
+      <p class="specs-more">The first time Summonly reads your Desktop, Documents or Downloads folder, macOS asks whether to allow it. Allow the folders you want searched. Summonly does not need Full Disk Access. It also reads the clipboard to keep history, and recent versions of macOS may ask you to allow that. If you add a folder that macOS protects, it will ask for that one too. The first index of a large folder can take a few minutes and runs in the background at low priority.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="not-h">
+      <h2 id="not-h">What it is not</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">A replacement for all of Spotlight</th><td>It searches the folders you choose. It does not search Mail, Messages, Contacts or Calendar, or the web.</td></tr>
+          <tr><th scope="row">A workflow tool</th><td>There are no workflows, scripts or extensions in this version. It is for finding, opening, copying and calculating.</td></tr>
+          <tr><th scope="row">A chat assistant</th><td>It does not answer questions in sentences. The meaning search only suggests related documents.</td></tr>
+          <tr><th scope="row">Synced</th><td>Everything stays on your Mac. There is no account and no sync.</td></tr>
+          <tr><th scope="row">Cross-platform</th><td>Mac only. There is no Windows, iPhone or iPad version.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-list" data-motion="stagger">
+        <details class="faq-item">
+          <summary>What does it need to run?</summary>
+          <div class="faq-body">macOS 14 (Sonoma) or later. macOS asks permission before Summonly can read your Desktop, Documents and Downloads folders.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How is it different from Spotlight?</summary>
+          <div class="faq-body">Summonly searches the folders you choose, ranks by name and by what you open, answers sums and unit conversions, keeps a clipboard history that skips secrets, and runs web searches from a keyword. Spotlight also searches Mail, Messages and other content that Summonly does not.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it send my files or searches anywhere?</summary>
+          <div class="faq-body">No. The index and the clipboard history stay on your Mac. Web searches open in your browser, and then your browser sends them.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What does Find by meaning do?</summary>
+          <div class="faq-body">It suggests documents on the same subject, using a small English-language model that is part of macOS. It is optional, indexes in the background, and is helpful rather than exact.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it record passwords I copy?</summary>
+          <div class="faq-body">Not from a password manager, and not text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol. The check is a set of rules, so a password made only of letters, or any other unusual secret, can be recorded. It is cautious but not perfect, so you can also turn clipboard history off or keep it in memory only.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I change the shortcut?</summary>
+          <div class="faq-body">Summonly opens with Option-Space, and clipboard history with Option-Shift-V. You can record different shortcuts in Settings.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can it search inside Word documents?</summary>
+          <div class="faq-body">Yes. It reads the text of Word, Excel, PowerPoint and OpenDocument files, the start of text, code and Markdown files and RTF files, and the first pages of PDFs for ordinary search. If you turn on question search it reads whole documents. Pages and Keynote files are found by name only.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does one license work on more than one Mac?</summary>
+          <div class="faq-body">One license key works on two of your Macs. Paste the same key into Summonly on each one.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Are updates included?</summary>
+          <div class="faq-body">Yes, all of them. The price is a single payment, for life. Summonly checks for a new version and offers to install it in place.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What happens when the trial ends?</summary>
+          <div class="faq-body">The trial is the complete app for seven days from the first time you open it, with no account. To keep using Summonly after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key from the menu bar and paste it. It works offline.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I get a refund?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase. See the <a href="/terms/">terms</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I get help?</summary>
+          <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
+      <h2 id="closing-cta-heading">Try it for a week.</h2>
+      <p>Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.</p>
+      <div class="closing-cta-actions">
+        <a class="btn btn-primary" data-lf-gated data-lf-href="/.netlify/functions/summonly-download?download=1" data-lf-live-text="Try it free for 7 days" href="/.netlify/functions/summonly-download?download=1">Try it free for 7 days</a>
+        <a class="btn btn-ghost" href="#buy" data-lf-live-only>Buy Summonly</a>
+      </div>
+      <p class="closing-cta-fine">macOS 14 or later</p>
+    </section>
+    <div class="sticky-cta" data-sticky-cta data-lf-sticky data-hide-when="#buy, .closing-cta, .footer" hidden>
+      <span class="sticky-cta-text"><strong>Summonly</strong> free for 7 days</span>
+      <a class="btn btn-primary" href="#buy" data-track="sticky_cta" data-track-meta="summonly">Get Summonly</a>
+    </div>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=b8ce8097c2" defer></script>
+</body>
+</html>

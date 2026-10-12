@@ -175,6 +175,12 @@
       if (a && /tapefolio-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
         window.plTrack("tf_trial_download", "tapefolio");
       }
+      if (a && /panely-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
+        window.plTrack("pn_trial_download", "panely");
+      }
+      if (a && /summonly-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
+        window.plTrack("sm_trial_download", "summonly");
+      }
       // Anything else marked data-track="<event>" (optional data-track-meta):
       // template downloads, the phone sticky bar.
       var t = ev.target && ev.target.closest && ev.target.closest("[data-track]");

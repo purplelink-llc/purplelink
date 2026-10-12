@@ -4,6 +4,7 @@ import { brand, clamp01, expoOut, lerp, FONT_BODY } from "./theme.js";
 import { Stage, TitleCard, EndCard, LowerThird, useFonts } from "./V2.jsx";
 import { PRODUCTS } from "./products/index.js";
 import { Bumpered, BUMPER } from "./Bumper.jsx";
+import { Desk } from "./PanelyDesk.jsx";
 
 const XF = 0.5; // still crossfade seconds
 
@@ -45,12 +46,20 @@ function StillLayer({ stills }) {
   const t = frame / brand.fps;
   const i = stillIndex(stills, t);
   return (
-    <>
+    <div style={{ position: "absolute", inset: 0, isolation: "isolate" }}>
       {stills.map((s, j) => {
         if (j > i) return null;
         if (j < i - 1) return null;
         const o = j === 0 ? 1 : expoOut(clamp01((t - s.t0) / (s.xf ?? XF)));
         const y = -scrollAt(s, t);
+        if (s.desk) {
+          // drawn desk (Panely): s.desk is a spec, local time starts at the still's t0
+          return (
+            <div key={j} style={{ position: "absolute", left: 0, top: y, width: s.w, height: s.h, opacity: o, zIndex: j, isolation: "isolate" }}>
+              <Desk spec={s.desk} t={Math.max(0, t - s.t0)} />
+            </div>
+          );
+        }
         if (s.video) {
           return (
             <Sequence key={j} from={Math.round(s.t0 * brand.fps)} layout="none">
@@ -58,9 +67,9 @@ function StillLayer({ stills }) {
             </Sequence>
           );
         }
-        return <Img key={j} src={staticFile(s.src)} style={{ position: "absolute", left: 0, top: y, width: s.w, height: s.h, opacity: o, display: "block" }} />;
+        return <Img key={j} src={staticFile(s.src)} style={{ position: "absolute", left: 0, top: y, width: s.w, height: s.h, opacity: o, display: "block", zIndex: j }} />;
       })}
-    </>
+    </div>
   );
 }
 
@@ -133,7 +142,8 @@ function windowFor(plan, t) {
   const overlay = plan.cursors && plan.cursors.length ? (s) => <Cursors cursors={plan.cursors} t={t} s={s} /> : null;
   if (plan.frame === "phone") return { ...base, chrome: <PhoneBezel />, radius: 150, bg: "oklch(8% 0.01 300)", shadow: false, overlay };
   if (plan.frame === "browser") return { ...base, chrome: <BrowserBar url={plan.url} w={view.w} />, radius: "0 0 24px 24px", bg: "oklch(99% 0.003 310)", shadow: false, overlay };
-  return { ...base, overlay };
+  // a plan may give its window a fill and radius (transparent panels, so the corners do not show the default paper colour)
+  return { ...base, overlay, ...(plan.windowBg ? { bg: plan.windowBg, radius: plan.windowRadius ?? 24 } : {}) };
 }
 
 // ---- compositions ---------------------------------------------------------------------------------

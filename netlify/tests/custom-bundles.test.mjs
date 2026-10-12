@@ -65,24 +65,24 @@ const bundle = (product, apps, over = {}) => ({ id: SID, status: "complete", pay
 
 // ---- the price table and the helper ----
 
-test("two prices, below the Suite, above the dearest single app, and the six parts are the Suite's six", () => {
+test("two prices, below the Suite, above the dearest single app, and the eight parts are the Suite's eight", () => {
   assert.deepEqual(lib.BUNDLES, { "bundle-2": { count: 2, cents: 3499 }, "bundle-3": { count: 3, cents: 4499 } });
   const dearestSingle = 2999;
   assert.ok(lib.BUNDLES["bundle-2"].cents > dearestSingle, "pick 2 costs more than any single app");
   assert.ok(lib.BUNDLES["bundle-2"].cents < lib.BUNDLES["bundle-3"].cents);
-  assert.ok(lib.BUNDLES["bundle-3"].cents < 5499, "pick 3 stays under the Suite");
-  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "vitae-plus"]);
+  assert.ok(lib.BUNDLES["bundle-3"].cents < 5999, "pick 3 stays under the Suite");
+  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "vitae-plus"]);
 });
 
 test("the page's price tables are the server's", () => {
   const src = readFileSync(new URL("../../site/suite/bundle.js", import.meta.url), "utf8");
   const pricing = JSON.parse(src.match(/var BUNDLE_PRICING = (\{.*?\});/)[1]);
-  assert.deepEqual(pricing, { 2: lib.BUNDLES["bundle-2"].cents, 3: lib.BUNDLES["bundle-3"].cents, suite: 5499 });
+  assert.deepEqual(pricing, { 2: lib.BUNDLES["bundle-2"].cents, 3: lib.BUNDLES["bundle-3"].cents, suite: 5999 });
   const parts = JSON.parse(src.match(/var PART_PRICE = (\{.*?\});/)[1]);
   assert.deepEqual(Object.keys(parts), lib.BUNDLE_SLUGS);
   const html = readFileSync(new URL("../../site/suite/index.html", import.meta.url), "utf8");
   for (const slug of lib.BUNDLE_SLUGS) assert.ok(html.includes(`name="apps" value="${slug}"`), `${slug} is a choice on the page`);
-  assert.ok(html.includes("$34.99") && html.includes("$44.99") && html.includes("$54.99"));
+  assert.ok(html.includes("$34.99") && html.includes("$44.99") && html.includes("$59.99"));
   const checkout = readFileSync(new URL("../functions/checkout.mjs", import.meta.url), "utf8");
   assert.match(checkout, /"bundle-2":\s+\{ amount: BUNDLES\["bundle-2"\]\.cents/);
 });
@@ -97,8 +97,8 @@ test("parsing: exactly the right number of different, known parts, in the canoni
   assert.equal(lib.parseBundleParts(["moderntex", "moderntex", "legroom"], 3), null, "a duplicate cannot pad the count");
 });
 
-test("entitlements: the Suite is all six, a bundle its parts, a single app itself, a mismatched bundle nothing", () => {
-  assert.equal(lib.entitledParts("app-suite", {}).size, 6);
+test("entitlements: the Suite is all eight, a bundle its parts, a single app itself, a mismatched bundle nothing", () => {
+  assert.equal(lib.entitledParts("app-suite", {}).size, 8);
   assert.deepEqual([...lib.entitledParts("bundle-2", { apps: "legroom,keyfeel" })], ["legroom", "keyfeel"]);
   assert.deepEqual([...lib.entitledParts("legroom", {})], ["legroom"]);
   assert.deepEqual([...lib.entitledParts("moderntex-seats", {})], ["moderntex"]);
@@ -158,7 +158,7 @@ test("checkout refuses a wrong count, a duplicate, an unknown part or no parts, 
 test("the Suite and the single apps are unchanged by bundles", async () => {
   await post({ product: "app-suite", apps: ["moderntex", "legroom"] }, "198.51.100.80");
   let p = stripeParams();
-  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "5499");
+  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "5999");
   assert.equal(p.get("metadata[apps]"), null);
   calls = [];
   await post({ product: "keyfeel", apps: ["moderntex", "legroom"] }, "198.51.100.81");
@@ -346,7 +346,7 @@ test("the picker: a pair and a triple show the price and the saving, and send on
 test("the picker: four or more parts point to the Suite instead", async () => {
   const four = runPicker(["moderntex", "outbound-veil", "legroom", "tapefolio"]);
   assert.equal(four.buy.disabled, false);
-  assert.equal(four.buy.textContent, "Buy the Suite, $54.99");
+  assert.equal(four.buy.textContent, "Buy the Suite, $59.99");
   assert.match(four.summary.textContent, /Suite is the better buy/);
   four.click();
   await new Promise((r) => setTimeout(r, 5));

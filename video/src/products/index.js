@@ -7,6 +7,9 @@ import * as sizzle from "./sizzle.js";
 import * as outboundveil from "./outboundveil.js";
 import * as legroom from "./legroom.js";
 import * as keyfeel from "./keyfeel.js";
+import * as summonly from "./summonly.js";
+import * as panely from "./panely.js";
+import * as panely15 from "./panely15.js";
 
 export const PRODUCTS = {
   "vitae-promo": vitae,
@@ -18,4 +21,8 @@ export const PRODUCTS = {
   "outbound-veil-promo": outboundveil,
   "legroom-promo": legroom,
   "keyfeel-promo": keyfeel,
+  "summonly-promo": summonly,
+  "summonly-promo-15": summonly,
+  "panely-promo": panely,
+  "panely-promo-15": panely15,
 };

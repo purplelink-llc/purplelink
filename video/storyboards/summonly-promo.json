@@ -1,0 +1,31 @@
+{
+  "id": "summonly-promo",
+  "title": "Summonly promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+2%",
+  "scenes": [
+    {
+      "narration": "Press Option-Space, type a few letters, and press Return."
+    },
+    {
+      "narration": "Ask a question, and it shows the passage and the page. It matches the words you use."
+    },
+    {
+      "narration": "Clipboard history keeps what you copy."
+    },
+    {
+      "narration": "It is off until you turn it on, and it skips password managers."
+    },
+    {
+      "narration": "Nine ninety-nine, once, with a seven day free trial."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
