@@ -266,7 +266,7 @@ test("/suite/success/ shows only the parts of a custom bundle and hides the rest
   ]);
   for (const hidden of ["part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-tapefolio"]) assert.equal(nodes[hidden].hidden, true, hidden);
   for (const shown of ["part-keyfeel", "part-vitae-plus"]) assert.notEqual(nodes[shown].hidden, true, shown);
-  assert.equal(nodes["hero-title"].textContent, "Your bundle is yours");
+  assert.equal(nodes["hero-title"].textContent, "Your bundle is ready");
   assert.equal(nodes["dl-kf"].children[0].textContent, "Download: App");
 });
 
@@ -285,7 +285,7 @@ test("/suite/success/ keeps the license-key section for a bundle that has a keye
   });
   await tick();
   assert.notEqual(suite.nodes["part-keyfeel"].hidden, true);
-  assert.notEqual(suite.nodes["hero-title"].textContent, "Your bundle is yours");
+  assert.notEqual(suite.nodes["hero-title"].textContent, "Your bundle is ready");
 });
 
 test("the Suite success page has an id on every part the script can hide", () => {
