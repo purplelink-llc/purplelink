@@ -37,7 +37,7 @@ if (!scenes.length) for (let t = 0; t < dur; t += 3) scenes.push({ i: scenes.len
 for (const s of scenes) ff(["-ss", String(Math.min(dur - 0.1, s.start + s.dur / 2)), "-i", video, "-frames:v", "1", "-vf", "scale=480:-2", "-q:v", "3", path.join(out, `phone-${String(s.i).padStart(2, "0")}.jpg`)]);
 // microtrailer: one mid-scene frame per scene tiled, so a reviewer sees the whole story in one image
 const cols = Math.min(6, scenes.length);
-ff(["-i", video, "-vf", `select='${scenes.map((s) => `lt(abs(t-${(s.start + s.dur / 2).toFixed(3)}\\,0.034)\\,0.034)`).join("+")}',scale=320:-1,tile=${cols}x${Math.ceil(scenes.length / cols)}:padding=4:color=black`, "-vsync", "vfr", "-frames:v", "1", "-q:v", "3", path.join(out, "micro.jpg")]);
+ff(["-i", video, "-vf", `select='${scenes.map((s) => `lt(abs(t-${(s.start + s.dur / 2).toFixed(3)}),0.034)`).join("+")}',scale=320:-1,tile=${cols}x${Math.ceil(scenes.length / cols)}:padding=4:color=black`, "-fps_mode", "vfr", "-frames:v", "1", "-q:v", "3", path.join(out, "micro.jpg")]);
 
 // loudness, black and freeze detection
 const ln = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", video, "-af", "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json", "-vn", "-f", "null", "-"], { encoding: "utf8" }).stderr;
