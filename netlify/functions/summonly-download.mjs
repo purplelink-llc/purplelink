@@ -47,6 +47,20 @@ async function incrementDownloadCount(fileName) {
   await stats.set(key, String(n + 1));
 }
 
+/** Counts one served download for the dashboard: lifetime per file and kind ("public" is the trial download, "buyer" is a purchase
+ *  download) and per UTC day. Best effort: counting must never slow or break a download. HEAD requests and crawlers are not counted. */
+async function countServed(request, kind, fileName) {
+  try {
+    if (request.method !== "GET" || /bot|crawl|spider|slurp|preview|monitor/i.test(request.headers.get("user-agent") || "")) return;
+    const stats = getStore(STATS_STORE);
+    const day = new Date().toISOString().slice(0, 10);
+    for (const key of [`${kind}:${fileName}`, `day:${day}:${kind}`]) {
+      const n = parseInt((await stats.get(key)) || "0", 10) || 0;
+      await stats.set(key, String(n + 1));
+    }
+  } catch { /* ignore */ }
+}
+
 function json(status, body) {
   return new Response(JSON.stringify(body), {
     status,
@@ -165,6 +179,7 @@ export default async function handler(request) {
     await rl.set(key, String(n + 1));
     const name = await latestDmgName(store);
     if (!name) return json(404, { error: "no_release", detail: "No download is available right now." });
+    await countServed(request, "public", name);
     return streamBlob(store, name, "application/x-apple-diskimage", `attachment; filename="${name}"`);
   }
 
@@ -187,7 +202,18 @@ export default async function handler(request) {
       const { blobs } = await stats.list({ prefix: "downloads:" });
       const counts = {};
       for (const b of blobs) counts[b.key.slice("downloads:".length)] = parseInt((await stats.get(b.key)) || "0", 10) || 0;
-      return json(200, { downloads: counts });
+      // Served downloads: lifetime per file by kind, and per UTC day. Requests handed the file, not confirmed completions.
+      const served = { public: {}, buyer: {} }, byDay = {};
+      for (const kind of ["public", "buyer"]) {
+        const { blobs: kb } = await stats.list({ prefix: `${kind}:` });
+        for (const b of kb) served[kind][b.key.slice(kind.length + 1)] = parseInt((await stats.get(b.key)) || "0", 10) || 0;
+      }
+      const { blobs: db } = await stats.list({ prefix: "day:" });
+      for (const b of db) {
+        const m = b.key.match(/^day:(\d{4}-\d{2}-\d{2}):(public|buyer)$/);
+        if (m) (byDay[m[1]] ||= { public: 0, buyer: 0 })[m[2]] = parseInt((await stats.get(b.key)) || "0", 10) || 0;
+      }
+      return json(200, { downloads: counts, public: served.public, buyer: served.buyer, byDay });
     }
     if (!DMG_NAME.test(updateFile)) return json(400, { error: "bad_file" });
     // Counted as a download the moment we decide to serve it — matching the trial
@@ -224,5 +250,6 @@ export default async function handler(request) {
   }
   // A buyer may fetch any released version, not only the newest — an older Mac may need it.
   if (!DMG_NAME.test(fileKey)) return json(404, { error: "unknown_file" });
+  await countServed(request, "buyer", fileKey);
   return streamBlob(store, fileKey, "application/x-apple-diskimage", `attachment; filename="${fileKey}"`);
 }
