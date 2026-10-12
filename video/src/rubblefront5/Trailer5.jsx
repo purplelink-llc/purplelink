@@ -159,7 +159,7 @@ function Footage({ shot, fmt, fps }) {
         const o = (fl.amp ?? 0.6) * Math.pow(1 - lt / fl.dur, 2);
         return <AbsoluteFill key={k} style={{ background: fl.color || "#fff4e0", opacity: o, mixBlendMode: "screen" }} />;
       })}
-      {(shot.insets || []).map((ins, k) => <Inset key={k} ins={ins} fmt={fmt} fps={fps} t={t} />)}
+            {(shot.insets || []).map((ins, k) => <Inset key={k} ins={ins} fmt={fmt} fps={fps} t={t} />)}
       {shot.logo ? <LogoSlam at={shot.logo.at} dur={shot.logo.dur} vertical={fmt.vertical} t={t} /> : null}
     </AbsoluteFill>
   );

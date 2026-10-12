@@ -129,8 +129,9 @@ def music_cfg(t_kill1, t_loop, t_logo, fade=3.5):
     seg("battle_mid_drive.ogg", t_kill1, t_loop, 2.0)
     seg("battle_high.ogg", t_logo, t_logo + 100, 0.0, fade)
     seg("battle_high_drive.ogg", t_logo, t_logo + 100, 2.0, fade)
-    env = [{"t": 0, "db": 0}, {"t": t_logo - 0.4, "db": 0}, {"t": t_logo - 0.35, "db": -40}, {"t": t_logo - 0.03, "db": -40}, {"t": t_logo, "db": 0}]
-    syn = [{"t": t_kill1, "kind": "riser", "dur": 2.4, "gain_db": -3}, {"t": t_logo, "kind": "riser", "dur": 4.0, "gain_db": -6}, {"t": t_logo, "kind": "boom", "gain_db": 3}]
+    b0 = max(t_kill1 + 4.0, t_logo - 8.0)     # the build: the mid stem rises from -3 dB to +2 dB over the last 8 s before the slam, with a riser
+    env = [{"t": 0, "db": 0}, {"t": b0, "db": -3}, {"t": t_logo - 0.45, "db": 2}, {"t": t_logo - 0.4, "db": -40}, {"t": t_logo - 0.03, "db": -40}, {"t": t_logo, "db": 0}]
+    syn = [{"t": t_kill1, "kind": "riser", "dur": 2.4, "gain_db": -3}, {"t": t_logo - 0.4, "kind": "riser", "dur": t_logo - 0.4 - b0, "gain_db": -3}, {"t": t_logo, "kind": "boom", "gain_db": 6}]
     return m, env, syn
 
 
@@ -150,18 +151,17 @@ def loop_scenes():
     L = [
         sp(1.7, 1.3, cards=[card("TAKE A TOWN.\n*PICK ONE OF THREE.*", 0.0, 1.25)]),
         sp(3.3, 0.9, crop={"x": 0.5, "y": 0.45, "s": 1.18}),
-        sp(6.1, 1.3),
-        sp(7.2, 2.0, insets=[{"clip": "h_runmap", "src": 0.8, "at": 0.15, "dur": 1.8, "crop": {"x": 70, "y": 165, "w": 1210, "h": 690}, "x": 250, "y": 120, "w": 1420}],
+        sp(6.1, 0.5),
+        sp(7.2, 2.0, insets=[{"clip": "h_runmap", "src": 0.8, "at": 0.15, "dur": 1.8, "crop": {"x": 70, "y": 165, "w": 1210, "h": 690}, "x": 40, "y": 140, "w": 900}],
            cards=[card("THE MAP\n*BRANCHES.*", 0.0, 2.0, pos="bottom")]),
-        S("k_hub", 3.0, 2.5, crop={"x": 0.5, "y": 0.0, "s": 1.22}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 2.5)]),
-        S("k_hub", 5.0, 1.5, crop={"x": 0.5, "y": 0.0, "s": 1.22}, cards=[card("NEW BUILDINGS.\n*NEW UNITS.*", 0.0, 1.5)]),
+        S("k_hub", 3.0, 2.8, crop={"x": 0.5, "y": 0.0, "s": 1.22}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 1.4), card("NEW BUILDINGS.\n*NEW UNITS.*", 1.4, 1.4)]),
     ]
     return L
 
 
 def build_main():
     sc = []
-    sc.append(shot("s_a", 0, 2.58, 0.9, cards=[card("TURN-BASED\n*TACTICS.*", 0.2, 2.0, pos="top", size=92)],
+    sc.append(shot("s_a", 0, 2.58, 0.9, cards=[card("TURN-BASED\n*TACTICS.*", 0.2, 2.0, pos="top", size=92, sfxDb=-3)],
                    hits=None, slow=False))
     sc[-1]["hits"] = [{"at": t, "kind": "tick", "gain_db": -4} for t in (0.5, 1.0, 1.5, 2.0, 2.5)]
     sc.append(shot("s_a", 1, 0.6, 1.7, cards=[card("BLOW A HOLE IN\nTHEIR *COVER.*", 0.0, 2.2)]))
@@ -174,8 +174,8 @@ def build_main():
     sc.append(shot("s_d", 3, 0.5, 1.8))
     loop_start = sum(x["dur"] for x in sc)
     sc += loop_scenes()
-    sc.append(shot("s_g1", 0, 1.6, 1.1, cards=[card("DAY *ONE.*", 0.0, 2.5)]))
-    sc.append(shot("s_g3", 0, 1.6, 1.1, cards=[card("RUN *THREE.*", 0.0, 2.5)]))
+    sc.append(shot("s_g1", 0, 1.6, 1.1, cards=[card("EARLY *SQUAD.*", 0.0, 2.5)]))
+    sc.append(shot("s_g3", 0, 1.6, 1.1, cards=[card("UPGRADED *SQUAD.*", 0.0, 2.5)]))
     # land the logo on an odd second (the music's downbeats): pad the last "run three" shot
     t = sum(x["dur"] for x in sc)
     want = math.ceil(t + 1.5 - 1.0 + 0.0001)
@@ -187,14 +187,19 @@ def build_main():
     sc.append(e)
     t_logo = sum(x["dur"] for x in sc[:-1]) + 1.5
     sc.append(ow_kill(6.4, 2.6, 1.25, [card("HOLD. WAIT.\n*AMBUSH.*", 0.0, 2.6)]))
-    sc.append(S("k_massive", 6.0, 1.8, cards=[card("BOARDS UP TO\n*18 BY 14.*", 0.0, 1.7)]))
-    sc.append(shot("s_f", 0, 1.3, 1.0, cards=[card("FOG CHANGES\nTHE *ODDS.*", 0.0, 2.2)]))
-    chain = [S("k_massive", 11.0, 1.0), ow_kill(12.9, 1.0, 0.5), shot("t_a", 0, .3, .7), shot("t_a", 1, .3, .6), shot("t_a", 2, .3, .55),
-             shot("t_c", 0, .35, .6), shot("t_c", 1, .3, .5), shot("t_d", 1, .3, .5), shot("t_d", 3, .3, .55), shot("s_f", 1, .3, .6),
-             strike("t_e", .3, .5), shot("t_f", 1, .25, .5)]
+    sc.append(S("k_massive", 6.0, 1.8, cards=[card("BOARDS UP TO\n*18 BY 14 TILES.*", 0.0, 1.7)]))
+    sc.append(shot("s_f", 1, 1.3, 1.0, cards=[card("SOMETIMES\nIT *MISSES.*", 0.0, 2.2)]))
+    chain = [ow_kill(12.9, 1.0, 0.5), shot("t_a", 0, .3, .7), shot("t_a", 1, .3, .6), shot("t_a", 2, .3, .55),
+             shot("t_c", 0, .35, .6), shot("t_c", 1, .3, .5), shot("t_d", 1, .3, .5), shot("t_d", 3, .3, .55), shot("s_f", 0, .3, .6),
+             strike("t_e", .3, .5), shot("t_f", 1, .25, .5), shot("t_d", 0, .4, .6), shot("t_f", 0, .4, .6)]
+    keep = {0, 3, 7, 9}      # the strongest kills keep flash, shake and slow-motion; the rest are plain cuts
+    for i, d in enumerate(chain):
+        if i not in keep:
+            for k in ("flash", "shake", "slow"):
+                d.pop(k, None)
     sc += chain
-    sc.append(S("t_e", 4.6, 3.2, punch={"from": 1.0, "to": 1.05}, cards=[card("ONE MORE *RUN.*", 1.7, 1.5, pos="mid", size=150, sfx="boom")]))
-    sc.append(END(4.0))
+    sc.append(S("t_e", 4.6, 2.0, punch={"from": 1.0, "to": 1.05}, cards=[card("ONE MORE *RUN.*", 0.4, 1.5, pos="mid", size=150, sfx=False)]))
+    sc.append(END(4.0)); sc[-1]["hits"] = [{"at": 0.0, "kind": "boom", "gain_db": 0}]
     return sc, loop_start, t_logo
 
 
@@ -209,14 +214,14 @@ write("rubblefront-v5", "rubblefront-v5", {"16x9": "rubblefront-trailer-v5-16x9.
 
 # ================================================================== 30 s
 def build_30():
-    sc = [shot("s_a", 0, 2.58, 0.9, cards=[card("TURN-BASED\n*TACTICS.*", 0.2, 2.0, pos="top", size=92)], slow=False)]
+    sc = [shot("s_a", 0, 2.58, 0.9, cards=[card("TURN-BASED\n*TACTICS.*", 0.2, 2.0, pos="top", size=92, sfxDb=-3)], slow=False)]
     sc[-1]["hits"] = [{"at": t, "kind": "tick", "gain_db": -4} for t in (0.5, 1.0, 1.5, 2.0, 2.5)]
     sc.append(shot("s_a", 1, 0.6, 1.5, cards=[card("BLOW A HOLE IN\nTHEIR *COVER.*", 0.0, 2.0)]))
     sc.append(shot("s_c", 1, 0.9, 1.1, cards=[card("FLANK FOR\nTHE *KILL.*", 0.0, 2.0)]))
     sc.append(S("k_spoils", 3.3, 0.9, cards=[card("PICK ONE\nOF *THREE.*", 0.0, 1.0)]))
     sc.append(S("k_hub", 3.0, 1.6, crop={"x": 0.5, "y": 0.0, "s": 1.22}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 1.6)]))
-    sc.append(shot("s_g1", 0, 1.2, 0.8, cards=[card("DAY *ONE.*", 0.0, 1.6)]))
-    sc.append(shot("s_g3", 0, 1.2, 0.8, cards=[card("RUN *THREE.*", 0.0, 1.6)]))
+    sc.append(shot("s_g1", 0, 1.2, 0.8, cards=[card("EARLY *SQUAD.*", 0.0, 1.6)]))
+    sc.append(shot("s_g3", 0, 1.2, 0.8, cards=[card("UPGRADED *SQUAD.*", 0.0, 1.6)]))
     t = sum(x["dur"] for x in sc)
     want = math.ceil(t + 1.5)
     if want % 2 == 0:
@@ -229,8 +234,8 @@ def build_30():
     sc.append(ow_kill(6.4, 2.2, 1.25, [card("HOLD. WAIT.\n*AMBUSH.*", 0.0, 2.2)]))
     for a in (shot("t_a", 0, .3, .7), shot("t_c", 1, .3, .6), strike("t_e", .3, .5), shot("t_f", 1, .25, .5)):
         sc.append(a)
-    sc.append(S("t_e", 4.6, 2.2, punch={"from": 1.0, "to": 1.05}, cards=[card("ONE MORE *RUN.*", 0.7, 1.5, pos="mid", size=150, sfx="boom")]))
-    sc.append(END(3.2))
+    sc.append(S("t_e", 4.6, 2.2, punch={"from": 1.0, "to": 1.05}, cards=[card("ONE MORE *RUN.*", 0.4, 1.5, pos="mid", size=150, sfx=False)]))
+    sc.append(END(3.2)); sc[-1]["hits"] = [{"at": 0.0, "kind": "boom", "gain_db": 0}]
     return sc, t_logo
 
 
@@ -253,15 +258,15 @@ def build_15():
     sc[-1]["hits"] = [{"at": t, "kind": "tick", "gain_db": -4} for t in (0.4, 0.9, 1.4)]
     sc.append(vshot("v_a", 1, 0.5, 1.4, cards=[card("BLOW A HOLE IN\nTHEIR *COVER.*", 0.0, 1.9)]))
     sc.append(vshot("v_a", 2, 0.5, 1.2, cards=[card("EVERY SHOT\nHAS *ODDS.*", 0.0, 1.7)]))
-    d = vshot("v_g1", 0, 0.9, 0.7, cards=[card("DAY *ONE.*", 0.0, 1.6)])
+    d = vshot("v_g1", 0, 0.9, 0.7, cards=[card("EARLY *SQUAD.*", 0.0, 1.6)])
     sc.append(d)
-    sc.append(vshot("v_g3", 0, 0.9, 0.7, cards=[card("RUN *THREE.*", 0.0, 1.6)]))
+    sc.append(vshot("v_g3", 0, 0.9, 0.7, cards=[card("UPGRADED *SQUAD.*", 0.0, 1.6)]))
     e = strike("v_e", 1.2, 1.1)
     e["vclip"] = "v_e"
     e["logo"] = {"at": 1.2, "dur": 1.0}
     sc.append(e)
     sc.append(vshot("v_a", 0, 0.3, 0.6, cards=[card("ONE MORE *RUN.*", 0.0, 0.9, pos="bottom")]))
-    sc.append(END(2.5))
+    sc.append(END(2.5)); sc[-1]["hits"] = [{"at": 0.0, "kind": "boom", "gain_db": 0}]
     return sc
 
 

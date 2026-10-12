@@ -7,7 +7,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { bundle } from "@remotion/bundler";
 import { renderMedia, selectComposition, openBrowser } from "@remotion/renderer";
@@ -130,18 +130,21 @@ else {
     const wav = c && c.src.replace(/\.mp4$/, ".wav");
     if (wav && fs.existsSync(wav)) spec.game.push({ file: wav, in: g.in, dur: g.dur, t: g.t, gain_db: g.gain_db });
   }
-  const audKey = sha(JSON.stringify([spec, fileKey(path.join(VIDEO, "mixrf2.py")), spec.game.map((g) => fileKey(g.file)), spec.music.map((m) => fileKey(m.file))]));
+  const audKey = sha(JSON.stringify([spec, fileKey(path.join(VIDEO, "mixrf2.py")), "ln2pass-v2", spec.game.map((g) => fileKey(g.file)), spec.music.map((m) => fileKey(m.file))]));
   const norm = path.join(work, `norm-${format}-${audKey}.wav`);
   if (!fs.existsSync(norm)) {
     const specFile = path.join(work, `mix-${format}.json`);
     fs.writeFileSync(specFile, JSON.stringify(spec, null, 1));
     const wav = path.join(work, `mix-${format}-${audKey}.wav`);
     execFileSync("python3", [path.join(VIDEO, "mixrf2.py"), specFile, wav], { stdio: "ignore" });
-    execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", wav, "-af", "loudnorm=I=-14:TP=-2.2:LRA=11", "-ar", "48000", norm]);
+    // two-pass loudnorm (measure, then apply linear with the measured values), then a limiter at 0.63 (-4 dBFS: AAC at 320k overshoots by about 1.7 dB, so this keeps the encoded true peak under -2 dBTP) so the AAC overshoot stays under -1 dBTP
+    const meas = (() => { const r = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", wav, "-af", "loudnorm=I=-13.6:TP=-2.0:LRA=11:print_format=json", "-f", "null", "-"], { encoding: "utf8" }); const m = (r.stderr || "").match(/\{[^{}]*"input_i"[^{}]*\}/); return m ? JSON.parse(m[0]) : null; })();
+    const ln = meas ? `loudnorm=I=-13.6:TP=-2.0:LRA=11:measured_I=${meas.input_i}:measured_TP=${meas.input_tp}:measured_LRA=${meas.input_lra}:measured_thresh=${meas.input_thresh}:offset=${meas.target_offset}:linear=true` : "loudnorm=I=-14:TP=-2.0:LRA=11";
+    execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", wav, "-af", `${ln},alimiter=limit=0.63:level=disabled`, "-ar", "48000", norm]);
     fs.rmSync(wav, { force: true });
     for (const f of fs.readdirSync(work)) if (f.startsWith(`norm-${format}-`) && f !== path.basename(norm)) fs.rmSync(path.join(work, f), { force: true });
   }
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", raw, "-i", norm, "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", outFile]);
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", raw, "-i", norm, "-c:v", "copy", "-c:a", "aac", "-b:a", "320k", "-shortest", "-movflags", "+faststart", outFile]);
 }
 lap(`wrote ${outFile}`);
 say(`cache ${pruneCache(settings.cacheMaxGB ?? 8).toFixed(1)} GB after pruning (limit ${settings.cacheMaxGB ?? 8})`);

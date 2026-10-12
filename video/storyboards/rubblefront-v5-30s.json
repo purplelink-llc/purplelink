@@ -63,15 +63,15 @@
    "gain_db": -3
   },
   {
-   "t": 17.0,
+   "t": 16.6,
    "kind": "riser",
-   "dur": 4.0,
-   "gain_db": -6
+   "dur": 7.600000000000001,
+   "gain_db": -3
   },
   {
    "t": 17.0,
    "kind": "boom",
-   "gain_db": 3
+   "gain_db": 6
   }
  ],
  "scenes": [
@@ -107,7 +107,8 @@
      "at": 0.2,
      "dur": 2.0,
      "pos": "top",
-     "size": 92
+     "size": 92,
+     "sfxDb": -3
     }
    ],
    "hits": [
@@ -281,7 +282,7 @@
    ],
    "cards": [
     {
-     "text": "DAY *ONE.*",
+     "text": "EARLY *SQUAD.*",
      "at": 0.0,
      "dur": 1.6,
      "pos": "bottom"
@@ -306,7 +307,7 @@
    ],
    "cards": [
     {
-     "text": "RUN *THREE.*",
+     "text": "UPGRADED *SQUAD.*",
      "at": 0.0,
      "dur": 1.6,
      "pos": "bottom"
@@ -528,11 +529,11 @@
    "cards": [
     {
      "text": "ONE MORE *RUN.*",
-     "at": 0.7,
+     "at": 0.4,
      "dur": 1.5,
      "pos": "mid",
      "size": 150,
-     "sfx": "boom"
+     "sfx": false
     }
    ]
   },
@@ -543,6 +544,13 @@
     "Spring 2027",
     "rubblefront.com",
     "A Purplelink LLC game"
+   ],
+   "hits": [
+    {
+     "at": 0.0,
+     "kind": "boom",
+     "gain_db": 0
+    }
    ]
   }
  ],
@@ -553,11 +561,15 @@
    "db": 0
   },
   {
-   "t": 16.6,
-   "db": 0
+   "t": 9.0,
+   "db": -3
   },
   {
-   "t": 16.65,
+   "t": 16.55,
+   "db": 2
+  },
+  {
+   "t": 16.6,
    "db": -40
   },
   {
