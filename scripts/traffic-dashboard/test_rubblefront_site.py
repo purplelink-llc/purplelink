@@ -24,6 +24,7 @@ def test_rubblefront_is_its_own_site_on_the_shared_endpoint():
     assert rf["token_env"] == pl["token_env"] == "PURPLELINK_STATS_TOKEN"
     assert rf["stats_host"] == "rubblefront.com"
     assert "stats_host" not in pl
+    assert rf["gsc_property"] == "sc-domain:rubblefront.com"
     assert [k for k, _ in rf["secondaries"]] == ["steamClicks", "outboundClicks", "downloads", "newsletterSubmits"]
     assert len({s["key"] for s in td.SITES}) == len(td.SITES)
 

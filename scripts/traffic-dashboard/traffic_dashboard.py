@@ -229,6 +229,9 @@ SITES = [
         "token_env": "PURPLELINK_STATS_TOKEN",
         "secondaries": [("steamClicks", "Steam clicks"), ("outboundClicks", "outbound clicks"),
                         ("downloads", "downloads"), ("newsletterSubmits", "newsletter signups")],
+        # Domain property (verified 2026-10-12 by a DNS TXT record), so the sc-domain: form. Little data for the first days.
+        # The service account must be a user on the property; a 403 here means it is not, and is non-fatal.
+        "gsc_property": "sc-domain:rubblefront.com",
     },
 ]
 
