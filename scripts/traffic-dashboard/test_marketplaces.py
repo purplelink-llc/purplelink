@@ -114,6 +114,13 @@ class Parsers(unittest.TestCase):
 
 
 class Dashboard(unittest.TestCase):
+    def setUp(self):
+        # profit_view reads the fixed costs file; the real one under ~/.config must not leak into the test.
+        old = td.COSTS_PATH
+        td.COSTS_PATH = Path(TMP) / "costs.json"
+        td.COSTS_PATH.unlink(missing_ok=True)
+        self.addCleanup(setattr, td, "COSTS_PATH", old)
+
     def test_gumroad_sale(self):
         s = {"id": "abc==", "created_at": "2026-09-29T14:05:00Z", "product_name": "Tenure Tracker", "price": 1200,
              "gumroad_fee": 170, "currency": "usd", "refunded": False, "email": "buyer@example.invalid"}
