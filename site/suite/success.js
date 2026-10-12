@@ -33,7 +33,17 @@
     box.appendChild(b);
   }
 
+  // The heading and lead start hidden, so a bundle buyer never sees the Suite's wording before the page knows what was
+  // bought. Whatever happens next, they are shown: with the right words once the order is read, with the Suite's if not.
+  var heroTitle = document.getElementById("hero-title");
+  var heroLead = document.getElementById("hero-lead");
+  function showHero() {
+    if (heroTitle) heroTitle.hidden = false;
+    if (heroLead) heroLead.hidden = false;
+  }
+
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
+    showHero();
     var msg = "If you just completed a purchase, use the link in your receipt email. If this looks wrong, email the address on your receipt and we will help.";
     note(boxes.mtx, msg); note(boxes.ov, msg); note(boxes.lg, msg); note(boxes.kf, msg); note(boxes.tf, msg); note(boxes.key, msg);
     return;
@@ -154,11 +164,10 @@
     var keys = document.getElementById("part-keys");
     if (keys && !(keep("moderntex") || keep("outbound-veil") || keep("legroom"))) keys.hidden = true;
     if (parts) {
-      var title = document.getElementById("hero-title");
-      var lead = document.getElementById("hero-lead");
-      if (title) title.textContent = "Your bundle is ready";
-      if (lead) lead.textContent = "Everything you chose is below: the downloads and license keys for your parts. We have also emailed this page to the address on your receipt.";
+      if (heroTitle) heroTitle.textContent = "Your bundle is ready";
+      if (heroLead) heroLead.textContent = "Everything you chose is below: the downloads and license keys for your parts. We have also emailed this page to the address on your receipt.";
     }
+    showHero();
     if (keep("moderntex")) files(boxes.mtx, "moderntex-download");
     if (keep("outbound-veil")) files(boxes.ov, "outbound-veil-download");
     if (keep("legroom")) files(boxes.lg, "legroom-download");

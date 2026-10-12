@@ -267,6 +267,7 @@ test("/suite/success/ shows only the parts of a custom bundle and hides the rest
   for (const hidden of ["part-keys", "part-moderntex", "part-outbound-veil", "part-legroom", "part-tapefolio"]) assert.equal(nodes[hidden].hidden, true, hidden);
   for (const shown of ["part-keyfeel", "part-vitae-plus"]) assert.notEqual(nodes[shown].hidden, true, shown);
   assert.equal(nodes["hero-title"].textContent, "Your bundle is ready");
+  assert.notEqual(nodes["hero-title"].hidden, true, "the heading is shown once the order is read");
   assert.equal(nodes["dl-kf"].children[0].textContent, "Download: App");
 });
 
@@ -286,6 +287,32 @@ test("/suite/success/ keeps the license-key section for a bundle that has a keye
   await tick();
   assert.notEqual(suite.nodes["part-keyfeel"].hidden, true);
   assert.notEqual(suite.nodes["hero-title"].textContent, "Your bundle is ready");
+});
+
+test("/suite/success/ keeps the heading hidden until the order is read, then shows the Suite's or the bundle's", async () => {
+  const html = read("suite/success/index.html");
+  assert.match(html, /<h1 id="hero-title" hidden>/);
+  assert.match(html, /<p id="hero-lead" hidden>/);
+  assert.match(html, /<noscript><h1>The Mac Suite is yours<\/h1><\/noscript>/);
+  const ids = ["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "license", "hero-title", "hero-lead"];
+  // The script never shows the heading until the order is read: `hidden` is only ever set to false by showHero().
+  let release;
+  const gate = new Promise((r) => { release = r; });
+  const waiting = runScript("suite/success.js", { search: `?session_id=${SID}`, ids, fetchImpl: () => gate.then(() => reply(200, { keys: [] })) });
+  await tick();
+  assert.notEqual(waiting.nodes["hero-title"].hidden, false, "not shown while the order is being read");
+  assert.notEqual(waiting.nodes["hero-lead"].hidden, false);
+  release();
+  await tick();
+  assert.equal(waiting.nodes["hero-title"].hidden, false, "shown once it is read, with the Suite's wording");
+  assert.equal(waiting.nodes["hero-lead"].hidden, false);
+  assert.notEqual(waiting.nodes["hero-title"].textContent, "Your bundle is ready");
+  // A failure to read the order still shows the Suite heading; a bad link shows it too.
+  const failed = runScript("suite/success.js", { search: `?session_id=${SID}`, ids, fetchImpl: () => Promise.reject(new Error("offline")) });
+  await tick();
+  assert.equal(failed.nodes["hero-title"].hidden, false);
+  const bad = runScript("suite/success.js", { search: "?session_id=nope", ids, fetchImpl: () => assert.fail("fetched") });
+  assert.equal(bad.nodes["hero-title"].hidden, false);
 });
 
 test("the Suite success page has an id on every part the script can hide", () => {
