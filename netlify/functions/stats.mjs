@@ -32,6 +32,17 @@ function json(status, body) {
 }
 function bump(obj, key, n = 1) { if (key) obj[key] = (obj[key] || 0) + n; }
 
+// LinkedIn arrives under several names: any linkedin.com host, lnkd.in, the Android app referrer
+// (android-app://com.linkedin.android, or com.linkedin.android as a bare host) and utm_source=linkedin in any
+// case. They are one channel, "linkedin". Only the host is read, so a label that merely contains "linkedin"
+// in a path or query does not match. This mirrors isLinkedin() in site/analytics.js; it is applied here when
+// records are read, so history stored under the separate labels is counted too and no stored record changes.
+export function isLinkedin(v) {
+  const h = String(v || "").toLowerCase().replace(/^[a-z][a-z0-9+.\-]*:\/\//, "").split(/[/?#]/)[0].replace(/:\d+$/, "");
+  return h === "linkedin" || h === "lnkd.in" || /(^|\.)linkedin\.com$/.test(h) || /^com\.linkedin\.android(\.[a-z]+)?$/.test(h);
+}
+export const foldChannel = (v) => (isLinkedin(v) ? "linkedin" : v);
+
 // Sites other than purplelink.llc that beacon to this collector. Their records are never mixed into the default numbers.
 export const EXTERNAL_HOSTS = ["rubblefront.com"];
 // Event types counted per day in a ?host= response (the host's own funnel), keyed to the byDay / totals field they feed.
@@ -166,7 +177,8 @@ export default async function handler(request) {
       // Product-page views are the denominator for a channel's trial and buy rates; the path is kept for pageviews
       // so the dashboard can restrict them to product pages.
       if (rec.ft && !String(rec.meta || "").startsWith("__")) {
-        const fc = s.funnelByChannel[rec.ft] || (s.funnelByChannel[rec.ft] = { pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {} });
+        const ft = foldChannel(rec.ft);
+        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {} });
         if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); }
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
         else if (/_?trial_download$/.test(rec.type)) bump(fc.trial, rec.meta || rec.type);
@@ -175,8 +187,8 @@ export default async function handler(request) {
       if (rec.type === "pageview") {
         s.totals.pageviews++; s.byDay[day].pageviews++;
         bump(s.byPath, rec.path);
-        if (rec.refHost) bump(s.byReferrer, rec.refHost);
-        if (rec.utm) bump(s.byUtm, rec.utm);
+        if (rec.refHost) bump(s.byReferrer, foldChannel(rec.refHost));
+        if (rec.utm) bump(s.byUtm, foldChannel(rec.utm));
       } else if (rec.type === "tool_use") {
         s.totals.toolRuns++; s.byDay[day].toolRuns++;
         bump(s.toolRuns, toolName(rec));

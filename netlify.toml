@@ -184,6 +184,51 @@
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
 
+# LinkedIn short links: a post can carry purplelink.llc/li/<slug>, which is easy to type on a Mac after reading on a
+# phone, and still lands tagged so analytics.js records the visit as channel "linkedin". 302, not 301, so a
+# destination can change later. One exact rule per page and no /li/* wildcard: a wildcard would redirect any
+# path and tag it. Netlify passes an incoming query string through to the destination; see
+# site-tests/test_linkedin_redirects.py. The short paths are not in the sitemap or the search index.
+[[redirects]]
+  from = "/li/moderntex"
+  to = "/moderntex/?utm_source=linkedin&utm_medium=social&utm_campaign=li-moderntex"
+  status = 302
+
+[[redirects]]
+  from = "/li/vitae"
+  to = "/vitae/?utm_source=linkedin&utm_medium=social&utm_campaign=li-vitae"
+  status = 302
+
+[[redirects]]
+  from = "/li/outbound-veil"
+  to = "/outbound-veil/?utm_source=linkedin&utm_medium=social&utm_campaign=li-outbound-veil"
+  status = 302
+
+[[redirects]]
+  from = "/li/tapefolio"
+  to = "/tapefolio/?utm_source=linkedin&utm_medium=social&utm_campaign=li-tapefolio"
+  status = 302
+
+[[redirects]]
+  from = "/li/paper-review"
+  to = "/tools/paper-review/?utm_source=linkedin&utm_medium=social&utm_campaign=li-paper-review"
+  status = 302
+
+[[redirects]]
+  from = "/li/legroom"
+  to = "/legroom/?utm_source=linkedin&utm_medium=social&utm_campaign=li-legroom"
+  status = 302
+
+[[redirects]]
+  from = "/li/guides"
+  to = "/guides/?utm_source=linkedin&utm_medium=social&utm_campaign=li-guides"
+  status = 302
+
+[[redirects]]
+  from = "/li/tools"
+  to = "/tools/?utm_source=linkedin&utm_medium=social&utm_campaign=li-tools"
+  status = 302
+
 # The OG-image generator is a build-time utility, not a public page.
 # 404 any direct hit so it doesn't get crawled or indexed.
 # `force = true` because the file still exists on disk; without it Netlify

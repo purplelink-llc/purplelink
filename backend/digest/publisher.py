@@ -9,6 +9,7 @@ import email.utils
 import hashlib
 import html
 import logging
+import os
 from typing import Optional
 
 import httpx
@@ -954,7 +955,12 @@ async def publish(
 
         await ping_websub(client)
 
-        if linkedin_token and linkedin_author_urn:
+        # Opt-in only: nothing is posted to LinkedIn unless LINKEDIN_AUTOPOST is exactly "enabled",
+        # even with a token and author URN configured. A refreshed token must not start posting
+        # under whatever author URN is set (it could be a personal profile) without the owner's say.
+        if linkedin_token and linkedin_author_urn and os.environ.get("LINKEDIN_AUTOPOST", "") != "enabled":
+            logger.info("post_linkedin: skipped (autopost not enabled)")
+        elif linkedin_token and linkedin_author_urn:
             await post_linkedin(client, digest, linkedin_token, linkedin_author_urn)
         else:
             logger.info("post_linkedin: skipped (no credentials)")
