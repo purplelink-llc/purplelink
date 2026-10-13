@@ -122,7 +122,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>BibTeX Validator</h1>
-        <p>Upload or paste a <code>.bib</code> file to check syntax, missing fields, dead DOIs, and verify your citations actually exist, including author and year correctness. Download a corrected <code>.bib</code> where CrossRef returns a confident match. Useful for catching AI-hallucinated references. <strong>Files are never stored.</strong></p>
+        <p>Upload or paste a <code>.bib</code> file to check syntax, missing fields, and dead DOIs. The tool also verifies that your citations exist and that the authors and years are correct. Download a corrected <code>.bib</code> where CrossRef returns a confident match. The checks catch AI-hallucinated references (citations a language model made up). <strong>Files are never stored.</strong></p>
       </div>
 
       <div class="tool-app">
@@ -192,7 +192,7 @@
           <li>Click <strong>Validate .bib</strong>. A color-coded table shows each entry. Click any row to see the original BibTeX, plus the corrected version when CrossRef returned a confident match. Use the filter chips to focus on warnings or errors.</li>
           <li>Download the <strong>annotated</strong> <code>.bib</code> (your file with status comments) or the <strong>corrected</strong> <code>.bib</code> (entries rewritten from CrossRef metadata where confidence is high).</li>
         </ol>
-        <p>If the table lists errors you do not recognize, the guide shows how to <a href="/guides/fix-bibtex-errors/">fix the errors the validator finds</a>, with a before and after for each of the eight most common.</p>
+        <p>If the table lists errors you do not recognize, read how to <a href="/guides/fix-bibtex-errors/">fix the errors the validator finds</a>. The guide gives a before and after for each of the eight most common.</p>
       </section>
 
       <section class="tool-howto bib-demo" id="see-it-catch-faults">
@@ -254,11 +254,11 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This tool validates BibTeX files in layers: syntax + completeness (always), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. It's particularly useful for catching AI-hallucinated citations that have plausible-looking metadata but don't correspond to real papers.</p>
-        <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title and author list match a real paper, and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on <a href="/guides/catch-ai-hallucinated-citations/">catching AI-hallucinated citations</a>.</div></details>
+        <p>This tool validates BibTeX files in layers: syntax and completeness (always), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.</p>
+        <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database. It reports how closely the title and author list match a real paper and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on <a href="/guides/catch-ai-hallucinated-citations/">catching AI-hallucinated citations</a>.</div></details>
         <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services. This is disclosed before you run the check.</div></details>
-        <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry showing its validation status: missing required fields, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.</div></details>
-        <details><summary>What is the corrected .bib?</summary><div class="faq-body">For each entry where CrossRef returned a high-confidence match (title similarity at least 85%), the corrected .bib replaces the entry's fields with authoritative metadata: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a confident match are passed through unchanged. Each rewritten entry is marked with a "CORRECTED from CrossRef" comment so you can audit the changes.</div></details>
+        <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry. The comment shows the validation status: missing required fields, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.</div></details>
+        <details><summary>What is the corrected .bib?</summary><div class="faq-body">The corrected .bib covers each entry where CrossRef returned a high-confidence match (title similarity at least 85%). It replaces the entry's fields with CrossRef metadata: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a confident match are passed through unchanged. Each rewritten entry is marked with a "CORRECTED from CrossRef" comment so you can audit the changes.</div></details>
         <details><summary>How does the author check work?</summary><div class="faq-body">Names are normalized to canonical last-name tokens (folding "John Smith", "Smith, John", "J. Smith", and "Müller" → "muller" all to the same key) and compared as a set against the authoritative author list. The score is the Jaccard overlap, so partial matches still get partial credit.</div></details>
         <details><summary>What BibTeX entry types are supported?</summary><div class="faq-body">article, book, inproceedings, proceedings, phdthesis, mastersthesis, techreport, misc, incollection, inbook, booklet, manual, conference, unpublished, and thesis.</div></details>
       </section>
@@ -266,7 +266,7 @@
       <!-- paper-review-cta -->
       <aside class="tool-paid-cta">
         <h2>The other kind of citation problem</h2>
-        <p>A clean .bib fixes citations that are malformed. It cannot tell you about a citation that is well-formed and does not support the sentence attached to it. Paper Review reads it the way a referee would: four reviewer personas argue over the manuscript, every citation is checked against the live record, and figures are scanned for integrity problems. The report usually comes back in 4 to 8 minutes.</p>
+        <p>A clean .bib fixes citations that are malformed. However, it cannot tell you about a citation that is well-formed and does not support the sentence attached to it. Paper Review reads it the way a referee would. Four reviewer personas argue over the manuscript, every citation is checked against the live record, and figures are scanned for integrity problems. The report usually comes back in 4 to 8 minutes.</p>
         <p class="tool-paid-cta-meta">From $9 per review, Anonymity Check bundled free. <a href="/tools/paper-review/">See what the report covers &rarr;</a></p>
       </aside>
 
@@ -274,7 +274,7 @@
       <section class="waitlist-section mt-cta">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
         <div class="waitlist-actions">
           <a class="btn btn-primary" href="/moderntex/">Get ModernTex &mdash; $19.99</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
