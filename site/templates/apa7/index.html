@@ -100,11 +100,11 @@
         <p class="post-date">LaTeX template</p>
         <h1 class="post-title">APA 7th edition template (apa7)</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time></p>
-        <p class="post-lede">For a paper in APA 7th edition style, use Daniel Weiss's apa7 class with <code>\documentclass[man]{apa7}</code> for a manuscript, and biblatex with <code>style=apa</code> and the Biber backend for the references.</p>
+        <p class="post-lede">For a paper in APA 7th edition style, use Daniel Weiss's apa7 class with <code>\documentclass[man]{apa7}</code> for a manuscript. Use biblatex with <code>style=apa</code> and the Biber backend for the references.</p>
       </div>
 
       <article class="post-body">
-        <p>apa7 is distributed on CTAN as the <a href="https://ctan.org/pkg/apa7" rel="noopener">apa7 package</a> and included in TeX Live and MiKTeX. The reference list comes from a separate package, <a href="https://ctan.org/pkg/biblatex-apa" rel="noopener">biblatex-apa</a>. The class is not published or endorsed by the American Psychological Association, and a journal that follows APA style can still add its own rules, so read the journal's instructions as well.</p>
+        <p>apa7 is distributed on CTAN as the <a href="https://ctan.org/pkg/apa7" rel="noopener">apa7 package</a> and included in TeX Live and MiKTeX. The reference list comes from a separate package, <a href="https://ctan.org/pkg/biblatex-apa" rel="noopener">biblatex-apa</a>. The class is not published or endorsed by the American Psychological Association. A journal that follows APA style can still add its own rules, so read the journal's instructions as well.</p>
 
         <h2>Minimal skeleton</h2>
         <p>Save your references as <code>references.bib</code> in the same folder. The build is pdfLaTeX, then Biber (not BibTeX), then pdfLaTeX twice. latexmk runs those passes for you, and so does the online compiler linked below.</p>
@@ -153,12 +153,12 @@ Text.
 \printbibliography
 
 \end{document}</code></pre>
-        <p>The affiliation is wrapped in a second pair of braces because commas separate affiliations in <code>\authorsaffiliations</code>; without them, "Department" and "University" print as two affiliations. For authors with different affiliations, <code>\authorsnames</code> takes an optional argument that maps each author to an affiliation; the class documentation has examples.</p>
+        <p>The affiliation is wrapped in a second pair of braces because commas separate affiliations in <code>\authorsaffiliations</code>. Without them, "Department" and "University" print as two affiliations. For authors with different affiliations, <code>\authorsnames</code> takes an optional argument that maps each author to an affiliation. The class documentation has examples.</p>
 
         <h2>Key options</h2>
         <ul>
           <li><code>man</code>: the manuscript format for journal submission. Double-spaced 12pt text, a title page, the abstract on its own page, a running head from <code>\shorttitle</code>, and figures and tables moved to the end.</li>
-          <li><code>stu</code>: a student paper. Add <code>\course</code>, <code>\professor</code> and <code>\duedate</code> for the title page; the class warns if they are missing.</li>
+          <li><code>stu</code>: a student paper. Add <code>\course</code>, <code>\professor</code> and <code>\duedate</code> for the title page. The class warns if they are missing.</li>
           <li><code>jou</code>: a typeset, journal-like layout, for sharing a readable copy. If you give no mode at all, the version tested for this page (2.16) uses <code>jou</code>.</li>
           <li><code>doc</code>: an ordinary LaTeX document look, single column.</li>
           <li><code>mask</code>: hides the author names, affiliations and author note for masked review.</li>
@@ -169,17 +169,17 @@ Text.
 
         <h2>Common submission pitfalls</h2>
         <ul>
-          <li><strong>Biber, not BibTeX.</strong> biblatex-apa only works with Biber. If the references come out as bold citation keys, the Biber pass did not run. Older tutorials also add <code>\DeclareLanguageMapping{american}{american-apa}</code>; current versions of biblatex-apa do not need it.</li>
+          <li><strong>Use Biber.</strong> biblatex-apa only works with Biber. If the references come out as bold citation keys, the Biber pass did not run. Older tutorials also add <code>\DeclareLanguageMapping{american}{american-apa}</code>. Current versions of biblatex-apa do not need it.</li>
           <li><strong>Title case in the .bib file.</strong> biblatex-apa converts article titles to sentence case, so enter them in title case and put braces around words that must keep their capitals, such as <code>{LaTeX}</code> or a proper noun.</li>
           <li><strong>Figures at the end.</strong> In <code>man</code> mode the class moves figures and tables after the references. APA 7 allows them either there or in the text, so follow the journal. The class uses the endfloat package for this, so <code>\begin{figure}</code> and <code>\end{figure}</code> must each be on a line of their own, or the build fails. Use <code>floatsintext</code> if the journal wants them in the text.</li>
-          <li><strong>Masked review.</strong> The <code>mask</code> option hides the title-page details, but not self-citations in the text. Cite your own work with <code>\maskparencite</code> or <code>\masktextcite</code>: with <code>mask</code> on they print "(1 citation removed for masked review)", and without it they print a normal citation.</li>
-          <li><strong>No "Introduction" heading.</strong> In APA style the paper's title, repeated at the top of the first page of text, serves as the heading of the introduction. Start the first section after it with Method or its equivalent. <code>\section</code> gives a Level 1 heading and <code>\subsection</code> a Level 2.</li>
+          <li><strong>Masked review.</strong> The <code>mask</code> option hides the title-page details. However, it does not hide self-citations in the text. Cite your own work with <code>\maskparencite</code> or <code>\masktextcite</code>. With <code>mask</code> on they print "(1 citation removed for masked review)", and without it they print a normal citation.</li>
+          <li><strong>No "Introduction" heading.</strong> In APA style the paper's title, repeated at the top of the first page of text, is the heading of the introduction. Start the first section after it with Method or its equivalent. <code>\section</code> gives a Level 1 heading and <code>\subsection</code> a Level 2.</li>
           <li><strong>Abstract length.</strong> APA 7 suggests an abstract of no more than 250 words, and many journals set a lower limit. Count it before you submit.</li>
         </ul>
 
         <h2>Check before you submit</h2>
         <ul>
-          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free): upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX, including the BibTeX or Biber passes. Useful for a clean build on a machine that is not yours.</li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free). Upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX (including the BibTeX or Biber passes). It is useful for a clean build on a machine that is not yours.</li>
           <li><a href="/tools/bib-validator/">BibTeX validator</a> (free): flags missing required fields, duplicate keys, dead DOIs and entries that do not match a real paper. It runs in the browser.</li>
           <li><a href="/tools/anonymity-check/">Anonymity Check</a> ($2): scans the manuscript for author names, institutions, grant numbers, self-citation patterns and author-owned URLs before a double-blind submission.</li>
           <li><a href="/tools/paper-review/">Paper Review</a> (from $9): four AI reviewers read the manuscript for methods, statistics and the editor's view, and every reference is checked against CrossRef.</li>
@@ -187,7 +187,7 @@ Text.
         </ul>
 
         <h2>Writing it on a Mac</h2>
-        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so apa7 behaves the same as it does anywhere else, and the PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
+        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so apa7 behaves the same as it does anywhere else. The PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
       </article>
 
       <section class="deadline-remind" aria-labelledby="deadline-h">

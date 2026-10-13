@@ -100,7 +100,7 @@
         <p class="post-date">LaTeX template</p>
         <h1 class="post-title">NeurIPS paper template</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time></p>
-        <p class="post-lede">NeurIPS papers use the standard <code>article</code> class plus that year's style file, loaded with <code>\usepackage{neurips_20XX}</code>; download the current year's style file from the <a href="https://neurips.cc/" rel="noopener">NeurIPS website</a>, because it changes every year.</p>
+        <p class="post-lede">NeurIPS papers use the standard <code>article</code> class plus that year's style file, loaded with <code>\usepackage{neurips_20XX}</code>. Download the current year's style file from the <a href="https://neurips.cc/" rel="noopener">NeurIPS website</a>, because it changes every year.</p>
       </div>
 
       <article class="post-body">
@@ -160,7 +160,7 @@ Funding and thanks. The default (anonymized) mode hides this block.
 \bibliography{references}
 
 \end{document}</code></pre>
-        <p>The style file loads natbib, so <code>\citep</code> and <code>\citet</code> work. The formatting instructions accept any reference style used consistently; <code>plainnat</code> is a common choice.</p>
+        <p>The style file loads natbib, so <code>\citep</code> and <code>\citet</code> work. The formatting instructions accept any reference style used consistently. A common choice is <code>plainnat</code>.</p>
 
         <h2>Key options</h2>
         <ul>
@@ -175,8 +175,8 @@ Funding and thanks. The default (anonymized) mode hides this block.
         <h2>Common submission pitfalls</h2>
         <ul>
           <li><strong>Last year's style file.</strong> Reusing an old project is the easy way to submit with the wrong year's file. Check the file name, and the line in the log where the package is loaded, before you upload.</li>
-          <li><strong>Anonymization beyond the author block.</strong> The default mode hides the names on the title page, but not your self-citations, code links or file metadata. Cite your own work in the third person, link an anonymized repository, keep thanks and funding inside <code>ack</code>, and check the PDF's document properties.</li>
-          <li><strong>Page limits.</strong> The limit on content pages is set in each year's call. In recent years the main track has allowed nine content pages, with references, the checklist and appendices not counted, but confirm the number for the current year and count in the compiled PDF.</li>
+          <li><strong>Anonymization beyond the author block.</strong> The default mode hides the names on the title page. However, it does not hide your self-citations, code links or file metadata. Cite your own work in the third person, link an anonymized repository, keep thanks and funding inside <code>ack</code>, and check the PDF's document properties.</li>
+          <li><strong>Page limits.</strong> The limit on content pages is set in each year's call. In recent years the main track has allowed nine content pages, with references, the checklist and appendices not counted. Confirm the number for the current year and count in the compiled PDF.</li>
           <li><strong>The paper checklist.</strong> Recent calls have required the NeurIPS Paper Checklist at the end of the submission PDF and said that papers without it may be desk rejected. Check whether the current call does, and fill it in rather than leaving the template answers.</li>
           <li><strong>Changing the format.</strong> The instructions say not to change the margins, font size or line spacing, and papers that do can be rejected without review. Fit the page limit by cutting text or moving material to the appendix.</li>
           <li><strong>Paper size and fonts.</strong> The formatting instructions ask for US letter paper and embedded fonts. Run <code>pdffonts paper.pdf</code> to confirm every font is embedded, and look for <code>Type 3</code> fonts, which usually come from matplotlib figures saved with default settings (set <code>pdf.fonttype</code> to 42).</li>
@@ -184,7 +184,7 @@ Funding and thanks. The default (anonymized) mode hides this block.
 
         <h2>Check before you submit</h2>
         <ul>
-          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free): upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX, including the BibTeX or Biber passes. Useful for a clean build on a machine that is not yours.</li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free). Upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX (including the BibTeX or Biber passes). It is useful for a clean build on a machine that is not yours.</li>
           <li><a href="/tools/bib-validator/">BibTeX validator</a> (free): flags missing required fields, duplicate keys, dead DOIs and entries that do not match a real paper. It runs in the browser.</li>
           <li><a href="/tools/anonymity-check/">Anonymity Check</a> ($2): scans the manuscript for author names, institutions, grant numbers, self-citation patterns and author-owned URLs before a double-blind submission.</li>
           <li><a href="/tools/paper-review/">Paper Review</a> (from $9): four AI reviewers read the manuscript for methods, statistics and the editor's view, and every reference is checked against CrossRef.</li>
@@ -193,7 +193,7 @@ Funding and thanks. The default (anonymized) mode hides this block.
         </ul>
 
         <h2>Writing it on a Mac</h2>
-        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so the NeurIPS style file behaves the same as it does anywhere else, and the PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
+        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so the NeurIPS style file behaves the same as it does anywhere else. The PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
       </article>
 
       <section class="deadline-remind" aria-labelledby="deadline-h">
