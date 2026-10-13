@@ -1687,7 +1687,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
 
 AI_REFERRERS = ("chatgpt", "perplexity", "claude.ai", "copilot", "gemini")
 SEARCH_REFERRERS = ("google", "bing", "duckduckgo", "brave", "ecosia", "yahoo")
-SOCIAL_REFERRERS = ("reddit", "twitter", "t.co", "x.com", "facebook", "linkedin",
+SOCIAL_REFERRERS = ("reddit", "twitter", "t.co", "x.com", "facebook", "linkedin", "lnkd.in",
                     "instagram", "youtube", "news.ycombinator", "bsky", "mastodon")
 
 

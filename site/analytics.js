@@ -82,11 +82,22 @@
     return a;
   })();
 
+  // LinkedIn reaches us under several names: www.linkedin.com and other linkedin.com hosts, the lnkd.in short
+  // link, the Android app (android-app://com.linkedin.android, or com.linkedin.android as a bare host) and
+  // utm_source=linkedin in any case. They are one channel, "linkedin". Only the host is looked at, so a page
+  // that merely mentions linkedin in its path or query string does not count. The same rule is applied to
+  // old stored records in netlify/functions/stats.mjs (keep the two in step).
+  function isLinkedin(v) {
+    var h = String(v || "").toLowerCase().replace(/^[a-z][a-z0-9+.\-]*:\/\//, "").split(/[\/?#]/)[0].replace(/:\d+$/, "");
+    return h === "linkedin" || h === "lnkd.in" || /(^|\.)linkedin\.com$/.test(h) || /^com\.linkedin\.android(\.[a-z]+)?$/.test(h);
+  }
+
   // A short label for how this visitor first arrived ("google", "chatgpt.com", a campaign tag, or "direct"), for counting
   // sign-ups by channel. Nothing is stored with an account; the label goes out once, as an event in our own statistics.
   window.plFirstTouch = function () {
     var f = attr.first || attr.last;
-    return (f && (f.s || f.r)) || (f && f.g ? "google ads" : "direct");
+    var label = (f && (f.s || f.r)) || (f && f.g ? "google ads" : "direct");
+    return isLinkedin(label) ? "linkedin" : label;
   };
 
   // The first-touch channel as a short label for the funnel events below only (product-page views, trial
@@ -98,7 +109,8 @@
     if (!f) return "direct";
     var med = String(f.m || "").toLowerCase();
     if (f.g || med === "cpc" || med === "ppc" || med === "paid" || med === "paidsocial") return clip("paid:" + (f.s || "google"), 40);
-    return clip(f.s || f.r || "direct", 40);
+    var label = f.s || f.r || "direct";
+    return isLinkedin(label) ? "linkedin" : clip(label, 40);
   }
   var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download)$/;
 

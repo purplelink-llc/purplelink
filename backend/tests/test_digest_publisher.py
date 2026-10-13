@@ -216,7 +216,8 @@ def test_publish_calls_github_rss_and_websub_steps(monkeypatch):
     assert digest.number == 7
 
 
-def test_publish_posts_linkedin_when_credentials_given(monkeypatch):
+def _publish_with_linkedin_creds(monkeypatch):
+    """Run publish() with credentials and a fake poster; return the list of post_linkedin calls."""
     linkedin_called = []
 
     async def _noop(*args, **kwargs): pass
@@ -233,10 +234,47 @@ def test_publish_posts_linkedin_when_credentials_given(monkeypatch):
     monkeypatch.setattr("digest.publisher.ping_websub", _noop)
     monkeypatch.setattr("digest.publisher.post_linkedin", _fake_linkedin)
 
-    digest = _make_digest()
-    asyncio.run(publish(digest, "gh_token", "li_token", "urn:li:organization:123"))
+    asyncio.run(publish(_make_digest(), "gh_token", "li_token", "urn:li:organization:123"))
+    return linkedin_called
 
-    assert linkedin_called == [("li_token", "urn:li:organization:123")]
+
+def test_publish_skips_linkedin_by_default_even_with_credentials(monkeypatch, caplog):
+    monkeypatch.delenv("LINKEDIN_AUTOPOST", raising=False)
+    with caplog.at_level("INFO", logger="digest.publisher"):
+        assert _publish_with_linkedin_creds(monkeypatch) == []
+    assert "post_linkedin: skipped (autopost not enabled)" in caplog.text
+
+
+def test_publish_skips_linkedin_unless_autopost_is_exactly_enabled(monkeypatch):
+    for value in ("", "true", "1", "ENABLED", "enabled "):
+        monkeypatch.setenv("LINKEDIN_AUTOPOST", value)
+        assert _publish_with_linkedin_creds(monkeypatch) == [], value
+
+
+def test_publish_posts_linkedin_when_credentials_given_and_autopost_enabled(monkeypatch):
+    monkeypatch.setenv("LINKEDIN_AUTOPOST", "enabled")
+    assert _publish_with_linkedin_creds(monkeypatch) == [("li_token", "urn:li:organization:123")]
+
+
+def test_post_linkedin_sends_one_post_with_a_mocked_http_client(monkeypatch):
+    """When enabled, the real post_linkedin runs against a mocked client (no network)."""
+    import digest.publisher as pub
+
+    calls = []
+
+    class _Resp:
+        status_code = 201
+        headers = {"x-restli-id": "urn:li:share:1"}
+        text = ""
+        def raise_for_status(self): pass
+
+    class _Client:
+        async def post(self, url, **kwargs):
+            calls.append(url)
+            return _Resp()
+
+    asyncio.run(pub.post_linkedin(_Client(), _make_digest(), "li_token", "urn:li:organization:123"))
+    assert calls == ["https://api.linkedin.com/rest/posts"]
 
 
 def test_render_html_section_has_anchor_id():

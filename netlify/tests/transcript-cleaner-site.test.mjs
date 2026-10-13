@@ -85,7 +85,7 @@ test("CSP: no inline styles, no inline scripts or handlers, and every asset is t
   const scripts = [...html.matchAll(/<script\b([^>]*)>/g)].map((m) => m[1]);
   for (const a of scripts) assert.ok(/src="\//.test(a) || /type="application\/ld\+json"/.test(a), "inline script: " + a);
   for (const m of html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)) {
-    assert.match(m[1], /^https:\/\/(purplelink\.llc\/|buymeacoffee\.com\/bampel)/, "external reference " + m[1]);
+    assert.match(m[1], /^https:\/\/(purplelink\.llc\/|buymeacoffee\.com\/bampel|www\.linkedin\.com\/company\/purplelink-llc\/$)/, "external reference " + m[1]);
   }
   assert.doesNotMatch(html, /<script[^>]+src="https?:/);
 });

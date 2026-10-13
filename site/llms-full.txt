@@ -3919,6 +3919,8 @@ Purplelink LLC is a Georgia LLC in Atlanta, founded in 2026. The changelog recor
 
 That has two effects you can check. Support is email to ben@purplelink.llc, with no ticket system, no support team and no promised response time (see Support). Releases are quick, because the person who hears about a bug is the person who fixes it: the changelog lists 60 releases across nine Mac apps and GlobePin between September 3 and October 13, 2026.
 
+Purplelink also posts guides and release notes on LinkedIn.
+
 ## What we build
 
 ModernTex, Vitae, GlobePin and the web tools are shipping. Haea is in active development:

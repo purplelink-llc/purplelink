@@ -92,6 +92,7 @@ FOOTER_COLUMNS = [
         ("Press", "/press/"),
         ("Support", "/support/"),
         ("Contact", "mailto:ben@purplelink.llc"),
+        ("LinkedIn", "https://www.linkedin.com/company/purplelink-llc/", ' rel="noopener"'),
         ("Privacy", "/privacy/"),
         ("Terms", "/terms/"),
         ("Find a purchase", "/recover/"),
@@ -122,7 +123,8 @@ def footer_html(indent: str) -> str:
     i = indent
     cols = []
     for head, links in FOOTER_COLUMNS:
-        lis = "\n".join(f'{i}        <li><a href="{h}">{t}</a></li>' for t, h in links)
+        # A link may carry a third item: extra attributes for the <a> (external links use rel="noopener").
+        lis = "\n".join(f'{i}        <li><a href="{l[1]}"{l[2] if len(l) > 2 else ""}>{l[0]}</a></li>' for l in links)
         cols.append(
             f'{i}    <nav class="footer-col" aria-label="{head}">\n'
             f'{i}      <p class="footer-head">{head}</p>\n'
