@@ -383,6 +383,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 ## Guides (free how-to articles)
 - Guides index: https://purplelink.llc/guides/
 - LaTeX hub: https://purplelink.llc/guides/latex/ — pillar page covering the full academic LaTeX workflow.
+- latexdiff online for a multi-file project: https://purplelink.llc/guides/latexdiff-online/ — when to use latexdiff, how to run it on a single file or a git project with latexpand and latexdiff-vc, common failures, and what the online tool does.
 - BibTeX hub: https://purplelink.llc/guides/bibtex/ — pillar page covering bibliography management.
 - Mac utility guides: https://purplelink.llc/guides/mac/ — hub for the guides on disk space, System Data, window managers, keyboard sound apps, privacy permissions and other Mac utilities.
 - Methodology problems peer reviewers flag, and how to fix them: https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/ — fifteen failure modes (p-hacking, HARKing, underpowered samples, test-train contamination, LLM self-judging, fabricated citations and more), each with a definition, an example, the fix and primary references.

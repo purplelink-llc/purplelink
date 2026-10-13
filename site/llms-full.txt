@@ -3095,7 +3095,7 @@ If this saves you time, you can leave a tip. It helps keep these tools free and 
 ---
 
 Source: https://purplelink.llc/tools/bib-validator/
-Title: BibTeX Validator - Detect AI Hallucinations | Purplelink LLC
+Title: BibTeX Validator Online: Required Fields and DOIs
 
 ← All tools
 
@@ -3134,6 +3134,69 @@ Files are never written to disk or logged.
 - Download the annotated .bib (your file with status comments) or the corrected .bib (entries rewritten from CrossRef metadata where confidence is high).
 
 If the table lists errors you do not recognize, the guide shows how to fix the errors the validator finds, with a before and after for each of the eight most common.
+
+## See it catch real faults
+
+This is a small .bib file with common faults added on purpose. The output below is what the validator's own code returned for it, with only the always-on syntax and required-field check enabled.
+
+### Input
+
+@article{ampel2023trust,
+author = {Ampel, Benjamin and Doe, Jane},
+title = {Trust in automated review tools},
+journal = {Journal of Examples},
+year = {2023},
+}
+
+@article{smith2021missing,
+author = {Smith, Alex},
+title = {A study with no journal},
+year = {2021},
+}
+
+@inproceedings{lee2022noyear,
+author = {Lee, Sam},
+title = {A conference paper with no year},
+booktitle = {Proceedings of the Example Conference},
+}
+
+@book{ng2020book,
+author = {Ng, Priya},
+title = {A book with no publisher},
+year = {2020},
+}
+
+@article{ampel2023trust,
+author = {Ampel, Benjamin},
+title = {A second paper that reuses the first key},
+journal = {Journal of Examples},
+year = {2024},
+}
+
+@article{brown2019brace,
+author = {Brown, Kim},
+title = {An entry with an unclosed brace,
+journal = {Journal of Examples},
+year = {2019},
+}
+
+### Output
+
+Summary: 2 OK, 0 warnings, 3 errors, 5 entries total. The annotated .bib puts one comment line above each entry:
+
+% [bib-validator] OK | fields OK
+% [bib-validator] ERROR | MISSING: journal
+% [bib-validator] ERROR | MISSING: year
+% [bib-validator] ERROR | MISSING: publisher
+% [bib-validator] OK | fields OK
+
+### What it did not report
+
+- The file has six entries and the table lists five. The last entry, with the unclosed brace in its title, is skipped by the parser and gets no message.
+
+- The second ampel2023trust entry reuses the first entry's key. The validator does not check for duplicate keys, so it is marked OK.
+
+Check those two by hand, or with your LaTeX build log. The guide on how to fix common BibTeX errors covers both. If your entries are missing fields because they were typed by hand, build BibTeX from DOIs instead.
 
 ## About this tool
 
@@ -4371,15 +4434,15 @@ No. Every publisher and venue policy that addresses authorship rules it out, bec
 ---
 
 Source: https://purplelink.llc/guides/overleaf-alternative-mac/
-Title: Overleaf alternative for Mac: offline LaTeX editors compared | Purplelink
+Title: Overleaf alternative Mac 2026: offline editors | Purplelink
 
 ← All guides
 
 Comparison
 
-# Overleaf alternative for Mac: offline LaTeX editors compared
+# Overleaf alternative Mac 2026: offline editors
 
-By Benjamin Ampel · September 24, 2026
+By Benjamin Ampel · September 24, 2026, updated October 13, 2026
 
 The best Overleaf alternative on a Mac is a local TeX distribution (MacTeX or TinyTeX) plus a native editor: TeXShop if you want free and standard, Texifier or ModernTex if you want a modern paid Mac app, and Overleaf itself for any draft that co-authors edit at the same time.
 
@@ -4391,11 +4454,13 @@ People go looking for an Overleaf alternative after a slow compile, a timeout on
 
 - Real-time collaboration. Several people can type in the same document at once and see each other's cursors, with comments and tracked changes alongside. Desktop editors have not matched it: the closest, in TeXstudio and VS Code, are shared sessions. If your paper has four co-authors editing the methods section in the week before a deadline, that is Overleaf's job.
 
-- Zero install. Overleaf runs the TeX distribution on its own servers. Nothing to download, no 5 GB MacTeX package, nothing to update. It also means a co-author on Windows, a student on a Chromebook and you on a Mac all compile with the same setup.
+- Zero install. Overleaf runs the TeX distribution on its own servers. Nothing to download, no 6 GB-plus MacTeX package, nothing to update. It also means a co-author on Windows, a student on a Chromebook and you on a Mac all compile with the same setup.
 
 - Institutional licences. Many universities pay for Overleaf through a site licence, which gives everyone on campus the premium features. If yours does, the usual free-tier complaints (compile time limits, collaborator caps, no Git) may not apply to you at all.
 
 - Journal templates. The template gallery is large, and some publishers link to their Overleaf template directly from their author instructions.
+
+The free-plan compile limit, specifically. Overleaf's plan limits page lists 10 seconds per compile on the free plan and 240 seconds on premium plans (read October 13, 2026), and its announcement says the 10-second limit applied to all free users from September 8, 2025. If one slow project is the only reason you are here, the guide to the Overleaf compile timeout lists the fixes to try first and shows how to time the same project locally. Staying is fine if the fixes work or your institution already provides a premium plan.
 
 If you mostly co-author, and you are always online, you may not need an alternative. What follows is for everyone else.
 
@@ -4531,7 +4596,7 @@ A LaTeX project is portable by design, so the move takes minutes. Most of the wo
 
 - Download the source. In the Overleaf editor, open the Menu and choose Download > Source. You get a zip of every file in the project. Unzip it into a folder you will keep, not your Downloads folder.
 
-- Install a TeX distribution. MacTeX is the full TeX Live for macOS, about 5 GB, and includes every package a template is likely to load. TinyTeX and BasicTeX are far smaller and add packages as you need them with tlmgr install. If disk space is not a problem, MacTeX saves you a round of "file not found" errors.
+- Install a TeX distribution. MacTeX is the full TeX Live for macOS, about 6.4 GB as the install guide lists it (BasicTeX is 134 MB), and includes every package a template is likely to load. TinyTeX and BasicTeX are far smaller and add packages as you need them with tlmgr install. If disk space is not a problem, MacTeX saves you a round of "file not found" errors.
 
 - Note Overleaf's settings before you leave. In the Overleaf Menu, check the Compiler (pdfLaTeX, XeLaTeX or LuaLaTeX) and the Main document. Set the same compiler in your editor, and open the same main .tex file, or mark it as the root file.
 
@@ -4542,6 +4607,8 @@ A LaTeX project is portable by design, so the move takes minutes. Most of the wo
 - Check fonts under XeLaTeX or LuaLaTeX. A fontspec line that names a font works only if that font is installed on your Mac. Overleaf's servers have a different font set from macOS, so install the font or switch to one you have.
 
 - Compile and compare. Build once and compare the PDF against the last Overleaf PDF. Page count and reference list are the quickest checks.
+
+To check the move before you commit, time the project once with time latexmk -pdf -interaction=nonstopmode main.tex, as the compile timeout guide describes. Which editor to use afterwards is the question the table above answers, and the longer editor comparison goes further.
 
 If you are on a machine without a TeX install and need one PDF today, our LaTeX to PDF tool compiles a project in the browser; this guide covers multi-file projects.
 
@@ -4601,9 +4668,9 @@ Does ModernTex have real-time collaboration like Overleaf?
 
 No. ModernTex is a single-user Mac app. Your files are ordinary files on disk, so you can share them through whatever you already use, but two people cannot type in the same document at the same time. If you need that, keep Overleaf for the shared draft.
 
-Do I need the full 5 GB MacTeX install?
+Do I need the full 6.4 GB MacTeX install?
 
-No. BasicTeX and TinyTeX are much smaller and install missing packages on demand with tlmgr. Full MacTeX is the easiest option if you have the disk space, because every package a template might load is already there.
+No. BasicTeX (134 MB) and TinyTeX (about 67 MB) are much smaller and install missing packages on demand with tlmgr. Full MacTeX is the easiest option if you have the disk space, because every package a template might load is already there.
 
 From the team behind these tools
 
@@ -5023,19 +5090,19 @@ For TinyTeX, run tlmgr path remove and then delete the ~/Library/TinyTeX folder.
 ---
 
 Source: https://purplelink.llc/guides/overleaf-compile-timeout/
-Title: Overleaf compile timeout: fixes, and when to compile locally | Purplelink
+Title: Overleaf compile timeout 2026: fix or go local | Purplelink
 
 ← All guides
 
 How-to
 
-# Overleaf compile timeout: fixes, and when to compile locally
+# Overleaf compile timeout 2026: fix or go local
 
-By Benjamin Ampel · October 5, 2026
+By Benjamin Ampel · October 5, 2026, updated October 13, 2026
 
-Overleaf stops a compile that runs past its limit, which its plan-limits page lists as 10 seconds on the free plan and 240 seconds on premium plans. Most timeouts come from a short list of causes you can fix inside the project. If yours is a heavy project that simply needs more time, a local build has no limit.
+Overleaf stops a compile that runs past its limit, which its plan-limits page lists as 10 seconds on the free plan and 240 seconds (4 minutes) on premium plans. Most timeouts come from a short list of causes you can fix inside the project. If yours is a heavy project that simply needs more time, a local build has no limit.
 
-Disclosure: Purplelink makes ModernTex, a Mac LaTeX editor, and it is mentioned near the end. The fixes below come from Overleaf's own documentation on compile timeouts, and the limits from its plan limits page. Both can change, so check them if a number matters to you.
+Disclosure: Purplelink makes ModernTex, a Mac LaTeX editor, and it is mentioned near the end. The fixes below come from Overleaf's own documentation on compile timeouts, and the limits from its plan limits page. Overleaf's announcement of the change says the 10-second limit applied to all free users from September 8, 2025, after a gradual rollout. I read all three pages on October 13, 2026. Limits can change, so check them if a number matters to you.
 
 ## First, check that it is a timeout and not an error
 
@@ -5085,11 +5152,41 @@ Then read the result:
 
 - It never finishes. Stop it with Ctrl-C and open main.log. A loop, a missing file prompt or a package conflict shows near the end of the log. No time limit would have rescued this one, so a paid plan would not either.
 
+## When staying on Overleaf is fine
+
+A timeout is not a reason to leave by itself. Staying makes sense when:
+
+- The fixes above work. Most projects get under the limit once the hidden errors and slow figures are dealt with, and then nothing else changes.
+
+- Your institution already pays for it. Many universities provide premium plans through a site licence, which brings the 240-second limit. Check before you buy or install anything.
+
+- Several people edit the same document. Local editors do not match live co-editing with comments, so keep the shared draft on Overleaf. See Overleaf alternatives for Mac for what you give up by leaving.
+
+- You do not want to maintain a TeX install. A local setup needs disk space and an update about once a year.
+
+## One timed local compile
+
+To give the local build a concrete number, I generated a test document and compiled it once. It is synthetic, not an Overleaf project: 30 sections of generated filler text, 30 numbered equations and 30 small TikZ drawings, which came to 68 pages. I did not compile it on Overleaf, so this does not show how Overleaf would handle it, and it says nothing about your project.
+
+time latexmk -pdf -interaction=nonstopmode test.tex
+
+One run on October 13, 2026, on a Mac with an Apple M4 chip running macOS 27.2, with pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026) and Latexmk 4.88: 2.9 seconds of wall time from a clean folder. I ran it once and did not average runs or separate a first build from a later one. A real thesis with large images, a bibliography and many packages will take longer, and the only way to know how much is to time your own project as described above.
+
+## An offline workflow, short version
+
+- Download the source from the Overleaf menu and unzip it into a folder you keep.
+
+- Install a TeX distribution. The install guide for MacTeX, BasicTeX and TinyTeX lists the installer sizes (MacTeX 6.4 GB, BasicTeX 134 MB, as TUG listed them in March 2026) and how to add missing packages with tlmgr.
+
+- Pick an editor. The comparison of Mac LaTeX editors covers free and paid options, or just run latexmk from the Terminal.
+
+- If co-authors stay on Overleaf, sync through Git (a premium Overleaf feature) or upload changed files by hand, as the hybrid workflow section describes.
+
 ## Your options when you hit the limit
 
 - Fix the project. Free, and often enough. The checklist above is the whole list.
 
-- Move to a premium plan. Overleaf lists 240 seconds on premium plans, and many universities provide it through a site licence. Check whether yours does before paying.
+- Move to a premium plan. Overleaf lists 240 seconds on premium plans (its own documentation also says very large projects may need a local compile even then), and many universities provide it through a site licence. Check whether yours does before paying.
 
 - Compile locally. No limit and no account. You give up live co-editing for that copy, and you take on a TeX installation.
 
@@ -5103,7 +5200,7 @@ ModernTex is a native Mac editor that compiles on your own machine, so there is 
 
 What is the Overleaf compile timeout?
 
-Overleaf's plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 2026. Limits change, so check that page if the numbers matter for your decision.
+Overleaf's plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 13, 2026. Overleaf's announcement says the 10-second limit applied to all free users from September 8, 2025. Limits change, so check that page if the numbers matter for your decision.
 
 Why does my project compile in Fast [draft] mode but time out normally?
 

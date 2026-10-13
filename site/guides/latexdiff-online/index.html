@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>latexdiff online for a multi-file project | Purplelink</title>
+    <meta name="description" content="How to run latexdiff on a LaTeX project split across several files: latexdiff-vc with git, latexpand, the options that fix common failures, and what our online tool does.">
+    <link rel="canonical" href="https://purplelink.llc/guides/latexdiff-online/">
+    <meta property="og:title" content="latexdiff online for a multi-file LaTeX project">
+    <meta property="og:description" content="How to run latexdiff on a LaTeX project split across several files: latexdiff-vc with git, latexpand, the options that fix common failures, and what our online tool does.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/latexdiff-online/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/tools-launch.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="latexdiff online for a multi-file LaTeX project">
+    <meta name="twitter:description" content="How to run latexdiff on a LaTeX project split across several files: latexdiff-vc with git, latexpand, the options that fix common failures, and what our online tool does.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/tools-launch.png">
+    <meta name="twitter:image:alt" content="latexdiff online for a multi-file LaTeX project">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "latexdiff online for a multi-file project",
+          "description": "How to run latexdiff on a LaTeX project split across several files: latexdiff-vc with git, latexpand, the options that fix common failures, and what our online tool does.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
+          "mainEntityOfPage": "https://purplelink.llc/guides/latexdiff-online/",
+          "datePublished": "2026-10-13",
+          "dateModified": "2026-10-13",
+          "image": "https://purplelink.llc/assets/og/tools-launch.png"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "latexdiff online for a multi-file project", "item": "https://purplelink.llc/guides/latexdiff-online/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=9f5d7ed0ad">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=cfa7188dde" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">latexdiff online for a multi-file project</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-13">October 13, 2026</time></p>
+        <p class="post-lede">A revision usually asks for a marked-up PDF, and a real manuscript is rarely one file. This guide covers the commands for a project with <code>\input</code> and <code>\include</code>, the options that fix the usual failures, and what our online tool does with a project.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Everything below about <code>latexdiff</code>, <code>latexdiff-vc</code> and <code>latexpand</code> comes from their own documentation: the manual embedded in the <a href="https://github.com/ftilmann/latexdiff" rel="noopener">latexdiff source</a> and the help text of <a href="https://gitlab.com/latexpand/latexpand" rel="noopener">latexpand</a>, both read on 2026-10-13. I did not run the commands for this page, because neither program is installed on the machine I wrote it on, so there is no sample output here. Run them on a copy of your project first.</p>
+
+        <h2>Which tool for which job</h2>
+        <ul>
+          <li><strong>latexdiff</strong> compares two versions and produces a PDF where additions and deletions are visible on the page. Use it when an editor or co-author wants to see the changes without opening your source. It is the closest LaTeX has to Word's tracked changes, and the <a href="/guides/latex-track-changes/">guide to showing changes between two LaTeX versions</a> explains what it marks.</li>
+          <li><strong>A version-control history</strong> (git) answers a different question: what changed, when, and who changed it. It is what feeds <code>latexdiff-vc</code> below.</li>
+          <li><strong>Overleaf history</strong> keeps earlier versions of a project inside Overleaf. I have not tested its comparison features for this guide, so check Overleaf's own documentation for what it can show and export before relying on it for a journal submission.</li>
+        </ul>
+
+        <h2>One file</h2>
+        <p>With a single <code>.tex</code> file per version:</p>
+<pre><code>latexdiff old.tex new.tex &gt; diff.tex
+pdflatex diff.tex</code></pre>
+        <p>The manual says the old and new files must be real files, not pipes. It also says the preamble is compared line by line while the body is compared word by word, so a changed preamble shows up as commented lines (<code>%DIF</code>) rather than as marked text.</p>
+
+        <h2>A project with several files</h2>
+        <p>latexdiff compares the text of the two files you give it. If the main file only contains <code>\input{intro}</code>, a comparison of two main files sees an unchanged line. You need the included text in front of latexdiff. There are three ways to get it.</p>
+
+        <h3>Option 1: latexdiff-vc with git</h3>
+        <p>If the project is in a git repository, <code>latexdiff-vc</code> (installed alongside latexdiff) can check out two revisions into a temporary directory, flatten them and compare them. From the documentation:</p>
+<pre><code># working copy against the last commit
+latexdiff-vc --git --flatten -r HEAD main.tex
+
+# two named revisions
+latexdiff-vc --git --flatten -r v1-submitted -r HEAD main.tex</code></pre>
+        <p>Here <code>v1-submitted</code> stands for any tag, branch or commit in your repository. Points from the documentation worth knowing:</p>
+        <ul>
+          <li>Run it from the directory that holds the project. That directory defines the subtree that is checked out.</li>
+          <li>Files that <code>--flatten</code> does not pull in, such as package files and graphics, have to be reachable from the current directory.</li>
+          <li>For BibTeX, the manual recommends keeping the <code>.bbl</code> file under version control. Recent versions also try to run bibtex in the checked-out copies, which only works if the <code>.bib</code> and <code>.bst</code> files are tracked or on bibtex's search path.</li>
+          <li>If you renamed the main file between the two revisions, add <code>--old-file</code> with the old name.</li>
+          <li>The name of the difference file is chosen automatically and printed. <code>--pdf</code> also runs pdflatex on it, and <code>--force</code> overwrites an existing diff file without asking.</li>
+        </ul>
+
+        <h3>Option 2: flatten with latexpand, then compare</h3>
+        <p>If the versions are two folders rather than two commits, flatten each one first. <code>latexpand</code> expands <code>\input</code> and <code>\include</code> and, by default, strips comments.</p>
+<pre><code>latexpand old/main.tex -o old-flat.tex
+latexpand new/main.tex -o new-flat.tex
+latexdiff old-flat.tex new-flat.tex &gt; diff.tex</code></pre>
+        <p>Two options from its help text matter for manuscripts. <code>--keep-comments</code> keeps comment lines, which is the documented workaround for verbatim blocks, because latexpand does not recognise verbatim environments and would strip a <code>%</code> inside one. <code>--expand-bbl FILE</code> inlines a compiled <code>.bbl</code> file; <code>--biber FILE</code> does the same for biblatex with biber. Compile <code>diff.tex</code> in the folder of the new version, or copy that version's figures and class files next to it, so LaTeX can find them.</p>
+
+        <h3>Option 3: let latexdiff flatten</h3>
+        <p>latexdiff has its own flag:</p>
+<pre><code>latexdiff --flatten old/main.tex new/main.tex &gt; diff.tex</code></pre>
+        <p>The manual says this replaces <code>\input</code> and <code>\include</code> in the body with the file contents, recursively, honours <code>\includeonly</code>, and also handles <code>\import</code>, <code>\subimport</code> and <code>\subfile</code>. It assumes included files sit in the same directories as the old and new main files. It also warns that processing time can become prohibitive for larger documents and that the result no longer reflects the structure of your input files. If it is slow on a long thesis, option 1 or 2 is the fallback.</p>
+
+        <h2>Common failures and the options that exist for them</h2>
+        <p>Every option below is listed in the latexdiff manual. Add them to the same command line.</p>
+        <ul>
+          <li><strong>Errors from changed equations.</strong> Try <code>--math-markup=whole</code>, which compares whole equations. If that still fails, <code>--math-markup=off</code> removes equation markup, and deleted equations then do not appear. The default is <code>coarse</code>; <code>fine</code> marks small changes inside equations.</li>
+          <li><strong>Deleted math underlined instead of struck out.</strong> The manual attributes this to the ulem package. It says that loading <code>amsmath</code> makes deleted passages get wrapped in <code>\text</code>; if amsmath comes in through another package, add <code>--packages=amsmath</code>.</li>
+          <li><strong>Overfull boxes around changed citations.</strong> latexdiff wraps changed citations in <code>\mbox</code>. The manual offers <code>-t CFONT</code> (no ulem), <code>--disable-citation-markup</code> (deleted citations are not shown, added ones are shown plain), or <code>--append-mboxsafecmd</code> for custom citation commands.</li>
+          <li><strong>A custom command whose argument is text.</strong> latexdiff compares a command and its arguments as one unit, so a change inside <code>\mynote{...}</code> is marked as the whole command. If the last argument is ordinary text, <code>--append-textcmd="mynote"</code> lets it be compared word by word. The value is a regular expression matched against the whole command name without the backslash, and a comma-separated list needs quotes in the shell.</li>
+          <li><strong>A command that breaks inside the markup.</strong> <code>--exclude-safecmd="cmdname"</code> removes it from the list of commands allowed inside added or deleted text, and <code>--append-safecmd</code> adds one to that list. <code>--exclude-textcmd</code> does the same for the text-command list.</li>
+          <li><strong>Spaces between a command and its braces.</strong> latexdiff assumes arguments directly follow the command. <code>\section {Title}</code> can go wrong; write <code>\section{Title}</code>, or try <code>--allow-spaces</code>, which the manual says may have side effects.</li>
+          <li><strong>Tables and figures.</strong> The manual says a "Misplaced \noalign" error can come from certain table changes, and its stated workaround is <code>--graphics-markup=none</code>. For a passage that still breaks, wrap it in <code>%BEGIN DIFNOMARKUP</code> and <code>%END DIFNOMARKUP</code> comments in the new file and rerun. Markup is suppressed there and the new text is shown.</li>
+          <li><strong>Different look.</strong> <code>--type</code> (short form <code>-t</code>) picks the style. The default is <code>UNDERLINE</code>. Others in the manual include <code>CTRADITIONAL</code> (changes shown as footnotes), <code>CFONT</code>, <code>CCHANGEBAR</code> and <code>PDFCOMMENT</code>.</li>
+        </ul>
+        <p>A moved paragraph is compared as text, so it shows as deleted in one place and added in another. The manual describes no move detection.</p>
+
+        <h2>What our online tool does today</h2>
+        <p>Everything here is taken from the <a href="/tools/latex-diff/">LaTeX diff tool</a> page itself.</p>
+        <ul>
+          <li>You upload an old and a new version. Each can be a single <code>.tex</code> file (up to 5 MB) or a project <code>.zip</code> with <code>main.tex</code> at the root (up to 10 MB).</li>
+          <li>You choose pdfLaTeX or XeLaTeX and can add a legend that explains the colors.</li>
+          <li>The output is a PDF with additions in blue and underlined and deletions in red and struck through.</li>
+          <li>For zip uploads, the page says the new version's assets, such as figures and styles, are used for compilation.</li>
+          <li>Changes inside tables are shown in final form only and are not marked.</li>
+          <li>The page says files are processed in an ephemeral container, discarded immediately and never written to disk.</li>
+        </ul>
+        <p>The tool page does not list any latexdiff options, so you cannot pass <code>--math-markup</code> or <code>--append-textcmd</code> to it, and it does not say how it handles a bibliography. If your project needs those, run latexdiff locally with the commands above. <a href="/guides/install-latex-on-mac/">Install LaTeX on a Mac</a> if you do not have a TeX distribution yet.</p>
+
+        <h2>After the PDF</h2>
+        <p>Check your journal's submission instructions for whether it wants a marked-up PDF. <a href="/blog/producing-a-diff-pdf-for-journal-resubmission/">Producing a diff PDF for journal resubmission</a> covers producing one. To compile the project itself in a browser, see <a href="/guides/compile-latex-project-to-pdf-online/">compile a LaTeX project online</a>, and <a href="/guides/check-response-letter-before-resubmitting/">check your response letter before resubmitting</a> before it goes out.</p>
+      </article>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Try the tool &amp; related guides</h2>
+        <ul>
+          <li><a href="/tools/latex-diff/">Open the LaTeX diff tool</a></li>
+          <li><a href="/guides/latex-track-changes/">Show changes between two LaTeX versions</a></li>
+          <li><a href="/guides/compile-latex-project-to-pdf-online/">Compile a LaTeX project online</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=2eb71ffb05" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

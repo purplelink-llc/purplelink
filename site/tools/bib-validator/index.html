@@ -4,21 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>BibTeX Validator - Detect AI Hallucinations | Purplelink LLC</title>
-    <meta name="description" content="Free online BibTeX validator. Check syntax, dead DOIs, author and year correctness. Download a corrected .bib. Catches AI-hallucinated citations.">
+    <title>BibTeX Validator Online: Required Fields and DOIs</title>
+    <meta name="description" content="Free online BibTeX validator. Checks required fields per entry type. Optional: DOIs resolve, and titles, authors and years match CrossRef.">
     <link rel="canonical" href="https://purplelink.llc/tools/bib-validator/">
-    <meta property="og:title" content="BibTeX Validator - Detect AI Hallucinations">
-    <meta property="og:description" content="Free online BibTeX validator. Check syntax, dead DOIs, author and year correctness. Download a corrected .bib. Catches AI-hallucinated citations.">
+    <meta property="og:title" content="BibTeX Validator Online: Required Fields and DOIs">
+    <meta property="og:description" content="Free online BibTeX validator. Checks required fields per entry type. Optional: DOIs resolve, and titles, authors and years match CrossRef.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/bib-validator/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/bib-validator.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="BibTeX Validator - Detect AI Hallucinations">
-    <meta name="twitter:description" content="Free online BibTeX validator. Check syntax, dead DOIs, author and year correctness. Download a corrected .bib. Catches AI-hallucinated citations.">
+    <meta name="twitter:title" content="BibTeX Validator Online: Required Fields and DOIs">
+    <meta name="twitter:description" content="Free online BibTeX validator. Checks required fields per entry type. Optional: DOIs resolve, and titles, authors and years match CrossRef.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
-    <meta name="twitter:image:alt" content="BibTeX Validator - Detect AI Hallucinations">
+    <meta name="twitter:image:alt" content="BibTeX Validator Online: Required Fields and DOIs">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -31,7 +31,7 @@
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
           "image": "https://purplelink.llc/assets/og/bib-validator.png",
-          "description": "A free online BibTeX validator. Upload or paste a .bib file to check syntax and required fields, verify DOIs resolve, and cross-reference titles, authors, and publication years against CrossRef and Semantic Scholar to catch AI-hallucinated citations. Download a corrected .bib for high-confidence matches.",
+          "description": "A free online BibTeX validator. Upload or paste a .bib file to check required fields for each entry type, and optionally verify DOIs resolve, and cross-reference titles, authors, and publication years against CrossRef and Semantic Scholar to catch AI-hallucinated citations. Download a corrected .bib for high-confidence matches.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Syntax and required-field validation per BibTeX entry type",
@@ -98,7 +98,7 @@
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=cfa7188dde" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
-    <link rel="stylesheet" href="/tools/bib-validator/bib-validator.css?v=e89c950ffa">
+    <link rel="stylesheet" href="/tools/bib-validator/bib-validator.css?v=50cbacd195">
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -193,6 +193,63 @@
           <li>Download the <strong>annotated</strong> <code>.bib</code> (your file with status comments) or the <strong>corrected</strong> <code>.bib</code> (entries rewritten from CrossRef metadata where confidence is high).</li>
         </ol>
         <p>If the table lists errors you do not recognize, the guide shows how to <a href="/guides/fix-bibtex-errors/">fix the errors the validator finds</a>, with a before and after for each of the eight most common.</p>
+      </section>
+
+      <section class="tool-howto bib-demo" id="see-it-catch-faults">
+        <h2>See it catch real faults</h2>
+        <p>This is a small <code>.bib</code> file with common faults added on purpose. The output below is what the validator's own code returned for it, with only the always-on syntax and required-field check enabled.</p>
+        <h3>Input</h3>
+        <pre class="bib-demo-code"><code>@article{ampel2023trust,
+  author  = {Ampel, Benjamin and Doe, Jane},
+  title   = {Trust in automated review tools},
+  journal = {Journal of Examples},
+  year    = {2023},
+}
+
+@article{smith2021missing,
+  author  = {Smith, Alex},
+  title   = {A study with no journal},
+  year    = {2021},
+}
+
+@inproceedings{lee2022noyear,
+  author    = {Lee, Sam},
+  title     = {A conference paper with no year},
+  booktitle = {Proceedings of the Example Conference},
+}
+
+@book{ng2020book,
+  author = {Ng, Priya},
+  title  = {A book with no publisher},
+  year   = {2020},
+}
+
+@article{ampel2023trust,
+  author  = {Ampel, Benjamin},
+  title   = {A second paper that reuses the first key},
+  journal = {Journal of Examples},
+  year    = {2024},
+}
+
+@article{brown2019brace,
+  author  = {Brown, Kim},
+  title   = {An entry with an unclosed brace,
+  journal = {Journal of Examples},
+  year    = {2019},
+}</code></pre>
+        <h3>Output</h3>
+        <p>Summary: 2 OK, 0 warnings, 3 errors, 5 entries total. The annotated <code>.bib</code> puts one comment line above each entry:</p>
+        <pre class="bib-demo-code"><code>% [bib-validator] OK | fields OK
+% [bib-validator] ERROR | MISSING: journal
+% [bib-validator] ERROR | MISSING: year
+% [bib-validator] ERROR | MISSING: publisher
+% [bib-validator] OK | fields OK</code></pre>
+        <h3>What it did not report</h3>
+        <ul>
+          <li>The file has six entries and the table lists five. The last entry, with the unclosed brace in its title, is skipped by the parser and gets no message.</li>
+          <li>The second <code>ampel2023trust</code> entry reuses the first entry's key. The validator does not check for duplicate keys, so it is marked OK.</li>
+        </ul>
+        <p>Check those two by hand, or with your LaTeX build log. The guide on how to <a href="/guides/fix-bibtex-errors/">fix common BibTeX errors</a> covers both. If your entries are missing fields because they were typed by hand, <a href="/guides/build-bibtex-from-dois/">build BibTeX from DOIs</a> instead.</p>
       </section>
 
       <section class="tool-faq">

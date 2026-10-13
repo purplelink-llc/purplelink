@@ -4,19 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Overleaf compile timeout: fixes, and when to compile locally | Purplelink</title>
-    <meta name="description" content="Why Overleaf says Timed out, a checklist of fixes taken from Overleaf&#x27;s own documentation, and how to tell whether the project needs a local compile with no time limit.">
+    <title>Overleaf compile timeout 2026: fix or go local | Purplelink</title>
+    <meta name="description" content="Overleaf&#x27;s free plan stops a compile at 10 seconds. Fixes to try in order, when staying is fine, and one timed local compile on a Mac.">
     <link rel="canonical" href="https://purplelink.llc/guides/overleaf-compile-timeout/">
-    <meta property="og:title" content="Overleaf compile timeout: fixes, and when to compile locally">
-    <meta property="og:description" content="The limits by plan, the fixes worth trying in order, and how to time the same project on your own computer.">
+    <meta property="og:title" content="Overleaf compile timeout 2026: fix or go local">
+    <meta property="og:description" content="The 2026 limits by plan, the fixes worth trying in order, when staying on Overleaf is fine, and one timed local compile.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/overleaf-compile-timeout/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/overleaf-compile-timeout.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Overleaf compile timeout: fixes, and when to compile locally">
-    <meta name="twitter:description" content="The limits by plan, the fixes worth trying in order, and how to time the same project on your own computer.">
+    <meta name="twitter:title" content="Overleaf compile timeout 2026: fix or go local">
+    <meta name="twitter:description" content="The 2026 limits by plan, the fixes worth trying in order, when staying on Overleaf is fine, and one timed local compile.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/overleaf-compile-timeout.png">
     <meta name="twitter:image:alt" content="Overleaf compile timeout guide">
     <script type="application/ld+json">
@@ -25,12 +25,12 @@
       "@graph": [
         {
           "@type": "Article",
-          "headline": "Overleaf compile timeout: fixes, and when to compile locally",
-          "description": "Why Overleaf says Timed out, a checklist of fixes taken from Overleaf's own documentation, and how to tell whether the project needs a local compile with no time limit.",
+          "headline": "Overleaf compile timeout 2026: fix or go local",
+          "description": "Overleaf's free plan stops a compile at 10 seconds. Fixes to try in order, when staying is fine, and one timed local compile on a Mac.",
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-10-05",
-          "dateModified": "2026-10-05",
+          "dateModified": "2026-10-13",
           "image": "https://purplelink.llc/assets/og/overleaf-compile-timeout.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/overleaf-compile-timeout/"
         },
@@ -59,7 +59,7 @@
       "name": "What is the Overleaf compile timeout?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Overleaf's plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 2026. Limits change, so check that page if the numbers matter for your decision."
+        "text": "Overleaf's plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 13, 2026. Overleaf's announcement says the 10-second limit applied to all free users from September 8, 2025. Limits change, so check that page if the numbers matter for your decision."
       }
     },
     {
@@ -125,13 +125,13 @@
       <a class="back-link" href="/guides/">← All guides</a>
       <div class="post-hero">
         <p class="post-date">How-to</p>
-        <h1 class="post-title">Overleaf compile timeout: fixes, and when to compile locally</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-05">October 5, 2026</time></p>
-        <p class="post-lede">Overleaf stops a compile that runs past its limit, which its plan-limits page lists as 10 seconds on the free plan and 240 seconds on premium plans. Most timeouts come from a short list of causes you can fix inside the project. If yours is a heavy project that simply needs more time, a local build has no limit.</p>
+        <h1 class="post-title">Overleaf compile timeout 2026: fix or go local</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-05">October 5, 2026</time>, updated <time datetime="2026-10-13">October 13, 2026</time></p>
+        <p class="post-lede">Overleaf stops a compile that runs past its limit, which its plan-limits page lists as 10 seconds on the free plan and 240 seconds (4 minutes) on premium plans. Most timeouts come from a short list of causes you can fix inside the project. If yours is a heavy project that simply needs more time, a local build has no limit.</p>
       </div>
 
       <article class="post-body">
-        <p><strong>Disclosure:</strong> Purplelink makes ModernTex, a Mac LaTeX editor, and it is mentioned near the end. The fixes below come from <a href="https://docs.overleaf.com/troubleshooting-and-support/fixing-and-preventing-compile-timeouts" rel="noopener">Overleaf's own documentation on compile timeouts</a>, and the limits from its <a href="https://docs.overleaf.com/getting-started/free-and-premium-plans/plan-limits" rel="noopener">plan limits page</a>. Both can change, so check them if a number matters to you.</p>
+        <p><strong>Disclosure:</strong> Purplelink makes ModernTex, a Mac LaTeX editor, and it is mentioned near the end. The fixes below come from <a href="https://docs.overleaf.com/troubleshooting-and-support/fixing-and-preventing-compile-timeouts" rel="noopener">Overleaf's own documentation on compile timeouts</a>, and the limits from its <a href="https://docs.overleaf.com/getting-started/free-and-premium-plans/plan-limits" rel="noopener">plan limits page</a>. Overleaf's <a href="https://www.overleaf.com/blog/changes-to-free-compile-timeout" rel="noopener">announcement of the change</a> says the 10-second limit applied to all free users from September 8, 2025, after a gradual rollout. I read all three pages on October 13, 2026. Limits can change, so check them if a number matters to you.</p>
 
         <h2>First, check that it is a timeout and not an error</h2>
         <p>A "Timed out" message does not always mean the project is too big. A fatal error can leave LaTeX waiting for input or looping until the clock runs out, and then Overleaf reports a timeout instead of the error.</p>
@@ -166,10 +166,32 @@
           <li><strong>It never finishes.</strong> Stop it with Ctrl-C and open <code>main.log</code>. A loop, a missing file prompt or a package conflict shows near the end of the log. No time limit would have rescued this one, so a paid plan would not either.</li>
         </ul>
 
+        <h2>When staying on Overleaf is fine</h2>
+        <p>A timeout is not a reason to leave by itself. Staying makes sense when:</p>
+        <ul>
+          <li><strong>The fixes above work.</strong> Most projects get under the limit once the hidden errors and slow figures are dealt with, and then nothing else changes.</li>
+          <li><strong>Your institution already pays for it.</strong> Many universities provide premium plans through a site licence, which brings the 240-second limit. Check before you buy or install anything.</li>
+          <li><strong>Several people edit the same document.</strong> Local editors do not match live co-editing with comments, so keep the shared draft on Overleaf. See <a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a> for what you give up by leaving.</li>
+          <li><strong>You do not want to maintain a TeX install.</strong> A local setup needs disk space and an update about once a year.</li>
+        </ul>
+
+        <h2>One timed local compile</h2>
+        <p>To give the local build a concrete number, I generated a test document and compiled it once. It is synthetic, not an Overleaf project: 30 sections of generated filler text, 30 numbered equations and 30 small TikZ drawings, which came to 68 pages. I did not compile it on Overleaf, so this does not show how Overleaf would handle it, and it says nothing about your project.</p>
+        <pre><code>time latexmk -pdf -interaction=nonstopmode test.tex</code></pre>
+        <p>One run on October 13, 2026, on a Mac with an Apple M4 chip running macOS 27.2, with pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026) and Latexmk 4.88: 2.9 seconds of wall time from a clean folder. I ran it once and did not average runs or separate a first build from a later one. A real thesis with large images, a bibliography and many packages will take longer, and the only way to know how much is to time your own project as described above.</p>
+
+        <h2>An offline workflow, short version</h2>
+        <ol>
+          <li>Download the source from the Overleaf menu and unzip it into a folder you keep.</li>
+          <li>Install a TeX distribution. The <a href="/guides/install-latex-on-mac/">install guide for MacTeX, BasicTeX and TinyTeX</a> lists the installer sizes (MacTeX 6.4 GB, BasicTeX 134 MB, as TUG listed them in March 2026) and how to add missing packages with <code>tlmgr</code>.</li>
+          <li>Pick an editor. The <a href="/guides/best-mac-latex-editors/">comparison of Mac LaTeX editors</a> covers free and paid options, or just run <code>latexmk</code> from the Terminal.</li>
+          <li>If co-authors stay on Overleaf, sync through Git (a premium Overleaf feature) or upload changed files by hand, as the <a href="/guides/overleaf-alternative-mac/#hybrid">hybrid workflow section</a> describes.</li>
+        </ol>
+
         <h2>Your options when you hit the limit</h2>
         <ul>
           <li><strong>Fix the project.</strong> Free, and often enough. The checklist above is the whole list.</li>
-          <li><strong>Move to a premium plan.</strong> Overleaf lists 240 seconds on premium plans, and many universities provide it through a site licence. Check whether yours does before paying.</li>
+          <li><strong>Move to a premium plan.</strong> Overleaf lists 240 seconds on premium plans (its own documentation also says very large projects may need a local compile even then), and many universities provide it through a site licence. Check whether yours does before paying.</li>
           <li><strong>Compile locally.</strong> No limit and no account. You give up live co-editing for that copy, and you take on a TeX installation.</li>
           <li><strong>Do both.</strong> Keep the shared draft on Overleaf for co-authors and build the heavy version on your own machine. The guide to <a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a> covers moving a project over and syncing with Git.</li>
         </ul>
@@ -181,7 +203,7 @@
 
       <section class="tool-faq">
         <h2>Frequently asked questions</h2>
-        <details><summary>What is the Overleaf compile timeout?</summary><div class="faq-body">Overleaf&#x27;s plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 2026. Limits change, so check that page if the numbers matter for your decision.</div></details>
+        <details><summary>What is the Overleaf compile timeout?</summary><div class="faq-body">Overleaf&#x27;s plan-limits page lists 10 seconds on the free plan and 240 seconds on its premium plans, as of October 13, 2026. Overleaf&#x27;s announcement says the 10-second limit applied to all free users from September 8, 2025. Limits change, so check that page if the numbers matter for your decision.</div></details>
           <details><summary>Why does my project compile in Fast [draft] mode but time out normally?</summary><div class="faq-body">Draft mode skips rendering images, so a project that compiles in draft mode and times out otherwise is spending its time on images. Convert diagrams and plots to PDF, keep JPEG for photographs, and avoid EPS and SVG, as Overleaf&#x27;s documentation recommends.</div></details>
           <details><summary>Is there a time limit when I compile LaTeX on my own computer?</summary><div class="faq-body">No. A local build runs until it finishes. The catch is that a document stuck in a loop never finishes either, so run it once with a timer and stop it with Ctrl-C if it passes a few minutes. The last lines of the .log file usually show where it stalled.</div></details>
           <details><summary>Will upgrading to a paid Overleaf plan fix a timeout?</summary><div class="faq-body">If the project needs 30 seconds to build and you are on the free plan, yes. If a fatal error or a loop is behind the timeout, a longer limit only makes you wait longer for the same failure. Run Stop on first error before paying.</div></details>
