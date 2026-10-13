@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>How to delete a Mac app and the files it leaves behind | Purplelink</title>
+    <meta name="description" content="Dragging a Mac app to the Trash leaves its preferences, caches and support folders behind. How to find them by bundle ID, which are safe to remove, and which free tools help.">
+    <link rel="canonical" href="https://purplelink.llc/guides/delete-mac-app-and-leftover-files/">
+    <meta property="og:title" content="How to delete a Mac app and the files it leaves behind">
+    <meta property="og:description" content="Dragging a Mac app to the Trash leaves its preferences, caches and support folders behind. How to find them by bundle ID, which are safe to remove, and which free tools help.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/delete-mac-app-and-leftover-files/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/products.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to delete a Mac app and the files it leaves behind">
+    <meta name="twitter:description" content="Dragging a Mac app to the Trash leaves its preferences, caches and support folders behind. How to find them by bundle ID, which are safe to remove, and which free tools help.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/products.png">
+    <meta name="twitter:image:alt" content="Deleting a Mac app and its leftover files">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "How to delete a Mac app and the files it leaves behind",
+          "description": "Dragging a Mac app to the Trash leaves its preferences, caches and support folders behind. How to find them by bundle ID, which are safe to remove, and which free tools help.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-10-13",
+          "dateModified": "2026-10-13",
+          "image": "https://purplelink.llc/assets/og/products.png",
+          "mainEntityOfPage": "https://purplelink.llc/guides/delete-mac-app-and-leftover-files/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "How to delete a Mac app and its leftover files", "item": "https://purplelink.llc/guides/delete-mac-app-and-leftover-files/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "If I drag an app to the Trash, is it really gone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The app is. Its saved data usually is not. Preferences, caches and a support folder stay in your Library until you remove them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it safe to delete the leftover folders?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mostly, for an app you no longer use. The risk is data you want: a database in Application Support, or documents in a Container. Look inside first, and move things to the Trash instead of deleting them, so you can put them back."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does leftover data slow my Mac down?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, it only takes space. Most apps leave a few megabytes. A few leave far more, which is why some people find tens of gigabytes after years of trying apps."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will removing leftovers fix System Data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It can shrink it by the orphaned app data it holds, but System Data also holds Time Machine snapshots, device backups and system files. The guide on why System Data is so big on a Mac lists each cause."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why not just use a cleaner app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can. Whichever you choose, look at what it plans to remove before it removes it, and prefer one that moves things to the Trash instead of deleting them outright."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=9f5d7ed0ad">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=cfa7188dde" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">How to delete a Mac app and the files it leaves behind</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-13">October 13, 2026</time></p>
+        <p class="post-lede">Moving an app to the Trash removes the app, not what it saved to your Library. Most of what stays is a few megabytes of preferences and caches, but a support folder can hold real data, so look before you delete.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes one app mentioned here, <a href="/legroom/">Legroom</a>, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is young, and I say where free tools do the same job. I ran the Terminal command in step 1 and looked at the Library folders named here on my own Mac on October 13, 2026 (macOS 27.2). Everything else comes from Apple's page and each tool's own description, and where I could not confirm something I say so.</p>
+
+        <h2>The short answer</h2>
+        <p>Apple's page on deleting apps says to run an app's own uninstaller if it has one, because that is the best way to remove login items, extensions and other data the app stored elsewhere (<a href="https://support.apple.com/en-us/ht202235" rel="noopener">Apple: Delete or uninstall apps on Mac</a>). When an app has no uninstaller, what usually stays is small: preferences, caches, saved state and a support folder. A few apps keep gigabytes. You can find and remove it by hand in about five minutes.</p>
+
+        <h2 id="steps">Steps</h2>
+        <ol>
+          <li><strong>Find the app's bundle identifier before you delete it, if you can.</strong> Leftover files are named after it, not after the app. In Terminal: <code>mdls -name kMDItemCFBundleIdentifier /Applications/Example.app</code>. It prints something like <code>com.example.app</code>; on my Mac it returned <code>llc.purplelink.panely</code> for Panely. If the app is already in the Trash, run the same command on its path there.</li>
+          <li><strong>Delete the app.</strong> In Finder, select it in Applications and press Command-Delete, or drag it to the Trash. Apple notes the Trash does not free space until you empty it (Finder, Empty Trash).</li>
+          <li><strong>Open your Library folder.</strong> In Finder, hold the Option key and choose Library from the Go menu.</li>
+          <li><strong>Look in these folders for that identifier or the app's name:</strong> Application Support, Caches, Preferences, Containers, Group Containers, Saved Application State, Logs, HTTPStorages, WebKit, Cookies and LaunchAgents. Not every folder exists on every Mac: on mine, Saved Application State was absent when I looked.</li>
+          <li><strong>Judge each match before you remove it.</strong> The table below says which are safe.</li>
+          <li><strong>Move the matches to the Trash rather than deleting them outright.</strong> If nothing you miss turns up in a day or two, empty the Trash.</li>
+          <li><strong>Check for system-level leftovers.</strong> Some apps install helpers in <code>/Library</code>, the one at the top of the disk rather than in your home folder. Those need an administrator password. Look at them in Finder and do not delete anything there that you cannot identify.</li>
+        </ol>
+
+        <h2 id="which">Which leftovers are safe to remove</h2>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th class="u-th" scope="col">Folder in your Library</th><th class="u-th" scope="col">What it holds</th><th class="u-th" scope="col">Safe to remove?</th></tr></thead>
+            <tbody>
+              <tr><td class="u-cell"><code>Preferences</code></td><td class="u-cell">The app's settings, in a file named after its identifier</td><td class="u-cell">Yes, for an app you are done with.</td></tr>
+              <tr><td class="u-cell"><code>Caches</code>, <code>HTTPStorages</code>, <code>WebKit</code>, <code>Logs</code></td><td class="u-cell">Temporary data the app rebuilds</td><td class="u-cell">Yes, for an app you are done with.</td></tr>
+              <tr><td class="u-cell"><code>Application Support</code></td><td class="u-cell">The app's real data: databases, downloads, sometimes a license</td><td class="u-cell">Only if you will never reopen the app, or you have exported what you need. Look inside first.</td></tr>
+              <tr><td class="u-cell"><code>Containers</code></td><td class="u-cell">Everything a sandboxed app keeps, documents included</td><td class="u-cell">Look inside before deleting. It can hold your own files.</td></tr>
+              <tr><td class="u-cell"><code>Group Containers</code></td><td class="u-cell">Data shared between apps from one developer</td><td class="u-cell">Leave it while any other app from that developer is installed.</td></tr>
+              <tr><td class="u-cell"><code>LaunchAgents</code></td><td class="u-cell">A background helper that starts at login</td><td class="u-cell">Removing its file stops it starting. Only for an app you removed.</td></tr>
+              <tr><td class="u-cell"><code>Saved Application State</code>, <code>Cookies</code></td><td class="u-cell">Window positions and browser cookies for the app</td><td class="u-cell">Yes, for an app you are done with.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>What to leave alone</h2>
+        <p>Apple apps and anything in system folders. Anything inside Group Containers whose name you do not recognise. Folders that hold a photo, music or video library, a backup, or an item that exists only in iCloud. Anything that changed in the last few minutes, because the app may still be running.</p>
+
+        <h2>Why this happens</h2>
+        <p>A Mac app is a folder you can drag anywhere, and macOS does not keep a list of what an app wrote to your Library while it ran. Dragging the app to the Trash loses nothing, and cleans up nothing either.</p>
+
+        <h2 id="tools">Tools that do this for you</h2>
+        <p>From each tool's own description or a current review, read October 13, 2026. I did not test any of them for this guide.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th class="u-th" scope="col">Tool</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">What it does</th><th class="u-th" scope="col">Worth knowing</th></tr></thead>
+            <tbody>
+              <tr><td class="u-cell"><a href="https://github.com/alienator88/Pearcleaner" rel="noopener">Pearcleaner</a></td><td class="u-cell">Free</td><td class="u-cell">Finds leftovers for an app you drop on it, searches for leftovers of apps already deleted, and can watch the Trash</td><td class="u-cell">Source-available under Apache 2.0 with the Commons Clause, which bars selling it, so not open source in the strict sense. Review what it finds before deleting. Third-party sources list macOS 13 or later; I could not confirm that on the project's page.</td></tr>
+              <tr><td class="u-cell"><a href="https://freemacsoft.net/appcleaner/" rel="noopener">AppCleaner</a></td><td class="u-cell">Free</td><td class="u-cell">Drop an app on it and it lists the related files</td><td class="u-cell">Long established. I could not read the developer's page, so I am not stating a minimum macOS version. Not the same product as Nektony's paid App Cleaner and Uninstaller.</td></tr>
+              <tr><td class="u-cell"><a href="https://github.com/tw93/Mole" rel="noopener">Mole</a></td><td class="u-cell">Free command-line tool (GPL-3.0); a separate Mac app has its own price</td><td class="u-cell"><code>mo uninstall</code> removes an app with related files, keeps data shared with other installed copies, and supports <code>--dry-run</code></td><td class="u-cell">Terminal only. Runs on macOS 12 or newer.</td></tr>
+              <tr><td class="u-cell"><a href="/legroom/">Legroom</a> (mine)</td><td class="u-cell">Free 7-day trial, then $9.99 once</td><td class="u-cell">Its Uninstaller reads the app's bundle identifier, lists matches from a fixed set of Library folders with sizes, ticks the ones whose names match exactly, and moves them to the Trash only after you confirm</td><td class="u-cell">Young. It does not offer Apple apps or system folders, and it lists leftovers in the system Library with a command for you to run yourself. I have not yet watched it move real files on my own Mac, only the preview and confirm steps.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Frequently asked</h2>
+        <h3>If I drag an app to the Trash, is it really gone?</h3>
+        <p>The app is. Its saved data usually is not. Preferences, caches and a support folder stay in your Library until you remove them.</p>
+        <h3>Is it safe to delete the leftover folders?</h3>
+        <p>Mostly, for an app you no longer use. The risk is data you want: a database in Application Support, or documents in a Container. Look inside first, and move things to the Trash instead of deleting them, so you can put them back.</p>
+        <h3>Does leftover data slow my Mac down?</h3>
+        <p>No, it only takes space. Most apps leave a few megabytes. A few leave far more, which is why some people find tens of gigabytes after years of trying apps.</p>
+        <h3>Will removing leftovers fix System Data?</h3>
+        <p>It can shrink it by the orphaned app data it holds, but System Data also holds Time Machine snapshots, device backups and system files. The guide on why System Data is so big on a Mac lists each cause. See <a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac?</a></p>
+        <h3>Why not just use a cleaner app?</h3>
+        <p>You can. Whichever you choose, look at what it plans to remove before it removes it, and prefer one that moves things to the Trash instead of deleting them outright.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac?</a>: what fills the category and which causes are safe to remove.</li>
+          <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer and cleaner for Mac (2026)</a>: folder maps and cleaners compared.</li>
+          <li><a href="/legroom/">Legroom</a>, <a href="/products/">all products</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=2eb71ffb05" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
