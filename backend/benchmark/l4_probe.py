@@ -30,7 +30,7 @@ IMAGE = (
     .apt_install("ghostscript")
     .pip_install("fastapi[standard]==0.115.2", "python-docx==1.1.2", "lxml==5.3.0", "bibtexparser>=1.3,<2",
                  "httpx==0.27.2", "markitdown[pdf,docx,pptx,xlsx]==0.1.6", "pdfplumber>=0.11,<1",
-                 "pdf2image>=1.17,<2", "pillow>=10,<12", "pypdf>=4.3,<6")
+                 "pdf2image>=1.17,<2", "pillow>=12.3,<13", "pypdf>=6.19,<7")
     .add_local_file(os.path.join(os.path.dirname(HERE), "texmf.cnf"), "/etc/texmf/texmf.d/99-hardening.cnf", copy=True)
     .run_commands("update-texmf")
     .add_local_python_source("latextools")

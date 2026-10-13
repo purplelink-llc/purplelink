@@ -40,7 +40,7 @@ import modal  # noqa: E402
 # production secret. Both are defined unconditionally so the container sees the same objects.
 IMAGE = (
     modal.Image.debian_slim(python_version="3.11")
-    .pip_install("httpx==0.27.2", "pdfplumber>=0.11,<1", "pdf2image>=1.17,<2", "pillow>=10,<12", "pypdf>=4.3,<6")
+    .pip_install("httpx==0.27.2", "pdfplumber>=0.11,<1", "pdf2image>=1.17,<2", "pillow>=12.3,<13", "pypdf>=6.19,<7")
     .add_local_python_source("latextools")
 )
 # The key is passed at launch (BENCH_ANTHROPIC_KEY) and travels as an inline secret: nothing is stored in Modal

@@ -30,15 +30,15 @@ image = (
     .pip_install(
         "fastapi[standard]==0.115.2",
         "python-docx==1.1.2",
-        "lxml==5.3.0",
+        "lxml>=6.1.0,<7",
         "bibtexparser>=1.3,<2",
         "httpx==0.27.2",
         "markitdown[pdf,docx,pptx,xlsx]==0.1.6",
         # Paper Review (paid) tool deps
         "pdfplumber>=0.11,<1",
         "pdf2image>=1.17,<2",
-        "pillow>=10,<12",
-        "pypdf>=4.3,<6",   # PDF annotation rendering
+        "pillow>=12.3,<13",
+        "pypdf>=6.19,<7",   # PDF annotation rendering
     )
     # Append paranoid hardening to the texmf config via the Debian texmf.d
     # mechanism, then verify it took effect at build time (fail the build if not).
