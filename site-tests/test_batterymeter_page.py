@@ -13,7 +13,7 @@ from pathlib import Path
 from common import SITE, ORIGIN, EMOJI, page_of, canonical, jsonld_blocks, walk, meta
 
 URL = "/batterymeter/"
-ZIP = SITE / "batterymeter" / "BatteryMeter-1.2.0.zip"
+ZIP = SITE / "batterymeter" / "BatteryMeter-1.2.1.zip"
 APPCAST = SITE / "batterymeter" / "appcast.xml"
 SPARKLE = "{http://www.andymatuschak.org/xml-namespaces/sparkle}"
 
@@ -51,10 +51,10 @@ class BatteryMeterPage(unittest.TestCase):
         self.assertEqual(float(app["offers"]["price"]), 0)
         self.assertEqual(app["offers"]["priceCurrency"], "USD")
         self.assertEqual(app["applicationCategory"], "UtilitiesApplication")
-        self.assertEqual(app["softwareVersion"], "1.2.0")
+        self.assertEqual(app["softwareVersion"], "1.2.1")
         self.assertEqual(app["operatingSystem"], "macOS 13.0 or later")
         self.assertEqual(app["fileSize"], "%d bytes" % ZIP.stat().st_size)
-        self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.2.0.zip")
+        self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.2.1.zip")
         types = {d.get("@type") for d in self.nodes}
         self.assertIn("BreadcrumbList", types)
         self.assertIn("FAQPage", types)
@@ -77,7 +77,7 @@ class BatteryMeterPage(unittest.TestCase):
                 self.assertTrue((SITE / h.lstrip("/")).exists() or "/media/" in h, h)
 
     def test_download_link_and_tracking(self):
-        links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.2\.0\.zip"[^>]*>', self.text)
+        links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.2\.1\.zip"[^>]*>', self.text)
         self.assertGreaterEqual(len(links), 2)
         for tag in links:
             self.assertIn('data-track="download"', tag)
@@ -155,6 +155,7 @@ class BatteryMeterPage(unittest.TestCase):
         upd = answers["How does it update?"]
         for s in ("once a day", "asks before it installs", "signed", "1.1.0 or earlier", "by hand", "changelog"):
             self.assertIn(s, upd)
+        self.assertIn("download 1.2.1 from this page", upd)
         self.assertIn('href="/changelog/"', self.text)
         for rel in ("privacy/index.html", "products/index.html",
                     "guides/check-mac-battery-health-voltage-and-cycle-count/index.html"):
@@ -167,11 +168,32 @@ class BatteryMeterPage(unittest.TestCase):
         self.assertNotIn("no network connection", section)
         self.assertIn("appcast.xml", section)
 
+    def test_update_check_toggle_stated_everywhere(self):
+        sentence = ("A menu item, Check for updates automatically, turns the daily check off. "
+                    "With it off, the app makes no network request until you choose Check for updates.")
+        faq = [d for d in self.nodes if d.get("@type") == "FAQPage"][0]
+        answers = {q["name"]: q["acceptedAnswer"]["text"] for q in faq["mainEntity"]}
+        self.assertIn(sentence, answers["Does it send anything?"])
+        self.assertIn(sentence, text_of(self.text))
+        self.assertIn(sentence, (SITE / "privacy" / "index.html").read_text(encoding="utf-8"))
+        llms = (SITE / "llms.txt").read_text(encoding="utf-8")
+        self.assertIn(sentence.replace("Check for updates.", "Check for updates."), llms)
+        pages = [self.text, (SITE / "privacy" / "index.html").read_text(encoding="utf-8"), llms,
+                 (SITE / "llms-full.txt").read_text(encoding="utf-8"),
+                 (SITE / "products" / "index.html").read_text(encoding="utf-8"),
+                 (SITE / "guides" / "check-mac-battery-health-voltage-and-cycle-count" / "index.html").read_text(encoding="utf-8")]
+        for s in pages:
+            self.assertNotRegex(s, r"(?i)no setting to turn the (daily )?check off")
+            self.assertNotRegex(s, r"(?i)has no setting to turn")
+        log = (SITE / "changelog" / "index.html").read_text(encoding="utf-8")
+        self.assertIn("<h2>BatteryMeter 1.2.1</h2>", log)
+        self.assertLess(log.index("BatteryMeter 1.2.1"), log.index("BatteryMeter 1.2.0"))
+
     def test_download_line_matches_zip(self):
         data = ZIP.read_bytes()
         self.assertIn(hashlib.sha256(data).hexdigest(), self.text)
         self.assertIn("{:,} bytes".format(len(data)), self.text)
-        self.assertIn("Version 1.2.0, released October 13, 2026", self.text)
+        self.assertIn("Version 1.2.1, released October 13, 2026", self.text)
         self.assertNotIn("404 KB", self.text)
         self.assertNotIn("464,618", self.text)
 
