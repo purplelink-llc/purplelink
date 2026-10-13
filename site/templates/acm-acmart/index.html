@@ -100,11 +100,11 @@
         <p class="post-date">LaTeX template</p>
         <h1 class="post-title">ACM paper template (acmart)</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time></p>
-        <p class="post-lede">For an ACM conference or journal, use the acmart class: <code>\documentclass[sigconf]{acmart}</code> for conference proceedings or <code>[acmsmall]</code> for most ACM journals, and add <code>review,anonymous</code> for a double-blind submission.</p>
+        <p class="post-lede">For an ACM conference or journal, use the acmart class. Use <code>\documentclass[sigconf]{acmart}</code> for conference proceedings or <code>[acmsmall]</code> for most ACM journals, and add <code>review,anonymous</code> for a double-blind submission.</p>
       </div>
 
       <article class="post-body">
-        <p>acmart is ACM's single class for all of its publications. It is maintained by Boris Veytsman and distributed on CTAN as the <a href="https://ctan.org/pkg/acmart" rel="noopener">acmart package</a>, which also carries the <code>ACM-Reference-Format</code> bibliography style. New versions come out several times a year, so if a call says to use the latest one, update your TeX distribution or take the class from CTAN.</p>
+        <p>acmart is ACM's single class for all of its publications. It is maintained by Boris Veytsman and distributed on CTAN as the <a href="https://ctan.org/pkg/acmart" rel="noopener">acmart package</a>, which also carries the <code>ACM-Reference-Format</code> bibliography style. New versions come out several times a year. If a call says to use the latest one, update your TeX distribution or take the class from CTAN.</p>
 
         <h2>Minimal skeleton</h2>
         <p>Save your references as <code>references.bib</code> in the same folder. This compiles with pdfLaTeX followed by BibTeX. The class loads its own fonts and hyperref, so you do not need to.</p>
@@ -163,13 +163,13 @@ Funding and thanks go here. The anonymous option hides this block.
         <h2>Key options</h2>
         <ul>
           <li><code>sigconf</code>: the two-column format for most ACM conference proceedings.</li>
-          <li><code>acmsmall</code>: the single-column format for most ACM journals, including conferences that publish in a PACM journal. Other formats exist for particular venues, such as <code>sigplan</code> and <code>acmtog</code>; with no format option you get <code>manuscript</code>, a single-column draft.</li>
+          <li><code>acmsmall</code>: the single-column format for most ACM journals, including conferences that publish in a PACM journal. Other formats exist for particular venues, such as <code>sigplan</code> and <code>acmtog</code>. With no format option you get <code>manuscript</code>, a single-column draft.</li>
           <li><code>review</code>: adds line numbers and page numbers for reviewers.</li>
-          <li><code>anonymous</code>: hides the author names, affiliations and emails, leaves the author out of the PDF metadata, suppresses the <code>acks</code> environment, and prints the ID set with <code>\acmSubmissionID</code>.</li>
+          <li><code>anonymous</code>: hides the author names, affiliations and emails, and leaves the author out of the PDF metadata. It also suppresses the <code>acks</code> environment and prints the ID set with <code>\acmSubmissionID</code>.</li>
           <li><code>nonacm</code>: removes ACM-specific material such as the reference-format block and the copyright box, for a preprint or a document that is not an ACM publication.</li>
           <li><code>screen</code>: colored links, for a version meant to be read on screen.</li>
           <li><code>\citestyle{acmauthoryear}</code>: switches from the default numeric citations to author-year, for venues that ask for it.</li>
-          <li><code>\setcopyright</code>, <code>\acmConference</code>, <code>\acmDOI</code>, <code>\acmISBN</code>: rights and publication details. At submission you can leave them out and the class prints placeholder text; after acceptance, ACM's rights form gives you the exact lines to paste in.</li>
+          <li><code>\setcopyright</code>, <code>\acmConference</code>, <code>\acmDOI</code>, <code>\acmISBN</code>: rights and publication details. At submission you can leave them out and the class prints placeholder text. After acceptance, ACM's rights form gives you the exact lines to paste in.</li>
         </ul>
 
         <h2>Common submission pitfalls</h2>
@@ -177,15 +177,15 @@ Funding and thanks go here. The anonymous option hides this block.
           <li><strong>Front matter order.</strong> The <code>abstract</code> environment, <code>\ccsdesc</code> and <code>\keywords</code> must come before <code>\maketitle</code>. An abstract placed after it stops the build with the error "Abstract must be defined before maketitle command".</li>
           <li><strong>Missing country.</strong> Current acmart requires <code>\country</code> in every <code>\affiliation</code>, and a missing one is an error. In anonymous mode it can go unnoticed until you turn anonymous off for the camera-ready version.</li>
           <li><strong>Anonymization beyond the author block.</strong> The <code>anonymous</code> option hides names in the PDF, but your .tex source still contains them, so do not upload source files as supplementary material without checking. Write self-citations in the third person, put thanks and funding inside <code>acks</code>, and link an anonymized copy of any code repository.</li>
-          <li><strong>Page limits.</strong> Calls differ on whether references and appendices count. Check the page count in the compiled PDF, and do not shrink margins or spacing to fit; format changes are a common reason for desk rejection.</li>
-          <li><strong>CCS concepts.</strong> Generate the <code>CCSXML</code> block and <code>\ccsdesc</code> lines with ACM's CCS tool at <a href="https://dl.acm.org/ccs" rel="noopener">dl.acm.org/ccs</a> rather than typing them by hand. Many venues require them at camera-ready.</li>
+          <li><strong>Page limits.</strong> Calls differ on whether references and appendices count. Check the page count in the compiled PDF. Do not shrink margins or spacing to fit, because format changes are a common reason for desk rejection.</li>
+          <li><strong>CCS concepts.</strong> Generate the <code>CCSXML</code> block and <code>\ccsdesc</code> lines with ACM's CCS (Computing Classification System) tool at <a href="https://dl.acm.org/ccs" rel="noopener">dl.acm.org/ccs</a> rather than typing them by hand. Many venues require them at camera-ready.</li>
           <li><strong>Bibliography style.</strong> Keep <code>\bibliographystyle{ACM-Reference-Format}</code>. Entries with a <code>doi</code> field get a DOI link, so a wrong DOI in the .bib file ends up printed in the paper.</li>
           <li><strong>Camera-ready packages.</strong> Many ACM venues now send camera-ready source through ACM's TAPS system, which compiles your .tex itself and accepts only an approved list of packages. Check that list before adding a package late.</li>
         </ul>
 
         <h2>Check before you submit</h2>
         <ul>
-          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free): upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX, including the BibTeX or Biber passes. Useful for a clean build on a machine that is not yours.</li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free). Upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX (including the BibTeX or Biber passes). It is useful for a clean build on a machine that is not yours.</li>
           <li><a href="/tools/bib-validator/">BibTeX validator</a> (free): flags missing required fields, duplicate keys, dead DOIs and entries that do not match a real paper. It runs in the browser.</li>
           <li><a href="/tools/anonymity-check/">Anonymity Check</a> ($2): scans the manuscript for author names, institutions, grant numbers, self-citation patterns and author-owned URLs before a double-blind submission.</li>
           <li><a href="/tools/paper-review/">Paper Review</a> (from $9): four AI reviewers read the manuscript for methods, statistics and the editor's view, and every reference is checked against CrossRef.</li>
@@ -193,7 +193,7 @@ Funding and thanks go here. The anonymous option hides this block.
         </ul>
 
         <h2>Writing it on a Mac</h2>
-        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so acmart behaves the same as it does anywhere else, and the PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
+        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so acmart behaves the same as it does anywhere else. The PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
       </article>
 
       <section class="deadline-remind" aria-labelledby="deadline-h">

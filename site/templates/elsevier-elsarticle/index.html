@@ -104,7 +104,7 @@
       </div>
 
       <article class="post-body">
-        <p>elsarticle is Elsevier's own class, distributed on CTAN as the <a href="https://ctan.org/pkg/elsarticle" rel="noopener">elsarticle package</a> and included in TeX Live and MiKTeX. Its bibliography styles, <code>elsarticle-num</code>, <code>elsarticle-num-names</code> and <code>elsarticle-harv</code>, come with it. A few Elsevier journals point authors to Elsevier's newer CAS templates (<code>cas-sc</code> and <code>cas-dc</code>) instead; use whichever class the journal's Guide for Authors names.</p>
+        <p>elsarticle is Elsevier's own class, distributed on CTAN as the <a href="https://ctan.org/pkg/elsarticle" rel="noopener">elsarticle package</a> and included in TeX Live and MiKTeX. Its bibliography styles, <code>elsarticle-num</code>, <code>elsarticle-num-names</code> and <code>elsarticle-harv</code>, come with it. A few Elsevier journals point authors to Elsevier's newer CAS templates (<code>cas-sc</code> and <code>cas-dc</code>) instead. Use whichever class the journal's Guide for Authors names.</p>
 
         <h2>Minimal skeleton</h2>
         <p>Save your references as <code>references.bib</code> in the same folder. This compiles with pdfLaTeX followed by BibTeX. The key-value form of <code>\affiliation</code> needs a recent version of the class; older copies use <code>\address</code> instead.</p>
@@ -174,16 +174,16 @@ Summary.
         <h2>Common submission pitfalls</h2>
         <ul>
           <li><strong>Read the Guide for Authors first.</strong> Many Elsevier journals accept a first submission in any consistent format (Elsevier calls this "Your Paper Your Way") and only ask for the template after acceptance. Others have specific rules on length, structure and reference style.</li>
-          <li><strong>Double-anonymized review.</strong> Journals that use it usually ask for a separate title page with the author details and an anonymized manuscript. The <code>doubleblind</code> option handles the title block, but check every page: in the version of elsarticle tested for this page (3.3, in TeX Live 2023), the highlights page still printed the author names with <code>doubleblind</code> on.</li>
+          <li><strong>Double-anonymized review.</strong> Journals that use it usually ask for a separate title page with the author details and an anonymized manuscript. The <code>doubleblind</code> option handles the title block. However, check every page. In the version of elsarticle tested for this page (3.3, in TeX Live 2023), the highlights page still printed the author names with <code>doubleblind</code> on.</li>
           <li><strong>Highlights.</strong> Many journals ask for 3 to 5 highlights of at most 85 characters each, including spaces, usually uploaded as a separate file. Recent versions of the class also have a <code>highlights</code> environment if the journal wants them in the PDF.</li>
           <li><strong>Citation mode and style must match.</strong> An author-year style with the default <code>number</code> option, or the reverse, gives wrong or missing citations. Change the class option and the <code>.bst</code> file together.</li>
           <li><strong>Final layouts are an estimate.</strong> Elsevier typesets accepted papers itself, so there is no need to submit in <code>5p</code>. Submit with <code>preprint</code> or <code>review</code>, whichever the journal asks for.</li>
-          <li><strong>Blurry symbols and Type 3 fonts.</strong> If <code>pdffonts paper.pdf</code> lists a <code>Type 3</code> font, it is usually a symbol that pdfLaTeX could only find as a bitmap. Adding <code>\usepackage{lmodern}</code> or installing cm-super fixes most cases; matplotlib figures need <code>pdf.fonttype</code> set to 42.</li>
+          <li><strong>Blurry symbols and Type 3 fonts.</strong> If <code>pdffonts paper.pdf</code> lists a <code>Type 3</code> font, it is usually a symbol that pdfLaTeX could only find as a bitmap. Adding <code>\usepackage{lmodern}</code> or installing cm-super fixes most cases. For matplotlib figures, set <code>pdf.fonttype</code> to 42.</li>
         </ul>
 
         <h2>Check before you submit</h2>
         <ul>
-          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free): upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX, including the BibTeX or Biber passes. Useful for a clean build on a machine that is not yours.</li>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free). Upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX (including the BibTeX or Biber passes). It is useful for a clean build on a machine that is not yours.</li>
           <li><a href="/tools/bib-validator/">BibTeX validator</a> (free): flags missing required fields, duplicate keys, dead DOIs and entries that do not match a real paper. It runs in the browser.</li>
           <li><a href="/tools/anonymity-check/">Anonymity Check</a> ($2): scans the manuscript for author names, institutions, grant numbers, self-citation patterns and author-owned URLs before a double-blind submission.</li>
           <li><a href="/tools/paper-review/">Paper Review</a> (from $9): four AI reviewers read the manuscript for methods, statistics and the editor's view, and every reference is checked against CrossRef.</li>
@@ -191,7 +191,7 @@ Summary.
         </ul>
 
         <h2>Writing it on a Mac</h2>
-        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so elsarticle behaves the same as it does anywhere else, and the PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
+        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so elsarticle behaves the same as it does anywhere else. The PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
       </article>
 
       <section class="deadline-remind" aria-labelledby="deadline-h">

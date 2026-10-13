@@ -60,7 +60,7 @@
           <img src="/kits/assets/monetization-cover.png" alt="The Monetization Stack setup guide, cover page" width="420" height="594">
           <div class="kit-product-buy" id="buy">
             <span class="kit-price">$29</span>
-            <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="kit-monetization">Get the kit &mdash; $29</button>
+            <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="kit-monetization">Get the kit for $29</button>
             <p class="kit-buy-meta">One-time. Full source code plus setup guide. Instant download.</p>
             <p class="tool-status" id="checkout-status" aria-live="polite"></p>
           </div>
@@ -69,35 +69,35 @@
         <div class="kit-detail">
           <p class="eyebrow">Site monetization kit</p>
           <h1>The Monetization Stack</h1>
-          <p class="kit-lede">Most monetization advice is a list of accounts to sign up for. This is the opposite: four small systems you drop into a static site once, then forget. They are already running in production on live sites, not sketches.</p>
+          <p class="kit-lede">Most monetization advice is a list of accounts to sign up for. This kit is four small systems you drop into a static site once, then forget. They already run in production on live sites.</p>
 
-          <p>You get analytics you actually own with no monthly bill, affiliate links that tag and disclose themselves, an ad setup that will not fight your content-security policy, and a deploy pipeline that stops the single most common way a static site quietly ships stale content.</p>
+          <p>You get analytics you own with no monthly bill and affiliate links that tag and disclose themselves. You also get an ad setup that will not fight your content-security policy (CSP) and a deploy pipeline that stops the most common way a static site ships stale content.</p>
 
           <h2>The four systems</h2>
           <h3>Owned analytics</h3>
           <p>A cookieless first-party beacon, an edge function that stores hits in your host's own key-value store, and a private dashboard. No third-party script, no monthly fee, and the data is yours. It replaces a paid analytics subscription.</p>
           <h3>Affiliate auto-tagging</h3>
-          <p>A small script finds every Amazon link on a page, appends your tag if one is not already there, and adds the disclosure markup the FTC expects. There is no per-link work and no double-tagging. Disclosure is a legal requirement, not a nicety, and a platform's built-in tag does not cover an outside Amazon link.</p>
+          <p>A small script finds every Amazon link on a page, appends your tag if one is not already there, and adds the disclosure markup the Federal Trade Commission (FTC) expects. There is no per-link work and no double-tagging. Disclosure is a legal requirement, and a platform's built-in tag does not cover an outside Amazon link.</p>
           <h3>Ads without breaking your CSP</h3>
-          <p>The exact content-security-policy origins and Auto Ads setup that let Google's ads render on a strict site, the list of pages to exclude to stay inside policy, and the ad categories to block so a serious brand does not serve junk.</p>
+          <p>You get the exact CSP origins and Auto Ads setup that let Google's ads render on a strict site. You also get the list of pages to exclude to stay inside policy and the ad categories to block so a serious brand does not serve junk.</p>
           <h3>Drift-proof deploys</h3>
           <p>The most common static-site failure is a local command publishing an out-of-date copy over what your pipeline pushed to Git. The fix is to make Git the single source of truth so every push publishes itself. This one habit removes the entire class of "why is the old version live" bugs.</p>
 
           <h2>How you use it</h2>
           <ol class="kit-steps">
-            <li>Add the analytics beacon and its two edge functions; set one secret and open your private dashboard.</li>
+            <li>Add the analytics beacon and its two edge functions. Set one secret and open your private dashboard.</li>
             <li>Set your affiliate tag in one line and load the tagging script.</li>
             <li>Paste the ad origins into your headers, add the loader, enable Auto Ads, and apply the category blocks.</li>
             <li>Connect your repository for auto-deploy and retire the manual deploy command.</li>
           </ol>
-          <p>Each piece is independent. Do them in any order; none depends on another. Plan on an afternoon.</p>
+          <p>Each piece is independent, so you can do them in any order. Plan on an afternoon.</p>
 
-          <div class="kit-note"><strong>What you get:</strong> the cookieless analytics beacon, two serverless functions (a collector and a token-gated aggregator), and a self-contained dashboard; the Amazon affiliate auto-tagger; the AdSense configuration (loader, ads.txt, and the Content-Security-Policy that actually lets ads run); a full README; and a beautifully typeset setup guide. Delivered as a source archive plus the guide. The analytics pieces cost nothing to run.</div>
+          <div class="kit-note"><strong>What you get:</strong> a cookieless analytics beacon, two serverless functions (a collector and a token-gated aggregator), and a self-contained dashboard. You also get the Amazon affiliate auto-tagger, the AdSense configuration (loader, ads.txt, and the Content-Security-Policy that lets ads run), a full README, and a typeset setup guide. Delivered as a source archive plus the guide. The analytics pieces cost nothing to run.</div>
 
           <h2>An honest note</h2>
           <p>Ads and affiliates earn in proportion to traffic. This kit makes a site ready to earn and removes the recurring analytics bill. It does not manufacture visitors. Delivered as-is: third-party platform behaviour, ad approval, and pricing are outside anyone's control, and nothing here is legal or tax advice.</p>
 
-          <div class="kit-cta-row"><a class="btn btn-primary" href="#buy">Get the kit &mdash; $29</a><a class="btn" href="/kits/">Compare all kits</a></div>
+          <div class="kit-cta-row"><a class="btn btn-primary" href="#buy">Get the kit for $29</a><a class="btn" href="/kits/">Compare all kits</a></div>
         </div>
       </div>
     </main>
