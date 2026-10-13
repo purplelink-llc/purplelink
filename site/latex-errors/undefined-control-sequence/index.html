@@ -176,7 +176,7 @@ We use two samples.</code></pre>
         <pre><code>\section{Methods}
 We use two samples.</code></pre>
         <h3>2. The package that defines the command is not loaded</h3>
-        <p>The spelling is right, but the command belongs to a package. <code>\includegraphics</code> needs <code>graphicx</code>, <code>\text</code> needs <code>amsmath</code>, <code>\toprule</code> needs <code>booktabs</code>, <code>\textcolor</code> needs <code>xcolor</code>. Add the <code>\usepackage</code> line to the preamble.</p>
+        <p>The spelling is right, but the command belongs to a package. <code>\includegraphics</code> needs <code>graphicx</code>, <code>\text</code> needs <code>amsmath</code>, <code>\toprule</code> needs <code>booktabs</code>, <code>\textcolor</code> needs <code>xcolor</code>. Add the <code>\usepackage</code> line to the preamble. If the compiler then reports that the package file is missing, <a href="/guides/install-latex-on-mac/">add the missing package with tlmgr</a>.</p>
         <p><strong>Before</strong></p>
         <pre><code>% preamble has no \usepackage{xcolor}
 \textcolor{red}{Check this number.}</code></pre>

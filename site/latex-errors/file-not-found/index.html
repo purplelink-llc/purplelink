@@ -173,7 +173,7 @@ l.3 \begin
         <h2>Why it happens</h2>
         <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
         <h3>1. The package is not installed</h3>
-        <p>Small distributions such as TinyTeX and BasicTeX ship a subset of packages. Install the missing one with <code>tlmgr</code>. If the package name differs from the file name, <code>tlmgr search --global --file cleveref.sty</code> tells you which package contains the file. MiKTeX offers to install a missing package the first time a document asks for it.</p>
+        <p>Small distributions such as TinyTeX and BasicTeX ship a subset of packages. <a href="/guides/install-latex-on-mac/">Add the missing package with tlmgr</a>, the TeX Live package manager. If the package name differs from the file name, <code>tlmgr search --global --file cleveref.sty</code> tells you which package contains the file. MiKTeX offers to install a missing package the first time a document asks for it.</p>
         <p><strong>Before</strong></p>
         <pre><code>\usepackage{cleveref}
 % ! LaTeX Error: File `cleveref.sty' not found.</code></pre>

@@ -184,6 +184,7 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
+        <p>Writing the paper on a Mac? See the <a href="/guides/best-mac-latex-editors/">LaTeX editors for Mac, tested</a>.</p>
         <p>This generator turns tabular data into a LaTeX <code>tabular</code> for you. Cell contents are escaped so LaTeX special characters (<code>&amp; % $ # _ { } ~ ^ \</code>) render as literal text rather than breaking your build. Everything happens in your browser with JavaScript. No server, no upload.</p>
         <details><summary>What is booktabs?</summary><div class="faq-body"><code>booktabs</code> is a popular LaTeX package for professional tables. It provides <code>\toprule</code>, <code>\midrule</code>, and <code>\bottomrule</code> for well-spaced horizontal rules instead of the heavier <code>\hline</code>. Add <code>\usepackage{booktabs}</code> to your preamble. Turn this option off to use plain <code>\hline</code> rules instead.</div></details>
         <details><summary>Does it handle commas inside quoted CSV fields?</summary><div class="faq-body">Yes. For comma-separated data, fields wrapped in double quotes may contain commas, and a doubled quote (<code>""</code>) inside a quoted field is treated as a single literal quote (standard CSV quoting). Tab- and semicolon-separated input is split on the delimiter directly.</div></details>
