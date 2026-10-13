@@ -95,11 +95,11 @@
             <p>Click <strong>Convert to LaTeX</strong>. The conversion runs server-side and returns a .tex file within a few seconds.</p>
           </li>
           <li>
-            <p>Download the .tex file and open it in your LaTeX editor. (If you do not have one yet, we compare <a href="/guides/best-mac-latex-editors/">the LaTeX editors that run on a Mac</a>.) Standard content transfers cleanly: headings, paragraph text, bold, italic, lists, basic tables, and footnotes. Check these areas manually before submitting:</p>
+            <p>Download the .tex file and open it in your LaTeX editor. (If you do not have one yet, see <a href="/guides/best-mac-latex-editors/">the LaTeX editors that run on a Mac</a>.) Standard content transfers cleanly. That covers headings, paragraph text, bold, italic, lists, basic tables, and footnotes. Check these areas manually before submitting:</p>
             <ul>
               <li>Cross-references (Figure 1, Table 2, etc.) become plain text. Rebuild them using <code>\ref{}</code> and <code>\label{}</code>.</li>
               <li>Multi-column layouts and text boxes become ordinary paragraphs.</li>
-              <li>Equations are converted from Word's native format and need review; verify each one.</li>
+              <li>Equations are converted from Word's native format and need review. Verify each one.</li>
               <li>Tables with merged cells rarely convert correctly and usually need to be rebuilt.</li>
             </ul>
           </li>
@@ -110,7 +110,7 @@
 
         <h2>What's happening under the hood</h2>
 
-        <p>The tool runs <code>pandoc --standalone</code> on your file. Pandoc maps Word structure to LaTeX equivalents: headings become <code>\section{}</code>, bold becomes <code>\textbf{}</code>, numbered lists become <code>enumerate</code> environments, and footnotes become <code>\footnote{}</code>. The <code>--standalone</code> flag produces a complete preamble with common packages, so the file compiles without additional setup. Word elements without a LaTeX equivalent, including field codes, embedded objects, and custom styles, are dropped or converted to plain text.</p>
+        <p>The tool runs <code>pandoc --standalone</code> on your file (pandoc is an open-source document converter). Pandoc maps Word structure to LaTeX equivalents. Headings become <code>\section{}</code>, bold becomes <code>\textbf{}</code>, numbered lists become <code>enumerate</code> environments, and footnotes become <code>\footnote{}</code>. The <code>--standalone</code> flag produces a complete preamble (the setup block before the document body) with common packages, so the file compiles without additional setup. Word elements without a LaTeX equivalent, including field codes, embedded objects, and custom styles, are dropped or converted to plain text.</p>
 
         <h2>Q&amp;A</h2>
 
@@ -118,14 +118,14 @@
         <p>No. The file is processed in a temporary container and discarded the moment the output is returned. Nothing is written to durable storage or logged.</p>
 
         <h3>My equation looks wrong in the output. What should I do?</h3>
-        <p>Pandoc converts from Word's internal equation format to LaTeX math. Complex equations often need manual rewriting; check each one against your original document.</p>
+        <p>Pandoc converts from Word's internal equation format to LaTeX math. Complex equations often need manual rewriting. Check each one against your original document.</p>
 
         <h3>The table layout is wrong. How do I fix it?</h3>
         <p>Pandoc assigns default column specifiers. Open the <code>tabular</code> block and set the column specs (<code>l</code>, <code>c</code>, <code>r</code>, or <code>p{width}</code>) to match your original layout.</p>
 
         <p>Convert your manuscript at <a href="https://purplelink.llc/tools/word-to-latex/">purplelink.llc/tools/word-to-latex/</a>.</p>
         <p>After the conversion, <a href="/moderntex/">ModernTex</a> for Mac can bring a supervisor's tracked changes and comments from a reviewed Word file back into the LaTeX source, so co-authors who prefer Word can keep using it. 7-day free trial, then $19.99 once.</p>
-        <p><a href="/blog/the-co-author-who-writes-in-word/">The co-author who writes in Word</a> goes through why that reconciliation step is the harder half of this whole conversion, and how I check what actually changed once the file lands back in LaTeX.</p>
+        <p><a href="/blog/the-co-author-who-writes-in-word/">The co-author who writes in Word</a> goes through why that reconciliation step is the harder half of this whole conversion. It also covers how I check what actually changed once the file lands back in LaTeX.</p>
       </div>
       <nav class="tool-related" aria-label="Related pages">
         <h2>Related</h2>
