@@ -16,9 +16,9 @@
 // and logs why to the console, so a half-filled launch cannot sell anything.
 window.PANELY_LAUNCH = {
   live: true,
-  version: "1.0.1",
+  version: "1.0.2",
   sizeMb: "4",
-  released: "2026-10-12"
+  released: "2026-10-13"
 };
 
 (function () {
