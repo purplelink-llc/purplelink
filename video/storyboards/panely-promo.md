@@ -6,7 +6,7 @@ Footage: no screen recording and no screenshot of anyone's screen. Two kinds of 
 1. The real Settings window, drawn by Panely's own SwiftUI code rendered offscreen with a fake home folder and invented sample data (`video/panely-shots/render.sh`, then `compose_settings.py`). Nothing was launched, no window was shown, no real folder or preference was read.
 2. A drawn desktop (`src/PanelyDesk.jsx`, geometry from `src/panely/desk.js`) with invented windows (Draft, Sources, Notes, Chat, Photos, Plan, Callroom), the Panely menu-bar icon and its drop-down, key caps, a cursor and the drag preview. Tile sizes use the same arithmetic as the app (columns and rows, a 10 px margin and gap on a 1280 px desk). It illustrates the idea; it is not a recording of the app, and the page's own hero caption says the same ("An illustration of the idea, not a screenshot of the app").
 
-Voice: en-GB-SoniaNeural, as Legroom and Keyfeel. No sound bed.
+Voice: en-GB-SoniaNeural at +4% (edge-tts, `narrate.py`, which points edge-tts at Microsoft's new host since the old one answers 403 from 2026-10-10; `EDGE_TTS_HOST=legacy` reverts), as Legroom and Keyfeel. No sound bed.
 
 ## 0. Title card (about 1.2 s)
 - **Sees:** app icon, "Panely", "Window snapping for Mac."

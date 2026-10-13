@@ -18,16 +18,33 @@ WordBoundary events arrive with the audio, ticks of 100 ns. Punctuation is resto
 source text so captions can break at phrase ends.
 """
 from __future__ import annotations
-import asyncio, hashlib, json, subprocess, sys
+import asyncio, hashlib, json, os, subprocess, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_VOICE = "en-US-AndrewNeural"
 DEFAULT_RATE = "+0%"
 
+# Microsoft moved Edge's Read Aloud service on 2026-10-10: the old host (speech.platform.bing.com)
+# answers every handshake with 403, and edge-tts 7.2.8 still uses it (rany2/edge-tts#490). The new
+# host takes the same client token under the query name Ocp-Apim-Subscription-Key. communicate.py
+# binds WSS_URL at import, so the override is set on edge_tts.communicate. EDGE_TTS_HOST=legacy
+# leaves the library's own URL untouched. Same switch as TikTokPipeline/shared_media/narrate.py.
+EDGE_TTS_HOST = os.environ.get("EDGE_TTS_HOST", "api.msedgeservices.com")
+
+
+def apply_edge_endpoint(host: str = EDGE_TTS_HOST) -> str:
+    import edge_tts.communicate as com
+    from edge_tts.constants import TRUSTED_CLIENT_TOKEN
+    if host and host != "legacy":
+        com.WSS_URL = (f"wss://{host}/tts/cognitiveservices/websocket/v1"
+                       f"?Ocp-Apim-Subscription-Key={TRUSTED_CLIENT_TOKEN}")
+    return com.WSS_URL
+
 
 async def synth(text: str, voice: str, rate: str, mp3: Path) -> list[dict]:
     import edge_tts
+    apply_edge_endpoint()
     comm = edge_tts.Communicate(text, voice, rate=rate, boundary="WordBoundary")
     words = []
     with open(mp3, "wb") as f:

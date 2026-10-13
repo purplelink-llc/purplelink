@@ -7,7 +7,7 @@ Footage: not a screen recording. Every picture is a 2x render of the app's own m
 - `sample-draining.png` and `sample-low.png` are drawn by the app's snapshot mode with sample values. Each carries "Sample values, not a live reading" inside the image. The narration says "sample", and the lower third says "Sample values" for the whole scene.
 `sample-full.png` exists in the app repo but is not used or copied.
 
-Voice: en-GB-SoniaNeural at +4%, as the Panely promo. On 2026-10-13 edge-tts answered 403, so this render uses the macOS voice "Flo (English (UK))" through `narrate_say.py --rate 225` (delete `.cache/batterymeter-promo` and run `narrate.py` when edge-tts works; Sonia reads faster, so the cut will come out shorter). Short declarative sentences, no semicolons, no em-dashes, plain numbers.
+Voice: en-GB-SoniaNeural at +4%, as the Panely promo, through edge-tts (`narrate.py`, which points edge-tts at Microsoft's new host since the old one answers 403 from 2026-10-10; `EDGE_TTS_HOST=legacy` reverts). The narration in `storyboards/batterymeter-promo.json` is the short cut; the longer lines below (with red at 10 and nothing leaves your Mac) run about 3 s longer with Sonia and were not restored, so the page transcript matches the JSON. Short declarative sentences, no semicolons, no em-dashes, plain numbers.
 
 ## 0. Title card (about 3.5 s)
 - **Sees:** app icon, "BatteryMeter", "A free Mac battery meter that shows more."
