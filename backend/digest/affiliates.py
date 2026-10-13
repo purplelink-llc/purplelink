@@ -27,6 +27,9 @@ DISCLOSURE = (
 AMAZON_DISCLOSURE = "As an Amazon Associate I earn from qualifying purchases"
 DISCLOSURE_MARK = 'class="aff-disclosure"'
 DISCLOSURE_HTML = f"<p {DISCLOSURE_MARK}>{html.escape(DISCLOSURE)}</p>"
+LABEL_TEXT = "(paid link)"
+LABEL_HTML = f'<span class="aff-label">{LABEL_TEXT}</span>'
+_LABEL_AFTER = re.compile(r'\s*<span class="aff-label">')
 
 
 @dataclass(frozen=True)
@@ -90,6 +93,114 @@ REGISTRY: tuple = (
         source_url="https://1password.com/affiliate",
         notes="Only where a guide really discusses password managers. Official page not read yet.",
         topics=("privacy", "security"),
+    ),
+    Program(
+        id="wordvice",
+        name="Wordvice",
+        domains=("wordvice.com",),
+        network="In-house",
+        status="candidate",
+        commission="15% of a new client's first order, after the client's 10% discount; 90-day cookie; no minimum order or payout minimum (program page, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://wordvice.com/affiliate/home/",
+        notes="Self-serve. Terms last amended 2020-12-21.",
+        topics=("academic-editing",),
+    ),
+    Program(
+        id="raycast",
+        name="Raycast",
+        domains=("raycast.com",),
+        network="Rewardful",
+        status="candidate",
+        commission="30% of all payments from referred Pro users, recurring; referred user gets 10% off; cookie length not stated (Raycast blog, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://raycast.com/blog/affiliate-program",
+        notes="Open to any Raycast account holder.",
+        topics=("mac-apps","launchers"),
+    ),
+    Program(
+        id="paperpal",
+        name="Paperpal",
+        domains=("paperpal.com",),
+        network="TrackDesk",
+        status="candidate",
+        commission="30% one-time on each Paperpal Prime purchase; 60-day cookie (program page, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://paperpal.com/affiliate-program",
+        notes="Self-serve. Aimed at students, researchers and academic influencers.",
+        topics=("academic-writing",),
+    ),
+    Program(
+        id="scrivener",
+        name="Scrivener",
+        domains=("literatureandlatte.com",),
+        network="FirstPromoter",
+        status="candidate",
+        commission="20% on licences sold through the link; cookie length not stated (Literature and Latte page, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://www.literatureandlatte.com/becoming-a-sales-affiliate",
+        notes="Self-serve.",
+        topics=("writing-apps",),
+    ),
+    Program(
+        id="ulysses",
+        name="Ulysses",
+        domains=("ulysses.app",),
+        network="In-house",
+        status="candidate",
+        commission="25% per subscriber; readers get 25% off the first year; cookie length not stated (program page, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://ulysses.app/affiliate/",
+        notes="Application form, reviewed.",
+        topics=("writing-apps","mac-apps"),
+    ),
+    Program(
+        id="proton",
+        name="Proton",
+        domains=("proton.me",),
+        network="In-house",
+        status="candidate",
+        commission="30% on new subscriptions and renewals for most products; one product group differs; $100 minimum payout; cookie length not stated (Proton partner page, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://proton.me/partners/affiliates",
+        notes="Partners must disclose the relationship. Paid search on brand terms and cookie stuffing are banned.",
+        topics=("privacy","security"),
+    ),
+    Program(
+        id="pcloud",
+        name="pCloud",
+        domains=("pcloud.com",),
+        network="In-house",
+        status="candidate",
+        commission="20% of every payment, or of a Lifetime purchase; 45-day cookie; PayPal payout from $10 (pCloud help page, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://help.pcloud.com/article/affiliate-program",
+        notes="Open to adults (18+).",
+        topics=("cloud-storage","disk-space"),
+    ),
+    Program(
+        id="readwise",
+        name="Readwise",
+        domains=("readwise.io",),
+        network="In-house",
+        status="candidate",
+        commission="33% per paying subscriber; cookie length not stated (Readwise docs, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://docs.readwise.io/affiliates",
+        notes="Application form, reviewed. Approved affiliates receive custom links.",
+        topics=("reading","research"),
+    ),
+    Program(
+        id="logitech",
+        name="Logitech",
+        domains=("logitech.com",),
+        network="Impact",
+        status="candidate",
+        commission="4% to 10% depending on brand and season; 30-day cookie (Logitech affiliate page, read 2026-10-12)",
+        terms_checked="2026-10-12",
+        source_url="https://www.logitech.com/en-us/programs/affiliate-program",
+        notes="Reviewed on Impact. Free to join.",
+        topics=("keyboards","equipment"),
     ),
 )
 
@@ -177,8 +288,9 @@ def rewrite_html(page: str, registry=None) -> tuple:
     """Rewrite links to live programs in one page. Returns (new_page, number_changed).
 
     Idempotent. Every link to a live program gets rel="sponsored noopener". When any non-Amazon program is used,
-    the generic disclosure is inserted once, right after the page's </h1>. Amazon's own sentence is left to the
-    page, which scripts/check_content.py already enforces.
+    the generic disclosure is inserted once, right after the page's </h1>, and every such link is followed by a
+    small "(paid link)" label, because a notice at the top alone is not close enough to the link. Amazon links keep
+    their existing markup and sentence, which scripts/check_content.py already enforces.
     """
     changed = 0
     used_generic = False
@@ -208,6 +320,15 @@ def rewrite_html(page: str, registry=None) -> tuple:
         out.append(page[pos:m.start()])
         out.append(tag)
         pos = m.end()
+        if p.id != "amazon":
+            close = page.find("</a>", m.end())
+            if close != -1:
+                close += len("</a>")
+                out.append(page[pos:close])
+                pos = close
+                if not _LABEL_AFTER.match(page, close):
+                    out.append(LABEL_HTML)
+                    changed += 1
     out.append(page[pos:])
     result = "".join(out)
     if used_generic and DISCLOSURE_MARK not in result:
@@ -233,6 +354,10 @@ def lint_html(page: str, registry=None) -> list:
             problems.append(f"{p.id} link without rel=sponsored: {href[:80]}")
         amazon |= p.id == "amazon"
         generic |= p.id != "amazon"
+        if p.id != "amazon":
+            close = page.find("</a>", m.end())
+            if close == -1 or not _LABEL_AFTER.match(page, close + len("</a>")):
+                problems.append(f"{p.id} link without a (paid link) label: {href[:80]}")
     if generic and DISCLOSURE_MARK not in page:
         problems.append("affiliate links but no disclosure paragraph")
     if amazon and AMAZON_DISCLOSURE not in page:
