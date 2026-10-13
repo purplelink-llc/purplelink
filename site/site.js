@@ -763,6 +763,8 @@
       k.innerHTML = '<img src="/assets/purplelink-mark.svg" alt="" width="18" height="18"><span></span>';
       k.lastChild.textContent = kind();
       title.insertAdjacentElement("beforebegin", k);
+      const dup = hero.querySelector(".post-date");
+      if (dup && dup.textContent.trim().toLowerCase() === kind().toLowerCase()) dup.remove();
     }
     const choice = pick(hero);
     if (!choice) return;

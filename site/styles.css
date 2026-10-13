@@ -882,6 +882,9 @@ dd {
 }
 
 .footer-mail {
+  display: inline-block;
+  min-height: 24px;
+  padding-block: 3px;
   font-size: 0.85rem;
   font-weight: 600;
   color: oklch(84% 0.1 310);
@@ -1275,7 +1278,10 @@ dd {
   .topbar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 8px;
+    padding-block: 10px 6px;
+    /* Two rows (logo, then links) take about 14% of a phone screen, so the bar scrolls away instead of staying pinned. */
+    position: static;
   }
 
   .topbar nav {
@@ -5494,3 +5500,9 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 
 /* Affiliate label: small marker right after each tracked link, so the notice sits next to the link it describes. */
 .aff-label { margin-left: 0.25em; font-size: 0.8125rem; font-weight: 400; font-style: normal; color: var(--muted); white-space: nowrap; }
+
+/* Spec tables with long cell text wrapped instead of widening the page on a phone. */
+@media (max-width: 520px) {
+  .specs-table th,
+  .specs-table td { padding: 8px; overflow-wrap: anywhere; }
+}

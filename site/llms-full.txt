@@ -3078,7 +3078,7 @@ Which engines are supported?
 
 pdfLaTeX and XeLaTeX. LuaLaTeX is not supported for security reasons.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Writing LaTeX on a Mac?
 
@@ -3232,7 +3232,7 @@ A clean .bib fixes citations that are malformed. However, it cannot tell you abo
 
 From $9 per review, Anonymity Check bundled free. See what the report covers →
 
-From the team behind these tools
+From the maker of these tools
 
 ## Writing LaTeX on a Mac?
 
@@ -3335,7 +3335,7 @@ Is anything stored?
 
 No. DOI and ISBN lookups go directly from your browser to the public APIs. arXiv lookups relay through our server, since arXiv doesn't allow direct browser access. All formatting happens locally either way, and we never log or store anything you enter.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Writing LaTeX on a Mac?
 
@@ -4676,7 +4676,7 @@ Do I need the full 6.4 GB MacTeX install?
 
 No. BasicTeX (134 MB) and TinyTeX (about 67 MB) are much smaller and install missing packages on demand with tlmgr. Full MacTeX is the easiest option if you have the disk space, because every package a template might load is already there.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Writing LaTeX on a Mac?
 
@@ -4845,7 +4845,7 @@ Can I open the same project in all three?
 
 Yes. A LaTeX project is a folder of ordinary .tex, .bib and image files, and each editor reads it in place. Check the root file setting when you switch. TeXShop and TeXstudio both read a root-file comment at the top of chapter files, and ModernTex detects the root file itself.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Writing LaTeX on a Mac?
 
@@ -5222,7 +5222,7 @@ Can I compile locally and still use Overleaf with co-authors?
 
 Yes. The project is ordinary .tex, .bib and image files. Download the source, build it locally when the compile is too heavy, and keep the shared draft on Overleaf. The Overleaf alternatives guide covers Git sync and the manual route.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Writing LaTeX on a Mac?
 
@@ -5650,7 +5650,7 @@ Once the writing is done and submission is next, Paper Review red-teams the manu
 
 For more on the academic LaTeX workflow generally, see the LaTeX hub and the BibTeX and citations hub.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Writing LaTeX on a Mac?
 
@@ -6021,7 +6021,7 @@ If the material must not leave your machine, yes. Ollama and LM Studio run open 
 
 - Purplelink's privacy page, the Mac Suite and all guides.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Typing client notes into AI chats on a Mac?
 
@@ -6322,7 +6322,7 @@ The venue, manuscript number, date submitted, the version sent, each decision wi
 
 - What Vitae Plus adds, the Mac Suite, the spreadsheets and all guides.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Keeping your research record on a Mac?
 
@@ -6641,7 +6641,7 @@ The core is free and open source under the ISC license. Optional Pro is $40 once
 
 - Scholar Utility Belt and all guides.
 
-From the team behind these tools
+From the maker of these tools
 
 ## Searching Google Scholar every day?
 
@@ -6954,7 +6954,7 @@ Sometimes. GlobePin's listing mentions CSV import and export. Flighty imports fr
 
 - Purplelink's privacy page, all products and all guides.
 
-From the team behind these tools
+From the maker of these tools
 
 ## A map of where you have been, kept in your own iCloud
 
