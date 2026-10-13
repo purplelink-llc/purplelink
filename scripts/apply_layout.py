@@ -41,13 +41,14 @@ SKIP_PATHS = {
 }
 
 # (label, href, sections that mark it current)
+# Games and Blog are not in the header (2026-10-13 nav trim); they stay in the
+# footer ("Daily games" under Free tools, "Blog" and "Changelog" under Learn),
+# so pages in those sections simply have no highlighted header item.
 NAV = [
     ("Products", "/products/", ("products/", "moderntex/", "legroom/", "keyfeel/", "tapefolio/", "panely/", "summonly/", "batterymeter/", "vitae/", "globepin/",
                                 "haea/", "binnacle/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/", "latex-errors/")),
-    ("Games", "/games/", ("games/",)),
-    ("Blog", "/blog/", ("blog/", "changelog/")),
     ("About", "/about/", ("about/", "press/")),
 ]
 

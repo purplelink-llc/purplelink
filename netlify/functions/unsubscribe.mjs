@@ -74,7 +74,6 @@ function page(title, heading, bodyHtml, status = 200) {
         <a href="/#software">Software</a>
         <a href="/#projects">Products</a>
         <a href="/tools/">Tools</a>
-        <a href="/blog/">Blog</a>
         <a href="/changelog/">Changelog</a>
         <a href="/about/">About</a>
         <a href="/#contact">Contact</a>

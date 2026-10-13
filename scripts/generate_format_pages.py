@@ -151,7 +151,6 @@ def venue_page(v):
         <a href="/products/">Products</a>
         <a href="/tools/" aria-current="page">Tools</a>
         <a href="/guides/">Guides</a>
-        <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
       </nav>
     </header>
@@ -375,7 +374,6 @@ def hub_page():
         <a href="/products/">Products</a>
         <a href="/tools/" aria-current="page">Tools</a>
         <a href="/guides/">Guides</a>
-        <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
       </nav>
     </header>

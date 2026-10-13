@@ -44,7 +44,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=07d8025cab"></script>
-    <link rel="stylesheet" href="/styles.css?v=e775131596">
+    <link rel="stylesheet" href="/styles.css?v=75ccb1a51f">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -60,8 +60,6 @@
         <a href="/products/">Products</a>
         <a href="/tools/">Tools</a>
         <a href="/guides/">Guides</a>
-        <a href="/games/">Games</a>
-        <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
       </nav>
     </header>
@@ -85,6 +83,7 @@
           <div><dt>Paper Review and the paid checks</dt><dd>Paper Review, Anonymity Check, Citation Gap Analysis, Revision Review, Response to Reviewers and Resume Review run on Modal. The manuscript is sent to Anthropic's Claude API for analysis. Under Anthropic's commercial terms, inputs are retained for up to 30 days for abuse monitoring and are not used for model training. Reference titles and DOIs go to CrossRef, and the DOIs or titles of the references whose abstracts are checked against your claims go to OpenAlex and Semantic Scholar. Nothing from your manuscript's own text goes to those three. The result waits in Modal storage until you open it. For Paper Review, the report is also emailed as a PDF when the review finishes, through Resend, to the address on the Stripe receipt or the one entered at upload. The manuscript and the annotated PDF are never emailed. Purplelink deletes the manuscript, the online copy of the review and the annotated PDF 30 minutes after the result is first opened, or after 24 hours if it never is. A scheduled job enforces the 24-hour limit. The free reference check on the Paper Review page reads the PDF on Modal, sends reference titles and DOIs to CrossRef, and discards the file when it answers. Nothing goes to Anthropic and nothing is stored. The Cover Letter tool receives your abstract and the journal name, not the manuscript.</dd></div>
           <div><dt>ModernTex</dt><dd>A Mac app. Your documents stay on your Mac, and there is no account. The license key is checked offline against a public key built into the app. Unlocking makes no server request. Once a day the app asks purplelink.llc for its update feed. That request carries the app's version and a channel token compiled into the app, and nothing from your documents. We count update downloads as totals per file. If you turn on ModernTex's optional AI features, they use your own AI account, not ours.</dd></div>
           <div><dt>Vitae</dt><dd>A Mac app with a local database and no account. Purplelink cannot see your records. Once a day it checks purplelink.llc for a newer version and, unless you hide it, fetches the text of a small sidebar card. Neither request carries an account, device identifier, cookie or library data. Citation lookups go to CrossRef, OpenAlex, Semantic Scholar, ORCID or Zotero only when you use those features, and your mailbox is read only if you connect one.</dd></div>
+          <div id="mac-downloads"><dt>Mac app downloads</dt><dd>The Mac apps are disk images signed with a Developer ID certificate and notarized by Apple, so macOS Gatekeeper can check them before they open. BatteryMeter also lists the SHA-256 of its download on its page, so you can check the file yourself. What each app sends over the network is in the <a href="/privacy/">privacy policy</a>.</dd></div>
           <div><dt>Scholar Utility Belt</dt><dd>A Chrome extension that runs on Google Scholar pages. It has no Purplelink server and no analytics. Saved papers, notes and settings stay in the extension's storage in your browser. Lookups you turn on go straight from your browser to public scholarly services such as OpenAlex, CrossRef, Unpaywall and Semantic Scholar. The optional Pro tier is licensed through ExtensionPay.</dd></div>
           <div><dt>Payments</dt><dd>Stripe takes payment on its own checkout page. Purplelink never sees card details and creates no account for you.</dd></div>
         </dl>

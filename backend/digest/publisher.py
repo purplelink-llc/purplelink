@@ -235,8 +235,6 @@ def render_html(digest: DigestData) -> str:
         <a href="/products/">Products</a>
         <a href="/tools/">Tools</a>
         <a href="/guides/">Guides</a>
-        <a href="/games/">Games</a>
-        <a href="/blog/" aria-current="page">Blog</a>
         <a href="/about/">About</a>
       </nav>
     </header>
@@ -513,8 +511,6 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
         <a href="/products/">Products</a>
         <a href="/tools/">Tools</a>
         <a href="/guides/">Guides</a>
-        <a href="/games/">Games</a>
-        <a href="/blog/" aria-current="page">Blog</a>
         <a href="/about/">About</a>
       </nav>
     </header>
