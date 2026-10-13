@@ -57,6 +57,10 @@ class Rewrite(unittest.TestCase):
         for i in ids:
             p = by_id[i]
             # Setapp and 1Password were applied for on 2026-10-13; neither has a tracked link until approved.
+            if i == "wordvice":
+                # approved 2026-10-13 (Tolt): any wordvice.com URL plus ?aff=benjamin
+                self.assertEqual((p.status, p.link, p.deep_link, p.tag, p.tag_param), ("approved", "", "", "benjamin", "aff"))
+                continue
             expected = "applied" if i in ("setapp", "1password") else "candidate"
             self.assertEqual((p.status, p.link, p.deep_link, p.tag), (expected, "", "", ""), i)
             self.assertTrue(p.source_url.startswith("http"), i)
@@ -99,6 +103,19 @@ class Rewrite(unittest.TestCase):
         page = '<h1>T</h1><a href="https://www.amazon.com/dp/1?tag=purplelinkpl-20" rel="sponsored noopener">b</a>'
         self.assertEqual(aff.lint_html(page), ["Amazon links but no Amazon Associate statement"])
         self.assertEqual(aff.lint_html(page + aff.AMAZON_DISCLOSURE), [])
+
+
+class WordviceLink(unittest.TestCase):
+    def test_wordvice_links_get_the_aff_parameter_once(self):
+        self.assertEqual(aff.rewrite_url("https://wordvice.com/")[0], "https://wordvice.com/?aff=benjamin")
+        self.assertEqual(aff.rewrite_url("https://wordvice.com/pricing?x=1")[0], "https://wordvice.com/pricing?x=1&aff=benjamin")
+        self.assertIsNone(aff.rewrite_url("https://wordvice.com/?aff=benjamin")[1])
+
+    def test_guide_page_carries_label_disclosure_and_rel(self):
+        page = read_site("guides/get-feedback-on-a-paper-before-submitting/index.html")
+        self.assertIn('href="https://wordvice.com/?aff=benjamin" rel="sponsored noopener"', page)
+        self.assertIn(aff.DISCLOSURE_MARK, page)
+        self.assertEqual(aff.lint_html(page), [])
 
 
 class Registry(unittest.TestCase):
