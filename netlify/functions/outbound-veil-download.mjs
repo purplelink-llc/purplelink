@@ -76,7 +76,8 @@ async function loadSession(sessionId) {
       headers: { Authorization: `Bearer ${secretKey}` },
     });
   } catch (err) {
-    return { error: json(502, { error: "stripe_unreachable", detail: String(err) }) };
+    console.error("outbound-veil-download: stripe request failed:", err?.name, err?.message);
+    return { error: json(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." }) };
   }
   if (!resp.ok) return { error: json(403, { error: "session_not_found", detail: "That download link is not valid for this store." }) };
   const session = await resp.json();

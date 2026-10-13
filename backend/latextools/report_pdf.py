@@ -20,6 +20,8 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 
+from latextools.safe_exec import minimal_env
+
 logger = logging.getLogger(__name__)
 
 RENDER_TIMEOUT_SECONDS = 60
@@ -85,7 +87,7 @@ def _run_pandoc(md: str, engine: str) -> Optional[bytes]:
         src.write_text(md, encoding="utf-8")
         cmd = [
             "pandoc", str(src), "-f", "gfm", "-o", str(out),
-            "--standalone", "--wrap=none",
+            "--sandbox", "--standalone", "--wrap=none",
             f"--pdf-engine={engine}",
             "--pdf-engine-opt=-no-shell-escape",
             "-V", "geometry:margin=1in",
@@ -93,7 +95,7 @@ def _run_pandoc(md: str, engine: str) -> Optional[bytes]:
         ]
         proc = subprocess.run(
             cmd, cwd=workdir, capture_output=True, text=True,
-            timeout=RENDER_TIMEOUT_SECONDS,
+            timeout=RENDER_TIMEOUT_SECONDS, env=minimal_env(workdir),
         )
         if proc.returncode != 0 or not out.exists():
             # stderr can echo report text, so only the exit code is logged.

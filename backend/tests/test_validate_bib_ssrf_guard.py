@@ -29,6 +29,16 @@ if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
 
+def _logical(url, headers):
+    """The requests now connect to the checked IP and carry the real name in the
+    Host header; rebuild the name-based URL the old assertions were written for."""
+    from urllib.parse import urlsplit
+
+    host = (headers or {}).get("Host")
+    parts = urlsplit(url)
+    return parts._replace(netloc=host).geturl() if host else url
+
+
 def _resp(status_code, location=None):
     r = MagicMock()
     r.status_code = status_code
@@ -44,7 +54,8 @@ async def test_doi_check_does_not_follow_redirect_to_private_ip(monkeypatch):
 
     calls = []
 
-    async def _fake_head(url, follow_redirects=False, timeout=None):
+    async def _fake_head(url, headers=None, extensions=None, follow_redirects=False, timeout=None):
+        url = _logical(url, headers)
         calls.append(url)
         if url == "https://doi.org/10.1000/evil":
             return _resp(302, location="https://169.254.169.254/latest/meta-data/")
@@ -69,7 +80,8 @@ async def test_doi_check_follows_redirect_to_public_host(monkeypatch):
 
     calls = []
 
-    async def _fake_head(url, follow_redirects=False, timeout=None):
+    async def _fake_head(url, headers=None, extensions=None, follow_redirects=False, timeout=None):
+        url = _logical(url, headers)
         calls.append(url)
         if url == "https://doi.org/10.1038/nature12373":
             return _resp(302, location="https://www.nature.com/articles/nature12373")
@@ -146,7 +158,8 @@ def test_validate_bib_endpoint_refuses_malicious_doi_redirect(monkeypatch):
     contacted_hosts = []
 
     async def _fake_head(self, url, follow_redirects=False, **kwargs):
-        host = httpx.URL(url).host
+        headers = kwargs.get("headers") or {}
+        host = headers.get("Host") or httpx.URL(url).host
         contacted_hosts.append(host)
         if host == "doi.org":
             return httpx.Response(

@@ -451,7 +451,8 @@ export default async function handler(request) {
       body: formEncode(params),
     });
   } catch (err) {
-    return jsonResponse(502, { error: "stripe_unreachable", detail: String(err) });
+    console.error("checkout: stripe request failed:", err?.name, err?.message);
+    return jsonResponse(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." });
   }
 
   let data;

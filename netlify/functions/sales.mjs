@@ -20,6 +20,7 @@
  */
 
 import { createHash } from "node:crypto";
+import { ownerToken, safeEqual } from "../lib/auth.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 // Pinned so invoice.subscription / invoice.charge keep the shape this code reads,
@@ -107,7 +108,7 @@ export default async function handler(request) {
   const url = new URL(request.url);
   const expected = Netlify.env.get("STATS_TOKEN");
   if (!expected) return json(500, { error: "misconfigured", detail: "Set STATS_TOKEN on this site." });
-  if (url.searchParams.get("token") !== expected) return json(401, { error: "unauthorized" });
+  if (!safeEqual(ownerToken(request, url), expected)) return json(401, { error: "unauthorized" });
 
   const key = Netlify.env.get("STRIPE_SECRET_KEY");
   if (!key) return json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." });

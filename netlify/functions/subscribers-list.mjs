@@ -9,12 +9,12 @@
  * Required env var: SUBSCRIBE_SECRET
  */
 import { getStore } from "@netlify/blobs"
+import { bearerMatches } from "../lib/auth.mjs"
 
 export default async function handler(request) {
   const secret = process.env.SUBSCRIBE_SECRET
-  const auth = request.headers.get("authorization") ?? ""
 
-  if (!secret || auth !== `Bearer ${secret}`) {
+  if (!secret || !bearerMatches(request, secret)) {
     return new Response("Unauthorized", { status: 401 })
   }
 

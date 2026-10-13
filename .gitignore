@@ -48,3 +48,8 @@ photo-licensing-workspace/
 video/out/
 video/node_modules/
 video/.cache/
+
+# Local-only tooling and scratch files (never publish; this repo is public)
+.claude/
+.vistest-ssd/
+yt.html

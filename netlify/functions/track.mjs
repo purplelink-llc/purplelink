@@ -22,6 +22,12 @@ import { createHash, randomUUID } from "node:crypto";
 
 const BOT_RE = /bot|spider|crawl|slurp|bingpreview|headless|lighthouse|preview|facebookexternalhit|embedly/i;
 
+// Abuse limits (the endpoint is public and writes one Blob per event). A real beacon is a few hundred bytes and one
+// visitor sends tens of events a day, so these never touch normal traffic.
+export const MAX_BODY_BYTES = 2048;
+export const DAILY_EVENT_LIMIT = 500;
+const TYPE_RE = /^[a-z0-9_]{1,32}$/;
+
 function clip(v, n) {
   return String(v == null ? "" : v).slice(0, n);
 }
@@ -56,12 +62,18 @@ export default async function handler(request, context) {
     return new Response(null, { status: 204 });
   }
 
+  const declared = parseInt(request.headers.get("content-length") || "0", 10);
+  if (declared > MAX_BODY_BYTES) return new Response(null, { status: 204 });
   let b;
   try {
-    b = await request.json();
+    const raw = await request.text();
+    if (raw.length > MAX_BODY_BYTES) return new Response(null, { status: 204 });
+    b = JSON.parse(raw);
   } catch (_) {
     return new Response(null, { status: 204 });
   }
+  if (!b || typeof b !== "object" || Array.isArray(b)) return new Response(null, { status: 204 });
+  if (b.t != null && (typeof b.t !== "string" || !TYPE_RE.test(b.t))) return new Response(null, { status: 204 });
 
   const type = clip(b.t || "pageview", 32);
   const path = clip(b.p || "/", 200);
@@ -82,6 +94,16 @@ export default async function handler(request, context) {
   // Country only (see countryCode). Always present; "" when Netlify gave none. Older records have no cc at all.
   const rec = { type, path, host, refHost, utm, meta, vid, ts: Date.now(), cc: countryCode(request, context) };
   if (ft) rec.ft = ft;
+
+  // Per-IP daily cap, same shared "rate-limits" store pattern as the other functions. The key holds a hash of the IP,
+  // never the IP. Over the cap the event is dropped quietly; a limiter error never blocks the beacon.
+  try {
+    const rl = getStore("rate-limits");
+    const key = `rl:track:${day}:${createHash("sha256").update(ip).digest("hex").slice(0, 16)}`;
+    const count = parseInt((await rl.get(key)) || "0", 10) || 0;
+    if (count >= DAILY_EVENT_LIMIT) return new Response(null, { status: 204 });
+    await rl.set(key, String(count + 1));
+  } catch (_) { /* limiter unavailable: record the event */ }
 
   try {
     await getStore("analytics").setJSON(`ev/${day}/${Date.now()}-${randomUUID().slice(0, 8)}`, rec);

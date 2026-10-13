@@ -1561,20 +1561,63 @@ def _is_ssrf_safe_url(url: str) -> bool:
     return all(_is_public_ip(info[4][0]) for info in infos)
 
 
+def _pin_public_address(url: str):
+    """Resolve the host of `url` once and return (pinned_url, headers,
+    extensions) for a request that connects to that exact address, or None
+    when the URL is not http(s) or any resolved address is not public.
+
+    `_is_ssrf_safe_url` alone leaves a DNS-rebinding window: the name is
+    resolved to check it, then resolved again when the request connects, and
+    an attacker's DNS can answer differently the second time. Connecting to
+    the address that was checked closes it. The Host header keeps the
+    original name, and for https the TLS server name (SNI and certificate
+    check) stays the original host through httpx's `sni_hostname` extension.
+    """
+    try:
+        parsed = urlparse(url)
+        host = parsed.hostname
+        port = parsed.port
+    except Exception:
+        return None
+    if parsed.scheme not in ("http", "https") or not host:
+        return None
+    try:
+        infos = socket.getaddrinfo(host, port or None, type=socket.SOCK_STREAM)
+    except Exception:
+        return None
+    addrs = [info[4][0] for info in infos]
+    if not addrs or not all(_is_public_ip(a) for a in addrs):
+        return None
+    ip = addrs[0]
+    ip_netloc = f"[{ip}]" if ":" in ip else ip
+    if port:
+        ip_netloc += f":{port}"
+    host_header = host if not port else f"{host}:{port}"
+    pinned = parsed._replace(netloc=ip_netloc).geturl()
+    extensions = {"sni_hostname": host} if parsed.scheme == "https" else {}
+    return pinned, {"Host": host_header}, extensions
+
+
 async def _resolve_doi_redirects_safely(client, doi: str):
     """Manually walk the doi.org redirect chain, validating every hop
-    against `_is_ssrf_safe_url` before requesting it. Never follows
-    redirects automatically (no `follow_redirects=True`) — that would hand
-    an attacker-controlled DOI registrant an unguarded SSRF primitive.
+    before requesting it, and connecting to the address that was validated
+    (see `_pin_public_address`). Never follows redirects automatically
+    (no `follow_redirects=True`) — that would hand an attacker-controlled
+    DOI registrant an unguarded SSRF primitive.
 
     Returns the final httpx.Response, or raises on network error / an
     unsafe redirect target (both treated as failures by the caller).
     """
     url = f"https://doi.org/{doi}"
     for _ in range(_MAX_DOI_REDIRECTS):
-        if not _is_ssrf_safe_url(url):
+        pin = _pin_public_address(url)
+        if pin is None:
             raise ValueError(f"refusing to request non-public URL: {url!r}")
-        resp = await client.head(url, follow_redirects=False, timeout=10.0)
+        pinned_url, headers, extensions = pin
+        resp = await client.head(
+            pinned_url, headers=headers, extensions=extensions,
+            follow_redirects=False, timeout=10.0,
+        )
         if resp.status_code in (301, 302, 303, 307, 308):
             location = resp.headers.get("location")
             if not location:

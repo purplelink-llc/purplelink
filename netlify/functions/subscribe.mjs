@@ -48,7 +48,7 @@ export default async function handler(request) {
   }
 
   const email = (body?.email ?? "").toLowerCase().trim()
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!email || !/^[^\s@<>"`\\]+@[^\s@<>"`\\]+\.[^\s@<>"`\\]+$/.test(email)) {
     return json(400, { error: "invalid_email" })
   }
   const refCode = typeof body?.ref === "string" ? body.ref.trim().slice(0, 32) : ""

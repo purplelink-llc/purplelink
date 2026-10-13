@@ -49,6 +49,10 @@ async function cancelStripeSubscription(subscriptionId) {
   }
 }
 
+function escapeHtml(v) {
+  return String(v).replace(/[&<>"'`]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "`": "&#96;" }[c]))
+}
+
 function page(title, heading, bodyHtml, status = 200) {
   return new Response(`<!doctype html>
 <html lang="en">
@@ -159,6 +163,6 @@ export default async function handler(request) {
 
   return page(
     "Unsubscribed", "Unsubscribed",
-    `<p class="post-lede">You've been removed from the Daily Digest. No more emails will be sent to ${email}.</p><p><a href="/blog/digest/">Back to Daily Digest</a></p>`,
+    `<p class="post-lede">You've been removed from the Daily Digest. No more emails will be sent to ${escapeHtml(email)}.</p><p><a href="/blog/digest/">Back to Daily Digest</a></p>`,
   )
 }
