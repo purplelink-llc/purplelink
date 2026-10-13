@@ -52,7 +52,7 @@
           "name": "What is multiple comparisons?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "With \u03b1 = 0.05, every independent statistical test has a 5% chance of returning a false-positive result. Run 20 tests and the expected false-positive count is 1. Run 100 tests and you'll find roughly 5 'significant' results from random noise alone."
+            "text": "With \u03b1 = 0.05 (the significance threshold), every independent statistical test has a 5% chance of returning a false-positive result. Run 20 tests and the expected false-positive count is 1. Run 100 tests and you will find roughly 5 'significant' results from random noise alone."
           }
         },
         {
@@ -60,7 +60,7 @@
           "name": "Why does a reviewer care about multiple comparisons?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Common failure modes: testing every cell in a correlation matrix; checking every demographic subgroup for an effect; comparing every pair of conditions in a factorial design without correction; running a separate test per outcome in a battery and headlining whichever popped."
+            "text": "Common failure modes include testing every cell in a correlation matrix and checking every demographic subgroup for an effect. Others are comparing every pair of conditions in a factorial design without correction and running a separate test per outcome in a battery, then headlining whichever came out significant."
           }
         },
         {
@@ -68,7 +68,7 @@
           "name": "How do I fix multiple comparisons?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Apply a correction. Bonferroni (divide \u03b1 by the number of tests) is conservative and rarely controversial. Benjamini-Hochberg (FDR) is appropriate when many true positives are expected. Either way, name the correction in the methods and apply it consistently. Where possible, pre-specify which contrasts are primary so you only need to correct over those."
+            "text": "Apply a correction. Bonferroni (divide \u03b1 by the number of tests) is conservative and rarely controversial. Benjamini-Hochberg (which controls the false discovery rate, FDR) is appropriate when many true positives are expected. Either way, name the correction in the methods and apply it consistently. Where possible, pre-specify which contrasts are primary. Then you only need to correct over those."
           }
         }
       ]
@@ -94,13 +94,13 @@
       <p><strong>When you run 20 tests, 1 will be 'significant' by chance.</strong></p>
 
       <h2>What it is</h2>
-      <p>With α = 0.05, every independent statistical test has a 5% chance of returning a false-positive result. Run 20 tests and the expected false-positive count is 1. Run 100 tests and you'll find roughly 5 'significant' results from random noise alone.</p>
+      <p>With α = 0.05 (the significance threshold), every independent statistical test has a 5% chance of returning a false-positive result. Run 20 tests and the expected false-positive count is 1. Run 100 tests and you will find roughly 5 'significant' results from random noise alone.</p>
 
       <h2>Why a reviewer cares</h2>
-      <p>Common failure modes: testing every cell in a correlation matrix; checking every demographic subgroup for an effect; comparing every pair of conditions in a factorial design without correction; running a separate test per outcome in a battery and headlining whichever popped.</p>
+      <p>Common failure modes include testing every cell in a correlation matrix and checking every demographic subgroup for an effect. Others are comparing every pair of conditions in a factorial design without correction and running a separate test per outcome in a battery, then headlining whichever came out significant.</p>
 
       <h2>How to fix it</h2>
-      <p>Apply a correction. Bonferroni (divide α by the number of tests) is conservative and rarely controversial. Benjamini-Hochberg (FDR) is appropriate when many true positives are expected. Either way, name the correction in the methods and apply it consistently. Where possible, pre-specify which contrasts are primary so you only need to correct over those.</p>
+      <p>Apply a correction. Bonferroni (divide α by the number of tests) is conservative and rarely controversial. Benjamini-Hochberg (which controls the false discovery rate, FDR) is appropriate when many true positives are expected. Either way, name the correction in the methods and apply it consistently. Where possible, pre-specify which contrasts are primary. Then you only need to correct over those.</p>
 
       <hr class="divider">
       <p>This is one of <a href="/guides/why-it-matters/">~15 canonical methodology explainers</a> Paper Review's red-team report links to. To get a full review of your manuscript, <a href="/tools/paper-review/" class="link-strong">start a Paper Review ($9)</a>.</p>
