@@ -14,8 +14,8 @@ const FMT = { "16x9": { W: 1920, H: 1080, vertical: false }, "9x16": { W: 1080, 
 const VWIN = { top: 230, size: 1080 };
 const VCARD = { top: 1560, h: 260 };
 const VCARD_TOP = 1480;
-const VCLIP_TOP = 95; // ends at 1310, the same line as the square window of the landscape-clip vertical shots
-const VCLIP_H = 1215; // the full-frame vertical captures are 1920x2160 (8:9), so at 1080 wide they are 1215 tall; never stretch them
+const VCLIP_TOP = 0; // ends at 1310, the same line as the square window of the landscape-clip vertical shots
+const VCLIP_H = 1888; // the portrait captures are 1024x1790 (undistorted game window), drawn at 1080 wide = 1888 tall, the same scale on both axes
 
 function useFonts() {
   const [handle] = useState(() => delayRender("fonts"));
@@ -171,7 +171,7 @@ function EndCard({ end, fmt, fps }) {
   const v = fmt.vertical;
   const logoP = expoOut(clamp01(t / 0.6));
   const row = (d) => expoOut(clamp01((t - d) / 0.5));
-  const fadeOut = clamp01((end.dur - t) / 0.4);
+  const fadeOut = 1;
   const L = end.lines;
   return (
     <AbsoluteFill style={{ background: "#07060e", opacity: fadeOut }}>
@@ -201,8 +201,8 @@ function renderText(text, accent) {
 function Card({ c, fmt, t }) {
   const lt = t - c.start;
   if (lt < 0 || t > c.end) return null;
-  const inP = expoOut(clamp01(lt / 0.18));
-  const op = Math.min(clamp01(lt / 0.05), clamp01((c.end - t) / 0.15));
+  const inP = c.instant ? 1 : expoOut(clamp01(lt / 0.18));
+  const op = c.instant ? clamp01((c.end - t) / 0.15) : Math.min(clamp01(lt / 0.05), clamp01((c.end - t) / 0.15));
   const v = fmt.vertical;
   const size = v ? (c.vsize ?? 84) : (c.size ?? 104);
   const accent = c.accent === "cyan" ? C.cyan : c.accent === "purple" ? C.purpleLight : C.orange;
@@ -214,6 +214,12 @@ function Card({ c, fmt, t }) {
   } else if (c.pos === "mid") {
     place = { left: 0, right: 0, top: 0, bottom: 0, alignItems: "center", justifyContent: "center" };
     plate = "radial-gradient(ellipse at 50% 50%, rgba(7,6,14,0.62) 0%, rgba(7,6,14,0) 66%)";
+  } else if (c.pos === "floor") {
+    place = { left: 0, width: 1920, bottom: 28, height: 130, alignItems: "flex-end", justifyContent: "center" };
+    plate = null;
+  } else if (c.pos === "left") {
+    place = { left: 24, width: 620, top: 130, height: 240, alignItems: "flex-start", justifyContent: "flex-start" };
+    plate = null;
   } else if (c.pos === "top") {
     place = { left: 0, width: 1920, top: 150, height: 240, alignItems: "flex-start", justifyContent: "center" };
     plate = null;

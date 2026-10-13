@@ -71,8 +71,8 @@
  ],
  "scenes": [
   {
-   "clip": "v_ob",
-   "in": 2.1,
+   "clip": "v2_ob",
+   "in": 2.167,
    "dur": 2.6,
    "v": {
     "cx": 960,
@@ -106,13 +106,14 @@
    "cards": [
     {
      "text": "TURN-BASED\n*TACTICS.*",
-     "at": 0.1,
-     "dur": 2.3,
+     "at": 0.0,
+     "dur": 2.4,
      "pos": "bottom",
-     "sfxDb": -4.5
+     "sfxDb": -4.5,
+     "instant": true
     }
    ],
-   "vclip": "v_ob",
+   "vclip": "v2_ob",
    "hits": [
     {
      "at": 0.4,
@@ -132,8 +133,8 @@
    ]
   },
   {
-   "clip": "v_ob",
-   "in": 8.433,
+   "clip": "v2_ob",
+   "in": 8.5,
    "dur": 2.5,
    "v": {
     "cx": 960,
@@ -173,11 +174,11 @@
      "sfxDb": -4.5
     }
    ],
-   "vclip": "v_ob"
+   "vclip": "v2_ob"
   },
   {
-   "clip": "v_g1",
-   "in": 2.833,
+   "clip": "v2_g1",
+   "in": 2.867,
    "dur": 1.6,
    "v": {
     "cx": 960,
@@ -200,11 +201,11 @@
      "sfxDb": -4.5
     }
    ],
-   "vclip": "v_g1"
+   "vclip": "v2_g1"
   },
   {
-   "clip": "v_g3",
-   "in": 2.833,
+   "clip": "v2_g3",
+   "in": 2.867,
    "dur": 1.6,
    "v": {
     "cx": 960,
@@ -227,11 +228,11 @@
      "sfxDb": -4.5
     }
    ],
-   "vclip": "v_g3"
+   "vclip": "v2_g3"
   },
   {
-   "clip": "v_ob",
-   "in": 2.7,
+   "clip": "v2_ob",
+   "in": 2.767,
    "dur": 2.6,
    "v": {
     "cx": 960,
@@ -262,15 +263,15 @@
      "speed": 0.4
     }
    ],
-   "vclip": "v_ob",
+   "vclip": "v2_ob",
    "logo": {
     "at": 1.95,
     "dur": 1.0
    }
   },
   {
-   "clip": "v_a",
-   "in": 13.333,
+   "clip": "v2_a",
+   "in": 13.367,
    "dur": 1.2,
    "v": {
     "cx": 960,
@@ -303,7 +304,7 @@
      "sfx": false
     }
    ],
-   "vclip": "v_a"
+   "vclip": "v2_a"
   },
   {
    "type": "end",

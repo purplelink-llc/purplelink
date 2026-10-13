@@ -69,9 +69,9 @@
    "gain_db": -14
   },
   {
-   "t": 55.82,
+   "t": 55.72,
    "kind": "riser",
-   "dur": 11.299999999999997,
+   "dur": 11.199999999999996,
    "gain_db": -8
   }
  ],
@@ -112,11 +112,12 @@
    "cards": [
     {
      "text": "TURN-BASED\n*TACTICS.*",
-     "at": 0.2,
-     "dur": 2.0,
+     "at": 0.0,
+     "dur": 2.2,
      "pos": "top",
      "size": 92,
-     "sfxDb": -4.5
+     "sfxDb": -4.5,
+     "instant": true
     }
    ],
    "hits": [
@@ -449,7 +450,7 @@
    },
    "cards": [
     {
-     "text": "TAKE A TOWN.\n*PICK ONE OF THREE.*",
+     "text": "TAKE A *TOWN.*",
      "at": 0.0,
      "dur": 1.25,
      "pos": "bottom",
@@ -466,11 +467,16 @@
     "cy": 540,
     "s": 1.0
    },
-   "crop": {
-    "x": 0.5,
-    "y": 0.45,
-    "s": 1.18
-   }
+   "cards": [
+    {
+     "text": "PICK ONE *OF THREE.*",
+     "at": 0.0,
+     "dur": 0.85,
+     "pos": "floor",
+     "size": 70,
+     "sfxDb": -4.5
+    }
+   ]
   },
   {
    "clip": "k_spoils",
@@ -510,7 +516,7 @@
   },
   {
    "clip": "k_hub",
-   "in": 7.2,
+   "in": 6.0,
    "dur": 1.2,
    "v": {
     "cx": 960,
@@ -527,7 +533,8 @@
      "text": "BUILD THE\n*OUTPOST.*",
      "at": 0.0,
      "dur": 1.2,
-     "pos": "top",
+     "pos": "left",
+     "size": 78,
      "sfxDb": -4.5,
      "strong": true
     }
@@ -911,7 +918,7 @@
   {
    "clip": "t_e",
    "in": 2.95,
-   "dur": 1.0,
+   "dur": 2.4,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -940,25 +947,11 @@
      "dur": 0.42,
      "speed": 0.4
     }
-   ]
-  },
-  {
-   "clip": "t_e",
-   "in": 4.6,
-   "dur": 1.5,
-   "v": {
-    "cx": 960,
-    "cy": 540,
-    "s": 1.0
-   },
-   "punch": {
-    "from": 1.0,
-    "to": 1.05
-   },
+   ],
    "cards": [
     {
      "text": "ONE MORE *RUN.*",
-     "at": 0.1,
+     "at": 1.0,
      "dur": 1.35,
      "pos": "mid",
      "size": 150,

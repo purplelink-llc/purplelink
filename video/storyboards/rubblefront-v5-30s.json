@@ -69,9 +69,9 @@
    "gain_db": -14
   },
   {
-   "t": 26.5,
+   "t": 25.7,
    "kind": "riser",
-   "dur": 6.5,
+   "dur": 5.699999999999999,
    "gain_db": -8
   }
  ],
@@ -112,11 +112,12 @@
    "cards": [
     {
      "text": "TURN-BASED\n*TACTICS.*",
-     "at": 0.2,
-     "dur": 2.0,
+     "at": 0.0,
+     "dur": 2.2,
      "pos": "top",
      "size": 92,
-     "sfxDb": -4.5
+     "sfxDb": -4.5,
+     "instant": true
     }
    ],
    "hits": [
@@ -245,7 +246,7 @@
   },
   {
    "clip": "k_hub",
-   "in": 3.0,
+   "in": 6.0,
    "dur": 2.23,
    "v": {
     "cx": 960,
@@ -262,7 +263,8 @@
      "text": "BUILD THE\n*OUTPOST.*",
      "at": 0.0,
      "dur": 1.2,
-     "pos": "top",
+     "pos": "left",
+     "size": 78,
      "sfxDb": -4.5,
      "strong": true
     }
@@ -490,7 +492,7 @@
   {
    "clip": "t_e",
    "in": 3.0,
-   "dur": 0.9,
+   "dur": 2.1,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -519,26 +521,12 @@
      "dur": 0.42,
      "speed": 0.4
     }
-   ]
-  },
-  {
-   "clip": "t_e",
-   "in": 4.6,
-   "dur": 2.0,
-   "v": {
-    "cx": 960,
-    "cy": 540,
-    "s": 1.0
-   },
-   "punch": {
-    "from": 1.0,
-    "to": 1.05
-   },
+   ],
    "cards": [
     {
      "text": "ONE MORE *RUN.*",
-     "at": 0.4,
-     "dur": 1.5,
+     "at": 0.8,
+     "dur": 1.2,
      "pos": "mid",
      "size": 150,
      "sfx": false
