@@ -13,6 +13,7 @@ from typing import Optional
 
 import httpx
 
+from digest.affiliates import DISCLOSURE, rewrite_url
 from digest.curator import DigestData, DigestItem, _SECTION_LABELS
 
 logger = logging.getLogger(__name__)
@@ -90,10 +91,21 @@ def _fmt_date(d: datetime.date) -> str:
     return f"{_MONTHS[d.month]} {d.day}, {d.year}"
 
 
+def _item_link(item: DigestItem) -> tuple:
+    """(href, rel) for an item. Links to an approved affiliate program get the tracked URL and rel=sponsored."""
+    href, program = rewrite_url(item.url)
+    return href, ("sponsored noopener" if program else "noopener")
+
+
+def digest_has_affiliate_links(digest: DigestData) -> bool:
+    return any(rewrite_url(it.url)[1] is not None for items in digest.sections.values() for it in items)
+
+
 def _render_item_html(item: DigestItem) -> str:
+    href, rel = _item_link(item)
     return f"""      <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="{html.escape(item.url, quote=True)}" target="_blank" rel="noopener">{html.escape(item.title)}</a>
+          <a class="digest-item-title" href="{html.escape(href, quote=True)}" target="_blank" rel="{rel}">{html.escape(item.title)}</a>
           <span class="digest-item-source">{html.escape(item.source_name)}</span>
         </div>
         <p class="digest-item-note">{html.escape(item.editorial_note)}</p>
@@ -128,6 +140,9 @@ def render_html(digest: DigestData) -> str:
     iso_date = digest.date.isoformat()
     title = f"Purplelink Daily Digest #{digest.number} — {date_str}"
     sections_html = _render_sections_html(digest)
+    affiliate_note = (
+        f'<p class="aff-disclosure">{html.escape(DISCLOSURE)}</p>' if digest_has_affiliate_links(digest) else ""
+    )
     css_url = asset_url("/styles.css")
     site_js_url = asset_url("/site.js")
     theme_js_url = asset_url("/theme.js")
@@ -230,6 +245,7 @@ def render_html(digest: DigestData) -> str:
     <article id="main-content" class="post-body digest-body">
 
       <p class="digest-intro">{html.escape(digest.intro)}</p>
+{affiliate_note}
 
 {sections_html}
 
@@ -329,6 +345,10 @@ def render_email_html(digest: DigestData, unsubscribe_url: str = "", tier: str =
     """
     date_str = _fmt_date(digest.date)
     title = f"Purplelink Daily Digest #{digest.number} — {date_str}"
+    email_affiliate_note = (
+        f'<p style="font-size:12px;color:#666;margin:-12px 0 24px;">{html.escape(DISCLOSURE)}</p>'
+        if digest_has_affiliate_links(digest) else ""
+    )
     sections_html = _render_sections_html(digest)
     unsub_line = (
         f'<p style="font-size:12px;color:#888;margin-top:24px;">'
@@ -368,6 +388,7 @@ def render_email_html(digest: DigestData, unsubscribe_url: str = "", tier: str =
 <body style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:24px 16px;color:#1a1a1a;">
   <h1 style="font-size:22px;margin-bottom:8px;">{title}</h1>
   <p style="color:#555;margin-bottom:24px;">{html.escape(digest.intro)}</p>
+  {email_affiliate_note}
 {sections_html}
   <hr style="border:none;border-top:1px solid #e0e0e0;margin:24px 0;">
   <p style="font-size:13px;color:#555;">
