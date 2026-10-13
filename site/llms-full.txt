@@ -69,6 +69,10 @@ Finding a file or app without opening Finder
 
 Summonly searches the folders you choose from one box, answers sums and unit conversions, and keeps a clipboard history that skips passwords.
 
+A battery percent that tells you too little
+
+BatteryMeter, a free app, shows charge, battery power in watts and cycle count in the menu bar.
+
 Keeping track of where everything is
 
 Vitae, a free app. Vitae Plus is an optional subscription from $2.99 a month.
@@ -168,6 +172,14 @@ Free 7-day trial, then $9.99
 A menu-bar app that finds files, apps and clipboard history from one box, opened with Option-Space. It keeps a private index of the folders you choose, answers sums and unit conversions, and runs web searches from a keyword. macOS 14 or later.
 
 See Summonly →
+
+Free
+
+### BatteryMeter
+
+A menu-bar app that shows battery percent, an arrow for the direction of charge and battery power in watts, with a menu of charge, adapter, capacity and cycle count details. It makes no network connection. macOS 13 or later, Apple silicon.
+
+Download BatteryMeter →
 
 Before you submit
 

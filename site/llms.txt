@@ -108,6 +108,16 @@
 - **Status:** Shipping. Notarized download, no App Store required.
 - **Trial and purchase:** https://purplelink.llc/summonly/
 
+### BatteryMeter (macOS)
+- **Platform:** macOS 13 or later, Apple silicon only
+- **Category:** Battery and power
+- **Description:** A free menu-bar battery indicator for MacBooks. It shows the percent, an arrow for whether the charge is rising or falling, and battery power in watts, with a menu of time to full or empty, volts and amps, adapter watts, capacity against design, cycle count and a chart of the last hour. The icon is green while charging, orange at 20 percent or below and red at 10 percent or below.
+- **Pricing:** Free. One download, no email, no account, no trial and no license key.
+- **Privacy:** It reads one battery entry in macOS, makes no network connection and collects nothing. It stores only its display settings on the Mac.
+- **Limits:** No temperature unless macOS provides one. Apple silicon only. The time estimate is macOS's own. Not on the Mac App Store.
+- **Status:** Shipping since 2026-10-13. Notarized download.
+- **Download:** https://purplelink.llc/batterymeter/
+
 ### Mac Suite (macOS bundle)
 - **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus key.
 - **Pricing:** $59.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
