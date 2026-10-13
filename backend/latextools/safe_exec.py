@@ -51,3 +51,20 @@ def run_pandoc_sandboxed(cmd, *, cwd, timeout, fallback: bool = False):
         list(cmd), cwd=cwd, capture_output=True, text=True,
         timeout=remaining, env=env,
     )
+
+
+def run_pandoc_plain(cmd, *, cwd, timeout):
+    """Run pandoc WITHOUT --sandbox, with the minimal environment.
+
+    The packaged pandoc on the Modal image cannot reach its own data files in
+    sandbox mode (docx and pdf writers fail with "Could not find data file"),
+    and its --sandbox does not stop the docx writer embedding a local file named
+    by an image path. Callers must therefore remove file references from the
+    document tree themselves (see NO_IMAGES_LUA in app.py).
+    """
+    import subprocess
+
+    return subprocess.run(
+        list(cmd), cwd=cwd, capture_output=True, text=True,
+        timeout=timeout, env=minimal_env(cwd),
+    )
