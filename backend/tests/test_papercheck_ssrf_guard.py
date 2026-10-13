@@ -180,3 +180,69 @@ async def test_crossref_lookup_reports_network_error_for_ssrf_attempt():
 
     assert result["status"] == "network_error"
     assert client.head.await_count == 1
+
+
+# ----------------------------------------------------------------------------
+# DNS-rebinding window: the request connects to the address that was checked
+# ----------------------------------------------------------------------------
+
+def _fake_getaddrinfo(mapping):
+    calls = []
+
+    def fake(host, port, *args, **kwargs):
+        calls.append(host)
+        if host not in mapping:
+            raise OSError("unresolvable")
+        return [(2, 1, 6, "", (ip, port or 0)) for ip in mapping[host]]
+
+    fake.calls = calls
+    return fake
+
+
+def test_pin_connects_to_resolved_ip_and_keeps_name_for_host_and_sni(monkeypatch):
+    monkeypatch.setattr(papercheck.socket, "getaddrinfo", _fake_getaddrinfo({"doi.org": ["8.8.8.8"]}))
+    pinned, headers, ext = papercheck._pin_public_address("https://doi.org/10.1000/abc?x=1")
+    assert pinned == "https://8.8.8.8/10.1000/abc?x=1"
+    assert headers == {"Host": "doi.org"}
+    assert ext == {"sni_hostname": "doi.org"}
+
+
+def test_pin_keeps_port_and_brackets_ipv6_and_skips_sni_for_http(monkeypatch):
+    monkeypatch.setattr(
+        papercheck.socket, "getaddrinfo",
+        _fake_getaddrinfo({"a.example": ["2606:4700:4700::1111"], "b.example": ["1.1.1.1"]}),
+    )
+    pinned, headers, ext = papercheck._pin_public_address("http://a.example:8080/x")
+    assert pinned == "http://[2606:4700:4700::1111]:8080/x"
+    assert headers == {"Host": "a.example:8080"} and ext == {}
+
+
+def test_pin_refuses_when_any_address_is_private(monkeypatch):
+    monkeypatch.setattr(
+        papercheck.socket, "getaddrinfo",
+        _fake_getaddrinfo({"mixed.example": ["8.8.8.8", "10.0.0.5"], "meta.example": ["169.254.169.254"]}),
+    )
+    assert papercheck._pin_public_address("https://mixed.example/") is None
+    assert papercheck._pin_public_address("https://meta.example/") is None
+    assert papercheck._pin_public_address("file:///etc/passwd") is None
+    assert papercheck._pin_public_address("https://unknown.example/") is None
+
+
+@pytest.mark.asyncio
+async def test_each_hop_resolves_once_and_requests_the_checked_address(monkeypatch):
+    """A name that would resolve differently on a second lookup is only ever
+    resolved once per hop, and the request goes to the first (checked) answer."""
+    fake = _fake_getaddrinfo({"doi.org": ["8.8.8.8"], "pub.example": ["1.1.1.1"]})
+    monkeypatch.setattr(papercheck.socket, "getaddrinfo", fake)
+    client = MagicMock()
+    client.head = AsyncMock(side_effect=[_resp(302, location="https://pub.example/p"), _resp(200)])
+
+    await papercheck._resolve_doi_redirects_safely(client, "10.1000/abc")
+
+    assert fake.calls == ["doi.org", "pub.example"]
+    first, second = client.head.await_args_list
+    assert first.args[0] == "https://8.8.8.8/10.1000/abc"
+    assert first.kwargs["headers"] == {"Host": "doi.org"}
+    assert first.kwargs["extensions"] == {"sni_hostname": "doi.org"}
+    assert second.args[0] == "https://1.1.1.1/p"
+    assert second.kwargs["headers"] == {"Host": "pub.example"}
