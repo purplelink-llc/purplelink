@@ -1,4 +1,4 @@
-"""Thin-page prune, 2026-10-12: photography place pages and the kits are noindex,follow
+"""Thin-page prune, 2026-10-12: photography place pages are noindex,follow (the kits stay indexable by decision)
 and out of sitemap.xml; the digest is crawlable so its noindex can be read."""
 import re
 import unittest
@@ -52,14 +52,16 @@ class PhotographyPlaces(unittest.TestCase):
 
 
 class Kits(unittest.TestCase):
-    def test_noindex_and_not_in_sitemap(self):
+    """Ben's call on 2026-10-12: the kits stay indexable (the report suggested noindex)."""
+
+    def test_kits_stay_indexable_and_in_sitemap(self):
         paths = sitemap_paths()
         pages = kit_pages()
         self.assertEqual(len(pages), 4)
         for f in pages:
-            self.assertTrue(has_noindex(f.read_text(encoding="utf-8")), f)
+            self.assertFalse(has_noindex(f.read_text(encoding="utf-8")), f)
             url = "/" + f.parent.relative_to(SITE).as_posix() + "/"
-            self.assertNotIn(url if url != "//" else "/kits/", paths)
+            self.assertIn(url, paths)
 
     def test_still_linked_from_products(self):
         text = (SITE / "products" / "index.html").read_text(encoding="utf-8")
