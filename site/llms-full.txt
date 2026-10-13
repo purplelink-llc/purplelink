@@ -1058,7 +1058,7 @@ Keyfeel plays real recorded keyboard-switch sounds when you press a key on your 
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.5.2, released October 13, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.5.3, released October 13, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
 Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
 
@@ -1090,7 +1090,7 @@ Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it
 
 ## What it does
 
-Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), IBM Model M recordings (key presses only), and synthesized extras. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
+Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), IBM Model M recordings (key presses only), and synthesized extras. Every sound in the menu has a play button that plays a few keys in it without switching to it, so you can hear it first. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
 
 Your own soundsImport a Mechvibes sound pack in the original format (its folder, its zip or its config.json), including packs in .ogg. Each key keeps the sound the pack gave it. Packs in the newer MechvibesDX format are not read. Or choose one short sound file of your own.
 
@@ -7609,7 +7609,7 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 ## Keyfeel (Purplelink's)
 
-Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.5.2, signed and notarized, released October 13, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
+Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.5.3, signed and notarized, released October 13, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
 
 I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return.
 
