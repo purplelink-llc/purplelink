@@ -22,6 +22,7 @@
  */
 
 import { getStore } from "@netlify/blobs";
+import { ownerToken, safeEqual } from "../lib/auth.mjs";
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -80,7 +81,7 @@ export default async function handler(request) {
   const url = new URL(request.url);
   const expected = Netlify.env.get("STATS_TOKEN");
   if (!expected) return json(500, { error: "misconfigured", detail: "Set STATS_TOKEN on this site." });
-  if (url.searchParams.get("token") !== expected) return json(401, { error: "unauthorized" });
+  if (!safeEqual(ownerToken(request, url), expected)) return json(401, { error: "unauthorized" });
 
   // ?host=<host> returns only that host's records; without it, EXTERNAL_HOSTS are left out.
   const hostFilter = normalizeHost(url.searchParams.get("host"));
