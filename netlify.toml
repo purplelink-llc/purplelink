@@ -159,6 +159,14 @@
   [headers.values]
     Cache-Control = "public, max-age=300, must-revalidate"
 
+# Sparkle update feed: installed copies of BatteryMeter poll this once a day. Short cache so a
+# new release shows up within minutes; the catch-all rule above would otherwise cache it a year.
+[[headers]]
+  for = "/batterymeter/appcast.xml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
+    Cache-Control = "public, max-age=300, must-revalidate"
+
 [[headers]]
   for = "/sitemap.xml"
   [headers.values]

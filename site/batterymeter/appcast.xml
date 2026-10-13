@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>BatteryMeter</title>
+    <link>https://purplelink.llc/batterymeter/</link>
+    <description>BatteryMeter updates</description>
+    <language>en</language>
+    <item>
+      <title>1.2.0</title>
+      <pubDate>Tue, 13 Oct 2026 19:37:32 +0000</pubDate>
+      <sparkle:version>3</sparkle:version>
+      <sparkle:shortVersionString>1.2.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Adds automatic updates. The list of apps using the most power is unchanged.</p>]]></description>
+      <enclosure url="https://purplelink.llc/batterymeter/BatteryMeter-1.2.0.zip" length="1598552" type="application/octet-stream" sparkle:edSignature="gTkZQxbQhg1IbWKwT82czJoP83pg8/C/WyQj/Z4BnyH3FjPoiCcOtzaMP2qIoY6GL6penU8rH80HJJnzZIguBg=="/>
+    </item>
+  </channel>
+</rss>

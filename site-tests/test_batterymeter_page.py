@@ -6,13 +6,16 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
 from common import SITE, ORIGIN, EMOJI, page_of, canonical, jsonld_blocks, walk, meta
 
 URL = "/batterymeter/"
-ZIP = SITE / "batterymeter" / "BatteryMeter-1.1.0.zip"
+ZIP = SITE / "batterymeter" / "BatteryMeter-1.2.0.zip"
+APPCAST = SITE / "batterymeter" / "appcast.xml"
+SPARKLE = "{http://www.andymatuschak.org/xml-namespaces/sparkle}"
 
 
 def text_of(s):
@@ -48,10 +51,10 @@ class BatteryMeterPage(unittest.TestCase):
         self.assertEqual(float(app["offers"]["price"]), 0)
         self.assertEqual(app["offers"]["priceCurrency"], "USD")
         self.assertEqual(app["applicationCategory"], "UtilitiesApplication")
-        self.assertEqual(app["softwareVersion"], "1.1.0")
+        self.assertEqual(app["softwareVersion"], "1.2.0")
         self.assertEqual(app["operatingSystem"], "macOS 13.0 or later")
         self.assertEqual(app["fileSize"], "%d bytes" % ZIP.stat().st_size)
-        self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.1.0.zip")
+        self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.2.0.zip")
         types = {d.get("@type") for d in self.nodes}
         self.assertIn("BreadcrumbList", types)
         self.assertIn("FAQPage", types)
@@ -63,7 +66,7 @@ class BatteryMeterPage(unittest.TestCase):
             (text_of(m.group(1)), text_of(m.group(2)))
             for m in re.finditer(r'<details class="faq-item">\s*<summary>(.*?)</summary>\s*<div class="faq-body">(.*?)</div>', self.text, re.S)
         ]
-        self.assertTrue(4 <= len(ld) <= 8)
+        self.assertTrue(4 <= len(ld) <= 10)
         self.assertEqual(ld, vis)
 
     def test_internal_links_resolve(self):
@@ -74,7 +77,7 @@ class BatteryMeterPage(unittest.TestCase):
                 self.assertTrue((SITE / h.lstrip("/")).exists() or "/media/" in h, h)
 
     def test_download_link_and_tracking(self):
-        links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.1\.0\.zip"[^>]*>', self.text)
+        links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.2\.0\.zip"[^>]*>', self.text)
         self.assertGreaterEqual(len(links), 2)
         for tag in links:
             self.assertIn('data-track="download"', tag)
@@ -136,8 +139,64 @@ class BatteryMeterPage(unittest.TestCase):
         answers = {q["name"]: q["acceptedAnswer"]["text"] for q in faq["mainEntity"]}
         self.assertIn("Force Quit asks you to confirm first", answers["Can it force quit apps?"])
         self.assertIn("relative score, not watts", answers["Does the energy impact number mean watts?"])
-        self.assertIn("makes no network connection", self.text)
+        self.assertNotIn("makes no network connection", self.text)
+        self.assertNotIn("No network</h3>", self.text)
+        self.assertNotIn("no network,", self.text)
+        self.assertNotRegex(self.text, r"(?i)no network connection")
         self.assertNotRegex(self.text, r"(?i)\b(uploads?|sends? (?:your|process)|phones? home)\b")
+
+    def test_update_check_privacy_statement(self):
+        statement = "Once a day it fetches purplelink.llc/batterymeter/appcast.xml"
+        self.assertIn(statement, self.text)
+        self.assertIn("no account, no battery data and no list of processes", self.text)
+        faq = [d for d in self.nodes if d.get("@type") == "FAQPage"][0]
+        answers = {q["name"]: q["acceptedAnswer"]["text"] for q in faq["mainEntity"]}
+        self.assertIn(statement, answers["Does it send anything?"])
+        upd = answers["How does it update?"]
+        for s in ("once a day", "asks before it installs", "signed", "1.1.0 or earlier", "by hand", "changelog"):
+            self.assertIn(s, upd)
+        self.assertIn('href="/changelog/"', self.text)
+        for rel in ("privacy/index.html", "products/index.html",
+                    "guides/check-mac-battery-health-voltage-and-cycle-count/index.html"):
+            s = (SITE / rel).read_text(encoding="utf-8")
+            for line in s.splitlines():
+                if "BatteryMeter" in line:
+                    self.assertNotIn("makes no network connection", line, rel)
+        llms = (SITE / "llms.txt").read_text(encoding="utf-8")
+        section = llms.split("### BatteryMeter", 1)[1].split("\n### ", 1)[0]
+        self.assertNotIn("no network connection", section)
+        self.assertIn("appcast.xml", section)
+
+    def test_download_line_matches_zip(self):
+        data = ZIP.read_bytes()
+        self.assertIn(hashlib.sha256(data).hexdigest(), self.text)
+        self.assertIn("{:,} bytes".format(len(data)), self.text)
+        self.assertIn("Version 1.2.0, released October 13, 2026", self.text)
+        self.assertNotIn("404 KB", self.text)
+        self.assertNotIn("464,618", self.text)
+
+    def test_appcast_matches_page_and_zip(self):
+        self.assertTrue(APPCAST.is_file())
+        root = ET.parse(APPCAST).getroot()
+        items = root.findall("./channel/item")
+        self.assertGreaterEqual(len(items), 1)
+        app = [d for d in self.nodes if d.get("@type") == "SoftwareApplication"][0]
+        newest = max(items, key=lambda i: int(i.find(SPARKLE + "version").text))
+        self.assertEqual(newest.find(SPARKLE + "shortVersionString").text, app["softwareVersion"])
+        enc = newest.find("enclosure")
+        self.assertEqual(enc.get("url"), app["downloadUrl"])
+        self.assertEqual(int(enc.get("length")), ZIP.stat().st_size)
+        self.assertTrue(enc.get(SPARKLE + "edSignature"))
+        for item in items:
+            self.assertTrue(item.find("enclosure").get(SPARKLE + "edSignature"))
+
+    def test_appcast_headers_short_cache_xml(self):
+        toml = (SITE.parent / "netlify.toml").read_text(encoding="utf-8")
+        m = re.search(r'for = "/batterymeter/appcast\.xml"\s*\[headers\.values\]\s*(.*?)\n\n', toml, re.S)
+        self.assertIsNotNone(m)
+        self.assertIn("application/xml", m.group(1))
+        self.assertIn("max-age=300", m.group(1))
+        self.assertNotIn("immutable", m.group(1))
 
     def test_wired_in_hub_home_changelog(self):
         for rel in ("products/index.html", "index.html", "changelog/index.html"):
