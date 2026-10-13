@@ -70,7 +70,7 @@
           "@type": "FAQPage",
           "mainEntity": [
             {"@type": "Question", "name": "Does it work on a desktop Mac?", "acceptedAnswer": {"@type": "Answer", "text": "No. BatteryMeter reads the battery, so a Mac without one shows No battery. It is for MacBooks."}},
-            {"@type": "Question", "name": "Does it send anything?", "acceptedAnswer": {"@type": "Answer", "text": "BatteryMeter makes one kind of network request. Once a day it fetches purplelink.llc/batterymeter/appcast.xml to see whether a newer version exists. That request carries no account, no battery data and no list of processes. BatteryMeter has no analytics, collects nothing and stores only its display preferences on your Mac. The app has no setting to turn the daily check off."}},
+            {"@type": "Question", "name": "Does it send anything?", "acceptedAnswer": {"@type": "Answer", "text": "BatteryMeter makes one kind of network request. Once a day it fetches purplelink.llc/batterymeter/appcast.xml to see whether a newer version exists. That request carries no account, no battery data and no list of processes. As with any web request, our server sees your IP address and the app's name and version. BatteryMeter has no analytics, collects nothing and stores only its display preferences on your Mac. The app has no setting to turn the daily check off."}},
             {"@type": "Question", "name": "Why does its capacity differ from the health figure in System Settings?", "acceptedAnswer": {"@type": "Answer", "text": "BatteryMeter shows capacity against design (raw) and the nominal charge capacity, both read from the battery. Apple's own health figure uses its own method and can differ."}},
             {"@type": "Question", "name": "Does it show the battery temperature?", "acceptedAnswer": {"@type": "Answer", "text": "Only if macOS provides it. The battery entry on the Mac used for testing has no temperature, so the app shows none there."}},
             {"@type": "Question", "name": "Does it run on an Intel Mac?", "acceptedAnswer": {"@type": "Answer", "text": "No. BatteryMeter is built for Apple silicon (M-series chips) only, and it needs macOS 13 or later."}},
@@ -254,7 +254,7 @@
         </div>
         <div class="feature-item">
           <h3>One daily update check</h3>
-          <p>Its only network request is a check once a day of purplelink.llc/batterymeter/appcast.xml for a newer version. The request carries no account, no battery data and no list of processes. It collects nothing and has no analytics and no account. Process names are shown on screen and never stored.</p>
+          <p>Its only network request is a check once a day of purplelink.llc/batterymeter/appcast.xml for a newer version. The request carries no account, no battery data and no list of processes. As with any web request, our server sees your IP address and the app's name and version. It collects nothing and has no analytics and no account. Process names are shown on screen and never stored.</p>
         </div>
         <div class="feature-item">
           <h3>Nothing changed</h3>
@@ -291,7 +291,7 @@
         </details>
         <details class="faq-item">
           <summary>Does it send anything?</summary>
-          <div class="faq-body">BatteryMeter makes one kind of network request. Once a day it fetches purplelink.llc/batterymeter/appcast.xml to see whether a newer version exists. That request carries no account, no battery data and no list of processes. BatteryMeter has no analytics, collects nothing and stores only its display preferences on your Mac. The app has no setting to turn the daily check off.</div>
+          <div class="faq-body">BatteryMeter makes one kind of network request. Once a day it fetches purplelink.llc/batterymeter/appcast.xml to see whether a newer version exists. That request carries no account, no battery data and no list of processes. As with any web request, our server sees your IP address and the app's name and version. BatteryMeter has no analytics, collects nothing and stores only its display preferences on your Mac. The app has no setting to turn the daily check off.</div>
         </details>
         <details class="faq-item">
           <summary>Why does its capacity differ from the health figure in System Settings?</summary>
