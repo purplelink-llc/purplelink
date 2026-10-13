@@ -2,6 +2,8 @@
 //  - live-charging.png is a live reading from the real app on a Mac (the lower thirds say "Live reading");
 //  - sample-draining.png and sample-low.png are drawn by the app's snapshot mode with sample values and carry
 //    "Sample values, not a live reading" inside the image (the lower thirds say "Sample values");
+//  - sample-consumers.png (the "Using the most power" section, with a drawn Quit / Force Quit flyout) is also drawn with
+//    sample values ("Sample App A/B/C") and carries the same label inside the image (lower third: "Sample values");
 //  - the setup scene is a drawn text card, not a screenshot.
 // Facts from the brief for this cut and the BatteryMeter README.
 import { beats, finish } from "../stillplan.js";
@@ -11,12 +13,14 @@ export const media = {
   "bm-live.png": "assets/batterymeter/live-charging.png",
   "bm-drain.png": "assets/batterymeter/sample-draining.png",
   "bm-low.png": "assets/batterymeter/sample-low.png",
+  "bm-cons.png": "assets/batterymeter/sample-consumers.png",
 };
 
 // source pixels (2x render) shown 1:1 in window px
 const LIVE = { src: "media/bm-live.png", w: 1120, h: 828 };
 const DRAIN = { src: "media/bm-drain.png", w: 1120, h: 732 };
 const LOW = { src: "media/bm-low.png", w: 1120, h: 732 };
+const CONS = { src: "media/bm-cons.png", w: 1120, h: 776 }; // 1600x1108 source shown at 0.7
 const CARD = { w: 1120, h: 640 };
 const BG = "oklch(24% 0.03 300)";
 const ITEM = [940, 36]; // centre of the menu bar item in all three images
@@ -24,8 +28,8 @@ const ITEM_RING = [782, 8, 306, 56];
 const row = (y) => [60, y - 25, 960, 50];
 
 export function build(timing) {
-  const B = beats(timing, [0, 1, 2, 3, 4, 5], { start: 0.3, lead: 0.3, tail: 0.12, hold: { 0: 2.6 } });
-  const [b0, b1, b2, b3, b4, b5] = B;
+  const B = beats(timing, [0, 1, 2, 3, 4, 5, 6], { start: 0.3, lead: 0.3, tail: 0.12, hold: { 0: 2.6 } });
+  const [b0, b1, b2, b3, b4, b5, b6] = B;
   const keys = [];
   const rings = [];
   const lower = [];
@@ -66,25 +70,35 @@ export function build(timing) {
   R(b4.cue("cycle") - 0.1, b4.e - 0.05, row(665));
   L(b4.n + 0.15, b4.e - 0.1, "Live reading", "The menu adds the details.");
 
-  // 5 setup card
-  const s5 = b5.s - 0.1;
+  // 5 consumers sample: top 5 apps by energy impact, then the Quit / Force Quit flyout (all sample values)
+  const sc = b5.s - 0.1;
+  keys.push({ t: sc, fx: CONS.w / 2, fy: CONS.h / 2, s: wide, d: 0.9, ...AY });
+  keys.push({ t: b5.cue("lists") - 0.2, fx: 600, fy: 480, s: [1.3, 0.86], d: 1.0, ...AY });
+  R(b5.cue("apps") - 0.1, b5.cue("quit") - 0.2, [632, 498, 96, 42]); // first row, energy number
+  keys.push({ t: b5.cue("quit") - 0.3, fx: 600, fy: 540, s: [1.3, 0.86], d: 0.9, ...AY });
+  R(b5.cue("quit") - 0.1, b5.e - 0.05, [762, 498, 325, 193]); // Quit / Force Quit flyout
+  L(b5.n + 0.15, b5.e - 0.1, "Sample values", "Top apps by energy impact. Not a live reading.");
+
+  // 6 setup card
+  const s5 = b6.s - 0.1;
   const card = {
     bg: BG, ink: "oklch(97% 0.01 300)", muted: "oklch(76% 0.04 300)", accent: "oklch(56% 0.22 310)", accentInk: "oklch(99% 0.01 310)",
     tag: "Setup", heading: "Put it where Apple's icon was",
     steps: [
-      { t: b5.cue("hide") - s5 - 0.2, text: "Hide Apple's icon: System Settings, Control Center, Battery." },
-      { t: b5.cue("hold") - s5 - 0.2, text: "Hold Command and drag BatteryMeter's item into its place." },
+      { t: b6.cue("hide") - s5 - 0.2, text: "Hide Apple's icon: System Settings, Control Center, Battery." },
+      { t: b6.cue("hold") - s5 - 0.2, text: "Hold Command and drag BatteryMeter's item into its place." },
     ],
   };
   keys.push({ t: s5, fx: CARD.w / 2, fy: CARD.h / 2, s: [1.25, 0.9], d: 0.9, ...AY });
 
-  const ENDs = b5.e;
+  const ENDs = b6.e;
   const stills = [
     { ...LIVE, t0: 0 },
     { ...LIVE, t0: b1.s - 0.1 },
     { ...DRAIN, t0: s2 },
     { ...LOW, t0: s3 },
     { ...LIVE, t0: s4 },
+    { ...CONS, t0: sc },
     { src: null, ...CARD, card, t0: s5 },
   ];
   // the first two entries are the same picture; drop the duplicate so there is no needless crossfade
@@ -102,7 +116,7 @@ export function build(timing) {
       poster: b1.cue("watts") + 0.5,
       windowBg: BG, windowRadius: 24,
     },
-    B, 6, timing, { endLead: 0.2, endTail: 0.35 },
+    B, 7, timing, { endLead: 0.2, endTail: 0.35 },
   );
 }
 
