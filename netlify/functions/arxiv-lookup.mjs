@@ -40,7 +40,8 @@ export default async function handler(request) {
   try {
     resp = await fetch(`${ARXIV_API}?id_list=${encodeURIComponent(id)}&max_results=1`);
   } catch (err) {
-    return jsonResponse(502, { error: "arxiv_unreachable", detail: String(err) });
+    console.error("arxiv-lookup: arxiv request failed:", err?.name, err?.message);
+    return jsonResponse(502, { error: "arxiv_unreachable", detail: "Could not reach arXiv. Try again in a minute." });
   }
 
   if (!resp.ok) {
