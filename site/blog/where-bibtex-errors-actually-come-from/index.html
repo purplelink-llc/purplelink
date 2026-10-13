@@ -91,21 +91,21 @@
     <article class="post-body">
       <p>When I built the <a href="/tools/bib-validator/">BibTeX validator</a>, I expected it to catch the kind of mistakes researchers make directly: a misspelled author name, a missing journal field, a stray character in a citekey. The mental model was proofreading. Someone writes their bibliography, the validator flags their typos, they fix it.</p>
 
-      <p>That's not what happens.</p>
+      <p>That is not what happens.</p>
 
-      <p>Most of the errors the validator flags come from software exports, not from researchers. Mendeley, Zotero, Google Scholar, Scopus, even publisher download pages: each one produces BibTeX that's subtly wrong in its own way. Google Scholar omits the <code>month</code> field and sometimes drops page numbers entirely. Mendeley serializes the <code>author</code> field correctly but writes DOIs into the <code>url</code> field, which breaks certain bibliography styles. Zotero handles most entry types well but produces nonstandard output for conference papers. Some export tools write month as a number; others use the three-letter abbreviation LaTeX expects; others use the full word, which requires extra package support to parse.</p>
+      <p>Most of the errors the validator flags come from software exports, not from researchers. Mendeley, Zotero, Google Scholar, Scopus, even publisher download pages: each one produces BibTeX that is subtly wrong in its own way. Google Scholar omits the <code>month</code> field and sometimes drops page numbers entirely. Mendeley serializes the <code>author</code> field correctly but writes DOIs into the <code>url</code> field, which breaks certain bibliography styles. Zotero handles most entry types well but produces nonstandard output for conference papers. Some export tools write month as a number. Others use the three-letter abbreviation LaTeX expects, and others use the full word, which requires extra package support to parse.</p>
 
-      <p>None of these are researcher errors. The researcher opened their bibliography manager, exported to BibTeX, and dropped it into their project. The software they trusted to get this right didn't.</p>
+      <p>None of these are researcher errors. The researcher opened their bibliography manager, exported to BibTeX, and dropped the file into their project. The software they trusted to get it right did not.</p>
 
       <p>That reframing changed how I built it. A compatibility layer between incompatible software is a different job than a proofreader, and it needs different checks.</p>
 
-      <p>It also meant rethinking what "valid" means. A BibTeX file that compiles without errors in one journal's template will sometimes fail in another. Some styles require <code>number</code> fields that others ignore. Some demand a <code>publisher</code> entry for book chapters; others don't care. The BibTeX spec is loose enough that valid-by-spec isn't the same as valid-in-practice, and in-practice depends on which packages you're using.</p>
+      <p>It also meant rethinking what "valid" means. A BibTeX file that compiles without errors in one journal's template will sometimes fail in another. Some styles require <code>number</code> fields that others ignore. Some demand a <code>publisher</code> entry for book chapters, and others do not care. The BibTeX spec is loose enough that valid by the spec is not the same as valid in practice, and valid in practice depends on which packages you use.</p>
 
-      <p>The validator now checks against what commonly-used packages actually expect, not just what the original 1985 spec requires. It also surfaces a category of warnings that aren't errors: fields that will compile fine today but may cause problems if the researcher switches to a different bibliography style later. Whether to act on a warning is the researcher's call.</p>
+      <p>The validator now checks against what commonly used packages expect, not just what the original 1985 spec requires. It also surfaces warnings that are not errors: fields that compile today but may cause problems if the researcher switches to a different bibliography style later. Whether to act on a warning is the researcher's call.</p>
 
-      <p>The thing I didn't see coming: the warnings are what researchers find most useful. The errors they already knew about. The subtle compatibility issues they didn't.</p>
+      <p>I did not see this coming: researchers find the warnings most useful. They already knew about the errors. They did not know about the subtle compatibility issues.</p>
 
-      <p>I started this with a proofreading metaphor. The more accurate one is translation. The validator is reading what four different pieces of software produced and telling you what will and won't survive the trip to the journal template.</p>
+      <p>I started this with a proofreading metaphor. The more accurate one is translation. The validator reads what four different pieces of software produced and tells you what will and will not survive the trip to the journal template.</p>
       <p>The free <a href="/tools/bib-validator/">BibTeX Validator</a> catches these in a .bib file. In a finished manuscript, <a href="/tools/paper-review/">Paper Review</a> (from $9) checks every reference against CrossRef as part of the review.</p>
     </article>
 
