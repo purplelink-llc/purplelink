@@ -5511,3 +5511,23 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
   .specs-table th,
   .specs-table td { padding: 8px; overflow-wrap: anywhere; }
 }
+
+/* Trust block (home and products hub): five checkable facts, each linking to the page that states it. */
+.trust-check { padding: clamp(40px, 6vw, 72px) clamp(20px, 6vw, 80px); }
+.trust-check-ruled { border-bottom: 1px solid var(--line); }
+.trust-check h2 { margin-bottom: 8px; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+.trust-intro { margin-bottom: clamp(16px, 2.4vw, 28px); color: var(--muted); }
+.trust-list { list-style: none; max-width: 900px; margin: 0; padding: 0; }
+.trust-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 8px 20px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.trust-list h3 { margin: 0; font-family: var(--font-display); font-size: 1.15rem; }
+.trust-list h3 a { display: inline-block; padding: 4px 0; color: var(--ink); text-decoration-color: var(--purple); text-underline-offset: 4px; }
+.trust-list p { margin: 0; color: var(--muted); }
+@media (max-width: 640px) {
+  .trust-list li { grid-template-columns: 1fr; }
+}

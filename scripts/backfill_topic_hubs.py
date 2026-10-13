@@ -110,7 +110,6 @@ def topic_hub_skeleton(section_label, slug):
         <a href="/products/">Products</a>
         <a href="/tools/">Tools</a>
         <a href="/guides/">Guides</a>
-        <a href="/blog/" aria-current="page">Blog</a>
         <a href="/about/">About</a>
       </nav>
     </header>

@@ -13,6 +13,40 @@ Products
 
 Eight Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
 
+## What you can check before you install
+
+Each line links to the page that states it.
+
+- 
+
+### Signed and notarized
+
+The Mac apps are signed with a Developer ID and notarized by Apple, so macOS checks them before they open.
+
+- 
+
+### No account to create
+
+None of the Mac apps asks you to sign in. The privacy policy states what the apps and web tools send or keep.
+
+- 
+
+### A 14-day refund
+
+Email within 14 days of a purchase and it is refunded to the original payment method.
+
+- 
+
+### One person answers
+
+Email goes to the person who wrote the code. There is no ticket system and no account to sign in to.
+
+- 
+
+### Who makes it
+
+Benjamin Ampel, assistant professor at Georgia State University. Purplelink LLC, Atlanta, founded 2026.
+
 Watch the overview
 
 ## Everything Purplelink makes
@@ -113,7 +147,7 @@ Free app, optional Plus from $2.99 a month
 
 ### Vitae
 
-Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later. Currently a beta, version 1.0.4.
+Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later. Currently a beta, version 1.1.2.
 
 Download Vitae →
 
@@ -3751,13 +3785,19 @@ It is a one-person studio, so the person who answers your email is the person wh
 
 Ben
 
+## Company
+
+Purplelink LLC is a Georgia LLC in Atlanta, founded in 2026. The changelog records the formation filing on May 27, 2026. It has one person: I write the code, answer the email and decide what ships.
+
+That has two effects you can check. Support is email to ben@purplelink.llc, with no ticket system, no support team and no promised response time (see Support). Releases are quick, because the person who hears about a bug is the person who fixes it: the changelog lists 60 releases across nine Mac apps and GlobePin between September 3 and October 13, 2026.
+
 ## What we build
 
 ModernTex, Vitae, GlobePin and the web tools are shipping. Haea is in active development:
 
 ### ModernTex
 
-A native macOS LaTeX studio for academic researchers. Multi-file editing, synchronized PDF preview, BibTeX autocomplete, and submission-readiness checks built for the manuscript workflow. Shipping since September 2026, now at version 1.3; a free 7-day trial, then $19.99 once.
+A native macOS LaTeX studio for academic researchers. Multi-file editing, synchronized PDF preview, BibTeX autocomplete, and submission-readiness checks built for the manuscript workflow. Shipping since September 2026; a free 7-day trial, then $19.99 once.
 
 ### Vitae
 
@@ -3783,6 +3823,32 @@ An on-device iOS health analytics platform. Advanced ML models for recovery, cir
 
 An iOS travel tracking app for mapping everywhere you've been, every flight taken, and every destination on the list. 3D globe, stats, goals, and shareable postcards. Version 1.0 shipped in September 2026, free on the App Store with ads; a one-time Pro purchase removes them.
 
+## What we have shipped
+
+The latest version of each product as the changelog and the product page list it. Haea is still in development and has no release.
+
+ProductLatest versionReleased
+
+ModernTex1.6.3October 2026
+
+Vitae1.1.2October 2026
+
+Legroom1.2.1October 2026
+
+Keyfeel1.5.3October 2026
+
+Tapefolio1.0.1October 2026
+
+Panely1.0.3October 2026
+
+Summonly1.0October 2026
+
+Outbound Veil1.1.0October 2026
+
+BatteryMeter1.2.0October 2026
+
+GlobePin (iOS)1.21.0 in September 2026
+
 ## How we build
 
 ### Native first
@@ -3800,6 +3866,12 @@ Software that lasts takes more time to build. The tradeoff is worth it: apps peo
 ### Small and focused
 
 Purplelink is a one-person studio. Small means accountable: every line of code and every design decision has an owner.
+
+## How we handle your data
+
+The Mac apps have no account, and your files stay on your Mac. Their routine network use is a once-a-day check for a new version. The privacy policy and each product page say what else an app contacts and what the request carries.
+
+The free web tools that run on our server process a file in memory and discard it when the answer is returned. The paid manuscript checks send the manuscript to Anthropic's Claude API, which keeps inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes its own copy within a day. Security and data handling lists every service that touches data, product by product.
 
 ## Photography
 

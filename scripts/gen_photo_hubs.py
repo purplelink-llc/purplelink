@@ -263,7 +263,6 @@ HEAD = """<!doctype html>
         <a href="/products/">Products</a>
         <a href="/tools/">Tools</a>
         <a href="/guides/">Guides</a>
-        <a href="/blog/">Blog</a>
         <a href="/about/">About</a>
       </nav>
     </header>
