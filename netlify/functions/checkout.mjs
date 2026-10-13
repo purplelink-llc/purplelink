@@ -69,6 +69,23 @@ const HEARD_OPTIONS = [
   ["Other", "other"],
 ];
 
+// Refund line shown beside the Pay button (Stripe custom_text.submit). Each string is the
+// "Refunds." sentence of that product's section on /terms/, word for word (a test compares
+// them against site/terms/index.html). Only products whose terms carry a no-reason 14-day
+// refund are listed; the others (reviews, kits, Vitae Plus, seats, bundles) get no line
+// rather than a paraphrase of a different policy.
+const REFUND_EMAIL = "Email ben@purplelink.llc within 14 days of purchase and we will refund";
+const REFUND_TEXT = {
+  "moderntex": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
+  "outbound-veil": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
+  "legroom": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
+  "keyfeel": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly license keys and its Vitae Plus key are no longer licensed for use.`,
+};
+
 // Defense-in-depth: cap how many Checkout Sessions one IP can spin up per
 // day. This costs the attacker nothing directly, but unbounded creation
 // pollutes the Stripe dashboard and can trip Stripe's own abuse detection
@@ -343,7 +360,7 @@ export default async function handler(request) {
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v4:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}:${seats}:${bundleParts.join("+")}`)
+    .update(`v5:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}:${seats}:${bundleParts.join("+")}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -400,6 +417,7 @@ export default async function handler(request) {
       params[`custom_fields[0][dropdown][options][${i}][value]`] = value;
     });
   }
+  if (REFUND_TEXT[product]) params["custom_text[submit][message]"] = REFUND_TEXT[product];
   if (entry.seats) params["metadata[seats]"] = String(seats);
   if (entry.bundle) params["metadata[apps]"] = bundleParts.join(",");
   if (referralCode) {
