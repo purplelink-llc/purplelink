@@ -30,6 +30,7 @@ def test_ordinary_link_is_untouched_and_has_no_disclosure():
     assert 'href="https://example.org/post"' in html
     assert "aff-disclosure" not in html
     assert "sponsored" not in html
+    assert "aff-label" not in html
     assert "affiliate links" not in publisher.render_email_html(_digest("https://example.org/post"))
 
 
@@ -40,6 +41,7 @@ def test_affiliate_link_is_tracked_sponsored_and_disclosed(monkeypatch):
     assert 'href="https://setapp.sjv.io/abc123"' in html
     assert 'rel="sponsored noopener"' in html
     assert html.count('class="aff-disclosure"') == 1
+    assert html.count('A tool</a><span class="aff-label">(paid link)</span>') == 1
     assert "affiliate links" in publisher.render_email_html(d)
 
 

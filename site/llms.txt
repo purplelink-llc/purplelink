@@ -384,6 +384,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Guides index: https://purplelink.llc/guides/
 - LaTeX hub: https://purplelink.llc/guides/latex/ — pillar page covering the full academic LaTeX workflow.
 - BibTeX hub: https://purplelink.llc/guides/bibtex/ — pillar page covering bibliography management.
+- Mac utility guides: https://purplelink.llc/guides/mac/ — hub for the guides on disk space, System Data, window managers, keyboard sound apps, privacy permissions and other Mac utilities.
 - Methodology problems peer reviewers flag, and how to fix them: https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/ — fifteen failure modes (p-hacking, HARKing, underpowered samples, test-train contamination, LLM self-judging, fabricated citations and more), each with a definition, an example, the fix and primary references.
 - How to get feedback on a paper before submitting: https://purplelink.llc/guides/get-feedback-on-a-paper-before-submitting/ — colleagues, editing services, general AI assistants, preprints and Paper Review compared.
 - AI paper review tools compared: https://purplelink.llc/guides/ai-paper-review-tools-compared/ — Paperpal Preflight, SciScore, Writefull, a general chatbot and Paper Review: what each checks, price, and what it misses.

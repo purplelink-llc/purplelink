@@ -4,19 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Show free disk space in the Mac menu bar | Purplelink</title>
-    <meta name="description" content="How to see free disk space on a Mac: Finder, Storage settings, Disk Utility and Terminal, then the menu-bar apps that keep the number in view, compared by price, alerts and macOS version.">
+    <title>Free disk space in the Mac menu bar (2026) | Purplelink</title>
+    <meta name="description" content="See free disk space on a Mac four built-in ways, then compare nine menu-bar apps by price, App Store listing, readout and updates. Checked 2026-10-12.">
     <link rel="canonical" href="https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/">
-    <meta property="og:title" content="Show free disk space in the Mac menu bar">
-    <meta property="og:description" content="macOS has no menu bar item for free disk space. This guide covers the built-in views and compares eight menu-bar apps by price, low-space alerts, cleaning and macOS version, with a plain disclosure about Purplelink's own Legroom.">
+    <meta property="og:title" content="Show free disk space in the Mac menu bar (2026)">
+    <meta property="og:description" content="macOS has no menu bar item for free disk space. This guide covers the built-in views and compares nine menu-bar apps as of October 12, 2026 by price, App Store listing, readout and updates, with a plain disclosure about Purplelink's own Legroom.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/legroom.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Show free disk space in the Mac menu bar">
-    <meta name="twitter:description" content="macOS has no menu bar item for free disk space. This guide covers the built-in views and compares eight menu-bar apps by price, low-space alerts, cleaning and macOS version, with a plain disclosure about Purplelink's own Legroom.">
+    <meta name="twitter:title" content="Show free disk space in the Mac menu bar (2026)">
+    <meta name="twitter:description" content="macOS has no menu bar item for free disk space. This guide covers the built-in views and compares nine menu-bar apps as of October 12, 2026 by price, App Store listing, readout and updates, with a plain disclosure about Purplelink's own Legroom.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/legroom.png">
     <meta name="twitter:image:alt" content="Show free disk space in the Mac menu bar: built-in views and menu-bar apps compared">
     <script type="application/ld+json">
@@ -25,8 +25,8 @@
   "@graph": [
     {
       "@type": "Article",
-      "headline": "Show free disk space in the Mac menu bar",
-      "description": "macOS has no menu bar item for free disk space. This guide covers the built-in views and compares eight menu-bar apps by price, low-space alerts, cleaning and macOS version, with a plain disclosure about Purplelink's own Legroom.",
+      "headline": "Show free disk space in the Mac menu bar (2026)",
+      "description": "macOS has no menu bar item for free disk space. This guide covers the built-in views and compares nine menu-bar apps as of October 12, 2026 by price, App Store listing, readout and updates, with a plain disclosure about Purplelink's own Legroom.",
       "author": {
         "@id": "https://purplelink.llc/about/#person"
       },
@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-08",
-      "dateModified": "2026-10-08",
+      "dateModified": "2026-10-12",
       "image": "https://purplelink.llc/assets/og/legroom.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/"
     },
@@ -156,7 +156,7 @@
 }
     </script>
     <script src="/theme.js?v=07d8025cab"></script>
-<link rel="stylesheet" href="/styles.css?v=ff6297c645">
+<link rel="stylesheet" href="/styles.css?v=9f5d7ed0ad">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=cfa7188dde" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -184,7 +184,7 @@
       <div class="post-hero">
         <p class="post-date">Comparison</p>
         <h1 class="post-title">Show free disk space in the Mac menu bar</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time>, updated <time datetime="2026-10-12">October 12, 2026</time></p>
         <p class="post-lede">macOS has no setting that puts free disk space in the menu bar. Finder, Storage settings, Disk Utility and Terminal each show it on request. For a number that stays in view, you need a small app, and several are free.</p>
       </div>
 
@@ -203,6 +203,28 @@
           <li><strong>Ask Terminal with df.</strong> Run <code>df -h /System/Volumes/Data</code> and read the Avail column. On my Mac, running macOS 27.2, that printed 22Gi, and <code>diskutil info /</code> printed 23.1 GB of container free space: about the same space in binary and decimal units. Use <code>df -H</code> for decimal units.</li>
         </ol>
         <p>The numbers can differ between these views. Purgeable space is one reason: Finder counts it as available and some tools do not. Units are the other, as in the Terminal example. Apple's note on <a href="https://support.apple.com/en-us/102119" rel="noopener">how capacity is measured</a> explains the decimal and binary difference. Neither number is wrong.</p>
+
+        <h2>Nine menu-bar apps, checked October 12, 2026</h2>
+        <p>Updated 2026-10-12. This table re-checks the menu-bar apps against each vendor's own page or Mac App Store listing and adds one app, Disk Space Monitor &amp; Analyzer. "Maintained" means the newest release date I saw, not a promise of support. Where the vendor's page did not say, the cell says so. I did not install the other eight apps.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">App</th><th class="u-th" scope="col">Price model</th><th class="u-th" scope="col">In the Mac App Store</th><th class="u-th" scope="col">Menu-bar readout</th><th class="u-th" scope="col">Actively maintained</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell"><strong>Legroom (mine)</strong></td><td class="u-cell">$9.99 once after a 7-day trial</td><td class="u-cell">No: direct download from purplelink.llc</td><td class="u-cell">Free space on the startup disk; stays free after the trial</td><td class="u-cell">Yes: version 1.2.0 on its page</td></tr>
+              <tr><td class="u-cell"><strong>Stats</strong></td><td class="u-cell">Free, MIT license</td><td class="u-cell">Not on the vendor page; no listing found in an App Store search. Homebrew and GitHub</td><td class="u-cell">Disk module text widget, default <code>$capacity.free/$capacity.total</code> (source file)</td><td class="u-cell">Yes: v3.0.21 released October 11</td></tr>
+              <tr><td class="u-cell"><strong>iStat Menus 7</strong></td><td class="u-cell">Paid; 14-day trial. Vendor page shows no price. $11.99 on the App Store listing</td><td class="u-cell">Yes (listing by Bjango Pty Ltd, version 7.30). Vendor page does not mention it</td><td class="u-cell">Used space, free space and disk activity (vendor page)</td><td class="u-cell">Yes: version 7.5, September 14, 2026</td></tr>
+              <tr><td class="u-cell"><strong>Mole</strong></td><td class="u-cell">$19 once for 2 Macs, no subscription</td><td class="u-cell">Not on the vendor page; no listing found in an App Store search</td><td class="u-cell">Live CPU, memory and network speed. Free space is not listed for the menu bar</td><td class="u-cell">Yes: v1.16.0, October 12, 2026</td></tr>
+              <tr><td class="u-cell"><strong>Mister Plimsoll</strong></td><td class="u-cell">Free; optional tips</td><td class="u-cell">Yes (listing by Glenn Fleishman)</td><td class="u-cell">Not stated in the listing. It lives in the menu bar and alerts at a percent-used threshold</td><td class="u-cell">Yes: 1.1.10, September 24, 2026</td></tr>
+              <tr><td class="u-cell"><strong>Activity Bar</strong></td><td class="u-cell">Free; paid Pro tier</td><td class="u-cell">Yes (listing by Denis Litvin)</td><td class="u-cell">Used, free or total space on disk (listing)</td><td class="u-cell">Yes: 4.3, October 2, 2026</td></tr>
+              <tr><td class="u-cell"><strong>System Monitor</strong></td><td class="u-cell">$4.99</td><td class="u-cell">Yes (listing by Marcel Bresink)</td><td class="u-cell">Storage space is listed; free versus used not stated</td><td class="u-cell">Yes: 6.7, September 23, 2026</td></tr>
+              <tr><td class="u-cell"><strong>Free Disk Space Monitor</strong></td><td class="u-cell">$1.99</td><td class="u-cell">Yes (listing by Fredrik Nordqvist)</td><td class="u-cell">Current free disk space</td><td class="u-cell">No: version 1.4, September 20, 2020</td></tr>
+              <tr><td class="u-cell"><strong>Disk Space Monitor &amp; Analyzer</strong></td><td class="u-cell">$0.99</td><td class="u-cell">Yes (listing by Harshad Jadav)</td><td class="u-cell">Live free disk space next to a disk icon</td><td class="u-cell">Recent: version 1.1, February 20, 2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Sources, read October 12, 2026.</strong> <a href="/legroom/">Legroom's page</a>; <a href="https://github.com/exelban/stats" rel="noopener">Stats on GitHub</a> (its releases page and Disk module source); <a href="https://bjango.com/mac/istatmenus/" rel="noopener">Bjango's iStat Menus page</a> and version history; <a href="https://mole.fit/" rel="noopener">mole.fit</a> and its releases page; and the Mac App Store listings for the other apps, through Apple's public lookup service. The older table below has more columns, including alerts, cleaning and macOS version, and was last read October 8.</p>
 
         <h2>Menu-bar apps that show free space</h2>
         <p>US prices and requirements, October 8, 2026. "Not stated" means the page I read did not say. Apps on this list that are monitors only (Stats, iStat Menus, Activity Bar, System Monitor) show free space as one item among CPU, memory and network readings.</p>
@@ -335,7 +357,7 @@
           </div>
         </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js?v=065fa37b22" defer></script>
+      <script src="/analytics.js?v=2eb71ffb05" defer></script>
   <script src="/ethicalads.js?v=c8d9be094c" defer></script>
 </body>
 </html>

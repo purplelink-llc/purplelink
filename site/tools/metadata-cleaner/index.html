@@ -162,7 +162,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=07d8025cab"></script>
-    <link rel="stylesheet" href="/styles.css?v=ff6297c645">
+    <link rel="stylesheet" href="/styles.css?v=9f5d7ed0ad">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=cfa7188dde" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -341,6 +341,7 @@
 
       <section class="tool-faq">
         <h2>Questions</h2>
+        <p>Author names are not the only leak in a double-blind submission; the guide to <a href="/guides/anonymity-check-double-blind-manuscript/">checking a manuscript for double-blind leaks</a> covers the text as well as the file.</p>
         <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads the file with your browser, rewrites it in memory in a background worker and hands you the result as a download. There is no server step. The meter on the page counts the requests it makes while it works, so you can see this for yourself. The only requests the page makes are for its own scripts, such as the PDF library when you add your first PDF.</div></details>
         <details><summary>How do I know the metadata is really gone?</summary><div class="faq-body">Each result is read a second time with the same reader that found the fields in the first place, and the page says what, if anything, is still there. It also checks that the cleaned file still opens: pictures are decoded, PDFs are reloaded, and Office and OpenDocument files are unzipped and their XML is checked. If a check fails, the file is not offered for download. For your own check, open the cleaned file&#x27;s properties dialog, or run a tool such as ExifTool on it.</div></details>
         <details><summary>Does it change my photos or reduce their quality?</summary><div class="faq-body">No. JPEG, PNG, WebP, GIF and TIFF are edited at the byte level: the metadata blocks are cut out and the image data is copied as it was. The file gets a little smaller and looks identical. Color profiles are kept so colors do not shift. The cover tool is the exception, because it has to change pixels, and it redraws the picture to do it.</div></details>
@@ -440,6 +441,6 @@
         <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
       </div>
     </footer>
-    <script src="/analytics.js?v=065fa37b22" defer></script>
+    <script src="/analytics.js?v=2eb71ffb05" defer></script>
   </body>
 </html>

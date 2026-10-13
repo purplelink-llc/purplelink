@@ -445,3 +445,6 @@
   .pr-preview-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pr-preview-upsell .btn { width: 100%; justify-content: center; }
 }
+
+.tools-hero > .pr-who, .tools-hero > .pr-proof { margin-top: 0.9rem; font-size: 0.93rem; line-height: 1.55; max-width: 70ch; }
+.pr-who a, .pr-proof a { color: var(--purple); font-weight: 600; }

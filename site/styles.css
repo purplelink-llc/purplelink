@@ -5491,3 +5491,6 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 
 /* Affiliate disclosure: one plain sentence under the title of any page, or digest issue, that carries a tracked link. */
 .aff-disclosure { margin: 0 0 20px; padding-left: 12px; border-left: 2px solid var(--line); font-size: 0.875rem; line-height: 1.5; color: var(--muted); }
+
+/* Affiliate label: small marker right after each tracked link, so the notice sits next to the link it describes. */
+.aff-label { margin-left: 0.25em; font-size: 0.8125rem; font-weight: 400; font-style: normal; color: var(--muted); white-space: nowrap; }

@@ -46,13 +46,21 @@
   var ATTR_KEY = "pl_attr";
   var ATTR_DAYS = 90;
   function clip(v, n) { return String(v || "").replace(/[^\w.\-:\/ ]/g, "").slice(0, n); }
+  // The in-app Buy link may carry the trial day as ?from=trial&d=<0-7>. Only a single digit 0 to 7 counts,
+  // and only with from=trial; anything else is ignored. It is recorded as the campaign field "trial-day-N"
+  // so the first-touch source stays "from:trial" and existing reports keep matching.
+  function trialDay(q) {
+    if (q.get("from") !== "trial") return "";
+    var d = q.get("d");
+    return d !== null && /^[0-7]$/.test(d) ? "trial-day-" + d : "";
+  }
   function arrival() {
     try {
       var q = new URLSearchParams(location.search);
       var r = refHost();
       if (/(^|\.)(stripe\.com|purplelink\.llc)$/.test(r)) r = "";
       var t = {
-        s: clip(utmSource(), 60), m: clip(q.get("utm_medium"), 40), c: clip(q.get("utm_campaign"), 80),
+        s: clip(utmSource(), 60), m: clip(q.get("utm_medium"), 40), c: clip(q.get("utm_campaign") || trialDay(q), 80),
         r: clip(r, 80), g: (q.get("gclid") || q.get("gbraid") || q.get("wbraid")) ? 1 : 0,
         l: clip(location.pathname, 120), d: new Date().toISOString().slice(0, 10)
       };

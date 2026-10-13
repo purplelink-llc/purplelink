@@ -32,6 +32,33 @@ class Rewrite(unittest.TestCase):
         self.assertIn('target="_blank"', new)
         self.assertIn('rel="sponsored noopener"', new)
 
+    def test_every_rewritten_link_gets_one_label_after_the_anchor(self):
+        reg = (live_setapp(),)
+        new, _ = aff.rewrite_html(PAGE, reg)
+        self.assertIn("Setapp</a>" + aff.LABEL_HTML, new)
+        self.assertEqual(new.count(aff.LABEL_HTML), 1)
+
+    def test_lint_flags_missing_label(self):
+        reg = (live_setapp(),)
+        new, _ = aff.rewrite_html(PAGE, reg)
+        unlabeled = new.replace(aff.LABEL_HTML, "")
+        self.assertTrue(any("(paid link)" in p for p in aff.lint_html(unlabeled, reg)))
+
+    def test_amazon_links_get_no_label(self):
+        page = '<h1>T</h1><a href="https://www.amazon.com/dp/1">b</a>'
+        new, _ = aff.rewrite_html(page)
+        self.assertNotIn("aff-label", new)
+
+    def test_requested_programs_are_candidates_without_links(self):
+        ids = {"wordvice", "raycast", "paperpal", "scrivener", "ulysses", "proton", "pcloud", "readwise",
+               "logitech", "setapp", "1password"}
+        by_id = {p.id: p for p in aff.REGISTRY}
+        self.assertTrue(ids <= set(by_id))
+        for i in ids:
+            p = by_id[i]
+            self.assertEqual((p.status, p.link, p.deep_link, p.tag), ("candidate", "", "", ""), i)
+            self.assertTrue(p.source_url.startswith("http"), i)
+
     def test_disclosure_added_once_after_h1_and_apply_is_idempotent(self):
         reg = (live_setapp(),)
         new, _ = aff.rewrite_html(PAGE, reg)
@@ -97,6 +124,10 @@ class RealSite(unittest.TestCase):
 
     def test_stylesheet_styles_the_disclosure(self):
         self.assertIn(".aff-disclosure", read_site("styles.css"))
+        self.assertIn(".aff-label", read_site("styles.css"))
+
+    def test_privacy_page_explains_affiliate_links(self):
+        self.assertIn("(paid link)", read_site("privacy/index.html"))
 
 
 if __name__ == "__main__":

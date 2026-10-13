@@ -187,7 +187,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=07d8025cab"></script>
-    <link rel="stylesheet" href="/styles.css?v=ff6297c645">
+    <link rel="stylesheet" href="/styles.css?v=9f5d7ed0ad">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=cfa7188dde" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -323,6 +323,7 @@ Alex Sample: Sure.</pre>
 
       <section class="tool-faq">
         <h2>Questions</h2>
+        <p>If you record meetings on a Mac, the comparison of <a href="/guides/best-mac-apps-transcription-text-to-speech-ocr/">Mac apps for transcription, text to speech and OCR</a> covers the apps that make the transcript in the first place.</p>
         <details><summary>Is my file uploaded?</summary><div class="faq-body">No. The page reads the file with your browser and cleans it in a background worker on your device. The meter on the page counts the requests the page makes while it works. The only one is an anonymous usage count that names the file type (vtt, srt or text), never the file name or any of its text.</div></details>
         <details><summary>Does it change the words?</summary><div class="faq-body">No. It does not summarise, correct, translate or reword anything. Spelling, grammar, false starts and filler words stay as they are. The changes to the text itself are small: line breaks inside a cue become spaces, repeated spaces become one, the HTML codes for ampersand, less-than, greater-than and non-breaking space that VTT files use are turned back into characters, and caption tags such as italics are removed. If you tick the sound tag option, a fixed list of bracketed tags is removed too.</div></details>
         <details><summary>Which files and layouts can it read?</summary><div class="faq-body">It reads .vtt (WebVTT), .srt (SubRip) and .txt files. In a VTT or SRT file, speaker names are taken from voice tags such as &lt;v Jane Doe&gt; (the layout Microsoft Teams uses) or from a name and colon at the start of each cue, such as Jane Doe: (the layout Zoom uses). A .txt file can use Name: lines, or a line such as [Jane Doe] 00:00:05 above each turn. It was built and tested on sample files written from the published formats, not on real exports. If a real Zoom or Teams file comes out wrong, send the first few lines with the names changed to ben@purplelink.llc.</div></details>
@@ -419,6 +420,6 @@ Alex Sample: Sure.</pre>
         <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
       </div>
     </footer>
-    <script src="/analytics.js?v=065fa37b22" defer></script>
+    <script src="/analytics.js?v=2eb71ffb05" defer></script>
   </body>
 </html>

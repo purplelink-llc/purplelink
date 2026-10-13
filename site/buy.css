@@ -9,6 +9,13 @@
   color: var(--ink);
 }
 
+.buy-suite {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 .buy-proof {
   margin-top: 6px;
   font-size: 0.9rem;
@@ -103,6 +110,7 @@
   .exp-hero-shot .app-hero-name { order: 2; }
   .exp-hero-shot .app-hero-actions { order: 3; }
   .exp-hero-shot .buy-assurance { order: 4; }
+  .exp-hero-shot .buy-suite { order: 4; }
   .exp-hero-shot .tool-status { order: 5; }
   .exp-hero-shot .trial-remind { order: 6; }
   .exp-hero-shot .app-hero-window { order: 7; margin-top: 24px; }
