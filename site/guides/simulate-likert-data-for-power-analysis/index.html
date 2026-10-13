@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Simulate Likert Data to Dry-Run Your Analysis | Purplelink</title>
+    <title>Simulate Likert data to dry-run your analysis | Purplelink</title>
     <meta name="description" content="Generate correlated 5-point survey items from a latent model in Python or R, label the file synthetic, and run a Monte Carlo power estimate that you can check against a closed-form value.">
     <link rel="canonical" href="https://purplelink.llc/guides/simulate-likert-data-for-power-analysis/">
     <meta property="og:title" content="Simulate Likert survey data to test your analysis">
@@ -83,7 +83,7 @@
               "name": "Can I report results from simulated data in a paper?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Not as findings. You can report a simulation-based power analysis in a preregistration or a methods section, as long as it is described as a simulation and the assumed effect sizes, loadings and missingness are stated with their sources. The data files should be labelled synthetic and kept out of the results."
+                "text": "Not as findings. You can report a simulation-based power analysis in a preregistration or a methods section. Describe it as a simulation, and state the assumed effect sizes, loadings and missingness with their sources. The data files should be labelled synthetic and kept out of the results."
               }
             },
             {
@@ -91,7 +91,7 @@
               "name": "Why is the power in the second example lower than for the same effect on a single continuous score?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Each 5-point item carries measurement error and is cut into five categories, so the difference in the scale score between groups is smaller in standard-deviation units than the difference in the latent variable. In the run below, a latent shift of 0.5 gave a scale-score effect of about 0.45, and power at 64 per group fell from about 0.80 to about 0.70."
+                "text": "Each 5-point item carries measurement error and is cut into five categories. The difference in the scale score between groups is therefore smaller in standard-deviation units than the difference in the latent variable. In the run above, a latent shift of 0.5 gave a scale-score effect of about 0.45, and power at 64 per group fell from about 0.80 to about 0.70."
               }
             },
             {
@@ -141,20 +141,20 @@
         <p class="post-date">Guide</p>
         <h1 class="post-title">Simulate Likert survey data to test your analysis before collecting any</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-13">October 13, 2026</time></p>
-        <p class="post-lede">Before you collect responses you can generate a fake data set from a model you write down, run your analysis script on it, and estimate power by repeating that many times. This guide shows how, with code I ran and the output it produced, and says plainly what the exercise cannot tell you.</p>
+        <p class="post-lede">Before you collect responses, you can generate a fake data set from a model you write down and run your analysis script on it. Repeating that many times gives you a power estimate. This guide shows how, with code I ran and the output it produced. It also says plainly what the exercise cannot tell you.</p>
       </div>
 
       <article class="post-body">
         <h2>What simulated data is good for, and what it is not</h2>
-        <p>A simulated data set is the output of a model you specified: how many constructs, how strongly each item reflects its construct, how the constructs relate, how the responses are cut into categories, how much is missing. Everything in the file comes from those numbers and a random number generator. That makes it useful for two jobs: checking that your analysis code runs on data shaped like yours, and finding out how often your planned test would reject if the world were exactly as you specified.</p>
-        <p>It cannot do more than that. It reproduces your assumptions. If the effect size you typed in is too large, the power estimate will be too high, and the output will not warn you. It is not a pilot study, and it says nothing about whether respondents will understand your items or whether the construct exists.</p>
-        <p><strong>Integrity statement.</strong> Simulated data is not data about people. Do not present it as collected data, do not use it as pilot data, and do not place results from it in a results section. Name every file so it is obvious: this guide uses a <code>synthetic_</code> filename prefix and a <code>synthetic</code> column set to <code>TRUE</code> in every row. A column can be deleted, so this reduces mistakes and does not prevent misuse; the responsibility sits with whoever holds the file.</p>
+        <p>A simulated data set is the output of a model you specified. The model fixes how many constructs there are and how strongly each item reflects its construct. It also fixes how the constructs relate, how the responses are cut into categories, and how much is missing. Everything in the file comes from those numbers and a random number generator. That makes it useful for two jobs. First, you can check that your analysis code runs on data shaped like yours. Second, you can find out how often your planned test would reject if the world were exactly as you specified.</p>
+        <p>Simulation cannot do more than that, because it only reproduces your assumptions. If the effect size you typed in is too large, the power estimate will be too high, and the output will not warn you. A simulated file is not a pilot study. It says nothing about whether respondents will understand your items or whether the construct exists.</p>
+        <p><strong>Integrity statement.</strong> Simulated data is not data about people. Do not present it as collected data, do not use it as pilot data, and do not place results from it in a results section. Name every file so it is obvious: this guide uses a <code>synthetic_</code> filename prefix and a <code>synthetic</code> column set to <code>TRUE</code> in every row. A column can be deleted, so this reduces mistakes and does not prevent misuse. The responsibility sits with whoever holds the file.</p>
 
         <h2>When to use it</h2>
         <ul>
-          <li><strong>Rehearsing an analysis script.</strong> Reverse-keyed items, scale scores, listwise deletion, a model that does not converge: you find these on fake data in an afternoon instead of on real data after the survey closes.</li>
-          <li><strong>Checking preregistration code.</strong> In my view, a script that runs end to end on a mock file is a stronger preregistered analysis plan than a prose description of one.</li>
-          <li><strong>Power analysis where there is no closed-form answer.</strong> For a t test or a correlation, a formula exists. For a model with measurement error, ordinal items and missing data, repeated simulation is often the practical route.</li>
+          <li><strong>Rehearsing an analysis script.</strong> On fake data, you can find problems with reverse-keyed items (items worded in the opposite direction), scale scores, listwise deletion (dropping any row with a missing value) and non-converging models in an afternoon. Otherwise you find them on real data after the survey closes.</li>
+          <li><strong>Checking preregistration code.</strong> In my view, a script that runs end to end on a mock file makes a stronger preregistered analysis plan than a prose description of one.</li>
+          <li><strong>Power analysis where there is no closed-form answer.</strong> For a t test or a correlation, a formula exists. For a model with measurement error, ordinal items (ordered categories) and missing data, repeated simulation is often the practical route.</li>
           <li><strong>Teaching.</strong> Students can see how loadings, thresholds and sample size change what an analysis recovers, because the true values are known.</li>
         </ul>
 
@@ -163,13 +163,13 @@
         <ol>
           <li>Draw latent scores for the two constructs from a bivariate normal distribution with variance 1 and correlation 0.40.</li>
           <li>For each item, form an indicator <code>x = loading * latent + sqrt(1 - loading^2) * noise</code>. The indicator has variance 1, and its squared loading is the share of its variance that comes from the construct. This is how reliability enters: lower loadings mean noisier items.</li>
-          <li>Cut each indicator at four thresholds to get a 1 to 5 response. The thresholds below are my choice; the TRUST items are symmetric and the INTENT items put slightly more weight on the low and high ends.</li>
+          <li>Cut each indicator at four thresholds to get a 1 to 5 response. The thresholds below are my choice. The TRUST items are symmetric, and the INTENT items put slightly more weight on the low and high ends.</li>
           <li>Blank out 5% of the cells completely at random (MCAR).</li>
         </ol>
-        <p>Step 3 is a standard way to treat ordinal items as coarsened continuous variables. It is an assumption, not a fact about how people answer, and real responses often depart from it.</p>
+        <p>Step 3 is a standard way to treat ordinal items as coarsened continuous variables. It is an assumption about how people answer. However, real responses often depart from it.</p>
 
         <h2>Python: data frame, CSV and checks</h2>
-        <p>This is the complete script. It needs numpy and pandas. I ran it with Python 3.12.10, numpy 2.5.2 and pandas 2.3.3, and the output below is the output of that run. The seed is fixed, so rerunning it should print the same numbers on the same library versions; a different numpy version may draw different random numbers.</p>
+        <p>This is the complete script. It needs numpy and pandas. I ran it with Python 3.12.10, numpy 2.5.2 and pandas 2.3.3, and the output below is the output of that run. The seed is fixed, so rerunning it should print the same numbers on the same library versions. A different numpy version may draw different random numbers.</p>
         <pre><code>import numpy as np
 import pandas as pd
 from math import erf, sqrt
@@ -283,14 +283,14 @@ continuous indicators: 0.337
 
         <h3>Reading the verification step</h3>
         <ul>
-          <li>The generator is run again with 200,000 rows and no missingness, so sampling error is small. The simulated item correlations differ from the specified <code>loading_i * loading_j * rho</code> by at most 0.002 in the pairs shown, and the category proportions differ from the normal-theory targets by under 0.002.</li>
-          <li>The correlation between the two <em>scale scores</em> is not 0.40. It is 0.337, and the script computes that value from the loadings, so the simulation matches the model. The gap from 0.40 is the effect of unreliable items. After cutting into five categories it drops a little further, to 0.325. If you plan an analysis on scale scores, this is the correlation it will see, and it is smaller than the construct-level value because of measurement error.</li>
+          <li>The generator runs again with 200,000 rows and no missingness, so sampling error is small. The simulated item correlations differ from the specified <code>loading_i * loading_j * rho</code> by at most 0.002 in the pairs shown, and the category proportions differ from the normal-theory targets by under 0.002.</li>
+          <li>The correlation between the two <em>scale scores</em> is not 0.40. It is 0.337, and the script computes that value from the loadings, so the simulation matches the model. The gap from 0.40 is the effect of unreliable items (items that measure the construct with noise). After cutting into five categories, the correlation drops a little further, to 0.325. If you plan an analysis on scale scores, this is the correlation it will see. It is smaller than the construct-level value because of measurement error.</li>
           <li>The 500-row example has 4.4% missing cells against the 5% target. With 4,000 cells, a gap of that size is within ordinary sampling variation, so I did not treat it as a defect.</li>
         </ul>
 
         <h2>The same example in R</h2>
-        <p>I could not run R for this guide: the R installation on the machine I wrote this on does not start, so <strong>this snippet was not executed and I show no output for it</strong>. It is written from the documentation of the <a href="https://cran.r-project.org/web/packages/latent2likert/index.html" rel="noopener">latent2likert</a> package (version 1.2.1), which documents <code>rlikert(size, n_items, n_levels, mean = 0, sd = 1, skew = 0, corr = 0)</code>. According to its reference manual, <code>corr</code> is the correlation between the latent variables, and the function returns a matrix of responses from 1 to <code>n_levels</code> named Y1 to Yn.</p>
-        <p>Two things differ from the Python version. The package treats each item as having its own latent variable, so the loading-based model above is expressed here as a latent correlation matrix, <code>loading_i * loading_j * rho</code>; that construction is mine, not a package feature. And the package chooses its own discretization, so the category proportions will not match the thresholds in the Python script. I did not check how closely the correlations are reproduced, so run the last line and compare.</p>
+        <p>I could not run R for this guide. The R installation on the machine I wrote this on does not start, so <strong>this snippet was not executed and I show no output for it</strong>. I wrote it from the documentation of the <a href="https://cran.r-project.org/web/packages/latent2likert/index.html" rel="noopener">latent2likert</a> package (version 1.2.1), which documents <code>rlikert(size, n_items, n_levels, mean = 0, sd = 1, skew = 0, corr = 0)</code>. According to its reference manual, <code>corr</code> is the correlation between the latent variables, and the function returns a matrix of responses from 1 to <code>n_levels</code> named Y1 to Yn.</p>
+        <p>Two things differ from the Python version. First, the package treats each item as having its own latent variable, so the loading-based model above is expressed here as a latent correlation matrix, <code>loading_i * loading_j * rho</code>. That construction is mine, not a package feature. Second, the package chooses its own discretization (the way it cuts a latent score into categories), so the category proportions will not match the thresholds in the Python script. I did not check how closely the correlations are reproduced, so run the last line and compare.</p>
         <pre><code>library(latent2likert)
 
 # Loadings, four items per construct, as in the Python example
@@ -312,7 +312,7 @@ write.csv(dat, "synthetic_trust_intent.csv", row.names = FALSE)
 round(cor(dat[, 2:9]), 2)   # compare with R; expect some shrinkage</code></pre>
 
         <h2>A Monte Carlo power estimate</h2>
-        <p>The question: two groups of 64 people, the second group shifted by 0.5 standard deviations on the latent construct, a scale score made from four 5-point items, a two-sided t test at 0.05. How often does the test reject? The script repeats the whole process 5,000 times and counts rejections. It also checks the simulation against a closed-form calculation from statsmodels (<code>TTestIndPower</code>), in two ways. First, a plain continuous score with d = 0.5, where the textbook answer is about 0.80. Second, the item-based scale score, where the effect in standard-deviation units is not 0.5 because of noise and coarsening. The script estimates that effective d from two very large samples and gives it to the formula. This is the code I ran, with scipy 1.18.1 and statsmodels 0.14.6:</p>
+        <p>The design has two groups of 64 people. The second group is shifted by 0.5 standard deviations on the latent construct. The outcome is a scale score (the mean of four 5-point items), and the test is a two-sided t test at 0.05. How often does the test reject? The script repeats the whole process 5,000 times and counts rejections. It also checks the simulation against a closed-form calculation from statsmodels (<code>TTestIndPower</code>) in two ways. First, a plain continuous score with d = 0.5 (Cohen's d, the difference in standard-deviation units) has a textbook answer of about 0.80. Second, the item-based scale score has an effect in standard-deviation units that is not 0.5, because of noise and coarsening. The script estimates that effective d from two very large samples and gives it to the formula. This is the code I ran, with scipy 1.18.1 and statsmodels 0.14.6:</p>
         <pre><code>import numpy as np
 from scipy import stats
 from statsmodels.stats.power import TTestIndPower
@@ -376,8 +376,8 @@ print(f"   statsmodels n per group for 80% power at d = {d_eff:.3f}: {need:.1f}"
    simulated power 0.701 (+/- 0.013), statsmodels at d = 0.447: 0.709
    simulated rejection rate with shift 0: 0.053 (alpha 0.05)
    statsmodels n per group for 80% power at d = 0.447: 79.4</code></pre>
-        <p>The simulation agrees with the closed form in both cases: 0.796 against 0.801 for the continuous score, and 0.701 against 0.709 for the scale score, each within about one Monte Carlo margin. The rejection rate with no true difference is 0.053, close to the nominal 0.05. The useful finding is the size of the loss: a latent effect of 0.5 became an effective 0.447 on the scale score, so 64 per group gives about 70% power, and the formula says about 79 per group would be needed for 80%.</p>
-        <p>Here the simulation was not needed, because a formula exists once you know the effective d. The method pays off when the analysis is something like a latent-variable model, a mixed model or an ordinal regression with missing data, where you replace the t test with your own analysis and keep the loop. The agreement above is the evidence that the loop itself is not broken, which is why I recommend running a case with a known answer first. If you want a second closed-form check, <a href="https://cran.r-project.org/web/packages/pwr/index.html" rel="noopener">pwr</a> and G*Power compute the same two-sample t test power; I did not run them for this page.</p>
+        <p>The simulation agrees with the closed form in both cases. The continuous score gives 0.796 against 0.801, and the scale score gives 0.701 against 0.709. Each pair is within about one Monte Carlo margin. The rejection rate with no true difference is 0.053, close to the nominal 0.05. The size of the loss is the useful finding. A latent effect of 0.5 became an effective 0.447 on the scale score, so 64 per group gives about 70% power. The formula says about 79 per group would be needed for 80%.</p>
+        <p>Here the simulation was not needed, because a formula exists once you know the effective d. The method pays off for a latent-variable model, a mixed model or an ordinal regression with missing data. In those cases you replace the t test with your own analysis and keep the loop. The agreement above is the evidence that the loop itself is not broken, which is why I recommend running a case with a known answer first. If you want a second closed-form check, <a href="https://cran.r-project.org/web/packages/pwr/index.html" rel="noopener">pwr</a> and G*Power compute the same two-sample t test power. I did not run them for this page.</p>
 
         <h2>Common mistakes</h2>
         <ul>
@@ -395,9 +395,9 @@ print(f"   statsmodels n per group for 80% power at d = {d_eff:.3f}: {need:.1f}"
             <caption>Free tools for simulating survey data and estimating power</caption>
             <thead><tr><th scope="col">Tool</th><th scope="col">What and licence</th><th scope="col">What it does, as its page describes it</th></tr></thead>
             <tbody>
-            <tr><th scope="row"><a href="https://cran.r-project.org/web/packages/faux/index.html" rel="noopener">faux</a></th><td data-label="What and licence">R, version 1.2.4, MIT</td><td data-label="What it does, as its page describes it">Creates datasets with factorial structure by specifying variable parameters. Good for designs with conditions; Likert items are your job to build.</td></tr>
+            <tr><th scope="row"><a href="https://cran.r-project.org/web/packages/faux/index.html" rel="noopener">faux</a></th><td data-label="What and licence">R, version 1.2.4, MIT</td><td data-label="What it does, as its page describes it">Creates datasets with factorial structure by specifying variable parameters. Good for designs with conditions. Likert items are your job to build.</td></tr>
             <tr><th scope="row"><a href="https://cran.r-project.org/web/packages/latent2likert/index.html" rel="noopener">latent2likert</a></th><td data-label="What and licence">R, version 1.2.1, MIT</td><td data-label="What it does, as its page describes it">Converts continuous latent variables into ordinal categories to produce Likert item responses. Its rlikert() takes the latent means, standard deviations, skewness and correlations.</td></tr>
-            <tr><th scope="row"><a href="https://cran.r-project.org/web/packages/LikertMakeR/index.html" rel="noopener">LikertMakeR</a></th><td data-label="What and licence">R, version 2.3.0, MIT</td><td data-label="What it does, as its page describes it">Generates and correlates synthetic Likert and rating-scale responses from predefined means and standard deviations; its page also lists Cronbach's alpha and factor loadings among the inputs.</td></tr>
+            <tr><th scope="row"><a href="https://cran.r-project.org/web/packages/LikertMakeR/index.html" rel="noopener">LikertMakeR</a></th><td data-label="What and licence">R, version 2.3.0, MIT</td><td data-label="What it does, as its page describes it">Generates and correlates synthetic Likert and rating-scale responses from predefined means and standard deviations. Its page also lists Cronbach's alpha and factor loadings among the inputs.</td></tr>
             <tr><th scope="row"><a href="https://cran.r-project.org/web/packages/simstudy/index.html" rel="noopener">simstudy</a></th><td data-label="What and licence">R, version 0.9.2, GPL-3</td><td data-label="What it does, as its page describes it">Simulates data sets to explore modeling techniques or data-generating processes. Supports missing-data mechanisms (MCAR, MAR, NMAR) and trial designs. No Likert-specific vocabulary.</td></tr>
             <tr><th scope="row"><a href="https://cran.r-project.org/web/packages/simsem/index.html" rel="noopener">simsem</a></th><td data-label="What and licence">R, version 0.5-17, GPL</td><td data-label="What it does, as its page describes it">A framework for Monte Carlo simulation in structural equation modeling, including power analysis. You write lavaan-style model code.</td></tr>
             <tr><th scope="row"><a href="https://cran.r-project.org/web/packages/power4mome/index.html" rel="noopener">power4mome</a></th><td data-label="What and licence">R, version 0.2.1, GPL</td><td data-label="What it does, as its page describes it">Power and sample size for moderation, mediation and moderated mediation, through lavaan or regression.</td></tr>
@@ -412,9 +412,9 @@ print(f"   statsmodels n per group for 80% power at d = {d_eff:.3f}: {need:.1f}"
         <h3>Is simulated survey data a substitute for a pilot study?</h3>
         <p>No. A pilot study tells you something about real respondents, such as whether items are understood and what the response rates are. Simulated data contains only the numbers you typed into the model. It can show that your script runs and what your design could detect if your assumptions hold. It cannot show that the assumptions hold.</p>
         <h3>Can I report results from simulated data in a paper?</h3>
-        <p>Not as findings. You can report a simulation-based power analysis in a preregistration or a methods section, as long as it is described as a simulation and the assumed effect sizes, loadings and missingness are stated with their sources. The data files should be labelled synthetic and kept out of the results.</p>
+        <p>Not as findings. You can report a simulation-based power analysis in a preregistration or a methods section. Describe it as a simulation, and state the assumed effect sizes, loadings and missingness with their sources. The data files should be labelled synthetic and kept out of the results.</p>
         <h3>Why is the power in the second example lower than for the same effect on a single continuous score?</h3>
-        <p>Each 5-point item carries measurement error and is cut into five categories, so the difference in the scale score between groups is smaller in standard-deviation units than the difference in the latent variable. In the run below, a latent shift of 0.5 gave a scale-score effect of about 0.45, and power at 64 per group fell from about 0.80 to about 0.70.</p>
+        <p>Each 5-point item carries measurement error and is cut into five categories. The difference in the scale score between groups is therefore smaller in standard-deviation units than the difference in the latent variable. In the run above, a latent shift of 0.5 gave a scale-score effect of about 0.45, and power at 64 per group fell from about 0.80 to about 0.70.</p>
         <h3>Do I need R, or is Python enough?</h3>
         <p>Either is enough. The Python example uses numpy and pandas for the data and scipy for the t test, and nothing else is needed to generate the data. The R example uses one package and I did not run it, so treat it as a starting point to check against the package documentation.</p>
       </article>
