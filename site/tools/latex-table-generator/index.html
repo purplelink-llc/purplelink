@@ -105,7 +105,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>LaTeX Table Generator</h1>
-        <p>Paste your CSV or TSV data and get a clean, ready-to-paste LaTeX table, with <code>booktabs</code> rules, alignment, a header row, and an optional <code>table</code> environment with caption and label. Runs entirely in your browser.</p>
+        <p>Paste your CSV or TSV data and get a ready-to-paste LaTeX table. The table has <code>booktabs</code> rules, alignment, a header row, and an optional <code>table</code> environment with caption and label. Runs entirely in your browser.</p>
       </div>
 
       <div class="tool-app">
@@ -177,7 +177,7 @@
         <h2>How to generate a LaTeX table</h2>
         <ol>
           <li>Paste your data into the box above, as comma-separated (CSV) or tab-separated (TSV) values. The first row can be your column headers.</li>
-          <li>Pick your options: keep <strong>booktabs</strong> on for clean professional rules, choose the column alignment, and decide whether to wrap the table in a <code>table</code> environment with a caption and label.</li>
+          <li>Pick your options. Keep <strong>booktabs</strong> on for professional rules, choose the column alignment, and decide whether to wrap the table in a <code>table</code> environment with a caption and label.</li>
           <li>Click <strong>Generate</strong> (output also updates as you type), then press <strong>Copy</strong> and paste the LaTeX straight into your document.</li>
         </ol>
       </section>
@@ -185,9 +185,9 @@
       <section class="tool-faq">
         <h2>About this tool</h2>
         <p>Writing the paper on a Mac? See the <a href="/guides/best-mac-latex-editors/">LaTeX editors for Mac, tested</a>.</p>
-        <p>This generator turns tabular data into a LaTeX <code>tabular</code> for you. Cell contents are escaped so LaTeX special characters (<code>&amp; % $ # _ { } ~ ^ \</code>) render as literal text rather than breaking your build. Everything happens in your browser with JavaScript. No server, no upload.</p>
-        <details><summary>What is booktabs?</summary><div class="faq-body"><code>booktabs</code> is a popular LaTeX package for professional tables. It provides <code>\toprule</code>, <code>\midrule</code>, and <code>\bottomrule</code> for well-spaced horizontal rules instead of the heavier <code>\hline</code>. Add <code>\usepackage{booktabs}</code> to your preamble. Turn this option off to use plain <code>\hline</code> rules instead.</div></details>
-        <details><summary>Does it handle commas inside quoted CSV fields?</summary><div class="faq-body">Yes. For comma-separated data, fields wrapped in double quotes may contain commas, and a doubled quote (<code>""</code>) inside a quoted field is treated as a single literal quote (standard CSV quoting). Tab- and semicolon-separated input is split on the delimiter directly.</div></details>
+        <p>This generator turns tabular data into a LaTeX <code>tabular</code> for you. Cell contents are escaped. LaTeX special characters (<code>&amp; % $ # _ { } ~ ^ \</code>) therefore render as literal text and do not break your build. Everything happens in your browser with JavaScript. No server, no upload.</p>
+        <details><summary>What is booktabs?</summary><div class="faq-body"><code>booktabs</code> is a LaTeX package for professional tables. It provides <code>\toprule</code>, <code>\midrule</code>, and <code>\bottomrule</code> for well-spaced horizontal rules instead of the heavier <code>\hline</code>. Add <code>\usepackage{booktabs}</code> to your preamble. Turn this option off to use plain <code>\hline</code> rules instead.</div></details>
+        <details><summary>Does it handle commas inside quoted CSV fields?</summary><div class="faq-body">Yes. For comma-separated data, fields wrapped in double quotes may contain commas. A doubled quote (<code>""</code>) inside a quoted field is treated as a single literal quote (standard CSV quoting). Tab- and semicolon-separated input is split on the delimiter directly.</div></details>
         <details><summary>How are columns and ragged rows handled?</summary><div class="faq-body">The number of columns is taken from the widest row, and shorter rows are padded with empty cells so the table stays well-formed. The chosen alignment (left, center, or right) is applied to every column.</div></details>
         <details><summary>Is my data stored?</summary><div class="faq-body">No. The whole tool runs locally in your browser. Your data never leaves your device, nothing is uploaded, and nothing is saved.</div></details>
       </section>
@@ -196,7 +196,7 @@
       <section class="waitlist-section mt-cta">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
         <div class="waitlist-actions">
           <a class="btn btn-primary" href="/moderntex/">Get ModernTex &mdash; $19.99</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
