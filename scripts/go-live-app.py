@@ -50,7 +50,7 @@ def main(argv):
     h = re.sub(rf'\s*<span class="product-status product-status-soon" data-{pf}-pre-only>[^<]*</span>', "", h)
     h = re.sub(rf'(data-{pf}-live-only) hidden', r"\1", h)
     nice = date.fromisoformat(released).strftime("%B %-d, %Y")
-    h = h.replace(f'data-{pf}-facts></p>', f'data-{pf}-facts>Version {version}, released {nice}. {size} MB disk image.</p>')
+    h = re.sub(rf'(data-{pf}-facts>)[^<]*(</p>)', lambda m: f'{m.group(1)}Version {version}, released {nice}. {size} MB disk image.{m.group(2)}', h)    # also replaces an older version's text
     page.write_text(h)
 
     sm = site / "sitemap.xml"; x = sm.read_text()
