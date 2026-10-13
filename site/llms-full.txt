@@ -7348,6 +7348,8 @@ Yes. Legroom is Purplelink's Mac menu-bar app: a free 7-day trial, then $9.99 on
 
 ## Related guides
 
+- How to delete a Mac app and the files it leaves behind: what an app leaves in your Library after you delete it, and which of it is safe to remove.
+
 - Why is System Data so big on my Mac?: what fills the System Data category and which causes are safe to remove.
 
 - What AI tools leave on your Mac, and what is safe to delete: measured sizes and the commands that clear them.
