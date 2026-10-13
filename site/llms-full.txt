@@ -585,6 +585,28 @@ Manuscript toolsMulti-file navigation, synchronized PDF preview, plain-language 
 
 Prefer Overleaf when several people edit the same draft at the same time, or when you work on Windows, Linux or an iPad. Prefer ModernTex when you write mostly alone on a Mac and want no subscription, no account and no compile limit. Moving over is a zip download or a Git clone (see the FAQ).
 
+Comparison
+
+## ModernTex compared with TeXShop and TeXstudio
+
+TeXShop and TeXstudio are the two free editors most Mac users try first.
+
+ModernTex compared with TeXShop and TeXstudio
+
+TopicModernTexTeXShopTeXstudio
+
+Price$19.99 once, after a free 7-day trial.Free, under the GPL.Free and open source, under the GPL v2.
+
+PlatformsmacOS 14 or later.Mac only. Version 5.57 needs Mac OS X 10.13 or later.Windows, Linux, BSD and macOS.
+
+Finding your TeX installUses MacTeX or TinyTeX. Offers a one-click TinyTeX install if it finds neither.Looked only at the MacTeX location. With TinyTeX it compiled nothing until the TeX path was set in preferences.Did not find TinyTeX on that Mac by itself. It worked once the TeX path was set.
+
+SigningSigned and notarized disk image.Signed and notarized.The Apple silicon build was unsigned, so macOS blocked it until approved.
+
+Price, license and platform: texstudio.org and the TeXShop page, checked on October 13, 2026. Setup and signing: the tests in our LaTeX editors guide, run October 11, 2026 on TeXShop 5.57 and TeXstudio 4.9.8 with TinyTeX installed.
+
+Prefer TeXShop or TeXstudio when free matters most, or, for TeXstudio, when you also work on Windows or Linux. In the same test TeXstudio ran BibTeX by itself, and TeXShop needed BibTeX run as a separate step. Prefer ModernTex when you want submission-readiness checks and an anonymized export for blind review in a Mac app. More detail: ModernTex against TeXShop and TeXstudio and the LaTeX editors for Mac compared.
+
 Before you install
 
 ## What ModernTex needs.
@@ -662,6 +684,14 @@ Yes. A dissertation is a multi-file project like any other: open the folder and 
 Will I have to pay again for a new version?
 
 No. Every update to ModernTex is included in the $19.99, forever, including future major versions. There is no upgrade fee.
+
+Does ModernTex work offline?
+
+Yes. Your files are ordinary files on your Mac and the compile runs on your Mac, so there is no server and no compile timeout. You need a TeX distribution, MacTeX or TinyTeX, and ModernTex can install TinyTeX for you. The license key is checked inside the app with no server involved. The optional AI features run on Apple Intelligence on your Mac, or on your own Claude or OpenAI account, which needs a connection.
+
+What if I stop using ModernTex?
+
+Your manuscripts stay ordinary .tex, .bib and image files in a folder on your disk, so TeXShop, TeXstudio or any other LaTeX editor can open them. There is no account to close and no subscription to cancel. If the trial ends before you buy, the window shows a notice and a Buy button, and your files are not touched.
 
 ## Try it on your own manuscript.
 
@@ -1005,6 +1035,28 @@ The cloudThere is no cloud, no account and no sync. Your measurements, rules and
 
 Legroom has no account and no analytics. Your daily measurements, your rules, the log of what was cleaned and the trial clock are stored on your Mac and are not sent anywhere. Apart from two things, Legroom does not use the network. The Buy button opens this page in your browser. And every copy, trial or licensed, asks this site once a day for its update feed: that request carries the app's name and version and an update token that is the same in every copy, plus what any web request carries, such as your IP address. It does not carry your files, your measurements or a profile of your Mac. Legroom asks for Full Disk Access only if you choose to give it, so it can read folders such as Desktop, Documents and Downloads. Details are on the privacy page. For what Full Disk Access allows and how to review it, see the permissions guide.
 
+Comparison
+
+## How it compares
+
+Most full disks can be explained with what macOS already shows you, so start there. This is how Legroom differs from the tools people usually weigh it against.
+
+Legroom compared with macOS Storage settings, DaisyDisk and CleanMyMac
+
+TopicLegroommacOS Storage settingsDaisyDiskCleanMyMac
+
+Price$9.99 once, after a 7-day trial.Free, built in.$9.99 once. The page says it is not a subscription.Starts at $3.33 a month on its page. No one-time price is listed.
+
+Free way to try7 days of the full app. The menu-bar readout and alerts keep working after.Always.A Try Free download. Trial length not stated.A free trial. Length not stated.
+
+Map of what takes spaceYes, the Space Map.No, categories only.Yes, a disk map.Yes, called Space Lens.
+
+How files are deletedRules: Trash or permanent, chosen per rule and shown in the preview. Space Map, Find Files and the Uninstaller: Trash only.Through Apple's own flows.Permanently, per its comparison table.Says it deletes. Trash or permanent not stated.
+
+Competitor facts from daisydiskapp.com and macpaw.com/cleanmymac, checked on October 13, 2026. The macOS Storage settings column, the CleanMyMac Space Lens and deletion cells are from our October 4, 2026 guide. "Not stated" means the page did not say.
+
+Start with macOS Storage settings, which cost nothing. Pick DaisyDisk if you only want a disk map, at the same price. Pick CleanMyMac if you want a broader all-in-one cleaner and are happy with a subscription. Pick Legroom if you want the free-space number in the menu bar, low-space alerts, rules you approve from a preview, and an Uninstaller, for one payment. The side-by-side table of twenty-plus tools is in Best disk space analyzer and cleaner for Mac.
+
 ## Frequently asked questions
 
 What does it need to run?
@@ -1066,6 +1118,14 @@ DaisyDisk, OmniDiskSweeper, GrandPerspective and others show a map of what takes
 How do I get help?
 
 Email ben@purplelink.llc. If you lose your download link or your license key, the Find a purchase page emails them again to the address you paid with.
+
+Why not DaisyDisk?
+
+DaisyDisk is a good disk map and costs the same $9.99 once. If a map is all you need, it is a fine choice. Legroom adds a free-space readout in the menu bar, low-space alerts, folder rules you approve from a preview, a What Grew view and an Uninstaller. DaisyDisk's page says it deletes permanently. Legroom's Space Map, Find Files and Uninstaller only move items to the Trash.
+
+Why not the macOS Storage settings, or a cleaner like CleanMyMac?
+
+Try the Storage settings first, because they are free and built in. They show categories but not a map of your own folders. CleanMyMac is an all-in-one cleaner with a free trial and prices that start at $3.33 a month on its page. Legroom is narrower: it frees disk space, it does not make your Mac faster, and it costs $9.99 once after a 7-day trial.
 
 ## Try it for a week.
 
@@ -1204,6 +1264,30 @@ New hardwareSounds play through your Mac's audio output. Haptic feedback is felt
 
 Cross-platformMac only. There is no Windows, iPhone or iPad version.
 
+Comparison
+
+## How it compares
+
+Free apps do the main job, and Klack is the simple paid one. Keyfeel adds sounds beyond key presses and rules for when to stay quiet.
+
+Keyfeel compared with Klack, Thock and Mechvibes
+
+TopicKeyfeelKlackThockMechvibes
+
+Price$9.99 once, after a 7-day trial.$4.99 on the Mac App Store.Free, MIT license.Free and open source.
+
+Oldest macOSmacOS 13.macOS 15.macOS 13.5.Runs on Windows, macOS and Linux. Minimum macOS not stated.
+
+Beyond key pressesMouse clicks, scroll ticks and optional trackpad haptics.Mouse clicks, and scroll sounds with haptic ticks.Keys. Mouse and scroll not stated.Keys. Mouse sounds are in a rewrite called MechvibesDX, per our guide.
+
+Quiet in some apps or on callsYes. Per-app silence, quiet hours, and silence while the microphone or a camera is in use.Not stated.Mutes during playback in Apple Music, Spotify or VLC.Not stated.
+
+Sound packsImports Mechvibes packs in the original format. Packs in the newer MechvibesDX format are not read.Not stated.Custom packs, defined in JSON.Community packs.
+
+Klack price from its Mac App Store listing, Thock from its repository and Mechvibes from mechvibes.com, checked on October 13, 2026. The Klack macOS version and sounds, the per-app rows and the MechvibesDX note are from our October 7 and 13, 2026 guide. "Not stated" means the pages read did not say.
+
+Pick Mechvibes or Thock if you want it free. Pick Klack if you want a simple app at a lower price, and a Mac that runs macOS 15. Pick Keyfeel if you want mouse and scroll sounds, quiet rules for apps and calls, and Mechvibes packs, for one payment. The full comparison, with more apps, is in the keyboard sound apps for Mac compared.
+
 ## Frequently asked questions
 
 What does it need to run?
@@ -1253,6 +1337,14 @@ Email ben@purplelink.llc within 14 days of purchase. See the terms.
 How do I get help?
 
 Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with.
+
+Why pay when Mechvibes and Thock are free?
+
+You do not have to. Both are free and open source, and Thock mutes itself during playback in Apple Music, Spotify and VLC. Keyfeel costs $9.99 once after a 7-day trial. It adds mouse-click sounds, scroll ticks and optional trackpad haptics, and it can go quiet in apps you choose, at set hours, and while the microphone or a camera is in use. If you do not need those, try a free app first.
+
+Does it work offline?
+
+Yes. Keyfeel runs in the menu bar and works offline, and pasting a license key works offline too. It reads which key was pressed, not the characters, and it does not send your typing anywhere.
 
 ## Try it for a week.
 
@@ -1429,6 +1521,30 @@ Disk spaceThe app is about 40 MB, plus the optional models you choose to downloa
 
 PermissionsmacOS asks for microphone access the first time you record in the app.
 
+Comparison
+
+## How it compares
+
+Tapefolio is one of several Mac apps that transcribe on the device. These are the three people most often compare it with.
+
+Tapefolio compared with MacWhisper, Aiko and Buzz
+
+TopicTapefolioMacWhisperAikoBuzz
+
+Price$29.99 once, after a 7-day trial.Free tier. Pro is a one-time €64 with lifetime updates.$24 once.Free, MIT license.
+
+Where it transcribesOn your Mac. Nothing from your files is sent anywhere.On your Mac with local models. Cloud services are optional.On your device. The page says audio is never uploaded.Offline, on your computer.
+
+Speaker labelsYes, on the Mac.Listed as a feature.Not supported yet, per its page.Listed as a feature, as speaker identification.
+
+PlatformmacOS 26 or later, Apple silicon only.Minimum macOS not stated.macOS, iOS and visionOS.macOS, Windows and Linux. Macs need Apple silicon.
+
+Free way to tryThe full app for 7 days.A free tier with no time limit.Not stated.Free.
+
+Competitor facts from macwhisper.com, sindresorhus.com/aiko and github.com/chidiwilliams/buzz, checked on October 13, 2026. "Not stated" means the page did not say. I did not test the other apps.
+
+Pick MacWhisper or Buzz if you want a free option. Check the MacWhisper requirements first if you have an Intel Mac or an older macOS, because Tapefolio will not run on either. Pick Aiko for the lowest one-time price when you do not need speaker labels. Pick Tapefolio when you want speaker labels, a review step for names and other identifiers, and OCR in one app on your Mac. Prices for more apps, including cloud services, text to speech and OCR, are in the Mac apps for transcription, text to speech and OCR guide.
+
 ## Frequently asked questions
 
 What does it need to run?
@@ -1486,6 +1602,18 @@ Email ben@purplelink.llc within 14 days of purchase. See the terms.
 How do I get help?
 
 Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with.
+
+Why not use a free app like MacWhisper or Buzz?
+
+You can, and for a plain transcript a free app may be the better value. MacWhisper has a free tier and Buzz is free and open source, and both transcribe on your Mac. Tapefolio costs $29.99 once. What that pays for is the work around the transcript: speaker labels, a review step for names and other identifiers, and OCR, all on your Mac. Try the 7-day trial on one recording before you decide.
+
+Does it work offline?
+
+Yes, once the models you use are installed. Transcription, speaker labels, identifier removal and OCR run on your Mac. The internet is used for the optional model downloads, for the update check, and for the one-time download of Apple's speech model if you use Apple's speech recognition. Pasting a license key works offline.
+
+Is it more accurate than other apps?
+
+Tapefolio has not been compared with other apps for accuracy, so this page makes no claim. The measured results on this page are for Tapefolio's own speech models on two meeting recordings, with word error rates between 21% and 39%. Whichever app you use, check any quoted text against the recording.
 
 ## Try it on one recording.
 

@@ -26,7 +26,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=75ccb1a51f">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/panely/panely.css?v=b09a37dc87">
+    <link rel="stylesheet" href="/panely/panely.css?v=af48f9573f">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script src="/panely/launch.js?v=ac99174d3c" defer></script>
@@ -154,6 +154,16 @@
               "@type": "Question",
               "name": "How do I get help?",
               "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why not Rectangle or Magnet?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Both are good, and Rectangle is free. If you only snap windows to halves, quarters and thirds, you may not need Panely. Panely adds your own areas, up to twelve, and saved layouts that come back when you reconnect a monitor. It costs $9.99 once after a 7-day trial. Magnet is $4.99 on the Mac App Store, and Rectangle Pro has a 10-day trial." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it work offline, and does it need an account?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, it works offline, and there is no account. Layouts, shortcuts and settings are kept on your Mac. Pasting a license key works offline. The only network use is the check for a new version." }
             }
           ]
         },
@@ -367,7 +377,30 @@
       </table>
     </section>
 
-    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+        <section class="specs-section" id="compare" aria-labelledby="compare-h">
+      <p class="eyebrow">Comparison</p>
+      <h2 id="compare-h">How it compares</h2>
+      <p class="specs-more">macOS can tile windows, and Rectangle, Magnet and Moom each have a long record. Here is what separates them from Panely.</p>
+        <div class="u-scroll-x" role="region" tabindex="0" aria-label="Panely compared with macOS, Rectangle, Magnet and Moom">
+          <table class="compare-table u-table-wide">
+            <caption class="visually-hidden">Panely compared with macOS, Rectangle, Magnet and Moom</caption>
+            <thead>
+              <tr><th scope="col"><span class="visually-hidden">Topic</span></th><th scope="col">Panely</th><th scope="col">macOS</th><th scope="col">Rectangle</th><th scope="col">Magnet</th><th scope="col">Moom</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Price</th><td>$9.99 once, after a 7-day trial.</td><td>Free.</td><td>Free and open source. Rectangle Pro has a 10-day trial.</td><td>$4.99 on the Mac App Store, a perpetual license.</td><td>$15, with a free trial. The license is valid forever and includes at least a year of updates.</td></tr>
+              <tr><th scope="row">Your own areas</th><td>Up to twelve, set as percentages of the screen.</td><td>Fixed layouts such as halves and quarters.</td><td>The free app has preset positions. Pro adds custom shortcuts for any size and position.</td><td>Custom commands, per its listing.</td><td>Up to 61 custom actions in a palette.</td></tr>
+              <tr><th scope="row">Saved layouts</th><td>Yes, and it keeps one automatically for each set of displays you use.</td><td>Not on the pages read.</td><td>Pro arranges a set of apps with one shortcut.</td><td>Not stated.</td><td>Yes. Any-window layouts apply to your most recent windows.</td></tr>
+              <tr><th scope="row">Windows after a monitor reconnects</th><td>Put back where they were, a few seconds after the displays change back.</td><td>Not covered on the pages read.</td><td>Pro can arrange apps when displays connect.</td><td>Not stated.</td><td>Saved layouts try to adjust to displays of other sizes.</td></tr>
+              <tr><th scope="row">Oldest macOS</th><td>macOS 14.</td><td>macOS Sequoia 15 for tiling.</td><td>10.15 or later, per its site.</td><td>macOS 13.</td><td>macOS 10.13.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <p class="specs-more">Competitor facts from <a href="https://rectangleapp.com/" rel="noopener">rectangleapp.com</a>, <a href="https://apps.apple.com/us/app/magnet/id441258766?mt=12" rel="noopener">Magnet's Mac App Store listing</a> and <a href="https://manytricks.com/moom/" rel="noopener">manytricks.com/moom</a>, checked on October 13, 2026. The macOS column, Rectangle Pro's app arrangement and Moom's display adjustment are from our October 12, 2026 guide. "Not stated" means the pages read did not say.</p>
+      <p class="specs-more"><strong>Use what macOS already has</strong> if halves and quarters are enough. <strong>Pick Rectangle</strong> if you want a capable free app, or you run an older macOS. <strong>Pick Magnet</strong> for a low-priced snapper from the App Store. <strong>Pick Moom</strong> if you want the deepest custom actions. <strong>Pick Panely</strong> if you want saved layouts that return after a monitor is reconnected, for one payment. More apps, with prices and permissions, are in <a href="/guides/best-window-managers-for-mac/">Best window managers for Mac</a>.</p>
+    </section>
+
+<section class="faq-section" id="faq" aria-labelledby="faq-heading">
       <h2 id="faq-heading">Frequently asked questions</h2>
       <div class="faq-list" data-motion="stagger">
         <details class="faq-item">
@@ -425,6 +458,14 @@
         <details class="faq-item">
           <summary>How do I get help?</summary>
           <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Why not Rectangle or Magnet?</summary>
+          <div class="faq-body">Both are good, and Rectangle is free. If you only snap windows to halves, quarters and thirds, you may not need Panely. Panely adds your own areas, up to twelve, and saved layouts that come back when you reconnect a monitor. It costs $9.99 once after a 7-day trial. Magnet is $4.99 on the Mac App Store, and Rectangle Pro has a 10-day trial.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it work offline, and does it need an account?</summary>
+          <div class="faq-body">Yes, it works offline, and there is no account. Layouts, shortcuts and settings are kept on your Mac. Pasting a license key works offline. The only network use is the check for a new version.</div>
         </details>
       </div>
     </section>

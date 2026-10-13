@@ -28,7 +28,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=75ccb1a51f">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/moderntex/seats.css?v=bf2a8b7fe8">
+    <link rel="stylesheet" href="/moderntex/seats.css?v=191e754b6e">
     <link rel="stylesheet" href="/buy.css?v=589347358c">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -138,6 +138,16 @@
               "@type": "Question",
               "name": "Will I have to pay again for a new version?",
               "acceptedAnswer": { "@type": "Answer", "text": "No. Every update to ModernTex is included in the $19.99, forever, including future major versions. There is no upgrade fee." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does ModernTex work offline?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Your files are ordinary files on your Mac and the compile runs on your Mac, so there is no server and no compile timeout. You need a TeX distribution, MacTeX or TinyTeX, and ModernTex can install TinyTeX for you. The license key is checked inside the app with no server involved. The optional AI features run on Apple Intelligence on your Mac, or on your own Claude or OpenAI account, which needs a connection." }
+            },
+            {
+              "@type": "Question",
+              "name": "What if I stop using ModernTex?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Your manuscripts stay ordinary .tex, .bib and image files in a folder on your disk, so TeXShop, TeXstudio or any other LaTeX editor can open them. There is no account to close and no subscription to cancel. If the trial ends before you buy, the window shows a notice and a Buy button, and your files are not touched." }
             }
           ]
         },
@@ -434,7 +444,29 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
       <p class="specs-more"><strong>Prefer Overleaf</strong> when several people edit the same draft at the same time, or when you work on Windows, Linux or an iPad. <strong>Prefer ModernTex</strong> when you write mostly alone on a Mac and want no subscription, no account and no compile limit. Moving over is a zip download or a Git clone (see <a href="#faq">the FAQ</a>).</p>
     </section>
 
-    <section class="waitlist-section" id="requirements">
+        <section class="specs-section" id="vs-free-editors" aria-labelledby="vs-free-editors-h">
+      <p class="eyebrow">Comparison</p>
+      <h2 id="vs-free-editors-h">ModernTex compared with TeXShop and TeXstudio</h2>
+      <p class="specs-more">TeXShop and TeXstudio are the two free editors most Mac users try first.</p>
+        <div class="u-scroll-x" role="region" tabindex="0" aria-label="ModernTex compared with TeXShop and TeXstudio">
+          <table class="compare-table u-table-wide">
+            <caption class="visually-hidden">ModernTex compared with TeXShop and TeXstudio</caption>
+            <thead>
+              <tr><th scope="col"><span class="visually-hidden">Topic</span></th><th scope="col">ModernTex</th><th scope="col">TeXShop</th><th scope="col">TeXstudio</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Price</th><td>$19.99 once, after a free 7-day trial.</td><td>Free, under the GPL.</td><td>Free and open source, under the GPL v2.</td></tr>
+              <tr><th scope="row">Platforms</th><td>macOS 14 or later.</td><td>Mac only. Version 5.57 needs Mac OS X 10.13 or later.</td><td>Windows, Linux, BSD and macOS.</td></tr>
+              <tr><th scope="row">Finding your TeX install</th><td>Uses MacTeX or TinyTeX. Offers a one-click TinyTeX install if it finds neither.</td><td>Looked only at the MacTeX location. With TinyTeX it compiled nothing until the TeX path was set in preferences.</td><td>Did not find TinyTeX on that Mac by itself. It worked once the TeX path was set.</td></tr>
+              <tr><th scope="row">Signing</th><td>Signed and notarized disk image.</td><td>Signed and notarized.</td><td>The Apple silicon build was unsigned, so macOS blocked it until approved.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <p class="specs-more">Price, license and platform: <a href="https://www.texstudio.org/" rel="noopener">texstudio.org</a> and <a href="https://pages.uoregon.edu/koch/texshop/" rel="noopener">the TeXShop page</a>, checked on October 13, 2026. Setup and signing: the tests in our LaTeX editors guide, run October 11, 2026 on TeXShop 5.57 and TeXstudio 4.9.8 with TinyTeX installed.</p>
+      <p class="specs-more"><strong>Prefer TeXShop or TeXstudio</strong> when free matters most, or, for TeXstudio, when you also work on Windows or Linux. In the same test TeXstudio ran BibTeX by itself, and TeXShop needed BibTeX run as a separate step. <strong>Prefer ModernTex</strong> when you want submission-readiness checks and an anonymized export for blind review in a Mac app. More detail: <a href="/guides/texshop-alternative-mac/">ModernTex against TeXShop and TeXstudio</a> and <a href="/guides/best-mac-latex-editors/">the LaTeX editors for Mac compared</a>.</p>
+    </section>
+
+<section class="waitlist-section" id="requirements">
       <p class="eyebrow">Before you install</p>
       <h2>What ModernTex needs.</h2>
       <p>A Mac running macOS 14 or later and a TeX distribution. MacTeX or TinyTeX both work, and you do not have to set either up first: if ModernTex cannot find one when you compile, it offers a one-click TinyTeX install in the editor. After checkout you get a signed disk image. Open it and drag ModernTex to Applications. Bookmark the download page, which always gives you the newest version.</p>
@@ -528,6 +560,14 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         <details class="faq-item">
           <summary>Will I have to pay again for a new version?</summary>
           <div class="faq-body">No. Every update to ModernTex is included in the $19.99, forever, including future major versions. There is no upgrade fee.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does ModernTex work offline?</summary>
+          <div class="faq-body">Yes. Your files are ordinary files on your Mac and the compile runs on your Mac, so there is no server and no compile timeout. You need a TeX distribution, MacTeX or TinyTeX, and ModernTex can install TinyTeX for you. The license key is checked inside the app with no server involved. The optional AI features run on Apple Intelligence on your Mac, or on your own Claude or OpenAI account, which needs a connection.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What if I stop using ModernTex?</summary>
+          <div class="faq-body">Your manuscripts stay ordinary .tex, .bib and image files in a folder on your disk, so TeXShop, TeXstudio or any other LaTeX editor can open them. There is no account to close and no subscription to cancel. If the trial ends before you buy, the window shows a notice and a Buy button, and your files are not touched.</div>
         </details>
       </div>
     </section>
