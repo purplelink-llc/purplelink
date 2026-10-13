@@ -1,0 +1,8 @@
+1. continuous score, d = 0.50, n = 64 per group
+   simulated power 0.796 (+/- 0.011), statsmodels 0.801
+
+2. four 5-point items, latent shift 0.5, n = 64 per group
+   effective d on the scale score: 0.447
+   simulated power 0.701 (+/- 0.013), statsmodels at d = 0.447: 0.709
+   simulated rejection rate with shift 0: 0.053 (alpha 0.05)
+   statsmodels n per group for 80% power at d = 0.447: 79.4
