@@ -1,0 +1,19 @@
+    Battery Information:
+
+      Model Information:
+          Serial Number: XXXX
+          Device Name: XXXX
+          Pack Lot Code: 0x0000
+          PCB Lot Code: 0x0000
+          Firmware Version: 0x00000b00
+          Hardware Revision: 0x0100
+          Cell Revision: 0x551d
+      Charge Information:
+          The battery’s charge is below the warning level: No
+          Fully Charged: No
+          Charging: Yes
+          State of Charge (%): 57
+      Health Information:
+          Cycle Count: 628
+          Condition: Normal
+          Maximum Capacity: 89%
