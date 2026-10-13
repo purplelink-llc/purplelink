@@ -28,6 +28,8 @@ import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 
+from latextools.safe_exec import minimal_env
+
 logger = logging.getLogger(__name__)
 
 MAX_UNCOMPRESSED_BYTES = 150 * 1024 * 1024
@@ -102,7 +104,7 @@ def _run_pandoc(src: Path, out: Path, workdir: Path, extra: list[str], timeout: 
         "--pdf-engine=xelatex", "--pdf-engine-opt=-no-shell-escape",
         "-V", "geometry:margin=1in", "-V", "fontsize=11pt",
     ] + extra
-    return subprocess.run(cmd, cwd=workdir, capture_output=True, timeout=timeout)
+    return subprocess.run(cmd, cwd=workdir, capture_output=True, timeout=timeout, env=minimal_env(workdir))
 
 
 def convert(data: bytes, timeout: float = CONVERT_TIMEOUT_SECONDS) -> Conversion:
