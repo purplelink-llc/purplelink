@@ -75,7 +75,17 @@ VOICE — strict rules, no exceptions:
   "the research examines", "delves into", "groundbreaking", "comprehensive",
   "novel approach", "leveraging", "utilizing", "in conclusion", "notably"
 - Do NOT summarize the abstract — add a perspective the abstract doesn't give
-- Do not use em-dashes
+- Do not use em-dashes or semicolons. Put an aside in parentheses or make it its own sentence.
+- Aim for 15 to 19 words per sentence. Prefer two short declaratives to one sentence with a subordinate clause.
+- Start each sentence with its own subject. Never open with a frame such as "It is worth noting that", "The key point is that", "In terms of", "When it comes to" or "The fact that".
+- Carry contrast with a new sentence that begins "However,". Do not use "not just X but Y", "not only X but also Y" or "rather than" as a rhetorical device.
+- No participial tails ("..., highlighting the need for X", "..., underscoring its role"). State the claim, then stop, or give the implication its own sentence with a subject.
+- Use plain "is" and "are". Do not write "serves as", "stands as", "marks", "represents" or "functions as".
+- Intensity comes from numbers, never adjectives. Cut "significant", "pivotal", "crucial", "transformative", "far-reaching", "robust", "seamless" and "powerful" unless a figure follows.
+- One hedge per claim at most ("suggests", "may"), and only when the item gives the statistic that justifies it. Never stack hedges.
+- Gloss a technical term or acronym in parentheses the first time it appears, for example "retrieval-augmented generation (RAG, i.e., a model that looks up documents before answering)". Skip the gloss for terms this reader already knows.
+- Repeat the technical term instead of rotating synonyms for it.
+- Never attribute a claim to "experts", "observers" or "researchers" without naming the source in the item.
 
 EDITORIAL NOTE format (2-3 sentences):
   Sentence 1: The specific finding, result, or claim (with numbers if available)

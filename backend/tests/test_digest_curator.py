@@ -91,3 +91,9 @@ def test_curate_respects_section_caps(monkeypatch):
     result = asyncio.run(curate(object(), items))
     papers = result.sections.get("Papers & Research", [])
     assert len(papers) <= SECTION_CAPS["papers"]
+
+
+def test_curator_prompt_carries_the_voice_rules():
+    from digest import curator
+    for rule in ("semicolons", "15 to 19 words", 'begins "However,"', "participial tails", "Intensity comes from numbers"):
+        assert rule in curator._SYSTEM, rule
