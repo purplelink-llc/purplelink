@@ -168,7 +168,9 @@ def render_html(digest: DigestData) -> str:
          which is the profile AdSense rejected as "low value content" on
          2026-07-05. They stay published and stay in the RSS feed, which is
          where their readers actually come from; they just stop being offered
-         to the index. follow is kept so outbound links still carry. -->
+         to the index. follow is kept so outbound links still carry.
+         Do not Disallow /blog/digest/ in robots.txt: a blocked page cannot
+         show this tag, and its URL may still be indexed from links. -->
     <meta name="robots" content="noindex, follow">
     <title>{title} | Purplelink LLC</title>
     <meta name="description" content="{desc}">
@@ -472,7 +474,9 @@ def _topic_hub_skeleton(section_label: str, slug: str) -> str:
          which is the profile AdSense rejected as "low value content" on
          2026-07-05. They stay published and stay in the RSS feed, which is
          where their readers actually come from; they just stop being offered
-         to the index. follow is kept so outbound links still carry. -->
+         to the index. follow is kept so outbound links still carry.
+         Do not Disallow /blog/digest/ in robots.txt: a blocked page cannot
+         show this tag, and its URL may still be indexed from links. -->
     <meta name="robots" content="noindex, follow">
     <title>{html.escape(title)} | Purplelink LLC</title>
     <meta name="description" content="Every Purplelink Daily Digest issue that covered {html.escape(section_label)}, newest first.">

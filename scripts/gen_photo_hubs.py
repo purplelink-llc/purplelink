@@ -223,7 +223,7 @@ HEAD = """<!doctype html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="{robots}">
     <title>{title} | Purplelink</title>
     <meta name="description" content="{desc}">
     <link rel="canonical" href="{url}">
@@ -315,12 +315,12 @@ def grid(images, etsy):
     return '        <div class="hub-grid">\n' + "".join(figure(i, etsy) for i in images) + "        </div>\n"
 
 
-def page(title, desc, url, images, body, crumb_items, og_title=None):
+def page(title, desc, url, images, body, crumb_items, og_title=None, robots="index, follow"):
     og = images[0] if images else None
     jl = {"@context": "https://schema.org", "@graph": [crumbs(crumb_items)] + ([{
         "@type": "ImageGallery", "name": title, "url": url,
         "associatedMedia": [image_object(i) for i in images]}] if images else [])}
-    return (HEAD.format(title=esc(title), desc=esc(desc), url=url, og_title=esc(og_title or title),
+    return (HEAD.format(robots=robots, title=esc(title), desc=esc(desc), url=url, og_title=esc(og_title or title),
                         og_image=BASE + (og["src"] if og else "/assets/photography/matterhorn-2200.webp"),
                         og_w=og["w"] if og else 2200, og_h=og["h"] if og else 1464,
                         og_alt=esc(og["caption"] if og else title),
@@ -399,7 +399,7 @@ def main():
             title = f"{p['name']} photographs"
             desc = f"{len(imgs)} photographs of {p['name']} by Benjamin Ampel, available as prints and to license. {p['fact']}"
             write(OUT / cs / p["slug"] / "index.html",
-                  page(title, desc[:300], purl, imgs, body, [("Home", BASE + "/"), ("Photography", BASE + "/photography/"), (c["name"], curl), (p["name"], purl)]),
+                  page(title, desc[:300], purl, imgs, body, [("Home", BASE + "/"), ("Photography", BASE + "/photography/"), (c["name"], curl), (p["name"], purl)], robots="noindex, follow"),
                   a.check, changed)
             sitemap.append((purl, imgs))
             place_cards.append(f'          <a class="hub-card" href="/photography/{cs}/{p["slug"]}/" data-reveal>\n'
