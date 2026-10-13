@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Mac battery health, cycle count and voltage (2026)</title>
+    <meta name="description" content="How to read battery health, cycle count, charge current, voltage, charger watts and time to empty on a Mac with System Settings, System Information and three Terminal commands, with real output.">
+    <link rel="canonical" href="https://purplelink.llc/guides/check-mac-battery-health-voltage-and-cycle-count/">
+    <meta property="og:title" content="Mac battery health, cycle count and voltage (2026)">
+    <meta property="og:description" content="How to read battery health, cycle count, charge current, voltage, charger watts and time to empty on a Mac with System Settings, System Information and three Terminal commands, with real output.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/check-mac-battery-health-voltage-and-cycle-count/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/products.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mac battery health, cycle count and voltage (2026)">
+    <meta name="twitter:description" content="How to read battery health, cycle count, charge current, voltage, charger watts and time to empty on a Mac with System Settings, System Information and three Terminal commands, with real output.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/products.png">
+    <meta name="twitter:image:alt" content="Mac battery health, cycle count and voltage read with built-in tools">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Check your Mac battery health, cycle count, voltage and charger watts without installing anything",
+      "description": "How to read battery health, cycle count, charge current, voltage, charger watts and time to empty on a Mac with System Settings, System Information and three Terminal commands, with real output.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-13",
+      "dateModified": "2026-10-13",
+      "image": "https://purplelink.llc/assets/og/products.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/check-mac-battery-health-voltage-and-cycle-count/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Check Mac battery health, voltage and cycle count",
+          "item": "https://purplelink.llc/guides/check-mac-battery-health-voltage-and-cycle-count/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I see my Mac battery cycle count?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hold the Option key, click the Apple menu and choose System Information. Under Hardware, select Power. The cycle count is listed under Health Information. In Terminal, run system_profiler SPPowerDataType and look for Cycle Count. On my Mac it read 628, and Apple's table lists 1000 as the limit for recent MacBook Air models."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is the amperage on my Mac negative?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On the Mac I tested, a negative Amperage meant the battery was losing charge and a positive one meant it was gaining charge. The negative reading came with a time-to-empty estimate and the positive reading came with a time-to-full estimate. A Mac can read negative while plugged in if the charger supplies less than the Mac uses. Mine did on an 8 W source."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does Terminal give a different health number than System Settings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Apple's Maximum Capacity figure uses a method Apple does not publish. On my Mac, system_profiler reported 89%. Dividing AppleRawMaxCapacity by DesignCapacity gave 82.0% in one reading and 83.1% in another. Trust Apple's figure for service decisions and treat your own division as a rough check."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need an app to see battery voltage and charger watts?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Voltage comes from ioreg -rn AppleSmartBattery, and the charger's wattage comes from system_profiler SPPowerDataType or from the AdapterDetails line in the same ioreg output. An app is useful only if you want a live readout in the menu bar or a saved history."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=e775131596">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=fb682a98eb" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">Check your Mac battery health, cycle count, voltage and charger watts without installing anything</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-13">October 13, 2026</time></p>
+        <p class="post-lede">Your Mac records more battery numbers than System Settings shows. This guide reads them with tools already on the Mac: health, cycle count, charge current, voltage, charger watts and time to empty. Every command only reads and needs no administrator password. The output is real, taken from one MacBook Air on October 13, 2026.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink publishes this site and sells other Mac apps, but none of them is a battery tool. No link on this page is an affiliate link. I ran every command below on my own Mac (macOS 27.2) on October 13, 2026. I read Apple's pages and each tool's own page the same day. I did not run the third-party tools. Where a page did not say something, I write "not stated" and do not guess.</p>
+
+        <p><strong>About the redactions:</strong> Every serial number, device name and adapter name in the output below is replaced with <code>XXXX</code>. Your own output will show those values, so remove them before you paste it anywhere.</p>
+
+        <h2>The short answer</h2>
+        <p>Three built-in routes show battery numbers. System Settings shows health and a condition. System Information adds the cycle count. Terminal adds the rest: charge current, voltage, charger watts and time estimates. Terminal is also the only route that shows how fast the battery is charging or draining right now.</p>
+        <p>Temperature is the exception. System Information did not list it, and the battery record that Terminal reads had no temperature entry on my Mac. I found no built-in route to it. The tools table near the end names the apps whose own pages say they show it.</p>
+
+        <h2 id="numbers">What each number means</h2>
+        <p>These are the eight numbers this guide reads. Apple defines the first two on its own pages. The others are standard electrical units, and the sections below show where each one appears.</p>
+
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th class="u-th" scope="col">Number</th><th class="u-th" scope="col">Unit</th><th class="u-th" scope="col">How to read it</th></tr></thead>
+            <tbody>
+              <tr><td class="u-cell">Maximum capacity (health)</td><td class="u-cell">percent</td><td class="u-cell">How much charge the battery holds now compared with when it was new (<a href="https://support.apple.com/102589" rel="noopener">Apple's page</a>). Lower means more wear.</td></tr>
+              <tr><td class="u-cell">Cycle count</td><td class="u-cell">cycles</td><td class="u-cell">One cycle is using all of the battery's power, and that can be spread across several charges (<a href="https://support.apple.com/en-us/102888" rel="noopener">Apple's page</a>). Compare it with the limit for your model.</td></tr>
+              <tr><td class="u-cell">Design capacity</td><td class="u-cell">mAh</td><td class="u-cell">The charge the battery held when new. A milliamp-hour (mAh) is a unit of stored charge.</td></tr>
+              <tr><td class="u-cell">Voltage</td><td class="u-cell">mV</td><td class="u-cell">The electrical pressure of the battery. 11509 millivolts (mV) is 11.5 volts (V). It moves with charge level and load.</td></tr>
+              <tr><td class="u-cell">Current (amperage)</td><td class="u-cell">mA</td><td class="u-cell">How fast charge flows into or out of the battery. A reading of 1415 milliamps (mA) is 1.415 amps (A).</td></tr>
+              <tr><td class="u-cell">Power</td><td class="u-cell">W</td><td class="u-cell">Voltage times current. 11.5 V at 1.415 A is about 16.3 watts (W).</td></tr>
+              <tr><td class="u-cell">Charger watts</td><td class="u-cell">W</td><td class="u-cell">What the plugged-in source can supply.</td></tr>
+              <tr><td class="u-cell">Time remaining</td><td class="u-cell">minutes</td><td class="u-cell">The Mac's own estimate, until empty or until full.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="route-1">Route 1: the built-in windows</h2>
+        <p>These two need no Terminal. I read Apple's pages for the steps and did not open the windows for this guide, so this section reports what Apple says and not what my screen showed.</p>
+        <ol>
+          <li><strong>Open Battery Health.</strong> Choose Apple menu, System Settings, then Battery (<a href="https://support.apple.com/en-us/108376" rel="noopener">Apple's page on Service Recommended</a>). Find the line for Battery Health. It reads Normal or Service Recommended.</li>
+          <li><strong>Look for the maximum capacity.</strong> Apple defines Maximum Capacity as battery capacity relative to when the battery was new (<a href="https://support.apple.com/102589" rel="noopener">Apple's page on Apple silicon Macs</a>). Check whether your Battery Health view shows it. Terminal prints it for certain, as the next section shows.</li>
+          <li><strong>Find the cycle count.</strong> Hold the Option key and click the Apple menu. Choose System Information. Under Hardware, select Power. The cycle count sits under Battery Information (<a href="https://support.apple.com/en-us/102888" rel="noopener">Apple's page on cycle count</a>).</li>
+        </ol>
+        <p>Neither window shows current, voltage or charger watts. Terminal does.</p>
+
+        <h2 id="route-2">Route 2: Terminal</h2>
+        <p>Open Terminal from Applications, then Utilities. Paste one command at a time. Each command below only reads. None needs <code>sudo</code> (the prefix that runs a command as administrator).</p>
+
+        <h3>pmset: the quick status line</h3>
+        <p><code>pmset</code> is the Mac's power-management command. The <code>-g batt</code> option prints the battery status.</p>
+
+        <pre><code>$ pmset -g batt
+Now drawing from 'AC Power'
+ -InternalBattery-0 (id=XXXX)	57%; charging; (no estimate) present: true</code></pre>
+
+        <p>The line gives the charge (57%), the state (charging) and the time estimate. It read "(no estimate)" here, so the Mac had no time to show. A second reading, taken after I changed chargers, looked like this:</p>
+
+        <pre><code>$ pmset -g batt
+Now drawing from 'AC Power'
+ -InternalBattery-0 (id=XXXX)	55%; charging; 3:18 remaining present: true</code></pre>
+
+        <p>"3:18 remaining" means 3 hours and 18 minutes until full. The <code>id</code> number is replaced with XXXX.</p>
+
+        <h3>system_profiler: health, cycle count and charger</h3>
+        <p><code>system_profiler SPPowerDataType</code> prints the same power report that System Information shows. The full report is long and includes your sleep settings and scheduled wake events. These two commands print only the battery and charger sections.</p>
+
+        <pre><code>$ system_profiler SPPowerDataType | sed -n '/Battery Information:/,/Maximum Capacity/p'
+    Battery Information:
+
+      Model Information:
+          Serial Number: XXXX
+          Device Name: XXXX
+          Pack Lot Code: 0x0000
+          PCB Lot Code: 0x0000
+          Firmware Version: 0x00000b00
+          Hardware Revision: 0x0100
+          Cell Revision: 0x551d
+      Charge Information:
+          The battery’s charge is below the warning level: No
+          Fully Charged: No
+          Charging: Yes
+          State of Charge (%): 57
+      Health Information:
+          Cycle Count: 628
+          Condition: Normal
+          Maximum Capacity: 89%</code></pre>
+
+        <p>Three lines matter. <strong>Cycle Count</strong> is 628. <strong>Condition</strong> is Normal. <strong>Maximum Capacity</strong> is 89%. Apple's table lists 1000 cycles for recent MacBook Air models, so look up your own row. The Serial Number and Device Name lines are redacted.</p>
+
+        <pre><code>$ system_profiler SPPowerDataType | sed -n '/AC Charger Information:/,/Charging:/p'
+    AC Charger Information:
+
+      Connected: Yes
+      ID: 0x000a
+      Wattage (W): 8
+      Family: XXXX
+      Charging: Yes</code></pre>
+
+        <p>The charger section reports <strong>Wattage (W)</strong>: 8. That is the most the plugged-in source could supply. After I switched chargers, the same command reported this:</p>
+
+        <pre><code>$ system_profiler SPPowerDataType | sed -n '/AC Charger Information:/,/Charging:/p'
+    AC Charger Information:
+
+      Connected: Yes
+      ID: 0x7003
+      Wattage (W): 30
+      Family: XXXX
+      Serial Number: XXXX
+      Name: XXXX
+      Manufacturer: Apple Inc.
+      Hardware Version: 1.0
+      Firmware Version: 1030054
+      Charging: Yes</code></pre>
+
+        <p>The wattage is now 30. The Serial Number and Name lines belong to the charger, and I replaced both with XXXX.</p>
+
+        <h3 id="ioreg">ioreg: current, voltage and capacity in detail</h3>
+        <p><code>ioreg</code> (the I/O Registry Explorer) lists the hardware the Mac knows about and each device's properties. The <code>-r</code> option shows the subtree for a match. The <code>-n</code> option matches by name. The battery's name is <code>AppleSmartBattery</code>. The full output runs to about 65 lines, and several contain serial numbers and device names. This command keeps only the lines that matter:</p>
+
+        <pre><code>ioreg -rn AppleSmartBattery | grep -E '"(CycleCount|Voltage|Amperage|InstantAmperage|TimeRemaining|AvgTimeToEmpty|ExternalConnected|IsCharging|MaxCapacity|CurrentCapacity|AdapterDetails|BatteryData)" ='
+  |   "TimeRemaining" = 65535
+  |   "AvgTimeToEmpty" = 87
+  |   "AdapterDetails" = {"IsWireless"=No,"AdapterID"=10,"AdapterVoltage"=5000,"FamilyCode"=XXXX,"AdapterPowerTier"=1,"Watts"=8,"UsbHvcHvcIndex"=255,"Current"=1500,"PMUConfiguration"=1500,"UsbHvcMenu"=()}
+  |   "ExternalConnected" = Yes
+  |   "Voltage" = 11509
+  |   "MaxCapacity" = 100
+  |   "CurrentCapacity" = 57
+  |   "CycleCount" = 628
+  |   "BatteryData" = {"CurrentCapacity"=57,"AppleRawMaxCapacity"=3798,"AppleRawCurrentCapacity"=2078,"AbsoluteCapacity"=0,"AvgTimeToEmpty"=87,"DesignCapacity"=4629,"NominalChargeCapacity"=3925,"FullChargeCapacity"=3798,"MaxCapacity"=100,"FullyCharged"=0,"RemainingCapacity"=2078,"BatteryPower"=18446744073709535331,"TrueRemainingCapacity"=0}
+  |   "InstantAmperage" = 18446744073709550201
+  |   "Amperage" = 18446744073709550201
+  |   "IsCharging" = Yes</code></pre>
+
+        <p>The leading <code>|</code> characters are part of the real output. In the <code>AdapterDetails</code> line, the adapter's family code is replaced with XXXX. I cut the output to these lines. Nothing else was changed.</p>
+
+        <h2 id="fields">Read the ioreg fields</h2>
+        <p>Apple does not document the registry keys. Each row below states what I could confirm from the output on my Mac, and says so where I could not.</p>
+
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th class="u-th" scope="col">Field</th><th class="u-th" scope="col">My reading</th><th class="u-th" scope="col">What it means and how I know</th></tr></thead>
+            <tbody>
+              <tr><td class="u-cell">CycleCount</td><td class="u-cell">628</td><td class="u-cell">The cycle count. It matches the Cycle Count line from system_profiler.</td></tr>
+              <tr><td class="u-cell">BatteryData: DesignCapacity</td><td class="u-cell">4629</td><td class="u-cell">The capacity when new, in mAh. The name says so, and I found no Apple page that defines it.</td></tr>
+              <tr><td class="u-cell">BatteryData: AppleRawMaxCapacity</td><td class="u-cell">3798</td><td class="u-cell">In mAh. The name suggests the capacity the battery holds now. It did not give Apple's number (see the work-out section).</td></tr>
+              <tr><td class="u-cell">BatteryData: NominalChargeCapacity</td><td class="u-cell">3925</td><td class="u-cell">Not documented. It sits between the other two and gives 84.8% of design, which is not Apple's 89% either.</td></tr>
+              <tr><td class="u-cell">MaxCapacity</td><td class="u-cell">100</td><td class="u-cell">Apple does not document it. It reads 100 while Apple's Maximum Capacity is 89%, so it is not a health figure.</td></tr>
+              <tr><td class="u-cell">CurrentCapacity</td><td class="u-cell">57</td><td class="u-cell">The charge percent. It matches the 57% from pmset.</td></tr>
+              <tr><td class="u-cell">Voltage</td><td class="u-cell">11509</td><td class="u-cell">Battery voltage in millivolts (11.5 V).</td></tr>
+              <tr><td class="u-cell">Amperage and InstantAmperage</td><td class="u-cell">18446744073709550201</td><td class="u-cell">The current in milliamps, stored as a wrapped number (next section). Both lines held the same value here.</td></tr>
+              <tr><td class="u-cell">AdapterDetails: Watts</td><td class="u-cell">8</td><td class="u-cell">The charger's capability in watts. It matches the Wattage line from system_profiler. The same record lists AdapterVoltage 5000 mV and Current 1500 mA, which multiply to 7.5 W.</td></tr>
+              <tr><td class="u-cell">TimeRemaining</td><td class="u-cell">65535</td><td class="u-cell">A placeholder for no estimate. In the later reading it was 198 minutes, the same as the 3:18 that pmset showed.</td></tr>
+              <tr><td class="u-cell">AvgTimeToEmpty</td><td class="u-cell">87</td><td class="u-cell">Minutes until empty. In the later reading, during charging, it was 65535.</td></tr>
+              <tr><td class="u-cell">IsCharging</td><td class="u-cell">Yes</td><td class="u-cell">The Mac's charging flag. It stayed Yes while the battery was losing charge (see the section on reading both signs).</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Temperature does not appear. This command counts lines that contain a Temperature entry in the battery record:</p>
+
+        <pre><code>$ ioreg -rn AppleSmartBattery | grep -c '"Temperature"'
+0</code></pre>
+
+        <p>The result is 0 on this Mac. Other Macs or macOS versions may differ, and I could not test them.</p>
+
+        <h2 id="negative">Turn the wrapped numbers into signed ones</h2>
+        <p>The <code>Amperage</code> value of 18446744073709550201 is not 18 quintillion milliamps. The registry holds the current as an unsigned 64-bit number (a number with no minus sign), so a small negative value prints as a huge positive one. Two ways convert it. Bash (the shell, not the default zsh) does the arithmetic directly:</p>
+
+        <pre><code>$ bash -c 'echo $((18446744073709550201))'
+-1415</code></pre>
+
+        <p>The same trick converts the <code>BatteryPower</code> field inside <code>BatteryData</code>:</p>
+
+        <pre><code>$ bash -c 'echo $((18446744073709535331))'
+-16285</code></pre>
+
+        <p>That is minus 16285 milliwatts, or 16.3 W leaving the battery. The second method asks the registry for XML and extracts one key with <code>plutil</code>, a macOS tool for property lists. It saves a file that contains your serial number, so delete it when you finish.</p>
+
+        <pre><code>ioreg -rn AppleSmartBattery -a &gt; battery.plist
+for k in Amperage InstantAmperage Voltage; do printf '%s ' $k; plutil -extract 0.$k raw battery.plist; done
+rm battery.plist
+Amperage -1415
+InstantAmperage -1415
+Voltage 11509</code></pre>
+
+        <p>Use <code>bash</code> for the arithmetic. In my tests zsh (the default shell) cut the number short and printed a warning. The text tool awk subtracted 2 to the power of 64 and returned this wrong answer, because it stores large integers as decimals:</p>
+
+        <pre><code>$ awk 'BEGIN { print 18446744073709550201 - 18446744073709551616 }'
+-2048</code></pre>
+
+        <p>The correct value is -1415.</p>
+
+        <h2 id="sign">Read the sign: charging and draining</h2>
+        <p>The sign of Amperage tells you which way the charge flows. Two readings from the same Mac confirm it.</p>
+        <ul>
+          <li><strong>Negative, battery losing charge.</strong> The first reading was -1415 mA with an 8 W source plugged in. The ioreg output gave a time to empty (<code>AvgTimeToEmpty</code> 87 minutes). However, pmset printed no estimate. Dividing the 2078 mAh remaining by 1415 mA gives 1.47 hours, or 88 minutes.</li>
+          <li><strong>Positive, battery gaining charge.</strong> After I changed to a 30 W charger, the reading was +738 mA, with 3:18 remaining until full.</li>
+        </ul>
+        <p>Here is the second reading, with the same command as before:</p>
+
+        <pre><code>ioreg -rn AppleSmartBattery | grep -E '"(CycleCount|Voltage|Amperage|InstantAmperage|TimeRemaining|AvgTimeToEmpty|ExternalConnected|IsCharging|MaxCapacity|CurrentCapacity|AdapterDetails|BatteryData)" ='
+  |   "TimeRemaining" = 198
+  |   "AvgTimeToEmpty" = 65535
+  |   "AdapterDetails" = {"SerialString"="XXXX","Watts"=30,"AdapterPowerTier"=2,"Model"="0x7003","PMUConfiguration"=1500,"Current"=1500,"Name"="XXXX","FamilyCode"=XXXX,"FwVersion"="01030054","AdapterVoltage"=20000,"UsbHvcMenu"=({"Index"=0,"MaxCurrent"=3000,"MaxVoltage"=5000},{"Index"=1,"MaxCurrent"=3000,"MaxVoltage"=9000},{"Index"=2,"MaxCurrent"=2000,"MaxVoltage"=15000},{"Index"=3,"MaxCurrent"=1500,"MaxVoltage"=20000}),"AdapterID"=28675,"UsbHvcHvcIndex"=3,"IsWireless"=No,"HwVersion"="1.0","Manufacturer"="Apple Inc."}
+  |   "ExternalConnected" = Yes
+  |   "Voltage" = 11845
+  |   "MaxCapacity" = 100
+  |   "CurrentCapacity" = 55
+  |   "CycleCount" = 628
+  |   "BatteryData" = {"CurrentCapacity"=55,"AppleRawMaxCapacity"=3849,"AppleRawCurrentCapacity"=2070,"AbsoluteCapacity"=0,"AvgTimeToEmpty"=65535,"DesignCapacity"=4629,"NominalChargeCapacity"=3976,"FullChargeCapacity"=3849,"MaxCapacity"=100,"FullyCharged"=0,"RemainingCapacity"=2070,"BatteryPower"=8741,"TrueRemainingCapacity"=0}
+  |   "InstantAmperage" = 738
+  |   "Amperage" = 738
+  |   "IsCharging" = Yes</code></pre>
+
+        <p>In this reading the battery received 11.845 V times 0.738 A, which is 8.74 W. The charger line shows <code>AdapterVoltage</code> 20000 mV and <code>Current</code> 1500 mA, which multiply to 30 W and match <code>Watts</code> 30. The <code>SerialString</code> and <code>Name</code> entries are redacted.</p>
+        <p>The first reading shows a trap. The Mac said "charging" (<code>IsCharging</code> Yes, and pmset printed "charging") while the battery lost charge. The likely cause is that the Mac used more than the 8 W source supplied, so the battery covered the difference. I did not measure the Mac's load, so treat that as an inference. If the amperage is negative while plugged in, try a charger with more watts.</p>
+
+        <h2 id="worked">Work out health, power and time yourself</h2>
+        <p>Three divisions or multiplications turn the fields into numbers you can read. <code>awk</code> is a text tool built into macOS, and I use it here as a calculator.</p>
+        <p><strong>Health from the capacity fields.</strong> Divide AppleRawMaxCapacity (3798) by DesignCapacity (4629), then multiply by 100:</p>
+
+        <pre><code>$ awk 'BEGIN { printf "%.1f%%\n", 3798 / 4629 * 100 }'
+82.0%</code></pre>
+
+        <p><strong>Power from voltage and current.</strong> Convert millivolts and milliamps to volts and amps, then multiply (11.509 V and 1.415 A):</p>
+
+        <pre><code>$ awk 'BEGIN { printf "%.2f W\n", 11.509 * 1.415 }'
+16.29 W</code></pre>
+
+        <p>That matches the 16285 mW from the BatteryPower field.</p>
+        <p><strong>Minutes to empty from charge and current.</strong> Divide the remaining charge (RemainingCapacity, 2078 mAh) by the current (1415 mA) and convert hours to minutes:</p>
+
+        <pre><code>$ awk 'BEGIN { printf "%.0f minutes\n", 2078 / 1415 * 60 }'
+88 minutes</code></pre>
+
+        <p>The Mac's own estimate was 87 minutes. The two agree here because the current was steady.</p>
+        <p><strong>Compare with Apple's figure.</strong> My division gave 82.0%, and system_profiler reported 89%. A second reading, taken after I changed chargers, used AppleRawMaxCapacity 3849:</p>
+
+        <pre><code>$ awk 'BEGIN { printf "%.1f%%\n", 3798 / 4629 * 100 }'; awk 'BEGIN { printf "%.1f%%\n", 3849 / 4629 * 100 }'
+82.0%
+83.1%</code></pre>
+
+        <p>I could not reproduce Apple's 89% from any pair of fields I tried. The next section explains why that matters.</p>
+
+        <h2 id="limits">What these numbers cannot tell you</h2>
+        <p>One reading is a snapshot. Four limits apply to everything above.</p>
+        <ul>
+          <li><strong>Apple's health figure uses Apple's method.</strong> Apple does not publish how it computes Maximum Capacity. I do not know which fields it uses, and my division did not match it (82.0% against 89%).</li>
+          <li><strong>The fields move.</strong> AppleRawMaxCapacity read 3798 in one reading and 3849 in the other, which is 82.0% and 83.1% of design. Voltage went from 11509 to 11845 mV and current changed sign. Take several readings before you trust one.</li>
+          <li><strong>Current and voltage depend on load.</strong> A busy Mac, a bright screen or a weak charger changes both. Compare readings under the same conditions.</li>
+          <li><strong>Third-party health figures can differ from Apple's.</strong> Apple's page says third-party apps that report battery health might not be accurate and says to rely on what macOS reports (<a href="https://support.apple.com/en-us/108376" rel="noopener">Apple's page</a>).</li>
+        </ul>
+        <p>This page makes no claim about what your warranty or AppleCare plan covers. Apple's pages, listed in the next sections, say who is covered. Together, these limits mean the numbers help you notice a trend. They do not decide a repair.</p>
+
+        <h2 id="tools">Free and paid tools that show more</h2>
+        <p>The commands above give you a snapshot. An app can show a live readout or keep a history. Each line below repeats what the product's own page says on October 13, 2026. I did not test any of them, and I earn nothing from these links.</p>
+
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th class="u-th" scope="col">Tool</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">What its page says</th></tr></thead>
+            <tbody>
+              <tr><td class="u-cell"><a href="https://www.coconut-flavour.com/coconutbattery/" rel="noopener">coconutBattery</a></td><td class="u-cell">Standard and Plus, both one-time. Price not stated on the page</td><td class="u-cell">Shows battery health for Mac, iPhone and iPad. Plus adds menu-bar details and a lifetime analyzer with temperature and voltage ranges. Version 4.4 (September 9, 2026). Not on the Mac App Store.</td></tr>
+              <tr><td class="u-cell"><a href="https://github.com/exelban/stats" rel="noopener">Stats</a></td><td class="u-cell">Free, MIT open source</td><td class="u-cell">A system monitor. Its feature list says battery level and a sensors module for temperature, voltage and power. Desktop widgets are off until you enable them. Version 3.0.21 (October 11, 2026).</td></tr>
+              <tr><td class="u-cell"><a href="https://bjango.com/mac/istatmenus/" rel="noopener">iStat Menus</a></td><td class="u-cell">Paid. Price not shown in the page text I read. Also on Setapp at $9.99 a month</td><td class="u-cell">A menu-bar monitor with a battery section that gives "detailed info on your battery's current state". Version 7.5 (September 14, 2026). Needs macOS 13 or later.</td></tr>
+              <tr><td class="u-cell"><a href="https://apphousekitchen.com/aldente-overview/" rel="noopener">AlDente</a></td><td class="u-cell">Free tier. Pro shown as 11.49 EUR a year or 23.99 EUR for life</td><td class="u-cell">Its main job is a charge limit. The Pro Stats feature lists maximum capacity, temperature and system load. Mac App Store listing for AlDente: not stated.</td></tr>
+              <tr><td class="u-cell"><a href="https://apps.apple.com/us/app/battery-monitor-x-health/id6740076698" rel="noopener">Battery Monitor X</a></td><td class="u-cell">Free. In-app purchases not checked</td><td class="u-cell">The listing names capacity against design capacity, cycle count, temperature, charging power and adapter wattage. Version 1.18 (September 9, 2026).</td></tr>
+              <tr><td class="u-cell"><a href="https://apps.apple.com/us/app/better-battery-2-stats-info/id1455789676" rel="noopener">Better Battery 2</a></td><td class="u-cell">Free Standard edition. Pro is an in-app purchase</td><td class="u-cell">The listing names charge cycles, health, age, temperature and electrical values. Pro adds history. Version 2.11 (August 13, 2026).</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>I also tested whether a sandboxed app can read this data. The App Sandbox (Apple's restriction on what an app can touch) is required for Mac App Store apps. A test app with only the App Sandbox entitlement read the cycle count, voltage and amperage on this Mac. I do not know how the two Mac App Store apps above read their data.</p>
+
+        <h2 id="replace">When to replace the battery, according to Apple</h2>
+        <p>This section states only what Apple's own pages say. I read all three on October 13, 2026.</p>
+        <ul>
+          <li><strong>The 80% design point.</strong> A normal battery is designed to retain up to 80% of its original capacity at its maximum cycle count under normal conditions (<a href="https://support.apple.com/102589" rel="noopener">Apple's page on Apple silicon Macs</a>).</li>
+          <li><strong>The cycle limit depends on the model.</strong> Apple's table lists 1000 for recent MacBook Air and MacBook Pro models and 500 or 300 for older ones. Apple says to replace the battery at the maximum cycle count for best performance. You can keep using it past the limit, with shorter battery life (<a href="https://support.apple.com/en-us/102888" rel="noopener">Apple's page on cycle count</a>). My Mac shows 628 cycles, and the table lists 1000 for recent MacBook Air models.</li>
+          <li><strong>Service Recommended.</strong> The label means the battery holds less charge than when new or is not working normally. Apple says you can safely keep using the Mac, and that you can get service if the lower capacity affects you (<a href="https://support.apple.com/en-us/108376" rel="noopener">Apple's page</a>).</li>
+          <li><strong>Coverage.</strong> Apple says its one-year warranty includes replacement for a defective battery, and that an AppleCare plan replaces a battery that retains less than 80 percent of its original capacity. Read the page for the exact terms (<a href="https://support.apple.com/en-us/108376" rel="noopener">same page</a>).</li>
+        </ul>
+        <p>The pages I read set no replace-at percent for Maximum Capacity. They give the 80% design point, the model's cycle limit and the AppleCare condition above. Use Apple's own Battery Health condition and your model's cycle limit, not a number from the commands above.</p>
+
+        <h2>Frequently asked</h2>
+
+        <h3>How do I see my Mac battery cycle count?</h3>
+        <p>Hold the Option key, click the Apple menu and choose System Information. Under Hardware, select Power. The cycle count is listed under Health Information. In Terminal, run system_profiler SPPowerDataType and look for Cycle Count. On my Mac it read 628, and Apple&#x27;s table lists 1000 as the limit for recent MacBook Air models.</p>
+
+        <h3>Why is the amperage on my Mac negative?</h3>
+        <p>On the Mac I tested, a negative Amperage meant the battery was losing charge and a positive one meant it was gaining charge. The negative reading came with a time-to-empty estimate and the positive reading came with a time-to-full estimate. A Mac can read negative while plugged in if the charger supplies less than the Mac uses. Mine did on an 8 W source.</p>
+
+        <h3>Why does Terminal give a different health number than System Settings?</h3>
+        <p>Apple&#x27;s Maximum Capacity figure uses a method Apple does not publish. On my Mac, system_profiler reported 89%. Dividing AppleRawMaxCapacity by DesignCapacity gave 82.0% in one reading and 83.1% in another. Trust Apple&#x27;s figure for service decisions and treat your own division as a rough check.</p>
+
+        <h3>Do I need an app to see battery voltage and charger watts?</h3>
+        <p>No. Voltage comes from ioreg -rn AppleSmartBattery, and the charger&#x27;s wattage comes from system_profiler SPPowerDataType or from the AdapterDetails line in the same ioreg output. An app is useful only if you want a live readout in the menu bar or a saved history.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/show-free-disk-space-mac-menu-bar/">Free disk space in the Mac menu bar (2026)</a>: another readout you can keep in view, with the Terminal command behind it.</li>
+          <li><a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac?</a>: more read-only Terminal commands, with real output from the same Mac.</li>
+          <li><a href="/guides/">All guides</a>.</li>
+        </ul>
+      </article>
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=2eb71ffb05" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

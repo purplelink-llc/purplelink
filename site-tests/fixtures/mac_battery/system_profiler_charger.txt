@@ -1,0 +1,7 @@
+    AC Charger Information:
+
+      Connected: Yes
+      ID: 0x000a
+      Wattage (W): 8
+      Family: XXXX
+      Charging: Yes

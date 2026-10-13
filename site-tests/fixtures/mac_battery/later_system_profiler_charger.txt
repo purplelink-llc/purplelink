@@ -1,0 +1,12 @@
+    AC Charger Information:
+
+      Connected: Yes
+      ID: 0x7003
+      Wattage (W): 30
+      Family: XXXX
+      Serial Number: XXXX
+      Name: XXXX
+      Manufacturer: Apple Inc.
+      Hardware Version: 1.0
+      Firmware Version: 1030054
+      Charging: Yes

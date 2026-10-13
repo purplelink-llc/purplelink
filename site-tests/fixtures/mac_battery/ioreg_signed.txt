@@ -1,0 +1,3 @@
+Amperage -1415
+InstantAmperage -1415
+Voltage 11509
