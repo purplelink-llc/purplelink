@@ -664,6 +664,8 @@ Refunded if you email within 14 days of purchase. Updates are included forever.
 
 The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0 · 38 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
+If you installed version 1.0.0 or 1.0.1, the app cannot update itself. Download the current version once from this page; updates work from then on.
+
 Also in the Mac Suite: Outbound Veil, ModernTex, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once.
 
 Outbound Veil checking a fictional client note typed into a plain text field in Chrome. Every name and number on this page is invented.
@@ -780,7 +782,7 @@ No. What you type is checked on your Mac. Nothing you type is stored or sent, an
 
 Are updates included?
 
-Yes, all of them, forever, including future major versions. Every copy, trial or licensed, checks for a new version and offers to install it in place, or you can choose Check for updates from its menu. Each download is signed by Purplelink LLC.
+Yes, all of them, forever, including future major versions. Every copy, trial or licensed, checks for a new version and offers to install it in place, or you can choose Check for updates from its menu. If you installed version 1.0.0 or 1.0.1, the app cannot update itself. Download the current version once from this page; updates work from then on. Each download is signed by Purplelink LLC.
 
 What happens when the trial ends?
 
@@ -829,7 +831,9 @@ Try it free for 7 days
 
 Refunded if you email within 14 days of purchase.
 
-The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.0 · 7.3 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.1 · 7.4 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+
+If you installed version 1.0.0, the app cannot update itself. Download the current version once from this page; updates work from then on.
 
 Also in the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once.
 
@@ -1007,7 +1011,7 @@ No. If you install this version over a copy you already paid for, it recognizes 
 
 Are updates included?
 
-Updates to the version you buy are included. Every copy, trial or licensed, checks for a new version once a day and asks before installing it, or you can check by hand from its menu. I have not decided whether a later major version would be a free update.
+Updates to the version you buy are included. Every copy, trial or licensed, checks for a new version once a day and asks before installing it, or you can check by hand from its menu. I have not decided whether a later major version would be a free update. If you installed version 1.0.0, the app cannot update itself. Download the current version once from this page; updates work from then on.
 
 Can I get a refund?
 
