@@ -211,7 +211,7 @@ Free
 
 ### BatteryMeter
 
-A menu-bar app that shows battery percent, an arrow for the direction of charge and battery power in watts, with a menu of charge, adapter, capacity and cycle count details and a list of the apps using the most power. It updates itself once a day, with your approval. macOS 13 or later, Apple silicon.
+A menu-bar app that shows battery percent, an arrow for the direction of charge and battery power in watts, with a menu of charge, adapter, capacity and cycle count details and a list of the apps using the most power. It checks for updates once a day and installs only with your approval; a menu item turns the check off. macOS 13 or later, Apple silicon.
 
 Download BatteryMeter →
 
@@ -3973,7 +3973,7 @@ Summonly1.0October 2026
 
 Outbound Veil1.1.0October 2026
 
-BatteryMeter1.2.0October 2026
+BatteryMeter1.2.1October 2026
 
 GlobePin (iOS)1.21.0 in September 2026
 

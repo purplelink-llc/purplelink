@@ -72,6 +72,15 @@
         <span class="changelog-date">October 13, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>BatteryMeter 1.2.1</h2>
+          <p>BatteryMeter now uses less battery and CPU. The charging animation runs for a few cycles when charging starts or the charge crosses a level, then holds a still charging icon. The menu bar refreshes when macOS reports a power change, plus a slow timer, instead of every 5 seconds. On one MacBook on AC at 26 to 28 percent charge, idle CPU while charging went from about 1.9 percent to about 0.05 percent, and interrupt wakeups from about 13.7 to about 0.3 per second. Other Macs and charge levels will differ. The download is smaller, 1.0 MB instead of 1.6 MB, because unused parts of Sparkle were removed. A new menu item, Check for updates automatically, turns the daily update check off. With it off, the app makes no network request until you choose Check for updates. Version 1.2.0 installs 1.2.1 through its update check, or you can download it from the <a href="/batterymeter/">BatteryMeter</a> page.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 13, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>BatteryMeter 1.2.0</h2>
           <p>BatteryMeter now updates through Sparkle, the standard Mac update framework. It checks once a day for a newer version, and a new Check for updates menu item checks on demand. It downloads only an update signed by Purplelink from purplelink.llc, and it asks before it installs. The check sends no account, no battery data and no list of processes, and it is the only network request the app makes. Versions up to 1.1.0 have no updater, so if you have 1.1.0 or earlier, download 1.2.0 once by hand. Updates come through the app from then on. <a href="/batterymeter/">BatteryMeter</a>.</p>
         </div>
