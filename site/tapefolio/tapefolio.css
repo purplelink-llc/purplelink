@@ -38,3 +38,7 @@
 .tf-note { max-width: 64ch; color: var(--muted); font-size: 0.9rem; }
 .tf-list { margin: 10px 0 0; padding-left: 1.2em; color: var(--muted); max-width: 64ch; }
 .tf-list li + li { margin-top: 6px; }
+
+/* Comparison table on the product page: even columns inside a scroll container. */
+.compare-table.u-table-wide tbody th { min-width: 7.5rem; }
+.compare-table.u-table-wide td { min-width: 10rem; }

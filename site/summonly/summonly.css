@@ -46,3 +46,7 @@
 .sm-shot p { margin: 0 0 14px; color: var(--muted); max-width: 56ch; }
 .sm-shot figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
 .sm-shot-small .frame-soft { max-width: 300px; }
+
+/* Comparison table on the product page: even columns inside a scroll container. */
+.compare-table.u-table-wide tbody th { min-width: 7.5rem; }
+.compare-table.u-table-wide td { min-width: 10rem; }

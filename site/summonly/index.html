@@ -26,7 +26,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=e775131596">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/summonly/summonly.css?v=eae0d33f05">
+    <link rel="stylesheet" href="/summonly/summonly.css?v=899f62d3ec">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script src="/summonly/launch.js?v=af818f7db0" defer></script>
@@ -137,6 +137,16 @@
               "@type": "Question",
               "name": "How do I get help?",
               "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why not Alfred or Raycast?",
+              "acceptedAnswer": { "@type": "Answer", "text": "If you want workflows, extensions or built-in AI, use one of them. Summonly has none of those in this version. It is for finding files in the folders you choose, opening apps, doing sums and unit conversions, and keeping a clipboard history, and it costs $9.99 once after a 7-day trial. Alfred has a free core and a paid Powerpack. Raycast has a free plan and a Pro plan at $10 a month or $96 a year." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it work offline?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. The file index and the clipboard history are kept on your Mac, and searching them needs no connection. Web searches and the Claude, ChatGPT and Perplexity rows open in your browser, which needs a connection. Pasting a license key works offline." }
             }
           ]
         },
@@ -364,7 +374,31 @@
       </table>
     </section>
 
-    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+        <section class="specs-section" id="compare" aria-labelledby="compare-h">
+      <p class="eyebrow">Comparison</p>
+      <h2 id="compare-h">How it compares</h2>
+      <p class="specs-more">Alfred and Raycast do more than Summonly. Spotlight is already on your Mac and now does more than it used to. The table shows what each costs and where they differ.</p>
+        <div class="u-scroll-x" role="region" tabindex="0" aria-label="Summonly compared with Alfred, Raycast and Spotlight">
+          <table class="compare-table u-table-wide">
+            <caption class="visually-hidden">Summonly compared with Alfred, Raycast and Spotlight</caption>
+            <thead>
+              <tr><th scope="col"><span class="visually-hidden">Topic</span></th><th scope="col">Summonly</th><th scope="col">Alfred</th><th scope="col">Raycast</th><th scope="col">Spotlight</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Price</th><td>$9.99 once, after a 7-day trial. Updates included.</td><td>Core is free. The Powerpack is £34 (Single License) or £59 (Mega Supporter, free lifetime upgrades).</td><td>Free. Pro is $10 a month or $96 a year.</td><td>Built into macOS.</td></tr>
+              <tr><th scope="row">Free to use</th><td>The full app for 7 days.</td><td>The core, with no time limit.</td><td>A free plan. Clipboard history is limited to 3 months and AI is not included.</td><td>Always.</td></tr>
+              <tr><th scope="row">Workflows and extensions</th><td>None in this version.</td><td>Workflows, which are a Powerpack feature.</td><td>Thousands of extensions, and you can write your own.</td><td>Not described on Apple's page.</td></tr>
+              <tr><th scope="row">Clipboard history</th><td>Yes, off until you turn it on.</td><td>Listed as a Powerpack feature.</td><td>Yes. Unlimited on Pro.</td><td>Yes, per Apple's page.</td></tr>
+              <tr><th scope="row">AI</th><td>None built in. Rows open Claude, ChatGPT or Perplexity in your browser.</td><td>Not stated.</td><td>Included in Pro.</td><td>Apple's page mentions asking Siri.</td></tr>
+              <tr><th scope="row">Oldest macOS</th><td>macOS 14.</td><td>macOS 10.14.</td><td>Not stated.</td><td>Part of macOS.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <p class="specs-more">Competitor facts from <a href="https://www.alfredapp.com/powerpack/" rel="noopener">Alfred</a>, <a href="https://www.raycast.com/pricing" rel="noopener">Raycast</a> and <a href="https://support.apple.com/guide/mac-help/search-with-spotlight-mchlp1008/mac" rel="noopener">Apple's Spotlight help</a>, checked on October 13, 2026. Alfred prices are in pounds because its page lists them that way.</p>
+      <p class="specs-more"><strong>Stay with Alfred or try Raycast</strong> if you want workflows, extensions or built-in AI, or if you need an older macOS. <strong>Check Spotlight first</strong> if all you want is launching, sums and clipboard history. <strong>Pick Summonly</strong> if you want file search in folders you choose and a clipboard history that skips secrets, for one payment. The full comparison, with LaunchBar, Quicksilver and Keyboard Maestro, is in <a href="/guides/best-alfred-alternatives-for-mac/">Best Alfred alternatives for Mac</a>.</p>
+    </section>
+
+<section class="faq-section" id="faq" aria-labelledby="faq-heading">
       <h2 id="faq-heading">Frequently asked questions</h2>
       <div class="faq-list" data-motion="stagger">
         <details class="faq-item">
@@ -414,6 +448,14 @@
         <details class="faq-item">
           <summary>How do I get help?</summary>
           <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Why not Alfred or Raycast?</summary>
+          <div class="faq-body">If you want workflows, extensions or built-in AI, use one of them. Summonly has none of those in this version. It is for finding files in the folders you choose, opening apps, doing sums and unit conversions, and keeping a clipboard history, and it costs $9.99 once after a 7-day trial. Alfred has a free core and a paid Powerpack. Raycast has a free plan and a Pro plan at $10 a month or $96 a year.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it work offline?</summary>
+          <div class="faq-body">Yes. The file index and the clipboard history are kept on your Mac, and searching them needs no connection. Web searches and the Claude, ChatGPT and Perplexity rows open in your browser, which needs a connection. Pasting a license key works offline.</div>
         </details>
       </div>
     </section>
