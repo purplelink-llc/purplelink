@@ -384,6 +384,8 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Guides index: https://purplelink.llc/guides/
 - LaTeX hub: https://purplelink.llc/guides/latex/ — pillar page covering the full academic LaTeX workflow.
 - latexdiff online for a multi-file project: https://purplelink.llc/guides/latexdiff-online/ — when to use latexdiff, how to run it on a single file or a git project with latexpand and latexdiff-vc, common failures, and what the online tool does.
+- Simulate Likert data for power analysis: https://purplelink.llc/guides/simulate-likert-data-for-power-analysis/ — dry-run an analysis script and estimate power with synthetic survey data, with Python code and real outputs, and what simulated data cannot tell you.
+- Check Mac battery health, voltage and cycle count: https://purplelink.llc/guides/check-mac-battery-health-voltage-and-cycle-count/ — read health, cycle count, charge current, voltage, charger watts and time to empty with System Settings, System Information and Terminal, with real output and what the numbers cannot tell you.
 - BibTeX hub: https://purplelink.llc/guides/bibtex/ — pillar page covering bibliography management.
 - Mac utility guides: https://purplelink.llc/guides/mac/ — hub for the guides on disk space, System Data, window managers, keyboard sound apps, privacy permissions and other Mac utilities.
 - Methodology problems peer reviewers flag, and how to fix them: https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/ — fifteen failure modes (p-hacking, HARKing, underpowered samples, test-train contamination, LLM self-judging, fabricated citations and more), each with a definition, an example, the fix and primary references.
