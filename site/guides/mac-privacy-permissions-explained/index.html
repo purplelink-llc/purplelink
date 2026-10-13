@@ -78,7 +78,7 @@
       "name": "Is it safe to allow Full Disk Access on a Mac?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It depends on the app. Full Disk Access gives an app access to nearly everything on the Mac, including data from Mail and Messages, so grant it only to an app from a developer you trust whose job needs it, such as a backup tool. Apple said on October 2, 2026 that some developers use it in ways that could put users at risk, and that it will add controls requiring very explicit user action. It gave no date or macOS version."
+        "text": "It depends on the app. Full Disk Access gives an app access to nearly everything on the Mac, including data from Mail and Messages. Grant it only to an app whose job needs it (such as a backup tool) and whose developer you trust. Apple said on October 2, 2026 that some developers use it in ways that could put users at risk, and that it will add controls requiring very explicit user action. It gave no date or macOS version."
       }
     },
     {
@@ -118,7 +118,7 @@
       "name": "Do Legroom, Keyfeel and Outbound Veil need Full Disk Access?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. Legroom asks for it only if you choose to give it, and skips protected folders without it. Keyfeel needs Input Monitoring, and Outbound Veil needs Accessibility. Neither of those two asks for Full Disk Access, according to their product pages."
+        "text": "No. Legroom asks for it only if you choose to give it, and skips protected folders without it. Keyfeel needs Input Monitoring, and Outbound Veil needs Accessibility. According to their product pages, neither of those two asks for Full Disk Access."
       }
     }
   ]
@@ -154,7 +154,7 @@
         <p class="post-date">Explainer</p>
         <h1 class="post-title">Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time></p>
-        <p class="post-lede">Full Disk Access, Input Monitoring and Accessibility are three of the broadest permissions macOS gives an app. Whether it is safe depends on the app, not the permission. This guide says what each one allows, what Apple said about Full Disk Access on October 2, 2026, how to review and remove them, and exactly what our three Mac apps ask for.</p>
+        <p class="post-lede">Full Disk Access, Input Monitoring and Accessibility are three of the broadest permissions macOS gives an app. Whether it is safe depends on the app, not the permission. This guide says what each one allows and what Apple said about Full Disk Access on October 2, 2026. It also shows how to review and remove them and lists exactly what our three Mac apps ask for.</p>
       </div>
 
       <article class="post-body">
@@ -176,7 +176,7 @@
           <li>Some developers use it in ways that could put users at risk, exposing files, mail, messages and browsing history without the user fully understanding. For communication apps, it can also expose the people the user talks to.</li>
           <li>Apple will add controls so that granting this access takes "very explicit user action". It also names AI agents, saying the risk grows as they become more capable and autonomous.</li>
         </ul>
-        <p><strong>What the note does not say:</strong> when the controls will arrive, which macOS version will carry them, what they will look like, or whether grants you made earlier will be affected. It says only "going forward". Until Apple ships something, I do not know how existing apps will be affected, and neither does anyone outside Apple. The note is about Full Disk Access only. It says nothing about Input Monitoring or Accessibility.</p>
+        <p><strong>What the note does not say:</strong> when the controls will arrive. It also omits which macOS version will carry them, what they will look like, and whether grants you made earlier will be affected. It says only "going forward". Until Apple ships something, I do not know how existing apps will be affected, and neither does anyone outside Apple. The note is about Full Disk Access only. It says nothing about Input Monitoring or Accessibility.</p>
 
         <h2>What each permission lets an app do</h2>
         <p>The first column follows Apple's own descriptions in its <a href="https://support.apple.com/guide/mac-help/mchl211c911f/mac" rel="noopener">Privacy &amp; Security help</a>. The last two are general knowledge about how apps use them, not Apple's wording.</p>
@@ -186,9 +186,9 @@
               <tr><th class="u-th">Permission</th><th class="u-th">What it allows</th><th class="u-th">Apps that legitimately ask</th><th class="u-th">What to weigh</th></tr>
             </thead>
             <tbody>
-              <tr><td class="u-cell">Full Disk Access</td><td class="u-cell">Access to all files on the Mac, including data from other apps such as Mail and Messages, Time Machine backups and some administrative settings</td><td class="u-cell">Backup tools, some cleaners and file managers, search indexers</td><td class="u-cell">The widest reach into your files. Ask whether a narrower grant (a folder you pick) would do.</td></tr>
-              <tr><td class="u-cell">Input Monitoring</td><td class="u-cell">Watching input from the mouse or trackpad and seeing what you type, including while you use other apps</td><td class="u-cell">Keyboard sound apps, text expanders, keyboard and mouse remapping tools</td><td class="u-cell">It sees keystrokes. A well-built app needs only which key was pressed, but the permission itself does not limit that.</td></tr>
-              <tr><td class="u-cell">Accessibility</td><td class="u-cell">Running scripts and system commands that control the Mac</td><td class="u-cell">Window managers, automation tools, password managers, screen readers, text checkers</td><td class="u-cell">In practice, an app with it can read what is on screen in other apps, such as the text field in focus, and press buttons for you.</td></tr>
+              <tr><td class="u-cell">Full Disk Access</td><td class="u-cell">Access to all files on the Mac, including data from other apps such as Mail and Messages, Time Machine backups and some administrative settings</td><td class="u-cell">Backup tools, some cleaners and file managers, search indexers</td><td class="u-cell">This is the widest reach into your files. Ask whether a narrower grant (a folder you pick) would do.</td></tr>
+              <tr><td class="u-cell">Input Monitoring</td><td class="u-cell">Watching input from the mouse or trackpad and seeing what you type, including while you use other apps</td><td class="u-cell">Keyboard sound apps, text expanders, keyboard and mouse remapping tools</td><td class="u-cell">It sees keystrokes. A well-built app needs only which key was pressed. However, the permission itself does not limit that.</td></tr>
+              <tr><td class="u-cell">Accessibility</td><td class="u-cell">Running scripts and system commands that control the Mac</td><td class="u-cell">Window managers, automation tools, password managers, screen readers, text checkers</td><td class="u-cell">An app with it can read what is on screen in other apps (such as the text field in focus) and press buttons for you.</td></tr>
             </tbody>
           </table>
         </div>
@@ -199,7 +199,7 @@
           <li>Open the Apple menu, choose System Settings, and click Privacy &amp; Security in the sidebar. You may need to scroll down to find it.</li>
           <li>Click Full Disk Access, Input Monitoring or Accessibility. Each shows a list of the apps you have allowed.</li>
           <li>Read the list. Anything you do not recognize, or no longer use, should go.</li>
-          <li>Switch an app's toggle off to take the permission away. Apple's Input Monitoring help describes this step. For Full Disk Access and Accessibility, Apple's page describes adding an app with the Add button; on the versions I know, the list also lets you select an app and remove it with a minus button under the list.</li>
+          <li>Switch an app's toggle off to take the permission away. Apple's Input Monitoring help describes this step. For Full Disk Access and Accessibility, Apple's page describes adding an app with the Add button. On the versions I know, you can also select an app and remove it with the minus button under the list.</li>
           <li>Quit and reopen the app if it was running. Some apps do not notice a change until they restart.</li>
         </ol>
         <p>Turning a permission off stops future access. It does not undo anything the app did earlier. If you are worried about a specific app, remove its permission, then delete the app.</p>
@@ -209,7 +209,7 @@
           <li><strong>What does the app need this for, in its maker's own words?</strong> The product page or help should say which feature uses the permission. If it does not, that is a reason to wait.</li>
           <li><strong>Does it work without it?</strong> Good apps degrade. A cleaner that skips protected folders, or a tool that loses one optional feature, is asking for the right amount.</li>
           <li><strong>What leaves the Mac?</strong> Look for a privacy statement that names the network requests. An app that watches your keys or your screen and also has an account, analytics or uploads deserves more scrutiny than one that works offline.</li>
-          <li><strong>Where did it come from?</strong> The developer's own site, the Mac App Store, or a project repository you can read, not a search ad or a repackaged download. Apps notarized by Apple open without the unidentified-developer warning; one that is not will make you override a block, and that is a cue to slow down.</li>
+          <li><strong>Where did it come from?</strong> The developer's own site, the Mac App Store, or a project repository you can read, not a search ad or a repackaged download. Apps notarized by Apple (checked by Apple for known malware) open without the unidentified-developer warning. An app that is not notarized makes you override a block, and that is a cue to slow down.</li>
           <li><strong>Can I turn it off later without losing my work?</strong> Check that removing the permission does not leave the app stuck or your files in a different state.</li>
         </ol>
 
@@ -230,9 +230,9 @@
           </table>
         </div>
         <ul>
-          <li><strong><a href="/legroom/">Legroom</a></strong> and the network: the readout, rules and measurements stay on the Mac. Apart from the Buy link, the only network use is the once-a-day update check, which carries the app's name and version and an update token, plus what any web request carries, such as an IP address. Its page says it does not clean inside system folders. <a href="/guides/best-disk-space-analyzer-for-mac/">The disk space guide</a> has more on what to expect from a cleaner.</li>
+          <li><strong><a href="/legroom/">Legroom</a></strong> and the network: the readout, rules and measurements stay on the Mac. Apart from the Buy link, the only network use is the once-a-day update check. That check carries the app's name and version and an update token, plus what any web request carries (such as an IP address). Its page says it does not clean inside system folders. <a href="/guides/best-disk-space-analyzer-for-mac/">The disk space guide</a> has more on what to expect from a cleaner.</li>
           <li><strong><a href="/keyfeel/">Keyfeel</a></strong> and passwords: the page says that when a password field has focus, macOS stops delivering keystrokes to apps like Keyfeel, so it hears nothing there. Its only network use is the update check. <a href="/guides/mechvibes-sound-packs-on-mac/">The Mechvibes guide</a> covers what it needs from sound packs.</li>
-          <li><strong><a href="/outbound-veil/">Outbound Veil</a></strong> and its limits: it will miss some things, it is not a compliance product, and it lowers the chance of a mistake rather than removing it. Its <a href="/outbound-veil/start/">setup guide</a> walks through granting Accessibility.</li>
+          <li><strong><a href="/outbound-veil/">Outbound Veil</a></strong> and its limits: it will miss some things and is not a compliance product. It lowers the chance of a mistake and does not remove it. Its <a href="/outbound-veil/start/">setup guide</a> walks through granting Accessibility.</li>
         </ul>
         <p>You do not have to take my word for these. You can check part of it yourself: the permission lists in System Settings show what each app has been given, and a network monitor shows what it connects to. The <a href="/privacy/">privacy page</a> has the site-wide statement.</p>
 
@@ -246,7 +246,7 @@
 
         <h2 id="faq">Frequently asked</h2>
         <h3>Is it safe to allow Full Disk Access on a Mac?</h3>
-        <p>It depends on the app. Full Disk Access gives an app access to nearly everything on the Mac, including data from Mail and Messages, so grant it only to an app from a developer you trust whose job needs it, such as a backup tool. Apple said on October 2, 2026 that some developers use it in ways that could put users at risk, and that it will add controls requiring very explicit user action. It gave no date or macOS version.</p>
+        <p>It depends on the app. Full Disk Access gives an app access to nearly everything on the Mac, including data from Mail and Messages. Grant it only to an app whose job needs it (such as a backup tool) and whose developer you trust. Apple said on October 2, 2026 that some developers use it in ways that could put users at risk, and that it will add controls requiring very explicit user action. It gave no date or macOS version.</p>
         <h3>Does Apple's October 2026 announcement change anything today?</h3>
         <p>Not that Apple has said. The note says Apple will add controls going forward and gives no date, no macOS version and no details. Review the Full Disk Access list in System Settings, Privacy &amp; Security now, since it is worth doing either way.</p>
         <h3>Why does a keyboard sound app need Input Monitoring?</h3>
@@ -256,7 +256,7 @@
         <h3>How do I see which apps have these permissions?</h3>
         <p>Open System Settings, click Privacy &amp; Security, then open Full Disk Access, Input Monitoring and Accessibility in turn. Each list shows the apps you have allowed, with a toggle to switch each off.</p>
         <h3>Do Legroom, Keyfeel and Outbound Veil need Full Disk Access?</h3>
-        <p>No. Legroom asks for it only if you choose to give it, and skips protected folders without it. Keyfeel needs Input Monitoring, and Outbound Veil needs Accessibility. Neither of those two asks for Full Disk Access, according to their product pages.</p>
+        <p>No. Legroom asks for it only if you choose to give it, and skips protected folders without it. Keyfeel needs Input Monitoring, and Outbound Veil needs Accessibility. According to their product pages, neither of those two asks for Full Disk Access.</p>
 
         <h2>Related guides</h2>
         <ul>

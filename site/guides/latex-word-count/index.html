@@ -62,7 +62,7 @@
               "@type": "HowToStep",
               "position": 5,
               "name": "Cross-check with the journal's requirements",
-              "text": "Different journals count differently (with vs without abstract, footnotes, captions). Read the submission guidelines carefully."
+              "text": "Different journals count differently (with or without the abstract, footnotes, and captions). Read the submission guidelines."
             }
           ]
         },
@@ -80,7 +80,7 @@
         {
           "@type": "FAQPage",
           "mainEntity": [
-        { "@type": "Question", "name": "Why is my LaTeX word count different from Word's?", "acceptedAnswer": { "@type": "Answer", "text": "LaTeX source includes markup commands that aren't prose. Counting the raw .tex inflates the number, while tools like texcount or counting the compiled text give a closer match to what a reader sees." } },
+        { "@type": "Question", "name": "Why is my LaTeX word count different from Word's?", "acceptedAnswer": { "@type": "Answer", "text": "LaTeX source includes markup commands that are not prose. Counting the raw .tex inflates the number. However, texcount or counting the compiled text gives a closer match to what a reader sees." } },
         { "@type": "Question", "name": "Does the bibliography count toward a word limit?", "acceptedAnswer": { "@type": "Answer", "text": "Usually not, but it is venue-dependent. Check the call for papers: some limits exclude references, captions, and appendices, and some don't." } },
         { "@type": "Question", "name": "Can I count words without compiling?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Paste your body text into the free word counter for an instant count. It runs entirely in your browser and stores nothing." } },
         { "@type": "Question", "name": "Does the counter handle LaTeX commands?", "acceptedAnswer": { "@type": "Answer", "text": "The counter treats any non-whitespace sequence as a word, so raw commands are counted as written. For prose-only counts, paste the text without the surrounding markup." } }
@@ -131,37 +131,37 @@
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to count words in a LaTeX document</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-28">May 28, 2026</time></p>
-        <p class="post-lede">Word limits are strict in many venues, but counting words in LaTeX is surprisingly fiddly because of all the markup. Here's how to get a number you can trust.</p>
+        <p class="post-lede">Many venues enforce strict word limits. However, counting words in LaTeX is fiddly because of all the markup. This guide shows how to get a number you can trust.</p>
       </div>
 
       <article class="post-body">
-        <p>Conferences and journals enforce word and page limits, but LaTeX source is full of commands that aren't words. The challenge is counting the prose without counting the markup. You can paste text into our free <a href="/tools/word-counter/">word counter</a> for an instant count, or read on for the trade-offs.</p>
+        <p>Conferences and journals enforce word and page limits. However, LaTeX source is full of commands that are not words. The hard part is counting the prose without counting the markup. Paste text into our free <a href="/tools/word-counter/">word counter</a> for an instant count, or read on for the trade-offs.</p>
         <h2>Why counts disagree</h2>
         <p>Three methods give three different numbers:</p>
         <ul>
-          <li><strong>Counting the .tex source</strong> includes commands like <code>\section</code> and <code>\cite</code> as "words," inflating the count.</li>
-          <li><strong>texcount</strong> (a Perl tool) tries to count only prose, skipping most markup (usually the most accurate for submission limits).</li>
-          <li><strong>Counting the compiled PDF</strong> counts what the reader sees but includes figure captions, references, and headers unless you exclude them.</li>
+          <li><strong>Counting the .tex source</strong> includes commands like <code>\section</code> and <code>\cite</code> as "words." This inflates the count.</li>
+          <li><strong>texcount</strong> (a Perl tool) counts only prose and skips most markup. It is usually the most accurate method for submission limits.</li>
+          <li><strong>Counting the compiled PDF</strong> counts what the reader sees. It also includes figure captions, references, and headers unless you exclude them.</li>
         </ul>
         <h2>The practical approach</h2>
         <ol>
           <li>For a quick estimate, paste your body text into the <a href="/tools/word-counter/">word counter</a>. It reports words, characters, sentences, and reading time live.</li>
-          <li>For a strict submission limit, decide what the venue counts: does the limit include the abstract? References? Captions? Read the call for papers.</li>
+          <li>For a strict submission limit, decide what the venue counts. Check whether the limit includes the abstract, references, and captions in the call for papers.</li>
           <li>Count the relevant sections only, excluding the bibliography and any appendices that don't count toward the limit.</li>
         </ol>
         <h2>What usually does <em>not</em> count</h2>
         <ul>
-          <li>The reference list / bibliography.</li>
+          <li>The reference list (bibliography).</li>
           <li>Figure and table captions (venue-dependent).</li>
           <li>Author names and affiliations.</li>
           <li>Appendices (venue-dependent).</li>
         </ul>
-        <p>When in doubt, the safest move is to be slightly under the limit using the strictest reasonable interpretation.</p>
+        <p>When in doubt, stay slightly under the limit using the strictest reasonable interpretation.</p>
       </article>
 
       <section class="tool-faq">
         <h2>Frequently asked questions</h2>
-        <details><summary>Why is my LaTeX word count different from Word's?</summary><div class="faq-body">LaTeX source includes markup commands that aren't prose. Counting the raw .tex inflates the number, while tools like texcount or counting the compiled text give a closer match to what a reader sees.</div></details>
+        <details><summary>Why is my LaTeX word count different from Word's?</summary><div class="faq-body">LaTeX source includes markup commands that are not prose. Counting the raw .tex inflates the number. However, texcount or counting the compiled text gives a closer match to what a reader sees.</div></details>
         <details><summary>Does the bibliography count toward a word limit?</summary><div class="faq-body">Usually not, but it is venue-dependent. Check the call for papers: some limits exclude references, captions, and appendices, and some don't.</div></details>
         <details><summary>Can I count words without compiling?</summary><div class="faq-body">Yes. Paste your body text into the free <a href="/tools/word-counter/">word counter</a> for an instant count. It runs entirely in your browser and stores nothing.</div></details>
         <details><summary>Does the counter handle LaTeX commands?</summary><div class="faq-body">The counter treats any non-whitespace sequence as a word, so raw commands are counted as written. For prose-only counts, paste the text without the surrounding markup.</div></details>
@@ -171,7 +171,7 @@
       <section class="waitlist-section mt-cta">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
         <div class="waitlist-actions">
           <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($19.99)</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
