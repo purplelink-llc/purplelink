@@ -1,0 +1,22 @@
+(500, 10)
+ id  TRUST1  TRUST2  TRUST3  TRUST4  INTENT1  INTENT2  INTENT3  INTENT4  synthetic
+  1       3       2       2       1     <NA>        2        4        3       True
+  2       2       2       1       1        3        3        3        4       True
+  3       4       4       3       2        2        3        3        2       True
+missing share: 0.044
+
+Item-item correlations of the continuous indicators vs lambda_i * lambda_j * rho
+TRUST1-TRUST2: specified 0.600, simulated 0.601
+TRUST1-INTENT1: specified 0.272, simulated 0.274
+TRUST3-INTENT4: specified 0.196, simulated 0.196
+INTENT2-INTENT3: specified 0.600, simulated 0.601
+largest absolute gap: 0.002
+
+Category proportions, TRUST1 and INTENT1: target vs simulated
+TRUST1 target [0.067 0.242 0.383 0.242 0.067] simulated [0.066 0.241 0.383 0.244 0.066] max gap 0.0018
+INTENT1 target [0.115 0.23  0.311 0.23  0.115] simulated [0.115 0.228 0.311 0.229 0.116] max gap 0.001
+
+Scale-score correlation TRUST-INTENT (latent specified 0.40)
+implied by the loadings: 0.337
+continuous indicators: 0.337
+5-point items:          0.325
