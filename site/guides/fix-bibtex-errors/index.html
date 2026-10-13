@@ -222,7 +222,7 @@
           <li><strong>Bisect.</strong> Uncomment half the entries. Build. Did it break? The bad entry is in that half. Halve again, and so on. Five or six iterations is enough to locate the bad entry in a 500-line file.</li>
           <li><strong>Inspect the entry.</strong> Once isolated, the issue is almost always one of the six categories above, most often missing braces.</li>
         </ol>
-        <p>It is better to avoid the problem in the first place. <a href="/tools/bib-validator/">Run the BibTeX validator</a> on your <code>.bib</code> after every meaningful change. It catches all eight categories above in under a second, never uploads your file, and produces an annotated <code>.bib</code> you can paste back into your project with inline warning comments. If you would rather build the file from a DOI list, the <a href="/tools/bib-builder/">BibTeX Builder</a> goes the other direction. The validator checks the file, not the paper: <a href="/tools/paper-review/">Paper Review</a> ($9 to $15) audits whether the cited sources support the claims in the manuscript itself.</p>
+        <p>It is better to avoid the problem in the first place. <a href="/tools/bib-validator/">Run the BibTeX validator</a> on your <code>.bib</code> after every meaningful change. It catches all eight categories above in under a second, checks your file in a temporary container and discards it right away, and produces an annotated <code>.bib</code> you can paste back into your project with inline warning comments. If you would rather build the file from a DOI list, the <a href="/tools/bib-builder/">BibTeX Builder</a> goes the other direction. The validator checks the file, not the paper: <a href="/tools/paper-review/">Paper Review</a> ($9 to $15) audits whether the cited sources support the claims in the manuscript itself.</p>
       </article>
 
       <section class="tool-faq">
@@ -237,7 +237,7 @@
       <section class="waitlist-section mt-cta">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
         <div class="waitlist-actions">
           <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($19.99)</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>
