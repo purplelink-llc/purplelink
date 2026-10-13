@@ -13,7 +13,7 @@ from typing import Optional
 
 import httpx
 
-from digest.affiliates import DISCLOSURE, rewrite_url
+from digest.affiliates import DISCLOSURE, LABEL_HTML, rewrite_url
 from digest.curator import DigestData, DigestItem, _SECTION_LABELS
 
 logger = logging.getLogger(__name__)
@@ -97,6 +97,12 @@ def _item_link(item: DigestItem) -> tuple:
     return href, ("sponsored noopener" if program else "noopener")
 
 
+def _item_label(item: DigestItem) -> str:
+    """The small "(paid link)" label that follows the title of a non-Amazon affiliate item."""
+    program = rewrite_url(item.url)[1]
+    return LABEL_HTML if program is not None and program.id != "amazon" else ""
+
+
 def digest_has_affiliate_links(digest: DigestData) -> bool:
     return any(rewrite_url(it.url)[1] is not None for items in digest.sections.values() for it in items)
 
@@ -105,7 +111,7 @@ def _render_item_html(item: DigestItem) -> str:
     href, rel = _item_link(item)
     return f"""      <div class="digest-item">
         <div class="digest-item-meta">
-          <a class="digest-item-title" href="{html.escape(href, quote=True)}" target="_blank" rel="{rel}">{html.escape(item.title)}</a>
+          <a class="digest-item-title" href="{html.escape(href, quote=True)}" target="_blank" rel="{rel}">{html.escape(item.title)}</a>{_item_label(item)}
           <span class="digest-item-source">{html.escape(item.source_name)}</span>
         </div>
         <p class="digest-item-note">{html.escape(item.editorial_note)}</p>
