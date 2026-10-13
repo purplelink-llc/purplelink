@@ -49,14 +49,16 @@ class Rewrite(unittest.TestCase):
         new, _ = aff.rewrite_html(page)
         self.assertNotIn("aff-label", new)
 
-    def test_requested_programs_are_candidates_without_links(self):
+    def test_requested_programs_have_no_links_until_approved(self):
         ids = {"wordvice", "raycast", "paperpal", "scrivener", "ulysses", "proton", "pcloud", "readwise",
                "logitech", "setapp", "1password"}
         by_id = {p.id: p for p in aff.REGISTRY}
         self.assertTrue(ids <= set(by_id))
         for i in ids:
             p = by_id[i]
-            self.assertEqual((p.status, p.link, p.deep_link, p.tag), ("candidate", "", "", ""), i)
+            # Setapp and 1Password were applied for on 2026-10-13; neither has a tracked link until approved.
+            expected = "applied" if i in ("setapp", "1password") else "candidate"
+            self.assertEqual((p.status, p.link, p.deep_link, p.tag), (expected, "", "", ""), i)
             self.assertTrue(p.source_url.startswith("http"), i)
 
     def test_disclosure_added_once_after_h1_and_apply_is_idempotent(self):
