@@ -545,7 +545,7 @@ test("the update check is described the same way everywhere: app name, version, 
   const faq = jsonLd(page).find((n) => n["@type"] === "FAQPage").mainEntity.find((q) => q.name === "Do my recordings leave my Mac?");
   assert.match(faq.acceptedAnswer.text, /app's name, its version, the macOS version and the app's update token/);
   assert.match(faq.acceptedAnswer.text, /Hugging Face/);
-  assert.match(faq.acceptedAnswer.text, /macOS itself, which may download Apple's own speech model once/);
+  assert.match(faq.acceptedAnswer.text, /macOS itself may download Apple's own speech model once/);
   assert.match(faq.acceptedAnswer.text, /nothing from your files is sent anywhere/);
   const privacy = read("privacy/index.html");
   const para = privacy.slice(privacy.indexOf("<strong>Tapefolio</strong> has no account"), privacy.indexOf("<strong>Find a purchase.</strong>"));
@@ -562,7 +562,7 @@ test("the Suite page, the Suite terms and llms.txt say the same about updates an
   const terms = read("terms/index.html");
   assert.match(terms, /all updates to Keyfeel, Tapefolio, Panely and Summonly, updates to the version of Legroom you receive/);
   assert.match(read("suite/index.html"), /so is every Keyfeel, Tapefolio, Panely and Summonly update\. Legroom updates to the version you buy are included/);
-  assert.match(read("suite/index.html"), /its check for a new version, which sends the app's name, its version and the macOS version, and macOS itself/);
+  assert.match(read("suite/index.html"), /its check for a new version, which sends the app's name, its version and the macOS version\. The third is macOS itself/);
 });
 
 test("the site promo card offers Tapefolio with its real icon, and never on its own page or the Suite page", () => {
@@ -694,7 +694,7 @@ test("the captions say what the captures show: the invented demo, the errors, an
   const section = html.match(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/)[0];
   const text = visibleText(section).replace(/&[lr]dquo;/g, '"').replace(/&rsquo;/g, "'");
   assert.match(text, /invented interview read by two computer voices/);
-  assert.match(text, /the letters in the OCR capture are generated test files/);
+  assert.match(text, /The letters in the OCR capture are generated test files/);
   assert.match(text, /the first pass missed some identifiers/);
   assert.match(text, /in this first pass the app did not mark .Decatur. \(transcribed there as .Indecator.\) or .Brightwater Clinic. as identifiers/);
   assert.match(text, /Brightwater Clinic Indecator. is still readable because it was never marked/);
@@ -779,9 +779,9 @@ test("the speaker-label claims are the corrected ones: every word counted, the t
 test("Nemotron 3 is recommended and used automatically once installed; the standard separation comes with the app; nothing calls it a second way or a match", () => {
   const html = read("tapefolio/index.html");
   const page = visibleText(html);
-  assert.match(page, /NVIDIA Nemotron 3 Diarization is recommended instead: it was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download\./);
+  assert.match(page, /NVIDIA Nemotron 3 Diarization is recommended instead\. It was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download\./);
   assert.match(page, /standard speaker-separation models that come with the app/);
-  assert.match(page, /Separating speakers; recommended, and used automatically once installed/);
+  assert.match(page, /Separating speakers\. Recommended, and used automatically once installed/);
   assert.match(page, /About 190 MB/);
   const features = jsonLd(html).find((n) => n["@type"] === "SoftwareApplication").featureList.join(" ");
   assert.match(features, /Nemotron 3 Diarization, which is recommended for speaker labels and used automatically once installed/);
