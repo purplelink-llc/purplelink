@@ -20,6 +20,9 @@
       "narration": "The menu adds time left, volts, adapter, and cycles."
     },
     {
+      "narration": "It also lists the apps using the most power. Quit one, or force quit it after a prompt."
+    },
+    {
       "narration": "Hide Apple's icon, then hold Command and drag BatteryMeter in."
     },
     {
