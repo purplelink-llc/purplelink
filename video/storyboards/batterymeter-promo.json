@@ -1,0 +1,37 @@
+{
+  "id": "batterymeter-promo",
+  "title": "BatteryMeter promo",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+4%",
+  "scenes": [
+    {
+      "narration": "A free Mac battery meter that shows more."
+    },
+    {
+      "narration": "A real reading: percent, an arrow, and watts."
+    },
+    {
+      "narration": "A sample. The arrow points down while it drains."
+    },
+    {
+      "narration": "Another sample. Orange at 20 percent or below."
+    },
+    {
+      "narration": "The menu adds time left, volts, adapter, and cycles."
+    },
+    {
+      "narration": "Hide Apple's icon, then hold Command and drag BatteryMeter in."
+    },
+    {
+      "narration": "Free for Apple silicon Macs. No email, no account."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
