@@ -111,10 +111,10 @@
 ### BatteryMeter (macOS)
 - **Platform:** macOS 13 or later, Apple silicon only
 - **Category:** Battery and power
-- **Description:** A free menu-bar battery indicator for MacBooks. It shows the percent, an arrow for whether the charge is rising or falling, and battery power in watts, with a menu of time to full or empty, volts and amps, adapter watts, capacity against design, cycle count and a chart of the last hour. The icon is green while charging, orange at 20 percent or below and red at 10 percent or below.
+- **Description:** A free menu-bar battery indicator for MacBooks. It shows the percent, an arrow for whether the charge is rising or falling, and battery power in watts, with a menu of time to full or empty, volts and amps, adapter watts, capacity against design, cycle count and a chart of the last hour, and a Using the most power list of the top five apps by energy impact (a relative score, not watts) with Quit and Force Quit for your own processes. The icon is green while charging, orange at 20 percent or below and red at 10 percent or below.
 - **Pricing:** Free. One download, no email, no account, no trial and no license key.
-- **Privacy:** It reads one battery entry in macOS, makes no network connection and collects nothing. It stores only its display settings on the Mac.
-- **Limits:** No temperature unless macOS provides one. Apple silicon only. The time estimate is macOS's own. Not on the Mac App Store.
+- **Privacy:** It reads one battery entry in macOS, makes no network connection and collects nothing. The power list runs top and ps locally when you open the menu; process names are shown and never stored. It stores only its display settings on the Mac.
+- **Limits:** No temperature unless macOS provides one. Apple silicon only. The time estimate is macOS's own. Energy impact is relative, not watts. Not on the Mac App Store.
 - **Status:** Shipping since 2026-10-13. Notarized download.
 - **Download:** https://purplelink.llc/batterymeter/
 
