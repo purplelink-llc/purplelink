@@ -31,7 +31,7 @@
    "file": "battle_mid_drive.ogg",
    "in": 0.0,
    "t": 3.0,
-   "dur": 7.32,
+   "dur": 6.870000000000001,
    "gain_db": 2.0,
    "fade_in": 0.02,
    "fade_out": 0.25
@@ -77,9 +77,9 @@
  ],
  "scenes": [
   {
-   "clip": "s_a",
-   "in": 1.153,
-   "dur": 3.48,
+   "clip": "o_a",
+   "in": 1.683,
+   "dur": 3.45,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -100,6 +100,13 @@
      "amp": 16,
      "dur": 0.35,
      "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 2.98,
+     "dur": 0.42,
+     "speed": 0.4
     }
    ],
    "cards": [
@@ -132,18 +139,13 @@
      "at": 2.0,
      "kind": "tick",
      "gain_db": -4
-    },
-    {
-     "at": 2.5,
-     "kind": "tick",
-     "gain_db": -4
     }
    ]
   },
   {
-   "clip": "s_a",
-   "in": 8.033,
-   "dur": 3.02,
+   "clip": "o_a",
+   "in": 8.467,
+   "dur": 2.6,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -151,7 +153,7 @@
    },
    "flash": [
     {
-     "at": 1.02,
+     "at": 1.95,
      "dur": 0.07,
      "amp": 0.85,
      "color": "#fff6e6",
@@ -160,7 +162,7 @@
    ],
    "shake": [
     {
-     "at": 1.02,
+     "at": 1.95,
      "amp": 16,
      "dur": 0.35,
      "zoom": 0.03
@@ -168,21 +170,16 @@
    ],
    "slow": [
     {
-     "at": 1.0,
+     "at": 1.93,
      "dur": 0.42,
      "speed": 0.4
-    },
-    {
-     "at": 1.42,
-     "dur": 0.9,
-     "speed": 2.0
     }
    ],
    "cards": [
     {
      "text": "BLOW A HOLE IN\nTHEIR *COVER.*",
-     "at": 2.02,
-     "dur": 1.0,
+     "at": 1.7,
+     "dur": 0.8,
      "pos": "bottom",
      "sfxDb": -4.5
     }
@@ -244,21 +241,12 @@
     "cx": 960,
     "cy": 540,
     "s": 1.0
-   },
-   "cards": [
-    {
-     "text": "PICK ONE\nOF *THREE.*",
-     "at": 0.0,
-     "dur": 1.0,
-     "pos": "bottom",
-     "sfxDb": -4.5
-    }
-   ]
+   }
   },
   {
    "clip": "k_hub",
    "in": 3.0,
-   "dur": 1.78,
+   "dur": 2.23,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -266,15 +254,15 @@
    },
    "crop": {
     "x": 0.5,
-    "y": 0.0,
-    "s": 1.22
+    "y": 0.5,
+    "s": 1.0
    },
    "cards": [
     {
      "text": "SPEND SALVAGE\nON *BUILDINGS.*",
      "at": 0.0,
      "dur": 1.6,
-     "pos": "bottom",
+     "pos": "top",
      "sfxDb": -4.5,
      "strong": true
     }
@@ -308,7 +296,7 @@
   },
   {
    "clip": "s_g3",
-   "in": 2.833,
+   "in": 2.367,
    "dur": 1.7,
    "v": {
     "cx": 960,
@@ -450,7 +438,7 @@
   },
   {
    "clip": "t_c",
-   "in": 9.367,
+   "in": 9.133,
    "dur": 0.9,
    "v": {
     "cx": 960,

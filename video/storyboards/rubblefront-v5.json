@@ -31,7 +31,7 @@
    "file": "battle_mid_drive.ogg",
    "in": 0.0,
    "t": 3.0,
-   "dur": 23.12,
+   "dur": 22.67,
    "gain_db": 2.0,
    "fade_in": 0.02,
    "fade_out": 0.25
@@ -77,14 +77,48 @@
  ],
  "scenes": [
   {
-   "clip": "s_a",
-   "in": 1.153,
-   "dur": 3.48,
+   "clip": "o_a",
+   "in": 1.683,
+   "dur": 3.45,
    "v": {
     "cx": 960,
     "cy": 540,
     "s": 1.0
    },
+   "flash": [
+    {
+     "at": 3.0,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 3.0,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 2.98,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "TURN-BASED\n*TACTICS.*",
+     "at": 0.2,
+     "dur": 2.0,
+     "pos": "top",
+     "size": 92,
+     "sfxDb": -4.5
+    }
+   ],
    "hits": [
     {
      "at": 0.5,
@@ -105,45 +139,13 @@
      "at": 2.0,
      "kind": "tick",
      "gain_db": -4
-    },
-    {
-     "at": 2.5,
-     "kind": "tick",
-     "gain_db": -4
-    }
-   ],
-   "flash": [
-    {
-     "at": 3.0,
-     "dur": 0.07,
-     "amp": 0.85,
-     "color": "#fff6e6",
-     "sfx": "hit"
-    }
-   ],
-   "shake": [
-    {
-     "at": 3.0,
-     "amp": 16,
-     "dur": 0.35,
-     "zoom": 0.03
-    }
-   ],
-   "cards": [
-    {
-     "text": "TURN-BASED\n*TACTICS.*",
-     "at": 0.2,
-     "dur": 2.0,
-     "pos": "top",
-     "size": 92,
-     "sfxDb": -4.5
     }
    ]
   },
   {
-   "clip": "s_a",
-   "in": 8.033,
-   "dur": 3.02,
+   "clip": "o_a",
+   "in": 8.467,
+   "dur": 2.6,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -151,7 +153,7 @@
    },
    "flash": [
     {
-     "at": 1.02,
+     "at": 1.95,
      "dur": 0.07,
      "amp": 0.85,
      "color": "#fff6e6",
@@ -160,7 +162,7 @@
    ],
    "shake": [
     {
-     "at": 1.02,
+     "at": 1.95,
      "amp": 16,
      "dur": 0.35,
      "zoom": 0.03
@@ -168,21 +170,16 @@
    ],
    "slow": [
     {
-     "at": 1.0,
+     "at": 1.93,
      "dur": 0.42,
      "speed": 0.4
-    },
-    {
-     "at": 1.42,
-     "dur": 0.9,
-     "speed": 2.0
     }
    ],
    "cards": [
     {
      "text": "BLOW A HOLE IN\nTHEIR *COVER.*",
-     "at": 2.02,
-     "dur": 1.0,
+     "at": 1.7,
+     "dur": 0.8,
      "pos": "bottom",
      "sfxDb": -4.5
     }
@@ -190,7 +187,7 @@
   },
   {
    "clip": "t_c",
-   "in": 2.533,
+   "in": 2.3,
    "dur": 2.2,
    "v": {
     "cx": 960,
@@ -264,7 +261,7 @@
   },
   {
    "clip": "s_d",
-   "in": 2.533,
+   "in": 2.5,
    "dur": 2.0,
    "v": {
     "cx": 960,
@@ -290,7 +287,7 @@
   },
   {
    "clip": "s_d",
-   "in": 9.167,
+   "in": 9.133,
    "dur": 1.3,
    "v": {
     "cx": 960,
@@ -300,7 +297,7 @@
   },
   {
    "clip": "s_d",
-   "in": 15.0,
+   "in": 14.967,
    "dur": 1.1,
    "v": {
     "cx": 960,
@@ -317,7 +314,7 @@
   },
   {
    "clip": "s_d",
-   "in": 20.633,
+   "in": 20.6,
    "dur": 2.1,
    "v": {
     "cx": 960,
@@ -361,8 +358,8 @@
    "cards": [
     {
      "text": "HOLD. WAIT.\n*AMBUSH.*",
-     "at": 0.0,
-     "dur": 2.4,
+     "at": 0.9,
+     "dur": 1.5,
      "pos": "bottom",
      "sfxDb": -4.5
     }
@@ -513,7 +510,7 @@
   {
    "clip": "k_hub",
    "in": 3.0,
-   "dur": 2.38,
+   "dur": 2.83,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -521,15 +518,15 @@
    },
    "crop": {
     "x": 0.5,
-    "y": 0.0,
-    "s": 1.22
+    "y": 0.5,
+    "s": 1.0
    },
    "cards": [
     {
      "text": "SPEND SALVAGE\nON *BUILDINGS.*",
      "at": 0.0,
      "dur": 1.3,
-     "pos": "bottom",
+     "pos": "top",
      "sfxDb": -4.5,
      "strong": true
     },
@@ -537,7 +534,7 @@
      "text": "NEW BUILDINGS.\n*NEW UNITS.*",
      "at": 1.3,
      "dur": 1.3,
-     "pos": "bottom",
+     "pos": "top",
      "sfxDb": -4.5,
      "strong": true
     }
@@ -571,7 +568,7 @@
   },
   {
    "clip": "s_g3",
-   "in": 2.733,
+   "in": 2.267,
    "dur": 1.9,
    "v": {
     "cx": 960,
@@ -746,7 +743,7 @@
   },
   {
    "clip": "t_c",
-   "in": 9.317,
+   "in": 9.083,
    "dur": 1.0,
    "v": {
     "cx": 960,
@@ -848,7 +845,7 @@
   },
   {
    "clip": "t_f",
-   "in": 9.533,
+   "in": 9.333,
    "dur": 1.0,
    "v": {
     "cx": 960,

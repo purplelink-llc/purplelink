@@ -158,10 +158,29 @@ def loop_scenes():
         sp(6.1, 0.5),
         sp(7.2, 2.0, insets=[{"clip": "h_runmap", "src": 0.8, "at": 0.15, "dur": 1.8, "crop": {"x": 70, "y": 165, "w": 1210, "h": 690}, "x": 40, "y": 140, "w": 900}],
            cards=[card("THE MAP\n*BRANCHES.*", 0.0, 2.0, pos="bottom")]),
-        S("k_hub", 3.0, 2.8, crop={"x": 0.5, "y": 0.0, "s": 1.22}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 1.4), card("NEW BUILDINGS.\n*NEW UNITS.*", 1.4, 1.4)]),
+        S("k_hub", 3.0, 2.8, crop={"x": 0.5, "y": 0.5, "s": 1.0}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 1.4), card("NEW BUILDINGS.\n*NEW UNITS.*", 1.4, 1.4)]),
     ]
     return L
 
+
+
+IMPACT_B = 0.95   # blast-mode captures (--blast): the odds bubble shows 0.8 s after Fire, then the explosion plays about 0.95 s after Fire
+
+
+def blastshot(clip, i, pre, post, cards=None, slow=True, **kw):
+    """A shot captured with --blast: the destruction animation is in frame (no result bubble over it). Flash and slow-motion only on a log 'destroyed'."""
+    s = info(clip, i)
+    imp = pre + IMPACT_B
+    d = S(clip, s["fire"] - pre, pre + post, **kw)
+    if s["kill"]:
+        d["flash"] = [{"at": imp, "dur": 0.07, "amp": 0.85, "color": "#fff6e6", "sfx": "hit"}]
+        d["shake"] = [{"at": imp, "amp": 16, "dur": 0.35, "zoom": 0.03}]
+        if slow:
+            d["slow"] = [{"at": imp - 0.02, "dur": 0.42, "speed": 0.4}]
+    if cards:
+        d["cards"] = cards
+    d["_kill"] = s["kill"]
+    return d
 
 
 def ramp(clip, i, pre, text, tail=0.7, card_dur=1.0, **kw):
@@ -200,9 +219,9 @@ def kclip(clip, src, dur=1.0, hit_at=0.45):
 
 def build_main():
     sc = []
-    sc.append(shot("s_a", 0, 2.58, 0.9, cards=[card("TURN-BASED\n*TACTICS.*", 0.2, 2.0, pos="top", size=92, sfxDb=-4.5)], hits=None, slow=False))
-    sc[-1]["hits"] = [{"at": t, "kind": "tick", "gain_db": -4} for t in (0.5, 1.0, 1.5, 2.0, 2.5)]
-    sc.append(ramp("s_a", 1, 0.6, "BLOW A HOLE IN\nTHEIR *COVER.*"))    # card while the wall is rubble (log: reduced to rubble)
+    sc.append(blastshot("o_a", 0, 2.05, 1.4, cards=[card("TURN-BASED\n*TACTICS.*", 0.2, 2.0, pos="top", size=92, sfxDb=-4.5)]))
+    sc[-1]["hits"] = [{"at": t, "kind": "tick", "gain_db": -4} for t in (0.5, 1.0, 1.5, 2.0)]
+    sc.append(blastshot("o_a", 1, 1.0, 1.6, cards=[card("BLOW A HOLE IN\nTHEIR *COVER.*", 1.7, 0.8, sfxDb=-4.5)]))    # the wall collapse (log: reduced to rubble) is in frame
     sc.append(shot("t_c", 0, 1.2, 1.0, cards=[card("EVERY SHOT HAS *ODDS.*", 0.0, 1.9, sfxDb=-4.5)]))
     sc.append(ramp("s_c", 1, 0.5, "FLANK FOR\nTHE *KILL.*"))
     sc.append(shot("s_d", 0, 1.2, 0.8, cards=[card("ONE TITAN.\n*FOUR SHOTS.*", 0.0, 2.0, sfxDb=-4.5)]))
@@ -210,7 +229,7 @@ def build_main():
     sc.append(shot("s_d", 2, 0.3, 0.8))
     sc.append(shot("s_d", 3, 0.5, 1.6))
     loop_start = sum(x["dur"] for x in sc) + 0.0
-    amb = plain(ow_kill(6.4, 2.4, 1.25, [card("HOLD. WAIT.\n*AMBUSH.*", 0.0, 2.4, sfxDb=-4.5)]))
+    amb = plain(ow_kill(6.4, 2.4, 1.25, [card("HOLD. WAIT.\n*AMBUSH.*", 0.9, 1.5, sfxDb=-4.5)]))
     amb["flash"] = [{"at": 1.25, "dur": 0.07, "amp": 0.85, "color": "#fff6e6", "sfx": "hit"}]
     amb["shake"] = [{"at": 1.25, "amp": 16, "dur": 0.35, "zoom": 0.03}]
     sc.append(amb)
@@ -222,7 +241,7 @@ def build_main():
     sc.append(S("k_spoils", 3.3, 0.9, crop={"x": 0.5, "y": 0.45, "s": 1.18}))
     sc.append(S("k_spoils", 7.2, 1.7, insets=[{"clip": "h_runmap", "src": 0.8, "at": 0.1, "dur": 1.6, "crop": {"x": 70, "y": 165, "w": 1210, "h": 690}, "x": 40, "y": 140, "w": 900}],
                 cards=[card("THE MAP\n*BRANCHES.*", 0.0, 1.7, sfxDb=-4.5)]))
-    hub = S("k_hub", 3.0, 2.6, crop={"x": 0.5, "y": 0.0, "s": 1.22}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 1.3, sfxDb=-4.5, strong=True), card("NEW BUILDINGS.\n*NEW UNITS.*", 1.3, 1.3, sfxDb=-4.5, strong=True)])
+    hub = S("k_hub", 3.0, 2.6, crop={"x": 0.5, "y": 0.5, "s": 1.0}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 1.3, pos="top", sfxDb=-4.5, strong=True), card("NEW BUILDINGS.\n*NEW UNITS.*", 1.3, 1.3, pos="top", sfxDb=-4.5, strong=True)])
     sc.append(hub)
     sc.append(shot("s_g1", 0, 1.2, 0.9, cards=[card("EARLY *SQUAD.*", 0.0, 2.0, sfxDb=-4.5)]))
     sc.append(shot("s_g3", 0, 1.0, 0.9, cards=[card("UPGRADED *SQUAD.*", 0.0, 1.9, sfxDb=-4.5)]))
@@ -269,12 +288,12 @@ write("rubblefront-v5", "rubblefront-v5", {"16x9": "rubblefront-trailer-v5-16x9.
 
 # ================================================================== 30 s
 def build_30():
-    sc = [shot("s_a", 0, 2.58, 0.9, cards=[card("TURN-BASED\n*TACTICS.*", 0.2, 2.0, pos="top", size=92, sfxDb=-4.5)], slow=False)]
-    sc[-1]["hits"] = [{"at": t, "kind": "tick", "gain_db": -4} for t in (0.5, 1.0, 1.5, 2.0, 2.5)]
-    sc.append(ramp("s_a", 1, 0.6, "BLOW A HOLE IN\nTHEIR *COVER.*"))
+    sc = [blastshot("o_a", 0, 2.05, 1.4, cards=[card("TURN-BASED\n*TACTICS.*", 0.2, 2.0, pos="top", size=92, sfxDb=-4.5)])]
+    sc[-1]["hits"] = [{"at": t, "kind": "tick", "gain_db": -4} for t in (0.5, 1.0, 1.5, 2.0)]
+    sc.append(blastshot("o_a", 1, 1.0, 1.6, cards=[card("BLOW A HOLE IN\nTHEIR *COVER.*", 1.7, 0.8, sfxDb=-4.5)]))
     sc.append(ramp("s_c", 1, 0.5, "FLANK FOR\nTHE *KILL.*"))
-    sc.append(S("k_spoils", 3.3, 0.9, cards=[card("PICK ONE\nOF *THREE.*", 0.0, 1.0, sfxDb=-4.5)]))
-    hub = S("k_hub", 3.0, 1.6, crop={"x": 0.5, "y": 0.0, "s": 1.22}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 1.6, sfxDb=-4.5, strong=True)])
+    sc.append(S("k_spoils", 3.3, 0.9))
+    hub = S("k_hub", 3.0, 1.6, crop={"x": 0.5, "y": 0.5, "s": 1.0}, cards=[card("SPEND SALVAGE\nON *BUILDINGS.*", 0.0, 1.6, pos="top", sfxDb=-4.5, strong=True)])
     sc.append(hub)
     sc.append(shot("s_g1", 0, 1.0, 0.7, cards=[card("EARLY *SQUAD.*", 0.0, 1.6, sfxDb=-4.5)]))
     sc.append(shot("s_g3", 0, 0.9, 0.8, cards=[card("UPGRADED *SQUAD.*", 0.0, 1.6, sfxDb=-4.5)]))
@@ -320,6 +339,12 @@ def vshot(clip, i, pre, post, cards=None, **kw):
     return d
 
 
+def vblast(clip, i, pre, post, cards=None, **kw):
+    d = blastshot(clip, i, pre, post, cards=cards, **kw)
+    d["vclip"] = clip
+    return d
+
+
 def vramp(clip, i, pre, text, **kw):
     d = ramp(clip, i, pre, text, **kw)
     d["vclip"] = clip
@@ -327,9 +352,9 @@ def vramp(clip, i, pre, text, **kw):
 
 
 def build_15():
-    sc = [vshot("v_a", 0, 1.6, 0.9, cards=[card("TURN-BASED\n*TACTICS.*", 0.1, 2.3, sfxDb=-4.5)], slow=False)]
+    sc = [vblast("v_ob", 0, 1.6, 1.0, cards=[card("TURN-BASED\n*TACTICS.*", 0.1, 2.3, sfxDb=-4.5)])]
     sc[-1]["hits"] = [{"at": t, "kind": "tick", "gain_db": -4} for t in (0.4, 0.9, 1.4)]
-    sc.append(vramp("v_a", 1, 0.6, "BLOW A HOLE IN\nTHEIR *COVER.*"))
+    sc.append(vblast("v_ob", 1, 1.0, 1.5, cards=[card("BLOW A HOLE IN\nTHEIR *COVER.*", 1.7, 0.8, sfxDb=-4.5)]))
     sc.append(vshot("v_g1", 0, 0.9, 0.7, cards=[card("EARLY *SQUAD.*", 0.0, 1.6, sfxDb=-4.5)]))
     sc.append(vshot("v_g3", 0, 0.9, 0.7, cards=[card("UPGRADED *SQUAD.*", 0.0, 1.6, sfxDb=-4.5)]))
     e = strike("v_e", 1.2, 1.5)
