@@ -70,10 +70,10 @@
 - **Description:** A Mac menu-bar app that plays recorded keyboard-switch sounds when you press a key, with mouse-click sounds, speed-aware scroll ticks and optional trackpad haptics (only while a finger is on the trackpad). Recorded profiles Tactile, Cherry MX Brown and Dome, a different recording each press, per-key pitch and left-to-right stereo, sounds for the space bar and Return, a click ripple, per-app silence, silence while the microphone is in use, and import of your own sound.
 - **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once to keep, updates included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. 14-day refund.
 - **Privacy:** It reads key codes, never the characters you type. It works offline. It needs the macOS Input Monitoring permission. No account, no analytics.
-- **Status:** Shipping, version 1.4.0 (October 2026). One license key works on two of your Macs.
+- **Status:** Shipping, version 1.5.0 (October 13, 2026), which adds quiet hours, silence while other apps play sound or a Focus is on, favorite sounds, shortcuts you record, pack import from a link, a measured delay readout and a Privacy tab. One license key works on two of your Macs.
 - **Trial and purchase:** https://purplelink.llc/keyfeel/
 - **Sound credits:** https://purplelink.llc/keyfeel/sound-credits/ (author and license, all CC0 1.0, of every recorded sound in the app)
-- **Comparison:** https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ (Klack, KeyOpera, Thock, Mechvibes and others, by price, sounds, permissions and limits)
+- **Comparison:** https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/ (Klack, KeyOpera, Thock, Mechvibes, TapWriter Pro, Tacque, KeyBell, FunKey, Click and others, by price, sounds, permissions and limits, with a feature-by-feature table)
 - **Mechvibes sound packs:** https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/ (Keyfeel imports Mechvibes packs in the original format, not the MechvibesDX V2 format; how to import, what does not carry over)
 - **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (Keyfeel needs Input Monitoring and reads key codes, never characters; Accessibility is optional for two features)
 
@@ -384,7 +384,6 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Guides index: https://purplelink.llc/guides/
 - LaTeX hub: https://purplelink.llc/guides/latex/ — pillar page covering the full academic LaTeX workflow.
 - latexdiff online for a multi-file project: https://purplelink.llc/guides/latexdiff-online/ — when to use latexdiff, how to run it on a single file or a git project with latexpand and latexdiff-vc, common failures, and what the online tool does.
-- Simulate Likert data for power analysis: https://purplelink.llc/guides/simulate-likert-data-for-power-analysis/ — dry-run an analysis script and estimate power with synthetic survey data, with Python code and real outputs, and what simulated data cannot tell you.
 - BibTeX hub: https://purplelink.llc/guides/bibtex/ — pillar page covering bibliography management.
 - Mac utility guides: https://purplelink.llc/guides/mac/ — hub for the guides on disk space, System Data, window managers, keyboard sound apps, privacy permissions and other Mac utilities.
 - Methodology problems peer reviewers flag, and how to fix them: https://purplelink.llc/guides/methodology-problems-peer-reviewers-flag/ — fifteen failure modes (p-hacking, HARKing, underpowered samples, test-train contamination, LLM self-judging, fabricated citations and more), each with a definition, an example, the fix and primary references.

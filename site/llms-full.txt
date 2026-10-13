@@ -1046,7 +1046,7 @@ Keyfeel plays real recorded keyboard-switch sounds when you press a key on your 
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.4.0, released October 8, 2026. 7 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.5.0, released October 13, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
 Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
 
@@ -1078,11 +1078,11 @@ Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it
 
 ## What it does
 
-Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), and synthesized extras. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
+Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), IBM Model M recordings (key presses only), and synthesized extras. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
 
 Your own soundsImport a Mechvibes sound pack in the original format (its folder, its zip or its config.json), including packs in .ogg. Each key keeps the sound the pack gave it. Packs in the newer MechvibesDX format are not read. Or choose one short sound file of your own.
 
-KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own, and you can set the level of the space bar and modifier keys separately. Fast typing gets gently quieter so it does not wear on you.
+KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own, and you can set the level of the space bar and modifier keys separately. Key positions are right on ANSI, ISO and JIS keyboards. Fast typing gets gently quieter so it does not wear on you. The menu bar icon can look pressed for an instant on each key, without showing which key.
 
 MousePress and release sounds for mouse clicks, and a ripple on screen where you click.
 
@@ -1092,11 +1092,17 @@ ShortcutsEach of eleven shortcuts, such as copy, paste, undo and save, can have 
 
 TrackpadOptional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.
 
-QuietSilence in the apps you choose, automatic silence on the speakers while the microphone or a camera is in use, and an option to stay silent in full-screen apps. Headphones, wired or Bluetooth, play by default, have their own switch and keep their own volume, which Keyfeel switches to when the output changes. You can also keep sounds off the built-in speakers and play them only on headphones or external audio. A separate setting keeps the sounds on the MacBook's own speakers and moves them to AirPods, or any device you tick, only when the Mac sends its sound there. Casting to a TV then leaves your clicks on the laptop, without the delay a cast adds.
+QuietSilence in the apps you choose, automatic silence on the speakers while the microphone or a camera is in use, and an option to stay silent in full-screen apps. Headphones, wired or Bluetooth, play by default, have their own switch and keep their own volume, which Keyfeel switches to when the output changes. You can also keep sounds off the built-in speakers and play them only on headphones or external audio. A separate setting keeps the sounds on the MacBook's own speakers and moves them to AirPods, or any device you tick, only when the Mac sends its sound there. Casting to a TV then leaves your clicks on the laptop, without the delay a cast adds. Quiet hours keep Keyfeel silent at the days and times you set, including overnight. Two more options keep it silent while another app plays sound (macOS 14.2 or later) and while a Focus is on. macOS asks you once to allow the Focus check, and Keyfeel reads only whether a Focus is on. When Keyfeel is quiet for one of these reasons, its menu says why.
 
-Per appPick a different sound for each app. Add the app you are in, choose its sound, and Keyfeel plays that sound whenever the app is in front and your usual one everywhere else.
+Per appPick a different sound for each app. Add the app you are in, choose its sound, and Keyfeel plays that sound whenever the app is in front and your usual one everywhere else. Imported packs can be chosen too.
 
-ControlKeyfeel runs from the menu bar, where you control it, including a volume slider. Settings has separate levels for keys, the space bar, modifier keys, mouse clicks and scrolling, and headphones and speakers keep their own volumes. Keyboard shortcuts turn it on and off and switch sounds, a keyfeel:// link works from Shortcuts and scripts, and you can hide the menu bar icon.
+FavoritesStar the sounds you like. With two or more, Keyfeel can move to the next favorite each time it starts, every hour or every day, and never repeats the one that is playing. A button moves on at once.
+
+ControlKeyfeel runs from the menu bar, where you control it, including a volume slider. Settings has separate levels for keys, the space bar, modifier keys, mouse clicks and scrolling, and headphones and speakers keep their own volumes. Keyboard shortcuts turn it on and off and switch sounds, and you can record your own. A keyfeel:// link works from Shortcuts and scripts, and you can hide the menu bar icon. To import a pack from a link, choose Import sound pack from a link in the menu, or open a keyfeel://pack/ link. Keyfeel shows you the address and downloads nothing until you say so.
+
+DelaySettings, General shows how long Keyfeel took to hand your recent key presses to the audio system. It gives a median, a 95th percentile and the slowest, timed from the moment macOS stamped each key, next to the output delay the device reports. It is a measurement made on your own Mac while you type. It is not a recording of the sound reaching your ear, and Bluetooth output adds its own delay on top.
+
+Privacy tabSettings, Privacy lists what Keyfeel looks at and what it does not. It shows live counts of the key presses, clicks and scrolls Keyfeel has been told about, which are counts only and reset when it quits. It shows the permissions, and on request lists the network connections Keyfeel has open at that moment, with the commands to check its signature yourself.
 
 ## How it feels
 
@@ -1152,7 +1158,7 @@ Cross-platformMac only. There is no Windows, iPhone or iPad version.
 
 What does it need to run?
 
-macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission.
+macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission. I tested version 1.5.0 on macOS 27.2 on October 13, 2026. It heard key presses, clicks and scrolls.
 
 Does it read what I type?
 
@@ -1164,7 +1170,7 @@ No. When a password field has focus, macOS stops delivering keystrokes to apps l
 
 Can I make it quiet in some apps, or on calls?
 
-Yes. You can silence Keyfeel in the apps you choose, and it goes quiet by itself while the microphone or a camera is in use. An option also keeps it silent in full-screen apps.
+Yes. You can silence Keyfeel in the apps you choose, set quiet hours by day and time (overnight works), and it goes quiet by itself while the microphone or a camera is in use. Options also keep it silent in full-screen apps, while another app plays sound (macOS 14.2 or later), and while a Focus is on. When it is quiet for one of those reasons, the menu says why.
 
 Why do the haptics need a finger on the trackpad?
 
@@ -1172,7 +1178,7 @@ Keyfeel produces trackpad haptics only while a finger is on the trackpad, which 
 
 Is there a delay between pressing a key and hearing it?
 
-A small one, about 8 to 25 milliseconds on a Mac's built-in speakers, depending on the Mac. Settings shows the estimate for your output. Bluetooth headphones add their own delay, often 100 milliseconds or more, which no app can remove. Settings tells you when the current output is Bluetooth.
+A small one. Settings, General shows two things for your Mac. One is how long Keyfeel took to hand your recent key presses to the audio system, measured as you type. The other is the delay your output device reports. Bluetooth headphones add their own delay, often 100 milliseconds or more, which no app can remove. Settings tells you when the current output is Bluetooth.
 
 Can I use sound packs from other apps?
 
@@ -7383,7 +7389,7 @@ These apps make your Mac's keyboard, mouse and trackpad sound or feel like somet
 
 Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Keyfeel, sold as a free 7-day trial and then $9.99 once. It is new, and where another app is the better choice I say so.
 
-I did not install or test any of the other apps. I read everything below on October 7, 2026, from vendor pages, Mac App Store listings, project repositories and launch pages. The exception is Tacque and Typemac, which I read on October 9, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
+I did not install or test any of the other apps. I read everything below on October 7, 2026, from vendor pages, Mac App Store listings, project repositories and launch pages. The exception is Tacque and Typemac, which I read on October 9, 2026. I read TapWriter Pro, KeyBell, FunKey, Click, Tikey, Sound Typing and ClyKey on October 13, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
 
 ## The short answer
 
@@ -7394,6 +7400,8 @@ The table below compares every app in this guide by price, macOS version, permis
 ## The apps side by side
 
 US prices, October 7, 2026, as listed. Tacque and Typemac were read on October 9, 2026 and not tested. "Not stated" means the pages I read did not say.
+
+Correction, October 13, 2026: the Keyfeel section of an earlier version could be read as if silence in chosen apps, or while a call is on, were something only Keyfeel offers. It is not. TapWriter Pro's Mac App Store listing states per-app rules and muting while the microphone is in use. Tacque's Setapp page states muting while the microphone is in use. KeyBell's listing states per-app profiles, and Tikey's states allow and block lists. This page now lists seven more apps that an earlier version left out.
 
 Correction, October 8, 2026: an earlier version said Klack had no mouse or scroll sounds. Its changelog lists mouse click sounds since version 1.7 and scroll sounds with haptic ticks since version 2.2, so this page now says so.
 
@@ -7413,11 +7421,79 @@ Snick$7 per AlternativeTo; vendor gives no amount14 or laterAccessibilityScrolli
 
 HapticPadFree per hapticpad.app, $4.99 per other listings13 or laterNot statedNone, web-page haptics onlyNeeds a Force Touch trackpad and browser extensions
 
-Keyfeel (mine)$9.99 once, with a 7-day trial13 or laterInput MonitoringKeys, mouse clicks, scrolling and shortcuts, with optional hapticsNew, Mac only, no Mac App Store build. Reads Mechvibes packs in the original format only
+Keyfeel (mine)$9.99 once, with a 7-day trial13 or laterInput MonitoringKeys, mouse clicks, scrolling and shortcuts, with optional hapticsNew, Mac only, no Mac App Store build, source not public. Reads Mechvibes packs in the original format only
 
 TacqueFrom $4.99 for the app alone, per Setapp's page. Also on Setapp, with a 7-day trial15.0 or laterNot statedKeys. Mouse and scroll not statedNot tested. Setapp's page does not name the developer
 
+TapWriter Pro$2.99 on the Mac App Store12.0 or laterInput Monitoring, per the listingKeys. 37 sounds, 21 of them mechanical switch sets, with a different sample for each keyboard rowNo mouse or scroll sounds or pack import listed
+
+KeyBellFree to download, with lifetime purchases of $4.99 and $9.99 inside the app in the US store11.0 or laterNot stated on the listingKeys and mouse clicks. More than 25 profiles, including retro machinesThe listing does not say what each purchase includes. Reviews ask for custom sounds and call some keys artificial
+
+FunKey (listed as FunKey 3.0 on Product Hunt)$4.99 on the US listing; another storefront shows $3.9913.0 or laterNot statedKeys. More than 25 profiles on the listing, and the maker says mouse clicks and scrolling tooThe App Store page I read describes an iOS keyboard, so the Mac details come from Product Hunt. Users ask for a way to silence the space bar
+
+Click - Keyboard Sounds$2.99 on the Mac App Store; also free from GitHub14.0 or laterAccessibility, per its GitHub pageKeys, from Mechvibes sound packs, with a few named switch setsKeys only, as listed. Open source under GPL-3.0
+
+TikeyFree with an in-app purchase, ¥800 on the Japan store. US price not found10.13 or laterNot statedKeys, more than 30 sounds and volume controlThin listing. Its allow and block lists are the one per-app control stated
+
+Sound Typing$1.99 on the Mac App Store11.0 or laterNot statedKeys, with more than 10 novelty sounds such as water bubble and wind chimeEffects, not recordings of switches
+
+ClyKeyFree with a $9.99 lifetime Pro purchase11.0 or laterNot statedKeys, typewriter to mechanical, with no sound count givenVersion 0.6 is from August 2024, and a reviewer reports it stopping until restarted
+
 Typemac$7 once13.0 or laterInput MonitoringKeys. Mouse and scroll not statedNot tested. No trial or Mac App Store build mentioned on its page
+
+## Feature by feature
+
+The same apps, row by row, for the things the first table has no room for. Yes means the vendor's page, the store listing or the project page says so. Reported means only the maker's reply to a question or a third-party summary says so. Not stated means the pages I read did not say, which is not the same as the app lacking it. I tested none of these apps except my own, so a blank is a gap in my reading, not a finding about the app.
+
+Keyfeel has a No in the last two rows on purpose. A table where one product ticks every box is not worth trusting, so the rows where Keyfeel does not lead stay in.
+
+Which of ten Mac keyboard sound apps state each feature, as read on October 13, 2026
+
+FeatureKeyfeel 1.5.0KlackTapWriter ProTacqueKeyBellFunKeyClickTikeySound TypingClyKey
+
+Mouse click soundsYesYes–Not stated–Not statedYesReported–Not stated–Not stated–Not stated–Not stated
+
+Scroll soundsYesYes–Not stated–Not stated–Not statedReported–Not stated–Not stated–Not stated–Not stated
+
+Trackpad hapticsYesYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Their own sounds for the space bar and ReturnYes–Not statedReturn onlyYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Pitch changes from press to pressYesYesVolume onlyYes–Not statedReported–Not stated–Not stated–Not stated–Not stated
+
+Stereo position follows the keyYesSpatial audioYesYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Rules for each appYes–Not statedYes–Not statedYes–Not stated–Not statedAllow and block lists–Not stated–Not stated
+
+Silent while the microphone is in useYes–Not statedYesYes–Not statedReported–Not stated–Not stated–Not stated–Not stated
+
+Silent while a camera is in useYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Silent while another app plays soundYes (macOS 14.2 or later)–Not statedYesYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Quiet hoursYes–Not statedYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Follows FocusYes–Not statedYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Choose where the sounds playYes–Not statedYes–Not statedHeadphones or speakers–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Imports packs or your own soundsYes–Not stated–Not statedYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Shortcuts you can changeYes–Not stated–Not stated–Not statedYes–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Sounds for shortcuts such as copy and pasteYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Favorites or automatic rotationYes–Not statedRotation–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Key presses shown in the menu barYes–Not statedYesWaveform–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Shows the delay in the appYes, measured–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+
+Source code you can readNo–Not stated–Not stated–Not stated–Not stated–Not statedYes–Not stated–Not stated–Not stated
+
+On the Mac App StoreNoYesYesSetappYesYesYesYesYesYes
+
+Where a row is "Not stated" for Klack, I read its Mac App Store listing, site and changelog, which may be behind the app. Klack's "Spatial audio" is its support for spatial audio on AirPods, which is a different thing from a sound that follows the key across the keyboard.
 
 ## What these apps do, and what they do not
 
@@ -7432,6 +7508,12 @@ A keyboard sound app plays a recorded sound when you press a key, so a quiet lap
 - What it needs from macOS. To be told which key was pressed, an app needs a permission, usually Input Monitoring. It needs the key, not the character you typed. Most of these say so on their pages, and you can check it in System Settings, Privacy & Security.
 
 One thing no app fixes: Bluetooth audio adds its own delay, often 100 milliseconds or more, so on Bluetooth headphones every one of these sounds late. Built-in speakers, wired headphones or a USB audio device keep the sound in step with your fingers.
+
+## What the apps say about delay
+
+Several listings make a claim about how quickly the sound follows the key, and none that I read shows a measurement. Click's Mac App Store listing and its GitHub page both say "zero latency audio playback". Klakk's listing claims a response under 10 milliseconds. FunKey's maker wrote on Product Hunt that it has 0% latency, and a third-party summary of FunKey says under 10 milliseconds. TapWriter Pro says nothing numeric. A sound cannot arrive in zero time, so read these as "fast enough that I did not notice".
+
+What a number would have to include: the time macOS takes to tell the app about the key, the time the app takes to start the sound, and the delay of the output device, which for Bluetooth is often 100 milliseconds or more. Keyfeel's Settings shows the first two as a median over your last presses, measured on your own Mac, and the third as the device reports it. That is a number you can check. It is still not a microphone test of sound reaching the room.
 
 ## The shortlist
 
@@ -7515,7 +7597,7 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 ## Keyfeel (Purplelink's)
 
-Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.4.0, signed and notarized, released October 8, 2026. It is the newest and least proven app in this guide. I make it, and I have not compared it with the others on a test Mac.
+Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.5.0, signed and notarized, released October 13, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.0 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
 
 I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return.
 
@@ -7523,9 +7605,11 @@ It adds mouse click sounds, and scroll ticks that follow how fast you scroll and
 
 It can play its own sound for shortcuts such as copy and paste, with a different sound if a copy did not take. It imports Mechvibes packs in the original format, including .ogg ones, and keeps the different sound each pack gives each key. Packs in the newer MechvibesDX format are not read (how to tell them apart).
 
-It goes quiet in the apps you choose and while the microphone or a camera is in use. If you want, it also goes quiet in full-screen apps. It reads which key was pressed and not the character, works offline, and its only network use is checking for updates. Settings shows an estimate of the delay from key press to sound for your output, and warns when that output is Bluetooth.
+It goes quiet in the apps you choose and while the microphone or a camera is in use. If you want, it also goes quiet in full-screen apps. Version 1.5.0 added quiet hours by day and time, and silence while another app plays sound (macOS 14.2 or later) or while a Focus is on. The menu says why it is quiet. It also added favorites with optional rotation, shortcuts you record yourself, pack import from a link that asks before it downloads, and a Privacy tab that lists what Keyfeel looks at.
 
-What it lacks: it is Mac only, it is new, and it has no Mac App Store build. It does not have the spoken key names KeyOpera offers or the command line Thock has. It does not claim the community pack library Mechvibes has. It imports those packs instead.
+It reads which key was pressed and not the character, works offline, and its only network use is checking for updates. Settings shows how long Keyfeel took to hand your recent key presses to the audio system, next to the output delay the device reports. It warns when that output is Bluetooth. The measured part is the time inside the Mac, from the moment macOS stamped the key. It is not a recording of sound reaching your ear.
+
+What it lacks: it is Mac only, it is new, it has no Mac App Store build, and its source is not public, so you cannot read it the way you can read Thock, Mechvibes or Click. It does not have the spoken key names KeyOpera offers or the command line Thock has. It does not claim the community pack library Mechvibes has. It imports those packs instead.
 
 Where others are better today: Klack for a keyboard-only app with years of polish, KeyOpera for the lowest price, Thock and Mechvibes for free, and Snick if scrolling is all you want. Pick Keyfeel if you want keys, clicks, scrolling and haptics in one app and would rather pay once than collect several.
 
@@ -7540,6 +7624,16 @@ I read only the AlternativeTo and launch-page descriptions of the first three, a
 - TypeLouder is listed as a paid app for mechanical click sounds with low latency and offline use.
 
 - Tacque, on Setapp's page, plays mechanical switch sounds on keystrokes, with selectable sound packs and volume control. The page says from $4.99 for the app alone, a 7-day free trial on Setapp, and macOS 15.0 or later. It states no permission and no mouse or scroll sounds.
+
+- TapWriter Pro is on the Mac App Store at $2.99, for macOS 12.0 or later. The listing states 37 sounds, per-app rules, muting while the microphone is in use or other apps play audio, optional following of Focus, time schedules, a choice of output device with its own volume, Input Monitoring as its only permission, and no data collected beyond crash reports. It lists no mouse or scroll sounds. I read it on October 13, 2026 and did not test it.
+
+- KeyBell, on the Mac App Store, is free to download, with lifetime purchases of $4.99 and $9.99 inside the app in the US store, for macOS 11.0 or later. It lists more than 25 profiles in mechanical, typewriter, electronic, fun and mouse-click groups, per-app profiles, a headphones-only mode and configurable hotkeys. Reviewers mention a double click when you drag, and ask for custom sounds.
+
+- FunKey appears on Product Hunt as FunKey 3.0, a menu-bar app, with named profiles such as MX Brown and Zen Rock. The Mac App Store page that matches it describes an iOS keyboard as well, so I could not confirm the Mac details from the store. Its maker says it has mouse and scroll sounds, and users ask for a way to silence the space bar.
+
+- Click - Keyboard Sounds is $2.99 on the Mac App Store, for macOS 14.0 or later, and the source is public on GitHub under GPL-3.0. It uses sound packs from the Mechvibes project, needs the Accessibility permission, and says it collects no typing data.
+
+- Tikey, Sound Typing and ClyKey are small listings. Tikey offers more than 30 sounds and allow and block lists. Sound Typing is $1.99 with more than 10 novelty sounds. ClyKey is free with a $9.99 lifetime Pro purchase and has not been updated since August 2024.
 
 - Typemac, at typemac.app, adds mechanical switch sounds to keystrokes. The page says $7 once with no subscription, macOS 13.0 or later on Apple silicon and Intel, and Input Monitoring as its only permission. It mentions no mouse or scroll sounds, no trial and no Mac App Store build.
 
@@ -7590,6 +7684,14 @@ Some can. Snick plays click sounds and trackpad haptics as you scroll. Keyfeel p
 ### Will Bluetooth headphones make the sound late?
 
 Yes, on any app. Bluetooth audio adds its own delay, often 100 milliseconds or more, which no keyboard sound app can remove. Built-in speakers, a wired headset or a USB audio device keep the sound in step with your keys.
+
+### Which keyboard sound apps stay quiet during a call?
+
+Several state it. TapWriter Pro and Tacque say they mute while the microphone is in use, and TapWriter Pro also follows Focus and can pause while other apps play audio. Keyfeel stays silent while the microphone or a camera is in use, and can also stay silent while another app plays sound or a Focus is on. I tested none of the others, so check the listing for the version you buy.
+
+### How fast do keyboard sound apps respond?
+
+Some listings claim zero latency or under 10 milliseconds, and none that I read shows a measurement. The delay has three parts: how long macOS takes to report the key, how long the app takes to start the sound, and the delay of the output device, which is often 100 milliseconds or more on Bluetooth. Keyfeel shows the first two as a median over your recent presses in Settings, and the third as the device reports it.
 
 ### Is Keyfeel available, and what does it cost?
 

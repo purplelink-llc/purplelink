@@ -11,6 +11,15 @@ scroll ticks, optional trackpad haptics, a click ripple, per-app silence and aut
 in use. It works offline, reads key codes and never the characters, and needs the macOS Input Monitoring permission.
 Requires macOS 13 or later, Apple silicon or Intel. 14-day refund like the other apps.
 
+**1.5.0 (2026-10-13):** quiet hours; silence while other apps play sound (macOS 14.2+) and during a Focus (asks
+macOS once); favorites and shuffle; rebindable global shortcuts; `keyfeel://pack/<https address>` and a menu item that
+import a pack from a link after a confirmation; a measured hand-off delay in Settings (event stamp to audio hand-off,
+plus the delay the device reports; not an acoustic measurement); a Privacy tab; a menu-bar key indicator; ISO and JIS key
+positions; per-app sounds can use imported packs; an IBM Model M sound (CC0 recordings from Wikimedia Commons). The 1.4.1
+fix (virtual devices hidden from the output list) is included. The guide
+`site/guides/best-keyboard-sound-apps-for-mac/` carries a feature matrix; its cells say Yes, Reported or Not stated, never No
+for a rival, because those apps were read, not tested.
+
 **Copy rule:** the pages list only the shipped features named in the brief (recorded profiles Tactile, Cherry MX Brown
 and Dome plus synthesized extras; a different recording each press; per-key pitch and left-to-right stereo; press and
 release sounds; space bar and Return sounds; mouse click press and release sounds; speed-aware scroll ticks; trackpad
