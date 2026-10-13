@@ -2,9 +2,10 @@
 
 User-agent: *
 Allow: /
-# The daily digest is machine-compiled and kept for its RSS and email readers,
-# not for search or ad review.
-Disallow: /blog/digest/
+# /blog/digest/ is deliberately NOT disallowed. Digest pages carry
+# <meta name="robots" content="noindex, follow">, and a crawler can only obey a
+# noindex it is allowed to fetch. Blocking the path here would let Google list
+# the bare URLs from links ("Indexed, though blocked by robots.txt").
 
 # AI crawlers — explicitly welcome
 User-agent: GPTBot
@@ -36,19 +37,16 @@ Allow: /
 
 User-agent: Bingbot
 Allow: /
-Disallow: /blog/digest/
 
 User-agent: DuckAssistBot
 Allow: /
 
 User-agent: Googlebot
 Allow: /
-Disallow: /blog/digest/
 
 # AdSense crawler
 User-agent: Mediapartners-Google
 Allow: /
-Disallow: /blog/digest/
 
 User-agent: Google-Extended
 Allow: /

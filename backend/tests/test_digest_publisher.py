@@ -455,3 +455,24 @@ def test_put_file_marks_skip_build_commits():
     asyncio.run(_github_put_file(_Client(), "a", "x", "chore(digest): a", "t", skip_build=True))
     asyncio.run(_github_put_file(_Client(), "b", "x", "chore(digest): b", "t"))
     assert sent == ["chore(digest): a [skip netlify]", "chore(digest): b"]
+
+
+def test_render_html_is_noindex_follow():
+    html_out = render_html(_make_digest())
+    assert '<meta name="robots" content="noindex, follow">' in html_out
+    assert "adsbygoogle" not in html_out
+
+
+def test_topic_hub_skeleton_is_noindex_follow():
+    from digest.publisher import _topic_hub_skeleton
+    out = _topic_hub_skeleton("Cybersecurity", "cybersecurity")
+    assert '<meta name="robots" content="noindex, follow">' in out
+
+
+def test_robots_txt_does_not_block_digest_pages():
+    # noindex is only honoured on a crawlable page, so robots.txt must not
+    # Disallow the path the publisher marks noindex.
+    robots = (BACKEND.parent / "site" / "robots.txt").read_text(encoding="utf-8")
+    disallowed = [ln for ln in robots.splitlines()
+                  if ln.strip().lower().startswith("disallow:") and "/blog/digest" in ln]
+    assert disallowed == []
