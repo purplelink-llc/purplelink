@@ -1058,7 +1058,7 @@ Keyfeel plays real recorded keyboard-switch sounds when you press a key on your 
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.5.1, released October 13, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.5.2, released October 13, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
 Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
 
@@ -1104,7 +1104,7 @@ ShortcutsEach of eleven shortcuts, such as copy, paste, undo and save, can have 
 
 TrackpadOptional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.
 
-QuietSilence in the apps you choose, automatic silence on the speakers while the microphone or a camera is in use, and an option to stay silent in full-screen apps. Headphones, wired or Bluetooth, play by default, have their own switch and keep their own volume, which Keyfeel switches to when the output changes. You can also keep sounds off the built-in speakers and play them only on headphones or external audio. A separate setting keeps the sounds on the MacBook's own speakers and moves them to AirPods, or any device you tick, only when the Mac sends its sound there. Casting to a TV then leaves your clicks on the laptop, without the delay a cast adds. Quiet hours keep Keyfeel silent at the days and times you set, including overnight. Two more options keep it silent while another app plays sound (macOS 14.2 or later) and while a Focus is on. macOS asks you once to allow the Focus check, and Keyfeel reads only whether a Focus is on. When Keyfeel is quiet for one of these reasons, its menu says why.
+QuietSilence in the apps you choose, automatic silence on the speakers while the microphone or a camera is in use, and an option to stay silent in full-screen apps. Headphones, wired or Bluetooth, play by default, have their own switch and keep their own volume, which Keyfeel switches to when the output changes. You can also keep sounds off the built-in speakers and play them only on headphones or external audio. A separate setting keeps the sounds on the MacBook's own speakers and moves them to AirPods, or any device you tick, only when the Mac sends its sound there. Casting to a TV then leaves your clicks on the laptop, without the delay a cast adds. Quiet hours keep Keyfeel silent at the days and times you set, including overnight. One more option keeps it silent while another app plays sound (macOS 14.2 or later). When Keyfeel is quiet for one of these reasons, its menu says why.
 
 Per appPick a different sound for each app. Add the app you are in, choose its sound, and Keyfeel plays that sound whenever the app is in front and your usual one everywhere else. Imported packs can be chosen too.
 
@@ -1170,7 +1170,7 @@ Cross-platformMac only. There is no Windows, iPhone or iPad version.
 
 What does it need to run?
 
-macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission. I tested version 1.5.1 on macOS 27.2 on October 13, 2026. It heard key presses, clicks and scrolls.
+macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission. I tested version 1.5.2 on macOS 27.2 on October 13, 2026. It heard key presses, clicks and scrolls.
 
 Does it read what I type?
 
@@ -1182,7 +1182,7 @@ No. When a password field has focus, macOS stops delivering keystrokes to apps l
 
 Can I make it quiet in some apps, or on calls?
 
-Yes. You can silence Keyfeel in the apps you choose, set quiet hours by day and time (overnight works), and it goes quiet by itself while the microphone or a camera is in use. Options also keep it silent in full-screen apps, while another app plays sound (macOS 14.2 or later), and while a Focus is on. When it is quiet for one of those reasons, the menu says why.
+Yes. You can silence Keyfeel in the apps you choose, set quiet hours by day and time (overnight works), and it goes quiet by itself while the microphone or a camera is in use. Options also keep it silent in full-screen apps and while another app plays sound (macOS 14.2 or later). When it is quiet for one of those reasons, the menu says why.
 
 Why do the haptics need a finger on the trackpad?
 
@@ -7457,7 +7457,7 @@ Typemac$7 once13.0 or laterInput MonitoringKeys. Mouse and scroll not statedNot 
 
 The same apps, row by row, for the things the first table has no room for. Yes means the vendor's page, the store listing or the project page says so. Reported means only the maker's reply to a question or a third-party summary says so. Not stated means the pages I read did not say, which is not the same as the app lacking it. I tested none of these apps except my own, so a blank is a gap in my reading, not a finding about the app.
 
-Keyfeel has a No in the last two rows on purpose. A table where one product ticks every box is not worth trusting, so the rows where Keyfeel does not lead stay in.
+Keyfeel has a No in a few rows on purpose. A table where one product ticks every box is not worth trusting, so the rows where Keyfeel does not lead stay in.
 
 Which of ten Mac keyboard sound apps state each feature, as read on October 13, 2026
 
@@ -7485,7 +7485,7 @@ Silent while another app plays soundYes (macOS 14.2 or later)–Not statedYesYes
 
 Quiet hoursYes–Not statedYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
 
-Follows FocusYes–Not statedYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+Follows FocusNo–Not statedYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
 
 Choose where the sounds playYes–Not statedYes–Not statedHeadphones or speakers–Not stated–Not stated–Not stated–Not stated–Not stated
 
@@ -7609,7 +7609,7 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 ## Keyfeel (Purplelink's)
 
-Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.5.1, signed and notarized, released October 13, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.1 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
+Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.5.2, signed and notarized, released October 13, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
 
 I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return.
 
@@ -7617,7 +7617,7 @@ It adds mouse click sounds, and scroll ticks that follow how fast you scroll and
 
 It can play its own sound for shortcuts such as copy and paste, with a different sound if a copy did not take. It imports Mechvibes packs in the original format, including .ogg ones, and keeps the different sound each pack gives each key. Packs in the newer MechvibesDX format are not read (how to tell them apart).
 
-It goes quiet in the apps you choose and while the microphone or a camera is in use. If you want, it also goes quiet in full-screen apps. Version 1.5.0 added quiet hours by day and time, and silence while another app plays sound (macOS 14.2 or later) or while a Focus is on. The menu says why it is quiet. It also added favorites with optional rotation, shortcuts you record yourself, pack import from a link that asks before it downloads, and a Privacy tab that lists what Keyfeel looks at.
+It goes quiet in the apps you choose and while the microphone or a camera is in use. If you want, it also goes quiet in full-screen apps. Version 1.5.0 added quiet hours by day and time, and silence while another app plays sound (macOS 14.2 or later). The menu says why it is quiet. Version 1.5.0 also had a Focus option, which I removed in 1.5.2 because macOS only reports a Focus the user has chosen to share. It also added favorites with optional rotation, shortcuts you record yourself, pack import from a link that asks before it downloads, and a Privacy tab that lists what Keyfeel looks at.
 
 It reads which key was pressed and not the character, works offline, and its only network use is checking for updates. Settings shows how long Keyfeel took to hand your recent key presses to the audio system, next to the output delay the device reports. It warns when that output is Bluetooth. The measured part is the time inside the Mac, from the moment macOS stamped the key. It is not a recording of sound reaching your ear.
 
@@ -7699,7 +7699,7 @@ Yes, on any app. Bluetooth audio adds its own delay, often 100 milliseconds or m
 
 ### Which keyboard sound apps stay quiet during a call?
 
-Several state it. TapWriter Pro and Tacque say they mute while the microphone is in use, and TapWriter Pro also follows Focus and can pause while other apps play audio. Keyfeel stays silent while the microphone or a camera is in use, and can also stay silent while another app plays sound or a Focus is on. I tested none of the others, so check the listing for the version you buy.
+Several state it. TapWriter Pro and Tacque say they mute while the microphone is in use, and TapWriter Pro also follows Focus and can pause while other apps play audio. Keyfeel stays silent while the microphone or a camera is in use, and can also stay silent while another app plays sound. I tested none of the others, so check the listing for the version you buy.
 
 ### How fast do keyboard sound apps respond?
 
