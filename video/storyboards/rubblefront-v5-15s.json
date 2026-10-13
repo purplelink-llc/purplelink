@@ -22,10 +22,10 @@
    "file": "battle_mid.ogg",
    "in": 0.0,
    "t": 1.5,
-   "dur": 7.6,
+   "dur": 8.75,
    "gain_db": 0.0,
    "fade_in": 0.02,
-   "fade_out": 0.25
+   "fade_out": 0.02
   },
   {
    "file": "battle_mid_drive.ogg",
@@ -38,19 +38,19 @@
   },
   {
    "file": "battle_high.ogg",
-   "in": 8.0,
-   "t": 9.5,
+   "in": 8.75,
+   "t": 10.25,
    "dur": 100.0,
-   "gain_db": 0.0,
+   "gain_db": 3.0,
    "fade_in": 0.02,
    "fade_out": 2.0
   },
   {
    "file": "battle_high_drive.ogg",
-   "in": 8.0,
-   "t": 9.5,
+   "in": 8.75,
+   "t": 10.25,
    "dur": 100.0,
-   "gain_db": 2.0,
+   "gain_db": 5.0,
    "fade_in": 0.02,
    "fade_out": 2.0
   }
@@ -63,10 +63,10 @@
    "gain_db": -3
   },
   {
-   "t": 9.1,
+   "t": 10.21,
    "kind": "riser",
-   "dur": 3.5999999999999996,
-   "gain_db": -3
+   "dur": 4.710000000000001,
+   "gain_db": -14
   }
  ],
  "scenes": [
@@ -167,8 +167,8 @@
    "cards": [
     {
      "text": "BLOW A HOLE IN\nTHEIR *COVER.*",
-     "at": 1.7,
-     "dur": 0.8,
+     "at": 1.2,
+     "dur": 0.75,
      "pos": "bottom",
      "sfxDb": -4.5
     }
@@ -193,7 +193,7 @@
    ],
    "cards": [
     {
-     "text": "EARLY *SQUAD.*",
+     "text": "SMALL *SQUAD.*",
      "at": 0.0,
      "dur": 1.6,
      "pos": "bottom",
@@ -220,7 +220,7 @@
    ],
    "cards": [
     {
-     "text": "UPGRADED *SQUAD.*",
+     "text": "MORE *UNITS.*",
      "at": 0.0,
      "dur": 1.6,
      "pos": "bottom",
@@ -230,9 +230,9 @@
    "vclip": "v_g3"
   },
   {
-   "clip": "v_e",
-   "in": 2.1,
-   "dur": 2.7,
+   "clip": "v_ob",
+   "in": 2.7,
+   "dur": 2.6,
    "v": {
     "cx": 960,
     "cy": 540,
@@ -240,7 +240,7 @@
    },
    "flash": [
     {
-     "at": 1.2,
+     "at": 1.95,
      "dur": 0.07,
      "amp": 0.85,
      "color": "#fff6e6",
@@ -249,22 +249,22 @@
    ],
    "shake": [
     {
-     "at": 1.2,
-     "amp": 20,
-     "dur": 0.4,
-     "zoom": 0.035
+     "at": 1.95,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
     }
    ],
    "slow": [
     {
-     "at": 1.18,
+     "at": 1.93,
      "dur": 0.42,
      "speed": 0.4
     }
    ],
-   "vclip": "v_e",
+   "vclip": "v_ob",
    "logo": {
-    "at": 1.2,
+    "at": 1.95,
     "dur": 1.0
    }
   },
@@ -330,23 +330,27 @@
   },
   {
    "t": 5.5,
+   "db": -11
+  },
+  {
+   "t": 9.91,
    "db": -3
   },
   {
-   "t": 9.05,
-   "db": 2
+   "t": 9.95,
+   "db": -12
   },
   {
-   "t": 9.1,
-   "db": -40
+   "t": 10.23,
+   "db": -12
   },
   {
-   "t": 9.47,
-   "db": -40
+   "t": 10.25,
+   "db": 6
   },
   {
-   "t": 9.5,
-   "db": 0
+   "t": 12.05,
+   "db": -1
   }
  ]
 }

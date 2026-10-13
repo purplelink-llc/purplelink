@@ -46,7 +46,7 @@ export function buildPlan(sb, format = "16x9") {
     for (const f of sc.flash || []) if (f.sfx !== false) sfx.push({ t: t + f.at, kind: f.sfx || "hit", gain_db: f.sfxDb ?? 0 });
     for (const f of sc.hits || []) sfx.push({ t: t + f.at, kind: f.kind || "hit", gain_db: f.gain_db ?? 0, dur: f.dur });
     if (type === "logo") sfx.push({ t, kind: "boom", gain_db: 2 });
-    if (sc.logo) sfx.push({ t: t + sc.logo.at, kind: "boom", gain_db: 6 });
+    if (sc.logo) sfx.push({ t: t + sc.logo.at, kind: "boom", gain_db: 10 });
     if (type === "clip" && sc.clip && sc.sfx !== false) {
       for (const s of sp) if (s.rate === 1) gameAudio.push({ clip: sc.clip, in: s.src, dur: s.dur, t: t + s.start, gain_db: sc.sfxDb ?? sb.sfxDb ?? -6 });
     }
