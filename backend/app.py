@@ -8,7 +8,15 @@ import modal
 logger = logging.getLogger(__name__)
 
 from latextools import core
-from latextools.safe_exec import minimal_env, run_pandoc_sandboxed
+from latextools.safe_exec import minimal_env, run_pandoc_plain, run_pandoc_sandboxed
+
+# Pandoc Lua filter: replace every image with its alt text (or nothing), so no
+# local path or URL named in user Markdown is ever opened or embedded.
+NO_IMAGES_LUA = """
+function Image(el)
+  return pandoc.Span(el.caption)
+end
+"""
 
 app = modal.App("purplelink-latextools")
 
@@ -1793,8 +1801,15 @@ def web():
                 # --sandbox: the Markdown may name images by path or URL; none
                 # of that may be read or fetched. It does not limit the PDF
                 # engine, which is confined separately as described below.
+                # The packaged pandoc's --sandbox does not stop the docx writer
+                # embedding a local file named by an image path (verified live
+                # on 2026-10-14), so images are replaced by their alt text in
+                # the document tree before any file is read.
+                filter_path = workdir / "no_images.lua"
+                filter_path.write_text(NO_IMAGES_LUA, encoding="utf-8")
                 cmd = ["pandoc", str(md_path), "-o", str(out_path),
-                       "--standalone", "--wrap=none"]
+                       "--standalone", "--wrap=none",
+                       f"--lua-filter={filter_path}"]
                 if target == "pdf":
                     # Pandoc passes raw LaTeX in the Markdown straight through to
                     # pdflatex, so this path is only as safe as the engine's
@@ -1806,12 +1821,9 @@ def web():
                     # \input/\openin are blocked by openin_any=p.
                     cmd += ["--pdf-engine=pdflatex",
                             "--pdf-engine-opt=-no-shell-escape"]
-                # The docx writer may need pandoc data files that --sandbox
-                # cannot reach (untested on the image), so that target alone
-                # retries once without it.
-                proc = run_pandoc_sandboxed(
-                    cmd, cwd=workdir, timeout=90, fallback=(target == "docx"),
-                )
+                # Not --sandbox: it fails for the docx and pdf writers on this
+                # image. The Lua filter above is the file-read control.
+                proc = run_pandoc_plain(cmd, cwd=workdir, timeout=90)
                 if proc.returncode != 0 or not out_path.exists():
                     return None, proc.stderr.strip()[:500] or "pandoc failed"
                 return out_path.read_bytes(), None
