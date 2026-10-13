@@ -11,10 +11,11 @@ scroll ticks, optional trackpad haptics, a click ripple, per-app silence and aut
 in use. It works offline, reads key codes and never the characters, and needs the macOS Input Monitoring permission.
 Requires macOS 13 or later, Apple silicon or Intel. 14-day refund like the other apps.
 
+**1.5.2 (2026-10-13)** removes the Focus option: INFocusStatusCenter reports a Focus only when the user shares it, and a real Do Not Disturb test (Ben, 2026-10-13) showed isFocused false for the authorized app. The permission string and code are gone.
+
 **1.5.1 (2026-10-13)** fixes a main-thread freeze found the same day: MuteMonitor read and rebuilt CoreAudio listeners on the main thread and a notification storm (likely the iPhone Continuity microphone) kept it busy. CoreAudio, camera and full-screen reads now run on background queues and the key path reads snapshots only.
 
-**1.5.0 (2026-10-13):** quiet hours; silence while other apps play sound (macOS 14.2+) and during a Focus (asks
-macOS once); favorites and shuffle; rebindable global shortcuts; `keyfeel://pack/<https address>` and a menu item that
+**1.5.0 (2026-10-13):** quiet hours; silence while other apps play sound (macOS 14.2+) and (removed in 1.5.2) during a Focus; favorites and shuffle; rebindable global shortcuts; `keyfeel://pack/<https address>` and a menu item that
 import a pack from a link after a confirmation; a measured hand-off delay in Settings (event stamp to audio hand-off,
 plus the delay the device reports; not an acoustic measurement); a Privacy tab; a menu-bar key indicator; ISO and JIS key
 positions; per-app sounds can use imported packs; an IBM Model M sound (CC0 recordings from Wikimedia Commons). The 1.4.1

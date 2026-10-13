@@ -16,7 +16,7 @@
 // and logs why to the console, so a half-filled launch cannot sell anything.
 window.KEYFEEL_LAUNCH = {
   live: true,
-  version: "1.5.1",
+  version: "1.5.2",
   sizeMb: "8",
   released: "2026-10-13"
 };
