@@ -4149,6 +4149,8 @@ main input:focus-visible {
 .specs-table a { color: var(--purple); }
 .specs-more { margin-top: 18px; color: var(--muted); }
 .specs-more a { color: var(--purple); font-weight: 600; }
+/* Source-note and table-caption links stay inline in the sentence but get a 24px tall target (WCAG 2.2 target size). Vertical padding on an inline box adds hit area without changing line spacing. */
+.specs-more a, .compare-table caption a { padding-block: 4px; }
 .specs-table caption a { color: var(--purple); }
 .specs-table thead th { width: auto; }
 

@@ -392,7 +392,7 @@ test("the Privacy page says what Tapefolio sends and does not send, and names it
   assert.match(html, /<strong>Tapefolio<\/strong> has no account and no analytics/);
   assert.match(html, /does not upload your recordings, transcripts, images or key files/);
   assert.match(html, /Tapefolio trial emails<\/strong>/);
-  assert.match(html, /Keyfeel, Tapefolio, Mac Suite and kit purchases/);
+  assert.match(html, /Keyfeel, Tapefolio, Panely, Summonly, Mac Suite and kit purchases/);
 });
 
 // ---- the success page's script, against a fake DOM ---------------------------------------
