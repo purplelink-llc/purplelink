@@ -104,29 +104,29 @@
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to catch AI-hallucinated citations in your bibliography</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> &middot; <time datetime="2026-07-14">July 14, 2026</time></p>
-        <p class="post-lede">AI writing assistants invent references that are formatted perfectly and read convincingly, yet point to papers that were never written. Here is what a hallucinated citation actually looks like, and an honest comparison of the ways to catch one before a reviewer, an editor, or your own reputation does.</p>
+        <p class="post-lede">AI writing assistants invent references that are formatted perfectly and read convincingly but point to papers that were never written. This guide shows what a hallucinated citation looks like and compares the ways to catch one before a reviewer, an editor, or your reputation does.</p>
       </div>
 
       <article class="post-body">
-        <p><strong>Disclosure up front:</strong> one of the tools compared below is mine (the <a href="/tools/bib-validator/">BibTeX Validator</a>). I have tried to write this so it is useful even if you never touch it. Manual checking against a DOI is free and remains the gold standard; the automated tools, mine included, exist to make that checking fast enough that you actually do it.</p>
+        <p><strong>Disclosure:</strong> one of the tools compared below is mine (the <a href="/tools/bib-validator/">BibTeX Validator</a>). I wrote this guide so it is useful even if you never use it. Manual checking against a DOI (digital object identifier) is free and remains the gold standard. The automated tools, mine included, exist to make that checking fast enough that you actually do it.</p>
 
         <h2>Why AI invents citations that look real</h2>
-        <p>A large language model does not look up a database of papers when you ask it for a reference. It predicts a plausible sequence of words. A citation is a very predictable sequence: an author surname, a year in parentheses, a title in the house style of the field, a journal name, a volume, a page range, maybe a DOI. The model has seen millions of these, so it can assemble one that is grammatically and stylistically flawless. Whether the paper behind it exists is a separate question the model was never actually answering.</p>
-        <p>This is why hallucinated references are dangerous in a way that a typo is not. A misspelled author name looks wrong. A hallucinated citation looks exactly right. Since 2023, journal correction notices, retraction reports, and methods papers across medicine, law, and the social sciences have repeatedly documented fabricated references slipping into submitted and even published work. The common thread is not carelessness; it is that the fake looks indistinguishable from the real until someone checks the source.</p>
+        <p>A large language model (an AI system trained to predict text) does not look up a database of papers when you ask it for a reference. It predicts a plausible sequence of words. A citation is a very predictable sequence: an author surname, a year in parentheses, a title in the house style of the field, a journal name, a volume, a page range, and sometimes a DOI. The model has seen millions of these, so it can assemble one that is stylistically flawless. Whether the paper behind it exists is a separate question the model was never answering. Fluent formatting therefore tells you nothing about whether the source is real.</p>
+        <p>A misspelled author name looks wrong, but a hallucinated citation looks exactly right. Since 2023, journal correction notices, retraction reports, and methods papers across medicine, law, and the social sciences have documented fabricated references in submitted and even published work. The common thread is not carelessness. The fake looks identical to the real reference until someone checks the source. That is why a hallucinated reference is more dangerous than a typo.</p>
 
         <h2>What a hallucinated citation looks like</h2>
-        <p>Hallucinations are not random gibberish. They cluster into a few recognisable patterns. Learning them makes manual spot-checks much faster.</p>
+        <p>Hallucinations are not random gibberish. They cluster into five recognisable patterns, and knowing them makes manual spot-checks faster.</p>
         <ul>
           <li><strong>Real authors, invented title.</strong> The model pairs genuine, well-known researchers in a field with a paper title they never wrote. The names check out on Google Scholar, so a quick author search gives false comfort.</li>
-          <li><strong>Real paper, wrong metadata.</strong> A real study attributed to the wrong year, journal, volume, or page range. Everything is almost right, which is exactly what makes it slip through.</li>
-          <li><strong>Plausible but dead DOI.</strong> A DOI in the correct registrant format (for example a <code>10.1145/&hellip;</code> that looks like ACM) that resolves to nothing, or resolves to a completely different article.</li>
-          <li><strong>Frankenstein reference.</strong> First author from one paper, title from another, journal from a third. Each fragment is real; the combination is not.</li>
-          <li><strong>The confident near-match.</strong> A paper that almost exists: the model has blended two similar titles into one that reads perfectly and matches neither.</li>
+          <li><strong>Real paper, wrong metadata.</strong> A real study attributed to the wrong year, journal, volume, or page range. Everything is almost right, so it slips through.</li>
+          <li><strong>Plausible but dead DOI.</strong> A DOI in the correct registrant format (for example a <code>10.1145/&hellip;</code> that looks like ACM) that resolves to nothing or to a different article.</li>
+          <li><strong>Frankenstein reference.</strong> First author from one paper, title from another, journal from a third. Each fragment is real, but the combination is not.</li>
+          <li><strong>The confident near-match.</strong> A paper that almost exists. The model has blended two similar titles into one that reads perfectly and matches neither.</li>
         </ul>
-        <p>The single most reliable tell is the source itself. If you cannot open the paper and see that its title, authors, year, and venue match your citation, treat the citation as unverified.</p>
+        <p>The most reliable tell is the source itself. If you cannot open the paper and confirm that its title, authors, year, and venue match your citation, treat the citation as unverified.</p>
 
         <h2>The methods for catching them, compared</h2>
-        <p>There is no single right tool. The honest comparison is about trade-offs between reliability, speed, and how many references you have to check. Here is how the common approaches stack up.</p>
+        <p>No single tool is right for every case. The methods trade off reliability, speed, and the number of references you have to check. The table compares the common approaches.</p>
 
         <div class="u-scroll-x">
         <table class="u-table-wide">
@@ -143,7 +143,7 @@
             </tr>
             <tr>
               <td>Reference manager (Zotero, Mendeley)</td>
-              <td>Formatting and duplicates; weak on existence</td>
+              <td>Formatting and duplicates, weak on existence</td>
               <td>Fast to organise, not built to verify</td>
               <td>Free / freemium</td>
               <td>Managing a library, not detecting fabrication</td>
@@ -174,40 +174,40 @@
         </div>
 
         <h3>Manual checking</h3>
-        <p>Open <code>https://doi.org/</code> followed by the DOI, or search the exact title in Google Scholar or the publisher's site. Confirm the title, author list, year, and venue all match one real paper. This is the only method that catches every pattern above, because you are looking at the source. Its weakness is human: at forty references, thoroughness decays, and the one you skim past is the one that was fake. Manual checking is the right tool for the final verification of a handful of suspicious entries, not for grinding through an entire list.</p>
+        <p>Open <code>https://doi.org/</code> followed by the DOI, or search the exact title in Google Scholar or the publisher's site. Confirm that the title, author list, year, and venue all match one real paper. This is the only method that catches every pattern above, because you are looking at the source. Its weakness is human. At forty references, thoroughness decays, and the one you skim past is the one that was fake. Use manual checking for the final verification of a handful of suspicious entries, not for an entire list.</p>
 
         <h3>Reference managers</h3>
-        <p>Zotero and Mendeley are excellent at organising a library and generating consistent output, and if you added each reference by importing it from a real database, it is real by construction. But they were not built to answer the question "does this entry, which I pasted in from a chatbot, correspond to a real paper?" A reference manager will happily store a hallucination in perfect format. Use them for organisation, not for detection.</p>
+        <p>Zotero and Mendeley organise a library and generate consistent output. If you imported each reference from a real database, it is real by construction. However, they were not built to answer the question "does this entry, which I pasted in from a chatbot, correspond to a real paper?" A reference manager will store a hallucination in perfect format. Use it for organisation, not for detection.</p>
 
         <h3>Crossref and OpenAlex</h3>
-        <p>The scholarly metadata registries are the ground truth. A DOI either resolves to a record in Crossref or it does not; a title either matches a real work in OpenAlex or Semantic Scholar or it does not. If you are comfortable with an API, you can query these directly. Most researchers are not, which is the gap automated validators fill.</p>
+        <p>The scholarly metadata registries are the ground truth. A DOI either resolves to a record in Crossref or it does not. A title either matches a real work in OpenAlex or Semantic Scholar or it does not. If you are comfortable with an API (a programmatic interface to a database), you can query these directly. Most researchers are not, and automated validators fill that gap.</p>
 
         <h3>Automated validators</h3>
-        <p>An automated bibliography checker parses your <code>.bib</code> file and resolves each entry against databases such as Crossref, Semantic Scholar, or OpenAlex, then reports which references are missing DOIs, fail to resolve, or have metadata that does not match the record it found. Several exist, and a genuinely useful comparison acknowledges that: some run as web tools, some as command-line utilities, some as browser extensions that check against Google Scholar. They differ in which databases they query, whether they check the full metadata or only the DOI, and how they present near-matches.</p>
-        <p>My own <a href="/tools/bib-validator/">BibTeX Validator</a> sits in this category: paste or upload a <code>.bib</code> file and it checks each entry against scholarly databases and flags the ones that look wrong, in one pass, with nothing stored. The honest limitation, true of every tool in this class, is that an automated pass is a filter, not a verdict. It narrows dozens of references down to the few worth a human look. It cannot certify that a reference is genuine; only that it found, or failed to find, a matching record. Treat any validator, mine included, as the first pass, and confirm the flagged entries by opening the source yourself.</p>
+        <p>An automated bibliography checker parses your <code>.bib</code> file and resolves each entry against databases such as Crossref, Semantic Scholar, or OpenAlex. It then reports which references are missing DOIs, fail to resolve, or have metadata that does not match the record it found. Several exist. Some run as web tools, some as command-line utilities, and some as browser extensions that check against Google Scholar. They differ in which databases they query, whether they check the full metadata or only the DOI, and how they present near-matches.</p>
+        <p>My own <a href="/tools/bib-validator/">BibTeX Validator</a> is in this category. Paste or upload a <code>.bib</code> file, and it checks each entry against scholarly databases and flags the ones that look wrong, in one pass, with nothing stored. Every tool in this class has the same limitation: an automated pass is a filter, not a verdict. It narrows dozens of references down to the few worth a human look. It cannot certify that a reference is genuine. It can only report that it found, or failed to find, a matching record. Treat any validator, mine included, as the first pass, and confirm the flagged entries by opening the source yourself.</p>
 
         <h2>A workflow that actually gets done</h2>
-        <p>The best method is the one you will still be doing at reference forty. This one is fast enough to survive a real deadline:</p>
+        <p>The best method is the one you will still be doing at reference forty. These five steps are fast enough to survive a real deadline.</p>
         <ol>
-          <li><strong>Never paste a citation straight from a chatbot into your manuscript.</strong> If an AI tool suggests a source, treat it as a lead, not a reference. Find the real paper, then cite that.</li>
+          <li><strong>Never paste a citation straight from a chatbot into your manuscript.</strong> If an AI tool suggests a source, treat it as a lead and not a reference. Find the real paper, then cite that.</li>
           <li><strong>Run the whole <code>.bib</code> file through an <a href="/tools/bib-validator/">automated validator</a></strong> to flag missing DOIs, non-resolving entries, and metadata mismatches in one pass.</li>
           <li><strong>Manually verify every flagged entry</strong> by opening its DOI or searching the exact title. Confirm title, authors, year, and venue against one real source.</li>
           <li><strong>Spot-check a random sample of the entries that passed.</strong> Validators miss the Frankenstein and near-match patterns most, so open five or six that looked fine.</li>
-          <li><strong>Fix or remove anything you cannot verify.</strong> A missing citation is a weakness; a fabricated one is an integrity problem. If you cannot find the source, do not cite it.</li>
+          <li><strong>Fix or remove anything you cannot verify.</strong> A missing citation is a weakness. A fabricated one is an integrity problem. If you cannot find the source, do not cite it.</li>
         </ol>
 
         <h2>Tools that pair well</h2>
-        <p>These free utilities support the workflow above. Nothing is stored.</p>
+        <p>These free utilities support the workflow above, and none of them stores your data.</p>
         <ul>
-          <li><a href="/tools/bib-validator/">BibTeX Validator</a>, the automated first pass: flags missing DOIs, non-resolving entries, and metadata mismatches across a whole <code>.bib</code> file.</li>
-          <li><a href="/tools/citation-generator/">Citation Generator</a>: build a clean, correct reference from a DOI or identifier so you are not hand-typing metadata.</li>
+          <li><a href="/tools/bib-validator/">BibTeX Validator</a>, the automated first pass. It flags missing DOIs, non-resolving entries, and metadata mismatches across a whole <code>.bib</code> file.</li>
+          <li><a href="/tools/citation-generator/">Citation Generator</a>: build a clean reference from a DOI or other identifier so you do not type metadata by hand.</li>
           <li><a href="/tools/reference-converter/">Reference Converter</a>: move references between BibTeX, RIS, and EndNote without reformatting by hand.</li>
         </ul>
         <p>For the wider picture, see the <a href="/guides/bibtex/">BibTeX and citations hub</a>, the guide to <a href="/guides/fix-bibtex-errors/">fixing common BibTeX errors</a>, and <a href="/guides/doi-to-bibtex/">turning a DOI into a BibTeX entry</a>.</p>
 
         <h2>The short version</h2>
-        <p>AI hallucinates citations because it predicts plausible text rather than retrieving real records, so the fakes look flawless. The only certain check is the source: does a real paper exist whose title, authors, year, and venue match your citation? Automated validators make that check fast enough to run on every reference; manual verification of the flagged ones makes it certain. Do both, and do not cite what you cannot open.</p>
-        <p>Before you submit, <a href="/tools/paper-review/">Paper Review</a> (from $9) runs this check on every reference in the manuscript against CrossRef, and for the claims that matter most it reads the cited paper's abstract to see whether it supports the sentence citing it.</p>
+        <p>AI hallucinates citations because it predicts plausible text instead of retrieving real records, so the fakes look flawless. The only certain check is the source. Does a real paper exist whose title, authors, year, and venue match your citation? Automated validators make that check fast enough to run on every reference, and manual verification of the flagged ones makes it certain. Do both, and do not cite what you cannot open.</p>
+        <p>Before you submit, <a href="/tools/paper-review/">Paper Review</a> (from $9) runs this check on every reference in the manuscript against CrossRef. For the claims that matter most, it reads the cited paper's abstract to see whether it supports the sentence citing it.</p>
       </article>
     </main>
 
