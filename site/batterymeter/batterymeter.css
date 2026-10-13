@@ -30,3 +30,9 @@
 
 .bm-steps-list { max-width: 64ch; padding-left: 1.4em; margin-top: 14px; }
 .bm-steps-list li { margin-top: 10px; }
+
+.bm-consumers .specs-more { max-width: 64ch; }
+.bm-consumers .bm-steps-list { list-style: disc; }
+.bm-consumers-shot { margin: 24px 0; }
+.bm-consumers-shot .frame-soft { max-width: 760px; }
+.bm-consumers-shot figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }

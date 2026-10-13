@@ -12,7 +12,7 @@ from pathlib import Path
 from common import SITE, ORIGIN, EMOJI, page_of, canonical, jsonld_blocks, walk, meta
 
 URL = "/batterymeter/"
-ZIP = SITE / "batterymeter" / "BatteryMeter-1.0.0.zip"
+ZIP = SITE / "batterymeter" / "BatteryMeter-1.1.0.zip"
 
 
 def text_of(s):
@@ -48,10 +48,10 @@ class BatteryMeterPage(unittest.TestCase):
         self.assertEqual(float(app["offers"]["price"]), 0)
         self.assertEqual(app["offers"]["priceCurrency"], "USD")
         self.assertEqual(app["applicationCategory"], "UtilitiesApplication")
-        self.assertEqual(app["softwareVersion"], "1.0.0")
+        self.assertEqual(app["softwareVersion"], "1.1.0")
         self.assertEqual(app["operatingSystem"], "macOS 13.0 or later")
         self.assertEqual(app["fileSize"], "%d bytes" % ZIP.stat().st_size)
-        self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.0.0.zip")
+        self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.1.0.zip")
         types = {d.get("@type") for d in self.nodes}
         self.assertIn("BreadcrumbList", types)
         self.assertIn("FAQPage", types)
@@ -63,7 +63,7 @@ class BatteryMeterPage(unittest.TestCase):
             (text_of(m.group(1)), text_of(m.group(2)))
             for m in re.finditer(r'<details class="faq-item">\s*<summary>(.*?)</summary>\s*<div class="faq-body">(.*?)</div>', self.text, re.S)
         ]
-        self.assertTrue(4 <= len(ld) <= 6)
+        self.assertTrue(4 <= len(ld) <= 8)
         self.assertEqual(ld, vis)
 
     def test_internal_links_resolve(self):
@@ -74,7 +74,7 @@ class BatteryMeterPage(unittest.TestCase):
                 self.assertTrue((SITE / h.lstrip("/")).exists() or "/media/" in h, h)
 
     def test_download_link_and_tracking(self):
-        links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.0\.0\.zip"[^>]*>', self.text)
+        links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.1\.0\.zip"[^>]*>', self.text)
         self.assertGreaterEqual(len(links), 2)
         for tag in links:
             self.assertIn('data-track="download"', tag)
@@ -116,6 +116,28 @@ class BatteryMeterPage(unittest.TestCase):
         for n in ("sample-draining", "sample-low", "sample-full"):
             alt = re.search(r'<img src="/batterymeter/img/%s-1120\.webp"[^>]*alt="([^"]*)"' % n, self.text).group(1)
             self.assertIn("Sample values", alt)
+
+    def test_consumers_section(self):
+        m = re.search(r'<section [^>]*aria-labelledby="power-h">(.*?)</section>', self.text, re.S)
+        self.assertIsNotNone(m)
+        body = text_of(m.group(1))
+        self.assertIn("Using the most power", body)
+        self.assertIn("relative score, not watts", body)
+        self.assertIn("Force Quit asks first", body)
+        self.assertIn("Cancel is the default", body)
+        alt = re.search(r'<img src="/batterymeter/img/sample-consumers-1120\.webp"[^>]*alt="([^"]*)"', m.group(1)).group(1)
+        self.assertIn("Sample values", alt)
+        self.assertRegex(m.group(1), r'sample-consumers-1120\.webp"[^>]*width="1120" height="776" loading="lazy"')
+        for n in ("sample-consumers-1120", "sample-consumers-560"):
+            self.assertTrue((SITE / "batterymeter" / "img" / (n + ".webp")).is_file())
+
+    def test_consumers_faq_and_no_network_claim(self):
+        faq = [d for d in self.nodes if d.get("@type") == "FAQPage"][0]
+        answers = {q["name"]: q["acceptedAnswer"]["text"] for q in faq["mainEntity"]}
+        self.assertIn("Force Quit asks you to confirm first", answers["Can it force quit apps?"])
+        self.assertIn("relative score, not watts", answers["Does the energy impact number mean watts?"])
+        self.assertIn("makes no network connection", self.text)
+        self.assertNotRegex(self.text, r"(?i)\b(uploads?|sends? (?:your|process)|phones? home)\b")
 
     def test_wired_in_hub_home_changelog(self):
         for rel in ("products/index.html", "index.html", "changelog/index.html"):
