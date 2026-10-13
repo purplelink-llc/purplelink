@@ -52,6 +52,8 @@
             "A shortcut for each action that you can record yourself, reset or turn off, with checks against macOS shortcuts and duplicates, and the same actions in the menu bar",
             "Drag a window to a screen edge or corner and a preview shows where it will land",
             "Press the left or right half shortcut again to step through half, two thirds and one third",
+        "Leaves Picture in Picture video windows alone by default, so a shortcut, a drag or a layout does not resize them, with a Settings switch to turn that off",
+        "After you snap a window, optionally offers the free part of the screen to another window, chosen from cards showing app names and window titles, with no Screen Recording permission",
             "A margin around the screen and a gap between windows, from 0 to 32 points",
             "Move a window to the next or previous display, keeping its proportions",
             "Restore a window to the size it had before its first snap, kept on a screen that exists even if its monitor was unplugged",
@@ -98,6 +100,22 @@
               "acceptedAnswer": { "@type": "Answer", "text": "No. It reads each window's position, size and title, which it needs to move and match windows." }
             },
             {
+      "@type": "Question",
+      "name": "Will Panely resize my Picture in Picture window?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, not by default. A Picture in Picture video window keeps its size and place when you use a shortcut, drag it to an edge or apply a layout, and it is not offered in the fill-the-rest list. Panely recognises it by its title and its small size. A switch in Settings turns this off if you want those windows snapped like any other. A pop-out window that is not video, such as a call in a small window, may not be recognised."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the list of windows that appears after I snap one?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It offers the part of the screen your window did not take to another window. Cards show each window's app icon, app name and title, and you pick one with the arrow keys and Return, a number key or a click; Escape skips it. It reads no screen content and needs no Screen Recording permission. By default it appears after dragging a window; Settings can turn it off or show it after shortcuts too."
+      }
+    },
+    {
               "@type": "Question",
               "name": "Will it put windows back when I reconnect a monitor?",
               "acceptedAnswer": { "@type": "Answer", "text": "It is built to. Panely remembers where windows were for each arrangement of displays and, a few seconds after the arrangement changes back, puts the windows where they were. It only places windows that are open, and only those in the current Space." }
@@ -298,6 +316,8 @@
           <tr><th scope="row">Shortcuts</th><td>Most actions have a default shortcut, such as Control-Option with an arrow key. In Settings, click any shortcut and press the keys you want, including for the sixths, which have none to start with. Panely refuses combinations that macOS keeps for itself or that another action already uses, and warns you when another app holds one. Any shortcut can be reset or turned off. Panely uses macOS&#x27;s own system for global shortcuts, so it does not need the Input Monitoring permission and does not see other keys you press.</td></tr>
           <tr><th scope="row">Dragging</th><td>Drag a window to the left or right edge for a half. Drag it to the top edge to maximize, to the bottom edge for a bottom half, or to a corner for a quarter. A translucent preview shows the result before you let go.</td></tr>
           <tr><th scope="row">Repeat to resize</th><td>Press a left or right half shortcut again and the window steps to two thirds, then one third, then back to half. This can be turned off.</td></tr>
+          <tr><th scope="row">Fill the rest</th><td>After you snap a window, Panely can show your other windows over the part of the screen that is left. Pick one with the arrow keys and Return, a number key or a click, and it fills that space; Escape skips it. Each card shows the app icon, the app name and the window title, and nothing from inside the window. By default it appears after dragging; Settings can turn it off or show it after shortcuts too. It offers nothing after a maximize, when nothing is left, and a window placed this way can be restored like any other.</td></tr>
+          <tr><th scope="row">Picture in Picture</th><td>Picture in Picture video windows are left alone: a shortcut, a drag to an edge or a layout does not move or resize them, and they are not offered in the fill-the-rest list. Panely recognises them by their title and small size. A switch in Settings turns this off if you want them snapped. A pop-out window that is not video, such as a call in a small window, may not be recognised.</td></tr>
           <tr><th scope="row">Displays</th><td>Move a window to the next or previous display and it keeps its proportions. Panely orders displays left to right.</td></tr>
           <tr><th scope="row">Restore</th><td>Return a window to the size and place it had before its first snap.</td></tr>
           <tr><th scope="row">Custom areas</th><td>Define your own places, up to twelve, such as a reading column in the middle 60% of the screen. Set the left edge, top, width and height as percentages in Settings. Or place a window where you want it and choose Save this window as an area from the menu bar. Each area can have its own shortcut and appears in the menu bar. Areas are fractions of the screen, so they fit any display.</td></tr>
@@ -321,7 +341,7 @@
         </div>
         <div class="feature-item">
           <h3>Positions, sizes and titles</h3>
-          <p>To move a window, Panely reads where it is, how big it is and its title, so a saved layout can tell two windows of one app apart. It does not read what is inside a window.</p>
+          <p>To move a window, Panely reads where it is, how big it is and its title, so a saved layout can tell two windows of one app apart. It does not read what is inside a window. The list of windows offered after a snap shows app names and titles too, and uses no Screen Recording permission.</p>
         </div>
         <div class="feature-item">
           <h3>No keystroke access</h3>
@@ -366,6 +386,14 @@
         <details class="faq-item">
           <summary>Can it see what is in my windows?</summary>
           <div class="faq-body">No. It reads each window&#x27;s position, size and title, which it needs to move and match windows.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Will Panely resize my Picture in Picture window?</summary>
+          <div class="faq-body">No, not by default. A Picture in Picture video window keeps its size and place when you use a shortcut, drag it to an edge or apply a layout, and it is not offered in the fill-the-rest list. Panely recognises it by its title and its small size. A switch in Settings turns this off if you want those windows snapped like any other. A pop-out window that is not video, such as a call in a small window, may not be recognised.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What is the list of windows that appears after I snap one?</summary>
+          <div class="faq-body">It offers the part of the screen your window did not take to another window. Cards show each window's app icon, app name and title, and you pick one with the arrow keys and Return, a number key or a click; Escape skips it. It reads no screen content and needs no Screen Recording permission. By default it appears after dragging a window; Settings can turn it off or show it after shortcuts too.</div>
         </details>
         <details class="faq-item">
           <summary>Will it put windows back when I reconnect a monitor?</summary>
