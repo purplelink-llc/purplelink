@@ -75,3 +75,8 @@
 .bib-next { margin: 1rem 0 0; padding: 0.75rem 1rem; border-left: 3px solid var(--purple); background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; }
 
 @media (prefers-reduced-motion: reduce) { .bib-row-expander { transition: none; } }
+
+/* Seeded-fault demo */
+.bib-demo h3 { font-size: 0.95rem; margin: 1.1rem 0 0.4rem; }
+.bib-demo-code { background: oklch(14% 0.02 310); border: 1px solid var(--line); border-radius: 6px; padding: 0.7rem 0.9rem; font-size: 0.78rem; line-height: 1.5; color: oklch(88% 0.01 310); margin: 0; overflow-x: auto; white-space: pre; }
+.bib-demo ul { margin: 0.4rem 0 0.8rem 1.1rem; color: var(--muted); }
