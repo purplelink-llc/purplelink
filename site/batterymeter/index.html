@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>BatteryMeter: Free Battery Readout for the Mac Menu Bar</title>
+    <meta name="description" content="A free Mac menu-bar app that shows battery percent, power in watts and cycle count. No account, no network, no trial. macOS 13 or later, Apple silicon.">
+    <link rel="canonical" href="https://purplelink.llc/batterymeter/">
+    <meta property="og:title" content="BatteryMeter: Free Battery Readout for the Mac Menu Bar">
+    <meta property="og:description" content="A free Mac menu-bar app that shows battery percent, power in watts and cycle count. No account, no network, no trial. macOS 13 or later, Apple silicon.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/batterymeter.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/batterymeter/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BatteryMeter: Free Battery Readout for the Mac Menu Bar">
+    <meta name="twitter:description" content="A free Mac menu-bar app that shows battery percent, power in watts and cycle count. No account, no network, no trial. macOS 13 or later, Apple silicon.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/batterymeter.png">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=e775131596">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/batterymeter/batterymeter.css?v=5ac4616ccd">
+    <script src="/site.js?v=fb682a98eb" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "BatteryMeter",
+          "applicationCategory": "UtilitiesApplication",
+          "applicationSubCategory": "Battery",
+          "operatingSystem": "macOS 13.0 or later",
+          "softwareVersion": "1.0.0",
+          "datePublished": "2026-10-13",
+          "url": "https://purplelink.llc/batterymeter/",
+          "image": "https://purplelink.llc/assets/og/batterymeter.png",
+          "downloadUrl": "https://purplelink.llc/batterymeter/BatteryMeter-1.0.0.zip",
+          "fileSize": "404356 bytes",
+          "isAccessibleForFree": true,
+          "description": "BatteryMeter is a free Mac menu-bar app. It shows battery percent, an arrow for the direction of charge, and battery power in watts, with a menu of charge, time, adapter, capacity and cycle count details. It makes no network connection.",
+          "softwareRequirements": "macOS 13 or later on a Mac with Apple silicon. Intel Macs are not supported.",
+          "featureList": [
+            "Battery icon, percent, a trend arrow and battery power in watts in the menu bar",
+            "Green while charging, orange at 20 percent or below on battery, red at 10 percent or below",
+            "A menu with charge in mAh, time to full or empty, volts and amps, system use, adapter details, capacity against design and cycle count",
+            "A chart of charge over the last hour",
+            "Reads the AppleSmartBattery entry in the macOS I/O registry, with no network connection"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": "https://purplelink.llc/batterymeter/"
+          },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {"@type": "Question", "name": "Does it work on a desktop Mac?", "acceptedAnswer": {"@type": "Answer", "text": "No. BatteryMeter reads the battery, so a Mac without one shows No battery. It is for MacBooks."}},
+            {"@type": "Question", "name": "Does it send anything?", "acceptedAnswer": {"@type": "Answer", "text": "No. BatteryMeter makes no network connection, collects nothing and has no analytics or account. It stores only its display preferences on your Mac."}},
+            {"@type": "Question", "name": "Why does its capacity differ from the health figure in System Settings?", "acceptedAnswer": {"@type": "Answer", "text": "BatteryMeter shows capacity against design (raw) and the nominal charge capacity, both read from the battery. Apple's own health figure uses its own method and can differ."}},
+            {"@type": "Question", "name": "Does it show the battery temperature?", "acceptedAnswer": {"@type": "Answer", "text": "Only if macOS provides it. The battery entry on the Mac used for testing has no temperature, so the app shows none there."}},
+            {"@type": "Question", "name": "Does it run on an Intel Mac?", "acceptedAnswer": {"@type": "Answer", "text": "No. BatteryMeter is built for Apple silicon (M-series chips) only, and it needs macOS 13 or later."}},
+            {"@type": "Question", "name": "How do I remove it?", "acceptedAnswer": {"@type": "Answer", "text": "Quit BatteryMeter from its menu. If you ticked Open at login, untick it first. Then drag BatteryMeter from Applications to the Trash."}}
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://purplelink.llc/products/" },
+            { "@type": "ListItem", "position": 3, "name": "BatteryMeter", "item": "https://purplelink.llc/batterymeter/" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/games/">Games</a>
+        <a href="/blog/">Blog</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/products/">&larr; All products</a>
+
+    <div class="app-hero">
+      <img class="app-hero-icon" src="/assets/batterymeter-icon.webp" width="120" height="120" fetchpriority="high" alt="BatteryMeter app icon">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS</span>
+          <span class="product-status product-status-live">Free</span>
+        </div>
+        <h1 class="app-hero-name">BatteryMeter</h1>
+        <p class="app-hero-tagline">BatteryMeter puts your MacBook's charge, the direction it is moving and the battery's power in watts in the menu bar. It is free. There is no email to give, no account, no trial and no license key.</p>
+        <div class="app-hero-actions" id="download">
+          <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.0.0.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
+        </div>
+        <p class="waitlist-fine-print">Version 1.0.0, released October 13, 2026. ZIP file, <span id="bm-size">404,356 bytes</span> (395 KB). Open it and move BatteryMeter to Applications.</p>
+        <p class="waitlist-fine-print">Requires macOS 13 or later on a Mac with Apple silicon. Intel Macs are not supported. The app is notarized (checked by Apple) and signed with a Developer ID.</p>
+        <p class="waitlist-fine-print">SHA-256 (a fingerprint you can use to check the download): <code class="bm-hash" id="bm-sha">edebed0cace3202f4ce72a29e0d2c91733869e3d2fcfb6a25ccfee9f68f368d0</code></p>
+        <p class="waitlist-fine-print">Made by Purplelink LLC, a one-person studio. Not on the Mac App Store.</p>
+      </div>
+      <figure class="app-hero-window bm-hero-window">
+        <div class="frame-soft">
+          <img src="/batterymeter/img/live-charging-1120.webp" srcset="/batterymeter/img/live-charging-560.webp 560w, /batterymeter/img/live-charging-1120.webp 1120w" sizes="(max-width: 900px) 92vw, 46vw" alt="BatteryMeter on a MacBook while charging: the menu bar shows a green battery icon, 61%, an up arrow and +8.0 W. The open menu lists charge in mAh, time to full, battery power, system use, adapter power, capacity against design and cycle count." width="1120" height="828" fetchpriority="high" decoding="async">
+        </div>
+        <figcaption>A live reading from a MacBook while charging.</figcaption>
+      </figure>
+    </div>
+
+    <section class="screenshots-section tour-section bm-watch" aria-labelledby="watch-h">
+      <p class="eyebrow">Watch it work</p>
+      <h2 id="watch-h">BatteryMeter in the menu bar</h2>
+      <p class="section-intro">A short video of the app. The transcript below lists what it shows.</p>
+      <div class="frame-soft bm-video">
+        <video controls playsinline preload="none" poster="/batterymeter/media/batterymeter-poster.webp" width="1280" height="720">
+          <source src="/batterymeter/media/batterymeter-promo-16x9.mp4" type="video/mp4">
+          <p>Your browser cannot play this video. <a href="/batterymeter/media/batterymeter-promo-16x9.mp4">Download the MP4</a>.</p>
+        </video>
+      </div>
+      <p class="bm-vertical"><a href="/batterymeter/media/batterymeter-promo-9x16.mp4">Download the vertical version (MP4, 9:16)</a></p>
+      <details class="bm-transcript">
+        <summary>Transcript and what is on screen</summary>
+        <p>BatteryMeter is a free battery indicator for the Mac menu bar. It shows the charge, an arrow for the direction the charge is moving and the battery's power in watts. Open its menu for the details. It makes no network connection and collects nothing.</p>
+        <ul>
+          <li>The menu bar item: a battery icon, the percent, an arrow and the power in watts.</li>
+          <li>The menu: status, charge in mAh, time to full or empty, battery power, system use, adapter details, capacity and cycle count.</li>
+          <li>A chart of the charge over the last hour.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="screenshots-section bm-gallery" aria-labelledby="look-h">
+      <h2 id="look-h">What it shows</h2>
+      <p class="section-intro">The first screenshot, at the top of this page, is a live reading from a MacBook. The three below are not. The app drew them with sample values, and each says "Sample values, not a live reading" in the image.</p>
+      <div class="bm-gallery-grid">
+        <figure class="bm-shot">
+          <h3>On battery, sample</h3>
+          <div class="frame-soft">
+            <img src="/batterymeter/img/sample-draining-1120.webp" srcset="/batterymeter/img/sample-draining-560.webp 560w, /batterymeter/img/sample-draining-1120.webp 1120w" sizes="(max-width: 900px) 92vw, 46vw" alt="Sample values, not a live reading. The menu bar shows a white battery icon, 64%, a down arrow and minus 11.0 W, and the open menu reads On battery with time to empty and the rate in percent per hour." width="1120" height="732" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample values. The arrow points down while the charge falls.</figcaption>
+        </figure>
+        <figure class="bm-shot">
+          <h3>Low charge, sample</h3>
+          <div class="frame-soft">
+            <img src="/batterymeter/img/sample-low-1120.webp" srcset="/batterymeter/img/sample-low-560.webp 560w, /batterymeter/img/sample-low-1120.webp 1120w" sizes="(max-width: 900px) 92vw, 46vw" alt="Sample values, not a live reading. The menu bar shows an orange battery icon, 16%, a down arrow and minus 7.2 W, and the open menu reads On battery with 1 h 36 min to empty." width="1120" height="732" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample values. The icon turns orange at 20 percent or below on battery, and red at 10 percent or below.</figcaption>
+        </figure>
+        <figure class="bm-shot">
+          <h3>Full and on power, sample</h3>
+          <div class="frame-soft">
+            <img src="/batterymeter/img/sample-full-1120.webp" srcset="/batterymeter/img/sample-full-560.webp 560w, /batterymeter/img/sample-full-1120.webp 1120w" sizes="(max-width: 900px) 92vw, 46vw" alt="Sample values, not a live reading. The menu bar shows a green battery icon, 100%, a dot and +0.0 W, and the open menu reads Fully charged, on power with the adapter rating of 30 W." width="1120" height="732" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Sample values. A dot means the charge is steady.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="does-h">
+      <h2 id="does-h">What it does</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Menu bar</th><td>A battery icon, the percent, an arrow and the battery's power in watts (W, the rate of energy flow). The arrow points up while the charge rises, down while it falls and shows a dot when it is steady. Power has a plus sign while charging and a minus sign while draining.</td></tr>
+          <tr><th scope="row">Colors</th><td>Green while charging. Orange at 20 percent or below on battery. Red at 10 percent or below. The icon fill animates while charging, follows the macOS Reduce Motion setting and can be turned off.</td></tr>
+          <tr><th scope="row">Menu bar text</th><td>Choose percent only, percent and power, percent and time, or all three.</td></tr>
+          <tr><th scope="row">The menu</th><td>Status and adapter. Charge in mAh (milliamp-hours). Time to full or empty. Battery power with volts and amps. The rate in percent per hour. System use in watts. Watts, volts and amps from the adapter, and the adapter rating. Capacity against design (raw), and the nominal charge capacity. Cycle count. A chart of the charge over the last hour.</td></tr>
+          <tr><th scope="row">Health figures</th><td>Apple's own health figure uses its own method and can differ from the capacity BatteryMeter shows. The menu says so beside the numbers.</td></tr>
+          <tr><th scope="row">Menu items</th><td>Copy details, Open at login (off until you tick it), Battery settings and Quit.</td></tr>
+          <tr><th scope="row">Refresh</th><td>Every 5 seconds, and at once when you plug in or unplug the charger.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="specs-section bm-steps" aria-labelledby="swap-h">
+      <h2 id="swap-h">Put it where Apple's icon was</h2>
+      <p class="specs-more">macOS keeps its own battery icon in the menu bar. Hide that one and move BatteryMeter into its place.</p>
+      <ol class="bm-steps-list">
+        <li><strong>Hide Apple's icon.</strong> Open System Settings, then Control Center, then Battery. Turn off Show in Menu Bar.</li>
+        <li><strong>Hold Command.</strong> Keep the Command key down.</li>
+        <li><strong>Drag it into place.</strong> With Command held, drag BatteryMeter's item to the spot where Apple's icon was. macOS remembers the position.</li>
+      </ol>
+    </section>
+
+    <section class="features-section bg-purple-xlight" aria-labelledby="privacy-h">
+      <div class="features-header">
+        <h2 id="privacy-h">Privacy</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>One source, read locally</h3>
+          <p>BatteryMeter reads one entry in the macOS I/O registry (the list of hardware and its readings), the AppleSmartBattery entry. The Terminal command <code>ioreg -rn AppleSmartBattery</code> reads the same source.</p>
+        </div>
+        <div class="feature-item">
+          <h3>No network</h3>
+          <p>It makes no network connection. It collects nothing and has no analytics and no account.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Nothing changed</h3>
+          <p>It stores only its display preferences on your Mac. It changes no system setting.</p>
+        </div>
+      </div>
+      <p>Details are on the <a href="/privacy/">privacy page</a>.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="not-h">
+      <h2 id="not-h">What it does not do</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Temperature</th><td>It shows a temperature only if macOS provides one. The registry entry on the Mac used for testing has none.</td></tr>
+          <tr><th scope="row">Intel Macs</th><td>It is built for Apple silicon only.</td></tr>
+          <tr><th scope="row">Desktop Macs</th><td>A Mac without a battery shows No battery.</td></tr>
+          <tr><th scope="row">A time estimate of its own</th><td>The time to full or empty is macOS's own estimate. BatteryMeter does not compute a different one.</td></tr>
+          <tr><th scope="row">The Mac App Store</th><td>It is not sold there. You download it from this page.</td></tr>
+          <tr><th scope="row">Other macOS versions</th><td>It was tested on macOS 27.2. It needs macOS 13 or later.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-list" data-motion="stagger">
+        <details class="faq-item">
+          <summary>Does it work on a desktop Mac?</summary>
+          <div class="faq-body">No. BatteryMeter reads the battery, so a Mac without one shows No battery. It is for MacBooks.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it send anything?</summary>
+          <div class="faq-body">No. BatteryMeter makes no network connection, collects nothing and has no analytics or account. It stores only its display preferences on your Mac.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Why does its capacity differ from the health figure in System Settings?</summary>
+          <div class="faq-body">BatteryMeter shows capacity against design (raw) and the nominal charge capacity, both read from the battery. Apple&#x27;s own health figure uses its own method and can differ.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it show the battery temperature?</summary>
+          <div class="faq-body">Only if macOS provides it. The battery entry on the Mac used for testing has no temperature, so the app shows none there.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it run on an Intel Mac?</summary>
+          <div class="faq-body">No. BatteryMeter is built for Apple silicon (M-series chips) only, and it needs macOS 13 or later.</div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I remove it?</summary>
+          <div class="faq-body">Quit BatteryMeter from its menu. If you ticked Open at login, untick it first. Then drag BatteryMeter from Applications to the Trash.</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="guide-h">
+      <h2 id="guide-h">Related guide</h2>
+      <p class="specs-more">To read the same numbers in Terminal, follow <a href="/guides/check-mac-battery-health-voltage-and-cycle-count/">how to check a Mac's battery health, voltage and cycle count</a>.</p>
+    </section>
+
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
+      <h2 id="closing-cta-heading">Download BatteryMeter.</h2>
+      <p>It is free. There is no email, account, trial or license key.</p>
+      <div class="closing-cta-actions">
+        <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.0.0.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
+      </div>
+      <p class="closing-cta-fine">macOS 13 or later, Apple silicon</p>
+    </section>
+    <div class="sticky-cta" data-sticky-cta data-hide-when="#download, .closing-cta, .footer" hidden>
+      <span class="sticky-cta-text"><strong>BatteryMeter</strong> is free</span>
+      <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.0.0.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
+    </div>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=2eb71ffb05" defer></script>
+</body>
+</html>

@@ -53,9 +53,10 @@ JS = r"""
   }
   for (const im of document.querySelectorAll('img')) {
     const probs = [];
-    if (!im.complete || im.naturalWidth === 0) probs.push('broken');
+    const ir = im.getBoundingClientRect();
+    if (ir.width > 0 && ir.height > 0 && im.complete && im.naturalWidth === 0) probs.push('broken');
     if (!im.hasAttribute('alt')) probs.push('no-alt');
-    if (!(im.getAttribute('width') && im.getAttribute('height')) && !getComputedStyle(im).aspectRatio.includes('/')) probs.push('no-size');
+    if (ir.width > 0 && !(im.getAttribute('width') && im.getAttribute('height')) && !getComputedStyle(im).aspectRatio.includes('/')) probs.push('no-size');
     if (probs.length) out.img.push({src: (im.getAttribute('src') || '').slice(-50), probs});
   }
   const lum = (r, g, b) => { const f = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
@@ -109,10 +110,9 @@ def serve(site: Path, port: int):
             self.send_header("Cache-Control", "no-store")
             super().end_headers()
 
-    socketserver.TCPServer.allow_reuse_address = True
-    socketserver.ThreadingTCPServer.request_queue_size = 256
-    socketserver.ThreadingTCPServer.daemon_threads = True
-    srv = socketserver.ThreadingTCPServer(("127.0.0.1", port), H)
+    http.server.ThreadingHTTPServer.request_queue_size = 512
+    http.server.ThreadingHTTPServer.daemon_threads = True
+    srv = http.server.ThreadingHTTPServer(("127.0.0.1", port), H)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     return srv
 
@@ -169,8 +169,7 @@ def main():
                 pg.on("requestfailed", lambda r, c=cons: None)
                 try:
                     pg.goto(base + url, wait_until="load", timeout=20000)
-                    pg.evaluate("document.querySelectorAll('img[loading=lazy]').forEach(i => { i.loading = 'eager'; })")
-                    pg.wait_for_timeout(900)
+                    pg.wait_for_timeout(600)
                     v = pg.evaluate(JS)
                     if v["img"]:
                         pg.wait_for_timeout(1200)

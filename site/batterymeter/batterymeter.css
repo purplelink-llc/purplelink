@@ -1,0 +1,32 @@
+/* /batterymeter/ page. External file so the strict CSP permits it. */
+
+.bm-hero-window .frame-soft { max-width: 640px; margin-inline: auto; }
+.bm-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+.bm-hash { display: block; margin-top: 4px; font-size: 0.8rem; overflow-wrap: anywhere; word-break: break-all; }
+
+.bm-video { max-width: 960px; margin-inline: auto; }
+.bm-video video { display: block; width: 100%; height: auto; background: #000; }
+.bm-vertical { max-width: 64ch; margin: 14px auto 0; }
+.bm-watch .bm-transcript { max-width: 64ch; margin: 18px auto 0; }
+.bm-transcript summary { cursor: pointer; font-weight: 600; }
+.bm-transcript p, .bm-transcript li { margin-top: 10px; }
+.bm-transcript ul { padding-left: 1.2em; }
+
+.bm-gallery .section-intro { max-width: 64ch; }
+.bm-gallery-grid {
+  display: grid;
+  gap: clamp(28px, 4vw, 48px);
+  grid-template-columns: 1fr;
+  margin-top: 28px;
+}
+@media (min-width: 900px) {
+  .bm-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.bm-shot { margin: 0; }
+.bm-shot h3 { margin: 0 0 10px; }
+.bm-shot .frame-soft { max-width: 100%; }
+.bm-shot figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+.bm-steps-list { max-width: 64ch; padding-left: 1.4em; margin-top: 14px; }
+.bm-steps-list li { margin-top: 10px; }
