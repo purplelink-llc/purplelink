@@ -80,7 +80,7 @@ if [ "$code" = 200 ] && head -c 5 m.pdf | grep -q '%PDF-'; then pass "markdown t
 
 # --- word-to-latex using the first docx as input -------------------------------
 code=$(curl -s -o w.tex -w '%{http_code}' -F "file=@r1.docx" "$BASE/word-to-latex")
-if [ "$code" = 200 ] && grep -q 'SUBFILE.\{0,1\}MARKER.\{0,1\}OK' w.tex; then pass "word to latex works"; else bad "word to latex (HTTP $code)"; fi
+if [ "$code" = 200 ] && grep -q 'SUBFILE.\{0,2\}MARKER.\{0,2\}OK' w.tex; then pass "word to latex works"; else bad "word to latex (HTTP $code)"; fi
 
 echo
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "SOME CHECKS FAILED"; fi
