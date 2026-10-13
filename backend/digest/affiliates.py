@@ -74,11 +74,11 @@ REGISTRY: tuple = (
         name="Setapp",
         domains=("setapp.com",),
         network="Impact",
-        status="candidate",
+        status="applied",
         commission="$25 flat per new paid user, 45-day cookie, $10 minimum payout (Setapp page, read 2026-10-12)",
         terms_checked="2026-10-12",
         source_url="https://setapp.com/affiliate-program",
-        notes="Free to join, no traffic minimum, applications reviewed.",
+        notes="Free to join, no traffic minimum, applications reviewed. Applied 2026-10-13 through Impact, in review.",
         topics=("mac-apps", "window-managers", "disk-space", "latex-editors"),
     ),
     Program(
@@ -86,12 +86,12 @@ REGISTRY: tuple = (
         name="1Password",
         domains=("1password.com",),
         network="CJ Affiliate",
-        status="candidate",
+        status="applied",
         commission="Reported between $2 plus 25% of the first payment and 40% of sales; sources disagree. "
                    "Read the official page before applying.",
         terms_checked="2026-10-12",
         source_url="https://1password.com/affiliate",
-        notes="Only where a guide really discusses password managers. Official page not read yet.",
+        notes="Only where a guide really discusses password managers. Applied 2026-10-13 through CJ, pending review. Official terms page not read yet.",
         topics=("privacy", "security"),
     ),
     Program(
