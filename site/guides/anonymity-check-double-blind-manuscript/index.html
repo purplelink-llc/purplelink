@@ -79,13 +79,13 @@
         <p class="post-lede">A step-by-step walkthrough of using Purplelink's Anonymity Check to find identifying information in a manuscript before double-blind submission.</p>
       </div>
       <div class="post-body">
-        <p>Researchers preparing a double-blind submission use Purplelink's Anonymity Check to catch identifying information that manual blinding missed.</p>
+        <p>Purplelink's Anonymity Check catches identifying information that manual blinding missed in a double-blind submission.</p>
 
         <h2>Steps</h2>
 
         <ol>
           <li>
-            <p>Compile your manuscript to PDF. If you're working in LaTeX, use the free <a href="https://purplelink.llc/tools/latex-to-pdf/">LaTeX to PDF tool</a> if you don't have a local install. In Word, use File &gt; Export &gt; PDF.</p>
+            <p>Compile your manuscript to PDF. If you work in LaTeX and have no local install, use the free <a href="https://purplelink.llc/tools/latex-to-pdf/">LaTeX to PDF tool</a>. In Word, use File &gt; Export &gt; PDF.</p>
           </li>
           <li>
             <p>Go to <a href="https://purplelink.llc/tools/anonymity-check/">purplelink.llc/tools/anonymity-check/</a> and click <strong>Start scan — $2.</strong></p>
@@ -119,7 +119,7 @@
 
         <h2>What's happening under the hood</h2>
 
-        <p>The scan sends your manuscript to Anthropic's Claude API, which reads the full text and flags each category of identifying information. Purplelink deletes the result from its servers 30 minutes after you first open it, or after 24 hours if you never do. Anthropic retains the manuscript for up to 30 days for abuse monitoring, not for training. The tool covers the body and abstract; supplementary materials, figures, and PDF metadata require a separate manual pass.</p>
+        <p>The scan sends your manuscript to Anthropic's Claude API, which reads the full text and flags each category of identifying information. Purplelink deletes the result from its servers 30 minutes after you first open it, or after 24 hours if you never do. Anthropic retains the manuscript for up to 30 days for abuse monitoring and does not use it for training. The tool covers the body and abstract. Supplementary materials, figures, and PDF metadata require a separate manual pass.</p>
 
         <h2>Q&amp;A</h2>
 
@@ -130,7 +130,7 @@
         <p>PDF metadata fields (Author, Creator, Producer) are outside the scan. In Word, clear them via File &gt; Info &gt; Properties &gt; Remove Personal Information. In LaTeX, add <code>\hypersetup{pdfauthor={}, pdftitle={}}</code> to the preamble before compiling.</p>
 
         <h3>The scan flagged a citation to my own published paper. Do I need to remove it?</h3>
-        <p>Not necessarily. A reference list entry alone rarely breaks blind review. The surrounding prose does: for example, "As we showed in [N]..." Fix the prose and confirm the entry's title doesn't reveal authorship.</p>
+        <p>Not necessarily. A reference list entry alone rarely breaks blind review. The surrounding prose does, for example "As we showed in [N]..." Fix the prose and confirm the entry's title doesn't reveal authorship.</p>
 
         <p>Run a scan at <a href="https://purplelink.llc/tools/anonymity-check/">purplelink.llc/tools/anonymity-check/</a>.</p>
       </div>
