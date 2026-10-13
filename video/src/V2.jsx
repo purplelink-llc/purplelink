@@ -232,7 +232,7 @@ export function TitleCard({ format, t, t0 = 0, t1 = 1.6, sub = "A native LaTeX e
   );
 }
 
-export function EndCard({ format, t, t0, name = "ModernTex", icon = "brand/moderntex-icon.png", iconRadius = 0.22, pill = "$19.99, one purchase", url = "purplelink.llc/moderntex" }) {
+export function EndCard({ format, t, t0, name = "ModernTex", icon = "brand/moderntex-icon.png", iconRadius = 0.22, pill = "$19.99, one purchase", url = "purplelink.llc/moderntex", note = null }) {
   const f = FMT[format];
   if (t < t0) return null;
   const rv = (d) => expoOut(clamp01((t - t0 - d) / 0.8));
@@ -244,6 +244,7 @@ export function EndCard({ format, t, t0, name = "ModernTex", icon = "brand/moder
         <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: f.v ? (name.length > 10 ? 100 : 128) : name.length > 10 ? 116 : 136, letterSpacing: "-0.02em", color: INK, opacity: rv(0.1), transform: `translateY(${(1 - rv(0.1)) * 30}px)`, textAlign: "center", lineHeight: 1.05, maxWidth: f.v ? 960 : 1500 }}>{name}</div>
         <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: f.v ? (pill.length > 22 ? 46 : 56) : pill.length > 22 ? 46 : 52, color: "oklch(99% 0.01 310)", background: PURPLE, borderRadius: 999, padding: "16px 48px", opacity: rv(0.22), transform: `translateY(${(1 - rv(0.22)) * 26}px)`, boxShadow: "0 20px 50px oklch(45% 0.22 310 / 0.4)", textAlign: "center", maxWidth: f.v ? 940 : 1400 }}>{pill}</div>
         <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: f.v ? (url.length > 26 ? 38 : 46) : 44, color: INK, opacity: rv(0.36), transform: `translateY(${(1 - rv(0.36)) * 20}px)` }}>{url}</div>
+        {note && <div style={{ fontFamily: FONT_BODY, fontWeight: 500, fontSize: f.v ? 36 : 34, color: C.muted, opacity: rv(0.5), transform: `translateY(${(1 - rv(0.5)) * 16}px)`, textAlign: "center", whiteSpace: "pre-line", maxWidth: f.v ? 900 : 1400, lineHeight: 1.3 }}>{note}</div>}
       </div>
     </AbsoluteFill>
   );

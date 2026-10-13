@@ -10,6 +10,7 @@ import * as keyfeel from "./keyfeel.js";
 import * as summonly from "./summonly.js";
 import * as panely from "./panely.js";
 import * as panely15 from "./panely15.js";
+import * as batterymeter from "./batterymeter.js";
 
 export const PRODUCTS = {
   "vitae-promo": vitae,
@@ -25,4 +26,5 @@ export const PRODUCTS = {
   "summonly-promo-15": summonly,
   "panely-promo": panely,
   "panely-promo-15": panely15,
+  "batterymeter-promo": batterymeter,
 };

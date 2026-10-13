@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame } from "remotion";
-import { brand, clamp01, expoOut, lerp, FONT_BODY } from "./theme.js";
+import { brand, clamp01, expoOut, lerp, FONT_BODY, FONT_DISPLAY } from "./theme.js";
 import { Stage, TitleCard, EndCard, LowerThird, useFonts } from "./V2.jsx";
 import { PRODUCTS } from "./products/index.js";
 import { Bumpered, BUMPER } from "./Bumper.jsx";
@@ -41,6 +41,28 @@ export function viewAt(plan, t) {
   return { w: lerp(pv.w, cv.w, p), h: lerp(pv.h, cv.h, p) };
 }
 
+// A drawn text card: tag, heading and numbered steps that appear at card.steps[i].t (seconds since the still started).
+function Card({ card, t, w, h }) {
+  const rv = (d) => expoOut(clamp01((t - d) / 0.7));
+  return (
+    <div style={{ position: "absolute", inset: 0, background: card.bg, padding: "72px 72px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 28 }}>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 26, letterSpacing: "0.08em", textTransform: "uppercase", color: card.muted, opacity: rv(0.1) }}>{card.tag}</div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 72, lineHeight: 1.08, letterSpacing: "-0.02em", color: card.ink, opacity: rv(0.2), transform: `translateY(${(1 - rv(0.2)) * 24}px)` }}>{card.heading}</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 30, marginTop: 20 }}>
+        {card.steps.map((st, i) => {
+          const p = rv(st.t);
+          return (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 28, opacity: p, transform: `translateY(${(1 - p) * 26}px)` }}>
+              <div style={{ flex: "none", width: 64, height: 64, borderRadius: 32, background: card.accent, color: card.accentInk, fontFamily: FONT_BODY, fontWeight: 700, fontSize: 36, display: "flex", alignItems: "center", justifyContent: "center" }}>{i + 1}</div>
+              <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 42, lineHeight: 1.28, color: card.ink, paddingTop: 2 }}>{st.text}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function StillLayer({ stills }) {
   const frame = useCurrentFrame();
   const t = frame / brand.fps;
@@ -57,6 +79,13 @@ function StillLayer({ stills }) {
           return (
             <div key={j} style={{ position: "absolute", left: 0, top: y, width: s.w, height: s.h, opacity: o, zIndex: j, isolation: "isolate" }}>
               <Desk spec={s.desk} t={Math.max(0, t - s.t0)} />
+            </div>
+          );
+        }
+        if (s.card) {
+          return (
+            <div key={j} style={{ position: "absolute", left: 0, top: y, width: s.w, height: s.h, opacity: o, zIndex: j, isolation: "isolate" }}>
+              <Card card={s.card} t={Math.max(0, t - s.t0)} w={s.w} h={s.h} />
             </div>
           );
         }
