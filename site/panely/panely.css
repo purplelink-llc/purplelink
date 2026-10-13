@@ -39,3 +39,7 @@
 .pf-shot h3 { margin: 0 0 10px; }
 .pf-shot .frame-soft { max-width: 100%; }
 .pf-shot figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+/* Comparison table on the product page: even columns inside a scroll container. */
+.compare-table.u-table-wide tbody th { min-width: 7.5rem; }
+.compare-table.u-table-wide td { min-width: 10rem; }

@@ -22,3 +22,7 @@
   .seat-unit { grid-column: 2; }
   .seat-total { grid-column: 3; }
 }
+
+/* Comparison table on the product page: even columns inside a scroll container. */
+.compare-table.u-table-wide tbody th { min-width: 7.5rem; }
+.compare-table.u-table-wide td { min-width: 10rem; }

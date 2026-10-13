@@ -33,3 +33,7 @@
 .kf-feel-item h3 { margin: 4px 0 0; }
 .kf-feel-item p { margin: 0; color: var(--muted); max-width: 52ch; }
 .kf-note { max-width: 64ch; color: var(--muted); font-size: 0.9rem; }
+
+/* Comparison table on the product page: even columns inside a scroll container. */
+.compare-table.u-table-wide tbody th { min-width: 7.5rem; }
+.compare-table.u-table-wide td { min-width: 10rem; }

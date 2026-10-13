@@ -26,7 +26,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=e775131596">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/keyfeel/keyfeel.css?v=47557f39a8">
+    <link rel="stylesheet" href="/keyfeel/keyfeel.css?v=7ca6b12221">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/trial-reminder.js?v=d43def6c9f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -122,6 +122,16 @@
               "@type": "Question",
               "name": "How do I get help?",
               "acceptedAnswer": { "@type": "Answer", "text": "Email ben@purplelink.llc. If you lose your download link, the Find a purchase page emails it again to the address you paid with." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why pay when Mechvibes and Thock are free?",
+              "acceptedAnswer": { "@type": "Answer", "text": "You do not have to. Both are free and open source, and Thock mutes itself during playback in Apple Music, Spotify and VLC. Keyfeel costs $9.99 once after a 7-day trial. It adds mouse-click sounds, scroll ticks and optional trackpad haptics, and it can go quiet in apps you choose, at set hours, and while the microphone or a camera is in use. If you do not need those, try a free app first." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it work offline?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Keyfeel runs in the menu bar and works offline, and pasting a license key works offline too. It reads which key was pressed, not the characters, and it does not send your typing anywhere." }
             }
           ]
         },
@@ -318,7 +328,30 @@
       </table>
     </section>
 
-    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+        <section class="specs-section" id="compare" aria-labelledby="compare-h">
+      <p class="eyebrow">Comparison</p>
+      <h2 id="compare-h">How it compares</h2>
+      <p class="specs-more">Free apps do the main job, and Klack is the simple paid one. Keyfeel adds sounds beyond key presses and rules for when to stay quiet.</p>
+        <div class="u-scroll-x" role="region" tabindex="0" aria-label="Keyfeel compared with Klack, Thock and Mechvibes">
+          <table class="compare-table u-table-wide">
+            <caption class="visually-hidden">Keyfeel compared with Klack, Thock and Mechvibes</caption>
+            <thead>
+              <tr><th scope="col"><span class="visually-hidden">Topic</span></th><th scope="col">Keyfeel</th><th scope="col">Klack</th><th scope="col">Thock</th><th scope="col">Mechvibes</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Price</th><td>$9.99 once, after a 7-day trial.</td><td>$4.99 on the Mac App Store.</td><td>Free, MIT license.</td><td>Free and open source.</td></tr>
+              <tr><th scope="row">Oldest macOS</th><td>macOS 13.</td><td>macOS 15.</td><td>macOS 13.5.</td><td>Runs on Windows, macOS and Linux. Minimum macOS not stated.</td></tr>
+              <tr><th scope="row">Beyond key presses</th><td>Mouse clicks, scroll ticks and optional trackpad haptics.</td><td>Mouse clicks, and scroll sounds with haptic ticks.</td><td>Keys. Mouse and scroll not stated.</td><td>Keys. Mouse sounds are in a rewrite called MechvibesDX, per our guide.</td></tr>
+              <tr><th scope="row">Quiet in some apps or on calls</th><td>Yes. Per-app silence, quiet hours, and silence while the microphone or a camera is in use.</td><td>Not stated.</td><td>Mutes during playback in Apple Music, Spotify or VLC.</td><td>Not stated.</td></tr>
+              <tr><th scope="row">Sound packs</th><td>Imports Mechvibes packs in the original format. Packs in the newer MechvibesDX format are not read.</td><td>Not stated.</td><td>Custom packs, defined in JSON.</td><td>Community packs.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <p class="specs-more">Klack price from its <a href="https://apps.apple.com/app/klack/id6446206067" rel="noopener">Mac App Store listing</a>, Thock from <a href="https://github.com/kamillobinski/thock" rel="noopener">its repository</a> and Mechvibes from <a href="https://mechvibes.com/" rel="noopener">mechvibes.com</a>, checked on October 13, 2026. The Klack macOS version and sounds, the per-app rows and the MechvibesDX note are from our October 7 and 13, 2026 guide. "Not stated" means the pages read did not say.</p>
+      <p class="specs-more"><strong>Pick Mechvibes or Thock</strong> if you want it free. <strong>Pick Klack</strong> if you want a simple app at a lower price, and a Mac that runs macOS 15. <strong>Pick Keyfeel</strong> if you want mouse and scroll sounds, quiet rules for apps and calls, and Mechvibes packs, for one payment. The full comparison, with more apps, is in <a href="/guides/best-keyboard-sound-apps-for-mac/">the keyboard sound apps for Mac compared</a>.</p>
+    </section>
+
+<section class="faq-section" id="faq" aria-labelledby="faq-heading">
       <h2 id="faq-heading">Frequently asked questions</h2>
       <div class="faq-list" data-motion="stagger">
         <details class="faq-item">
@@ -368,6 +401,14 @@
         <details class="faq-item">
           <summary>How do I get help?</summary>
           <div class="faq-body">Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. If you lose your download link, the <a href="/recover/">Find a purchase</a> page emails it again to the address you paid with.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Why pay when Mechvibes and Thock are free?</summary>
+          <div class="faq-body">You do not have to. Both are free and open source, and Thock mutes itself during playback in Apple Music, Spotify and VLC. Keyfeel costs $9.99 once after a 7-day trial. It adds mouse-click sounds, scroll ticks and optional trackpad haptics, and it can go quiet in apps you choose, at set hours, and while the microphone or a camera is in use. If you do not need those, try a free app first.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it work offline?</summary>
+          <div class="faq-body">Yes. Keyfeel runs in the menu bar and works offline, and pasting a license key works offline too. It reads which key was pressed, not the characters, and it does not send your typing anywhere.</div>
         </details>
       </div>
     </section>
