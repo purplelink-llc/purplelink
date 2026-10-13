@@ -114,7 +114,7 @@
         </div>
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
-        <p class="tool-next" data-tool-next="#result" hidden>Co-authors staying on Word? <a data-track="tool_next" data-track-meta="word-to-latex" href="/moderntex/">ModernTex</a> for Mac brings tracked changes and comments from a reviewed Word file back into the LaTeX source. 7-day free trial, then $19.99 once.</p>
+        <p class="tool-next" data-tool-next="#result" hidden>Do your co-authors stay in Word? <a data-track="tool_next" data-track-meta="word-to-latex" href="/moderntex/">ModernTex</a> for Mac brings tracked changes and comments from a reviewed Word file back into the LaTeX source. 7-day free trial, then $19.99 once.</p>
         <p class="tool-privacy">Files are never written to disk or logged.</p>
       </div>
 
@@ -123,15 +123,15 @@
         <ol>
           <li>Drag your <code>.docx</code> file onto the upload area, or choose it (up to 5 MB).</li>
           <li>Click <strong>Convert to LaTeX</strong>.</li>
-          <li>Download the <code>.tex</code> file. Open it in your LaTeX editor and clean up any formatting that didn't carry over perfectly.</li>
+          <li>Download the <code>.tex</code> file. Open it in your LaTeX editor and clean up any formatting that did not carry over.</li>
         </ol>
       </section>
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This runs <code>pandoc --standalone</code> to produce a complete, compilable <code>.tex</code> file from your Word document. The output is a <strong>starting point</strong>: standard elements (headings, bold, italic, lists, tables) convert well, but complex Word formatting, field codes, and macros may need manual attention.</p>
+        <p>This runs <code>pandoc --standalone</code> to produce a complete, compilable <code>.tex</code> file from your Word document. The output is a <strong>starting point</strong>. Standard elements (headings, bold, italic, lists, tables) convert well. However, complex Word formatting, field codes and macros may need manual attention.</p>
         <details><summary>What converts well?</summary><div class="faq-body">Headings, paragraph text, bold, italic, unordered and numbered lists, basic tables, and footnotes. The output includes a standard LaTeX preamble with common packages.</div></details>
-        <details><summary>What may need cleanup?</summary><div class="faq-body">Multi-column layouts, text boxes, Word styles with no LaTeX equivalent, embedded objects, and cross-references (which become plain text). Equations are preserved as best Pandoc can manage.</div></details>
+        <details><summary>What may need cleanup?</summary><div class="faq-body">Multi-column layouts, text boxes, Word styles with no LaTeX equivalent, embedded objects, and cross-references (which become plain text). Pandoc preserves equations as well as it can.</div></details>
         <details><summary>Are my files stored?</summary><div class="faq-body">No. Your file is converted in an ephemeral container and discarded immediately.</div></details>
       </section>
 
