@@ -4105,6 +4105,8 @@ September 24, 2026
 
 # How to Get Feedback on a Paper Before Submitting: Options Compared
 
+Some links on this page are affiliate links. If you buy through one, Purplelink may earn a commission at no extra cost to you. It does not change which products we mention or what we say about them.
+
 By Benjamin Ampel · September 24, 2026
 
 Colleagues, reading groups, writing centers, editing services, AI chat assistants, preprints and AI paper review tools compared on cost, turnaround, what each catches and what it misses.
@@ -4203,6 +4205,8 @@ Usually 4 to 8 minutes (Standard); 10 to 15 minutes (Deep)
 Methods and statistics red flags, claims the data do not support, references that do not resolve in CrossRef, citation support at the abstract level, figure presentation issues, compliance with 25 supported journals and conferences (Journal Pack), a bundled anonymity scan
 Not a domain expert; can be wrong; reads the manuscript as written and cannot inspect your data or code; citation support is judged from abstracts, not full texts
 Sent to Anthropic's Claude API, which retains inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes the manuscript and review 30 minutes after you first open the result, or after 24 hours.
+
+If you want paid language editing before you submit, Wordvice(paid link) is one academic editing service with published per-word pricing. We have not used it ourselves, so read its confidentiality terms before you upload a file, and compare it with your institution's writing center first, which is often free.
 
 ## Where Paper Review fits, and where it doesn't
 

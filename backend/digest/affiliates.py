@@ -44,7 +44,8 @@ class Program:
     source_url: str
     link: str = ""          # fixed tracked link (used when there is no template)
     deep_link: str = ""     # template containing {url}, which gets the percent-encoded destination
-    tag: str = ""           # Amazon-style tracking id appended as ?tag=
+    tag: str = ""           # tracking id appended as a query parameter (see tag_param)
+    tag_param: str = "tag"  # name of that query parameter: "tag" for Amazon, "aff" for Wordvice
     only_paths: str = ""    # regex; when set, only URL paths matching it are rewritten
     notes: str = ""
     topics: tuple = field(default_factory=tuple)
@@ -98,12 +99,14 @@ REGISTRY: tuple = (
         id="wordvice",
         name="Wordvice",
         domains=("wordvice.com",),
-        network="In-house",
-        status="candidate",
-        commission="15% of a new client's first order, after the client's 10% discount; 90-day cookie; no minimum order or payout minimum (program page, read 2026-10-12)",
-        terms_checked="2026-10-12",
+        network="In-house (Tolt)",
+        status="approved",
+        commission="15% of a new client's first order, after the client's 10% discount; 90-day cookie; no minimum order or payout minimum (program page, read 2026-10-12; account approved 2026-10-13)",
+        terms_checked="2026-10-13",
         source_url="https://wordvice.com/affiliate/home/",
-        notes="Self-serve. Terms last amended 2020-12-21.",
+        tag="benjamin",
+        tag_param="aff",
+        notes="Self-serve. Terms last amended 2020-12-21. Link format is any wordvice.com URL plus ?aff=benjamin.",
         topics=("academic-editing",),
     ),
     Program(
@@ -244,7 +247,7 @@ def tracked_owner(url: str, registry=None) -> Optional[Program]:
         if not p.live:
             continue
         if p.tag:
-            if program_for(url, [p]) and re.search(r"[?&]tag=" + re.escape(p.tag) + r"(?:&|$)", url):
+            if program_for(url, [p]) and re.search(r"[?&]" + re.escape(p.tag_param) + "=" + re.escape(p.tag) + r"(?:&|$)", url):
                 return p
             continue
         fixed = (p.link or p.deep_link.split("{url}")[0]).split("?")[0]
@@ -259,8 +262,8 @@ def is_tracked(url: str, registry=None) -> bool:
 
 def tracked_url(url: str, p: Program) -> str:
     if p.tag:
-        base = re.sub(r"([?&])tag=[^&]*&?", r"\1", url).rstrip("?&")
-        return base + ("&" if "?" in base else "?") + "tag=" + p.tag
+        base = re.sub(r"([?&])" + re.escape(p.tag_param) + r"=[^&]*&?", r"\1", url).rstrip("?&")
+        return base + ("&" if "?" in base else "?") + p.tag_param + "=" + p.tag
     if p.deep_link:
         return p.deep_link.replace("{url}", quote(url, safe=""))
     return p.link
