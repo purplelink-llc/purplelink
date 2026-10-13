@@ -59,7 +59,7 @@
       "name": "Is there a free TeXShop alternative for Mac?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. TeXstudio is free and open source under the GPL (version 2), and it runs on macOS 13 or later, Windows and Linux. TeXShop itself is also free. Both need a TeX distribution such as MacTeX installed separately; TeXShop comes with the MacTeX installer."
+        "text": "Yes. TeXstudio is free and open source under the GPL (version 2), and it runs on macOS 13 or later, Windows and Linux. TeXShop itself is also free. Both need a TeX distribution such as MacTeX installed separately. TeXShop comes with the MacTeX installer."
       }
     },
     {
@@ -75,7 +75,7 @@
       "name": "Do TeXShop, TeXstudio and ModernTex include LaTeX?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. TeXShop and TeXstudio are editors that call a TeX distribution you install separately; MacTeX installs TeXShop along with TeX Live. ModernTex also needs a TeX distribution, either MacTeX or TinyTeX, and offers a one-click TinyTeX install if it finds none when you compile."
+        "text": "No. TeXShop and TeXstudio are editors that call a TeX distribution you install separately. MacTeX installs TeXShop along with TeX Live. ModernTex also needs a TeX distribution, either MacTeX or TinyTeX, and offers a one-click TinyTeX install if it finds none when you compile."
       }
     },
     {
@@ -135,14 +135,14 @@
         <p class="post-date">Comparison</p>
         <h1 class="post-title">TeXShop alternative for Mac: ModernTex, TeXShop and TeXstudio compared</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-07">October 7, 2026</time></p>
-        <p class="post-lede">TeXShop and TeXstudio are free. ModernTex costs $19.99 once. TeXShop is the Mac editor that comes with MacTeX, TeXstudio is the one of the three that also runs on Windows and Linux, and ModernTex is a paid, Mac-only editor built around writing and submitting a journal manuscript. If cost decides it, a free editor is a fair choice, and this page says when.</p>
+        <p class="post-lede">TeXShop and TeXstudio are free. ModernTex costs $19.99 once. TeXShop is the Mac editor that comes with MacTeX. TeXstudio is the one of the three that also runs on Windows and Linux. ModernTex is a paid, Mac-only editor built around writing and submitting a journal manuscript. If cost decides it, a free editor is a fair choice, and this page says when.</p>
       </div>
 
       <article class="post-body">
         <p><strong>Disclosure up front:</strong> Purplelink makes and sells ModernTex, one of the three editors compared here. TeXShop and TeXstudio cost nothing, and for many people either one is the better pick. I took the facts about them from each project's own website and manual, listed under <a href="#last-checked">Last checked</a>, and left out anything I could not confirm there. The ModernTex facts are the ones on its <a href="/moderntex/">product page</a>.</p>
 
         <h2>The three, side by side</h2>
-        <p>None of the three includes TeX itself. Each calls a TeX distribution such as <a href="https://www.tug.org/mactex/" rel="noopener">MacTeX</a>. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back, which these editors do through SyncTeX.</p>
+        <p>None of the three includes TeX itself. Each calls a TeX distribution such as <a href="https://www.tug.org/mactex/" rel="noopener">MacTeX</a>. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back. These editors do this through SyncTeX (a TeX feature that links source lines to PDF positions).</p>
 
         <table class="compare-table compare-stack">
           <caption>ModernTex, TeXShop and TeXstudio, checked October 7, 2026</caption>
@@ -191,28 +191,28 @@
         <h2>What each one is built around</h2>
 
         <h3>TeXShop</h3>
-        <p>TeXShop is a Mac-only front end to TeX, written in Cocoa by Richard Koch with many contributors. It was first released on July 23, 2000, and it is free under the GPL. The MacTeX installer puts it in <code>/Applications/TeX</code> beside TeX Live Utility, BibDesk and LaTeXiT, so if you have installed MacTeX you already have it.</p>
-        <p>It keeps to the basics of writing LaTeX. Source and PDF preview can share one window or sit in two. SyncTeX takes you from a spot in the source to the matching spot in the PDF and back. For a thesis or book with chapter files, you put a root comment at the top of each chapter, and typesetting a chapter typesets the whole document. It also has a Macros menu, command completion on the Escape or Tab key, a BibTeX item in the Typeset menu, latexmk-based engines, and a manual of about two hundred pages in the Help menu. Its site says the current release runs on macOS 26, Tahoe, and the MacTeX page describes an extra build for Tahoe.</p>
+        <p>TeXShop is a Mac-only front end to TeX (the editor and viewer that call the TeX programs), written in Cocoa by Richard Koch with many contributors. It was first released on July 23, 2000, and it is free under the GPL. The MacTeX installer puts it in <code>/Applications/TeX</code> beside TeX Live Utility, BibDesk and LaTeXiT, so if you have installed MacTeX you already have it.</p>
+        <p>TeXShop keeps to the basics of writing LaTeX. Source and PDF preview can share one window or sit in two. SyncTeX takes you from a spot in the source to the matching spot in the PDF and back. For a thesis or book with chapter files, you put a root comment at the top of each chapter, and typesetting a chapter typesets the whole document. It also has a Macros menu, command completion on the Escape or Tab key, a BibTeX item in the Typeset menu, latexmk-based engines, and a manual of about two hundred pages in the Help menu. Its site says the current release runs on macOS 26, Tahoe. The MacTeX page describes an extra build for Tahoe.</p>
         <p><strong>Choose it if</strong> you want a free editor made for the Mac, you have MacTeX already, or you have an older Mac: its site lists the current release for macOS 10.13 and later.</p>
 
         <h3>TeXstudio</h3>
-        <p>TeXstudio is free and open source under the GPL, written in C++ with Qt, and runs on Windows, Linux, macOS and BSD. It began in 2009 as a fork of Texmaker. Its site lists a structure view, code folding, a spell checker, grammar checker and reference checker, assistants that generate code for images and tables, more than 1000 math symbols, completion that covers references and bibliography entries, and an integrated PDF viewer with SyncTeX syncing. The build system supports several compilers, latexmk and bibliography tools, and it notices when LaTeX needs another run.</p>
-        <p>Its manual describes three more things worth knowing. There is a Git panel (the site's news puts it in 4.9.6, July 2026). There is an optional AI chat assistant, which uses your own account with a provider such as Mistral AI or Claude, or a local model. And there is collaborative editing: a second person on another computer opens a shared folder with an access code and sees your cursor and changes as you type. That feature uses a separate program, teamtype, which the manual says is currently available on macOS and Linux.</p>
-        <p>On a Mac, the download is a zip file. The site notes that the project has no Apple Developer account, so macOS may warn about an unidentified developer, and it gives the workaround of opening the app from its context menu.</p>
+        <p>TeXstudio is free and open source under the GPL, written in C++ with Qt, and runs on Windows, Linux, macOS and BSD. It began in 2009 as a fork of Texmaker. Its site lists a structure view, code folding, and a spell checker, grammar checker and reference checker. It also lists assistants that generate code for images and tables, more than 1000 math symbols, completion that covers references and bibliography entries, and an integrated PDF viewer with SyncTeX syncing. The build system supports several compilers, latexmk and bibliography tools. It also notices when LaTeX needs another run.</p>
+        <p>Its manual describes three more things worth knowing. First, there is a Git panel (the site's news puts it in 4.9.6, July 2026). Second, there is an optional AI chat assistant, which uses your own account with a provider such as Mistral AI or Claude, or a local model. Third, there is collaborative editing. A second person on another computer opens a shared folder with an access code and sees your cursor and changes as you type. That feature uses a separate program, teamtype, which the manual says is currently available on macOS and Linux.</p>
+        <p>On a Mac, the download is a zip file. The site notes that the project has no Apple Developer account, so macOS may warn about an unidentified developer. It gives a workaround: open the app from its context menu.</p>
         <p><strong>Choose it if</strong> you also work on Windows or Linux and want the same editor on each, or you want shared editing sessions, a Git panel and an AI assistant without paying for them.</p>
 
         <h3>ModernTex</h3>
-        <p>ModernTex is the native macOS editor we make, built for journal articles, conference papers and dissertation chapters. It handles multi-file manuscripts with root file detection and a sidebar, keeps the PDF in sync in both directions, completes citations by searching your <code>.bib</code> by author, title or key, and explains compile errors in plain language. It adds submission-readiness checks (anonymization, page limits, required sections, packaging), an anonymized export for double-blind review, version snapshots with diffs, and visual editors for TikZ figures and tables that write the LaTeX for you. An optional Fix with AI proposes a repair for a build error and shows it as a diff first; it runs on Apple Intelligence or on your own Claude or OpenAI account.</p>
-        <p>What it does not do: real-time co-editing. Get Changes and Send Changes sync a project between your Macs or with a co-author, but two people cannot type in the same file at once. It runs only on macOS 14 or later, it is not on Windows, Linux or iPad, and it needs a TeX distribution. It was first released in September 2026, so it has far less of a track record than TeXShop or TeXstudio. <strong>Choose it if</strong> you write manuscripts on a Mac, mostly alone, and the submission-focused features are the ones you want. The <a href="/moderntex/">trial is the full app for seven days</a> with no account.</p>
+        <p>ModernTex is the native macOS editor we make, built for journal articles, conference papers and dissertation chapters. It handles multi-file manuscripts with root file detection and a sidebar, keeps the PDF in sync in both directions, completes citations by searching your <code>.bib</code> file by author, title or key, and explains compile errors in plain language. It adds submission-readiness checks (anonymization, page limits, required sections, packaging), an anonymized export for double-blind review, version snapshots with diffs, and visual editors for TikZ figures and tables that write the LaTeX for you. An optional Fix with AI proposes a repair for a build error and shows it as a diff first. It runs on Apple Intelligence or on your own Claude or OpenAI account.</p>
+        <p>What it does not do is real-time co-editing. Get Changes and Send Changes sync a project between your Macs or with a co-author. However, two people cannot type in the same file at once. It runs only on macOS 14 or later and is not on Windows, Linux or iPad. It needs a TeX distribution. It was first released in September 2026, so it has far less of a track record than TeXShop or TeXstudio. <strong>Choose it if</strong> you write manuscripts on a Mac, mostly alone, and the submission-focused features are the ones you want. The <a href="/moderntex/">trial is the full app for seven days</a> with no account.</p>
 
         <h2>What each one costs</h2>
         <p>TeXShop and TeXstudio cost nothing. ModernTex is $19.99 once, with all updates included and no subscription. The trial is the full app for seven days, and if you buy it and it is not useful, email within 14 days of purchase and it is refunded.</p>
-        <p>All three compile a LaTeX project and show a synced PDF, so the money is not for the basics. It buys the manuscript-specific features described above. If those do not match how you work, you will not get $19.99 of use from them, and a free editor is the better choice.</p>
+        <p>All three compile a LaTeX project and show a synced PDF, so the money is not for the basics. It buys the manuscript-specific features described above. If those do not match how you work, a free editor is the better choice.</p>
 
         <h2>Where they differ</h2>
         <ul>
           <li><strong>Operating systems and Macs.</strong> TeXstudio is the only one of the three on Windows and Linux. On older Macs, TeXShop's site lists its current release for macOS 10.13 and later, TeXstudio's current build needs macOS 13, and ModernTex needs macOS 14.</li>
-          <li><strong>Working with co-authors.</strong> TeXstudio offers collaborative editing through teamtype, as described above. ModernTex has no real-time co-editing. If several people edit one draft at the same time in a browser, that is Overleaf's job; <a href="/guides/overleaf-alternative-mac/">the Overleaf guide</a> covers how to use it alongside a local editor.</li>
+          <li><strong>Working with co-authors.</strong> TeXstudio offers collaborative editing through teamtype, as described above. ModernTex has no real-time co-editing. If several people edit one draft at the same time in a browser, that is Overleaf's job. <a href="/guides/overleaf-alternative-mac/">The Overleaf guide</a> covers how to use it alongside a local editor.</li>
           <li><strong>AI.</strong> TeXstudio's assistant and ModernTex's Fix with AI are both optional, and both can use your own provider account. TeXstudio's can also use a local model, and ModernTex's can run on Apple Intelligence on your Mac. Check what each one sends before you use it on unpublished work.</li>
           <li><strong>History and version control.</strong> TeXstudio has a Git panel and SVN support. ModernTex takes snapshots you can diff, which is separate from Git.</li>
           <li><strong>Installing.</strong> TeXShop arrives with MacTeX. TeXstudio is a zip, with the unidentified-developer note above. ModernTex is a signed and notarized disk image.</li>
@@ -244,9 +244,9 @@
 
       <section class="tool-faq">
         <h2>Frequently asked questions</h2>
-        <details><summary>Is there a free TeXShop alternative for Mac?</summary><div class="faq-body">Yes. TeXstudio is free and open source under the GPL (version 2), and it runs on macOS 13 or later, Windows and Linux. TeXShop itself is also free. Both need a TeX distribution such as MacTeX installed separately; TeXShop comes with the MacTeX installer.</div></details>
+        <details><summary>Is there a free TeXShop alternative for Mac?</summary><div class="faq-body">Yes. TeXstudio is free and open source under the GPL (version 2), and it runs on macOS 13 or later, Windows and Linux. TeXShop itself is also free. Both need a TeX distribution such as MacTeX installed separately. TeXShop comes with the MacTeX installer.</div></details>
         <details><summary>Is ModernTex better than TeXShop or TeXstudio?</summary><div class="faq-body">Not in general. It is a different kind of editor. ModernTex is a paid, Mac-only app built around writing and submitting a journal manuscript, with submission checks, an anonymized export, version snapshots, and visual editors for TikZ and tables. TeXShop and TeXstudio are free, and TeXstudio also runs on Windows and Linux. If you do not need the manuscript features, a free editor is a reasonable choice.</div></details>
-        <details><summary>Do TeXShop, TeXstudio and ModernTex include LaTeX?</summary><div class="faq-body">No. TeXShop and TeXstudio are editors that call a TeX distribution you install separately; MacTeX installs TeXShop along with TeX Live. ModernTex also needs a TeX distribution, either MacTeX or TinyTeX, and offers a one-click TinyTeX install if it finds none when you compile.</div></details>
+        <details><summary>Do TeXShop, TeXstudio and ModernTex include LaTeX?</summary><div class="faq-body">No. TeXShop and TeXstudio are editors that call a TeX distribution you install separately. MacTeX installs TeXShop along with TeX Live. ModernTex also needs a TeX distribution, either MacTeX or TinyTeX, and offers a one-click TinyTeX install if it finds none when you compile.</div></details>
         <details><summary>Which of the three runs on Windows or Linux?</summary><div class="faq-body">Only TeXstudio. TeXShop is macOS only, and ModernTex needs macOS 14 or later.</div></details>
         <details><summary>What does ModernTex cost, and can I try it first?</summary><div class="faq-body">It is $19.99 once, with all updates included and no subscription. The free trial is the full app for seven days, with no account. If you buy it and it is not useful, email within 14 days of purchase for a refund.</div></details>
         <details><summary>Can I open the same project in all three?</summary><div class="faq-body">Yes. A LaTeX project is a folder of ordinary .tex, .bib and image files, and each editor reads it in place. Check the root file setting when you switch. TeXShop and TeXstudio both read a root-file comment at the top of chapter files, and ModernTex detects the root file itself.</div></details>
@@ -257,7 +257,7 @@
       <section class="waitlist-section mt-cta">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
         <div class="waitlist-actions">
           <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($19.99)</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>

@@ -62,7 +62,7 @@
             {
               "@type": "Question",
               "name": "Is there a free tier?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Haea has a free tier for core health logging and charts. Premium features ($1.99/month or $14.99/year) include advanced analytics like Kalman-filtered recovery state, Granger causality analysis, and biological age estimation." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Haea has a free tier for core health logging and charts. Premium ($1.99/month or $14.99/year) adds Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation." }
             },
             {
               "@type": "Question",
@@ -72,12 +72,12 @@
             {
               "@type": "Question",
               "name": "What health data sources does Haea support?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Haea reads from Apple Health and integrates sleep, nutrition, weight, exercise, and biometric data including heart rate, HRV, and blood oxygen." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Haea reads from Apple Health and combines sleep, nutrition, weight, exercise, and biometric data, including heart rate, heart rate variability (HRV), and blood oxygen." }
             },
             {
               "@type": "Question",
               "name": "Is Haea HIPAA-compliant?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Haea is designed with a privacy-first architecture: all data is stored on-device with no cloud transmission or third-party access. While Haea is a consumer app and not a covered entity under HIPAA, its design exceeds typical health app privacy standards." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Haea is a consumer app and not a covered entity under HIPAA (the US health privacy law for providers and insurers). All data is stored on your device with no cloud transmission or third-party access, so Purplelink holds no copy of your health records to breach." }
             }
           ]
         },
@@ -122,7 +122,7 @@
           <span class="product-status">In development · 2026</span>
         </div>
         <h1 class="app-hero-name">Haea</h1>
-        <p class="app-hero-tagline">Your complete health picture, on your phone. Haea integrates sleep, nutrition, activity, and biometrics to surface patterns you'd otherwise miss, through advanced ML, entirely on-device.</p>
+        <p class="app-hero-tagline">Your health data, analyzed on your phone. Haea combines sleep, nutrition, activity, and biometrics and uses machine learning (ML) to surface patterns you would otherwise miss. All analysis runs on the device.</p>
         <div class="app-hero-actions">
           <a class="btn btn-primary" href="#waitlist">Join the waitlist</a>
         </div>
@@ -169,19 +169,19 @@
       <div class="features-grid">
         <div class="feature-item">
           <h3>Complete logging</h3>
-          <p>Log food, weight, water, exercise, and mood in one place. Fast entry, no friction. Connects to HealthKit to pull in data you've already logged.</p>
+          <p>Log food, weight, water, exercise, and mood in one place. Haea connects to HealthKit (Apple's health data store) to pull in data you have already logged.</p>
         </div>
         <div class="feature-item">
           <h3>Trend charts</h3>
-          <p>7-day and 30-day views of every metric. See where things are heading at a glance without digging through tables.</p>
+          <p>7-day and 30-day views of every metric, so you can see where each one is heading without reading tables.</p>
         </div>
         <div class="feature-item">
           <h3>Activity timeline</h3>
-          <p>A unified feed of everything you've logged (workouts, meals, weight entries, sleep) in chronological context.</p>
+          <p>One chronological feed of everything you have logged: workouts, meals, weight entries, and sleep.</p>
         </div>
         <div class="feature-item">
           <h3>Daily briefing</h3>
-          <p>An optional 8am summary of your key metrics from the day before. One short morning summary.</p>
+          <p>An optional 8am summary of your key metrics from the day before.</p>
         </div>
       </div>
     </section>
@@ -193,28 +193,28 @@
       </div>
       <div class="features-grid">
         <div class="feature-item">
-          <h3>Energy Balance &amp; TDEE</h3>
-          <p>Calculate your true daily energy expenditure from actual weight and calorie data. Auto-detects eating patterns and surfaces your real caloric balance over rolling windows.</p>
+          <h3>Energy balance and TDEE</h3>
+          <p>Calculates your total daily energy expenditure (TDEE, the calories you burn in a day) from your logged weight and calorie data. Haea detects eating patterns and shows your caloric balance over rolling windows.</p>
         </div>
         <div class="feature-item">
-          <h3>Circadian Rhythm Intelligence</h3>
-          <p>Tracks your biological circadian phase. Identifies your optimal windows for energy, focus, and sleep, then shows the transition between active and wind-down phases.</p>
+          <h3>Circadian rhythm tracking</h3>
+          <p>Tracks your circadian phase (where you are in your body's 24-hour cycle). Haea identifies your best windows for energy, focus, and sleep, then shows the transition between active and wind-down phases.</p>
         </div>
         <div class="feature-item">
-          <h3>Running Analytics</h3>
-          <p>FIT file export, colored route maps with pace visualization, mean max power curves, and polarized training zone breakdown for serious runners.</p>
+          <h3>Running analytics</h3>
+          <p>FIT file export, route maps colored by pace, mean max power curves, and a polarized training zone breakdown for serious runners.</p>
         </div>
         <div class="feature-item">
           <h3>Advanced ML models</h3>
-          <p>Dose-response curves, Granger causality analysis, adaptation tracking, and Kalman-filtered recovery state estimation. What actually causes what in your health data.</p>
+          <p>Dose-response curves, Granger causality analysis (a test of whether one measure helps predict another), adaptation tracking, and Kalman-filtered recovery state estimation. Together they show which changes in your data precede others.</p>
         </div>
         <div class="feature-item">
           <h3>Biological metrics</h3>
-          <p>Biological age estimation, VO₂ max tracking, DFA-α1 heart rate variability analysis, and circadian age (CosinorAge). Metrics that move, not just snapshots.</p>
+          <p>Biological age estimation, VO₂ max tracking, DFA-α1 heart rate variability analysis, and circadian age (CosinorAge). Each metric is tracked over time.</p>
         </div>
         <div class="feature-item">
           <h3>Private by design</h3>
-          <p>No cloud sync. No analytics or advertising SDKs. No ads. Your records are kept in a local GRDB.sqlite database and all analytics run on the phone. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.</p>
+          <p>Haea has no cloud sync, no analytics or advertising SDKs, and no ads. Your records are kept in a local GRDB.sqlite database, and all analytics run on the phone. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.</p>
         </div>
       </div>
     </section>
@@ -222,14 +222,14 @@
     <section class="waitlist-section" id="waitlist">
       <p class="eyebrow">Early access</p>
       <h2>Be first to know when Haea ships.</h2>
-      <p>Add your email and you'll get one message the day Haea hits the App Store. Nothing else.</p>
+      <p>Add your email and you will get one message the day Haea is on the App Store. You will get nothing else.</p>
       <form class="waitlist-form" name="waitlist-haea" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="waitlist-haea">
         <p hidden><input name="bot-field"></p>
         <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
         <button type="submit">Notify me at launch</button>
       </form>
-      <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a> · <a href="/blog/why-haea-is-on-device/">Why on-device →</a> · <a href="/guides/best-on-device-health-apps/">Compare health apps that keep data on your phone →</a></p>
+      <p class="waitlist-fine-print">We will only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a> · <a href="/blog/why-haea-is-on-device/">Why on-device →</a> · <a href="/guides/best-on-device-health-apps/">Compare health apps that keep data on your phone →</a></p>
     </section>
 
     <section class="faq-section" id="faq" aria-labelledby="faq-heading">
@@ -237,11 +237,11 @@
       <div class="faq-list" data-motion="stagger">
         <details class="faq-item">
           <summary>When does Haea ship?</summary>
-          <div class="faq-body">Haea is expected to launch in 2026. Join the waitlist above to be notified the moment it's available.</div>
+          <div class="faq-body">Haea is expected to launch in 2026. Join the waitlist above to be notified when it is available.</div>
         </details>
         <details class="faq-item">
           <summary>Is there a free tier?</summary>
-          <div class="faq-body">Yes. Haea has a free tier for core health logging and charts. Premium features ($1.99/month or $14.99/year) premium adds: Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation.</div>
+          <div class="faq-body">Yes. Haea has a free tier for core health logging and charts. Premium ($1.99/month or $14.99/year) adds Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation.</div>
         </details>
         <details class="faq-item">
           <summary>Does Haea sync to the cloud?</summary>
@@ -249,11 +249,11 @@
         </details>
         <details class="faq-item">
           <summary>What health data sources does it support?</summary>
-          <div class="faq-body">Haea reads from Apple Health and integrates sleep, nutrition, weight, exercise, and biometric data including heart rate, HRV, and blood oxygen.</div>
+          <div class="faq-body">Haea reads from Apple Health and combines sleep, nutrition, weight, exercise, and biometric data, including heart rate, heart rate variability (HRV), and blood oxygen.</div>
         </details>
         <details class="faq-item">
           <summary>Is Haea HIPAA-compliant?</summary>
-          <div class="faq-body">Haea is designed with privacy-first architecture: all data is stored on-device with no cloud transmission or third-party access. While Haea is a consumer app and not a covered entity under HIPAA, its design exceeds typical health app privacy standards: there is simply no data to breach on our end.</div>
+          <div class="faq-body">Haea is a consumer app and not a covered entity under HIPAA (the US health privacy law for providers and insurers). All data is stored on your device with no cloud transmission or third-party access, so Purplelink holds no copy of your health records to breach.</div>
         </details>
       </div>
     </section>

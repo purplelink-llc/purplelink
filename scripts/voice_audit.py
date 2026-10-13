@@ -81,6 +81,13 @@ def _rel(p: Path) -> str:
         return str(p)
 
 
+def _count(low: str, word: str) -> int:
+    """Count a banned word, but let real terms through ("robustness" is a statistics term, "robust" as filler is not)."""
+    if word == "robust":
+        return len(re.findall(r"\brobust\b(?!ness)", low))
+    return low.count(word)
+
+
 def audit(path: Path) -> dict:
     raw = path.read_text(encoding="utf-8", errors="replace")
     text = visible_text(raw)
@@ -91,7 +98,7 @@ def audit(path: Path) -> dict:
     long_sents = sum(1 for s in sents if len(s.split()) > 30)
     r = {
         "words": words,
-        "banned": {b.strip(): low.count(b) for b in BANNED if low.count(b)},
+        "banned": {b.strip(): _count(low, b) for b in BANNED if _count(low, b)},
         "throat": sum(len(re.findall(p, low)) for p in THROAT),
         "negpar": sum(len(re.findall(p, low)) for p in NEG_PARALLEL),
         "partic": sum(len(re.findall(p, low)) for p in PARTICIPIAL),

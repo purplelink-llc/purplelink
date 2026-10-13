@@ -92,22 +92,22 @@
             {
               "@type": "Question",
               "name": "Do my recordings leave my Mac?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things: the optional model downloads inside the app, which come from Hugging Face and happen once each; the app's check for a new version, which sends the app's name, its version, the macOS version and the app's update token to purplelink.llc; and macOS itself, which may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things. First, the optional model downloads inside the app come from Hugging Face and happen once each. Second, the app's check for a new version sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. Third, macOS itself may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account." }
             },
             {
               "@type": "Question",
               "name": "How accurate is it?",
-              "acceptedAnswer": { "@type": "Answer", "text": "It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for Apple's speech recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for the small Whisper base model, so a person should check any text that will be quoted against the recording." }
+              "acceptedAnswer": { "@type": "Answer", "text": "It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for Apple's speech recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for the small Whisper base model. A person should check any text that will be quoted against the recording." }
             },
             {
               "@type": "Question",
               "name": "Does it anonymize a transcript?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Identifier removal finds many identifiers and replaces them with codes, and it misses some. You review each one, and you should read the result before you share it. It does not make a study compliant; that is for you and your ethics board to decide." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Identifier removal finds many identifiers and replaces them with codes, and it misses some. You review each one, and you should read the result before you share it. It does not make a study compliant. That is for you and your ethics board to decide." }
             },
             {
               "@type": "Question",
               "name": "How good are the speaker labels?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Good on clear two-person recordings once Nemotron 3 is installed, and weaker without it. On five real two-person recordings (71 minutes, English, YouTube-quality audio) standard speaker separation had a total error of 11.3% of the speech time and Nemotron 3 had 1.9%. On the two AMI meetings, with four people each, about 83% to 84% of all words got the right speaker, and some got none. Five files is a small sample, those files have no transcripts, so word accuracy on them was not measured, and you can rename and merge speakers in the review screen." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Good on clear two-person recordings once Nemotron 3 is installed, and weaker without it. On five real two-person recordings (71 minutes, English, YouTube-quality audio) standard speaker separation had a total error of 11.3% of the speech time and Nemotron 3 had 1.9%. On the two AMI meetings, with four people each, about 83% to 84% of all words got the right speaker, and some got none. Five files is a small sample. Those files have no transcripts, so word accuracy on them was not measured. You can rename and merge speakers in the review screen." }
             },
             {
               "@type": "Question",
@@ -132,7 +132,7 @@
             {
               "@type": "Question",
               "name": "What happens when the trial ends?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The trial is the complete app for seven days from the first time you open it, with no account. To keep using Tapefolio after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key in Tapefolio and paste it. It works offline and needs no second download." }
+              "acceptedAnswer": { "@type": "Answer", "text": "The trial is the complete app for seven days from the first time you open it, with no account. To keep using Tapefolio after that, buy it. You get a license key by email and on the page after you pay. Choose Enter License Key in Tapefolio and paste it. It works offline and needs no second download." }
             },
             {
               "@type": "Question",
@@ -198,7 +198,7 @@
           </div>
           <p class="trial-remind-note" data-reminder-status aria-live="polite">Optional. Two emails, then nothing, each with an unsubscribe link. Your address is deleted once the second is sent.</p>
         </form>
-        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay; paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-tf-facts>Version 1.0.1, released October 9, 2026. 43 MB disk image.</span> Needs macOS 26 or later on a Mac with Apple silicon.</p>
+        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-tf-facts>Version 1.0.1, released October 9, 2026. 43 MB disk image.</span> Needs macOS 26 or later on a Mac with Apple silicon.</p>
         <p class="waitlist-fine-print">Comparing options? See <a href="/guides/best-mac-apps-transcription-text-to-speech-ocr/">Mac apps for transcription, text to speech and OCR compared</a>.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once.</p>
       </div>
@@ -241,7 +241,7 @@
 
     <section class="screenshots-section" aria-labelledby="shots-h">
       <h2 id="shots-h">What it looks like</h2>
-      <p class="section-intro">Captures of the running app. The recording in the first four is an invented interview read by two computer voices, and the letters in the OCR capture are generated test files, so every name and number is made up. The draft has transcription errors, and the first pass missed some identifiers.</p>
+      <p class="section-intro">Captures of the running app. The recording in the first four is an invented interview read by two computer voices. The letters in the OCR capture are generated test files. Every name and number is made up. The draft has transcription errors, and the first pass missed some identifiers.</p>
       <div class="tf-shots" data-motion="stagger">
         <figure class="tf-shot">
           <img src="/assets/tapefolio-screens/review-main.webp" alt="The review window before any decisions. Speakers are named Speaker 1 and Speaker 2, with 46% and 54% of the words. Seven identifiers are listed on the left with their times and codes, and the progress line reads 0 to replace, 0 left in, 7 not reviewed." width="1600" height="1130" loading="lazy" decoding="async">
@@ -275,7 +275,7 @@
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
           <tr><th scope="row">Transcription</th><td>Transcribes audio on your Mac, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet for English, Whisper base for English and Whisper large-v3 turbo for many languages. Settings can delete any of them.</td></tr>
-          <tr><th scope="row">Speakers</th><td>Labels who is speaking, using the standard speaker-separation models that come with the app. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is recommended instead: it was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download.</td></tr>
+          <tr><th scope="row">Speakers</th><td>Labels who is speaking, using the standard speaker-separation models that come with the app. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is recommended instead. It was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download.</td></tr>
           <tr><th scope="row">Speaker memory</th><td>Optional, and opt-in for each project. Tapefolio requires a recorded consent note before it saves a voice. Voices are stored encrypted on your Mac, the app only suggests matches for you to confirm, and you can delete them.</td></tr>
           <tr><th scope="row">Identifier removal</th><td>Finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth, and replaces them with consistent codes. You review case by case: replace or keep each one, or replace all that remain. The key file that maps the codes back is kept separately. It misses some, so you read the result.</td></tr>
           <tr><th scope="row">Review screen</th><td>An audio player next to the transcript, with the current word highlighted. Turns are editable, and you can rename or merge speakers and go through the identifier review without leaving the screen.</td></tr>
@@ -291,7 +291,7 @@
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
           <tr><th scope="row">Get every word right</th><td>It will mishear words and mislabel speakers. Overlapping voices, quiet speech and short replies such as okay and yep are where it loses the most. Check any text you plan to quote against the recording.</td></tr>
-          <tr><th scope="row">Anonymize a transcript</th><td>Identifier removal finds many identifiers and misses some, and it cannot tell when a detail identifies someone only in context. It does not make a study compliant; that is for you and your ethics board. Read every transcript before you share it.</td></tr>
+          <tr><th scope="row">Anonymize a transcript</th><td>Identifier removal finds many identifiers and misses some, and it cannot tell when a detail identifies someone only in context. It does not make a study compliant. That is for you and your ethics board. Read every transcript before you share it.</td></tr>
           <tr><th scope="row">Read handwriting or phone photos reliably</th><td>OCR has been measured only on generated test files. Real handwriting and real phone photos of pages have not been tested.</td></tr>
           <tr><th scope="row">Promise results in other languages</th><td>What has been measured is English meeting audio. Other languages, accents and a quiet two-person interview have not been measured, and Whisper is the model to try for languages other than English.</td></tr>
           <tr><th scope="row">Run on an Intel Mac or an older macOS</th><td>It needs macOS 26 or later and Apple silicon. There is no Windows, iPhone or iPad version.</td></tr>
@@ -321,7 +321,7 @@
       <div class="features-grid">
         <div class="feature-item">
           <h3>Your files stay on your Mac</h3>
-          <p>Transcription, speaker labels, identifier removal and OCR run on your Mac. There are no accounts. If your ethics board requires that recordings stay on your own computer, Tapefolio does its work there; whether that meets the board's rules is for you and the board to decide.</p>
+          <p>Transcription, speaker labels, identifier removal and OCR run on your Mac. There are no accounts. If your ethics board requires that recordings stay on your own computer, Tapefolio does its work there. Whether that meets the board's rules is for you and the board to decide.</p>
         </div>
         <div class="feature-item">
           <h3>Downloads, each once</h3>
@@ -338,14 +338,14 @@
           <tr><th scope="col">Model</th><th scope="col">For</th><th scope="col">Size</th></tr>
         </thead>
         <tbody>
-          <tr><th scope="row">Apple's speech recognition</th><td>Transcription, used until you download a model</td><td>None from Tapefolio; macOS may fetch Apple's model once</td></tr>
+          <tr><th scope="row">Apple's speech recognition</th><td>Transcription, used until you download a model</td><td>None from Tapefolio. macOS may fetch Apple's model once</td></tr>
           <tr><th scope="row">NVIDIA Parakeet</th><td>English transcription</td><td class="tf-num">About 470 MB</td></tr>
           <tr><th scope="row">Whisper base</th><td>English transcription, a small download</td><td class="tf-num">About 150 MB</td></tr>
           <tr><th scope="row">Whisper large-v3 turbo</th><td>Transcription in many languages</td><td class="tf-num">About 650 MB</td></tr>
-          <tr><th scope="row">NVIDIA Nemotron 3 Diarization</th><td>Separating speakers; recommended, and used automatically once installed</td><td class="tf-num">About 190 MB</td></tr>
+          <tr><th scope="row">NVIDIA Nemotron 3 Diarization</th><td>Separating speakers. Recommended, and used automatically once installed</td><td class="tf-num">About 190 MB</td></tr>
         </tbody>
       </table>
-      <p class="tf-note">Optional models can be deleted from Settings. The first time each model runs on a Mac, it can take a few minutes while macOS prepares the model for the Neural Engine, and Whisper large-v3 turbo can take about ten minutes the first time it runs on a given chip.</p>
+      <p class="tf-note">Optional models can be deleted from Settings. The first time each model runs on a Mac, it can take a few minutes while macOS prepares the model for the Neural Engine. Whisper large-v3 turbo can take about ten minutes the first time it runs on a given chip.</p>
       <p class="tf-note">Credits: the speech models are NVIDIA Parakeet TDT 0.6B v2 (CC BY 4.0), run through FluidAudio and FluidInference (Apache-2.0), and OpenAI Whisper (MIT), run through WhisperKit (MIT, Argmax). The speaker models are from pyannote and WeSpeaker, via FluidInference. The measurements above use the AMI Meeting Corpus (CC BY 4.0) and five recordings from VoxConverse (CC BY 4.0).</p>
     </section>
 
@@ -364,7 +364,7 @@
         </div>
         <div class="feature-item">
           <h3>One key, two Macs</h3>
-          <p>The key unlocks Tapefolio on up to two of your own Macs, works offline and needs no second download. Refunds within 14 days: email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>.</p>
+          <p>The key works in Tapefolio on up to two of your own Macs, works offline and needs no second download. Refunds within 14 days: email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>.</p>
         </div>
       </div>
     </section>
@@ -390,15 +390,15 @@
         </details>
         <details class="faq-item">
           <summary>Do my recordings leave my Mac?</summary>
-          <div class="faq-body">No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things: the optional model downloads inside the app, which come from Hugging Face and happen once each; the app's check for a new version, which sends the app's name, its version, the macOS version and the app's update token to purplelink.llc; and macOS itself, which may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account.</div>
+          <div class="faq-body">No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things. First, the optional model downloads inside the app come from Hugging Face and happen once each. Second, the app's check for a new version sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. Third, macOS itself may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account.</div>
         </details>
         <details class="faq-item">
           <summary>How accurate is it?</summary>
-          <div class="faq-body">It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for Apple's speech recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for the small Whisper base model, so a person should check any text that will be quoted against the recording. The measured results are above.</div>
+          <div class="faq-body">It will mishear words and mislabel speakers. On two meeting recordings from the AMI corpus the word error rate was between 21% and 29% for Apple's speech recognition, Parakeet and Whisper large-v3 turbo, and between 29% and 39% for the small Whisper base model. A person should check any text that will be quoted against the recording. The measured results are above.</div>
         </details>
         <details class="faq-item">
           <summary>Does it anonymize a transcript?</summary>
-          <div class="faq-body">No. Identifier removal finds many identifiers and replaces them with codes, and it misses some. You review each one, and you should read the result before you share it. It does not make a study compliant; that is for you and your ethics board to decide.</div>
+          <div class="faq-body">No. Identifier removal finds many identifiers and replaces them with codes, and it misses some. You review each one, and you should read the result before you share it. It does not make a study compliant. That is for you and your ethics board to decide.</div>
         </details>
         <details class="faq-item">
           <summary>What happens to the key file?</summary>
@@ -406,7 +406,7 @@
         </details>
         <details class="faq-item">
           <summary>How good are the speaker labels?</summary>
-          <div class="faq-body">Good on clear two-person recordings once Nemotron 3 is installed, and weaker without it. On five real two-person recordings (71 minutes, English, YouTube-quality audio) standard speaker separation had a total error of 11.3% of the speech time and Nemotron 3 had 1.9%. On the two AMI meetings, with four people each, about 83% to 84% of all words got the right speaker, and some got none. Five files is a small sample, those files have no transcripts, so word accuracy on them was not measured, and you can rename and merge speakers in the review screen.</div>
+          <div class="faq-body">Good on clear two-person recordings once Nemotron 3 is installed, and weaker without it. On five real two-person recordings (71 minutes, English, YouTube-quality audio) standard speaker separation had a total error of 11.3% of the speech time and Nemotron 3 had 1.9%. On the two AMI meetings, with four people each, about 83% to 84% of all words got the right speaker, and some got none. Five files is a small sample. Those files have no transcripts, so word accuracy on them was not measured. You can rename and merge speakers in the review screen.</div>
         </details>
         <details class="faq-item">
           <summary>Does it remember people's voices?</summary>
@@ -414,7 +414,7 @@
         </details>
         <details class="faq-item">
           <summary>Which speech model should I use?</summary>
-          <div class="faq-body">Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only; Whisper large-v3 turbo covers many languages but was the slowest.</div>
+          <div class="faq-body">Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only. Whisper large-v3 turbo covers many languages but was the slowest.</div>
         </details>
         <details class="faq-item">
           <summary>Why is the first run slow?</summary>
@@ -430,7 +430,7 @@
         </details>
         <details class="faq-item">
           <summary>What happens when the trial ends?</summary>
-          <div class="faq-body">The trial is the complete app for seven days from the first time you open it, with no account. To keep using Tapefolio after that, buy it. You get a license key by email and on the page after you pay; choose Enter License Key in Tapefolio and paste it. It works offline and needs no second download.</div>
+          <div class="faq-body">The trial is the complete app for seven days from the first time you open it, with no account. To keep using Tapefolio after that, buy it. You get a license key by email and on the page after you pay. Choose Enter License Key in Tapefolio and paste it. It works offline and needs no second download.</div>
         </details>
         <details class="faq-item">
           <summary>Can I get a refund?</summary>

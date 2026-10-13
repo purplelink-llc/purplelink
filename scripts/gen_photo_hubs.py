@@ -329,7 +329,7 @@ def page(title, desc, url, images, body, crumb_items, og_title=None, robots="ind
 
 def shop_strip():
     return ('        <aside class="hub-shops" data-reveal>\n'
-            '          <p>Prints: <a href="' + FAA + '" rel="noopener noreferrer" target="_blank">Fine Art America</a> ships finished prints; '
+            '          <p>Prints: <a href="' + FAA + '" rel="noopener noreferrer" target="_blank">Fine Art America</a> ships finished prints. '
             '<a href="' + ETSY_SHOP + '" rel="noopener noreferrer" target="_blank">Etsy</a> sells the files to print yourself. '
             'Licenses: <a href="/photography/license/">three fixed tiers</a>, delivered as a clean full-resolution file.</p>\n'
             '        </aside>\n')

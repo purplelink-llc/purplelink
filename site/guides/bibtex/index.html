@@ -78,21 +78,21 @@
         <p class="post-date">Topic hub</p>
         <h1 class="post-title">BibTeX and citations</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time></p>
-        <p class="post-lede">Build, validate, and reformat academic bibliographies. Free in-browser tools and practical guides covering every step from DOI to camera-ready reference list.</p>
+        <p class="post-lede">Build, validate, and reformat academic bibliographies. This hub lists free in-browser tools and guides for every step from DOI to camera-ready reference list.</p>
       </div>
 
       <article class="post-body">
-        <p>BibTeX is a 1985-vintage bibliography system that's still the engine behind nearly every academic LaTeX submission. It works well when your <code>.bib</code> file is clean and the entry types are right; it fails in confusing ways when they aren't. This hub collects the guides and free tools that cover the lifecycle of a research bibliography: pulling entries from authoritative sources, validating the file before you compile, fixing the recurring errors, and switching citation styles when you move a paper between venues.</p>
+        <p>BibTeX is a bibliography system from 1985 that is still the engine behind nearly every academic LaTeX submission. It works well when your <code>.bib</code> file is clean and the entry types are right. It fails in confusing ways when they are not. This hub collects the guides and free tools for each stage of a research bibliography: pulling entries from authoritative sources, validating the file before you compile, fixing the recurring errors, and switching citation styles when you move a paper between venues.</p>
 
         <h2>Build entries from identifiers</h2>
-        <p>Manually typing BibTeX from a PDF is busywork and a source of errors. Every modern paper has a DOI; every arXiv preprint has an arXiv ID. Use either to pull a clean entry from CrossRef or arXiv.</p>
+        <p>Typing BibTeX by hand from a PDF is slow and introduces errors. Every modern paper has a DOI (digital object identifier), and every arXiv preprint has an arXiv ID. Use either one to pull a clean entry from CrossRef or arXiv.</p>
         <ul>
           <li><strong><a href="/tools/bib-builder/">BibTeX Builder</a></strong>: paste a DOI or arXiv ID (or a list of them), get back well-formed BibTeX. Nothing stored.</li>
           <li><strong><a href="/guides/doi-to-bibtex/">Guide: get BibTeX from a DOI or arXiv ID →</a></strong>: workflow, common edge cases (preprint vs published, diacritics, title capitalization), batch import.</li>
         </ul>
 
         <h2>Validate before you compile</h2>
-        <p>Most BibTeX failures fall into a handful of recurring categories: missing required fields, unbalanced braces, duplicate keys, unescaped special characters, missing commas, stray Unicode. With the rise of AI-assisted writing tools, hallucinated DOIs and fabricated citations are an added concern.</p>
+        <p>Most BibTeX failures fall into a few recurring categories: missing required fields, unbalanced braces, duplicate keys, unescaped special characters, missing commas, and stray Unicode. AI-assisted writing tools add one more, hallucinated DOIs and fabricated citations.</p>
         <ul>
           <li><strong><a href="/tools/bib-validator/">BibTeX Validator</a></strong>: checks syntax, required fields, dead DOIs, and author + year correctness against CrossRef and Semantic Scholar. Downloads an annotated <code>.bib</code> with one comment per entry, plus an optional <em>corrected</em> <code>.bib</code> where high-confidence matches have been rewritten from authoritative metadata.</li>
           <li><strong><a href="/guides/fix-bibtex-errors/">Guide: fix common BibTeX errors →</a></strong>: eight recurring errors with before-and-after examples and a debugging strategy when nothing else works.</li>
@@ -100,37 +100,37 @@
         </ul>
 
         <h2>Format citations in any style</h2>
-        <p>Different fields use different styles. Engineering uses IEEE, social sciences use APA, the humanities use MLA or Chicago. Most submission systems require the right style and reject manuscripts in the wrong one.</p>
+        <p>Different fields use different styles. Engineering uses IEEE, social sciences use APA, and the humanities use MLA or Chicago. Most submission systems require the right style and reject manuscripts in the wrong one.</p>
         <ul>
           <li><strong><a href="/tools/citation-generator/">Citation Generator</a></strong>: paste a DOI, ISBN, or arXiv ID and get a single formatted reference in APA, MLA, Chicago, or IEEE.</li>
-          <li><strong><a href="/tools/reference-converter/">Reference Converter</a></strong>: convert citation lists between BibTeX, RIS, and EndNote formats. Useful when moving between reference managers or switching venues that expect different file formats. <a href="/guides/convert-references-bibtex-ris-endnote/">Step-by-step guide →</a></li>
+          <li><strong><a href="/tools/reference-converter/">Reference Converter</a></strong>: convert citation lists between BibTeX, RIS, and EndNote formats. Use it when you move between reference managers or submit to a venue that expects a different file format. <a href="/guides/convert-references-bibtex-ris-endnote/">Step-by-step guide →</a></li>
           <li><strong><a href="/guides/citation-styles-explained/">Guide: IEEE vs APA vs MLA vs Chicago →</a></strong>: what each style looks like, when each is used, how to switch.</li>
         </ul>
 
         <h2>The hallucinated-citation problem</h2>
-        <p>If you used an AI writing assistant for any part of a literature review, run your <code>.bib</code> through the validator with both the CrossRef and Semantic Scholar checks enabled. Hallucinated citations typically have plausible author names, a plausible journal, and a plausible year, but the title doesn't match any real paper. The validator surfaces these by comparing your title against the closest match in each database and reporting a similarity score. Anything below 50% is almost certainly a fake citation. A 4-week-old academic publishing convention has caught up to this: several journals and conferences now flag suspect citations during the submission process.</p>
+        <p>If you used an AI writing assistant for any part of a literature review, run your <code>.bib</code> through the validator with both the CrossRef and Semantic Scholar checks enabled. Hallucinated citations typically have plausible author names, a plausible journal, and a plausible year, but the title does not match any real paper. The validator compares your title against the closest match in each database and reports a similarity score. Anything below 50% is almost certainly a fake citation. Several journals and conferences now flag suspect citations during the submission process too. Checking your own file first means you find them before an editor does.</p>
 
-        <h2>The validator and builder, together</h2>
-        <p>A clean academic-writing workflow looks like:</p>
+        <h2>Use the builder and validator together</h2>
+        <p>A clean workflow has five steps.</p>
         <ol>
           <li>Find a paper you want to cite. Note its DOI.</li>
           <li>Paste the DOI into the <a href="/tools/bib-builder/">Builder</a>. Add the returned entry to your <code>.bib</code>.</li>
           <li>Repeat for every reference.</li>
           <li>Run the whole file through the <a href="/tools/bib-validator/">Validator</a> before each compile.</li>
-          <li>Before submission, run the Validator one last time with DOI resolution + CrossRef check enabled. Address anything that flags.</li>
+          <li>Before submission, run the Validator one last time with DOI resolution and the CrossRef check enabled. Fix anything it flags.</li>
         </ol>
-        <p>The combination catches roughly 95% of pre-submission bibliography problems. The remaining 5% are usually stylistic (title capitalization, author order, abbreviated venue names), and those are caught at the proofread stage.</p>
+        <p>The combination catches roughly 95% of pre-submission bibliography problems. The remaining 5% are usually stylistic (title capitalization, author order, abbreviated venue names), and a proofread catches those.</p>
 
         <h2>BibLaTeX and Biber</h2>
-        <p>Classic BibTeX (the executable that ships with most TeX distributions) is showing its age. Biber + BibLaTeX is the modern stack: UTF-8 native, more sophisticated style support, better cross-referencing, and richer entry types. If you're starting a new LaTeX project today, use BibLaTeX:</p>
+        <p>Classic BibTeX (the executable that ships with most TeX distributions) is showing its age. Biber with BibLaTeX is the modern stack. It handles UTF-8 natively and offers better style support, better cross-referencing, and richer entry types. If you are starting a new LaTeX project, use BibLaTeX:</p>
         <pre><code>\usepackage[backend=biber,style=ieee]{biblatex}
 \addbibresource{refs.bib}
 % ...
 \printbibliography</code></pre>
-        <p>Your build chain becomes <code>pdflatex → biber → pdflatex → pdflatex</code> (or whatever your IDE wires up). Most popular styles (IEEE, APA, MLA, Chicago) have a BibLaTeX implementation; the official <code>biblatex-ieee</code>, <code>biblatex-apa</code>, and <code>biblatex-chicago</code> packages are well-maintained and match the latest editions.</p>
+        <p>Your build chain becomes <code>pdflatex → biber → pdflatex → pdflatex</code> (or whatever your IDE wires up). Most popular styles (IEEE, APA, MLA, Chicago) have a BibLaTeX implementation. The official <code>biblatex-ieee</code>, <code>biblatex-apa</code>, and <code>biblatex-chicago</code> packages are well-maintained and match the latest editions.</p>
 
-        <h2>What's in your <code>.bib</code> matters more than which engine processes it</h2>
-        <p>Whether you use classic BibTeX or BibLaTeX, the bibliography quality comes from the source data: well-formed entries, correct entry types, complete required fields, real DOIs. The tools above optimize for that source quality. If your <code>.bib</code> is clean, switching engines is a one-line change in your preamble.</p>
+        <h2>Your <code>.bib</code> content matters more than the engine</h2>
+        <p>Whether you use classic BibTeX or BibLaTeX, bibliography quality comes from the source data: well-formed entries, correct entry types, complete required fields, and real DOIs. The tools above target that source quality. If your <code>.bib</code> is clean, switching engines is a one-line change in your preamble.</p>
 
         <p>Two paid options sit next to the free tools: <a href="/moderntex/">ModernTex</a> for Mac completes citation keys by searching your .bib by author or title as you type, and <a href="/tools/paper-review/">Paper Review</a> checks every reference in a finished manuscript against CrossRef.</p>
         <p>Related: <strong><a href="/guides/latex/">LaTeX for academic writing →</a></strong>, the parent hub covering compilation, conversion, equations, tables, and tracked changes.</p>

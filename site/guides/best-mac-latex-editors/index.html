@@ -26,7 +26,7 @@
         {
           "@type": "Article",
           "headline": "Best LaTeX Editor for Mac 2026: 3 Tested, 16 Compared",
-          "description": "An honest comparison of the LaTeX editors that work on Mac in 2026: TeXShop, Texifier, Octree, VS Code with LaTeX Workshop, Overleaf, and ModernTex.",
+          "description": "A comparison of the LaTeX editors that work on a Mac in 2026: TeXShop, Texifier, Octree, VS Code with LaTeX Workshop, Overleaf, and ModernTex.",
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-05-31",
@@ -67,7 +67,7 @@
       "name": "How much does Overleaf cost compared with a Mac LaTeX editor?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Overleaf Standard is $199 a year billed annually or $25 a month billed monthly, and its paid Student plan is $98 a year (Overleaf's plans page, read October 12, 2026). ModernTex, which Purplelink makes, is free for seven days and then $19.99 once with updates included, and TeXShop, TeXstudio and VS Code with LaTeX Workshop are free. Overleaf's paid plans are built for co-authors editing together, which is the main reason to pay for it."
+        "text": "Overleaf Standard is $199 a year billed annually or $25 a month billed monthly. Its paid Student plan is $98 a year (Overleaf's plans page, read October 12, 2026). ModernTex, which Purplelink makes, is free for seven days and then $19.99 once with updates included. TeXShop, TeXstudio and VS Code with LaTeX Workshop are free. Overleaf's paid plans are built for co-authors editing together, which is the main reason to pay for it."
       }
     },
     {
@@ -151,11 +151,11 @@
         <p class="post-date">Comparison</p>
         <h1 class="post-title">Best LaTeX editor for Mac in 2026: 3 tested, 16 compared</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time>, updated <time datetime="2026-10-12">October 12, 2026</time></p>
-        <p class="post-lede">A direct comparison of the LaTeX editors that actually work on Mac in 2026, covering what each one is good at, what it costs, and which workflow it suits. No affiliate links, no rankings padding.</p>
+        <p class="post-lede">A comparison of the LaTeX editors that work on a Mac in 2026. It covers what each one does well, what it costs and which workflow it suits. No affiliate links, no rankings padding.</p>
       </div>
 
       <article class="post-body">
-        <p><strong>Disclosure up front:</strong> I make one of the editors on this list (ModernTex). I've tried to write the comparison honestly. <a href="https://pages.uoregon.edu/koch/texshop/" rel="noopener">TeXShop</a> is the right call for most academics today, and <a href="https://www.texifier.com/" rel="noopener">Texifier</a> is the right call for most people who want a polished modern editor. ModernTex shipped its 1.0 in September 2026; I've kept its entry to what the app actually does today.</p>
+        <p><strong>Disclosure up front:</strong> I make one of the editors on this list (ModernTex). <a href="https://pages.uoregon.edu/koch/texshop/" rel="noopener">TeXShop</a> is the right call for most academics today, and <a href="https://www.texifier.com/" rel="noopener">Texifier</a> is the right call for most people who want a polished modern editor. ModernTex shipped its 1.0 in September 2026. I've kept its entry to what the app does today.</p>
 
         <h2>The short answer</h2>
         <p>TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 12, 2026.</p>
@@ -170,12 +170,12 @@
               <tr><td>Install size</td><td>83 MB</td><td>429 MB</td><td>902 MB, plus 32 MB for the extension</td></tr>
               <tr><td>Architecture, minimum macOS</td><td>Universal (Intel and Apple silicon), 10.13</td><td>Apple silicon only</td><td>Apple silicon, 12.0</td></tr>
               <tr><td>Signed and notarized by Apple</td><td>Yes</td><td>No (the Apple silicon build is unsigned, so macOS blocks it until you approve it)</td><td>Yes</td></tr>
-              <tr><td>Finds a TeX installation by itself</td><td>Only at the MacTeX location. With TinyTeX it compiled nothing until I set the TeX path in its preferences.</td><td>Not on this Mac; I started it with the TinyTeX folder as the TeX path</td><td>Not tested</td></tr>
+              <tr><td>Finds a TeX installation by itself</td><td>Only at the MacTeX location. With TinyTeX it compiled nothing until I set the TeX path in its preferences.</td><td>Not on this Mac. I started it with the TinyTeX folder as the TeX path</td><td>Not tested</td></tr>
               <tr><td>One compile</td><td>Ran LaTeX once. The PDF and SyncTeX file were written. The citation stayed undefined until BibTeX was run as a separate step.</td><td>Ran BibTeX itself. The citation resolved and only my undefined reference remained.</td><td>Not verified: my automated build command did not start a build</td></tr>
             </tbody>
           </table>
         </div>
-        <p>Two readings follow from this. First, TeXShop works as long as MacTeX is installed, and the extra BibTeX step is the kind of thing a new user trips on. Second, TeXstudio's compile handled the bibliography on its own, but its Apple silicon download is unsigned, which is a real hurdle for a first-time Mac user. I make no claim about VS Code's compile because I could not confirm one.</p>
+        <p>Two readings follow from this. First, TeXShop works as long as MacTeX is installed, and the extra BibTeX step is the kind of thing a new user trips on. Second, TeXstudio's compile handled the bibliography on its own. However, its Apple silicon download is unsigned, a hurdle for a first-time Mac user. I make no claim about VS Code's compile because I could not confirm one.</p>
 
         <h2>The editors side by side</h2>
         <p>"Not stated" means the guide, or the source page it cites, does not say. Offline means the editor compiles on your machine without a server.</p>
@@ -185,41 +185,41 @@
               <tr><th class="u-th" scope="col">Editor</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">Runs on</th><th class="u-th" scope="col">Works offline</th><th class="u-th" scope="col">PDF preview and SyncTeX</th><th class="u-th" scope="col">Notable limit</th></tr>
             </thead>
             <tbody>
-              <tr><td class="u-cell"><strong>TeXShop</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS only</td><td class="u-cell">Yes: compiles locally with MacTeX; no cloud</td><td class="u-cell">Side-by-side PDF preview; SyncTeX click-to-source</td><td class="u-cell">Dated interface; no inline BibTeX autocomplete or plain-language errors</td></tr>
-              <tr><td class="u-cell"><strong>Texifier</strong></td><td class="u-cell">$29.99 (occasional discount)</td><td class="u-cell">macOS and iOS</td><td class="u-cell">Yes: bundles its own TeX distribution</td><td class="u-cell">PDF updates as you type; SyncTeX not stated</td><td class="u-cell">Tracked changes via latexdiff need external tools</td></tr>
-              <tr><td class="u-cell"><strong>Octree</strong></td><td class="u-cell">Free tier with limits; paid plan about $10/mo</td><td class="u-cell">Web, with a Mac wrapper</td><td class="u-cell">Not stated; the project lives on Octree's servers by default</td><td class="u-cell">Not stated</td><td class="u-cell">Manuscript is on Octree's servers by default</td></tr>
+              <tr><td class="u-cell"><strong>TeXShop</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS only</td><td class="u-cell">Yes: compiles locally with MacTeX, no cloud</td><td class="u-cell">Side-by-side PDF preview, SyncTeX click-to-source</td><td class="u-cell">Dated interface, no inline BibTeX autocomplete or plain-language errors</td></tr>
+              <tr><td class="u-cell"><strong>Texifier</strong></td><td class="u-cell">$29.99 (occasional discount)</td><td class="u-cell">macOS and iOS</td><td class="u-cell">Yes: bundles its own TeX distribution</td><td class="u-cell">PDF updates as you type, SyncTeX not stated</td><td class="u-cell">Tracked changes via latexdiff need external tools</td></tr>
+              <tr><td class="u-cell"><strong>Octree</strong></td><td class="u-cell">Free tier with limits, paid plan about $10/mo</td><td class="u-cell">Web, with a Mac wrapper</td><td class="u-cell">Not stated, the project lives on Octree's servers by default</td><td class="u-cell">Not stated</td><td class="u-cell">Manuscript is on Octree's servers by default</td></tr>
               <tr><td class="u-cell"><strong>VS Code + LaTeX Workshop</strong></td><td class="u-cell">Free</td><td class="u-cell">Cross-platform</td><td class="u-cell">Not stated</td><td class="u-cell">SyncTeX preview</td><td class="u-cell">Feels like a code file, not a paper</td></tr>
-              <tr><td class="u-cell"><strong>Overleaf</strong></td><td class="u-cell">Free tier (limited compile time, no Git sync); paid plans $98 a year (Student) or $199 a year (Standard), or $25 a month billed monthly</td><td class="u-cell">Browser</td><td class="u-cell">No offline access on the free tier; paid tiers not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Free tier has limited compile time and no Git sync</td></tr>
-              <tr><td class="u-cell"><strong>ModernTex (mine)</strong></td><td class="u-cell">$19.99 once, after a free 7-day trial</td><td class="u-cell">macOS 14+</td><td class="u-cell">Yes: compiles with local MacTeX or TinyTeX</td><td class="u-cell">PDF preview that stays in sync; SyncTeX not stated</td><td class="u-cell">Version 1.0 shipped in September 2026, so no track record; no iPad app</td></tr>
-              <tr><td class="u-cell"><strong>TeXstudio</strong></td><td class="u-cell">Free, open source</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">Integrated PDF viewer with SyncTeX</td><td class="u-cell">Qt application; does not feel like a Mac app</td></tr>
-              <tr><td class="u-cell"><strong>Texmaker</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">Built-in PDF viewer; SyncTeX</td><td class="u-cell">Simpler than TeXstudio, with fewer features</td></tr>
-              <tr><td class="u-cell"><strong>TeXworks</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated; ships inside MacTeX and TeX Live</td><td class="u-cell">PDF window; SyncTeX</td><td class="u-cell">Minimal: source window, PDF window, a typeset button</td></tr>
-              <tr><td class="u-cell"><strong>LyX</strong></td><td class="u-cell">Free, open source</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated; needs a TeX distribution installed</td><td class="u-cell">Not stated</td><td class="u-cell">Generates LaTeX rather than editing it; awkward when you must share source</td></tr>
-              <tr><td class="u-cell"><strong>Archimedes</strong></td><td class="u-cell">Paid, one-time</td><td class="u-cell">macOS, with an iOS version</td><td class="u-cell">Not stated</td><td class="u-cell">Live preview; SyncTeX not stated</td><td class="u-cell">Built for Markdown with LaTeX math, not full journal manuscripts</td></tr>
+              <tr><td class="u-cell"><strong>Overleaf</strong></td><td class="u-cell">Free tier (limited compile time, no Git sync), paid plans $98 a year (Student) or $199 a year (Standard), or $25 a month billed monthly</td><td class="u-cell">Browser</td><td class="u-cell">No offline access on the free tier, paid tiers not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Free tier has limited compile time and no Git sync</td></tr>
+              <tr><td class="u-cell"><strong>ModernTex (mine)</strong></td><td class="u-cell">$19.99 once, after a free 7-day trial</td><td class="u-cell">macOS 14+</td><td class="u-cell">Yes: compiles with local MacTeX or TinyTeX</td><td class="u-cell">PDF preview that stays in sync, SyncTeX not stated</td><td class="u-cell">Version 1.0 shipped in September 2026, so no track record, no iPad app</td></tr>
+              <tr><td class="u-cell"><strong>TeXstudio</strong></td><td class="u-cell">Free, open source</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">Integrated PDF viewer with SyncTeX</td><td class="u-cell">Qt application, does not feel like a Mac app</td></tr>
+              <tr><td class="u-cell"><strong>Texmaker</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">Built-in PDF viewer, SyncTeX</td><td class="u-cell">Simpler than TeXstudio, with fewer features</td></tr>
+              <tr><td class="u-cell"><strong>TeXworks</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated, ships inside MacTeX and TeX Live</td><td class="u-cell">PDF window, SyncTeX</td><td class="u-cell">Minimal: source window, PDF window, a typeset button</td></tr>
+              <tr><td class="u-cell"><strong>LyX</strong></td><td class="u-cell">Free, open source</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated, needs a TeX distribution installed</td><td class="u-cell">Not stated</td><td class="u-cell">Generates LaTeX rather than editing it, awkward when you must share source</td></tr>
+              <tr><td class="u-cell"><strong>Archimedes</strong></td><td class="u-cell">Paid, one-time</td><td class="u-cell">macOS, with an iOS version</td><td class="u-cell">Not stated</td><td class="u-cell">Live preview, SyncTeX not stated</td><td class="u-cell">Built for Markdown with LaTeX math, not full journal manuscripts</td></tr>
               <tr><td class="u-cell"><strong>TeX64</strong></td><td class="u-cell">Paid</td><td class="u-cell">macOS</td><td class="u-cell">Yes: compiles locally through your MacTeX or TeX Live</td><td class="u-cell">Not stated</td><td class="u-cell">Recent, with no track record</td></tr>
               <tr><td class="u-cell"><strong>Emacs with AUCTeX</strong></td><td class="u-cell">Free</td><td class="u-cell">Anything</td><td class="u-cell">Not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Learning curve is the whole Emacs learning curve</td></tr>
               <tr><td class="u-cell"><strong>Neovim or Vim with VimTeX</strong></td><td class="u-cell">Free</td><td class="u-cell">Anything</td><td class="u-cell">Not stated</td><td class="u-cell">Forward and inverse search with a PDF viewer such as Skim</td><td class="u-cell">Rewards people who already use Vim</td></tr>
-              <tr><td class="u-cell"><strong>texspark</strong></td><td class="u-cell">$39.99 one-time; free 14-day trial</td><td class="u-cell">macOS 14+</td><td class="u-cell">Not stated</td><td class="u-cell">SyncTeX across multiple files (&#8984;-click in the PDF); preview details not stated</td><td class="u-cell">Updates cover releases before 1.0 per its page; license activates on up to 3 Macs; not tested</td></tr>
-              <tr><td class="u-cell"><strong>Oleafly</strong></td><td class="u-cell">Free, open source (AGPL-3.0)</td><td class="u-cell">macOS (Apple Silicon), Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">PDF pane; SyncTeX not stated on the pages read</td><td class="u-cell">Parts of the app are labeled beta on its page; not tested</td></tr>
+              <tr><td class="u-cell"><strong>texspark</strong></td><td class="u-cell">$39.99 one-time, free 14-day trial</td><td class="u-cell">macOS 14+</td><td class="u-cell">Not stated</td><td class="u-cell">SyncTeX across multiple files (&#8984;-click in the PDF), preview details not stated</td><td class="u-cell">Updates cover releases before 1.0 per its page, license activates on up to 3 Macs, not tested</td></tr>
+              <tr><td class="u-cell"><strong>Oleafly</strong></td><td class="u-cell">Free, open source (AGPL-3.0)</td><td class="u-cell">macOS (Apple Silicon), Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">PDF pane, SyncTeX not stated on the pages read</td><td class="u-cell">Parts of the app are labeled beta on its page, not tested</td></tr>
             </tbody>
           </table>
         </div>
         <p><strong>Sources for the added rows, read October 9, 2026.</strong> texspark: <a href="https://texspark.io/" rel="noopener">texspark.io</a>. Oleafly: <a href="https://oleafly.com/" rel="noopener">oleafly.com</a> and its <a href="https://oleafly.com/docs/editor/" rel="noopener">editor documentation</a>. I did not install or test either one, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.</p>
 
         <h2 id="cost-per-year">What each option costs per year</h2>
-        <p>Overleaf Standard is $199 a year billed annually, or $25 a month if you pay monthly, which is $300 over twelve months. Overleaf's paid Student plan is $98 a year, or $13 a month billed monthly. Overleaf also lists a Professional plan at $399 a year and discounts for groups at degree-granting institutions; check <a href="https://www.overleaf.com/user/subscription/plans" rel="noopener">its plans page</a> for your case. ModernTex is free for seven days, then $19.99 once, with updates included. TeXShop is free. Costs for the other editors are listed in the table above.</p>
+        <p>Overleaf Standard is $199 a year billed annually, or $25 a month if you pay monthly, which is $300 over twelve months. Overleaf's paid Student plan is $98 a year, or $13 a month billed monthly. Overleaf also lists a Professional plan at $399 a year and discounts for groups at degree-granting institutions. Check <a href="https://www.overleaf.com/user/subscription/plans" rel="noopener">its plans page</a> for your case. ModernTex is free for seven days, then $19.99 once, with updates included. TeXShop is free. Costs for the other editors are listed in the table above.</p>
         <div class="u-scroll-x">
           <table class="u-table-wide">
             <thead><tr><th class="u-th" scope="col">Option</th><th class="u-th" scope="col">Year 1</th><th class="u-th" scope="col">Three years</th></tr></thead>
             <tbody>
               <tr><td class="u-cell">Overleaf Standard, billed annually</td><td class="u-cell">$199</td><td class="u-cell">$597</td></tr>
-              <tr><td class="u-cell">Overleaf Student, billed annually</td><td class="u-cell">$98</td><td class="u-cell">$294, while you qualify</td></tr>
+              <tr><td class="u-cell">Overleaf Student, billed annually</td><td class="u-cell">$98</td><td class="u-cell">$294 as long as you qualify</td></tr>
               <tr><td class="u-cell">ModernTex (mine)</td><td class="u-cell">$19.99</td><td class="u-cell">$19.99</td></tr>
               <tr><td class="u-cell">TeXShop, TeXstudio, VS Code with LaTeX Workshop</td><td class="u-cell">Free</td><td class="u-cell">Free</td></tr>
             </tbody>
           </table>
         </div>
-        <p>The totals are the vendors' listed prices multiplied out, not a quote, and they leave out taxes. Price is not the whole comparison: Overleaf's paid plans are built for co-authors editing the same document at once, which ModernTex is not, and the free editors need you to install and configure a TeX distribution yourself. ModernTex is our app; the comparison uses each vendor's own pricing page, read on October 12, 2026.</p>
+        <p>The totals are the vendors' listed prices multiplied out, not a quote, and they leave out taxes. Price is not the whole comparison. Overleaf's paid plans are built for co-authors editing the same document at once, which ModernTex is not. The free editors need you to install and configure a TeX distribution yourself. I make ModernTex. The comparison uses each vendor's own pricing page, read on October 12, 2026.</p>
 
         <h2>What you actually need to run LaTeX on a Mac</h2>
         <p>A LaTeX editor is only half of the setup, and this trips up most people
@@ -253,25 +253,25 @@
           <li><strong>Overleaf</strong>: web-based, collaborative, runs in any browser.</li>
           <li><strong>ModernTex</strong>: $19.99, native macOS, focused on the academic manuscript workflow.</li>
         </ol>
-        <p>Those six are the ones worth a real look. <a href="#more-editors">Eight more that run on a Mac</a> are covered further down, including <a href="https://www.texstudio.org/" rel="noopener">TeXstudio</a> and <a href="https://www.xm1math.net/texmaker/" rel="noopener">Texmaker</a>, with a straight answer on why each is not on the shortlist.</p>
+        <p>Those six are the ones worth a real look. <a href="#more-editors">Eight more that run on a Mac</a> are covered further down, including <a href="https://www.texstudio.org/" rel="noopener">TeXstudio</a> and <a href="https://www.xm1math.net/texmaker/" rel="noopener">Texmaker</a>. Each has a short note on why it is not on the shortlist.</p>
 
         <h2>TeXShop</h2>
         <p><strong>Cost:</strong> Free. <strong>Platform:</strong> macOS-only. <strong>Installed by:</strong> almost every academic with a Mac and MacTeX.</p>
-        <p>TeXShop is the editor that ships with the MacTeX distribution. It's been around for over 20 years, it's actively maintained by Richard Koch at the University of Oregon, and it does one thing well: edit a <code>.tex</code> file and compile it with whatever engine MacTeX provides. Side-by-side editor and PDF preview, SyncTeX click-to-source, basic syntax highlighting, multi-file support via root document declaration.</p>
+        <p>TeXShop is the editor that ships with the MacTeX distribution. It has been around for over 20 years, and Richard Koch at the University of Oregon actively maintains it. It does one thing well: edit a <code>.tex</code> file and compile it with whatever engine MacTeX provides. It has a side-by-side editor and PDF preview, SyncTeX click-to-source, basic syntax highlighting and multi-file support via root document declaration.</p>
         <p><strong>What it's good at:</strong> reliability. Compatible with every TeX distribution macro you'll encounter. No telemetry, no cloud, no subscription. If a tutorial says "open TeXShop and...", that's a feature.</p>
         <p><strong>What it lacks:</strong> modern UX (the interface looks like 2010), no inline BibTeX autocomplete, no plain-language error messages, no built-in tracked-changes view. Searching across a multi-file project is functional but not great.</p>
         <p><strong>Pick TeXShop if</strong> you want the closest thing to a default and you don't mind the dated interface. Most senior researchers do, in fact, pick TeXShop.</p>
 
         <h2>Texifier (formerly Texpad)</h2>
         <p><strong>Cost:</strong> $29.99 (occasional discount). <strong>Platform:</strong> macOS + iOS.</p>
-        <p>Texifier is the polished Mac-native option that most people who actually shop for a LaTeX editor end up with. It bundles its own TeX distribution (no MacTeX install required), has incremental typesetting (PDF updates as you type with no manual compile), a structure sidebar that maps your manuscript by sections, and the best autocomplete-for-LaTeX experience available.</p>
-        <p><strong>What it's good at:</strong> the "it just works" experience. Outline sidebar makes navigating a long manuscript feel natural. iPad app is genuinely usable. Active development.</p>
+        <p>Texifier is the polished Mac-native option that most people who actually shop for a LaTeX editor end up with. It bundles its own TeX distribution (no MacTeX install required). It has incremental typesetting (the PDF updates as you type with no manual compile) and a structure sidebar that maps your manuscript by sections. It also has the best autocomplete-for-LaTeX experience available.</p>
+        <p><strong>What it's good at:</strong> the "it just works" experience. Outline sidebar makes navigating a long manuscript feel natural. The iPad app is usable. Active development.</p>
         <p><strong>What it lacks:</strong> deep bibliography tooling. The BibTeX autocomplete is good but not specifically built for academic writing workflows. Tracked-changes via latexdiff requires external tools.</p>
         <p><strong>Pick Texifier if</strong> you want a polished, modern Mac-native experience and you're willing to pay $30 for it. This is the right answer for most working researchers writing journal-length manuscripts on a Mac today.</p>
 
         <h2>Octree</h2>
         <p><strong>Cost:</strong> Free tier with limits, paid plan ~$10/mo. <strong>Platform:</strong> Web + Mac wrapper.</p>
-        <p>The newer entrant. AI-assisted writing (suggestions, grammar, rewrites) on top of a competent LaTeX editor. The cloud-first design is a real distinguishing feature, because your project lives on Octree's servers, accessible from any device.</p>
+        <p>Octree is the newer entrant. It adds AI-assisted writing (suggestions, grammar, rewrites) on top of a competent LaTeX editor. Its design is cloud-first, so your project lives on Octree's servers and is accessible from any device.</p>
         <p><strong>What it's good at:</strong> AI-assisted drafting. If you want copilot-style suggestions while you write, Octree is the only mainstream option that integrates them well.</p>
         <p><strong>What it lacks:</strong> on-device privacy. Your manuscript is on Octree's servers by default. For sensitive research (medical, military, IP), that's disqualifying.</p>
         <p><strong>Pick Octree if</strong> AI-assisted writing is core to your workflow and your research isn't sensitive. Avoid if "no cloud" is a requirement.</p>
@@ -285,34 +285,34 @@
 
         <h2>Overleaf</h2>
         <p><strong>Cost:</strong> Free tier (limited compile time, no Git sync). Paid: Standard $199 a year or $25 a month, Student $98 a year, per <a href="https://www.overleaf.com/user/subscription/plans" rel="noopener">Overleaf's plans page</a>, read October 12, 2026.</p>
-        <p>Browser-based, collaborative. Overleaf is the de facto choice for multi-author papers where co-authors aren't all comfortable installing LaTeX. The collaboration model (Google Docs-style) works.</p>
+        <p>Overleaf is browser-based and collaborative. It is the de facto choice for multi-author papers where co-authors aren't all comfortable installing LaTeX. The collaboration model (Google Docs-style) works.</p>
         <p><strong>What it's good at:</strong> multi-author collaboration. Templates for major journals. No local install required.</p>
         <p><strong>What it lacks:</strong> offline access on the free tier, Git sync on free, native-Mac feel. The editor itself runs in a browser.</p>
         <p><strong>Pick Overleaf if</strong> you need real-time collaboration. Many academic teams use Overleaf for collaboration and a native editor for solo writing.</p>
 
         <h2>ModernTex</h2>
-        <p><strong>Cost:</strong> $19.99, one-time, all updates included, forever, after a free 7-day trial. <strong>Platform:</strong> macOS 14+. <strong>Status:</strong> shipping, shipping since September 2026; current version 1.3.6.</p>
-        <p>I built ModernTex specifically because the existing options miss a few things that matter for academic manuscript work: plain-language compile error explanations (BibTeX-style cryptic errors are the #1 frustration for new users), BibTeX autocomplete that searches by author or title across your entire <code>.bib</code>, revision snapshots tied to ideas not files, submission-readiness checks that catch journal-specific issues before you upload, and a live TikZ figure editor for building flowcharts and diagrams by dragging boxes instead of writing coordinates by hand.</p>
-        <p><strong>Why a new editor when Texifier exists:</strong> Texifier is excellent but optimizes for general LaTeX users (programmers, technical writers, students). ModernTex narrows the focus to <em>academic manuscript writers</em>, the workflow of writing a journal article or dissertation chapter, from outline to camera-ready. That's a deliberate constraint.</p>
+        <p><strong>Cost:</strong> $19.99, one-time, all updates included, forever, after a free 7-day trial. <strong>Platform:</strong> macOS 14+. <strong>Status:</strong> shipping since September 2026. Current version 1.3.6.</p>
+        <p>I built ModernTex because the existing options miss a few things that matter for academic manuscript work. It explains compile errors in plain language (BibTeX-style cryptic errors are the #1 frustration for new users). Its BibTeX autocomplete searches by author or title across your entire <code>.bib</code>. Revision snapshots are tied to ideas, not files. Submission-readiness checks catch journal-specific issues before you upload. A live TikZ figure editor builds flowcharts and diagrams by dragging boxes instead of writing coordinates by hand.</p>
+        <p><strong>Why a new editor when Texifier exists:</strong> Texifier is excellent. However, it targets general LaTeX users (programmers, technical writers, students). ModernTex narrows the focus to <em>academic manuscript writers</em> (the workflow of writing a journal article or dissertation chapter, from outline to camera-ready). That is a deliberate constraint.</p>
         <p><strong>What it lacks:</strong> a track record. Version 1.0 shipped in September 2026, so it has none of the twenty years of edge-case coverage TeXShop has, and no iPad app. It needs MacTeX or <a href="https://yihui.org/tinytex/" rel="noopener">TinyTeX</a>, and offers a one-click TinyTeX install if neither is found.</p>
-        <p><strong>Pick ModernTex if</strong> you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. <a href="/moderntex/">The trial is free for seven days; keeping it is $19.99, once</a>.</p>
+        <p><strong>Pick ModernTex if</strong> you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. <a href="/moderntex/">The trial is free for seven days. Keeping it is $19.99, once</a>.</p>
 
         <h2 id="more-editors">Eight more LaTeX editors that run on a Mac</h2>
-        <p>Every one of these works on macOS today. They are not on the shortlist because, for someone choosing an editor on a Mac in 2026, each is beaten by one of the six above at the thing it is best at. The exception is TeXstudio, which is the right answer for a specific person: anyone who also works on Windows or Linux.</p>
+        <p>Every one of these works on macOS today. They are not on the shortlist because, for someone choosing an editor on a Mac in 2026, one of the six above does each one's best job better. The exception is TeXstudio, which is the right answer for a specific person: anyone who also works on Windows or Linux.</p>
 
         <h3>TeXstudio</h3>
         <p><strong>Cost:</strong> Free, open source. <strong>Platform:</strong> macOS, Windows, Linux.</p>
-        <p>The most widely installed LaTeX editor that is not tied to one platform. It began as a fork of Texmaker and has grown well past it: an integrated PDF viewer with SyncTeX, a structure panel for long documents, autocomplete for commands and references, wizards for tables and figures, spell-checking as you type. It is a Qt application, so it does not look or behave like a Mac app. Menus, shortcuts and dialogs feel like they were designed elsewhere, because they were.</p>
+        <p>The most widely installed LaTeX editor that is not tied to one platform. It began as a fork of Texmaker and has grown well past it. It has an integrated PDF viewer with SyncTeX, a structure panel for long documents, autocomplete for commands and references, wizards for tables and figures, and spell-checking as you type. It is a Qt application, so it does not look or behave like a Mac app. Menus, shortcuts and dialogs feel like they were designed elsewhere, because they were.</p>
         <p><strong>Pick TeXstudio if</strong> you move between a Mac and a Windows or Linux machine and want the identical editor on both. If you only write on a Mac, TeXShop does the same job and feels native.</p>
 
         <h3>Texmaker</h3>
         <p><strong>Cost:</strong> Free. <strong>Platform:</strong> macOS, Windows, Linux.</p>
-        <p>The editor TeXstudio was forked from, still maintained by its original author, and simpler for it: built-in PDF viewer, SyncTeX, Unicode, spell-check, code folding, and less of everything else. If you opened TeXstudio and found it busy, this is the same idea with fewer panels.</p>
+        <p>Texmaker is the editor TeXstudio was forked from, and its original author still maintains it. It is simpler for that: it has a built-in PDF viewer, SyncTeX, Unicode, spell-check, code folding, and less of everything else. If you opened TeXstudio and found it busy, this is the same idea with fewer panels.</p>
         <p><strong>Pick Texmaker if</strong> you want a cross-platform editor and TeXstudio felt like too much. Otherwise the same advice applies: on a Mac alone, TeXShop.</p>
 
         <h3>TeXworks</h3>
         <p><strong>Cost:</strong> Free. <strong>Platform:</strong> macOS, Windows, Linux. <strong>Installed by:</strong> you, already, if you installed MacTeX.</p>
-        <p><a href="https://www.tug.org/texworks/" rel="noopener">TeXworks</a> ships inside MacTeX and TeX Live, and was deliberately modelled on TeXShop's simplicity so that other platforms would have something like it. Source window, PDF window, SyncTeX, a typeset button. That is the whole editor. It is fine for a first document and you will outgrow it by the second chapter.</p>
+        <p><a href="https://www.tug.org/texworks/" rel="noopener">TeXworks</a> ships inside MacTeX and TeX Live, and was deliberately modelled on TeXShop's simplicity so that other platforms would have something like it. It has a source window, a PDF window, SyncTeX and a typeset button. That is the whole editor. It is fine for a first document and you will outgrow it by the second chapter.</p>
         <p><strong>Pick TeXworks if</strong> it is already on your machine and you need to compile something today. Then pick something else.</p>
 
         <h3>LyX</h3>
@@ -322,22 +322,22 @@
 
         <h3>Archimedes</h3>
         <p><strong>Cost:</strong> Paid, one-time. <strong>Platform:</strong> macOS, with an iOS version.</p>
-        <p>A native Mac editor for Markdown with LaTeX math, with live preview and a math-focused toolbar. It is built for writing notes, problem sets and math-heavy documents, not for compiling a full journal manuscript with a bibliography and a class file. Good at what it is for, which is not what most of this page's readers are doing.</p>
+        <p>Archimedes is a native Mac editor for Markdown with LaTeX math, with live preview and a math-focused toolbar. It is built for writing notes, problem sets and math-heavy documents, not for compiling a full journal manuscript with a bibliography and a class file. It is good at what it is for, which is not what most of this page's readers are doing.</p>
         <p><strong>Pick <a href="https://furnacecreek.org/archimedes/" rel="noopener">Archimedes</a> if</strong> your LaTeX is mostly equations inside otherwise plain documents. For a paper, use one of the six above.</p>
 
         <h3>TeX64</h3>
         <p><strong>Cost:</strong> Paid. <strong>Platform:</strong> macOS.</p>
-        <p>A newer native macOS editor that compiles locally through the MacTeX or TeX Live installation you already have, rather than bundling its own distribution the way Texifier does. It is recent enough that I would not yet rely on it for a deadline, for the same reason I say that about ModernTex: no track record. Worth watching if native-Mac matters to you and you already have MacTeX installed.</p>
+        <p>TeX64 is a newer native macOS editor. It compiles locally through the MacTeX or TeX Live installation you already have, rather than bundling its own distribution the way Texifier does. It is recent enough that I would not yet rely on it for a deadline, for the same reason I say that about ModernTex: no track record. Worth watching if native-Mac matters to you and you already have MacTeX installed.</p>
         <p><strong>Pick <a href="https://tex64.com/" rel="noopener">TeX64</a> if</strong> you want a native app, do not want a second TeX distribution on disk, and are comfortable being an early adopter.</p>
 
         <h3>Emacs with AUCTeX</h3>
         <p><strong>Cost:</strong> Free. <strong>Platform:</strong> anything.</p>
-        <p><a href="https://www.gnu.org/software/auctex/" rel="noopener">AUCTeX</a> plus RefTeX is, feature for feature, one of the most capable LaTeX environments that exists: inline previews of equations, cross-reference and citation lookup that understands your whole project, folding, and a compile loop you can bend to any shape. The learning curve is the entire <a href="https://www.gnu.org/software/emacs/" rel="noopener">Emacs</a> learning curve. If you already live in Emacs you know this and did not need this page. If you do not, this is not the week to start.</p>
+        <p><a href="https://www.gnu.org/software/auctex/" rel="noopener">AUCTeX</a> plus RefTeX is, feature for feature, one of the most capable LaTeX environments that exists. It offers inline previews of equations, cross-reference and citation lookup that understands your whole project, folding, and a compile loop you can bend to any shape. The learning curve is the entire <a href="https://www.gnu.org/software/emacs/" rel="noopener">Emacs</a> learning curve. If you already live in Emacs you know this and did not need this page. If you do not, this is not the week to start.</p>
         <p><strong>Pick AUCTeX if</strong> you are already an Emacs user. Nobody else.</p>
 
         <h3>Neovim or Vim with VimTeX</h3>
         <p><strong>Cost:</strong> Free. <strong>Platform:</strong> anything.</p>
-        <p><a href="https://github.com/lervag/vimtex" rel="noopener">VimTeX</a> is excellent: compilation, syntax, text objects for environments and commands, folding, and forward and inverse search when paired with a PDF viewer such as <a href="https://skim-app.sourceforge.io/" rel="noopener">Skim</a> on the Mac. The same caveat as Emacs applies. It rewards people who already think in <a href="https://www.vim.org/" rel="noopener">Vim</a> and punishes everyone else.</p>
+        <p><a href="https://github.com/lervag/vimtex" rel="noopener">VimTeX</a> is excellent. It handles compilation, syntax, text objects for environments and commands, folding, and forward and inverse search when paired with a PDF viewer such as <a href="https://skim-app.sourceforge.io/" rel="noopener">Skim</a> on the Mac. The same caveat as Emacs applies. It rewards people who already think in <a href="https://www.vim.org/" rel="noopener">Vim</a> and punishes everyone else.</p>
         <p><strong>Pick VimTeX if</strong> Vim is already how you write everything. Otherwise VS Code with LaTeX Workshop gives you most of the benefit with none of the modal editing.</p>
 
         <p><a href="https://www.sublimetext.com/" rel="noopener">Sublime Text</a> with the <a href="https://github.com/SublimeText/LaTeXTools" rel="noopener">LaTeXTools</a> package and <a href="https://www.barebones.com/products/bbedit/" rel="noopener">BBEdit</a> with its TeX syntax highlighting also exist. Neither adds anything the eight above do not, so they are not covered separately.</p>
@@ -378,7 +378,7 @@
         <p><strong>Installing nothing is also an option.</strong> Overleaf runs entirely in the browser.
         For a single co-authored paper on a borrowed machine that is often the right
         answer, and you can move to a local setup later without changing your source
-        files. Our <a href="/tools/latex-to-pdf/">LaTeX to PDF compiler</a> will also
+        files. The Purplelink <a href="/tools/latex-to-pdf/">LaTeX to PDF compiler</a> will also
         build a document without any local install if you just need one PDF.</p>
         <p>For the steps, sizes and a check that it worked, see <a href="/guides/install-latex-on-mac/">how to install LaTeX on a Mac</a>.</p>
         <p>Apple Silicon no longer needs any special handling. MacTeX has shipped native
@@ -386,11 +386,10 @@
         series hardware.</p>
 
         <h3 id="compiler">Which LaTeX compiler to use on a Mac</h3>
-        <p>People search for the best LaTeX compiler for Mac, and the honest answer is
+        <p>People search for the best LaTeX compiler for Mac, and the answer is
         that it is not a Mac question. MacTeX ships all three engines you would ever
         choose between, and every editor above lets you pick. <strong>pdfLaTeX</strong>
-        is the default, the fastest, and what nearly every journal template assumes;
-        start there.</p>
+        is the default, the fastest, and what nearly every journal template assumes. Start there.</p>
         <p><strong>XeLaTeX</strong> adds system fonts and proper Unicode,
         which matters for non-Latin scripts or a document that must use a specific
         typeface. <strong>LuaLaTeX</strong> does what XeLaTeX does and is where newer
@@ -404,7 +403,7 @@
         has a free tier with limits on compile time and no Git sync. Of the paid
         options, Texifier is a one-time $29.99 rather than a subscription.</p>
         <h3>How much does Overleaf cost compared with a Mac LaTeX editor?</h3>
-        <p>Overleaf Standard is $199 a year billed annually or $25 a month billed monthly, and its paid Student plan is $98 a year (Overleaf's plans page, read October 12, 2026). ModernTex, which Purplelink makes, is free for seven days and then $19.99 once with updates included, and TeXShop, TeXstudio and VS Code with LaTeX Workshop are free. Overleaf's paid plans are built for co-authors editing together, which is the main reason to pay for it.</p>
+        <p>Overleaf Standard is $199 a year billed annually or $25 a month billed monthly. Its paid Student plan is $98 a year (Overleaf's plans page, read October 12, 2026). ModernTex, which Purplelink makes, is free for seven days and then $19.99 once with updates included. TeXShop, TeXstudio and VS Code with LaTeX Workshop are free. Overleaf's paid plans are built for co-authors editing together, which is the main reason to pay for it.</p>
         <h3>Does macOS come with LaTeX?</h3>
         <p>No. macOS ships no TeX distribution and no LaTeX editor. You need to
         install MacTeX, or use a browser-based option like Overleaf.</p>
@@ -439,7 +438,7 @@
           <li><a href="/tools/bib-validator/">BibTeX Validator</a>: catch citation errors before compile.</li>
         </ul>
 
-        <p>Once the writing is done and submission is next, <a href="/tools/paper-review/">Paper Review</a> red-teams the manuscript before a referee does: four reviewer personas argue over it, citations are checked against the live record, and figures are scanned for integrity problems. That one is paid, from $9 per review.</p>
+        <p>Once the writing is done and submission is next, <a href="/tools/paper-review/">Paper Review</a> red-teams the manuscript before a referee does. Four reviewer personas argue over it, citations are checked against the live record, and figures are scanned for integrity problems. That one is paid, from $9 per review.</p>
 
         <p>For more on the academic LaTeX workflow generally, see the <a href="/guides/latex/">LaTeX hub</a> and the <a href="/guides/bibtex/">BibTeX and citations hub</a>.</p>
       </article>
@@ -447,7 +446,7 @@
       <section class="waitlist-section">
         <p class="eyebrow">From the team behind these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>ModernTex is a native macOS LaTeX studio: multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
         <div class="waitlist-actions">
           <a class="btn btn-primary" href="/moderntex/">Get ModernTex ($19.99)</a>
           <a class="btn btn-ghost" href="/moderntex/">See what it does</a>

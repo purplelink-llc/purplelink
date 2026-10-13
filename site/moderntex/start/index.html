@@ -139,7 +139,7 @@
       <p class="post-kicker"><img src="/assets/purplelink-mark.svg" alt="" width="18" height="18"><span>ModernTex setup guide</span></p>
       <h1 class="post-title">First ten minutes with ModernTex</h1>
       <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time> · written for version 1.3.0</p>
-      <p class="post-lede">Seven steps, in order: install the app, sort out a TeX distribution, build the sample manuscript, open your own project, fix a first error, start from a venue template, and run the checks before you submit.</p>
+      <p class="post-lede">The setup takes seven steps, in order. Install the app, set up a TeX distribution (the software that turns .tex files into PDFs), build the sample manuscript, open your own project, fix a first error, start from a venue template, and run the checks before you submit.</p>
     </div>
 
     <article class="post-body">
@@ -168,10 +168,10 @@
         <li>ModernTex cannot verify the script's contents, because the TinyTeX project does not publish a fixed checksum for it. The dialog says so.</li>
       </ul>
       <p>If you would rather install a distribution you download yourself, choose <strong>Install MacTeX Instead…</strong> in the same dialog, which opens the MacTeX site. When the TinyTeX install finishes, ModernTex builds again on its own.</p>
-      <p>TinyTeX starts with a small set of packages. When a document needs one that is missing, the error in Build Results carries an <strong>Install</strong> button with the package name, and the build runs again after the install.</p>
+      <p>TinyTeX starts with a small set of packages. When a document needs a missing package, the error in Build Results shows an <strong>Install</strong> button with the package name. The build runs again after the install.</p>
 
       <h2 id="sample">3. Open the sample manuscript and build once</h2>
-      <p>On the welcome screen, choose <strong>Try the Sample Manuscript</strong>. ModernTex creates a short example in a folder named ModernTex Sample inside Documents, opens its <code>main.tex</code>, and runs a build, so the first thing you see is source next to a PDF.</p>
+      <p>On the welcome screen, choose <strong>Try the Sample Manuscript</strong>. ModernTex creates a short example in a folder named ModernTex Sample inside Documents, opens its <code>main.tex</code>, and runs a build. The first thing you see is source next to a PDF.</p>
       <figure class="post-figure post-figure-shot">
         <img src="/assets/moderntex-screens/01-editor-clean-1440.webp" alt="ModernTex with a manuscript open: the document outline in the sidebar, LaTeX source in the editor, and the built PDF beside it" width="1440" height="792" loading="lazy" decoding="async">
         <figcaption>Sidebar, source and PDF. Click in the PDF to move the cursor to that spot in the source.</figcaption>
@@ -198,7 +198,7 @@
         <li><strong>Install</strong> followed by a package name appears when the document needs a package your distribution does not have. ModernTex installs it and builds again.</li>
         <li><strong>Fix with AI</strong> appears on an error that points to a line in one of your project's files.</li>
       </ul>
-      <p><strong>How Fix with AI works.</strong> It sends the lines around the error to a model and shows the proposed repair as a diff. Nothing changes until you choose <strong>Accept and Rebuild</strong>; <strong>Reject</strong> discards it. It only changes files inside the project. When the model cannot write a safe fix, you get exact steps to do by hand instead.</p>
+      <p><strong>How Fix with AI works.</strong> It sends the lines around the error to a model and shows the proposed repair as a diff. Nothing changes until you choose <strong>Accept and Rebuild</strong>. <strong>Reject</strong> discards the repair. It only changes files inside the project. When the model cannot write a safe fix, you get exact steps to do by hand instead.</p>
       <p>The model is Apple Intelligence, running on your Mac, when your Mac supports it. Otherwise, or if you prefer, sign in to your own Claude account or add your own OpenAI API key under <strong>Account &amp; AI Settings</strong>. A privacy consent step appears the first time a cloud provider is used. Purplelink charges nothing for these features, and every one of them is optional.</p>
 
       <h2 id="templates">6. Start from a venue template</h2>
@@ -235,7 +235,7 @@
 
       <h2 id="help">If something goes wrong</h2>
       <ul>
-        <li><strong>Where the license key goes.</strong> Click <strong>Enter license key</strong> in the trial bar above the toolbar, on the notice shown when the trial ends, or in Settings, and paste the key from your receipt email. The copy you already have unlocks, with no fresh download, and it keeps updating itself.</li>
+        <li><strong>Where the license key goes.</strong> Click <strong>Enter license key</strong> in the trial bar above the toolbar, on the notice shown when the trial ends, or in Settings, and paste the key from your receipt email. The copy you already have accepts the key with no fresh download, and it keeps updating itself.</li>
         <li><strong>Lost the key.</strong> <a href="/recover/">Find a purchase</a> emails a new key to the address you paid with. Any key you had before keeps working.</li>
         <li><strong>Something is broken or unclear.</strong> The <a href="/support/">support page</a> says what to include in an email. One person reads and answers every message.</li>
         <li><strong>What changed in each version.</strong> The <a href="/changelog/">changelog</a> lists every release.</li>

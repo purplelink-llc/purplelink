@@ -79,7 +79,7 @@
         <p class="post-lede">Researchers use Purplelink's free Citation Generator to turn a DOI, arXiv ID, or ISBN into a formatted APA, MLA, Chicago, or IEEE citation in seconds.</p>
       </div>
       <div class="post-body">
-        <p>Researchers preparing a manuscript bibliography use the Citation Generator to convert a DOI, arXiv ID, or ISBN into a formatted citation without opening a reference manager. The tool fetches metadata from public databases and formats the result in the browser, so no account is needed.</p>
+        <p>Researchers preparing a manuscript bibliography use the Citation Generator to convert a DOI (digital object identifier), arXiv ID, or ISBN (International Standard Book Number) into a formatted citation without opening a reference manager. The tool fetches metadata from public databases and formats the result in the browser. No account is needed.</p>
 
         <h2>Steps</h2>
 
@@ -88,7 +88,7 @@
             <p>Go to <a href="https://purplelink.llc/tools/citation-generator/">purplelink.llc/tools/citation-generator/</a>. The page opens with an identifier input field and format tabs for APA, MLA, Chicago, and IEEE.</p>
           </li>
           <li>
-            <p>Paste your identifier into the field: a DOI (like <code>10.1145/3290605.3300307</code>), an arXiv ID (like <code>2303.08774</code>), or an ISBN. Full doi.org and arxiv.org URLs also work; the tool extracts the identifier automatically.</p>
+            <p>Paste your identifier into the field: a DOI (like <code>10.1145/3290605.3300307</code>), an arXiv ID (like <code>2303.08774</code>), or an ISBN. Full doi.org and arxiv.org URLs also work, and the tool extracts the identifier automatically.</p>
           </li>
           <li>
             <p>Click Generate or press Enter. The tool fetches metadata from Crossref, the arXiv API, or Open Library and renders the formatted citation. Results appear in about one second.</p>
@@ -100,7 +100,7 @@
             <p>Click Copy. Paste the citation into your document.</p>
           </li>
           <li>
-            <p>Proofread before using. Author names with diacritics sometimes encode incorrectly in source database records. Verify the year, volume, and page range against the actual paper. Metadata from Crossref and Open Library is usually accurate but not guaranteed.</p>
+            <p>Proofread before using. Author names with diacritics sometimes encode incorrectly in source database records. Verify the year, volume, and page range against the actual paper. Metadata from Crossref and Open Library is usually accurate. However, it is not guaranteed.</p>
           </li>
           <li>
             <p>If the identifier does not resolve, use the manual entry form below the input field. The formatted output from manual entry is identical to an auto-resolved lookup.</p>
@@ -109,7 +109,7 @@
 
         <h2>What's happening under the hood</h2>
 
-        <p>DOI lookups resolve through Crossref, which indexes over 100 million published items. ISBNs use the Open Library API. DOI and ISBN lookups go straight from your browser; arXiv lookups pass through Purplelink's server because arXiv blocks direct browser requests. Nothing is stored. Formatting applies the field-mapping rules for each style: author ordering, year placement, title capitalization, and container name conventions. The entire operation runs in the page's JavaScript with no server call after the metadata arrives.</p>
+        <p>DOI lookups resolve through Crossref, which indexes over 100 million published items. ISBNs use the Open Library API. DOI and ISBN lookups go straight from your browser. arXiv lookups pass through Purplelink's server because arXiv blocks direct browser requests. Nothing is stored. Formatting applies the field-mapping rules for each style (author ordering, year placement, title capitalization, and container name conventions). The entire operation runs in the page's JavaScript with no server call after the metadata arrives.</p>
 
         <h2>Q&amp;A</h2>
 
@@ -117,7 +117,7 @@
         <p>Crossref records occasionally have author order errors. Check the paper's title page and edit the citation by hand.</p>
 
         <h3>I only have a URL, not a DOI.</h3>
-        <p>Paste the doi.org URL directly; the tool extracts the DOI. For a paper with no DOI or arXiv ID, use the manual entry form and fill in what you have.</p>
+        <p>Paste the doi.org URL directly, and the tool extracts the DOI. For a paper with no DOI or arXiv ID, use the manual entry form and fill in what you have.</p>
 
         <h3>Do I need to create an account?</h3>
         <p>No. Nothing is stored and no login is required.</p>

@@ -84,7 +84,7 @@
               "name": "My references contain accented characters like ü or é. Will they come through correctly?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The converter keeps accented characters as Unicode in every format. Current LaTeX engines read UTF-8 .bib files; if an older journal template rejects them, replace each one with its LaTeX accent command, such as {\\\"u} for ü."
+                "text": "The converter keeps accented characters as Unicode in every format. Current LaTeX engines read UTF-8 .bib files. If an older journal template rejects them, replace each one with its LaTeX accent command, such as {\\\"u} for ü."
               }
             }
           ]
@@ -127,7 +127,7 @@
         <p class="post-lede">Purplelink's Reference Converter converts citations between BibTeX, RIS, and EndNote formats entirely in your browser. This guide walks through the export, paste, and convert steps.</p>
       </div>
       <div class="post-body">
-        <p>To convert references between BibTeX, RIS and EndNote, paste the exported records into the free <a href="/tools/reference-converter/">Reference Converter</a>, pick the target format and copy the result. It works in any direction and runs in your browser, so nothing is uploaded.</p>
+        <p>To convert references between BibTeX, RIS and EndNote, paste the exported records into the free <a href="/tools/reference-converter/">Reference Converter</a>, pick the target format and copy the result. It works in any direction. It runs in your browser, so nothing is uploaded.</p>
 
         <h2>Steps</h2>
 
@@ -149,9 +149,9 @@
           </li>
         </ol>
 
-        <h2>What's happening under the hood</h2>
+        <h2>What happens under the hood</h2>
 
-        <p>The converter reads each record into plain fields (title, authors, year, journal, DOI and so on), then writes those fields back out in the target format's syntax. BibTeX stores authors as "Last, First and Last, First"; RIS puts each author on its own AU line; EndNote uses a %A tag per author. Journal articles, conference papers, book chapters and books convert cleanly. Unusual entry types or non-standard fields can come through slightly altered, so scan the output before importing it.</p>
+        <p>The converter reads each record into plain fields (title, authors, year, journal, DOI and so on), then writes those fields back out in the target format's syntax. BibTeX stores authors as "Last, First and Last, First". RIS puts each author on its own AU line. EndNote uses a %A tag per author. Journal articles, conference papers, book chapters and books convert cleanly. Unusual entry types or non-standard fields can come through slightly altered, so scan the output before importing it.</p>
 
         <h2>Q&amp;A</h2>
 
@@ -162,11 +162,11 @@
         <p>Fields with no equivalent in the target format are dropped. Missing DOIs or truncated abstracts reflect the source data, not the conversion.</p>
 
         <h3>My references contain accented characters like ü or é. Will they come through correctly?</h3>
-        <p>The converter keeps accented characters as Unicode in every format. Current LaTeX engines read UTF-8 .bib files; if an older journal template rejects them, replace each one with its LaTeX accent command, such as {\"u} for ü.</p>
+        <p>The converter keeps accented characters as Unicode in every format. Current LaTeX engines read UTF-8 .bib files. If an older journal template rejects them, replace each one with its LaTeX accent command, such as {\"u} for ü.</p>
 
         <h2>After converting</h2>
 
-        <p>Before a .bib file goes into a manuscript, run it through the free <a href="/tools/bib-validator/">BibTeX Validator</a>, which flags missing fields, duplicate keys and references that do not match a real DOI. The <a href="/guides/fix-bibtex-errors/">guide to common BibTeX errors</a> explains what each warning means, and the <a href="/guides/bibtex/">BibTeX hub</a> collects the related tools. If you only have a list of DOIs, <a href="/guides/doi-to-bibtex/">get BibTeX from a DOI or arXiv ID</a> instead. Once the manuscript is finished, <a href="/tools/paper-review/">Paper Review</a> ($9 to $15, no account) checks the cited sources against the claims in the text.</p>
+        <p>Before a .bib file goes into a manuscript, run it through the free <a href="/tools/bib-validator/">BibTeX Validator</a>, which flags missing fields, duplicate keys and references that do not match a real DOI. The <a href="/guides/fix-bibtex-errors/">guide to common BibTeX errors</a> explains what each warning means, and the <a href="/guides/bibtex/">BibTeX hub</a> collects the related tools. If you only have a list of DOIs, <a href="/guides/doi-to-bibtex/">get BibTeX from a DOI or arXiv ID</a> instead. When the manuscript is finished, <a href="/tools/paper-review/">Paper Review</a> ($9 to $15, no account) checks the cited sources against the claims in the text.</p>
 
         <p>Further reading: if you manage bibliographies in LaTeX often, <a href="https://www.amazon.com/dp/0135556848?tag=purplelinkpl-20" rel="sponsored noopener noreferrer" target="_blank" data-track="affiliate_click" data-track-meta="9780135556849">The LaTeX Companion</a> (3rd edition) covers BibTeX and biblatex styles in detail in Part II. There are more books on the <a href="/desk/">research desk</a>.</p>
         <p>Disclosure: the Amazon link above is an affiliate link. As an Amazon Associate I earn from qualifying purchases.</p>

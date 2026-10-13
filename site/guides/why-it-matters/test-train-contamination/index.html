@@ -52,7 +52,7 @@
           "name": "What is test-train contamination?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "If even a small fraction of your test set ends up in training (directly or through near-duplicates, or via a pretraining corpus that included the benchmark), your evaluation no longer measures generalisation. For language-model evaluations, contamination is especially insidious because the training corpus is enormous and the test set is public."
+            "text": "If even a small fraction of your test set ends up in training, your evaluation no longer measures generalisation. The leak can be direct, come through near-duplicates, or arrive via a pretraining corpus that included the benchmark. For language-model evaluations, contamination is hard to catch because the training corpus is enormous and the test set is public."
           }
         },
         {
@@ -60,7 +60,7 @@
           "name": "Why does a reviewer care about test-train contamination?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Reviewers check: was the train/test split clean? For pretrained models, does the pretraining cutoff predate the test set's release? Did you de-duplicate against the eval set? Are there near-duplicates (paraphrases, translations, format variants)?"
+            "text": "Reviewers check whether the train/test split was clean. For pretrained models, they check whether the pretraining cutoff predates the test set's release. They also check whether you de-duplicated against the eval set and whether near-duplicates remain (paraphrases, translations, format variants)."
           }
         },
         {
@@ -68,7 +68,7 @@
           "name": "How do I fix test-train contamination?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Build a contamination test into your evaluation: search the training corpus for substrings from the test set. For LLM evals, prefer benchmarks released AFTER your model's pretraining cutoff. Where contamination is possible, report a contamination-robustness check that masks or removes contaminated items."
+            "text": "Build a contamination test into your evaluation: search the training corpus for substrings from the test set. For large language model (LLM) evals, prefer benchmarks released after your model's pretraining cutoff. Where contamination is possible, report a check that masks or removes contaminated items and shows how the results change."
           }
         }
       ]
@@ -94,13 +94,13 @@
       <p><strong>When the evaluation set leaked into training.</strong></p>
 
       <h2>What it is</h2>
-      <p>If even a small fraction of your test set ends up in training (directly or through near-duplicates, or via a pretraining corpus that included the benchmark), your evaluation no longer measures generalisation. For language-model evaluations, contamination is especially insidious because the training corpus is enormous and the test set is public.</p>
+      <p>If even a small fraction of your test set ends up in training, your evaluation no longer measures generalisation. The leak can be direct, come through near-duplicates, or arrive via a pretraining corpus that included the benchmark. For language-model evaluations, contamination is hard to catch because the training corpus is enormous and the test set is public.</p>
 
       <h2>Why a reviewer cares</h2>
-      <p>Reviewers check: was the train/test split clean? For pretrained models, does the pretraining cutoff predate the test set's release? Did you de-duplicate against the eval set? Are there near-duplicates (paraphrases, translations, format variants)?</p>
+      <p>Reviewers check whether the train/test split was clean. For pretrained models, they check whether the pretraining cutoff predates the test set's release. They also check whether you de-duplicated against the eval set and whether near-duplicates remain (paraphrases, translations, format variants).</p>
 
       <h2>How to fix it</h2>
-      <p>Build a contamination test into your evaluation: search the training corpus for substrings from the test set. For LLM evals, prefer benchmarks released AFTER your model's pretraining cutoff. Where contamination is possible, report a contamination-robustness check that masks or removes contaminated items.</p>
+      <p>Build a contamination test into your evaluation: search the training corpus for substrings from the test set. For large language model (LLM) evals, prefer benchmarks released after your model's pretraining cutoff. Where contamination is possible, report a check that masks or removes contaminated items and shows how the results change.</p>
 
       <hr class="divider">
       <p>This is one of <a href="/guides/why-it-matters/">~15 canonical methodology explainers</a> Paper Review's red-team report links to. To get a full review of your manuscript, <a href="/tools/paper-review/" class="link-strong">start a Paper Review ($9)</a>.</p>

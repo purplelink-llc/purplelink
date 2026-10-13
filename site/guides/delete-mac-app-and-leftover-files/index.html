@@ -59,7 +59,7 @@
       "name": "If I drag an app to the Trash, is it really gone?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The app is. Its saved data usually is not. Preferences, caches and a support folder stay in your Library until you remove them."
+        "text": "The app is gone. Its saved data usually is not. Preferences, caches and a support folder stay in your Library until you remove them."
       }
     },
     {
@@ -83,7 +83,7 @@
       "name": "Will removing leftovers fix System Data?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It can shrink it by the orphaned app data it holds, but System Data also holds Time Machine snapshots, device backups and system files. The guide on why System Data is so big on a Mac lists each cause."
+        "text": "It can shrink it by the orphaned app data it holds. However, System Data also holds Time Machine snapshots, device backups and system files. The guide on why System Data is so big on a Mac lists each cause."
       }
     },
     {
@@ -131,20 +131,20 @@
       </div>
 
       <article class="post-body">
-        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes one app mentioned here, <a href="/legroom/">Legroom</a>, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is young, and I say where free tools do the same job. I ran the Terminal command in step 1 and looked at the Library folders named here on my own Mac on October 13, 2026 (macOS 27.2). Everything else comes from Apple's page and each tool's own description, and where I could not confirm something I say so.</p>
+        <p><strong>Disclosure:</strong> Purplelink, which publishes this site, makes one app mentioned here, <a href="/legroom/">Legroom</a>, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is young, and I say where free tools do the same job. On October 13, 2026 I ran the Terminal command in step 1 and looked at the Library folders named here on my own Mac (macOS 27.2). Everything else comes from Apple's page and each tool's own description. Where I could not confirm something, I say so.</p>
 
         <h2>The short answer</h2>
         <p>Apple's page on deleting apps says to run an app's own uninstaller if it has one, because that is the best way to remove login items, extensions and other data the app stored elsewhere (<a href="https://support.apple.com/en-us/ht202235" rel="noopener">Apple: Delete or uninstall apps on Mac</a>). When an app has no uninstaller, what usually stays is small: preferences, caches, saved state and a support folder. A few apps keep gigabytes. You can find and remove it by hand in about five minutes.</p>
 
         <h2 id="steps">Steps</h2>
         <ol>
-          <li><strong>Find the app's bundle identifier before you delete it, if you can.</strong> Leftover files are named after it, not after the app. In Terminal: <code>mdls -name kMDItemCFBundleIdentifier /Applications/Example.app</code>. It prints something like <code>com.example.app</code>; on my Mac it returned <code>llc.purplelink.panely</code> for Panely. If the app is already in the Trash, run the same command on its path there.</li>
+          <li><strong>Find the app's bundle identifier before you delete it, if you can.</strong> Leftover files are named after it, not after the app. In Terminal: <code>mdls -name kMDItemCFBundleIdentifier /Applications/Example.app</code>. It prints something like <code>com.example.app</code>. On my Mac it returned <code>llc.purplelink.panely</code> for Panely. If the app is already in the Trash, run the same command on its path there.</li>
           <li><strong>Delete the app.</strong> In Finder, select it in Applications and press Command-Delete, or drag it to the Trash. Apple notes the Trash does not free space until you empty it (Finder, Empty Trash).</li>
           <li><strong>Open your Library folder.</strong> In Finder, hold the Option key and choose Library from the Go menu.</li>
-          <li><strong>Look in these folders for that identifier or the app's name:</strong> Application Support, Caches, Preferences, Containers, Group Containers, Saved Application State, Logs, HTTPStorages, WebKit, Cookies and LaunchAgents. Not every folder exists on every Mac: on mine, Saved Application State was absent when I looked.</li>
+          <li><strong>Look in these folders for that identifier or the app's name:</strong> Application Support, Caches, Preferences, Containers, Group Containers, Saved Application State, Logs, HTTPStorages, WebKit, Cookies and LaunchAgents. Not every folder exists on every Mac. On mine, Saved Application State was absent when I looked.</li>
           <li><strong>Judge each match before you remove it.</strong> The table below says which are safe.</li>
           <li><strong>Move the matches to the Trash rather than deleting them outright.</strong> If nothing you miss turns up in a day or two, empty the Trash.</li>
-          <li><strong>Check for system-level leftovers.</strong> Some apps install helpers in <code>/Library</code>, the one at the top of the disk rather than in your home folder. Those need an administrator password. Look at them in Finder and do not delete anything there that you cannot identify.</li>
+          <li><strong>Check for system-level leftovers.</strong> Some apps install helpers in <code>/Library</code> (the folder at the top of the disk, not the one in your home folder). Those need an administrator password. Look at them in Finder, and do not delete anything there that you cannot identify.</li>
         </ol>
 
         <h2 id="which">Which leftovers are safe to remove</h2>
@@ -164,10 +164,10 @@
         </div>
 
         <h2>What to leave alone</h2>
-        <p>Apple apps and anything in system folders. Anything inside Group Containers whose name you do not recognise. Folders that hold a photo, music or video library, a backup, or an item that exists only in iCloud. Anything that changed in the last few minutes, because the app may still be running.</p>
+        <p>Leave Apple apps and anything in system folders. Leave anything inside Group Containers whose name you do not recognise. Leave folders that hold a photo, music or video library, a backup, or an item that exists only in iCloud. Leave anything that changed in the last few minutes, because the app may still be running.</p>
 
         <h2>Why this happens</h2>
-        <p>A Mac app is a folder you can drag anywhere, and macOS does not keep a list of what an app wrote to your Library while it ran. Dragging the app to the Trash loses nothing, and cleans up nothing either.</p>
+        <p>A Mac app is a folder you can drag anywhere. macOS does not keep a list of what an app wrote to your Library while it ran. Dragging the app to the Trash therefore loses nothing and cleans up nothing.</p>
 
         <h2 id="tools">Tools that do this for you</h2>
         <p>From each tool's own description or a current review, read October 13, 2026. I did not test any of them for this guide.</p>
@@ -175,23 +175,23 @@
           <table class="u-table-wide">
             <thead><tr><th class="u-th" scope="col">Tool</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">What it does</th><th class="u-th" scope="col">Worth knowing</th></tr></thead>
             <tbody>
-              <tr><td class="u-cell"><a href="https://github.com/alienator88/Pearcleaner" rel="noopener">Pearcleaner</a></td><td class="u-cell">Free</td><td class="u-cell">Finds leftovers for an app you drop on it, searches for leftovers of apps already deleted, and can watch the Trash</td><td class="u-cell">Source-available under Apache 2.0 with the Commons Clause, which bars selling it, so not open source in the strict sense. Review what it finds before deleting. Third-party sources list macOS 13 or later; I could not confirm that on the project's page.</td></tr>
+              <tr><td class="u-cell"><a href="https://github.com/alienator88/Pearcleaner" rel="noopener">Pearcleaner</a></td><td class="u-cell">Free</td><td class="u-cell">Finds leftovers for an app you drop on it, searches for leftovers of apps already deleted, and can watch the Trash</td><td class="u-cell">Source-available under Apache 2.0 with the Commons Clause, which bars selling it, so it is not open source in the strict sense. Review what it finds before deleting. Third-party sources list macOS 13 or later, but I could not confirm that on the project's page.</td></tr>
               <tr><td class="u-cell"><a href="https://freemacsoft.net/appcleaner/" rel="noopener">AppCleaner</a></td><td class="u-cell">Free</td><td class="u-cell">Drop an app on it and it lists the related files</td><td class="u-cell">Long established. I could not read the developer's page, so I am not stating a minimum macOS version. Not the same product as Nektony's paid App Cleaner and Uninstaller.</td></tr>
-              <tr><td class="u-cell"><a href="https://github.com/tw93/Mole" rel="noopener">Mole</a></td><td class="u-cell">Free command-line tool (GPL-3.0); a separate Mac app has its own price</td><td class="u-cell"><code>mo uninstall</code> removes an app with related files, keeps data shared with other installed copies, and supports <code>--dry-run</code></td><td class="u-cell">Terminal only. Runs on macOS 12 or newer.</td></tr>
-              <tr><td class="u-cell"><a href="/legroom/">Legroom</a> (mine)</td><td class="u-cell">Free 7-day trial, then $9.99 once</td><td class="u-cell">Its Uninstaller reads the app's bundle identifier, lists matches from a fixed set of Library folders with sizes, ticks the ones whose names match exactly, and moves them to the Trash only after you confirm</td><td class="u-cell">Young. It does not offer Apple apps or system folders, and it lists leftovers in the system Library with a command for you to run yourself. I have not yet watched it move real files on my own Mac, only the preview and confirm steps.</td></tr>
+              <tr><td class="u-cell"><a href="https://github.com/tw93/Mole" rel="noopener">Mole</a></td><td class="u-cell">Free command-line tool (GPL-3.0). A separate Mac app has its own price</td><td class="u-cell"><code>mo uninstall</code> removes an app with related files, keeps data shared with other installed copies, and supports <code>--dry-run</code></td><td class="u-cell">Terminal only. Runs on macOS 12 or newer.</td></tr>
+              <tr><td class="u-cell"><a href="/legroom/">Legroom</a> (mine)</td><td class="u-cell">Free 7-day trial, then $9.99 once</td><td class="u-cell">Its Uninstaller reads the app's bundle identifier, lists matches from a fixed set of Library folders with sizes, ticks the ones whose names match exactly, and moves them to the Trash only after you confirm</td><td class="u-cell">Young. It does not offer Apple apps or system folders. It lists leftovers in the system Library with a command for you to run yourself. I have not yet watched it move real files on my own Mac, only the preview and confirm steps.</td></tr>
             </tbody>
           </table>
         </div>
 
         <h2>Frequently asked</h2>
         <h3>If I drag an app to the Trash, is it really gone?</h3>
-        <p>The app is. Its saved data usually is not. Preferences, caches and a support folder stay in your Library until you remove them.</p>
+        <p>The app is gone. Its saved data usually is not. Preferences, caches and a support folder stay in your Library until you remove them.</p>
         <h3>Is it safe to delete the leftover folders?</h3>
         <p>Mostly, for an app you no longer use. The risk is data you want: a database in Application Support, or documents in a Container. Look inside first, and move things to the Trash instead of deleting them, so you can put them back.</p>
         <h3>Does leftover data slow my Mac down?</h3>
         <p>No, it only takes space. Most apps leave a few megabytes. A few leave far more, which is why some people find tens of gigabytes after years of trying apps.</p>
         <h3>Will removing leftovers fix System Data?</h3>
-        <p>It can shrink it by the orphaned app data it holds, but System Data also holds Time Machine snapshots, device backups and system files. The guide on why System Data is so big on a Mac lists each cause. See <a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac?</a></p>
+        <p>It can shrink it by the orphaned app data it holds. However, System Data also holds Time Machine snapshots, device backups and system files. The guide on why System Data is so big on a Mac lists each cause. See <a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac?</a></p>
         <h3>Why not just use a cleaner app?</h3>
         <p>You can. Whichever you choose, look at what it plans to remove before it removes it, and prefer one that moves things to the Trash instead of deleting them outright.</p>
 
