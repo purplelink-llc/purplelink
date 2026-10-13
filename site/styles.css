@@ -5488,3 +5488,6 @@ a, button, summary, label, select, input, textarea, [role="button"], [role="tab"
 dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavior: contain; }
 /* Containers that take focus from a script (results, status lines) show a ring when a keyboard puts it there. */
 .list-signup .list-signup-status:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+/* Affiliate disclosure: one plain sentence under the title of any page, or digest issue, that carries a tracked link. */
+.aff-disclosure { margin: 0 0 20px; padding-left: 12px; border-left: 2px solid var(--line); font-size: 0.875rem; line-height: 1.5; color: var(--muted); }
