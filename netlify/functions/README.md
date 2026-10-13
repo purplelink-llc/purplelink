@@ -158,7 +158,7 @@ This is the only step you have to do in the Netlify UI (the CLI doesn't expose o
 2. Under **Outgoing webhooks**, click **Add notification**
 3. Configure:
    - **Event:** `Deploy succeeded`
-   - **URL to notify:** `https://purplelink.llc/.netlify/functions/indexnow-ping?token=_LpQkCvG08Pp7kD62F5LXipYj70JsSG9R3iUk405pik`
+   - **URL to notify:** `https://purplelink.llc/.netlify/functions/indexnow-ping?token=<INDEXNOW_PING_TOKEN>`
    - **JWT signature secret:** leave blank (auth is via the URL token instead)
 4. Save
 
@@ -169,7 +169,7 @@ After that, every successful production deploy automatically pings IndexNow abou
 If you ever need to force a full re-ping (e.g., after a large sitemap rewrite):
 
 ```
-TOKEN='_LpQkCvG08Pp7kD62F5LXipYj70JsSG9R3iUk405pik'
+TOKEN='<INDEXNOW_PING_TOKEN>'
 curl -X POST "https://purplelink.llc/.netlify/functions/indexnow-ping?token=$TOKEN&all=1"
 ```
 
