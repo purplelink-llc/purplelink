@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Audio, Img, Sequence, staticFile, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { brand, clamp01, expoOut, FONT_BODY, FONT_DISPLAY } from "./theme.js";
 import { Backdrop, useFonts } from "./V2.jsx";
 import { Bumpered, BUMPER } from "./Bumper.jsx";
@@ -8,7 +8,8 @@ import { buildLong } from "./latexfix/longplan.js";
 
 // The long "LaTeX Error: File not found" tutorial: title card, one cut per cause (the same typed log, highlighted
 // source and fix as the Shorts, minus the end card), then a ModernTex card with the product's own editor screenshot.
-// Everything on screen is text drawn here or a real screenshot from the site; nothing is simulated.
+// Everything on screen is text drawn here, a real screenshot from the site, or a real recording of ModernTex
+// (assets/footage, window-only, invented sample projects); nothing is simulated.
 const INK = "oklch(14% 0.07 310)";
 const MUTED = "oklch(46% 0.04 300)";
 const PURPLE = "oklch(50% 0.24 310)";
@@ -82,6 +83,24 @@ function ModernTexCard({ timing }) {
   );
 }
 
+// Real ModernTex footage: a window-only recording of the app (invented sample project) fixing the cause just shown.
+function ClipCard({ id, timing }) {
+  const frame = useCurrentFrame();
+  const t = frame / brand.fps;
+  const rv = (d, len = 0.7) => expoOut(clamp01((t - d) / len));
+  const H = 860, W = Math.round(H * 1800 / 1304);
+  return (
+    <AbsoluteFill>
+      <Backdrop px={0} py={0} />
+      <div style={{ position: "absolute", left: 0, right: 0, top: 46, textAlign: "center", fontFamily: FONT_BODY, fontWeight: 700, fontSize: 34, letterSpacing: "0.1em", textTransform: "uppercase", color: PURPLE, ...up(rv(0.05)) }}>In ModernTex</div>
+      <div style={{ position: "absolute", left: (1920 - W) / 2, top: 130, width: W, height: H, borderRadius: 20, overflow: "hidden", boxShadow: "0 40px 90px oklch(30% 0.14 310 / 0.34), 0 12px 30px oklch(30% 0.14 310 / 0.22)", ...up(rv(0.1, 0.8), 40) }}>
+        <OffthreadVideo src={staticFile(`clips/${id}.mp4`)} muted style={{ width: W, height: H, display: "block" }} />
+      </div>
+      <Sequence from={fr(0.25)}><Audio src={staticFile(timing.scenes[0].audio)} /></Sequence>
+    </AbsoluteFill>
+  );
+}
+
 export function LatexLong({ parts, bumper = BUMPER }) {
   useFonts();
   const { segs, total } = buildLong(parts);
@@ -92,6 +111,7 @@ export function LatexLong({ parts, bumper = BUMPER }) {
           <Sequence key={i} from={fr(s.t0)} durationInFrames={fr(s.dur)}>
             {s.kind === "title" && <TitleCard timing={s.timing} />}
             {s.kind === "cut" && <Cut id={s.id} format="16x9" timing={s.timing} storyboard={s.storyboard} showEnd={false} />}
+            {s.kind === "clip" && <ClipCard id={s.id} timing={s.timing} />}
             {s.kind === "moderntex" && <ModernTexCard timing={s.timing} />}
           </Sequence>
         ))}

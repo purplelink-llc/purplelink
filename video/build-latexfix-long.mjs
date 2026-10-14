@@ -36,10 +36,13 @@ const brand = JSON.parse(fs.readFileSync(path.join(ROOT, "brand.json"), "utf8"))
 const PLAN = [
   { kind: "title", id: "fnf-long-title", sb: "storyboards/latex-errors-long/title.json" },
   { kind: "cut", id: "file-not-found-package", sb: "storyboards/latex-errors/file-not-found-package.json" },
+  { kind: "clip", id: "fnf-long-clip-package", sb: "storyboards/latex-errors-long/clip-package.json", footage: "assets/footage/mt-package.mp4" },
   { kind: "cut", id: "file-not-found-name", sb: "storyboards/latex-errors/file-not-found-name.json" },
   { kind: "cut", id: "file-not-found-template", sb: "storyboards/latex-errors/file-not-found-template.json" },
+  { kind: "clip", id: "fnf-long-clip-template", sb: "storyboards/latex-errors-long/clip-template.json", footage: "assets/footage/mt-template.mp4" },
   { kind: "cut", id: "file-not-found-class", sb: "storyboards/latex-errors/file-not-found-class.json" },
   { kind: "cut", id: "file-not-found-input", sb: "storyboards/latex-errors/file-not-found-input.json" },
+  { kind: "clip", id: "fnf-long-clip-input", sb: "storyboards/latex-errors-long/clip-input.json", footage: "assets/footage/mt-input.mp4" },
   { kind: "moderntex", id: "fnf-long-moderntex", sb: "storyboards/latex-errors-long/moderntex.json" },
 ];
 const parts = [];
@@ -63,7 +66,14 @@ for (const s of segs) {
 
 const pub = path.join(ROOT, ".cache", `public-${NAME}`);
 fs.rmSync(pub, { recursive: true, force: true });
-for (const d of ["fonts", "brand", "audio", "img"]) fs.mkdirSync(path.join(pub, d), { recursive: true });
+for (const d of ["fonts", "brand", "audio", "img", "clips"]) fs.mkdirSync(path.join(pub, d), { recursive: true });
+// real ModernTex recordings; each holds its last frame for 8 s, so it must cover the segment it fills
+for (const p of PLAN.filter((x) => x.footage)) {
+  const len = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path.join(ROOT, p.footage)]).toString());
+  const seg = segs.find((s) => s.id === p.id);
+  if (len < seg.dur) throw new Error(`${p.id}: footage ${len.toFixed(1)}s is shorter than its ${seg.dur.toFixed(1)}s segment`);
+  fs.copyFileSync(path.join(ROOT, p.footage), path.join(pub, "clips", `${p.id}.mp4`));
+}
 for (const f of Object.values(brand.fonts)) fs.copyFileSync(path.resolve(ROOT, f.file), path.join(pub, "fonts", path.basename(f.file)));
 stageBrandAudio(path.join(ROOT, "assets"), path.join(pub, "brand"));
 for (const p of PLAN) say(`narration -16 LUFS ${p.id}: ${stageNarration(path.join(ROOT, ".cache", p.id, "audio"), path.join(pub, "audio", p.id)).join(", ")}`);

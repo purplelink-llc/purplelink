@@ -92,10 +92,15 @@ node build-latexfix.mjs <slug> --stills 5,9,14           # JPG stills into .cach
 node verify-latexfix.mjs [slug]                          # compile each example with the local pdflatex, compare logs
 zsh render-latexfix-batch.sh <slug> <slug> ...           # several videos strictly one after another
 
-The long tutorial for one error, "File not found" (about 2 minutes 15, 16:9 only): a title card, the five causes from
+The long tutorial for one error, "File not found" (about 2 minutes 45, 16:9 only): a title card, the five causes from
 the page (`file-not-found-package`, `-name`, `-template`, `-class`, `-input` in `src/latexfix/data.js`, each cut reuses the
 Short's typed log, highlighted source and fix without its end card) and a ModernTex card with the editor screenshot
 from `site/assets/moderntex-screens/`. One render, one pair of bumpers.
+
+After causes 1, 3 and 5 an "In ModernTex" clip of about 11 s shows the same fix in the real app (`assets/footage/mt-*.mp4`,
+narrated by `storyboards/latex-errors-long/clip-*.json`). They are window-only recordings of ModernTex 1.7.1 on invented
+sample projects, filmed 2026-10-14 with `tools/winrec --no-cursor` while the app was frontmost (in the background its
+window stops redrawing). Each file holds its last frame for 8 s and the builder fails if a clip is shorter than its segment.
 ```
 node check-latexfix.mjs && node verify-latexfix.mjs        # text matches the page and the real pdflatex log (cause 1 cannot be reproduced locally)
 node build-latexfix-long.mjs --stills 7.8,24,52            # frames at those composition seconds (bumper included)
