@@ -107,5 +107,12 @@ for (const m of marks) ff(["-ss", m.toFixed(2), "-i", file, "-frames:v", "1", "-
 const poster = path.join(OUT, `${NAME}-poster.jpg`);
 await renderStill({ composition: comp, serveUrl, output: poster, imageFormat: "jpeg", jpegQuality: 92, inputProps, frame: Math.round((P0 + segs[0].t0 + 8) * brand.fps) });
 say(`poster: ${mb(poster)} MB -> ${path.relative(ROOT, poster)}`);
+// A/B/C thumbnails for YouTube Test & Compare (required for every long video; see README "A/B testing")
+const abSpec = path.join(ROOT, "thumbs", "ab", `${NAME}.json`);
+if (!fs.existsSync(abSpec)) throw new Error(`no thumbnail variants at ${path.relative(ROOT, abSpec)}: write three (A, B, C) before publishing`);
+const ab = JSON.parse(fs.readFileSync(abSpec, "utf8"));
+if (ab.length !== 3 || ab.map((v) => v.variant).join("") !== "ABC") throw new Error(`${path.relative(ROOT, abSpec)} must hold variants A, B and C`);
+execFileSync(process.execPath, [path.join(ROOT, "build-thumbs.mjs"), "--spec", path.relative(ROOT, abSpec), "--out", OUT, "--no-sheet"], { stdio: "inherit" });
+say(`thumbnails A/B/C -> ${path.relative(ROOT, OUT)}/${NAME}-thumb-{A,B,C}.jpg; publish with yt-upload.py --ab-thumbnails`);
 say(`total: ${secs(t0)}s`);
 fs.writeFileSync(path.join(OUT, "run-log.txt"), log.join("\n") + "\n");
