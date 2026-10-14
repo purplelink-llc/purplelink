@@ -5,8 +5,16 @@
   <link href="https://purplelink.llc/blog/feed.xml" rel="self"/>
   <link href="https://purplelink.llc/blog/"/>
   <id>https://purplelink.llc/blog/</id>
-  <updated>2026-10-07T12:00:00Z</updated>
+  <updated>2026-10-14T12:00:00Z</updated>
   <author><name>Benjamin Ampel</name></author>
+  <entry>
+    <title>Checking a replication package before the data editor does</title>
+    <link href="https://purplelink.llc/blog/checking-replication-package-before-data-editor/"/>
+    <id>https://purplelink.llc/blog/checking-replication-package-before-data-editor/</id>
+    <published>2026-10-14T12:00:00Z</published>
+    <updated>2026-10-14T12:00:00Z</updated>
+    <summary>A journal's request for your replication package bundles nine separate requirements into one line. Here is how I check a project folder against them with Replication Package Checker before a data editor does.</summary>
+  </entry>
   <entry>
     <title>Forward and inverse search aren't mirror images</title>
     <link href="https://purplelink.llc/blog/forward-and-inverse-search-arent-mirror-images/"/>
@@ -53,7 +61,7 @@
     <id>https://purplelink.llc/blog/tikz-and-tables-without-the-syntax/</id>
     <published>2026-09-13T12:00:00Z</published>
     <updated>2026-10-07T12:00:00Z</updated>
-    <summary>ModernTex now has a visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel — both still write plain LaTeX underneath.</summary>
+    <summary>ModernTex now has a visual TikZ designer with live preview, and a Table Editor that pastes straight from Excel. Both still write plain LaTeX underneath.</summary>
   </entry>
   <entry>
     <title>Checking your response letter before resubmission</title>
@@ -72,7 +80,7 @@
     <summary>The kits page had visitors but Stripe showed no sessions. Here is how I instrumented the checkout boundary without adding click handlers to every buy button.</summary>
   </entry>
   <entry>
-    <title>What Your Literature Search Misses</title>
+    <title>What your literature search misses</title>
     <link href="https://purplelink.llc/blog/what-your-literature-search-misses/"/>
     <id>https://purplelink.llc/blog/what-your-literature-search-misses/</id>
     <published>2026-08-26T12:00:00Z</published>
@@ -189,7 +197,7 @@
     <id>https://purplelink.llc/blog/what-globepin-does-differently/</id>
     <published>2026-05-27T12:00:00Z</published>
     <updated>2026-05-31T12:00:00Z</updated>
-    <summary>Why GlobePin is different from every travel tracking app on the market - and what we built that the others missed.</summary>
+    <summary>Why GlobePin is different from every travel tracking app on the market, and what I built that the others missed.</summary>
   </entry>
   <entry>
     <title>The LaTeX editor that academics actually want</title>
@@ -197,7 +205,7 @@
     <id>https://purplelink.llc/blog/the-latex-editor-academics-want/</id>
     <published>2026-05-27T12:00:00Z</published>
     <updated>2026-09-04T12:00:00Z</updated>
-    <summary>Why existing LaTeX editors fail academic researchers - and what ModernTex does differently to serve the manuscript workflow.</summary>
+    <summary>Why existing LaTeX editors fail academic researchers, and what ModernTex does differently for the manuscript workflow.</summary>
   </entry>
   <entry>
     <title>Starting Purplelink</title>
