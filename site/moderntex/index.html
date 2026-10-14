@@ -26,7 +26,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/moderntex-icon.webp" as="image" fetchpriority="high">
     <script src="/theme.js?v=07d8025cab"></script>
-    <link rel="stylesheet" href="/styles.css?v=bfe7a8458f">
+    <link rel="stylesheet" href="/styles.css?v=b2952c350a">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/moderntex/seats.css?v=191e754b6e">
     <link rel="stylesheet" href="/buy.css?v=589347358c">
@@ -216,6 +216,23 @@
           </div>
           <p class="trial-remind-note" data-trial-status aria-live="polite">Optional. Three emails over a week, then nothing, each with an unsubscribe link.</p>
         </form>
+        <form class="ask-poll" data-ask-poll hidden novalidate>
+          <fieldset>
+            <legend id="ask-poll-h1">One optional question: what are you trying to do with ModernTex?</legend>
+            <label class="ask-poll-choice"><input type="radio" name="what-1" value="paper"> <span>Write a paper</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-1" value="thesis"> <span>Write a thesis or dissertation</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-1" value="coauthors"> <span>Work with co-authors</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-1" value="replace-overleaf"> <span>Replace Overleaf</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-1" value="course-notes"> <span>Course notes or lecture slides</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-1" value="looking"> <span>Just looking</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-1" value="other"> <span>Something else</span></label>
+          </fieldset>
+          <div class="ask-poll-actions">
+            <button type="submit" class="btn btn-secondary">Send</button>
+            <button type="button" class="ask-poll-skip" data-ask-skip>Skip</button>
+          </div>
+          <p class="trial-remind-note" data-ask-status aria-live="polite">Counted with no email or other identifier.</p>
+        </form>
         <p class="waitlist-fine-print">The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (<a href="/terms/">terms</a>). The receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.6.3 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. <a href="#requirements">Requirements</a>. Also in the <a href="/suite/">Mac Suite</a> with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once. <a href="/moderntex/start/">First ten minutes: install and first build</a>.</p>
       </div>
       <figure class="app-hero-window">
@@ -231,6 +248,7 @@
       </figure>
     </div>
     <script src="/moderntex/seats.js?v=372cfdf34a" defer></script>
+    <script src="/moderntex/poll.js?v=55072754b3" defer></script>
     <script src="/exp-moderntex-hero.js?v=144980bbe3"></script>
 
     <section class="screenshots-section tour-section">
@@ -590,6 +608,23 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         </div>
         <p class="trial-remind-note" data-trial-status aria-live="polite">Optional. Three emails over a week, then nothing, each with an unsubscribe link.</p>
       </form>
+      <form class="ask-poll" data-ask-poll hidden novalidate>
+          <fieldset>
+            <legend id="ask-poll-h2">One optional question: what are you trying to do with ModernTex?</legend>
+            <label class="ask-poll-choice"><input type="radio" name="what-2" value="paper"> <span>Write a paper</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-2" value="thesis"> <span>Write a thesis or dissertation</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-2" value="coauthors"> <span>Work with co-authors</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-2" value="replace-overleaf"> <span>Replace Overleaf</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-2" value="course-notes"> <span>Course notes or lecture slides</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-2" value="looking"> <span>Just looking</span></label>
+            <label class="ask-poll-choice"><input type="radio" name="what-2" value="other"> <span>Something else</span></label>
+          </fieldset>
+          <div class="ask-poll-actions">
+            <button type="submit" class="btn btn-secondary">Send</button>
+            <button type="button" class="ask-poll-skip" data-ask-skip>Skip</button>
+          </div>
+          <p class="trial-remind-note" data-ask-status aria-live="polite">Counted with no email or other identifier.</p>
+        </form>
       <p class="closing-cta-fine">macOS 14 or later · Apple silicon and Intel · Signed and notarized</p>
     </section>
     <div class="sticky-cta" data-sticky-cta data-hide-when="#buy, .closing-cta, .footer" hidden>
