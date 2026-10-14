@@ -4359,6 +4359,9 @@ def classify_touch(t: dict | None) -> str:
         return "Google Ads"
     if s.startswith("from:") or s.startswith("ref:") or s in ("vitae", "moderntex"):
         return "Own apps & links"
+    if re.fullmatch(r"tool-[a-z0-9][a-z0-9-]{0,39}", s):
+        # The offer card on a free tool page (utm_source=tool-<slug>); the slug is in the funnel table as tool:<slug>.
+        return "Tool offers"
     if s in ("email", "newsletter", "rss"):
         return "Email & RSS"
     probe = r or s

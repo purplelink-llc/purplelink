@@ -1,0 +1,251 @@
+[
+ {
+  "id": "Yd51v0bEfCw",
+  "kind": "long",
+  "msg": "File not found",
+  "n": 5,
+  "unit": "causes",
+  "sub": "and the fix for each"
+ },
+ {
+  "id": "cEgQawus6Dw",
+  "kind": "error",
+  "level": "warning",
+  "msg": "Citation undefined"
+ },
+ {
+  "id": "A8m-t1rPuug",
+  "kind": "error",
+  "level": "error",
+  "msg": "Missing $ inserted"
+ },
+ {
+  "id": "icITQm2K6UY",
+  "kind": "error",
+  "level": "error",
+  "msg": "Undefined control sequence"
+ },
+ {
+  "id": "RJ7MIxjx1_o",
+  "kind": "error",
+  "level": "error",
+  "msg": "Environment undefined"
+ },
+ {
+  "id": "vZ4GNH_Ii24",
+  "kind": "error",
+  "level": "error",
+  "msg": "Extra alignment tab has been changed to \\cr"
+ },
+ {
+  "id": "9syjfJ7rUEI",
+  "kind": "error",
+  "level": "error",
+  "msg": "Misplaced alignment tab character &"
+ },
+ {
+  "id": "Izr0LARPKtA",
+  "kind": "error",
+  "level": "error",
+  "msg": "Missing \\begin{document}"
+ },
+ {
+  "id": "inNtvl4VPGs",
+  "kind": "error",
+  "level": "warning",
+  "msg": "Overfull \\hbox"
+ },
+ {
+  "id": "lQmcTtyuVuI",
+  "kind": "error",
+  "level": "error",
+  "msg": "Paragraph ended before \\label was complete"
+ },
+ {
+  "id": "C_8pv42BDqs",
+  "kind": "error",
+  "level": "error",
+  "msg": "Too many }'s"
+ },
+ {
+  "id": "LQvPpDTgaqQ",
+  "kind": "error",
+  "level": "error",
+  "msg": "File not found"
+ },
+ {
+  "id": "m49rFiTgNsk",
+  "kind": "error",
+  "level": "error",
+  "msg": "Runaway argument"
+ },
+ {
+  "id": "ZGGOC7-EsKk",
+  "kind": "product",
+  "name": "ModernTex",
+  "line": "Catch LaTeX errors as you type",
+  "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+  "icon": "site/assets/moderntex-icon.png",
+  "pos": "28% 22%",
+  "zoom": 1.7
+ },
+ {
+  "id": "wSLfShkNJoY",
+  "kind": "product",
+  "name": "ModernTex",
+  "line": "A LaTeX editor for Mac",
+  "img": "site/assets/moderntex-screens/07-tikz-editor-1440.webp",
+  "icon": "site/assets/moderntex-icon.png",
+  "zoom": 1.3,
+  "pos": "45% 40%"
+ },
+ {
+  "id": "I2833N6GULk",
+  "kind": "product",
+  "name": "Vitae",
+  "line": "Your CV, from your record",
+  "img": "site/assets/vitae-screens/cv-1440.webp",
+  "icon": "site/assets/vitae-icon.png",
+  "pos": "18% 8%",
+  "zoom": 1.7
+ },
+ {
+  "id": "PyneqIGLW4w",
+  "kind": "product",
+  "name": "GlobePin",
+  "line": "Every place you've been",
+  "img": "site/assets/globepin-screens/03-globe.webp",
+  "icon": "site/assets/globepin-icon.png",
+  "portrait": true
+ },
+ {
+  "id": "rerU61qAMvM",
+  "kind": "product",
+  "name": "Haea",
+  "line": "Health trends, on your phone",
+  "img": "site/assets/haea-screens/01-today.webp",
+  "icon": "site/assets/haea-icon.png",
+  "portrait": true,
+  "pos": "center top"
+ },
+ {
+  "id": "2Qh-Uo0QVJ4",
+  "kind": "product",
+  "name": "Paper Review",
+  "line": "A review before you submit",
+  "img": "site/assets/tool-shots/paper-review-sample.webp",
+  "icon": "site/assets/purplelink-logo.png",
+  "pos": "0% 0%",
+  "zoom": 1.4
+ },
+ {
+  "id": "EWlyzL88-uo",
+  "kind": "product",
+  "name": "Outbound Veil",
+  "line": "Catch it before you send",
+  "img": "site/assets/outbound-veil-screens/marked-1440.webp",
+  "icon": "site/assets/outbound-veil-icon.png",
+  "zoom": 1.9,
+  "pos": "0% 38%"
+ },
+ {
+  "id": "L_MmXQAS1_k",
+  "kind": "product",
+  "name": "Scholar Utility Belt",
+  "line": "Journal ranks in Scholar",
+  "img": "site/assets/video/scholar-utility-belt-poster.webp",
+  "icon": "site/assets/scholar-utility-belt-icon.webp",
+  "zoom": 1.35,
+  "pos": "0% 0%"
+ },
+ {
+  "id": "EdhGVgJBEl0",
+  "kind": "product",
+  "name": "Purplelink",
+  "line": "Tools for researchers",
+  "icon": "site/assets/purplelink-logo.png",
+  "icons": [
+   "site/assets/moderntex-icon.png",
+   "site/assets/vitae-icon.png",
+   "site/assets/outbound-veil-icon.png",
+   "site/assets/legroom-icon.webp",
+   "site/assets/keyfeel-icon.webp",
+   "site/assets/tapefolio-icon.webp",
+   "site/assets/panely-icon.webp",
+   "site/assets/summonly-icon.webp",
+   "site/assets/batterymeter-icon.webp"
+  ]
+ },
+ {
+  "id": "xk7zuKGKe6o",
+  "kind": "product",
+  "name": "Legroom",
+  "line": "Free up disk space",
+  "img": "site/legroom/img/space-map.webp",
+  "icon": "site/assets/legroom-icon.webp",
+  "zoom": 1.4,
+  "pos": "50% 55%"
+ },
+ {
+  "id": "IoJ5dRUA0xs",
+  "kind": "product",
+  "name": "Keyfeel",
+  "line": "Hear real switches as you type",
+  "img": {
+   "video": "site/assets/video/keyfeel-hero.mp4",
+   "t": 3.4
+  },
+  "icon": "site/assets/keyfeel-icon.webp",
+  "zoom": 1.9,
+  "pos": "5% 45%"
+ },
+ {
+  "id": "b5iFfo1E_lY",
+  "kind": "product",
+  "name": "Tapefolio",
+  "line": "Transcribe on your Mac",
+  "img": "site/assets/tapefolio-screens/review-main.webp",
+  "icon": "site/assets/tapefolio-icon.webp",
+  "pos": "0% 0%",
+  "zoom": 1.5
+ },
+ {
+  "id": "KYsSXIWI3Ak",
+  "kind": "product",
+  "name": "Summonly",
+  "line": "Find anything from one box",
+  "img": {
+   "video": "site/summonly/media/summonly-hero.mp4",
+   "t": 3.4
+  },
+  "icon": "site/assets/summonly-icon.webp",
+  "zoom": 1.9,
+  "pos": "35% 30%"
+ },
+ {
+  "id": "Q2PSiql7k5M",
+  "kind": "product",
+  "name": "Panely",
+  "line": "Snap windows into place",
+  "img": {
+   "video": "site/panely/media/panely-hero.mp4",
+   "t": 4.6
+  },
+  "icon": "site/assets/panely-icon.webp",
+  "zoom": 1.15,
+  "pos": "50% 50%"
+ },
+ {
+  "id": "741nCr3zq1g",
+  "kind": "product",
+  "name": "BatteryMeter",
+  "line": "Battery life at a glance",
+  "img": {
+   "video": "site/batterymeter/media/batterymeter-promo-16x9.mp4",
+   "t": 11.9
+  },
+  "icon": "site/assets/batterymeter-icon.webp",
+  "zoom": 1.7,
+  "pos": "40% 25%"
+ }
+]

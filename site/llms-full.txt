@@ -365,7 +365,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $19.99 to keep · v1.6.3
+Free 7-day trial · $19.99 to keep · v1.7.2
 
 # ModernTex
 
@@ -379,7 +379,7 @@ Or get the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Pan
 
 From the studio behind Scholar Utility Belt, which 1,000 researchers use and the Chrome Web Store rates 4.5 out of 5.
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms). The receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.6.3 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once. First ten minutes: install and first build.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms). The receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.7.2 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once. First ten minutes: install and first build.
 
 ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.
 
@@ -519,9 +519,13 @@ AI featuresOptional. Fix with AI proposes a repair for a build error and shows i
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
-Current version1.6.3, which opens the sidebar wider and gives New File and New Folder icon buttons under a Project files heading. 1.6.2 puts the title bar and the toolbar in one row, with the window buttons at the left end of the toolbar. 1.6.1 shortens the toolbar into Insert and Cite menus and a search field, keeps the Build Results panel closed until you open it, and marks the line of a build error in the editor with a one-click fix. 1.6.0 builds a PDF of your project with your edits marked since the last time you synced, and can mark what the last Get Changes brought in. 1.5.0 builds projects kept in iCloud Drive and OneDrive, flags a Figure that points at a table, suggests the label you meant, shows a checks summary in the status bar and saves automatic checkpoints. 1.4.0 made ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
+Current version1.7.2, which keeps the status bar from sticking on Compiling (Live), names the real error in the editor note, and suggests the right name for a misspelled package. 1.7.1 shows build errors raised inside a package (such as hyperref or biblatex) instead of hiding them, adds an SBL (Society of Biblical Literature) reference style, stops the whole TeX process tree when you cancel a build, and builds projects in cloud-synced folders outside the synced folder. 1.6.3 opens the sidebar wider and gives New File and New Folder icon buttons under a Project files heading. 1.6.2 puts the title bar and the toolbar in one row, with the window buttons at the left end of the toolbar. 1.6.1 shortens the toolbar into Insert and Cite menus and a search field, keeps the Build Results panel closed until you open it, and marks the line of a build error in the editor with a one-click fix. 1.6.0 builds a PDF of your project with your edits marked since the last time you synced, and can mark what the last Get Changes brought in. 1.5.0 builds projects kept in iCloud Drive and OneDrive, flags a Figure that points at a table, suggests the label you meant, shows a checks summary in the status bar and saves automatic checkpoints. 1.4.0 made ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
 
-### Sixteen updates since launch on September 4
+### Eighteen updates since launch on September 4
+
+- Oct 141.7.2No more stuck Compiling (Live), an error note that names the real error, and "Did you mean graphicx?" for a misspelled package.
+
+- Oct 141.7.1Errors from inside a package now show in Build Results with plain steps, a new SBL reference style, and Stop ends latexmk, the engine and biber together.
 
 - Oct 101.6.3A roomier sidebar: wider by default, no project row at the top, and icon buttons for New File and New Folder.
 
@@ -798,7 +802,7 @@ Chrome text areasWord by word in a plain text area. In the ChatGPT and claude.ai
 
 Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens. Apple Mail’s compose window is one. Safari, Slack, VS Code and most other apps have not been tested yet. The full table of apps and fields says which are which, and how to check your own app during the free trial.
 
-Comparing it with other ways to keep personal details out of AI chats? See the comparison of redaction tools for ChatGPT and other AI chats, which says plainly where a competitor is the better choice.
+Comparing it with other ways to keep personal details out of AI chats? See the comparison of redaction tools for ChatGPT and other AI chats, which says plainly where a competitor is the better choice. Using Apple Mail? See what Apple Mail can and cannot catch.
 
 ## Privacy
 
@@ -2660,6 +2664,14 @@ What does Purplelink retain?
 
 Only briefly. The scan result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
+This reads a finished manuscript PDF for leaks in a blind submission.
+
+Outbound Veil is a different check. It marks names, contact details and ID numbers in the text you are typing, before you send it. It is not a manuscript leak scan, it will miss some things, and it is not a compliance product.
+
+Free for 7 days, then $29.99 once. Needs macOS 14 or later.
+
+See Outbound Veil
+
 
 ---
 
@@ -2834,6 +2846,14 @@ Yes. One of the three personas simulates how an Applicant Tracking System would 
 What does Purplelink retain?
 
 Only briefly. The report is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. Your resume is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
+
+This reviews one resume and does not keep a record of your work.
+
+Vitae imports a CV from Word, PDF, RTF, ODT or a web page. It then fills your CV from the papers, grants and positions you track, and exports to PDF, LaTeX or rich text.
+
+The app is free, with no limits on your record. Needs macOS 15 or later.
+
+See Vitae
 
 
 ---
@@ -3262,16 +3282,13 @@ Which engines are supported?
 
 pdfLaTeX and XeLaTeX. LuaLaTeX is not supported for security reasons.
 
-From the maker of these tools
+A compile on this page is cut off after about a minute.
 
-## Writing LaTeX on a Mac?
+ModernTex compiles on your Mac, so there is no server compile timeout, and its Live mode keeps the PDF in sync as you type.
 
-ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
+$19.99 once, after a free 7-day trial. Needs a Mac with macOS 14 or later.
 
-Get ModernTex — $19.99
-See what it does
-
-Requires macOS 14 or later. Free 7-day trial, no account.
+See ModernTex
 
 If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
@@ -3416,16 +3433,13 @@ A clean .bib fixes citations that are malformed. However, it cannot tell you abo
 
 From $9 per review, Anonymity Check bundled free. See what the report covers →
 
-From the maker of these tools
+This checks a .bib file after you have written it.
 
-## Writing LaTeX on a Mac?
+ModernTex points a bibliography build error at the line in your .bib file, and completes citations from your .bib files as you type.
 
-ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
+$19.99 once, after a free 7-day trial. Needs a Mac with macOS 14 or later.
 
-Get ModernTex — $19.99
-See what it does
-
-Requires macOS 14 or later. Free 7-day trial, no account.
+See ModernTex
 
 If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
@@ -3519,16 +3533,13 @@ Is anything stored?
 
 No. DOI and ISBN lookups go directly from your browser to the public APIs. arXiv lookups relay through our server, since arXiv doesn't allow direct browser access. All formatting happens locally either way, and we never log or store anything you enter.
 
-From the maker of these tools
+This gives you one formatted citation to copy and does not keep your reference list.
 
-## Writing LaTeX on a Mac?
+ModernTex suggests citations from your .bib files as you type, searching by author, title or key.
 
-ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
+$19.99 once, after a free 7-day trial. Needs a Mac with macOS 14 or later.
 
-Get ModernTex — $19.99
-See what it does
-
-Requires macOS 14 or later. Free 7-day trial, no account.
+See ModernTex
 
 If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
@@ -5897,13 +5908,13 @@ Comparison
 
 # Best tools to redact personal information before you use ChatGPT and other AI chats (2026)
 
-By Benjamin Ampel · October 4, 2026, updated October 9, 2026
+By Benjamin Ampel · October 4, 2026, updated October 14, 2026
 
 This guide is for anyone who keeps pasting client, patient, student or personal details into an AI chat. Each option gets what it does, what it costs, where the checking happens and what it misses. Three of the options are not software you install: provider settings, a local model and find-and-replace.
 
 Disclosure up front: I make one of the tools on this list (Outbound Veil, a Mac menu-bar app). In several cases a competitor is the better choice. Predact is free and handles files, which Outbound Veil does not. PrivacyScrubber works on Windows and Linux, which Outbound Veil does not. If your data cannot leave your machine at all, a local model beats every redaction tool here.
 
-Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. MetaVeils was added on October 9, 2026, and I read its page that day. Where a vendor says its software runs on your device, I write "says": I have not audited that.
+Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. MetaVeils was added on October 9, 2026, and I read its page that day. Data Guard, Prompt Guard and Whiteout were added on October 14, 2026, each from a page I read that day. Where a vendor says its software runs on your device, I write "says": I have not audited that.
 
 ## The short answer
 
@@ -5961,7 +5972,13 @@ MaskbaseOpen source, price not statedMac appNot statedDocumentsA young project
 
 Veil (helloveil.com)$8 a monthNot statedNot statedA meeting recorder with a privacy engineA different company's product, its changelog lists nothing that checks what you type in other apps
 
-Sources. Rows come from the sections below and the vendor pages they cite, read October 4, 2026. MetaVeils: metaveils.com, read October 9, 2026. Not tested. The last seven rows are the narrower options described near the end of the tool sections.
+Data Guard (Firefox)Not stated on the listing, as listed on 2026-10-14Firefox add-on, for chatgpt.com, chat.openai.com, claude.ai and gemini.google.comNot statedIts listing says it warns you before you share Social Security numbers, card numbers, API keys, phone numbers, street addresses, passwords and health-related informationFirefox only. The listing says the warning does not block or change your message. As listed on 2026-10-14 it showed version 1.0, an update on July 31, 2026, one review and no users. Not tested by us
+
+Prompt Guard (Firefox)Not stated on the listing, as listed on 2026-10-14Firefox add-on, for chatgpt.com, gemini.google.com, claude.ai and a few other AI sites named in its permissionsIts listing calls it client-sideIts listing says it detects and masks personal information, API keys and credentials as you type or paste, with built-in rules for card numbers, Social Security numbers, API keys and passwords, and custom rules you can addFirefox only, and a young project: as listed on 2026-10-14 it showed version 0.1.0, an update on May 25, 2026, one user and no ratings. Not tested by us
+
+Whiteout (Mac)$9.99 once, with a 7-day free trial, as listed on hunted.space on 2026-10-14Mac menu-bar appThe listing says fully offline, with no cloud, no accounts and no data leaving your machine. That is the listing's claimScreenshots: the listing says it scans them for details such as phone numbers, Social Security numbers, credit cards and API keys, saves a redacted copy and keeps the original in a backup folderScreenshots only, not typed text. I could not find the developer's own page, so this row rests on the hunted.space listing alone, as listed on 2026-10-14. Not tested by us
+
+Sources. Rows come from the sections below and the vendor pages they cite, read October 4, 2026. MetaVeils: metaveils.com, read October 9, 2026. Not tested. The last seven rows are the narrower options described near the end of the tool sections. Data Guard: its Firefox add-on listing, read October 14, 2026. Prompt Guard: its Firefox add-on listing, read October 14, 2026. Whiteout: its hunted.space listing, read October 14, 2026. Those three rows are as listed on 2026-10-14 and not tested by us.
 
 ## What you actually need to stop leaking data into AI chats
 
@@ -6142,6 +6159,8 @@ Microsoft's documentation describes Endpoint DLP (data loss prevention) policies
 The seven narrower options are mostly young, with a handful of installs or stars as of this writing. ChatGPT Privacy Shield is a free Chrome extension for ChatGPT only, with Pro ($9 a month) and Team ($49 a month) plans listed as a waitlist. Rescriber is a free, open-source ChatGPT extension from Northeastern University researchers. PII Scrubber (ChatGPT, free for 5 uses a day, Pro $7 a month) and Paste Redactor (four browsers, free for 100 redactions a month, then $1 a month) are small extensions with paid tiers.
 
 PIIGuardAI is an open-source Mac menu-bar proxy that blocks AI requests containing patterns such as emails and card numbers but uses regular expressions only. Maskbase is an open-source Mac app for documents. Veil (helloveil.com, $8 a month) is a different company's meeting recorder with a privacy engine. Its changelog lists nothing that checks what you type in other apps.
+
+Three more were added on October 14, 2026, each as listed that day and not tested by us. Data Guard and Prompt Guard are Firefox add-ons for AI chat sites, which matters if you use Firefox, since several tools above are Chrome extensions. Data Guard warns without blocking, and Prompt Guard masks matches. Neither listing states a price. Whiteout is a Mac menu-bar app for screenshots, and its only listing I could read is on hunted.space. Mac screenshot apps cover images and Outbound Veil covers typed text, so they do not replace each other.
 
 ## What redaction cannot do
 
@@ -7570,6 +7589,8 @@ For some things, yes. Hazel runs rules on folders, though a free-space trigger n
 Yes. Legroom is Purplelink's Mac menu-bar app. It has a free 7-day trial, then costs $9.99 once with no subscription, for macOS 14 or later on Apple silicon and Intel. I make it and it has been out only since October 5, 2026. This guide describes it from its own product page rather than from a test against the other tools.
 
 ## Related guides
+
+- How to run Windows-only research software on an Apple silicon Mac: a Windows virtual machine is often the largest single file on a research Mac.
 
 - How to delete a Mac app and the files it leaves behind: what an app leaves in your Library after you delete it, and which of it is safe to remove.
 
@@ -9488,6 +9509,8 @@ Open System Settings, click Privacy & Security, then open Full Disk Access, Inpu
 No. Legroom asks for it only if you choose to give it, and skips protected folders without it. Keyfeel needs Input Monitoring, and Outbound Veil needs Accessibility. According to their product pages, neither of those two asks for Full Disk Access.
 
 ## Related guides
+
+- Do researchers need a VPN?: what a university VPN does and does not protect, and when a commercial VPN helps.
 
 - Legroom, Keyfeel and Outbound Veil: the three Mac apps described above.
 

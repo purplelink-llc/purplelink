@@ -1,0 +1,19 @@
+{
+ "id": "fnf-long-moderntex",
+ "series": "latex-errors-long",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "scenes": [
+  {
+   "narration": "If you write LaTeX on a Mac, ModernTex lists each build error in plain language. When a package is missing, the error carries an Install button with the package name, and ModernTex installs it and builds again. There is a free seven day trial."
+  }
+ ],
+ "bumper": {
+  "open": 2.2,
+  "close": 2.5,
+  "xf": 0.4,
+  "intro": "assets/sting-intro.wav",
+  "outro": "assets/sting-outro.wav",
+  "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+ }
+}

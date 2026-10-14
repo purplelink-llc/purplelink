@@ -13,12 +13,18 @@
  * fingerprinting; the only per-visitor value is a daily-salted hash of the IP
  * (rotates every day, can't be reversed or linked across days). stats.mjs
  * aggregates on read. Each record also carries `cc`, a two-letter country code from Netlify's geolocation (no city,
- * region, coordinates or IP), empty when unavailable. Honors Do Not Track. Best-effort: returns 204 even on an
+ * region, coordinates or IP), empty when unavailable.
+ *
+ * Per-tool counts (lib/tool-counts.mjs): a tool_use beacon from a /tools/<slug>/ page also bumps that tool's daily "runs"
+ * counter. tool_outcome (m: ok|error|limit), offer_view and offer_click (m: moderntex|tapefolio|outbound-veil|vitae)
+ * are counted per day and tool and nothing else is kept: no event record is written for them. The slug comes from the
+ * page path and must be an allowlisted tool directory; a bad slug or meta drops the event. Honors Do Not Track. Best-effort: returns 204 even on an
  * internal hiccup so analytics never breaks a page.
  */
 
 import { getStore } from "@netlify/blobs";
 import { createHash, randomUUID } from "node:crypto";
+import { toolSlugFromPath, countField, bumpToolCount } from "../lib/tool-counts.mjs";
 
 const BOT_RE = /bot|spider|crawl|slurp|bingpreview|headless|lighthouse|preview|facebookexternalhit|embedly/i;
 
@@ -84,6 +90,12 @@ export default async function handler(request, context) {
   // First-touch channel label, sent only with pageviews, trial downloads and buy clicks (analytics.js).
   const ft = clip(String(b.ft || "").replace(/[^\w.\-:\/ ]/g, ""), 40);
 
+  // The three count-only event types are valid only from an allowlisted tool page with an allowlisted meta value.
+  const toolSlug = toolSlugFromPath(path);
+  const toolField = toolSlug ? countField(type, meta) : "";
+  const countOnly = type === "tool_outcome" || type === "offer_view" || type === "offer_click";
+  if (countOnly && !toolField) return new Response(null, { status: 204 });
+
   const ip =
     request.headers.get("x-nf-client-connection-ip") ||
     request.headers.get("x-forwarded-for") ||
@@ -104,6 +116,11 @@ export default async function handler(request, context) {
     if (count >= DAILY_EVENT_LIMIT) return new Response(null, { status: 204 });
     await rl.set(key, String(count + 1));
   } catch (_) { /* limiter unavailable: record the event */ }
+
+  if (toolField) {
+    try { await bumpToolCount(getStore("tool-counts"), day, toolSlug, toolField); } catch (_) { /* counts are best effort */ }
+  }
+  if (countOnly) return new Response(null, { status: 204 });
 
   try {
     await getStore("analytics").setJSON(`ev/${day}/${Date.now()}-${randomUUID().slice(0, 8)}`, rec);

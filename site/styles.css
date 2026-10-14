@@ -2821,6 +2821,29 @@ dd {
 .tool-paid-cta a { color: var(--purple); font-weight: 600; text-decoration: none; }
 .tool-paid-cta a:hover { text-decoration: underline; }
 
+/* One offer card per tool page (scripts/tool_offers.py). Same quiet surface as .tool-paid-cta, which it
+   reuses tokens from, so it follows both themes. The link is a 44px-high target. */
+.tool-offer {
+  max-width: 820px;
+  margin: 32px auto;
+  padding: 20px 26px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+.tool-offer p { color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
+.tool-offer .tool-offer-hook { color: var(--ink); font-weight: 600; }
+.tool-offer .tool-offer-meta { color: var(--ink); font-size: 0.95rem; }
+.tool-offer-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--purple);
+  font-weight: 600;
+  text-decoration: none;
+}
+.tool-offer-link:hover { text-decoration: underline; }
+
 /* fix 5 — dropzone hover polish */
 .dropzone:hover { border-color: var(--purple-dim); }
 
@@ -4429,7 +4452,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 /* Phones: bordered panels keep the 16px page gutter instead of touching
    the screen edges. */
 @media (max-width: 600px) {
-  .tool-paid-cta, .checklist { margin-left: 16px; margin-right: 16px; }
+  .tool-paid-cta, .tool-offer, .checklist { margin-left: 16px; margin-right: 16px; }
 }
 
 /* ─── Pricing page ────────────────────────────────────────────────────── */

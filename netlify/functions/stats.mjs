@@ -19,6 +19,10 @@
  * GET ...stats?section=signals&weeks=8 returns only the count-only answers signal.mjs stores (why-not and
  * trial-download poll), per ISO week, newest first. No analytics records are read for it.
  *
+ * GET ...stats?section=tools&weeks=8 returns, per ISO week (newest first) and per free tool, the counts tool-counts stores
+ * (runs, ok, error, limit, offerViews, offerClicks; see lib/tool-counts.mjs), plus what visitors whose first touch was that
+ * tool's offer link went on to do (page views, daily visitors, trial downloads, buy clicks, read from the event records).
+ *
  * Gated by STATS_TOKEN (set it on the Netlify site). Scale note: this
  * lists+reads one blob per event, fine at early-stage volume; if daily events
  * reach the thousands, switch to pre-aggregated counters.
@@ -26,7 +30,8 @@
 
 import { getStore } from "@netlify/blobs";
 import { ownerToken, safeEqual } from "../lib/auth.mjs";
-import { readSignals, recentWeeks } from "../lib/signals.mjs";
+import { readSignals, recentWeeks, isoWeek } from "../lib/signals.mjs";
+import { TOOL_SLUGS, COUNT_FIELDS, emptyCounts, readToolCounts } from "../lib/tool-counts.mjs";
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -46,6 +51,16 @@ export function isLinkedin(v) {
   return h === "linkedin" || h === "lnkd.in" || /(^|\.)linkedin\.com$/.test(h) || /^com\.linkedin\.android(\.[a-z]+)?$/.test(h);
 }
 export const foldChannel = (v) => (isLinkedin(v) ? "linkedin" : v);
+
+// The free tool pages tag their offer link utm_source=tool-<slug>. That is channel "tool" with the slug as detail, written
+// "tool:<slug>". Only a campaign source or a first-touch label is folded, never a referrer host, so a referring site with
+// "tool" in its name keeps its own label (a host has a dot; the pattern has none). This mirrors toolChannel() in
+// site/analytics.js, which writes "tool:<slug>" for new visits; this fold also catches a cached older script's "tool-<slug>".
+export function toolChannel(v) {
+  const m = /^tool-([a-z0-9][a-z0-9-]{0,39})$/i.exec(String(v || ""));
+  return m ? `tool:${m[1].toLowerCase()}` : "";
+}
+export const foldSource = (v) => toolChannel(v) || foldChannel(v);
 
 // Sites other than purplelink.llc that beacon to this collector. Their records are never mixed into the default numbers.
 export const EXTERNAL_HOSTS = ["rubblefront.com"];
@@ -92,6 +107,75 @@ function toolName(rec) {
   return p || "(unknown)";
 }
 
+const TOOL_SET = new Set(TOOL_SLUGS);
+
+/**
+ * The ?section=tools answer. Counts come from the tool-counts store (the day-and-tool records track.mjs writes). The
+ * attribution columns come from the event records: pageviews whose first-touch label folds to tool:<slug>, the distinct
+ * daily visitors among them (a visitor id is a per-day hash, so a person on two days counts twice), and the trial
+ * downloads and buy clicks that carry the same label. Orders are not here: the Stripe order's first-touch metadata is
+ * read by the dashboard's ledger, not by this function.
+ */
+async function toolsSection(weeks) {
+  const now = Date.now();
+  const days = Array.from({ length: weeks * 7 }, (_, i) => new Date(now - i * 86400000).toISOString().slice(0, 10));
+  const weekOf = (day) => isoWeek(new Date(`${day}T12:00:00Z`));
+  // The weeks the last weeks*7 days touch, newest first; the oldest may be only partly covered.
+  const weekLabels = [...new Set(days.map(weekOf))];
+
+  const out = {};   // week -> slug -> counts + attributed
+  const row = (week, slug) => {
+    const w = out[week] || (out[week] = {});
+    return w[slug] || (w[slug] = { ...emptyCounts(), attributed: { pageviews: 0, dayVisitors: 0, trialDownloads: 0, checkoutClicks: 0 } });
+  };
+
+  const counts = await readToolCounts(getStore("tool-counts"), days);
+  for (const [day, bySlug] of Object.entries(counts)) {
+    const week = weekOf(day);
+    for (const [slug, c] of Object.entries(bySlug)) {
+      const r = row(week, slug);
+      for (const f of COUNT_FIELDS) r[f] += c[f];
+    }
+  }
+
+  const events = getStore("analytics");
+  await mapLimit(days, 6, async (day) => {
+    const week = weekOf(day);
+    let blobs = [];
+    try { blobs = ((await events.list({ prefix: `ev/${day}/` })) || {}).blobs || []; } catch (_) { return; }
+    const seen = {};
+    const recs = await mapLimit(blobs, 64, async (b) => {
+      try { return await events.get(b.key, { type: "json" }); } catch (_) { return null; }
+    });
+    for (const rec of recs) {
+      if (!rec || !rec.ft || String(rec.meta || "").startsWith("__")) continue;
+      if (EXTERNAL_HOSTS.includes(normalizeHost(rec.host))) continue;
+      const ch = foldSource(rec.ft);
+      if (!ch.startsWith("tool:")) continue;
+      const slug = ch.slice(5);
+      const key = TOOL_SET.has(slug) ? slug : "(other)";
+      const a = row(week, key).attributed;
+      if (rec.type === "pageview") {
+        a.pageviews++;
+        const set = seen[key] || (seen[key] = new Set());
+        if (rec.vid && !set.has(rec.vid)) { set.add(rec.vid); a.dayVisitors++; }
+      } else if (/_?trial_download$/.test(rec.type)) a.trialDownloads++;
+      else if (rec.type === "checkout_click") a.checkoutClicks++;
+    }
+  });
+
+  return {
+    generatedAt: new Date().toISOString(),
+    weeks: weekLabels,
+    tools: Object.fromEntries(weekLabels.filter((w) => out[w]).map((w) => [w, Object.fromEntries(Object.entries(out[w]).sort())])),
+    notes: [
+      "runs counts tool_use beacons; ok, error and limit count how a backend run ended and are only sent by tools that call the compile and convert API, so they can sum to less than runs.",
+      "The oldest week listed may be only partly covered. offerViews counts a page view once when half the offer card was on screen; offerClicks counts clicks on its link.",
+      "attributed.* reads visitors whose first touch was utm_source=tool-<slug>. Orders are not included: read them from the Stripe checkout metadata (attr_first) in the dashboard ledger.",
+    ],
+  };
+}
+
 export default async function handler(request) {
   const url = new URL(request.url);
   const expected = Netlify.env.get("STATS_TOKEN");
@@ -106,6 +190,17 @@ export default async function handler(request) {
       return json(200, { generatedAt: new Date().toISOString(), signals: await readSignals(getStore("signals"), recentWeeks(weeks)) });
     } catch (_) {
       return json(502, { error: "signals_unavailable" });
+    }
+  }
+
+  if (url.searchParams.get("section") === "tools") {
+    let weeks = parseInt(url.searchParams.get("weeks") || "8", 10);
+    if (!Number.isFinite(weeks) || weeks < 1) weeks = 8;
+    if (weeks > 16) weeks = 16;
+    try {
+      return json(200, await toolsSection(weeks));
+    } catch (_) {
+      return json(502, { error: "tools_unavailable" });
     }
   }
 
@@ -192,7 +287,7 @@ export default async function handler(request) {
       // Product-page views are the denominator for a channel's trial and buy rates; the path is kept for pageviews
       // so the dashboard can restrict them to product pages.
       if (rec.ft && !String(rec.meta || "").startsWith("__")) {
-        const ft = foldChannel(rec.ft);
+        const ft = foldSource(rec.ft);
         const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {} });
         if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); }
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
@@ -203,7 +298,7 @@ export default async function handler(request) {
         s.totals.pageviews++; s.byDay[day].pageviews++;
         bump(s.byPath, rec.path);
         if (rec.refHost) bump(s.byReferrer, foldChannel(rec.refHost));
-        if (rec.utm) bump(s.byUtm, foldChannel(rec.utm));
+        if (rec.utm) bump(s.byUtm, foldSource(rec.utm));
       } else if (rec.type === "tool_use") {
         s.totals.toolRuns++; s.byDay[day].toolRuns++;
         bump(s.toolRuns, toolName(rec));

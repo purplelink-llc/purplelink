@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Weekly LaTeX video funnel report and stop-rule check. Runs through the wake-time wrapper (waits for DNS,
+       retries a failure). Install: cp this file to ~/Library/LaunchAgents/ then
+       launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/llc.purplelink.latexfunnel.plist -->
+  <key>Label</key><string>llc.purplelink.latexfunnel</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/benampel/.purplelink/run-when-online.sh</string>
+    <string>/bin/bash</string>
+    <string>/Users/benampel/.purplelink/latex-funnel/latex-funnel-weekly.sh</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key><string>/Users/benampel</string>
+    <key>PATH</key><string>/Library/Frameworks/Python.framework/Versions/3.12/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key><integer>1</integer>
+    <key>Hour</key><integer>9</integer>
+    <key>Minute</key><integer>10</integer>
+  </dict>
+  <key>StandardOutPath</key><string>/Users/benampel/.purplelink-logs/latex-funnel-launchd.log</string>
+  <key>StandardErrorPath</key><string>/Users/benampel/.purplelink-logs/latex-funnel-launchd.log</string>
+</dict>
+</plist>

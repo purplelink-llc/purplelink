@@ -200,8 +200,13 @@ export default async function handler(request) {
   const wantsStats = url.searchParams.get("stats") === "1";
   if (wantsFeed || updateFile || wantsStats) {
     const expected = Netlify.env.get("OUTBOUND_VEIL_UPDATE_TOKEN") || "";
+    // Paid 1.0.0 and 1.0.1 carry the token retired on 2026-10-05. It opens the feed and the
+    // update files only, so those copies can reach the current release; never `stats`.
+    const legacy = Netlify.env.get("OUTBOUND_VEIL_LEGACY_UPDATE_TOKEN") || "";
     const presented = request.headers.get("x-outboundveil-channel") || "";
-    if (!expected || !timingSafeEqual(presented, expected)) {
+    const current = !!expected && timingSafeEqual(presented, expected);
+    const old = !wantsStats && !!legacy && timingSafeEqual(presented, legacy);
+    if (!current && !old) {
       return json(403, { error: "forbidden", detail: "Updates are delivered inside Outbound Veil." });
     }
     if (wantsFeed) return serveFeed(store);

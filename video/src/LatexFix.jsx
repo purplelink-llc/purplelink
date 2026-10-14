@@ -171,7 +171,8 @@ function EndCard({ plan, t, f }) {
   );
 }
 
-function Cut({ id, format, timing, storyboard }) {
+// showEnd=false: the long tutorial (LatexLong.jsx) reuses this cut for one cause and drops the end card and its narration.
+export function Cut({ id, format, timing, storyboard, showEnd = true }) {
   const frame = useCurrentFrame();
   const t = frame / brand.fps;
   const f = FMT[format];
@@ -215,8 +216,8 @@ function Cut({ id, format, timing, storyboard }) {
       {plan.lower.map((l, i) => (
         <LowerThird key={i} item={l} t={t} format={format} />
       ))}
-      <EndCard plan={plan} t={t} f={f} />
-      {plan.audio.map((a) => (
+      {showEnd && <EndCard plan={plan} t={t} f={f} />}
+      {plan.audio.filter((a) => showEnd || a.i < 4).map((a) => (
         <Sequence key={a.i} from={Math.round(a.at * brand.fps)}>
           <Audio src={staticFile(timing.scenes[a.i].audio)} />
         </Sequence>

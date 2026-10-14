@@ -25,7 +25,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=07d8025cab"></script>
-    <link rel="stylesheet" href="/styles.css?v=b2952c350a">
+    <link rel="stylesheet" href="/styles.css?v=532fe2c022">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -67,6 +67,33 @@
 
     <div class="changelog-layout">
     <div class="changelog-list">
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 14, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Outbound Veil 1.2.0</h2>
+          <p>Outbound Veil uses less of your Mac's power. What it checks and what it flags have not changed. Highlights now redraw when the text field moves, scrolls or changes, rather than five times a second, and with nothing flagged the highlight timer does not run. The app checks less often while you are idle, pauses while the screen is locked or asleep, and slows down further in Low Power Mode or when the Mac is hot. Apps you have turned off in Outbound Veil are no longer read at all. Settings, General has a switch for automatic update checks and a Check Now button. The download is smaller, 34 MB instead of 38 MB. Copies of 1.0.0 and 1.0.1 that stopped finding updates after October 5 can update again from the menu. Any copy installs 1.2.0 through its update check, or you can download it from the <a href="/outbound-veil/">Outbound Veil</a> page.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 14, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 1.7.2</h2>
+          <p>The status bar no longer sticks on Compiling (Live) when a Live pass and Compile Now overlap. The error note in the editor names the real error instead of "Emergency stop" or a knock-on error, and for a missing package it points at the <code>\usepackage</code> line. A misspelled package is no longer offered for install: <code>\usepackage{graphicsx}</code> reads "Did you mean graphicx?" and the button fixes the name. An error raised inside one of TeX's own packages is still shown but no longer opens that package's file or offers Fix with AI on it. "Backend request inconsistent with engine", which comes from a dvips option, now says which option to delete. Earlier versions install 1.7.2 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 14, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 1.7.1</h2>
+          <p>Errors raised inside a package now appear in Build Results. Before, an error such as hyperref refusing a latex + dvips option, or biblatex not finding a style, was dropped, and the panel only said the build stopped after a step outside the TeX engine. The real message now shows with plain steps: for the dvips driver error it says which option to delete from <code>\documentclass</code>, and for a missing biblatex style it offers an Install button. A new SBL (Society of Biblical Literature) reference style switches a biblatex project to SBL footnote citations and changes nothing else. Stop now ends latexmk, the TeX engine and biber together. Projects in iCloud and other synced folders build into a cache folder, and the PDF is still copied next to the source. The trial-expired screen shows the price, the 14-day refund and a Buy button. Earlier versions install 1.7.1 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
+        </div>
+      </div>
 
       <div class="changelog-entry">
         <span class="changelog-date">October 13, 2026</span>
@@ -833,7 +860,7 @@
     </footer>
 
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js?v=629e42abf5" defer></script>
+      <script src="/analytics.js?v=bcc135f878" defer></script>
   <script src="/ethicalads.js?v=c8d9be094c" defer></script>
 </body>
 </html>

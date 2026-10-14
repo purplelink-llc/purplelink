@@ -1,0 +1,19 @@
+{
+ "id": "fnf-long-title",
+ "series": "latex-errors-long",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "scenes": [
+  {
+   "narration": "LaTeX says file not found, and the build stops. There are five usual causes, in order of likelihood. Here is how to spot each one and fix it."
+  }
+ ],
+ "bumper": {
+  "open": 2.2,
+  "close": 2.5,
+  "xf": 0.4,
+  "intro": "assets/sting-intro.wav",
+  "outro": "assets/sting-outro.wav",
+  "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+ }
+}
