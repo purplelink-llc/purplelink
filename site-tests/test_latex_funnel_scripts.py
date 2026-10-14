@@ -90,7 +90,7 @@ class DemandRanking(unittest.TestCase):
 class StopRule(unittest.TestCase):
     def rows(self, start, weeks, per_28d):
         d0 = dt.date.fromisoformat(start)
-        return [{"date": (d0 + dt.timedelta(days=7 * i)).isoformat(), "site_views_28d": str(per_28d)} for i in range(weeks + 1)]
+        return [{"date": (d0 + dt.timedelta(days=7 * i)).isoformat(), "human_views_est_28d": str(per_28d)} for i in range(weeks + 1)]
 
     def test_before_the_checkpoint_it_waits(self):
         s, _ = R.verdict(self.rows("2026-10-14", 2, 5), 12, dt.date(2026, 10, 28))
@@ -124,6 +124,30 @@ class StopRule(unittest.TestCase):
             R.append_history({"date": "2026-10-21", "videos": 13, "site_views_28d": 6}, p)
             rows = R.read_history(p)
             self.assertEqual([(r["date"], r["site_views_28d"]) for r in rows], [("2026-10-14", "5"), ("2026-10-21", "6")])
+            self.assertEqual(list(rows[0].keys()), R.FIELDS)
+
+    def test_the_2026_10_14_link_check_burst_reads_as_zero_human_views(self):
+        """28 page views on 14 brand-new tagged URLs (exactly 2 each) were all link checks, not viewers."""
+        allowance = R.bot_allowance([], dt.date(2026, 10, 14), 14)
+        self.assertEqual(allowance, 28)
+        self.assertEqual(R.human_estimate(28, allowance), 0)
+
+    def test_real_visits_on_top_of_the_checks_survive_the_subtraction(self):
+        allowance = R.bot_allowance([], dt.date(2026, 10, 14), 14)
+        self.assertEqual(R.human_estimate(40, allowance), 12)
+
+    def test_only_urls_published_inside_the_window_are_allowed_for(self):
+        old = [{"date": "2026-10-14", "tagged_urls": "14"}]
+        # 29 days later, 3 more URLs: only those 3 are new in the window
+        self.assertEqual(R.bot_allowance(old, dt.date(2026, 11, 12), 17), 6)
+        # a row that is not yet 28 days old does not count as the base
+        self.assertEqual(R.bot_allowance(old, dt.date(2026, 10, 30), 17), 34)
+
+    def test_a_daily_upload_alone_cannot_clear_the_bar(self):
+        """30 daily uploads, each adding 2 link-check views and no person: human estimate stays 0."""
+        urls = 14 + 30
+        views = R.BOT_VIEWS_PER_URL * urls
+        self.assertEqual(R.human_estimate(views, R.bot_allowance([], dt.date(2026, 11, 13), urls)), 0)
 
     def test_site_numbers_reads_only_the_series_channel(self):
         stats = {"funnelByChannel": {"youtube": {"pageviews": 99},

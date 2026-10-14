@@ -11,7 +11,7 @@
     <string>/bin/bash</string>
     <string>/Users/benampel/.purplelink/run-when-online.sh</string>
     <string>/bin/bash</string>
-    <string>/Volumes/Extreme SSD/Purplelink LLC/scripts/latex-funnel-weekly.sh</string>
+    <string>/Users/benampel/.purplelink/latex-funnel/latex-funnel-weekly.sh</string>
   </array>
   <key>EnvironmentVariables</key>
   <dict>
