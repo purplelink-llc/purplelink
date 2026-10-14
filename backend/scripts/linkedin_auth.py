@@ -137,11 +137,10 @@ def main():
         print(f"Could not fetch person URN automatically: {e}")
         person_urn = "urn:li:person:YOUR_ID_HERE"
 
-    # NOTE: Organization/Page posting (w_organization_social) requires LinkedIn's
-    # Community Management API product — a separate application with company
-    # verification, not something granted through "Share on LinkedIn" alone.
-    # Until that's approved, posts go out under the personal profile.
-    author_urn = person_urn
+    # Posts go only to the Purplelink LLC company page, never the personal profile
+    # (Ben, 2026-10-14). Page posting needs w_organization_social (LinkedIn's
+    # Community Management API product); publisher.post_linkedin refuses any other author.
+    author_urn = "urn:li:organization:120183926"
 
     print("--- Run this command to store credentials in Modal ---\n")
     print(f"modal secret create linkedin \\")
