@@ -5641,13 +5641,13 @@ Requires macOS 14 or later. Free 7-day trial, no account.
 ---
 
 Source: https://purplelink.llc/guides/best-mac-latex-editors/
-Title: Best LaTeX Editor for Mac 2026: 3 Tested, 16 Compared
+Title: LaTeX Editor for Mac: Best macOS Editors of 2026, 16 Compared
 
 ← All guides
 
 Comparison
 
-# Best LaTeX editor for Mac in 2026: 3 tested, 16 compared
+# LaTeX editor for Mac: the best macOS LaTeX editors of 2026, 3 tested and 16 compared
 
 By Benjamin Ampel · May 31, 2026, updated October 12, 2026
 
@@ -5836,6 +5836,8 @@ What it's good at: multi-author collaboration. Templates for major journals. No 
 What it lacks: offline access on the free tier, Git sync on free, native-Mac feel. The editor itself runs in a browser.
 
 Pick Overleaf if you need real-time collaboration. Many academic teams use Overleaf for collaboration and a native editor for solo writing.
+
+If a large project hits the free tier's compile time limit, see what to do about an Overleaf compile timeout.
 
 ## ModernTex
 
