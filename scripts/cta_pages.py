@@ -5,12 +5,9 @@ page list and source-tag convention cannot drift between insertion and
 verification. To add a page to the funnel, edit only this file.
 """
 
-TOOL_SLUGS = [
-    "bib-builder", "bib-validator", "citation-generator", "equation-renderer",
-    "file-to-markdown", "latex-diff", "latex-table-generator", "latex-to-pdf",
-    "latex-to-word", "markdown-to-pdf", "pdf-tools", "reference-converter",
-    "word-counter", "word-to-latex",
-]
+# Tool pages no longer carry the generic ModernTex block: each one now has a tailored offer card, or none,
+# written by scripts/tool_offers.py. Left empty so the obsolete insert script cannot put the old block back.
+TOOL_SLUGS = []
 GUIDE_SLUGS = [
     "citation-styles-explained", "doi-to-bibtex", "fix-bibtex-errors",
     "latex-to-word", "latex-track-changes", "latex-word-count",

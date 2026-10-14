@@ -37,3 +37,22 @@ def test_funnel_prints_and_flags_missing_tracking(capsys):
     h["adFunnel"]["channels"].pop("paid:google")
     td.print_ad_funnel(h, ads)
     assert "we saw none" in capsys.readouterr().out
+
+
+def test_tool_offer_visits_are_their_own_channel():
+    assert td.classify_touch({"s": "tool-latex-diff", "m": "tool", "c": "moderntex"}) == "Tool offers"
+    assert td.classify_touch({"s": "Tool-Bib-Validator", "r": "purplelink.llc"}) == "Tool offers"
+    # Not the tool channel: a referrer or campaign that only mentions tool, and a paid click.
+    assert td.classify_touch({"r": "tool-time.example"}) == "Other sites"
+    assert td.classify_touch({"s": "tools"}) == "Campaign: tools"
+    assert td.classify_touch({"s": "toolbox", "m": "email"}) == "Campaign: toolbox"
+    assert td.classify_touch({"g": 1, "s": "tool-latex-diff"}) == "Google Ads"
+    assert td.classify_touch({"s": "google", "m": "cpc"}) == "Google Ads"
+    assert td.classify_touch({"s": "newsletter"}) == "Email & RSS"
+
+
+def test_tool_channels_print_with_their_slug(capsys):
+    h = {"ledger": {}, "adFunnel": {"days": 7, "channels": {
+        "tool:latex-diff": {"pageviews": 4, "pageviewsByPath": {"/moderntex/": 4}, "trial": {"moderntex": 1}, "checkout": {}}}}}
+    td.print_ad_funnel(h, {})
+    assert "tool:latex-diff" in capsys.readouterr().out

@@ -2660,6 +2660,14 @@ What does Purplelink retain?
 
 Only briefly. The scan result is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. The manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
 
+This reads a finished manuscript PDF for leaks in a blind submission.
+
+Outbound Veil is a different check. It marks names, contact details and ID numbers in the text you are typing, before you send it. It is not a manuscript leak scan, it will miss some things, and it is not a compliance product.
+
+Free for 7 days, then $29.99 once. Needs macOS 14 or later.
+
+See Outbound Veil
+
 
 ---
 
@@ -2834,6 +2842,14 @@ Yes. One of the three personas simulates how an Applicant Tracking System would 
 What does Purplelink retain?
 
 Only briefly. The report is deleted from our servers 30 minutes after you first open it, or after 24 hours if you never do. Your resume is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring, never for training.
+
+This reviews one resume and does not keep a record of your work.
+
+Vitae imports a CV from Word, PDF, RTF, ODT or a web page. It then fills your CV from the papers, grants and positions you track, and exports to PDF, LaTeX or rich text.
+
+The app is free, with no limits on your record. Needs macOS 15 or later.
+
+See Vitae
 
 
 ---
@@ -3262,16 +3278,13 @@ Which engines are supported?
 
 pdfLaTeX and XeLaTeX. LuaLaTeX is not supported for security reasons.
 
-From the maker of these tools
+A compile on this page is cut off after about a minute.
 
-## Writing LaTeX on a Mac?
+ModernTex compiles on your Mac, so there is no server compile timeout, and its Live mode keeps the PDF in sync as you type.
 
-ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
+$19.99 once, after a free 7-day trial. Needs a Mac with macOS 14 or later.
 
-Get ModernTex — $19.99
-See what it does
-
-Requires macOS 14 or later. Free 7-day trial, no account.
+See ModernTex
 
 If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
@@ -3416,16 +3429,13 @@ A clean .bib fixes citations that are malformed. However, it cannot tell you abo
 
 From $9 per review, Anonymity Check bundled free. See what the report covers →
 
-From the maker of these tools
+This checks a .bib file after you have written it.
 
-## Writing LaTeX on a Mac?
+ModernTex points a bibliography build error at the line in your .bib file, and completes citations from your .bib files as you type.
 
-ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
+$19.99 once, after a free 7-day trial. Needs a Mac with macOS 14 or later.
 
-Get ModernTex — $19.99
-See what it does
-
-Requires macOS 14 or later. Free 7-day trial, no account.
+See ModernTex
 
 If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
@@ -3519,16 +3529,13 @@ Is anything stored?
 
 No. DOI and ISBN lookups go directly from your browser to the public APIs. arXiv lookups relay through our server, since arXiv doesn't allow direct browser access. All formatting happens locally either way, and we never log or store anything you enter.
 
-From the maker of these tools
+This gives you one formatted citation to copy and does not keep your reference list.
 
-## Writing LaTeX on a Mac?
+ModernTex suggests citations from your .bib files as you type, searching by author, title or key.
 
-ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.
+$19.99 once, after a free 7-day trial. Needs a Mac with macOS 14 or later.
 
-Get ModernTex — $19.99
-See what it does
-
-Requires macOS 14 or later. Free 7-day trial, no account.
+See ModernTex
 
 If this saves you time, you can leave a tip. It helps keep these tools free and online.
 
