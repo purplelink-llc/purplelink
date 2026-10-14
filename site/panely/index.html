@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="/panely/panely.css?v=af48f9573f">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
-    <script src="/panely/launch.js?v=ac99174d3c" defer></script>
+    <script src="/panely/launch.js?v=285a8f5909" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
     {
@@ -53,7 +53,7 @@
             "Drag a window to a screen edge or corner and a preview shows where it will land",
             "Press the left or right half shortcut again to step through half, two thirds and one third",
         "Leaves Picture in Picture video windows alone by default, so a shortcut, a drag or a layout does not resize them, with a Settings switch to turn that off",
-        "After you snap a window, optionally offers the free part of the screen to another window, chosen from cards showing app names and window titles, with no Screen Recording permission",
+        "After you snap a window, optionally offers the free part of the screen to another window or app: your open windows, your 10 most used apps and a search over every app on the Mac, with no Screen Recording permission",
             "A margin around the screen and a gap between windows, from 0 to 32 points",
             "Move a window to the next or previous display, keeping its proportions",
             "Restore a window to the size it had before its first snap, kept on a screen that exists even if its monitor was unplugged",
@@ -112,7 +112,7 @@
       "name": "What is the list of windows that appears after I snap one?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It offers the part of the screen your window did not take to another window. Cards show each window's app icon, app name and title, and you pick one with a click. After a drag you can also use the arrow keys, Return, a number key and Escape. It reads no screen content and needs no Screen Recording permission. By default it appears after every snap, including from the menu bar and by shortcut; after a shortcut or a menu choice it is click-only, so your typing still goes to your app. Settings can limit it to dragging and the menu, or turn it off."
+        "text": "It offers the part of the screen your window did not take to another window or app. You see your open windows and your 10 most used apps, and you can type to find any app on your Mac. Choose one with a click, or type and press Return, and Panely puts its window in that space, opening the app first if it is not running. It reads no screen content and needs no Screen Recording permission. Escape closes it at once. By default it appears after every snap, including from the menu bar and by shortcut; after a shortcut or a menu choice it waits until you click into it, so your typing still goes to your app. Settings can limit it to dragging and the menu, or turn it off."
       }
     },
     {
@@ -212,7 +212,7 @@
           <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="panely" data-pf-gated data-pf-live-text="Buy Panely">Buy Panely</button>
         </div>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
-        <p class="waitlist-fine-print" data-pf-facts>Version 1.0.3, released October 13, 2026. 4 MB disk image.</p>
+        <p class="waitlist-fine-print" data-pf-facts>Version 1.0.4, released October 14, 2026. 4 MB disk image.</p>
         <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>, $59.99 once.</p>
         <p class="waitlist-fine-print">Compare Panely with Rectangle, Magnet, Moom and others in <a href="/guides/best-window-managers-for-mac/">Best window managers for Mac</a>, or read <a href="/guides/snap-windows-on-mac/">how to snap and tile windows on a Mac</a> with the tools macOS already has.</p>
@@ -325,7 +325,7 @@
           <tr><th scope="row">Shortcuts</th><td>Most actions have a default shortcut, such as Control-Option with an arrow key. In Settings, click any shortcut and press the keys you want, including for the sixths, which have none to start with. Panely refuses combinations that macOS keeps for itself or that another action already uses, and warns you when another app holds one. Any shortcut can be reset or turned off. Panely uses macOS&#x27;s own system for global shortcuts, so it does not need the Input Monitoring permission and does not see other keys you press.</td></tr>
           <tr><th scope="row">Dragging</th><td>Drag a window to the left or right edge for a half. Drag it to the top edge to maximize, to the bottom edge for a bottom half, or to a corner for a quarter. A translucent preview shows the result before you let go.</td></tr>
           <tr><th scope="row">Repeat to resize</th><td>Press a left or right half shortcut again and the window steps to two thirds, then one third, then back to half. This can be turned off.</td></tr>
-          <tr><th scope="row">Fill the rest</th><td>After you snap a window, Panely can show your other windows over the part of the screen that is left. Pick one with a click, and it fills that space. After a drag you can also use the arrow keys, Return, a number key and Escape. Each card shows the app icon, the app name and the window title, and nothing from inside the window. By default it appears after every snap, including from the menu bar and by shortcut. After a shortcut or a menu choice it is click-only, so what you type next still goes to your app. Settings can limit it to dragging and the menu, or turn it off. It offers nothing after a maximize, when nothing is left, and a window placed this way can be restored like any other.</td></tr>
+          <tr><th scope="row">Fill the rest</th><td>After you snap a window, Panely can offer the part of the screen that is left to another window or app. The list shows your open windows, your 10 most used apps and a search box that finds any app on your Mac by name. Choose one with a click, or type and press Return, and it fills that space; if the app is not running, Panely opens it first. Both windows come to the front afterwards. Each entry shows the app icon and name and, for a window, its title, and nothing from inside the window. Escape closes the list at once. By default it appears after every snap, including from the menu bar and by shortcut. After a drag you can type straight away; after a shortcut or a menu choice the list waits until you click into it, so what you type next still goes to your app. Settings can limit it to dragging and the menu, or turn it off. It offers nothing after a maximize, when nothing is left, and a window placed this way can be restored like any other.</td></tr>
           <tr><th scope="row">Picture in Picture</th><td>Picture in Picture video windows are left alone: a shortcut, a drag to an edge or a layout does not move or resize them, and they are not offered in the fill-the-rest list. Panely recognises them by their title and small size. A switch in Settings turns this off if you want them snapped. A pop-out window that is not video, such as a call in a small window, may not be recognised.</td></tr>
           <tr><th scope="row">Displays</th><td>Move a window to the next or previous display and it keeps its proportions. Panely orders displays left to right.</td></tr>
           <tr><th scope="row">Restore</th><td>Return a window to the size and place it had before its first snap.</td></tr>
@@ -350,11 +350,11 @@
         </div>
         <div class="feature-item">
           <h3>Positions, sizes and titles</h3>
-          <p>To move a window, Panely reads where it is, how big it is and its title, so a saved layout can tell two windows of one app apart. It does not read what is inside a window. The list of windows offered after a snap shows app names and titles too, and uses no Screen Recording permission.</p>
+          <p>To move a window, Panely reads where it is, how big it is and its title, so a saved layout can tell two windows of one app apart. It does not read what is inside a window. The list offered after a snap shows app names and window titles too, and reads the use counts macOS already keeps for apps to find the ones you use most. It uses no Screen Recording permission.</p>
         </div>
         <div class="feature-item">
           <h3>No keystroke access</h3>
-          <p>Shortcuts use macOS&#x27;s own global shortcut system. Panely does not need Input Monitoring and cannot see which other keys you press.</p>
+          <p>Shortcuts use macOS&#x27;s own global shortcut system. Panely does not need Input Monitoring and cannot see which other keys you press. The one short-lived addition is Escape, which Panely registers as a shortcut only while the picker is open, so it can close it at once.</p>
         </div>
       </div>
       <p>Details are on the <a href="/privacy/">privacy page</a>.</p>
@@ -425,7 +425,7 @@
         </details>
         <details class="faq-item">
           <summary>What is the list of windows that appears after I snap one?</summary>
-          <div class="faq-body">It offers the part of the screen your window did not take to another window. Cards show each window's app icon, app name and title, and you pick one with a click. After a drag you can also use the arrow keys, Return, a number key and Escape. It reads no screen content and needs no Screen Recording permission. By default it appears after every snap, including from the menu bar and by shortcut; after a shortcut or a menu choice it is click-only, so your typing still goes to your app. Settings can limit it to dragging and the menu, or turn it off.</div>
+          <div class="faq-body">It offers the part of the screen your window did not take to another window or app. You see your open windows and your 10 most used apps, and you can type to find any app on your Mac. Choose one with a click, or type and press Return, and Panely puts its window in that space, opening the app first if it is not running. It reads no screen content and needs no Screen Recording permission. Escape closes it at once. By default it appears after every snap, including from the menu bar and by shortcut; after a shortcut or a menu choice it waits until you click into it, so your typing still goes to your app. Settings can limit it to dragging and the menu, or turn it off.</div>
         </details>
         <details class="faq-item">
           <summary>Will it put windows back when I reconnect a monitor?</summary>
