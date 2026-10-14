@@ -72,6 +72,15 @@
         <span class="changelog-date">October 14, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 1.7.5</h2>
+          <p>A Full build no longer gets stuck after the bibliography step fails once. latexmk remembers a failed biber or bibtex step and then does nothing on every later run, so the build finished in a fraction of a second and the real error never came back. ModernTex now notices that and builds once more with latexmk's <code>-g</code> option, so the step runs again and its own error is shown in Build Results. Earlier versions install 1.7.5 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 14, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>ModernTex 1.7.4</h2>
           <p>Build Results shows only what is still wrong after a Full build. A Full build runs LaTeX several times, with biber in between, and Build Results used to collect warnings from every pass, so a citation the first pass could not resolve was still listed after biber and the last pass had fixed it. It now reads the last pass only. Earlier versions install 1.7.4 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
         </div>
