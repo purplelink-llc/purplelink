@@ -38,5 +38,24 @@ class ThumbSpec(unittest.TestCase):
         self.assertIsNone(re.search(r"[\U0001F300-\U0001FAFF☀-➿]", blob))
 
 
+class AbVariants(unittest.TestCase):
+    """Every long video ships three thumbnails for YouTube Test & Compare (video/thumbs/ab/<video>.json)."""
+
+    def test_each_file_holds_three_distinct_honest_variants(self):
+        files = sorted((ROOT / "video" / "thumbs" / "ab").glob("*.json"))
+        self.assertTrue(files)
+        for f in files:
+            v = json.loads(f.read_text())
+            self.assertEqual([x["variant"] for x in v], ["A", "B", "C"], f.name)
+            self.assertEqual(len({x["id"] for x in v}), 3, f.name)
+            # variants that differ only in colour teach nothing: at least two different templates
+            self.assertGreaterEqual(len({x["kind"] for x in v}), 2, f.name)
+            for x in v:
+                self.assertNotRegex(x.get("line") or x.get("msg") or x.get("after") or "", r"\$\d", f.name)
+                src = x.get("img")
+                if src:
+                    self.assertTrue((ROOT / (src["video"] if isinstance(src, dict) else src)).is_file(), f"{f.name}: {src}")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,6 @@
 [
  {
-  "id": "Yd51v0bEfCw",
+  "id": "file-not-found-long-thumb-A",
   "kind": "long",
   "msg": "File not found",
   "n": 5,
@@ -9,14 +9,15 @@
   "variant": "A"
  },
  {
-  "id": "Yd51v0bEfCw-B",
+  "id": "file-not-found-long-thumb-B",
   "kind": "split",
   "msg": "File not found",
   "img": "video/thumbs/assets/fnf-built-crop.png",
-  "after": "5 causes, each fixed"
+  "after": "5 causes, each fixed",
+  "variant": "B"
  },
  {
-  "id": "Yd51v0bEfCw-C",
+  "id": "file-not-found-long-thumb-C",
   "kind": "product",
   "name": "LaTeX error",
   "line": "File not found: 5 causes, 5 fixes",
@@ -27,6 +28,7 @@
    "top": 170,
    "width": 700,
    "height": 212
-  }
+  },
+  "variant": "C"
  }
 ]

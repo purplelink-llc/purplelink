@@ -9,7 +9,7 @@ limit and needs no file dialog, so the full-quality master goes up as-is.
 The automation Chrome must be signed in to a Google account that can manage
 the channel (Ben does that sign-in; this script never touches credentials).
 
-  python3 scripts/yt-upload.py FILE --title "..." --description "..." [--public] [--thumbnail THUMB.jpg]
+  python3 scripts/yt-upload.py FILE --title "..." --description "..." [--public] [--thumbnail THUMB.jpg | --ab-thumbnails A.jpg B.jpg C.jpg]
   python3 scripts/yt-upload.py FILE --title ... --dry-run   # stops before choosing the file
 
 Visibility defaults to unlisted so a bad render never goes public by accident;
@@ -136,6 +136,8 @@ def main():
     ap.add_argument("--public", action="store_true", help="publish public (default unlisted)")
     ap.add_argument("--dry-run", action="store_true", help="open the dialog, find the input, stop")
     ap.add_argument("--thumbnail", help="custom thumbnail (1280x720 JPEG under 2 MB, from video/build-thumbs.mjs) set after publishing")
+    ap.add_argument("--ab-thumbnails", nargs=3, metavar=("A", "B", "C"),
+                    help="three thumbnails for a Test & Compare test started after publishing (long-form public videos; A is the control)")
     a = ap.parse_args()
     path = os.path.abspath(a.file)
     if not os.path.isfile(path):
@@ -144,6 +146,13 @@ def main():
         sys.exit("title over 100 characters")
     if a.thumbnail and (not os.path.isfile(a.thumbnail) or os.path.getsize(a.thumbnail) >= 2_000_000):
         sys.exit(f"thumbnail missing or 2 MB or more: {a.thumbnail}")
+    if a.ab_thumbnails and a.thumbnail:
+        sys.exit("use --thumbnail or --ab-thumbnails, not both (A of the test is the thumbnail)")
+    if a.ab_thumbnails and not a.public:
+        sys.exit("Test & Compare runs only on public videos; add --public")
+    for t in a.ab_thumbnails or []:
+        if not os.path.isfile(t) or os.path.getsize(t) >= 2_000_000:
+            sys.exit(f"thumbnail missing or 2 MB or more: {t}")
 
     # Foreground on purpose: Chrome gives a hidden tab no layout, so every
     # rect is 0x0 and Input events land nowhere. Studio's fields need real clicks.
@@ -242,6 +251,10 @@ def main():
             ytt = importlib.util.module_from_spec(spec); spec.loader.exec_module(ytt)
             ok = ytt.apply(vid, os.path.abspath(a.thumbnail))
             print("thumbnail live" if ok else f"thumbnail saved but not public yet; recheck with scripts/yt-thumbnail.py {vid}={a.thumbnail}")
+        if a.ab_thumbnails:
+            spec = importlib.util.spec_from_file_location("yab", os.path.join(os.path.dirname(os.path.abspath(__file__)), "yt-abtest.py"))
+            yab = importlib.util.module_from_spec(spec); spec.loader.exec_module(yab)
+            yab.start(vid, *a.ab_thumbnails)  # sets A as the thumbnail, starts the test, records it
     except Exception:
         print(f"left the Studio tab open for manual recovery: {tab.url()}", file=sys.stderr)
         raise
