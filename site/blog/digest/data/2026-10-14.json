@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-14",
+  "number": 109,
+  "intro": "Anthropic's self-replicating AI worm study and its custom Git replacement, Microsoft's record 1,400-flaw Patch Tuesday, and ransomware physical threats lead this digest.",
+  "sections": {
+    "Papers & Research": [
+      {
+        "title": "Regulating the Frontier: Model-Level Evidence from the EU AI Act",
+        "url": "https://philpapers.org/rec/LIRTFO",
+        "source_name": "OpenAlex",
+        "category": "papers",
+        "editorial_note": "This paper tests empirically whether the EU AI Act's general-purpose model transparency regime changes how developers build models. The question is sharper than most compliance commentary because it asks if rules produce behavior change or only paperwork nobody sees. The snippet gives no effect sizes, so the strength of the evidence needs checking in the full text."
+      },
+      {
+        "title": "Replication Package for Fairness Bugs Detection Empirical Study",
+        "url": "https://doi.org/10.5281/zenodo.19207801",
+        "source_name": "OpenAlex",
+        "category": "papers",
+        "editorial_note": "This replication package covers a metamorphic testing study of fairness bugs in LLMs answering medical questions. It ships the benchmark, scripts and results. Metamorphic testing (i.e., checking that outputs stay consistent under input changes that should not matter) transfers directly to adversarial robustness work. However, the paper is still under review."
+      }
+    ],
+    "AI & Technology": [
+      {
+        "title": "Redesigning source control at Anthropic",
+        "url": "https://www.anthropic.com/engineering/redesigning-source-control",
+        "source_name": "Hacker News",
+        "category": "ai_tech",
+        "editorial_note": "Anthropic built its own Git alternative after code change volume rose sharply over six months, averaging around 2,500 changes in May 2026. Agent-generated commits break assumptions Git was designed around. Indie developers running coding agents will hit the same limits at smaller scale."
+      },
+      {
+        "title": "Google DeepMind and Singapore Government collaborate to build fine-tuned AI model for scam detection",
+        "url": "https://deepmind.google/blog/on-device-ai-scam-detection-mddi",
+        "source_name": "Google DeepMind",
+        "category": "ai_tech",
+        "editorial_note": "GovTech Singapore and DeepMind run lightweight on-device Gemma models that catch conversational scams in private chats with zero cloud data egress. The design avoids the privacy objection that usually blocks message scanning. Open questions are false-positive rates and how scammers adapt once the classifier's behavior is probed."
+      },
+      {
+        "title": "Run fast, private agents on-device with LFM2.5-24B-A2B",
+        "url": "https://huggingface.co/blog/LiquidAI/lfm25-24b-a2b",
+        "source_name": "HuggingFace Blog",
+        "category": "ai_tech",
+        "editorial_note": "Liquid AI's model is a 24B-parameter mixture-of-experts with about 2B active parameters, aimed at on-device agents. Low active-parameter counts make local inference plausible on Apple silicon. Benchmarks and memory footprint need verification before anyone builds on it."
+      }
+    ],
+    "Cybersecurity": [
+      {
+        "title": "Anthropic Finds Ingredients for Future AI Worms",
+        "url": "https://www.darkreading.com/perimeter/anthropic-ingredients-future-ai-worms",
+        "source_name": "Dark Reading",
+        "category": "cybersecurity",
+        "editorial_note": "Anthropic combined IoT and network tests to assess whether small models could self-replicate across consumer devices such as Android TV boxes and smart ovens. The threat model is a botnet that runs AI workloads without data centers, which removes the usual compute chokepoint defenders rely on. The snippet does not give success rates, so how close the demonstrated pieces are to a working worm remains open."
+      },
+      {
+        "title": "Anthropic warns self-replicating AI could spread to your smart devices",
+        "url": "https://www.bleepingcomputer.com/news/security/anthropic-warns-self-replicating-ai-could-spread-to-your-smart-devices",
+        "source_name": "Bleeping Computer",
+        "category": "cybersecurity",
+        "editorial_note": "Bleeping Computer frames the same Anthropic work around distributed botnets on consumer IoT hardware. Defenders should note that shutdown becomes hard once inference runs on thousands of owner-controlled devices. Connects to: Anthropic Finds Ingredients for Future AI Worms."
+      },
+      {
+        "title": "An OpenAI Employee Allegedly Used a Chatbot to Help Plant a Recording Device at the Office",
+        "url": "https://www.wired.com/story/an-openai-employee-allegedly-used-a-chatbot-to-help-plant-a-recording-device-at-the-office",
+        "source_name": "Wired Security",
+        "category": "cybersecurity",
+        "editorial_note": "Chatbot prompts allegedly document an engineer's planning of a covert listening device found in an executive meeting room. The insider threat evidence trail here is the assistant's own logs. That makes LLM conversation history a new forensic and detection source for insider risk programs. The allegations are unproven."
+      },
+      {
+        "title": "Ransomware Gangs Embrace Physical Threats, Family Stalking?",
+        "url": "https://www.darkreading.com/cybersecurity-analytics/ransomware-gangs-physical-threats-family-stalking",
+        "source_name": "Dark Reading",
+        "category": "cybersecurity",
+        "editorial_note": "Organizations report employees facing threats to families, stalking, violence and abduction. Dark Reading itself notes the claims are hard to verify. That gap matters for dark web intelligence work, since leak-site and negotiation-chat data rarely confirms physical coercion."
+      }
+    ],
+    "Worth Reading": [
+      {
+        "title": "Open models have real benefits. Do they outweigh the risks?",
+        "url": "https://www.technologyreview.com/2026/10/13/1146366/open-models-have-real-benefits-do-they-outweigh-the-risks",
+        "source_name": "MIT Technology Review",
+        "category": "general_tech",
+        "editorial_note": "Anthropic released a report late last month arguing that the open model GLM-5.3 poses a major cyberattack risk. The piece weighs that claim against open-model benefits. Anthropic is a commercial competitor of open labs, so the report's evidence deserves independent replication."
+      },
+      {
+        "title": "AI labs are buying data from dead startups to train their models",
+        "url": "https://www.technologyreview.com/2026/10/13/1145755/ai-labs-buying-data-from-dead-startups-to-train-models",
+        "source_name": "MIT Technology Review",
+        "category": "general_tech",
+        "editorial_note": "One founder netted roughly $25,000 for a defunct crypto startup's code base and archives. Shuttered companies now have a salvage market. Founders should check user privacy terms before selling, because anonymous users do not make the data free of obligation."
+      }
+    ]
+  },
+  "sources_reviewed": 1005,
+  "items_selected": 11
+}
