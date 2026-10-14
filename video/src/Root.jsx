@@ -7,6 +7,7 @@ import { PanelyShot } from "./PanelyShot.jsx";
 import { PRODUCTS } from "./products/index.js";
 import { LatexFix } from "./LatexFix.jsx";
 import { LatexLong } from "./LatexLong.jsx";
+import { Thumb } from "./Thumb.jsx";
 import { buildLong } from "./latexfix/longplan.js";
 import { ChainDay } from "./Chain.jsx";
 import { build as buildChain } from "./chain/plan.js";
@@ -48,6 +49,7 @@ export const Root = () => (
     <Composition id="LatexLong" component={LatexLong} fps={brand.fps} width={1920} height={1080} durationInFrames={90}
       defaultProps={{ parts: [], bumper: BUMPER }}
       calculateMetadata={({ props }) => ({ width: 1920, height: 1080, durationInFrames: Math.max(1, Math.round(bumperTotal(props.parts.length ? buildLong(props.parts).total : 3, props.bumper || BUMPER) * brand.fps)) })} />
+    <Composition id="Thumb" component={Thumb} fps={brand.fps} width={1280} height={720} durationInFrames={1} defaultProps={{ kind: "error", msg: "Undefined control sequence" }} />
     <Composition id="ChainDay" component={ChainDay} fps={brand.fps} width={1080} height={1920} durationInFrames={90}
       defaultProps={{ chain: { players: [], hops: [] }, format: "9x16", timing: { scenes: [] }, bumper: BUMPER }}
       calculateMetadata={({ props }) => { const fmt = FORMATS[props.format]; const total = props.timing.scenes.length ? bumperTotal(buildChain(props.chain, props.timing).total, props.bumper || BUMPER) : 3; return { width: fmt.W, height: fmt.H, durationInFrames: Math.round(total * brand.fps) }; }} />

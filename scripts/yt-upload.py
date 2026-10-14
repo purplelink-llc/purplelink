@@ -9,7 +9,7 @@ limit and needs no file dialog, so the full-quality master goes up as-is.
 The automation Chrome must be signed in to a Google account that can manage
 the channel (Ben does that sign-in; this script never touches credentials).
 
-  python3 scripts/yt-upload.py FILE --title "..." --description "..." [--public]
+  python3 scripts/yt-upload.py FILE --title "..." --description "..." [--public] [--thumbnail THUMB.jpg]
   python3 scripts/yt-upload.py FILE --title ... --dry-run   # stops before choosing the file
 
 Visibility defaults to unlisted so a bad render never goes public by accident;
@@ -17,7 +17,7 @@ pass --public only after Ben has approved that specific video in chat.
 Prints the video URL on success. Exit 2 means the channel was not reachable
 (wrong account in the automation Chrome).
 """
-import argparse, os, re, subprocess, sys, time, urllib.request
+import argparse, importlib.util, os, re, subprocess, sys, time, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from cdp_tab import Tab  # noqa: E402
@@ -135,12 +135,15 @@ def main():
     ap.add_argument("--description", default="")
     ap.add_argument("--public", action="store_true", help="publish public (default unlisted)")
     ap.add_argument("--dry-run", action="store_true", help="open the dialog, find the input, stop")
+    ap.add_argument("--thumbnail", help="custom thumbnail (1280x720 JPEG under 2 MB, from video/build-thumbs.mjs) set after publishing")
     a = ap.parse_args()
     path = os.path.abspath(a.file)
     if not os.path.isfile(path):
         sys.exit(f"no such file: {path}")
     if len(a.title) > 100:
         sys.exit("title over 100 characters")
+    if a.thumbnail and (not os.path.isfile(a.thumbnail) or os.path.getsize(a.thumbnail) >= 2_000_000):
+        sys.exit(f"thumbnail missing or 2 MB or more: {a.thumbnail}")
 
     # Foreground on purpose: Chrome gives a hidden tab no layout, so every
     # rect is 0x0 and Input events land nowhere. Studio's fields need real clicks.
@@ -232,6 +235,13 @@ def main():
             sys.exit(3)
         print(link)
         print(f"verified in Studio: {got}")
+        if a.thumbnail:
+            # Set on the published video's edit page (scripts/yt-thumbnail.py), which confirms the public image matches;
+            # the upload dialog's own thumbnail input shares markup with the video input, so it is not used.
+            spec = importlib.util.spec_from_file_location("ytt", os.path.join(os.path.dirname(os.path.abspath(__file__)), "yt-thumbnail.py"))
+            ytt = importlib.util.module_from_spec(spec); spec.loader.exec_module(ytt)
+            ok = ytt.apply(vid, os.path.abspath(a.thumbnail))
+            print("thumbnail live" if ok else f"thumbnail saved but not public yet; recheck with scripts/yt-thumbnail.py {vid}={a.thumbnail}")
     except Exception:
         print(f"left the Studio tab open for manual recovery: {tab.url()}", file=sys.stderr)
         raise

@@ -111,3 +111,21 @@ Never publish it without Ben's approval of that specific video; `scripts/yt-uplo
 ```
 
 Output: `out/latex-errors/<slug>/<slug>-16x9.mp4`, `-9x16.mp4`, `-poster.jpg`, `frames/`. Code is 36 px in both formats. In 9:16 the log's continuation line keeps its text but is indented less so it fits the panel, and long source lines soft-wrap. The build fails if narration overlaps a bumper and warns outside 20 to 25 s. Run one build at a time.
+
+## YouTube thumbnails
+
+`src/Thumb.jsx` (composition `Thumb`, 1280x720) has three templates: `error` (the LaTeX error as the log prints it, plus
+"How to fix it"), `long` (an error plus the number of causes the video covers) and `product` (one real screen of the app,
+cropped in with `zoom` and `pos`, and a 2 to 5 word outcome). The rules come from a 2026-10-14 research pass:
+show only what the video shows, 1 to 5 display words in type that reads at 168x94, no prices, and nothing in the
+bottom-right corner where YouTube puts the duration.
+```
+node build-thumbs.mjs                     # every entry in thumbs/youtube.json -> out/thumbs/<video id>.jpg + sheet.jpg
+node build-thumbs.mjs --only ID,ID        # some of them
+python3 ../scripts/yt-thumbnail.py --dir out/thumbs ID [ID ...]      # set them on existing videos (automation Chrome)
+python3 ../scripts/yt-upload.py FILE --title ... --thumbnail THUMB   # new uploads get one right after publishing
+```
+`build-latexfix.mjs` writes `<slug>-thumb.jpg` for every new error Short. The text is the storyboard's `thumb.msg`, or
+otherwise the title after "Fix this LaTeX error:"; set `thumb.msg` whenever the spoken title differs from the log text.
+When a new video goes up, add its entry to `thumbs/youtube.json` so the whole channel can be re-rendered in one pass.
+YouTube's Test & Compare (Studio, long-form public videos only) can try up to three thumbnails and picks by watch time.

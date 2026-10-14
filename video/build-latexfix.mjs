@@ -1,7 +1,7 @@
 // node build-latexfix.mjs <slug> [--format 16x9|9x16|both] [--stills t1,t2,...] [--skip-narrate]
 // "Fix this LaTeX error" shorts (src/LatexFix.jsx, content in src/latexfix/data.js, narration and captions in
 // storyboards/latex-errors/<slug>.json). Renders one format after the other, never in parallel.
-// Outputs video/out/latex-errors/<slug>/: <slug>-16x9.mp4, <slug>-9x16.mp4, <slug>-poster.jpg, frames/*.jpg, run-log.txt.
+// Outputs video/out/latex-errors/<slug>/: <slug>-16x9.mp4, <slug>-9x16.mp4, <slug>-poster.jpg, <slug>-thumb.jpg (YouTube), frames/*.jpg, run-log.txt.
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
@@ -89,6 +89,14 @@ for (const format of fmts) {
     const poster = path.join(OUT, `${ID}-poster.jpg`);
     await renderStill({ composition: comp, serveUrl, output: poster, imageFormat: "jpeg", jpegQuality: 92, inputProps, frame: Math.round((P0 + plan.poster) * brand.fps) });
     say(`poster: ${mb(poster)} MB -> ${path.relative(ROOT, poster)}`);
+    // YouTube thumbnail (src/Thumb.jsx error card): storyboard "thumb": { msg, level } wins, else the title's error
+    const sb = JSON.parse(fs.readFileSync(path.join(ROOT, "storyboards", "latex-errors", `${ID}.json`), "utf8"));
+    const msg = sb.thumb?.msg ?? sb.title.replace(/^Fix (this LaTeX (error|warning): )?/, "").replace(/, cause .*$/, "");
+    const level = sb.thumb?.level ?? (/^(Citation|Reference) .*undefined|^(Over|Under)full/.test(msg) ? "warning" : "error");
+    const tp = { kind: "error", msg, level };
+    const thumb = path.join(OUT, `${ID}-thumb.jpg`);
+    await renderStill({ composition: await selectComposition({ serveUrl, id: "Thumb", inputProps: tp }), serveUrl, output: thumb, imageFormat: "jpeg", jpegQuality: 90, inputProps: tp });
+    say(`thumbnail (${level}: ${msg}): ${mb(thumb)} MB -> ${path.relative(ROOT, thumb)}; upload with yt-upload.py --thumbnail`);
   }
 }
 say(`total: ${secs(t0)}s`);
