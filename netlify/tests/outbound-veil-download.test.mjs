@@ -205,6 +205,32 @@ test("the channel stays closed when the token is not configured, even for an emp
   assert.equal((await call("feed=1", { "x-outboundveil-channel": "" })).status, 403);
 });
 
+test("the retired 1.0.x token opens the feed and updates but not stats, and only when configured", async () => {
+  const LEGACY = "c".repeat(64);
+  for (const q of ["feed=1", "update=OutboundVeil-1.0.0.dmg"]) {
+    assert.equal((await call(q, { "x-outboundveil-channel": LEGACY })).status, 403, `${q} unconfigured`);
+  }
+  env.OUTBOUND_VEIL_LEGACY_UPDATE_TOKEN = LEGACY;
+  try {
+    assert.equal((await call("feed=1", { "x-outboundveil-channel": LEGACY })).status, 200);
+    assert.equal((await call("update=OutboundVeil-1.0.0.dmg", { "x-outboundveil-channel": LEGACY })).status, 200);
+    assert.equal((await call("stats=1", { "x-outboundveil-channel": LEGACY })).status, 403);
+    assert.equal((await call("feed=1", { "x-outboundveil-channel": LEGACY.slice(0, -1) })).status, 403);
+    assert.equal((await call("feed=1", { "x-outboundveil-channel": TOKEN })).status, 200);
+  } finally {
+    delete env.OUTBOUND_VEIL_LEGACY_UPDATE_TOKEN;
+  }
+});
+
+test("an empty legacy setting never matches an empty header", async () => {
+  env.OUTBOUND_VEIL_LEGACY_UPDATE_TOKEN = "";
+  try {
+    assert.equal((await call("feed=1", { "x-outboundveil-channel": "" })).status, 403);
+  } finally {
+    delete env.OUTBOUND_VEIL_LEGACY_UPDATE_TOKEN;
+  }
+});
+
 test("the right token serves the appcast with every enclosure pointed at the update door", async () => {
   const res = await call("feed=1", { "x-outboundveil-channel": TOKEN });
   assert.equal(res.status, 200);
