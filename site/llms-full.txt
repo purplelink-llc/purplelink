@@ -365,7 +365,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $19.99 to keep · v1.7.2
+Free 7-day trial · $19.99 to keep · v1.7.3
 
 # ModernTex
 
@@ -379,7 +379,7 @@ Or get the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Pan
 
 From the studio behind Scholar Utility Belt, which 1,000 researchers use and the Chrome Web Store rates 4.5 out of 5.
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms). The receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.7.2 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once. First ten minutes: install and first build.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms). The receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.7.3 · 18 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once. First ten minutes: install and first build.
 
 ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.
 
@@ -519,9 +519,11 @@ AI featuresOptional. Fix with AI proposes a repair for a build error and shows i
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
-Current version1.7.2, which keeps the status bar from sticking on Compiling (Live), names the real error in the editor note, and suggests the right name for a misspelled package. 1.7.1 shows build errors raised inside a package (such as hyperref or biblatex) instead of hiding them, adds an SBL (Society of Biblical Literature) reference style, stops the whole TeX process tree when you cancel a build, and builds projects in cloud-synced folders outside the synced folder. 1.6.3 opens the sidebar wider and gives New File and New Folder icon buttons under a Project files heading. 1.6.2 puts the title bar and the toolbar in one row, with the window buttons at the left end of the toolbar. 1.6.1 shortens the toolbar into Insert and Cite menus and a search field, keeps the Build Results panel closed until you open it, and marks the line of a build error in the editor with a one-click fix. 1.6.0 builds a PDF of your project with your edits marked since the last time you synced, and can mark what the last Get Changes brought in. 1.5.0 builds projects kept in iCloud Drive and OneDrive, flags a Figure that points at a table, suggests the label you meant, shows a checks summary in the status bar and saves automatic checkpoints. 1.4.0 made ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
+Current version1.7.3, which runs biber on every Full build, including with LuaLaTeX or XeLaTeX chosen as the engine. 1.7.2 keeps the status bar from sticking on Compiling (Live), names the real error in the editor note, and suggests the right name for a misspelled package. 1.7.1 shows build errors raised inside a package (such as hyperref or biblatex) instead of hiding them, adds an SBL (Society of Biblical Literature) reference style, stops the whole TeX process tree when you cancel a build, and builds projects in cloud-synced folders outside the synced folder. 1.6.3 opens the sidebar wider and gives New File and New Folder icon buttons under a Project files heading. 1.6.2 puts the title bar and the toolbar in one row, with the window buttons at the left end of the toolbar. 1.6.1 shortens the toolbar into Insert and Cite menus and a search field, keeps the Build Results panel closed until you open it, and marks the line of a build error in the editor with a one-click fix. 1.6.0 builds a PDF of your project with your edits marked since the last time you synced, and can mark what the last Get Changes brought in. 1.5.0 builds projects kept in iCloud Drive and OneDrive, flags a Figure that points at a table, suggests the label you meant, shows a checks summary in the status bar and saves automatic checkpoints. 1.4.0 made ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. Changelog
 
-### Eighteen updates since launch on September 4
+### Nineteen updates since launch on September 4
+
+- Oct 141.7.3A Full build runs biber with LuaLaTeX and XeLaTeX too, so citations no longer print as bold keys.
 
 - Oct 141.7.2No more stuck Compiling (Live), an error note that names the real error, and "Did you mean graphicx?" for a misspelled package.
 
@@ -2918,7 +2920,7 @@ Free and Pro
 
 ## What is free and what is Pro
 
-Reading and browsing aids stay free: quality badges, the result action grid, citation velocity, the saved-paper library, author summary metrics (h-index, g-index and similar), the query trend tracker, retraction and tortured-phrase warnings, and related works. Pro covers workflow tools that save power users time.
+Reading and browsing aids stay free: quality badges, the result action grid, citation velocity, the saved-paper library, author summary metrics (h-index, g-index and similar), the query trend tracker, retraction and tortured-phrase warnings, and related works. Pro covers workflow tools that save power users time. The Pro page lists every feature, the trial and the prices.
 
 ### Pro features
 
@@ -2986,6 +2988,167 @@ ABDC, the Financial Times 50 (FT50), the UT Dallas 24 (UTD24) and SCImago Journa
 Which browsers does it support?
 
 Google Chrome, from the Chrome Web Store.
+
+
+---
+
+Source: https://purplelink.llc/scholar-utility-belt/pro/
+Title: Scholar Utility Belt Pro: free vs Pro, trial and price | Purplelink
+
+← Scholar Utility Belt
+
+# Scholar Utility Belt Pro
+
+Scholar Utility Belt is a free Chrome extension that adds journal rankings, author metrics and retraction warnings to Google Scholar. Pro is an optional tier on top of it for review, export and library work. It has a 14-day trial, and it costs $40 once, $3 a month or $20 a year. If you installed the extension before Pro existed, the Pro features that existed then are still free for you.
+
+Add to Chrome
+Main product page
+
+There is no checkout on this site. The trial and the purchase both start inside the extension, on its Options page.
+
+## What stays free
+
+The reading and browsing aids are free for everyone, new installs included.
+
+- Journal quality badges from the packaged ranking lists, and a venue list of your own that you upload as a CSV.
+
+- The result action grid, citation velocity and the Emerging signal.
+
+- Retraction and tortured-phrase warnings, related works and the query trend tracker.
+
+- The saved-paper library with notes, tags, collections, and merging export and import.
+
+- Author summary metrics (h-index, g-index and the others) and author filters.
+
+## What Pro adds
+
+Pro covers workflow tools that take a power user real time: systematic reviews, citation mapping, benchmarking an author against peers, and moving a library into other tools. "Older" means the feature existed when Pro shipped in version 0.6.0; those are the ones early installs keep. Everything else in the table needs the trial, a purchase or App Pass.
+
+Free and Pro features as of version 1.0.0
+
+FeatureTierEarly install
+
+Venue quality badgesFreeFree
+
+Your own venue list (CSV)FreeFree
+
+Result action grid, citation velocity, EmergingFreeFree
+
+Retraction and tortured-phrase warningsFreeFree
+
+Related works, query trend trackerFreeFree
+
+Saved-paper library, merging import and exportFreeFree
+
+Author summary metrics (h-index, g-index and others)FreeFree
+
+Author compareProFree (older)
+
+Extended bibliometrics: p-index, FWCI, RCR, influential citationsProFree (older)
+
+Narrative CVProFree (older)
+
+Publish-or-Perish reportProFree (older)
+
+Citation lineageProFree (older)
+
+Citation-graph overlayProFree (older)
+
+Systematic-review workspaceProFree (older)
+
+Reference import, risk of bias, agreement report, evidence matrix, snapshotsProTrial, purchase or App Pass
+
+Claim-evidence chips, reproducibility signals, reading orderProTrial, purchase or App Pass
+
+Tenure packetProTrial, purchase or App Pass
+
+Bibliography checkerProTrial, purchase or App Pass
+
+Zotero, Obsidian, LaTeX and Word exportsProTrial, purchase or App Pass
+
+Collection packets, similar papers, watch listsProTrial, purchase or App Pass
+
+Triage card (optional, on-device AI)ProTrial, purchase or App Pass
+
+Ask my shortlist (optional, your own API key)ProTrial, purchase or App Pass
+
+## Trial, price and App Pass
+
+- 14-day trial. New installs can start it from the Pro section of the extension's Options page. Everyone, including early installs, can use it for the newer Pro features.
+
+- $40 once (lifetime), $3 a month or $20 a year. All three unlock the same features. Payment goes through ExtensionPay and Stripe, and ExtensionPay collects your email address.
+
+- App Pass. If you already subscribe to App Pass, which covers many browser extensions with one subscription, you can turn it on in Options to unlock Pro. It is off by default, and nothing contacts joinapppass.com until you switch it on.
+
+## If you installed before Pro
+
+The seven Pro features that existed when Pro shipped stay free on your install, permanently: author compare, citation lineage, the extended bibliometrics (p-index, FWCI, Relative Citation Ratio and influential citations), narrative CV, the systematic-review workspace, the citation-graph overlay and the Publish-or-Perish report.
+
+That promise covers those seven and nothing added since. The newer Pro features need the trial, a purchase or App Pass for everyone, early installs included. Removing the extension and installing it again counts as a fresh install.
+
+## Limits worth knowing
+
+- No institution has reviewed it. It is made by one person. No university, library or publisher has checked or endorsed it, and it is not part of any institutional license.
+
+- Ranking lists are copies. The lists ship inside the extension as snapshots. For anything that goes into a tenure file or a funding application, check the venue against the publisher of the list.
+
+- Signals from heuristics are hedged. Emerging, tortured-phrase warnings, claim-evidence chips and reproducibility signals are rules applied to titles and snippets. They can miss things and can flag harmless text. Read them as a prompt to look at the paper, not as a finding. The triage card and Ask my shortlist show a value only when it appears word for word in the saved text, which proves the words are there and not that they are the right ones.
+
+- AI is optional. The triage card uses Chrome's built-in model on your device, when your Chrome version and hardware support it. Ask my shortlist uses your own API key, and the provider you choose receives the text you confirm. Neither runs unless you turn it on.
+
+- Chrome only. It is installed from the Chrome Web Store.
+
+What the extension sends, and to whom, is in the privacy policy. The extension has no Purplelink server and no analytics. The page you are reading is counted like any page on this site, with cookieless analytics.
+
+## Frequently asked questions
+
+Is Scholar Utility Belt still free?
+
+Yes. The core is free and open source under the ISC license: venue badges, the result action grid, citation velocity, the saved-paper library, author summary metrics, retraction and tortured-phrase warnings, the query trend tracker, related works and your own journal list. Pro is optional.
+
+How do I start the 14-day trial?
+
+Open the extension's Options page and use the Pro section. The trial and any purchase go through ExtensionPay, which asks for your email address. There is no checkout on purplelink.llc.
+
+What happens when the trial ends?
+
+The free features keep working. Pro features show a locked card in the place where the feature would be, with the option to buy.
+
+I installed before Pro existed. Do I have to pay for anything?
+
+Not for the seven Pro features that existed when Pro shipped in version 0.6.0: author compare, citation lineage, the extended bibliometrics, narrative CV, the systematic-review workspace, the citation-graph overlay and the Publish-or-Perish report. Those stay free on your install. Pro features added after that, which are the ones marked as needing a trial, purchase or App Pass in the table above, need a trial, a purchase or App Pass for everyone.
+
+What counts as installed before Pro?
+
+An install that was updated from a version before 0.6.0. The extension records once, when it is installed or updated, whether it was a fresh install, and never changes that record. Removing the extension and installing it again counts as a fresh install.
+
+What does the $40 lifetime price cover?
+
+It is a single payment with no renewal. The monthly plan is $3 and the yearly plan is $20, and both unlock the same features as the lifetime plan.
+
+Can I use Pro on a second computer?
+
+Yes. In the extension, choose Already purchased and sign in through ExtensionPay with the email you used. You do not need to pay again.
+
+What is App Pass?
+
+App Pass is a separate subscription, sold by joinapppass.com, that covers many browser extensions. If you already have one, you can turn it on in Options and it unlocks Pro. Nothing contacts joinapppass.com until you do.
+
+Do the AI features send my papers anywhere?
+
+Only if you turn them on. The triage card uses Chrome's built-in model on your device when your Chrome version and hardware support it. Ask my shortlist uses an API key you supply for Anthropic, OpenAI or Google Gemini. It shows the provider, the number of papers, an estimated cost and the exact text before you press Send, and it sends nothing else.
+
+Is there a license for a lab or a class?
+
+Licenses are for one person. If several people in a lab or a course want Pro, write to ben@purplelink.llc.
+
+Where is the source?
+
+On GitHub at BenAmpel/ScholarUtilityBelt, under the ISC license, so you can read what the extension does before you install it.
+
+Add to Chrome
+Source on GitHub
+Main product page
 
 
 ---
