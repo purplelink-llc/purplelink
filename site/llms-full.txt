@@ -7590,6 +7590,8 @@ Yes. Legroom is Purplelink's Mac menu-bar app. It has a free 7-day trial, then c
 
 ## Related guides
 
+- How to run Windows-only research software on an Apple silicon Mac: a Windows virtual machine is often the largest single file on a research Mac.
+
 - How to delete a Mac app and the files it leaves behind: what an app leaves in your Library after you delete it, and which of it is safe to remove.
 
 - Why is System Data so big on my Mac?: what fills the System Data category and which causes are safe to remove.

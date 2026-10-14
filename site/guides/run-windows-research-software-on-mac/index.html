@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>How to run Windows-only research software on an Apple silicon Mac (2026) | Purplelink</title>
+    <meta name="description" content="Boot Camp is gone on M-series Macs. What runs Windows research software now: Parallels, VMware Fusion, UTM, CrossOver or a campus virtual desktop, and which programs (E-Prime, AMOS, ArcGIS Pro, SAS) work, struggle or fail.">
+    <link rel="canonical" href="https://purplelink.llc/guides/run-windows-research-software-on-mac/">
+    <meta property="og:title" content="How to run Windows-only research software on an Apple silicon Mac (2026)">
+    <meta property="og:description" content="Boot Camp is gone on M-series Macs. What runs Windows research software now: Parallels, VMware Fusion, UTM, CrossOver or a campus virtual desktop, and which programs (E-Prime, AMOS, ArcGIS Pro, SAS) work, struggle or fail.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/run-windows-research-software-on-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/products.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to run Windows-only research software on an Apple silicon Mac (2026)">
+    <meta name="twitter:description" content="Boot Camp is gone on M-series Macs. What runs Windows research software now: Parallels, VMware Fusion, UTM, CrossOver or a campus virtual desktop, and which programs (E-Prime, AMOS, ArcGIS Pro, SAS) work, struggle or fail.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/products.png">
+    <meta name="twitter:image:alt" content="Running Windows research software on an Apple silicon Mac">
+    <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "How to run Windows-only research software on an Apple silicon Mac (2026)",
+      "description": "Boot Camp is gone on M-series Macs. What runs Windows research software now: Parallels, VMware Fusion, UTM, CrossOver or a campus virtual desktop, and which programs (E-Prime, AMOS, ArcGIS Pro, SAS) work, struggle or fail.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-14",
+      "dateModified": "2026-10-14",
+      "image": "https://purplelink.llc/assets/og/products.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/run-windows-research-software-on-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Windows research software on a Mac",
+          "item": "https://purplelink.llc/guides/run-windows-research-software-on-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can I still use Boot Camp?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not on an Apple silicon Mac. Apple says Boot Camp is for Intel-based Macs only. On an M-series Mac, Windows runs in a virtual machine instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to buy Windows as well as Parallels?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Parallels, VMware Fusion and UTM do not include a Windows license. Check your university's software store first, since many campus agreements include Windows. CrossOver is the exception: it runs some Windows programs without Windows at all."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will my Windows statistics program run on Windows for Arm?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually, if it is an ordinary desktop program. Windows 11 for Arm emulates x64 programs, but emulation does not cover drivers. Software that needs its own driver, a USB license dongle or precise hardware timing is where it fails."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much memory does my Mac need?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Parallels recommends 16 GB or more and lists 8 GB as the minimum. Windows also needs at least 16 GB of disk space, and in practice far more once your software and data are on it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is VMware Fusion really free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Broadcom made Fusion Pro free for personal use in May 2024. Whether university research counts as personal use is a question for Broadcom's current license terms or your IT office, so check before relying on it for funded work."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=532fe2c022">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=fb682a98eb" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">How to run Windows-only research software on an Apple silicon Mac (2026)</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-14">October 14, 2026</time></p>
+        <p class="post-lede">On an M-series Mac, Windows runs in a virtual machine, not through Boot Camp. Most Windows statistics and analysis programs work that way. Programs that need their own drivers, a license dongle or exact timing often do not, so check your program before you buy anything.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure:</strong> Purplelink has applied to the Parallels affiliate program through CJ. The application was pending when I wrote this, and no link on this page earns anything. If it is approved, Parallels links here may become affiliate links, labeled as paid links. I did not install any of these tools for this guide. Prices and support statements come from each vendor's own page, read October 14, 2026, and I say where a source is secondary or could not be confirmed.</p>
+
+        <h2>The short answer</h2>
+        <p>Apple's Boot Camp only works on Intel-based Macs (<a href="https://support.apple.com/en-us/102622" rel="noopener">Apple: Boot Camp</a>). On an Apple silicon Mac, you run Windows 11 for Arm inside a virtual machine (a program that runs a second operating system in a window). Windows for Arm then emulates ordinary x64 Windows programs. Microsoft states the limit plainly: emulation covers user-mode code and not drivers, so any kernel-mode part must be built for Arm (<a href="https://learn.microsoft.com/en-us/windows/arm/apps-on-arm-x86-emulation" rel="noopener">Microsoft: How emulation works on Arm</a>). That one rule explains most of what works and what does not.</p>
+
+        <h2 id="steps">Steps</h2>
+        <ol>
+          <li><strong>Check for a Mac or browser version first.</strong> Several programs researchers assume are Windows-only now run natively on a Mac, or have a browser version. The table below lists common ones.</li>
+          <li><strong>Ask your university about a virtual desktop.</strong> Many campuses stream Windows software to a Mac through Citrix, AppsAnywhere or a similar service, at no cost to you. Cambridge, for example, offers a virtual Windows desktop to all staff and students (<a href="https://help.uis.cam.ac.uk/node/1315" rel="noopener">University of Cambridge</a>).</li>
+          <li><strong>Check your program's own statement on virtual machines.</strong> Search the vendor's support pages for "Parallels", "virtual machine" or "Apple silicon". Some vendors say outright that they do not support it.</li>
+          <li><strong>Get a Windows license.</strong> Look in your university's software store before buying one. Parallels recommends Windows 11 Pro or Enterprise, and each virtual machine needs its own license (<a href="https://www.parallels.com/products/desktop/microsoft-authorized-solution-windows-11-arm/" rel="noopener">Parallels: Windows 11 on Arm</a>).</li>
+          <li><strong>Pick a virtual machine app and try it before paying.</strong> Parallels offers a 30-day money-back guarantee on direct purchases. VMware Fusion and UTM cost nothing to try.</li>
+          <li><strong>Install your program and test the part you depend on.</strong> Run a real analysis, open a real project file and print or export, before you move your work across.</li>
+        </ol>
+
+        <h2 id="software">Common research software on a Mac</h2>
+        <p>From each vendor's page or support forum, read October 14, 2026. Where my source is a third party, the last column says so.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th class="u-th" scope="col">Program</th><th class="u-th" scope="col">Mac version?</th><th class="u-th" scope="col">In a Windows virtual machine</th><th class="u-th" scope="col">Worth knowing</th></tr></thead>
+            <tbody>
+              <tr><td class="u-cell">Stata</td><td class="u-cell">Yes, native on Apple silicon</td><td class="u-cell">Not needed</td><td class="u-cell">Stata's own pages disagree on the newest supported macOS, so check before you upgrade macOS (<a href="https://www.stata.com/support/faqs/mac/will-stata-run-on-macs-with-apple-silicon/" rel="noopener">Stata FAQ</a>).</td></tr>
+              <tr><td class="u-cell">GraphPad Prism</td><td class="u-cell">Yes, native since 9.0.1</td><td class="u-cell">Not needed</td><td class="u-cell"><a href="https://www.graphpad.com/support/faq/prism-mac-big-sur" rel="noopener">GraphPad FAQ</a>.</td></tr>
+              <tr><td class="u-cell">MAXQDA</td><td class="u-cell">Yes, native since 2022.3</td><td class="u-cell">Not needed</td><td class="u-cell">Older versions need Rosetta (<a href="https://help.maxqda.com/en/support/solutions/articles/80001135601-the-use-of-maxqda-on-arm-macs" rel="noopener">MAXQDA help</a>).</td></tr>
+              <tr><td class="u-cell">SmartPLS 4</td><td class="u-cell">Yes</td><td class="u-cell">Not needed</td><td class="u-cell">The vendor lists macOS 11 to 15 (<a href="https://smartpls.com/faq/compatibility/system-requirements" rel="noopener">SmartPLS requirements</a>).</td></tr>
+              <tr><td class="u-cell">IBM SPSS Statistics</td><td class="u-cell">Yes</td><td class="u-cell">Rarely needed</td><td class="u-cell">Version 31 runs on Apple silicon through Rosetta 2, per IBM's community forum. Check IBM for a native build.</td></tr>
+              <tr><td class="u-cell">NVivo</td><td class="u-cell">Yes, with fewer features</td><td class="u-cell">Use it if you need Windows-only features</td><td class="u-cell">Mac and Windows use different project formats, and Lumivero warns of data loss moving a project from Windows to Mac (<a href="https://help-nv.qsrinternational.com/20/mac/Content/projects-teamwork/work-with-projects-windows-mac.htm" rel="noopener">NVivo help</a>). Agree on one platform with your co-authors.</td></tr>
+              <tr><td class="u-cell">SAS</td><td class="u-cell">No desktop version</td><td class="u-cell">Not supported on Arm, per a SAS community answer</td><td class="u-cell">SAS OnDemand for Academics runs in the browser and is free for noncommercial use (<a href="https://communities.sas.com/t5/SAS-Communities-Library/How-to-use-SAS-on-a-Mac/ta-p/761451" rel="noopener">SAS Communities</a>).</td></tr>
+              <tr><td class="u-cell">IBM SPSS AMOS</td><td class="u-cell">No</td><td class="u-cell">Not supported on Apple silicon</td><td class="u-cell">An IBM moderator says AMOS does not work on Apple silicon, Parallels included. Use a campus virtual desktop or a Windows PC (<a href="https://community.ibm.com/community/user/discussion/spss-29-apple-silicon" rel="noopener">IBM Community</a>).</td></tr>
+              <tr><td class="u-cell">ArcGIS Pro</td><td class="u-cell">No</td><td class="u-cell">Works in Parallels, with limits</td><td class="u-cell">Esri documents running it in Parallels with Windows 11 for Arm, but troubleshoots defects only on certified x64 Windows. Some GPU and deep-learning tools are limited (<a href="https://pro.arcgis.com/en/pro-app/latest/get-started/run-pro-on-a-mac.htm" rel="noopener">Esri</a>).</td></tr>
+              <tr><td class="u-cell">E-Prime</td><td class="u-cell">No</td><td class="u-cell">Not supported</td><td class="u-cell">Psychology Software Tools says E-Prime needs direct hardware access and is not supported under virtualization or emulation, warning of crashes and inaccurate timing (<a href="https://support.pstnet.com/hc/en-us/articles/360062304034" rel="noopener">PST support</a>). Run experiments on a Windows PC.</td></tr>
+              <tr><td class="u-cell">LabVIEW</td><td class="u-cell">No longer</td><td class="u-cell">Untested here</td><td class="u-cell">The 2023 release was the last for macOS. Hardware drivers make a virtual machine a poor fit for lab instruments.</td></tr>
+              <tr><td class="u-cell">OriginPro</td><td class="u-cell">No</td><td class="u-cell">Runs, per Parallels</td><td class="u-cell">My source is Parallels' own blog. I could not confirm a statement on OriginLab's site.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Programs I could not confirm, so they are not in the table: EViews, Mplus, LISREL, HLM, ChemDraw and Gaussian. Check the vendor's page before you assume anything.</p>
+
+        <h2 id="options">Ways to run Windows on the Mac</h2>
+        <p>From each vendor's own page, read October 14, 2026. Prices are list prices in US dollars. Parallels also showed lower introductory prices that day, which change often, so they are left out.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th class="u-th" scope="col">Option</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">What it is</th><th class="u-th" scope="col">Worth knowing</th></tr></thead>
+            <tbody>
+              <tr><td class="u-cell">Campus virtual desktop</td><td class="u-cell">Usually free to you</td><td class="u-cell">Your university runs the Windows software and streams it to your Mac</td><td class="u-cell">Needs a network connection. Only the programs your university licenses. Ask IT first, because it can save you the rest of this table.</td></tr>
+              <tr><td class="u-cell"><a href="https://www.parallels.com/products/desktop/" rel="noopener">Parallels Desktop</a></td><td class="u-cell">Standard $99.99 a year or $219.99 once. Pro $119.99 a year. A student offer is on the buy page</td><td class="u-cell">Virtual machine app built for the Mac. Downloads Windows 11 for Arm for you</td><td class="u-cell">Parallels says it is the only solution Microsoft authorizes for Windows 11 on M-series Macs. Standard caps a virtual machine at 8 GB of memory and 4 processor cores, and Pro raises that. Version 27 needs macOS 14 or later.</td></tr>
+              <tr><td class="u-cell"><a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion" rel="noopener">VMware Fusion Pro</a></td><td class="u-cell">Free for personal use</td><td class="u-cell">Virtual machine app from Broadcom</td><td class="u-cell">Download requires a Broadcom account. Check whether funded or institutional research counts as personal use under Broadcom's current terms.</td></tr>
+              <tr><td class="u-cell"><a href="https://mac.getutm.app/" rel="noopener">UTM</a></td><td class="u-cell">Free, open source (Apache 2.0)</td><td class="u-cell">Virtual machine app built on QEMU</td><td class="u-cell">Has a Windows 11 for Arm guide. Setup takes more steps than Parallels, and graphics-heavy programs suffer most (<a href="https://docs.getutm.app/guides/windows/" rel="noopener">UTM docs</a>).</td></tr>
+              <tr><td class="u-cell"><a href="https://www.codeweavers.com/crossover" rel="noopener">CrossOver</a></td><td class="u-cell">$74 a year, or $494 lifetime. 14-day trial</td><td class="u-cell">Runs some Windows programs directly on macOS, without Windows</td><td class="u-cell">No Windows license needed. Compatibility is program by program, so check CodeWeavers' compatibility database first. Purchases are non-refundable.</td></tr>
+              <tr><td class="u-cell">A Windows PC</td><td class="u-cell">Varies</td><td class="u-cell">A real Windows computer, owned or borrowed from the lab</td><td class="u-cell">The only safe choice for timing-critical experiments, license dongles and lab instruments.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>What usually does not work</h2>
+        <ul>
+          <li><strong>Programs with their own drivers.</strong> Emulation does not cover drivers, so instrument software, some USB license dongles and copy protection that installs a driver fail unless the vendor ships an Arm version.</li>
+          <li><strong>Timing-critical experiments.</strong> A virtual machine adds delay that you cannot control. E-Prime's vendor says so directly.</li>
+          <li><strong>Windows features that need nested virtualization.</strong> Parallels lists Windows Sandbox, virtualization-based security and some WSL and emulator setups as unsupported.</li>
+          <li><strong>Some graphics-heavy programs.</strong> Parallels notes limits with some DirectX 12 programs, and Esri lists GPU limits for ArcGIS Pro.</li>
+        </ul>
+
+        <h2>How much Mac you need</h2>
+        <p>Parallels recommends 16 GB of memory or more, with 8 GB as the minimum, and at least 16 GB of free disk space for Windows (<a href="https://kb.parallels.com/en/124223" rel="noopener">Parallels requirements</a>). In practice, Windows, Office and one large statistics package take far more than 16 GB. On an 8 GB Mac, expect both systems to slow down while the virtual machine runs.</p>
+
+        <h2>Frequently asked</h2>
+        <h3>Can I still use Boot Camp?</h3>
+        <p>Not on an Apple silicon Mac. Apple says Boot Camp is for Intel-based Macs only. On an M-series Mac, Windows runs in a virtual machine instead.</p>
+        <h3>Do I need to buy Windows as well as Parallels?</h3>
+        <p>Yes. Parallels, VMware Fusion and UTM do not include a Windows license. Check your university&#x27;s software store first, since many campus agreements include Windows. CrossOver is the exception: it runs some Windows programs without Windows at all.</p>
+        <h3>Will my Windows statistics program run on Windows for Arm?</h3>
+        <p>Usually, if it is an ordinary desktop program. Windows 11 for Arm emulates x64 programs, but emulation does not cover drivers. Software that needs its own driver, a USB license dongle or precise hardware timing is where it fails.</p>
+        <h3>How much memory does my Mac need?</h3>
+        <p>Parallels recommends 16 GB or more and lists 8 GB as the minimum. Windows also needs at least 16 GB of disk space, and in practice far more once your software and data are on it.</p>
+        <h3>Is VMware Fusion really free?</h3>
+        <p>Broadcom made Fusion Pro free for personal use in May 2024. Whether university research counts as personal use is a question for Broadcom&#x27;s current license terms or your IT office, so check before relying on it for funded work.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer and cleaner for Mac (2026)</a>: a Windows virtual machine is often the largest file on a Mac, and this shows how to find it.</li>
+          <li><a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac?</a>: what fills the System Data category and which causes are safe to remove.</li>
+          <li><a href="/guides/mac/">Mac utility guides</a>, <a href="/tools/">free research tools</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/batterymeter/">BatteryMeter</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=bcc135f878" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
