@@ -10,6 +10,11 @@ Usage:
 One-time setup: python3 backend/scripts/linkedin_login.py
 
 Exit codes: 0 posted  1 nothing to post  2 session expired  3 failed
+            4 refused: not on the company admin page, or the composer was not posting as the company
+
+Posts go ONLY to the Purplelink LLC company page, never to Ben's personal profile (Ben, 2026-10-14:
+a post landed on his personal account and he had to delete it). Before clicking Post the script
+checks the page URL and the composer's "post as" identity, and refuses on any mismatch.
 """
 from __future__ import annotations
 
@@ -28,6 +33,8 @@ SITE_DIR     = Path(__file__).resolve().parents[2] / "site"
 DIGEST_DIR   = SITE_DIR / "blog" / "digest"
 BASE_URL     = "https://purplelink.llc/blog/digest"
 COMPANY_URL  = "https://www.linkedin.com/company/120183926/admin/page-posts/published/"
+COMPANY_PATH = "/company/120183926/admin"
+COMPANY_NAME = "Purplelink LLC"
 
 
 # ── digest content ────────────────────────────────────────────────────────────
@@ -96,6 +103,29 @@ def _paste_text(page, text: str) -> None:
     page.keyboard.insert_text(text)
 
 
+def _composer_identity(page) -> str:
+    """Return the name the open composer will post as (the first line of the dialog header)."""
+    dlg = page.locator('[role="dialog"]').first
+    lines = [l.strip() for l in dlg.inner_text(timeout=8_000).splitlines() if l.strip()]
+    lines = [l for l in lines if l not in ("Dialog content start.", "Create post modal")]
+    return lines[0] if lines else ""
+
+
+def _refuse(page, why: str) -> int:
+    """Stop before posting: screenshot, notify, exit code 4."""
+    print(f"REFUSED: {why}. Nothing was posted.")
+    try:
+        shot_dir = Path.home() / ".purplelink" / "linkedin-failures"
+        shot_dir.mkdir(parents=True, exist_ok=True)
+        shot = shot_dir / f"{datetime.datetime.now():%Y%m%d-%H%M%S}-refused.png"
+        page.screenshot(path=str(shot))
+        print(f"Saved screenshot: {shot}")
+    except Exception:
+        pass
+    _notify(f"LinkedIn post refused: {why}")
+    return 4
+
+
 def post_to_linkedin(post_text: str, dry_run: bool) -> int:
     if not PROFILE_DIR.exists():
         print("No saved session — run: python3 backend/scripts/linkedin_login.py")
@@ -134,6 +164,11 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
                 _notify("LinkedIn session expired — re-run linkedin_login.py")
                 return 2
 
+            # A redirect (to the member feed, a switcher, a checkpoint) would put
+            # "Start a post" on Ben's own profile. Only continue on the admin page.
+            if COMPANY_PATH not in page.url:
+                return _refuse(page, f"landed on {page.url}, not the company admin page")
+
             # Click "Start a post" on the company admin page
             print("Opening post composer...")
             try:
@@ -148,6 +183,13 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
                     'button[aria-label="Start a post"]'
                 ).first.click(timeout=10_000)
             page.wait_for_timeout(1_500)
+
+            # The composer has a "post as" switcher. Refuse unless it is the company.
+            identity = _composer_identity(page)
+            print(f"Composer identity: {identity!r}")
+            if identity != COMPANY_NAME:
+                page.keyboard.press("Escape")
+                return _refuse(page, f"composer would post as {identity!r}, not {COMPANY_NAME}")
 
             # Type post text via clipboard paste (avoids garbled characters)
             print("Entering post text...")
@@ -166,6 +208,12 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
                 print("Press Enter to close the browser: ", end="", flush=True)
                 input()
                 return 0
+
+            # Re-check right before posting, in case the identity changed while typing.
+            identity = _composer_identity(page)
+            if identity != COMPANY_NAME or COMPANY_PATH not in page.url:
+                page.keyboard.press("Escape")
+                return _refuse(page, f"identity {identity!r} or page {page.url} changed before Post")
 
             # Click the Post button
             print("Clicking Post...")
