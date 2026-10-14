@@ -85,12 +85,19 @@ def _file_inputs(tab):
     return out
 
 
+WEEKLY_LOG = os.path.expanduser("~/.purplelink/yt-abtest/ab-tests.json")
+
+
 def _record(entry):
-    log = json.load(open(LOG)) if os.path.exists(LOG) else []
-    log = [x for x in log if not (x["video"] == entry["video"] and x["started"] == entry["started"])] + [entry]
-    with open(LOG, "w") as f:
-        json.dump(log, f, indent=1)
-        f.write("\n")
+    # the repo log, plus the weekly job's own copy so a new test is checked without a manual step
+    for path in dict.fromkeys([LOG, WEEKLY_LOG]):
+        if path == WEEKLY_LOG and not os.path.isdir(os.path.dirname(path)):
+            continue
+        log = json.load(open(path)) if os.path.exists(path) else []
+        log = [x for x in log if not (x["video"] == entry["video"] and x["started"] == entry["started"])] + [entry]
+        with open(path, "w") as f:
+            json.dump(log, f, indent=1)
+            f.write("\n")
 
 
 def start(vid, a, b, c):
