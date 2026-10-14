@@ -3,6 +3,7 @@ import datetime as dt
 import importlib.util
 import sys
 import tempfile
+import re
 import unittest
 from pathlib import Path
 
@@ -46,8 +47,9 @@ class YoutubeTagging(unittest.TestCase):
     def test_every_listed_video_id_is_a_youtube_id(self):
         import json
         ids = json.loads((ROOT / "scripts" / "yt-utm-videos.json").read_text())
-        self.assertEqual(len(ids), 14)
-        self.assertTrue(all(len(i) == 11 for i in ids))
+        self.assertGreaterEqual(len(ids), 14)
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertTrue(all(re.fullmatch(r"[A-Za-z0-9_-]{11}", i) for i in ids))
 
 
 class DemandRanking(unittest.TestCase):

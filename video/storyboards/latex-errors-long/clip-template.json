@@ -1,0 +1,19 @@
+{
+ "id": "fnf-long-clip-template",
+ "series": "latex-errors-long",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "scenes": [
+  {
+   "narration": "The same case in ModernTex. The error names the missing style file. Copy it from the template folder into the project, build again, and it compiles."
+  }
+ ],
+ "bumper": {
+  "open": 2.2,
+  "close": 2.5,
+  "xf": 0.4,
+  "intro": "assets/sting-intro.wav",
+  "outro": "assets/sting-outro.wav",
+  "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+ }
+}

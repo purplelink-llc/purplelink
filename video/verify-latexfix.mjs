@@ -18,6 +18,7 @@ const run = (dir, lines) => {
 };
 for (const [slug, E] of Object.entries(ERRORS)) {
   if (only && slug !== only) continue;
+  if (E.noVerify) { console.log(`${slug}: not verified locally: ${E.noVerify}`); continue; }
   const file = E.file || E.stages[0].lines;
   const log = run(path.join(ROOT, ".cache/latex-check", slug), file);
   const missing = E.log.filter((l) => !log.split("\n").some((x) => x.replace(/\s+$/, "") === l.replace(/\s+$/, "")));

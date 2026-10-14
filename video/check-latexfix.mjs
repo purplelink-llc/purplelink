@@ -9,7 +9,7 @@ const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const dec = (s) => s.replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;|&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&");
 let bad = 0;
 for (const [slug, E] of Object.entries(ERRORS)) {
-  const rel = `site/latex-errors/${slug}/index.html`;
+  const rel = `site/latex-errors/${E.page || slug}/index.html`;
   const local = path.join(ROOT, "..", rel);
   const html = fs.existsSync(local) ? fs.readFileSync(local, "utf8") : execFileSync("git", ["show", `origin/main:${rel}`], { cwd: ROOT, encoding: "utf8" });
   const pres = [...html.matchAll(/<pre[^>]*>([\s\S]*?)<\/pre>/g)].map((m) => dec(m[1]).split("\n")).flat();

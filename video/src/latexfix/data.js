@@ -208,6 +208,67 @@ export const ERRORS = {
     derived: ["The term \\emph{endogeneity} is defined in Section 2."],
     ok: { head: "Compiles", sub: "No errors in the log." },
   },
+
+  // ---- The five causes on /latex-errors/file-not-found/, for the long tutorial (src/LatexLong.jsx). `page` names the
+  // page every line is checked against. The first cause cannot be reproduced locally (the full TeX Live installed
+  // here ships cleveref), so verify-latexfix.mjs skips it and says why.
+  "file-not-found-package": {
+    page: "file-not-found",
+    noVerify: "cleveref ships with the full TeX Live installed here; the message needs a small distribution such as TinyTeX or BasicTeX",
+    name: "File `cleveref.sty' not found",
+    file: ["\\documentclass{article}", "\\usepackage{cleveref}", "\\begin{document}", "A figure goes here.", "\\end{document}"],
+    log: ["! LaTeX Error: File `cleveref.sty' not found.", "Type X to quit or <RETURN> to proceed,", "or enter new name. (Default extension: sty)", "Enter file name:", "! Emergency stop."],
+    mark: { line: 0, token: "cleveref.sty", beat: 1, cue: "names" },
+    stages: [
+      { title: SRC, gutter: true, beat: 1, dt: 0, lines: "file", hi: { line: 1, token: "cleveref", kind: "bad", beat: 1, cue: "cleveref" } },
+      { title: "terminal", gutter: false, beat: 2, cue: "install", lines: ["tlmgr install cleveref", "pdflatex main.tex"], hi: { line: 0, token: "tlmgr install cleveref", kind: "good" } },
+    ],
+    // The page's log shows this line as a comment ("% ! LaTeX Error: ..."); the real log line is the same text.
+    derived: ["! LaTeX Error: File `cleveref.sty' not found."],
+    ok: { head: "Compiles", sub: "No errors in the log." },
+  },
+  "file-not-found-template": {
+    page: "file-not-found",
+    name: "File `neurips_2026.sty' not found",
+    file: ["\\documentclass{article}", "\\usepackage{neurips_2026}", "\\begin{document}", "A figure goes here.", "\\end{document}"],
+    log: ["! LaTeX Error: File `neurips_2026.sty' not found.", "Type X to quit or <RETURN> to proceed,", "or enter new name. (Default extension: sty)", "Enter file name:", "! Emergency stop."],
+    mark: { line: 0, token: "neurips_2026.sty", beat: 1, cue: "names" },
+    stages: [
+      { title: SRC, gutter: true, beat: 1, dt: 0, lines: "file", hi: { line: 1, token: "neurips_2026", kind: "bad", beat: 1, cue: "neurips" } },
+      { title: SRC, gutter: true, beat: 2, cue: "copy", lines: ["% neurips_2026.sty copied next to main.tex", "\\usepackage{neurips_2026}"], hi: { line: 0, token: "copied next to main.tex", kind: "good" } },
+    ],
+    derived: ["! LaTeX Error: File `neurips_2026.sty' not found."],
+    ok: { head: "Compiles", sub: "No errors in the log." },
+  },
+  "file-not-found-class": {
+    page: "file-not-found",
+    name: "File `artcle.cls' not found",
+    file: ["\\documentclass{artcle}", "\\begin{document}", "A figure goes here.", "\\end{document}"],
+    log: ["! LaTeX Error: File `artcle.cls' not found.", "Type X to quit or <RETURN> to proceed,", "or enter new name. (Default extension: cls)", "Enter file name:", "! Emergency stop."],
+    mark: { line: 0, token: "artcle.cls", beat: 1, cue: "same" },
+    stages: [
+      { title: SRC, gutter: true, beat: 1, dt: 0, lines: "file", hi: { line: 0, token: "artcle", kind: "bad", beat: 1, cue: "misspelled" } },
+      { title: SRC, gutter: true, beat: 2, cue: "fix", lines: ["\\documentclass{article}", "\\begin{document}", "A figure goes here.", "\\end{document}"], hi: { line: 0, token: "article", kind: "good" } },
+    ],
+    // Same message as the .sty case with the extension swapped; the page states "the same message with a .cls extension".
+    derived: ["! LaTeX Error: File `artcle.cls' not found.", "or enter new name. (Default extension: cls)"],
+    ok: { head: "Compiles", sub: "No errors in the log." },
+  },
+  "file-not-found-input": {
+    page: "file-not-found",
+    name: "File `sections/introduction.tex' not found",
+    file: ["\\documentclass{article}", "\\begin{document}", "\\input{sections/introduction}", "\\end{document}"],
+    log: ["! LaTeX Error: File `sections/introduction.tex' not found.", "Type X to quit or <RETURN> to proceed,", "or enter new name. (Default extension: tex)", "Enter file name:", "! Emergency stop."],
+    mark: { line: 0, token: "sections/introduction.tex", beat: 1, cue: "extension" },
+    stages: [
+      { title: SRC, gutter: true, beat: 1, dt: 0, lines: ["\\input{sections/introduction}", "% the file on disk is sections/intro.tex"], hi: { line: 0, token: "introduction", kind: "bad", beat: 1, cue: "path" } },
+      { title: SRC, gutter: true, beat: 2, cue: "name", lines: ["\\input{sections/intro}"], hi: { line: 0, token: "intro", kind: "good" } },
+    ],
+    derived: ["! LaTeX Error: File `sections/introduction.tex' not found.", "or enter new name. (Default extension: tex)"],
+    ok: { head: "Compiles", sub: "No errors in the log." },
+  },
 };
+// cause 2 is the existing graphicsx example
+ERRORS["file-not-found-name"] = { ...ERRORS["file-not-found"], page: "file-not-found" };
 
 for (const E of Object.values(ERRORS)) for (const st of E.stages) if (st.lines === "file") st.lines = E.file;

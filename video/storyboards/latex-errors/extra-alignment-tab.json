@@ -43,5 +43,9 @@
     "intro": "assets/sting-intro.wav",
     "outro": "assets/sting-outro.wav",
     "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  },
+  "thumb": {
+    "msg": "Extra alignment tab has been changed to \\cr",
+    "level": "error"
   }
 }
