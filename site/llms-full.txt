@@ -126,7 +126,7 @@ macOS
 
 ## ModernTex
 
-A native LaTeX editor for Mac, built around the manuscript rather than the file. Source and PDF stay in sync, citations autocomplete from your .bib, and a submission check runs before you upload. Version 1.3 adds a visual table editor and TikZ designer.
+A native LaTeX editor for Mac, built around the manuscript rather than the file. Source and PDF stay in sync, citations autocomplete from your .bib, and a submission check runs before you upload. Version 1.6.3 includes a visual table editor and a TikZ figure editor. The trial is free for seven days, then it is $19.99 once.
 
 See ModernTex
 Download the trial

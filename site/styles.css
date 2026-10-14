@@ -4298,6 +4298,19 @@ html { scroll-padding-top: 96px; }
 .trial-remind-row input[type="email"] { flex: 1 1 220px; min-height: 44px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 100px; background: var(--bg); color: var(--ink); font: inherit; }
 .trial-remind-row input[type="email"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .trial-remind-note { margin: 8px 0 0; color: var(--muted); font-size: 0.85rem; }
+/* ModernTex trial-download poll (site/moderntex/poll.js): one optional question, plain radio buttons. */
+.ask-poll { margin: 14px 0 4px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); max-width: 560px; text-align: left; }
+.ask-poll[hidden], .ask-poll [hidden] { display: none; }
+.ask-poll fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.ask-poll legend { padding: 0; margin: 0 0 8px; font-weight: 600; color: var(--ink); font-size: 0.95rem; }
+.ask-poll-choice { display: flex; align-items: center; gap: 10px; min-height: 44px; color: var(--ink); font-size: 0.95rem; cursor: pointer; }
+.ask-poll-choice input { width: 20px; height: 20px; margin: 0; accent-color: var(--purple); flex: none; }
+.ask-poll-choice input:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.ask-poll-actions { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+.ask-poll-skip { min-height: 44px; padding: 0 4px; background: none; border: 0; color: var(--muted); font: inherit; text-decoration: underline; cursor: pointer; }
+.ask-poll-skip:hover { color: var(--ink); }
+.ask-poll-skip:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-radius: 4px; }
+.closing-cta .ask-poll { margin: 14px auto 4px; }
 .closing-cta .trial-remind { margin: 18px auto 4px; text-align: left; }
 
 /* Inside a padded static page, the back link lines up with the content. */

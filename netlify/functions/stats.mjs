@@ -16,6 +16,9 @@
  * engagedTime (never in the default response). Without the filter the response says how many records
  * it left out, in `excludedHosts`.
  *
+ * GET ...stats?section=signals&weeks=8 returns only the count-only answers signal.mjs stores (why-not and
+ * trial-download poll), per ISO week, newest first. No analytics records are read for it.
+ *
  * Gated by STATS_TOKEN (set it on the Netlify site). Scale note: this
  * lists+reads one blob per event, fine at early-stage volume; if daily events
  * reach the thousands, switch to pre-aggregated counters.
@@ -23,6 +26,7 @@
 
 import { getStore } from "@netlify/blobs";
 import { ownerToken, safeEqual } from "../lib/auth.mjs";
+import { readSignals, recentWeeks } from "../lib/signals.mjs";
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -93,6 +97,17 @@ export default async function handler(request) {
   const expected = Netlify.env.get("STATS_TOKEN");
   if (!expected) return json(500, { error: "misconfigured", detail: "Set STATS_TOKEN on this site." });
   if (!safeEqual(ownerToken(request, url), expected)) return json(401, { error: "unauthorized" });
+
+  if (url.searchParams.get("section") === "signals") {
+    let weeks = parseInt(url.searchParams.get("weeks") || "8", 10);
+    if (!Number.isFinite(weeks) || weeks < 1) weeks = 8;
+    if (weeks > 52) weeks = 52;
+    try {
+      return json(200, { generatedAt: new Date().toISOString(), signals: await readSignals(getStore("signals"), recentWeeks(weeks)) });
+    } catch (_) {
+      return json(502, { error: "signals_unavailable" });
+    }
+  }
 
   // ?host=<host> returns only that host's records; without it, EXTERNAL_HOSTS are left out.
   const hostFilter = normalizeHost(url.searchParams.get("host"));

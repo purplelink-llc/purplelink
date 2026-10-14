@@ -69,6 +69,48 @@ const HEARD_OPTIONS = [
   ["Other", "other"],
 ];
 
+// ModernTex only: two more optional dropdowns, so an order says who bought and in which field. With the
+// "heard" question above that is Stripe's maximum of three custom fields. Stripe limits: label.custom up to
+// 50 characters, option label and value up to 100, up to 200 options; values here are lowercase letters and digits.
+// The answers stay in Stripe (dashboard and exports); sales.mjs reads them back as counts only.
+export const ROLE_FIELD = {
+  key: "role",
+  label: "Which best describes you?",
+  options: [
+    ["Graduate student", "gradstudent"],
+    ["Faculty or researcher", "faculty"],
+    ["Industry researcher", "industry"],
+    ["Other", "other"],
+  ],
+};
+export const FIELD_FIELD = {
+  key: "field",
+  label: "Your main field?",
+  options: [
+    ["Computer science or engineering", "cseng"],
+    ["Mathematics, statistics or physics", "mathstatphys"],
+    ["Economics or finance", "econfin"],
+    ["Social sciences", "socsci"],
+    ["Humanities", "humanities"],
+    ["Life sciences", "lifesci"],
+    ["Other", "other"],
+  ],
+};
+const ROLE_FIELD_PRODUCTS = new Set(["moderntex"]);
+
+// The trial day the app's Buy link carries (?td=): a whole number of days 0 to 30, or the word "unknown".
+// Anything else is dropped. Returns the string to store, or "".
+export function cleanTrialDay(v) {
+  if (typeof v === "number") v = Number.isInteger(v) ? String(v) : "";
+  if (typeof v !== "string") return "";
+  return /^(?:[0-9]|[12][0-9]|30|unknown)$/.test(v) ? v : "";
+}
+// The utm_source of the visit that opened the Buy page, kept only in a short safe charset ("moderntex-app").
+export function cleanAppSource(v) {
+  if (typeof v !== "string") return "";
+  return /^[a-z0-9_-]{1,40}$/.test(v) ? v : "";
+}
+
 // Refund line shown beside the Pay button (Stripe custom_text.submit). Each string is the
 // "Refunds." sentence of that product's section on /terms/, word for word (a test compares
 // them against site/terms/index.html). Only products whose terms carry a no-reason 14-day
@@ -302,6 +344,9 @@ export default async function handler(request) {
   const referralCode = typeof body?.ref === "string" ? body.ref.trim().slice(0, 32) : "";
   const attrFirst = cleanTouch(body?.attr?.first);
   const attrLast = cleanTouch(body?.attr?.last);
+  // ModernTex Buy page opened from the app's expired-trial screen: trial day and utm_source, as metadata.
+  const trialDay = product === "moderntex" ? cleanTrialDay(body?.td) : "";
+  const appSource = product === "moderntex" ? cleanAppSource(body?.src) : "";
   // Photograph licenses need the photo; anything else ignores it.
   const photo = entry.photo && typeof body?.photo === "string" && PHOTO_RE.test(body.photo) ? body.photo : "";
   if (entry.photo && !photo) {
@@ -360,7 +405,7 @@ export default async function handler(request) {
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v5:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${photo}:${seats}:${bundleParts.join("+")}`)
+    .update(`v5:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${photo}:${seats}:${bundleParts.join("+")}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -417,6 +462,20 @@ export default async function handler(request) {
       params[`custom_fields[0][dropdown][options][${i}][value]`] = value;
     });
   }
+  if (mode === "payment" && !photo && ROLE_FIELD_PRODUCTS.has(product)) {
+    [ROLE_FIELD, FIELD_FIELD].forEach((f, n) => {
+      const i = n + 1;
+      params[`custom_fields[${i}][key]`] = f.key;
+      params[`custom_fields[${i}][label][type]`] = "custom";
+      params[`custom_fields[${i}][label][custom]`] = f.label;
+      params[`custom_fields[${i}][type]`] = "dropdown";
+      params[`custom_fields[${i}][optional]`] = "true";
+      f.options.forEach(([label, value], j) => {
+        params[`custom_fields[${i}][dropdown][options][${j}][label]`] = label;
+        params[`custom_fields[${i}][dropdown][options][${j}][value]`] = value;
+      });
+    });
+  }
   if (REFUND_TEXT[product]) params["custom_text[submit][message]"] = REFUND_TEXT[product];
   if (entry.seats) params["metadata[seats]"] = String(seats);
   if (entry.bundle) params["metadata[apps]"] = bundleParts.join(",");
@@ -426,6 +485,8 @@ export default async function handler(request) {
   if (photo) {
     params["metadata[photo]"] = photo;
   }
+  if (trialDay) params["metadata[trial_day]"] = trialDay;
+  if (appSource) params["metadata[app_source]"] = appSource;
   if (attrFirst) params["metadata[attr_first]"] = attrFirst;
   if (attrLast) params["metadata[attr_last]"] = attrLast;
   if (mode === "subscription") {
