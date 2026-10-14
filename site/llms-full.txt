@@ -9510,6 +9510,8 @@ No. Legroom asks for it only if you choose to give it, and skips protected folde
 
 ## Related guides
 
+- Do researchers need a VPN?: what a university VPN does and does not protect, and when a commercial VPN helps.
+
 - Legroom, Keyfeel and Outbound Veil: the three Mac apps described above.
 
 - Best disk space analyzer and cleaner for Mac (2026): what to ask of a cleaner before it deletes anything.

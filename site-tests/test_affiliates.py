@@ -61,9 +61,19 @@ class Rewrite(unittest.TestCase):
                 # approved 2026-10-13 (Tolt): any wordvice.com URL plus ?aff=benjamin
                 self.assertEqual((p.status, p.link, p.deep_link, p.tag, p.tag_param), ("approved", "", "", "benjamin", "aff"))
                 continue
-            expected = "applied" if i in ("setapp", "1password") else "candidate"
+            # Proton and pCloud were applied for through CJ on 2026-10-14.
+            expected = "applied" if i in ("setapp", "1password", "proton", "pcloud") else "candidate"
             self.assertEqual((p.status, p.link, p.deep_link, p.tag), (expected, "", "", ""), i)
             self.assertTrue(p.source_url.startswith("http"), i)
+
+    def test_cj_programs_from_2026_10_14(self):
+        by_id = {p.id: p for p in aff.REGISTRY}
+        nord = by_id["nordvpn"]
+        # approved automatically on CJ: a fixed click URL carrying the publisher ID
+        self.assertEqual((nord.status, nord.link), ("approved", "https://www.kqzyfj.com/click-101903253-15545954"))
+        self.assertTrue(nord.live)
+        for i in ("abbyy", "updf", "parallels"):
+            self.assertEqual((by_id[i].status, by_id[i].link, by_id[i].deep_link, by_id[i].tag), ("applied", "", "", ""), i)
 
     def test_disclosure_added_once_after_h1_and_apply_is_idempotent(self):
         reg = (live_setapp(),)
