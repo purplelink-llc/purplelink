@@ -1,0 +1,32 @@
+[
+ {
+  "id": "Yd51v0bEfCw",
+  "kind": "long",
+  "msg": "File not found",
+  "n": 5,
+  "unit": "causes",
+  "sub": "and the fix for each",
+  "variant": "A"
+ },
+ {
+  "id": "Yd51v0bEfCw-B",
+  "kind": "split",
+  "msg": "File not found",
+  "img": "video/thumbs/assets/fnf-built-crop.png",
+  "after": "5 causes, each fixed"
+ },
+ {
+  "id": "Yd51v0bEfCw-C",
+  "kind": "product",
+  "name": "LaTeX error",
+  "line": "File not found: 5 causes, 5 fixes",
+  "img": "video/thumbs/assets/fnf-moderntex-error-crop.png",
+  "icon": "site/assets/moderntex-icon.png",
+  "box": {
+   "left": 560,
+   "top": 170,
+   "width": 700,
+   "height": 212
+  }
+ }
+]
