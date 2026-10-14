@@ -798,7 +798,7 @@ Chrome text areasWord by word in a plain text area. In the ChatGPT and claude.ai
 
 Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens. Apple Mail’s compose window is one. Safari, Slack, VS Code and most other apps have not been tested yet. The full table of apps and fields says which are which, and how to check your own app during the free trial.
 
-Comparing it with other ways to keep personal details out of AI chats? See the comparison of redaction tools for ChatGPT and other AI chats, which says plainly where a competitor is the better choice.
+Comparing it with other ways to keep personal details out of AI chats? See the comparison of redaction tools for ChatGPT and other AI chats, which says plainly where a competitor is the better choice. Using Apple Mail? See what Apple Mail can and cannot catch.
 
 ## Privacy
 
