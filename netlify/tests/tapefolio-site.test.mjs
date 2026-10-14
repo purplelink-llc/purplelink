@@ -99,7 +99,10 @@ test("LAUNCHED: launch.js ships live with valid facts, and the static page alrea
   const log = read("changelog/index.html");
   assert.match(log, /<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-update">Update<\/span>\s*<h2>Tapefolio 1\.0\.1<\/h2>\s*<p>Fixes speaker labels\. The standard speaker separation had been dropping about half of the speech in long recordings\. NVIDIA Nemotron 3 speaker separation, an optional download, is now used automatically when it is installed\./);
   assert.match(log, /<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-launch">Launch<\/span>\s*<h2>Tapefolio 1\.0<\/h2>/);
-  assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/tapefolio\/<\/loc>\s*<lastmod>2026-10-09<\/lastmod>/);
+  // The scheduled deploy and blog jobs regenerate lastmod dates, so require a valid date on or after the 2026-10-09 launch, not that exact day.
+  const sm = read("sitemap.xml").match(/<loc>https:\/\/purplelink\.llc\/tapefolio\/<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+  assert.ok(sm, "tapefolio is listed in the sitemap with a lastmod");
+  assert.ok(sm[1] >= "2026-10-09", `tapefolio lastmod ${sm[1]} should be on or after the 2026-10-09 launch`);
 });
 
 test("the page is indexable and the success page is not", () => {
