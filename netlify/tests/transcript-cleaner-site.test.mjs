@@ -72,8 +72,9 @@ test("copy rules: no emoji, no em dash, none of the banned words, no mention of 
     const t = read(f);
     assert.doesNotMatch(t, /\p{Extended_Pictographic}/u, f + " has an emoji");
     assert.doesNotMatch(t, /—/, f + " has an em dash");
-    // The shared site footer lists every product; the page itself must not promote Tapefolio.
-    assert.doesNotMatch(t.replace(/<footer class="footer">[\s\S]*?<\/footer>/, ""), /tapefolio/i, f + " mentions Tapefolio");
+    // The shared site footer lists every product, and Tapefolio is live, so the page carries its one offer card
+    // (scripts/tool_offers.py, checked in site-tests/test_tool_offers.py). Nothing else on the page may mention it.
+    assert.doesNotMatch(t.replace(/<footer class="footer">[\s\S]*?<\/footer>/, "").replace(/<!-- tool-offer -->[\s\S]*?<!-- \/tool-offer -->/, ""), /tapefolio/i, f + " mentions Tapefolio outside its offer card");
   }
   assert.doesNotMatch(visibleText, /\b(streamline|supercharge|seamless|world-class|game-changer|AI-powered|revolutionary|effortless)\b/i);
 });

@@ -2,7 +2,7 @@
 // Sends a pageview on load, exposes window.plTrack(type, meta), and wraps fetch
 // so every call to the LaTeX-tools Modal backend is recorded as a "tool_use"
 // event (tagged by the tool page). This is what Cloudflare Web Analytics can't
-// tell you: which tools are actually run. No cookies, no fingerprinting. Honors
+// tell you: which tools are actually run (tool_use, plus tool_outcome and offer_view/offer_click for the per-tool counts in track.mjs). No cookies, no fingerprinting. Honors
 // Do Not Track. Same-origin only (no CSP change, no third-party load).
 (function () {
   var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -92,12 +92,21 @@
     return h === "linkedin" || h === "lnkd.in" || /(^|\.)linkedin\.com$/.test(h) || /^com\.linkedin\.android(\.[a-z]+)?$/.test(h);
   }
 
+  // The free tool pages carry one offer card whose link is tagged utm_source=tool-<slug>. That is channel "tool", with
+  // the slug as the detail: the label reads "tool:<slug>". Only the campaign source is read, never the referrer, so a
+  // referring site that merely has "tool" in its name is unaffected. A paid click (below) still reads "paid:..." first.
+  // Mirrored in netlify/functions/stats.mjs (toolChannel), which folds the same names in stored records.
+  function toolChannel(src) {
+    var m = /^tool-([a-z0-9][a-z0-9-]{0,39})$/i.exec(String(src || ""));
+    return m ? "tool:" + m[1].toLowerCase() : "";
+  }
+
   // A short label for how this visitor first arrived ("google", "chatgpt.com", a campaign tag, or "direct"), for counting
   // sign-ups by channel. Nothing is stored with an account; the label goes out once, as an event in our own statistics.
   window.plFirstTouch = function () {
     var f = attr.first || attr.last;
     var label = (f && (f.s || f.r)) || (f && f.g ? "google ads" : "direct");
-    return isLinkedin(label) ? "linkedin" : label;
+    return (f && toolChannel(f.s)) || (isLinkedin(label) ? "linkedin" : label);
   };
 
   // The first-touch channel as a short label for the funnel events below only (product-page views, trial
@@ -109,6 +118,8 @@
     if (!f) return "direct";
     var med = String(f.m || "").toLowerCase();
     if (f.g || med === "cpc" || med === "ppc" || med === "paid" || med === "paidsocial") return clip("paid:" + (f.s || "google"), 40);
+    var tool = toolChannel(f.s);
+    if (tool) return clip(tool, 40);
     var label = f.s || f.r || "direct";
     return isLinkedin(label) ? "linkedin" : clip(label, 40);
   }
@@ -139,12 +150,14 @@
     var _fetch = window.fetch;
     if (typeof _fetch === "function") {
       window.fetch = function (input, init) {
+        var toolCall = false;
         try {
           var url = typeof input === "string" ? input : (input && input.url) || "";
           if (url.indexOf(TOOL_API_HOST) !== -1) {
             var path = "";
             try { path = new URL(url).pathname; } catch (e) { path = url.split("modal.run")[1] || ""; }
             window.plTrack("tool_use", (path || "").split("?")[0]);
+            toolCall = true;
           } else if (url.indexOf("/.netlify/functions/purchases-recover") !== -1) {
             window.plTrack("recover_request", "");
           } else if (url.indexOf(CHECKOUT_FN) !== -1) {
@@ -168,10 +181,45 @@
             window.plTrack("checkout_click", product);
           }
         } catch (e) { /* ignore */ }
-        return _fetch.call(this, input, init);
+        var pending = _fetch.call(this, input, init);
+        // How the run ended, for the per-tool counts: ok, error, or limit (the tool refused because of its size,
+        // time or daily limit). Counts only; the response body is never kept, and a read for the timeout flag
+        // happens on a clone so the tool's own code still gets the untouched response.
+        if (toolCall) {
+          pending.then(function (resp) {
+            try {
+              var st = resp.status, kind = "error";
+              if (resp.ok) kind = "ok";
+              else if (st === 408 || st === 413 || st === 429 || st === 504) kind = "limit";
+              if (kind !== "error" || !/json/.test(resp.headers.get("content-type") || "")) { window.plTrack("tool_outcome", kind); return; }
+              resp.clone().json().then(function (j) {
+                window.plTrack("tool_outcome", j && j.error === "timeout" ? "limit" : "error");
+              }, function () { window.plTrack("tool_outcome", "error"); });
+            } catch (e) { /* ignore */ }
+          }, function () { window.plTrack("tool_outcome", "error"); });
+        }
+        return pending;
       };
     }
   } catch (e) { /* leave fetch untouched on any error */ }
+
+  // Tool pages show one offer card (<aside data-offer="<app>">). Count it once per page view, when at least half of it
+  // is on screen. The counts are per tool and per day on the server, with nothing that identifies the visitor.
+  try {
+    var offer = document.querySelector("[data-offer]");
+    if (offer && "IntersectionObserver" in window) {
+      var seen = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            seen.disconnect();
+            window.plTrack("offer_view", offer.getAttribute("data-offer") || "");
+            return;
+          }
+        }
+      }, { threshold: 0.5 });
+      seen.observe(offer);
+    }
+  } catch (e) { /* the page works the same without it */ }
 
   // The ModernTex trial is a plain download link, not a fetch, so the wrapper
   // above never sees it. Count the click: trial downloads against later
