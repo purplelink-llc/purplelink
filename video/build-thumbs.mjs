@@ -1,4 +1,4 @@
-// node build-thumbs.mjs [--only ID,ID] [--spec thumbs/youtube.json]
+// node build-thumbs.mjs [--only ID,ID] [--spec thumbs/youtube.json] [--out DIR] [--no-sheet]
 // Renders YouTube thumbnails (src/Thumb.jsx, 1280x720 JPEG) for every entry in the spec into out/thumbs/<id>.jpg,
 // plus out/thumbs/sheet.jpg (all of them at 320 px, the size viewers actually judge them at).
 // Spec entries: { id, kind: "error"|"long"|"product", ... }. A product `img` is a repo-relative path, or
@@ -42,7 +42,7 @@ function stage(src) {
 }
 const props = specs.map((s) => ({ ...s, img: stage(s.img), icon: stage(s.icon), icons: s.icons?.map(stage) }));
 
-const OUT = path.join(ROOT, "out", "thumbs");
+const OUT = path.resolve(ROOT, opt("out", path.join("out", "thumbs")));
 fs.mkdirSync(OUT, { recursive: true });
 const serveUrl = await bundle({ entryPoint: path.join(ROOT, "src", "index.jsx"), publicDir: pub });
 const files = [];
@@ -55,6 +55,7 @@ for (const p of props) {
   console.log(`${p.id}  ${p.kind.padEnd(7)} ${mb.toFixed(2)} MB  ${p.msg || p.line}`);
   files.push(file);
 }
+if (args.includes("--no-sheet")) process.exit(0);
 const cols = Math.min(4, files.length);
 const rows = Math.ceil(files.length / cols);
 const layout = files.map((_, i) => `${(i % cols) * 320}_${Math.floor(i / cols) * 180}`).join("|");

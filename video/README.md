@@ -129,3 +129,19 @@ python3 ../scripts/yt-upload.py FILE --title ... --thumbnail THUMB   # new uploa
 otherwise the title after "Fix this LaTeX error:"; set `thumb.msg` whenever the spoken title differs from the log text.
 When a new video goes up, add its entry to `thumbs/youtube.json` so the whole channel can be re-rendered in one pass.
 YouTube's Test & Compare (Studio, long-form public videos only) can try up to three thumbnails and picks by watch time.
+
+## A/B testing (every long video)
+
+YouTube's Test & Compare (Studio, long-form public videos only; Shorts cannot be tested) shows up to three thumbnails
+to equal shares of viewers and picks by share of watch time, not clicks: Winner, Preferred, or None (the first stays).
+Every long faceless video ships three variants and starts a test the day it is published.
+
+1. Write `thumbs/ab/<name>.json`: variants `A`, `B`, `C`, each a `Thumb` entry with `id` `<name>-thumb-<letter>`.
+   Use at least two templates and one idea per variant (a numbered promise, the before/after, the real app),
+   never three colourings of one design; every variant shows only what the video shows. A test checks this.
+2. The build renders them: `build-latexfix-long.mjs` stops without the file and writes `out/.../<name>-thumb-{A,B,C}.jpg`.
+3. Publish with `python3 ../scripts/yt-upload.py FILE --title ... --public --ab-thumbnails A.jpg B.jpg C.jpg`, or
+   start a test on a published video with `python3 ../scripts/yt-abtest.py start VIDEO_ID A.jpg B.jpg C.jpg`.
+   Each start is recorded in `thumbs/ab-tests.json` and in the change log.
+4. `python3 ../scripts/yt-abtest.py status` reads every open test's result from Studio into `thumbs/ab-tests.json`.
+   A low-traffic video can take two weeks and still end in None; carry the lesson (which idea won) into the next spec.
