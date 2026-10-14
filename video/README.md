@@ -91,6 +91,18 @@ node build-latexfix.mjs undefined-control-sequence       # narrate, render 16:9 
 node build-latexfix.mjs <slug> --stills 5,9,14           # JPG stills into .cache/stills/<slug>/
 node verify-latexfix.mjs [slug]                          # compile each example with the local pdflatex, compare logs
 zsh render-latexfix-batch.sh <slug> <slug> ...           # several videos strictly one after another
+
+The long tutorial for one error, "File not found" (about 2 minutes 15, 16:9 only): a title card, the five causes from
+the page (`file-not-found-package`, `-name`, `-template`, `-class`, `-input` in `src/latexfix/data.js`, each cut reuses the
+Short's typed log, highlighted source and fix without its end card) and a ModernTex card with the editor screenshot
+from `site/assets/moderntex-screens/`. One render, one pair of bumpers.
+```
+node check-latexfix.mjs && node verify-latexfix.mjs        # text matches the page and the real pdflatex log (cause 1 cannot be reproduced locally)
+node build-latexfix-long.mjs --stills 7.8,24,52            # frames at those composition seconds (bumper included)
+node build-latexfix-long.mjs --concurrency 3               # full render into out/latex-errors/file-not-found-long/
+```
+The render is CPU heavy: run it when no pipeline is posting (the daily uploaders starve when the machine is saturated).
+Never publish it without Ben's approval of that specific video; `scripts/yt-upload.py` uploads unlisted by default.
 ```
 
 Output: `out/latex-errors/<slug>/<slug>-16x9.mp4`, `-9x16.mp4`, `-poster.jpg`, `frames/`. Code is 36 px in both formats. In 9:16 the log's continuation line keeps its text but is indented less so it fits the panel, and long source lines soft-wrap. The build fails if narration overlaps a bumper and warns outside 20 to 25 s. Run one build at a time.

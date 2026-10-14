@@ -1,0 +1,47 @@
+{
+ "id": "file-not-found-class",
+ "series": "latex-errors-long",
+ "title": "Fix File not found, cause 4: wrong class name",
+ "source": "https://purplelink.llc/latex-errors/file-not-found/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "scenes": [
+  {
+   "narration": "Cause four: the class name is wrong.",
+   "tag": "Cause 4 of 5",
+   "caption": "The class name is wrong."
+  },
+  {
+   "narration": "The same message, with a C L S extension, means the name in documentclass is misspelled, or the class is not installed.",
+   "tag": "The log",
+   "caption": "artcle.cls does not exist."
+  },
+  {
+   "narration": "Fix the class name.",
+   "tag": "The fix",
+   "caption": "\\documentclass{article}"
+  },
+  {
+   "narration": "Now it compiles.",
+   "tag": "Result",
+   "caption": "Now it compiles."
+  },
+  {
+   "narration": ""
+  }
+ ],
+ "end": {
+  "lines": [
+   "The full explanation: purplelink.llc/latex-errors",
+   "ModernTex flags this as you type. purplelink.llc/moderntex"
+  ]
+ },
+ "bumper": {
+  "open": 2.2,
+  "close": 2.5,
+  "xf": 0.4,
+  "intro": "assets/sting-intro.wav",
+  "outro": "assets/sting-outro.wav",
+  "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+ }
+}

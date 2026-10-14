@@ -1,0 +1,47 @@
+{
+ "id": "file-not-found-input",
+ "series": "latex-errors-long",
+ "title": "Fix File not found, cause 5: input path",
+ "source": "https://purplelink.llc/latex-errors/file-not-found/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "scenes": [
+  {
+   "narration": "Cause five: an input path does not match the file on disk.",
+   "tag": "Cause 5 of 5",
+   "caption": "The input path is wrong."
+  },
+  {
+   "narration": "With a dot tex extension in the message, the path in input or include is wrong. Paths are relative to the main file, not to the file that contains the input.",
+   "tag": "The log",
+   "caption": "The file on disk is sections/intro.tex"
+  },
+  {
+   "narration": "Use the name that is on disk.",
+   "tag": "The fix",
+   "caption": "\\input{sections/intro}"
+  },
+  {
+   "narration": "Now it compiles.",
+   "tag": "Result",
+   "caption": "Now it compiles."
+  },
+  {
+   "narration": ""
+  }
+ ],
+ "end": {
+  "lines": [
+   "The full explanation: purplelink.llc/latex-errors",
+   "ModernTex flags this as you type. purplelink.llc/moderntex"
+  ]
+ },
+ "bumper": {
+  "open": 2.2,
+  "close": 2.5,
+  "xf": 0.4,
+  "intro": "assets/sting-intro.wav",
+  "outro": "assets/sting-outro.wav",
+  "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+ }
+}
