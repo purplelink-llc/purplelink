@@ -842,6 +842,9 @@ _FEED_URL = f"{SITE_URL}/blog/digest/feed.xml"
 
 _LINKEDIN_API = "https://api.linkedin.com/rest"  # Posts API (replaces deprecated /v2/ugcPosts)
 _LINKEDIN_HASHTAGS = "#cybersecurity #AI #infosec #research #entrepreneurship"
+# The only author this code may post as: the Purplelink LLC company page. Never a personal
+# profile (Ben, 2026-10-14: a post landed on his personal account and he had to delete it).
+LINKEDIN_COMPANY_URN = "urn:li:organization:120183926"
 
 
 async def ping_websub(client) -> None:
@@ -867,7 +870,10 @@ async def post_linkedin(
     access_token: str,
     author_urn: str,
 ) -> None:
-    """Post a digest announcement to LinkedIn (person or organization)."""
+    """Post a digest announcement to the Purplelink LLC LinkedIn page (never a person)."""
+    if author_urn != LINKEDIN_COMPANY_URN:
+        logger.warning("post_linkedin: refused, author %s is not the Purplelink LLC page", author_urn.split(":")[2] if author_urn.count(":") >= 3 else "unset")
+        return
     iso = digest.date.isoformat()
     page_url = f"{SITE_URL}/blog/digest/{iso}.html"
     title = f"Purplelink Daily Digest #{digest.number} — {_fmt_date(digest.date)}"

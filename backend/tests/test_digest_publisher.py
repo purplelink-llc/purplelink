@@ -234,7 +234,7 @@ def _publish_with_linkedin_creds(monkeypatch):
     monkeypatch.setattr("digest.publisher.ping_websub", _noop)
     monkeypatch.setattr("digest.publisher.post_linkedin", _fake_linkedin)
 
-    asyncio.run(publish(_make_digest(), "gh_token", "li_token", "urn:li:organization:123"))
+    asyncio.run(publish(_make_digest(), "gh_token", "li_token", "urn:li:organization:120183926"))
     return linkedin_called
 
 
@@ -253,7 +253,7 @@ def test_publish_skips_linkedin_unless_autopost_is_exactly_enabled(monkeypatch):
 
 def test_publish_posts_linkedin_when_credentials_given_and_autopost_enabled(monkeypatch):
     monkeypatch.setenv("LINKEDIN_AUTOPOST", "enabled")
-    assert _publish_with_linkedin_creds(monkeypatch) == [("li_token", "urn:li:organization:123")]
+    assert _publish_with_linkedin_creds(monkeypatch) == [("li_token", "urn:li:organization:120183926")]
 
 
 def test_post_linkedin_sends_one_post_with_a_mocked_http_client(monkeypatch):
@@ -273,7 +273,7 @@ def test_post_linkedin_sends_one_post_with_a_mocked_http_client(monkeypatch):
             calls.append(url)
             return _Resp()
 
-    asyncio.run(pub.post_linkedin(_Client(), _make_digest(), "li_token", "urn:li:organization:123"))
+    asyncio.run(pub.post_linkedin(_Client(), _make_digest(), "li_token", "urn:li:organization:120183926"))
     assert calls == ["https://api.linkedin.com/rest/posts"]
 
 
@@ -514,3 +514,21 @@ def test_robots_txt_does_not_block_digest_pages():
     disallowed = [ln for ln in robots.splitlines()
                   if ln.strip().lower().startswith("disallow:") and "/blog/digest" in ln]
     assert disallowed == []
+
+
+def test_post_linkedin_refuses_any_author_but_the_company_page():
+    """A personal-profile URN must never be posted as, even with a token and autopost on."""
+    import asyncio
+    from digest import publisher
+
+    class _Client:
+        def __init__(self):
+            self.calls = 0
+        async def post(self, *a, **k):
+            self.calls += 1
+            raise AssertionError("must not call LinkedIn for a non-company author")
+
+    for urn in ("urn:li:person:abc123", "", "urn:li:organization:999"):
+        c = _Client()
+        asyncio.run(publisher.post_linkedin(c, _make_digest(), "tok", urn))
+        assert c.calls == 0, urn
