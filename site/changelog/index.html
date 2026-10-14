@@ -72,6 +72,15 @@
         <span class="changelog-date">October 14, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 1.7.4</h2>
+          <p>Build Results shows only what is still wrong after a Full build. A Full build runs LaTeX several times, with biber in between, and Build Results used to collect warnings from every pass, so a citation the first pass could not resolve was still listed after biber and the last pass had fixed it. It now reads the last pass only. Earlier versions install 1.7.4 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 14, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>ModernTex 1.7.3</h2>
           <p>A Full build now runs the bibliography step with every engine. With LuaLaTeX or XeLaTeX chosen as the Full Build Engine, ModernTex ran that engine once and stopped, so biber never ran and every citation printed its key in bold. A Full build now goes through latexmk with the engine you chose. When biber has not run yet, Build Results says so instead of "Citation key missing in .bib file". Earlier versions install 1.7.3 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
         </div>
