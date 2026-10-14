@@ -145,3 +145,6 @@ Every long faceless video ships three variants and starts a test the day it is p
    Each start is recorded in `thumbs/ab-tests.json` and in the change log.
 4. `python3 ../scripts/yt-abtest.py status` reads every open test's result from Studio into `thumbs/ab-tests.json`.
    A low-traffic video can take two weeks and still end in None; carry the lesson (which idea won) into the next spec.
+   The launchd job `llc.purplelink.ytabtest` (Sundays 03:30, `scripts/yt-abtest-weekly.sh`) runs this from local copies
+   in `~/.purplelink/yt-abtest/` with its own log, and posts a notification when a test reaches a result. After
+   starting a new test, append its entry to `~/.purplelink/yt-abtest/ab-tests.json` too (or re-copy the repo file).

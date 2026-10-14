@@ -20,12 +20,35 @@ def _load(name, file):
 
 ytu = _load("ytu", "yt-upload.py")
 ytt = _load("ytt", "yt-thumbnail.py")
-LOG = os.path.join(HERE, "..", "video", "thumbs", "ab-tests.json")
+# the weekly job (llc.purplelink.ytabtest) runs local copies and keeps its own log: YT_ABTEST_LOG overrides the path
+LOG = os.environ.get("YT_ABTEST_LOG") or os.path.join(HERE, "..", "video", "thumbs", "ab-tests.json")
 CHANGELOG = os.path.expanduser("~/.purplelink/insights/changelog/log_change.py")
 WALK = "const all=[];(function w(r){for(const e of r.querySelectorAll('*')){all.push(e);if(e.shadowRoot)w(e.shadowRoot);}})(document);"
 
 
+def ensure_chrome():
+    """Start the automation Chrome (its own signed-in profile) when nothing answers on port 9340."""
+    try:
+        urllib.request.urlopen("http://127.0.0.1:9340/json/version", timeout=3).read()
+        return
+    except Exception:
+        pass
+    subprocess.Popen(["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "--remote-debugging-port=9340",
+                      f"--user-data-dir={os.path.expanduser('~/.photo-automation-chrome')}", "--no-first-run",
+                      "--no-default-browser-check"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for _ in range(30):
+        time.sleep(1)
+        try:
+            urllib.request.urlopen("http://127.0.0.1:9340/json/version", timeout=3).read()
+            time.sleep(4)
+            return
+        except Exception:
+            continue
+    raise SystemExit("automation Chrome did not start on port 9340")
+
+
 def _open(vid):
+    ensure_chrome()
     tab = Tab.new(f"https://studio.youtube.com/video/{vid}/edit")
     urllib.request.urlopen(f"http://127.0.0.1:9340/json/activate/{tab.info['id']}").read()
     tab.wait_idle(10)
@@ -159,6 +182,7 @@ def status_of(vid):
 
 
 def status(vids):
+    """Read open tests from Studio. Prints RESULT lines for tests that reached Winner, Preferred or None."""
     log = json.load(open(LOG)) if os.path.exists(LOG) else []
     todo = vids or [x["video"] for x in log if not any(w in x.get("status", "") for w in ("Winner", "Preferred", "None", "ended"))]
     today = dt.date.today().isoformat()
@@ -167,7 +191,8 @@ def status(vids):
         for x in log:
             if x["video"] == vid:
                 x["status"], x["checked"] = state, today
-        print(f"{vid}: {state[:200]}")
+        done = next((w for w in ("Winner", "Preferred", "None") if w in state), None)
+        print(f"{'RESULT' if done else 'open'} {vid}: {' '.join(state.split())[:200]}")
     with open(LOG, "w") as f:
         json.dump(log, f, indent=1)
         f.write("\n")
