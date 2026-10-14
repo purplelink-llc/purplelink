@@ -224,7 +224,9 @@ class BatteryMeterPage(unittest.TestCase):
         for rel in ("products/index.html", "index.html", "changelog/index.html"):
             self.assertIn('href="/batterymeter/"', (SITE / rel).read_text(encoding="utf-8"), rel)
         suite = (SITE / "suite" / "index.html").read_text(encoding="utf-8")
-        self.assertNotIn("BatteryMeter", suite)
+        # The shared footer lists every product, so check the page itself: the Suite does not include BatteryMeter.
+        body = re.sub(r"<footer\b.*?</footer>", "", suite, flags=re.S | re.I)
+        self.assertNotIn("BatteryMeter", body)
 
 
 if __name__ == "__main__":
