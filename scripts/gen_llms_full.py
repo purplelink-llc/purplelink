@@ -40,6 +40,7 @@ PAGES = [
     "tools/cover-letter/",
     "tools/resume-review/",
     "scholar-utility-belt/",
+    "scholar-utility-belt/pro/",
     "tools/",
     "tools/latex-to-pdf/",
     "tools/bib-validator/",
