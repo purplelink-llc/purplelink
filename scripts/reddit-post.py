@@ -295,6 +295,13 @@ def cmd_comment(cfg: dict, args) -> None:
     words = len(text.split())
     if words > 200:
         sys.exit(f"draft is {words} words; §5 caps replies around 150. Trim it before posting.")
+    # Posting is switched off (Ben, 2026-10-09). Reddit's Responsible Builder Policy requires approval
+    # for API access and bars automated comments from accounts that are not registered as apps, so
+    # promotional comments are posted by hand. --dry-run still works. Set REDDIT_ALLOW_POSTING=1 to
+    # re-enable this on purpose.
+    if not args.dry_run and os.environ.get("REDDIT_ALLOW_POSTING") != "1":
+        sys.exit("posting from this script is switched off; paste the comment into Reddit yourself "
+                 "(--dry-run shows what would be sent)")
     parent = _thing_id(args.thing)
     me = api_get(cfg, "/api/v1/me")
     if me.get("name", "").lower() != cfg["REDDIT_USERNAME"].lower():

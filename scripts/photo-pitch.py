@@ -102,7 +102,9 @@ def pitch_body(t, names):
     short = t["target"].split("(")[0].strip()
     descr = [names.get(f, f[:-5]) for f in files][:4]
     lines = ["Hello,", "",
-             f"I'm a photographer based in Atlanta. I photographed {short} and would like to offer {'the image' if n == 1 else 'the images'} to your marketing team.",
+             (f"I'm a photographer based in Atlanta. I photographed places your tours visit and would like to offer {'the image' if n == 1 else 'the images'} to your marketing team."
+              if "PLACE-PITCH" in t.get("notes", "") else
+              f"I'm a photographer based in Atlanta. I photographed {short} and would like to offer {'the image' if n == 1 else 'the images'} to your marketing team."),
              "", (f"There is 1 image (preview attached):" if n == 1 else f"There are {n} images (previews attached):")]
     lines += [f"- {d}" for d in descr]
     if n > len(descr):
@@ -183,7 +185,8 @@ def cmd_queue(a):
         files = [f.strip() for f in t["filenames"].split(";") if f.strip()]
         if not files or not all((SRC / f).exists() for f in files):
             print(f"skip {t['target']}: a file is missing locally"); continue
-        subject = f"Photos of {t['target'].split('(')[0].strip()}, available to license"
+        subject = (f"Iceland photos for {t['target'].split('(')[0].strip()}, available to license" if "PLACE-PITCH" in t["notes"]
+                   else f"Photos of {t['target'].split('(')[0].strip()}, available to license")
         ver = re.search(r"VERIFIED \d{4}-\d{2}-\d{2}[^.;]*", t["notes"]).group(0)
         md = item_md(t["target"], t["contact_email"], subject, pitch_body(t, names), files,
                      f"{t['type']} in {t['country']} with its own marketing contact ({t.get('contact_url') or 'see CSV'}); no image bank of its own.",
