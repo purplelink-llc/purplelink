@@ -1,0 +1,592 @@
+{
+ "id": "rubblefront-v5-30s",
+ "outputs": {
+  "16x9": "rubblefront-trailer-v5-30s-16x9.mp4"
+ },
+ "formats": [
+  "16x9"
+ ],
+ "crf": 16,
+ "sfxDb": -6,
+ "music": [
+  {
+   "file": "battle_low.ogg",
+   "in": 44.0,
+   "t": 0.0,
+   "dur": 3.4,
+   "gain_db": -6,
+   "fade_in": 1.2,
+   "fade_out": 0.3
+  },
+  {
+   "file": "battle_mid.ogg",
+   "in": 0.0,
+   "t": 3.0,
+   "dur": 14.0,
+   "gain_db": 0.0,
+   "fade_in": 0.02,
+   "fade_out": 0.02
+  },
+  {
+   "file": "battle_mid_drive.ogg",
+   "in": 0.0,
+   "t": 3.0,
+   "dur": 6.870000000000001,
+   "gain_db": 2.0,
+   "fade_in": 0.02,
+   "fade_out": 0.25
+  },
+  {
+   "file": "battle_high.ogg",
+   "in": 14.0,
+   "t": 17.0,
+   "dur": 100.0,
+   "gain_db": 3.0,
+   "fade_in": 0.02,
+   "fade_out": 3.0
+  },
+  {
+   "file": "battle_high_drive.ogg",
+   "in": 14.0,
+   "t": 17.0,
+   "dur": 100.0,
+   "gain_db": 5.0,
+   "fade_in": 0.02,
+   "fade_out": 3.0
+  }
+ ],
+ "synth": [
+  {
+   "t": 3.0,
+   "kind": "riser",
+   "dur": 2.4,
+   "gain_db": -3
+  },
+  {
+   "t": 16.96,
+   "kind": "riser",
+   "dur": 7.960000000000001,
+   "gain_db": -14
+  },
+  {
+   "t": 25.7,
+   "kind": "riser",
+   "dur": 5.699999999999999,
+   "gain_db": -8
+  }
+ ],
+ "scenes": [
+  {
+   "clip": "o_a",
+   "in": 1.683,
+   "dur": 3.45,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 3.0,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 3.0,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 2.98,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "TURN-BASED\n*TACTICS.*",
+     "at": 0.0,
+     "dur": 2.2,
+     "pos": "top",
+     "size": 92,
+     "sfxDb": -4.5,
+     "instant": true
+    }
+   ],
+   "hits": [
+    {
+     "at": 0.5,
+     "kind": "tick",
+     "gain_db": -4
+    },
+    {
+     "at": 1.0,
+     "kind": "tick",
+     "gain_db": -4
+    },
+    {
+     "at": 1.5,
+     "kind": "tick",
+     "gain_db": -4
+    },
+    {
+     "at": 2.0,
+     "kind": "tick",
+     "gain_db": -4
+    }
+   ]
+  },
+  {
+   "clip": "o_a",
+   "in": 8.467,
+   "dur": 2.6,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 1.95,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 1.95,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 1.93,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "BLOW A HOLE IN\nTHEIR *COVER.*",
+     "at": 1.2,
+     "dur": 0.75,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "s_c",
+   "in": 9.167,
+   "dur": 2.92,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.9199999999999999,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.9199999999999999,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.8999999999999999,
+     "dur": 0.42,
+     "speed": 0.4
+    },
+    {
+     "at": 1.3199999999999998,
+     "dur": 0.9,
+     "speed": 2.0
+    }
+   ],
+   "cards": [
+    {
+     "text": "FLANK FOR\nTHE *KILL.*",
+     "at": 1.92,
+     "dur": 1.0,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "k_spoils",
+   "in": 3.3,
+   "dur": 0.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   }
+  },
+  {
+   "clip": "k_hub",
+   "in": 6.0,
+   "dur": 2.23,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "crop": {
+    "x": 0.5,
+    "y": 0.5,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "BUILD THE\n*OUTPOST.*",
+     "at": 0.0,
+     "dur": 1.2,
+     "pos": "left",
+     "size": 78,
+     "sfxDb": -4.5,
+     "strong": true
+    }
+   ]
+  },
+  {
+   "clip": "s_g1",
+   "in": 2.733,
+   "dur": 1.7,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 1.42,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ],
+   "cards": [
+    {
+     "text": "SMALL *SQUAD.*",
+     "at": 0.0,
+     "dur": 1.6,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "s_g3",
+   "in": 2.367,
+   "dur": 1.7,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 1.32,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ],
+   "cards": [
+    {
+     "text": "MORE *UNITS.*",
+     "at": 0.0,
+     "dur": 1.6,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "s_e",
+   "in": 1.8,
+   "dur": 2.5,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 1.5,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 1.5,
+     "amp": 20,
+     "dur": 0.4,
+     "zoom": 0.035
+    }
+   ],
+   "slow": [
+    {
+     "at": 1.48,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "logo": {
+    "at": 1.5,
+    "dur": 1.0
+   }
+  },
+  {
+   "clip": "s_b",
+   "in": 6.4,
+   "dur": 2.0,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "HOLD. WAIT.\n*AMBUSH.*",
+     "at": 0.0,
+     "dur": 2.0,
+     "pos": "bottom",
+     "sfx": false
+    }
+   ],
+   "flash": [],
+   "hits": [
+    {
+     "at": 1.25,
+     "kind": "hit",
+     "gain_db": -3
+    }
+   ]
+  },
+  {
+   "clip": "t_a",
+   "in": 3.433,
+   "dur": 0.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.72,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.72,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.7,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "k_desert_combo",
+   "in": 4.3,
+   "dur": 0.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 0.02,
+     "kind": "hit",
+     "gain_db": -3
+    }
+   ]
+  },
+  {
+   "clip": "t_c",
+   "in": 9.133,
+   "dur": 0.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.72,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.72,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.7,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "k_snow_ow",
+   "in": 8.6,
+   "dur": 0.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 0.02,
+     "kind": "hit",
+     "gain_db": -3
+    }
+   ]
+  },
+  {
+   "clip": "t_e",
+   "in": 3.0,
+   "dur": 2.1,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.3,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.3,
+     "amp": 20,
+     "dur": 0.4,
+     "zoom": 0.035
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.27999999999999997,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "ONE MORE *RUN.*",
+     "at": 0.8,
+     "dur": 1.2,
+     "pos": "mid",
+     "size": 150,
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "type": "end",
+   "dur": 3.2,
+   "lines": [
+    "Spring 2027",
+    "rubblefront.com",
+    "A Purplelink LLC game"
+   ],
+   "hits": [
+    {
+     "at": 0.0,
+     "kind": "boom",
+     "gain_db": 4
+    }
+   ]
+  }
+ ],
+ "wishlistText": "Wishlist on Steam",
+ "musicEnv": [
+  {
+   "t": 0,
+   "db": 0
+  },
+  {
+   "t": 9.0,
+   "db": -11
+  },
+  {
+   "t": 16.66,
+   "db": -3
+  },
+  {
+   "t": 16.7,
+   "db": -12
+  },
+  {
+   "t": 16.98,
+   "db": -12
+  },
+  {
+   "t": 17.0,
+   "db": 6
+  },
+  {
+   "t": 18.8,
+   "db": -1
+  },
+  {
+   "t": 19.95,
+   "db": 0
+  },
+  {
+   "t": 21.0,
+   "db": 4.0
+  }
+ ]
+}

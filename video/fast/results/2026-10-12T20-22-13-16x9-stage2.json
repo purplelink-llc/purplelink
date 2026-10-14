@@ -1,0 +1,165 @@
+{
+ "when": "2026-10-12T20:22:13.776Z",
+ "host": "Mac",
+ "cpu": "Apple M4",
+ "cores": 10,
+ "ramGB": 16,
+ "base": {
+  "adapter": "rubblefront4",
+  "sb": "storyboards/rubblefront-v4-30s.json",
+  "format": "16x9",
+  "frames": "150-239",
+  "clips": "orig",
+  "concurrency": 5,
+  "imageFormat": "jpeg",
+  "hw": "disable",
+  "crf": 16
+ },
+ "reps": 3,
+ "results": [
+  {
+   "cell": {
+    "name": "baseline",
+    "adapter": "rubblefront4",
+    "sb": "storyboards/rubblefront-v4-30s.json",
+    "format": "16x9",
+    "frames": "150-239",
+    "clips": "orig",
+    "concurrency": 5,
+    "imageFormat": "jpeg",
+    "hw": "disable",
+    "crf": 16
+   },
+   "reps": [
+    22.44,
+    28.02,
+    32.85
+   ],
+   "median_render_s": 28.02,
+   "fps": 3.21,
+   "bundle_s": 3,
+   "proxy_s": 1.19,
+   "out_mb": 4.91,
+   "ssim": 1,
+   "psnr": 99,
+   "load_max": 28.64
+  },
+  {
+   "cell": {
+    "adapter": "rubblefront4",
+    "sb": "storyboards/rubblefront-v4-30s.json",
+    "format": "16x9",
+    "frames": "150-239",
+    "clips": "gop15",
+    "concurrency": 5,
+    "imageFormat": "jpeg",
+    "hw": "disable",
+    "crf": 16,
+    "name": "final_gop15",
+    "jpegQuality": 90,
+    "cacheMB": 2048
+   },
+   "reps": [
+    14.99,
+    17.43,
+    51.88
+   ],
+   "median_render_s": 17.43,
+   "fps": 5.16,
+   "bundle_s": 3.29,
+   "proxy_s": 0.01,
+   "out_mb": 4.29,
+   "ssim": null,
+   "psnr": null,
+   "load_max": 141.32
+  },
+  {
+   "cell": {
+    "adapter": "rubblefront4",
+    "sb": "storyboards/rubblefront-v4-30s.json",
+    "format": "16x9",
+    "frames": "150-239",
+    "clips": "gop15",
+    "concurrency": 5,
+    "imageFormat": "jpeg",
+    "hw": "required",
+    "crf": 16,
+    "name": "final_gop15_hw",
+    "jpegQuality": 90,
+    "cacheMB": 2048
+   },
+   "reps": [
+    11.51,
+    23.76,
+    64.03
+   ],
+   "median_render_s": 23.76,
+   "fps": 3.79,
+   "bundle_s": 3.24,
+   "proxy_s": 0.01,
+   "out_mb": 6.4,
+   "ssim": null,
+   "psnr": null,
+   "load_max": 339.45
+  },
+  {
+   "cell": {
+    "adapter": "rubblefront4",
+    "sb": "storyboards/rubblefront-v4-30s.json",
+    "format": "16x9",
+    "frames": "150-239",
+    "clips": "prores",
+    "concurrency": 5,
+    "imageFormat": "jpeg",
+    "hw": "disable",
+    "crf": 16,
+    "name": "final_prores",
+    "jpegQuality": 90,
+    "cacheMB": 2048
+   },
+   "reps": [
+    16.16,
+    26.74,
+    55.79
+   ],
+   "median_render_s": 26.74,
+   "fps": 3.37,
+   "bundle_s": 6.96,
+   "proxy_s": 0.01,
+   "out_mb": 5.93,
+   "ssim": null,
+   "psnr": null,
+   "load_max": 238.67
+  },
+  {
+   "cell": {
+    "adapter": "rubblefront4",
+    "sb": "storyboards/rubblefront-v4-30s.json",
+    "format": "16x9",
+    "frames": "150-239",
+    "clips": "gop15",
+    "concurrency": 6,
+    "imageFormat": "jpeg",
+    "hw": "disable",
+    "crf": 24,
+    "name": "draft_half",
+    "scale": 0.5,
+    "jpegQuality": 70,
+    "x264Preset": "ultrafast"
+   },
+   "reps": [
+    10.34,
+    10.98,
+    17.7
+   ],
+   "median_render_s": 10.98,
+   "fps": 8.19,
+   "bundle_s": 3.95,
+   "proxy_s": 0.01,
+   "out_mb": 2.04,
+   "ssim": null,
+   "psnr": null,
+   "load_max": 161.6
+  }
+ ]
+}

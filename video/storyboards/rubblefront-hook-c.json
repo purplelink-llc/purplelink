@@ -1,0 +1,42 @@
+{
+ "id": "rubblefront-hook-c",
+ "voice": "en-US-AndrewNeural",
+ "rate": "-4%",
+ "music": {
+  "file": "title.ogg",
+  "in": 0,
+  "t": 0,
+  "gain_db": -9,
+  "fade_in": 0.8,
+  "fade_out": 1.2,
+  "duck_db": -7
+ },
+ "sfxDb": -4,
+ "crf": 19,
+ "scenes": [
+  {
+   "clip": "rubble",
+   "in": 3.6,
+   "dur": 2.4,
+   "caption": "Cover holds until it is shot away.",
+   "capAt": 0.2,
+   "capDur": 3.0
+  },
+  {
+   "clip": "rubble",
+   "in": 9.4,
+   "dur": 2.4
+  },
+  {
+   "clip": "rubble",
+   "in": 15.0,
+   "dur": 3.2
+  }
+ ],
+ "outputs": {
+  "16x9": "rubblefront-hook-c-16x9.mp4"
+ },
+ "formats": [
+  "16x9"
+ ]
+}

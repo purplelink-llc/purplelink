@@ -1,0 +1,24 @@
+  baseline rep1: render 32.85s (2.74 fps) bundle 3.45s load 19.31->28.64 39s wall
+  final_gop15 rep1: render 17.43s (5.16 fps) bundle 3.29s load 25.47->24.51 23s wall
+  final_gop15_hw rep1: render 23.76s (3.79 fps) bundle 3.24s load 21.68->30.09 30s wall
+  final_prores rep1: render 26.74s (3.37 fps) bundle 6.96s load 28.51->42.2 36s wall
+  draft_half rep1: render 10.34s (8.71 fps) bundle 3.81s load 38.68->34.64 17s wall
+  baseline rep2: render 22.44s (4.01 fps) bundle 2.64s load 29.29->27.09 28s wall
+  final_gop15 rep2: render 14.99s (6 fps) bundle 3.25s load 22->21.73 20s wall
+  final_gop15_hw rep2: render 11.51s (7.82 fps) bundle 2.41s load 18.62->17.44 15s wall
+  final_prores rep2: render 16.16s (5.57 fps) bundle 3.4s load 16.82->18.91 22s wall
+  draft_half rep2: render 10.98s (8.19 fps) bundle 3.95s load 15.82->15.77 17s wall
+  baseline rep3: render 28.02s (3.21 fps) bundle 3s load 14.39->25.68 35s wall
+  final_gop15 rep3: render 51.88s (1.73 fps) bundle 4.29s load 23.23->141.32 60s wall
+  final_gop15_hw rep3: render 64.03s (1.41 fps) bundle 15.17s load 210.13->339.45 84s wall
+  final_prores rep3: render 55.79s (1.61 fps) bundle 9.98s load 302.1->238.67 69s wall
+  draft_half rep3: render 17.7s (5.08 fps) bundle 3.96s load 209.95->161.6 24s wall
+
+name | render_s (reps) | fps | speedup | bundle_s | out_MB | SSIM | PSNR | load_max
+draft_half | 10.98 (10.34, 10.98, 17.7) | 8.19 | x2.55 | 3.95 | 2.04 | - | - | 161.6
+final_gop15 | 17.43 (14.99, 17.43, 51.88) | 5.16 | x1.61 | 3.29 | 4.29 | - | - | 141.32
+final_gop15_hw | 23.76 (11.51, 23.76, 64.03) | 3.79 | x1.18 | 3.24 | 6.4 | - | - | 339.45
+final_prores | 26.74 (16.16, 26.74, 55.79) | 3.37 | x1.05 | 6.96 | 5.93 | - | - | 238.67
+baseline | 28.02 (22.44, 28.02, 32.85) | 3.21 | x1 | 3 | 4.91 | 1 | 99 | 28.64
+
+results -> /Volumes/Extreme SSD/_worktrees/Purplelink LLC/rubblefront-trailer/video/fast/results/2026-10-12T20-22-13-16x9-stage2.json

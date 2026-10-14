@@ -1,0 +1,18 @@
+{
+  "_note": "RubbleFront trailer profile. Colors are sampled from the game's own interface (dark navy panels, purple action color) and its logo (cyan, orange). Fonts are the site's self-hosted Fraunces and Plus Jakarta Sans, which the game's interface also uses.",
+  "colors": {
+    "bg": "#0f1320",
+    "panel": "#1a1530",
+    "ink": "#f5f2ff",
+    "muted": "#b9b2d6",
+    "purple": "#7a3fd8",
+    "purpleLight": "#c7a8ff",
+    "cyan": "#2bd0de",
+    "orange": "#ff6a1f"
+  },
+  "fonts": {
+    "display": { "family": "Fraunces", "file": "../site/assets/fonts/fraunces-latin.woff2", "weight": "300 900" },
+    "body": { "family": "Plus Jakarta Sans", "file": "../site/assets/fonts/plus-jakarta-sans-latin.woff2", "weight": "200 800" }
+  },
+  "fps": 30
+}

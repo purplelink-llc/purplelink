@@ -1,0 +1,22 @@
+{
+  "cacheMaxGB": 6,
+  "_note": "Chosen from fast/results (stage1, stage2) on Apple M4 10 cores, 16 GB, under heavy load. Software x264 encode: hardware encode and ProRes proxies did not help and ProRes dropped SSIM to 0.968.",
+  "common": {
+    "clips": "gop15",
+    "imageFormat": "jpeg",
+    "concurrency": 5,
+    "concurrencyMin": 4,
+    "jpegQuality": 90,
+    "cacheMB": 2048
+  },
+  "draft": {
+    "scale": 0.5,
+    "x264Preset": "ultrafast",
+    "crf": 24,
+    "jpegQuality": 70
+  },
+  "final": {
+    "scale": 1,
+    "crf": 16
+  }
+}

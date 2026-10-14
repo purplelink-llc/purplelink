@@ -1,0 +1,12 @@
+  baseline rep1: render 30.23s (2.98 fps) bundle 3.86s load 123.41->81.08 37s wall
+  final_gop15 rep1: render 80.1s (1.12 fps) bundle 3.64s load 63.69->90.72 86s wall
+  final_gop15_hw rep1: render 39.14s (2.3 fps) bundle 3.05s load 75.3->53.04 44s wall
+  final_prores rep1: render 47.07s (1.91 fps) bundle 6.1s load 47.45->48.05 56s wall
+  draft_half rep1: render 41.08s (2.19 fps) bundle 3.97s load 42.65->42.09 49s wall
+  baseline rep2: render 34.23s (2.63 fps) bundle 6.54s load 35.06->32.79 45s wall
+  final_gop15 rep2: render 38.44s (2.34 fps) bundle 3.61s load 29.82->33.87 45s wall
+  final_gop15_hw rep2: render 34.48s (2.61 fps) bundle 4.89s load 32.56->46.97 42s wall
+  final_prores rep2: render 46.06s (1.95 fps) bundle 6.92s load 45.31->113.51 56s wall
+  draft_half rep2: render 64.14s (1.4 fps) bundle 6s load 103.76->119.48 76s wall
+  baseline rep3: render 41.21s (2.18 fps) bundle 3.24s load 109.26->78.68 47s wall
+  final_gop15 rep3: render 32.43s (2.78 fps) bundle 3.17s load 67.74->49.57 38s wall
