@@ -61,6 +61,13 @@ case $RC in
     notify "LinkedIn session expired — run: python3 backend/scripts/linkedin_login.py"
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] SESSION EXPIRED" >> "$LOG"
     ;;
+  4)
+    # Refused: not on the company page or not posting as Purplelink LLC. Do not
+    # retry today (a retry could hit the same state); Ben checks the screenshot.
+    touch "$DONE_MARKER"
+    notify "LinkedIn post refused (not posting as Purplelink LLC). Nothing posted today."
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] REFUSED — nothing posted, no retry today" >> "$LOG"
+    ;;
   *)
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] Post failed (exit $RC) — will retry" >> "$LOG"
     ;;
