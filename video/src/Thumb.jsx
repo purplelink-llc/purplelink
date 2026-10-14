@@ -6,6 +6,7 @@ import { Backdrop, useFonts } from "./V2.jsx";
 // YouTube thumbnails, 1280x720. Three templates:
 //   error    - one LaTeX error or warning, as it reads in the log, with "How to fix it" (the series)
 //   long     - an error plus a numbered promise ("5 causes") that the video keeps
+//   split    - before and after: the error, an arrow, the page that compiles (a Test & Compare variant)
 //   product  - an app's real screen (site screenshot or a frame of its own promo) with a 2-4 word outcome
 // Rules (research 2026-10-14): show only what the video shows; 1-5 words of display text; large type that reads at
 // 168x94; no prices (they go stale); the bottom-right corner (x > 1080, y > 620) stays empty for the duration stamp.
@@ -88,8 +89,8 @@ function LongThumb({ msg, n = 5, unit = "causes", sub = "and the fix for each" }
 
 // One real screen, cropped in (`zoom` around the `pos` focus point) so a single element reads at feed size; it runs
 // off the right edge and stops above the duration stamp. `icons` instead of `img` shows a grid of app icons.
-function ProductThumb({ name, line, img, icon, icons, pos = "center", zoom = 1, portrait = false }) {
-  const shot = portrait
+function ProductThumb({ name, line, img, icon, icons, pos = "center", zoom = 1, portrait = false, box }) {
+  const shot = box ? { radius: 20, ...box } : portrait
     ? { left: 780, top: 34, width: 320, height: 586, radius: 44 }
     : { left: 560, top: 40, width: 760, height: 540, radius: 24 };
   return (
@@ -115,8 +116,33 @@ function ProductThumb({ name, line, img, icon, icons, pos = "center", zoom = 1, 
   );
 }
 
+// Before and after: the error on the dark log panel, an arrow, and the page that compiles once it is fixed.
+function SplitThumb({ msg, img, after = "Compiles" }) {
+  return (
+    <Dark>
+      <div style={{ position: "absolute", left: 70, top: 70, width: 560, display: "grid", gap: 30 }}>
+        <Pill text="LaTeX error" color={ERR} />
+        <div style={{ fontFamily: MONO, fontWeight: 700, fontSize: fit(msg, [[14, 92], [22, 80], [99, 64]]), lineHeight: 1.1, color: CODE, letterSpacing: "-0.02em" }}>
+          <span style={{ color: ERR }}>! </span>{msg}
+        </div>
+      </div>
+      <svg width="110" height="90" viewBox="0 0 120 90" style={{ position: "absolute", left: 640, top: 250 }}>
+        <path d="M8 45h88M70 16l30 29-30 29" fill="none" stroke={LIGHT} strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <div style={{ position: "absolute", left: 780, top: 150, width: 440, padding: "34px 30px", borderRadius: 16, background: "white", boxShadow: "0 30px 70px oklch(5% 0.05 310 / 0.6)" }}>
+        <Img src={staticFile(img)} style={{ width: "100%", display: "block" }} />
+      </div>
+      <div style={{ position: "absolute", left: 70, bottom: 70, display: "flex", alignItems: "center", gap: 20 }}>
+        <Check />
+        <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 650, fontSize: 64, color: CODE }}>{after}</span>
+      </div>
+    </Dark>
+  );
+}
+
 export function Thumb(props) {
   useFonts();
+  if (props.kind === "split") return <SplitThumb {...props} />;
   if (props.kind === "error") return <ErrorThumb {...props} />;
   if (props.kind === "long") return <LongThumb {...props} />;
   return <ProductThumb {...props} />;
