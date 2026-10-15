@@ -37,6 +37,7 @@ import { MAX_SEATS, parseSeats, seatUnitCents } from "../lib/seats.mjs";
 import { BUNDLES, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { managedPaymentsOn, applyManagedPayments } from "../lib/managed-payments.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -403,9 +404,12 @@ export default async function handler(request) {
   // campus NAT apart; the referral code and attribution are included so
   // differing tags never collide (Stripe rejects a reused key with new params).
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
+  // Stripe as merchant of record for this product (off unless STRIPE_MANAGED_PAYMENTS names it); see
+  // netlify/lib/managed-payments.mjs. Part of the idempotency key, because Stripe rejects a reused key with new params.
+  const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v5:${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${photo}:${seats}:${bundleParts.join("+")}`)
+    .update(`v5:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${photo}:${seats}:${bundleParts.join("+")}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -499,6 +503,8 @@ export default async function handler(request) {
       params["subscription_data[trial_period_days]"] = String(entry.trialDays);
     }
   }
+
+  if (managed) applyManagedPayments(params, product);
 
   let resp;
   try {
