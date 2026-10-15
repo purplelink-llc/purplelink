@@ -1,0 +1,77 @@
+{
+ "note": "Daily problem-and-fix videos: the job takes cycle[next], then advances next (mod len). ModernTex has 4 of 14 slots: LaTeX problems carry the most search demand.",
+ "apps": [
+  {
+   "app": "moderntex",
+   "page": "https://purplelink.llc/moderntex/",
+   "topics": "LaTeX and TeX problems on a Mac: build errors, missing packages, BibTeX/biber, fonts"
+  },
+  {
+   "app": "legroom",
+   "page": "https://purplelink.llc/legroom/",
+   "topics": "Mac disk space: System Data, caches, leftover app files, Time Machine snapshots"
+  },
+  {
+   "app": "outbound-veil",
+   "page": "https://purplelink.llc/outbound-veil/",
+   "topics": "Personal information in what you paste or send: emails, AI chats, forms"
+  },
+  {
+   "app": "panely",
+   "page": "https://purplelink.llc/panely/",
+   "topics": "Window management on a Mac: snapping, tiling, multiple displays"
+  },
+  {
+   "app": "summonly",
+   "page": "https://purplelink.llc/summonly/",
+   "topics": "Finding files and apps, Spotlight not finding things, clipboard history"
+  },
+  {
+   "app": "tapefolio",
+   "page": "https://purplelink.llc/tapefolio/",
+   "topics": "Transcribing interviews and audio on a Mac, reading scanned documents"
+  },
+  {
+   "app": "keyfeel",
+   "page": "https://purplelink.llc/keyfeel/",
+   "topics": "Keyboard sound and typing feel on a Mac"
+  },
+  {
+   "app": "batterymeter",
+   "page": "https://purplelink.llc/batterymeter/",
+   "topics": "Mac battery: percentage, health, apps draining power"
+  },
+  {
+   "app": "vitae",
+   "page": "https://purplelink.llc/vitae/",
+   "topics": "Academic CV and record keeping: submissions, grants, co-authors"
+  },
+  {
+   "app": "paper-review",
+   "page": "https://purplelink.llc/tools/paper-review/",
+   "topics": "Preparing a manuscript for submission: reference checks, reviewer objections"
+  },
+  {
+   "app": "scholar-utility-belt",
+   "page": "https://purplelink.llc/scholar-utility-belt/",
+   "topics": "Google Scholar: journal rankings, h-index, retractions"
+  }
+ ],
+ "cycle": [
+  "moderntex",
+  "legroom",
+  "outbound-veil",
+  "moderntex",
+  "panely",
+  "summonly",
+  "tapefolio",
+  "moderntex",
+  "keyfeel",
+  "batterymeter",
+  "vitae",
+  "moderntex",
+  "paper-review",
+  "scholar-utility-belt"
+ ],
+ "next": 1
+}

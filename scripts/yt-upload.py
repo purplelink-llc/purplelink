@@ -26,6 +26,29 @@ CHANNEL = "UCUv28P5SUzT4RLQOmi3EK8w"
 UPLOAD_URL = f"https://studio.youtube.com/channel/{CHANNEL}/videos/upload?d=ud"
 
 
+def ensure_chrome():
+    """Start the automation Chrome (its own signed-in profile) when nothing answers on port 9340, so scheduled
+    uploads do not depend on someone having left it open."""
+    try:
+        urllib.request.urlopen("http://127.0.0.1:9340/json/version", timeout=3).read()
+        return
+    except Exception:
+        pass
+    subprocess.Popen(["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "--remote-debugging-port=9340",
+                      f"--user-data-dir={os.path.expanduser('~/.photo-automation-chrome')}", "--no-first-run",
+                      "--no-default-browser-check"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for _ in range(30):
+        time.sleep(1)
+        try:
+            urllib.request.urlopen("http://127.0.0.1:9340/json/version", timeout=3).read()
+            time.sleep(4)
+            return
+        except Exception:
+            continue
+    print("automation Chrome did not start on port 9340", file=sys.stderr)
+    sys.exit(2)
+
+
 def wait_for(tab, js, timeout=60, every=0.5):
     end = time.time() + timeout
     while time.time() < end:
@@ -156,6 +179,7 @@ def main():
 
     # Foreground on purpose: Chrome gives a hidden tab no layout, so every
     # rect is 0x0 and Input events land nowhere. Studio's fields need real clicks.
+    ensure_chrome()
     tab = Tab.new(UPLOAD_URL)
     try:
         urllib.request.urlopen(f"http://127.0.0.1:9340/json/activate/{tab.info['id']}").read()
@@ -220,9 +244,10 @@ def main():
             except LookupError:
                 pass
             raise RuntimeError("Studio said it is still checking the content; the video is a draft. Wait for the check, then save it in Studio")
+        # Long videos show a youtu.be/<id> link in the dialog; Shorts show youtube.com/shorts/<id>.
         link = wait_for(tab, """(()=>{const a=[...document.querySelectorAll('a')]
-            .find(x=>/youtu\\.be\\//.test(x.href)); return a? a.href : null})()""", 120)
-        m = re.search(r"youtu\.be/([\w-]+)", link)
+            .find(x=>/youtu\\.be\\/|youtube\\.com\\/shorts\\//.test(x.href)); return a? a.href : null})()""", 120)
+        m = re.search(r"(?:youtu\.be|youtube\.com/shorts)/([\w-]{11})", link)
         if not m:
             raise RuntimeError("could not read the video id from " + link)
         vid = m.group(1)
@@ -242,7 +267,7 @@ def main():
             print(f"WRONG STATE: Studio says {got!r} for {link}, wanted {want!r}. Fix it with: "
                   f"python3 scripts/yt-visibility.py {want.lower()} {vid}", file=sys.stderr)
             sys.exit(3)
-        print(link)
+        print(f"https://youtu.be/{vid}")  # one stable form for long videos and Shorts
         print(f"verified in Studio: {got}")
         if a.thumbnail:
             # Set on the published video's edit page (scripts/yt-thumbnail.py), which confirms the public image matches;

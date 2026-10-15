@@ -148,3 +148,28 @@ Every long faceless video ships three variants and starts a test the day it is p
    The launchd job `llc.purplelink.ytabtest` (Sundays 03:30, `scripts/yt-abtest-weekly.sh`) runs this from local copies
    in `~/.purplelink/yt-abtest/` with its own log, and posts a notification when a test reaches a result. `start`
    records each new test in both logs, so the weekly job picks it up without a manual step.
+
+## Daily problem-and-fix videos (published automatically)
+
+One video a day: the next app in `howto/rotation.json` (`cycle[next]`; ModernTex has 4 of 14 slots), a real problem
+people search for that the app solves, the manual fix, then what the app does. A scheduled Claude task does the
+research and writing; everything else is scripted. Ben chose fully automatic publishing (2026-10-15), so
+`scripts/howto_gate.py` is the review and nothing ships when it fails.
+
+1. Research: find a specific, searched problem (TeX Stack Exchange, Apple Community, the MacOSX-TeX list, forums)
+   not already in `howto/ledger.json` or on the channel. Record the links in `sources`.
+2. Verify: run the fix's commands safely (no sudo, no deletes; `tlmgr --dry-run`, version checks, a PATH without
+   the tool for the symptom) and record each command and its output in `verify.runs`. Documentation links in
+   `verify.docs`. On-screen output lines must come from those runs; the gate re-runs them.
+3. Write `storyboards/howto/<slug>.json` (scene types and fields in `src/HowTo.jsx`; example:
+   `latexmk-command-not-found.json`), with `thumbs` A/B/C in at least two templates.
+4. `node build-howto.mjs <slug>`: gate, narration (ElevenLabs when its key exists, edge-tts otherwise), the 16:9
+   tutorial, the 9:16 Short (scenes marked `short`), thumbnails. Review the frames.
+5. `python3 ../scripts/howto-publish.py <slug>`: gate again, the tutorial public with a Test & Compare A/B/C test,
+   the Short public linking to it, ledger and rotation updated, change logged. Links use
+   `utm_source=youtube-howto`. `--dry-run` prints the titles and descriptions.
+
+Kill switch: create `~/.purplelink/howto/PAUSE` and nothing publishes. Gate rules: no prices, emoji, em dashes or
+hype words; no destructive commands; `sudo` only for `tlmgr` with tug.org/ctan.org docs. Tests:
+`site-tests/test_howto_gate.py`. `node_modules` lives at `/Volumes/Extreme SSD/_node/purplelink-video/node_modules`
+(symlink it into a fresh worktree).
