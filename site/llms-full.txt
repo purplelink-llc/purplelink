@@ -1677,7 +1677,7 @@ Track NSF, NIH, and other grants from planning to award: deadlines, requested an
 
 ### CV & packages
 
-Start from the CV you have. Vitae imports it from Word, PDF, RTF, ODT, or a web page, in APA, Chicago, MLA, IEEE, ACM, Harvard, or Vancouver style. It reads your papers, grants, positions, talks, teaching and service, and shows you everything before saving. From then on your CV fills itself from your records. Choose from seven CV formats or build your own, and export several at once to PDF, LaTeX, or rich text that opens in Word. Word (.docx) templates are part of Vitae Plus.
+Start from the CV you have. Vitae imports it from Word, PDF, RTF, ODT, or a web page, in APA, Chicago, MLA, IEEE, ACM, Harvard, or Vancouver style. It reads your papers, grants, positions, talks, teaching and service, and shows you everything before saving. From then on your CV fills itself from your records. Choose from seven CV formats or build your own, and export several at once to PDF, Word, rich text, HTML or Markdown. Word (.docx) templates are part of Vitae Plus.
 
 ### Inbox triage
 
@@ -2859,7 +2859,7 @@ Only briefly. The report is deleted from our servers 30 minutes after you first 
 
 This reviews one resume and does not keep a record of your work.
 
-Vitae imports a CV from Word, PDF, RTF, ODT or a web page. It then fills your CV from the papers, grants and positions you track, and exports to PDF, LaTeX or rich text.
+Vitae imports a CV from Word, PDF, RTF, ODT or a web page. It then fills your CV from the papers, grants and positions you track, and exports to PDF, Word, rich text, HTML or Markdown.
 
 The app is free, with no limits on your record. Needs macOS 15 or later.
 

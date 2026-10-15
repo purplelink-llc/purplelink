@@ -105,7 +105,7 @@ class ToolOffers(unittest.TestCase):
             "transcript-cleaner": ("tapefolio", ["transcribes interview and meeting recordings on your Mac", "labels the speakers", "replace names and other identifiers", "Your files are not uploaded", "It will mishear words"]),
             "metadata-cleaner": ("outbound-veil", ["checks what you type for personal information", "Names, street addresses, phone numbers", "Card numbers", "ChatGPT and claude.ai prompt boxes in Chrome", "the text never leaves it"]),
             "anonymity-check": ("outbound-veil", ["checks what you type for personal information", "Names, street addresses, phone numbers", "Government and tax"]),
-            "resume-review": ("vitae", ["imports it from Word, PDF, RTF, ODT, or a web page", "your CV fills itself from your records", "Export to PDF, LaTeX or rich text"]),
+            "resume-review": ("vitae", ["imports it from Word, PDF, RTF, ODT, or a web page", "your CV fills itself from your records", "Export to PDF, Word, rich text, HTML or Markdown"]),
         }
         self.assertEqual(set(evidence), set(T.OFFERS))
         for slug, (app, phrases) in evidence.items():
