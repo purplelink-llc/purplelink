@@ -5677,7 +5677,7 @@ For each document and engine I ran one build that I discarded (it fills font cac
 
 - Date: October 14, 2026.
 
-This was a TinyTeX install. The MacTeX folder that came with the machine was not usable, so I did not test MacTeX. Both are TeX Live, and ModernTex works with either.
+This was a TinyTeX install. The MacTeX install already on this Mac was incomplete, so I did not test MacTeX. Both are TeX Live, and ModernTex works with either.
 
 ## Results: CPU time
 
