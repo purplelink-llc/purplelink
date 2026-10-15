@@ -72,7 +72,13 @@ class Rewrite(unittest.TestCase):
         # approved automatically on CJ: a fixed click URL carrying the publisher ID
         self.assertEqual((nord.status, nord.link), ("approved", "https://www.kqzyfj.com/click-101903253-15545954"))
         self.assertTrue(nord.live)
-        for i in ("abbyy", "updf", "parallels"):
+        par = by_id["parallels"]
+        # accepted 2026-10-15: CJ deep link, product and buy pages only
+        self.assertEqual((par.status, par.deep_link), ("approved", "https://www.tkqlhce.com/click-101903253-15733336?url={url}"))
+        self.assertIsNotNone(aff.program_for("https://www.parallels.com/products/desktop/", [par]))
+        self.assertIsNone(aff.program_for("https://kb.parallels.com/en/124223", [par]))
+        self.assertIsNone(aff.program_for("https://www.parallels.com/products/desktop/microsoft-authorized-solution-windows-11-arm/", [par]))
+        for i in ("abbyy", "updf"):
             self.assertEqual((by_id[i].status, by_id[i].link, by_id[i].deep_link, by_id[i].tag), ("applied", "", "", ""), i)
 
     def test_disclosure_added_once_after_h1_and_apply_is_idempotent(self):

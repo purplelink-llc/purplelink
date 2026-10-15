@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-14",
-      "dateModified": "2026-10-14",
+      "dateModified": "2026-10-15",
       "image": "https://purplelink.llc/assets/og/products.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/run-windows-research-software-on-mac/"
     },
@@ -143,12 +143,13 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to run Windows-only research software on an Apple silicon Mac (2026)</h1>
+        <p class="aff-disclosure">Some links on this page are affiliate links. If you buy through one, Purplelink may earn a commission at no extra cost to you. It does not change which products we mention or what we say about them.</p>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-14">October 14, 2026</time></p>
         <p class="post-lede">On an M-series Mac, Windows runs in a virtual machine, not through Boot Camp. Most Windows statistics and analysis programs work that way. Programs that need their own drivers, a license dongle or exact timing often do not, so check your program before you buy anything.</p>
       </div>
 
       <article class="post-body">
-        <p><strong>Disclosure:</strong> Purplelink has applied to the Parallels affiliate program through CJ. The application was pending when I wrote this, and no link on this page earns anything. If it is approved, Parallels links here may become affiliate links, labeled as paid links. I did not install any of these tools for this guide. Prices and support statements come from each vendor's own page, read October 14, 2026, and I say where a source is secondary or could not be confirmed.</p>
+        <p><strong>Disclosure:</strong> The link to Parallels Desktop's product page is an affiliate link through CJ, labeled as a paid link, and Purplelink earns a commission if you buy through it. Links to Parallels' support and Microsoft pages are sources and earn nothing. The free options (a campus virtual desktop, VMware Fusion and UTM) come first because they cost nothing to try. I did not install any of these tools for this guide. Prices and support statements come from each vendor's own page, read October 14, 2026, and I say where a source is secondary or could not be confirmed.</p>
 
         <h2>The short answer</h2>
         <p>Apple's Boot Camp only works on Intel-based Macs (<a href="https://support.apple.com/en-us/102622" rel="noopener">Apple: Boot Camp</a>). On an Apple silicon Mac, you run Windows 11 for Arm inside a virtual machine (a program that runs a second operating system in a window). Windows for Arm then emulates ordinary x64 Windows programs. Microsoft states the limit plainly: emulation covers user-mode code and not drivers, so any kernel-mode part must be built for Arm (<a href="https://learn.microsoft.com/en-us/windows/arm/apps-on-arm-x86-emulation" rel="noopener">Microsoft: How emulation works on Arm</a>). That one rule explains most of what works and what does not.</p>
@@ -193,7 +194,7 @@
             <thead><tr><th class="u-th" scope="col">Option</th><th class="u-th" scope="col">Price</th><th class="u-th" scope="col">What it is</th><th class="u-th" scope="col">Worth knowing</th></tr></thead>
             <tbody>
               <tr><td class="u-cell">Campus virtual desktop</td><td class="u-cell">Usually free to you</td><td class="u-cell">Your university runs the Windows software and streams it to your Mac</td><td class="u-cell">Needs a network connection. Only the programs your university licenses. Ask IT first, because it can save you the rest of this table.</td></tr>
-              <tr><td class="u-cell"><a href="https://www.parallels.com/products/desktop/" rel="noopener">Parallels Desktop</a></td><td class="u-cell">Standard $99.99 a year or $219.99 once. Pro $119.99 a year. A student offer is on the buy page</td><td class="u-cell">Virtual machine app built for the Mac. Downloads Windows 11 for Arm for you</td><td class="u-cell">Parallels says it is the only solution Microsoft authorizes for Windows 11 on M-series Macs. Standard caps a virtual machine at 8 GB of memory and 4 processor cores, and Pro raises that. Version 27 needs macOS 14 or later.</td></tr>
+              <tr><td class="u-cell"><a href="https://www.tkqlhce.com/click-101903253-15733336?url=https%3A%2F%2Fwww.parallels.com%2Fproducts%2Fdesktop%2F" rel="noopener sponsored">Parallels Desktop</a><span class="aff-label">(paid link)</span></td><td class="u-cell">Standard $99.99 a year or $219.99 once. Pro $119.99 a year. A student offer is on the buy page</td><td class="u-cell">Virtual machine app built for the Mac. Downloads Windows 11 for Arm for you</td><td class="u-cell">Parallels says it is the only solution Microsoft authorizes for Windows 11 on M-series Macs. Standard caps a virtual machine at 8 GB of memory and 4 processor cores, and Pro raises that. Version 27 needs macOS 14 or later.</td></tr>
               <tr><td class="u-cell"><a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion" rel="noopener">VMware Fusion Pro</a></td><td class="u-cell">Free for personal use</td><td class="u-cell">Virtual machine app from Broadcom</td><td class="u-cell">Download requires a Broadcom account. Check whether funded or institutional research counts as personal use under Broadcom's current terms.</td></tr>
               <tr><td class="u-cell"><a href="https://mac.getutm.app/" rel="noopener">UTM</a></td><td class="u-cell">Free, open source (Apache 2.0)</td><td class="u-cell">Virtual machine app built on QEMU</td><td class="u-cell">Has a Windows 11 for Arm guide. Setup takes more steps than Parallels, and graphics-heavy programs suffer most (<a href="https://docs.getutm.app/guides/windows/" rel="noopener">UTM docs</a>).</td></tr>
               <tr><td class="u-cell"><a href="https://www.codeweavers.com/crossover" rel="noopener">CrossOver</a></td><td class="u-cell">$74 a year, or $494 lifetime. 14-day trial</td><td class="u-cell">Runs some Windows programs directly on macOS, without Windows</td><td class="u-cell">No Windows license needed. Compatibility is program by program, so check CodeWeavers' compatibility database first. Purchases are non-refundable.</td></tr>
