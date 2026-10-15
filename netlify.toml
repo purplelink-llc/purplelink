@@ -10,7 +10,7 @@
   # blocks the digest; check_og_images fails the build, as in deploy.sh.
   # Builds are batched to save build minutes: a push to main builds only for the digest cron's final daily commit
   # or a commit message containing "[deploy now]", and only when it changed a build input. Everything else waits for
-  # the scheduled build hook (09:00 and 17:00 from Ben's Mac); hook builds are never skipped. See the script.
+  # the scheduled build hook (06:00 and 17:00 US Eastern, from Ben's Mac); hook builds are never skipped. See the script.
   ignore = "bash ./scripts/netlify_ignore.sh"
   command = "python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py && python3 scripts/gen_search_index.py && python3 scripts/gen_blog_feed.py && python3 scripts/gen_llms_full.py && python3 scripts/check_og_images.py && python3 scripts/check_content.py && python3 scripts/check_games.py"
 

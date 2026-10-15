@@ -84,13 +84,19 @@ Not covered: the Modal digest cron (`backend/digest`), which commits digest file
   `build.ignore`) skips every git-triggered build except (a) the digest cron's final commit `chore(digest): Daily
   Digest #N`, so emailed digest links are live, and (b) a commit whose message contains `[deploy now]`; both still build
   only when a build input changed. Everything else is published by the "scheduled" build hook, which the launchd job
-  `com.purplelink.netlify-batch` calls at 09:00 and 17:00 Phoenix time when the Mac is awake and `main` has
+  `com.purplelink.netlify-batch` calls at 06:00 and 17:00 US Eastern (it fires at 03:00, 04:00, 14:00 and 15:00 Phoenix and
+  runs each Eastern slot once, or late after a wake) when `main` has
   unpublished site changes (`~/.purplelink/bin/netlify-batch-build.sh`; hook URLs in
   `~/.config/purplelink/netlify-build-hooks.json`, never print them; log `~/Library/Logs/purplelink-netlify-batch.log`).
   To ship something now (a checkout, delivery or security fix): put `[deploy now]` in the PR title or squash message,
   or run `bash ~/.purplelink/bin/netlify-batch-build.sh manual` after the merge. Do not call `netlify api
   createSiteBuild` after merges any more. Verifying a change live means waiting for the next scheduled build or using
   one of those two. Netlify Starter allows 300 build minutes a month.
+  App updates do not wait for a build: every paid app and Vitae serve their Sparkle feed and downloads from a
+  Netlify function reading Blobs (`<app>-download?feed=1`), so `publish-release.sh` is live at once. The exception is
+  BatteryMeter, whose `site/batterymeter/appcast.xml` and zip are static site files: after a BatteryMeter release
+  use `[deploy now]` or the manual build, or its users see the update only at the next slot. Product-page version
+  text and changelog entries in `site/` also wait for the next slot.
 
 - Frontend: `bash scripts/deploy.sh` (Netlify `--prod` + IndexNow ping).
 - Backend (Modal): `bash scripts/deploy.sh --backend`.
