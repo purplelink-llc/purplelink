@@ -6066,7 +6066,7 @@ Comparison
 
 # LaTeX editor for Mac: the best macOS LaTeX editors of 2026, 3 tested and 16 compared
 
-By Benjamin Ampel · May 31, 2026, updated October 12, 2026
+By Benjamin Ampel · May 31, 2026, updated October 15, 2026
 
 A comparison of the LaTeX editors that work on a Mac in 2026. It covers what each one does well, what it costs and which workflow it suits. No affiliate links, no rankings padding.
 
@@ -6074,7 +6074,7 @@ Disclosure up front: I make one of the editors on this list (ModernTex). TeXShop
 
 ## The short answer
 
-TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $29.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 12, 2026.
+TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $39.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 15, 2026.
 
 ## Tested on October 11, 2026: TeXShop, TeXstudio, VS Code
 
@@ -6106,7 +6106,7 @@ EditorPriceRuns onWorks offlinePDF preview and SyncTeXNotable limit
 
 TeXShopFreemacOS onlyYes: compiles locally with MacTeX, no cloudSide-by-side PDF preview, SyncTeX click-to-sourceDated interface, no inline BibTeX autocomplete or plain-language errors
 
-Texifier$29.99 (occasional discount)macOS and iOSYes: bundles its own TeX distributionPDF updates as you type, SyncTeX not statedTracked changes via latexdiff need external tools
+Texifier$39.99 per seatmacOS and iOSYes: bundles its own TeX distributionPDF updates as you type, SyncTeX not statedTracked changes via latexdiff need external tools
 
 OctreeFree tier with limits, paid plan about $10/moWeb, with a Mac wrapperNot stated, the project lives on Octree's servers by defaultNot statedManuscript is on Octree's servers by default
 
@@ -6210,7 +6210,7 @@ Pick TeXShop if you want the closest thing to a default and you don't mind the d
 
 ## Texifier (formerly Texpad)
 
-Cost: $29.99 (occasional discount). Platform: macOS + iOS.
+Cost: $39.99 per seat. Platform: macOS + iOS.
 
 Texifier is the polished Mac-native option that most people who actually shop for a LaTeX editor end up with. It bundles its own TeX distribution (no MacTeX install required). It has incremental typesetting (the PDF updates as you type with no manual compile) and a structure sidebar that maps your manuscript by sections. It also has the best autocomplete-for-LaTeX experience available.
 
@@ -6218,7 +6218,7 @@ What it's good at: the "it just works" experience. Outline sidebar makes navigat
 
 What it lacks: deep bibliography tooling. The BibTeX autocomplete is good but not specifically built for academic writing workflows. Tracked-changes via latexdiff requires external tools.
 
-Pick Texifier if you want a polished, modern Mac-native experience and you're willing to pay $30 for it. This is the right answer for most working researchers writing journal-length manuscripts on a Mac today.
+Pick Texifier if you want a polished, modern Mac-native experience and you're willing to pay $40 for it. This is the right answer for most working researchers writing journal-length manuscripts on a Mac today.
 
 ## Octree
 
@@ -6417,7 +6417,7 @@ you to, not because one is "best".
 Yes, several. TeXShop is free and arrives with MacTeX, so most people
 already have it. VS Code with the LaTeX Workshop extension is free. Overleaf
 has a free tier with limits on compile time and no Git sync. Of the paid
-options, Texifier is a one-time $29.99 rather than a subscription.
+options, Texifier is a one-time $39.99 rather than a subscription.
 
 ### How much does Overleaf cost compared with a Mac LaTeX editor?
 
