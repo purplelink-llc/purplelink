@@ -251,11 +251,15 @@ REGISTRY: tuple = (
         name="Parallels Desktop",
         domains=("parallels.com",),
         network="CJ Affiliate",
-        status="applied",
+        status="approved",
         commission="10% on Parallels Desktop full licenses, rising with volume; 45-day referral period (CJ program terms, read 2026-10-14)",
-        terms_checked="2026-10-14",
+        terms_checked="2026-10-15",
         source_url="https://members.cj.com/ (advertiser 2005415, Program Terms)",
-        notes="Applied 2026-10-14, pending. Linked unpaid from /guides/run-windows-research-software-on-mac/.",
+        deep_link="https://www.tkqlhce.com/click-101903253-15733336?url={url}",
+        only_paths=r"^/products/desktop/(?:buy/)?$",
+        notes="Accepted on CJ 2026-10-15. CJ deep link. Only the product and buy pages become paid links; Parallels "
+              "support and Microsoft-authorization pages cited as sources stay plain (only_paths). Linked from "
+              "/guides/run-windows-research-software-on-mac/.",
         topics=("windows-on-mac",),
     ),
 )
