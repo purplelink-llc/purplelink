@@ -6076,6 +6076,17 @@ Disclosure up front: I make one of the editors on this list (ModernTex). TeXShop
 
 TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $39.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 15, 2026.
 
+I make this one
+
+## ModernTex: $19.99 once, free for 7 days
+
+A native Mac editor for journal articles and theses. It compiles on your Mac with MacTeX or TinyTeX, explains compile errors in plain language, and checks a manuscript before you submit. No account, and the trial is the full app.
+
+Try free for 7 days
+See what it does
+
+Disclosure: I make ModernTex, so weigh this card accordingly. The comparison below treats it like the others. Requires macOS 14 or later.
+
 ## Tested on October 11, 2026: TeXShop, TeXstudio, VS Code
 
 I installed the three free editors on an Apple silicon Mac, compiled one small article in each, then removed them. The file had one citation, one deliberately undefined reference and a BibTeX file. This Mac has TinyTeX, not MacTeX, so it also tested how each editor finds a TeX installation. I drove each app with AppleScript and keystrokes, so this covers installing, launching and compiling. It does not cover every menu, and I did not test SyncTeX click-to-source, autocomplete or error messages.
@@ -6114,7 +6125,7 @@ VS Code + LaTeX WorkshopFreeCross-platformNot statedSyncTeX previewFeels like a 
 
 OverleafFree tier (limited compile time, no Git sync), paid plans $98 a year (Student) or $199 a year (Standard), or $25 a month billed monthlyBrowserNo offline access on the free tier, paid tiers not statedNot statedFree tier has limited compile time and no Git sync
 
-ModernTex (mine)$19.99 once, after a free 7-day trialmacOS 14+Yes: compiles with local MacTeX or TinyTeXPDF preview that stays in sync, SyncTeX not statedVersion 1.0 shipped in September 2026, so no track record, no iPad app
+ModernTex (mine)$19.99 once, after a free 7-day trialmacOS 14+Yes: compiles with local MacTeX or TinyTeXPDF preview that stays in sync. Command-click in the PDF jumps to the source line, and Command-Control-J jumps the PDF to the cursorVersion 1.0 shipped in September 2026, so no track record, no iPad app
 
 TeXstudioFree, open sourcemacOS, Windows, LinuxNot statedIntegrated PDF viewer with SyncTeXQt application, does not feel like a Mac app
 
@@ -6260,7 +6271,7 @@ If a large project hits the free tier's compile time limit, see what to do about
 
 ## ModernTex
 
-Cost: $19.99, one-time, all updates included, forever, after a free 7-day trial. Platform: macOS 14+. Status: shipping since September 2026. Current version 1.3.6.
+Cost: $19.99, one-time, all updates included, forever, after a free 7-day trial. Platform: macOS 14+. Status: shipping since September 2026. Updated often since launch; the release list is on the product page.
 
 I built ModernTex because the existing options miss a few things that matter for academic manuscript work. It explains compile errors in plain language (BibTeX-style cryptic errors are the #1 frustration for new users). Its BibTeX autocomplete searches by author or title across your entire .bib. Revision snapshots are tied to ideas, not files. Submission-readiness checks catch journal-specific issues before you upload. A live TikZ figure editor builds flowcharts and diagrams by dragging boxes instead of writing coordinates by hand.
 
@@ -6269,6 +6280,9 @@ Why a new editor when Texifier exists: Texifier is excellent. However, it target
 What it lacks: a track record. Version 1.0 shipped in September 2026, so it has none of the twenty years of edge-case coverage TeXShop has, and no iPad app. It needs MacTeX or TinyTeX, and offers a one-click TinyTeX install if neither is found.
 
 Pick ModernTex if you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. The trial is free for seven days. Keeping it is $19.99, once.
+
+Try ModernTex free for 7 days
+ModernTex page
 
 ## Eight more LaTeX editors that run on a Mac
 
