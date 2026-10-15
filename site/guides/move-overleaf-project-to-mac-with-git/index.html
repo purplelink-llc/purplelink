@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Move an Overleaf project to a local Mac editor with Git | Purplelink</title>
+    <meta name="description" content="Clone an Overleaf project with its Git address and a token, build it with latexmk on a Mac, and push changes back. Covers the paid-plan requirement and common Git errors.">
+    <link rel="canonical" href="https://purplelink.llc/guides/move-overleaf-project-to-mac-with-git/">
+    <meta property="og:title" content="Move an Overleaf project to a local Mac editor with Git">
+    <meta property="og:description" content="Clone an Overleaf project with Git, build it locally on a Mac, and push back. Includes the paid-plan requirement and fixes for common Git errors.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/move-overleaf-project-to-mac-with-git/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-move-overleaf-project-to-mac-with-git.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Move an Overleaf project to a local Mac editor with Git">
+    <meta name="twitter:description" content="Clone an Overleaf project with Git, build it locally on a Mac, and push back. Includes the paid-plan requirement and fixes for common Git errors.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-move-overleaf-project-to-mac-with-git.jpg">
+    <meta name="twitter:image:alt" content="Move an Overleaf project to a local Mac editor with Git">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Move an Overleaf project to a local Mac editor with Git",
+      "description": "Clone an Overleaf project with its Git address and a token, build it with latexmk on a Mac, and push changes back. Covers the paid-plan requirement and common Git errors.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-15",
+      "dateModified": "2026-10-15",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/move-overleaf-project-to-mac-with-git/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Move an Overleaf project to a Mac with Git",
+          "item": "https://purplelink.llc/guides/move-overleaf-project-to-mac-with-git/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Overleaf Git integration work on a free account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Overleaf documents Git integration as a premium feature on its cloud service. It is available when the project's owner has a paid subscription or has been granted access, for example through an institutional licence. On a free account, download the source as a zip and upload changed files by hand."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What username and password do I use to clone an Overleaf project?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Per Overleaf's documentation, use git as the username and a Git authentication token as the password. Create the token in your Overleaf account settings. Your normal account password is not used."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does git pull say it needs to reconcile divergent branches?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The remote has a commit you do not have, and Git does not know whether to merge or rebase. Run git pull --no-rebase to merge, or set it for the project with git config pull.rebase false."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use ModernTex to edit an Overleaf project?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. ModernTex has an Overleaf panel (Command-Shift-E) that clones, pushes and pulls with the Git address and a token, and it can import and export a zip on any plan. The Git part needs a paid Overleaf plan."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=7dd899cd0a">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=fb682a98eb" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">Move an Overleaf project to a local Mac editor with Git</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-15">October 15, 2026</time></p>
+        <p class="post-lede">Clone the project with Overleaf's Git address and a token, build it on your Mac, and push changes back. This needs a paid Overleaf plan on the project's owner. Free accounts can use the zip route.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I make ModernTex, which is one of the options at the end. The Git steps work with any editor. I ran the Git commands below on a Mac with Apple's Git 2.50.1 against a local test repository, not against a live Overleaf project, so the parts that depend on Overleaf come from <a href="https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/git-integration" rel="noopener">Overleaf's Git documentation</a>, read October 15, 2026.</p>
+
+        <h2>What you need first</h2>
+        <ul>
+          <li><strong>A project whose owner has a paid Overleaf plan.</strong> The documentation calls Git integration a premium feature, available when the project's owner has a paid subscription or has been given access. Many universities have a site licence that includes it. On a free account, use the zip download instead (see the end of this page).</li>
+          <li><strong>Git on your Mac.</strong> Run <code>git --version</code> in Terminal. If it is missing, macOS offers to install the command line tools.</li>
+          <li><strong>A TeX distribution</strong> to build locally, MacTeX or TinyTeX. The <a href="/guides/install-latex-on-mac/">install guide</a> compares them.</li>
+        </ul>
+
+        <h2>Step 1: get the Git address and a token</h2>
+        <p>In Overleaf, open the project, choose Menu, then Git. Copy the address. On Overleaf's cloud service it has this form, where the last part is your project's id:</p>
+<pre><code>https://git.overleaf.com/1234567</code></pre>
+        <p>Overleaf does not accept your account password for this. Create a Git authentication token in your <a href="https://www.overleaf.com/user/settings" rel="noopener">Overleaf account settings</a>; the first time you use Git you can also generate one from the project's Git menu. Copy the token when it is shown, because you cannot view the whole token again. Per the documentation you can hold up to 10 tokens, and each expires after one year.</p>
+
+        <h2>Step 2: clone the project</h2>
+<pre><code>cd ~/Documents
+git clone https://git.overleaf.com/1234567 my-paper</code></pre>
+        <p>Git asks for a username and a password. The documentation says to enter <code>git</code> as the username and the token as the password. Apple's Git on a Mac is set up to use the macOS Keychain helper (<code>osxkeychain</code>; I confirmed this in the Git configuration on the Mac I used), so it should remember the token after the first time.</p>
+        <p>Check the branch name:</p>
+<pre><code>cd my-paper
+git branch --show-current</code></pre>
+        <p>New clones use <code>main</code>. Older ones may use <code>master</code>. Overleaf does not support branches, so stay on that one.</p>
+
+        <h2>Step 3: build it locally</h2>
+        <p>The project folder now has your <code>.tex</code>, <code>.bib</code> and image files. Build it with the main file's name:</p>
+<pre><code>latexmk -pdf -synctex=1 main.tex</code></pre>
+        <p>Use <code>-xelatex</code> or <code>-lualatex</code> in place of <code>-pdf</code> if the project used XeLaTeX or LuaLaTeX in Overleaf. The compiler and main document are settings in Overleaf's menu, not files in the repository, so check them there. The rest of the matching settings (Biber, shell escape, fonts) are the same as when you move a project by zip; they are listed in <a href="/guides/overleaf-alternative-mac/#move-from-overleaf">the move checklist</a>. For jumping between source and PDF, see <a href="/guides/synctex-on-mac/">SyncTeX on Mac</a>.</p>
+
+        <h2>Step 4: keep build files out of the project</h2>
+        <p>If you commit everything, you will push <code>.aux</code> and <code>.log</code> files into the Overleaf project. A <code>.gitignore</code> would itself become a file in the project, so use the repository's private exclude file instead. Name your own main PDF rather than ignoring every PDF, because your figures may be PDFs:</p>
+<pre><code>printf '%s\n' '*.aux' '*.log' '*.bbl' '*.blg' '*.out' '*.fls' '*.fdb_latexmk' '*.synctex.gz' 'main.pdf' >> .git/info/exclude</code></pre>
+        <p>Files Overleaf already tracks are not affected by this.</p>
+
+        <h2>Step 5: the working cycle</h2>
+        <p>Pull before you start, work, then commit and push when you stop:</p>
+<pre><code>git pull --no-rebase
+# edit and build
+git add -A
+git commit -m "Revise methods section"
+git push</code></pre>
+        <p>The <code>--no-rebase</code> matters. I tested what happens when the remote has a commit you do not have. A <code>git push</code> is rejected with a hint to pull first, and a plain <code>git pull</code> on this Git version stops with "Need to specify how to reconcile divergent branches". <code>git pull --no-rebase</code> merges the two sides, which is the simplest choice for a paper. You can set it once for this project with <code>git config pull.rebase false</code>.</p>
+        <p>If you and a co-author changed the same lines, Git stops the merge and marks the file with <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> lines. Edit the file to keep what you want, remove the markers, then <code>git add</code> it and <code>git commit</code>. Short sessions and frequent pushes keep this rare. To show a co-author what you changed, <a href="/guides/latexdiff-online/">a latexdiff PDF</a> marks the edits.</p>
+
+        <h2>What to watch for</h2>
+        <p>These points are from Overleaf's documentation, not from my testing:</p>
+        <ul>
+          <li><strong>Track changes and comments.</strong> A push from Git can move or lose them. Overleaf advises against mixing active Git use with track changes or comments.</li>
+          <li><strong>Renames.</strong> A rename or move in Git becomes a delete and a create in Overleaf, which can remove that file's tracked changes and comments.</li>
+          <li><strong>Large or unusual commits.</strong> Pushes can fail for projects over the plan's file size or file count limits, and for symlinks or Git LFS files. Large commits can time out, so split them.</li>
+          <li><strong>A pull creates a commit.</strong> Overleaf creates a commit for the project's current state when you pull or fetch, if one does not already exist.</li>
+        </ul>
+
+        <h2>Doing this in ModernTex</h2>
+        <p>ModernTex has an Overleaf panel for this, opened with Command-Shift-E. It asks for three things: the Git URL from Step 1, a field labelled Email / Username, and a field labelled Password / Token. Following Overleaf's documentation, enter <code>git</code> and the token. Push stages all local changes and uploads them to Overleaf. Pull downloads the latest version, and local changes are committed first so they are not lost. The panel is labelled as an Overleaf Premium feature, matching the plan requirement above. I have not run it against a live Overleaf project for this guide.</p>
+        <p>The panel also imports and exports a zip, which works on every plan. For two Macs, or a co-author who uses GitHub or GitLab, Get Changes (Command-Option-G) and Send Changes (Command-Control-S) work with a plain Git remote. Changes Since Last Sync (Command-Option-D) builds a PDF with your edits marked, using latexdiff, which the app can install. It marks the text of <code>.tex</code> files only. The <a href="/moderntex/#coauthors">ModernTex page</a> describes the co-author setup.</p>
+
+        <h2>If you are on the free plan</h2>
+        <p>Download the source from Overleaf (Menu, Download, Source), work locally, and upload the changed files back, replacing the old versions. It is easy to overwrite a co-author's edit this way, so tell them first. <a href="/guides/overleaf-alternative-mac/">The Overleaf alternatives guide</a> covers the move and the hybrid workflow, and <a href="/guides/overleaf-compile-timeout/">the compile timeout guide</a> covers the free plan's compile limit.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Does Overleaf Git integration work on a free account?</summary><div class="faq-body">No. Overleaf documents Git integration as a premium feature on its cloud service. It is available when the project's owner has a paid subscription or has been granted access, for example through an institutional licence. On a free account, download the source as a zip and upload changed files by hand.</div></details>
+        <details><summary>What username and password do I use to clone an Overleaf project?</summary><div class="faq-body">Per Overleaf's documentation, use <code>git</code> as the username and a Git authentication token as the password. Create the token in your Overleaf account settings. Your normal account password is not used.</div></details>
+        <details><summary>Why does git pull say it needs to reconcile divergent branches?</summary><div class="faq-body">The remote has a commit you do not have, and Git does not know whether to merge or rebase. Run <code>git pull --no-rebase</code> to merge, or set it for the project with <code>git config pull.rebase false</code>.</div></details>
+        <details><summary>Can I use ModernTex to edit an Overleaf project?</summary><div class="faq-body">Yes. ModernTex has an Overleaf panel (Command-Shift-E) that clones, pushes and pulls with the Git address and a token, and it can import and export a zip on any plan. The Git part needs a paid Overleaf plan.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex has an Overleaf panel that pulls and pushes a project with its Git address and token, plus a zip import for free accounts. $19.99 once, after a free trial.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?src=guide&amp;trial=1" data-track="guide_mtx_trial" data-track-meta="move-overleaf-project-to-mac-with-git">Try free for 7 days</a>
+          <a class="btn btn-ghost" href="/moderntex/" data-track="guide_mtx_click" data-track-meta="move-overleaf-project-to-mac-with-git:page">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">I make ModernTex. $19.99 once after the trial, macOS 14 or later, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/moderntex/#coauthors">ModernTex: a co-author who stays in Overleaf</a></li>
+          <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
+          <li><a href="/guides/overleaf-compile-timeout/">Fix an Overleaf compile timeout</a></li>
+          <li><a href="/guides/synctex-on-mac/">SyncTeX on Mac</a></li>
+          <li><a href="/guides/latexdiff-online/">Mark changes with latexdiff</a></li>
+          <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=bcc135f878" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
