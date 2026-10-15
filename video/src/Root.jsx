@@ -8,6 +8,8 @@ import { PRODUCTS } from "./products/index.js";
 import { LatexFix } from "./LatexFix.jsx";
 import { LatexLong } from "./LatexLong.jsx";
 import { Thumb } from "./Thumb.jsx";
+import { PhotoQuiz } from "./PhotoQuiz.jsx";
+import { buildQuiz } from "./photoquiz/plan.js";
 import { HowTo } from "./HowTo.jsx";
 import { buildHowTo } from "./howto/plan.js";
 import { buildLong } from "./latexfix/longplan.js";
@@ -54,6 +56,9 @@ export const Root = () => (
     <Composition id="HowTo" component={HowTo} fps={brand.fps} width={1920} height={1080} durationInFrames={90}
       defaultProps={{ storyboard: { scenes: [], url: "" }, timing: { scenes: [] }, format: "16x9", bumper: BUMPER }}
       calculateMetadata={({ props }) => { const fmt = FORMATS[props.format]; const total = props.storyboard.scenes.length ? bumperTotal(buildHowTo(props.storyboard, props.timing, props.format).total, props.bumper || BUMPER) : 3; return { width: fmt.W, height: fmt.H, durationInFrames: Math.max(1, Math.round(total * brand.fps)) }; }} />
+    <Composition id="PhotoQuiz" component={PhotoQuiz} fps={brand.fps} width={1080} height={1920} durationInFrames={90}
+      defaultProps={{ spec: { items: [], url: "" }, timing: { scenes: [] } }}
+      calculateMetadata={({ props }) => ({ durationInFrames: Math.max(1, Math.round((props.spec.items.length ? buildQuiz(props.spec, props.timing).total : 3) * brand.fps)) })} />
     <Composition id="Thumb" component={Thumb} fps={brand.fps} width={1280} height={720} durationInFrames={1} defaultProps={{ kind: "error", msg: "Undefined control sequence" }} />
     <Composition id="ChainDay" component={ChainDay} fps={brand.fps} width={1080} height={1920} durationInFrames={90}
       defaultProps={{ chain: { players: [], hops: [] }, format: "9x16", timing: { scenes: [] }, bumper: BUMPER }}
