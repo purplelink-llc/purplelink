@@ -1,0 +1,44 @@
+\chapter{Chapter 5 on synthetic material}\label{ch:5}
+\section{Background}
+\lipsum[5-12]
+\textcite{ref131} and \parencite{ref009,ref076} report related results.  \textcite{ref136} and \parencite{ref089,ref143} report related results.  \textcite{ref053} and \parencite{ref099,ref002} report related results. 
+\section{Analysis}
+\lipsum[13-18]
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.8]
+  \draw[->] (0,0) -- (5,0) node[right]{$x$};
+  \draw[->] (0,0) -- (0,10) node[above]{$y$};
+  \draw[thick,blue!60!black] plot[smooth,mark=*] coordinates {(0,5) (1,3) (2,6) (3,7) (4,9)};
+  \foreach \i in {0,...,4} \draw (\i,0.1) -- (\i,-0.1);
+\end{tikzpicture}
+\caption{Synthetic series 5.1.}\label{fig:5-1}
+\end{figure}
+\begin{equation}\label{eq:5}
+  \mathcal{L}_5(\theta) = \sum_{i=1}^{n} \log p(y_i \mid x_i, \theta) - \frac{1}{2}\lVert\theta\rVert^2
+\end{equation}
+\lipsum[19-24]
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.8]
+  \draw[->] (0,0) -- (9,0) node[right]{$x$};
+  \draw[->] (0,0) -- (0,10) node[above]{$y$};
+  \draw[thick,blue!60!black] plot[smooth,mark=*] coordinates {(0,6) (1,4) (2,4) (3,5) (4,4) (5,3) (6,5) (7,5) (8,8)};
+  \foreach \i in {0,...,8} \draw (\i,0.1) -- (\i,-0.1);
+\end{tikzpicture}
+\caption{Synthetic series 5.2.}\label{fig:5-2}
+\end{figure}
+\section{Discussion}
+\lipsum[25-30]
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.8]
+  \draw[->] (0,0) -- (7,0) node[right]{$x$};
+  \draw[->] (0,0) -- (0,10) node[above]{$y$};
+  \draw[thick,blue!60!black] plot[smooth,mark=*] coordinates {(0,8) (1,2) (2,4) (3,6) (4,6) (5,6) (6,8)};
+  \foreach \i in {0,...,6} \draw (\i,0.1) -- (\i,-0.1);
+\end{tikzpicture}
+\caption{Synthetic series 5.3.}\label{fig:5-3}
+\end{figure}
+\lipsum[31-34]
+\lipsum[35-42] See Figure~\ref{fig:5-1} and Equation~\ref{eq:5}.

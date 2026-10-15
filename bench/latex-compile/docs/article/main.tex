@@ -1,0 +1,43 @@
+\documentclass[11pt]{article}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+\else
+  \usepackage{fontspec}
+\fi
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{lipsum}
+\usepackage{hyperref}
+\title{A short article for the compile benchmark}
+\author{Purplelink LLC}
+\date{October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}\lipsum[1]\end{abstract}
+\section{Introduction}
+\lipsum[2-5]
+\input{edit}
+\section{Method}
+\lipsum[6-8]
+\begin{equation}
+  \hat{\theta} = \arg\min_{\theta} \sum_{i=1}^{n} \ell(y_i, f_\theta(x_i)) + \lambda \lVert\theta\rVert_2^2
+\end{equation}
+\lipsum[9-10]
+\section{Results}
+\begin{table}[h]
+\centering
+\begin{tabular}{lrr}
+\toprule
+Method & Accuracy & Time (s)\\
+\midrule
+Baseline & 0.81 & 12\\
+Proposed & 0.86 & 15\\
+\bottomrule
+\end{tabular}
+\caption{Synthetic results.}
+\end{table}
+\lipsum[11-16]
+\end{document}

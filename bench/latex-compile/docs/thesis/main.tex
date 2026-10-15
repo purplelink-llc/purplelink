@@ -1,0 +1,35 @@
+\documentclass[11pt,openany]{report}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+\else
+  \usepackage{fontspec}
+\fi
+\usepackage{amsmath}
+\usepackage{lipsum}
+\usepackage{tikz}
+\usepackage[style=authoryear,backend=biber]{biblatex}
+\addbibresource{refs.bib}
+\usepackage{hyperref}
+\title{A synthetic thesis for the compile benchmark}
+\author{Purplelink LLC}
+\date{October 2026}
+\begin{document}
+\maketitle
+\tableofcontents
+\listoffigures
+\chapter*{Preface}
+\input{edit}
+\lipsum[1-2]
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+\include{chapter6}
+\include{chapter7}
+\include{chapter8}
+\printbibliography[heading=bibintoc]
+\end{document}

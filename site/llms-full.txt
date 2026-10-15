@@ -5578,7 +5578,7 @@ To give the local build a concrete number, I generated a test document and compi
 
 time latexmk -pdf -interaction=nonstopmode test.tex
 
-I ran it once on October 13, 2026, on a Mac with an Apple M4 chip running macOS 27.2, with pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026) and Latexmk 4.88. The result was 2.9 seconds of wall time from a clean folder. I did not average runs or separate a first build from a later one. A real thesis with large images, a bibliography and many packages will take longer. To know how much, time your own project as described above.
+I ran it once on October 13, 2026, on a Mac with an Apple M4 chip running macOS 27.2, with pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026) and Latexmk 4.88. The result was 2.9 seconds of wall time from a clean folder. I did not average runs or separate a first build from a later one. A real thesis with large images, a bibliography and many packages will take longer. To know how much, time your own project as described above, or see the repeatable benchmark of four document types and three engines for measured cold and rebuild times.
 
 ## An offline workflow, short version
 
@@ -5636,6 +5636,186 @@ Get ModernTex ($19.99)
 See what it does
 
 Requires macOS 14 or later. Free 7-day trial, no account.
+
+
+---
+
+Source: https://purplelink.llc/guides/latex-compile-time-benchmark-mac/
+Title: How long LaTeX takes to compile on a Mac: a reproducible benchmark | Purplelink
+
+← All guides
+
+Benchmark
+
+# How long LaTeX takes to compile on a Mac: a reproducible benchmark
+
+By Benjamin Ampel · October 14, 2026
+
+A 98-page thesis with a bibliography used 13.4 seconds of CPU time for a cold build with pdfLaTeX on an Apple M4 Mac, and 3.07 seconds to rebuild after a one-line edit. Overleaf's free plan stops a compile at 10 seconds. The four test documents, the script and the raw results are in the Purplelink repository, so you can repeat the run on your own Mac.
+
+Disclosure: Purplelink makes ModernTex, a Mac LaTeX editor that builds with the TeX install already on your Mac. It is mentioned once, near the end. I did not run anything on Overleaf, so this page says nothing about how fast Overleaf is. It reports only what I measured locally, and the Overleaf limit comes from Overleaf's plan limits page, which I read on October 14, 2026.
+
+## What was measured
+
+I built four documents with latexmk (the tool that reruns LaTeX and the bibliography program until the output settles) and three engines (pdfLaTeX, LuaLaTeX and XeLaTeX). Every document is synthetic and public domain (CC0), so anyone can compile the same files.
+
+- Article: 5 pages with equations and a table. No bibliography.
+
+- Thesis: 98 pages in the report class, 8 chapters, 24 TikZ figures and 150 synthetic references through biblatex and biber.
+
+- Beamer deck: 42 pages (40 content slides), each with a small TikZ diagram.
+
+- pgfplots paper: 7 pages with 12 line plots and 2 surface plots drawn by pgfplots.
+
+For each document and engine I ran one build that I discarded (it fills font caches), then two sets of 5 runs. A cold build deletes every auxiliary file first, so LaTeX starts from nothing. A warm rebuild changes one line of text and keeps the auxiliary files, which is what happens each time you save and recompile while writing.
+
+## Machine and software
+
+- Machine: Apple M4, 10 cores, 16 GB memory, macOS 27.2.
+
+- TeX: local TeX Live 2026 (TinyTeX, a small TeX Live install), pdfTeX 3.141592653-2.6-1.40.29, Latexmk 4.88.
+
+- Date: October 14, 2026.
+
+This was a TinyTeX install. The MacTeX folder that came with the machine was not usable, so I did not test MacTeX. Both are TeX Live, and ModernTex works with either.
+
+## Results: CPU time
+
+CPU seconds (user plus system time of the whole latexmk process tree, including biber) are the figure to compare. The Mac was doing other work during the run, as the next section explains, and CPU time moves less than wall-clock time when other programs compete for the cores. Each cell shows the median of 5 runs, with the fastest and slowest run in parentheses.
+
+CPU seconds per build, median of 5 runs (fastest to slowest), Apple M4, TeX Live 2026
+
+DocumentEngineCold buildWarm rebuildRuns each
+
+Article
+5 pagespdfLaTeX1.09 s (1.03 to 1.11)0.59 s (0.58 to 0.59)5
+
+Article
+5 pagesLuaLaTeX2.57 s (2.40 to 2.61)1.28 s (1.26 to 1.30)5
+
+Article
+5 pagesXeLaTeX1.34 s (1.30 to 1.36)0.78 s (0.77 to 0.79)5
+
+Thesis
+98 pages, biber, 150 referencespdfLaTeX13.4 s (13.2 to 14.4)3.07 s (2.99 to 3.30)5
+
+Thesis
+98 pages, biber, 150 referencesLuaLaTeX22.5 s (21.2 to 25.7)5.84 s (5.10 to 6.65)5
+
+Thesis
+98 pages, biber, 150 referencesXeLaTeX14.2 s (11.8 to 19.6)3.00 s (2.36 to 3.52)5
+
+Beamer deck
+42 pages, 40 TikZ slidespdfLaTeX6.04 s (5.83 to 7.21)2.54 s (2.34 to 4.49)5
+
+Beamer deck
+42 pages, 40 TikZ slidesLuaLaTeX10.1 s (9.34 to 11.6)5.43 s (4.86 to 5.64)5
+
+Beamer deck
+42 pages, 40 TikZ slidesXeLaTeX7.88 s (5.42 to 8.89)3.56 s (2.20 to 3.94)5
+
+pgfplots paper
+7 pages, 14 plotspdfLaTeX21.8 s (17.7 to 26.4)11.4 s (8.74 to 15.2)5
+
+pgfplots paper
+7 pages, 14 plotsLuaLaTeX16.5 s (15.4 to 16.7)8.14 s (5.78 to 8.87)5
+
+pgfplots paper
+7 pages, 14 plotsXeLaTeX50.0 s (46.2 to 61.3)19.0 s (13.7 to 25.9)5
+
+I make three observations from the table. First, the one-line rebuild costs about a fifth to a quarter of a cold build for the thesis and roughly half for the other documents, because the aux files and the bibliography are reused. Second, the engine matters most for the plot-heavy paper. pgfplots needed 16.5 seconds under LuaLaTeX, 21.8 under pdfLaTeX and 50.0 under XeLaTeX, so the same file differs by a factor of 3.0. Third, the article took 1.09 to 2.57 seconds on every engine. A short paper is not where compile limits bite.
+
+## Conditions: one machine, other work running
+
+Other jobs ran on the same Mac during the benchmark, including software builds from another project, and no other process was stopped or touched. The one-minute load average (how many programs wanted a core, on a 10-core machine) ranged from 3.9 to 22.5 across the runs. The script waits up to 10 minutes before each group of 5 runs for the load average to fall below 10, and records whether it waited or gave up. The results.csv file keeps the load average and the wait flag for every run.
+
+This inflated the numbers, including CPU time. A single early run on a quieter Mac took 0.49 seconds of wall time for a cold pdfLaTeX build of the article and 8.0 seconds for the thesis, against 1.09 and 13.4 seconds of CPU time in the table. A quiet machine should therefore beat the table. Treat the table as an upper bound and as a way to compare engines and documents on this machine, not as a speed rating for the Mac.
+
+Wall-clock seconds, median of 5 runs, with the highest load average seen (secondary figure)
+
+DocumentEngineCold buildWarm rebuildHighest load average
+
+ArticlepdfLaTeX1.11 s0.61 s9.8
+
+ArticleLuaLaTeX2.61 s1.30 s9.2
+
+ArticleXeLaTeX1.37 s0.79 s9.0
+
+ThesispdfLaTeX14.1 s3.12 s9.5
+
+ThesisLuaLaTeX23.3 s6.55 s11.6
+
+ThesisXeLaTeX15.3 s3.17 s16.4
+
+Beamer deckpdfLaTeX6.08 s2.56 s11.5
+
+Beamer deckLuaLaTeX10.4 s5.70 s16.1
+
+Beamer deckXeLaTeX9.62 s3.59 s14.6
+
+pgfplots paperpdfLaTeX22.0 s11.6 s9.4
+
+pgfplots paperLuaLaTeX16.9 s8.45 s10.2
+
+pgfplots paperXeLaTeX57.5 s19.3 s22.5
+
+## Overleaf's free-plan limit
+
+Overleaf's plan limits page lists a compile timeout of 10 seconds on the free plan and 240 seconds on premium plans. I read it on October 14, 2026. Limits change, so check the page before you rely on the number. The guide to Overleaf compile timeouts covers the fixes to try first.
+
+The comparison has limits of its own. Overleaf's limit is a clock on its servers, and the table is CPU time on one Mac. I did not measure Overleaf, so I cannot say how long these documents take there. The useful reading is narrower. A build that needs well over 10 CPU seconds on a local machine is a build where the free limit is a real constraint to check, and a build that needs 1 or 2 seconds is not.
+
+## What it means for a project near the limit
+
+On this Mac, the cold builds of the thesis used 13.4 to 22.5 CPU seconds and the pgfplots paper used 16.5 to 50.0 CPU seconds. Both are over 10. The thesis rebuild after a small edit, at 3.07 to 5.84 seconds, is under it. Whether Overleaf reuses auxiliary files between compiles is a question for Overleaf's documentation, not this benchmark.
+
+If your project times out, you have three options. First, apply the fixes in the timeout guide, because TikZ and pgfplots figures that LaTeX redraws on every build are the usual cost (the pgfplots paper above is an extreme case, since every plot is drawn on every cold build). Second, time your own project with the commands below, which tells you whether the cost is the project or the platform. Third, build the heavy version locally and keep the shared draft where your co-authors work.
+
+## Reproduce it
+
+The files are in the bench/latex-compile folder of the Purplelink repository. You need latexmk, the three engines and biber on your path (MacTeX or TinyTeX with biblatex, pgfplots and beamer installed), plus Python 3.
+
+git clone https://github.com/purplelink-llc/purplelink.git
+cd purplelink/bench/latex-compile
+bash run.sh 5 results.csv
+python3 summarize.py results.csv
+
+The script copies each document into a temporary folder, so the sources stay untouched, and it removes that folder when it finishes. A full run took a little over an hour here, including waits for the load to drop. To time your own project the same way, run this in its folder and read the CPU figure from user plus sys:
+
+latexmk -C
+time latexmk -pdf -interaction=nonstopmode main.tex
+
+## Limits of this benchmark
+
+Four limits apply, and the first matters most.
+
+- One machine, one TeX Live version, shared with other work. The numbers carry the load described above. A different Mac, an Intel Mac or a quiet run will give different values, and I would expect the same ordering of engines but not the same seconds.
+
+- Synthetic documents. They have filler text, generated figures and made-up references. Real projects add large images, many packages and custom fonts, which can move the cost a long way in either direction.
+
+- The timing includes everything latexmk runs. That covers every LaTeX pass and, for the thesis, biber. Warm rebuilds reuse the cached bibliography, so they exclude most of biber's work.
+
+- No Overleaf measurement. The only Overleaf figure on this page is its published limit.
+
+I measured no fonts beyond Latin Modern, no minted or other shell-escape packages, and no externalized TikZ figures, which is the usual fix for a slow plot-heavy project.
+
+## If you are on a Mac
+
+ModernTex runs these same local builds with your own TeX Live install and has no compile time limit. It is a native Mac LaTeX editor and costs $19.99 once, after a free 7-day trial. The numbers above come from running latexmk directly, not from ModernTex, and I did not time ModernTex against any other editor.
+
+## Frequently asked questions
+
+How long does a 100-page thesis take to compile in LaTeX?
+
+The 98-page synthetic thesis in this benchmark took 13.4 to 22.5 seconds of CPU time for a cold build with biber (the bibliography tool) on an Apple M4 Mac, depending on the engine, and 3.07 to 5.84 seconds to rebuild after a one-line edit. The Mac was running other work, so a quiet machine should be faster. A real thesis with large images will differ.
+
+What is the Overleaf free-plan compile timeout?
+
+Overleaf's plan-limits page lists 10 seconds for the free plan and 240 seconds for premium plans. Purplelink read that page on October 14, 2026. This benchmark did not measure Overleaf, so it cannot say how long Overleaf takes on the same documents.
+
+Is LuaLaTeX slower than pdfLaTeX?
+
+On these four documents, LuaLaTeX used more CPU time than pdfLaTeX on the cold builds of the article, thesis and Beamer deck, and less on the pgfplots paper. XeLaTeX was slowest on the pgfplots paper. The result is specific to these documents, one machine and one TeX Live version.
 
 
 ---
