@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 import { bundle } from "@remotion/bundler";
 import { renderMedia, renderStill, selectComposition } from "@remotion/renderer";
 import { buildHowTo } from "./src/howto/plan.js";
-import { stageNarration, stageBrandAudio } from "./audio.mjs";
+import { stageNarration, stageBrandAudio, addTrendBed } from "./audio.mjs";
 import { BUMPER, bumperTotal } from "./src/bumper.js";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -74,6 +74,7 @@ for (const format of ["16x9", "9x16"]) {
   const file = path.join(OUT, `${SLUG}-${format}.mp4`);
   ff(["-i", raw, "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", file]);
   fs.rmSync(raw, { force: true });
+  say(addTrendBed(file, SLUG));
   say(`render ${format} (${comp.width}x${comp.height}, ${(comp.durationInFrames / brand.fps).toFixed(2)}s): ${((Date.now() - t) / 1000).toFixed(1)}s, ${mb(file)} MB`);
 }
 if (!stills) {

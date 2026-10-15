@@ -25,6 +25,32 @@ def tagged(page: str, medium: str, slug: str) -> str:
     return f"{page}?utm_source=youtube-howto&utm_medium={medium}&utm_campaign={slug.removeprefix('howto-')}"
 
 
+TRENDS_ROOT = Path(os.environ.get("TRENDS_ROOT", "/Volumes/Extreme SSD/TikTokPipeline"))
+FALLBACK_TAGS = ["macos", "mactips", "techtips"]
+
+
+def trend_tags(sb: dict, short: bool) -> str:
+    """Relevant hashtags for the description (shared trends system, topic mac_howto, YouTube list).
+    YouTube shows the first three hashtags above the title, so the order matters: topic tags first, and
+    #shorts only on the Short (last). latex/overleaf tags only when the storyboard is about LaTeX."""
+    tags = list(FALLBACK_TAGS)
+    try:
+        r = subprocess.run([PY, "-m", "shared_media.trends.cli", "hashtags", "--topic", "mac_howto",
+                            "--platform", "youtube", "--k", "6"], cwd=TRENDS_ROOT, capture_output=True,
+                           text=True, timeout=60)
+        got = r.stdout.split()
+        if r.returncode == 0 and got:
+            tags = got
+    except Exception:
+        pass
+    if "latex" not in json.dumps(sb).lower():
+        tags = [t for t in tags if t not in ("latex", "overleaf")]
+    tags = [t for t in tags if t != "shorts"][:3 if short else 4]
+    if short:
+        tags.append("shorts")
+    return " ".join(f"#{t}" for t in tags)
+
+
 def descriptions(sb: dict, long_url: str | None) -> tuple[str, str]:
     scenes = sb["scenes"]
     hook = next(s for s in scenes if s["type"] == "hook")
@@ -39,6 +65,7 @@ def descriptions(sb: dict, long_url: str | None) -> tuple[str, str]:
     parts.append(f"{app['name']}: {app['line']}\n{tagged(sb['page'], 'video', sb['id'])}")
     if sb.get("sources"):
         parts.append("Where this comes up:\n" + "\n".join(sb["sources"]))
+    parts.append(trend_tags(sb, short=False))
     long_d = "\n\n".join(parts)
     short_parts = [f"{hook['title']}. {hook.get('sub', '')}".strip()]
     if cmds:
@@ -46,6 +73,7 @@ def descriptions(sb: dict, long_url: str | None) -> tuple[str, str]:
     if long_url:
         short_parts.append(f"Full walkthrough: {long_url}")
     short_parts.append(f"{app['name']}: {tagged(sb['page'], 'short', sb['id'])}")
+    short_parts.append(trend_tags(sb, short=True))
     return long_d, "\n\n".join(short_parts)
 
 
