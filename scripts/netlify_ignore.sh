@@ -4,8 +4,8 @@
 # Builds are batched to save build minutes (Netlify Starter: 300 a month). A push to main does NOT build, except:
 #   - the digest cron's final daily commit ("chore(digest): Daily Digest #N ..."), so the emailed digest link is live;
 #   - any commit whose message contains "[deploy now]", for fixes that cannot wait (checkout, delivery, security).
-# Everything else waits for the scheduled build: a launchd job on Ben's Mac calls the "scheduled" build hook at 09:00
-# and 17:00 when main has unpublished site changes (~/.purplelink/bin/netlify-batch-build.sh). Builds started by a
+# Everything else waits for the scheduled build: a launchd job on Ben's Mac calls the "scheduled" build hook at 06:00
+# and 17:00 US Eastern when main has unpublished site changes (~/.purplelink/bin/netlify-batch-build.sh). Builds started by a
 # build hook are never cancelled by this step (Netlify docs, "Ignore builds"), so they always run.
 #
 # Even the two exceptions build only when the push changed a build input; adding a script to `command` in
@@ -34,5 +34,5 @@ case "$msg" in
     ;;
 esac
 
-echo "netlify_ignore: batched; the next scheduled build (09:00 or 17:00 Phoenix, Mac awake) will publish this"
+echo "netlify_ignore: batched; the next scheduled build (06:00 or 17:00 US Eastern, Mac awake) will publish this"
 exit 0
