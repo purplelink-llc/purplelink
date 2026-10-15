@@ -92,11 +92,9 @@ Not covered: the Modal digest cron (`backend/digest`), which commits digest file
   or run `bash ~/.purplelink/bin/netlify-batch-build.sh manual` after the merge. Do not call `netlify api
   createSiteBuild` after merges any more. Verifying a change live means waiting for the next scheduled build or using
   one of those two. Netlify Starter allows 300 build minutes a month.
-  App updates do not wait for a build: every paid app and Vitae serve their Sparkle feed and downloads from a
-  Netlify function reading Blobs (`<app>-download?feed=1`), so `publish-release.sh` is live at once. The exception is
-  BatteryMeter, whose `site/batterymeter/appcast.xml` and zip are static site files: after a BatteryMeter release
-  use `[deploy now]` or the manual build, or its users see the update only at the next slot. Product-page version
-  text and changelog entries in `site/` also wait for the next slot.
+  App updates do not wait for a build: every app, BatteryMeter included (PR 129), serves its Sparkle feed and
+  downloads from a Netlify function reading Blobs, so `scripts/publish-release.sh` in the app repo is live at once.
+  Product-page version text and changelog entries in `site/` wait for the next slot.
 
 - Frontend: `bash scripts/deploy.sh` (Netlify `--prod` + IndexNow ping).
 - Backend (Modal): `bash scripts/deploy.sh --backend`.
