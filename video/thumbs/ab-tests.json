@@ -10,5 +10,16 @@
   "started": "2026-10-14",
   "status": "Running\u2026",
   "checked": "2026-10-14"
+ },
+ {
+  "video": "7uwmuvckBuI",
+  "variants": {
+   "A": "video/out/howto/latexmk-command-not-found/latexmk-command-not-found-thumb-A.jpg",
+   "B": "video/out/howto/latexmk-command-not-found/latexmk-command-not-found-thumb-B.jpg",
+   "C": "video/out/howto/latexmk-command-not-found/latexmk-command-not-found-thumb-C.jpg"
+  },
+  "started": "2026-10-15",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-10-15"
  }
 ]
