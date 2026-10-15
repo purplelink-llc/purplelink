@@ -123,7 +123,7 @@
     var label = f.s || f.r || "direct";
     return isLinkedin(label) ? "linkedin" : clip(label, 40);
   }
-  var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download)$/;
+  var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|guide_mtx_trial)$/;
 
   function send(payload) {
     try {
