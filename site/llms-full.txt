@@ -3596,12 +3596,6 @@ What BibTeX entry types are supported?
 
 article, book, inproceedings, proceedings, phdthesis, mastersthesis, techreport, misc, incollection, inbook, booklet, manual, conference, unpublished, and thesis.
 
-## The other kind of citation problem
-
-A clean .bib fixes citations that are malformed. However, it cannot tell you about a citation that is well-formed and does not support the sentence attached to it. Paper Review reads it the way a referee would. Four reviewer personas argue over the manuscript, every citation is checked against the live record, and figures are scanned for integrity problems. The report usually comes back in 4 to 8 minutes.
-
-From $9 per review, Anonymity Check bundled free. See what the report covers →
-
 This checks a .bib file after you have written it.
 
 ModernTex points a bibliography build error at the line in your .bib file, and completes citations from your .bib files as you type.

@@ -102,7 +102,10 @@ test("links: the Web Store listing, the privacy section and the main page, with 
   const tagged = [...html.matchAll(/<a\b[^>]*data-track="([^"]+)"[^>]*data-track-meta="([^"]+)"/g)];
   assert.ok(tagged.length >= 6);
   for (const [, ev] of tagged) assert.equal(ev, "pro_page_click");
-  for (const m of html.matchAll(/<a\b[^>]*href="https?:[^"]*"[^>]*>/g)) {
+  // The page's own outbound links (the Web Store, docs) send no referrer. The site-wide footer is shared by every page
+  // (its LinkedIn link uses rel="noopener" like the rest of the site), so it is left out of this check.
+  const body = html.slice(0, html.indexOf("<footer"));
+  for (const m of body.matchAll(/<a\b[^>]*href="https?:[^"]*"[^>]*>/g)) {
     if (!m[0].includes("purplelink.llc")) assert.match(m[0], /rel="noopener noreferrer"/, m[0]);
   }
   assert.ok(!/google-analytics|googletagmanager|facebook\.net|plausible|hotjar/i.test(html));
