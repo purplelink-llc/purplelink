@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>SyncTeX on Mac: jump between LaTeX source and PDF | Purplelink</title>
+    <meta name="description" content="How SyncTeX works on a Mac and how to set up forward and inverse search in TeXShop, Skim, VS Code and ModernTex, with fixes for when the jump does not work.">
+    <link rel="canonical" href="https://purplelink.llc/guides/synctex-on-mac/">
+    <meta property="og:title" content="SyncTeX on Mac: jump between LaTeX source and PDF">
+    <meta property="og:description" content="Turn on SyncTeX, set up click-to-jump in TeXShop, Skim, VS Code and ModernTex, and fix the common reasons it fails.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/synctex-on-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-synctex-on-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SyncTeX on Mac: jump between LaTeX source and PDF">
+    <meta name="twitter:description" content="Turn on SyncTeX, set up click-to-jump in TeXShop, Skim, VS Code and ModernTex, and fix the common reasons it fails.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-synctex-on-mac.jpg">
+    <meta name="twitter:image:alt" content="SyncTeX on Mac: jump between LaTeX source and PDF">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "SyncTeX on Mac: jump between LaTeX source and PDF",
+      "description": "How SyncTeX works on a Mac and how to set up forward and inverse search in TeXShop, Skim, VS Code and ModernTex, with fixes for when the jump does not work.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-15",
+      "dateModified": "2026-10-15",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/synctex-on-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "SyncTeX on Mac",
+          "item": "https://purplelink.llc/guides/synctex-on-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I turn on SyncTeX on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Add the flag to the build: latexmk -pdf -synctex=1 main.tex or pdflatex -synctex=1 main.tex. The build then writes a .synctex.gz file next to the PDF. Most Mac editors add the flag for you, so you only need it for terminal or custom builds."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does clicking the PDF not jump to my source?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually the build wrote no .synctex.gz, the PDF is older than the source, or the project folder was moved after the last build, because the map stores absolute paths. Rebuild with -synctex=1 and try again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the shortcut for inverse search?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on the program. TeXShop and ModernTex use Command-click in the PDF. Skim uses Shift-Command-click. LaTeX Workshop in VS Code uses Ctrl-click by default, with a setting for double-click."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does SyncTeX work with an included or multi-file project?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The map records the source file for every piece of text, and I checked that a line in a file loaded with \\input resolves to the right PDF page. In TeXShop, put % !TEX root = ../main.tex at the top of each included file."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=7dd899cd0a">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=fb682a98eb" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">SyncTeX on Mac: jump between LaTeX source and PDF</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-15">October 15, 2026</time></p>
+        <p class="post-lede">SyncTeX links your LaTeX source and the PDF in both directions. This guide shows how to switch it on, how to set it up in four Mac editors, and what to check when a click lands nowhere.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I make ModernTex, one of the editors covered here. The setup steps for the others come from their own documentation, and where I ran a command myself I say so.</p>
+
+        <p>SyncTeX is what lets you click a line in your LaTeX source and land on the matching spot in the PDF, and click the PDF to land on the source line. It is a TeX feature, not an editor feature, so the same file drives TeXShop, Skim, TeXstudio, VS Code and ModernTex. When sync does not work, the cause is almost always in the build, not in the editor. The blog post <a href="/blog/forward-and-inverse-search-arent-mirror-images/">Forward and inverse search aren't mirror images</a> covers why the two directions are different problems.</p>
+
+        <h2>How it works</h2>
+        <p>When TeX builds a PDF with SyncTeX turned on, it also writes a small map next to it, named like the PDF with <code>.synctex.gz</code> on the end. The map records, for each piece of text on each page, which source file and line produced it. An editor or viewer reads that map in one of two directions:</p>
+        <ul>
+          <li><strong>Forward search</strong> goes from a source position to a place on a PDF page. The editor asks for the page and rectangle that came from line N, then scrolls the PDF there.</li>
+          <li><strong>Inverse search</strong> (also called backward search) goes from a click on the PDF to a source file and line. The viewer asks which line produced that spot, then tells the editor to open it.</li>
+        </ul>
+        <p>You can see the map work without any editor. I built a two-file test project with TinyTeX and ran the command line tool that ships with TeX Live. Forward, from line 6 of <code>main.tex</code>:</p>
+<pre><code>synctex view -i "6:1:main.tex" -o main.pdf</code></pre>
+        <p>It prints a block that starts with <code>Output:main.pdf</code> and <code>Page:1</code>, followed by <code>x</code> and <code>y</code> coordinates in PDF points and the size of the box. Inverse, from a point on page 1:</p>
+<pre><code>synctex edit -o "1:133:140:main.pdf"</code></pre>
+        <p>It printed <code>Input:</code> with the full path of <code>main.tex</code> and <code>Line:3</code>. A line in the second file, <code>sections/two.tex</code>, resolved to the right page too, which is the multi-file case editors depend on. Notice the full path in <code>Input:</code>. The map stores absolute paths, which matters for the troubleshooting section below.</p>
+
+        <h2>Step one: turn SyncTeX on in the build</h2>
+        <p>Every setup starts here. I ran <code>latexmk -pdf main.tex</code> on a clean folder with TinyTeX and got a PDF and no <code>.synctex.gz</code>. Adding the flag produced it:</p>
+<pre><code>latexmk -pdf -synctex=1 main.tex</code></pre>
+        <p>Most editors add this flag for you; in my October 11 test TeXShop wrote the SyncTeX file with no setting changed (see the <a href="/guides/best-mac-latex-editors/#hands-on">editor tests</a>). If you build from a terminal, a Makefile or a custom command, add it yourself. You can also put <code>\synctex=1</code> in the preamble, which Skim's documentation lists as an alternative. With <code>pdflatex</code> directly the flag is the same: <code>pdflatex -synctex=1 main.tex</code>.</p>
+
+        <h2>Setting it up in each editor</h2>
+
+        <h3>TeXShop</h3>
+        <p>TeXShop's PDF preview and its source window are linked by Command-click in both directions. Command-click in the source window jumps to the matching place in the PDF, and Command-click in the PDF jumps to the source line. If TeXShop's sync method preference is set to something older than SyncTeX, set it to SyncTeX. For a project split across files, give each included file a first line that names the main file, so TeXShop knows which document the file belongs to:</p>
+<pre><code>% !TEX root = ../main.tex</code></pre>
+        <p>The path is relative to the included file. Without it, typesetting from a chapter file and forward search from it can fail or act on the wrong document.</p>
+
+        <h3>Skim as a separate viewer</h3>
+        <p>Skim is a free PDF viewer that many TeX users prefer because it reloads the PDF as it changes. Per <a href="https://sourceforge.net/p/skim-app/wiki/TeX_and_PDF_Synchronization/" rel="noopener">Skim's synchronization page</a>, inverse search is Shift-Command-click on the PDF, and the editor to open is chosen in Skim's Sync preferences, either from a preset or as a custom command. Forward search from an editor runs Skim's helper:</p>
+<pre><code>/Applications/Skim.app/Contents/SharedSupport/displayline LINE "main.pdf" "main.tex"</code></pre>
+        <p>The same page says that if forward search does nothing, check System Settings, Privacy and Security, Automation, and make sure your editor is allowed to control Skim. It lists no built-in TeXShop preset; a custom command is needed there.</p>
+
+        <h3>VS Code with LaTeX Workshop</h3>
+        <p>From <a href="https://github.com/James-Yu/LaTeX-Workshop/wiki/View" rel="noopener">the LaTeX Workshop wiki</a>: forward search is the command SyncTeX from cursor, Command-Option-J on a Mac. Inverse search in the built-in PDF viewer is Ctrl-click by default, and the setting <code>latex-workshop.view.pdf.internal.synctex.keybinding</code> changes it to double-click (reload VS Code afterward). The setting <code>latex-workshop.synctex.afterBuild.enabled</code> runs a forward search after every build; it is off by default. The wiki says SyncTeX with an external viewer such as Skim is not officially supported, so use the built-in viewer if sync matters.</p>
+
+        <h3>ModernTex</h3>
+        <p>ModernTex uses SyncTeX and adds the flag itself, so there is nothing to configure. Per the app's built-in guide: Command-click anywhere in the PDF jumps the editor cursor to that source line, and a double-click does the same when direct PDF editing (the pencil button) is off. Command-Control-J, Sync PDF to Cursor, moves the PDF to wherever the cursor is. With View, Follow Selection Between PDF and Source on, selecting text in either pane highlights the matching region in the other. Whether this works in your project depends on the same things as any other editor, covered next.</p>
+
+        <h2>When sync does not work</h2>
+        <ol>
+          <li><strong>No <code>.synctex.gz</code> exists.</strong> Look next to the PDF. If it is missing, the build ran without the flag. Add <code>-synctex=1</code> and rebuild.</li>
+          <li><strong>The PDF is older than the source.</strong> The map describes the last build. If you edited and did not rebuild, positions will be wrong or missing. Build, then try again.</li>
+          <li><strong>You moved or renamed the project folder.</strong> The map holds absolute paths to your source files (the <code>Input:</code> line above). After a move, rebuild so it records the new ones.</li>
+          <li><strong>The build output goes to another folder.</strong> With <code>latexmk -outdir=build</code> I found the PDF and the <code>.synctex.gz</code> together in <code>build/</code>, and the command line tool worked when I pointed it at <code>build/main.pdf</code>. An editor that looks for the map next to the source file will not find it; tell it where the build folder is, or build in place.</li>
+          <li><strong>The project has included files with no root hint.</strong> In TeXShop, add the <code>% !TEX root</code> line to each included file.</li>
+          <li><strong>You use an external viewer and an editor from different makers.</strong> Each side needs the other's command, as in the Skim section. If an editor integrates its own viewer, use that first.</li>
+          <li><strong>The jump lands near the right spot, not on it.</strong> SyncTeX maps to the box that TeX built from a line. Long paragraphs, display math, tables and figures are single boxes, so expect to land on a nearby line there.</li>
+        </ol>
+
+        <h2>Which setup to choose</h2>
+        <ul>
+          <li><strong>Free and standard on a Mac:</strong> TeXShop with MacTeX. It has sync built in.</li>
+          <li><strong>You already work in VS Code:</strong> LaTeX Workshop with its built-in viewer.</li>
+          <li><strong>You want a PDF viewer that stays out of the way:</strong> Skim, with the editor commands above.</li>
+          <li><strong>You want it configured already, for manuscripts:</strong> <a href="/moderntex/">ModernTex</a>, $19.99 after a free 7-day trial.</li>
+        </ul>
+        <p>For how the editors compare on price and platform, see <a href="/guides/best-mac-latex-editors/">the best LaTeX editors for Mac</a> and <a href="/guides/texshop-alternative-mac/">the TeXShop alternatives guide</a>.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>How do I turn on SyncTeX on a Mac?</summary><div class="faq-body">Add the flag to the build: <code>latexmk -pdf -synctex=1 main.tex</code> or <code>pdflatex -synctex=1 main.tex</code>. The build then writes a <code>.synctex.gz</code> file next to the PDF. Most Mac editors add the flag for you, so you only need it for terminal or custom builds.</div></details>
+        <details><summary>Why does clicking the PDF not jump to my source?</summary><div class="faq-body">Usually the build wrote no <code>.synctex.gz</code>, the PDF is older than the source, or the project folder was moved after the last build, because the map stores absolute paths. Rebuild with <code>-synctex=1</code> and try again.</div></details>
+        <details><summary>What is the shortcut for inverse search?</summary><div class="faq-body">It depends on the program. TeXShop and ModernTex use Command-click in the PDF. Skim uses Shift-Command-click. LaTeX Workshop in VS Code uses Ctrl-click by default, with a setting for double-click.</div></details>
+        <details><summary>Does SyncTeX work with an included or multi-file project?</summary><div class="faq-body">Yes. The map records the source file for every piece of text, and I checked that a line in a file loaded with <code>\input</code> resolves to the right PDF page. In TeXShop, put <code>% !TEX root = ../main.tex</code> at the top of each included file.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex is a native macOS LaTeX editor with the PDF jump set up from the first build. It also has plain-language compile errors and submission checks. $19.99 once, all updates included.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?src=guide&amp;trial=1" data-track="guide_mtx_trial" data-track-meta="synctex-on-mac">Try free for 7 days</a>
+          <a class="btn btn-ghost" href="/moderntex/" data-track="guide_mtx_click" data-track-meta="synctex-on-mac:page">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">I make ModernTex. $19.99 once after the trial, macOS 14 or later, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/moderntex/">ModernTex, the native Mac LaTeX editor</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac</a></li>
+          <li><a href="/guides/texshop-alternative-mac/">TeXShop alternative for Mac</a></li>
+          <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a></li>
+          <li><a href="/blog/forward-and-inverse-search-arent-mirror-images/">Forward and inverse search aren't mirror images</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=bcc135f878" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

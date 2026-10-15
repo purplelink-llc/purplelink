@@ -5024,6 +5024,8 @@ Many research groups do not choose one or the other. They keep the shared draft 
 
 The clean way to do this is Git. Overleaf offers Git integration (clone the project with git, edit locally, push back) and GitHub sync (link the project to a GitHub repository). Both are premium features. They are available on Overleaf's paid plans and through many institutional licences, not on the free tier. Check your account before you plan around them.
 
+Step by step, with the token setup and the commands: Move an Overleaf project to a local Mac editor with Git.
+
 A few habits keep this working:
 
 - Pull before you start, push when you stop. If a co-author edits the same lines on Overleaf while you edit locally, Git will ask you to resolve a conflict. Short sessions and frequent pushes keep conflicts rare.
