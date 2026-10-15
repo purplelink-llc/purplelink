@@ -126,7 +126,7 @@ OFFERS = {
     "resume-review": (
         "vitae",
         "This reviews one resume and does not keep a record of your work.",
-        "Vitae imports a CV from Word, PDF, RTF, ODT or a web page. It then fills your CV from the papers, grants and positions you track, and exports to PDF, LaTeX or rich text.",
+        "Vitae imports a CV from Word, PDF, RTF, ODT or a web page. It then fills your CV from the papers, grants and positions you track, and exports to PDF, Word, rich text, HTML or Markdown.",
     ),
 }
 
