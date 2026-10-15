@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 import { bundle } from "@remotion/bundler";
 import { renderMedia, renderStill, selectComposition } from "@remotion/renderer";
 import { quizLines } from "./src/photoquiz/plan.js";
-import { stageNarration } from "./audio.mjs";
+import { stageNarration, addTrendBed } from "./audio.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const PY = "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3";
@@ -55,4 +55,5 @@ const raw = path.join(ROOT, ".cache", `${spec.id}-raw.mp4`);
 await renderMedia({ composition: comp, serveUrl, codec: "h264", crf: 18, outputLocation: raw, inputProps, audioCodec: "aac", concurrency: Number(opt("concurrency", "3")) });
 execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", raw, "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", out]);
 fs.rmSync(raw, { force: true });
+console.log(addTrendBed(out, spec.id));
 console.log(`wrote ${out} (${(fs.statSync(out).size / 1e6).toFixed(2)} MB)`);
