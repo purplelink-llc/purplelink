@@ -121,3 +121,19 @@ test("asking for purplelink.llc by host returns its own records, and a bad host 
   const res = await handler(new Request("https://purplelink.llc/.netlify/functions/stats?token=wrong"));
   assert.equal(res.status, 401);
 });
+
+test("guide ModernTex card clicks get their own counts and stay out of trialDownloads", async () => {
+  ownEvents();
+  put({ type: "guide_mtx_trial", path: "/guides/best-mac-latex-editors/", host: "purplelink.llc", meta: "editors-guide:top", ft: "search:google", vid: "g1" });
+  put({ type: "guide_mtx_trial", path: "/guides/synctex-on-mac/", host: "purplelink.llc", meta: "synctex-on-mac", vid: "g2" });
+  put({ type: "guide_mtx_click", path: "/guides/best-mac-latex-editors/", host: "purplelink.llc", meta: "editors-guide:top-page", vid: "g1" });
+  put({ type: "guide_mtx_click", path: "/guides/best-mac-latex-editors/", host: "purplelink.llc", meta: "__selftest", vid: "g3" });
+  const { body } = await call();
+  assert.equal(body.totals.guideTrialClicks, 2);
+  assert.equal(body.totals.guidePageClicks, 1, "the self-test click is ignored");
+  assert.equal(body.totals.trialDownloads, 1, "guide trials do not move the product-page trial count");
+  assert.equal(body.byDay[TODAY].guideTrialClicks, 2);
+  assert.deepEqual(body.guidePageByPlacement, [{ key: "editors-guide:top-page", count: 1 }]);
+  assert.equal(body.guideTrialByPlacement.length, 2);
+  assert.ok(!body.otherEvents.some((x) => x.key.startsWith("guide_mtx")), "not double counted in otherEvents");
+});

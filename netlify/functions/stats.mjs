@@ -215,10 +215,11 @@ export default async function handler(request) {
   const store = getStore("analytics");
   const now = Date.now();
   const s = {
-    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, events: 0 },
+    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
     checkoutByProduct: {}, checkoutByPath: {},
     otherEvents: {}, otherEventDetail: {},
+    guideTrialByPlacement: {}, guidePageByPlacement: {},
     byDay: {},
     funnelByChannel: {},
     excludedHosts: {},
@@ -253,7 +254,7 @@ export default async function handler(request) {
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
     if (!s.byDay[day]) {
-      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0 };
+      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0 };
       if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.byDay[day][f] = 0;
     }
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
@@ -292,6 +293,7 @@ export default async function handler(request) {
         if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); }
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
         else if (/_?trial_download$/.test(rec.type)) bump(fc.trial, rec.meta || rec.type);
+        else if (rec.type === "guide_mtx_trial") bump(fc.trial, "guide_mtx_trial");
       }
 
       if (rec.type === "pageview") {
@@ -325,6 +327,14 @@ export default async function handler(request) {
       } else if (rec.type === "sm_trial_download") {
         // Summonly trial DMG downloads. Its own event type, for the same reason.
         s.totals.smTrialDownloads++; s.byDay[day].smTrialDownloads++;
+      } else if ((rec.type === "guide_mtx_trial" || rec.type === "guide_mtx_click") && !String(rec.meta || "").startsWith("__")) {
+        // ModernTex cards in the guides (2026-10-15): "guide_mtx_trial" is the card's trial button, which downloads the
+        // DMG directly and so is not a trial_download (that keeps the /moderntex/ hero test clean); "guide_mtx_click"
+        // goes to the product page. meta is the placement, e.g. "editors-guide:top-page".
+        const trial = rec.type === "guide_mtx_trial";
+        const f = trial ? "guideTrialClicks" : "guidePageClicks";
+        s.totals[f]++; s.byDay[day][f]++;
+        bump(trial ? s.guideTrialByPlacement : s.guidePageByPlacement, String(rec.meta || "unknown").slice(0, 80));
       } else if (rec.type === "checkout_click" && !String(rec.meta || "").startsWith("__")) {
         // Product keys are dunder-prefixed only by the self-test that verifies
         // the beacon actually fires end to end. Real keys never look like this,
@@ -382,6 +392,9 @@ export default async function handler(request) {
     topReferrers: topN(s.byReferrer),
     topUtm: topN(s.byUtm),
     byHost: topN(s.byHost),
+    // ModernTex cards in the guides, by placement (see the guide_mtx_* branch above).
+    guideTrialByPlacement: topN(s.guideTrialByPlacement, 40),
+    guidePageByPlacement: topN(s.guidePageByPlacement, 40),
     otherEvents: topN(s.otherEvents, 50),
     otherEventDetail: topN(s.otherEventDetail, 60),
     byDay: Object.fromEntries(Object.entries(s.byDay).sort()),
