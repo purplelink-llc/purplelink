@@ -61,6 +61,23 @@ build). A commit made on a stale local `main` makes the histories diverge; that 
   recently modified incoming files). Otherwise it logs to `~/Library/Logs/purplelink-main-sync.log`
   and sends one notification. It never merges, rebases, stashes or resets.
 
+## Automated and cloud sessions: open a PR, never push to main
+
+Any Claude session that runs on a schedule or in the cloud (for example the weekly Thursday guide job that writes
+`content/drafts/guides/` and `site/guides/<slug>/`) must not commit to or push `main`. On 2026-10-15 that job pushed a
+new guide straight to `main` and broke Site tests (no social card; a shared-footer change tripped a page test).
+
+1. Work on a branch off `origin/main` and open a pull request with `gh pr create`.
+2. Before opening it, for a new page: run `python3 scripts/gen_og_cards.py --only <section>/<slug>` (its social card),
+   `python3 scripts/gen_search_index.py`, `python3 scripts/gen_llms_full.py` and `python3 scripts/fingerprint_assets.py`,
+   then the tests CI runs: `python3 -m pytest -q site-tests` and
+   `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs`. Fix every failure.
+3. Wait for the PR's checks (`gh pr checks <n> --watch`). Squash-merge only when every check passes; if one fails,
+   fix it on the branch or leave the PR open and say so in the run's summary. Never merge red, never bypass checks.
+4. Add files by path, never `git add -A`; never add `Outreach/`, `docs/growth-briefs/` or other private paths.
+
+Not covered: the Modal digest cron (`backend/digest`), which commits digest files to `main` by design.
+
 ## Deploy
 
 - **Batch pushes.** Netlify Starter allows 300 build minutes a month and every push to `main` that touches the site costs about 20 seconds; commit locally and push once per working session, not once per edit. `netlify.toml` skips builds for pushes that change nothing in the build's inputs, and the digest cron marks all but its last commit `[skip netlify]`; add `[skip netlify]` to a commit message to skip a build by hand.
