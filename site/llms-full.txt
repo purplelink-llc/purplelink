@@ -1707,7 +1707,7 @@ One table holds the whole history: venue, date submitted, decision, and your own
 
 ### A CV built from your records
 
-Pick a format, a length and a date range, and the CV fills itself from the papers, positions and grants you already track. Export to PDF, LaTeX or rich text.
+Pick a format, a length and a date range, and the CV fills itself from the papers, positions and grants you already track. Export to PDF, Word, rich text, HTML or Markdown.
 
 ### Grants from proposal to final report
 
