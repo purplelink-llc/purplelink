@@ -99,6 +99,7 @@ CLUSTERS: dict[str, list[str]] = {
     ],
     "templates": [
         "/templates/",
+        "/templates/academic-cv/",
         "/templates/acm-acmart/",
         "/templates/apa7/",
         "/templates/elsevier-elsarticle/",
