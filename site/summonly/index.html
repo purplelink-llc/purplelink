@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="/summonly/summonly.css?v=899f62d3ec">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
-    <script src="/summonly/launch.js?v=af818f7db0" defer></script>
+    <script src="/summonly/launch.js?v=652d324d35" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
     {
@@ -47,6 +47,7 @@
           "softwareRequirements": "macOS 14 (Sonoma) or later. macOS asks permission to read the Desktop, Documents and Downloads folders.",
           "featureList": [
             "Finds files, folders and apps by name, and by the start of text, code and Markdown files, RTF files and the first pages of PDFs",
+        "Searches connected drives (external SSDs, USB drives) by file and folder name, without opening the files",
             "Abbreviations for apps, so vsc opens Visual Studio Code",
             "Filters such as kind:pdf, ext:docx, in:Documents, modified:week, and plain words such as yesterday and last week",
             "Ranks name matches first, then what you open often and recently",
@@ -113,6 +114,14 @@
               "name": "Can it search inside Word documents?",
               "acceptedAnswer": { "@type": "Answer", "text": "Yes. It reads the text of Word, Excel, PowerPoint and OpenDocument files, the start of text, code and Markdown files and RTF files, and the first pages of PDFs for ordinary search. If you turn on question search it reads whole documents. Pages and Keynote files are found by name only." }
             },
+    {
+      "@type": "Question",
+      "name": "Can it search an external SSD or a USB drive?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Connected drives are searched by file and folder name, and files on a drive are not opened unless you add a folder on it in Settings. Network drives, app installers and Time Machine backups are left out. macOS asks once before Summonly can read a removable drive. You can leave folders on a drive out, or turn drives off, in Settings."
+      }
+    },
             {
               "@type": "Question",
               "name": "Does one license work on more than one Mac?",
@@ -195,7 +204,7 @@
           <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="summonly" data-lf-gated data-lf-live-text="Buy Summonly">Buy Summonly</button>
         </div>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
-        <p class="waitlist-fine-print" data-lf-facts>Version 1.0.0, released October 12, 2026. 5 MB disk image.</p>
+        <p class="waitlist-fine-print" data-lf-facts>Version 1.2.0, released October 15, 2026. 5 MB disk image.</p>
         <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>, $59.99 once.</p>
         <p class="waitlist-fine-print">Comparing launchers? Read <a href="/guides/best-alfred-alternatives-for-mac/">Best Alfred alternatives for Mac (2026)</a>, which says plainly where Alfred and Raycast are stronger than Summonly. If Spotlight is missing files, <a href="/guides/find-files-on-mac-when-spotlight-cant/">How to find files on a Mac when Spotlight cannot</a> covers the usual causes and how to check each one.</p>
@@ -312,7 +321,7 @@
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
           <tr><th scope="row">Finds</th><td>File and folder names, apps, and the start of text, code and Markdown files, RTF files and the first pages of PDFs. The text of Word, Excel, PowerPoint and OpenDocument files is read too. Pages and Keynote files are found by name only.</td></tr>
-          <tr><th scope="row">Abbreviations</th><td>Type vsc for Visual Studio Code, or te for TextEdit. Summonly matches the first letters of an app&#x27;s words.</td></tr>
+          <tr><th scope="row">Abbreviations</th><td>Type vsc for Visual Studio Code, or te for TextEdit. Summonly matches the first letters of an app&#x27;s words. The start of a name written as one word works too: oned finds OneDrive.</td></tr>
           <tr><th scope="row">Filters</th><td>kind:pdf, ext:docx, in:Documents, modified:today, modified:week, after:2026-01-01 and before:2026-03-01, name:budget (names only) and size:&gt;5mb or size:&lt;200kb. Put words in quotes to match them side by side. Put a minus sign before a word to leave out files that contain it (invoice -draft). Use OR between words (report OR invoice). A search written this precisely is not loosened or spell-corrected. Plain words work too: invoice yesterday, notes last week, tax pdf.</td></tr>
           <tr><th scope="row">Typos and loose words</th><td>Misspell a word and Summonly looks for the nearest word in your own files, and tells you what it searched for. If one word of a long search matches nothing, files that match the rest still appear. A question such as how do buyers get their license key finds files that contain those words.</td></tr>
           <tr><th scope="row">Ranking</th><td>A name that matches comes first, then the file you open often and recently, then newer files. Opening a file teaches it, and you can clear what it has learned.</td></tr>
@@ -329,6 +338,7 @@
           <tr><th scope="row">Clipboard history</th><td>Option-Shift-V, or type clip. It does not record anything copied from a password manager or marked private by the app that copied it. It also skips text that looks like a card number, a one-time code, an access token, a long key, or a password with upper and lower case letters, a digit and a symbol. You choose how many items to keep and for how many days, and can keep history in memory only. Pin items you want to keep, and clear it at any time.</td></tr>
           <tr><th scope="row">Snippets</th><td>Save text under a keyword. {date}, {time} and {clipboard} are filled in when you use it. Summonly copies the snippet. You paste it where you want it.</td></tr>
           <tr><th scope="row">Folders</th><td>Desktop, Documents, Downloads and your Applications folders to start, or your whole home folder if you choose it (Library and the Trash are always left out). The first-run window lets you choose these and every other option. Add or remove folders in Settings, and leave any folder out. If macOS refuses a folder, Summonly says so in its status line. Changes apply at once, without reopening Summonly. Files whose names suggest secrets, such as .env files, key files and names with password or secret in them, are found by name only: nothing inside them is read. Hidden files and developer folders such as node_modules and .git are skipped.</td></tr>
+          <tr><th scope="row">Connected drives</th><td>External SSDs, USB drives and other partitions are searched by file and folder name, so a file on a drive turns up like any other. Files on a drive are not opened unless you add a folder on it in Settings. Network drives, app installers and Time Machine backups are left out. Summonly follows drives as you connect and eject them, and stops reading a drive as soon as you eject it. Leave any folder on a drive out in Settings, or turn drives off. On our own Mac, with about half a million names from one drive in the index, a search still answered in about a quarter of a second.</td></tr>
         </tbody>
       </table>
     </section>
@@ -356,14 +366,14 @@
 
     <section class="specs-section" aria-labelledby="perm-h">
       <h2 id="perm-h">Folder access</h2>
-      <p class="specs-more">The first time Summonly reads your Desktop, Documents or Downloads folder, macOS asks whether to allow it. Allow the folders you want searched. Summonly does not need Full Disk Access. It also reads the clipboard to keep history, and recent versions of macOS may ask you to allow that. If you add a folder that macOS protects, it will ask for that one too. The first index of a large folder can take a few minutes and runs in the background at low priority.</p>
+      <p class="specs-more">The first time Summonly reads your Desktop, Documents or Downloads folder, macOS asks whether to allow it. Allow the folders you want searched. Summonly does not need Full Disk Access. It also reads the clipboard to keep history, and recent versions of macOS may ask you to allow that. If you add a folder that macOS protects, it will ask for that one too. The first time Summonly reads an external or USB drive, macOS asks once whether to allow it. The first index of a large folder or drive can take a few minutes and runs in the background at low priority.</p>
     </section>
 
     <section class="specs-section" aria-labelledby="not-h">
       <h2 id="not-h">What it is not</h2>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">A replacement for all of Spotlight</th><td>It searches the folders you choose. It does not search Mail, Messages, Contacts or Calendar, or the web.</td></tr>
+          <tr><th scope="row">A replacement for all of Spotlight</th><td>It searches the folders you choose and, by name, your connected drives. It does not search Mail, Messages, Contacts or Calendar, or the web.</td></tr>
           <tr><th scope="row">A workflow tool</th><td>There are no workflows, scripts or extensions in this version. It is for finding, opening, copying and calculating.</td></tr>
           <tr><th scope="row">A chat assistant</th><td>It does not answer questions in sentences. The meaning search only suggests related documents.</td></tr>
           <tr><th scope="row">Synced</th><td>Everything stays on your Mac. There is no account and no sync.</td></tr>
@@ -426,6 +436,10 @@
         <details class="faq-item">
           <summary>Can it search inside Word documents?</summary>
           <div class="faq-body">Yes. It reads the text of Word, Excel, PowerPoint and OpenDocument files, the start of text, code and Markdown files and RTF files, and the first pages of PDFs for ordinary search. If you turn on question search it reads whole documents. Pages and Keynote files are found by name only.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can it search an external SSD or a USB drive?</summary>
+          <div class="faq-body">Yes. Connected drives are searched by file and folder name, and files on a drive are not opened unless you add a folder on it in Settings. Network drives, app installers and Time Machine backups are left out. macOS asks once before Summonly can read a removable drive. You can leave folders on a drive out, or turn drives off, in Settings.</div>
         </details>
         <details class="faq-item">
           <summary>Does one license work on more than one Mac?</summary>
