@@ -192,7 +192,9 @@ export default async function handler(request) {
     paid.push({
       id: s.id, kind: "purchase", created: s.created, product,
       site: SITE_OF_PRODUCT.get(product) || "unknown",
-      amount: s.amount_total || 0, currency: s.currency || "usd",
+      // Revenue excludes tax: under Stripe Managed Payments (netlify/lib/managed-payments.mjs) Stripe adds and remits
+      // VAT or sales tax, so amount_total would count tax as ours. Without it amount_tax is 0 and nothing changes.
+      amount: (s.amount_total || 0) - ((s.total_details && s.total_details.amount_tax) || 0), currency: s.currency || "usd",
       email: (s.customer_details && s.customer_details.email) || "",
       attr: attrOf(s.metadata),
       heard: heardOf(s),
