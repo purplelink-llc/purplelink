@@ -155,14 +155,6 @@
   [headers.values]
     Cache-Control = "public, max-age=300, must-revalidate"
 
-# Sparkle update feed: installed copies of BatteryMeter poll this once a day. Short cache so a
-# new release shows up within minutes; the catch-all rule above would otherwise cache it a year.
-[[headers]]
-  for = "/batterymeter/appcast.xml"
-  [headers.values]
-    Content-Type = "application/xml; charset=utf-8"
-    Cache-Control = "public, max-age=300, must-revalidate"
-
 [[headers]]
   for = "/sitemap.xml"
   [headers.values]
@@ -301,6 +293,22 @@
 [[redirects]]
   from = "/vitae/Vitae-*"
   to = "/.netlify/functions/vitae-download?file=Vitae-:splat"
+  status = 200
+  force = true
+
+# BatteryMeter's Sparkle appcast and release zips are served from the batterymeter-files Blobs store through
+# batterymeter-download (the function sets the headers: appcast 5-minute cache, zips long cache), so a release
+# needs no site build. Rewrites, not redirects: the URLs installed copies and the product page use do not change.
+# site/batterymeter/ must not hold copies of these files: they would be dead weight that drifts from the store.
+[[redirects]]
+  from = "/batterymeter/appcast.xml"
+  to = "/.netlify/functions/batterymeter-download?file=appcast.xml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/batterymeter/BatteryMeter-*"
+  to = "/.netlify/functions/batterymeter-download?file=BatteryMeter-:splat"
   status = 200
   force = true
 

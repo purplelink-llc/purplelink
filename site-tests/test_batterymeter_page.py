@@ -1,21 +1,17 @@
-import hashlib
 import html
 import json
 import re
-import shutil
-import subprocess
-import tempfile
 import unittest
-import xml.etree.ElementTree as ET
-import zipfile
-from pathlib import Path
 
 from common import SITE, ORIGIN, EMOJI, page_of, canonical, jsonld_blocks, walk, meta
 
 URL = "/batterymeter/"
-ZIP = SITE / "batterymeter" / "BatteryMeter-1.2.1.zip"
-APPCAST = SITE / "batterymeter" / "appcast.xml"
-SPARKLE = "{http://www.andymatuschak.org/xml-namespaces/sparkle}"
+# The appcast and zips are not in site/ any more: they live in the batterymeter-files Blobs store and are served by
+# netlify/functions/batterymeter-download.mjs (see netlify/tests/batterymeter-download.test.mjs). The facts of the
+# published 1.2.1 zip are pinned here so the page text still has to match them.
+ZIP_SHA256 = "503698a49d973b5eae280e04486e0e7abb15a532aaf2a898f7feabb515d1b3b3"
+ZIP_BYTES = 1031592
+TOML = SITE.parent / "netlify.toml"
 
 
 def text_of(s):
@@ -53,7 +49,7 @@ class BatteryMeterPage(unittest.TestCase):
         self.assertEqual(app["applicationCategory"], "UtilitiesApplication")
         self.assertEqual(app["softwareVersion"], "1.2.1")
         self.assertEqual(app["operatingSystem"], "macOS 13.0 or later")
-        self.assertEqual(app["fileSize"], "%d bytes" % ZIP.stat().st_size)
+        self.assertEqual(app["fileSize"], "%d bytes" % ZIP_BYTES)
         self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.2.1.zip")
         types = {d.get("@type") for d in self.nodes}
         self.assertIn("BreadcrumbList", types)
@@ -74,7 +70,8 @@ class BatteryMeterPage(unittest.TestCase):
             if h.endswith("/"):
                 self.assertTrue(h == "/" or page_of(h).is_file(), h)
             else:
-                self.assertTrue((SITE / h.lstrip("/")).exists() or "/media/" in h, h)
+                self.assertTrue((SITE / h.lstrip("/")).exists() or "/media/" in h or  # release zips are served from Blobs
+                             re.fullmatch(r"/batterymeter/BatteryMeter-[0-9.]+\.zip", h), h)
 
     def test_download_link_and_tracking(self):
         links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.2\.1\.zip"[^>]*>', self.text)
@@ -82,27 +79,12 @@ class BatteryMeterPage(unittest.TestCase):
         for tag in links:
             self.assertIn('data-track="download"', tag)
             self.assertIn('data-track-meta="batterymeter"', tag)
-        self.assertTrue(ZIP.is_file())
 
-    def test_sha_and_size_match_file(self):
-        data = ZIP.read_bytes()
+    def test_sha_and_size_match_published_zip(self):
         m = re.search(r'id="bm-sha">([0-9a-f]{64})<', self.text)
-        self.assertEqual(m.group(1), hashlib.sha256(data).hexdigest())
+        self.assertEqual(m.group(1), ZIP_SHA256)
         s = re.search(r'id="bm-size">([\d,]+) bytes<', self.text)
-        self.assertEqual(int(s.group(1).replace(",", "")), len(data))
-
-    def test_zip_contains_signed_app(self):
-        self.assertTrue(zipfile.is_zipfile(ZIP))
-        with zipfile.ZipFile(ZIP) as z:
-            self.assertTrue(any(n.startswith("BatteryMeter.app/") for n in z.namelist()))
-        if not shutil.which("codesign") or not shutil.which("ditto"):
-            self.skipTest("codesign or ditto is not available on this machine")
-        with tempfile.TemporaryDirectory() as tmp:
-            subprocess.run(["ditto", "-x", "-k", str(ZIP), tmp], check=True)
-            app = Path(tmp) / "BatteryMeter.app"
-            self.assertTrue(app.is_dir())
-            r = subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], capture_output=True, text=True)
-            self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(int(s.group(1).replace(",", "")), ZIP_BYTES)
 
     def test_video_markup_references_media(self):
         for p in (
@@ -190,35 +172,24 @@ class BatteryMeterPage(unittest.TestCase):
         self.assertLess(log.index("BatteryMeter 1.2.1"), log.index("BatteryMeter 1.2.0"))
 
     def test_download_line_matches_zip(self):
-        data = ZIP.read_bytes()
-        self.assertIn(hashlib.sha256(data).hexdigest(), self.text)
-        self.assertIn("{:,} bytes".format(len(data)), self.text)
+        self.assertIn(ZIP_SHA256, self.text)
+        self.assertIn("{:,} bytes".format(ZIP_BYTES), self.text)
         self.assertIn("Version 1.2.1, released October 13, 2026", self.text)
         self.assertNotIn("404 KB", self.text)
         self.assertNotIn("464,618", self.text)
 
-    def test_appcast_matches_page_and_zip(self):
-        self.assertTrue(APPCAST.is_file())
-        root = ET.parse(APPCAST).getroot()
-        items = root.findall("./channel/item")
-        self.assertGreaterEqual(len(items), 1)
-        app = [d for d in self.nodes if d.get("@type") == "SoftwareApplication"][0]
-        newest = max(items, key=lambda i: int(i.find(SPARKLE + "version").text))
-        self.assertEqual(newest.find(SPARKLE + "shortVersionString").text, app["softwareVersion"])
-        enc = newest.find("enclosure")
-        self.assertEqual(enc.get("url"), app["downloadUrl"])
-        self.assertEqual(int(enc.get("length")), ZIP.stat().st_size)
-        self.assertTrue(enc.get(SPARKLE + "edSignature"))
-        for item in items:
-            self.assertTrue(item.find("enclosure").get(SPARKLE + "edSignature"))
-
-    def test_appcast_headers_short_cache_xml(self):
-        toml = (SITE.parent / "netlify.toml").read_text(encoding="utf-8")
-        m = re.search(r'for = "/batterymeter/appcast\.xml"\s*\[headers\.values\]\s*(.*?)\n\n', toml, re.S)
-        self.assertIsNotNone(m)
-        self.assertIn("application/xml", m.group(1))
-        self.assertIn("max-age=300", m.group(1))
-        self.assertNotIn("immutable", m.group(1))
+    def test_release_files_are_not_static_and_are_rewritten_to_the_function(self):
+        folder = SITE / "batterymeter"
+        self.assertEqual(sorted(p.name for p in folder.glob("*.zip")), [])
+        self.assertFalse((folder / "appcast.xml").exists())
+        toml = TOML.read_text(encoding="utf-8")
+        for src, dst in (
+            ("/batterymeter/appcast.xml", "/.netlify/functions/batterymeter-download?file=appcast.xml"),
+            ("/batterymeter/BatteryMeter-*", "/.netlify/functions/batterymeter-download?file=BatteryMeter-:splat"),
+        ):
+            m = re.search(r'\[\[redirects\]\]\s*from = "%s"\s*to = "%s"\s*status = 200\s*force = true' % (re.escape(src), re.escape(dst)), toml)
+            self.assertIsNotNone(m, src)
+        self.assertNotIn('for = "/batterymeter/appcast.xml"', toml)
 
     def test_wired_in_hub_home_changelog(self):
         for rel in ("products/index.html", "index.html", "changelog/index.html"):
