@@ -209,7 +209,8 @@ def _update_date(u: dict) -> str:
 
 def _notice(type_: str, doi: str, date: str) -> dict:
     doi = doi[:120]
-    return {"type": type_, "doi": doi, "date": date, "url": f"https://doi.org/{quote(doi, safe="/()-._~:;")}" if doi else ""}
+    url = "https://doi.org/" + quote(doi, safe="/()-._~:;") if doi else ""
+    return {"type": type_, "doi": doi, "date": date, "url": url}
 
 
 def retraction_status(message: dict) -> dict:
