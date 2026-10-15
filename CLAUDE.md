@@ -80,7 +80,17 @@ Not covered: the Modal digest cron (`backend/digest`), which commits digest file
 
 ## Deploy
 
-- **Batch pushes.** Netlify Starter allows 300 build minutes a month and every push to `main` that touches the site costs about 20 seconds; commit locally and push once per working session, not once per edit. `netlify.toml` skips builds for pushes that change nothing in the build's inputs, and the digest cron marks all but its last commit `[skip netlify]`; add `[skip netlify]` to a commit message to skip a build by hand.
+- **Builds are batched (2026-10-15).** A push to `main` does not build. `scripts/netlify_ignore.sh` (netlify.toml
+  `build.ignore`) skips every git-triggered build except (a) the digest cron's final commit `chore(digest): Daily
+  Digest #N`, so emailed digest links are live, and (b) a commit whose message contains `[deploy now]`; both still build
+  only when a build input changed. Everything else is published by the "scheduled" build hook, which the launchd job
+  `com.purplelink.netlify-batch` calls at 09:00 and 17:00 Phoenix time when the Mac is awake and `main` has
+  unpublished site changes (`~/.purplelink/bin/netlify-batch-build.sh`; hook URLs in
+  `~/.config/purplelink/netlify-build-hooks.json`, never print them; log `~/Library/Logs/purplelink-netlify-batch.log`).
+  To ship something now (a checkout, delivery or security fix): put `[deploy now]` in the PR title or squash message,
+  or run `bash ~/.purplelink/bin/netlify-batch-build.sh manual` after the merge. Do not call `netlify api
+  createSiteBuild` after merges any more. Verifying a change live means waiting for the next scheduled build or using
+  one of those two. Netlify Starter allows 300 build minutes a month.
 
 - Frontend: `bash scripts/deploy.sh` (Netlify `--prod` + IndexNow ping).
 - Backend (Modal): `bash scripts/deploy.sh --backend`.
