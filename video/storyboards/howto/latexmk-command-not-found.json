@@ -1,0 +1,47 @@
+{
+ "id": "howto-latexmk-command-not-found",
+ "app": "moderntex",
+ "title": "latexmk: command not found on Mac (BasicTeX fix)",
+ "short_title": "latexmk: command not found? Two commands fix it",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://email.esm.psu.edu/pipermail/macosx-tex/2026-March/059196.html"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "env -i PATH=/usr/bin:/bin /bin/zsh -c 'latexmk -pdf main.tex; biber main'", "output": "zsh: command not found: latexmk\nzsh: command not found: biber"},
+   {"cmd": "tlmgr install --dry-run latexmk biber", "output": "tlmgr install: dry run, no changes will be made"},
+   {"cmd": "latexmk -v", "output": "Latexmk, John Collins, 9 March 2026. Version 4.88"},
+   {"cmd": "biber --version", "output": "biber version: 2.22"}
+  ],
+  "docs": ["https://tug.org/mactex/morepackages.html", "https://www.tug.org/texlive/doc/tlmgr.html"],
+  "notes": "Packages latexmk and biber exist in TeX Live 2026 (tlmgr info). BasicTeX installs into a root-owned tree, so its tlmgr needs sudo; the fix Ben gave a customer on 2026-10-14 worked."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "LaTeX on a Mac", "title": "latexmk: command not found", "sub": "The build stops before it starts.",
+   "narration": "If your LaTeX build on a Mac stops with latexmk: command not found, or biber: command not found, here is the fix."},
+  {"type": "symptom", "short": true, "label": "Terminal",
+   "lines": ["$ latexmk -pdf main.tex", "zsh: command not found: latexmk", "$ biber main", "zsh: command not found: biber"],
+   "narration": "This is what it looks like in Terminal. In VS Code, LaTeX Workshop reports the same thing as spawn latexmk E N O E N T."},
+  {"type": "cause", "text": "BasicTeX is the small version of MacTeX. It leaves out latexmk and biber.",
+   "narration": "BasicTeX is the small version of MacTeX. It leaves out latexmk and biber, the two tools most editors call to build a document and its bibliography."},
+  {"type": "steps", "short": true, "label": "Terminal",
+   "lines": ["$ sudo tlmgr update --self", "$ sudo tlmgr install latexmk biber"],
+   "ui": "BasicTeX's files belong to the system, so each command asks for your Mac password.",
+   "narration": "Open Terminal. Update the package manager first, then install both tools. BasicTeX's files belong to the system, so each command needs sudo and your Mac password."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "Both installed",
+   "lines": ["$ latexmk -v", "Latexmk, John Collins, 9 March 2026. Version 4.88", "$ biber --version", "biber version: 2.22"],
+   "narration": "Check both. If each prints a version, open a new Terminal window or restart your editor, and build again."},
+  {"type": "app", "name": "ModernTex", "line": "Uses the TeX installation that has everything a build needs, and installs a missing package for you.",
+   "url": "purplelink.llc/moderntex", "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp", "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex picks the TeX installation that has everything a build needs, and installs a missing package for you. There is a free seven day trial."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "msg": "latexmk: command not found"},
+  "B": {"kind": "long", "msg": "latexmk: command not found", "n": 2, "unit": "commands", "sub": "and it builds again"},
+  "C": {"kind": "product", "name": "ModernTex", "line": "latexmk not found? Fixed in Terminal", "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp", "icon": "site/assets/moderntex-icon.png", "zoom": 1.7, "pos": "28% 22%"}
+ }
+}

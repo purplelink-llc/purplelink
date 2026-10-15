@@ -1,0 +1,13 @@
+[
+ {
+  "slug": "howto-latexmk-command-not-found",
+  "app": "moderntex",
+  "date": "2026-10-15",
+  "title": "latexmk: command not found on Mac (BasicTeX fix)",
+  "long_id": "7uwmuvckBuI",
+  "short_id": "ns6BHuHYbC0",
+  "sources": [
+   "https://email.esm.psu.edu/pipermail/macosx-tex/2026-March/059196.html"
+  ]
+ }
+]
