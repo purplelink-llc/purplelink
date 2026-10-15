@@ -28,7 +28,7 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=7dd899cd0a">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <link rel="stylesheet" href="/moderntex/seats.css?v=191e754b6e">
+    <link rel="stylesheet" href="/moderntex/seats.css?v=5607673283">
     <link rel="stylesheet" href="/buy.css?v=589347358c">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -112,12 +112,12 @@
             {
               "@type": "Question",
               "name": "How is ModernTex different from TeXShop or Overleaf?",
-              "acceptedAnswer": { "@type": "Answer", "text": "ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks, built around how researchers write. Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration, and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing. For a draft several people type in at once, keep Overleaf." }
+              "acceptedAnswer": { "@type": "Answer", "text": "ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks, built around how researchers write. Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration (Git needs a paid Overleaf plan; the zip works on every plan), and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing. For a draft several people type in at once, keep Overleaf." }
             },
             {
               "@type": "Question",
               "name": "Can I move a project from Overleaf?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Download the project as a zip, or clone it with Overleaf's Git integration, and open the folder in ModernTex. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf at any time." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Download the project as a zip, or clone it with Overleaf's Git integration (Git needs a paid Overleaf plan; the zip works on every plan), and open the folder in ModernTex. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf at any time." }
             },
             {
               "@type": "Question",
@@ -148,6 +148,21 @@
               "@type": "Question",
               "name": "What if I stop using ModernTex?",
               "acceptedAnswer": { "@type": "Answer", "text": "Your manuscripts stay ordinary .tex, .bib and image files in a folder on your disk, so TeXShop, TeXstudio or any other LaTeX editor can open them. There is no account to close and no subscription to cancel. If the trial ends before you buy, the window shows a notice and a Buy button, and your files are not touched." }
+            },
+            {
+              "@type": "Question",
+              "name": "What if ModernTex stops being updated?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Your manuscripts are ordinary .tex and .bib files, so nothing is locked in. The license key is checked inside the app with an offline signature check and no server, so a key you have keeps working without any Purplelink service, and the copy you installed keeps running. ModernTex is made by one person, and I do not promise a support period. The refund window is 14 days." }
+            },
+            {
+              "@type": "Question",
+              "name": "What does Fix with AI send?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only when you click it on a build error. By default it runs on Apple Intelligence on your Mac and sends nothing. If you choose a Claude or OpenAI account instead, the app asks for your consent first, and then sends the lines around the error, some surrounding context and the document preamble to that provider. The repair is shown as a diff, and nothing changes until you accept it." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it work with my journal's or university's class file?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Any class you can compile with LaTeX works: put the class file in the project folder. ModernTex also bundles starter templates for several information systems journals, computer science conferences and a generic thesis. The free starters on this site for ACM, IEEE, Elsevier, APA 7 and the academic CV each compiled with TinyTeX and latexmk when I tested them on October 15, 2026, after the publisher class was installed with tlmgr. The NeurIPS starter needs the current year's style file from the conference, so I make no compile claim for it." }
             }
           ]
         },
@@ -398,6 +413,27 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
       <p class="mt-not-for"><strong>Not the right fit if</strong> several co-authors need to type in the same document at the same moment (keep Overleaf for that draft), you work on Windows, Linux or an iPad, or you would rather not have a TeX distribution on your Mac. ModernTex was first released in September 2026, so it has less of a track record than TeXShop or Texifier. The <a href="/guides/best-mac-latex-editors/">comparison of Mac LaTeX editors</a> covers the alternatives.</p>
     </section>
 
+    <section class="features-section" id="switching" aria-labelledby="switching-h">
+      <div class="features-header">
+        <p class="eyebrow">Switching</p>
+        <h2 id="switching-h">Coming from another editor</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>From Overleaf</h3>
+          <p>Bring the project over as a zip, or as a Git clone if your Overleaf plan has Git. It builds on your Mac, so there is no compile timeout. There is no real-time co-editing, so a co-author can stay in Overleaf. <a href="#coauthors">How that works</a>, and <a href="#vs-overleaf">the comparison</a>.</p>
+        </div>
+        <div class="feature-item">
+          <h3>From TeXShop or TeXstudio</h3>
+          <p>Open the same folder; there is nothing to convert. What changes is plain-language errors, bibliography search by author or title, and submission checks. It is Mac only. <a href="#vs-free-editors">The comparison</a>.</p>
+        </div>
+        <div class="feature-item">
+          <h3>From VS Code</h3>
+          <p>VS Code with LaTeX Workshop is free and very configurable. ModernTex is for people who want build, PDF, bibliography and submission checks to work without setting anything up. If you like building your own setup, stay where you are. <a href="/guides/best-mac-latex-editors/#hands-on">What I tested</a>.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="specs-section" aria-labelledby="specs-h">
       <p class="eyebrow">At a glance</p>
       <h2 id="specs-h">ModernTex, in facts</h2>
@@ -410,12 +446,12 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
           <tr><th scope="row">TeX distribution</th><td>Uses MacTeX or TinyTeX. If neither is installed, ModernTex offers a one-click TinyTeX install.</td></tr>
           <tr><th scope="row">Your files</th><td>Ordinary .tex, .bib and figure files in a folder on your disk. No cloud storage and no account.</td></tr>
           <tr><th scope="row">Working with co-authors</th><td>No real-time co-editing. Get Changes and Send Changes sync between your Macs or with a co-author.</td></tr>
-          <tr><th scope="row">AI features</th><td>Optional. Fix with AI proposes a repair for a build error and shows it as a diff before anything changes. It runs on Apple Intelligence on your Mac, or on your own Claude or OpenAI account. Purplelink charges nothing for it.</td></tr>
+          <tr><th scope="row">AI features</th><td>Optional. Fix with AI proposes a repair for a build error and shows it as a diff before anything changes. It runs on Apple Intelligence on your Mac, or on your own Claude or OpenAI account. Nothing leaves your Mac unless you sign in to Claude or add an OpenAI key, and the app asks for your consent before the first request to either. Purplelink charges nothing for it.</td></tr>
           <tr><th scope="row">Updates</th><td>Checks once a day and installs in place, or choose Check for Updates.</td></tr>
-          <tr><th scope="row">Current version</th><td>1.9.0, which adds Edit &gt; Convert Accent Commands to Characters, following the file's inputenc declaration so a Latin-1 file stays Latin-1, and makes a double-click in the PDF jump to the source when direct PDF editing is off. 1.8.0 keeps typing fast in long documents, compiles only the edited chapter for Live previews of books and theses, does less work in the background, shows the PDF light by default, and is a smaller download. 1.7.6 picks the TeX installation that has latexmk and biber when a Mac has more than one. 1.7.5 runs biber or bibtex again on the next Full build after it failed once, and shows its real error. 1.7.4 shows only the warnings left in the finished PDF after a Full build. 1.7.3 runs biber on every Full build, including with LuaLaTeX or XeLaTeX chosen as the engine. 1.7.2 keeps the status bar from sticking on Compiling (Live), names the real error in the editor note, and suggests the right name for a misspelled package. 1.7.1 shows build errors raised inside a package (such as hyperref or biblatex) instead of hiding them, adds an SBL (Society of Biblical Literature) reference style, stops the whole TeX process tree when you cancel a build, and builds projects in cloud-synced folders outside the synced folder. 1.6.3 opens the sidebar wider and gives New File and New Folder icon buttons under a Project files heading. 1.6.2 puts the title bar and the toolbar in one row, with the window buttons at the left end of the toolbar. 1.6.1 shortens the toolbar into Insert and Cite menus and a search field, keeps the Build Results panel closed until you open it, and marks the line of a build error in the editor with a one-click fix. 1.6.0 builds a PDF of your project with your edits marked since the last time you synced, and can mark what the last Get Changes brought in. 1.5.0 builds projects kept in iCloud Drive and OneDrive, flags a Figure that points at a table, suggests the label you meant, shows a checks summary in the status bar and saves automatic checkpoints. 1.4.0 made ModernTex one download: free for seven days, then a license key, with copies you already bought left as they are. 1.3.6 made the free trial show the right price and adds one note near the end of the trial. 1.3.5 made the plain Light and Dark themes change the whole window and toolbar tooltips are drawn by the app. 1.3.4 fixed Command-click in the PDF not scrolling the editor and made the toolbar fit narrow windows. 1.3.3 added fixes to jumping between the editor and the PDF, a PDF-only layout, a sidebar toggle and plain light and dark editor themes. 1.3.2 changed the key used to verify updates. 1.3.1 added one Settings window with editor fonts, line spacing, syntax colors and Zen mode. <a href="/changelog/">Changelog</a></td></tr>
+          <tr><th scope="row">Current version</th><td>1.9.0, released October 15, 2026. <a href="#changelog">Every update since launch is listed below</a>.</td></tr>
         </tbody>
       </table>
-      <div class="release-strip">
+      <div class="release-strip" id="changelog">
         <h3 class="release-strip-head">Twenty-four updates since launch on September 4</h3>
         <ol class="release-list" data-motion="stagger">
           <li><time datetime="2026-10-15">Oct 15</time><strong>1.9.0</strong><span>Edit &gt; Convert Accent Commands to Characters, which keeps a Latin-1 file in Latin-1, and double-click in the PDF to jump to the source.</span></li>
@@ -468,6 +504,12 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         </tbody>
       </table>
       <p class="specs-more"><strong>Prefer Overleaf</strong> when several people edit the same draft at the same time, or when you work on Windows, Linux or an iPad. <strong>Prefer ModernTex</strong> when you write mostly alone on a Mac and want no subscription, no account and no compile limit. Moving over is a zip download or a Git clone (see <a href="#faq">the FAQ</a>).</p>
+      <div class="specs-coauthor" id="coauthors">
+        <h3>A co-author who stays in Overleaf</h3>
+        <p>ModernTex can keep a local copy of an Overleaf project through Overleaf's Git integration. In Overleaf, open the project, choose Menu, then Git, and copy the address, which looks like https://git.overleaf.com/ followed by the project id. Create a Git authentication token in your Overleaf account settings. In ModernTex, open Overleaf sync (Command-Shift-E), paste the address, and enter the token as the password. Pull, edit and build on your Mac, then Push to send your changes back to the project. Your co-author sees them in Overleaf.</p>
+        <p>Two limits. Overleaf's Git integration is a paid Overleaf feature: it is available when the project's owner has a paid plan (<a href="https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/git-integration" rel="noopener">Overleaf's Git documentation</a>, read October 15, 2026). The zip route works on every plan. And it is not real-time: you and your co-author each work on a copy, and Overleaf advises against mixing Git pushes with its track changes and comments, because a push can disrupt them.</p>
+        <p>For two Macs, or a co-author who uses GitHub or GitLab, Get Changes and Send Changes work with any plain Git remote, and Changes Since Last Sync builds a PDF with your edits marked. Step by step: <a href="/guides/move-overleaf-project-to-mac-with-git/">Move an Overleaf project to a local Mac editor with Git</a>.</p>
+      </div>
     </section>
 
         <section class="specs-section" id="vs-free-editors" aria-labelledby="vs-free-editors-h">
@@ -565,11 +607,11 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         <details class="faq-item">
           <summary>How is ModernTex different from TeXShop or Overleaf?</summary>
           <div class="faq-body">ModernTex is a native macOS app designed specifically for the academic manuscript workflow. It is not a web app and not a general-purpose code editor. It combines multi-file manuscript navigation, synchronized PDF preview, BibTeX autocomplete that searches by author or title, plain-language error diagnostics, and submission-readiness checks. Designed for researchers, not programmers.</div>
-          <div class="faq-body">Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration, and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing. For a draft several people type in at once, keep Overleaf. <a href="/guides/best-mac-latex-editors/">See how the best LaTeX editors for Mac compare</a>, or read <a href="/guides/overleaf-alternative-mac/">what changes when you move from Overleaf to a Mac editor</a>.</div>
+          <div class="faq-body">Coming from Overleaf: download the project as a zip, or clone it with Overleaf's Git integration (Git needs a paid Overleaf plan; the zip works on every plan), and open the folder. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf or open them in TeXShop at any time. There is no real-time co-editing. For a draft several people type in at once, keep Overleaf. <a href="/guides/best-mac-latex-editors/">See how the best LaTeX editors for Mac compare</a>, or read <a href="/guides/overleaf-alternative-mac/">what changes when you move from Overleaf to a Mac editor</a>.</div>
         </details>
         <details class="faq-item">
           <summary>Can I move a project from Overleaf?</summary>
-          <div class="faq-body">Yes. Download the project as a zip, or clone it with Overleaf's Git integration, and open the folder in ModernTex. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf at any time. <a href="/guides/overleaf-alternative-mac/">What changes when you write locally</a></div>
+          <div class="faq-body">Yes. Download the project as a zip, or clone it with Overleaf's Git integration (Git needs a paid Overleaf plan; the zip works on every plan), and open the folder in ModernTex. The files stay ordinary .tex, .bib and image files, so you can upload them back to Overleaf at any time. <a href="/guides/overleaf-alternative-mac/">What changes when you write locally</a></div>
         </details>
         <details class="faq-item">
           <summary>Why not just use a free editor like TeXstudio?</summary>
@@ -594,6 +636,18 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         <details class="faq-item">
           <summary>What if I stop using ModernTex?</summary>
           <div class="faq-body">Your manuscripts stay ordinary .tex, .bib and image files in a folder on your disk, so TeXShop, TeXstudio or any other LaTeX editor can open them. There is no account to close and no subscription to cancel. If the trial ends before you buy, the window shows a notice and a Buy button, and your files are not touched.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What if ModernTex stops being updated?</summary>
+          <div class="faq-body">Your manuscripts are ordinary .tex and .bib files, so nothing is locked in. The license key is checked inside the app with an offline signature check and no server, so a key you have keeps working without any Purplelink service, and the copy you installed keeps running. ModernTex is made by one person, and I do not promise a support period. The refund window is 14 days.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What does Fix with AI send?</summary>
+          <div class="faq-body">Only when you click it on a build error. By default it runs on Apple Intelligence on your Mac and sends nothing. If you choose a Claude or OpenAI account instead, the app asks for your consent first, and then sends the lines around the error, some surrounding context and the document preamble to that provider. The repair is shown as a diff, and nothing changes until you accept it.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it work with my journal's or university's class file?</summary>
+          <div class="faq-body">Any class you can compile with LaTeX works: put the class file in the project folder. ModernTex also bundles starter templates for several information systems journals, computer science conferences and a generic thesis. The free starters on this site for <a href="/templates/acm-acmart/">ACM</a>, <a href="/templates/ieee-conference/">IEEE</a>, <a href="/templates/elsevier-elsarticle/">Elsevier</a>, <a href="/templates/apa7/">APA 7</a> and the <a href="/templates/academic-cv/">academic CV</a> each compiled with TinyTeX and latexmk when I tested them on October 15, 2026, after the publisher class was installed with tlmgr. The <a href="/templates/neurips/">NeurIPS</a> starter needs the current year's style file from the conference, so I make no compile claim for it.</div>
         </details>
       </div>
     </section>
