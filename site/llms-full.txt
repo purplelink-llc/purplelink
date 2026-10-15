@@ -4998,7 +4998,7 @@ What it does not do is real-time collaboration. It is a single-user app, and two
 
 A LaTeX project is portable by design, so the move takes minutes. Most of the work is matching the settings Overleaf chose for you. Follow these steps in order.
 
-- Download the source. In the Overleaf editor, open the Menu and choose Download > Source. You get a zip of every file in the project. Unzip it into a folder you will keep, not your Downloads folder.
+- Download the source. In the Overleaf editor, open the Menu and choose Download > Source. You get a zip of every file in the project. Unzip it into a folder you will keep, not your Downloads folder. If you are downloading the project to send it to a journal instead, see how to package the source as a ZIP.
 
 - Install a TeX distribution. MacTeX is the full TeX Live for macOS, about 6.4 GB as the install guide lists it (BasicTeX is 134 MB), and includes every package a template is likely to load. TinyTeX and BasicTeX are far smaller and add packages as you need them with tlmgr install. If disk space is not a problem, MacTeX saves you a round of "file not found" errors.
 
@@ -5129,7 +5129,7 @@ BibTeX completion that searches by author, title or key. BibTeX or biblatex with
 
 TeXShop
 Free. GPL (version 2), source available.
-macOS only. The current release is for Intel and Apple silicon, and its site lists High Sierra through Tahoe.
+macOS only. The current release is for Intel and Apple silicon, and its site lists High Sierra through Tahoe. On macOS 27, users reported a preview that lands one page early with 5.57 and, in a second report, a blank console. The maintainer's source page offers a Golden Gate build, 5.58 (TeX.SE reports, September 2026).
 Separate. Installed with MacTeX, or get BasicTeX and TeXShop on their own.
 Yes, both directions, with a command-click or the contextual menu
 Yes. A root comment in each chapter file makes typesetting a chapter build the whole document.
@@ -5209,7 +5209,7 @@ A LaTeX project is a folder of ordinary files, so opening it in a second editor 
 
 October 7, 2026. The TeXShop and TeXstudio facts above were checked against these pages on that date. Versions and requirements change, so check the project's own site before you rely on a detail.
 
-- TeXShop: home page (licence, release, supported systems), About TeXShop, Obtaining, Tahoe, and the changes page (sync, root comment, BibTeX, latexmk engines, completion).
+- TeXShop: home page (licence, release, supported systems), About TeXShop, Obtaining, Tahoe, the changes page (sync, root comment, BibTeX, latexmk engines, completion) and, for macOS 27, the maintainer's TeXShop on macOS Golden Gate page (the 5.58 build), with two user reports on TeX Stack Exchange: a preview that jumps one page back after typesetting (asked September 17, 2026, with an answer pointing to 5.58) and a blank console after updating to macOS 27 (asked September 14, 2026, unanswered when I read it). The macOS 27 note was added and checked on October 15, 2026.
 
 - MacTeX: home page and GUI applications (TeXShop installed with MacTeX, and the Tahoe build).
 
@@ -5816,6 +5816,245 @@ On these four documents, LuaLaTeX used more CPU time than pdfLaTeX on the cold b
 
 ---
 
+Source: https://purplelink.llc/guides/submit-latex-source-to-journal-zip/
+Title: How to submit LaTeX source files to a journal as a ZIP | Purplelink
+
+← All guides
+
+Guide
+
+# How to submit LaTeX source files to a journal as a ZIP
+
+By Benjamin Ampel · October 15, 2026
+
+Put every file the build needs in one folder with no subfolders, add the generated .bbl bibliography file, compile once from that folder, and ZIP the files themselves. Elsevier and Springer Nature each state rules that a normal Overleaf or Mac project breaks, and arXiv states a third set. Each rule below carries its source and the date I read it.
+
+Disclosure: Purplelink makes ModernTex, a Mac LaTeX editor. It is mentioned once, near the end, and only for what its export does today. Everything else here applies to any editor.
+
+## The short answer
+
+- Make a copy of the project. Work in the copy so your real project keeps its folders.
+
+- Flatten it. Move every .tex, .bib, .bbl, .bst, .cls, .sty and figure file into one folder. Delete the folder names from \includegraphics, \input, \include and \bibliography paths.
+
+- Add the .bbl. It is the bibliography your build already generated (a list of formatted references). Journal systems often cannot rebuild it from your .bib.
+
+- Compile from the flat copy. If it builds there with no errors, the journal's system has the best chance of building it.
+
+- ZIP the files, not the folder. Open the ZIP listing and confirm it has no folder entries.
+
+## What the publishers say
+
+I read each page below on October 15, 2026. The table keeps to what the pages state, and the next sections explain how to meet each rule. Journals also publish their own author instructions, which win over the general pages here.
+
+Stated rules for LaTeX source, read October 15, 2026
+
+Rule
+Elsevier (Editorial Manager)
+Springer Nature
+arXiv
+
+Subfolders
+Not processed. All files sit at the same folder level, and archives with subdirectories cause failures.
+Keep all files in a single directory. Subfolders cause missing figures.
+Allowed. The main file may sit in the root or a subdirectory, and compilation runs from the submission root.
+
+Figure paths
+File name only, such as alld.eps, not images/alld.eps.
+Local file name only, such as figure_1.jpg, not a full path.
+Relative to the submission root. No on-the-fly figure conversion, so convert EPS to PDF yourself for pdfLaTeX.
+
+Bibliography
+Either a .bib with \bibliography, or the .bbl included with \input{filename.bbl}. Use the .bbl if the bibliography does not appear.
+Upload a .bbl or .bib plus the .bst. Pasting the .bbl contents into the main .tex is called the most reliable method.
+A .bbl is used if present, and its name must match the main .tex file. Without one, arXiv needs the .bib and picks the bibliography program itself.
+
+TeX Live on their side
+The page does not state a version for Editorial Manager.
+Editorial Manager 2018, eJP 2017, Snapp 2021.
+2025 (default) or 2023.
+
+Archive
+ZIP or tar.gz. RAR is not supported.
+Snapp needs a .zip.
+A (possibly compressed) .tar or .zip.
+
+Engine
+Tries LaTeX first, then pdfLaTeX. XeLaTeX works with a first-line comment (below).
+Snapp must compile with pdfLaTeX.
+For pdfLaTeX, figures must be PDF, PNG or JPEG.
+
+Three observations from the table. First, Elsevier and Springer Nature both require the flat folder, so one flat ZIP meets both. Second, arXiv accepts folders, but a flat ZIP is also valid there, so the flat copy is the one package you can reuse for all three. Third, only Springer Nature names the TeX Live years it uses, and they are older than the TeX Live on a current Mac, so package versions can differ between your build and theirs.
+
+## What goes in the ZIP
+
+Include only what the build reads. For a typical manuscript that means these files.
+
+- Source: the main .tex file and every file it pulls in with \input or \include.
+
+- Bibliography: the .bbl, and the .bib and .bst if the journal asks for them (Springer Nature does, when you upload a .bib).
+
+- Class and style files: any .cls or .sty the journal's template needs that is not in TeX Live. Elsevier's page says a .sty file is required for compilation, and to upload it as a Manuscript item if it is missing.
+
+- Figures: every image the paper uses, in a format your engine reads.
+
+Leave out .aux, .log, .out, .synctex.gz, the compiled PDF of your own manuscript, and any backup copies. arXiv's page says it removes auxiliary and output files named after your source automatically, with .bbl and .ind as the exceptions, and asks you to exclude unused files. The two commercial pages do not say what they do with them, so leave them out there as well.
+
+File names matter too. Elsevier's page asks for one period per file name (fig1.eps is valid and fig.1.eps is not), excludes names with special characters such as G+.eps, and excludes reserved Windows names such as NUL and CON. It also says not to give a PDF and a LaTeX file the same base name. Its page adds that .tif files cannot be used inside \includegraphics. Convert those to PNG or PDF.
+
+## Generate the .bbl
+
+A .bbl file is written by BibTeX or Biber (the programs that turn a .bib database into formatted references) each time you build. It sits next to your main file and is named after it, so paper.tex produces paper.bbl. Follow these steps.
+
+- Compile the project completely: LaTeX, then BibTeX or Biber, then LaTeX twice more. latexmk -pdf paper.tex does all of that.
+
+- Confirm the PDF shows numbered or author-year citations, not question marks.
+
+- Copy paper.bbl into your flat folder.
+
+Then choose one of two ways to use it, depending on the system.
+
+- Include it by name (Elsevier). Replace \bibliography{refs} with \input{paper.bbl}, keeping the \bibliographystyle line only if your template needs it. This is Method B on Elsevier's page.
+
+- Paste it into the main file (Springer Nature). Comment out the \bibliography{...} line and paste the contents of the .bbl in its place. Springer Nature's page calls this the most reliable method for both Editorial Manager and eJP.
+
+- Leave it beside the main file (arXiv). Name it after the main .tex file, and arXiv uses it. If you use biblatex, the page says the .bbl must come from the same backend that builds the document, Biber or BibTeX, and arXiv's page lists the .bbl format each TeX Live release accepts. Build with the TeX Live year closest to the one you submit to.
+
+A .bbl is a snapshot. If you edit the .bib or change a citation afterwards, rebuild and replace the copy, or the ZIP carries stale references.
+
+## Flatten the folders and fix the paths
+
+Say your project looks like this.
+
+paper.tex
+refs.bib
+sections/intro.tex
+sections/methods.tex
+figures/fig1.pdf
+figures/fig2.png
+
+Copy the project, then move everything into the top folder. Check for two files with the same name in different folders (for example two results.png files) and rename one before you move it. Then update every path that pointed into a folder.
+
+\input{sections/intro} becomes \input{intro}
+\input{sections/methods} becomes \input{methods}
+\includegraphics{figures/fig1} becomes \includegraphics{fig1}
+\includegraphics{figures/fig2} becomes \includegraphics{fig2}
+
+Search the main file and each section file for four things: \input, \include, \includegraphics and \graphicspath. A \graphicspath{{figures/}} line hides the folder in the figure commands, so delete it too. Also check template files that load a logo or a data file by path, and \addbibresource if you use biblatex. Compile again. Any "file not found" error names a path you missed.
+
+## The engine and the old TeX Live
+
+The journal compiles your files with its own TeX Live, which may be several years older than yours. Springer Nature's page lists 2018 for Editorial Manager, 2017 for eJP and 2021 for Snapp. A package released after that year can build on your Mac and fail there. Three habits reduce the risk.
+
+- Use the journal's template. It was written for their system.
+
+- Avoid very new packages and options. If the build log on their side names a missing package, look for an older equivalent or ship the .sty file in the ZIP.
+
+- Read their log. Elsevier's and Springer Nature's Editorial Manager both return an error log when conversion fails. The Elsevier page says to open the submission PDF from "View Submission", and a failed build shows the TeX error codes there.
+
+For engines, Elsevier's page says Editorial Manager tries LaTeX first and then pdfLaTeX, and that XeLaTeX works if line 1 of the .tex file is %!TEX TS-program = xelatex. Springer Nature's Snapp compiles with pdfLaTeX only, so a LuaLaTeX or XeLaTeX project needs a pdfLaTeX-compatible preamble there.
+
+## Do it from Overleaf
+
+Overleaf's documentation (read October 15, 2026) separates three downloads, and the first one is not enough for most journals.
+
+- Source ZIP. File, then Download, then Download as source (.zip). It holds the source files only. It does not include the PDF, and Overleaf says the generated files are left out.
+
+- Submission ZIP with the .bbl. File, then Submit, then pick a journal or service and select Download project ZIP with submission files. Overleaf says this ZIP includes the .bbl and is in the format arXiv expects. It does not submit anything. If your project uses a journal template, the Submit menu may show only that journal, and Overleaf says to make a copy of the project to see every option.
+
+- The .bbl alone. Click Logs and output files beside Recompile, scroll to Other logs and files, and download output.bbl. Overleaf's page gives the same steps for pasting its contents into the main .tex file.
+
+Overleaf's documentation does not say that either ZIP flattens your folders. Unzip it and look. If it has folders and your journal is Elsevier or Springer Nature, flatten it as described above. Elsevier's page also notes that Overleaf produces a PDF even when there are errors, so read the compile log for warnings before you export.
+
+## Do it from a Mac
+
+Any editor works, because the rules apply to the files and not to the program that wrote them. These steps use only built-in tools.
+
+- Duplicate the project folder in Finder.
+
+- Flatten the copy and fix the paths as above, then build it with latexmk -pdf paper.tex in Terminal.
+
+- Delete the build files: latexmk -c removes most of them and keeps the .bbl.
+
+- Make the ZIP from inside the folder, so the archive has no folder entry. In Terminal, run cd into the folder, then zip -X ../submission.zip *.
+
+- Check the contents with unzip -l ../submission.zip. Every line should be a file name with no / in it.
+
+I used zip -X on purpose. I made a test archive with ditto, the command-line tool that produces the same kind of ZIP as Finder's Compress, from a folder whose files carried macOS extended attributes. The archive held the folder itself plus a __MACOSX folder of ._ files. I did not click through Finder, and I did not try uploading such an archive to a journal. A folder entry is, however, the thing the Elsevier and Springer Nature pages say to avoid, so check the listing before you upload. The zip -X archive from the same files held only the two files.
+
+ModernTex's submission export builds a ZIP of the manuscript without build files, and it is built for blind review, not for these systems. In the source I read on October 15, 2026, it keeps subfolders and leaves out the .bbl, so it does not produce a journal-ready ZIP for Editorial Manager. Treat its output as a starting point and apply the steps above.
+
+## Checklist
+
+- The ZIP holds only files, with no folder entries and no __MACOSX folder.
+
+- The main .tex, the class and style files, and every figure are inside it.
+
+- No \includegraphics, \input or \include path contains a folder name.
+
+- The .bbl is current and either pasted into the main file or included by name.
+
+- File names have one period, no special characters and no duplicates.
+
+- Figures are PDF, PNG or JPEG. EPS and TIFF have been converted.
+
+- The project builds from the flat folder with no errors in the log, not only a PDF.
+
+- After upload, you opened the PDF the system built and read it page by page.
+
+## Common causes of a rejected or broken build
+
+- Question marks where figures or tables should be. Elsevier's page ties this to archives with subdirectories. Flatten and re-upload.
+
+- Question marks in place of citations. The bibliography file was not used. Springer Nature's page lists a missing .bib, .bst or .bbl, or a .bbl that the main file never imports. Elsevier's page says incorrect bibliography formatting. Paste the .bbl into the main file.
+
+- A missing file error. Springer Nature's page gives trackchanges.sty as an example. Put the file in the ZIP, and match the name and case exactly.
+
+- An EPS figure that fails. Elsevier's page says EPS files may fail, and that those with embedded fonts are not processed. Convert to PDF or PNG yourself.
+
+- An unrecognized .bbl on Springer Nature's eJP. The page says to copy the \bibitem entries into the bibliography environment in the main file and check that every key matches its citation.
+
+- Boxes or broken text. Springer Nature's page says this usually means special characters were not converted to TeX code, such as \"a for an umlaut.
+
+- A package that builds for you and not for them. See the TeX Live section above.
+
+## Last checked
+
+October 15, 2026. Every rule above was read on that date from these pages. Publisher rules change, and a journal's own author instructions can differ, so check them before you upload.
+
+- Elsevier: How to submit a LaTeX file in Editorial Manager (page dated May 4, 2025).
+
+- Springer Nature: LaTeX author support.
+
+- arXiv: Submitting TeX/LaTeX.
+
+- Overleaf: Downloading a project, Generated files and Checklist for arXiv submissions.
+
+- ModernTex: the product page, and its export source file SubmissionExportService.swift, which I read on the same date.
+
+I did not cover IEEE or ACM. ACM's author pages returned an access block when I tried to read them, and I found no IEEE page that states rules for LaTeX source ZIPs. If something here is out of date or wrong, write to ben@purplelink.llc and I will fix it.
+
+## Frequently asked questions
+
+Do I need to include the .bbl file when I submit LaTeX to a journal?
+
+Often yes. Springer Nature's page calls pasting the .bbl into the main .tex file the most reliable method, Elsevier offers the .bbl as the fallback when the bibliography does not appear, and arXiv uses a .bbl whose name matches the main file. Read the journal's own instructions, because they decide.
+
+Can my LaTeX ZIP contain folders?
+
+Not for Elsevier's Editorial Manager or for Springer Nature, whose pages say subfolders cause failures or missing figures. arXiv accepts folders and compiles from the submission root. A flat ZIP satisfies all three.
+
+Why do my citations show question marks after I upload?
+
+The system could not use your bibliography. Check that the .bbl or .bib and the .bst are in the ZIP, that the main file reads the .bbl, and that no folder name is in the path. Pasting the .bbl contents into the main .tex file avoids most of these causes.
+
+How do I download a LaTeX project from Overleaf for a journal?
+
+Use File, Submit, choose a journal or service, and select Download project ZIP with submission files, which includes the .bbl. The plain Download as source (.zip) option leaves out generated files such as the .bbl. Unzip the result and flatten it if the journal forbids subfolders.
+
+
+---
+
 Source: https://purplelink.llc/guides/best-mac-latex-editors/
 Title: LaTeX Editor for Mac: Best macOS Editors of 2026, 16 Compared
 
@@ -5852,6 +6091,8 @@ Signed and notarized by AppleYesNo (the Apple silicon build is unsigned, so macO
 Finds a TeX installation by itselfOnly at the MacTeX location. With TinyTeX it compiled nothing until I set the TeX path in its preferences.Not on this Mac. I started it with the TinyTeX folder as the TeX pathNot tested
 
 One compileRan LaTeX once. The PDF and SyncTeX file were written. The citation stayed undefined until BibTeX was run as a separate step.Ran BibTeX itself. The citation resolved and only my undefined reference remained.Not verified: my automated build command did not start a build
+
+The TeXShop column is the 5.57 release tested on October 11, 2026. For reports about TeXShop on macOS 27 and the 5.58 build, see the TeXShop alternatives guide.
 
 Two readings follow from this. First, TeXShop works as long as MacTeX is installed, and the extra BibTeX step is the kind of thing a new user trips on. Second, TeXstudio's compile handled the bibliography on its own. However, its Apple silicon download is unsigned, a hurdle for a first-time Mac user. I make no claim about VS Code's compile because I could not confirm one.
 

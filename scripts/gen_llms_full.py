@@ -58,6 +58,7 @@ PAGES = [
     "guides/install-latex-on-mac/",
     "guides/overleaf-compile-timeout/",
     "guides/latex-compile-time-benchmark-mac/",
+    "guides/submit-latex-source-to-journal-zip/",
     "guides/best-mac-latex-editors/",
     "guides/best-pii-redaction-tools-for-chatgpt/",
     "guides/best-academic-record-tracking-software/",
