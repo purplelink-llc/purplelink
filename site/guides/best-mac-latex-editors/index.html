@@ -122,7 +122,7 @@
 }
 </script>
     <script src="/theme.js?v=07d8025cab"></script>
-<link rel="stylesheet" href="/styles.css?v=532fe2c022">
+<link rel="stylesheet" href="/styles.css?v=7dd899cd0a">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
@@ -158,6 +158,22 @@
         <h2>The short answer</h2>
         <p>TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $39.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 15, 2026.</p>
 
+        <aside class="guide-mtx-card" aria-labelledby="mtx-card-h">
+          <div>
+            <p class="eyebrow">I make this one</p>
+            <h2 id="mtx-card-h">ModernTex: $19.99 once, free for 7 days</h2>
+            <p>A native Mac editor for journal articles and theses. It compiles on your Mac with MacTeX or TinyTeX, explains compile errors in plain language, and checks a manuscript before you submit. No account, and the trial is the full app.</p>
+            <div class="guide-mtx-actions">
+              <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?src=guide&amp;trial=1" data-track="guide_mtx_trial" data-track-meta="editors-guide:top">Try free for 7 days</a>
+              <a class="btn btn-ghost" href="/moderntex/" data-track="guide_mtx_click" data-track-meta="editors-guide:top-page">See what it does</a>
+            </div>
+            <p class="guide-mtx-note">Disclosure: I make ModernTex, so weigh this card accordingly. The comparison below treats it like the others. Requires macOS 14 or later.</p>
+          </div>
+          <figure class="frame-soft">
+            <img src="/assets/moderntex-screens/01-editor-clean-800.webp" alt="ModernTex editor: document outline, LaTeX source and the built PDF side by side" width="800" height="440" loading="lazy" decoding="async">
+          </figure>
+        </aside>
+
         <h2 id="hands-on">Tested on October 11, 2026: TeXShop, TeXstudio, VS Code</h2>
         <p>I installed the three free editors on an Apple silicon Mac, compiled one small article in each, then removed them. The file had one citation, one deliberately undefined reference and a BibTeX file. This Mac has TinyTeX, not MacTeX, so it also tested how each editor finds a TeX installation. I drove each app with AppleScript and keystrokes, so this covers installing, launching and compiling. It does not cover every menu, and I did not test SyncTeX click-to-source, autocomplete or error messages.</p>
         <div class="u-scroll-x">
@@ -189,7 +205,7 @@
               <tr><td class="u-cell"><strong>Octree</strong></td><td class="u-cell">Free tier with limits, paid plan about $10/mo</td><td class="u-cell">Web, with a Mac wrapper</td><td class="u-cell">Not stated, the project lives on Octree's servers by default</td><td class="u-cell">Not stated</td><td class="u-cell">Manuscript is on Octree's servers by default</td></tr>
               <tr><td class="u-cell"><strong>VS Code + LaTeX Workshop</strong></td><td class="u-cell">Free</td><td class="u-cell">Cross-platform</td><td class="u-cell">Not stated</td><td class="u-cell">SyncTeX preview</td><td class="u-cell">Feels like a code file, not a paper</td></tr>
               <tr><td class="u-cell"><strong>Overleaf</strong></td><td class="u-cell">Free tier (limited compile time, no Git sync), paid plans $98 a year (Student) or $199 a year (Standard), or $25 a month billed monthly</td><td class="u-cell">Browser</td><td class="u-cell">No offline access on the free tier, paid tiers not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Free tier has limited compile time and no Git sync</td></tr>
-              <tr><td class="u-cell"><strong>ModernTex (mine)</strong></td><td class="u-cell">$19.99 once, after a free 7-day trial</td><td class="u-cell">macOS 14+</td><td class="u-cell">Yes: compiles with local MacTeX or TinyTeX</td><td class="u-cell">PDF preview that stays in sync, SyncTeX not stated</td><td class="u-cell">Version 1.0 shipped in September 2026, so no track record, no iPad app</td></tr>
+              <tr><td class="u-cell"><strong>ModernTex (mine)</strong></td><td class="u-cell">$19.99 once, after a free 7-day trial</td><td class="u-cell">macOS 14+</td><td class="u-cell">Yes: compiles with local MacTeX or TinyTeX</td><td class="u-cell">PDF preview that stays in sync. Command-click in the PDF jumps to the source line, and Command-Control-J jumps the PDF to the cursor</td><td class="u-cell">Version 1.0 shipped in September 2026, so no track record, no iPad app</td></tr>
               <tr><td class="u-cell"><strong>TeXstudio</strong></td><td class="u-cell">Free, open source</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">Integrated PDF viewer with SyncTeX</td><td class="u-cell">Qt application, does not feel like a Mac app</td></tr>
               <tr><td class="u-cell"><strong>Texmaker</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated</td><td class="u-cell">Built-in PDF viewer, SyncTeX</td><td class="u-cell">Simpler than TeXstudio, with fewer features</td></tr>
               <tr><td class="u-cell"><strong>TeXworks</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS, Windows, Linux</td><td class="u-cell">Not stated, ships inside MacTeX and TeX Live</td><td class="u-cell">PDF window, SyncTeX</td><td class="u-cell">Minimal: source window, PDF window, a typeset button</td></tr>
@@ -291,11 +307,15 @@
         <p>If a large project hits the free tier's compile time limit, see <a href="/guides/overleaf-compile-timeout/">what to do about an Overleaf compile timeout</a>.</p>
 
         <h2>ModernTex</h2>
-        <p><strong>Cost:</strong> $19.99, one-time, all updates included, forever, after a free 7-day trial. <strong>Platform:</strong> macOS 14+. <strong>Status:</strong> shipping since September 2026. Current version 1.3.6.</p>
+        <p><strong>Cost:</strong> $19.99, one-time, all updates included, forever, after a free 7-day trial. <strong>Platform:</strong> macOS 14+. <strong>Status:</strong> shipping since September 2026. Updated often since launch; the release list is on the <a href="/moderntex/">product page</a>.</p>
         <p>I built ModernTex because the existing options miss a few things that matter for academic manuscript work. It explains compile errors in plain language (BibTeX-style cryptic errors are the #1 frustration for new users). Its BibTeX autocomplete searches by author or title across your entire <code>.bib</code>. Revision snapshots are tied to ideas, not files. Submission-readiness checks catch journal-specific issues before you upload. A live TikZ figure editor builds flowcharts and diagrams by dragging boxes instead of writing coordinates by hand.</p>
         <p><strong>Why a new editor when Texifier exists:</strong> Texifier is excellent. However, it targets general LaTeX users (programmers, technical writers, students). ModernTex narrows the focus to <em>academic manuscript writers</em> (the workflow of writing a journal article or dissertation chapter, from outline to camera-ready). That is a deliberate constraint.</p>
         <p><strong>What it lacks:</strong> a track record. Version 1.0 shipped in September 2026, so it has none of the twenty years of edge-case coverage TeXShop has, and no iPad app. It needs MacTeX or <a href="https://yihui.org/tinytex/" rel="noopener">TinyTeX</a>, and offers a one-click TinyTeX install if neither is found.</p>
         <p><strong>Pick ModernTex if</strong> you write journal articles or dissertation chapters on a Mac and the manuscript-first features above are what you keep wishing for. <a href="/moderntex/">The trial is free for seven days. Keeping it is $19.99, once</a>.</p>
+        <div class="guide-mtx-actions">
+          <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?src=guide&amp;trial=1" data-track="guide_mtx_trial" data-track-meta="editors-guide:section">Try ModernTex free for 7 days</a>
+          <a class="btn btn-ghost" href="/moderntex/" data-track="guide_mtx_click" data-track-meta="editors-guide:section-page">ModernTex page</a>
+        </div>
 
         <h2 id="more-editors">Eight more LaTeX editors that run on a Mac</h2>
         <p>Every one of these works on macOS today. They are not on the shortlist because, for someone choosing an editor on a Mac in 2026, one of the six above does each one's best job better. The exception is TeXstudio, which is the right answer for a specific person: anyone who also works on Windows or Linux.</p>

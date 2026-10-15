@@ -5569,3 +5569,24 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 @media (max-width: 640px) {
   .trust-list li { grid-template-columns: 1fr; }
 }
+
+/* ModernTex card inside a guide (best-mac-latex-editors): screenshot, price, trial button. Uses the theme tokens only. */
+.guide-mtx-card {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+  gap: 20px 28px;
+  align-items: center;
+  margin: 28px 0;
+  padding: 22px 26px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+.guide-mtx-card h2 { margin: 4px 0 8px; font-size: clamp(1.3rem, 2.4vw, 1.7rem); }
+.guide-mtx-card p { margin: 0 0 10px; color: var(--muted); line-height: 1.6; }
+.guide-mtx-card .guide-mtx-note { font-size: 0.9rem; }
+.guide-mtx-card .frame-soft { margin: 0; }
+.guide-mtx-actions { display: flex; flex-wrap: wrap; gap: 10px 12px; margin: 14px 0 12px; }
+@media (max-width: 720px) {
+  .guide-mtx-card { grid-template-columns: 1fr; }
+}
