@@ -176,7 +176,7 @@
         <h2>One timed local compile</h2>
         <p>To give the local build a concrete number, I generated a test document and compiled it once. It is synthetic, not an Overleaf project: 30 sections of generated filler text, 30 numbered equations and 30 small TikZ drawings, which came to 68 pages. I did not compile it on Overleaf, so this does not show how Overleaf would handle it, and it says nothing about your project.</p>
         <pre><code>time latexmk -pdf -interaction=nonstopmode test.tex</code></pre>
-        <p>I ran it once on October 13, 2026, on a Mac with an Apple M4 chip running macOS 27.2, with pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026) and Latexmk 4.88. The result was 2.9 seconds of wall time from a clean folder. I did not average runs or separate a first build from a later one. A real thesis with large images, a bibliography and many packages will take longer. To know how much, time your own project as described above.</p>
+        <p>I ran it once on October 13, 2026, on a Mac with an Apple M4 chip running macOS 27.2, with pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026) and Latexmk 4.88. The result was 2.9 seconds of wall time from a clean folder. I did not average runs or separate a first build from a later one. A real thesis with large images, a bibliography and many packages will take longer. To know how much, time your own project as described above, or see the <a href="/guides/latex-compile-time-benchmark-mac/">repeatable benchmark of four document types and three engines</a> for measured cold and rebuild times.</p>
 
         <h2>An offline workflow, short version</h2>
         <ol>
