@@ -41,7 +41,7 @@ export function stageBrandAudio(assetsDir, brandDir) {
 const TRENDS_ROOT = process.env.TRENDS_ROOT || "/Volumes/Extreme SSD/TikTokPipeline";
 const TRENDS_PY = fs.existsSync("/Library/Frameworks/Python.framework/Versions/3.12/bin/python3") ? "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3" : "python3";
 
-export function addTrendBed(file, id, { bedDb = -22 } = {}) {
+export function addTrendBed(file, id, { bedDb = -16 } = {}) {
   if (process.env.TRENDS_BED === "0") return "trend bed disabled (TRENDS_BED=0)";
   if (!fs.existsSync(path.join(TRENDS_ROOT, "shared_media", "trends", "cli.py"))) return `trend bed skipped: no ${TRENDS_ROOT}/shared_media/trends`;
   const tmpBed = `${file}.bed.wav`;
