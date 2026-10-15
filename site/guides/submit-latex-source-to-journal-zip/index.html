@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>How to submit LaTeX source files to a journal as a ZIP | Purplelink</title>
+    <meta name="description" content="Package LaTeX source for Elsevier, Springer Nature or arXiv: one flat folder, the .bbl file, fixed figure paths, a checklist, and the Overleaf and Mac steps. Each rule is sourced and dated.">
+    <link rel="canonical" href="https://purplelink.llc/guides/submit-latex-source-to-journal-zip/">
+    <meta property="og:title" content="How to submit LaTeX source files to a journal as a ZIP">
+    <meta property="og:description" content="Package LaTeX source for Elsevier, Springer Nature or arXiv: one flat folder, the .bbl file, fixed figure paths, a checklist, and the Overleaf and Mac steps. Each rule is sourced and dated.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/submit-latex-source-to-journal-zip/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-submit-latex-source-to-journal-zip.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to submit LaTeX source files to a journal as a ZIP">
+    <meta name="twitter:description" content="Package LaTeX source for Elsevier, Springer Nature or arXiv: one flat folder, the .bbl file, fixed figure paths, a checklist, and the Overleaf and Mac steps. Each rule is sourced and dated.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-submit-latex-source-to-journal-zip.jpg">
+    <meta name="twitter:image:alt" content="Purplelink">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "How to submit LaTeX source files to a journal as a ZIP",
+          "description": "Package LaTeX source for Elsevier, Springer Nature or arXiv: one flat folder, the .bbl file, fixed figure paths, a checklist, and the Overleaf and Mac steps. Each rule is sourced and dated.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-10-15",
+          "dateModified": "2026-10-15",
+          "image": "https://purplelink.llc/assets/og/cards/guides-submit-latex-source-to-journal-zip.jpg",
+          "mainEntityOfPage": "https://purplelink.llc/guides/submit-latex-source-to-journal-zip/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "Submit LaTeX source as a ZIP", "item": "https://purplelink.llc/guides/submit-latex-source-to-journal-zip/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need to include the .bbl file when I submit LaTeX to a journal?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Often yes. Springer Nature's page calls pasting the .bbl into the main .tex file the most reliable method, Elsevier offers the .bbl as the fallback when the bibliography does not appear, and arXiv uses a .bbl whose name matches the main file. Read the journal's own instructions, because they decide."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can my LaTeX ZIP contain folders?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not for Elsevier's Editorial Manager or for Springer Nature, whose pages say subfolders cause failures or missing figures. arXiv accepts folders and compiles from the submission root. A flat ZIP satisfies all three."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do my citations show question marks after I upload?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The system could not use your bibliography. Check that the .bbl or .bib and the .bst are in the ZIP, that the main file reads the .bbl, and that no folder name is in the path. Pasting the .bbl contents into the main .tex file avoids most of these causes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I download a LaTeX project from Overleaf for a journal?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use File, Submit, choose a journal or service, and select Download project ZIP with submission files, which includes the .bbl. The plain Download as source (.zip) option leaves out generated files such as the .bbl. Unzip the result and flatten it if the journal forbids subfolders."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=532fe2c022">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=fb682a98eb" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">How to submit LaTeX source files to a journal as a ZIP</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-15">October 15, 2026</time></p>
+        <p class="post-lede">Put every file the build needs in one folder with no subfolders, add the generated <code>.bbl</code> bibliography file, compile once from that folder, and ZIP the files themselves. Elsevier and Springer Nature each state rules that a normal Overleaf or Mac project breaks, and arXiv states a third set. Each rule below carries its source and the date I read it.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure:</strong> Purplelink makes ModernTex, a Mac LaTeX editor. It is mentioned once, near the end, and only for what its export does today. Everything else here applies to any editor.</p>
+
+        <h2>The short answer</h2>
+        <ol>
+          <li><strong>Make a copy of the project.</strong> Work in the copy so your real project keeps its folders.</li>
+          <li><strong>Flatten it.</strong> Move every <code>.tex</code>, <code>.bib</code>, <code>.bbl</code>, <code>.bst</code>, <code>.cls</code>, <code>.sty</code> and figure file into one folder. Delete the folder names from <code>\includegraphics</code>, <code>\input</code>, <code>\include</code> and <code>\bibliography</code> paths.</li>
+          <li><strong>Add the <code>.bbl</code>.</strong> It is the bibliography your build already generated (a list of formatted references). Journal systems often cannot rebuild it from your <code>.bib</code>.</li>
+          <li><strong>Compile from the flat copy.</strong> If it builds there with no errors, the journal's system has the best chance of building it.</li>
+          <li><strong>ZIP the files, not the folder.</strong> Open the ZIP listing and confirm it has no folder entries.</li>
+        </ol>
+
+        <h2>What the publishers say</h2>
+        <p>I read each page below on October 15, 2026. The table keeps to what the pages state, and the next sections explain how to meet each rule. Journals also publish their own author instructions, which win over the general pages here.</p>
+        <table class="compare-table compare-stack">
+          <caption>Stated rules for LaTeX source, read October 15, 2026</caption>
+          <thead>
+            <tr>
+              <th scope="col">Rule</th>
+              <th scope="col">Elsevier (Editorial Manager)</th>
+              <th scope="col">Springer Nature</th>
+              <th scope="col">arXiv</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Subfolders</th>
+              <td data-label="Elsevier (Editorial Manager)">Not processed. All files sit at the same folder level, and archives with subdirectories cause failures.</td>
+              <td data-label="Springer Nature">Keep all files in a single directory. Subfolders cause missing figures.</td>
+              <td data-label="arXiv">Allowed. The main file may sit in the root or a subdirectory, and compilation runs from the submission root.</td>
+            </tr>
+            <tr>
+              <th scope="row">Figure paths</th>
+              <td data-label="Elsevier (Editorial Manager)">File name only, such as <code>alld.eps</code>, not <code>images/alld.eps</code>.</td>
+              <td data-label="Springer Nature">Local file name only, such as <code>figure_1.jpg</code>, not a full path.</td>
+              <td data-label="arXiv">Relative to the submission root. No on-the-fly figure conversion, so convert EPS to PDF yourself for pdfLaTeX.</td>
+            </tr>
+            <tr>
+              <th scope="row">Bibliography</th>
+              <td data-label="Elsevier (Editorial Manager)">Either a <code>.bib</code> with <code>\bibliography</code>, or the <code>.bbl</code> included with <code>\input{filename.bbl}</code>. Use the <code>.bbl</code> if the bibliography does not appear.</td>
+              <td data-label="Springer Nature">Upload a <code>.bbl</code> or <code>.bib</code> plus the <code>.bst</code>. Pasting the <code>.bbl</code> contents into the main <code>.tex</code> is called the most reliable method.</td>
+              <td data-label="arXiv">A <code>.bbl</code> is used if present, and its name must match the main <code>.tex</code> file. Without one, arXiv needs the <code>.bib</code> and picks the bibliography program itself.</td>
+            </tr>
+            <tr>
+              <th scope="row">TeX Live on their side</th>
+              <td data-label="Elsevier (Editorial Manager)">The page does not state a version for Editorial Manager.</td>
+              <td data-label="Springer Nature">Editorial Manager 2018, eJP 2017, Snapp 2021.</td>
+              <td data-label="arXiv">2025 (default) or 2023.</td>
+            </tr>
+            <tr>
+              <th scope="row">Archive</th>
+              <td data-label="Elsevier (Editorial Manager)">ZIP or tar.gz. RAR is not supported.</td>
+              <td data-label="Springer Nature">Snapp needs a <code>.zip</code>.</td>
+              <td data-label="arXiv">A (possibly compressed) <code>.tar</code> or <code>.zip</code>.</td>
+            </tr>
+            <tr>
+              <th scope="row">Engine</th>
+              <td data-label="Elsevier (Editorial Manager)">Tries LaTeX first, then pdfLaTeX. XeLaTeX works with a first-line comment (below).</td>
+              <td data-label="Springer Nature">Snapp must compile with pdfLaTeX.</td>
+              <td data-label="arXiv">For pdfLaTeX, figures must be PDF, PNG or JPEG.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Three observations from the table. First, Elsevier and Springer Nature both require the flat folder, so one flat ZIP meets both. Second, arXiv accepts folders, but a flat ZIP is also valid there, so the flat copy is the one package you can reuse for all three. Third, only Springer Nature names the TeX Live years it uses, and they are older than the TeX Live on a current Mac, so package versions can differ between your build and theirs.</p>
+
+        <h2>What goes in the ZIP</h2>
+        <p>Include only what the build reads. For a typical manuscript that means these files.</p>
+        <ul>
+          <li><strong>Source:</strong> the main <code>.tex</code> file and every file it pulls in with <code>\input</code> or <code>\include</code>.</li>
+          <li><strong>Bibliography:</strong> the <code>.bbl</code>, and the <code>.bib</code> and <code>.bst</code> if the journal asks for them (Springer Nature does, when you upload a <code>.bib</code>).</li>
+          <li><strong>Class and style files:</strong> any <code>.cls</code> or <code>.sty</code> the journal's template needs that is not in TeX Live. Elsevier's page says a <code>.sty</code> file is required for compilation, and to upload it as a Manuscript item if it is missing.</li>
+          <li><strong>Figures:</strong> every image the paper uses, in a format your engine reads.</li>
+        </ul>
+        <p>Leave out <code>.aux</code>, <code>.log</code>, <code>.out</code>, <code>.synctex.gz</code>, the compiled PDF of your own manuscript, and any backup copies. arXiv's page says it removes auxiliary and output files named after your source automatically, with <code>.bbl</code> and <code>.ind</code> as the exceptions, and asks you to exclude unused files. The two commercial pages do not say what they do with them, so leave them out there as well.</p>
+        <p>File names matter too. Elsevier's page asks for one period per file name (<code>fig1.eps</code> is valid and <code>fig.1.eps</code> is not), excludes names with special characters such as <code>G+.eps</code>, and excludes reserved Windows names such as <code>NUL</code> and <code>CON</code>. It also says not to give a PDF and a LaTeX file the same base name. Its page adds that <code>.tif</code> files cannot be used inside <code>\includegraphics</code>. Convert those to PNG or PDF.</p>
+
+        <h2>Generate the .bbl</h2>
+        <p>A <code>.bbl</code> file is written by BibTeX or Biber (the programs that turn a <code>.bib</code> database into formatted references) each time you build. It sits next to your main file and is named after it, so <code>paper.tex</code> produces <code>paper.bbl</code>. Follow these steps.</p>
+        <ol>
+          <li>Compile the project completely: LaTeX, then BibTeX or Biber, then LaTeX twice more. <code>latexmk -pdf paper.tex</code> does all of that.</li>
+          <li>Confirm the PDF shows numbered or author-year citations, not question marks.</li>
+          <li>Copy <code>paper.bbl</code> into your flat folder.</li>
+        </ol>
+        <p>Then choose one of two ways to use it, depending on the system.</p>
+        <ul>
+          <li><strong>Include it by name (Elsevier).</strong> Replace <code>\bibliography{refs}</code> with <code>\input{paper.bbl}</code>, keeping the <code>\bibliographystyle</code> line only if your template needs it. This is Method B on Elsevier's page.</li>
+          <li><strong>Paste it into the main file (Springer Nature).</strong> Comment out the <code>\bibliography{...}</code> line and paste the contents of the <code>.bbl</code> in its place. Springer Nature's page calls this the most reliable method for both Editorial Manager and eJP.</li>
+          <li><strong>Leave it beside the main file (arXiv).</strong> Name it after the main <code>.tex</code> file, and arXiv uses it. If you use biblatex, the page says the <code>.bbl</code> must come from the same backend that builds the document, Biber or BibTeX, and arXiv's page lists the <code>.bbl</code> format each TeX Live release accepts. Build with the TeX Live year closest to the one you submit to.</li>
+        </ul>
+        <p>A <code>.bbl</code> is a snapshot. If you edit the <code>.bib</code> or change a citation afterwards, rebuild and replace the copy, or the ZIP carries stale references.</p>
+
+        <h2>Flatten the folders and fix the paths</h2>
+        <p>Say your project looks like this.</p>
+        <pre><code>paper.tex
+refs.bib
+sections/intro.tex
+sections/methods.tex
+figures/fig1.pdf
+figures/fig2.png</code></pre>
+        <p>Copy the project, then move everything into the top folder. Check for two files with the same name in different folders (for example two <code>results.png</code> files) and rename one before you move it. Then update every path that pointed into a folder.</p>
+        <pre><code>\input{sections/intro}          becomes   \input{intro}
+\input{sections/methods}        becomes   \input{methods}
+\includegraphics{figures/fig1}  becomes   \includegraphics{fig1}
+\includegraphics{figures/fig2}  becomes   \includegraphics{fig2}</code></pre>
+        <p>Search the main file and each section file for four things: <code>\input</code>, <code>\include</code>, <code>\includegraphics</code> and <code>\graphicspath</code>. A <code>\graphicspath{{figures/}}</code> line hides the folder in the figure commands, so delete it too. Also check template files that load a logo or a data file by path, and <code>\addbibresource</code> if you use biblatex. Compile again. Any "file not found" error names a path you missed.</p>
+
+        <h2>The engine and the old TeX Live</h2>
+        <p>The journal compiles your files with its own TeX Live, which may be several years older than yours. Springer Nature's page lists 2018 for Editorial Manager, 2017 for eJP and 2021 for Snapp. A package released after that year can build on your Mac and fail there. Three habits reduce the risk.</p>
+        <ul>
+          <li><strong>Use the journal's template.</strong> It was written for their system.</li>
+          <li><strong>Avoid very new packages and options.</strong> If the build log on their side names a missing package, look for an older equivalent or ship the <code>.sty</code> file in the ZIP.</li>
+          <li><strong>Read their log.</strong> Elsevier's and Springer Nature's Editorial Manager both return an error log when conversion fails. The Elsevier page says to open the submission PDF from "View Submission", and a failed build shows the TeX error codes there.</li>
+        </ul>
+        <p>For engines, Elsevier's page says Editorial Manager tries LaTeX first and then pdfLaTeX, and that XeLaTeX works if line 1 of the <code>.tex</code> file is <code>%!TEX TS-program = xelatex</code>. Springer Nature's Snapp compiles with pdfLaTeX only, so a LuaLaTeX or XeLaTeX project needs a pdfLaTeX-compatible preamble there.</p>
+
+        <h2>Do it from Overleaf</h2>
+        <p>Overleaf's documentation (read October 15, 2026) separates three downloads, and the first one is not enough for most journals.</p>
+        <ol>
+          <li><strong>Source ZIP.</strong> <strong>File</strong>, then <strong>Download</strong>, then <strong>Download as source (.zip)</strong>. It holds the source files only. It does not include the PDF, and Overleaf says the generated files are left out.</li>
+          <li><strong>Submission ZIP with the .bbl.</strong> <strong>File</strong>, then <strong>Submit</strong>, then pick a journal or service and select <strong>Download project ZIP with submission files</strong>. Overleaf says this ZIP includes the <code>.bbl</code> and is in the format arXiv expects. It does not submit anything. If your project uses a journal template, the Submit menu may show only that journal, and Overleaf says to make a copy of the project to see every option.</li>
+          <li><strong>The .bbl alone.</strong> Click <strong>Logs and output files</strong> beside <strong>Recompile</strong>, scroll to <strong>Other logs and files</strong>, and download <code>output.bbl</code>. Overleaf's page gives the same steps for pasting its contents into the main <code>.tex</code> file.</li>
+        </ol>
+        <p>Overleaf's documentation does not say that either ZIP flattens your folders. Unzip it and look. If it has folders and your journal is Elsevier or Springer Nature, flatten it as described above. Elsevier's page also notes that Overleaf produces a PDF even when there are errors, so read the compile log for warnings before you export.</p>
+
+        <h2>Do it from a Mac</h2>
+        <p>Any editor works, because the rules apply to the files and not to the program that wrote them. These steps use only built-in tools.</p>
+        <ol>
+          <li>Duplicate the project folder in Finder.</li>
+          <li>Flatten the copy and fix the paths as above, then build it with <code>latexmk -pdf paper.tex</code> in Terminal.</li>
+          <li>Delete the build files: <code>latexmk -c</code> removes most of them and keeps the <code>.bbl</code>.</li>
+          <li>Make the ZIP from inside the folder, so the archive has no folder entry. In Terminal, run <code>cd</code> into the folder, then <code>zip -X ../submission.zip *</code>.</li>
+          <li>Check the contents with <code>unzip -l ../submission.zip</code>. Every line should be a file name with no <code>/</code> in it.</li>
+        </ol>
+        <p>I used <code>zip -X</code> on purpose. I made a test archive with <code>ditto</code>, the command-line tool that produces the same kind of ZIP as Finder's <strong>Compress</strong>, from a folder whose files carried macOS extended attributes. The archive held the folder itself plus a <code>__MACOSX</code> folder of <code>._</code> files. I did not click through Finder, and I did not try uploading such an archive to a journal. A folder entry is, however, the thing the Elsevier and Springer Nature pages say to avoid, so check the listing before you upload. The <code>zip -X</code> archive from the same files held only the two files.</p>
+        <p>ModernTex's submission export builds a ZIP of the manuscript without build files, and it is built for blind review, not for these systems. In the source I read on October 15, 2026, it keeps subfolders and leaves out the <code>.bbl</code>, so it does not produce a journal-ready ZIP for Editorial Manager. Treat its output as a starting point and apply the steps above.</p>
+
+        <h2>Checklist</h2>
+        <ol>
+          <li>The ZIP holds only files, with no folder entries and no <code>__MACOSX</code> folder.</li>
+          <li>The main <code>.tex</code>, the class and style files, and every figure are inside it.</li>
+          <li>No <code>\includegraphics</code>, <code>\input</code> or <code>\include</code> path contains a folder name.</li>
+          <li>The <code>.bbl</code> is current and either pasted into the main file or included by name.</li>
+          <li>File names have one period, no special characters and no duplicates.</li>
+          <li>Figures are PDF, PNG or JPEG. EPS and TIFF have been converted.</li>
+          <li>The project builds from the flat folder with no errors in the log, not only a PDF.</li>
+          <li>After upload, you opened the PDF the system built and read it page by page.</li>
+        </ol>
+
+        <h2>Common causes of a rejected or broken build</h2>
+        <ul>
+          <li><strong>Question marks where figures or tables should be.</strong> Elsevier's page ties this to archives with subdirectories. Flatten and re-upload.</li>
+          <li><strong>Question marks in place of citations.</strong> The bibliography file was not used. Springer Nature's page lists a missing <code>.bib</code>, <code>.bst</code> or <code>.bbl</code>, or a <code>.bbl</code> that the main file never imports. Elsevier's page says incorrect bibliography formatting. Paste the <code>.bbl</code> into the main file.</li>
+          <li><strong>A missing file error.</strong> Springer Nature's page gives <code>trackchanges.sty</code> as an example. Put the file in the ZIP, and match the name and case exactly.</li>
+          <li><strong>An EPS figure that fails.</strong> Elsevier's page says EPS files may fail, and that those with embedded fonts are not processed. Convert to PDF or PNG yourself.</li>
+          <li><strong>An unrecognized <code>.bbl</code> on Springer Nature's eJP.</strong> The page says to copy the <code>\bibitem</code> entries into the bibliography environment in the main file and check that every key matches its citation.</li>
+          <li><strong>Boxes or broken text.</strong> Springer Nature's page says this usually means special characters were not converted to TeX code, such as <code>\"a</code> for an umlaut.</li>
+          <li><strong>A package that builds for you and not for them.</strong> See the TeX Live section above.</li>
+        </ul>
+
+        <h2>Last checked</h2>
+        <p>October 15, 2026. Every rule above was read on that date from these pages. Publisher rules change, and a journal's own author instructions can differ, so check them before you upload.</p>
+        <ul>
+          <li>Elsevier: <a href="https://www.elsevier.support/publishing/answer/how-to-submit-a-latex-file-in-editorial-manager" rel="noopener">How to submit a LaTeX file in Editorial Manager</a> (page dated May 4, 2025).</li>
+          <li>Springer Nature: <a href="https://www.springernature.com/la/authors/campaigns/latex-author-support" rel="noopener">LaTeX author support</a>.</li>
+          <li>arXiv: <a href="https://info.arxiv.org/help/submit_tex.html" rel="noopener">Submitting TeX/LaTeX</a>.</li>
+          <li>Overleaf: <a href="https://docs.overleaf.com/managing-projects-and-files/downloading-a-project" rel="noopener">Downloading a project</a>, <a href="https://docs.overleaf.com/navigating-in-the-editor/generated-files" rel="noopener">Generated files</a> and <a href="https://docs.overleaf.com/troubleshooting-and-support/checklist-for-arxiv-submissions" rel="noopener">Checklist for arXiv submissions</a>.</li>
+          <li>ModernTex: <a href="/moderntex/">the product page</a>, and its export source file <code>SubmissionExportService.swift</code>, which I read on the same date.</li>
+        </ul>
+        <p>I did not cover IEEE or ACM. ACM's author pages returned an access block when I tried to read them, and I found no IEEE page that states rules for LaTeX source ZIPs. If something here is out of date or wrong, write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will fix it.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Do I need to include the .bbl file when I submit LaTeX to a journal?</summary><div class="faq-body">Often yes. Springer Nature's page calls pasting the .bbl into the main .tex file the most reliable method, Elsevier offers the .bbl as the fallback when the bibliography does not appear, and arXiv uses a .bbl whose name matches the main file. Read the journal's own instructions, because they decide.</div></details>
+        <details><summary>Can my LaTeX ZIP contain folders?</summary><div class="faq-body">Not for Elsevier's Editorial Manager or for Springer Nature, whose pages say subfolders cause failures or missing figures. arXiv accepts folders and compiles from the submission root. A flat ZIP satisfies all three.</div></details>
+        <details><summary>Why do my citations show question marks after I upload?</summary><div class="faq-body">The system could not use your bibliography. Check that the .bbl or .bib and the .bst are in the ZIP, that the main file reads the .bbl, and that no folder name is in the path. Pasting the .bbl contents into the main .tex file avoids most of these causes.</div></details>
+        <details><summary>How do I download a LaTeX project from Overleaf for a journal?</summary><div class="faq-body">Use File, Submit, choose a journal or service, and select Download project ZIP with submission files, which includes the .bbl. The plain Download as source (.zip) option leaves out generated files such as the .bbl. Unzip the result and flatten it if the journal forbids subfolders.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/tools/submission-checklist/">Submission checklist</a></li>
+          <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors</a></li>
+          <li><a href="/guides/camera-ready-checklist/">Camera-ready checklist</a></li>
+          <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=bcc135f878" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
