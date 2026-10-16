@@ -72,6 +72,15 @@
         <span class="changelog-date">October 16, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>Summonly 1.3.0</h2>
+          <p>Faster search. Summonly keeps the names of your files in memory, so one or two letters now find matches in a few thousandths of a second instead of up to two thirds of a second on a large index. After a restart it reads only what changed while it was closed, instead of going through every folder again, and a full scan walks folders several times faster. The index takes about a third less disk space; it is rebuilt once after the update, in the background, and search keeps working while it does. Earlier versions install 1.3.0 through Check for Updates, or you can download it from the <a href="/summonly/">Summonly</a> page.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 16, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>ModernTex 1.10.1</h2>
           <p>Fixes for thesis and journal templates. With no saved engine, no <code>% !TEX program</code> line and no latexmkrc that sets one, ModernTex picks the engine from the preamble: LuaLaTeX for <code>\DocumentMetadata</code>, fontspec, unicode-math or polyglossia, XeLaTeX for XeTeX-only packages such as xeCJK or bidi, and pdfLaTeX for documents that check which engine they run on. A missing bibliography style such as agsm.bst now names the TeX Live package it comes with and offers to install it. After a failed build the preview shows a PDF only if ModernTex built it, so a PDF shipped with a template is no longer shown as your document. When the open file belongs to a main file that brings in chapters with <code>\input</code>, <code>\include</code>, <code>\subfile</code> or <code>\import</code>, the Outline lists the whole document. Earlier versions install 1.10.1 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
         </div>
