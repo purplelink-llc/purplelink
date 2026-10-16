@@ -29,6 +29,7 @@ import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { bundleHasPart } from "../lib/bundles.mjs";
 import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
+import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "tapefolio-files";
@@ -76,6 +77,8 @@ async function loadSession(sessionId) {
   if (!resp.ok) return { error: json(403, { error: "session_not_found", detail: "That download link is not valid for this store." }) };
   const session = await resp.json();
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
+  // A fully refunded or disputed order no longer gets the file (netlify/lib/refunds.mjs).
+  if (await revocationFor(session)) return { error: json(403, { error: "refunded", detail: REVOKED_DETAIL }) };
   // The Mac Suite, and a custom bundle that names this app, include it, so their sessions unlock the same download.
   const bought = session.metadata?.product || "";
   if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "tapefolio")) {

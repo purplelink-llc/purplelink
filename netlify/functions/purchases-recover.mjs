@@ -23,6 +23,7 @@ import { issuePanelyLicense } from "../lib/panely-license.mjs";
 import { issueSummonlyLicense } from "../lib/summonly-license.mjs";
 import { issueModernTexLicense, licenseKeysForSession, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
 import { entitledParts, isBundleProduct, partsSentence, bundlePartsOf } from "../lib/bundles.mjs";
+import { revocationFor, paymentIntentOf } from "../lib/refunds.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const RESEND_API_URL = "https://api.resend.com/emails";
@@ -83,7 +84,7 @@ export async function purchasesForEmail(email, secretKey) {
         // Live sheets start on a free trial, so their session is complete but unpaid.
         const live = LIVE_PRODUCTS.has(product) && s.status === "complete";
         if (!live && (s.payment_status !== "paid" || !BLOB_DELIVERED_PRODUCTS.has(product))) continue;
-        found.set(s.id, { sessionId: s.id, product, created: s.created || 0, seats: parseInt(s?.metadata?.seats || "0", 10) || 0, apps: s?.metadata?.apps || "" });
+        found.set(s.id, { sessionId: s.id, product, created: s.created || 0, seats: parseInt(s?.metadata?.seats || "0", 10) || 0, apps: s?.metadata?.apps || "", paymentIntent: paymentIntentOf(s) });
       }
       if (!res.data?.has_more || rows.length === 0) break;
       after = rows[rows.length - 1].id;
@@ -186,9 +187,38 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
   };
 }
 
-async function sendRecovery(to, purchases) {
+/**
+ * Splits out the purchases that were fully refunded or disputed (netlify/lib/refunds.mjs). Their links and keys are
+ * not sent again; the email says so in one line instead, since it only ever goes to the buyer's own address.
+ */
+export async function withoutRevoked(purchases) {
+  const kept = [];
+  let revoked = 0;
+  for (const p of purchases) {
+    if (await revocationFor({ payment_intent: p.paymentIntent })) revoked++;
+    else kept.push(p);
+  }
+  return { kept, revoked };
+}
+
+const REVOKED_LINE =
+  "An order made with this address was refunded or disputed, so its download links and license keys are no longer sent. " +
+  "If you think this is a mistake, reply to this email.";
+
+/** The email when every purchase found was refunded or disputed; exported for tests. */
+export function revokedOnlyEmail() {
+  const outro = "If you did not ask for this, you can ignore it; nothing has changed.";
+  return {
+    subject: "Your Purplelink purchases",
+    text: `${REVOKED_LINE}\n\n${outro}\n\nPurplelink LLC, Atlanta, Georgia`,
+    html: `<p>${REVOKED_LINE}</p><p>${outro}</p><p>Purplelink LLC, Atlanta, Georgia</p>`,
+  };
+}
+
+async function sendRecovery(to, purchases, revoked = 0) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   if (!apiKey) return false;
+  if (!purchases.length) return postMail(apiKey, to, revokedOnlyEmail());
   // The ModernTex key is derived from the newest ModernTex or Suite purchase, so it matches what that
   // purchase's own email and download page show. Keyfeel's and Tapefolio's keys are derived from the address (their own schemes).
   const mtxPurchase = purchases.find((p) => p.product === "moderntex" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("moderntex")));
@@ -200,6 +230,14 @@ async function sendRecovery(to, purchases) {
   const summonlyLicense = hasPart("summonly") ? issueSummonlyLicense(to) : null;
   const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId, { seats: p.seats || 0, apps: p.apps || "" }).filter((k) => k.slug !== "moderntex")]));
   const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense, panelyLicense, summonlyLicense);
+  if (revoked) {
+    mail.text = mail.text.replace("If you did not ask for this", `${REVOKED_LINE}\n\nIf you did not ask for this`);
+    mail.html = mail.html.replace("<p>If you did not ask for this", `<p>${REVOKED_LINE}</p><p>If you did not ask for this`);
+  }
+  return postMail(apiKey, to, mail);
+}
+
+async function postMail(apiKey, to, mail) {
   try {
     const resp = await fetch(RESEND_API_URL, {
       method: "POST",
@@ -218,7 +256,8 @@ async function recover(email, secretKey) {
     console.error("purchases-recover: lookup failed", found.error);
     return;
   }
-  if (found.purchases.length && !(await sendRecovery(email, found.purchases))) {
+  const { kept, revoked } = await withoutRevoked(found.purchases);
+  if ((kept.length || revoked) && !(await sendRecovery(email, kept, revoked))) {
     console.error("purchases-recover: email failed");
   }
 }

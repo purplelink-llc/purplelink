@@ -13,6 +13,7 @@ import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { licenseKeysForSession } from "./stripe-webhook.mjs";
 import { entitledParts, isBundleProduct } from "../lib/bundles.mjs";
+import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
@@ -52,6 +53,8 @@ export default async function handler(request) {
   if (!resp.ok) return json(403, { error: "session_not_found", detail: "That link is not valid for this store." });
   const session = await resp.json();
   if (session.payment_status !== "paid") return json(403, { error: "not_paid", detail: "This order has not been paid." });
+  // Keys verify offline and cannot be revoked, but a fully refunded or disputed order is not handed them again.
+  if (await revocationFor(session)) return json(403, { error: "refunded", detail: REVOKED_DETAIL });
   const product = session.metadata?.product || "";
   if (!KEYED_PRODUCTS.has(product)) return json(403, { error: "not_entitled", detail: "This order has no license key." });
 

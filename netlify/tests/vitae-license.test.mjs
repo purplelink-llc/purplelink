@@ -272,3 +272,23 @@ test("recover includes lifetime keys for Mac Suite purchases made with that addr
   assert.equal(keys.length, 1);
   assert.equal(decodeKey(keys[0]).plan, "lifetime");
 });
+
+// ---- refunded or disputed Suite orders (netlify/lib/refunds.mjs) ----
+
+test("a refunded Mac Suite session gets no lifetime key", async () => {
+  stripe["/checkout/sessions/cs_live_suiterefund1234"] = suiteSession({ id: "cs_live_suiterefund1234", payment_intent: "pi_suiterefund" });
+  blobs.set("refunds/pi:pi_suiterefund", JSON.stringify({ reason: "refund" }));
+  const res = await get("?session_id=cs_live_suiterefund1234", "198.51.100.41");
+  assert.equal(res.status, 403);
+  const body = await res.json();
+  assert.equal(body.error, "refunded");
+  assert.equal(body.key, undefined);
+});
+
+test("recover leaves out the lifetime key of a disputed Suite purchase", async () => {
+  stripe["/customers?email="] = { data: [] };
+  stripe["/checkout/sessions?customer_details"] = { data: [suiteSession({ payment_intent: "pi_suitedispute" })] };
+  blobs.set("refunds/pi:pi_suitedispute", JSON.stringify({ reason: "dispute" }));
+  await post({ recover: "buyer@example.com" });
+  for (const c of resendCalls()) assert.doesNotMatch(JSON.parse(c.opts.body).text, /VP2-/);
+});
