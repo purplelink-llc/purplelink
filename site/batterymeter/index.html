@@ -39,12 +39,12 @@
           "applicationCategory": "UtilitiesApplication",
           "applicationSubCategory": "Battery",
           "operatingSystem": "macOS 13.0 or later",
-          "softwareVersion": "1.2.1",
+          "softwareVersion": "1.4.0",
           "datePublished": "2026-10-13",
           "url": "https://purplelink.llc/batterymeter/",
           "image": "https://purplelink.llc/assets/og/batterymeter.png",
-          "downloadUrl": "https://purplelink.llc/batterymeter/BatteryMeter-1.2.1.zip",
-          "fileSize": "1031592 bytes",
+          "downloadUrl": "https://purplelink.llc/batterymeter/BatteryMeter-1.4.0.zip",
+          "fileSize": "1384828 bytes",
           "isAccessibleForFree": true,
           "description": "BatteryMeter is a free Mac menu-bar app. It shows battery percent, an arrow for the direction of charge, and battery power in watts, with a menu of charge, time, adapter, capacity and cycle count details. Once a day it checks purplelink.llc for a newer version and sends nothing else. A menu item turns the daily check off.",
           "softwareRequirements": "macOS 13 or later on a Mac with Apple silicon. Intel Macs are not supported.",
@@ -75,7 +75,7 @@
             {"@type": "Question", "name": "Does it show the battery temperature?", "acceptedAnswer": {"@type": "Answer", "text": "Only if macOS provides it. The battery entry on the Mac used for testing has no temperature, so the app shows none there."}},
             {"@type": "Question", "name": "Does it run on an Intel Mac?", "acceptedAnswer": {"@type": "Answer", "text": "No. BatteryMeter is built for Apple silicon (M-series chips) only, and it needs macOS 13 or later."}},
             {"@type": "Question", "name": "How do I remove it?", "acceptedAnswer": {"@type": "Answer", "text": "Quit BatteryMeter from its menu. If you ticked Open at login, untick it first. Then drag BatteryMeter from Applications to the Trash."}},
-            {"@type": "Question", "name": "How does it update?", "acceptedAnswer": {"@type": "Answer", "text": "BatteryMeter checks once a day for a newer version, and Check for updates in its menu checks on demand. A menu item, Check for updates automatically, turns the daily check off. With it off, the app makes no network request until you choose Check for updates. It downloads an update only when the update is signed by Purplelink and passes macOS's signature check, and it asks before it installs anything. Versions up to 1.1.0 have no updater, so if you have 1.1.0 or earlier, download 1.2.1 from this page once by hand. Updates come through the app from then on. The changes in each version are listed on the changelog."}},
+            {"@type": "Question", "name": "How does it update?", "acceptedAnswer": {"@type": "Answer", "text": "BatteryMeter checks once a day for a newer version, and Check for updates in its menu checks on demand. A menu item, Check for updates automatically, turns the daily check off. With it off, the app makes no network request until you choose Check for updates. It downloads an update only when the update is signed by Purplelink and passes macOS's signature check, and it asks before it installs anything. Versions up to 1.1.0 have no updater, so if you have 1.1.0 or earlier, download the current version from this page once by hand. Updates come through the app from then on. The changes in each version are listed on the changelog."}},
             {"@type": "Question", "name": "Can it force quit apps?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, for your own apps and background processes. Hover a row in the Using the most power list and choose Quit or Force Quit. Force Quit asks you to confirm first, and Cancel is the default. System processes such as kernel_task, launchd, WindowServer, loginwindow, Finder and Dock show no quit options, and neither does BatteryMeter itself. Before it sends a signal it checks that the process is still the same program. It uses no sudo and no helper tool."}},
             {"@type": "Question", "name": "Does the energy impact number mean watts?", "acceptedAnswer": {"@type": "Answer", "text": "No. Energy impact is a relative score, not watts. It is like the Energy Impact column in Activity Monitor: a higher number means more power use than a lower one in the same list, but the numbers do not convert to watts. The battery power and system use lines in the menu are the figures in watts."}}
           ]
@@ -122,11 +122,11 @@
         <h1 class="app-hero-name">BatteryMeter</h1>
         <p class="app-hero-tagline">BatteryMeter puts your MacBook's charge, the direction it is moving and the battery's power in watts in the menu bar. It is free. There is no email to give, no account, no trial and no license key.</p>
         <div class="app-hero-actions" id="download">
-          <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.2.1.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
+          <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.4.0.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
         </div>
-        <p class="waitlist-fine-print">Version 1.2.1, released October 13, 2026. ZIP file, <span id="bm-size">1,031,592 bytes</span> (1,007 KB). Open it and move BatteryMeter to Applications.</p>
+        <p class="waitlist-fine-print">Version 1.4.0, released October 16, 2026. ZIP file, <span id="bm-size">1,384,828 bytes</span> (1,352 KB). Open it and move BatteryMeter to Applications.</p>
         <p class="waitlist-fine-print">Requires macOS 13 or later on a Mac with Apple silicon. Intel Macs are not supported. The app is notarized (checked by Apple) and signed with a Developer ID.</p>
-        <p class="waitlist-fine-print">SHA-256 (a fingerprint you can use to check the download): <code class="bm-hash" id="bm-sha">503698a49d973b5eae280e04486e0e7abb15a532aaf2a898f7feabb515d1b3b3</code></p>
+        <p class="waitlist-fine-print">SHA-256 (a fingerprint you can use to check the download): <code class="bm-hash" id="bm-sha">6d49da73b65b0690938b70ec4331b7862d419f946ea58207fd11107e82ba78a1</code></p>
         <p class="waitlist-fine-print">Updates: from version 1.2.0 the app checks once a day and asks before it installs. A menu item, Check for updates automatically, turns the daily check off. If you have version 1.1.0 or earlier, download this version once by hand. See <a href="#faq">How does it update?</a> and the <a href="/changelog/">changelog</a>.</p>
         <p class="waitlist-fine-print">Made by Purplelink LLC, a one-person studio. Not on the Mac App Store.</p>
       </div>
@@ -197,7 +197,7 @@
     <section class="specs-section bm-consumers" aria-labelledby="power-h">
       <h2 id="power-h">See what is using the power</h2>
       <p class="specs-more">Version 1.1.0 adds a section to the menu called Using the most power. It lists the top five apps and background processes by energy impact. Energy impact is a relative score, not watts. It works like the Energy Impact column in Activity Monitor: a higher number means more power use than a lower one in the same list.</p>
-      <p class="specs-more">Processes are grouped by app, so a browser's helper processes add up under the browser. A command-line tool inside a large app bundle also groups under that app. The list is measured when you open the menu. It takes about two seconds and shows Measuring first. Nothing is measured in the background, and the menu has a Show top consumers toggle that turns the section off.</p>
+      <p class="specs-more">Processes are grouped by app, so a browser's helper processes add up under the browser. A command-line tool inside a large app bundle also groups under that app. The list is measured when you open the menu. It takes about two seconds and shows Measuring first. The menu has a Show top consumers toggle that turns the section off. From version 1.4.0 an optional background watch, described below, also checks once a minute, on battery only.</p>
       <figure class="bm-shot bm-consumers-shot">
         <div class="frame-soft">
           <img src="/batterymeter/img/sample-consumers-1120.webp" srcset="/batterymeter/img/sample-consumers-560.webp 560w, /batterymeter/img/sample-consumers-1120.webp 1120w" sizes="(max-width: 900px) 92vw, 760px" alt="Sample values, not a live reading. The open BatteryMeter menu has a section called Using the most power, which says energy impact is a relative score, not watts. It lists Sample App A at 42.7, Sample App B at 18.3, a background job, Sample App C and a system service. A submenu for Sample App A shows Quit and Force Quit." width="1120" height="776" loading="lazy" decoding="async">
@@ -210,9 +210,23 @@
         <li><strong>System processes are protected.</strong> kernel_task, launchd, WindowServer, loginwindow, Finder, Dock, SystemUIServer, ControlCenter, coreaudiod and anything under /System or /usr/libexec show no quit options. Neither does BatteryMeter itself.</li>
         <li><strong>Force Quit asks first.</strong> A confirmation appears, and Cancel is the default.</li>
         <li><strong>It checks before it signals.</strong> It re-checks that the process is still the same program before it sends anything.</li>
-        <li><strong>No extra privileges.</strong> It uses no sudo and installs no helper tool.</li>
+        <li><strong>It tells you what happened.</strong> After Quit it waits a few seconds and says whether the app quit. If the app is still open, perhaps waiting for you to save, it brings the app forward and offers Force Quit.</li>
+        <li><strong>Several at once.</strong> Quit Apps to Save Battery opens a window with a checkbox for each app. Nothing is ticked until you tick it.</li>
+        <li><strong>No helper tool.</strong> It installs no helper and stores no password. Low Power Mode is the one setting that needs administrator rights, so macOS shows its own password or Touch ID prompt each time you change it.</li>
       </ul>
-      <p class="specs-more">Some background items cannot be quit from the menu. For those, use Activity Monitor. The list runs <code>/usr/bin/top</code> and <code>/bin/ps</code> on your Mac. Process names are shown on screen and never stored, and the app does not send them anywhere.</p>
+      <p class="specs-more">Some background items cannot be quit from the menu, and the menu now says why for each one. For those, use Activity Monitor. The list runs <code>/usr/bin/top</code> and <code>/bin/ps</code> on your Mac. Process names are shown on screen and never stored, and the app does not send them anywhere.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="save-h">
+      <h2 id="save-h">Save battery</h2>
+      <p class="specs-more">Version 1.4.0 adds ways to stretch a charge. None of them quits an app on its own.</p>
+      <ul class="bm-steps-list">
+        <li><strong>Low Power Mode.</strong> Turn on macOS Low Power Mode from the menu, on battery only or always. macOS asks for your password or Touch ID each time, because the setting needs administrator rights.</li>
+        <li><strong>Max Battery.</strong> One switch turns on Low Power Mode, dims the built-in display to a level you choose (40 percent unless you change it) and, if you tick it, turns Wi-Fi off. Turning it off or plugging in puts the brightness and Wi-Fi back. Putting Low Power Mode back needs your password, so the menu offers it as one click.</li>
+        <li><strong>Background watch.</strong> On battery, once a minute, it checks which of your apps are busy. It tells you when an app has stayed busy for five minutes, when an app has kept an idle Mac awake for 20 minutes, or when the Mac is running hot, and it says why. It checks nothing on power, and each check uses about a hundredth of a second of processor time.</li>
+        <li><strong>Efficiency cores.</strong> For apps you choose, it runs them on the Mac's low-power cores while they are in the background on battery, and puts them back when you switch to them or plug in.</li>
+        <li><strong>It learns from your answers.</strong> It stops suggesting what you keep dismissing. Only the efficiency-core move can become automatic, after you accept it three times for an app and turn it on, and every automatic move comes with Undo.</li>
+      </ul>
     </section>
 
     <section class="specs-section" aria-labelledby="does-h">
@@ -225,7 +239,7 @@
           <tr><th scope="row">The menu</th><td>Status and adapter. Charge in mAh (milliamp-hours). Time to full or empty. Battery power with volts and amps. The rate in percent per hour. System use in watts. Watts, volts and amps from the adapter, and the adapter rating. Capacity against design (raw), and the nominal charge capacity. Cycle count. A chart of the charge over the last hour. A Using the most power section, described above.</td></tr>
           <tr><th scope="row">Health figures</th><td>Apple's own health figure uses its own method and can differ from the capacity BatteryMeter shows. The menu says so beside the numbers.</td></tr>
           <tr><th scope="row">Menu items</th><td>Copy details, Show top consumers (on by default, untick it to turn the power list off), Open at login (off until you tick it), Battery settings, Check for updates and Quit.</td></tr>
-          <tr><th scope="row">Refresh</th><td>The battery readings refresh when macOS reports a power change, such as plugging in or unplugging the charger, and on a slow timer in between. The power list is measured only when you open the menu.</td></tr>
+          <tr><th scope="row">Refresh</th><td>The battery readings refresh when macOS reports a power change, such as plugging in or unplugging the charger, and on a slow timer in between. The power list is measured when you open the menu. The background watch, if it is on, checks once a minute on battery and not at all on power.</td></tr>
           <tr><th scope="row">Updates</th><td>From version 1.2.0 it checks for a newer version once a day and when you choose Check for updates in the menu. The Check for updates automatically menu item turns the daily check off. It asks before it installs. Updates are signed, and the app installs one only if the signature checks out.</td></tr>
         </tbody>
       </table>
@@ -267,9 +281,9 @@
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
           <tr><th scope="row">Watts per app</th><td>Energy impact is a relative score, not watts. BatteryMeter does not measure how many watts one app uses.</td></tr>
-          <tr><th scope="row">Background measuring</th><td>It measures processes only when you open the menu. Nothing is measured while the menu is closed, and no reading or process name is sent anywhere.</td></tr>
+          <tr><th scope="row">Background measuring</th><td>On power it measures nothing in the background. On battery the background watch checks once a minute, and the menu turns it off. No reading or process name is sent anywhere.</td></tr>
           <tr><th scope="row">Installing updates unasked</th><td>It checks daily, unless you turn that off, and installs only after you agree. A menu item, Check for updates automatically, turns the daily check off. With it off, the app makes no network request until you choose Check for updates.</td></tr>
-          <tr><th scope="row">Quitting everything</th><td>It will not quit system processes or other users' processes, and some background items cannot be quit from the menu.</td></tr>
+          <tr><th scope="row">Quitting everything</th><td>It will not quit system processes or other users' processes, and some background items cannot be quit from the menu. It never quits an app on its own.</td></tr>
           <tr><th scope="row">Temperature</th><td>It shows a temperature only if macOS provides one. The registry entry on the Mac used for testing has none.</td></tr>
           <tr><th scope="row">Intel Macs</th><td>It is built for Apple silicon only.</td></tr>
           <tr><th scope="row">Desktop Macs</th><td>A Mac without a battery shows No battery.</td></tr>
@@ -309,7 +323,7 @@
         </details>
         <details class="faq-item">
           <summary>How does it update?</summary>
-          <div class="faq-body">BatteryMeter checks once a day for a newer version, and Check for updates in its menu checks on demand. A menu item, Check for updates automatically, turns the daily check off. With it off, the app makes no network request until you choose Check for updates. It downloads an update only when the update is signed by Purplelink and passes macOS's signature check, and it asks before it installs anything. Versions up to 1.1.0 have no updater, so if you have 1.1.0 or earlier, download 1.2.1 from this page once by hand. Updates come through the app from then on. The changes in each version are listed on the changelog.</div>
+          <div class="faq-body">BatteryMeter checks once a day for a newer version, and Check for updates in its menu checks on demand. A menu item, Check for updates automatically, turns the daily check off. With it off, the app makes no network request until you choose Check for updates. It downloads an update only when the update is signed by Purplelink and passes macOS's signature check, and it asks before it installs anything. Versions up to 1.1.0 have no updater, so if you have 1.1.0 or earlier, download the current version from this page once by hand. Updates come through the app from then on. The changes in each version are listed on the changelog.</div>
         </details>
         <details class="faq-item">
           <summary>Can it force quit apps?</summary>
@@ -331,13 +345,13 @@
       <h2 id="closing-cta-heading">Download BatteryMeter.</h2>
       <p>It is free. There is no email, account, trial or license key.</p>
       <div class="closing-cta-actions">
-        <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.2.1.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
+        <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.4.0.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
       </div>
       <p class="closing-cta-fine">macOS 13 or later, Apple silicon</p>
     </section>
     <div class="sticky-cta" data-sticky-cta data-hide-when="#download, .closing-cta, .footer" hidden>
       <span class="sticky-cta-text"><strong>BatteryMeter</strong> is free</span>
-      <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.2.1.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
+      <a class="btn btn-primary" href="/batterymeter/BatteryMeter-1.4.0.zip" download data-track="download" data-track-meta="batterymeter">Download for Mac</a>
     </div>
     </main>
     <footer class="footer">
