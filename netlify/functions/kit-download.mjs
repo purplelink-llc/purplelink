@@ -13,6 +13,7 @@
  * caches drop it.
  */
 import { getStore } from "@netlify/blobs";
+import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 // Private Blobs store the owner uploads the deliverables into (see docs). The
@@ -120,6 +121,8 @@ async function loadSession(sessionId) {
   if (!resp.ok) return { error: json(403, { error: "session_not_found", detail: "That download link is not valid for this store." }) };
   const session = await resp.json();
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
+  // A fully refunded or disputed order no longer gets the file (netlify/lib/refunds.mjs).
+  if (await revocationFor(session)) return { error: json(403, { error: "refunded", detail: REVOKED_DETAIL }) };
   return { session };
 }
 

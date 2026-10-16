@@ -24,7 +24,8 @@
  *
  * Webhook endpoint to register in the Stripe dashboard:
  *   https://purplelink.llc/.netlify/functions/stripe-webhook
- *   subscribed to event: checkout.session.completed
+ *   subscribed to events: checkout.session.completed, customer.subscription.deleted,
+ *   charge.refunded, charge.dispute.created, charge.dispute.closed
  */
 
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
@@ -35,6 +36,7 @@ import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivate
 import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
 import { bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
+import { recordRevocation, clearDispute, paymentIntentOf } from "../lib/refunds.mjs";
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -656,6 +658,30 @@ export default async function handler(request) {
       cursor = nextCursor;
     } while (cursor && !downgraded);
     return jsonResponse(200, { status: downgraded ? "processed" : "subscriber_not_found", type: event.type });
+  }
+
+  // Full refunds and disputes: stop re-issuing this purchase's links and keys (netlify/lib/refunds.mjs).
+  // A partial refund leaves access as it was.
+  if (event.type === "charge.refunded") {
+    const charge = event.data?.object || {};
+    const pi = paymentIntentOf(charge);
+    const full = charge.refunded === true || (charge.amount > 0 && charge.amount_refunded >= charge.amount);
+    if (!full) return jsonResponse(200, { status: "partial_refund_ignored", type: event.type });
+    if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
+    await recordRevocation(pi, { reason: "refund", chargeId: charge.id || null, eventId: event.id || null });
+    return jsonResponse(200, { status: "refund_recorded", payment_intent: pi });
+  }
+  if (event.type === "charge.dispute.created" || event.type === "charge.dispute.closed") {
+    const dispute = event.data?.object || {};
+    const pi = paymentIntentOf(dispute);
+    if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
+    if (event.type === "charge.dispute.created") {
+      await recordRevocation(pi, { reason: "dispute", chargeId: dispute.charge || null, disputeId: dispute.id || null, eventId: event.id || null });
+      return jsonResponse(200, { status: "dispute_recorded", payment_intent: pi });
+    }
+    // Closed: a won dispute restores access; a lost one keeps the record.
+    const cleared = dispute.status === "won" ? await clearDispute(pi) : false;
+    return jsonResponse(200, { status: cleared ? "dispute_cleared" : "dispute_closed", payment_intent: pi });
   }
 
   // We only care about a completed Checkout session beyond this point.

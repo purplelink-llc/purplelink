@@ -67,6 +67,7 @@
 import { createHash, createHmac, createPrivateKey, sign, timingSafeEqual } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { bundleHasPart } from "../lib/bundles.mjs";
+import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const PAYLOAD_PRODUCT = "vitae-plus";
@@ -231,6 +232,8 @@ async function issue(sessionId, secretKey, pem) {
     if (session.status !== "complete" || session.payment_status !== "paid") {
       return json(402, { error: "not_paid", detail: "The payment has not cleared yet." });
     }
+    // A refunded or disputed Suite or bundle order no longer gets its lifetime Vitae Plus key (netlify/lib/refunds.mjs).
+    if (await revocationFor(session)) return json(403, { error: "refunded", detail: REVOKED_DETAIL });
     const now = Math.floor(Date.now() / 1000);
     let key;
     try {
@@ -417,6 +420,7 @@ export async function keysForEmail(email, secretKey, pem, now = Math.floor(Date.
       if (!grantsLifetime(s?.metadata) || s.payment_status !== "paid" || typeof s.id !== "string") continue;
       if (seen.has(s.id)) continue;
       seen.add(s.id);
+      if (await revocationFor(s)) continue;
       keys.push({ key: buildLicenseKey({ subscriptionId: s.id, plan: "lifetime", exp: now + LIFETIME_SECONDS, iat: now, privateKey }), plan: "lifetime" });
     }
   }

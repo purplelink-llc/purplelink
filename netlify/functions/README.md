@@ -16,7 +16,13 @@ Required env vars (set via `netlify env:set --context production`):
 
 ## `stripe-webhook`
 
-Receives Stripe webhook events. Only acts on `checkout.session.completed`.
+Receives Stripe webhook events. Acts on `checkout.session.completed`,
+`customer.subscription.deleted`, and on full refunds and disputes
+(`charge.refunded`, `charge.dispute.created`, `charge.dispute.closed`), which it
+records in the `refunds` Blobs store by payment intent (`netlify/lib/refunds.mjs`).
+The download functions, `purchase-license`, `vitae-license` and `purchases-recover`
+then stop handing out that order's links and keys. A partial refund changes nothing;
+a dispute closed as won restores access.
 Verifies the Stripe signature using HMAC-SHA256, extracts session_id +
 customer email + amount, and forwards to the Modal backend's
 `/paper-review/register-token` endpoint so the backend can mint a
@@ -34,7 +40,8 @@ Required env vars:
 
 1. In the Stripe dashboard, add a webhook endpoint at
    `https://purplelink.llc/.netlify/functions/stripe-webhook`.
-2. Subscribe to the single event `checkout.session.completed`.
+2. Subscribe to `checkout.session.completed`, `customer.subscription.deleted`,
+   `charge.refunded`, `charge.dispute.created` and `charge.dispute.closed`.
 3. Copy the signing secret (`whsec_…`) and set it as
    `STRIPE_WEBHOOK_SECRET` in Netlify.
 
