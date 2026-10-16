@@ -399,14 +399,25 @@
   function f5Time(sec) { var x = tenths(sec); return "#" + x.hms + "-" + x.d + "#"; }
   function nvivoTime(sec) { var x = tenths(sec); return x.hms + "." + x.d; }
 
+  // Counts and details both renderers report: speaker names in first-seen order with their turn counts.
+  function baseStats(doc, turns, removed, dropped) {
+    var counts = Object.create(null), order = [];
+    turns.forEach(function (turn) {
+      if (turn.speaker == null) return;
+      if (!counts[turn.speaker]) { counts[turn.speaker] = 0; order.push(turn.speaker); }
+      counts[turn.speaker]++;
+    });
+    return {
+      format: doc.format, source: doc.source, cues: doc.cues, turns: turns.length,
+      speakers: order.map(function (n) { return { name: n, turns: counts[n] }; }),
+      tagsRemoved: removed, emptyDropped: dropped, hasTimes: doc.hasTimes, warnings: doc.warnings.slice()
+    };
+  }
+
   function renderTimed(doc, o, turns, removed, dropped) {
     // One unit per paragraph of a turn, or per cue when paragraphs are not joined.
-    var units = [], speakerCounts = Object.create(null), speakerOrder = [];
+    var units = [];
     turns.forEach(function (turn) {
-      if (turn.speaker != null) {
-        if (!speakerCounts[turn.speaker]) { speakerCounts[turn.speaker] = 0; speakerOrder.push(turn.speaker); }
-        speakerCounts[turn.speaker]++;
-      }
       turn.paras.forEach(function (lines, q) {
         var times = turn.times[q];
         if (o.paragraphs) {
@@ -422,48 +433,50 @@
       });
     });
     // A file with start times only (text with "[Name] 00:01:02" headers): a unit ends where the next one starts.
-    var noEnd = 0;
+    // A next start earlier than this one is a mistake in the file: it is counted, and never used as an end.
+    var backwards = 0;
     for (var i = units.length - 1, nextStart = null; i >= 0; i--) {
-      if (units[i].end == null) units[i].end = nextStart;
-      if (units[i].start != null) nextStart = units[i].start;
+      var st = units[i].start;
+      if (st != null && nextStart != null && nextStart < st) backwards++;
+      if (units[i].end == null && nextStart != null && (st == null || nextStart > st)) units[i].end = nextStart;
+      if (st != null) nextStart = st;
     }
-    var out = [], last = null, colons = 0, untimed = 0;
+    var out = [], last = null, colons = 0, noEnd = 0, sameTime = 0, untimed = 0, startOnly = 0;
     units.forEach(function (u) {
       var name = o.speakers && u.speaker != null ? u.speaker : null;
       if (o.output === "qda") {
+        // MAXQDA drops a time earlier than the one above it, so a turn that ends at or before the turn above
+        // (people talking over each other) takes that turn's time and is counted, since it then spans no audio.
         var t = u.end;
         if (t == null) noEnd++;
-        else if (last != null && t < last) t = last;
+        else if (last != null && t <= last) { t = last; sameTime++; }
         if (t != null) last = t;
-        if (/:\s/.test(u.text)) colons++;
+        // NVivo for Mac reads text before the first colon and space as the speaker, which matters only when no name is written.
+        if (!name && /:\s/.test(u.text)) colons++;
         out.push((name ? name + ": " : "") + u.text + (t != null ? " " + f5Time(t) : ""));
       } else {
-        var s = u.start != null ? u.start : last;
-        var span = "";
-        if (s != null) {
-          if (last != null && s < last) s = last;
+        // Each line carries its own start and end, so overlapping turns keep their real times.
+        var s = u.start != null ? u.start : last, span = "";
+        if (s == null) untimed++;
+        else {
           span = nvivoTime(s);
-          var e = u.end;
-          if (e != null && e > s) span += "-" + nvivoTime(e);
-          last = e != null && e > s ? e : s;
-        } else untimed++;
+          if (u.end != null && u.end > s) { span += "-" + nvivoTime(u.end); last = u.end; }
+          else { startOnly++; last = s; }
+        }
         out.push(span + "\t" + (name || "") + "\t" + u.text);
       }
     });
     var txt = !out.length ? "" : o.output === "qda" ? out.join("\n\n") + "\n" : out.join("\r\n") + "\r\n";
-    return {
-      txt: txt,
-      md: txt,
-      stats: {
-        format: doc.format, source: doc.source, cues: doc.cues, turns: turns.length,
-        speakers: speakerOrder.map(function (n) { return { name: n, turns: speakerCounts[n] }; }),
-        tagsRemoved: removed, emptyDropped: dropped, hasTimes: doc.hasTimes, warnings: doc.warnings.slice(),
-        output: o.output, units: units.length,
-        // NVivo for Mac reads text before a colon and a space as a speaker name.
-        colonRows: o.output === "qda" ? colons : 0,
-        untimedRows: o.output === "qda" ? (doc.hasTimes ? noEnd : units.length) : untimed
-      }
-    };
+    var stats = baseStats(doc, turns, removed, dropped);
+    var qda = o.output === "qda";
+    stats.output = o.output;
+    stats.units = units.length;
+    stats.colonRows = qda ? colons : 0;
+    stats.untimedRows = qda ? (doc.hasTimes ? noEnd : units.length) : untimed;
+    stats.sameTimeRows = qda ? sameTime : 0;
+    stats.startOnlyRows = qda || !doc.hasTimes ? 0 : startOnly;
+    stats.backwardsTimes = doc.hasTimes ? backwards : 0;
+    return { txt: txt, md: txt, stats: stats };
   }
 
   // Turns the parsed pieces into text. opts: speakers, timestamps, paragraphs, tags, output.
@@ -490,13 +503,9 @@
     }
     if (o.output === "qda" || o.output === "nvivo-tsv") return renderTimed(doc, o, turns, removed, dropped);
     var join = o.paragraphs ? " " : "\n";
-    var txt = [], md = [], speakerCounts = Object.create(null), speakerOrder = [];
+    var txt = [], md = [];
     for (var k = 0; k < turns.length; k++) {
       var turn = turns[k];
-      if (turn.speaker != null) {
-        if (!speakerCounts[turn.speaker]) { speakerCounts[turn.speaker] = 0; speakerOrder.push(turn.speaker); }
-        speakerCounts[turn.speaker]++;
-      }
       var showTime = o.timestamps && turn.start != null;
       var showName = o.speakers && turn.speaker != null;
       var tsText = showTime ? "[" + formatTime(turn.start) + "]" : "";
@@ -516,11 +525,7 @@
     return {
       txt: txt.length ? txt.join("\n\n") + "\n" : "",
       md: md.length ? md.join("\n\n") + "\n" : "",
-      stats: {
-        format: doc.format, source: doc.source, cues: doc.cues, turns: turns.length,
-        speakers: speakerOrder.map(function (n) { return { name: n, turns: speakerCounts[n] }; }),
-        tagsRemoved: removed, emptyDropped: dropped, hasTimes: doc.hasTimes, warnings: doc.warnings.slice()
-      }
+      stats: baseStats(doc, turns, removed, dropped)
     };
   }
 

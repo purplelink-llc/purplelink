@@ -372,10 +372,31 @@ test("timed outputs: tenths match NVivo's documented conversion (#00:09:33-5# is
   assert.equal(TC.clean(src, "a.vtt", { output: "nvivo-tsv" }).txt, "00:09:30.0-00:09:33.5\tAnn Lee\tOne.\r\n00:09:33.5-01:22:30.0\tBo Chan\tTwo.\r\n");
 });
 
-test("timed outputs: times never go backwards when cues overlap (MAXQDA drops earlier times)", () => {
+test("timed outputs on overlapping cues: MAXQDA times never go backwards and the clamped turn is counted; NVivo for Windows keeps real spans", () => {
   const src = "WEBVTT\n\n00:00:01.000 --> 00:00:08.000\n<v Ann Lee>Long turn.</v>\n\n00:00:03.000 --> 00:00:05.000\n<v Bo Chan>Short overlap.</v>\n\n00:00:09.000 --> 00:00:10.000\n<v Ann Lee>After.</v>\n";
-  assert.equal(TC.clean(src, "o.vtt", { output: "qda" }).txt, "Ann Lee: Long turn. #00:00:08-0#\n\nBo Chan: Short overlap. #00:00:08-0#\n\nAnn Lee: After. #00:00:10-0#\n");
-  assert.equal(TC.clean(src, "o.vtt", { output: "nvivo-tsv" }).txt, "00:00:01.0-00:00:08.0\tAnn Lee\tLong turn.\r\n00:00:08.0\tBo Chan\tShort overlap.\r\n00:00:09.0-00:00:10.0\tAnn Lee\tAfter.\r\n");
+  const q = TC.clean(src, "o.vtt", { output: "qda" });
+  assert.equal(q.txt, "Ann Lee: Long turn. #00:00:08-0#\n\nBo Chan: Short overlap. #00:00:08-0#\n\nAnn Lee: After. #00:00:10-0#\n");
+  assert.equal(q.stats.sameTimeRows, 1);
+  const w = TC.clean(src, "o.vtt", { output: "nvivo-tsv" });
+  assert.equal(w.txt, "00:00:01.0-00:00:08.0\tAnn Lee\tLong turn.\r\n00:00:03.0-00:00:05.0\tBo Chan\tShort overlap.\r\n00:00:09.0-00:00:10.0\tAnn Lee\tAfter.\r\n");
+  assert.equal(w.stats.sameTimeRows, 0);
+  assert.equal(w.stats.startOnlyRows, 0);
+});
+
+test("timed outputs: a colon in the text is counted only when no speaker name is written before it", () => {
+  const src = "WEBVTT\n\n00:00:01.000 --> 00:00:04.000\n<v Ann Lee>One thing: we started late.</v>\n\n00:00:05.000 --> 00:00:07.000\n<v Bo Chan>Fine.</v>\n";
+  assert.equal(TC.clean(src, "c.vtt", { output: "qda" }).stats.colonRows, 0);
+  assert.equal(TC.clean(src, "c.vtt", { output: "qda", speakers: false }).stats.colonRows, 1);
+});
+
+test("timed outputs: a header time earlier than the one above is counted and never used as an end", () => {
+  const src = "[Jane Doe] 00:05:00\nFirst.\n\n[Alex Sample] 00:04:00\nSecond.\n\n[Jane Doe] 00:06:00\nThird.\n";
+  const q = TC.clean(src, "b.txt", { output: "qda" });
+  assert.equal(q.stats.backwardsTimes, 1);
+  assert.doesNotMatch(q.txt, /^Jane Doe: First\. #00:04:00-0#/);
+  const w = TC.clean(src, "b.txt", { output: "nvivo-tsv" });
+  assert.equal(w.stats.backwardsTimes, 1);
+  assert.match(w.txt, /^00:05:00\.0\tJane Doe\tFirst\.\r\n/);
 });
 
 test("timed outputs from text with '[Name] time' headers: a turn ends where the next starts; the last has no end", () => {
@@ -385,6 +406,7 @@ test("timed outputs from text with '[Name] time' headers: a turn ends where the 
   const w = TC.clean(fx("zoom-audio-transcript.txt"), "a.txt", { output: "nvivo-tsv" });
   assert.equal(w.txt, "00:00:03.0-00:00:07.0\tJane Doe\tThanks for making time today.\r\n00:00:07.0-00:00:19.0\tAlex Sample\tSure. I joined in 2021. Then the team moved. I took over the survey work.\r\n00:00:19.0\tJane Doe\tDid that change how you saw your role?\r\n");
   assert.equal(w.stats.untimedRows, 0);
+  assert.equal(w.stats.startOnlyRows, 1);
 });
 
 test("timed outputs: paragraphs off gives one row per cue with the speaker on each; speakers off drops names", () => {

@@ -202,8 +202,8 @@
     <script src="/motion.js?v=0c540c5924" defer></script>
     <link rel="stylesheet" href="/tools/transcript-cleaner/transcript-cleaner.css?v=5ea3c7ea59">
     <link rel="prefetch" as="script" data-tc-worker href="/tools/transcript-cleaner/transcript-cleaner-worker.js?v=b91de4093d">
-    <script src="/tools/transcript-cleaner/transcript-cleaner-core.js?v=1fbedf5b09" defer></script>
-    <script src="/tools/transcript-cleaner/transcript-cleaner.js?v=da2f5bb986" defer></script>
+    <script src="/tools/transcript-cleaner/transcript-cleaner-core.js?v=96ba5fa395" defer></script>
+    <script src="/tools/transcript-cleaner/transcript-cleaner.js?v=590b978bcc" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -329,7 +329,7 @@ Alex Sample: Sure.</pre>
         <ul class="tc-list-plain">
           <li><strong>NVivo for Mac or MAXQDA.</strong> Each turn is a paragraph that ends with its end time, such as <code>Jane Doe: Thanks for making time. #00:00:06-5#</code> for 6.5 seconds. Both programs read a time at the end of a paragraph as the end of that text and the start of the next. In NVivo 15 for Mac, open the audio or video file, turn on edit mode, and choose Import, then Files, then Transcript Rows (<a href="https://help-nv.qsrinternational.com/15/mac/Content/files/import-audio-video-transcripts.htm" rel="noopener">NVivo help</a>). NVivo for Mac puts any text before a colon and a space into the Speaker column, so the result lists turns that have one. In MAXQDA, choose Import, then Transcripts, and pick the f4 and f5transcript entry, which uses this time format, or Transcript with Timestamps (<a href="https://www.maxqda.com/help/import/transcripts" rel="noopener">MAXQDA help</a>).</li>
           <li><strong>NVivo for Windows.</strong> NVivo 15 for Windows reads a .txt transcript only as delimited lines, so this output writes one line per turn: the time span, such as 00:00:03.1-00:00:06.5, a tab, the speaker, a tab, and the text. Open the audio or video file, turn on edit mode, click Import Rows on the Edit tab, set "Create one transcript row for each" to Tab Delimited Line, untick "File includes header row", and map Field 1 to Timespan, Field 2 to Speaker and Field 3 to Content (<a href="https://help-nv.qsrinternational.com/15/win/Content/files/import-audio-video-transcripts.htm" rel="noopener">NVivo help</a>).</li>
-          <li><strong>Times.</strong> Times are rounded to a tenth of a second, the smallest step NVivo keeps. When people talk over each other, a time that would come before the one above it is raised to match it, because MAXQDA drops a time that goes backwards. The "Put a time before each turn" option does not apply to these outputs.</li>
+          <li><strong>Times.</strong> Times are rounded to a tenth of a second, the smallest step NVivo keeps. When people talk over each other, the NVivo for Mac and MAXQDA output raises a time that would come before the one above it to match it, because MAXQDA drops a time that goes backwards, and the page lists those turns so you can check them. The NVivo for Windows output gives every line its own start and end, so overlapping turns keep their real times. The "Put a time before each turn" option does not apply to these outputs.</li>
         </ul>
       </section>
 
