@@ -1,5 +1,5 @@
 {
-  "version": "1.1.2",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.1.2.dmg",
-  "releaseNotes": "Ideas now appear on the Dashboard, projects marked Idea can be brought into the Ideas screen, and ideas can be listed on your CV and made into Shareables. The Map can suggest links between ideas, and each idea lists related projects, publications, reading and talks. Matching uses topics and words on this Mac."
+  "version": "1.2.0",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.2.0.dmg",
+  "releaseNotes": "You can now add and edit degrees, with location, start year, honors, dissertation title and advisor, and Tidy cleans up and merges duplicate degrees. Papers can be linked to the grants that support them, and the CV can list each grant's publications under it. Spotlight no longer keeps stale entries."
 }
