@@ -30,7 +30,7 @@
     if (n === 0) return { text: "Choose two or three parts.", product: null, label: "Choose your parts" };
     if (n === 1) return { text: "Choose one more. A single app is cheaper on its own, from its own page.", product: null, label: "Choose one more" };
     if (n >= 4) {
-      return { text: "Four or more cost more than the Suite, which has all six for " + money(BUNDLE_PRICING.suite) + ". The Suite is the better buy.",
+      return { text: "Four or more cost more than the Suite, which has all eight for " + money(BUNDLE_PRICING.suite) + ". The Suite is the better buy.",
                product: "app-suite", label: "Buy the Suite, " + money(BUNDLE_PRICING.suite) };
     }
     var price = BUNDLE_PRICING[String(n)];

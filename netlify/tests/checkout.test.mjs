@@ -157,7 +157,7 @@ test("Legroom checks out with its Stripe price, its own success page and product
   assert.equal(paramFromBody(captured, "mode"), "payment");
 });
 
-test("the Mac Suite checkout line names all six apps", async () => {
+test("the Mac Suite checkout line names all eight parts", async () => {
   let captured = null;
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, opts) => {
@@ -178,7 +178,7 @@ test("the Mac Suite checkout line names all six apps", async () => {
     globalThis.fetch = originalFetch;
   }
   const name = paramFromBody(captured, "line_items[0][price_data][product_data][name]");
-  for (const app of ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Tapefolio", "Vitae Plus"]) assert.ok(name.includes(app), `${app} missing from "${name}"`);
+  for (const app of ["ModernTex", "Outbound Veil", "Legroom", "Keyfeel", "Tapefolio", "Panely", "Summonly", "Vitae Plus"]) assert.ok(name.includes(app), `${app} missing from "${name}"`);
 });
 
 test("Keyfeel checks out at $9.99, priced inline, with its own success page and product metadata", async () => {

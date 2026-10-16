@@ -80,6 +80,10 @@ test("the page's price tables are the server's", () => {
   assert.deepEqual(pricing, { 2: lib.BUNDLES["bundle-2"].cents, 3: lib.BUNDLES["bundle-3"].cents, suite: 5999 });
   const parts = JSON.parse(src.match(/var PART_PRICE = (\{.*?\});/)[1]);
   assert.deepEqual(Object.keys(parts), lib.BUNDLE_SLUGS);
+  // The four-or-more message names the Suite's part count; it said "all six" after the Suite grew to eight.
+  const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+  const said = src.match(/which has all (\w+) for/)[1];
+  assert.equal(said, words[lib.BUNDLE_SLUGS.length], `the Suite message says "all ${said}"`);
   const html = readFileSync(new URL("../../site/suite/index.html", import.meta.url), "utf8");
   for (const slug of lib.BUNDLE_SLUGS) assert.ok(html.includes(`name="apps" value="${slug}"`), `${slug} is a choice on the page`);
   assert.ok(html.includes("$34.99") && html.includes("$44.99") && html.includes("$59.99"));
