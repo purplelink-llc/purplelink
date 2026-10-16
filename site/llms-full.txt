@@ -9664,6 +9664,98 @@ Yes. Live Text in Preview and TextSniper work on a single image, macOCR handles 
 
 ---
 
+Source: https://purplelink.llc/guides/export-voice-memos-transcript-mac/
+Title: Export a Voice Memos transcript on a Mac (and what it leaves out) | Purplelink
+
+← All guides
+
+Guide
+
+# Export a Voice Memos transcript on a Mac (and what it leaves out)
+
+By Benjamin Ampel · October 16, 2026
+
+Voice Memos on a Mac writes a transcript of each recording, and you can copy that text into another document. Apple's page describes no other way to get it out. This guide gives Apple's steps, shows how to save the recording itself, and lists what the copied text does not carry.
+
+Disclosure: Purplelink, which publishes this site, makes a Mac transcription app. It comes up in one labeled paragraph near the end, after the part that does not depend on it. I read the pages cited below on October 16, 2026. I did not test Voice Memos for this guide, so its steps are given as Apple's page gives them.
+
+## The short answer
+
+Open the recording, click the Transcription button, select the text, Control-click it and choose Copy, then paste it where you need it. What you paste is plain text. It has no timestamps and no speaker names, so it cannot be turned into a caption file as it is.
+
+## Copy the transcript (Apple's steps)
+
+From Apple's Voice Memos User Guide for Mac, View a transcription of a recording, which covers macOS 27, macOS Tahoe 26 and macOS Sequoia 15:
+
+- Open Voice Memos on your Mac and click the recording.
+
+- Click the Transcription button.
+
+- Select the text, Control-click it, then choose Copy.
+
+- Paste it into another document, such as a Mail message or a text file.
+
+The same page says transcription is not available in all countries or regions, and that recordings made in macOS 14 or earlier are transcribed when you open them, if they contain speech. To find a passage, type in the search field: the list shows recordings whose title or transcription matches, and selecting a term in the transcription moves the playhead to that point.
+
+## Save the recording itself
+
+Keep the audio next to the text. Apple's page Share a recording says you can drag a recording from Voice Memos into a Finder window to save it to a folder, or drag it into an email, a note or a message. You can also select it, click the Share button and choose an app or service. Apple's page does not name the file format of the saved recording.
+
+## What the copied text leaves out
+
+You might wantWhat the pages say
+
+A transcript fileApple's page describes copying and pasting only. It describes no file export for the transcript.
+
+TimestampsMacMost says the transcript is plain text with no timing, so it cannot become SRT or VTT captions or subtitles, and that word timing works only inside the app, for jumping to a point in the audio (MacMost, January 6, 2025).
+
+Speaker namesNeither Apple's page nor MacMost's mentions speakers.
+
+For a note to yourself, copied text is often enough. For an interview you will quote, code or caption, you need the time of each line and who said it, and that means transcribing the saved recording in another app.
+
+## Free apps to try first
+
+Two free apps from my comparison of Mac transcription apps, with what that comparison recorded from their own pages:
+
+- Buzz is free under the MIT license and runs on the device, offline. Current builds are for Apple silicon only. Speaker labels are listed as a feature (github.com/chidiwilliams/buzz).
+
+- MacWhisper has a free tier, with Pro at €64 once. It runs on the device, and it can be pointed at cloud models with your own API keys, so check its settings if the recording must stay on your Mac. Speaker labels are listed as a feature, but the plan that includes them is not stated (macwhisper.com).
+
+That comparison did not record which export formats each free version offers. Check that the one you pick saves timestamps, or an SRT or VTT file, before you rely on it.
+
+## Tapefolio, which I make
+
+Tapefolio is a Mac app I make that transcribes audio on the Mac with the time of every word, labels speakers, and exports Word, HTML, Markdown, text, SRT, VTT and JSON, plus a timestamped Word file for MAXQDA. Its page says it opens audio files and records from the microphone; I have not listed which audio formats it accepts here, so try the recording you saved from Voice Memos during the free 7-day trial. After the trial it costs $29.99 once, and it needs macOS 26 or later on Apple silicon. Transcription runs on the Mac and nothing is uploaded. It will mishear words and mislabel speakers, so check any text you plan to quote against the recording. For a plain transcript, a free app above may be the better value. Details are on the Tapefolio page.
+
+## Frequently asked
+
+### Can Voice Memos on a Mac export a transcript as a file?
+
+Apple's page on viewing a transcription, read on October 16, 2026, describes copying the text and pasting it into another document, such as a Mail message or a text file. It describes no file export for the transcript.
+
+### Does the Voice Memos transcript have timestamps?
+
+Not in the text you copy. MacMost says the transcript is plain text with no timing, so it cannot become SRT or VTT captions. Inside the app, selecting a search term moves the playhead to that point in the recording.
+
+### Does Voice Memos label speakers?
+
+Apple's page does not mention speakers, and neither does MacMost's. I found nothing on either page that says the transcript marks who is talking.
+
+### How do I get the recording out of Voice Memos?
+
+Apple's page on sharing a recording says to drag the recording into a Finder window to save it to a folder, or to select it, click the Share button and choose an app or service.
+
+## Related guides
+
+- Best Mac apps for transcription, text to speech and OCR (2026): free and paid apps by price, where they run and what each does not do.
+
+- Transcript Cleaner: turns an SRT or VTT file into readable text in the browser.
+
+- All guides.
+
+
+---
+
 Source: https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/
 Title: Free disk space in the Mac menu bar (2026) | Purplelink
 
