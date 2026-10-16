@@ -4199,7 +4199,7 @@ Summonly1.0October 2026
 
 Outbound Veil1.2.0October 2026
 
-BatteryMeter1.2.1October 2026
+BatteryMeter1.4.0October 2026
 
 GlobePin (iOS)1.21.0 in September 2026
 

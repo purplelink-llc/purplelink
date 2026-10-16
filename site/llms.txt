@@ -115,7 +115,7 @@
 - **Pricing:** Free. One download, no email, no account, no trial and no license key.
 - **Privacy:** It reads one battery entry in macOS and collects nothing. Its only network request is a check once a day of purplelink.llc/batterymeter/appcast.xml for a newer version, which carries no account, no battery data and no list of processes. A menu item, Check for updates automatically, turns the daily check off. With it off, the app makes no network request until you choose Check for updates. The power list runs top and ps locally when you open the menu; process names are shown and never stored. It stores only its display settings on the Mac.
 - **Limits:** No temperature unless macOS provides one. Apple silicon only. The time estimate is macOS's own. Energy impact is relative, not watts. Not on the Mac App Store.
-- **Status:** Shipping since 2026-10-13. Notarized download. Version 1.2.0 added signed updates that ask before installing; 1.2.1 is lighter on battery and CPU, smaller, and adds a menu item to turn off the daily update check. 1.1.0 and earlier must be replaced once by hand.
+- **Status:** Shipping since 2026-10-13. Notarized download. Version 1.2.0 added signed updates that ask before installing; 1.2.1 is lighter on battery and CPU, smaller, and adds a menu item to turn off the daily update check. 1.4.0 (2026-10-16) reports whether Quit worked, quits several apps at once, adds a Low Power Mode menu, a Max Battery mode and an optional background watch on battery. 1.1.0 and earlier must be replaced once by hand.
 - **Download:** https://purplelink.llc/batterymeter/
 
 ### Mac Suite (macOS bundle)

@@ -8,9 +8,9 @@ from common import SITE, ORIGIN, EMOJI, page_of, canonical, jsonld_blocks, walk,
 URL = "/batterymeter/"
 # The appcast and zips are not in site/ any more: they live in the batterymeter-files Blobs store and are served by
 # netlify/functions/batterymeter-download.mjs (see netlify/tests/batterymeter-download.test.mjs). The facts of the
-# published 1.2.1 zip are pinned here so the page text still has to match them.
-ZIP_SHA256 = "503698a49d973b5eae280e04486e0e7abb15a532aaf2a898f7feabb515d1b3b3"
-ZIP_BYTES = 1031592
+# published 1.4.0 zip are pinned here so the page text still has to match them.
+ZIP_SHA256 = "6d49da73b65b0690938b70ec4331b7862d419f946ea58207fd11107e82ba78a1"
+ZIP_BYTES = 1384828
 TOML = SITE.parent / "netlify.toml"
 
 
@@ -47,10 +47,10 @@ class BatteryMeterPage(unittest.TestCase):
         self.assertEqual(float(app["offers"]["price"]), 0)
         self.assertEqual(app["offers"]["priceCurrency"], "USD")
         self.assertEqual(app["applicationCategory"], "UtilitiesApplication")
-        self.assertEqual(app["softwareVersion"], "1.2.1")
+        self.assertEqual(app["softwareVersion"], "1.4.0")
         self.assertEqual(app["operatingSystem"], "macOS 13.0 or later")
         self.assertEqual(app["fileSize"], "%d bytes" % ZIP_BYTES)
-        self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.2.1.zip")
+        self.assertEqual(app["downloadUrl"], ORIGIN + "/batterymeter/BatteryMeter-1.4.0.zip")
         types = {d.get("@type") for d in self.nodes}
         self.assertIn("BreadcrumbList", types)
         self.assertIn("FAQPage", types)
@@ -74,7 +74,7 @@ class BatteryMeterPage(unittest.TestCase):
                              re.fullmatch(r"/batterymeter/BatteryMeter-[0-9.]+\.zip", h), h)
 
     def test_download_link_and_tracking(self):
-        links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.2\.1\.zip"[^>]*>', self.text)
+        links = re.findall(r'<a [^>]*href="/batterymeter/BatteryMeter-1\.4\.0\.zip"[^>]*>', self.text)
         self.assertGreaterEqual(len(links), 2)
         for tag in links:
             self.assertIn('data-track="download"', tag)
@@ -137,7 +137,7 @@ class BatteryMeterPage(unittest.TestCase):
         upd = answers["How does it update?"]
         for s in ("once a day", "asks before it installs", "signed", "1.1.0 or earlier", "by hand", "changelog"):
             self.assertIn(s, upd)
-        self.assertIn("download 1.2.1 from this page", upd)
+        self.assertIn("download the current version from this page", upd)
         self.assertIn('href="/changelog/"', self.text)
         for rel in ("privacy/index.html", "products/index.html",
                     "guides/check-mac-battery-health-voltage-and-cycle-count/index.html"):
@@ -168,13 +168,13 @@ class BatteryMeterPage(unittest.TestCase):
             self.assertNotRegex(s, r"(?i)no setting to turn the (daily )?check off")
             self.assertNotRegex(s, r"(?i)has no setting to turn")
         log = (SITE / "changelog" / "index.html").read_text(encoding="utf-8")
-        self.assertIn("<h2>BatteryMeter 1.2.1</h2>", log)
-        self.assertLess(log.index("BatteryMeter 1.2.1"), log.index("BatteryMeter 1.2.0"))
+        self.assertIn("<h2>BatteryMeter 1.4.0</h2>", log)
+        self.assertLess(log.index("BatteryMeter 1.4.0"), log.index("BatteryMeter 1.2.1"))
 
     def test_download_line_matches_zip(self):
         self.assertIn(ZIP_SHA256, self.text)
         self.assertIn("{:,} bytes".format(ZIP_BYTES), self.text)
-        self.assertIn("Version 1.2.1, released October 13, 2026", self.text)
+        self.assertIn("Version 1.4.0, released October 16, 2026", self.text)
         self.assertNotIn("404 KB", self.text)
         self.assertNotIn("464,618", self.text)
 
