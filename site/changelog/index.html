@@ -72,6 +72,15 @@
         <span class="changelog-date">October 15, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 1.9.1</h2>
+          <p>Thesis templates that keep their class and style files in a folder such as <code>Styles/</code>, and add it to TeX's search path in <code>.latexmkrc</code>, now build. ModernTex still never runs that file, because it is Perl and could run any program; it reads it as text and uses only the search folders it adds inside the project (<code>ensure_path</code> or <code>$ENV</code> for TEXINPUTS, BIBINPUTS and BSTINPUTS), and Build Results lists the lines it did not use. On macOS 27 the biber in MacTeX 2025 fails as soon as it starts; before a Full build ModernTex now checks that biber runs and, if not, uses a working biber from another TeX installation such as TinyTeX or Homebrew. With none installed, the error says so and offers Install TinyTeX or <code>brew install biber</code>. Earlier versions install 1.9.1 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 15, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>ModernTex 1.9.0</h2>
           <p>New: Edit &gt; Convert Accent Commands to Characters turns commands such as <code>\'{a}</code>, <code>\c{c}</code> and <code>\~a</code> into á, ç and ã, in the selection or the whole file, as one undo step. It follows the file's <code>\usepackage[...]{inputenc}</code> declaration: a file that declares <code>latin1</code> is saved as Latin-1, so the bytes still match, and a file that declares <code>utf8</code> or nothing is saved as UTF-8. Characters the encoding cannot store stay as commands, and a .bib file asks first. Also new: with direct PDF editing off, a double-click in the PDF jumps to the matching line of the source; &#8984;-click still works. Earlier versions install 1.9.0 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
         </div>

@@ -365,7 +365,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $19.99 to keep · v1.9.0
+Free 7-day trial · $19.99 to keep · v1.9.1
 
 # ModernTex
 
@@ -535,9 +535,11 @@ AI featuresOptional. Fix with AI proposes a repair for a build error and shows i
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
-Current version1.9.0, released October 15, 2026. Every update since launch is listed below.
+Current version1.9.1, released October 15, 2026. Every update since launch is listed below.
 
-### Twenty-four updates since launch on September 4
+### Twenty-five updates since launch on September 4
+
+- Oct 151.9.1Thesis templates that keep their class in a Styles folder build, and a MacTeX biber that does not start on macOS 27 is replaced by a working one.
 
 - Oct 151.9.0Edit > Convert Accent Commands to Characters, which keeps a Latin-1 file in Latin-1, and double-click in the PDF to jump to the source.
 
@@ -4173,7 +4175,7 @@ The latest version of each product as the changelog and the product page list it
 
 ProductLatest versionReleased
 
-ModernTex1.7.6October 2026
+ModernTex1.9.1October 2026
 
 Vitae1.1.2October 2026
 
