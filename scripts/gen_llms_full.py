@@ -71,6 +71,7 @@ PAGES = [
     "guides/best-window-managers-for-mac/",
     "guides/snap-windows-on-mac/",
     "guides/best-mac-apps-transcription-text-to-speech-ocr/",
+    "guides/export-voice-memos-transcript-mac/",
     "guides/show-free-disk-space-mac-menu-bar/",
     "guides/mechvibes-sound-packs-on-mac/",
     "guides/mac-privacy-permissions-explained/",
