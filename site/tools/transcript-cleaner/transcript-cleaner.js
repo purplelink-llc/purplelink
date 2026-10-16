@@ -33,14 +33,26 @@
   // ---------- saved options ----------
   var KEY = "tc-options";
   var IDS = { speakers: "tc-opt-speakers", timestamps: "tc-opt-times", paragraphs: "tc-opt-para", tags: "tc-opt-tags" };
-  function options() {
-    return { speakers: $(IDS.speakers).checked, timestamps: $(IDS.timestamps).checked, paragraphs: $(IDS.paragraphs).checked, tags: $(IDS.tags).checked };
+  var OUTPUTS = { text: 1, qda: 1, "nvivo-tsv": 1 };
+  var outputRadios = document.querySelectorAll('input[name="tc-output"]');
+  function outputChoice() {
+    for (var i = 0; i < outputRadios.length; i++) if (outputRadios[i].checked) return outputRadios[i].value;
+    return "text";
   }
+  function options() {
+    return { speakers: $(IDS.speakers).checked, timestamps: $(IDS.timestamps).checked, paragraphs: $(IDS.paragraphs).checked, tags: $(IDS.tags).checked, output: outputChoice() };
+  }
+  // The "[00:01:35]" time before each turn belongs to readable text only.
+  function syncOutput() { $(IDS.timestamps).disabled = outputChoice() !== "text"; }
   function saveOptions() { try { localStorage.setItem(KEY, JSON.stringify(options())); } catch (e) { /* storage can be blocked; the page works without it */ } }
   (function restore() {
     var s = {};
     try { s = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { s = {}; }
     Object.keys(IDS).forEach(function (k) { if (typeof s[k] === "boolean") $(IDS[k]).checked = s[k]; });
+    if (typeof s.output === "string" && OUTPUTS[s.output]) {
+      Array.prototype.forEach.call(outputRadios, function (r) { r.checked = r.value === s.output; });
+    }
+    syncOutput();
   })();
 
   // ---------- network meter: counts what the page itself sends while it works ----------
@@ -145,7 +157,15 @@
   }
   function notesFor(item) {
     var st = item.res.stats, o = item.optsUsed, notes = [];
-    if (o.timestamps && !st.hasTimes) notes.push({ warn: false, text: "This file has no timestamps, so none were added." });
+    var timed = o.output === "qda" || o.output === "nvivo-tsv";
+    if (o.timestamps && !timed && !st.hasTimes) notes.push({ warn: false, text: "This file has no timestamps, so none were added." });
+    if (timed && !st.hasTimes) notes.push({ warn: true, text: "This file has no timestamps, so the output has none. NVivo and MAXQDA need times to link the text to the recording." });
+    else if (timed && st.untimedRows) {
+      notes.push({ warn: false, text: o.output === "qda"
+        ? plural(st.untimedRows, "turn has", "turns have") + " no end time in the file, so no timestamp was written after " + (st.untimedRows === 1 ? "it." : "them.")
+        : plural(st.untimedRows, "line comes", "lines come") + " before the first time in the file and " + (st.untimedRows === 1 ? "has" : "have") + " no time. NVivo needs a time on every line." });
+    }
+    if (st.colonRows) notes.push({ warn: true, text: plural(st.colonRows, "turn has", "turns have") + " a colon followed by a space in the text. NVivo for Mac reads text before a colon and a space as a speaker name, so check " + (st.colonRows === 1 ? "that turn" : "those turns") + " after importing." });
     if (o.tags && st.tagsRemoved) notes.push({ warn: false, text: plural(st.tagsRemoved, "bracketed sound tag", "bracketed sound tags") + " removed." });
     if (st.emptyDropped) notes.push({ warn: false, text: plural(st.emptyDropped, "empty cue", "empty cues") + " skipped." });
     st.warnings.forEach(function (w) { notes.push({ warn: true, text: w }); });
@@ -190,11 +210,13 @@
     copy.addEventListener("click", function () { copyText(item, copy); });
     var dtxt = el("button", "btn btn-ghost tc-small", "Download .txt");
     dtxt.type = "button";
-    dtxt.addEventListener("click", function () { download(item.res.txt, baseName(item.name) + "-clean.txt", "text/plain"); });
+    var suffix = item.optsUsed.output === "qda" ? "-nvivo-maxqda.txt" : item.optsUsed.output === "nvivo-tsv" ? "-nvivo-windows.txt" : "-clean.txt";
+    dtxt.addEventListener("click", function () { download(item.res.txt, baseName(item.name) + suffix, "text/plain"); });
     var dmd = el("button", "btn btn-ghost tc-small", "Download .md");
     dmd.type = "button";
     dmd.addEventListener("click", function () { download(item.res.md, baseName(item.name) + "-clean.md", "text/markdown"); });
-    act.appendChild(copy); act.appendChild(dtxt); act.appendChild(dmd);
+    act.appendChild(copy); act.appendChild(dtxt);
+    if (item.optsUsed.output === "text") act.appendChild(dmd);
     li.appendChild(act);
     paintPreview(item);
   }
@@ -232,7 +254,8 @@
 
   function updateBar() {
     bar.hidden = items.length === 0;
-    $("tc-view").hidden = !items.some(function (i) { return i.state === "done"; });
+    // Markdown is a readable-text format; the NVivo and MAXQDA layouts are plain text only.
+    $("tc-view").hidden = outputChoice() !== "text" || !items.some(function (i) { return i.state === "done"; });
   }
 
   function add(entries, skipNote) {
@@ -346,6 +369,9 @@
   });
 
   Object.keys(IDS).forEach(function (k) { $(IDS[k]).addEventListener("change", function () { saveOptions(); rerender(); }); });
+  Array.prototype.forEach.call(outputRadios, function (r) {
+    r.addEventListener("change", function () { syncOutput(); saveOptions(); updateBar(); rerender(); });
+  });
   Array.prototype.forEach.call(document.querySelectorAll('input[name="tc-view"]'), function (r) {
     r.addEventListener("change", function () {
       view = r.value;

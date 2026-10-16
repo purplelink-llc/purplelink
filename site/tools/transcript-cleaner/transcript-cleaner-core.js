@@ -377,9 +377,96 @@
     return s.replace(/^(\s*)(?:([#>+\-])|(\d+)([.)]))/, function (m, sp, mark, num, dot) { return sp + (mark ? "\\" + mark : num + "\\" + dot); });
   }
 
-  var DEFAULTS = { speakers: true, timestamps: false, paragraphs: true, tags: false };
+  // output: "text" (readable text, the default), "qda" (NVivo for Mac and MAXQDA) or "nvivo-tsv" (NVivo for Windows).
+  var DEFAULTS = { speakers: true, timestamps: false, paragraphs: true, tags: false, output: "text" };
 
-  // Turns the parsed pieces into text. opts: speakers, timestamps, paragraphs, tags.
+  // ---------- timestamped output for NVivo and MAXQDA ----------
+  // Layouts are taken from the programs' own help pages (read 2026-10-16), not from an import test:
+  // - NVivo 15 for Mac imports a .txt whose paragraphs end with a timestamp, with an optional
+  //   "Speaker: " before the text; its example uses the f4/f5 form #00:00:11-2# (11.2 seconds).
+  //   A timestamp is the end time of the text before it and the start time of the text after it.
+  // - MAXQDA (Import > Transcripts) reads #hh:mm:ss-x# (the f4 and f5transcript form) and wants a
+  //   timestamp at least at the end of each paragraph. It drops a timestamp earlier than the one
+  //   before it, so the times written here never go backwards.
+  // - NVivo 15 for Windows imports a .txt only as delimited lines. Each line here is
+  //   timespan TAB speaker TAB text, the layout NVivo Transcription exports, with the timespan
+  //   written as 00:02:00.0-00:10:00.0. Every line has the same two tabs, as the help asks.
+  function tenths(sec) {
+    var t = Math.max(0, Math.round(sec * 10));
+    var s = Math.floor(t / 10);
+    return { hms: pad2(Math.floor(s / 3600)) + ":" + pad2(Math.floor((s % 3600) / 60)) + ":" + pad2(s % 60), d: t % 10 };
+  }
+  function f5Time(sec) { var x = tenths(sec); return "#" + x.hms + "-" + x.d + "#"; }
+  function nvivoTime(sec) { var x = tenths(sec); return x.hms + "." + x.d; }
+
+  function renderTimed(doc, o, turns, removed, dropped) {
+    // One unit per paragraph of a turn, or per cue when paragraphs are not joined.
+    var units = [], speakerCounts = Object.create(null), speakerOrder = [];
+    turns.forEach(function (turn) {
+      if (turn.speaker != null) {
+        if (!speakerCounts[turn.speaker]) { speakerCounts[turn.speaker] = 0; speakerOrder.push(turn.speaker); }
+        speakerCounts[turn.speaker]++;
+      }
+      turn.paras.forEach(function (lines, q) {
+        var times = turn.times[q];
+        if (o.paragraphs) {
+          var start = null, end = null;
+          times.forEach(function (x) {
+            if (start == null && x.start != null) start = x.start;
+            if (x.end != null && (end == null || x.end > end)) end = x.end;
+          });
+          units.push({ speaker: turn.speaker, text: lines.join(" "), start: start, end: end });
+        } else {
+          lines.forEach(function (ln, j) { units.push({ speaker: turn.speaker, text: ln, start: times[j].start, end: times[j].end }); });
+        }
+      });
+    });
+    // A file with start times only (text with "[Name] 00:01:02" headers): a unit ends where the next one starts.
+    var noEnd = 0;
+    for (var i = units.length - 1, nextStart = null; i >= 0; i--) {
+      if (units[i].end == null) units[i].end = nextStart;
+      if (units[i].start != null) nextStart = units[i].start;
+    }
+    var out = [], last = null, colons = 0, untimed = 0;
+    units.forEach(function (u) {
+      var name = o.speakers && u.speaker != null ? u.speaker : null;
+      if (o.output === "qda") {
+        var t = u.end;
+        if (t == null) noEnd++;
+        else if (last != null && t < last) t = last;
+        if (t != null) last = t;
+        if (/:\s/.test(u.text)) colons++;
+        out.push((name ? name + ": " : "") + u.text + (t != null ? " " + f5Time(t) : ""));
+      } else {
+        var s = u.start != null ? u.start : last;
+        var span = "";
+        if (s != null) {
+          if (last != null && s < last) s = last;
+          span = nvivoTime(s);
+          var e = u.end;
+          if (e != null && e > s) span += "-" + nvivoTime(e);
+          last = e != null && e > s ? e : s;
+        } else untimed++;
+        out.push(span + "\t" + (name || "") + "\t" + u.text);
+      }
+    });
+    var txt = !out.length ? "" : o.output === "qda" ? out.join("\n\n") + "\n" : out.join("\r\n") + "\r\n";
+    return {
+      txt: txt,
+      md: txt,
+      stats: {
+        format: doc.format, source: doc.source, cues: doc.cues, turns: turns.length,
+        speakers: speakerOrder.map(function (n) { return { name: n, turns: speakerCounts[n] }; }),
+        tagsRemoved: removed, emptyDropped: dropped, hasTimes: doc.hasTimes, warnings: doc.warnings.slice(),
+        output: o.output, units: units.length,
+        // NVivo for Mac reads text before a colon and a space as a speaker name.
+        colonRows: o.output === "qda" ? colons : 0,
+        untimedRows: o.output === "qda" ? (doc.hasTimes ? noEnd : units.length) : untimed
+      }
+    };
+  }
+
+  // Turns the parsed pieces into text. opts: speakers, timestamps, paragraphs, tags, output.
   function render(doc, o) {
     o = Object.assign({}, DEFAULTS, o || {});
     var turns = [], cur = null, removed = 0, dropped = 0, carry = false;
@@ -393,13 +480,15 @@
       t = collapse(t);
       if (t === "") { dropped++; if (p.brk) carry = true; continue; }
       // With no speaker names, a pause or blank line starts a new turn, so each paragraph can carry its own time.
+      var tm = { start: p.start, end: p.end };
       if (!cur || p.speaker !== cur.speaker || ((p.brk || carry) && p.speaker == null)) {
-        cur = { speaker: p.speaker, start: p.start, paras: [[t]] };
+        cur = { speaker: p.speaker, start: p.start, paras: [[t]], times: [[tm]] };
         turns.push(cur);
-      } else if (p.brk || carry) cur.paras.push([t]);
-      else cur.paras[cur.paras.length - 1].push(t);
+      } else if (p.brk || carry) { cur.paras.push([t]); cur.times.push([tm]); }
+      else { cur.paras[cur.paras.length - 1].push(t); cur.times[cur.times.length - 1].push(tm); }
       carry = false;
     }
+    if (o.output === "qda" || o.output === "nvivo-tsv") return renderTimed(doc, o, turns, removed, dropped);
     var join = o.paragraphs ? " " : "\n";
     var txt = [], md = [], speakerCounts = Object.create(null), speakerOrder = [];
     for (var k = 0; k < turns.length; k++) {
