@@ -47,3 +47,15 @@ def test_html_lifecycle_winback_includes_unsubscribe_link():
     out = delivery.html_lifecycle_winback(unsubscribe_url=UNSUB_URL)
     assert f'href="{UNSUB_URL}"' in out
     assert "Still writing?" in out
+
+
+def test_trial_day4_and_day6_copy():
+    from latextools import delivery
+
+    day4 = delivery.html_lifecycle_trial_features(unsubscribe_url="https://x/u")
+    assert "The bar above the editor counts the days." in " ".join(day4.split())
+    day6 = " ".join(delivery.html_lifecycle_trial_ending(unsubscribe_url="https://x/u").split())
+    assert "In ModernTex choose Enter license key, paste it" in day6
+    assert "the trial ends about now. The bar above the editor shows the exact days left." in day6
+    assert "Have a license" not in day6
+    assert "https://x/u" in day4 and "https://x/u" in day6

@@ -814,6 +814,8 @@ def html_lifecycle_trial_features(*, unsubscribe_url: str, **_ignored) -> str:
     <li><strong>A table from a spreadsheet.</strong> Paste cells from Excel
     or Google Sheets into the Table Editor and get booktabs LaTeX back.</li>
   </ul>
+  <p>The bar above the editor counts the days. If you decide it is not for
+  you, a reply saying what was missing helps more than you would think.</p>
   <p>
     <a href="https://purplelink.llc/moderntex/?utm_source=email&amp;utm_campaign=mtx-trial-4#buy"
        style="display: inline-block; background: #7c3aed; color: #fff;
@@ -832,13 +834,14 @@ def html_lifecycle_trial_ending(*, unsubscribe_url: str, **_ignored) -> str:
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">Your ModernTex trial ends soon</h2>
-  <p>If you started the trial when you downloaded it, it ends in about a
-  day. When it does, the window shows a notice and a Buy button. Your .tex
-  files are ordinary files on disk and are not touched either way.</p>
+  <p>If you opened the app right after downloading it, the trial ends about
+  now. The bar above the editor shows the exact days left. When it ends, the
+  window shows a notice and a Buy button. Your .tex files are ordinary files
+  on disk and are not touched either way.</p>
   <p>Keeping it is $19.99 once, with all updates included, forever. The receipt
-  email carries a license key: paste it into the trial's "Have a license
-  key?" and the same copy unlocks, with no reinstall. To get updates in
-  place, install the download from your receipt page once.</p>
+  email carries a license key. In ModernTex choose Enter license key, paste
+  it, and the same copy unlocks, with no reinstall. To get updates in place,
+  install the download from your receipt page once.</p>
   <p>
     <a href="https://purplelink.llc/moderntex/?utm_source=email&amp;utm_campaign=mtx-trial-6#buy"
        style="display: inline-block; background: #7c3aed; color: #fff;
