@@ -81,6 +81,15 @@
         <span class="changelog-date">October 16, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 1.10.1</h2>
+          <p>Fixes for thesis and journal templates. With no saved engine, no <code>% !TEX program</code> line and no latexmkrc that sets one, ModernTex picks the engine from the preamble: LuaLaTeX for <code>\DocumentMetadata</code>, fontspec, unicode-math or polyglossia, XeLaTeX for XeTeX-only packages such as xeCJK or bidi, and pdfLaTeX for documents that check which engine they run on. A missing bibliography style such as agsm.bst now names the TeX Live package it comes with and offers to install it. After a failed build the preview shows a PDF only if ModernTex built it, so a PDF shipped with a template is no longer shown as your document. When the open file belongs to a main file that brings in chapters with <code>\input</code>, <code>\include</code>, <code>\subfile</code> or <code>\import</code>, the Outline lists the whole document. Earlier versions install 1.10.1 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 16, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>ModernTex 1.10.0</h2>
           <p>New: if your project's <code>latexmkrc</code> does real work, such as running PythonTeX, makeglossaries or texindy, you can let latexmk run it for Full builds, from Compile &gt; Compile Engine &amp; Profile or from Build Results after a Full build fails. ModernTex asks you to confirm first, because a latexmkrc is a Perl program that runs with your permissions; it still never runs one by default. The choice is remembered on this Mac for that folder only, is not stored in the project, and is withdrawn if the file changes. Fast and Live builds still ignore the file. Fixed: picking an environment after typing <code>\begin{</code> no longer leaves an extra closing brace. Fixed: the trial's one-time buying note, when focus mode hid it on days 5 and 6, now stays on screen on the last day until you dismiss it. Earlier versions install 1.10.0 through Check for Updates, or you can download it from the <a href="/moderntex/">ModernTex</a> page.</p>
         </div>
