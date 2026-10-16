@@ -2911,7 +2911,7 @@ See Vitae
 ---
 
 Source: https://purplelink.llc/scholar-utility-belt/
-Title: Scholar Utility Belt: Journal Rankings and h-index in Google Scholar | Purplelink
+Title: Scholar Utility Belt: Google Scholar Extension | Purplelink
 
 ← Products
 
@@ -7234,7 +7234,7 @@ Comparison
 
 # Best Chrome extensions for Google Scholar (2026)
 
-By Benjamin Ampel · October 4, 2026, updated October 4, 2026
+By Benjamin Ampel · October 4, 2026, updated October 16, 2026
 
 This guide is for anyone who searches Scholar daily and wants journal context, metrics, retraction warnings, full text and a way to save what they find. For each extension it says what it does on or around Google Scholar, what it costs, what the store says it collects and what it cannot do.
 
@@ -7276,11 +7276,11 @@ Those twelve cover most situations. Seven more extensions follow, then what I le
 
 ## Scholar Utility Belt
 
-Cost: Free core, open source under the ISC license. Optional Pro is $40 once, $3 a month or $20 a year. Platform: Chrome only. Store listing: version 0.6.2, about 1,000 users, 4.5 out of 5 from 16 ratings.
+Cost: Free core, open source under the ISC license. Optional Pro is $40 once, $3 a month or $20 a year. Platform: Chrome only. Store listing: version 1.0.1, about 1,000 users, 4.5 out of 5 from 16 ratings.
 
-It adds badges beside each Scholar result. The store listing names ABDC, FT50, UTD24 and CORE, and the project's README names more, including VHB, CCF, SCImago quartiles and ERA. The lists ship inside the extension, so badges need no network request. Beside them are citations per year, an "Emerging" signal for recent papers, a retraction warning and a tortured-phrase warning. The tortured-phrase warning checks each result's title and snippet against the Problematic Paper Screener's list of odd paraphrases (wording that can point to paper-mill text). The retraction warning looks up the DOI in a Retraction Watch-derived list that ships with the extension, and can ask Crossref if that list is not loaded. Author profiles get h-, m-, L-, g- and h5-index and the share of open access papers. There is also a local saved-paper library with notes and tags, BibTeX export, a query trend panel and related works.
+It adds badges beside each Scholar result. The project's README lists every ranking it includes, among them ABDC, FT50, UTD24, CORE, VHB, CCF, SCImago quartiles and ERA, and you can add your own list as a CSV with your own tier labels. The lists ship inside the extension, so badges need no network request. Beside them are citations per year, an "Emerging" signal for recent papers, a retraction warning and a tortured-phrase warning. The tortured-phrase warning checks each result's title and snippet against the Problematic Paper Screener's list of odd paraphrases (wording that can point to paper-mill text). The retraction warning looks up the DOI in a Retraction Watch-derived list that ships with the extension, and can ask Crossref if that list is not loaded. Author profiles get h-, m-, L-, g- and h5-index and the share of open access papers. There is also a local saved-paper library with notes and tags, BibTeX export, a query trend panel and related works.
 
-Pro adds author compare, citation lineage, extended bibliometrics (p-index, field-weighted citation impact, Relative Citation Ratio, influential citations), a narrative CV, a systematic-review workspace, a citation-graph overlay and a Publish-or-Perish-style report. Anyone who installed before version 0.6.0 keeps the features that existed then, free.
+Pro adds author compare, citation lineage, extended bibliometrics (p-index, field-weighted citation impact, Relative Citation Ratio, influential citations), a narrative CV, a systematic-review workspace, a citation-graph overlay and a Publish-or-Perish-style report. Anyone who installed before version 0.6.0 keeps the features that existed then, free. Version 1.0 added a results filter for papers that have Scholar's Quick read summary, and, in Pro, reference import from RIS, BibTeX and PubMed files with a search log and risk-of-bias notes.
 
 Privacy, exactly: no account, no analytics, no Purplelink server. Your library and settings stay in the extension's storage in your browser. Depending on the features you turn on, it sends lookups from your browser to public services (OpenAlex, Crossref, Unpaywall, OpenCitations, Semantic Scholar, DBLP, NIH iCite, PubMed, Europe PMC and ROR). Each lookup carries what it needs, such as a DOI, title, author name or search term. Pro licensing goes through ExtensionPay and Stripe. The extension makes no request to ExtensionPay unless you open the payment or sign-in page, and after that it sends a random per-install key to check your plan. An optional setting in Options asks Chrome for access to all sites and does nothing unless you press its button. The product page lists each call, and the source is on GitHub.
 
