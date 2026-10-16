@@ -205,7 +205,7 @@ const PRODUCT_CATALOG = {
   // docs/products/app-suite.md.
   "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life", successPath: "/suite/success/" },
   // Custom bundles of the Mac Suite: pick any 2 for $34.99 or any 3 for $44.99, the same price whichever parts are
-  // chosen (the six parts are the five apps and a lifetime Vitae Plus key; all six is the Suite above). The client sends
+  // chosen (the eight parts are the seven apps and a lifetime Vitae Plus key; all eight is the Suite above). The client sends
   // only `apps`; the price is the table in netlify/lib/bundles.mjs. Delivery reuses /suite/success/ and the per-app
   // download functions, which read metadata.apps back. See docs/growth-briefs/custom-bundle-pricing-2026-10-11.md.
   "bundle-2":                { amount: BUNDLES["bundle-2"].cents, bundle: true, name: "Purplelink Mac Suite custom bundle (any 2)", successPath: "/suite/success/" },

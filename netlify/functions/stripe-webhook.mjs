@@ -90,10 +90,10 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["tapefolio",         { name: "Tapefolio for macOS",               successPath: "/tapefolio/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Vitae Plus for life. /suite/success/
-  // lists all five downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Vitae Plus for life. /suite/success/
+  // lists all seven downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
-  // Custom bundles: any 2 or any 3 of the six Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
+  // Custom bundles: any 2 or any 3 of the eight Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
   // lists only the chosen parts; each download function and vitae-license.mjs read metadata.apps back.
   ["bundle-2",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
   ["bundle-3",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
